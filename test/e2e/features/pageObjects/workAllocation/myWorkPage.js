@@ -41,7 +41,7 @@ class MyWorkPage extends TaskList {
         //end of work filter locators
 
         this.subNavListContainer = $('xuilib-hmcts-sub-navigation .hmcts-sub-navigation__list');
-       
+
         this.myTasksContaine = $('exui-my-tasks');
         this.availableTasksContainer = $('exui-available-tasks');
 
@@ -151,7 +151,6 @@ class MyWorkPage extends TaskList {
             cucumberReporter.AddMessage("My work page not displayed "+err.stack, LOG_LEVELS.Error);
             return false;
         }
-        
     }
 
     async clickMyTasks() {
@@ -216,7 +215,7 @@ class MyWorkPage extends TaskList {
         const returnValues = [];
         for (let i = 0; i < servicesCheckBoxItemsCount;i++ ){
             const checkBoxItem = await this.workFilterServiceCheckboxeItems.get(i);
-            returnValues.push(await checkBoxItem.$('label').getText()); 
+            returnValues.push(await checkBoxItem.$('label').getText());
         }
         return returnValues;
     }
@@ -239,7 +238,7 @@ class MyWorkPage extends TaskList {
 
     async isWorkFilterServiceSelected(service){
         const serviceCheckBox = await this.getServiceCheckBox(service);
-        return serviceCheckBox.isSelected();  
+        return serviceCheckBox.isSelected();
     }
 
     async getServiceCheckBox(service) {
@@ -294,7 +293,7 @@ class MyWorkPage extends TaskList {
             if (locationName.includes(location)){
                 await e.click();
                 return;
-            } 
+            }
         }
         throw new Error(`location conating text ${location} is not found in selected location "${actualLocations}"`);
     }
@@ -305,10 +304,10 @@ class MyWorkPage extends TaskList {
         while(count > 0){
             const e = await this.selectedLocations.get(0);
             await e.click();
-            count = await this.selectedLocations.count(); 
+            count = await this.selectedLocations.count();
         }
-                 
-        
+
+
     }
 
     async isWorkFilterOfTypeDisplayed(filterType){
@@ -348,7 +347,6 @@ class MyWorkPage extends TaskList {
         return (await filterContainer.isPresent()) && (await filterContainer.isDisplayed());
 
     }
-
 }
 
 module.exports = new MyWorkPage();

@@ -4,15 +4,14 @@ import { StoreModule } from '@ngrx/store';
 import { NocService } from './noc.service';
 
 describe('NocService', () => {
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        StoreModule.forRoot({}),
+        StoreModule.forRoot({})
       ],
       providers: [
-        NocService,
+        NocService
       ]
     });
   });
@@ -31,7 +30,6 @@ describe('NocService', () => {
       expect(req.request.method).toEqual('GET');
       req.flush(null);
     }));
-
   });
 
   describe('validateNoCAnswers', () => {
@@ -44,7 +42,6 @@ describe('NocService', () => {
       expect(req.request.method).toEqual('POST');
       req.flush(null);
     }));
-
   });
 
   describe('submitNoCEvent', () => {
@@ -57,6 +54,5 @@ describe('NocService', () => {
       expect(req.request.method).toEqual('POST');
       req.flush(null);
     }));
-
   });
 });

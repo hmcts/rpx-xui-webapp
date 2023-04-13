@@ -15,7 +15,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-judge',
-  templateUrl: './hearing-judge.component.html',
+  templateUrl: './hearing-judge.component.html'
 })
 export class HearingJudgeComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public hearingJudgeForm: FormGroup;
@@ -29,7 +29,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   public selectJudgeNameError: string;
   public hearingJudgeFormInfo: { includedJudges: string[], judgeTypes: string[], excludedJudges: string[] };
   public serviceId: string;
-  @ViewChild('excludedJudge', {static: false}) public excludedJudge: HearingJudgeNamesListComponent;
+  @ViewChild('excludedJudge', { static: false }) public excludedJudge: HearingJudgeNamesListComponent;
 
   constructor(protected readonly route: ActivatedRoute,
               private readonly formBuilder: FormBuilder,
@@ -87,7 +87,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
     this.hearingJudgeForm = this.formBuilder.group({
       specificJudge: [this.specificJudgeSelection, Validators.required],
       judgeName: [null],
-      judgeType: this.getJudgeTypeFormArray,
+      judgeType: this.getJudgeTypeFormArray
     });
   }
 

@@ -25,7 +25,7 @@ function HeaderSearch(){
   this.label = element(by.xpath("//div[@class ='hmcts-primary-navigation__search']//exui-case-reference-search-box//span"));
   this.input = element(by.xpath("//div[@class ='hmcts-primary-navigation__search']//exui-case-reference-search-box//input[@id='caseReference']"));
   this.button = element(by.xpath("//div[@class ='hmcts-primary-navigation__search']//exui-case-reference-search-box//button"));
-  
+
   this.waitForContainer = async function() {
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForElement(this.container);
@@ -43,7 +43,6 @@ function HeaderSearch(){
 
     await this.button.click();
   }
-
 }
 
 function HeaderPage() {
@@ -53,10 +52,10 @@ function HeaderPage() {
     this.globalHeaderContainerWithStyle = element(by.xpath("//exui-hmcts-global-header/.."));
 
     this.caseReferenceSearchBox = $('.hmcts-primary-navigation__search exui-case-reference-search-box');
-    
+
     this.primaryNavBar = element(by.css(".hmcts-primary-navigation__container"));
     this.primaryNavBar_NavItems = element(by.css(".hmcts-primary-navigation__nav ul"));
-    
+
     this.headerMenuItems = $$('.hmcts-primary-navigation li.hmcts-primary-navigation__item');
     this.primaryNavBar_rightSideItems = element(by.css(".hmcts-primary-navigation__search ul"));
 
@@ -65,7 +64,7 @@ function HeaderPage() {
     this.headerAppLogoLink = $('.hmcts-header__logo a,.hmcts-header__container a.hmcts-header__link');
     this.headerBanner = $('exui-header header > div');
 
-    this.headerCaseRefSearch = new HeaderSearch(); 
+    this.headerCaseRefSearch = new HeaderSearch();
 
     this.navigateToRoute = async function(route){
       let currentUrl = await browser.getCurrentUrl();
@@ -77,7 +76,7 @@ function HeaderPage() {
 
       await browser.get(baseUrl + route);
       await browserUtil.waitForLD();
-      await this.waitForPrimaryNavDisplay(); 
+      await this.waitForPrimaryNavDisplay();
     }
 
     this.getMenuItemsCount = async function(){
@@ -170,9 +169,9 @@ function HeaderPage() {
           throw new Error(err);
         }
 
-        
+
       });
-      
+
     }
 
     this.clickAppLogoLink = async function(){
@@ -191,7 +190,7 @@ function HeaderPage() {
       await BrowserWaits.waitForElementClickable(refundsLink);
       await refundsLink.click();
       let searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[text() = 'Refund list']"));
-      await BrowserWaits.waitForElement(searchPageHeader); 
+      await BrowserWaits.waitForElement(searchPageHeader);
     };
 
     this.taskList = function(){
@@ -218,7 +217,7 @@ function HeaderPage() {
 
   this.clickCaseList = async function () {
     await BrowserWaits.waitForSpinnerToDissappear();
-    await BrowserWaits.waitForElement(this.caseList());  
+    await BrowserWaits.waitForElement(this.caseList());
     await BrowserWaits.waitForElementClickable(this.caseList());
     await this.caseList().click();
     await browserUtil.waitForLD();
@@ -229,8 +228,8 @@ function HeaderPage() {
     await BrowserWaits.waitForSpinnerToDissappear();
 
     await BrowserWaits.retryWithActionCallback(async () => {
-      await BrowserWaits.waitForSpinnerToDissappear(); 
-      await BrowserWaits.waitForElement(this.createCase()); 
+      await BrowserWaits.waitForSpinnerToDissappear();
+      await BrowserWaits.waitForElement(this.createCase());
       await BrowserWaits.waitForElementClickable(this.createCase());
       await this.createCase().click();
       await browserUtil.waitForLD();
@@ -306,7 +305,7 @@ function HeaderPage() {
       if (tabEle) {
         await tabEle.click();
       } else {
-        await this.refreshBrowser(); 
+        await this.refreshBrowser();
         throw new Error(`Tab ${tabText} is not present in navigation tabs headers ${primaryTabs} `);
       }
     });
@@ -377,7 +376,6 @@ function HeaderPage() {
     return retValue;
 
   }
-
 }
 
 module.exports = new HeaderPage;

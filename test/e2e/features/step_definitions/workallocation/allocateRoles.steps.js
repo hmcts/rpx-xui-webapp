@@ -21,7 +21,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             expect(await workFlowPageObject.getHeaderText(), `${workFlowPageType} work flow page header not matching`).to.include(workFlowPageType);
             expect((await workFlowPageObject.getHeaderCaption()).toLowerCase(), `${workFlowPageType} work flow page header caption not matching`).to.include(captionHeader.toLowerCase());
 
-        }); 
+        });
     });
 
     When('I enter find person search input {string} in work flow', async function(searchInput){
@@ -34,7 +34,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             const results = await workFlowPage.findPersonPage.getPersonsReturned();
             expect(results.length > 0, `No find person results returned for input "${searchInput}"`).to.be.true;
             await BrowserWaits.waitForSeconds(1);
-        }); 
+        });
     });
 
     Then('I see find person search results in work flow', async function(resulEmails){
@@ -46,7 +46,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             counter++;
             const actualSearcResults = await workFlowPage.findPersonPage.getPersonsReturned();
             const expectedResultsHashes = resulEmails.hashes();
-           
+
             const expectedResultsArr = [];
             for (const expectedHash of expectedResultsHashes) {
                 if (expectedHash.Person !== ''){
@@ -57,7 +57,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 expect(actualSearcResults, `Actual : ${actualSearcResults}`).to.include(expected)
             }
         });
-       
     });
 
     When('I select find person result {string} in work flow', async function(person){
@@ -111,7 +110,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await workFlowPage.durationOfRolePage.enterDayInDateInputWithLabel(dateInputField, dateToEnter.getDate());
         await workFlowPage.durationOfRolePage.enterMonthInDateInputWithLabel(dateInputField, dateToEnter.getMonth()+1);
         await workFlowPage.durationOfRolePage.enterYearInDateInputWithLabel(dateInputField, dateToEnter.getFullYear());
-
     });
 
     When('I enter duration date for field {string} with current date minus {int} days in work flow', async function (dateInputField, bydays) {
@@ -146,7 +144,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             workFlowPageObject = workFlowPage.checkYourAnswers;
         } else {
             throw new Error(`work flow page "${workFlowPageType}" is not recognised or not implemented in test step definition.`);
-        } 
+        }
         return workFlowPageObject;
     }
 
@@ -155,6 +153,5 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const durationOptionInput = workFlowPage.durationOfRolePage.getRadioOptionInputElement(durationOption);
         expect(await durationOptionInput.isSelected()).to.be.true;
     });
-
 });
 

@@ -25,7 +25,7 @@ describe('Hearing Actuals Effects', () => {
       providers: [
         {
           provide: HearingsService,
-          useValue: hearingsServiceMock,
+          useValue: hearingsServiceMock
         },
         {
           provide: Router,
@@ -64,7 +64,6 @@ describe('Hearing Actuals Effects', () => {
   });
 
   describe('updateHearingActualStage$', () => {
-
     it('should return a response with service hearing actuals stage', () => {
       hearingsServiceMock.updateHearingActuals.and.returnValue(of(hearingActualsMainModel));
       const action = new hearingActualsActions.UpdateHearingActualsStage({
@@ -93,7 +92,7 @@ describe('Hearing Actuals Effects', () => {
         status: 400,
         statusText: 'Bad Request',
         message: 'Bad Request',
-        errors: [],
+        errors: []
       };
       hearingsServiceMock.submitHearingActuals.and.returnValue(throwError(error));
       const action = new hearingActualsActions.SubmitHearingActuals('1111222233334444');

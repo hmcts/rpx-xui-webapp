@@ -67,7 +67,7 @@ describe('BookingGuard', () => {
         'pui-finance-manager',
         'pui-organisation-manager',
         'pui-user-manager'
-      ],
+      ]
     }
   };
 
@@ -80,7 +80,7 @@ describe('BookingGuard', () => {
     roleAssignmentInfo: [{
       primaryLocation: '',
       jurisdiction: '',
-      isCaseAllocator: true,
+      isCaseAllocator: true
     }],
     userInfo: {
       id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
@@ -96,7 +96,7 @@ describe('BookingGuard', () => {
         'pui-finance-manager',
         'pui-organisation-manager',
         'pui-user-manager'
-      ],
+      ]
     }
   };
   const USER_4: UserDetails = {
@@ -108,7 +108,7 @@ describe('BookingGuard', () => {
     roleAssignmentInfo: [{
       primaryLocation: '',
       jurisdiction: '',
-      isCaseAllocator: true,
+      isCaseAllocator: true
     }],
     userInfo: {
       id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
@@ -123,7 +123,7 @@ describe('BookingGuard', () => {
         'pui-finance-manager',
         'pui-organisation-manager',
         'pui-user-manager'
-      ],
+      ]
     }
   };
   let bookingGuard: BookingGuard;

@@ -13,5 +13,4 @@ describe('DefaultAmendedConverter', () => {
     const isAmended = false;
     result$.subscribe(result => expect(result).toBe(isAmended));
   });
-
 });

@@ -7,7 +7,7 @@ class GlobalSearchResultsPage{
 
         this.previousPageLink = element(by.xpath("//exui-search-results//xuilib-pagination//*[contains(@class,'hmcts-pagination__link') and contains(text(),'Previous page')]"));
         this.nextpageLink = element(by.xpath("//exui-search-results//xuilib-pagination//*[contains(@class,'hmcts-pagination__link') and contains(text(),'Next page')]"));
-       
+
         this.table = $('exui-search-results exui-page-wrapper table');
 
         this.tableHeaderColumns = $$('exui-search-results exui-page-wrapper table thead tr th');
@@ -59,7 +59,7 @@ class GlobalSearchResultsPage{
                 colNames.push(columnName);
             }
         }
-        return colNames; 
+        return colNames;
     }
 
     async getColumnIndex(columnName){
@@ -69,9 +69,9 @@ class GlobalSearchResultsPage{
             if (columns[i] === columnName){
                 index = i;
                 break;
-           } 
+           }
         }
-        return index; 
+        return index;
     }
 
     async getTableRowsCount(){
@@ -96,9 +96,8 @@ class GlobalSearchResultsPage{
             throw new Error(`Column with name not found in table : ${columnName} `);
         }
         return await tableRow.$$('td').get(colIndex);
-        
-    }
 
+    }
 }
 
 module.exports = new GlobalSearchResultsPage();

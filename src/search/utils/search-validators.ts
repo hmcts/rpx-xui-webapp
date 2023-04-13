@@ -17,7 +17,7 @@ export class SearchValidators {
     return (control: AbstractControl): ValidationErrors | null => {
       // Use template literal to coerce control.value to a string in case it is null
       if (!(`${control.value}`).replace(/[\s-]/g, '').match(/^\d{16}$/)) {
-        return {caseReference: true};
+        return { caseReference: true };
       }
       return null;
     };
@@ -45,7 +45,7 @@ export class SearchValidators {
        * Last two fragments are surrounded with parentheses to be sure that the lookahead applies to the whole thing.
        */
       if (!control.value.toString().replace(/[\s-]/g, '').match(/^\d{16}$|^(?=.{1,16}$)((\d+)?(\*(\d|$)+)+)/)) {
-        return {caseReference: true};
+        return { caseReference: true };
       }
       return null;
     };
@@ -55,7 +55,7 @@ export class SearchValidators {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === null || control.value === '') { return; }
       if (!control.value.toString().match(/^(([A-Za-z]{1,2}[0-9][A-Za-z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA) ?[0-9][A-Za-z]{2}|BFPO ?[0-9]{1,4}|(KY[0-9]|MSR|VG|AI)[ -]?[0-9]{4}|[A-Za-z]{2} ?[0-9]{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1)$/)) {
-        return {postcode: true};
+        return { postcode: true };
       }
       return null;
     };
@@ -86,7 +86,7 @@ export class SearchValidators {
 
       // Compare
       if (dateOfBirth > dateOfDeath) {
-        return {datePair: true, errorType: SearchFormErrorType.DATE_COMPARISON};
+        return { datePair: true, errorType: SearchFormErrorType.DATE_COMPARISON };
       }
       return null;
     };
@@ -99,8 +99,8 @@ export class SearchValidators {
   public static searchFormValidator(): ValidatorFn {
     return (formGroup: AbstractControl): ValidationErrors | null => {
       if (!Object.keys((formGroup as FormGroup).controls).filter(key => key !== SearchFormControl.SERVICES_LIST)
-      .some(key => !!(formGroup as FormGroup).controls[key].value)) {
-        return {searchForm: true, errorType: SearchFormErrorType.NO_SEARCH_CRITERIA};
+        .some(key => !!(formGroup as FormGroup).controls[key].value)) {
+        return { searchForm: true, errorType: SearchFormErrorType.NO_SEARCH_CRITERIA };
       }
       return null;
     };

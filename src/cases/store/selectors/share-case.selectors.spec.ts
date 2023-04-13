@@ -5,12 +5,13 @@ import { getShareCaseListState, reducers, State } from '../index';
 
 describe('Share case selectors', () => {
   let store: Store<State>;
+
   beforeEach(waitForAsync( () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('cases', reducers),
-      ],
+        StoreModule.forFeature('cases', reducers)
+      ]
     });
     store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
@@ -38,5 +39,4 @@ describe('Share case selectors', () => {
       expect(result.length).toEqual(2);
     });
   });
-
 });

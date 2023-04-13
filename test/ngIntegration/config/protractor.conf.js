@@ -15,7 +15,7 @@ exports.config = {
     '../tests/ccdToolkit_Caselist_Poc.test.js'
   ],
   exclude: [
-    '../tests/hiddenFields.test.js', 
+    '../tests/hiddenFields.test.js',
     '../tests/caseFieldCollectionsPermissions.test.js',
     '../tests/workAllocation1/*.test.js'
 ],
@@ -27,7 +27,7 @@ exports.config = {
   baseUrl: 'http://localhost:4200/',
   framework: 'mocha',
   mochaOpts: {
-    reporter: 'mochawesome', 
+    reporter: 'mochawesome',
     reporterOptions: {
       reportFilename: "index.html",
       reportDir: "reports/tests/ngIntegration",
@@ -44,6 +44,5 @@ exports.config = {
       browserInstance: browser
     });
   },
-  onComplete(){
-  }
+  onComplete(){}
 };

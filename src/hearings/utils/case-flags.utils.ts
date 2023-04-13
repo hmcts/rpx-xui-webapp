@@ -1,9 +1,9 @@
 import * as _ from 'underscore';
-import {CaseFlagGroup} from '../models/caseFlagGroup.model';
-import {CaseFlagReferenceModel} from '../models/caseFlagReference.model';
-import {CaseFlagType} from '../models/hearings.enum';
-import {PartyDetailsModel} from '../models/partyDetails.model';
-import {PartyFlagsDisplayModel, PartyFlagsModel} from '../models/partyFlags.model';
+import { CaseFlagGroup } from '../models/caseFlagGroup.model';
+import { CaseFlagReferenceModel } from '../models/caseFlagReference.model';
+import { CaseFlagType } from '../models/hearings.enum';
+import { PartyDetailsModel } from '../models/partyDetails.model';
+import { PartyFlagsDisplayModel, PartyFlagsModel } from '../models/partyFlags.model';
 
 export class CaseFlagsUtils {
   public static ACTIVE = 'active';
@@ -21,8 +21,8 @@ export class CaseFlagsUtils {
    * @return CaseFlagGroup[] - Flags group by case flags type
    */
   public static displayCaseFlagsGroup(partyFlags: PartyFlagsModel[],
-                                      caseFlagsRefDataModels: CaseFlagReferenceModel[],
-                                      caseFlagType: CaseFlagType): CaseFlagGroup[] {
+    caseFlagsRefDataModels: CaseFlagReferenceModel[],
+    caseFlagType: CaseFlagType): CaseFlagGroup[] {
     const allActiveFlags = this.getAllActiveDisplayFlags(partyFlags, caseFlagsRefDataModels);
     const allRAFs = allActiveFlags.filter(caseFlag =>
       (caseFlag.displayPath.includes(CaseFlagType.REASONABLE_ADJUSTMENT)
@@ -42,13 +42,13 @@ export class CaseFlagsUtils {
         return {
           ...flag,
           displayName: flagPath.name,
-          displayPath: flagPath.Path,
+          displayPath: flagPath.Path
         };
       } else {
         return {
           ...flag,
           displayName: null,
-          displayPath: null,
+          displayPath: null
         };
       }
     });
@@ -65,7 +65,7 @@ export class CaseFlagsUtils {
     const nonRAPFsWithGroup = _.groupBy(nonRAPFs, CaseFlagsUtils.PARTY_NAME);
     const caseFlags = flags.filter(nonRAF => nonRAF.displayPath.includes(CaseFlagType.CASE_FLAG));
     const caseFlagsWithGroup = _.groupBy(caseFlags, CaseFlagsUtils.PARTY_NAME);
-    return this.convertMapToArray({...nonRAPFsWithGroup, ...caseFlagsWithGroup});
+    return this.convertMapToArray({ ...nonRAPFsWithGroup, ...caseFlagsWithGroup });
   }
 
   public static findFlagByFlagId(caseFlagReferenceModels: CaseFlagReferenceModel[], flagId: string): CaseFlagReferenceModel {
@@ -84,8 +84,8 @@ export class CaseFlagsUtils {
   }
 
   public static convertPartiesToPartyWithFlags(caseFlagReferenceModels: CaseFlagReferenceModel[],
-                                               partyDetails: PartyDetailsModel[],
-                                               partiesFromServiceValue?: PartyDetailsModel[]): Map<string, CaseFlagReferenceModel[]> {
+    partyDetails: PartyDetailsModel[],
+    partiesFromServiceValue?: PartyDetailsModel[]): Map<string, CaseFlagReferenceModel[]> {
     const partyWithFlags: Map<string, CaseFlagReferenceModel[]> = new Map();
     partyDetails.forEach(party => {
       const foundPartyFromService = partiesFromServiceValue.find(pt => pt.partyID === party.partyID);

@@ -34,7 +34,6 @@ class UserDetails{
         })
         return userDetails;
     }
-
 }
 
 module.exports = new UserDetails();

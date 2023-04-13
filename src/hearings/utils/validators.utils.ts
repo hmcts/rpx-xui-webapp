@@ -108,7 +108,7 @@ export class ValidatorsUtils {
   }
 
   public errorValidator(message: string): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
+    return (): { [key: string]: any } | null => {
       return { error: message };
     };
   }

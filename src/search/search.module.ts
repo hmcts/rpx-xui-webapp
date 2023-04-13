@@ -19,7 +19,7 @@ import { SearchRoutingModule } from './search-routing.module';
   declarations: [
     SearchFormComponent,
     SearchResultsComponent,
-    NoResultsComponent,
+    NoResultsComponent
   ],
   exports: [
     SearchFormComponent,
@@ -30,4 +30,4 @@ import { SearchRoutingModule } from './search-routing.module';
 
   ]
 })
-export class SearchModule { }
+export class SearchModule {}

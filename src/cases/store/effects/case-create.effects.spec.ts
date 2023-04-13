@@ -10,13 +10,10 @@ import { ApplyChange, CaseCreateFilterApply, CreateCaseLoaded, CreateCaseReset }
 import { CaseCreateEffects } from './case-create.effects';
 
 describe('CaseCreate Effects', () => {
-
-  let mockAlertService: any;
-  let mockLogger: any;
   let actions$;
   let effects: CaseCreateEffects;
-  mockAlertService = jasmine.createSpyObj('alertService', ['success']);
-  mockLogger = jasmine.createSpyObj('mockLogger', ['info']);
+  const mockAlertService = jasmine.createSpyObj('alertService', ['success']);
+  const mockLogger = jasmine.createSpyObj('mockLogger', ['info']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -25,12 +22,11 @@ describe('CaseCreate Effects', () => {
         CaseCreateEffects,
         { provide: AlertService, useValue: mockAlertService },
         provideMockActions(() => actions$),
-        { provide: LoggerService, useValue: mockLogger },
-      ],
+        { provide: LoggerService, useValue: mockLogger }
+      ]
     });
 
     effects = TestBed.inject(CaseCreateEffects);
-
   });
 
   describe('applyCreateCase$', () => {

@@ -29,5 +29,4 @@ export class HearingsBadgePipe implements PipeTransform {
         return 'govuk-tag';
     }
   }
-
 }

@@ -9,7 +9,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-additional-instructions',
-  templateUrl: './hearing-additional-instructions.component.html',
+  templateUrl: './hearing-additional-instructions.component.html'
 })
 export class HearingAdditionalInstructionsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
 
@@ -51,7 +51,7 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
         ...this.hearingRequestMainModel.hearingDetails,
         listingComments: this.instructionsForm.value.instructions,
         autolistFlag: this.getAutoListFlag(),
-        listingAutoChangeReasonCode: this.getListingAutoChangeReasonCode(),
+        listingAutoChangeReasonCode: this.getListingAutoChangeReasonCode()
       }
     };
   }

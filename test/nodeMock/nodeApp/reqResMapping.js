@@ -34,14 +34,13 @@ module.exports = {
                 // reportLogger.AddJson(nodeAppMockData.userDetails.userInfo);
                 res.send(nodeAppMockData.userDetails);
 
-            },1) 
+            },1)
         },
         '/auth/logout': (req,res) => {
             res.header('location','/auth/login');
             res.status(302).send();
-        } 
+        }
 
     },
-    post: {
-    }
+    post: {}
 }

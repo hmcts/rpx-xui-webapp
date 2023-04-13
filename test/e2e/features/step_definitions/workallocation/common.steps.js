@@ -36,7 +36,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await BrowserWaits.retryWithActionCallback(async () => {
             await myWorkPage.amOnPage();
             await myWorkPage.amOnMyTasksTab();
-        }); 
+        });
     });
 
     Then('I see My work Available tasks page', async function () {
@@ -47,7 +47,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I see My work My cases page', async function () {
-        throw new Error('Step def not implemented'); 
+        throw new Error('Step def not implemented');
     });
 
     Then('I see All work Tasks page', async function () {
@@ -78,15 +78,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I click task list pagination link {string}', async function (paginationLinktext) {
         await BrowserWaits.waitForSeconds(1);
-        
+
         await BrowserWaits.waitForConditionAsync(async () => {
             const colCount = await taskListTable.getColumnCount();
             const rowCount = await taskListTable.getTaskListCountInTable();
             return colCount > 0 && rowCount > 0;
         });
-        if (paginationLinktext.toLowerCase() === "next") { 
+        if (paginationLinktext.toLowerCase() === "next") {
             await taskListTable.pageNextLink.click();
-        } else if (paginationLinktext.toLowerCase() === "previous") { 
+        } else if (paginationLinktext.toLowerCase() === "previous") {
             await taskListTable.pagePreviousLink.click();
         } else {
             await taskListTable.clickPaginationPageNum(paginationLinktext);
@@ -126,22 +126,21 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
            await BrowserWaits.waitForConditionAsync(async () => {
                return columnSortVal.includes(sortOrder.toLowerCase())
            }, 3000, "Sort column state to be " + sortOrder.toLowerCase());
-       }); 
-       
+       });
+
     });
 
     Then('I validate task list table columns displayed', async function (datatable) {
         const columnHeadersHash = datatable.hashes();
-        const expectdColHeaders = await ArrayUtil.map(columnHeadersHash, (headerhash) => headerhash.ColumnHeader );  
+        const expectdColHeaders = await ArrayUtil.map(columnHeadersHash, (headerhash) => headerhash.ColumnHeader );
         const actualHeadeColumns = await taskListTable.getColumnHeaderNames();
         expect(actualHeadeColumns.length, `Actual Cols ||${actualHeadeColumns}|| !== Expected Cols ||${expectdColHeaders}|| `).to.equal(expectdColHeaders.length);
         expect(actualHeadeColumns, `Actual Cols ||${actualHeadeColumns}|| !== Expected Cols ||${expectdColHeaders}|| `).to.include.members(expectdColHeaders);
-
     });
 
     Then('I validate task list table columns displayed for user {string}', async function (userType, datatable) {
         const columnHeadersHash = datatable.hashes();
-        
+
         const actualHeadeColumns = await taskListTable.getColumnHeaderNames();
         for (const headerHash of columnHeadersHash ){
             const columnHeader = headerHash.ColumnHeader;
@@ -183,7 +182,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         expect(actuallinkColumns.length, `Actual Cols ||${actuallinkColumns}|| !== Expected Cols ||${expectdLinkCols}|| `).to.equal(expectdLinkCols.length);
         expect(actuallinkColumns).to.include.members(expectdLinkCols);
-
     });
 
     When('I click task column link {string} at row {int}', async function(colName, rowPos){
@@ -193,7 +191,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click task column link {string} at row {int}, I see case details page', async function (colName, rowPos) {
-        
+
         await BrowserWaits.waitForPageNavigationOnAction(async () => {
             await BrowserWaits.retryWithActionCallback(async () => {
                 await taskListTable.clickTaskColLink(colName, rowPos);
@@ -201,12 +199,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         });
 
         await BrowserWaits.retryWithActionCallback(async () => {
-            expect(await caseDetailsPage.amOnPage(),'Case details page not displayed').to.be.true 
+            expect(await caseDetailsPage.amOnPage(),'Case details page not displayed').to.be.true
         });
     });
 
     Then('I see manage link displayed for task at position {int}', async function(row){
-        expect(await taskListTable.isManageLinkPresent(row)).to.be.true;    
+        expect(await taskListTable.isManageLinkPresent(row)).to.be.true;
     });
 
 
@@ -219,7 +217,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const taskHashes = tasksDatatable.hashes();
 
         for (let i = 0; i < taskHashes.length; i++) {
-          
+
             const taskActions = taskHashes[i]["actions"].split(",");
             let taskIndex = parseInt(taskHashes[i].index);
             if (taskHashes[i]["actions"] === ""){
@@ -237,10 +235,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 softAssert.setScenario(`Action ${action} present for task  ${JSON.stringify(taskHashes[i])} isPresent`);
                 await softAssert.assert(async () => expect(await taskListTable.isTaskActionPresent(action)).to.be.true);
             }
-            
+
         }
         softAssert.finally();
-
     });
 
     Then('I validate manage link actions for cases', async function (tasksDatatable) {
@@ -268,7 +265,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         }
         softAssert.finally();
-
     });
 
 
@@ -348,7 +344,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 if (messages[i].message !== "") {
                     expect(matchingMsgs.length > 0, `expected "${messages[i].message}" to be included in ${JSON.stringify(actualmessages)}`).to.be.true
                 }
-            }  
+            }
         });
     });
 
@@ -376,16 +372,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I validate task details displayed in check your changes page', async function (taskDetailsDatatable) {
         const taskDetails = taskDetailsDatatable.hashes()[0];
-        
-        validateTaskDetailsDisplayed(taskDetails, taskCheckYourChangesPage);
 
+        validateTaskDetailsDisplayed(taskDetails, taskCheckYourChangesPage);
     });
 
     Then('I validate task details displayed in check your changes page matching reference {string}', async function (reference) {
         const taskDetails = global.scenarioData[reference];
 
         validateTaskDetailsDisplayed(taskDetails, taskCheckYourChangesPage);
-
     });
 
     async function validateTaskDetailsDisplayed(taskDetails, actionPage){
@@ -413,7 +407,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(await taskActionPage.getActionDescription()).to.contain(actionDescription);
         });
-
     });
 
     When('I click {string} submit button in task action page', async function(actionSubmitBtnLabel){
@@ -421,7 +414,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             expect(await taskActionPage.getSubmitBtnActionLabel()).to.contain(actionSubmitBtnLabel);
             await taskActionPage.clickSubmit();
         });
-        
+
     });
 
     When('I click Cancel link in task action page', async function(){
@@ -452,7 +445,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is displayed").to.be.false;
             }
         });
-
     });
 
     Then('I validate WA tasks table footer displayed status is {string}', async function(displayStateBool){
@@ -466,7 +458,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
            await BrowserWaits.waitForElement(waCaseListTable.tableFooter);
            expect(await waCaseListTable.isTableFooterDisplayed()).to.equal(expectedDisplayState);
        });
-        
+
     });
 
     Then('I validate WA tasks table footer message is {string}', async function (message) {
@@ -480,7 +472,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Given('I have a caseworker details other than logged in user with reference {string} for service {string}', async function(caseWorkerRef, service){
         const caseworkersInSessionStorage = await browserUtil.getFromSessionStorage(`${service}-caseworkers`);
         const caseworkers = JSON.parse(caseworkersInSessionStorage);
-        
+
         const loggedinuserDetailsInSessionStorage = await browserUtil.getFromSessionStorage('userDetails');
         const loggedInUser = JSON.parse(loggedinuserDetailsInSessionStorage);
         const loggedinUserIdamId = loggedInUser.uid ? loggedInUser.uid : loggedInUser.id;
@@ -488,32 +480,31 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (const cw of caseworkers){
             if (cw.roleCategory === "LEGAL_OPERATIONS" && cw.idamId !== loggedinUserIdamId){
                 caseWorkerForRef = cw;
-                break; 
+                break;
             }
         }
 
         reportLogger.AddJson(caseWorkerForRef)
-        global.scenarioData[caseWorkerRef] = caseWorkerForRef; 
+        global.scenarioData[caseWorkerRef] = caseWorkerForRef;
 
     });
 
     Then('I see see page task assignment person not authorised page', async function(){
         try{
-            await BrowserWaits.waitForElement(taskAssignmentPersonNotAuthorisedPage.container); 
+            await BrowserWaits.waitForElement(taskAssignmentPersonNotAuthorisedPage.container);
         }catch(err){
             throw new Error("Task assignment person authorised page is not displayed.");
         }
-        
     });
 
     Then('I see see page task assignment authorisation error message {string}', async function(message){
-        await BrowserWaits.waitForElement(taskAssignmentPersonNotAuthorisedPage.container); 
-        expect(await taskAssignmentPersonNotAuthorisedPage.message.getText()).to.includes(message); 
+        await BrowserWaits.waitForElement(taskAssignmentPersonNotAuthorisedPage.container);
+        expect(await taskAssignmentPersonNotAuthorisedPage.message.getText()).to.includes(message);
     });
 
     When('I click back button in task assignment authorisation error page', async function(){
-        await BrowserWaits.waitForElement(taskAssignmentPersonNotAuthorisedPage.container); 
-        await taskAssignmentPersonNotAuthorisedPage.backButton.click(); 
+        await BrowserWaits.waitForElement(taskAssignmentPersonNotAuthorisedPage.container);
+        await taskAssignmentPersonNotAuthorisedPage.backButton.click();
      });
 
     Then('I validate work allocation task table column {string} width less than or equal to {int}', async function(columnName, size){
@@ -521,8 +512,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             const columnWidthActual = await taskListTable.getHeaderColumnWidth(columnName);
             reportLogger.AddMessage(`Actual column "${columnName}" width is ${columnWidthActual}`)
             expect(columnWidthActual <= size, `Size max width does not match. actual width ${columnWidthActual}` ).to.be.true;
-        }); 
-        
+        });
+
     });
 
     Then('I validate work allocation case table column {string} width less than or equal to {int}', async function (columnName, size) {
@@ -531,7 +522,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             reportLogger.AddMessage(`Actual column "${columnName}" width is ${columnWidthActual}`)
             expect(columnWidthActual <= size, `Size max width does not match. actual width ${columnWidthActual}`).to.be.true;
         });
-       
+
     });
 
     Given('I unassign the task at row 1', async function(){
@@ -544,6 +535,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await taskActionPage.amOnPage();
             await taskActionPage.clickSubmit();
             expect(await taskActionPage.isBannerMessageDisplayed()).to.be.true;
-        } 
+        }
     });
 });

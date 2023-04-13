@@ -1,17 +1,15 @@
-import {ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {PartyType} from '../models/hearings.enum';
-import {LovRefDataModel} from '../models/lovRefData.model';
-import {PartyDetailsModel} from '../models/partyDetails.model';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { PartyType } from '../models/hearings.enum';
+import { LovRefDataModel } from '../models/lovRefData.model';
+import { PartyDetailsModel } from '../models/partyDetails.model';
 import * as fromHearingStore from '../store';
-import {AnswerConverter} from './answer.converter';
+import { AnswerConverter } from './answer.converter';
 
 export class PartyChannelsAnswerConverter implements AnswerConverter {
-
   constructor(
-    protected readonly route: ActivatedRoute) {
-  }
+    protected readonly route: ActivatedRoute) {}
 
   private static getPartyChannelValue(refData: LovRefDataModel[], party: PartyDetailsModel): string {
     let preferredHearingChannelRefData = null;

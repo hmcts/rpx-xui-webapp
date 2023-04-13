@@ -14,7 +14,5 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await workflowUtil.waitForWorkflowPage(workFlowPage);
             global.scenarioData['workflow'] = workFlowPage;
         });
-        
     });
-
 });

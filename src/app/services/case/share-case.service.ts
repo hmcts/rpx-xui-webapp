@@ -6,10 +6,10 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class CaseShareService {
-    constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   public getUsersFromOrg(): Observable<UserDetails[]> {
-    return this.http.get<UserDetails[]>(`api/caseshare/users`);
+    return this.http.get<UserDetails[]>('api/caseshare/users');
   }
 
   public getShareCases(shareCases: SharedCase[]): Observable<SharedCase[]> {
@@ -19,10 +19,10 @@ export class CaseShareService {
         case_ids: caseIds
       }
     };
-    return this.http.get<SharedCase[]>(`api/caseshare/cases`, options);
+    return this.http.get<SharedCase[]>('api/caseshare/cases', options);
   }
 
   public assignUsersWithCases(sharedCases: SharedCase[]): Observable<SharedCase[]> {
-      return this.http.post<SharedCase[]>(`api/caseshare/case-assignments`, {sharedCases});
+    return this.http.post<SharedCase[]>('api/caseshare/case-assignments', { sharedCases });
   }
 }

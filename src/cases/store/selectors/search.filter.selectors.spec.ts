@@ -6,12 +6,13 @@ import { getSearchState } from './search.filter.selectors';
 
 describe('Search filter selectors', () => {
   let store: Store<SearchState>;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('cases', reducers),
-      ],
+        StoreModule.forFeature('cases', reducers)
+      ]
     });
     store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
@@ -26,5 +27,4 @@ describe('Search filter selectors', () => {
       expect(result).toEqual(initialSearchState);
     });
   });
-
 });

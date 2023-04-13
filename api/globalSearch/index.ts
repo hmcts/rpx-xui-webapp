@@ -22,8 +22,7 @@ export async function getServices(req: EnhancedRequest, res: Response, next: Nex
 
     // Retrieve jurisdictions from session if available
     // Else perform api call to get jurisdictions
-    let services: any;
-    services = generateServices(req.session.jurisdictions as Jurisdiction[]);
+    const services: any = generateServices(req.session.jurisdictions as Jurisdiction[]);
 
     // Store generated global search services to session
     req.session.globalSearchServices = services;

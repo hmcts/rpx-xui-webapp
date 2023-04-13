@@ -7,7 +7,7 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 
 export class JudgeExclusionAnswerConverter implements AnswerConverter {
-  constructor(protected readonly route: ActivatedRoute) { }
+  constructor(protected readonly route: ActivatedRoute) {}
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     const judicialUsersList: JudicialUserModel[] = this.route.snapshot.data.judicialUsers;

@@ -13,7 +13,6 @@ class ArrayUtil {
         const results = await Promise.all(arr.map(callback));
         return arr.filter((element, index) => results[index]);
     }
-
 }
 
 module.exports = new ArrayUtil();

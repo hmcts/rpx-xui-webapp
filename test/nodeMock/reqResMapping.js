@@ -16,11 +16,11 @@ const requestMapping = {
         ...ccdReqResMapping.get,
         ...globalSearchReqResMapping.get,
 
-       
+
        '/api/organisation': (req,res) => {
            res.send(getOrganisation());
        },
-       
+
        '/api/userList':(req,res) => {
             res.send(getUsersList());
        },
@@ -62,7 +62,7 @@ const requestMapping = {
                 }
             ]);
         }
-      
+
 
     },
     post:{
@@ -71,11 +71,11 @@ const requestMapping = {
         ...WAReqResMappings.post,
         ...globalSearchReqResMapping.post,
 
-        
+
         '/api/caseshare/case-assignments': (req, res) => {
             res.send( []);
         },
-       
+
 
     },
     put:{
@@ -84,13 +84,11 @@ const requestMapping = {
     delete:{
 
     }
-
 }
 
 
 function getOrganisation(){
     return {"organisationIdentifier":"VRSFNPV","name":"Test sreekanth org","status":"ACTIVE","sraId":null,"sraRegulated":false,"companyNumber":null,"companyUrl":null,"superUser":{"firstName":"test","lastName":"test","email":"sreekanth_su1@mailinator.com"},"paymentAccount":[],"contactInformation":[{"addressLine1":"Flat 39","addressLine2":"Sheraton House","addressLine3":null,"townCity":"London","county":"Essex","country":null,"postCode":"SW1V 3BZ","dxAddress":[]}]}
-
 }
 
 function getUsersList(){

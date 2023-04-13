@@ -41,7 +41,7 @@ class WorkAccessPage{
         if (!isPresent) {
             return isPresent;
         }
-        return await this.pageContainer.isDisplayed(); 
+        return await this.pageContainer.isDisplayed();
     }
 
     async isConitnueDisplayed(){
@@ -49,7 +49,7 @@ class WorkAccessPage{
         if (!isPresent){
             return isPresent;
         }
-        return await this.continueButton.isDisplayed(); 
+        return await this.continueButton.isDisplayed();
     }
 
     async getExistingBooksingCount(){
@@ -62,43 +62,42 @@ class WorkAccessPage{
         return {
             location: bookingAtIndex.location,
             fromDate: bookingAtIndex.fromDate,
-            toDate: bookingAtIndex.toDate 
-        } 
+            toDate: bookingAtIndex.toDate
+        }
     }
 
     async getMatchingBookings(location, fromDate, toDate){
         const allBookings = await this.getExistingBookingsDetails();
         const matchingBookings = allBookings.filter(booking =>{
-                cucumberReporter.AddMessage(`${location} ${fromDate} to ${toDate}`) 
+                cucumberReporter.AddMessage(`${location} ${fromDate} to ${toDate}`)
                 return booking.location.includes(location) && booking.fromDate.includes(fromDate) && booking.toDate.includes(toDate)
             }
         );
-        return matchingBookings; 
+        return matchingBookings;
     }
 
     async isBookingDisplayed(location, fromDate, toDate){
         const matchingBookings = await this.getMatchingBookings(location, fromDate, toDate);
-        return matchingBookings.length > 0; 
+        return matchingBookings.length > 0;
     }
 
     async getExistingBookingsDetails(){
         const count = await this.getExistingBooksingCount();
-        const bookings = []; 
+        const bookings = [];
         for(let i = 0; i < count ; i++){
             const booking = await this.existingBookings.get(i);
-            
+
             const bookingDatesText = await booking.$('span.govuk-hint').getText();
             const bookingDateSplit = bookingDatesText.split(' to ');
             bookings.push({
                 location: await booking.$('span[class*="font-weight-bold"]').getText(),
                 fromDate: bookingDateSplit[0],
                 toDate: bookingDateSplit[1],
-                continueBtnElement: booking.$('.govuk-button-group button') 
-            }); 
+                continueBtnElement: booking.$('.govuk-button-group button')
+            });
         }
-        return bookings; 
+        return bookings;
     }
-
 }
 
 module.exports = new WorkAccessPage();

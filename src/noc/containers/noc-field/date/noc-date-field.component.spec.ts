@@ -1,11 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocDateFieldComponent } from './noc-date-field.component';
-
 
 describe('NocDateFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
@@ -30,7 +29,7 @@ describe('NocDateFieldComponent', () => {
     display_context_parameter: '2',
     challenge_question_id: 'NoC',
     answer_field: '',
-    question_id: 'question2',
+    question_id: 'question2'
   };
   const ANSWER_VALUE = of('24/12/2019');
   let component: NocDateFieldComponent;
@@ -40,7 +39,7 @@ describe('NocDateFieldComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
-        NocDateFieldComponent,
+        NocDateFieldComponent
       ],
       imports: [
         ReactiveFormsModule,

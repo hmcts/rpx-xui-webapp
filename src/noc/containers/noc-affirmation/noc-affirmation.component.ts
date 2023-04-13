@@ -21,7 +21,7 @@ export class NocAffirmationComponent implements OnInit {
   public hasDisagreeError$: Observable<boolean>;
   public hasNotifyEveryPartyError$: Observable<boolean>;
 
-  constructor(private readonly store: Store<fromFeature.State>) { }
+  constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit() {
     this.validationErrors$ = this.store.pipe(select(fromFeature.validationErrors));

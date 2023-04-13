@@ -1,7 +1,6 @@
 import { NocErrorPipe } from './noc-error.pipe';
 
 describe('NocErrorPipe', () => {
-
   const ERROR_MESSAGE = 'This is wrong';
 
   let nocError: NocErrorPipe;

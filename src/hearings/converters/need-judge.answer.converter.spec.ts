@@ -11,8 +11,8 @@ import { AnswerConverter } from './answer.converter';
 import { NeedJudgeAnswerConverter } from './need-judge.answer.converter';
 
 describe('NeedJudgeAnswerConverter', () => {
-
   let converter: AnswerConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
   const JUDICAIL_USER_DETAILS = [{
     memberID: 'P0000001',
@@ -23,7 +23,7 @@ describe('NeedJudgeAnswerConverter', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState })
       ]
     });
     store = TestBed.inject(Store);
@@ -35,7 +35,7 @@ describe('NeedJudgeAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;
     const result$ = converter.transformAnswer(of(STATE));
     const option = '';
-    const expected = cold('(b|)', {b: option});
+    const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });
 
@@ -46,7 +46,7 @@ describe('NeedJudgeAnswerConverter', () => {
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = RadioOptions.NO;
-    const expected = cold('(b|)', {b: option});
+    const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });
 
@@ -57,7 +57,7 @@ describe('NeedJudgeAnswerConverter', () => {
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = RadioOptions.YES;
-    const expected = cold('(b|)', {b: option});
+    const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });
 });

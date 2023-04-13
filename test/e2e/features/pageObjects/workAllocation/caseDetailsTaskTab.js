@@ -57,7 +57,7 @@ class CaseDetailsTaskTab{
 
 
     async isAttributeDisplayedForTaskAtPos(pos, attributeName){
-        const taskAttributes = await this.getAttributeElementssDisplayedForTaskAtPos(pos); 
+        const taskAttributes = await this.getAttributeElementssDisplayedForTaskAtPos(pos);
         return Object.keys(taskAttributes).includes(attributeName);
     }
 
@@ -130,7 +130,6 @@ class CaseDetailsTaskTab{
         const link = await this.getAttributeLink(attributes, 'Next steps', linkText);
         await link.click();
     }
-
 }
 
 module.exports = new CaseDetailsTaskTab();

@@ -19,8 +19,8 @@ export class DateResponseSubmittedMultiDayAnswerConverter implements AnswerConve
         const hearingStartDateTime = hearingDaySchedule[0].hearingStartDateTime;
         const hearingEndDateTime = hearingDaySchedule[hearingDaySchedule.length - 1].hearingEndDateTime;
         return hearingStartDateTime && hearingEndDateTime
-            ? `${moment(hearingStartDateTime).format(HearingDateEnum.DisplayMonth)} - ${moment(hearingEndDateTime).format(HearingDateEnum.DisplayMonth)}`
-            : '';
+          ? `${moment(hearingStartDateTime).format(HearingDateEnum.DisplayMonth)} - ${moment(hearingEndDateTime).format(HearingDateEnum.DisplayMonth)}`
+          : '';
       })
     );
   }

@@ -19,7 +19,6 @@ function report(runner) {
             test.state = "failed";
             onFail(test, { 'message': 'Accesibility issues reported' });
         }
-
     });
     function onPass(test) {
         console.log('\n');
@@ -132,7 +131,7 @@ function consoleReport(reportjson) {
                 console.log("\t Test execution failed and no a11y test result returned" );
                 continue;
             }
-            
+
 
             console.log("\t \t Page title : " + a11yResult.documentTitle);
             console.log("\t \t Page url : " + a11yResult.pageUrl);
@@ -140,7 +139,7 @@ function consoleReport(reportjson) {
             if (a11yResult.issues) {
                 for (let issueCounter = 0; issueCounter < a11yResult.issues.length; issueCounter++) {
                     console.log("\t \t \t " + (issueCounter + 1) + ". " + a11yResult.issues[issueCounter].code);
-                    // console.log("\t \t \t \t"+a11yResult.issues[issueCounter].context); 
+                    // console.log("\t \t \t \t"+a11yResult.issues[issueCounter].context);
                     console.log("\t \t \t \t" + a11yResult.issues[issueCounter].selector);
                     console.log("\t \t \t \t" + a11yResult.issues[issueCounter].message);
                 }
@@ -153,5 +152,4 @@ function consoleReport(reportjson) {
         }
         console.log("\t");
     }
-
 }

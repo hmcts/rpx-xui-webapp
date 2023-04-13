@@ -1,11 +1,11 @@
-import {ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {CaseCategoryDisplayModel} from '../models/caseCategory.model';
-import {LovRefDataModel} from '../models/lovRefData.model';
-import {State} from '../store';
-import {CaseTypesUtils} from '../utils/case-types.utils';
-import {AnswerConverter} from './answer.converter';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { CaseCategoryDisplayModel } from '../models/caseCategory.model';
+import { LovRefDataModel } from '../models/lovRefData.model';
+import { State } from '../store';
+import { CaseTypesUtils } from '../utils/case-types.utils';
+import { AnswerConverter } from './answer.converter';
 
 export class TypeFromRequestAnswerConverter implements AnswerConverter {
   public caseTypeRefData: LovRefDataModel[];

@@ -15,12 +15,11 @@ class ErrorPage{
             await BrowserWaits.waitForElement(this.title);
             const headermessage = await this.title.getText();
             console.log('Error messge displayed : ' + headermessage);
-            return headermessage.includes('Sorry'); 
+            return headermessage.includes('Sorry');
         }catch(err){
             reportLogger.AddMessage("error page not displayed : "+err, LOG_LEVELS.Error);
             return false;
         }
-        
     }
 
     async getErrorMessage(){
@@ -41,7 +40,6 @@ class ErrorPage{
             return false;
         }
     }
-
 }
 
-module.exports = new ErrorPage(); 
+module.exports = new ErrorPage();

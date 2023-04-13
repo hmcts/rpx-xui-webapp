@@ -1,10 +1,7 @@
 import * as puppeteer from 'puppeteer';
 import {config} from '../config/config';
 import {reporterMsg} from './helper'
-const authCookiesForUsers = {
-
-};
-
+const authCookiesForUsers = {};
 
 export async function getSessionCookieString( username, password) {
 
@@ -31,7 +28,7 @@ export function updateSessionCookieString(username, name, value) {
             isNewCookie = false;
         }
     }
- 
+
     let cookieString = '';
     for (const cookie of authCookiesForUsers[username]) {
         cookieString = `${cookieString}${cookie.name}=${cookie.value};`;
@@ -85,11 +82,7 @@ export async function getUserId(username, password) {
     return userid;
 }
 
-
-
-
 async function  authenticateAndGetcookies(username, password)  {
-
     let browser = null;
     let page =null;
 
@@ -112,8 +105,6 @@ async function  authenticateAndGetcookies(username, password)  {
                 const primaryNavElement = page.$('.hmcts-primary-navigation');
                 const loginEmailField = page.$('#username');
 
-
-
                 let waitCounter = 0;
                 while (waitCounter < 20) {
                     await setTimeout(() => {
@@ -134,7 +125,6 @@ async function  authenticateAndGetcookies(username, password)  {
 
                 // await page.waitForSelector('.hmcts-primary-navigation', { visible: true, timeout: 10000 });
 
-
                 isLoginSuccess = true;
             } catch (error) {
                 console.log("Pupeeteer browser login to app error occured : " + error);
@@ -142,7 +132,7 @@ async function  authenticateAndGetcookies(username, password)  {
                 let usernameInput = "";
                 try {
                     usernameInput = await page.$eval('#username', element => element.value);
-                } catch (err) { }
+                } catch (err) {}
 
                 if (usernameInput === "") {
                     loginAttemptsCounter++;
@@ -154,7 +144,6 @@ async function  authenticateAndGetcookies(username, password)  {
                 };
             }
         }
-
     }catch(err){
         console.log("Pupeeteer browser login to app error occured : " + err);
 
@@ -166,7 +155,7 @@ async function  authenticateAndGetcookies(username, password)  {
     await page.close();
     await browser.close();
     return cookies;
-   
+
 }
 
 function getPuppeteerLaunchOptions(){

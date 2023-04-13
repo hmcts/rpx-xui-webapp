@@ -35,11 +35,11 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService,
     private readonly sessionStorageService: SessionStorageService) {
-      const navigation = this.router.getCurrentNavigation();
-      if (navigation && navigation.extras && navigation.extras.state) {
-          this.selectedPerson = navigation.extras.state.selectedPerson;
-          this.roleCategory = navigation.extras.state.roleCategory;
-      }
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation && navigation.extras && navigation.extras.state) {
+      this.selectedPerson = navigation.extras.state.selectedPerson;
+      this.roleCategory = navigation.extras.state.roleCategory;
+    }
   }
 
   private get returnUrl(): string {
@@ -128,7 +128,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   private reportUnavailableErrorAndReturn(): void {
     this.returnWithMessage({
       type: InfoMessageType.WARNING,
-      message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
+      message: InfoMessage.TASK_NO_LONGER_AVAILABLE
     }, { badRequest: true });
   }
 

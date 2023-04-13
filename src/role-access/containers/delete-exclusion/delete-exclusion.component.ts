@@ -12,7 +12,6 @@ import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../m
 import { AllocateRoleService, RoleExclusionsService } from '../../services';
 import { handleError } from '../../utils';
 
-
 @Component({
   selector: 'exui-delete-exclusion',
   templateUrl: './delete-exclusion.component.html'
@@ -42,10 +41,10 @@ export class DeleteExclusionComponent implements OnInit {
 
     const paramMap$ = this.route.queryParamMap;
     paramMap$.pipe(mergeMap(queryMap => {
-        return this.getExclusionFromQuery(queryMap);
-      })).subscribe(exclusions => {
-        this.findAndSetExclusion(exclusions);
-      });
+      return this.getExclusionFromQuery(queryMap);
+    })).subscribe(exclusions => {
+      this.findAndSetExclusion(exclusions);
+    });
   }
 
   public findAndSetExclusion(exclusions: RoleExclusion[]): void {
@@ -73,9 +72,9 @@ export class DeleteExclusionComponent implements OnInit {
 
   public populateAnswers(exclusion: RoleExclusion): void {
     const person = exclusion.name ? exclusion.name : 'Awaiting person details';
-    this.answers.push({label: AnswerLabelText.Person, value: person});
-    this.answers.push({label: AnswerLabelText.DescribeExclusion, value: exclusion.notes ? exclusion.notes : ''});
-    this.answers.push({label: AnswerLabelText.DateAdded, value: moment.parseZone(new Date(exclusion.added)).format('D MMMM YYYY')});
+    this.answers.push({ label: AnswerLabelText.Person, value: person });
+    this.answers.push({ label: AnswerLabelText.DescribeExclusion, value: exclusion.notes ? exclusion.notes : '' });
+    this.answers.push({ label: AnswerLabelText.DateAdded, value: moment.parseZone(new Date(exclusion.added)).format('D MMMM YYYY') });
   }
 
   private getNamesIfNeeded(): void {
@@ -99,8 +98,8 @@ export class DeleteExclusionComponent implements OnInit {
           this.router.navigate([goToCaseUrl], {
             state: {
               showMessage: true,
-              messageText: ExclusionMessageText.Delete}
-            });
+              messageText: ExclusionMessageText.Delete }
+          });
         }, error => {
           return handleError(error, this.router, goToCaseUrl);
         });

@@ -27,8 +27,7 @@ export class CaseShareComponent implements OnInit {
   public removeUserFromCaseToggleOn$: Observable<boolean>;
 
   constructor(private readonly store: Store<fromCaseList.State>,
-              private readonly featureToggleService: FeatureToggleService) {
-  }
+              private readonly featureToggleService: FeatureToggleService) {}
 
   public ngOnInit() {
     this.routerState$ = this.store.pipe(select(getRouterState));
@@ -57,5 +56,4 @@ export class CaseShareComponent implements OnInit {
   public synchronizeStore($event) {
     this.store.dispatch(new fromCasesFeature.SynchronizeStateToStore($event));
   }
-
 }

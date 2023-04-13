@@ -11,7 +11,6 @@ import { Booking } from '../../models/booking.interface';
 import { BookingService } from '../../services';
 import { BookingHomeComponent } from './booking-home.component';
 
-
 const DUMMY_BOOKINGS: Booking[] = [{
   id: 'd9d4f711-1ffe-4a22-a949-7286907422f1',
   userId: '7954b105-1014-4504-bb47-602639df24eb',
@@ -59,12 +58,13 @@ describe('BookingHomeComponent', () => {
     status: 400,
     message: 'Service down'
   };
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
         RouterTestingModule.withRoutes(
-          [{path: 'work/my-work/list', component: BookingHomeComponent}]
+          [{ path: 'work/my-work/list', component: BookingHomeComponent }]
         )
       ],
       declarations: [BookingHomeComponent],
@@ -177,7 +177,6 @@ describe('BookingHomeComponent', () => {
   });
 
   describe('onSelectOption()', () => {
-
     it('should change selectedBookingOption', () => {
 
       // Click on the second radio button.
@@ -189,7 +188,6 @@ describe('BookingHomeComponent', () => {
   });
 
   describe('onEventTrigger()', () => {
-
     it('should emit a navigation enum', () => {
 
       const eventTriggerSpy = spyOn(component.eventTrigger, 'emit');
@@ -205,15 +203,13 @@ describe('BookingHomeComponent', () => {
   });
 
   describe('assignBookingLocation()', () => {
-
     it('should assign locationName', () => {
 
       expect(component.existingBookings[0].locationName).toEqual('Glasgow Tribunals Centre');
     });
   });
 
-  describe('onExistingBookingSelected()',  () => {
-
+  describe('onExistingBookingSelected()', () => {
     it('should make a call to refreshRoleAssignments', fakeAsync( () => {
 
       mockRouter = {

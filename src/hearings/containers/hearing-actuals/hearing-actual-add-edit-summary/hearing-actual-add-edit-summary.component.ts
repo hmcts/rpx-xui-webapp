@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
-  ActualHearingDayModel,
+  ActualHearingDayModel
 } from '../../../models/hearingActualsMainModel';
 import {
   HearingActualAddEditSummaryEnum,
@@ -44,7 +44,7 @@ export class HearingActualAddEditSummaryComponent extends HearingActualSummaryBa
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(this.hearingActualsMainModel, hearingDay.hearingDate, { notRequired: !hearingDay.notRequired } as ActualHearingDayModel);
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
-      hearingActuals: patchedHearingActuals,
+      hearingActuals: patchedHearingActuals
     }));
   }
 
@@ -65,7 +65,7 @@ export class HearingActualAddEditSummaryComponent extends HearingActualSummaryBa
     );
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
-      hearingActuals: patchedHearingActuals,
+      hearingActuals: patchedHearingActuals
     }));
   }
 

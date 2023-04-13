@@ -17,7 +17,6 @@ class FeatureToggleUtil{
         CucumberReporter.AddMessage(`Feature toggle value for ${featureToggleName}`);
         CucumberReporter.AddJson(this.getFeatureToggleValue(featureToggleName));
     }
-
 }
 
 module.exports = new FeatureToggleUtil();

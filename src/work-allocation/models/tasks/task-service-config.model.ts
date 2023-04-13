@@ -6,4 +6,4 @@ export default interface TaskServiceConfig {
   defaultSortDirection: SortOrder;
   defaultSortFieldName: string;
   fields: FieldConfig[];
-}
+};

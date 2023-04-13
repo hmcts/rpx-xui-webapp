@@ -22,7 +22,7 @@ class CreateCaseStartPage {
 
   }
 
-  
+
 
   async selectJurisdiction(jurisdiction){
 
@@ -38,18 +38,18 @@ class CreateCaseStartPage {
       i++;
     }
     locatorString = locatorString + ']';
-    
+
     var e = element(by.xpath(locatorString));
     await BrowserWaits.waitForElement(e);
     await e.click();
-     
+
   }
 
   async selectCaseType(caseType){
-    
+
     let locatorString = "//*[@id = 'cc-case-type']/option[";
     let i = 0;
-    const options = caseType.split('|'); 
+    const options = caseType.split('|');
     for (const option of options) {
       if (i === 0) {
         locatorString += `contains(text(), '${option.trim()}')`;
@@ -62,7 +62,7 @@ class CreateCaseStartPage {
 
     var e = element(by.xpath(locatorString));
     await BrowserWaits.waitForElement(e);
-    await e.click(); 
+    await e.click();
 
     // await this._caseType.selectFromDropdownByText(option);
   }
@@ -70,7 +70,7 @@ class CreateCaseStartPage {
   async selectEvent(option){
     var e = element(by.xpath('//*[@id = "cc-event"]/option[text() = "' + option + '"]'));
     await BrowserWaits.waitForElement(e)
-    await e.click(); 
+    await e.click();
 
       // await this._event.selectFromDropdownByText(option);
   }
@@ -109,13 +109,12 @@ class CreateCaseStartPage {
       return false;
     }
 
-    
+
   }
 
   async getLoadedJurisdictionsCount(){
     return await this.jurisdictionOptions.count();
   }
-
 }
 
 module.exports = CreateCaseStartPage;

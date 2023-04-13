@@ -6,12 +6,13 @@ import { initialHearingValuesState, State } from '../reducers';
 
 describe('Hearing Values selectors', () => {
   let store: Store<State>;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('hearings', reducers),
-      ],
+        StoreModule.forFeature('hearings', reducers)
+      ]
     });
     store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();

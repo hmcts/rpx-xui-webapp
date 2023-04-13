@@ -100,8 +100,6 @@ export  const config =  {
             iaCaseIds: ["1547458486131483"]
         }
     }
-
-
 };
 
 function getBaseUrl() {

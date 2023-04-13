@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import * as fromContainers from '../../containers';
 import { NocNavigationEvent, NocState } from '../../models';
@@ -59,6 +59,7 @@ describe('NocHomeComponent', () => {
       storePipeMock.and.returnValue(of(0));
       fixture.detectChanges();
     });
+
     it('should set navEvent', () => {
       // Need to set a valid NoC navigation state on the component
       component.nocNavigationCurrentState = NocState.QUESTION;
@@ -145,6 +146,7 @@ describe('NocHomeComponent', () => {
       storePipeMock.and.returnValue(of(6));
       fixture.detectChanges();
     });
+
     it('should navigate to answer page when click continue button if on QUESTION page', () => {
       spyOn(component.nocCheckAndSubmitComponent, 'navigationHandler');
       component.navigationHandler(NocNavigationEvent.CHECK_ANSWERS);

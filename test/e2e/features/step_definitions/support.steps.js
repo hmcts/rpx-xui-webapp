@@ -8,7 +8,7 @@ const BrowserLogs = require('../../support/browserLogs');
 
 const cucumberReporter = require('../../support/reportLogger');
 defineSupportCode(function ({ And, But, Given, Then, When }) {
-   
+
 
     Given('I switch to new window opened', async function(){
         let retryCounter = 1;
@@ -24,7 +24,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
             await browser.switchTo().window(unknownWindowHandles[0]);
         });
-        
+
     });
 
     Then('I verify a networkc all made with endpoint containing {string}', async function(endPoint){
@@ -51,10 +51,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     async function getUnknownWindowHandles(){
         const scenarioDataKeys = Object.keys(global.scenarioData);
         const windowReferences = await ArrayUtil.filter(scenarioDataKeys,async (scrDataKey) => scrDataKey.includes('window.') );
-        const knownWindowHandles = await ArrayUtil.map(windowReferences, async (windowRef) => { return global.scenarioData[windowRef]}); 
+        const knownWindowHandles = await ArrayUtil.map(windowReferences, async (windowRef) => { return global.scenarioData[windowRef]});
         const allWindowHandles = await browser.driver.getAllWindowHandles();
         const unKnownWindowHandles = await ArrayUtil.filter(allWindowHandles, async (handle) => !knownWindowHandles.includes(handle));
         return unKnownWindowHandles;
     }
-
 });

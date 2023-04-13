@@ -12,7 +12,7 @@ import { getTitleText } from '../../../utils';
 
 @Component({
   selector: 'exui-choose-allocate-to',
-  templateUrl: './choose-allocate-to.component.html',
+  templateUrl: './choose-allocate-to.component.html'
 })
 export class ChooseAllocateToComponent implements OnInit {
 
@@ -33,7 +33,7 @@ export class ChooseAllocateToComponent implements OnInit {
   public typeOfRole: SpecificRole;
   public allocateTo: AllocateTo;
 
-  constructor(private readonly store: Store<fromFeature.State>) { }
+  constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
@@ -46,7 +46,7 @@ export class ChooseAllocateToComponent implements OnInit {
     );
 
     this.radioOptionControl = new FormControl(this.allocateTo ? this.allocateTo : '', [Validators.required]);
-    this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
+    this.formGroup = new FormGroup({ [this.radioControlName]: this.radioOptionControl });
     this.optionsList = [
       {
         optionId: EnumUtil(AllocateTo).getKeyOrDefault(AllocateTo.RESERVE_TO_ME),

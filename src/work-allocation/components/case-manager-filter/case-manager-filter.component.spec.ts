@@ -15,12 +15,11 @@ import { ALL_LOCATIONS } from '../constants/locations';
 /* tslint:disable:component-selector */
 @Component({
   selector: 'xuilib-generic-filter',
-  template: '<span></span>',
+  template: '<span></span>'
 })
 class MockGenericFilterComponent {
   @Input() public config;
 }
-
 
 describe('CaseManagerFilterComponent', () => {
   let component: CaseManagerFilterComponent;
@@ -39,12 +38,13 @@ describe('CaseManagerFilterComponent', () => {
       unsubscribe: () => null
     }
   };
+
   beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
         HttpClientTestingModule,
-        RouterTestingModule,
+        RouterTestingModule
       ],
       declarations: [CaseManagerFilterComponent, MockGenericFilterComponent ],
       providers: [
@@ -53,7 +53,7 @@ describe('CaseManagerFilterComponent', () => {
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         {
           provide: FilterService, useValue: mockFilterService
-        },
+        }
       ]
     }).compileComponents();
     store = TestBed.inject(Store);

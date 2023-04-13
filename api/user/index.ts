@@ -31,7 +31,7 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
       canShareCases,
       roleAssignmentInfo,
       sessionTimeout,
-      userInfo,
+      userInfo
     });
   } catch (error) {
     next(error);

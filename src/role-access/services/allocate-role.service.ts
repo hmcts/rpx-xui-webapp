@@ -33,7 +33,7 @@ export class AllocateRoleService {
       startDate : this.durationService.setUTCTimezone(dtperiod.startDate),
       endDate: this.durationService.setUTCTimezone(dtperiod.endDate)
     };
-    return this.http.post(`${AllocateRoleService.accessManagementUrl}/specific-access-approval`, {specificAccessStateData, period});
+    return this.http.post(`${AllocateRoleService.accessManagementUrl}/specific-access-approval`, { specificAccessStateData, period });
   }
 
   public requestMoreInformation(requestMoreInformationStateData: SpecificAccessStateData): Observable<any> {
@@ -41,7 +41,7 @@ export class AllocateRoleService {
   }
 
   public removeAllocation(assigmentId: string): Observable<any> {
-    const body = {assigmentId};
+    const body = { assigmentId };
     return this.http.post(`${AllocateRoleService.allocateRoleBaseUrl}/delete`, body);
   }
 
@@ -53,7 +53,7 @@ export class AllocateRoleService {
       const serviceKey = getRoleSessionStorageKeyForServiceId(serviceId);
       if (this.sessionStorageService.getItem(serviceKey)) {
         storedServices.push(serviceId);
-        storedRolesByService.push({service: serviceId, roles: JSON.parse(this.sessionStorageService.getItem(serviceKey))});
+        storedRolesByService.push({ service: serviceId, roles: JSON.parse(this.sessionStorageService.getItem(serviceKey)) });
       } else {
         newServices.push(serviceId);
       }
@@ -63,7 +63,7 @@ export class AllocateRoleService {
       return of(getAllRolesFromServices(storedRolesByService) as Role[]);
     }
     // all serviceIds passed in as node layer getting used anyway and caseworkers also stored there
-    return this.http.post<RolesByService[]>(`${AllocateRoleService.allocateRoleBaseUrl}/valid-roles`, {serviceIds}).pipe(
+    return this.http.post<RolesByService[]>(`${AllocateRoleService.allocateRoleBaseUrl}/valid-roles`, { serviceIds }).pipe(
       tap(rolesByService => {
         rolesByService.forEach(roleListByService => {
           // for any new service, ensure that they are then stored in the session
@@ -79,11 +79,11 @@ export class AllocateRoleService {
   }
 
   public getCaseRoles(caseId: string, jurisdiction: string, caseType: string, assignmentId?: string): Observable<CaseRole[]> {
-    return this.http.post<CaseRole[]>(`${AllocateRoleService.roleUrl}/post`, {caseId, jurisdiction, caseType, assignmentId});
+    return this.http.post<CaseRole[]>(`${AllocateRoleService.roleUrl}/post`, { caseId, jurisdiction, caseType, assignmentId });
   }
 
   public getCaseAccessRoles(caseId: string, jurisdiction: string, caseType: string, assignmentId?: string): Observable<CaseRole[]> {
-    return this.http.post<CaseRole[]>(`${AllocateRoleService.roleUrl}/access-get`, {caseId, jurisdiction, caseType, assignmentId});
+    return this.http.post<CaseRole[]>(`${AllocateRoleService.roleUrl}/access-get`, { caseId, jurisdiction, caseType, assignmentId });
   }
 
   public getMyAccessNewCount(): Observable<{count}> {
@@ -96,7 +96,7 @@ export class AllocateRoleService {
 
   public getCaseRolesUserDetails(userIds: string[], services: string[]): Observable<CaseRoleDetails[]> {
     if (userIds && userIds.length > 0) {
-      return this.http.post<CaseRoleDetails[]>(`${AllocateRoleService.roleUrl}/getJudicialUsers`, {userIds, services});
+      return this.http.post<CaseRoleDetails[]>(`${AllocateRoleService.roleUrl}/getJudicialUsers`, { userIds, services });
     }
     return of([]);
   }

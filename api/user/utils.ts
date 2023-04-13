@@ -1,5 +1,5 @@
-import { CASE_ALLOCATOR_ROLE, ORGANISATION_ROLE_TYPE } from "./constants";
-import { RoleAssignment } from "./interfaces/roleAssignment";
+import { CASE_ALLOCATOR_ROLE, ORGANISATION_ROLE_TYPE } from './constants';
+import { RoleAssignment } from './interfaces/roleAssignment';
 
 export const JUDGE_ROLE = 'judge';
 export const JUDGE_ROLE_CATEGORY = 'JUDICIAL';
@@ -28,8 +28,8 @@ export const CTSC_ROLE_NAME = 'ctsc';
 // If current jurisdiction is passed it checks if the RoleAssignment is for jurisdiction
 // If current location is passed it checks if the RoleAssignment is for location
 export function isCurrentUserCaseAllocator(currentUserRoleAssignment: RoleAssignment,
-                                           currentJurisdiction?: string,
-                                           currentLocation?: string): boolean {
+  currentJurisdiction?: string,
+  currentLocation?: string): boolean {
   return !!currentUserRoleAssignment
     && currentUserRoleAssignment.roleType === ORGANISATION_ROLE_TYPE
     && currentUserRoleAssignment.roleName === CASE_ALLOCATOR_ROLE

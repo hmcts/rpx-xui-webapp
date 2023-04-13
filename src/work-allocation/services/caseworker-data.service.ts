@@ -31,7 +31,7 @@ export class CaseworkerDataService {
       const serviceKey = getCaseworkerSessionStorageKeyForServiceId(serviceId);
       if (this.sessionStorageService.getItem(serviceKey)) {
         storedServices.push(serviceId);
-        storedCaseworkersByService.push({service: serviceId, caseworkers: JSON.parse(this.sessionStorageService.getItem(serviceKey))});
+        storedCaseworkersByService.push({ service: serviceId, caseworkers: JSON.parse(this.sessionStorageService.getItem(serviceKey)) });
       } else {
         newServices.push(serviceId);
       }
@@ -41,7 +41,7 @@ export class CaseworkerDataService {
       return of(getAllCaseworkersFromServices(storedCaseworkersByService) as Caseworker[]);
     }
     // all serviceIds passed in as node layer getting used anyway and caseworkers also stored there
-    return this.http.post<CaseworkersByService[]>(CaseworkerDataService.caseWorkerForServices, {serviceIds}).pipe(
+    return this.http.post<CaseworkersByService[]>(CaseworkerDataService.caseWorkerForServices, { serviceIds }).pipe(
       tap(caseworkersByService => {
         caseworkersByService.forEach(caseworkerListByService => {
           // for any new service, ensure that they are then stored in the session

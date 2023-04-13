@@ -19,10 +19,10 @@ describe('AdditionalFacilitiesAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                additionFacilitiesOptions: facilitiesListRefData,
-              },
-            },
-          },
+                additionFacilitiesOptions: facilitiesListRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -34,7 +34,7 @@ describe('AdditionalFacilitiesAnswerConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = converter.transformAnswer(of(STATE));
     const additionalFacilities = '<ul><li>Immigration detention centre</li><li>In camera court</li></ul>';
-    const expected = cold('(b|)', {b: additionalFacilities});
+    const expected = cold('(b|)', { b: additionalFacilities });
     expect(result$).toBeObservable(expected);
   });
 });

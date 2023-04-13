@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, forkJoin, merge, Observable, of, Subscription } from 'rxjs';
-import { debounceTime, filter, flatMap, map, mergeMap, switchMap } from 'rxjs/operators';
+import { combineLatest, forkJoin, Observable, of, Subscription } from 'rxjs';
+import { debounceTime, filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -28,7 +28,7 @@ import { JurisdictionsService } from '../../services/juridictions.service';
 import { getAssigneeName, handleFatalErrors, servicesMap, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
-  templateUrl: 'work-case-list-wrapper.component.html',
+  templateUrl: 'work-case-list-wrapper.component.html'
 })
 export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
 
@@ -56,7 +56,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     service: CaseService.IAC,
     defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'startDate',
-    fields: this.fields,
+    fields: this.fields
   };
   private pCasesTotal: number;
   private pUniqueCases: number;
@@ -85,8 +85,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     protected readonly rolesService: AllocateRoleService,
     protected readonly httpClient: HttpClient,
     protected store: Store<fromActions.State>
-  ) {
-  }
+  ) {}
 
   public get cases(): Case[] {
     return this.pCases;
@@ -172,8 +171,8 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
         waJurisdictions$]
     ).pipe(
       map(jurisdictions => {
-      return jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
-    }));
+        return jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
+      }));
   }
 
   public ngOnDestroy(): void {
@@ -216,7 +215,6 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
           this.defaultLocation = currentCW.location.id;
         }
       }
-
     }, error => {
       handleFatalErrors(error.status, this.router);
     });
@@ -259,7 +257,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   public refreshCases(): void {
     this.infoMessageCommService.addMessage({
       type: InfoMessageType.INFO,
-      message: InfoMessage.LIST_OF_CASES_REFRESHED,
+      message: InfoMessage.LIST_OF_CASES_REFRESHED
     });
     this.doLoad();
   }
@@ -406,5 +404,4 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     this.locations$ = this.locationService.getLocations();
     this.loadSupportedJurisdictions();
   }
-
 }

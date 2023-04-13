@@ -1,13 +1,13 @@
-import {Injectable} from '@angular/core';
-import {Router} from '@angular/router';
-import {select, Store} from '@ngrx/store';
-import {combineLatest, Observable} from 'rxjs';
-import {take} from 'rxjs/operators';
-import {HearingConditions} from '../models/hearingConditions';
-import {ConditionOperator} from '../models/hearings.enum';
-import {ScreenNavigationModel} from '../models/screenNavigation.model';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { combineLatest, Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { HearingConditions } from '../models/hearingConditions';
+import { ConditionOperator } from '../models/hearings.enum';
+import { ScreenNavigationModel } from '../models/screenNavigation.model';
 import * as fromHearingStore from '../store';
-import {AbstractPageFlow} from './abstract-page-flow';
+import { AbstractPageFlow } from './abstract-page-flow';
 
 @Injectable()
 export class PageFlow implements AbstractPageFlow {
@@ -32,32 +32,32 @@ export class PageFlow implements AbstractPageFlow {
     combineLatest([this.hearingConditions$, screensNavigations$]).pipe(take(1))
       // @ts-ignore
       .subscribe(([hearingConditions, screenNavigationModels]: [HearingConditions, ScreenNavigationModel[]]) => {
-      const screenModel = screenNavigationModels.find(screenNavigationModel =>
-        screenNavigationModel.screenName === this.getCurrentPage());
-      if (screenModel) {
-        if (!screenModel.conditionKey) {
-          nextPage = screenModel.navigation[0].resultValue;
-        } else {
-          if (hearingConditions.hasOwnProperty(screenModel.conditionKey)) {
-            const conditionValue = hearingConditions[screenModel.conditionKey];
-            screenModel.navigation.forEach(navigationModel => {
-              switch (navigationModel.conditionOperator) {
-                case ConditionOperator.INCLUDE:
-                  nextPage = conditionValue.includes(navigationModel.conditionValue) ? navigationModel.resultValue : nextPage;
-                  break;
-                case ConditionOperator.NOT_INCLUDE:
-                  nextPage = !conditionValue.includes(navigationModel.conditionValue) ? navigationModel.resultValue : nextPage;
-                  break;
-                default:
-                  nextPage = '';
-              }
-            });
+        const screenModel = screenNavigationModels.find(screenNavigationModel =>
+          screenNavigationModel.screenName === this.getCurrentPage());
+        if (screenModel) {
+          if (!screenModel.conditionKey) {
+            nextPage = screenModel.navigation[0].resultValue;
+          } else {
+            if (hearingConditions.hasOwnProperty(screenModel.conditionKey)) {
+              const conditionValue = hearingConditions[screenModel.conditionKey];
+              screenModel.navigation.forEach(navigationModel => {
+                switch (navigationModel.conditionOperator) {
+                  case ConditionOperator.INCLUDE:
+                    nextPage = conditionValue.includes(navigationModel.conditionValue) ? navigationModel.resultValue : nextPage;
+                    break;
+                  case ConditionOperator.NOT_INCLUDE:
+                    nextPage = !conditionValue.includes(navigationModel.conditionValue) ? navigationModel.resultValue : nextPage;
+                    break;
+                  default:
+                    nextPage = '';
+                }
+              });
+            }
           }
+        } else {
+          throw new Error('Current screen not found');
         }
-      } else {
-        throw new Error('Current screen not found');
-      }
-    });
+      });
     return nextPage;
   }
 
@@ -97,5 +97,4 @@ export class PageFlow implements AbstractPageFlow {
       });
     return lastPage;
   }
-
 }

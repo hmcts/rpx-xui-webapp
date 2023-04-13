@@ -45,7 +45,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             locationHashKeys.forEach(key => {
                 location[key] = locationsHashes[i][key];
             })
-            
+
         }
         MockApp.onGet("/workallocation2/location", (req,res) => {
             res.send(locationsResponseBody);
@@ -91,17 +91,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     for (const personInMock of personsResponseBody){
                         if (personInMock.sidam_id === forUserId){
                             requestedUser.push(personInMock);
-                            break; 
+                            break;
                         }
-                   } 
+                   }
                 }
                 res.send(requestedUser);
-            } 
+            }
         })
     });
 
     Given('I set MOCK tasks with permissions for view {string} and assigned state {string}', async function (inputView,assignedState ,taskPermissionsTable) {
-        const taskPermissionHashes = taskPermissionsTable.hashes(); 
+        const taskPermissionHashes = taskPermissionsTable.hashes();
         const tasks = [];
         let view = inputView.split(" ").join("");
         view = view.toLowerCase();
@@ -116,7 +116,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             for (let j = 0; j < taskCount;j++){
                 tasks.push(workAllocationMockData.getRelease2TaskWithPermissions(taskPermissionHashes[i]['Permissions'].split(","), view, assignedState));
             }
-            
+
         }
 
         switch (view){
@@ -133,11 +133,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             default:
                 throw new Error(`Unrecognised input view from step def "${inputView}"`);
         }
-        
     });
 
     Given('I set MOCK workallocation cases with permissions for view {string}', async function (viewInTest, casePermissionsTable) {
-        workAllocationMockData.setCasesWithPermissionsForView(viewInTest, casePermissionsTable.hashes()) 
+        workAllocationMockData.setCasesWithPermissionsForView(viewInTest, casePermissionsTable.hashes())
     });
 
 
@@ -173,7 +172,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     } else{
                         task[key] = taskHash[key];
                     }
-                    
+
                 } else if (key.toLowerCase().includes("date")) {
                     task[key] = getDateValueForDays(taskHash[key]);
                 }else{
@@ -184,7 +183,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             CucumberReporter.AddMessage(`Mock Task at index  ${taskHash.index}  `);
             CucumberReporter.AddJson(task);
         })
-       
+
     });
 
 
@@ -199,21 +198,21 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 break;
             case "my work cases":
                 pageUndertest = myWorkPage;
-                pageUndertest.clickSubNavigationTab("My cases"); 
-                break; 
+                pageUndertest.clickSubNavigationTab("My cases");
+                break;
         }
 
         let sortColumnInRequestParam = null;
         MockApp.addIntercept(taskRequesturl, (req, res, next) => {
             CucumberReporter.AddJson(req.body);
-            sortColumnInRequestParam = req.body;  
-            next(); 
+            sortColumnInRequestParam = req.body;
+            next();
         })
         await MockApp.stopServer();
         await MockApp.startServer();
 
         for (let i = 0; i < datatableHashes.length; i++) {
-            
+
             sortColumnInRequestParam = null;
             const headerName = datatableHashes[i]['ColumnHeader'];
             const sortColumnId = datatableHashes[i]['FieldId'];
@@ -225,13 +224,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
             const headerElement = await pageUndertest.getHeaderElementWithName(headerName);
             // const headerColId = await headerElement.getAttribute("id");
-           
+
             softAssert.setScenario("sorting: " + headerName);
             await softAssert.assert(async () => expect(await pageUndertest.getColumnSortState(headerName)).to.equal("none"));
-           
+
             await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-work-field','Sort test',true);
-            await pageUndertest.clickColumnHeader(headerName); 
-            await BrowserWaits.waitForConditionAsync(async () => { 
+            await pageUndertest.clickColumnHeader(headerName);
+            await BrowserWaits.waitForConditionAsync(async () => {
                 return sortColumnInRequestParam !== null
                  });
             await BrowserWaits.waitForConditionAsync(async () => {
@@ -247,11 +246,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await softAssert.assert(async () => expect(asc_sortingParamsInReq[0].sort_order).to.equal('asc'), 'Sorting param value in request asc');
             await softAssert.assert(async () => expect(await pageUndertest.getColumnSortState(headerName)).to.equal("ascending"), 'Sort column state ascending');
 
-            
+
             sortColumnInRequestParam = null;
             await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-work-field', 'Sort test', true);
             await pageUndertest.clickColumnHeader(headerName);
-           
+
             await BrowserWaits.waitForConditionAsync(async () => {
                 return sortColumnInRequestParam !== null
             });
@@ -271,7 +270,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         }
         softAssert.finally();
-
     });
 
 
@@ -286,7 +284,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 taskDetails.task[key] = getDateValueForDays(inputTaskDetails[key]);
             }else{
                 taskDetails.task[key] = inputTaskDetails[key];
-            } 
+            }
         })
 
     });
@@ -304,40 +302,38 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             bookingLocationsExpected.push(...locations)
         }
         bookingLocationsExpected = bookingLocationsExpected.filter(loc => loc !== "")
-        expect(bookingLocationsActual.length).to.equal(bookingLocationsExpected.length) 
+        expect(bookingLocationsActual.length).to.equal(bookingLocationsExpected.length)
         for (const loc of bookingLocationsExpected) {
             expect(bookingLocationsActual, `booking location is not present in request body`).to.includes(loc);
         }
-
     });
 
     Then('I validate work filter get location request body {string}, user locations for service', async function(requestBodyref, datatable){
         const body = global.scenarioData[requestBodyref];
         CucumberReporter.AddJson(body)
         const userLocationsActual = body.userLocations;
-        
+
         const userLocationsExpected = datatable.hashes();
-        
+
         for (const expectedLocationsForService of userLocationsExpected){
-            const actualServiceLocations = userLocationsActual.find(actulaLocationsForService => actulaLocationsForService.service === expectedLocationsForService.service) 
-            
+            const actualServiceLocations = userLocationsActual.find(actulaLocationsForService => actulaLocationsForService.service === expectedLocationsForService.service)
+
             if (expectedLocationsForService.locations === ""){
                 expect( actualServiceLocations === undefined, `Locations for service object ${expectedLocationsForService.service}   sent`).to.be.true
             }else{
                 expect(actualServiceLocations !== undefined, `Locations for service ${expectedLocationsForService.service}  not sent`).to.be.true
-                
+
                 const expectedLocations = expectedLocationsForService.locations.split(",");
                 expect(actualServiceLocations.locations.length).to.equal(expectedLocations.length)
-                const actualLocationIds = actualServiceLocations.locations.map(location => location.locationId) 
+                const actualLocationIds = actualServiceLocations.locations.map(location => location.locationId)
 
                 for (const loc of expectedLocations) {
                     expect(actualLocationIds, `user ${expectedLocationsForService.service} service location is not present in request body`).to.includes(loc);
                 }
             }
-            
-            
-        }
 
+
+        }
     });
 
     function getDateValueForDays(days){
@@ -345,8 +341,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         let date = new Date();
         date.setDate(date.getDate()+daysNum);
         return date.toISOString().replace("Z","+0100")
-        
-        
-    }
 
+
+    }
 }) ;

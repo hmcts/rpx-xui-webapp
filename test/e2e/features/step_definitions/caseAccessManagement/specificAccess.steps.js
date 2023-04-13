@@ -12,8 +12,8 @@ const workFlowPage = require("../../pageObjects/caseAccessManagement/SARWorkflow
 
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
-    const reviewSARPage = workFlowPage.reviewRequestPage; 
-    const durationSelectionPage = workFlowPage.durationSelectionPage; 
+    const reviewSARPage = workFlowPage.reviewRequestPage;
+    const durationSelectionPage = workFlowPage.durationSelectionPage;
 
     Then('I see Review specific access page with header {string} is displayed', async function (header) {
         await BrowserWaits.retryWithActionCallback(async () => {
@@ -24,7 +24,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate Review specific access page access request details', async function (datatable) {
-        const requestDetails = datatable.rowsHash(); 
+        const requestDetails = datatable.rowsHash();
         await BrowserWaits.retryWithActionCallback(async () => {
             const actualRequestDetails = await reviewSARPage.getAccessRequestDetails();
             const expectedRowHeaders = Object.keys(requestDetails);
@@ -34,14 +34,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 expect(actualRequestDetails[expectedRowKey], `${expectedRowKey} request details missmatch `).to.includes(requestDetails[expectedRowKey]);
 
             });
-           
+
 
         });
     });
 
     Then('I validate Review specific access page radio options for actions', async function (datatable) {
         const radioOptions = datatable.hashes();
-        const expectedOptions = radioOptions.map(hashOption => hashOption.option) 
+        const expectedOptions = radioOptions.map(hashOption => hashOption.option)
 
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(await reviewSARPage.chooseRadioOptionsContainer.isDisplayed(), `Action radio options not displayed`).to.be.true;
@@ -59,7 +59,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             expect(await durationSelectionPage.getHeaderCaption(), `${header} work flow page header caption not matching`).to.include(captionHeader);
 
         });
-       
+
 
     });
 
@@ -99,7 +99,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await durationSelectionPage.enterDayInDateInputWithLabel(dateInputField, dateToEnter.getDate());
         await durationSelectionPage.enterMonthInDateInputWithLabel(dateInputField, dateToEnter.getMonth() + 1);
         await durationSelectionPage.enterYearInDateInputWithLabel(dateInputField, dateToEnter.getFullYear());
-
     });
 
     When('I enter duration date for field {string} with current date minus {int} days in SAR work flow', async function (dateInputField, bydays) {
@@ -171,8 +170,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I am in SAR request more information page, enter in text area {string}', async function (moreInfotext) {
         await workFlowPage.requestMoreInfoPage.enterInTextArea(moreInfotext);
-           
     });
-
 });
 

@@ -16,7 +16,7 @@ export class JudicialUserSearchResolver implements Resolve<JudicialUserModel[]> 
   constructor(
     protected readonly judicialRefDataService: JudicialRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>
-  ) { }
+  ) {}
 
   public resolve(route?: ActivatedRouteSnapshot): Observable<JudicialUserModel[]> {
     return this.getUsersByPanelRequirements$()

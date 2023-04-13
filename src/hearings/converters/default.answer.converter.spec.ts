@@ -13,5 +13,4 @@ describe('DefaultAnswerConverter', () => {
     const msg = 'Not implement yet';
     result$.subscribe(result => expect(result).toBe(msg));
   });
-
 });

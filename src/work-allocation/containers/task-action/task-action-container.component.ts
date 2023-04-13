@@ -61,7 +61,7 @@ export class TaskActionContainerComponent implements OnInit {
     service: TaskService.IAC,
     defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
-    fields: this.fields,
+    fields: this.fields
   };
   public ngOnInit(): void {
     this.isJudicial = this.isCurrentUserJudicial();

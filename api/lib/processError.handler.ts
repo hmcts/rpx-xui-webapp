@@ -1,6 +1,6 @@
 import * as process from 'process';
 import * as log4jui from './log4jui';
-import {JUILogger} from './models';
+import { JUILogger } from './models';
 
 const logger: JUILogger = log4jui.getLogger('ProcessErrorHandler');
 

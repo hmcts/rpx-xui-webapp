@@ -1,15 +1,15 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Store} from '@ngrx/store';
-import {ErrorMessage} from '../../../../app/models';
-import {ACTION} from '../../../models/hearings.enum';
-import {HearingsService} from '../../../services/hearings.service';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { ErrorMessage } from '../../../../app/models';
+import { ACTION } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-welsh',
-  templateUrl: './hearing-welsh.component.html',
+  templateUrl: './hearing-welsh.component.html'
 })
 export class HearingWelshComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public error: ErrorMessage = null;
@@ -34,7 +34,7 @@ export class HearingWelshComponent extends RequestHearingPageFlow implements OnI
 
   public initForm(): void {
     this.welshForm = this.formBuilder.group({
-      hearingInWelshFlag: [false, Validators.required],
+      hearingInWelshFlag: [false, Validators.required]
     });
   }
 

@@ -8,9 +8,8 @@ import { Task } from '../../models/tasks';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { TaskFieldComponent } from './task-field.component';
 
-
 @Component({
-  template: `<exui-task-field [config]="config" [task]="task"></exui-task-field>`
+  template: '<exui-task-field [config]="config" [task]="task"></exui-task-field>'
 })
 class WrapperComponent {
   @ViewChild(TaskFieldComponent) public appComponentRef: TaskFieldComponent;
@@ -39,7 +38,7 @@ describe('WorkAllocation', () => {
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule, RouterTestingModule ]
       })
-      .compileComponents();
+        .compileComponents();
 
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
@@ -690,7 +689,7 @@ describe('WorkAllocation', () => {
       expect(element.getAttribute('src')).toBe(EXAMPLE1_IMAGE);
       expect(element.getAttribute('alt')).toBe('Image');
 
-       // Change the value of task.image
+      // Change the value of task.image
       task['image'] = EXAMPLE2_IMAGE;
       fixture.detectChanges();
       expect(element).not.toBeNull();
@@ -760,7 +759,7 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(task.case_id);
-      expect(element.getAttribute('href')).toContain(encodeURI(`/cases/case-details/The case reference`)); // Spaces allowed
+      expect(element.getAttribute('href')).toContain(encodeURI('/cases/case-details/The case reference')); // Spaces allowed
 
       // Change the value of task.case_id.
       task.case_id = 'NEW CASE REFERENCE';
@@ -768,7 +767,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe('NEW CASE REFERENCE');
-      expect(element.getAttribute('href')).toContain(encodeURI(`/cases/case-details/NEW CASE REFERENCE`)); // Spaces allowed
+      expect(element.getAttribute('href')).toContain(encodeURI('/cases/case-details/NEW CASE REFERENCE')); // Spaces allowed
 
       // Clear out the value of task.link and we should no longer have the anchor.
       task.case_id = undefined;
@@ -781,7 +780,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe('The case reference');
-      expect(element.getAttribute('href')).toContain(encodeURI(`/cases/case-details/The case reference`));
+      expect(element.getAttribute('href')).toContain(encodeURI('/cases/case-details/The case reference'));
 
       // Make task.link null.
       task.case_id = null;
@@ -824,7 +823,7 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
     });
 
-    it('should appropriately parse an ISO date string with toDate',  fakeAsync(() => {
+    it('should appropriately parse an ISO date string with toDate', fakeAsync(() => {
       component =wrapper.appComponentRef ;
       const config: FieldConfig = getConfig('case_id', FieldType.CASE_REFERENCE_STRING);
       const task: Task = {
@@ -904,5 +903,4 @@ describe('WorkAllocation', () => {
       expect(output).toBeNull();
     });
   });
-
 });

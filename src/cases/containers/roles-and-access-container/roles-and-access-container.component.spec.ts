@@ -37,7 +37,7 @@ const CASE_VIEW: CaseView = {
     name: 'Test Address Book Case',
     jurisdiction: {
       id: 'TEST',
-      name: 'Test',
+      name: 'Test'
     },
     printEnabled: true
   },
@@ -119,13 +119,11 @@ const CASE_VIEW: CaseView = {
       order: 3,
       fields: [],
       show_condition: ''
-    },
+    }
   ]
 };
 
 describe('RolesContainerComponent', () => {
-  let featureToggleService: FeatureToggleService;
-  featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   let component: RolesAndAccessContainerComponent;
   let fixture: ComponentFixture<RolesAndAccessContainerComponent>;
   const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseRoles', 'getCaseRolesUserDetails']);
@@ -138,7 +136,7 @@ describe('RolesContainerComponent', () => {
       known_as: 'Tom',
       surname: 'Cruz',
       full_name: 'Tom Cruz',
-      email_id: '330085EMP-@ejudiciary.net',
+      email_id: '330085EMP-@ejudiciary.net'
     }
   ];
   const caseRolesData: any[] = [
@@ -192,7 +190,7 @@ describe('RolesContainerComponent', () => {
               }
             }
           }
-        },
+        }
       ],
       declarations: [
         RolesAndAccessContainerComponent,
@@ -214,7 +212,6 @@ describe('RolesContainerComponent', () => {
   });
 
   it('setDisplayAllocateLink to set true for JUDICIAL', () => {
-
     component.setDisplayAllocateLink(initialMockState.appConfig.userDetails, 'JUDICIAL');
 
     expect(component.showAllocateRoleLink).toBeTruthy();
@@ -240,16 +237,16 @@ describe('RolesContainerComponent', () => {
 
 describe('RolesContainerComponent', () => {
   let component: RolesAndAccessContainerComponent;
-  let featureToggleService: FeatureToggleService;
   const route = jasmine.createSpyObj('route', ['navigate']);
   const store = jasmine.createSpyObj('route', ['pipe', 'select']);
-  featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
+  const featureToggleService: FeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const roleExclusionsService = jasmine.createSpyObj('route', ['getCurrentUserRoleExclusions']);
   const allocateService = jasmine.createSpyObj('route', ['getCaseRoles', 'getCaseRolesUserDetails']);
   const caseworkerDataService = jasmine.createSpyObj('route', ['loadAll']);
   const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem', 'setItem']);
   const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
-    mockNotifierService.cachedCaseView = {};
+  mockNotifierService.cachedCaseView = {};
+
   it('loadRoles', () => {
     component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
     const caseDetails = {} as CaseView;
@@ -261,7 +258,7 @@ describe('RolesContainerComponent', () => {
       jurisdiction: {
         id: '',
         name: '',
-        description: '',
+        description: ''
       },
       printEnabled: false
     };
@@ -337,8 +334,7 @@ describe('RolesContainerComponent', () => {
 
     const jurisdiction = { value: 'ia' };
     const exclusions = [];
-    const caseDetails = { case_id: '12344', case_type: { id: '345' } } as CaseView;
-    component.caseDetails = caseDetails;
+    component.caseDetails = { case_id: '12344', case_type: { id: '345' } } as CaseView;
     roleExclusionsService.getCurrentUserRoleExclusions.and.returnValue(of(exclusions));
     component.loadExclusions(jurisdiction);
     component.exclusions$.subscribe((actual) => {
@@ -355,6 +351,5 @@ describe('RolesContainerComponent', () => {
 
     expect(component.setDisplayAllocateLink).toHaveBeenCalled();
     expect(component.caseJurisdiction).toEqual('JUDICIAL');
-
   });
 });

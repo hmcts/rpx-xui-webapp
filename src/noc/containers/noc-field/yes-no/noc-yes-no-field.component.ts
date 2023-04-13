@@ -8,7 +8,6 @@ import { YesNoService } from './yes-no.service';
   templateUrl: './noc-yes-no-field.component.html'
 })
 export class NocYesNoFieldComponent extends AbstractFieldWriteComponent implements OnInit {
-
   public yesNoValues = [ 'Yes', 'No' ];
   public yesNoControl: FormControl;
 
@@ -20,5 +19,4 @@ export class NocYesNoFieldComponent extends AbstractFieldWriteComponent implemen
     this.setAnswer();
     this.yesNoControl = this.registerControl(new FormControl(this.yesNoService.format(this.answerValue)));
   }
-
 }

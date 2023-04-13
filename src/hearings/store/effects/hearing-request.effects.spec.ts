@@ -6,7 +6,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
-import { Observable, of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { Go } from '../../../app/store/actions';
 import { hearingRequestMainModel, initialState } from '../../hearing.test.data';
 import { Mode } from '../../models/hearings.enum';
@@ -21,7 +21,7 @@ describe('Hearing Request Effects', () => {
   let effects: HearingRequestEffects;
   let store: any;
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
-    'getAllHearings', 'loadHearingRequest', 'updateHearingRequest', 'submitHearingRequest',
+    'getAllHearings', 'loadHearingRequest', 'updateHearingRequest', 'submitHearingRequest'
   ]);
   const pageflowMock = jasmine.createSpyObj('AbstractPageFlow', [
     'getCurrentPage', 'getLastPage', 'getNextPage'
@@ -39,19 +39,19 @@ describe('Hearing Request Effects', () => {
         provideMockStore({ initialState }),
         {
           provide: HearingsService,
-          useValue: hearingsServiceMock,
+          useValue: hearingsServiceMock
         },
         {
           provide: AbstractPageFlow,
-          useValue: pageflowMock,
+          useValue: pageflowMock
         },
         {
           provide: Router,
-          useValue: mockRouter,
+          useValue: mockRouter
         },
         {
           provide: Location,
-          useValue: mockLocation,
+          useValue: mockLocation
         },
         HearingRequestEffects,
         provideMockActions(() => actions$)

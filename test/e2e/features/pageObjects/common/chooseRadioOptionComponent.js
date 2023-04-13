@@ -7,7 +7,7 @@ class ChooseRadioOptionComponent{
         if (typeof parentCss === 'string'){
             this.component = $(`${parentCss ? parentCss : ''} exui-choose-radio-option`);
         }else{
-            this.component = parentCss.$(`exui-choose-radio-option`); 
+            this.component = parentCss.$(`exui-choose-radio-option`);
         }
 
         this.header = this.component.$("h1");
@@ -40,7 +40,7 @@ class ChooseRadioOptionComponent{
     }
 
     async getValidationErrorMeessage(){
-        
+
         const isMsgDisplayed = await this.isValidationErrorMessageDisplayed();
         if (!isMsgDisplayed){
             throw new Error("Validation error message is not displayed.");
@@ -79,7 +79,6 @@ class ChooseRadioOptionComponent{
         const radioInput = await this.getRadioOptionInputElement(radioLabel);
         return await radioInput.isSelected();
     }
-
 }
 
 module.exports = ChooseRadioOptionComponent;

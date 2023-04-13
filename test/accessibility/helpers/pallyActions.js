@@ -1,5 +1,5 @@
 class Actions{
-   
+
 
     waitForurl(url){
         return ['wait for url to be '+url];
@@ -49,7 +49,6 @@ class Actions{
         return ['wait for url to not be ' + url];
 
     }
-
 }
 
 module.exports = new Actions();

@@ -20,7 +20,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-requirements',
-  templateUrl: './hearing-requirements.component.html',
+  templateUrl: './hearing-requirements.component.html'
 })
 export class HearingRequirementsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public caseFlagsRefData: CaseFlagReferenceModel[];
@@ -137,9 +137,9 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       const party: PartyDetailsModel = {
         ...partyDetail,
         individualDetails: {
-          ...partyDetail.individualDetails,
+          ...partyDetail.individualDetails
         },
-        ...organisationDetails && ({ organisationDetails }),
+        ...organisationDetails && ({ organisationDetails })
       };
       combinedPartyDetails.push(party);
     });

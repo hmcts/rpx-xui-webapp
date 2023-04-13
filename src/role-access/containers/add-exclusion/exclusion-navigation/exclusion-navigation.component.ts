@@ -31,8 +31,7 @@ export class ExclusionNavigationComponent implements OnInit {
   constructor(
     private readonly store: Store<fromFeature.State>,
     private readonly appStore: Store<fromRoot.State>
-  ) {
-  }
+  ) {}
 
   public ngOnInit() {
     this.navigationCurrentState$ = this.store.pipe(select(fromFeature.currentNavigation));

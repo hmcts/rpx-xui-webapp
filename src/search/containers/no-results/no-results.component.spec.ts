@@ -11,6 +11,7 @@ describe('NoResultsComponent', () => {
   let component: NoResultsComponent;
   let fixture: ComponentFixture<NoResultsComponent>;
   let mockRouter: any;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
   const storeMock = jasmine.createSpyObj('Store', [
     'dispatch'
@@ -23,7 +24,7 @@ describe('NoResultsComponent', () => {
       imports: [ RouterTestingModule.withRoutes([]) ],
       providers: [{ provide: Store, useValue: storeMock }]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

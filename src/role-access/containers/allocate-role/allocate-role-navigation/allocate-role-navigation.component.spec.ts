@@ -5,7 +5,6 @@ import { of } from 'rxjs';
 import * as fromStore from '../../../store';
 import { AllocateRoleNavigationComponent } from './allocate-role-navigation.component';
 
-
 describe('AllocateRoleNavigationComponent', () => {
   let component: AllocateRoleNavigationComponent;
   let fixture: ComponentFixture<AllocateRoleNavigationComponent>;
@@ -18,7 +17,7 @@ describe('AllocateRoleNavigationComponent', () => {
         AllocateRoleNavigationComponent
       ],
       providers: [
-        provideMockStore(),
+        provideMockStore()
       ]
     }).compileComponents();
 

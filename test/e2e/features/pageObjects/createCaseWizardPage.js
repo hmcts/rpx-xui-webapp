@@ -216,7 +216,6 @@ class CreateCaseWizardPage{
     let header = await this.getPageHeader();
     return header === 'Case Details - Appeal created'
   }
-
 }
 
 module.exports = CreateCaseWizardPage;

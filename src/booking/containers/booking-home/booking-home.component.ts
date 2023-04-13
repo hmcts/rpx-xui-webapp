@@ -36,7 +36,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     private readonly sessionStorageService: SessionStorageService,
     private readonly windowService: WindowService,
     private readonly featureToggleService: FeatureToggleService,
-  ) { }
+  ) {}
 
   public ngOnInit() {
     this.bookingTypeForm = this.fb.group({
@@ -57,9 +57,9 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
           })).subscribe();
         }
       },
-        err => {
-          this.NavigationErrorHandler(err, this.router);
-        });
+      err => {
+        this.NavigationErrorHandler(err, this.router);
+      });
     }
   }
 
@@ -105,7 +105,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   }
 
   public onExistingBookingSelected(locationId) {
-    this.refreshAssignmentsSubscription = this.bookingService.refreshRoleAssignments(this.userId).subscribe(response => {
+    this.refreshAssignmentsSubscription = this.bookingService.refreshRoleAssignments(this.userId).subscribe(() => {
       this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
       this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
       this.router.navigate(
@@ -138,5 +138,5 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
         }
       }
     }
-  }
+  };
 }

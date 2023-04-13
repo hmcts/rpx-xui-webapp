@@ -44,7 +44,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await softAssert.assert(async () => expect(await workFlowPage.findPersonPage.isPersonReturned(resultHashes[i].value)).to.be.true);
         }
         softAssert.finally();
-
     });
 
     When('In workflow {string}, I select find person result {string}', async function (workflow,person) {
@@ -73,5 +72,4 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
         expect(await workFlowPage.findPersonPage.isPersonSelected(caseworker.email), `${caseworker.email} is not selected`).to.be.true;
     });
-
 });

@@ -14,7 +14,7 @@ const axiosOptions = {
 axios.defaults.withCredentials = true;
 
 const http = axios.create(axiosOptions);
-const nodeAppMockData = require('../../nodeMock/nodeApp/mockData'); 
+const nodeAppMockData = require('../../nodeMock/nodeApp/mockData');
 class BrowserUtil{
 
     async gotoHomePage(){
@@ -27,7 +27,7 @@ class BrowserUtil{
             data: 'foobar'
         }, 'secret', { expiresIn: 60 * 60 });
         this.addCookie('__auth__', token);
-        
+
     }
 
     addCookie(cookieName, cookieVal){
@@ -42,7 +42,7 @@ class BrowserUtil{
         };
         browser.manage().addCookie(cookie);
     }
-        
+
     async browserInitWithAuth(roles){
         await this.gotoHomePage();
         this.setAuthCookie();
@@ -59,7 +59,7 @@ class BrowserUtil{
 
     setUserDetailsWithRoles(rolesArray) {
         nodeAppMockData.getUserDetailsWithRoles(rolesArray);
-       
+
     }
 
 
@@ -71,7 +71,6 @@ class BrowserUtil{
             console.log(err);
             return false;
         }
-        
     }
 
     onLDReceivedLogFeatureValue(name){
@@ -79,7 +78,7 @@ class BrowserUtil{
         if (!togglesToLogs){
             global.scenarioData['featureToggleToLog'] = [];
             togglesToLogs = global.scenarioData['featureToggleToLog'];
-        } 
+        }
         togglesToLogs.push(name)
     }
 
@@ -174,7 +173,7 @@ class BrowserUtil{
                 div.innerHTML = arguments[1];
             }
             return "success";
-            
+
         }, cssSelector, text, append);
     }
 
@@ -192,6 +191,5 @@ class BrowserUtil{
         return await browser.executeScript('return window.localStorage["' + key + '"]',
             key);
     }
-
 }
 module.exports = new BrowserUtil();

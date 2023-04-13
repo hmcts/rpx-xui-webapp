@@ -13,7 +13,7 @@ import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-allocate-role-navigation',
-  templateUrl: './allocate-role-navigation.component.html',
+  templateUrl: './allocate-role-navigation.component.html'
 })
 export class AllocateRoleNavigationComponent implements OnInit {
 
@@ -31,8 +31,7 @@ export class AllocateRoleNavigationComponent implements OnInit {
 
   constructor(
     private readonly store: Store<fromFeature.State>,
-  ) {
-  }
+  ) {}
 
   public ngOnInit(): void {
     this.allocateRoleStateData$ = this.store.pipe(select(fromFeature.getAllocateRoleState));

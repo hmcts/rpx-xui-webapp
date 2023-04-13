@@ -21,7 +21,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const actualHeadeColumns = await casesListTable.getColumnHeaderNames();
         expect(actualHeadeColumns.length, `Actual Cols ||${actualHeadeColumns}|| !== Expected Cols ||${expectdColHeaders}|| `).to.equal(expectdColHeaders.length);
         expect(actualHeadeColumns, `Actual Cols ||${actualHeadeColumns}|| !== Expected Cols ||${expectdColHeaders}|| `).to.include.members(expectdColHeaders);
-
     });
 
     Then('I validate work allocation table columns are links', async function (datatable) {
@@ -36,7 +35,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         expect(actuallinkColumns.length, `Actual Cols ||${actuallinkColumns}|| !== Expected Cols ||${expectdLinkCols}|| `).to.equal(expectdLinkCols.length);
         expect(actuallinkColumns).to.include.members(expectdLinkCols);
-
     });
 
     When('I click work allocation cases column link {string} at row {int}', async function (colName, rowPos) {
@@ -69,7 +67,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await casesListTable.clickCaseColLink(colName, rowPos);
         });
     });
-
 });
 
 

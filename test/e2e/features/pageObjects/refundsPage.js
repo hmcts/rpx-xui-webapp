@@ -76,13 +76,13 @@ class RefundsPage {
   async getProcessRefundsInfo(){
     await BrowserWaits.waitForElementClickable(this.processRefundPage.whatDoYouWantToDoWithThisRefundInfo.returnToCaseWorkerRadioButton);
     let  reviewRefundDetailsTableColumns = await this._gettAllText(this.processRefundPage.reviewRefundDetailsTableColumns);
-    let  refundActionsLabels = await this._gettAllText(this.processRefundPage.whatDoYouWantToDoWithThisRefundInfo.refundActionsLables);    
+    let  refundActionsLabels = await this._gettAllText(this.processRefundPage.whatDoYouWantToDoWithThisRefundInfo.refundActionsLables);
     let  refundActionsHints =  await  this._gettAllText(this.processRefundPage.whatDoYouWantToDoWithThisRefundInfo.refundActionsLinks);
     return {
       reviewRefundDetailsTableColumns: reviewRefundDetailsTableColumns,
       refundActionsLabels: refundActionsLabels,
       refundActionsHints: refundActionsHints
-    }    
+    }
   }
 
   async getReviewRefundsInfo(){
@@ -109,7 +109,6 @@ class RefundsPage {
     await BrowserWaits.waitForElementClickable(this.reviewRefundLink);
     await this.reviewRefundLink.click();
   }
-
 }
 
 module.exports = RefundsPage;

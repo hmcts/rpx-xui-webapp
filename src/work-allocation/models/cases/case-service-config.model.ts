@@ -6,4 +6,4 @@ export default interface CaseServiceConfig {
   defaultSortDirection: SortOrder;
   defaultSortFieldName: string;
   fields: CaseFieldConfig[];
-}
+};

@@ -13,5 +13,4 @@ describe('DefaultHiddenConverter', () => {
     const isHidden = false;
     result$.subscribe(result => expect(result).toBe(isHidden));
   });
-
 });

@@ -14,7 +14,7 @@ class CaseListPage{
 
     async amOnPage(){
         try{
-            await BrowserWaits.waitForElement(this.pageContainer); 
+            await BrowserWaits.waitForElement(this.pageContainer);
             return true;
         }catch(error){
             reportLogger.AddMessage("Error waiting for case list page "+error);
@@ -29,13 +29,13 @@ class CaseListPage{
         }catch(err){
             return false;
         }
-        
+
     }
 
     async isWorkbasketFilterDisplayed(fieldConfig){
         // await this.amOnPage();
         await BrowserWaits.waitForElement(this.dynamicFiltersContainer);
-        return await this.dynamicFiltersContainer.$(`#dynamicFilters .form-group #${fieldConfig.field.id}`).isDisplayed(); 
+        return await this.dynamicFiltersContainer.$(`#dynamicFilters .form-group #${fieldConfig.field.id}`).isDisplayed();
     }
 
     async validateDynamicFields(dynamicfield){
@@ -57,7 +57,6 @@ class CaseListPage{
                 expect(listValuesRendered.includes(item)).to.be.true
             });
         }
-
     }
 
     async getFieldListValues(fieldConfig){
@@ -67,9 +66,9 @@ class CaseListPage{
             const radiosCount = await radioInputs.count();
             const radioValues = [];
             for (let radioCounter = 0; radioCounter < radiosCount; radioCounter++){
-                radioValues.push(await radioInputs.get(radioCounter).getAttribute("ng-reflect-value")); 
-            } 
-            return radioValues; 
+                radioValues.push(await radioInputs.get(radioCounter).getAttribute("ng-reflect-value"));
+            }
+            return radioValues;
         }
          if(type === "FixedList"){
              const selectOptions = this.dynamicFiltersContainer.$$(`#${fieldConfig.field.id} option[ng-reflect-ng-value]`);
@@ -96,12 +95,12 @@ class CaseListPage{
     async inputWorkbasketFilter(fieldConfig,input){
         let inputValue = null;
         if (await this.isWorkbasketFilterDisplayed(fieldConfig)){
-            const type = fieldConfig.field.field_type.type; 
+            const type = fieldConfig.field.field_type.type;
             switch(type){
                 case "Text":
-                    const inputText = input ? input : fieldConfig.label+" test" 
+                    const inputText = input ? input : fieldConfig.label+" test"
                     await this.dynamicFiltersContainer.$(`.form-group #${fieldConfig.field.id}`).sendKeys(inputText);
-                    inputValue = inputText; 
+                    inputValue = inputText;
                     break;
                 case "FixedRadioList":
                     const inputRadio = input ? input : fieldConfig.field.field_type.fixed_list_items[0].code ;
@@ -110,18 +109,18 @@ class CaseListPage{
                     break;
                 case "YesOrNo":
                     let inputYesNo = input ? input : "Yes";
-                    inputYesNo = fieldConfig.field.id + "_" + inputYesNo; 
+                    inputYesNo = fieldConfig.field.id + "_" + inputYesNo;
                     await this.dynamicFiltersContainer.$(`.form-group #${fieldConfig.field.id} input#${inputYesNo}`).click();
                     inputValue = inputYesNo.includes("Yes") ? "Yes": "No";
                     break;
                 case "FixedList":
                     inputValue = input ? input : fieldConfig.field.field_type.fixed_list_items[0].code;
-                    await this.dynamicFiltersContainer.$(`.form-group #${fieldConfig.field.id} option[ng-reflect-ng-value=${inputValue}]`).click(); 
+                    await this.dynamicFiltersContainer.$(`.form-group #${fieldConfig.field.id} option[ng-reflect-ng-value=${inputValue}]`).click();
                     break;
                 case "MultiSelectList":
                     inputValue = input ? input : fieldConfig.field.field_type.fixed_list_items.map(item => item.code);
                     for (const selectInput of inputValue){
-                        await this.dynamicFiltersContainer.$(`.form-group #${fieldConfig.field.id} input#${fieldConfig.field.id}-${selectInput}`).click(); 
+                        await this.dynamicFiltersContainer.$(`.form-group #${fieldConfig.field.id} input#${fieldConfig.field.id}-${selectInput}`).click();
                     }
 
                     break;
@@ -133,7 +132,7 @@ class CaseListPage{
     async clickApplyWorkbasketFilters(){
         await this.amOnPage();
         await browser.executeScript('arguments[0].scrollIntoView()', this.applyBtnWorkbasketFilters);
-        await this.applyBtnWorkbasketFilters.click(); 
+        await this.applyBtnWorkbasketFilters.click();
     }
 
 
@@ -150,15 +149,14 @@ class CaseListPage{
         for (const casevalue in caseValues){
             if(caseFields[casevalue]){
                 let thObj = cases.columns.find(caseObj=>caseObj.label == caseFields[casevalue]);
-            
+
                 let thKey = thObj.case_field_id;
-    
+
                 let value = cases.results[0].case_fields[thKey] ? cases.results[0].case_fields[thKey] : "";
-    
+
                 expect(caseValues).to.be.contain(value.toString());
             }
         }
-
     }
     async validateCaseFields(){
 
@@ -199,7 +197,7 @@ class CaseListPage{
         await BrowserWaits.waitForElement(this.caseResultsPagination);
        return await this.caseListTableTr.count();
     }
-    
+
 
 }
 

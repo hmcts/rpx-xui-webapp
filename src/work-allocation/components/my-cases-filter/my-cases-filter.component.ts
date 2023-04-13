@@ -36,7 +36,7 @@ export class MyCasesFilterComponent implements OnInit, OnDestroy {
   public defaultLocations: string[] = [];
   public fieldsSettings: FilterSetting = {
     fields: [],
-    id: MyCasesFilterComponent.FILTER_NAME,
+    id: MyCasesFilterComponent.FILTER_NAME
   };
   public selectedLocations: string[] = [];
   public toggleFilter = false;
@@ -50,8 +50,7 @@ export class MyCasesFilterComponent implements OnInit, OnDestroy {
    */
   constructor(private readonly route: ActivatedRoute,
               private readonly filterService: FilterService,
-              private readonly locationService: LocationDataService) {
-  }
+              private readonly locationService: LocationDataService) {}
 
   public ngOnInit(): void {
     this.locationSubscription = this.locationService.getLocations()

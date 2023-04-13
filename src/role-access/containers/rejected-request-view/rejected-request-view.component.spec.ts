@@ -29,29 +29,29 @@ describe('RejectedRequestViewComponent', () => {
       declarations: [RejectedRequestViewComponent],
       imports: [PipesModule, HttpClientTestingModule],
       providers: [
-        {provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService},
-        {provide: AllocateRoleService, useValue: mockAllocateRoleService},
-        {provide: CaseworkerDataService, useValue: mockCaseworkerDataService},
-        {provide: Router, useValue: router},
+        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
+        { provide: AllocateRoleService, useValue: mockAllocateRoleService },
+        { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
+        { provide: Router, useValue: router },
         {
-            provide: ActivatedRoute,
-            useValue: {
-              snapshot: {
-                queryParams: {
-                    caseName: 'case name',
-                    caseReference: '123456789',
-                    roleCategory: RoleCategory.JUDICIAL,
-                    jurisdiction: 'IA',
-                    // date of role created is actually date rejected, not originally requested
-                    dateRejected: '01-01-2020',
-                    infoRequired: false,
-                    reviewer: 'example',
-                    dateSubmitted: '01-01-2019',
-                    specificAccessReason: 'I would like access'
-                },
-              },
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParams: {
+                caseName: 'case name',
+                caseReference: '123456789',
+                roleCategory: RoleCategory.JUDICIAL,
+                jurisdiction: 'IA',
+                // date of role created is actually date rejected, not originally requested
+                dateRejected: '01-01-2020',
+                infoRequired: false,
+                reviewer: 'example',
+                dateSubmitted: '01-01-2019',
+                specificAccessReason: 'I would like access'
+              }
             }
-          },
+          }
+        }
       ]
     })
       .compileComponents();
@@ -82,7 +82,7 @@ describe('RejectedRequestViewComponent', () => {
 
   it('should allow the user to go to request again', () => {
     component.goToRequest();
-    expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/123456789/specific-access-request`]);
+    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/123456789/specific-access-request']);
   });
 
   it('should show default message if infoRequired is false', () => {

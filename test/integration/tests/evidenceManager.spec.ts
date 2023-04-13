@@ -6,8 +6,6 @@ import { getUserId, getXSRFToken } from './utils/authUtil';
 import { setTestContext } from './utils/helper';
 import Request from './utils/request';
 
-
-
 describe('Evidence Manager Endpoints', () => {
     const userName = config.users[config.testEnv].solicitor.e;
     const password = config.users[config.testEnv].solicitor.sec;
@@ -86,7 +84,6 @@ describe('Evidence Manager Endpoints', () => {
         expect(response.status).to.equal(200);
     });
 
-
     it('Get document bookmarks', async () => {
         await Request.withSession(userName, password);
         const xsrfToken = await getXSRFToken(userName, password);
@@ -117,7 +114,6 @@ describe('Evidence Manager Endpoints', () => {
         expect(response.data).to.be.an('object');
         expect(response.data).to.have.all.keys('id', 'name', 'documentId', 'createdBy', 'pageNumber', 'xCoordinate', 'yCoordinate', 'parent', 'previous');
         expect(response.data.documentId).to.equal(config.em[config.testEnv].docId);
-
     });
 
     it('Delete document bookmark', async () => {
@@ -138,8 +134,6 @@ describe('Evidence Manager Endpoints', () => {
         const bookMarkDeleteResponse = await Request.delete(`em-anno/bookmarks_multiple`, { deleted: [bookMarkIdToDelete] }, headers, 200);
         expect(bookMarkDeleteResponse.status).to.equal(200);
     });
-
-
 
     async function getNewBookmarkIdObject(bookmarkName, docId, pagenum, previd) {
         const userId = await getUserId(userName, password);
@@ -188,5 +182,4 @@ describe('Evidence Manager Endpoints', () => {
             annotationSetId: annoSetid
         };
     }
-
 });

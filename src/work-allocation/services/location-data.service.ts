@@ -13,7 +13,7 @@ export class LocationDataService {
   public static regionLocationUrl: string = '/workallocation/region-location';
   public static allLocationsKey: string = 'allLocations';
   public static regionLocationsKey: string = 'regionLocations';
-  public constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) { }
+  public constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) {}
 
   public getLocations(): Observable<Location[]> {
     if (this.sessionStorageService.getItem(LocationDataService.allLocationsKey)) {
@@ -30,7 +30,7 @@ export class LocationDataService {
       const locationRegions = JSON.parse(this.sessionStorageService.getItem(LocationDataService.regionLocationsKey));
       return of(locationRegions as LocationsByRegion[]);
     }
-    return this.http.post<LocationsByRegion[]>(`${LocationDataService.regionLocationUrl}`, {serviceIds}).pipe(
+    return this.http.post<LocationsByRegion[]>(`${LocationDataService.regionLocationUrl}`, { serviceIds }).pipe(
       tap(regionLocations => this.sessionStorageService.setItem(LocationDataService.regionLocationsKey, JSON.stringify(regionLocations)))
     );
   }

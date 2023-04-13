@@ -6,7 +6,7 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 
 export class JudgeTypesAnswerConverter implements AnswerConverter {
-  constructor(protected readonly route: ActivatedRoute) { }
+  constructor(protected readonly route: ActivatedRoute) {}
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     const judgeTypes: LovRefDataModel[] = this.route.snapshot.data.judgeTypes;

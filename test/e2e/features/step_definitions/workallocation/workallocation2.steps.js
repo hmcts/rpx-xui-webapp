@@ -24,16 +24,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 await myWorkPage.clickSubNavigationTab(secondaryNavTab);
             }catch(err){
                 await headerPage.refreshBrowser();
-                throw new Error(err); 
+                throw new Error(err);
             }
-           
-        });   
-       
+
+        });
+
     });
 
     When('I navigate to All work sub navigation tab {string}', async function (secondaryNavTab) {
         await headerPage.clickPrimaryNavigationWithLabel('All work');
-        
+
         await BrowserWaits.retryWithActionCallback( async () => {
             await allWorkPage.clickSubNavigationTab(secondaryNavTab);
 
@@ -46,7 +46,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         });
         await BrowserWaits.waitForSpinnerToDissappear();
-        
+
     });
 
     Then('I validate My work sub navigations displayed', async function(datatable){
@@ -77,7 +77,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I see task check your changes page for action {string} displayed', async function(taskAction){
         await taskCheckYourChangesPage.validatePage();
         expect(await taskCheckYourChangesPage.getHeaderCaption()).to.contains(taskAction);
-
     });
 
     Then('I validate column {string} value is set to {string} in task check your changes page', async function(headerName, val){
@@ -102,7 +101,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             expect(await allWorkPage.isCasesContainerDisplayed()).to.be.false
             expect(await allWorkPage.allworkCasesMessage.getText()).to.contains(message)
         });
-        
+
     })
 
 });

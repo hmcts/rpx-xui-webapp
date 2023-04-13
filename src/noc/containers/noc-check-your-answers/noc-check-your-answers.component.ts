@@ -16,7 +16,7 @@ export class NocCheckYourAnswersComponent implements OnInit {
   @Input()
   public qAndA$: Observable<NocAnswer[]>;
 
-  constructor(private readonly store: Store<fromFeature.State>) {  }
+  constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit() {
     this.caseReference$ = this.store.pipe(select(fromFeature.caseReference));
@@ -26,6 +26,7 @@ export class NocCheckYourAnswersComponent implements OnInit {
     this.store.dispatch(new fromFeature.ChangeNavigation(NocState.START));
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public navToQAndA(answer: NocAnswer) {
     this.store.dispatch(new fromFeature.ChangeNavigation(NocState.QUESTION));
   }

@@ -22,14 +22,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Given('I set mock case create config {string}', async function (configReference) {
         const caseConfig = getTestJurisdiction();
         global.scenarioData[configReference] = caseConfig;
-        MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => { 
+        MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
             res.send(caseConfig.getCase());
         });
-      
+
     });
 
     Given('I set MOCK event {string} props', async function(caseConfigReference, dataTable){
-        const caseConfig = global.scenarioData[caseConfigReference]; 
+        const caseConfig = global.scenarioData[caseConfigReference];
         const eventprops = convertDatatablePropsToccdObj(dataTable);
         caseConfig.updateEventProps(eventprops);
     });
@@ -40,7 +40,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         MockApp.onGet('/data/internal/case-types/:jurisdiction/work-basket-inputs', (req, res) => {
             res.send(workbasetConfigurator.getConfig());
         });
-
     });
 
     Given('I set mock case searchinput config {string}', async function(searchInputRef){
@@ -49,7 +48,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         MockApp.onGet('/data/internal/case-types/:jurisdiction/search-inputs', (req, res) => {
             res.send(searchInputConfigurator.getConfig());
         });
-
     });
 
     Given('I set MOCK event {string} config with reference {string}', async function(eventId, eventReference){
@@ -62,8 +60,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I set MOCK event config {string} field {string} properties', async function(eventConfigRef, fieldId, datatable){
         const eventConfig = global.scenarioData[eventConfigRef];
-        const fieldProps = convertDatatablePropsToccdObj(datatable); 
-        eventConfig.updateFieldProps(fieldId, fieldProps); 
+        const fieldProps = convertDatatablePropsToccdObj(datatable);
+        eventConfig.updateFieldProps(fieldId, fieldProps);
     });
 
     Given('I set MOCK case details with reference {string}', async function(caseDetailsReference){
@@ -76,7 +74,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I set MOCK case details {string} values', async function (caseDetailsReference, caseDetailsDatatable) {
         const caseDetails = global.scenarioData[caseDetailsReference];
-        
+
     });
 
     Given('I set MOCK case details {string} property {string} as {string}', async function(caseDetailsRef, property, value){
@@ -179,7 +177,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             "publish_as": null,
             "acls": null
         });
-       
+
     });
 
     Given('I set MOCK case details {string} trigger id {string} trigger name {string}', async function (caseDetailsRef, eventId, eventName) {
@@ -201,13 +199,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 }
 
                 if(key === 'role-name'){
-                    hash[key] = hash[key].toLowerCase().split(" ").join("-"); 
+                    hash[key] = hash[key].toLowerCase().split(" ").join("-");
                 }
             }
         }
         workAlloctionMockData.caseRoles = workAlloctionMockData.getCaseRoles(dateTableHashes);
-        
-    }); 
+
+    });
 
     Given('I set MOCK case role exclusions', async function (caseRoleExclusionsDatatable) {
         const dateTableHashes = caseRoleExclusionsDatatable.hashes();
@@ -228,32 +226,31 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         const dateTableHashes = caseTasksDatatable.hashes();
         workAlloctionMockData.caseTasks = workAlloctionMockData.getCaseTasks(dateTableHashes, userDetails);
-        
+
     });
 
     Given('I set MOCK case list values', async function(caseListAttributesDatatable){
         const cases = ccdMockData.caseList.results;
         const inputDatatableHashes = caseListAttributesDatatable.hashes();
-        
+
         for (let i = 0; i < inputDatatableHashes.length; i++){
             const caseItem = cases[i];
             const inputHash = inputDatatableHashes[i];
-            
+
             const keys = Object.keys(inputHash);
             for(const caseAttrib of keys){
                 if (caseAttrib.startsWith('case_fields.')){
-                    const caseFieldAttrib = caseAttrib.replace('case_fields.',''); 
-                    caseItem['case_fields'][caseFieldAttrib] = inputHash[caseAttrib];  
+                    const caseFieldAttrib = caseAttrib.replace('case_fields.','');
+                    caseItem['case_fields'][caseFieldAttrib] = inputHash[caseAttrib];
                 } else if (caseAttrib.startsWith('case_fields_formatted.')){
                     const caseFieldAttrib = caseAttrib.replace('case_fields_formatted.', '');
-                    caseItem['case_fields_formatted'][caseFieldAttrib] = inputHash[caseAttrib];  
+                    caseItem['case_fields_formatted'][caseFieldAttrib] = inputHash[caseAttrib];
                 }else{
-                    caseItem[caseAttrib] = inputHash[caseAttrib]; 
+                    caseItem[caseAttrib] = inputHash[caseAttrib];
                 }
-            } 
+            }
 
         }
-        
     });
 });
 
@@ -274,10 +271,10 @@ function convertDatatablePropsToccdObj(datatable){
     for (const key in tableRowshash){
 
         if (tableRowshash[key].toUpperCase() === "YES"){
-            tableRowshash[key] = true; 
+            tableRowshash[key] = true;
         } else if (tableRowshash[key].toUpperCase() === "NO"){
-            tableRowshash[key] = false; 
+            tableRowshash[key] = false;
         }
-    } 
+    }
     return tableRowshash;
 }

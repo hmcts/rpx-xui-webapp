@@ -18,5 +18,4 @@ describe('CaseFlagsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
 });

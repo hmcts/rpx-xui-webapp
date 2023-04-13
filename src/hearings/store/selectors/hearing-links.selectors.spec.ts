@@ -5,12 +5,13 @@ import { initialHearingLinksState, State } from '../reducers';
 
 describe('Hearing Links selectors', () => {
   let store: Store<State>;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('hearings', reducers),
-      ],
+        StoreModule.forFeature('hearings', reducers)
+      ]
     });
     store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
@@ -25,5 +26,4 @@ describe('Hearing Links selectors', () => {
       expect(result).toEqual(initialHearingLinksState);
     });
   });
-
 });

@@ -2,10 +2,9 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { NocNavigationEvent, NocState } from '../../models';
-import * as fromNocStore from '../../store';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocCaseRefComponent } from './noc-case-ref.component';
 
@@ -62,7 +61,6 @@ describe('NocCaseRefComponent', () => {
 
       expect(storeDispatchMock).toHaveBeenCalled();
     });
-
   });
 
   afterEach(() => {

@@ -14,7 +14,7 @@ describe('App Effects', () => {
   let actions$;
   let effects: fromAppEffects.AppEffects;
   const AuthServiceMock = jasmine.createSpyObj('AuthService', [
-    'signOut',
+    'signOut'
   ]);
 
   beforeEach(() => {
@@ -26,8 +26,8 @@ describe('App Effects', () => {
       providers: [
         AppConfigService,
         {
-            provide: AuthService,
-            useValue: AuthServiceMock
+          provide: AuthService,
+          useValue: AuthServiceMock
         },
         RoleService,
         fromAppEffects.AppEffects,

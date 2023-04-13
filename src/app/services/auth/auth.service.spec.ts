@@ -5,14 +5,12 @@ import { of } from 'rxjs';
 import { SessionStorageService } from '../session-storage/session-storage.service';
 import { AuthService } from './auth.service';
 
-
 describe('AuthService', () => {
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        StoreModule.forRoot({}),
+        StoreModule.forRoot({})
       ],
       providers: [
         AuthService,
@@ -83,5 +81,4 @@ describe('AuthService', () => {
       }
     ));
   });
-
 });

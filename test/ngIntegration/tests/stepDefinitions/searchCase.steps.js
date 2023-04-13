@@ -28,7 +28,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
             await BrowserWaits.waitForElement(caseListPage.dynamicFiltersContainer);
         });
-        
+
     });
 
     Then('I validate search case {string} fields displayed', async function(searchCaseConfigReference){
@@ -36,7 +36,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (const dynamicfield of searchCaseConfig.getConfig().searchInputs) {
             expect(await searchCasePage.isWorkbasketFilterDisplayed(dynamicfield)).to.be.true
         }
-
     });
 
     Then('I Validate case search request to contain filters from search case {string}', async function(searchCaseConfigReference){
@@ -55,7 +54,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             if (!(await caseListPage.isDynamicFilterDisplayed())){
                 throw new Error("Dynamic filters not displayed to proced with scenario.");
             }
-       
+
             for (const dynamicfield of searchCaseConfig.searchInputs) {
                 searchCaseInputValues[dynamicfield.field.id] = await caseListPage.inputWorkbasketFilter(dynamicfield);
             }
@@ -76,7 +75,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
 
         });
-
     });
 
     Then('I validate searchcase fixed list items for searchcase {string}', async function(searchCaseConfigRef){
@@ -85,7 +83,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (const dynamicfield of searchCaseConfig.searchInputs) {
 
             await caseListPage.validateDynamicFields(dynamicfield);
-            
+
             expect(await caseListPage.isWorkbasketFilterDisplayed(dynamicfield)).to.be.true
         }
     });
@@ -103,7 +101,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I Validate search case total cases count {string}', async function(searchCaseConfigRef){
         const searchCaseConfig = global.scenarioData[searchCaseConfigRef].getConfig();
-        
+
         let reqData = { size: 25 }
         const searchCaseInputValues = {}
         for (const dynamicfield of searchCaseConfig.searchInputs) {
@@ -140,7 +138,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
 
         caseListReq = null;
-        
+
         await searchCasePage.clickApplySearchCaseFilters();
         await searchCasePage.openFirstCaseInResults();
         let nextStepDropDownData = await searchCasePage.nextStepTriggerActions()
@@ -150,7 +148,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             console.log("eventObj::"+JSON.stringify(caseDetailsData.triggers[eventObj]));
             expect(nextStepDropDownData).to.be.contain(caseDetailsData.triggers[eventObj].name);
         }
-        
     });
 
 

@@ -6,7 +6,6 @@ import { SessionStorageService } from '../session-storage/session-storage.servic
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 
-
 class HttpClientMock {
   public get() {
     return 'response';
@@ -22,7 +21,7 @@ describe('AuthGuard', () => {
       providers: [
         AuthService,
         SessionStorageService,
-        { provide: HttpClient, useClass: HttpClientMock },
+        { provide: HttpClient, useClass: HttpClientMock }
       ]
     });
   });
@@ -69,7 +68,6 @@ describe('AuthGuard', () => {
     expect(authService.isAuthenticated).toHaveBeenCalled();
     expect(authService.loginRedirect).toHaveBeenCalled();
   });
-
 
   describe('storeRedirectUrl', () => {
     it('store current path when unauthenticated', () => {

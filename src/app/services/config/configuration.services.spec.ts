@@ -6,6 +6,7 @@ import { AppConfigService } from './configuration.services';
 describe('Configuration Service', () => {
   let httpClientSpy: { get: jasmine.Spy };
   let service: AppConfigService;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -30,7 +31,7 @@ describe('Configuration Service', () => {
   });
 
   it('should have configuration service getFeatureToggle method', () => {
-      expect(service.getFeatureToggle).toBeTruthy();
+    expect(service.getFeatureToggle).toBeTruthy();
   });
 
   it('should have configuration service setConfiguration method', () => {
@@ -40,6 +41,5 @@ describe('Configuration Service', () => {
   it('should have configuration service setConfiguration method', () => {
     expect(service.getEditorConfiguration).toBeTruthy();
   });
-
 });
 

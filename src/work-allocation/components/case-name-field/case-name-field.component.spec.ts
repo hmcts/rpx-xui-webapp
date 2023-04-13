@@ -7,7 +7,7 @@ import { WorkAllocationComponentsModule } from '../work-allocation.components.mo
 import { CaseNameFieldComponent } from './case-name-field.component';
 
 @Component({
-  template: `<exui-case-name-field [caseName]="caseName" [caseId]="caseId" [hasAccess]="hasAccess"></exui-case-name-field>`
+  template: '<exui-case-name-field [caseName]="caseName" [caseId]="caseId" [hasAccess]="hasAccess"></exui-case-name-field>'
 })
 class WrapperComponent {
   @ViewChild(CaseNameFieldComponent) public appComponentRef: CaseNameFieldComponent;
@@ -22,6 +22,7 @@ describe('WorkAllocation', () => {
     const CASE_NAME: string = 'Casename';
     const CASE_ID: string = 'CaseId';
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: CaseNameFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
@@ -31,7 +32,7 @@ describe('WorkAllocation', () => {
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule, RouterTestingModule ]
       })
-      .compileComponents();
+        .compileComponents();
     }));
 
     beforeEach(() => {
@@ -114,14 +115,13 @@ describe('WorkAllocation', () => {
       wrapper.hasAccess = false;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
-      const label: HTMLElement = fixture.debugElement.nativeElement.querySelector('label');
       expect(fixture.debugElement.nativeElement.querySelector('label')).not.toBeNull();
     });
   });
 });
 
 @Component({
-  template: `<exui-case-name-field [caseName]="caseName" [caseId]="caseId" ></exui-case-name-field>`
+  template: '<exui-case-name-field [caseName]="caseName" [caseId]="caseId" ></exui-case-name-field>'
 })
 class Wrapper1Component {
   @ViewChild(CaseNameFieldComponent) public appComponentRef: CaseNameFieldComponent;
@@ -136,6 +136,7 @@ describe('WorkAllocation', () => {
     const CASE_NAME: string = 'Casename';
     const CASE_ID: string = 'CaseId';
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: CaseNameFieldComponent;
     let wrapper: Wrapper1Component;
     let fixture: ComponentFixture<WrapperComponent>;
@@ -145,7 +146,7 @@ describe('WorkAllocation', () => {
         declarations: [ Wrapper1Component ],
         imports: [ WorkAllocationComponentsModule, RouterTestingModule ]
       })
-      .compileComponents();
+        .compileComponents();
     }));
 
     beforeEach(() => {

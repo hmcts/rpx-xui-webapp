@@ -17,7 +17,7 @@ export class CreateCaseEventTriggerResolver implements Resolve<CaseEventTrigger>
 
   constructor(
     private readonly casesService: CasesService,
-  ) { }
+  ) {}
 
   public resolve(route: ActivatedRouteSnapshot): Observable<CaseEventTrigger> {
     return this.isRootCreateRoute(route) ? this.getAndCacheEventTrigger(route)
@@ -48,5 +48,4 @@ export class CreateCaseEventTriggerResolver implements Resolve<CaseEventTrigger>
     // if route is ':jid/:ctid/:eid'
     return !route.firstChild || !route.firstChild.url.length;
   }
-
 }

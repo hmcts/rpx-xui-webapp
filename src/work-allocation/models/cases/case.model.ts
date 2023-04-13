@@ -17,4 +17,4 @@ export default interface Case {
   actions: CaseAction[];
   derivedIcon?: string;
   isNew?: boolean;
-}
+};

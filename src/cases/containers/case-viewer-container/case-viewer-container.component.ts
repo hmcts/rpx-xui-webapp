@@ -1,19 +1,19 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {CaseTab, CaseView} from '@hmcts/ccd-case-ui-toolkit';
-import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
-import {select, Store} from '@ngrx/store';
-import {combineLatest, of} from 'rxjs';
-import {Observable} from 'rxjs/Observable';
-import {catchError, map} from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { select, Store } from '@ngrx/store';
+import { combineLatest, of } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { catchError, map } from 'rxjs/operators';
 import { WAFeatureConfig } from 'src/work-allocation/models/common/service-config.model';
-import {AppUtils} from '../../../app/app-utils';
-import {AppConstants} from '../../../app/app.constants';
+import { AppUtils } from '../../../app/app-utils';
+import { AppConstants } from '../../../app/app.constants';
 import * as fromRoot from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
-import {FeatureVariation} from '../../models/feature-variation.model';
-import {Utils} from '../../utils/utils';
+import { FeatureVariation } from '../../models/feature-variation.model';
+import { Utils } from '../../utils/utils';
 
 @Component({
   selector: 'exui-case-viewer-container',
@@ -69,7 +69,7 @@ export class CaseViewerContainerComponent implements OnInit {
     let requiredFeature = false;
     features.configurations.forEach(serviceConfig => {
       if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
-          requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2;
+        requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2;
       }
     });
     return requiredFeature && !!AppUtils.getUserRole(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
@@ -110,5 +110,4 @@ export class CaseViewerContainerComponent implements OnInit {
       })
     );
   }
-
 }

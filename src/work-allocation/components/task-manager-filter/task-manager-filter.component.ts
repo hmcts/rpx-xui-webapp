@@ -44,14 +44,13 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         {
           name: 'selectPerson',
           value: ['All']
-        },
+        }
       ]
     }
   };
 
   constructor(private readonly filterService: FilterService,
-              private readonly appStore: Store<fromAppStore.State>) {
-  }
+              private readonly appStore: Store<fromAppStore.State>) {}
 
   private static initServiceFilter(jurisdictions: string[]): FilterFieldConfig {
     return {
@@ -174,7 +173,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       enableCondition: 'selectPerson=Specific person',
       type: 'find-person',
       radioSelectionChange: 'selectPerson=Specific person',
-      servicesField: 'service',
+      servicesField: 'service'
     };
   }
 

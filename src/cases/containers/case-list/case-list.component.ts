@@ -25,7 +25,6 @@ import { ActionBindingModel } from '../../models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
 
-
 /**
  * Entry component wrapper for Case List
  * Smart Component
@@ -38,7 +37,7 @@ import * as fromCaseList from '../../store/reducers';
   styleUrls: ['case-list.component.scss']
 })
 export class CaseListComponent implements OnInit, OnDestroy {
-  @ViewChild('ccdSearchResult', {static: false}) public ccdSearchResult: SearchResultComponent; // EUI-2906
+  @ViewChild('ccdSearchResult', { static: false }) public ccdSearchResult: SearchResultComponent; // EUI-2906
   public defaults: any;
   public caseListFilterEventsBindings: ActionBindingModel[];
   public fromCasesFeature: any;
@@ -107,10 +106,9 @@ export class CaseListComponent implements OnInit, OnDestroy {
     private readonly windowService: WindowService,
     private readonly featureToggleService: FeatureToggleService,
     private readonly cd: ChangeDetectorRef
-  ) { }
+  ) {}
 
   public async ngOnInit() {
-
     this.isVisible = false;
     this.page = 1;
     this.resultView = null;
@@ -145,7 +143,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     ]).subscribe(result => this.onFilterSubscriptionHandler(result));
 
     this.caseFilterToggle$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterToggle));
-    this.caseFilterToggleSubscription = this.caseFilterToggle$.pipe(takeUntil(this.unsubscribe$)).subscribe( (result: boolean) => this.onToogleHandler(result));
+    this.caseFilterToggleSubscription = this.caseFilterToggle$.pipe(takeUntil(this.unsubscribe$)).subscribe( (result: boolean) => this.onToggleHandler(result));
 
     this.listenToPaginationMetadata();
 
@@ -173,7 +171,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterPaginationMetadata));
     this.paginationSubscription = this.paginationMetadata$.subscribe(paginationMetadata =>
       this.onPaginationSubscribeHandler(paginationMetadata));
-  }
+  };
 
   public doesIdExist(arr = [], id): boolean {
     return arr.some(element => element.id === id);
@@ -202,7 +200,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
           }
         }
       });
-  }
+  };
 
   /**
    * result
@@ -214,7 +212,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * ]
    */
   public onFilterSubscriptionHandler = result => {
-
     this.jurisdiction = {
       ...result[0]
     };
@@ -227,13 +224,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.metadataFields = {
       ...result[3]
     };
-  }
+  };
 
-  public onToogleHandler = showFilter => {
-
+  public onToggleHandler = showFilter => {
     this.showFilter = showFilter;
     this.toggleButtonName = this.getToggleButtonName(this.showFilter);
-  }
+  };
 
   public onResultsViewHandler = resultView => {
     if (this.elasticSearchFlag) {
@@ -258,7 +254,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       }) : [],
       hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
     };
-  }
+  };
 
   /**
    * Handles the return of Pagination Metadata.
@@ -266,8 +262,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * @param paginationMetadata - {total_pages_count: 33, total_results_count: 811}
    */
   public onPaginationSubscribeHandler = paginationMetadata => {
-
-    if (typeof paginationMetadata !== 'undefined'  && typeof paginationMetadata.total_pages_count !== 'undefined') {
+    if (typeof paginationMetadata !== 'undefined' && typeof paginationMetadata.total_pages_count !== 'undefined') {
       this.paginationMetadata.total_pages_count = paginationMetadata.total_pages_count;
       this.paginationMetadata.total_results_count = paginationMetadata.total_results_count;
 
@@ -276,7 +271,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
         this.store.dispatch(new fromCasesFeature.ApplyCaselistFilter(event));
       }
     }
-  }
+  };
 
   public getEvent() {
     let formGroupFromLS = null;
@@ -286,13 +281,13 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.setCaseListFilterDefaults();
     if (this.selected) {
       formGroupFromLS = this.selected.formGroup ? (this.selected.formGroup.value ? this.selected.formGroup.value : this.selected.formGroup) : null;
-      jurisdictionFromLS = { id: this.selected.jurisdiction.id};
+      jurisdictionFromLS = { id: this.selected.jurisdiction.id };
       caseTypeGroupFromLS = { id: this.selected.caseType.id };
       caseStateGroupFromLS = { id: this.selected.caseState ? this.selected.caseState.id : null };
     } else if (this.savedQueryParams) {
       this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
       formGroupFromLS = JSON.parse(localStorage.getItem('workbasket-filter-form-group-value'));
-      jurisdictionFromLS = { id: this.savedQueryParams.jurisdiction};
+      jurisdictionFromLS = { id: this.savedQueryParams.jurisdiction };
       caseTypeGroupFromLS = { id: this.savedQueryParams['case-type'] };
       caseStateGroupFromLS = { id: this.savedQueryParams['case-state'] };
     }
@@ -301,7 +296,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     if (jurisdictionFromLS && caseTypeGroupFromLS && caseStateGroupFromLS && metadataFieldsGroupFromLS) {
       return this.createEvent(jurisdictionFromLS, caseTypeGroupFromLS, caseStateGroupFromLS, metadataFieldsGroupFromLS,
-                                formGroupFromLS, this.page, this.sortParameters);
+        formGroupFromLS, this.page, this.sortParameters);
     } else {
       return null;
     }
@@ -328,7 +323,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       },
       sortParameters
     };
-  }
+  };
 
   /**
    * Display the name seen on the toggle button.

@@ -54,7 +54,6 @@ export class ActualHearingsUtils {
         };
       });
 
-
     if (hearingDays && hearingDays.length > 0) {
       hearingDays = hearingDays.sort((a, b) => {
         return Date.parse(a.hearingDate) === Date.parse(b.hearingDate) ? 0 : Date.parse(a.hearingDate) > Date.parse(b.hearingDate) ? 1 : -1;
@@ -65,15 +64,15 @@ export class ActualHearingsUtils {
   }
 
   public static mergeSingleHearingPartActuals(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string,
-                                              updatedActuals: ActualHearingDayModel): HearingActualsModel {
+    updatedActuals: ActualHearingDayModel): HearingActualsModel {
     const hearingActuals = {
       actualHearingDays: hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
-        ? [...hearingActualsMainModel.hearingActuals.actualHearingDays] : [],
+        ? [...hearingActualsMainModel.hearingActuals.actualHearingDays] : []
     } as HearingActualsModel;
 
     if (hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.hearingOutcome
       && hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult) {
-      hearingActuals.hearingOutcome = {...hearingActualsMainModel.hearingActuals.hearingOutcome};
+      hearingActuals.hearingOutcome = { ...hearingActualsMainModel.hearingActuals.hearingOutcome };
     }
 
     let indexOfActual: number;
@@ -97,7 +96,7 @@ export class ActualHearingsUtils {
         hearingEndTime: plannedHearingDate.plannedEndTime,
         actualDayParties: [],
         pauseDateTimes: [],
-        notRequired: null,
+        notRequired: null
       };
 
       hearingActuals.actualHearingDays.push({

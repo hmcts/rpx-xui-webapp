@@ -18,8 +18,7 @@ describe('HearingPriorityAmendedConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'standard';
     const result$ = hearingPriorityAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = false;
-    const expected = cold('(b|)', {b: isAmended});
+    const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
-
 });

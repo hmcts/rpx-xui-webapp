@@ -4,7 +4,6 @@ import { CreateCaseEventTriggerResolver } from './create-case-event-trigger.reso
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CreateCaseFieldsResolver', () => {
-
   const PARAM_JURISDICTION_ID = CreateCaseEventTriggerResolver.PARAM_JURISDICTION_ID;
   const PARAM_CASE_TYPE_ID = CreateCaseEventTriggerResolver.PARAM_CASE_TYPE_ID;
   const PARAM_EVENT_ID = CreateCaseEventTriggerResolver.PARAM_EVENT_ID;
@@ -29,6 +28,7 @@ describe('CreateCaseFieldsResolver', () => {
   let createCaseFieldsResolver: CreateCaseEventTriggerResolver;
 
   let casesService: any;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let alertService: any;
   let route: any;
 
@@ -40,7 +40,7 @@ describe('CreateCaseFieldsResolver', () => {
 
     route = {
       paramMap: createSpyObj('paramMap', ['get']),
-      queryParamMap: createSpyObj('queryParamMap', ['get']),
+      queryParamMap: createSpyObj('queryParamMap', ['get'])
     };
 
     route.paramMap.get.and.callFake(key => {
@@ -87,8 +87,8 @@ describe('CreateCaseFieldsResolver', () => {
   it('should resolve event trigger when route is not :jid/:ctid/:eid but cache is empty', () => {
     route = {
       firstChild: {
-          url: ['someChild']
-        },
+        url: ['someChild']
+      },
       queryParamMap : createSpyObj('queryParamMap', ['get']),
       paramMap: createSpyObj('paramMap', ['get'])
     };
@@ -108,8 +108,8 @@ describe('CreateCaseFieldsResolver', () => {
   it('should return cached event trigger when route is not :jid/:ctid/:eid if cache is not empty', () => {
     route = {
       firstChild: {
-          url: ['someChild']
-        },
+        url: ['someChild']
+      },
       queryParamMap : createSpyObj('queryParamMap', ['get']),
       paramMap: createSpyObj('paramMap', ['get'])
     };

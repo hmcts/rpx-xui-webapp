@@ -16,8 +16,7 @@ describe('NeedWelshAmendedConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = needWelshAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = false;
-    const expected = cold('(b|)', {b: isAmended});
+    const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
-
 });

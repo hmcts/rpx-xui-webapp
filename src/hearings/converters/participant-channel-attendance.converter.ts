@@ -7,8 +7,7 @@ import { AnswerConverter } from './answer.converter';
 
 export class ParticipantChannelAttendenceAnswerConverter implements AnswerConverter {
   constructor(
-    protected readonly route: ActivatedRoute) {
-  }
+    protected readonly route: ActivatedRoute) {}
 
   private static getPartyChannelValue(refData: LovRefDataModel[], channelName: string): string {
     const participantChannelName = refData.find(ref => ref.key === channelName);

@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -16,6 +16,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
   let mockRouter: any;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromRoot.State>;
   const storeMock = jasmine.createSpyObj('Store', [
     'dispatch', 'pipe'
@@ -37,7 +38,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
   const userDetails = {
     sessionTimeout: {
       idleModalDisplayTime: 10,
-      totalIdleTime: 1,
+      totalIdleTime: 1
     },
     canShareCases: true,
     userInfo: {
@@ -267,7 +268,6 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
       })
     ).subscribe(items => {
       expect(items).toEqual([component.items[0]]);
-
     });
   });
 
@@ -354,6 +354,7 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
   let mockRouter: any;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromRoot.State>;
   const storeMock = jasmine.createSpyObj('Store', [
     'dispatch', 'pipe'
@@ -473,7 +474,6 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
       })
     ).subscribe(items => {
       expect(items).toEqual([]);
-
     });
   });
 

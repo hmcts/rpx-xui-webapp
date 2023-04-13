@@ -8,10 +8,10 @@ import { Task } from './../../models/tasks';
 import { WorkFieldComponent } from './work-field.component';
 
 @Component({
-  template: `<exui-work-field [config]="config" [workField]="task"></exui-work-field>`
+  template: '<exui-work-field [config]="config" [workField]="task"></exui-work-field>'
 })
 class WrapperComponent {
-  @ViewChild(WorkFieldComponent, {static: true}) public appComponentRef: WorkFieldComponent;
+  @ViewChild(WorkFieldComponent, { static: true }) public appComponentRef: WorkFieldComponent;
   @Input() public config: FieldConfig;
   @Input() public task: Task;
 }
@@ -37,7 +37,7 @@ describe('WorkAllocation', () => {
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule, RouterTestingModule ]
       })
-      .compileComponents();
+        .compileComponents();
     }));
 
     beforeEach(() => {
@@ -609,7 +609,7 @@ describe('WorkAllocation', () => {
       expect(element.getAttribute('src')).toBe(EXAMPLE1_IMAGE);
       expect(element.getAttribute('alt')).toBe('Image');
 
-       // Change the value of task.image
+      // Change the value of task.image
       task['image'] = EXAMPLE2_IMAGE;
       fixture.detectChanges();
       expect(element).not.toBeNull();
@@ -678,7 +678,7 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(task.case_id);
-      expect(element.getAttribute('href')).toBe(encodeURI(`/cases/case-details/The case reference`)); // Spaces allowed
+      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The case reference')); // Spaces allowed
 
       // Change the value of task.case_id.
       task.case_id = 'NEW CASE REFERENCE';
@@ -686,7 +686,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe('NEW CASE REFERENCE');
-      expect(element.getAttribute('href')).toBe(encodeURI(`/cases/case-details/NEW CASE REFERENCE`)); // Spaces allowed
+      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/NEW CASE REFERENCE')); // Spaces allowed
 
       // Clear out the value of task.link and we should no longer have the anchor.
       task.case_id = undefined;
@@ -699,7 +699,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe('The case reference');
-      expect(element.getAttribute('href')).toBe(encodeURI(`/cases/case-details/The case reference`));
+      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The case reference'));
 
       // Make task.link null.
       task.case_id = null;
@@ -735,7 +735,7 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(task.caseName);
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/1`);
+      expect(element.getAttribute('href')).toBe('/cases/case-details/1');
 
       // Change the value of task.case_id.
       task.case_id = 'NEW CASE REFERENCE';
@@ -743,7 +743,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(task.caseName);
-      expect(element.getAttribute('href')).toBe(encodeURI(`/cases/case-details/NEW CASE REFERENCE`));
+      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/NEW CASE REFERENCE'));
 
       // Clear out the value of task.link and we should no longer have the anchor.
       task.case_id = undefined;
@@ -756,7 +756,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(task.caseName);
-      expect(element.getAttribute('href')).toBe(encodeURI(`/cases/case-details/The case reference`));
+      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The case reference'));
 
       // Make task.link null.
       task.case_id = null;
@@ -792,7 +792,7 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(task.taskName);
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/1/tasks`);
+      expect(element.getAttribute('href')).toBe('/cases/case-details/1/tasks');
 
       // Change the value of task.case_id.
       task.case_id = 'NEW CASE REFERENCE';
@@ -800,7 +800,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(task.taskName);
-      expect(element.getAttribute('href')).toBe(encodeURI(`/cases/case-details/NEW CASE REFERENCE/tasks`));
+      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/NEW CASE REFERENCE/tasks'));
 
       // Clear out the value of task.link and we should no longer have the anchor.
       task.case_id = undefined;
@@ -813,7 +813,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(task.taskName);
-      expect(element.getAttribute('href')).toBe(encodeURI(`/cases/case-details/The case reference/tasks`));
+      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The case reference/tasks'));
 
       // Make task.link null.
       task.case_id = null;
@@ -910,5 +910,4 @@ describe('WorkAllocation', () => {
       expect(output).toBeNull();
     });
   });
-
 });

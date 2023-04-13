@@ -15,5 +15,4 @@ export class HttpMock extends HttpMockClient {
   private constructor() {
     super('');
   }
-
 }

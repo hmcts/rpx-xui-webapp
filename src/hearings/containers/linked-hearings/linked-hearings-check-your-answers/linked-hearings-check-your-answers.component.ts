@@ -1,11 +1,10 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {select, Store} from '@ngrx/store';
-import {Observable, Subscription} from 'rxjs';
-import {take} from 'rxjs/operators';
-import {HttpError} from '../../../../models/httpError.model';
-import {HearingLinksStateData} from '../../../models/hearingLinksStateData.model';
-import {GroupLinkType, Mode} from '../../../models/hearings.enum';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import { HttpError } from '../../../../models/httpError.model';
+import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
+import { GroupLinkType, Mode } from '../../../models/hearings.enum';
 import {
   HearingDetailModel,
   LinkedCaseHearingsResult,
@@ -13,8 +12,8 @@ import {
   LinkedHearingsDetailModel,
   ServiceLinkedCasesWithHearingsModel
 } from '../../../models/linkHearings.model';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {HearingsService} from '../../../services/hearings.service';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 
 @Component({
@@ -38,7 +37,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   public cancelButtonText: string;
   public sub: Subscription;
   public serverErrors: { id: string, message: string }[] = [
-    {id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.'}
+    { id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.' }
   ];
   public error$: Observable<HttpError>;
   public isManageJourneyFinalPage: boolean;

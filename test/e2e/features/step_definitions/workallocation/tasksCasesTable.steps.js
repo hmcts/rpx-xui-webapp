@@ -17,13 +17,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const displayValuesAtRow = await taskListTable.getTableDisplayValuesAtRow(atRow);
         global.scenarioData[reference] = displayValuesAtRow;
         reportLogger.AddJson(displayValuesAtRow);
-        
+
     });
 
     Given('I capture case details at row {int} with reference {string}', async function (atRow, reference) {
         const displayValuesAtRow = caseListTable.getTableDisplayValuesAtRow(atRow);
         global.scenarioData[reference] = displayValuesAtRow;
-
     });
 
     Then('I validate work allocation table {string} columns sortability', async function (waTableFor, datatable){
@@ -37,7 +36,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click work allocation table {string} column header {string}', async function(waTableFor, columnHeader){
-        const table = getWATableObject(waTableFor);  
+        const table = getWATableObject(waTableFor);
         await table.clickColumnHeader(columnHeader);
     });
 
@@ -49,7 +48,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         // await BrowserWaits.retryWithActionCallback(async () => {
         //     expect(await table.isResetSortButtonDisplayed()).to.be.false;
         // });
-
     });
 
     Then('I see work allocation table {string} reset sort button state isDisplayed is {string}', async function (waTableFor, sortButtonIsDisplayed){
@@ -58,7 +56,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             const lowerCaseExpectedState = sortButtonIsDisplayed.toLowerCase().includes('true') || sortButtonIsDisplayed.toLowerCase().includes('yes');
             expect(await table.isResetSortButtonDisplayed()).to.equal(lowerCaseExpectedState);
         });
-        
+
     });
 
     Then('I see work allocation table {string} column {string} is sorted in {string}', async function (waTableFor,columnName, sortOrder){
@@ -67,7 +65,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             const actualSortstate = await table.getColumnSortState(columnName);
             expect(actualSortstate.toLowerCase()).to.include(sortOrder.toLowerCase());
         }, null, 1);
-        
+
     });
 
     Then('I see work allocation table {string} default column sorted by {string} for user type {string}', async function (waTableFor, sortState,userType ,datatable){

@@ -19,5 +19,4 @@ describe('IsPaperHearingAnswerConverter', () => {
     const expected = cold('(b|)', { b: paperHearing });
     expect(result$).toBeObservable(expected);
   });
-
 });

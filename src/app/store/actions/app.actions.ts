@@ -46,22 +46,22 @@ export class LoadFeatureToggleConfig implements Action {
 
 export class LoadFeatureToggleConfigSuccess implements Action {
   public readonly type = LOAD_FEATURE_TOGGLE_CONFIG_SUCCESS;
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class LoadFeatureToggleConfigFail implements Action {
   public readonly type = LOAD_FEATURE_TOGGLE_CONFIG_FAIL;
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class LoadConfigSuccess implements Action {
   public readonly type = APP_LOAD_CONFIG_SUCCESS;
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class LoadConfigFail implements Action {
   public readonly type = APP_LOAD_CONFIG_FAIL;
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class StartAppInitilizer implements Action {

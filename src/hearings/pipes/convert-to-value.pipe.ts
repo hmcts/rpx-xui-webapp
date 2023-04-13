@@ -1,6 +1,6 @@
-import {Pipe, PipeTransform} from '@angular/core';
-import {LovRefDataModel} from '../models/lovRefData.model';
-import {HearingsUtils} from '../utils/hearings.utils';
+import { Pipe, PipeTransform } from '@angular/core';
+import { LovRefDataModel } from '../models/lovRefData.model';
+import { HearingsUtils } from '../utils/hearings.utils';
 
 @Pipe({
   name: 'convertToValue'

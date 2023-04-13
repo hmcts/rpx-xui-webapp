@@ -48,7 +48,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
                 await myWorkPage.showHideWorkFilterBtn.click();
                 await BrowserWaits.waitForSeconds(1);
-            } 
+            }
             const afterClickButtonText = await myWorkPage.showHideWorkFilterBtn.getText();
             reportLogger.AddMessage(`Button text after click "${afterClickButtonText}"`);
 
@@ -65,7 +65,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }catch(err){
 
                 await myWorkPage.showHideWorkFilterBtn.click();
-                throw new Error(err); 
+                throw new Error(err);
            }
 
         });
@@ -75,7 +75,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(await myWorkPage.genericFilterContainer.isPresent(), 'location filter is still displayed').to.be.false;;
         });
-
     });
 
     Then('I validate My work filter locations displayed', async function () {
@@ -87,7 +86,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await myWorkPage.waitForWorkFilterToDisplay();
         const selectedLocs = await myWorkPage.getListOfSelectedLocations();
         expect(selectedLocs.length, 'selected locations count not matching').to.equal(selectedLocationsCount);
-
     });
 
     When('I click work location filter with label {string}', async function (workLocationLabel) {
@@ -107,7 +105,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     }
 
     Then('I validate following work location selected', async function (locationsDatatable) {
-        validateLocationsSelected(locationsDatatable); 
+        validateLocationsSelected(locationsDatatable);
     });
 
     Then('I validate following work location selected, if {string} equals {string}', async function (var1,var2,locationsDatatable) {
@@ -145,23 +143,22 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate my work filter services container displayed', async function(){
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(await myWorkPage.workFilterServicesContainer.isPresent()).to.be.true
-            expect(await myWorkPage.workFilterServicesContainer.isDisplayed()).to.be.true 
+            expect(await myWorkPage.workFilterServicesContainer.isDisplayed()).to.be.true
         });
-        
+
     });
 
     Then('I validate my work filter services container not displayed', async function () {
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(await myWorkPage.workFilterServicesContainer.isPresent()).to.be.false
         });
-
     });
 
     Then('I validate my work filter location search displayed', async function(){
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(await myWorkPage.workFiltersLocationsContainer.isPresent()).to.be.true
             expect(await myWorkPage.workFiltersLocationsContainer.isDisplayed()).to.be.true
-        });    
+        });
     });
 
     Then('I validate my work filter services listed', async function(expectedServicesDatatable){
@@ -170,7 +167,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (const hash of datatableHashes){
             expectedServieNames.push(hash.name);
         }
-        
+
         const servicesListed = await myWorkPage.getWorkFilterServicesList();
         expect(servicesListed).to.contains.members(expectedServieNames)
     });
@@ -180,7 +177,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const services = servicesListString.split(",");
         const servicesListed = await myWorkPage.getWorkFilterServicesList();
         expect(servicesListed).to.contains.members(services)
- 
+
     });
 
     Then('I Validate my work filter services selected {string}', async function (servicesSelectedString) {
@@ -202,7 +199,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (const selectedService of expectedServieNames){
             expect(await myWorkPage.isWorkFilterServiceSelected(selectedService)).to.be.true;
         }
-
     });
 
 
@@ -217,13 +213,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (const loc of expectedLocations ){
             expect(actualSelectedLocations).to.includes(loc);
         }
-
     });
 
     When('I select service {string} in my work filter', async function(service){
         await myWorkPage.selectWorkFilterService(service);
     });
-  
+
     When('I unselect service {string} in my work filter', async function (service) {
         await myWorkPage.unselectWorkFilterService(service);
     });
@@ -231,7 +226,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     When('I search for location text {string} in my work filters', async function(location){
         await myWorkPage.workFilterSearchLocationInput.clear();
         await myWorkPage.workFilterSearchLocationInput.sendKeys(location);
-
     });
 
 
@@ -240,24 +234,23 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const expectedLocations = [];
         for (const hash of datatableHashes) {
             expectedLocations.push(hash.name);
-        } 
-        
+        }
+
         await BrowserWaits.retryWithActionCallback(async () => {
             const locationResults = await myWorkPage.getWorkFilterLocationSearchResults();
             for (const expectLoc of expectedLocations) {
                 expect(locationResults).to.includes(expectLoc);
             }
         });
-        
+
     });
 
     Then('I see location search results returned {int} results in my work filter', async function (expectecResults) {
-        
+
         await BrowserWaits.retryWithActionCallback(async () => {
             const locationResults = await myWorkPage.getWorkFilterLocationSearchResults();
-            expect(locationResults.length, "Expected results count does not match").to.equal(expectecResults); 
+            expect(locationResults.length, "Expected results count does not match").to.equal(expectecResults);
         });
-
     });
 
 
@@ -293,7 +286,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await myWorkPage.clearAllSelectedLocations();
     });
 
-    
+
 });
 
 

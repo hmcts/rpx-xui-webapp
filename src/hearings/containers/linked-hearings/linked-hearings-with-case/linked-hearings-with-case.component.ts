@@ -69,7 +69,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
             state.hearingLinks.serviceLinkedCases?.filter(linkedCase => !this.linkedCases.map(x => x.caseRef).includes(linkedCase.caseReference));
           this.linkedHearingGroup = state.hearingLinks.linkedHearingGroup;
           if (state.hearingLinks.lastError) {
-            this.errors.push({id: 'httpError', message: HearingSummaryEnum.BackendError});
+            this.errors.push({ id: 'httpError', message: HearingSummaryEnum.BackendError });
           }
           this.initForm();
           this.getHearingsAvailable();
@@ -105,7 +105,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         caseRef: caseInfo.caseRef,
         caseName: caseInfo.caseName,
         reasonsForLink: this.fb.array(caseInfo.reasonsForLink),
-        caseHearings: this.getHearingsFormArray(caseInfo.caseHearings),
+        caseHearings: this.getHearingsFormArray(caseInfo.caseHearings)
       })));
     }
     return null;
@@ -126,7 +126,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       hearingDaySchedule: hearingInfo.hearingDaySchedule,
       exuiSectionStatus: hearingInfo.exuiSectionStatus,
       exuiDisplayStatus: hearingInfo.exuiDisplayStatus,
-      isSelected: this.shouldSelected(hearingInfo),
+      isSelected: this.shouldSelected(hearingInfo)
     })));
   }
 
@@ -138,7 +138,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public initForm(): void {
     this.linkHearingForm = this.fb.group({
       linkedCasesWithHearings: this.getCasesFormArray
-    }, {validator: this.validators.validateLinkedHearings()});
+    }, { validator: this.validators.validateLinkedHearings() });
   }
 
   public getHearingsAvailable() {
@@ -192,7 +192,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         this.saveLinkedHearingInfo();
       } else {
         this.linkedHearingSelectionError = this.linkedHearingEnum.ValidSelectionError;
-        this.errors.push({id: 'linked-form', message: this.linkedHearingEnum.ValidSelectionError});
+        this.errors.push({ id: 'linked-form', message: this.linkedHearingEnum.ValidSelectionError });
       }
     }
   }
@@ -207,7 +207,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     const isLinkable = hearing.hearingIsLinkedFlag && !hearing.hearingGroupRequestId;
     if (this.isManageLink) {
       return this.hearingGroupRequestId === hearing.hearingGroupRequestId || isLinkable;
-    } else  {
+    } else {
       return isLinkable;
     }
   }

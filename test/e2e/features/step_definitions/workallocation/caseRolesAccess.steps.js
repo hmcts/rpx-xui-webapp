@@ -31,9 +31,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
             else {
                 throw new Error(`${role} is not recognised or not implemented in test`);
-            }  
+            }
         });
-              
+
     });
 
     Then('I validate for role category {string} case roles no data message displayed status is {string} in case roles and access page', async function (roleCategory, displayStatus) {
@@ -77,12 +77,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             for (const headerHash of headerNameHashes) {
                 expect(await caseRolesAndAccessPage.isTableColumnDisplayedForAccessRoleType(roleCategory, headerHash.headerName), `${headerHash.headerName} column is not displayedin case role table for role ${roleCategory}`).to.be.true
             }
-        }); 
+        });
     });
 
     Then('I validate case roles table for role category {string} has data', async function (roleCategory, rowsDatatabale) {
         const rowHashes = rowsDatatabale.hashes();
-        let rowNum = 0;        
+        let rowNum = 0;
         for (const rowHash of rowHashes) {
             rowNum++;
             const headerNames = Object.keys(rowHash);
@@ -94,7 +94,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     }else{
                         expectedValue = '';
                     }
-                    
+
                 } else if (headerName === 'Added'){
                     const addedDate = new Date();
                     expectedValue = workAllocationDateUtil.getDurationDateDisplayString(expectedValue);
@@ -102,7 +102,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 expect(await caseRolesAndAccessPage.getTableColumnValueForAccessRoleType(roleCategory, rowNum, headerName), `${headerName} column value does not match ${roleCategory}`).to.contains(expectedValue);
             }
         }
-
     });
 
 
@@ -129,10 +128,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await BrowserWaits.retryWithActionCallback(async () => {
             await caseRolesAndAccessPage.clickAddExclusionLink();
         });
-
     });
 
-    Then('I click Add link for exclusions is displayed in Roles and access page', async function(){ 
+    Then('I click Add link for exclusions is displayed in Roles and access page', async function(){
         return caseRolesAndAccessPage.isExclusionAddLinkPresent();
    });
 
@@ -153,12 +151,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I validate actions row for role category {string} at row {int} is {string} in Roles and access page', async function(roleCategory,atRow, isDisplayedString){
         const expectedDisplayStatus = !isDisplayedString.toLowerCase().replace(' ','').includes('not');
-        
+
         await BrowserWaits.retryWithActionCallback(async () => {
             const caseRolesTable = caseRolesAndAccessPage.getTableForRoleACcessType(roleCategory);
             expect(await caseRolesTable.isActionRowDisplayed(atRow)).to.equal(expectedDisplayStatus);
         });
-        
+
    });
 
     Then('I validate actions row for role category {string} has action links in Roles and access page', async function (roleCategory, actionLinksdatatable){
@@ -168,7 +166,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             const actionLink = tableHash['ActionLinks'];
             expect(await caseRolesTable.isManageActionLinkDisplayed(actionLink), `${actionLink} is not displayed`).to.be.true;
 
-        } 
+        }
 
 
    });
@@ -181,15 +179,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
    });
 
     Then('I see Remove allocation page with caption {string} is displayed', async function(pageCaption){
-        
-        expect(await checkYourAnswersPage.getHeaderText()).to.include(pageCaption);
 
+        expect(await checkYourAnswersPage.getHeaderText()).to.include(pageCaption);
     });
 
     Then('I see Remove allocation page with hint text {string} is displayed', async function (hintText) {
 
         expect(await checkYourAnswersPage.getHintText()).to.include(hintText);
-
     });
 
     When('I click delete link at row {int} for exclusion in roles and access page', async function(atRow){
@@ -204,6 +200,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             expect(actualHeader, 'Header text does not match').to.include(header);
             expect(actualCaption, 'Caption did not match').to.include(caption);
         });
-        
+
     });
 });

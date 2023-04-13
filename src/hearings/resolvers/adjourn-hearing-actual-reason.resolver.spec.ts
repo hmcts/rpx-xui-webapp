@@ -16,17 +16,17 @@ describe('AdjournHearingActualReason Resolver', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-        imports: [
-          RouterTestingModule.withRoutes([]),
-          HttpClientTestingModule,
-        ],
-        providers: [
-          provideMockStore({initialState}),
-          AdjournHearingActualReasonResolver,
-          LovRefDataService,
-          {provide: APP_BASE_HREF, useValue: '/'}
-        ]
-      }
+      imports: [
+        RouterTestingModule.withRoutes([]),
+        HttpClientTestingModule
+      ],
+      providers: [
+        provideMockStore({ initialState }),
+        AdjournHearingActualReasonResolver,
+        LovRefDataService,
+        { provide: APP_BASE_HREF, useValue: '/' }
+      ]
+    }
     );
     lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
   });

@@ -19,9 +19,8 @@ describe('Header  Tabs', function () {
     });
     afterEach(async function (done) {
         await MockApp.stopServer();
-        // await BrowserUtil.addScreenshot(this, browser); 
+        // await BrowserUtil.addScreenshot(this, browser);
         done();
-
     });
 
     it('Case list tab present', async function () {
@@ -29,7 +28,7 @@ describe('Header  Tabs', function () {
         await MockApp.startServer();
         await BrowserUtil.gotoHomePage();
 
-        await headerPage.waitForPrimaryNavDisplay() 
+        await headerPage.waitForPrimaryNavDisplay()
         await BrowserUtil.waitForLD();
 
         expect(await headerPage.isTabPresent('Case list'), 'Case list tab not present, displayed tabs : ').to.be.true
@@ -41,7 +40,7 @@ describe('Header  Tabs', function () {
         await MockApp.startServer();
         await BrowserUtil.gotoHomePage();
 
-        await headerPage.waitForPrimaryNavDisplay() 
+        await headerPage.waitForPrimaryNavDisplay()
         await BrowserUtil.waitForLD();
 
         expect(await headerPage.isTabPresent('Create case'), 'Create case tab not present, displayed tabs : ').to.be.true
@@ -69,10 +68,10 @@ describe('Header  Tabs', function () {
         await BrowserUtil.waitForLD();
         expect(await headerPage.isTabPresent('Task list'), 'Task list tab not present, displayed tabs : ' + await headerPage.primaryNavBar.getText()).to.be.true
         expect(await headerPage.isTabPresent('Task manager'), 'Task manager tab present, displayed tabs : ' + await headerPage.primaryNavBar.getText()).to.be.false
- 
+
     });
 
-  
+
     it('Work allocation Tabs "Task list" and "Task manager" for role "caseworker-ia-caseofficer"', async function () {
         BrowserUtil.setUserDetailsWithRoles(["caseworker-ia-caseofficer"]);
         await MockApp.startServer();
@@ -97,7 +96,7 @@ describe('Header  Tabs', function () {
         expect(await headerPage.isTabPresent('Task list'), 'Task list tab not present' + await headerPage.primaryNavBar.getText()).to.be.true
 
     });
-        
+
 });
 
 

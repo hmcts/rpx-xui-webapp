@@ -18,8 +18,8 @@ describe('HearingCreateEditSummaryComponent', () => {
     TestBed.configureTestingModule({
       declarations: [HearingCreateEditSummaryComponent],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();

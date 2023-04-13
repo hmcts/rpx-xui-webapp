@@ -36,7 +36,6 @@ describe('Pa11y Accessibility tests', function () {
 
         actions.push(...PallyActions.waitForPageWithCssLocator('pagination-template'))
         await pa11ytest(this, actions, conf.baseUrl + 'cases');
-
     });
 
     it.skip('Case Search Page', async function () {
@@ -44,7 +43,6 @@ describe('Pa11y Accessibility tests', function () {
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('.search-block'))
         await pa11ytest(this, actions, conf.baseUrl + 'cases/case-search');
-
     });
 
 

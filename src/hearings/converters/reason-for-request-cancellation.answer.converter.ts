@@ -1,14 +1,13 @@
-import {ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {LovRefDataModel} from '../models/lovRefData.model';
-import {State} from '../store';
-import {HearingsUtils} from '../utils/hearings.utils';
-import {AnswerConverter} from './answer.converter';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { LovRefDataModel } from '../models/lovRefData.model';
+import { State } from '../store';
+import { HearingsUtils } from '../utils/hearings.utils';
+import { AnswerConverter } from './answer.converter';
 
 export class ReasonForRequestCancellationAnswerConverter implements AnswerConverter {
-  constructor(protected readonly route: ActivatedRoute) {
-  }
+  constructor(protected readonly route: ActivatedRoute) {}
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     const cancelHearingReasons: LovRefDataModel[] = this.route.snapshot.data.cancelHearingReasons;

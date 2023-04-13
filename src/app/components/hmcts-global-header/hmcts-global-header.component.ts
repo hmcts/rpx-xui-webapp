@@ -147,7 +147,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
       return of(items);
     }
     return ((obs.length > 1 ? combineLatest([obs[0], combineLatest(obs.slice(1))]) : obs[0]) as Observable<any>).pipe(
-      map(_ => {
+      map(() => {
         let i = items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? (flags[flag] as boolean) : (flags[flag.flagName] as string) === flag.value) : true);
         i = i || [];
         return i.filter(item => item.notFlags && item.notFlags.length > 0 ? item.notFlags.every(flag => this.isPlainFlag(flag) ? !(flags[flag] as boolean) : (flags[flag.flagName] as string) !== flag.value) : true);

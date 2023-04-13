@@ -13,7 +13,6 @@ import { SearchService } from '../../services/search.service';
   styleUrls: ['./search-results.component.scss']
 })
 export class SearchResultsComponent implements OnInit, OnDestroy {
-
   public searchSubscription$: Subscription;
   public jurisdictions: Jurisdiction[];
   public searchResultDisplay: SearchResultDisplay[];
@@ -24,7 +23,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
   constructor(private readonly searchService: SearchService,
               private readonly jurisdictionService: JurisdictionService,
               private readonly router: Router,
-              private readonly route: ActivatedRoute) { }
+              private readonly route: ActivatedRoute) {}
 
   public ngOnInit(): void {
     this.retrieveSearchResults();
@@ -91,7 +90,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
       this.jurisdictionService.getJurisdictions()
     ]).subscribe(
       results => this.onSearchSubscriptionHandler(results),
-      error => this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.ERROR }, relativeTo: this.route })
+      () => this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.ERROR }, relativeTo: this.route })
     );
   }
 

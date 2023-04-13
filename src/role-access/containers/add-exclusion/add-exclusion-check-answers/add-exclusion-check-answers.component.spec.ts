@@ -73,7 +73,6 @@ describe('AddExclusionCheckAnswersComponent', () => {
   });
 
   describe('setAnswersFromExclusionStore()', () => {
-
     it('should set all answers if excluding another person', () => {
       setup(ExcludeOption.EXCLUDE_ANOTHER_PERSON);
       expect(component.answers.length).toEqual(4);
@@ -93,5 +92,4 @@ describe('AddExclusionCheckAnswersComponent', () => {
       expect(component.storeSubscription.unsubscribe).toHaveBeenCalled();
     });
   });
-
 });

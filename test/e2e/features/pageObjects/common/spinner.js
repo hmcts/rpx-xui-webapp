@@ -14,7 +14,6 @@ class Spinner {
             return !(await this.loadingSpinner.isPresent());
         });
     }
-
 }
 
 module.exports = Spinner;

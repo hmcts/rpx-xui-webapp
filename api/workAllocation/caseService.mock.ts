@@ -23,13 +23,13 @@ export const init = () => {
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
     const caseList = sort(JUDICIAL_MY_CASES.cases,
-       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
         cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: JUDICIAL_MY_CASES.cases.length,
-      },
+        total_records: JUDICIAL_MY_CASES.cases.length
+      }
     ];
   });
 
@@ -39,13 +39,13 @@ export const init = () => {
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
     const caseList = sort(CASEWORKER_ALL_CASES.cases,
-       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
         cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: CASEWORKER_MY_CASES.cases.length,
-      },
+        total_records: CASEWORKER_MY_CASES.cases.length
+      }
     ];
   });
 
@@ -63,8 +63,8 @@ export const init = () => {
       200,
       {
         cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: filteredList.length,
-      },
+        total_records: filteredList.length
+      }
     ];
   });
 
@@ -81,8 +81,8 @@ export const init = () => {
       200,
       {
         cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: filteredList.length,
-      },
+        total_records: filteredList.length
+      }
     ];
   });
 };

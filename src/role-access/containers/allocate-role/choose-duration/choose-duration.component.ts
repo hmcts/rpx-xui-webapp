@@ -60,7 +60,7 @@ export class ChooseDurationComponent implements OnInit {
     this.monthEndDate = new FormControl('', [Validators.required, Validators.min(1), Validators.max(12)]);
     this.yearEndDate = new FormControl('', Validators.required);
     this.radioSelected = new FormControl('', Validators.required);
-   }
+  }
 
   public ngOnInit(): void {
     this.formGroup = this.builder.group({
@@ -106,10 +106,10 @@ export class ChooseDurationComponent implements OnInit {
       switch (navEvent) {
         case AllocateRoleNavigationEvent.CONTINUE:
           this.store.dispatch(new fromFeature.ChooseDurationAndGo({
-              durationOfRole: this.selectedDuration,
-              period,
-              allocateRoleState: AllocateRoleState.CHECK_ANSWERS}
-            ));
+            durationOfRole: this.selectedDuration,
+            period,
+            allocateRoleState: AllocateRoleState.CHECK_ANSWERS }
+          ));
           break;
         default:
           throw new Error('Invalid option');
@@ -142,7 +142,7 @@ export class ChooseDurationComponent implements OnInit {
         if (this.isDateValid() && this.datesMissing() && this.formGroup.valid && this.startDateNotInPast() && this.startDateLessThanEndDate()) {
           return {
             startDate: this.getStartDate(),
-            endDate: this.getEndDate(),
+            endDate: this.getEndDate()
           };
         }
 

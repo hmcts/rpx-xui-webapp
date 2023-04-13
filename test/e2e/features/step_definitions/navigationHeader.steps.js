@@ -26,22 +26,18 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I click on primary navigation header {string}', async function (headerTabLabel) {
         await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
-
     });
 
     When('I click on header tab Task list', async function () {
         await headerPage.clickTaskList();
-
     });
 
     When('I click on header tab Task manager', async function () {
         await headerPage.clickTaskManager();
-
     });
 
     When('I click on primary navigation header tab {string}', async function (headerTabLabel) {
         await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
-
     });
 
     When('I validate primary navigation items count {int}', async function (count) {
@@ -60,7 +56,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 await headerPage.refreshBrowser();
                 throw new Error(err);
             }
-            
+
         });
     });
 
@@ -76,13 +72,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }catch(err){
 
         }
-       
+
         expect(await headerPage.isTabPresent(headerlabel), headerlabel + " tab is not present in " + await headerPage.getPrimaryTabsDisplayed()).to.be.true;
     })
 
     Then('I see primary navigation tabs {string} in main header', async function (navigationTabs) {
         await browserWaits.retryWithActionCallback(async () => {
-            await browserUtil.waitForLD(); 
+            await browserUtil.waitForLD();
             try{
                 const softAssert = new SoftAssert();
                 const navigationTabsArr = navigationTabs.split(',');
@@ -105,9 +101,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 await headerPage.refreshBrowser();
                 throw new Error(err);
             }
-           
+
         });
-        
+
     })
 
     Then('I do not see primary navigation tabs does not exist excluding {string}', async function (displayedTabs,allTabsDatatable) {
@@ -117,14 +113,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (const dusplayedTab of displayedTabs.split(",")){
             displayedTabArr.push(dusplayedTab.trim());
         }
-        const navigationTabsArr = []; 
+        const navigationTabsArr = [];
         for (const hash of tableHashes){
             if (!displayedTabArr.includes(hash.Tabs)){
                 navigationTabsArr.push(hash.Tabs);
             }
         }
 
-        cucumberReporter.AddMessage("Tabs not to be displaued " + navigationTabsArr, LOG_LEVELS.Info); 
+        cucumberReporter.AddMessage("Tabs not to be displaued " + navigationTabsArr, LOG_LEVELS.Info);
         await browserWaits.retryWithActionCallback(async () => {
             try {
                 const softAssert = new SoftAssert();
@@ -153,7 +149,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I see primary navigation tabs {string} in right side header column', async function (navigationTabs) {
         await browserWaits.retryWithActionCallback(async () => {
-            await browserUtil.waitForLD(); 
+            await browserUtil.waitForLD();
             try{
                 const softAssert = new SoftAssert();
                 const navigationTabsArr = navigationTabs.split(',');
@@ -177,7 +173,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 throw new Error(err);
             }
         });
-        
+
     })
 
     Then('I do not see primary navigation tab {string} in header', async function (headerlabel) {
@@ -188,20 +184,20 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }catch(err){
 
         }
-        
+
         expect(await headerPage.isTabPresent(headerlabel), headerlabel + " tab is not expected to present " + await headerPage.getPrimaryTabsDisplayed() ).to.be.false;
     })
 
     Then('I validate header displayed for user type {string}', async function(userType){
         await browserWaits.retryWithActionCallback(async () => {
-            await browserUtil.waitForLD(); 
+            await browserUtil.waitForLD();
             try{
                 await browserWaits.retryWithActionCallback(async () => {
                     try {
                         await headerPage.validateHeaderDisplayedForUserType(userType);
                     } catch (err) {
                         await headerpage.clickManageCases();
-                        throw new Error(err); 
+                        throw new Error(err);
                     }
                 });
             }catch(err){
@@ -211,9 +207,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 await browserUtil.waitForLD();
                 throw new Error(err);
             }
-            
+
         });
-        
     });
 
     Then('I validate 16-digit Case reference search box isDisplayed? is {string}', async function(isDisplayed){
@@ -232,7 +227,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await browserWaits.waitForSpinnerToDissappear();
             await headerPage.headerCaseRefSearch.searchInput(input);
         }
-       
     });
 
     When('I click find in case ref in header 16 digit ref search', async function () {
@@ -240,5 +234,4 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await headerPage.headerCaseRefSearch.clickFind();
         });
     });
-
 });

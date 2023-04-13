@@ -1,12 +1,12 @@
-import {ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {LovRefDataModel} from '../models/lovRefData.model';
-import {State} from '../store';
-import {AnswerConverter} from './answer.converter';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { LovRefDataModel } from '../models/lovRefData.model';
+import { State } from '../store';
+import { AnswerConverter } from './answer.converter';
 
 export class HearingPriorityAnswerConverter implements AnswerConverter {
-  constructor(protected readonly route: ActivatedRoute) { }
+  constructor(protected readonly route: ActivatedRoute) {}
 
   private static getHearingPriorityDisplayValue(hearingPriorities: LovRefDataModel[], key: string): string {
     const lovData: LovRefDataModel = hearingPriorities.find(priority => priority.key === key);

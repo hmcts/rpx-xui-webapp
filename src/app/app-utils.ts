@@ -202,7 +202,6 @@ export class AppUtils {
     return userRole;
   }
 
-
   public static getFilterPersistenceByRoleType(userDetails: UserDetails): FilterPersistence {
     const userRole = AppUtils.getUserRole(userDetails.userInfo.roles);
     const roleType = AppUtils.convertDomainToLabel(userRole);

@@ -38,7 +38,7 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
 
   public ngOnInit(): void {
     this.hearingLinkForm = this.formBuilder.group({
-      hearingLink: ['', Validators.required],
+      hearingLink: ['', Validators.required]
     });
     this.initialiseFromHearingValues();
     this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({
@@ -62,7 +62,7 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
             const caseLinkingReasons = this.caseLinkingReasons.list_of_values.filter(reason => linkedCase.reasonsForLink.some(reasonCode => reason.key === reasonCode));
             const caseLinkingReasonsValues = caseLinkingReasons.map(x => x.value_en);
             if (caseLinkingReasonsValues && caseLinkingReasonsValues.length > 0) {
-              this.linkedCases.push({caseName: linkedCase.caseName, caseReference: linkedCase.caseReference, reasonsForLink: caseLinkingReasonsValues});
+              this.linkedCases.push({ caseName: linkedCase.caseName, caseReference: linkedCase.caseReference, reasonsForLink: caseLinkingReasonsValues });
             } else {
               this.linkedCases.push(linkedCase);
             }
@@ -103,7 +103,7 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
         id: 'yes',
         message: HearingLinkMessages.SELECT_HEARING_LINK_OPTION
       });
-      window.scrollTo({left: 0, top: 0, behavior: 'smooth'});
+      window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
       return false;
     }
     return true;

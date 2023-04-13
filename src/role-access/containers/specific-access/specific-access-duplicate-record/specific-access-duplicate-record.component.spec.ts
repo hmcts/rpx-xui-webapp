@@ -27,10 +27,10 @@ describe('SpecificAccessDuplicateRecordComponent', () => {
               }
             }
           }
-        },
+        }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

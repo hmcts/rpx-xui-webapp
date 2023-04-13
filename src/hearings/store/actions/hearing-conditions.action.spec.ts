@@ -11,7 +11,7 @@ describe('Hearing Conditions Actions', () => {
 
   describe('SaveHearingConditions', () => {
     it('should save hearing conditions', () => {
-      const action = new fromHearingConditionAction.SaveHearingConditions({region: 'Wales'});
+      const action = new fromHearingConditionAction.SaveHearingConditions({ region: 'Wales' });
       expect(action.type).toBe(fromHearingConditionAction.SAVE_HEARING_CONDITIONS);
     });
   });

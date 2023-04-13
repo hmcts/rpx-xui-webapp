@@ -18,8 +18,7 @@ export class CaseDetailsComponent implements OnDestroy, OnInit {
   public caseId: string;
   public $caseIdSubscription: Subscription;
 
-  constructor(private readonly store: Store<fromCaseCreate.State>) {
-  }
+  constructor(private readonly store: Store<fromCaseCreate.State>) {}
 
   public ngOnInit(): void {
     this.$caseIdSubscription = this.store.pipe(select(fromCaseCreate.getCaseId))

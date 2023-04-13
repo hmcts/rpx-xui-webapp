@@ -28,7 +28,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I see Check your answers page has questions and answers with change link', async function (datatable) {
         CheckYourAnswersValidation(datatable, true);
-
     });
 
     Then('I see Check your answers page has questions and answers without change link', async function (datatable) {
@@ -86,6 +85,5 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         }
     }
-
 });
 

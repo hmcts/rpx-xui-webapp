@@ -61,7 +61,7 @@ export function prepareExclusionBody(currentUserId: string, assigneeId: string, 
   return {
     roleRequest: {
       assignerId: currentUserId,
-      replaceExisting: false,
+      replaceExisting: false
     },
     requestedRoles: [{
       roleType: 'CASE',
@@ -70,13 +70,13 @@ export function prepareExclusionBody(currentUserId: string, assigneeId: string, 
       attributes: {
         caseId: body.caseId,
         jurisdiction: body.jurisdiction,
-        notes: body.exclusionDescription,
+        notes: body.exclusionDescription
       },
       roleCategory,
       roleName: 'conflict-of-interest',
       actorIdType: 'IDAM',
-      actorId: assigneeId,
-    }],
+      actorId: assigneeId
+    }]
   };
 }
 
@@ -93,8 +93,8 @@ export async function deleteUserExclusion(req: EnhancedRequest, res: Response, n
 }
 
 export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
-                                        assignmentId: string,
-                                        req: EnhancedRequest): RoleExclusion[] {
+  assignmentId: string,
+  req: EnhancedRequest): RoleExclusion[] {
   if (assignmentId) {
     roleAssignments = roleAssignments.filter(roleAssignment => roleAssignment.id === assignmentId);
   }
@@ -106,7 +106,7 @@ export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
     name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
     type: roleAssignment.roleType,
     userType: roleAssignment.roleCategory,
-    notes: roleAssignment.attributes.notes as string,
+    notes: roleAssignment.attributes.notes as string
   }));
 }
 
@@ -135,11 +135,11 @@ export function getExclusionRequestPayload(caseId: string, jurisdiction: string,
         attributes: {
           caseId: [caseId],
           caseType: [caseType],
-          jurisdiction: [jurisdiction],
+          jurisdiction: [jurisdiction]
         },
-        grantType: ['EXCLUDED'],
-      },
-    ],
+        grantType: ['EXCLUDED']
+      }
+    ]
   };
 }
 
@@ -172,7 +172,7 @@ export function getCorrectRoleCategory(domain: string): RoleCategory {
 }
 
 export function
- getJudicialUsersFromApi(req: express.Request, ids: string[], serviceCode: string): Promise<AxiosResponse<JudicialUserDto[]>> {
+getJudicialUsersFromApi(req: express.Request, ids: string[], serviceCode: string): Promise<AxiosResponse<JudicialUserDto[]>> {
   const headers = setHeaders(req);
   return http.post(`${JUDICIAL_REF_URL}/refdata/judicial/users`, { sidam_ids: ids, serviceCode }, { headers });
 }

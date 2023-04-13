@@ -8,7 +8,7 @@ const { pa11ytest,  page } = require('../helpers/pa11yUtil');
 const CustomValidations = require('../helpers/customeA11yValidations');
 const {conf} = require('../config/config');;
 
-const divorceCaseActions = require('../caseCreationActions/divorce'); 
+const divorceCaseActions = require('../caseCreationActions/divorce');
 const MockApp = require('../../nodeMock/app');
 
 const ccdApi = require('../../nodeMock/ccd/ccdApi');
@@ -33,7 +33,6 @@ describe('Pa11y Accessibility tests', function () {
             await CustomValidations.skipContentLink(page, issuesArr);
 
         });
-
     });
 
     it('Case Search Page', async function () {
@@ -44,7 +43,6 @@ describe('Pa11y Accessibility tests', function () {
             await CustomValidations.skipContentLink(page, issuesArr);
 
         });
-
     });
 
     it('Create Case Page', async function () {
@@ -57,7 +55,7 @@ describe('Pa11y Accessibility tests', function () {
         });
     });
 
-    const divorceCreateCaseConfig = ccdApi.getSolicitorCreateCaseConfig('DIVORCE','DIVORCE'); 
+    const divorceCreateCaseConfig = ccdApi.getSolicitorCreateCaseConfig('DIVORCE','DIVORCE');
     divorceCreateCaseConfig.wizard_pages.forEach(page => {
         it('Divorce Create Case Page '+ page.id, async function () {
             const actions = [];
@@ -69,7 +67,7 @@ describe('Pa11y Accessibility tests', function () {
             });
 
         });
- 
+
     });
 
     const fr_ConsentedConfig = ccdApi.getSolicitorCreateCaseConfig('FinancialRemedyMVP2', 'FR_solicitorCreate');
@@ -84,7 +82,6 @@ describe('Pa11y Accessibility tests', function () {
             });
 
         });
-
     });
 
     const fr_ContestedConfig = ccdApi.getSolicitorCreateCaseConfig('FinancialRemedyContested', 'FR_solicitorCreate');
@@ -98,7 +95,6 @@ describe('Pa11y Accessibility tests', function () {
 
             });
         });
-
     });
 
     const probateGrantOfrepresentation = ccdApi.getSolicitorCreateCaseConfig('GrantOfRepresentation', 'solicitorCreateApplication');
@@ -112,7 +108,6 @@ describe('Pa11y Accessibility tests', function () {
 
             });
         });
-
     });
 
     const probateCreateCaveat = ccdApi.getSolicitorCreateCaseConfig('Caveat', 'solicitorCreateCaveat');
@@ -126,7 +121,6 @@ describe('Pa11y Accessibility tests', function () {
 
             });
         });
-
     });
 
     const iaConfig = ccdApi.getSolicitorCreateCaseConfig('Asylum', 'startAppeal');
@@ -140,7 +134,6 @@ describe('Pa11y Accessibility tests', function () {
 
             });
         });
-
     });
 
     const fplCareSupervisionConfig = ccdApi.getSolicitorCreateCaseConfig('CARE_SUPERVISION_EPO', 'openCase');
@@ -154,7 +147,6 @@ describe('Pa11y Accessibility tests', function () {
 
             });
         });
-
     });
 
 

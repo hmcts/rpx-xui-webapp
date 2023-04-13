@@ -1,8 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
-import { Subscription } from 'rxjs';
 import { DateCategoryType, SearchFormControl, SearchFormErrorMessage, SearchFormErrorType, SearchStatePersistenceKey } from '../../enums';
 import { SearchParameters, SearchValidationError } from '../../models';
 import { SearchService } from '../../services/search.service';
@@ -14,7 +13,6 @@ import { SearchValidators } from '../../utils';
   styleUrls: ['./search-form.component.scss']
 })
 export class SearchFormComponent implements OnInit {
-
   public formGroup: FormGroup;
   public caseRefConfig: GovUiConfigModel;
   public otherRefConfig: GovUiConfigModel;
@@ -101,7 +99,7 @@ export class SearchFormComponent implements OnInit {
       label: 'Services'
     };
     this.services = [
-      {label: 'All', value: 'ALL', id: 'ALL'}
+      { label: 'All', value: 'ALL', id: 'ALL' }
     ];
   }
 
@@ -291,7 +289,7 @@ export class SearchFormComponent implements OnInit {
       this.searchService.storeState(SearchStatePersistenceKey.START_RECORD, 1);
 
       // Navigate to the Search Results page
-      this.router.navigate(['results'], {relativeTo: this.route});
+      this.router.navigate(['results'], { relativeTo: this.route });
     }
   }
 

@@ -2,7 +2,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { HttpMockAdapter } from '../../common/httpMockAdapter';
 import { ALL_COURT_LOCATIONS } from './data/location.mock.data';
-import {toEpimmsLocation} from "./models/location.model";
+import { toEpimmsLocation } from './models/location.model';
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
@@ -16,7 +16,7 @@ export const init = () => {
     const searchResult = ALL_COURT_LOCATIONS.find(location => location.epimms_id === epimmsID);
     return [
       200,
-      searchResult,
+      searchResult
     ];
   });
 
@@ -47,7 +47,7 @@ export const init = () => {
         locationByEPIMSModelArray.findIndex(t => (t.epimms_id === locationByEPIMSModel.epimms_id)) === index);
     return [
       200,
-      searchResult,
+      searchResult
     ];
   });
 

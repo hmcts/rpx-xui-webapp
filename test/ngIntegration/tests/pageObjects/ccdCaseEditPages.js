@@ -31,7 +31,7 @@ class CaseEdit {
     async amOnPage(){
         try{
             await this.waitForPage();
-            return true; 
+            return true;
         }catch(error){
             reportLogger.AddMessage("Error waiting for case edit page :" +error);
             return false;
@@ -527,7 +527,7 @@ class CaseEdit {
                 for (const val of multiSelectVal){
                     fieldValues.push(val.code);
                 }
-                fieldValue = fieldValues; 
+                fieldValue = fieldValues;
                 break;
             case "PhoneUK":
                 fieldValue = await this.inputPhoneUKField(fieldConfig, value, parentId);
@@ -552,7 +552,7 @@ class CaseEdit {
         const softAssert = new SoftAssert();
         softAssert.setScenario("Check yours answers page content");
         await softAssert.assert(async () => expect(await this.isCheckYourAnswersPagePresent(), "Not on check your answers page").to.be.true );
-        
+
         const isHeadingPresent = await this.checkYourAnswersHeading.isPresent();
         const isHeadingDescPresent = await this.checkYourAnswersHeadingDescription.isPresent();
         const summaryRowsCount = await this.checkYourAnswersSummaryRows.count()
@@ -575,7 +575,6 @@ class CaseEdit {
         }
         softAssert.finally();
     }
-
 }
 
-module.exports = new CaseEdit(); 
+module.exports = new CaseEdit();

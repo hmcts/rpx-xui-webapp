@@ -13,7 +13,7 @@ import { SortOrder } from 'src/work-allocation/enums';
 import { JurisdictionsService } from 'src/work-allocation/services/juridictions.service';
 import { SessionStorageService } from '../../../app/services';
 import * as fromActions from '../../../app/store';
-import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
+import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService } from '../../services';
 import { MyCasesComponent } from './my-cases.component';
 
 describe('MyCasesComponent', () => {
@@ -64,7 +64,7 @@ describe('MyCasesComponent', () => {
   });
 
   describe('getSearchCaseRequestPagination', () => {
-    it(`should return a SearchCaseRequest`, () => {
+    it('should return a SearchCaseRequest', () => {
       component = initializeComponent({ sessionStorageService: mockSessionStorageService });
       component.sortedBy = {
         fieldName: 'fieldName',
@@ -84,7 +84,7 @@ describe('MyCasesComponent', () => {
       expect(actual).toEqual(jasmine.objectContaining({
         search_parameters: [
           { key: 'user', operator: 'IN', values: [`${userInfo.id}`] },
-          { key: 'services', operator: 'IN', values: 'serviceValue'},
+          { key: 'services', operator: 'IN', values: 'serviceValue' },
           { key: 'locations', operator: 'IN', values: [] }
         ],
         sorting_parameters: [{
@@ -98,7 +98,7 @@ describe('MyCasesComponent', () => {
       localStorageGetItemSpy.calls.reset();
     });
 
-    it(`should return a SearchCaseRequest with user 'uid'`, () => {
+    it('should return a SearchCaseRequest with user \'uid\'', () => {
       component = initializeComponent({ sessionStorageService: mockSessionStorageService });
       component.sortedBy = {
         fieldName: 'fieldName',
@@ -120,7 +120,7 @@ describe('MyCasesComponent', () => {
       expect(actual).toEqual(jasmine.objectContaining({
         search_parameters: [
           { key: 'user', operator: 'IN', values: [`${userInfo.uid}`] },
-          { key: 'services', operator: 'IN', values: []},
+          { key: 'services', operator: 'IN', values: [] },
           { key: 'locations', operator: 'IN', values: ['locationID'] }
         ],
         sorting_parameters: [{
@@ -131,7 +131,7 @@ describe('MyCasesComponent', () => {
       }));
     });
 
-    it(`should NOT return a SearchCaseRequest`, () => {
+    it('should NOT return a SearchCaseRequest', () => {
       component = initializeComponent({ sessionStorageService: mockSessionStorageService });
 
       mockSessionStorageService.getItem.withArgs('userDetails').and.returnValue(undefined);
@@ -139,7 +139,6 @@ describe('MyCasesComponent', () => {
       const actual = component.getSearchCaseRequestPagination();
 
       expect(actual).toEqual(undefined);
-
     });
   });
 
@@ -160,7 +159,7 @@ describe('MyCasesComponent', () => {
       {
         method: 'fields',
         result: ConfigConstants.MyCases
-      },
+      }
     ];
     getters.forEach(({ method, result }) => {
       it(`should return '${result}'`, () => {
@@ -169,7 +168,5 @@ describe('MyCasesComponent', () => {
         expect(component[method]).toEqual(result);
       });
     });
-
   });
-
 });

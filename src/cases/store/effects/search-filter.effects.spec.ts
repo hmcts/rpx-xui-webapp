@@ -21,7 +21,7 @@ describe('Pending Organisation Effects', () => {
       providers: [
         {
           provide: SearchFilterService,
-          useValue: SearchFilterServiceMock,
+          useValue: SearchFilterServiceMock
         },
         fromSearchFilterEffects.SearchFilterEffects,
         provideMockActions(() => actions$)
@@ -29,7 +29,6 @@ describe('Pending Organisation Effects', () => {
     });
 
     effects = TestBed.inject(fromSearchFilterEffects.SearchFilterEffects);
-
   });
 
   describe('applySearchFilters$', () => {
@@ -78,5 +77,4 @@ describe('Pending Organisation Effects', () => {
       expect(effects.applySearchFiltersForES$).toBeObservable(expected);
     });
   });
-
 });

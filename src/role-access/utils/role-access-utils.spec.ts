@@ -25,7 +25,7 @@ describe('WorkAllocationUtils', () => {
     };
     error.status = 200;
     handleError(error, mockRouter, exampleUrl);
-    const additionalState = {state: {showMessage: true, message: {type: InfoMessageType.WARNING, message: 'Service down'}}};
+    const additionalState = { state: { showMessage: true, message: { type: InfoMessageType.WARNING, message: 'Service down' } } };
     expect(mockRouter.navigate).toHaveBeenCalledWith([exampleUrl], additionalState);
   });
 

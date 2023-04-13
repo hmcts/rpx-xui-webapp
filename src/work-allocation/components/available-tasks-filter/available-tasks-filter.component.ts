@@ -15,8 +15,8 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 export class AvailableTasksFilterComponent implements OnInit {
 
   // Getting CheckboxListComponent from DOM ensures it will be defined
-  @ViewChild('locationFilter', {static: false}) public locationFilter: CheckboxListComponent<Location>;
-  @ViewChild('filterDetails', {static: false})
+  @ViewChild('locationFilter', { static: false }) public locationFilter: CheckboxListComponent<Location>;
+  @ViewChild('filterDetails', { static: false })
   public filterDetails: ElementRef<HTMLDetailsElement>;
 
   public get detailsElement(): HTMLDetailsElement {
@@ -54,7 +54,6 @@ export class AvailableTasksFilterComponent implements OnInit {
     private readonly sessionStorageService: SessionStorageService,
     private readonly router: Router
   ) {}
-
 
   public ngOnInit(): void {
     let preselection: Location[] = [ FilterConstants.Defaults.LOCATION ];

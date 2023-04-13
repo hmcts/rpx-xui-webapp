@@ -86,7 +86,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
       this.jurisdiction$,
       this.caseType$,
       this.caseState$,
-      this.metadataFields$,
+      this.metadataFields$
     ]).subscribe(result => {
       this.jurisdiction = {
         ...result[0]
@@ -121,7 +121,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getSearchFilterPaginationMetadata));
     this.paginationSubscription = this.paginationMetadata$.subscribe(paginationMetadata =>
       this.onPaginationSubscribeHandler(paginationMetadata));
-  }
+  };
 
   /**
    * Handles the return of Pagination Metadata.
@@ -130,7 +130,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
    */
   public onPaginationSubscribeHandler = paginationMetadata => {
 
-    if (typeof paginationMetadata !== 'undefined'  && typeof paginationMetadata.total_pages_count !== 'undefined') {
+    if (typeof paginationMetadata !== 'undefined' && typeof paginationMetadata.total_pages_count !== 'undefined') {
       this.paginationMetadata.total_pages_count = paginationMetadata.total_pages_count;
       this.paginationMetadata.total_results_count = paginationMetadata.total_results_count;
       const event = this.getEvent();
@@ -138,7 +138,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
         this.store.dispatch(new fromCasesFeature.ApplySearchFilter(event));
       }
     }
-  }
+  };
 
   public onResultsViewHandler = resultView => {
     if (this.elasticSearchFlag) {
@@ -163,7 +163,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
       }) : [],
       hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
     };
-  }
+  };
 
   public getEvent() {
     let event = null;
@@ -257,5 +257,4 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
       this.elasticSearchFlagSubsription.unsubscribe();
     }
   }
-
 }

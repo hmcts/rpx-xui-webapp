@@ -25,7 +25,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (const dynamicfield of workbasketConfigurator.getConfig().workbasketInputs) {
             expect(await caseListPage.isWorkbasketFilterDisplayed(dynamicfield)).to.be.true
         }
-
     });
 
     Then('I Validate case search request to contain filters from workbasket {string}', async function(workbasketConfigRef){
@@ -67,7 +66,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (const dynamicfield of workbasketConfig.workbasketInputs) {
 
             await caseListPage.validateDynamicFields(dynamicfield);
-            
+
             expect(await caseListPage.isWorkbasketFilterDisplayed(dynamicfield)).to.be.true
         }
     });
@@ -99,5 +98,4 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         let totalCount = await caseListPage.getCasesCount();
         expect(reqData.size).to.equal(totalCount);
     });
-
 });

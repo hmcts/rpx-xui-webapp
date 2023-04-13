@@ -8,7 +8,6 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
   templateUrl: './noc-datetime-field.component.html'
 })
 export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
-
   public datetimeControl: FormControl;
   public datetimeGroup: FormGroup;
 
@@ -43,17 +42,17 @@ export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent imple
   }
 
   public ngAfterViewInit(): void {
-    this.datetimeGroup.valueChanges.subscribe(data => {
+    this.datetimeGroup.valueChanges.subscribe(() => {
       const date = [
         this.datetimeGroup.value.year !== null ? this.datetimeGroup.value.year : '',
         this.datetimeGroup.value.month !== null ? AppUtils.pad(this.datetimeGroup.value.month) : '',
-        this.datetimeGroup.value.day !== null ? AppUtils.pad(this.datetimeGroup.value.day) : '',
+        this.datetimeGroup.value.day !== null ? AppUtils.pad(this.datetimeGroup.value.day) : ''
       ].join('-');
       const time = [
         this.datetimeGroup.value.hour !== null ? AppUtils.pad(this.datetimeGroup.value.hour) : '',
         this.datetimeGroup.value.minute !== null ? AppUtils.pad(this.datetimeGroup.value.minute) : '',
         this.datetimeGroup.value.second !== null ? AppUtils.pad(this.datetimeGroup.value.second) : ''
-        ].join(':');
+      ].join(':');
       this.datetimeControl.setValue(`${date}T${time}.000`);
     });
   }

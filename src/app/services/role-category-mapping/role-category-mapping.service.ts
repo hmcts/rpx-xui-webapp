@@ -46,16 +46,16 @@ export class RoleCategoryMappingService {
     return combineLatest([this.roleMappings$, userRoles$]).pipe(
       // @ts-ignore
       map(([roleMappings, userRoles]: [RoleMapping, string[]]) => {
-          if (userRoles.some(userRole => roleMappings.JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
-            return UserRole.Judicial;
-          } else if (userRoles.some(userRole => roleMappings.OGD_ROLE_LIST.some(role => role === userRole))) {
-            return UserRole.Ogd;
-          } else if (userRoles.some(userRole => roleMappings.LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
-            return UserRole.LegalOps;
-          } else {
-            return UserRole.Admin;
-          }
+        if (userRoles.some(userRole => roleMappings.JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
+          return UserRole.Judicial;
+        } else if (userRoles.some(userRole => roleMappings.OGD_ROLE_LIST.some(role => role === userRole))) {
+          return UserRole.Ogd;
+        } else if (userRoles.some(userRole => roleMappings.LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
+          return UserRole.LegalOps;
+        } else {
+          return UserRole.Admin;
         }
+      }
       ));
   }
 }

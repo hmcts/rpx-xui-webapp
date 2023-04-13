@@ -27,7 +27,7 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
   public allAnswerEmpty: boolean = false;
   public allAnswerValid: boolean = true;
 
-  constructor(private readonly store: Store<fromFeature.State>) { }
+  constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit() {
     this.lastError$ = this.store.pipe(select(fromFeature.lastError));
@@ -89,7 +89,7 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
     if (navEvent === NocNavigationEvent.SET_ANSWERS && this.formGroup) {
       const answers: NocAnswer[] = [];
       Object.keys(this.formGroup.value).forEach(key => {
-        answers.push({question_id: key, value: this.formGroup.value[key]});
+        answers.push({ question_id: key, value: this.formGroup.value[key] });
       });
       const nocEvent: NocEvent = {
         case_id: this.nocCaseReference,

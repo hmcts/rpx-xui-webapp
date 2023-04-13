@@ -12,17 +12,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Given('I setup caselist mock {string}', async function (caselistMockRef) {
         const caseListConfig = new CaseListConfig();
         global.scenarioData[caselistMockRef] = caseListConfig;
-       
+
     });
 
     Given('I add case field columns to caselist config {string}', async function (caselistMockRef, datatable){
         const caseListConfigGenerator = global.scenarioData[caselistMockRef];
         const caseColumnRowHashes = datatable.hashes();
-        
+
         for (let i = 0; i < caseColumnRowHashes.length; i++){
             caseListConfigGenerator.addCaseField(caseColumnRowHashes[i]);
         }
-        
+
     });
 
     Given('I add case field type props to caselist config {string}', async function (caselistMockRef ,datatable) {
@@ -34,7 +34,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             delete caseFiledTypeRowHashes[i].case_field_id;
             caseListConfigGenerator.setCaseFieldTypeProps(caseFieldId, caseFiledTypeRowHashes[i]);
         }
-
     });
 
     Given('I add case list data rows for config {string}', async function (caselistMockRef, datatable){
@@ -64,11 +63,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 const actualVal = columnValueDisplayed[columns[j]][i];
                 softAssert.setScenario(`row ${i + 1} column ${columns[j]}`);
                 softAssert.assert(() => expect(actualVal, `${columns[j]} value at row ${i} mismatch `).to.equal(expectedVal))
-                
-            } 
+
+            }
         }
         softAssert.finally();
-        
+
     });
 
 

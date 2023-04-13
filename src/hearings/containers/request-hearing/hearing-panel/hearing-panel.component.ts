@@ -21,7 +21,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-panel',
-  templateUrl: './hearing-panel.component.html',
+  templateUrl: './hearing-panel.component.html'
 })
 export class HearingPanelComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public panelJudgeForm: FormGroup;
@@ -37,8 +37,8 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public personalCodejudgeList: JudicialUserModel[] = [];
   public configLevels: { level: number, controlType: ControlTypeEnum }[];
   public serviceId: string;
-  @ViewChild('includedJudge', {static: false}) public includedJudge: HearingJudgeNamesListComponent;
-  @ViewChild('excludedJudge', {static: false}) public excludedJudge: HearingJudgeNamesListComponent;
+  @ViewChild('includedJudge', { static: false }) public includedJudge: HearingJudgeNamesListComponent;
+  @ViewChild('excludedJudge', { static: false }) public excludedJudge: HearingJudgeNamesListComponent;
 
   constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -52,11 +52,11 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     this.configLevels = [
       {
         controlType: ControlTypeEnum.CHECK_BOX,
-        level: 1,
+        level: 1
       },
       {
         controlType: ControlTypeEnum.SELECT,
-        level: 2,
+        level: 2
       }
     ];
   }
@@ -247,7 +247,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
         parent_category: control.value.parent_category,
         active_flag: control.value.active_flag,
         child_nodes: control.value && control.value.child_nodes ? control.value.child_nodes : [],
-        selected: control.value.selected,
+        selected: control.value.selected
       };
       panelRoles.push(refDataModel);
     });
@@ -270,7 +270,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
           parent_category: otherPanelRoles.parent_category,
           active_flag: otherPanelRoles.active_flag,
           child_nodes: otherPanelRoles.child_nodes,
-          selected: !otherPanelRoles.selected ? false : true,
+          selected: !otherPanelRoles.selected ? false : true
         } as LovRefDataModel) as FormGroup);
       });
     }

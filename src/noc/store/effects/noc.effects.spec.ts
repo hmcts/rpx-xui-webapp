@@ -22,7 +22,7 @@ describe('Noc Effects', () => {
       providers: [
         {
           provide: NocService,
-          useValue: nocServiceMock,
+          useValue: nocServiceMock
         },
         NocEffects,
         provideMockActions(() => actions$)
@@ -30,7 +30,6 @@ describe('Noc Effects', () => {
     });
 
     effects = TestBed.inject(NocEffects);
-
   });
 
   describe('setCaseReference$', () => {
@@ -220,5 +219,4 @@ describe('Noc Effects', () => {
       action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/service-down'] })));
     });
   });
-
 });

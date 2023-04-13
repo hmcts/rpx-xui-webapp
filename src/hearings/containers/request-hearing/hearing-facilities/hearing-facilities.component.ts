@@ -1,19 +1,19 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {CaseFlagGroup} from '../../../models/caseFlagGroup.model';
-import {CaseFlagReferenceModel} from '../../../models/caseFlagReference.model';
-import {ACTION, CaseFlagType, HearingFacilitiesEnum} from '../../../models/hearings.enum';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {HearingsService} from '../../../services/hearings.service';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { CaseFlagGroup } from '../../../models/caseFlagGroup.model';
+import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
+import { ACTION, CaseFlagType, HearingFacilitiesEnum } from '../../../models/hearings.enum';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {CaseFlagsUtils} from '../../../utils/case-flags.utils';
-import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
+import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-facilities',
-  templateUrl: './hearing-facilities.component.html',
+  templateUrl: './hearing-facilities.component.html'
 })
 export class HearingFacilitiesComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public caseFlagsRefData: CaseFlagReferenceModel[];
@@ -40,7 +40,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   public ngOnInit(): void {
     this.hearingFactilitiesForm = this.fb.group({
       'addition-security-required': ['', Validators.required],
-      'addition-securities': this.additionalFacilities ? this.getHearingFacilitiesFormArray : [],
+      'addition-securities': this.additionalFacilities ? this.getHearingFacilitiesFormArray : []
     });
 
     if (this.hearingRequestMainModel.caseDetails &&

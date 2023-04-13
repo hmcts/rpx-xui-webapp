@@ -1,7 +1,7 @@
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {State} from '../store';
-import {AnswerConverter} from './answer.converter';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { State } from '../store';
+import { AnswerConverter } from './answer.converter';
 
 export class AdditionalSecurityAnswerConverter implements AnswerConverter {
 

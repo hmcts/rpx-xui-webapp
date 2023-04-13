@@ -25,7 +25,7 @@ describe('PanelInclusionHiddenConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;
     const result$ = panelInclusionHiddenConverter.transformHidden(of(STATE));
     const showWelshPage = true;
-    const expected = cold('(b|)', {b: showWelshPage});
+    const expected = cold('(b|)', { b: showWelshPage });
     expect(result$).toBeObservable(expected);
   });
 
@@ -36,8 +36,7 @@ describe('PanelInclusionHiddenConverter', () => {
     };
     const result$ = panelInclusionHiddenConverter.transformHidden(of(STATE));
     const showWelshPage = false;
-    const expected = cold('(b|)', {b: showWelshPage});
+    const expected = cold('(b|)', { b: showWelshPage });
     expect(result$).toBeObservable(expected);
   });
-
 });

@@ -25,7 +25,7 @@ export class DescribeExclusionComponent implements OnInit, OnDestroy {
 
   constructor(public readonly store: Store<fromFeature.State>,
               public readonly fb: FormBuilder) {
-      this.formGroup = this.fb.group({[this.controlName]: ['', [Validators.required]]
+    this.formGroup = this.fb.group({ [this.controlName]: ['', [Validators.required]]
     });
   }
 

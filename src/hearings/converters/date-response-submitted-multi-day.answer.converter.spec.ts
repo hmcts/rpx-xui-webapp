@@ -19,5 +19,4 @@ describe('DateResponseSubmittedMultiDayAnswerConverter', () => {
     const expected = cold('(b|)', { b: type });
     expect(result$).toBeObservable(expected);
   });
-
 });

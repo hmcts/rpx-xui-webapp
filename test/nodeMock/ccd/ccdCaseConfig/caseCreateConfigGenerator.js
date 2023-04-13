@@ -197,7 +197,7 @@ class CCDCaseConfig extends CCDCaseField {
             }
         };
         fieldConfig.field_type.fixed_list_items = fieldListItems;
-        
+
         return this;
     }
 
@@ -287,7 +287,6 @@ class CCDCaseConfig extends CCDCaseField {
                 fieldValTracker[fieldStructure[i]] = value;
             }
         }
-
     }
 
     getCaseFieldDefaultValue(fieldId) {
@@ -387,7 +386,6 @@ class CCDCaseConfig extends CCDCaseField {
         }
         return fieldConfig;
     }
-
 }
 
 module.exports = CCDCaseConfig;

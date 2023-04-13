@@ -17,7 +17,6 @@ class WAUtils{
         }
         return searhParam[0].key;
     }
-
 }
 
 module.exports = new WAUtils();

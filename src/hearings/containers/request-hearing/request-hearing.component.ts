@@ -19,8 +19,7 @@ export class RequestHearingComponent implements OnDestroy {
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly pageFlow: AbstractPageFlow,
-              private readonly hearingsService: HearingsService) {
-  }
+              private readonly hearingsService: HearingsService) {}
 
   public onBack(): void {
     this.hearingsService.navigateAction(ACTION.BACK);

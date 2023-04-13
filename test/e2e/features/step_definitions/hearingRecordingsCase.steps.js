@@ -21,7 +21,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await headerPage.refreshBrowser();
         throw err;
       }
-     
     });
   });
 
@@ -43,11 +42,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
       });
     }
-    
+
     await browserWaits.retryWithActionCallback(async () => {
       await hearingRecordingsCase.clickFileLink();
     });
-   
   });
 
 
@@ -56,5 +54,4 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
       await hearingRecordingsCase.checkFile();
     });
   });
-
 });

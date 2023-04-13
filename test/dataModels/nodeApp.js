@@ -13,7 +13,7 @@ class NodeApp{
                     caseType:'',
                     roleType:'ORGANISATION'
                 }
-                
+
             ],
             "sessionTimeout": {
                 "idleModalDisplayTime": 10,
@@ -77,7 +77,6 @@ class NodeApp{
             "substantive" : true
         }
     }
-
 }
 
 module.exports = new NodeApp();

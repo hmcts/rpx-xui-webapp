@@ -18,7 +18,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await caseListPage.amOnPage()).to.be.true;
     });
 
-    When('I select search criteria jurisdiction {string} case type {string} state {string} in case list page', 
+    When('I select search criteria jurisdiction {string} case type {string} state {string} in case list page',
     async function(jurisdiction,caseType,state){
         await BrowserWaits.retryWithActionCallback(async () => {
             try{
@@ -33,12 +33,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 throw new Error(err);
             }
         });
-        
+
     });
 
     When('I select search criteria jurisdiction {string} case type {string} state {string} in case list page and click apply',
         async function (jurisdiction, caseType, state) {
-           
+
             await BrowserWaits.retryWithActionCallback(async () => {
                 try {
                     await caseListPage.selectJurisdiction(jurisdiction);
@@ -54,14 +54,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 }
 
             });
-            
+
         });
 
     When('I click search Apply in case list page', async function(){
         await BrowserWaits.retryWithActionCallback(async  () => {
             await caseListPage.clickSearchApplyBtn();
         });
-        
+
     });
 
     When('I click search Reset in case list page', async function () {
@@ -80,7 +80,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 throw new Error(err);
             }
         });
-        
+
 
     });
 
@@ -90,7 +90,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I wait to see no case results displayed', async function () {
         await caseListPage.waitForNoCaseResultsToDisplay();
-
     });
 
     Then('I see cases in case list page', async function(){
@@ -129,7 +128,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         if (await caseListPage.isCaseSelectCheckboxSelected(rownum)) {
             await caseListPage.clickCaseSelectCheckBoxAtRow(rownum);
         } else {
-            this.attach("Case checkbox already un-selected"); 
+            this.attach("Case checkbox already un-selected");
         }
     });
 
@@ -167,7 +166,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         this.tableHeaderSelectAllInput = $(".govuk-table__header #select-all");
         this.shareCaseButton = $("#btn-share-button");
         this.resetCaseSelectionLink = $("a.search-result-reset-link");
-      
+
         if (featureCondition.toLowerCase() === "is"){
             expect(await caseListPage.tableHeaderSelectAllInput.isPresent(), "Table header Select All check box not present").to.be.true;
             expect(await caseListPage.shareCaseButton.isPresent(), "Share Case button not present").to.be.true;
@@ -175,8 +174,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }else{
             expect(await caseListPage.tableHeaderSelectAllInput.isPresent(), "Table header Select All check box should not be  present").to.be.false;
             expect(await caseListPage.shareCaseButton.isPresent(), "Share Case button should not be  present").to.be.false;
-            expect(await caseListPage.resetCaseSelectionLink.isPresent(), "Reset selection button should not be  present").to.be.false; 
-        } 
+            expect(await caseListPage.resetCaseSelectionLink.isPresent(), "Reset selection button should not be  present").to.be.false;
+        }
     });
 
     When('I click Share Case button', async function () {

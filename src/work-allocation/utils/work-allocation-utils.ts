@@ -5,7 +5,6 @@ import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
 import { ServiceRefData } from '../models/common';
-import { Service, ServiceCode } from '../models/common/service.enum';
 import { Caseworker, CaseworkersByService, LocationsByRegion, LocationsByService } from '../models/dtos';
 import { TaskPermission, TaskRole } from '../models/tasks';
 
@@ -77,7 +76,7 @@ export const handleTasksFatalErrors = (status: number, navigator: Navigator, fat
         // For certain conditions, we have to navigate to a different error page
         // if the selected person is not authorised to perform the task
         const destinationUrl = getDestinationUrl(navigator.url);
-        navigator.navigate([ destinationUrl ], { state: { returnUrl }});
+        navigator.navigate([ destinationUrl ], { state: { returnUrl } });
       } else {
         navigator.navigate([ REDIRECTS.NotAuthorised ]);
       }
@@ -132,7 +131,7 @@ export const getAssigneeName = (caseworkers: any [], assignee: string): string =
   return null;
 };
 
-export const servicesMap: {[key: string]: string} =  {
+export const servicesMap: {[key: string]: string} = {
   IA: 'Immigration and Asylum',
   SSCS: 'Social security and child support'
 };
@@ -151,6 +150,7 @@ export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessio
       let label;
       try {
         label = getLabel(roleCategory);
+        // eslint-disable-next-line no-empty
       } catch (error) {}
       const option: OptionsModel = {
         optionId: roleCategory,
@@ -264,11 +264,11 @@ export function addLocationToLocationsByService(locationsByServices: LocationsBy
   let locationsByService = locationsByServices.find(serviceLocations => serviceLocations.service === service);
   if (!locationsByService) {
     // check to ensure that if service present with null location (i.e. a base location not within region), we register this
-    !location.id && !location.regionId ? locationsByServices.push({service, locations: [], bookable}) : locationsByServices.push({service, locations: [location], bookable});
+    !location.id && !location.regionId ? locationsByServices.push({ service, locations: [], bookable }) : locationsByServices.push({ service, locations: [location], bookable });
   } else {
     const finalDataWithoutService = locationsByServices.filter(serviceLocations => serviceLocations.service !== service);
     // Need this to keep bookable attribute as true even if there is a non-bookable role on the same service
-    locationsByService = {service, locations: locationsByService.locations.concat([location]), bookable};
+    locationsByService = { service, locations: locationsByService.locations.concat([location]), bookable };
     locationsByServices = finalDataWithoutService.concat([locationsByService]);
   }
   return locationsByServices;

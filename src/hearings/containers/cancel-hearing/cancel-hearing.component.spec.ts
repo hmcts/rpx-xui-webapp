@@ -5,7 +5,7 @@ import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
-import { Observable, of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { initialState } from '../../hearing.test.data';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import { HearingsService } from '../../services/hearings.service';
@@ -28,7 +28,7 @@ describe('CancelHearingComponent', () => {
       category_key: 'CancelHearingReason',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'reasonTwo',
@@ -41,7 +41,7 @@ describe('CancelHearingComponent', () => {
       category_key: 'CancelHearingReason',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'reasonThree',
@@ -54,8 +54,8 @@ describe('CancelHearingComponent', () => {
       category_key: 'CancelHearingReason',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
-    },
+      child_nodes: null
+    }
   ];
 
   const HEARING_ID = 'h00001';
@@ -76,17 +76,17 @@ describe('CancelHearingComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingCancelOptions: reasons,
-              },
+                hearingCancelOptions: reasons
+              }
             },
-            params: of({ hearingId: HEARING_ID }),
-          },
+            params: of({ hearingId: HEARING_ID })
+          }
         },
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
         FormBuilder
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
 
@@ -147,6 +147,7 @@ describe('CancelHearingComponent', () => {
     expect(component.validationErrors.length).toBeGreaterThan(0);
     expect(formValid).toEqual(false);
   });
+
   it('should have a validation error message mapped when cancel hearing DELETE request failed', () => {
     (component.hearingCancelForm.controls.reasons as FormArray).controls
       .forEach(reason => reason.value.selected = true);

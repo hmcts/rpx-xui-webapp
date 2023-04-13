@@ -9,10 +9,8 @@ import { HearingsUtils } from '../utils/hearings.utils';
 import { AnswerConverter } from './answer.converter';
 
 export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
-
   constructor(
-    protected readonly route: ActivatedRoute) {
-  }
+    protected readonly route: ActivatedRoute) {}
 
   private static getPartyChannelValue(refData: LovRefDataModel[], party: PartyDetailsModel): string {
     const preferredHearingChannelRefData = refData.find(ref => ref.key === party.hearingSubChannel);

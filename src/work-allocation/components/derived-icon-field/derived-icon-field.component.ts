@@ -28,14 +28,13 @@ export class DerivedIconFieldComponent {
    */
   @Input() public matchValue: any;
 
-
   public message: string;
   public get showIcon(): boolean {
     if (!this.task || !this.sourceColumn || this.task[this.sourceColumn] !== this.matchValue || !this.task.warning_list) {
       return false;
     }
 
-    const distinctMessages =   this.task.warning_list.values.filter((thing, i, arr) => {
+    const distinctMessages = this.task.warning_list.values.filter((thing, i, arr) => {
       return arr.indexOf(arr.find(t => t.code === thing.code)) === i;
     });
 

@@ -8,7 +8,6 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
   templateUrl: './noc-date-field.component.html'
 })
 export class NocDateFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
-
   public dateControl: FormControl;
   public dateGroup: FormGroup;
 
@@ -22,7 +21,7 @@ export class NocDateFieldComponent extends AbstractFieldWriteComponent implement
     this.dateGroup = this.formBuilder.group({
       year: [null, Validators.required],
       month: [null, Validators.required],
-      day: [null, Validators.required],
+      day: [null, Validators.required]
     });
     if (this.dateControl.value) {
       const dateValues = this.dateControl.value.split('-');
@@ -33,11 +32,11 @@ export class NocDateFieldComponent extends AbstractFieldWriteComponent implement
   }
 
   public ngAfterViewInit(): void {
-    this.dateGroup.valueChanges.subscribe(data => {
+    this.dateGroup.valueChanges.subscribe(() => {
       const val = [
         this.dateGroup.value.year !== null ? this.dateGroup.value.year : '',
         this.dateGroup.value.month !== null ? AppUtils.pad(this.dateGroup.value.month) : '',
-        this.dateGroup.value.day !== null ? AppUtils.pad(this.dateGroup.value.day) : '',
+        this.dateGroup.value.day !== null ? AppUtils.pad(this.dateGroup.value.day) : ''
       ].join('-');
       this.dateControl.setValue(val);
     });

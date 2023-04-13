@@ -1,9 +1,9 @@
 import * as moment from 'moment';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {HearingDateEnum, RadioOptions} from '../models/hearings.enum';
-import {State} from '../store';
-import {AnswerConverter} from './answer.converter';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { HearingDateEnum, RadioOptions } from '../models/hearings.enum';
+import { State } from '../store';
+import { AnswerConverter } from './answer.converter';
 
 export class HearingSpecificDateAnswerConverter implements AnswerConverter {
 

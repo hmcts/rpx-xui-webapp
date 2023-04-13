@@ -19,10 +19,10 @@ describe('CaseFlagAmendedConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                caseFlags: caseFlagsRefData,
-              },
-            },
-          },
+                caseFlags: caseFlagsRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -34,8 +34,7 @@ describe('CaseFlagAmendedConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = caseFlagAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = true;
-    const expected = cold('(b|)', {b: isAmended});
+    const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
-
 });

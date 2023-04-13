@@ -24,7 +24,7 @@ describe('JudgeExclusionAmendedConverter', () => {
     }];
     const result$ = judgeExclusionAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = true;
-    const expected = cold('(b|)', {b: isAmended});
+    const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
 });

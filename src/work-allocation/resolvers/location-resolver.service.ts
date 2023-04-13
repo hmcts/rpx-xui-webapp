@@ -38,8 +38,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     private readonly bookingService: BookingService,
     private readonly sessionStorageService: SessionStorageService,
     private readonly locationService: LocationDataService
-  ) {
-  }
+  ) {}
 
   public resolve(): Observable<LocationModel[]> {
     return this.userDetails()
@@ -171,6 +170,6 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     if (!locations || locations.length === 0) {
       return of(null);
     }
-    return this.http.post<LocationModel[]>(`api/locations/getLocationsById`, { locations });
+    return this.http.post<LocationModel[]>('api/locations/getLocationsById', { locations });
   }
 }

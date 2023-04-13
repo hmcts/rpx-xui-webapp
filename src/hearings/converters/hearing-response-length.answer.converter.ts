@@ -69,7 +69,7 @@ export class HearingResponseLengthAnswerConverter implements AnswerConverter {
 
   public calculateFormattedMinutes(minutes: number): string {
     return minutes > 0
-    ? `${minutes} Minutes`
-    : '';
+      ? `${minutes} Minutes`
+      : '';
   }
 }

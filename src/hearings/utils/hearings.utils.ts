@@ -1,7 +1,7 @@
 import * as moment from 'moment';
-import {HearingConditions} from '../models/hearingConditions';
-import {HearingDayScheduleModel} from '../models/hearingDaySchedule.model';
-import {LovRefDataModel} from '../models/lovRefData.model';
+import { HearingConditions } from '../models/hearingConditions';
+import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
+import { LovRefDataModel } from '../models/lovRefData.model';
 
 export class HearingsUtils {
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
@@ -24,13 +24,11 @@ export class HearingsUtils {
   }
 
   public static getValues(keys: string[], lovRefDataModels: LovRefDataModel[]): string[] {
-    let result: string[];
     const flatChannels = HearingsUtils.flattenArray(lovRefDataModels);
-    result = keys && keys.length && keys.map(key => {
+    return keys && keys.length && keys.map(key => {
       const foundChannel = flatChannels.find(channel => channel.key === key);
       return foundChannel ? foundChannel.value_en : key;
     });
-    return result;
   }
 
   public static sortHearingDaySchedule(hearingDaySchedule: HearingDayScheduleModel[]): HearingDayScheduleModel[] {

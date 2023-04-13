@@ -114,7 +114,6 @@ defineSupportCode(function ({ Given, When, Then }) {
       await BrowserWaits.waitForElement(loginPage.signinTitle);
       expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
     });
-
   });
 
   Then(/^I should see failure error summary$/, async function () {
@@ -138,7 +137,6 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(loginPage.emailAddress.isDisplayed()).to.eventually.be.true;
     await expect(loginPage.password.isDisplayed()).to.eventually.be.true;
     browser.sleep(SHORT_DELAY);
-
   });
 
 
@@ -152,13 +150,11 @@ defineSupportCode(function ({ Given, When, Then }) {
 
     loginAttempts++;
     await loginattemptCheckAndRelogin(this.config.username, this.config.password, this);
-
   });
 
 
   When(/^I enter an Invalid email-address and password to login$/, async function () {
     await loginPage.givenIAmUnauthenticatedUser();
-
   });
 
 
@@ -172,7 +168,6 @@ defineSupportCode(function ({ Given, When, Then }) {
         .contains('Sign in');
     });
     browser.sleep(LONG_DELAY);
-
   });
 
 
@@ -199,15 +194,13 @@ defineSupportCode(function ({ Given, When, Then }) {
         await BrowserUtil.waitForLD();
         await BrowserWaits.waitForElement($("exui-header .hmcts-primary-navigation__item"));
         await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
-        
+
         await BrowserUtil.waitForLD();
       }catch(err){
         await browser.get(config.config.baseUrl);
         throw new Error(err);
       }
-
     });
-
   });
 
   Given('I am logged into Expert UI with valid user details', async function () {
@@ -222,7 +215,6 @@ defineSupportCode(function ({ Given, When, Then }) {
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)
     });
-
   });
 
   Given('I am logged into Expert UI with valid Probate back office user credentials', async function () {
@@ -235,7 +227,6 @@ defineSupportCode(function ({ Given, When, Then }) {
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)
     });
-
   });
 
   Given('I am logged into Expert UI with non professional user details', async function () {
@@ -312,7 +303,6 @@ defineSupportCode(function ({ Given, When, Then }) {
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)
     });
-
   });
 
   Given('I am logged into Expert UI caseworker-ia-caseofficer user details', async function () {
@@ -325,7 +315,6 @@ defineSupportCode(function ({ Given, When, Then }) {
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)
     });
-
   });
 
   Given('I am logged into Expert UI with test user identified as {string}', async function (testUserIdentifier) {
@@ -346,12 +335,11 @@ defineSupportCode(function ({ Given, When, Then }) {
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)
     });
-    
+
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForSpinnerToDissappear();
       await headerPage.clickAppLogoLink();
     });
-   
   });
 
   Given('I am logged into Expert UI with hrs testes user details', async function () {
@@ -364,7 +352,6 @@ defineSupportCode(function ({ Given, When, Then }) {
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)
     });
-
   });
 
 
@@ -383,5 +370,4 @@ defineSupportCode(function ({ Given, When, Then }) {
       .contains('Sign in');
     browser.sleep(LONG_DELAY);
   });
-
 });

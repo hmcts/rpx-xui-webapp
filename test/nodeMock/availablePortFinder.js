@@ -11,7 +11,7 @@ portfinder.highestPort = 3200; // default: 65535
 function getAvailablePort(){
     const portData = fs.readFileSync(`${__dirname}/NODEMOCK_PORT.txt`, "utf8");
     console.log(`${portData}`);
-    return portData; 
+    return portData;
 }
 
 
@@ -41,7 +41,6 @@ function configureTestProxyPort(){
         fs.writeFileSync(`${__dirname}/NODEMOCK_PORT.txt`, port+"");
         // getAvailablePort();
         updateAngularProxyTestConfig(port);
-
     });
 
 }

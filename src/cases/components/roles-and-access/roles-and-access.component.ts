@@ -54,8 +54,7 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   }
 
   constructor(
-    private readonly caseNotifier: CaseNotifier) {
-  }
+    private readonly caseNotifier: CaseNotifier) {}
 
   public ngOnInit(): void {
     this.caseId = this.caseDetails.case_id;

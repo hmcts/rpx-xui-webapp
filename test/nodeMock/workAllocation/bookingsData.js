@@ -12,7 +12,7 @@ class BookingsData{
             { appointmentId: "102" },
             { appointmentId: "103" }
         ]);
-         
+
     }
 
 
@@ -34,11 +34,11 @@ class BookingsData{
         this.bookingResponse = bookings.map(booking => {
             const bookingModel = BookingDataModel.getBooking();
             for (const bookingKey of Object.keys(booking)){
-                bookingModel[bookingKey] = booking[bookingKey]; 
-            }    
+                bookingModel[bookingKey] = booking[bookingKey];
+            }
             return bookingModel;
         });
-       
+
     }
 
     updateAllLocationsFromBookings(){
@@ -46,15 +46,14 @@ class BookingsData{
         this.allLocations = locationIds.map(locationId => {
             const locationDetailsTemplate = BookingDataModel.getLocationDetails();
             locationDetailsTemplate.epimms_id = locationId;
-            return locationDetailsTemplate; 
-        }); 
+            return locationDetailsTemplate;
+        });
 
     }
 
     getAllLocationDetails(){
-        return this.allLocations; 
+        return this.allLocations;
     }
-
 }
 
-module.exports = new BookingsData(); 
+module.exports = new BookingsData();

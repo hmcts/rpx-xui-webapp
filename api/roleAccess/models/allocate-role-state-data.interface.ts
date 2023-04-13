@@ -1,5 +1,5 @@
 import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
-import { AllocateTo, DurationOfRole, Period, RoleCategory, SpecificRole} from './allocate-role.enum';
+import { AllocateTo, DurationOfRole, Period, RoleCategory, SpecificRole } from './allocate-role.enum';
 import { RoleRequestPayload } from './role-request.model';
 
 export interface AllocateRoleData {

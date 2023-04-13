@@ -13,7 +13,7 @@ describe('Hearing Request To Compare Reducer', () => {
           hearingRequestMainModel: {
             requestDetails: {
               timeStamp: null,
-              versionNumber: 1,
+              versionNumber: 1
             },
             hearingDetails: {
               duration: null,
@@ -21,11 +21,11 @@ describe('Hearing Request To Compare Reducer', () => {
               hearingChannels: [],
               hearingLocations: [{
                 locationId: '196538',
-                locationType: HMCLocationType.COURT,
+                locationType: HMCLocationType.COURT
               }, {
                 locationId: '219164',
-                locationType: HMCLocationType.COURT,
-              },
+                locationType: HMCLocationType.COURT
+              }
               ],
               hearingIsLinkedFlag: false,
               hearingWindow: null,
@@ -57,17 +57,16 @@ describe('Hearing Request To Compare Reducer', () => {
               caseCategories: [],
               caseManagementLocationCode: null,
               caserestrictedFlag: false,
-              caseSLAStartDate: null,
+              caseSLAStartDate: null
             },
-            partyDetails: [],
+            partyDetails: []
           },
-          lastError: null,
+          lastError: null
         };
         const action = new fromHearingRequestToCompareActions.InitializeHearingRequestToCompare(initialHearingRequestState.hearingRequestMainModel);
         const hearingsState = fromHearingRequestToCompareReducer.hearingRequestToCompareReducer(initialHearingRequestState, action);
         expect(hearingsState).toEqual(initialHearingRequestState);
       });
     });
-
   });
 });

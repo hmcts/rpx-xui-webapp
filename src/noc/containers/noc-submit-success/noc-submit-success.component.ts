@@ -15,11 +15,10 @@ export class NocSubmitSuccessComponent implements OnInit {
   public currentNavigation$: Observable<NocState>;
   public nocState = NocState;
 
-  constructor(private readonly store: Store<fromFeature.State>) { }
+  constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit() {
     this.caseReference$ = this.store.pipe(select(fromFeature.caseReference));
     this.currentNavigation$ = this.store.pipe(select(fromFeature.currentNavigation));
   }
-
 }

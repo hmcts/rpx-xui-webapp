@@ -38,7 +38,7 @@ class CCDCaseDetails extends CCDCaseField{
     constructor(name) {
         super();
 
-        this.caseConfig = new CCDCaseConfig("test","test","test"); 
+        this.caseConfig = new CCDCaseConfig("test","test","test");
         this.caseDetailsTemplate.case_type.id = this.toCamelCase(name);
         this.caseDetailsTemplate.case_type.name = name;
         this.caseDetailsTemplate.case_type.description = "Mock case description "+name;
@@ -82,7 +82,7 @@ class CCDCaseDetails extends CCDCaseField{
             throw new Error("No tab added. Add a tab before adding a Case field");
         }
         const ccdCaseField = this.getCCDFieldTemplateCopy(fieldConfig);
-        
+
         this.currentTab.fields.push(ccdCaseField);
         return this;
     }
@@ -95,9 +95,9 @@ class CCDCaseDetails extends CCDCaseField{
            "description": "Mock state description for "+name,
            "title_display": null
        };
-       return this; 
+       return this;
    }
-   
+
     addEvent(eventName, stateName, eventDate){
         this.eventIdCounter++;
         this.caseDetailsTemplate.events.push({
@@ -120,12 +120,12 @@ class CCDCaseDetails extends CCDCaseField{
     addTrigger(name) {
         this.triggerOrderCounter++;
         this.caseDetailsTemplate.triggers.push({
-           
+
             "id": this.toCamelCase(name),
             "name": name,
             "description": "tTest description trigger "+name,
             "order": this.triggerOrderCounter
-            
+
         });
         return this
     }
@@ -139,7 +139,6 @@ class CCDCaseDetails extends CCDCaseField{
     getCase(){
         return this.caseDetailsTemplate;
     }
-
 }
 
 

@@ -36,7 +36,6 @@ xdescribe('Work Allocation: ', function () {
         actions.push(...PallyActions.waitForPageWithCssLocator(myWorkLocators.workFilters))
         actions.push(...PallyActions.waitForPageWithCssLocator(myWorkLocators.myTasks))
         await pa11ytest(this, actions, conf.baseUrl + '/');
-
     });
 
 
@@ -48,7 +47,6 @@ xdescribe('Work Allocation: ', function () {
         actions.push(...PallyActions.clickElement(myWorkLocators.subNavihationLinks.availableTasks))
         actions.push(...PallyActions.waitForPageWithCssLocator(myWorkLocators.availableTasks))
         await pa11ytest(this, actions, conf.baseUrl + '/');
-
     });
 
     it('My work: My cases', async function () {
@@ -59,7 +57,6 @@ xdescribe('Work Allocation: ', function () {
         actions.push(...PallyActions.clickElement(myWorkLocators.subNavihationLinks.myCases))
         actions.push(...PallyActions.waitForPageWithCssLocator(myWorkLocators.myCases))
         await pa11ytest(this, actions, conf.baseUrl + '/');
-
     });
 
     it.skip('My work: Work filters', async function () {
@@ -70,9 +67,7 @@ xdescribe('Work Allocation: ', function () {
         actions.push(...PallyActions.clickElement(myWorkLocators.workFilterButton))
         actions.push(...PallyActions.waitForPageWithCssLocator(myWorkLocators.workFilters))
         await pa11ytest(this, actions, conf.baseUrl + '/');
-
     });
-
 });
 
 

@@ -114,7 +114,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
             }
         }
-
     });
 
 
@@ -127,7 +126,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const messages = await taskListPage.getBannerMessagesDisplayed();
         const isSuccessDidplayed =  await taskListPage.isBannermessageWithTextDisplayed("You've assigned yourself a task. It's available in My tasks");
         expect(isSuccessDidplayed, "Success message expected is not displayed in :  " + JSON.stringify(messages)).to.be.true;
-
     });
 
     When('I click My tasks tab', async function(){
@@ -304,8 +302,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         const toggleVal = featureToggleUtil.getFeatureToggleValue(featureToggleName);
         expect(await taskListPage.paginationContainer.isDisplayed(), 'Pagination display is expected to be ' + toggleVal).to.equal(toggleVal);
-
     });
-
 });
 

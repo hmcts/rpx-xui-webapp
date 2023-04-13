@@ -113,7 +113,7 @@ export async function getMyAccessNewCount(req, resp, next) {
     const cases = await getMyAccessMappedCaseList(roleAssignments, req);
     const newAssignments = cases.filter(item => item.isNew);
 
-    return resp.status(200).send({count: newAssignments.length});
+    return resp.status(200).send({ count: newAssignments.length });
   } catch (error) {
     next(error);
   }
@@ -126,7 +126,7 @@ export async function manageLabellingRoleAssignment(req: EnhancedRequest, resp: 
     }
     const currentUserAssignments = (req.session.roleAssignmentResponse as RoleAssignment[]);
     const challengedAccessRequest = currentUserAssignments.find(roleAssignment => roleAssignment.attributes
-      && roleAssignment.attributes.caseId ===  req.params.caseId
+      && roleAssignment.attributes.caseId === req.params.caseId
       && roleAssignment.attributes.isNew);
 
     if (!challengedAccessRequest) {
@@ -150,7 +150,7 @@ export function mapResponseToCaseRoles(
   return roleAssignments.map(roleAssignment => ({
     actions: [
       { 'id': 'reallocate', 'title': 'Reallocate' },
-      { 'id': 'remove', 'title': 'Remove Allocation' },
+      { 'id': 'remove', 'title': 'Remove Allocation' }
     ],
     actorId: roleAssignment.actorId,
     email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null,
@@ -164,9 +164,9 @@ export function mapResponseToCaseRoles(
     start: roleAssignment.beginTime ? roleAssignment.beginTime.toString() : null,
     created: roleAssignment.created ? roleAssignment.created : null,
     notes: roleAssignment.attributes && roleAssignment.attributes.specificAccessReason ?
-     getSpecificReason(roleAssignment.attributes.specificAccessReason) : 'No reason for case access given',
+      getSpecificReason(roleAssignment.attributes.specificAccessReason) : 'No reason for case access given',
     requestedRole: roleAssignment.attributes && roleAssignment.attributes.requestedRole ?
-     roleAssignment.attributes.requestedRole : null,
+      roleAssignment.attributes.requestedRole : null
   }));
 }
 
@@ -195,7 +195,7 @@ export async function createSpecificAccessApprovalRole(req: EnhancedRequest, res
     // @ts-ignore
     const currentUser = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-    const roleAssignmentsBody = toSARoleAssignmentBody(currentUserId, body, {}, {isNew: true});
+    const roleAssignmentsBody = toSARoleAssignmentBody(currentUserId, body, {}, { isNew: true });
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
@@ -210,7 +210,7 @@ export async function createSpecificAccessApprovalRole(req: EnhancedRequest, res
 export async function createSpecificAccessDenyRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
   try {
     const currentUser = req.session.passport.user.userinfo;
-    const roleAssignmentsBody = toDenySARoleAssignmentBody(currentUser, req.body, {isNew: true});
+    const roleAssignmentsBody = toDenySARoleAssignmentBody(currentUser, req.body, { isNew: true });
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
 
@@ -224,24 +224,23 @@ export async function createSpecificAccessDenyRole(req: EnhancedRequest, res: Re
 // tslint:disable-next-line:max-line-length
 export async function deleteSpecificAccessRequestedRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
   try {
-  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-  const requestId = req.body.requestId;
-  const queryString = `?process=staff-organisational-role-mapping&reference=${requestId}`;
-  const fullPath = `${basePath}/am/role-assignments${queryString}`;
-  const headers = setHeaders(req);
-  const body = toDenySADletionRequestedRoleBody(requestId);
-  /* tslint:disable:no-string-literal */
-  delete headers['accept'];
-  const response = await http.delete(fullPath, {
-    data: body,
-    headers,
-  });
+    const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+    const requestId = req.body.requestId;
+    const queryString = `?process=staff-organisational-role-mapping&reference=${requestId}`;
+    const fullPath = `${basePath}/am/role-assignments${queryString}`;
+    const headers = setHeaders(req);
+    const body = toDenySADletionRequestedRoleBody(requestId);
+    /* tslint:disable:no-string-literal */
+    delete headers['accept'];
+    const response = await http.delete(fullPath, {
+      data: body,
+      headers
+    });
 
-  return response;
+    return response;
   } catch (error) {
     next(error);
   }
-
 }
 
 // this restores the specific access request role if task completion goes wrong
@@ -320,28 +319,28 @@ export function getRoleCategoryRequestPayload(caseId: string, jurisdiction: stri
         attributes: {
           caseId: [caseId],
           caseType: [caseType],
-          jurisdiction: [jurisdiction],
+          jurisdiction: [jurisdiction]
         },
-        roleCategory: SUPPORTED_ROLE_CATEGORIES,
-      },
-    ],
+        roleCategory: SUPPORTED_ROLE_CATEGORIES
+      }
+    ]
   };
 }
 
 export function getAccessRolesRequestPayload(caseId: string,
-                                             jurisdiction: string,
-                                             caseType: string): CaseRoleRequestPayload {
+  jurisdiction: string,
+  caseType: string): CaseRoleRequestPayload {
   return {
     queryRequests: [
       {
         attributes: {
-        caseId: [caseId],
-        caseType: [caseType],
-        jurisdiction: [jurisdiction],
+          caseId: [caseId],
+          caseType: [caseType],
+          jurisdiction: [jurisdiction]
         },
-        roleName: ['specific-access-requested'],
-      },
-    ],
+        roleName: ['specific-access-requested']
+      }
+    ]
   };
 }
 

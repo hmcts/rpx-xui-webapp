@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { Resolve } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
@@ -14,10 +14,9 @@ export class PanelMemberSearchResponseResolver implements Resolve<JudicialUserMo
   constructor(
     protected readonly judicialRefDataService: JudicialRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>
-  ) {
-  }
+  ) {}
 
-  public resolve(route?: ActivatedRouteSnapshot): Observable<JudicialUserModel[]> {
+  public resolve(): Observable<JudicialUserModel[]> {
     return this.getUsersByPanelRequirements$()
       .pipe(
         switchMap(panelMemberIds => {

@@ -26,7 +26,6 @@ class RoleAccessDataModel{
             requestedRole: null,
         }
     }
-
 }
 
 module.exports = new RoleAccessDataModel();

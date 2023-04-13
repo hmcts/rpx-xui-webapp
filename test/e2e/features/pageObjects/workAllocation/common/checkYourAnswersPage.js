@@ -74,7 +74,7 @@ class CheckYourAnswersPage{
 
     async getAnswerForQuestion(question) {
         await BrowserWaits.waitForElement(this.container);
-        
+
         const rowWithQuestion = this.getRowElementWithQuestion(question);
         if(!(await rowWithQuestion.isPresent())){
             throw new Error("Question is now found in page");
@@ -106,7 +106,6 @@ class CheckYourAnswersPage{
     getRowElementWithQuestion(question){
         return this.summaryListContainer.element(by.xpath(`//*[contains(@class,'govuk-summary-list__row')]//dt[contains(@class,'govuk-summary-list__key') and contains(text(),"${question}")]//ancestor::div[contains(@class,'govuk-summary-list__row')]`));
     }
-
 }
 
 module.exports = new CheckYourAnswersPage();

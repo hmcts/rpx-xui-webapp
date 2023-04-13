@@ -1,8 +1,8 @@
 /* tslint:disable:max-line-length */
 import MockAdapter from 'axios-mock-adapter';
-import {HttpMockAdapter} from '../../common/httpMockAdapter';
-import {ALL_JUDICIAL_USERS, RAW_JUDICIAL_USERS} from './data/judicial.mock.data';
-import {JudicialUserModel, RawJudicialUserModel} from "./models/judicialUser.model";
+import { HttpMockAdapter } from '../../common/httpMockAdapter';
+import { ALL_JUDICIAL_USERS, RAW_JUDICIAL_USERS } from './data/judicial.mock.data';
+import { JudicialUserModel, RawJudicialUserModel } from './models/judicialUser.model';
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
@@ -15,7 +15,7 @@ export const init = () => {
     const searchResult: JudicialUserModel[] = ALL_JUDICIAL_USERS.filter(user => user.fullName.toLowerCase().includes(searchedValue.toLowerCase()));
     return [
       200,
-      searchResult,
+      searchResult
     ];
   });
 
@@ -25,7 +25,7 @@ export const init = () => {
     const searchResult: RawJudicialUserModel[] = RAW_JUDICIAL_USERS.filter(user => personalCodes.includes(user.personal_code));
     return [
       200,
-      searchResult,
+      searchResult
     ];
   });
 

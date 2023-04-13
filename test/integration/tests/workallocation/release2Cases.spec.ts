@@ -6,7 +6,6 @@ import { reporterJson, reporterMsg, setTestContext } from '../utils/helper';
 import Request from '../utils/request';
 import CaseRequestBody from '../utils/wa/caseRequestBody';
 
-
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
 describe('Work allocation Release 2:  Cases', () => {
@@ -43,7 +42,6 @@ describe('Work allocation Release 2:  Cases', () => {
             expect(actualKeys).to.include.members(expectedCaseKeys);
 
         }
-
     });
 
     it('Get All work cases', async function () {
@@ -70,9 +68,7 @@ describe('Work allocation Release 2:  Cases', () => {
             expect(actualKeys).to.include.members(expectedCaseKeys);
 
         }
-
     });
-
 
     async function getCases(view, users){
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
@@ -89,7 +85,6 @@ describe('Work allocation Release 2:  Cases', () => {
         const response = await Request.post(`workallocation/my-work/cases`, caseRequestObj.getRequestBody(), headers, 200);
         return response;
     }
-
 
     function getSearchCaseReqBody(view, users,locations,userType) {
         // const response = await Request.get('api/user/details', null, 200);
@@ -124,7 +119,4 @@ describe('Work allocation Release 2:  Cases', () => {
 
         return caseRequestBody;
     }
-
 });
-
-

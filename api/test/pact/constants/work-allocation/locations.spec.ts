@@ -59,4 +59,4 @@ export const LOCATION_COMBINATIONS = [
 
   [ E ],
   []
-]
+];

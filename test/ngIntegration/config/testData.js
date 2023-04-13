@@ -15,7 +15,7 @@ const data = {
             }
         },
         taskListColumns:{
-            myTasks: { 
+            myTasks: {
                 wa_release_1: ["Case reference", "Case name", "Case category", "Location", "Task", "Date", "Assignee"],
                 wa_release_2: ["Case name", "Case category", "Location", "Task", "Age of task"]
             },
@@ -23,11 +23,9 @@ const data = {
                 wa_release_1: ["Case reference", "Case name", "Case category", "Location", "Task", "Date"],
                 wa_release_2: ["Case name", "Case category", "Location", "Task", "Age of task"]
             }
-           
-        }
-        
-    }
 
+        }
+    }
 };
 
 module.exports = data;

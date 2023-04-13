@@ -24,6 +24,5 @@ class ApplyForProbatePage {
 
     await this.saveandContinueButton.click();
   }
-
 }
 module.exports = ApplyForProbatePage;

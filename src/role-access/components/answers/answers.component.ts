@@ -16,8 +16,6 @@ export class AnswersComponent {
 
   @Output() public navigate = new EventEmitter<string>();
 
-  constructor() {}
-
   public changeAction(action: string): void {
     this.navigate.emit(action);
   }

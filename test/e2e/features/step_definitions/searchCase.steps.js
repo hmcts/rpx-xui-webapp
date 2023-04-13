@@ -31,11 +31,10 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
           await headerPage.refreshBrowser();
           await browserUtil.waitForLD();
         }
-        attemptCounter++; 
+        attemptCounter++;
         await BrowserWaits.waitForSpinnerToDissappear();
         await headerPage.clickCaseList();
       });
-       
     });
 
   Then(/^Search page should be displayed$/, async function () {
@@ -79,9 +78,8 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
         }
         throw new Error(err);
       }
-      
     });
-   
+
   });
 
   When('I enter search fields jurisdiction {string} case type {string} and click apply', async function (jurisdiction, caseType) {
@@ -107,14 +105,11 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
         }
         throw new Error(err);
       }
-
     });
-
   });
 
   When('I reset case search fields', async function(){
     await searchPage.clickResetButton();
-
   });
 
   When('I click apply to perform case search', async function () {
@@ -124,16 +119,16 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
     let isCaseListPage = await caseListContainer.isPresent();
     let isSearchCasesPage = await searchCasesContainer.isPresent();
 
-    
+
     await BrowserWaits.retryWithActionCallback(async () => {
       try{
         if (isSearchCasesPage){
           await searchPage.clickApplyButton();
- 
+
         } else if (isCaseListPage){
           await caseListPage.clickApplyButton();
         }else{
-          throw new Error("Not case list or search page to perform filter apply action on workbasket or search inputs."); 
+          throw new Error("Not case list or search page to perform filter apply action on workbasket or search inputs.");
         }
       }catch(err){
         CucumberReporter.AddMessage(`Retrying steps select inputs and click apply`, LOG_LEVELS.Info);
@@ -164,12 +159,11 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
         }
         throw new Error(err);
       }
-    }); 
+    });
   });
 
   When('I open first case in search results', async function () {
     await searchPage.openFirstCaseInResults();
-
   });
 
   Then('I see results returned', async function () {
@@ -178,10 +172,10 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
 
     let isCaseListPage = await caseListContainer.isPresent();
     let isSearchCasesPage = await searchCasesContainer.isPresent();
-    
+
 
     await BrowserWaits.retryWithActionCallback(async () => {
-  
+
       try{
         await searchPage.waitForAtleastOneSearchResult();
         await expect(await searchPage.hasSearchReturnedResults()).to.be.true;
@@ -215,10 +209,9 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
 
           await caseListPage.clickSearchApplyBtn();
         }
-       
+
         throw new Error(err);
       }
-   
   });
 });
 

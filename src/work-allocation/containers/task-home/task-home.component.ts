@@ -4,10 +4,8 @@ import { FeatureToggleService, FilterPersistence, SubNavigation } from '@hmcts/r
 import { Observable, Subscription } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
 import { AppConstants } from 'src/app/app.constants';
-
 import { AppUtils } from '../../../app/app-utils';
 import { ErrorMessage } from '../../../app/models';
-import { SessionStorageService } from '../../../app/services';
 import { AllocateRoleService } from '../../../role-access/services';
 import { SortField } from '../../models/common';
 
@@ -31,7 +29,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
    */
   public subNavigationItems: SubNavigation[] = [
     this.MY_TASKS,
-    {text: 'Available tasks', href: '/work/my-work/available', active: false}
+    { text: 'Available tasks', href: '/work/my-work/available', active: false }
   ];
 
   private routeSubscription: Subscription;
@@ -46,15 +44,15 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     this.subNavigationItems.push({ text: 'My cases', href: '/work/my-work/my-cases', active: false });
     this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waAccess, null).subscribe(hasMyAccess => {
       if (hasMyAccess) {
-        this.subNavigationItems.push({text: 'My access', href: '/work/my-work/my-access', active: false});
+        this.subNavigationItems.push({ text: 'My access', href: '/work/my-work/my-access', active: false });
       }
     });
 
     this.allocateRoleService.getMyAccessNewCount().subscribe( (countOfApproval) => {
-     const myAccessNavItem = this.subNavigationItems.find(nav => nav.text === 'My access' ) ;
-     if ( myAccessNavItem ) {
-      myAccessNavItem.roundel = countOfApproval.count ;
-     }
+      const myAccessNavItem = this.subNavigationItems.find(nav => nav.text === 'My access' ) ;
+      if ( myAccessNavItem ) {
+        myAccessNavItem.roundel = countOfApproval.count ;
+      }
     });
 
     this.routeSubscription = this.router.events.subscribe(event => {

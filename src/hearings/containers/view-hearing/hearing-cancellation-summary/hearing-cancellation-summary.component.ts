@@ -4,7 +4,7 @@ import { Mode } from '../../../models/hearings.enum';
 
 @Component({
   selector: 'exui-hearing-cancellation-summary',
-  templateUrl: './hearing-cancellation-summary.component.html',
+  templateUrl: './hearing-cancellation-summary.component.html'
 })
 export class HearingCancellationSummaryComponent {
 

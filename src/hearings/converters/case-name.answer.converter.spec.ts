@@ -16,8 +16,7 @@ describe('CaseNameAnswerConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = caseNameAnswerConverter.transformAnswer(of(STATE));
     const caseName = 'Jane vs DWP';
-    const expected = cold('(b|)', {b: caseName});
+    const expected = cold('(b|)', { b: caseName });
     expect(result$).toBeObservable(expected);
   });
-
 });

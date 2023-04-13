@@ -35,7 +35,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private readonly selectedLocation: Location = {
     id: '**ALL LOCATIONS**',
     locationName: '',
-    services: [],
+    services: []
   };
   private selectedTaskCategory: string = 'All';
   private selectedPerson: string = '';
@@ -82,7 +82,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       const searchParameters = [
-        {key: 'jurisdiction', operator: 'IN', values: this.selectedServices},
+        { key: 'jurisdiction', operator: 'IN', values: this.selectedServices },
         this.getStateParameter()
       ];
       const personParameter = { key: 'user', operator: 'IN', values: [this.selectedPerson] };
@@ -150,7 +150,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
 
   private getTaskTypeParameter(): any {
     if (this.selectedTaskType && this.selectedTaskType !== AllWorkTaskComponent.ALL_TASKS) {
-      return {key: 'role_category', operator: 'IN', values: [this.selectedTaskType]};
+      return { key: 'role_category', operator: 'IN', values: [this.selectedTaskType] };
     }
   }
 }

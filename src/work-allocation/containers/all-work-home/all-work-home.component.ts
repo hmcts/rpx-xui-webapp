@@ -13,16 +13,15 @@ export class AllWorkHomeComponent implements OnInit, OnDestroy {
   public pageTitle: string;
 
   public subNavigationItems: SubNavigation[] = [
-    {text: 'Tasks', href: '/work/all-work/tasks', active: true},
-    {text: 'Cases', href: '/work/all-work/cases', active: false}
+    { text: 'Tasks', href: '/work/all-work/tasks', active: true },
+    { text: 'Cases', href: '/work/all-work/cases', active: false }
   ];
 
   private routeSubscription: Subscription;
 
   constructor(
     private readonly router: Router
-  ) {
-  }
+  ) {}
 
   public ngOnInit(): void {
     this.routeSubscription = this.router.events.subscribe(event => {

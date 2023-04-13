@@ -4,15 +4,14 @@ import { StoreModule } from '@ngrx/store';
 import { CaseFlagsRefDataService } from './case-flags-ref-data.service';
 
 describe('CaseFlagsRefDataService', () => {
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        StoreModule.forRoot({}),
+        StoreModule.forRoot({})
       ],
       providers: [
-        CaseFlagsRefDataService,
+        CaseFlagsRefDataService
       ]
     });
   });
@@ -31,7 +30,5 @@ describe('CaseFlagsRefDataService', () => {
       expect(req.request.method).toEqual('GET');
       req.flush(null);
     }));
-
   });
-
 });

@@ -12,12 +12,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         if (!objectAtReference){
             throw new Error(`Object with reference "${objectReference}" not found, check tests steps if reference with with set`);
         }
-       
+
         const rowhash = datatable.rowsHash();
 
         for (const rowKey of Object.keys(rowhash)){
             objectAtReference[rowKey] = rowhash[rowKey];
         }
     });
-
 });

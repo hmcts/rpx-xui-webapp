@@ -28,7 +28,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
   public userDetails$: Observable<UserDetails>;
   public errorMessage = {
     title: 'There is a problem',
-    description: SpecificAccessErrors.NO_SELECTION,
+    description: SpecificAccessErrors.NO_SELECTION
   };
   public optionsList: OptionsModel[];
 
@@ -55,7 +55,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
     this.accessReasons = [
       { reason: AccessReason.APPROVE_REQUEST, checked: false },
       { reason: AccessReason.REJECT_REQUEST, checked: false },
-      { reason: AccessReason.REQUEST_MORE_INFORMATION, checked: false },
+      { reason: AccessReason.REQUEST_MORE_INFORMATION, checked: false }
     ];
   }
 
@@ -82,7 +82,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
     }
     this.reviewOptionControl = new FormControl(this.initialAccessReason ? this.initialAccessReason : '', [Validators.required]);
     this.formGroup = this.fb.group({
-      radioSelected: this.reviewOptionControl,
+      radioSelected: this.reviewOptionControl
     });
     this.optionsList = [
       {
@@ -141,7 +141,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
                   caseName: specificAccess.caseName,
                   requestCreated: specificAccess.requestCreated,
                   roleCategory: specificAccess.roleCategory,
-                  person: { id: specificAccess.actorId, name: null, domain: null },
+                  person: { id: specificAccess.actorId, name: null, domain: null }
                 };
               }
             });

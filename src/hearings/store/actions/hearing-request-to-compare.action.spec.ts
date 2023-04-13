@@ -7,11 +7,10 @@ describe('Hearing Request To Compare Actions', () => {
       const payload = {
         requestDetails: null,
         hearingDetails: null,
-        partyDetails: null,
+        partyDetails: null
       };
       const action = new fromHearingRequestToCompareAction.InitializeHearingRequestToCompare(payload);
       expect(action.type).toBe(fromHearingRequestToCompareAction.INITIALIZE_HEARING_REQUEST_TO_COMPARE);
     });
   });
-
 });

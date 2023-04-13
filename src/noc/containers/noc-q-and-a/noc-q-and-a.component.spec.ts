@@ -1,8 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { NocNavigationEvent } from '../../../noc/models';
 import * as fromNocStore from '../../store';
@@ -115,7 +115,6 @@ describe('NocQAndAComponent', () => {
         expect(result).toBeFalsy();
       });
     });
-
   });
 
   afterEach(() => {

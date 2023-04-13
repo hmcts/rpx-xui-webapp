@@ -9,18 +9,18 @@ class ShareCaseData
     AddCaseShareData(caseid, sharedWith, tobeShared, tobeRemoved) {
         let caseData = this.getCaseWithId(caseid);
         if (caseData !== null) {
-            // caseData.sharedWith = sharedWith; 
+            // caseData.sharedWith = sharedWith;
             // caseData.markedForShare = tobeShared;
-            // caseData.markedForUnShare = tobeRemoved; 
-        } 
+            // caseData.markedForUnShare = tobeRemoved;
+        }
         else{
             caseData = {
                 caseId: caseid,
                 sharedWith: sharedWith,
                 markedForShare: tobeShared,
-                markedForUnShare: tobeRemoved 
+                markedForUnShare: tobeRemoved
             };
-            cases.push(caseData); 
+            cases.push(caseData);
         }
     }
 
@@ -61,7 +61,7 @@ class ShareCaseData
         for (let i = 0; i < cases.length; i++) {
             let caseData = cases[i];
             caseData.markedForShare = [];
-            caseData.markedForUnShare = [];       
+            caseData.markedForUnShare = [];
         }
     }
 
@@ -73,7 +73,6 @@ class ShareCaseData
                 caseData.markedForUnShare = [];
             }
         }
-
     }
 
     changesCommited(){
@@ -82,9 +81,9 @@ class ShareCaseData
             for (let sharedWithUser = 0; sharedWithUser < caseData.markedForShare.length; sharedWithUser++){
                 let email = caseData.markedForShare[sharedWithUser];
                 if (caseData.sharedWith.indexOf(email) < 0) {
-                    caseData.sharedWith.push(email); 
+                    caseData.sharedWith.push(email);
                 }
-            }    
+            }
 
             for (let sharedWithUser = 0; sharedWithUser < caseData.markedForUnShare.length; sharedWithUser++) {
                 let email = caseData.markedForUnShare[sharedWithUser];
@@ -93,9 +92,8 @@ class ShareCaseData
                 if (index > -1) {
                     caseData.sharedWith.splice(index, email);
                 }
-            }   
+            }
         }
-
     }
 
     getCaseWithId(id) {

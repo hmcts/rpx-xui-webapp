@@ -5,7 +5,6 @@ import { getXSRFToken } from '../utils/authUtil';
 import { setTestContext } from '../utils/helper';
 import Request from '../utils/request';
 
-
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
 describe('Work allocation Release 2: locations search', () => {
@@ -16,8 +15,6 @@ describe('Work allocation Release 2: locations search', () => {
         setTestContext(this);
         Request.clearSession();
     });
-
-
 
     // [
     //     {
@@ -55,7 +52,6 @@ describe('Work allocation Release 2: locations search', () => {
     //         this.timeout(60000);
     //         await Request.withSession(caseOfficer, caseofficerPass);
     //         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
-
 
     //         const headers = {
     //             'X-XSRF-TOKEN': xsrfToken,
@@ -106,11 +102,4 @@ describe('Work allocation Release 2: locations search', () => {
 
     //     });
     // });
-
-
-
-
-
 });
-
-

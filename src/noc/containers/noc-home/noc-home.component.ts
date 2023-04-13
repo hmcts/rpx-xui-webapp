@@ -16,13 +16,13 @@ import { NocQAndAComponent } from '../noc-q-and-a/noc-q-and-a.component';
 })
 export class NocHomeComponent implements OnInit, OnDestroy {
 
-  @ViewChild('nocCaseRef', {static: false, read: NocCaseRefComponent})
+  @ViewChild('nocCaseRef', { static: false, read: NocCaseRefComponent })
   public nocCaseRefComponent: NocCaseRefComponent;
 
-  @ViewChild('nocQandA', {static: false, read: NocQAndAComponent})
+  @ViewChild('nocQandA', { static: false, read: NocQAndAComponent })
   public nocQandAComponent: NocQAndAComponent;
 
-  @ViewChild('nocCheckAndSubmit', {static: false, read: NocCheckAndSubmitComponent})
+  @ViewChild('nocCheckAndSubmit', { static: false, read: NocCheckAndSubmitComponent })
   public nocCheckAndSubmitComponent: NocCheckAndSubmitComponent;
 
   public nocNavigationCurrentState: NocState;
@@ -40,7 +40,7 @@ export class NocHomeComponent implements OnInit, OnDestroy {
   constructor(
     private readonly store: Store<fromFeature.State>,
     private readonly router: Router
-  ) { }
+  ) {}
 
   public ngOnInit() {
     this.nocNavigationCurrentStateSub = this.store.pipe(select(fromFeature.currentNavigation)).subscribe(state => this.nocNavigationCurrentState = state);
@@ -64,7 +64,7 @@ export class NocHomeComponent implements OnInit, OnDestroy {
         switch (this.nocNavigationCurrentState) {
           case NocState.START:
           case NocState.CASE_REF_VALIDATION_FAILURE:
-            this.router.navigateByUrl('').then(r => {
+            this.router.navigateByUrl('').then(() => {
               return;
             });
             break;

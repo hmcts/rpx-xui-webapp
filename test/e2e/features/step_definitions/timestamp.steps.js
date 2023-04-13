@@ -16,6 +16,5 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
       let currentDate = new Date();
       expect(await caseManager.getTimestampDisplayed()).to.be.contain(currentDate.toLocaleTimeString());
     });
-
 });
 

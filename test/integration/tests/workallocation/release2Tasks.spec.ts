@@ -6,7 +6,6 @@ import { reporterJson, reporterMsg, setTestContext } from '../utils/helper';
 import Request from '../utils/request';
 import TaskRequestBody from '../utils/wa/taskRequestBody';
 
-
 const workAllocationDataModels = require( '../../../dataModels/workAllocation');
 
 describe('Work allocations Release 2: Tasks', () => {
@@ -43,7 +42,6 @@ describe('Work allocations Release 2: Tasks', () => {
             expect(actual.tasks[0]).to.have.all.keys(Object.keys(expected.tasks[0]));
 
         }
-
     });
 
     it('case officer, Available tasks', async function () {
@@ -67,10 +65,8 @@ describe('Work allocations Release 2: Tasks', () => {
         expect(actual).to.have.all.keys(Object.keys(expected));
         if (actual.tasks.length > 0 ) {
             expect(Object.keys(actual.tasks[0])).to.include.members(expectedKeys);
-
         }
     });
-
 
     it('case officer, `All work tasks`', async function () {
         this.timeout(60000);
@@ -93,10 +89,8 @@ describe('Work allocations Release 2: Tasks', () => {
         expect(actual).to.have.all.keys(Object.keys(expected));
         if (actual.tasks.length > 0 ) {
             expect(expectedKeys).to.include.members(Object.keys(actual.tasks[0]));
-
         }
     });
-
 
     it('case officer,Assign to me task', async function () {
         this.timeout(60000);
@@ -109,7 +103,6 @@ describe('Work allocations Release 2: Tasks', () => {
         const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
         const tasksRes = await getTasks('AvailableTasks', [userDetailsRes.data.userInfo.id], 1);
         const caseworkerRes = await Request.get(`workallocation/caseworker`, headers, 200);
-
 
         const idamId = caseworkerRes.data[0].idamId;
 
@@ -128,11 +121,8 @@ describe('Work allocations Release 2: Tasks', () => {
             };
             const assignTaskRes2 = await Request.post(`workallocation/task/${tasksRes.data.tasks[1].id}/claim`, assignTaskReqBody, assignTasksHeader, 204);
             expect(assignTaskRes2.status).to.equal(204);
-
         }
-
     });
-
 
     it('case officer reassign task', async function () {
         this.timeout(60000);
@@ -148,7 +138,6 @@ describe('Work allocations Release 2: Tasks', () => {
         const tasksRes = await getTasks('MyTasks', [userDetailsRes.data.userInfo.id], 1);
         const caseworkerRes = await Request.get(`workallocation/caseworker`, headers, 200);
 
-
         const idamId = caseworkerRes.data[0].idamId;
 
         const assignTaskReqBody = { userId: idamId }
@@ -160,7 +149,6 @@ describe('Work allocations Release 2: Tasks', () => {
             const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[0].id}/assign`, assignTaskReqBody, assignTasksHeader, 204);
             expect(assignTaskRes.status).to.equal(204);
         }
-
     });
 
     it('case officer Unassign task', async function () {
@@ -176,7 +164,6 @@ describe('Work allocations Release 2: Tasks', () => {
 
         const tasksRes = await getTasks('MyTasks', [userDetailsRes.data.userInfo.id], 1);
 
-
         const assignTaskReqBody = {}
         const assignTasksHeader = {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
@@ -186,9 +173,7 @@ describe('Work allocations Release 2: Tasks', () => {
             const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[0].id}/unclaim`, assignTaskReqBody, assignTasksHeader, 204);
             expect(assignTaskRes.status).to.equal(204);
         }
-
     });
-
 
     it('case officer Mark as done/complete task', async function () {
         this.timeout(60000);
@@ -199,7 +184,6 @@ describe('Work allocations Release 2: Tasks', () => {
         };
 
         const tasksRes = await getTasks('AllWork', [],1);
-
 
         const assignTaskReqBody = {}
         const assignTasksHeader = {
@@ -219,10 +203,7 @@ describe('Work allocations Release 2: Tasks', () => {
         } else {
             reporterMsg('No tasks retuened with assignee, complete task can be performed only on already assigned tasks. skipping complete task step in tests due to data unavailability');
         }
-
-
     });
-
 
     it('case officer Cancel task/cancel', async function () {
         this.timeout(60000);
@@ -234,7 +215,6 @@ describe('Work allocations Release 2: Tasks', () => {
 
         const tasksRes = await getTasks('AllWork', [], 1);
 
-
         const assignTaskReqBody = {}
         const assignTasksHeader = {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
@@ -244,7 +224,6 @@ describe('Work allocations Release 2: Tasks', () => {
             const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[0].id}/cancel`, assignTaskReqBody, assignTasksHeader, 204);
             expect(assignTaskRes.status).to.equal(204);
         }
-
     });
 
     it('case officer, `Task manager tasks pagination`', async function () {
@@ -267,7 +246,6 @@ describe('Work allocations Release 2: Tasks', () => {
             //expect(response.data.tasks.length).to.equal(response.data.total_records > 20 ? 10 : response.data.total_records - 10);
 
         }
-
     });
 
     async function getTasks(view, users,pageNum){
@@ -339,7 +317,4 @@ describe('Work allocations Release 2: Tasks', () => {
 
         return taskRequestBody;
     }
-
 });
-
-

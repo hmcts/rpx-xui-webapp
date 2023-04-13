@@ -1,5 +1,5 @@
 const { LOG_LEVELS } = require("../../../../support/constants");
-const BrowserWaits = require("../../../../support/customWaits"); 
+const BrowserWaits = require("../../../../support/customWaits");
 const CucumberReporter = require("../../../../support/reportLogger");
 const exuiErrorMessage = require("../../common/exuiErrorMessage");
 
@@ -59,7 +59,7 @@ class FindPersonComponent{
         try{
             await BrowserWaits.waitForConditionAsync(async () => await this.searchResultsContainer.isDisplayed(),5000);
             return true;
-        } 
+        }
         catch(err){
             CucumberReporter.AddMessage(err.stack, LOG_LEVELS.Error);
             return false;
@@ -77,7 +77,7 @@ class FindPersonComponent{
             }
             return resulttexts;
         });
-        
+
     }
 
     async getResultElementWithText(resulttext){
@@ -105,7 +105,6 @@ class FindPersonComponent{
         const searchInputvalue = await this.searchInput.getAttribute("value");
         return searchInputvalue.includes(personText);
     }
-
 }
 
 module.exports = FindPersonComponent;

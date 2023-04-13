@@ -1,10 +1,10 @@
-import {Component, Input} from '@angular/core';
+import { Component, Input } from '@angular/core';
 
-import {InfoMessage, InfoMessageType} from './../../enums';
+import { InfoMessage, InfoMessageType } from './../../enums';
 
 @Component({
   selector: 'exui-info-message',
-  templateUrl: './info-message.component.html',
+  templateUrl: './info-message.component.html'
 })
 export class InfoMessageComponent {
 

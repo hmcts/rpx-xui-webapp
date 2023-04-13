@@ -25,7 +25,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click cancel in case edit page', async function(){
-        await caseEditPage.clickCancelLinkInEditPage(); 
+        await caseEditPage.clickCancelLinkInEditPage();
      });
 
     When('I click cancel in case edit page then I see page case list page', async function(){
@@ -53,17 +53,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
      Then('I validate config {string} case edit wizard pages and fields in pages', async function(configReference){
          const caseConfigInstance = global.scenarioData[configReference];
          const caseConfig = caseConfigInstance.getCase();
-         let validateReq = null; 
+         let validateReq = null;
          MockApp.addIntercept('/data/case-types/:caseType/validate', (req, res, next) => {
              validateReq = req.body;
-            //  console.log("/data/case-types/:caseType/validate req received : " + JSON.stringify(validateReq,2)); 
+            //  console.log("/data/case-types/:caseType/validate req received : " + JSON.stringify(validateReq,2));
              next();
          });
 
-         let submissionReq = null; 
+         let submissionReq = null;
          MockApp.addIntercept('/data/case-types/:caseType/cases', (req, res, next) => {
              submissionReq = req.body;
-             console.log("/data/case-types/:caseType/cases req received : " + submissionReq); 
+             console.log("/data/case-types/:caseType/cases req received : " + submissionReq);
              next();
          });
          await MockApp.stopServer();
@@ -81,8 +81,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                  const fieldConfig = caseConfig.case_fields.filter(field => field.id === pageField.case_field_id)[0];
                  // if (!fieldConfig.show_condition){
                  //     expect(await CaseEditPage.isFieldDisplayed(fieldConfig)).to.be.true;
-                 //     thisPageEventData[fieldConfig.id] = await CaseEditPage.inputCaseField(fieldConfig); 
-                 // }  
+                 //     thisPageEventData[fieldConfig.id] = await CaseEditPage.inputCaseField(fieldConfig);
+                 // }
                  expect(await caseEditPage.isFieldDisplayed(fieldConfig)).to.be.true;
                  thisPageEventData[fieldConfig.id] = await caseEditPage.inputCaseField(fieldConfig);
 
@@ -92,17 +92,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
              await BrowserWaits.waitForCondition(function () { return validateReq !== null; });
              expect(validateReq.data).to.deep.equal( thisPageEventData);
              eventData = Object.assign(eventData, thisPageEventData)
- 
+
          }
          await caseEditPage.waitForChecYourAnswersPage();
          await caseEditPage.validateCheckYourAnswersPage(caseConfig);
-       
+
          await caseEditPage.clickSubmit();
          await BrowserWaits.waitForCondition(async () => submissionReq !== null);
          expect(submissionReq.data).to.deep.equal(eventData);
 
          await caseDetailsPage.amOnPage()
-         
+
     });
 
     Then('I see collection field {string} {string} button is {string}', async function (fieldId, actionButton, buttonState) {
@@ -122,19 +122,18 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
         const buttonUnderTest = actionButton.includes("Add") ? addNewButton : removeButton;
-        expect(await buttonUnderTest.isEnabled(), `${actionButton} button is not ${buttonState}`).to.equal(buttonState.includes("enabled")) 
+        expect(await buttonUnderTest.isEnabled(), `${actionButton} button is not ${buttonState}`).to.equal(buttonState.includes("enabled"))
 
         // if (buttonState === "enabled"){
-        //     expect(await buttinUnderTest.isEnabled(), `${actionButton} button is not ${buttonState}`).to.be.true 
+        //     expect(await buttinUnderTest.isEnabled(), `${actionButton} button is not ${buttonState}`).to.be.true
         // }else{
-        //     expect(await buttinUnderTest.isEnabled(), `${actionButton} button is not ${buttonState}`).to.be.false 
+        //     expect(await buttinUnderTest.isEnabled(), `${actionButton} button is not ${buttonState}`).to.be.false
         // }
-
     });
 
     When('I input fields in case edit page from event {string} with values', async function (eventConfigRef, datatable){
         const caseConfigInstance = global.scenarioData[eventConfigRef];
-        const caseConfig = caseConfigInstance.getCase(); 
+        const caseConfig = caseConfigInstance.getCase();
         const fieldValues = datatable.hashes();
 
         for (const fieldValue of fieldValues){
@@ -147,13 +146,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     console.log(`${fieldValue.value} is in ${JSON.stringify(listItem)}`);
                     if (listItem.code === fieldValue.value){
                         value = listItem;
-                        break; 
-                    } 
-                } 
+                        break;
+                    }
+                }
                 if (value === null) {
                     throw new Error(`${fieldValue.fieldId} is list item and Provided value "${fieldValue.value}" not present in fieldConfig fixed_list_items ${JSON.stringify(fieldConfig.field_type.fixed_list_items)} ` );
                 }
-            } 
+            }
             await caseEditPage.inputCaseField(fieldConfig, value);
         }
     });
@@ -168,7 +167,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             const isExpectedToDisplay = fieldValue.isDisplayed.includes("true") ? true : false;
             expect(await caseEditPage.isFieldDisplayed(fieldConfig), `${fieldValue.fieldId} is ${isExpectedToDisplay ? "not": ""} displayed`).to.equal(isExpectedToDisplay);
         }
-
     });
 
     Then('I validate event page continue on validate request error status code {int}', async function(statusCode){
@@ -182,6 +180,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         await caseEditPage.clickContinue();
         expect(await caseEditPage.isCallbackErrorSummaryDisplayed(),' Error summary banner is not displayed').to.be.true;
-       
+
     });
 });

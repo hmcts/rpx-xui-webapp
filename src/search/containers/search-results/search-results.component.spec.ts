@@ -156,7 +156,7 @@ describe('SearchResultsComponent', () => {
         { provide: JurisdictionService, useValue: jurisdictionService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -210,7 +210,7 @@ describe('SearchResultsComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS }, relativeTo: route });
   });
 
-  it('should set \"more results to go\" flag correctly', () => {
+  it('should set "more results to go" flag correctly', () => {
     component.onSearchSubscriptionHandler([searchResultWithMoreResultsToGo, jurisdictions]);
     expect(component.moreResultsToGo).toBe(true);
   });

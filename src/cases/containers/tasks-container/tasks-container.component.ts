@@ -8,7 +8,7 @@ import { first, mergeMap, switchMap } from 'rxjs/operators';
 import { AppConstants } from '../../../app/app.constants';
 import { CaseRoleDetails } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
-import { Caseworker, } from '../../../work-allocation/models/dtos';
+import { Caseworker } from '../../../work-allocation/models/dtos';
 import { Task } from '../../../work-allocation/models/tasks';
 import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation/services';
 import { getAssigneeName } from '../../../work-allocation/utils';
@@ -32,8 +32,8 @@ export class TasksContainerComponent implements OnInit {
               private readonly caseworkerService: CaseworkerDataService,
               private readonly rolesService: AllocateRoleService,
               private readonly featureToggleService: FeatureToggleService) {
-                this.isUpdatedTaskPermissions$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
-               }
+    this.isUpdatedTaskPermissions$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
+  }
 
   public ngOnInit(): void {
     // note: internal logic used to be stored in resolver - resolver removed for smoother navigation purposes
@@ -52,11 +52,11 @@ export class TasksContainerComponent implements OnInit {
             return of([]);
           }
         })).pipe(mergeMap(caseworkers => {
-          this.caseworkers = caseworkers;
-          return this.tasks && this.tasks.length > 0 ? this.getAssignedNamesForTasks() : of(this.tasks);
-        })).subscribe(tasks => {
-          this.tasks = tasks;
-        });
+        this.caseworkers = caseworkers;
+        return this.tasks && this.tasks.length > 0 ? this.getAssignedNamesForTasks() : of(this.tasks);
+      })).subscribe(tasks => {
+        this.tasks = tasks;
+      });
     this.caseDetails = this.route.snapshot.data.case as CaseView;
   }
 

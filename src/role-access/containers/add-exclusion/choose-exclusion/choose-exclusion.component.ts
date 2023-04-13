@@ -44,8 +44,7 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
   };
   public optionsList: OptionsModel[] = [this.excludeMe, this.excludeOther];
 
-  constructor(private readonly store: Store<fromFeature.State>) {
-  }
+  constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
     const roleAccessState$ = this.store.pipe(select(fromFeature.getRoleAccessState));
@@ -55,7 +54,7 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
       this.setOptionsList(userDetails, exclusionStateData.jurisdiction);
     });
     this.radioOptionControl = new FormControl(this.exclusionOption ? this.exclusionOption : '', [Validators.required]);
-    this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
+    this.formGroup = new FormGroup({ [this.radioControlName]: this.radioOptionControl });
   }
 
   public setOptionsList(userDetails: UserDetails, jurisdiction: string) {

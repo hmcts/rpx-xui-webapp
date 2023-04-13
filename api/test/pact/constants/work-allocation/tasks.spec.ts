@@ -7,7 +7,7 @@ const KILI_MUSO = {
   caseCategory: 'Grant of representation',
   location: 'Taylor House',
   taskName: 'Apply for probate',
-  dueDate: new Date(1604938789000),
+  dueDate: new Date(1604938789000)
   //assignee: toAssignee(CASEWORKERS.JOHN_SMITH).userName
 };
 
@@ -148,7 +148,7 @@ export const freshTasks = (tasks: any[]): any[] => {
   return tasks.map(task => {
     return { ...task };
   });
-}
+};
 export const sortTasks = (tasks: any[], field: string, order: string) => {
   return tasks.sort((a: any, b: any) => {
     const aVal = a[field], bVal = b[field];
@@ -210,8 +210,7 @@ export const BAD_TASKS = {
   NAT_AUTHORISED,
   ANNE_SUPPORTED,
   SIR_VAN_ERROR
-}
-
+};
 
 export const ALL_TASKS = {
   ...TASKS,

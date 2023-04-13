@@ -21,7 +21,7 @@ import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-choose-role',
-  templateUrl: './choose-role.component.html',
+  templateUrl: './choose-role.component.html'
 })
 export class ChooseRoleComponent implements OnInit, OnDestroy {
   public ERROR_MESSAGE = ERROR_MESSAGE;
@@ -45,8 +45,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
   public jurisdiction: string;
 
   constructor(private readonly store: Store<fromFeature.State>,
-              private readonly route: ActivatedRoute) {
-  }
+              private readonly route: ActivatedRoute) {}
 
   public ngOnInit(): void {
     // roleCategory: 1. JUDICIAL/2. LEGAL_OPERATIONS which is exactly matched with back end

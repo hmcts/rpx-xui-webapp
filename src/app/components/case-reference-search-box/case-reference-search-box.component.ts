@@ -34,7 +34,7 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
     private readonly searchService: SearchService,
     private readonly router: Router,
     private readonly route: ActivatedRoute
-  ) { }
+  ) {}
 
   public ngOnInit(): void {
     this.formGroup = this.fb.group({
@@ -92,7 +92,7 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
   public navigateToCaseDetails(isCaseDetailsPage: boolean, caseReference: string): void {
     if (isCaseDetailsPage) {
 
-      this.router.navigateByUrl(`/cases/case-loader`, { skipLocationChange: true }).then(() => {
+      this.router.navigateByUrl('/cases/case-loader', { skipLocationChange: true }).then(() => {
         this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
       });
     } else {

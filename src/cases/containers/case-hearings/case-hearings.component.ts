@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
-import { combineLatest, Observable, of, Subscription } from 'rxjs';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserRole } from '../../../app/models';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
@@ -89,7 +89,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         this.serverError = {
           id: 'backendError', message: HearingSummaryEnum.BackendError
         };
-        window.scrollTo({left: 0, top: 0, behavior: 'smooth'});
+        window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
       } else {
         // Reset the error context if there is no error on subsequent requests
         this.serverError = null;
@@ -117,24 +117,24 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public getHearingListByStatus(status: EXUISectionStatusEnum | EXUIDisplayStatusEnum): Observable<HearingListViewModel[]> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
       map(hearingListStateData => {
-          if (hearingListStateData && hearingListStateData.hearingListMainModel && hearingListStateData.hearingListMainModel.caseHearings) {
-            let caseHearingModels: HearingListModel[] = [];
-            if (Object.values(EXUISectionStatusEnum).includes(status as EXUISectionStatusEnum)) {
-              caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
-                hearing.exuiSectionStatus === status
-              );
-            }
-            if (Object.values(EXUIDisplayStatusEnum).includes(status as EXUIDisplayStatusEnum)) {
-              caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
-                hearing.exuiDisplayStatus === status
-              );
-            }
-            const caseHearingViewModels: HearingListViewModel[] = this.calculateEarliestHearingDate(caseHearingModels);
-            return this.sortHearingsByHearingAndRequestDate(caseHearingViewModels);
-          } else {
-            return [];
+        if (hearingListStateData && hearingListStateData.hearingListMainModel && hearingListStateData.hearingListMainModel.caseHearings) {
+          let caseHearingModels: HearingListModel[] = [];
+          if (Object.values(EXUISectionStatusEnum).includes(status as EXUISectionStatusEnum)) {
+            caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
+              hearing.exuiSectionStatus === status
+            );
           }
+          if (Object.values(EXUIDisplayStatusEnum).includes(status as EXUIDisplayStatusEnum)) {
+            caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
+              hearing.exuiDisplayStatus === status
+            );
+          }
+          const caseHearingViewModels: HearingListViewModel[] = this.calculateEarliestHearingDate(caseHearingModels);
+          return this.sortHearingsByHearingAndRequestDate(caseHearingViewModels);
+        } else {
+          return [];
         }
+      }
       )
     );
   }
@@ -158,15 +158,15 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
   public sortHearingsByHearingAndRequestDate(arrayToBeSorted: HearingListViewModel[]): HearingListViewModel[] {
     return arrayToBeSorted.sort((a, b) => {
-        if (a.earliestHearingStartDateTime === b.earliestHearingStartDateTime) {
-          return new Date(a.hearingRequestDateTime) > new Date(b.hearingRequestDateTime) ? -1 : 1;
-        } else if (a.earliestHearingStartDateTime === null) {
-          return -1;
-        } else if (b.earliestHearingStartDateTime === null) {
-          return 1;
-        }
-        return new Date(a.earliestHearingStartDateTime) > new Date(b.earliestHearingStartDateTime) ? -1 : 1;
+      if (a.earliestHearingStartDateTime === b.earliestHearingStartDateTime) {
+        return new Date(a.hearingRequestDateTime) > new Date(b.hearingRequestDateTime) ? -1 : 1;
+      } else if (a.earliestHearingStartDateTime === null) {
+        return -1;
+      } else if (b.earliestHearingStartDateTime === null) {
+        return 1;
       }
+      return new Date(a.earliestHearingStartDateTime) > new Date(b.earliestHearingStartDateTime) ? -1 : 1;
+    }
     );
   }
 

@@ -8,8 +8,7 @@ export class AuthService {
   constructor(
     private readonly httpService: HttpClient,
     private readonly sessionStorageService: SessionStorageService
-  ) {
-  }
+  ) {}
 
   public loginRedirect() {
     const href = '/auth/login';

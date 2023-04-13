@@ -1,22 +1,24 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {NO_ERRORS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {ReactiveFormsModule} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {Observable, of} from 'rxjs';
-import {hearingActualsMainModel, initialState} from '../../hearing.test.data';
-import {LovRefDataModel} from '../../models/lovRefData.model';
-import {ConvertToValuePipe} from '../../pipes/convert-to-value.pipe';
-import {HearingAnswersPipe} from '../../pipes/hearing-answers.pipe';
-import {HearingActualSummaryComponent} from './hearing-actual-summary.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { Observable, of } from 'rxjs';
+import { hearingActualsMainModel, initialState } from '../../hearing.test.data';
+import { LovRefDataModel } from '../../models/lovRefData.model';
+import { ConvertToValuePipe } from '../../pipes/convert-to-value.pipe';
+import { HearingAnswersPipe } from '../../pipes/hearing-answers.pipe';
+import { HearingActualSummaryComponent } from './hearing-actual-summary.component';
 
 describe('HearingActualSummaryComponent', () => {
   let component: HearingActualSummaryComponent;
   let fixture: ComponentFixture<HearingActualSummaryComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: Router;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mockStore: any;
   const PARTY_CHANNELS: LovRefDataModel[] = [
     {
@@ -30,7 +32,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'HearingChannel',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'byPhone',
@@ -55,7 +57,7 @@ describe('HearingActualSummaryComponent', () => {
           category_key: 'HearingChannel',
           parent_category: 'byPhone',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           key: 'telephone-CVP',
@@ -68,7 +70,7 @@ describe('HearingActualSummaryComponent', () => {
           category_key: 'HearingChannel',
           parent_category: 'byPhone',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           key: 'telephone-other',
@@ -81,7 +83,7 @@ describe('HearingActualSummaryComponent', () => {
           category_key: 'HearingChannel',
           parent_category: 'byPhone',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           key: 'telephone-skype',
@@ -94,9 +96,9 @@ describe('HearingActualSummaryComponent', () => {
           category_key: 'HearingChannel',
           parent_category: 'byPhone',
           active_flag: 'Y',
-          child_nodes: null,
-        },
-      ],
+          child_nodes: null
+        }
+      ]
     },
     {
       key: 'byVideo',
@@ -121,7 +123,7 @@ describe('HearingActualSummaryComponent', () => {
           category_key: 'HearingChannel',
           parent_category: 'byVideo',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           key: 'video-other',
@@ -134,7 +136,7 @@ describe('HearingActualSummaryComponent', () => {
           category_key: 'HearingChannel',
           parent_category: 'byVideo',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           key: 'video-skype',
@@ -147,7 +149,7 @@ describe('HearingActualSummaryComponent', () => {
           category_key: 'HearingChannel',
           parent_category: 'byVideo',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           key: 'video-teams',
@@ -160,9 +162,9 @@ describe('HearingActualSummaryComponent', () => {
           category_key: 'HearingChannel',
           parent_category: 'byVideo',
           active_flag: 'Y',
-          child_nodes: null,
-        },
-      ],
+          child_nodes: null
+        }
+      ]
     },
     {
       key: 'notAttending',
@@ -175,8 +177,8 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'HearingChannel',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
-    },
+      child_nodes: null
+    }
   ];
   const HEARING_ROLES: LovRefDataModel[] = [
     {
@@ -398,7 +400,7 @@ describe('HearingActualSummaryComponent', () => {
         HearingAnswersPipe, ConvertToValuePipe
       ],
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -409,11 +411,11 @@ describe('HearingActualSummaryComponent', () => {
                 hearingStageOptions: HEARING_TYPES
               }
             },
-            fragment: of('point-to-me'),
+            fragment: of('point-to-me')
           }
-        },
+        }
       ],
-      schemas: [NO_ERRORS_SCHEMA],
+      schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
     mockStore = TestBed.inject(Store);

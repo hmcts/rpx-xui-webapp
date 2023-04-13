@@ -41,7 +41,6 @@ describe('Work Allocation: ', function () {
         actions.push(...PallyActions.clickElement(allWorkLocators.tasks))
 
         await pa11ytest(this, actions, conf.baseUrl + '/');
-
     });
 
 

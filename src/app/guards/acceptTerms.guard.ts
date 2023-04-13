@@ -9,8 +9,7 @@ import * as fromApp from '../store';
   providedIn: 'root'
 })
 export class AcceptTermsGuard implements CanActivate {
-  constructor(private readonly store: Store<fromApp.State>) {
-  }
+  constructor(private readonly store: Store<fromApp.State>) {}
 
   public canActivate(): Observable<boolean> {
     try {

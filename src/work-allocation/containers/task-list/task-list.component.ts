@@ -53,14 +53,13 @@ export class TaskListComponent implements OnChanges {
   public defaultSortElement: HTMLElement;
   public newUrl: string;
 
-  constructor(private readonly router: Router, private readonly sessionStorageService: SessionStorageService) {
-  }
+  constructor(private readonly router: Router, private readonly sessionStorageService: SessionStorageService) {}
 
   public get showResetSortButton(): boolean {
     if (!this.sortedBy) {
       return false;
     }
-    const {defaultSortFieldName, defaultSortDirection} = this.taskServiceConfig;
+    const { defaultSortFieldName, defaultSortDirection } = this.taskServiceConfig;
     return !(this.sortedBy.fieldName === defaultSortFieldName && this.sortedBy.order === defaultSortDirection);
   }
 
@@ -212,8 +211,8 @@ export class TaskListComponent implements OnChanges {
   }
 
   private setDefaultSort(): void {
-    const {defaultSortFieldName, defaultSortDirection} = this.taskServiceConfig;
-    this.sortedBy = {fieldName: defaultSortFieldName, order: defaultSortDirection};
+    const { defaultSortFieldName, defaultSortDirection } = this.taskServiceConfig;
+    this.sortedBy = { fieldName: defaultSortFieldName, order: defaultSortDirection };
   }
 
   private setupHash(): void {
@@ -232,5 +231,4 @@ export class TaskListComponent implements OnChanges {
   private getCurrentTaskCount(): number {
     return this.tasks ? this.tasks.length : 0;
   }
-
 }

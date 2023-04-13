@@ -5,11 +5,11 @@ class GlobalSearchMockData{
         this.mockName = "TEST_1";
         this.reset();
     }
-    
+
     reset(){
         this.searchResponse = globalSearchDataModel.getResults();
 
-       
+
         this.searchResponse.results[10].processForAccess = "CHALLENGED";
         this.searchResponse.results[11].processForAccess = "SPECIFIC";
         // this.searchResponse.results[11].baseLocationName = "Demo location";
@@ -37,7 +37,6 @@ class GlobalSearchMockData{
             }
         ]
     }
-
 }
 
 

@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { Observable, of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { PersonRole } from '../../../../api/workAllocation/interfaces/person';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { TaskActionConstants } from '../../components/constants';
@@ -24,7 +24,7 @@ import { TaskAssignmentConfirmComponent } from './task-assignment-confirm.compon
     <exui-task-assignment-confirm></exui-task-assignment-confirm>`
 })
 class WrapperComponent {
-  @ViewChild(TaskAssignmentConfirmComponent, {static: true}) public appComponentRef: TaskAssignmentConfirmComponent;
+  @ViewChild(TaskAssignmentConfirmComponent, { static: true }) public appComponentRef: TaskAssignmentConfirmComponent;
 }
 
 describe('TaskAssignmentConfirmComponent', () => {
@@ -270,7 +270,6 @@ describe('TaskAssignmentConfirmComponent', () => {
       }
     });
   });
-
 });
 
 ['caseworker-ia-iacjudge', 'caseworker-ia-caseofficer'].forEach(role => {
@@ -278,6 +277,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     let component: TaskAssignmentConfirmComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let router: Router;
     const SELECTED_PERSON = {
       id: 'id123',
@@ -366,7 +366,5 @@ describe('TaskAssignmentConfirmComponent', () => {
         expect(fieldLabels).toContain('Priority');
       }
     });
-
   });
-
 });

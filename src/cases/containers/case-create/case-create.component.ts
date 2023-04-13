@@ -1,9 +1,9 @@
-import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {select, Store} from '@ngrx/store';
-import {Subscription} from 'rxjs';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import * as fromRoot from '../../../app/store';
 import * as fromCases from '../../../cases/store';
-import {ActionBindingModel} from '../../models/create-case-actions.model';
+import { ActionBindingModel } from '../../models/create-case-actions.model';
 import * as fromCaseCreate from '../../store';
 /**
  * Entry component wrapper for CddCreateCaseFilter
@@ -22,8 +22,7 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
   public fromCasesFeature: any;
   public $inputSubscription: Subscription;
 
-  constructor(private readonly store: Store<fromCaseCreate.State>) {
-  }
+  constructor(private readonly store: Store<fromCaseCreate.State>) {}
 
   public ngOnInit(): void {
     this.fromCasesFeature = fromCases;
@@ -33,7 +32,7 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
         // if state is reseated then redirect
         if (!caseFilterInput.jurisdictionId) {
           this.store.dispatch(new fromRoot.Go({
-            path: ['/cases/case-list'],
+            path: ['/cases/case-list']
           }));
           return;
         }
@@ -43,8 +42,8 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
      * Mapping CCD components eventsBindings to ExUI Actions
      */
     this.caseCreateEventsBindings = [
-      {type: 'cancelled', action: 'CreateCaseReset'},
-      {type: 'submitted', action: 'ApplyChange'}
+      { type: 'cancelled', action: 'CreateCaseReset' },
+      { type: 'submitted', action: 'ApplyChange' }
     ];
 
   }
@@ -58,5 +57,4 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
       subscription.unsubscribe();
     }
   }
-
 }

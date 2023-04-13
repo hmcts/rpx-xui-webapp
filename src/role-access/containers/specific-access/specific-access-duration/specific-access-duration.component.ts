@@ -38,7 +38,7 @@ export class SpecificAccessDurationComponent implements OnInit {
   public selectedDuration: DurationType;
   public startDateErrorMessage: ErrorMessagesModel;
   public title = 'How long do you want to give access to this case for?';
-  public approvalRole = {id: 'specific-access-granted', name: 'specific-access-granted'};
+  public approvalRole = { id: 'specific-access-granted', name: 'specific-access-granted' };
 
   // form group and controls
   public formGroup: FormGroup;
@@ -71,7 +71,7 @@ export class SpecificAccessDurationComponent implements OnInit {
       hint: 'For example, 01 05 2022',
       label: 'Access Ends'
     };
-   }
+  }
 
   public ngOnInit(): void {
     this.formGroup = this.fb.group({
@@ -87,7 +87,6 @@ export class SpecificAccessDurationComponent implements OnInit {
     this.store.pipe(select(fromFeature.getSpecificAccessState)).pipe(take(1)).subscribe((specificAccessState) => {
       this.specificAccessStateData = specificAccessState;
       this.selectSpecificAccessDuration(specificAccessState);
-
     });
   }
 
@@ -126,7 +125,7 @@ export class SpecificAccessDurationComponent implements OnInit {
     if (period) {
       switch (navEvent) {
         case SpecificAccessNavigationEvent.CONTINUE:
-          this.store.dispatch(new fromFeature.ApproveSpecificAccessRequest({specificAccessStateData: this.specificAccessStateData, period}));
+          this.store.dispatch(new fromFeature.ApproveSpecificAccessRequest({ specificAccessStateData: this.specificAccessStateData, period }));
           break;
         default:
           throw new Error('Invalid option');
@@ -138,13 +137,13 @@ export class SpecificAccessDurationComponent implements OnInit {
 
   public resetPreviousErrors(): void {
     this.startDateErrorMessage = { isInvalid: false, messages: [] };
-    this.endDateErrorMessage =  { isInvalid: false, messages: [] };
+    this.endDateErrorMessage = { isInvalid: false, messages: [] };
   }
 
   public getRawData(): any {
     const startDate = this.durationHelper.getRawFromControlsValues(this.startDateDayCtrl, this.startDateMonthCtrl, this.startDateYearCtrl);
     const endDate = this.durationHelper.getRawFromControlsValues(this.endDateDayCtrl, this.endDateMonthCtrl, this.endDateYearCtrl);
-    return {startDate, endDate};
+    return { startDate, endDate };
   }
 
   public getPeriod(duration: DurationType): Period {
@@ -188,20 +187,20 @@ export class SpecificAccessDurationComponent implements OnInit {
             startDate,
             endDate
           };
-        } else {  // display the errors in the UI
+        } else { // display the errors in the UI
           if (!datesValid) {
             if (!dateCheck.isStartDateValid) {
-              this.startDateErrorMessage = { isInvalid: true, messages: ['Invalid Start date']};
+              this.startDateErrorMessage = { isInvalid: true, messages: ['Invalid Start date'] };
             }
             if (!dateCheck.isEndDateValid) {
-              this.endDateErrorMessage = { isInvalid: true, messages: ['Invalid End date']};
+              this.endDateErrorMessage = { isInvalid: true, messages: ['Invalid End date'] };
             }
           } else {
             if (!startDateNotInPast) {
-              this.startDateErrorMessage = { isInvalid: true, messages: ['The access start date must not be in the past']};
+              this.startDateErrorMessage = { isInvalid: true, messages: ['The access start date must not be in the past'] };
             }
             if (!startDateBeforeEndDate) {
-              this.endDateErrorMessage = { isInvalid: true, messages: ['The access end date must be after the access start date']};
+              this.endDateErrorMessage = { isInvalid: true, messages: ['The access end date must be after the access start date'] };
             }
           }
         }

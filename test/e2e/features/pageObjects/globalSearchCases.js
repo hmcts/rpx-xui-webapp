@@ -44,7 +44,6 @@ class DateSearchField{
     async clickHeaderSearchFind(){
         await headerPage.headerSearch.button.click();
     }
-
 }
 
 
@@ -84,7 +83,7 @@ class InputSearchField{
         return await this.errorMessage.isDisplayed();
     }
 
- 
+
 
 
 }

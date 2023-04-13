@@ -41,7 +41,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       estimation: [null, [Validators.pattern(/^\d+$/)]],
       parties: fb.array([]),
       hearingLevelChannels: this.getHearingLevelChannels,
-      paperHearing: [this.hearingRequestMainModel.hearingDetails.hearingChannels && this.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR) ? RadioOptions.YES : RadioOptions.NO],
+      paperHearing: [this.hearingRequestMainModel.hearingDetails.hearingChannels && this.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR) ? RadioOptions.YES : RadioOptions.NO]
     });
     this.partiesFormArray = fb.array([]);
   }
@@ -189,7 +189,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       ...individualDetails && ({ individualDetails }),
       ...organisationDetails && ({ organisationDetails }),
       unavailabilityDOW: [party.unavailabilityDOW],
-      unavailabilityRanges: [party.unavailabilityRanges],
+      unavailabilityRanges: [party.unavailabilityRanges]
     });
   }
 

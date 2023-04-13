@@ -80,8 +80,8 @@ export const bookings: Bookings = {
         region_id: '104',
         roleId: 'caseworker',
         userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'
-      },
-    ],
+      }
+    ]
 };
 
 export const bookingResponse: BookingResponse = {

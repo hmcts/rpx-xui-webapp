@@ -12,7 +12,7 @@ class BrowserLogs {
             "activity/cases",
             "/api/monitoring-tools",
             "dc.services.visualstudio.com"
-            
+
         ];
 
         this.ignoreItemsList = [
@@ -44,10 +44,10 @@ class BrowserLogs {
                 for (const ignoreItem of this.ignoreItemsList) {
                     if (browserLog[browserLogCounter]['message'].includes(ignoreItem)) {
                         ignore = true;
-                        break; 
-                    } 
+                        break;
+                    }
                 }
-                
+
                 if (browserLog[browserLogCounter]['message'].includes("ERROR [") || browserLog[browserLogCounter]['message'].includes(".js")) {
                     this.javascriptErrors.push(`${browserLog[browserLogCounter]['time']} : [${browserLog[browserLogCounter]['level']}] ${browserLog[browserLogCounter]['message']} ${JSON.stringify(browserLog[browserLogCounter])}`);
                 }else if (!ignore) {
@@ -87,9 +87,8 @@ class BrowserLogs {
             return this.browserlogs;
         }catch(err){
             cucumberReporter.AddMessage('error occures in collecting browser logs')
-            cucumberReporter.AddMessage(err)  
+            cucumberReporter.AddMessage(err)
         }
-        
     }
 
 
@@ -140,7 +139,6 @@ class BrowserLogs {
         }
         return this.networklogs;
     }
-
 }
 
 

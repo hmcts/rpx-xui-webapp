@@ -23,10 +23,10 @@ describe('IsAmendedPipe', () => {
               data: {
                 hearingPriorities: hearingPriorityRefData,
                 caseFlags: caseFlagsRefData,
-                partyChannels: partyChannelsRefData,
-              },
-            },
-          },
+                partyChannels: partyChannelsRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -168,5 +168,4 @@ describe('IsAmendedPipe', () => {
     const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
-
 });

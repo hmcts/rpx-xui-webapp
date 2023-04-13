@@ -43,7 +43,7 @@ describe('Search Service', () => {
 
   it('should get global search services', () => {
     const dummyResponse: GlobalSearchService[] = [
-      {serviceId: 'TEST', serviceName: 'Test service'}
+      { serviceId: 'TEST', serviceName: 'Test service' }
     ];
     service.getServices().subscribe(response => {
       expect(response).toEqual(dummyResponse);

@@ -21,7 +21,7 @@ const healthCheckEndpointDictionary = {
   '/cases/case-details': ['ccdComponentApi'],
   '/cases/case-filter': ['ccdComponentApi'],
   '/cases/case-search': ['ccdComponentApi'],
-  '/cases/case-share': ['ccdComponentApi'],
+  '/cases/case-share': ['ccdComponentApi']
 };
 
 /*
@@ -38,7 +38,7 @@ export function getPromises(path): any[] {
   const Promises = [];
   /* Checking whether path can be simplified, ie route has parameters*/
   const dictionaryKeys = Object.keys(healthCheckEndpointDictionary).reverse();
-  for (const key of dictionaryKeys)  {
+  for (const key of dictionaryKeys) {
     if (path.indexOf(key) > -1) {
       path = key;
       break;

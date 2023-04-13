@@ -16,8 +16,7 @@ describe('VenueAmendedConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = venueAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = false;
-    const expected = cold('(b|)', {b: isAmended});
+    const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
-
 });

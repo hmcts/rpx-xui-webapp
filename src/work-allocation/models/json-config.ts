@@ -6,7 +6,7 @@ export default class JsonConfig {
    * into a strongly-typed Task object.
    */
   public static fromJson<T>(json: object): T {
-     // TODO: This possible needs more than simple coercion.
+    // TODO: This possible needs more than simple coercion.
     const value = (json as unknown);
     return (value) as T;
   }

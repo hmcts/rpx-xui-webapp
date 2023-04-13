@@ -53,7 +53,6 @@ class HearingRecordingsCase {
       await BrowserWaits.waitForSeconds(5);
       return await this.fileText.isPresent();
    }
-
 }
 
 module.exports = HearingRecordingsCase;

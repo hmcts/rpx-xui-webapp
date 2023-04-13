@@ -38,6 +38,5 @@ class DivorcesPage {
   async clickOnSaveAndContinue() {
     await this.saveandContinueButton.click();
   }
-
 }
 module.exports = DivorcesPage;

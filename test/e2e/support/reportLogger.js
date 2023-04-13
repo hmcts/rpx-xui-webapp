@@ -5,7 +5,7 @@ class CucumberReportLog{
 
     setScenarioWorld(world){
         this.scenarioWorld = world;
-        this.logLevel = process.env.LOG_LEVEL !== undefined ? process.env.LOG_LEVEL : LOG_LEVELS.Info; 
+        this.logLevel = process.env.LOG_LEVEL !== undefined ? process.env.LOG_LEVEL : LOG_LEVELS.Info;
     }
 
     FormatPrintJson(jsonObj,basePad){
@@ -30,7 +30,6 @@ class CucumberReportLog{
             }
             console.log(`${key.padEnd(startPadding)} : ${jsonObj[key]}`)
         }
-
     }
 
     LogTestDataInput(message){
@@ -88,27 +87,26 @@ class CucumberReportLog{
     async AddScreenshot(onbrowser, logLevel){
         if (!this._isLevelEnabled(logLevel)) return;
 
-        onbrowser = onbrowser ? onbrowser : browser; 
+        onbrowser = onbrowser ? onbrowser : browser;
         if (!this.scenarioWorld) {
             return;
         }
         const decodedImage = await this.getScreenshot(onbrowser);
         await this.scenarioWorld.attach(decodedImage, 'image/png');
-       
+
     }
 
     async getScreenshot(onbrowser){
         const scrrenshotBrowser = onbrowser ? onbrowser : browser;
         const stream = await scrrenshotBrowser.takeScreenshot();
         const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
-        return decodedImage; 
+        return decodedImage;
     }
 
     _isLevelEnabled(msgLoglevel){
-        msgLoglevel = msgLoglevel !== undefined ? msgLoglevel : LOG_LEVELS.Info;  
-        return msgLoglevel >= this.logLevel; 
+        msgLoglevel = msgLoglevel !== undefined ? msgLoglevel : LOG_LEVELS.Info;
+        return msgLoglevel >= this.logLevel;
     }
-
 }
 
 module.exports = new CucumberReportLog();

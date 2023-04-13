@@ -15,7 +15,7 @@ import * as fromActions from '../../store';
 
 @Component({
   selector: 'exui-app-header',
-  templateUrl: './app-header.component.html',
+  templateUrl: './app-header.component.html'
 })
 
 /**
@@ -96,16 +96,16 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
       this.userDetails$,
       decorate16DigitCaseReferenceSearchBoxInHeader$
     ]).subscribe(([userDetails, decorate16DigitCaseReferenceSearchBoxInHeader]) => {
-        this.userDetails = userDetails;
-        this.setAppHeaderProperties(this.defaultTheme, this.defaultMenuItems);
-        this.setHeaderContent(userDetails);
-        this.decorate16DigitCaseReferenceSearchBoxInHeader = decorate16DigitCaseReferenceSearchBoxInHeader;
+      this.userDetails = userDetails;
+      this.setAppHeaderProperties(this.defaultTheme, this.defaultMenuItems);
+      this.setHeaderContent(userDetails);
+      this.decorate16DigitCaseReferenceSearchBoxInHeader = decorate16DigitCaseReferenceSearchBoxInHeader;
 
-        // Set up the active link whenever we detect that navigation has completed.
-        this.router.events.subscribe(event => {
-          this.setNavigationEnd(event);
-        });
+      // Set up the active link whenever we detect that navigation has completed.
+      this.router.events.subscribe(event => {
+        this.setNavigationEnd(event);
       });
+    });
   }
 
   public async setHeaderContent(userDetails) {
@@ -133,7 +133,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   public getApplicationThemeForUser(): Observable<ApplicationTheme> {
     try {
-        return this.getUsersTheme(this.defaultTheme);
+      return this.getUsersTheme(this.defaultTheme);
     } catch (error) {
       return this.logErrorAndReturnDefaultTheme(error);
     }

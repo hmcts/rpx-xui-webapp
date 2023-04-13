@@ -3,7 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { NavigationStart, Router, RoutesRecognized } from '@angular/router';
 import { CookieService, FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, Observable, Subscription } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { SessionStorageService } from 'src/app/services';
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
@@ -21,7 +21,7 @@ import * as fromRoot from '../../store';
 export class AppComponent implements OnInit, OnDestroy {
   public timeoutModalConfig = {
     countdown: '0 seconds',
-    isVisible: false,
+    isVisible: false
   };
 
   private userId: string = null;
@@ -47,7 +47,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly environmentService: EnvironmentService,
     private readonly sessionStorageService: SessionStorageService
   ) {
-
     this.router.events.subscribe((data) => {
       if (data instanceof RoutesRecognized) {
         let child = data.state.root;
@@ -97,10 +96,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public handleCookieBannerFeatureToggle(): void {
     this.cookieBannerEnabledSubscription = this.featureService.isEnabled('mc-cookie-banner-enabled')
-                                            .subscribe(flag => {
-                                              this.cookieBannerEnabled = flag;
-                                              this.setCookieBannerVisibility();
-                                            });
+      .subscribe(flag => {
+        this.cookieBannerEnabled = flag;
+        this.setCookieBannerVisibility();
+      });
   }
 
   /**
@@ -252,8 +251,8 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   public updateTimeoutModal(countdown: string, isVisible: boolean): void {
     this.timeoutModalConfig = {
-        countdown,
-        isVisible
+      countdown,
+      isVisible
     };
   }
 
@@ -327,5 +326,4 @@ export class AppComponent implements OnInit, OnDestroy {
   public setCookieBannerVisibility(): void {
     this.isCookieBannerVisible = this.cookieBannerEnabled && !!this.userId;
   }
-
 }

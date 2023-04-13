@@ -4,7 +4,7 @@ let testContext;
 export const mochaHooks = {
    beforeEach(){
        testContext = this;
-   } 
+   }
 }
 
 export const setTestContext = (testObj) => {
@@ -37,6 +37,5 @@ export const testWithRetry = async (fn) => {
       }
 
    }
-
 }
 

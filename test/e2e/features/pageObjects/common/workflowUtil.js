@@ -37,7 +37,6 @@ class workFlowUtil{
         expect(await workFlowPageObject.workFlowContainer.isDisplayed(), `${workflow} workflow container not displayed`).to.be.true;
 
     }
-
 }
 
 module.exports = new workFlowUtil();

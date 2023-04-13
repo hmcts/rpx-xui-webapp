@@ -10,12 +10,11 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
-
   constructor(
     public authService: AuthService,
     private readonly sessionStorage: SessionStorageService,
     private readonly windowLocationService: WindowLocationService
-  ) { }
+  ) {}
 
   public canActivate(): Observable<boolean> {
     return this.authService.isAuthenticated().pipe(map(isAuth => {

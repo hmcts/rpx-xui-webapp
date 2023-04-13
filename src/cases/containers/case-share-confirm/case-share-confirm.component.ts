@@ -15,8 +15,7 @@ export class CaseShareConfirmComponent implements OnInit {
   public shareCases$: Observable<SharedCase[]>;
   public shareCases: SharedCase[];
 
-  constructor(public store: Store<fromCaseList.State>) {
-  }
+  constructor(public store: Store<fromCaseList.State>) {}
 
   public ngOnInit() {
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
@@ -24,5 +23,4 @@ export class CaseShareConfirmComponent implements OnInit {
       this.shareCases = shareCases;
     });
   }
-
 }

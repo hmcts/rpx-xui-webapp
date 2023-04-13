@@ -66,7 +66,7 @@ const config = {
       case_officer: {
         username: process.env.TEST_CASEOFFICER_USERNAME || 'ia.caseofficer.ccd@gmail.com',
         password: process.env.TEST_CASEOFFICER_PASSWORD|| 'AldgateT0wer'
-      }, 
+      },
       legal_rep: {
         username: process.env.TEST_LAW_FIRM_A_USERNAME || 'ia.legalrep.b.ccd@gmail.com',
         password: process.env.TEST_LAW_FIRM_A_PASSWORD || 'AldgateT0wer'
@@ -96,7 +96,6 @@ const config = {
         password: process.env.TEST_JUDICIARY_PASSWORD|| 'AldgateT0wer'
       }
     }
-
   },
   directConnect: true,
   // seleniumAddress: 'http://localhost:4444/wd/hub',

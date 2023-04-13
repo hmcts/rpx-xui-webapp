@@ -44,12 +44,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             });
 
         }
-        
     });
 
     Given('I set MOCK task details', async function(datatable){
         const taskRow = datatable.rowsHash();
-        waMockData.setTaskDetails(taskRow); 
+        waMockData.setTaskDetails(taskRow);
     });
-
 });

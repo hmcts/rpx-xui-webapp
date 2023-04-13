@@ -11,7 +11,7 @@ const logger: JUILogger = log4jui.getLogger('case-service');
 export async function handleCaseGet(path: string, req: EnhancedRequest): Promise<any> {
   logger.info('getting cases for', path);
   const headers = setHeaders(req);
-  const response: AxiosResponse = await http.get(path, {headers});
+  const response: AxiosResponse = await http.get(path, { headers });
   return response.data;
 }
 

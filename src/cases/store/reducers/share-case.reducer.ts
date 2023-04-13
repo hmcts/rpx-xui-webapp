@@ -9,7 +9,7 @@ export interface ShareCasesState {
   users: UserDetails[];
 }
 
-export let initialSharedCasesState: ShareCasesState = {
+export const initialSharedCasesState: ShareCasesState = {
   shareCases: [],
   loading: false,
   error: undefined,
@@ -17,7 +17,7 @@ export let initialSharedCasesState: ShareCasesState = {
 };
 
 export function shareCasesReducer(state: ShareCasesState = initialSharedCasesState,
-                                  action: ShareCasesActions.Actions): ShareCasesState {
+  action: ShareCasesActions.Actions): ShareCasesState {
   switch (action.type) {
     case ShareCasesActions.NAVIGATE_TO_SHARE_CASES:
       const navigateToShareCases = state.shareCases.slice();

@@ -28,7 +28,7 @@ export const getTitleText = (role: SpecificRole, action: string, roleCategory: s
     } else if (roleCategory === RoleCategory.CTSC) {
       return `${action} a CTSC role`;
     }
-    return roleCategory  ? `${action} a ${roleCategory.replace('_', ' ')} role` : `${action} a role`;
+    return roleCategory ? `${action} a ${roleCategory.replace('_', ' ')} role` : `${action} a role`;
   }
 };
 

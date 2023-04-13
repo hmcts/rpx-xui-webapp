@@ -36,6 +36,7 @@ export abstract class AbstractFormFieldComponent {
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected addValidators(questionField: NocQuestion, control: FormControl): void {
     // No validators by default, override this method to add validators to the form control
   }

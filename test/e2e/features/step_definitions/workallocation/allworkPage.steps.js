@@ -53,19 +53,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         const hashes = datatable.hashes();
         for (const hash of hashes){
-            expect(actualOption).to.includes(hash.option) 
+            expect(actualOption).to.includes(hash.option)
         }
-
     });
 
     Then('I validate filter item {string} select or radio has option {string} in all work page', async function (filterItem, filterOptions) {
         const actualOption = await allWorkPage.getFilterSelectOrRadioOptions(filterItem);
         reportLogger.AddMessage(`${filterItem} options displayed : ${JSON.stringify(actualOption)}`);
- 
+
         for (const option of filterOptions.split(",")) {
             expect(actualOption).to.includes(option)
         }
-
     });
 
     When('I select filter item {string} select or radio option {string} in all work page', async function (filterItem, option) {
@@ -75,7 +73,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
 
         const optionElement = await allWorkPage.setFilterSelectOrRadioOptions(filterItem, option);
-
     });
 
     When('I input filter item {string} input text {string} in all work page', async function (filterItem, inputText) {
@@ -84,7 +81,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             return;
         }
         await allWorkPage.inputFilterItem(filterItem, inputText);
-
     });
 
     When('I click Apply filter button in all work page', async function(){
@@ -107,20 +103,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await allWorkPage.FILTER_ITEMS['Location search'].isPresent(),'Search input not present').to.be.true;
         expect(await allWorkPage.FILTER_ITEMS['Location search'].isDisplayed(),'Search input not displayed').to.be.true;
         expect(await allWorkPage.FILTER_ITEMS['Location search'].isEnabled(),'Search input not enabled').to.be.true;
-
     });
 
     Then('I see location search input is disabled in all work filters', async function () {
         expect(await allWorkPage.FILTER_ITEMS['Location search'].isPresent(), 'Search input not present').to.be.true;
         expect(await allWorkPage.FILTER_ITEMS['Location search'].isDisplayed(), 'Search input not displayed').to.be.true;
         expect(await allWorkPage.FILTER_ITEMS['Location search'].isEnabled(), 'Search input not disabled').to.be.false;
-
     });
 
     When('I enter location search {string} in all work filter', async function (searchTerm) {
         await allWorkPage.FILTER_ITEMS['Location search'].clear();
         await allWorkPage.FILTER_ITEMS['Location search'].sendKeys(searchTerm);
-
     });
 
     Then('I see location search results in all work filter', async function (dataTable) {
@@ -128,14 +121,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const expectdLocations = [];
         for (const locationsHash of locationsHashes){
             expectdLocations.push(locationsHash.location);
-        } 
+        }
         await BrowserWaits.retryWithActionCallback(async () => {
             const actualResults = await allWorkPage.getSearchResults();
             for (const expectedLoc of expectdLocations) {
                 expect(await allWorkPage.isSearchResultPresent(expectedLoc), `Search result ${expectedLoc} not found in actual results "${actualResults}"`).to.be.true
             }
         });
-        
+
     });
 
     When('I select location search result {string} in all work filter', async function (location) {

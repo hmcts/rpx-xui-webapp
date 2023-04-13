@@ -22,31 +22,26 @@ xdescribe('Pa11y Accessibility tests', function () {
         await MockApp.stopServer();
         done();
     });
-    
+
     it.skip('Accessibility Page', async function () {
         const actions = [];
         await pa11ytest(this, actions, conf.baseUrl + 'accessibility');
-
     });
 
     it.skip('Cookies Page', async function () {
         const actions = [];
         await pa11ytest(this, actions, conf.baseUrl + 'cookies');
-
     });
 
     it.skip('privacy-policy Page', async function () {
         const actions = [];
         await pa11ytest(this, actions, conf.baseUrl + 'privacy-policy');
-
     });
 
     it.skip('get-help Page', async function () {
         const actions = [];
         await pa11ytest(this, actions, conf.baseUrl + 'get-help');
-
     });
-
 });
 
 

@@ -7,8 +7,6 @@ import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
 import { handleCaseGet, handleCasePost, handleCaseSearch } from './caseService';
 
-
-
 chai.use(sinonChai);
 describe('workAllocation.caseService', () => {
 
@@ -25,7 +23,6 @@ describe('workAllocation.caseService', () => {
   });
 
   describe('handleCaseGet', () => {
-
     it('should make a get request', async () => {
       spy = sandbox.stub(http, 'get').resolves(res);
       const path = '/case/123456';
@@ -33,13 +30,11 @@ describe('workAllocation.caseService', () => {
       const response = await handleCaseGet(path, req);
       expect(response).to.equal('ok'); // Returns just the data.
       const args = spy.getCall(0).args;
-      expect(args[0]).to.equal(path);    // Correct url.
+      expect(args[0]).to.equal(path); // Correct url.
     });
-
   });
 
   describe('handleCaseSearch', () => {
-
     it('should make a post request', async () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const path = '/case';
@@ -49,14 +44,12 @@ describe('workAllocation.caseService', () => {
       expect(response).to.be.an('object'); // Returns the entire response.
       expect(response.data).to.equal('ok');
       const args = spy.getCall(0).args;
-      expect(args[0]).to.equal(path);    // Correct url.
+      expect(args[0]).to.equal(path); // Correct url.
       expect(args[1]).to.equal(payload); // Correct search criteria posted.
     });
-
   });
 
   describe('handleCasePost', () => {
-
     it('should make a post request', async () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const path = '/case/123456/assign';
@@ -66,10 +59,8 @@ describe('workAllocation.caseService', () => {
       expect(response).to.be.an('object'); // Returns the entire response.
       expect(response.data).to.equal('ok');
       const args = spy.getCall(0).args;
-      expect(args[0]).to.equal(path);    // Correct url.
+      expect(args[0]).to.equal(path); // Correct url.
       expect(args[1]).to.equal(payload); // Correct search criteria posted.
     });
-
   });
-
 });

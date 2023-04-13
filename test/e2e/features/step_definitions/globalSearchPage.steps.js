@@ -30,7 +30,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     Then('I see global search Page', async function(){
         expect(await globalSearchPage.amOnPage()).to.be.true
     });
-    
+
     When('I click search button in global search page', async function(){
          await globalSearchPage.searchButton.click();
     });
@@ -48,7 +48,6 @@ defineSupportCode(function ({ Given, When, Then }) {
             await globalSearchResultsPage.changeSearchLink.click();
             expect(await globalSearchPage.amOnPage()).to.be.true
         });
-        
     });
 
     When('I input field {string} with value {string} in global search Page', async function(fieldName,fieldValue){
@@ -109,7 +108,7 @@ defineSupportCode(function ({ Given, When, Then }) {
                     expect(await globalSearchPage.dateOfBirth.getMonthValue()).to.includes(dateSplitArr[1]);
                     expect(await globalSearchPage.dateOfBirth.getYearValue()).to.includes(dateSplitArr[2]);
                 }
-                
+
                 break;
             case 'date of death':
                 if(fieldValue === ''){
@@ -122,7 +121,7 @@ defineSupportCode(function ({ Given, When, Then }) {
                     expect(await globalSearchPage.dateOfdeath.getMonthValue()).to.includes(dateSplitArr[1]);
                     expect(await globalSearchPage.dateOfdeath.getYearValue()).to.includes(dateSplitArr[2]);
                 }
-                 
+
                 break;
             default:
                 throw new Error(`Field ${fieldName} is not recognised in test`);
@@ -158,7 +157,7 @@ defineSupportCode(function ({ Given, When, Then }) {
                     await globalSearchPage.dateOfdeath.year.sendKeys(dateValues[2]);
                 }
                 break;
-          
+
             default:
                 throw new Error(`Field ${fieldName} is not recognised in test`);
         }
@@ -210,7 +209,6 @@ defineSupportCode(function ({ Given, When, Then }) {
         expect( await globalSearchPage.errorSummaryContainer.isPresent() && await globalSearchPage.errorSummaryContainer.isDisplayed()).to.be.true
         expect( await globalSearchPage.errorSummaryContainer.getText()).to.includes(errormessage)
         await CucumberReportLogger.AddScreenshot(global.screenshotUtils);
-
     });
 
     Then('I see error message {string} in global search Page', async function (errormessage) {
@@ -243,7 +241,7 @@ defineSupportCode(function ({ Given, When, Then }) {
 
             for (const column of columns){
                 if (column === 'Row_Num'){
-                    //do nothing - test support col 
+                    //do nothing - test support col
                 } else if (column === 'ACTION_LINK_COLUMN'){
                     const linkElement = await globalSearchResultsPage.getTableRowColumnElement(rowNum, column);
                     const linkText = await linkElement.getText();
@@ -259,7 +257,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     Then('I validate global search results values displayed', async function (datatable) {
         const datatableHashes = datatable.hashes();
         for (const tableHash of datatableHashes) {
-            const column = tableHash.name; 
+            const column = tableHash.name;
 
             const coltext = await globalSearchResultsPage.getTableRowColumnValue(1, column);
             expect(coltext.length > 0, `Column ${column} value not displayed`).to.be.true
@@ -276,12 +274,12 @@ defineSupportCode(function ({ Given, When, Then }) {
         const linkElement = await globalSearchResultsPage.getTableRowColumnElement(rowNum, "ACTION_LINK_COLUMN");
         const linkText = await linkElement.getText();
         expect(linkText).to.equal(actionLink);
-        
+
         await linkElement.$('a').click();
     });
 
     Then('I validate global search no results page is displayed', async function(){
-       expect(await globalSearchResultsPage.isNoResultsPageDisplayed()).to.be.true 
+       expect(await globalSearchResultsPage.isNoResultsPageDisplayed()).to.be.true
     });
 
    Then('I validate global searh no results page displays message {string}', async function(message){
@@ -290,7 +288,6 @@ defineSupportCode(function ({ Given, When, Then }) {
 
    Then('I validate global search no results back link displayed', async function(){
        expect(await globalSearchResultsPage.noResultsPageBackLink.isDisplayed()).to.be.true;
-
     });
 
     When('I click global search no results back link', async function () {
@@ -304,7 +301,6 @@ defineSupportCode(function ({ Given, When, Then }) {
         }else{
             expect(await globalSearchResultsPage.previousPageLink.getTagName()).to.equal('a')
         }
-
     });
 
 
@@ -315,7 +311,7 @@ defineSupportCode(function ({ Given, When, Then }) {
 
         } else {
             expect(await globalSearchResultsPage.previousPageLink.getTagName()).to.equal('span')
-        }    
+        }
     });
 
     When('I click global search results pagination link {string}', async function(paginationLink){
@@ -346,12 +342,11 @@ defineSupportCode(function ({ Given, When, Then }) {
             await headerPage.headerSearch.input.clear();
             await headerPage.headerSearch.input.sendKeys(scenario.caseReference);
             await headerPage.headerSearch.button.click();
-            
+
             await softAssert.assert(async () => expect(await caseManager.caseDetailsPage.isPresent()).to.be.true);
 
         }
         softAssert.finally();
-    
     });
 
     Then('I validate invalid global search case reference searches', async function (datatable) {
@@ -370,7 +365,5 @@ defineSupportCode(function ({ Given, When, Then }) {
 
         }
         softAssert.finally();
-
     });
-
 });

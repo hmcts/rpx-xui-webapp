@@ -58,7 +58,6 @@ class AppealCreatedPage{
     let header = await this.getPageHeader();
     return header === 'Appeal created'
   }
-
 }
 
 module.exports = AppealCreatedPage;

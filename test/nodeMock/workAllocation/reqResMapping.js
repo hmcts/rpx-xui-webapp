@@ -39,7 +39,7 @@ module.exports = {
         '/workallocation/judicialworker' : (req,res) => {
             res.send(workAllocationMockData.judgeUsers);
         },
-      
+
         '/workallocation/task/:taskId/roles' : (req,res) => {
             res.send(workAllocationMockData.getTaskRoles());
         },
@@ -60,9 +60,9 @@ module.exports = {
             const allLocations = [];
             for(const locationsByService of workAllocationMockData.locationsByServices){
                 if (servicesRequested.includes(locationsByService.service)){
-                    allLocations.push(...locationsByService.locations) 
-               } 
-            } 
+                    allLocations.push(...locationsByService.locations)
+               }
+            }
             res.send(allLocations);
         },
         '/api/role-access/roles/getNewCasesCount':(req,res) =>{
@@ -321,7 +321,6 @@ module.exports = {
             res.send([])
         }
     }
-
 }
 
 function getTaskPageRecords(totalRecords, pageNum, pageSize) {

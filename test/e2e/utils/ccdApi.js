@@ -20,11 +20,11 @@ class CcdApi {
             });
         }catch(err){
             CucumberReportLogger.AddMessage("Error occured, will attempt again in 5sec "+err);
-            await BrowserWaits.waitForSeconds(5); 
+            await BrowserWaits.waitForSeconds(5);
             throw new Error(err);
         }
-       
-        
+
+
     }
     async getWorkbasketAPIRes(reqPath) {
         try {
@@ -40,8 +40,8 @@ class CcdApi {
             await BrowserWaits.waitForSeconds(5);
             throw new Error(err);
         }
-       
-        
+
+
     }
 
     async getSearchInputsAPIRes(reqPath) {
@@ -58,8 +58,8 @@ class CcdApi {
             await BrowserWaits.waitForSeconds(5);
             throw new Error(err);
         }
-       
-        
+
+
     }
 
     async getCasesApiReq(reqURL) {
@@ -77,8 +77,8 @@ class CcdApi {
             await BrowserWaits.waitForSeconds(5);
             throw new Error(err);
         }
-       
-        
+
+
     }
 
     async getCaseResultsResponse() {
@@ -99,7 +99,6 @@ class CcdApi {
             await BrowserWaits.waitForSeconds(5);
             throw new Error(err);
         }
-        
     }
 
 
@@ -116,6 +115,5 @@ class CcdApi {
         });
         return caseId;
     }
-
 }
-module.exports = new CcdApi(); 
+module.exports = new CcdApi();

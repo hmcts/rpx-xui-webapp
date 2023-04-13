@@ -20,7 +20,7 @@ import {
   loadServiceLinkedCases
 } from './services.index';
 
-export const router = express.Router({mergeParams: true});
+export const router = express.Router({ mergeParams: true });
 
 router.use(authInterceptor);
 // ------request-amend hearing APIs start------

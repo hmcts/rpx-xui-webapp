@@ -81,7 +81,6 @@ class TextField{
   async getText(){
     return await $(this.css).getAttribute('value');
   }
-
 }
 
 module.exports = TextField;

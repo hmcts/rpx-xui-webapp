@@ -7,7 +7,6 @@ import { NocQuestions } from '../models/noc-questions.interface';
 
 @Injectable()
 export class NocService {
-
   constructor(private readonly http: HttpClient) {}
 
   public getNoCQuestions(caseId: string): Observable<NocQuestions> {

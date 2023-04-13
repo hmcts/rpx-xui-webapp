@@ -15,7 +15,6 @@ class CustomValidations{
                 this.getIssueDetailsObj("Skip link", "Navigation", "Skip link to main content is missing", "a", "a")
             );
         }
-
     }
 
     getIssueDetailsObj(code,type,message,selector,context){
@@ -30,4 +29,4 @@ class CustomValidations{
     }
 }
 
-module.exports = new CustomValidations(); 
+module.exports = new CustomValidations();

@@ -39,7 +39,7 @@ class TaskRequestBody {
         return this;
     }
 
-    searchWithAllUsers() {       
+    searchWithAllUsers() {
         const searchParamsWithAllUsers = [];
         for (const searchParam of this.requestBody.searchRequest.search_parameters){
             if (searchParam.key !== 'user'){
@@ -81,7 +81,6 @@ class TaskRequestBody {
         }
         return this;
     }
-
 
     searchWithTaskType(taskType: string) {
         const taskTypeConfig = this.requestBody.searchRequest.search_parameters.filter(searchField => searchField.key === "taskType");
@@ -142,7 +141,6 @@ class TaskRequestBody {
         // reporterJson(this.requestBody);
         return this.requestBody;
     }
-
 }
 
 export default TaskRequestBody;

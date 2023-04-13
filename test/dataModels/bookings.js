@@ -55,6 +55,5 @@ class BookingsDataModels{
             "fact_url": ""
         }
     }
-
 }
-module.exports = new BookingsDataModels(); 
+module.exports = new BookingsDataModels();

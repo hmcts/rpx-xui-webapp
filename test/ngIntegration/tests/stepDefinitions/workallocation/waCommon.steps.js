@@ -37,7 +37,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
             workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
         }
-
     });
 
     Given('I set MOCK with {string} release user and roles {string}', async function (releaseUer, roles) {
@@ -48,15 +47,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         const userIdamID = testUserIdamId.idamId;
         await CucumberReporter.AddMessage(`${releaseUer} id ${testUserIdamId.idamId}`);
-        
+
         roles = roles.split(",");
         if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
             workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
-        } 
+        }
         const userDetails = nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
-
     });
-    
+
     Given('I set MOCK locations for release {string}', async function(release,locationsDatatbale){
         const locations = locationsDatatbale.hashes();
         let apiUrl = "/";
@@ -95,22 +93,21 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         persons[0].idamId = testUser.idamId;
         persons[0].location.id = locationInputDetails.id;
         persons[0].location.locationName = locationInputDetails.locationName
-        MockApp.onGet(apiUrl, (req, res) => { 
+        MockApp.onGet(apiUrl, (req, res) => {
             res.send(persons);
         });
-
     });
 
 
-    Given('I set MOCK with user {string} and roles {string} with reference {string}', async function (useridentifier, roles,mockUserRef) { 
+    Given('I set MOCK with user {string} and roles {string} with reference {string}', async function (useridentifier, roles,mockUserRef) {
         nodeAppMock.userDetails = nodeAppMock.getMockLoginUserWithidentifierAndRoles(useridentifier,roles);
         CucumberReporter.AddJson(nodeAppMock.userDetails);
         global.scenarioData[mockUserRef] = nodeAppMock.userDetails;
-       
+
     });
 
     Given('I add roleAssignmentInfo to MOCK user with reference {string}', async function(userDetailsRef, roleAssignments){
-        const boolAttributes = ['isCaseAllocator','bookable']; 
+        const boolAttributes = ['isCaseAllocator','bookable'];
         const userDetails = global.scenarioData[userDetailsRef];
         const roleAssignmentArr = [];
         for (let roleAssignment of roleAssignments.hashes()){
@@ -121,7 +118,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     roleAssignment[attr] = roleAssignment[attr] === "true";
                 }
             })
-            
+
             roleAssignmentArr.push(roleAssignment);
         }
         userDetails.roleAssignmentInfo.push(...roleAssignmentArr);
@@ -130,7 +127,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Given('I set Mock user with ref {string}, reset role assignments', async function (userDetailsRef){
         const userDetails = global.scenarioData[userDetailsRef];
         userDetails.roleAssignmentInfo =[];
- 
+
     });
 
     function addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable){
@@ -163,9 +160,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         if (services === ''){
             return;
         }
-        addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable) 
+        addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable)
     });
-    
+
     Given('I set Mock user with ref {string}, ORGANISATION roles for services {string} allow empty service', async function (userDetailsRef, services, roleAttributesDataTable) {
         addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable)
     });
@@ -188,9 +185,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 if (valueTypeAndValue.length > 0 && valueTypeAndValue[1] && valueTypeAndValue[1].includes('string')){
                     roleAssignment['bookable'] = valueTypeAndValue[0]
                 }else{
-                    roleAssignment['bookable'] = roleAssignment['bookable'] === "true" 
+                    roleAssignment['bookable'] = roleAssignment['bookable'] === "true"
 
-                } 
+                }
             }
             if (roleKeys.includes('roleType') ){
                 roleAssignment.isCaseAllocator = roleAssignment.roleType === 'ORGANISATION'
@@ -209,7 +206,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
 
         const userIdamID = testUserIdamId.idamId;
-       
+
         const rolesIdentifiersArr = roleIdentifiers.split(",");
         const roleidentifersForRoleType = userRolesConfig[roleType.toLowerCase()];
         if (!roleidentifersForRoleType){
@@ -227,7 +224,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
             workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
         }
-        
+
 
     });
 
@@ -320,7 +317,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate task request body in reference {string} has locations set', async function(reference, locationsDatatable){
        const reqBody = global.scenarioData[reference];
        return "Pending";
-
     });
 
     Given('I clear all MOCK location', function(){
@@ -331,15 +327,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const locationNamesHashes = locationNamesDatatable.hashes();
         const locationNames = [];
         for (const locationNameHash of locationNamesHashes){
-            locationNames.push({ locationName: locationNameHash.locationName, id: locationNameHash.id}); 
-        } 
-        
+            locationNames.push({ locationName: locationNameHash.locationName, id: locationNameHash.id});
+        }
+
         const locationsArray = workallocationMockData.getLocationsWithNames(locationNames);
 
         let locationForThisService = { service: service, locations: [] }
         locationForThisService.locations.push(...locationsArray);
         workallocationMockData.locationsByServices.push(locationForThisService)
-    
+
     });
 
     Given('I set MOCK person with user {string} and roles {string}', async function(userIdentifier, roles, datatable){
@@ -347,8 +343,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.userIdentifier === userIdentifier)[0];
 
         const datatablehashes = datatable.hashes();
-        const locationId = datatablehashes[0].locationId 
-        const locationName = datatablehashes[0].locationName 
+        const locationId = datatablehashes[0].locationId
+        const locationName = datatablehashes[0].locationName
 
         const roleCategory = userUtil.getUserRoleType(rolesArr);
         let person = null;

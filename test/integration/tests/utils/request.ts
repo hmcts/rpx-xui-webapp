@@ -11,8 +11,6 @@ axios.defaults.withCredentials = true;
 axios.defaults.baseURL = config.baseUrl;
 const http: AxiosInstance = axios.create(axiosOptions);
 
-
-
 const requestInterceptor = (request) => {
     console.log(`${request.method.toUpperCase()} to ${request.url}`);
     return request;
@@ -32,11 +30,8 @@ const responseInterceptor = (response) => {
     return response;
 };
 
-
 http.interceptors.request.use(requestInterceptor);
 http.interceptors.response.use(responseInterceptor)
-
-
 
 class Request {
     private testContext;
@@ -105,9 +100,7 @@ class Request {
         reporterMsg('----------------------------------------------------->>');
 
         return await this.retryRequest(() => http.put(reqpath, data, this.getRequestConfig(headers)), expectedStatus);
-
     }
-
 
     public async delete(reqpath: string, payload, moreHeaders: any, expectedStatus:any) {
         reporterMsg('<<-----------------------------------------------------');
@@ -137,27 +130,25 @@ class Request {
             error = null;
             try {
                 retVal = await callback();
-                reporterMsg(`Response: Status code ${retVal.status}`); 
+                reporterMsg(`Response: Status code ${retVal.status}`);
             } catch (err) {
                 // retryErrorLogs.push(err.response ? err.response : err);
                 error = err;
-                retVal = err.response ? err.response : null; 
-                
+                retVal = err.response ? err.response : null;
             }
-            
 
             if (retVal && expectedResponsecode instanceof Array){
-                isExpectedResponseReceived = expectedResponsecode.includes(retVal.status); 
+                isExpectedResponseReceived = expectedResponsecode.includes(retVal.status);
             } else if (retVal){
-                isExpectedResponseReceived = expectedResponsecode === retVal.status 
+                isExpectedResponseReceived = expectedResponsecode === retVal.status
             }
 
             if (!isExpectedResponseReceived){
                 // console.log(retVal);
                 // console.log(error);
                 const status = retVal  ? retVal.status : "unknown";
-                const responseBody = retVal  ? retVal.data : "unknown"; 
-                let errorMessage = retVal ? `STATUS CODE : ${status} =>RESPONSE BODY :  ${JSON.stringify(responseBody)}` : `unknown request error occured ${error} ` 
+                const responseBody = retVal  ? retVal.data : "unknown";
+                let errorMessage = retVal ? `STATUS CODE : ${status} =>RESPONSE BODY :  ${JSON.stringify(responseBody)}` : `unknown request error occured ${error} `
                 retryErrorLogs.push(`\n Retry ${retryAttemptCounter  } : ${errorMessage}`);
                 reporterMsg('<<-------------------- ERROR RESPONSE---------------------------------');
                 reporterMsg(` Unexpected response : ${errorMessage}`);
@@ -167,15 +158,15 @@ class Request {
                 // console.log(` Unexpected response : ${errorMessage}`);
                 // console.log(` Retrying atempt ${retryAttemptCounter}`);
 
-                let sleepInSec = retryAttemptCounter *2; 
+                let sleepInSec = retryAttemptCounter *2;
                 await new Promise((resolve,reject) => {
                     setTimeout(() => {
                         reporterMsg(` <<<<<<<<<<<< Sleep for ${sleepInSec} sec before retry`);
                         resolve(true);
                     }, sleepInSec*1000);
                 });
-            } 
-            
+            }
+
         }
 
         if (isExpectedResponseReceived){

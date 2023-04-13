@@ -14,7 +14,6 @@ class config {
         }
         return baseurl;
     }
-
 }
 module.exports = new config();
 

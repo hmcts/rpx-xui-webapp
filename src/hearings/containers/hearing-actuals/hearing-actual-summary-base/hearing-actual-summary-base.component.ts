@@ -189,12 +189,11 @@ export class HearingActualSummaryBaseComponent implements OnInit, OnDestroy {
       pauseDateTimes: hearingDay.pauseDateTimes,
       actualDayParties: [...hearingDay.actualDayParties]
     } as ActualHearingDayModel;
-    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
-      (this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals);
+    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals);
 
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
-      hearingActuals: patchedHearingActuals,
+      hearingActuals: patchedHearingActuals
     }));
   }
 

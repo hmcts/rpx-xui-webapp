@@ -5,7 +5,6 @@ import { setTestContext } from './utils/helper';
 import Request from './utils/request';
 const config = require('./config/config').config;
 
-
 describe('CCD Endpoints', () => {
     const userName = config.users[config.testEnv].solicitor.e;
     const password = config.users[config.testEnv].solicitor.sec;

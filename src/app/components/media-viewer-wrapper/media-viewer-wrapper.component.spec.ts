@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AbstractAppConfig, DocumentUrlPipe, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { MediaViewerModule } from '@hmcts/media-viewer';
@@ -12,107 +12,106 @@ import createSpyObj = jasmine.createSpyObj;
 const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
 const REMOTE_DOCUMENT_URL = 'https://www.example.com/binary';
 const MEDIA_VIEWER_DATA = {
-    document_binary_url: GATEWAY_DOCUMENT_URL,
-    document_filename: 'sample.pdf',
-    content_type: 'pdf',
+  document_binary_url: GATEWAY_DOCUMENT_URL,
+  document_filename: 'sample.pdf',
+  content_type: 'pdf'
 };
 
 describe('MediaViewerWrapperComponent', () => {
+  let component: MediaViewerWrapperComponent;
+  let fixture: ComponentFixture<MediaViewerWrapperComponent>;
+  let windowService;
+  let sessionStorageService;
+  let mockAppConfig: any;
+  let featureToggleService;
 
-    let component: MediaViewerWrapperComponent;
-    let fixture: ComponentFixture<MediaViewerWrapperComponent>;
-    let windowService;
-    let sessionStorageService;
-    let mockAppConfig: any;
-    let featureToggleService;
+  beforeEach(waitForAsync(() => {
+    mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
+    mockAppConfig.getDocumentManagementUrl.and.returnValue(GATEWAY_DOCUMENT_URL);
+    mockAppConfig.getRemoteDocumentManagementUrl.and.returnValue(REMOTE_DOCUMENT_URL);
+    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
+    sessionStorageService = createSpyObj('sessionStorageService', ['setItem', 'getItem']);
+    featureToggleService = createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
+    TestBed.configureTestingModule({
+      imports: [
+        MediaViewerModule,
+        StoreModule.forRoot({}),
+        EffectsModule.forRoot([]),
+        RouterTestingModule
+      ],
+      declarations: [
+        MediaViewerWrapperComponent,
+        DocumentUrlPipe
+      ],
+      providers: [
+        { provide: AbstractAppConfig, useValue: mockAppConfig },
+        { provide: WindowService, useValue: windowService },
+        { provide: FeatureToggleService, useValue: featureToggleService },
+        { provide: SessionStorageService, useValue: sessionStorageService }
+      ]
+    })
+      .compileComponents();
+  }));
 
-    beforeEach(waitForAsync(() => {
-        mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
-        mockAppConfig.getDocumentManagementUrl.and.returnValue(GATEWAY_DOCUMENT_URL);
-        mockAppConfig.getRemoteDocumentManagementUrl.and.returnValue(REMOTE_DOCUMENT_URL);
-        windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
-        sessionStorageService = createSpyObj('sessionStorageService', ['setItem', 'getItem']);
-        featureToggleService = createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
-        TestBed.configureTestingModule({
-            imports: [
-                MediaViewerModule,
-                StoreModule.forRoot({}),
-                EffectsModule.forRoot([]),
-                RouterTestingModule
-            ],
-            declarations: [
-                MediaViewerWrapperComponent,
-                DocumentUrlPipe
-            ],
-            providers: [
-                { provide: AbstractAppConfig, useValue: mockAppConfig },
-                { provide: WindowService, useValue: windowService },
-                { provide: FeatureToggleService, useValue: featureToggleService },
-                { provide: SessionStorageService, useValue: sessionStorageService }
-            ]
-        })
-            .compileComponents();
-    }));
+  beforeEach(() => {
+    fixture = TestBed.createComponent(MediaViewerWrapperComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(MediaViewerWrapperComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
+  it('should create media viewer component', () => {
+    expect(component).toBeTruthy();
+  });
+
+  describe('ngOnInit', () => {
+    it('should load media viewer data from local storage', () => {
+      windowService.getLocalStorage.and.returnValues(JSON.stringify(MEDIA_VIEWER_DATA));
+      fixture.detectChanges();
+      expect(component).toBeTruthy();
+      component.ngOnInit();
+      expect(component.mediaURL).toBe(GATEWAY_DOCUMENT_URL);
+      expect(component.mediaFilename).toBe('sample.pdf');
+      expect(component.mediaContentType).toBe('pdf');
     });
 
-    it('should create media viewer component', () => {
-        expect(component).toBeTruthy();
+    it('should move media viewer data from local to session storage', () => {
+      windowService.getLocalStorage.and.returnValues(JSON.stringify(MEDIA_VIEWER_DATA));
+      fixture.detectChanges();
+      expect(component).toBeTruthy();
+      component.ngOnInit();
+      expect(sessionStorageService.setItem).toHaveBeenCalledTimes(1);
+      expect(windowService.removeLocalStorage).toHaveBeenCalledTimes(1);
     });
 
-    describe('ngOnInit', () => {
-        it('should load media viewer data from local storage', () => {
-            windowService.getLocalStorage.and.returnValues(JSON.stringify(MEDIA_VIEWER_DATA));
-            fixture.detectChanges();
-            expect(component).toBeTruthy();
-            component.ngOnInit();
-            expect(component.mediaURL).toBe(GATEWAY_DOCUMENT_URL);
-            expect(component.mediaFilename).toBe('sample.pdf');
-            expect(component.mediaContentType).toBe('pdf');
-        });
+    it('should not set the session or remove the local storage media viewer data if there is already media viewer data in session storage', () => {
+      sessionStorageService.getItem.and.returnValues(JSON.stringify(MEDIA_VIEWER_DATA));
+      fixture.detectChanges();
+      expect(component).toBeTruthy();
+      component.ngOnInit();
+      expect(sessionStorageService.setItem).toHaveBeenCalledTimes(0);
+      expect(windowService.removeLocalStorage).toHaveBeenCalledTimes(0);
+    });
+  });
 
-        it('should move media viewer data from local to session storage', () => {
-            windowService.getLocalStorage.and.returnValues(JSON.stringify(MEDIA_VIEWER_DATA));
-            fixture.detectChanges();
-            expect(component).toBeTruthy();
-            component.ngOnInit();
-            expect(sessionStorageService.setItem).toHaveBeenCalledTimes(1);
-            expect(windowService.removeLocalStorage).toHaveBeenCalledTimes(1);
-        });
-
-        it('should not set the session or remove the local storage media viewer data if there is already media viewer data in session storage', () => {
-            sessionStorageService.getItem.and.returnValues(JSON.stringify(MEDIA_VIEWER_DATA));
-            fixture.detectChanges();
-            expect(component).toBeTruthy();
-            component.ngOnInit();
-            expect(sessionStorageService.setItem).toHaveBeenCalledTimes(0);
-            expect(windowService.removeLocalStorage).toHaveBeenCalledTimes(0);
-        });
+  describe('isIcpEnabled', () => {
+    it('should return true when icp-enabled is true and jurisdiction is empty', () => {
+      component.caseJurisdiction = 'dummy';
+      expect(component.isIcpEnabled(true, [])).toBeTruthy();
     });
 
-    describe('isIcpEnabled', () => {
-        it('should return true when icp-enabled is true and jurisdiction is empty', () => {
-            component.caseJurisdiction = 'dummy';
-            expect(component.isIcpEnabled(true, [])).toBeTruthy();
-        });
-
-        it('should return false when icp-enabled is false and jurisdiction is empty', () => {
-            component.caseJurisdiction = 'dummy';
-            expect(component.isIcpEnabled(false, [])).toBeFalsy();
-        });
-
-        it('should return true when icp-enabled is false but jurisdiction is not empty and correct', () => {
-            component.caseJurisdiction = 'dummy';
-            expect(component.isIcpEnabled(false, ['dummy'])).toBeTruthy();
-        });
-
-        it('should return false when icp-enabled is false and jurisdiction is not empty but is wrong ', () => {
-            component.caseJurisdiction = 'dummy';
-            expect(component.isIcpEnabled(false, ['dummy1'])).toBeFalsy();
-        });
+    it('should return false when icp-enabled is false and jurisdiction is empty', () => {
+      component.caseJurisdiction = 'dummy';
+      expect(component.isIcpEnabled(false, [])).toBeFalsy();
     });
+
+    it('should return true when icp-enabled is false but jurisdiction is not empty and correct', () => {
+      component.caseJurisdiction = 'dummy';
+      expect(component.isIcpEnabled(false, ['dummy'])).toBeTruthy();
+    });
+
+    it('should return false when icp-enabled is false and jurisdiction is not empty but is wrong ', () => {
+      component.caseJurisdiction = 'dummy';
+      expect(component.isIcpEnabled(false, ['dummy1'])).toBeFalsy();
+    });
+  });
 });

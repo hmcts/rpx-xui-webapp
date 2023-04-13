@@ -73,12 +73,11 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   } catch (error) {
     next(error);
   }
-
 }
 
 export function filterOutResults(locations: LocationModel[], locationIds: string[],
-                                 regions: string[], courtTypes: string[]): LocationModel[] {
-return locations.filter(location => !(courtTypes.includes(location.court_type_id))
+  regions: string[], courtTypes: string[]): LocationModel[] {
+  return locations.filter(location => !(courtTypes.includes(location.court_type_id))
 || (locationIds.includes(location.epimms_id) || regions.includes(location.region_id)));
 }
 

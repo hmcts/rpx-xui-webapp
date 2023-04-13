@@ -80,10 +80,10 @@ export async function getRegionLocationsForServices(req: EnhancedRequest) {
     response.data.court_venues.forEach(courtVenue => {
       if (!regions.includes(courtVenue.region_id)) {
         regions.push(courtVenue.region_id);
-        regionLocations.push({regionId: courtVenue.region_id, locations: [courtVenue.epimms_id]});
+        regionLocations.push({ regionId: courtVenue.region_id, locations: [courtVenue.epimms_id] });
       } else {
         regionLocations.find(locationList =>
-           locationList.regionId === courtVenue.region_id).locations.push(courtVenue.epimms_id);
+          locationList.regionId === courtVenue.region_id).locations.push(courtVenue.epimms_id);
       }
     });
   }

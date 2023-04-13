@@ -13,7 +13,7 @@ const caseDetailsPage = require('../../pageObjects/caseDetailsPage');
 
 const headerPage = require('../../../../e2e/features/pageObjects/headerPage');
 const CaseListPage = require('../../../../e2e/features/pageObjects/CaseListPage');
-const errorPage = require('../../../../e2e/features/pageObjects/errorPage'); 
+const errorPage = require('../../../../e2e/features/pageObjects/errorPage');
 
 const SoftAssert = require('../../../util/softAssert');
 const browserUtil = require('../../../util/browserUtil');
@@ -60,7 +60,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
      Then('I validate tasks column sorting', async function(){
-         let tasksRequested = false; 
+         let tasksRequested = false;
          let sortColumnInRequestParam = "";
          await MockUtil.setMockResponse("POST", "/workallocation/taskWithPagination", (req, res) => {
              CucumberReporter.AddMessage("get tasks with sort request body:");
@@ -105,7 +105,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
              tasksRequested = false;
              expect(await taskListPage.getColumnSortState(headerName)).to.equal("descending");
          }
- 
+
      });
 
 
@@ -119,7 +119,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await taskListPage.clickColumnHeader(columnHeaders[1]);
             expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
         });
-       
+
 
         await headerPage.getTabElementWithText('Case list').click();
         await browserUtil.waitForLD();
@@ -128,8 +128,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await taskListPage.amOnPage();
         await taskListPage.waitForTable();
         expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
-
-    }); 
+    });
 
     Then('I validate Available tasks sort column persist in session', async function () {
 
@@ -142,7 +141,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
 
         });
-       
+
         await headerPage.getTabElementWithText('Case list').click();
         await browserUtil.waitForLD();
         expect(await caseListPage.amOnPage()).to.be.true;
@@ -153,8 +152,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await taskListPage.waitForTable();
 
         expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
-
-    }); 
+    });
 
     Then('I validate Task manager tasks sort column persist in session', async function () {
 
@@ -174,8 +172,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         });
         await taskManagerPage.waitForTable();
         expect(await taskManagerPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
-
-    }); 
+    });
 
 
     Then('I validate error responses on My tasks page', async function(){
@@ -188,11 +185,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         // expect(await taskListPage.amOnPage()).to.be.true;
         for (const responseCode of testErrorResponseCodes) {
             CucumberReporter.AddMessage(`Validation on ${responseCode} error POST /workallocation/taskWithPagination/ `);
- 
+
             await headerPage.clickManageCases();
 
             await caseListPage.amOnPage();
-           
+
             await MockUtil.setMockResponse("POST", "/workallocation/taskWithPagination/", (req, res) => {
                 res.status(responseCode).send(workAllocationMockData.getMyTasks(10));
             })
@@ -207,11 +204,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
 
         softAssertion.finally();
-    });   
-    
+    });
+
     Then('I validate error responses on available tasks page', async function(){
         const softAssertion = new SoftAssert(this);
- 
+
         await MockUtil.setMockResponse("POST", "/workallocation/taskWithPagination/", (req, res) => {
             res.send(workAllocationMockData.getMyTasks(10));
         });
@@ -219,7 +216,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         // expect(await taskListPage.amOnPage()).to.be.true;
         for (const responseCode of testErrorResponseCodes) {
             await MockUtil.resetMock();
-        
+
 
             await BrowserWaits.retryWithActionCallback(async () => {
                 await headerPage.clickManageCases();
@@ -227,11 +224,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     throw new Error('Not on case list page');
                 }
             });
-          
+
             await headerPage.clickTaskList();
             await taskListPage.amOnPage();
             const taskCount = await taskListPage.getTaskListCountInTable();
-          
+
             await MockUtil.setMockResponse("POST", "/workallocation/taskWithPagination/", (req, res) => {
                 res.status(responseCode).send(workAllocationMockData.getAvailableTasks(10));
             });
@@ -279,16 +276,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
     Then('I validate Task manager page tasks count {int}', async function (tasksCount){
-       
+
         expect(parseInt(await taskManagerPage.getTaskListCountInTable()), 'Task count does not match expected ').to.equal(tasksCount);
-        
+
         if (tasksCount === 0) {
             expect(await taskManagerPage.isTableFooterDisplayed(), "task list table footer is not displayed").to.be.true;
             expect(await taskManagerPage.getTableFooterMessage(), "task list table footer message when 0 tasks are displayed").to.equal("There are no tasks that match your selection.");
         } else {
             expect(await taskManagerPage.isTableFooterDisplayed(), "task list table footer is displayed").to.be.false;
         }
-
     });
 
     Then('I validate error responses on Task manager page', async function(){
@@ -336,7 +332,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         };
 
         softAssertion.finally();
-
     });
 
     Then('I validate My task reassign page errors', async function(){
@@ -347,12 +342,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             { name: "Locations", url: "/workallocation/location" }
 
         ];
-    
+
         for (const endPoint of reassignEndpoints) {
             for (const responseCode of testErrorResponseCodes) {
                 await headerPage.clickManageCases();
                 await caseListPage.amOnPage();
-               await MockUtil.resetMock(); 
+               await MockUtil.resetMock();
                 await MockUtil.setMockResponse("POST", '/workallocation/taskWithPagination/', (req, res) => {
                     res.send(workAllocationMockData.getMyTasks(10));
                 });
@@ -374,7 +369,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
                 await taskListPage.clickTaskAction("Reassign task");
                 // await browserUtil.waitForNetworkResponse(endPoint.url);
-                softAssertion.setScenario(`Scenario validation: GET ${endPoint.url} error response ${responseCode} `); 
+                softAssertion.setScenario(`Scenario validation: GET ${endPoint.url} error response ${responseCode} `);
                 const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
                 await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action Reassign on ${endPoint.name} status code ${responseCode} status response, error page not displayed`).to.be.true);
                 if (isErrorPageDisplayed) {
@@ -389,16 +384,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I validate My task reassign submit errors', async function(){
         const softAssertion = new SoftAssert(this);
-       
+
         for (const responseCode of testErrorResponseCodes) {
             await MockUtil.resetMock();
             await MockUtil.setMockResponse("POST", '/workallocation/taskWithPagination/', (req, res) => {
                 res.send(workAllocationMockData.getMyTasks(10));
             });
-            
+
             await headerPage.clickManageCases();
             await caseListPage.amOnPage();
-            
+
             await headerPage.clickTaskList();
             await taskListPage.amOnPage();
             expect(await taskListPage.isMyTasksDisplayed(), "Default My tasks tab page not displayed").to.be.true;
@@ -427,9 +422,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             softAssertion.setScenario(`Scenario validation: POST /workallocation/task/:taskId/assign error response ${responseCode} `);
 
             if (responseCode === 400){
-                const isErrorMessageBannerDisplayed = await taskAssignmentPage.isBannerMessageDisplayed(); 
+                const isErrorMessageBannerDisplayed = await taskAssignmentPage.isBannerMessageDisplayed();
                 await softAssertion.assert(async () => expect(isErrorMessageBannerDisplayed, `For action Reassign on submit status code ${responseCode} status response, error message banner not displayed`).to.be.true);
-                
+
             }else{
                 const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
                 await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action Reassign on submit status code ${responseCode} status response, error page not displayed`).to.be.true);
@@ -439,22 +434,22 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 }
             }
 
-           
+
         }
         softAssertion.finally();
     });
 
     Then('I validate available task action page errors', async function(){
         const softAssertion = new SoftAssert(this);
-        
+
         // expect(await taskListPage.amOnPage()).to.be.true;
         for (const action of availableTask_actions) {
             for (const responseCode of testErrorResponseCodes) {
-                
+
 
                 await headerPage.clickManageCases();
                 await caseListPage.amOnPage();
-                await MockUtil.resetMock(); 
+                await MockUtil.resetMock();
                 await MockUtil.setMockResponse("POST", '/workallocation/taskWithPagination/', (req, res) => {
                     res.send(workAllocationMockData.getAvailableTasks(10));
                 });
@@ -472,29 +467,28 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 if (!isTaskManagelinkOpen){
                     await taskListPage.clickManageLinkForTaskAt(1);
                 }
-                
+
                 expect(await taskListPage.isTaskActionRowForTaskDisplayed(1), "Task actions for selected task not displayed").to.be.true;
 
                 await taskListPage.clickTaskAction(action);
 
                 const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
 
-                softAssertion.setScenario(`Scenario validation: on action ${action} GET /workallocation/task/:taskId/claim error response ${responseCode} `); 
+                softAssertion.setScenario(`Scenario validation: on action ${action} GET /workallocation/task/:taskId/claim error response ${responseCode} `);
                 await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action ${action} on task details ${responseCode} status response, error page not displayed`).to.be.true);
                 if (isErrorPageDisplayed) {
                     const errorMessageDisplayed = await errorPage.getErrorMessage();
                     await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action ${action} on task details ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
                 }
-            } 
+            }
         }
 
         softAssertion.finally();
-
     });
 
 
     Then('I validate Task manager task action page errors', async function(){
-        
+
 
         const softAssertion = new SoftAssert(this);
 
@@ -526,7 +520,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 await taskListPage.clickTaskAction(action);
 
                 const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-                softAssertion.setScenario(`Scenario validation: on action ${action} GET /workallocation/task/:taskId error response ${responseCode} `); 
+                softAssertion.setScenario(`Scenario validation: on action ${action} GET /workallocation/task/:taskId error response ${responseCode} `);
 
                 await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action ${action} on task details ${responseCode} status response, error page not displayed`).to.be.true);
                 if (isErrorPageDisplayed) {
@@ -537,7 +531,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             softAssertion.finally();
         }
 
-        
+
     });
 
     Then('I validate Task actions from page {string}', async function(fromPage, datatable){
@@ -547,7 +541,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const softAssert = new SoftAssert(this);
         for (let i = 0; i < scenarios.length; i++){
             const scr = scenarios[i];
-            
+
             const scenarioDesc = `${scr.ManageAction} ${scr.ActionType} ${scr.SubmitCancel} ${scr.SuccessMessage}`;
             CucumberReporter.AddMessage("")
             CucumberReporter.AddMessage("**********************************************************************************************")
@@ -558,7 +552,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
             await headerPage.clickManageCases();
             await caseListPage.amOnPage();
-            
+
             if (fromPage.toUpperCase().includes('MY')){
                 await headerPage.clickTaskList();
                 await taskListPage.amOnPage();
@@ -581,7 +575,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             if (!isManageLinkOpen){
                 await taskListPage.clickManageLinkForTaskAt(1);
             }
-            
+
             await taskListPage.clickTaskAction(scr.ManageAction);
 
             if(scr.ActionType.toUpperCase() == "ASSIGNMENT"){
@@ -592,7 +586,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 }else{
                     await taskAssignmentPage.clickCancelBtn();
                 }
-                
+
             } else if (scr.ActionType.toUpperCase() == "ACTION"){
                 await taskActionPage.validatePageContentForAction(scr.ManageAction, softAssert);
                 if (scr.SubmitCancel.toUpperCase === "SUBMIT") {
@@ -606,19 +600,18 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
             if (scr.ManageAction.includes('to case')){
                 await softAssert.assert(async () => expect(await caseDetailsPage.amOnPage(), "Not on case details page").to.be.true);
-                
+
             }else{
                 await validateOnPage();
                 if (scr.SuccessMessage && !scr.ManageAction.includes('to case')){
                     // const displayedMessages = await taskListPage.getBannerMessagesDisplayed();
                     // const messagesMathcing = displayedMessages.filter(msg => msg.includes(scr.SuccessMessage));
                     // expect(messagesMathcing.length > 0, `${scr.SuccessMessage} is not in displayed message ${displayedMessages}`).to.be.true;
-                } 
+                }
             }
-            
+
        }
         softAssert.finally();
-       
     });
 
 
@@ -664,5 +657,4 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             CucumberReporter.AddJson(task);
         })
     });
-
 });

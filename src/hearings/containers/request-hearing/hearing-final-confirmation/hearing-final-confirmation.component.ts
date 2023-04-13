@@ -17,8 +17,7 @@ export class HearingFinalConfirmationComponent implements OnInit, OnDestroy {
   public caseId: string;
   public sub: Subscription;
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {
-  }
+  constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {}
 
   public ngOnInit(): void {
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(

@@ -20,17 +20,17 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
     });
     afterEach(async function (done) {
         await MockApp.stopServer();
-        // await BrowserUtil.addScreenshot(this, browser); 
+        // await BrowserUtil.addScreenshot(this, browser);
 
         done();
     });
 
     const addNewButton = element(by.xpath("//div[@id = 'textCollection']//button[text() = 'Add new']"));
     const removeButton = element(by.xpath("//div[@id = 'textCollection']//button[text() = 'Remove']"));
-    
+
 
     it('display_context_parameter null', async function () {
-        setUpcaseConfig(null); 
+        setUpcaseConfig(null);
 
         await MockApp.startServer();
         await BrowserUtil.gotoHomePage();
@@ -44,7 +44,7 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
     });
 
     it('display_context_parameter with collection(allowInsert,allowDelete)', async function () {
-        setUpcaseConfig("#COLLECTION(allowInsert,allowDelete)"); 
+        setUpcaseConfig("#COLLECTION(allowInsert,allowDelete)");
 
         await MockApp.startServer();
         await BrowserUtil.gotoHomePage();
@@ -59,7 +59,7 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
     });
 
     it('display_context_parameter with collection(allowInsert)', async function () {
-        setUpcaseConfig("#COLLECTION(allowInsert)"); 
+        setUpcaseConfig("#COLLECTION(allowInsert)");
 
         await MockApp.startServer();
         await BrowserUtil.gotoHomePage();
@@ -73,7 +73,7 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
     });
 
     it('display_context_parameter with collection(allowDelete)', async function () {
-        setUpcaseConfig("#COLLECTION(allowDelete)"); 
+        setUpcaseConfig("#COLLECTION(allowDelete)");
 
         await MockApp.startServer();
         await BrowserUtil.gotoHomePage();
@@ -87,7 +87,7 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
     });
 
     it('display_context_parameter combination of conditions' , async function () {
-        setUpcaseConfig("#TABLE(AddressLine1,AddressLine2),#COLLECTION(allowInsert,allowDelete)"); 
+        setUpcaseConfig("#TABLE(AddressLine1,AddressLine2),#COLLECTION(allowInsert,allowDelete)");
 
         await MockApp.startServer();
         await BrowserUtil.gotoHomePage();
@@ -100,7 +100,7 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
     });
 
     it('display_context_parameter with no permission in collection ', async function () {
-        setUpcaseConfig("#COLLECTION()"); 
+        setUpcaseConfig("#COLLECTION()");
         await MockApp.startServer();
 
         await BrowserUtil.gotoHomePage();
@@ -120,7 +120,6 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
             res.send(caseConfig);
         });
     }
-
 });
 
 

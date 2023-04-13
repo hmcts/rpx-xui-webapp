@@ -67,7 +67,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 expect(personExpectedIsReturned, `${expectedPerson} is expected to retun in find person search is not retuned.`).to.be.true;
             }
         });
-
     });
 
     Then('I see caseworker from reference {string} returned to Select in Find person search result of exclusions work flow', async function(caseworkerRef){
@@ -75,7 +74,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await BrowserWaits.retryWithActionCallback(async () => {
             const personExpectedIsReturned = await exclusionWorkFlow.findPersonPage.isPersonReturned(caseworker.email);
         });
-
     });
 
 

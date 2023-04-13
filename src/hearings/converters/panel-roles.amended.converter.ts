@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MemberType } from '../models/hearings.enum';
 import { State } from '../store/reducers';
 import { IsAmendedConverter } from './is-amended.converter';
 

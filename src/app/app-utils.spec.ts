@@ -7,7 +7,6 @@ import { NavigationItem } from './models/theming.model';
 import { UserDetails, UserRole } from './models/user-details.model';
 
 describe('getEnvironment', () => {
-
   it('should return the prod environment for a blank url.', () => {
     expect(AppUtils.getEnvironment('')).toEqual(AppConstants.ENVIRONMENT_NAMES.prod);
   });
@@ -41,22 +40,17 @@ describe('getEnvironment', () => {
     expect(AppUtils.getEnvironment('perftest')).toEqual(
       AppConstants.ENVIRONMENT_NAMES.perftest);
   });
-
 });
 
 describe('showNavItems', () => {
-
   it('should show only appropriate navigation items', () => {
     expect(AppUtils.showNavItems('SomeItems')).toEqual(true);
     expect(AppUtils.showNavItems('accept-terms-and-conditions')).toEqual(false);
   });
-
 });
 
 describe('removeJsonPrefix', () => {
-
   it('should take in the User Roles string from cookie and return the string without the j: prefix.', () => {
-
     const userRolesString = 'j:["pui-organisation-manager","caseworker-publiclaw",' +
       '"caseworker-divorce-financialremedy-solicitor","caseworker"]';
 
@@ -67,9 +61,7 @@ describe('removeJsonPrefix', () => {
 });
 
 describe('getCookieRolesAsArray', () => {
-
   it('should take in the User Roles string (which comes from the cookie), and return an Array of User Roles.', () => {
-
     const userRoles = '["pui-organisation-manager","caseworker-publiclaw",' +
       '"caseworker-divorce-financialremedy-solicitor","caseworker"]';
 
@@ -77,13 +69,12 @@ describe('getCookieRolesAsArray', () => {
       'pui-organisation-manager',
       'caseworker-publiclaw',
       'caseworker-divorce-financialremedy-solicitor',
-      'caseworker',
+      'caseworker'
     ]);
   });
 });
 
 describe('setActiveLink', () => {
-
   it('should correctly flag an item as being active', () => {
     const ITEMS: NavigationItem[] = [
       { href: '/a', active: false, text: 'A' },
@@ -164,7 +155,6 @@ describe('setActiveLink', () => {
     // verify tab not set for action page within tasks and any additional url snippet for cases
     expect(AppUtils.checkTabs(mockItems, '/tasks/assign')).toEqual([ false, '']);
     expect(AppUtils.checkTabs(mockItems, '/cases/random-parameter')).toEqual([ false, '']);
-
   });
 
   it('should correctly set the fullUrl value', () => {
@@ -177,7 +167,6 @@ describe('setActiveLink', () => {
 });
 
 describe('getFeatureToggledUrl', () => {
-
   it('url when feature is off', () => {
     const url = AppUtils.getFeatureToggledUrl(false, 'someUrl');
     expect(url).toBeNull();
@@ -190,7 +179,6 @@ describe('getFeatureToggledUrl', () => {
 });
 
 describe('getUserRole', () => {
-
   it('should return legal ops role if user has any legal ops role', () => {
     const roleCategory = AppUtils.getUserRole(['caseworker-ia-caseofficer']);
     expect(roleCategory).toBe(UserRole.LegalOps);
@@ -239,7 +227,7 @@ describe('getUserRole', () => {
 
 describe('setThemeBasedOnUserType', () => {
   it('Judicial User', () => {
-    const theme = { appTitle: {}} as Theme;
+    const theme = { appTitle: {} } as Theme;
     AppUtils.setThemeBasedOnUserType('Judicial', theme);
     expect(theme.appTitle.name).toEqual('Judicial Case Manager');
     expect(theme.backgroundColor).toEqual( '#8d0f0e');
@@ -247,7 +235,7 @@ describe('setThemeBasedOnUserType', () => {
   });
 
   it('LegalOps User', () => {
-    const theme = { appTitle: {}} as Theme;
+    const theme = { appTitle: {} } as Theme;
     AppUtils.setThemeBasedOnUserType('LegalOps', theme);
     expect(theme.appTitle.name).toEqual('Manage cases');
     expect(theme.backgroundColor).toEqual('#202020');
@@ -255,7 +243,7 @@ describe('setThemeBasedOnUserType', () => {
   });
 
   it('Solicitor User', () => {
-    const theme = { appTitle: {}} as Theme;
+    const theme = { appTitle: {} } as Theme;
     AppUtils.setThemeBasedOnUserType('Solicitor', theme);
     expect(theme.appTitle.name).toEqual('Manage cases');
     expect(theme.backgroundColor).toEqual('#202020');
@@ -283,7 +271,6 @@ describe('getUserType', () => {
   });
 });
 
-
 describe('getFilterPersistenceByRoleType', () => {
   it('should return local persistence if user is a judicial user', () => {
     const persistence = AppUtils.getFilterPersistenceByRoleType(initialMockState.appConfig.userDetails);
@@ -298,7 +285,6 @@ describe('getFilterPersistenceByRoleType', () => {
   });
 
   describe('isBookableAndJudicialRole', () => {
-
     it('should set true/false base on the user details', () => {
       const USER_2: UserDetails = {
         canShareCases: true,
@@ -307,7 +293,7 @@ describe('getFilterPersistenceByRoleType', () => {
           baseLocation: 'Glasgow',
           jurisdiction: 'IA',
           isCaseAllocator: true
-      }],
+        }],
         sessionTimeout: {
           idleModalDisplayTime: 10,
           totalIdleTime: 50
@@ -323,7 +309,7 @@ describe('getFilterPersistenceByRoleType', () => {
             'caseworker',
             'caseworker-sscs-judge',
             'fee-paid-judge'
-          ],
+          ]
         }
       };
 

@@ -118,5 +118,4 @@ describe('Noc Actions', () => {
       expect(action.type).toBe(fromNocAction.SET_SUBMISSION_FAILURE);
     });
   });
-
 });

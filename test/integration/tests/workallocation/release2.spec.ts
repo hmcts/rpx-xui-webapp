@@ -5,7 +5,6 @@ import { getXSRFToken } from '../utils/authUtil';
 import { reporterMsg, setTestContext } from '../utils/helper';
 import Request from '../utils/request';
 
-
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
 describe('Work allocations Release 2', () => {
@@ -40,7 +39,6 @@ describe('Work allocations Release 2', () => {
         }else{
             reporterMsg(`No locations returned`);
         }
-
     });
 
     it('case officer,get caseworkers /workallocation/caseworker', async function () {
@@ -60,9 +58,7 @@ describe('Work allocations Release 2', () => {
         const expected = workAllocationDataModels.getCaseWorkerOrperson();
         expect(actual).to.have.all.keys(Object.keys(expected));
         expect(actual.location).to.have.all.keys(Object.keys(expected.location));
-
     });
-
 
     // tslint:disable-next-line: only-arrow-functions
     it('case officer,search for completable tasks of a case /workallocation/searchForCompletable' , async function () {
@@ -91,7 +87,6 @@ describe('Work allocations Release 2', () => {
         const expected = workAllocationDataModels.getCompletableTasks();
         expect(actual).to.have.all.keys(Object.keys(expected));
         expect(actual.tasks).to.be.an('array');
-
     });
 
     it('case officer,get exclusion roles categories /workallocation/exclusion/rolesCategory', async function() {
@@ -128,7 +123,4 @@ describe('Work allocations Release 2', () => {
             expect(actual[0]).to.have.all.keys(Object.keys(expected));
         }
     });
-
 });
-
-

@@ -1,5 +1,5 @@
-import {CaseRole, CaseRoleDetails, RoleCategory, RoleExclusion} from '../../role-access/models';
-import {FeatureVariation} from '../models/feature-variation.model';
+import { CaseRole, CaseRoleDetails, RoleCategory, RoleExclusion } from '../../role-access/models';
+import { FeatureVariation } from '../models/feature-variation.model';
 
 export class Utils {
 
@@ -53,7 +53,7 @@ export class Utils {
       return {
         ...role,
         name: userDetails.full_name,
-        email: userDetails.email_id,
+        email: userDetails.email_id
       };
     });
   }
@@ -73,7 +73,6 @@ export class Utils {
 export function escapeRegExp(string: string): string {
   return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
-
 
 export function replaceAll(str: string, find: string, replace: string): string {
   return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);

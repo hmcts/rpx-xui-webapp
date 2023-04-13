@@ -7,15 +7,16 @@ describe('Role category mapping service', () => {
   let mockFeatureService: any;
   const ROLE_MAPPINGS: RoleMapping = {
     JUDICIAL_ROLE_LIST: [
-      'caseworker-sscs-judge',
+      'caseworker-sscs-judge'
     ],
     LEGAL_OPS_ROLE_LIST: [
-      'caseworker-sscs',
+      'caseworker-sscs'
     ],
     OGD_ROLE_LIST: [
       'caseworker-sscs-dwpresponsewriter'
     ]
   };
+
   beforeEach(() => {
     mockFeatureService = jasmine.createSpyObj('FeatureToggleService', ['getValueOnce']);
     mockFeatureService.getValueOnce.and.returnValues(of(ROLE_MAPPINGS));

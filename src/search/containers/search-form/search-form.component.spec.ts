@@ -113,7 +113,7 @@ describe('SearchFormComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['results'], { relativeTo: route });
   });
 
-  it('should store the selected service in the search parameters when the selected value is not \"All\"', () => {
+  it('should store the selected service in the search parameters when the selected value is not "All"', () => {
     component.formGroup.get(SearchFormControl.CASE_REF).setValue('1234123412341234');
     component.formGroup.get(SearchFormControl.SERVICES_LIST).setValue('TEST');
     component.onSubmit();
@@ -270,7 +270,7 @@ describe('SearchFormComponent', () => {
     expect(component.formGroup.get(SearchFormControl.SERVICES_LIST).value).toEqual('TEST');
   });
 
-  it('should leave the selected service as \"All\" if existing search parameters contain more than one service', () => {
+  it('should leave the selected service as "All" if existing search parameters contain more than one service', () => {
     searchService.retrieveState.and.returnValue({
       caseReferences: ['1234123412341234'],
       CCDJurisdictionIds: ['TEST', 'TEST2'],

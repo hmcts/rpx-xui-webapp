@@ -29,7 +29,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
         if (this.test.ctx.currentTest.state === 'failed'){
             addContext(this, { title: 'Case Event create/edit config', value: caseEventConfigOfTest });
             addContext(this, { title: 'Case Event submit request body', value: caseEventSubmitRequestBody });
-            // await BrowserUtil.addScreenshot(this, browser); 
+            // await BrowserUtil.addScreenshot(this, browser);
         }
         done();
     });
@@ -46,7 +46,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
         { showField: true, retainHiddenField: false }
     ].forEach(scenario => {
         it(`Text Field : retain_hidden_field "${scenario.retainHiddenField}" and field is Displayed ${scenario.showField}`, async function () {
-            // CCD case config setup start 
+            // CCD case config setup start
             const caseConfig = new CCDCaseConfig('TEST_CaseType', 'Test case type hidden field retain value', 'test description');
             const page1 = caseConfig.addWizardPage('HiddenFieldPage_1', 'Hidden field retain value test page');
 
@@ -59,7 +59,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
             textField.show_condition = `${testFieldShowYesNo.id}=\"Yes\"`;
 
             setUpcaseConfig(caseConfig.caseConfigTemplate)
-            // CCD case config setup end 
+            // CCD case config setup end
 
             await MockApp.startServer();
             await browser.get(`cases/case-details/1604309496714935/trigger/casetype_1/HiddenFieldPage_1`);
@@ -98,7 +98,6 @@ describe('CCD casefields, retain_hidden_field setting', function () {
                 expect(caseEventSubmitRequestBody.data[textField.id]).to.equal('Test old value');
             }
         });
-
     });
 
     [
@@ -110,7 +109,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
         { fieldType: "AddressGlobalUK", showField: false, retainHiddenField: true },
         { fieldType: "AddressGlobalUK", showField: false, retainHiddenField: false },
         { fieldType: "AddressGlobalUK", showField: false, retainHiddenField: null },
-        { fieldType: "AddressGlobalUK", showField: true, retainHiddenField: false }, 
+        { fieldType: "AddressGlobalUK", showField: true, retainHiddenField: false },
 
         { fieldType: "CaseLink", showField: false, retainHiddenField: true },
         { fieldType: "CaseLink", showField: false, retainHiddenField: false },
@@ -129,15 +128,15 @@ describe('CCD casefields, retain_hidden_field setting', function () {
 
     ].forEach(scenario => {
         it(`field ${scenario.fieldType} : retain_hidden_field "${scenario.retainHiddenField}" and field is Displayed ${scenario.showField}`, async function () {
-            // CCD case config setup start 
+            // CCD case config setup start
             const caseConfig = new CCDCaseConfig('TEST_CaseType', 'Test case type hidden field retain value', 'test description');
             const page1 = caseConfig.addWizardPage('HiddenFieldPage_1', 'Hidden field retain value test page');
-           
+
             let testFieldShowYesNo = caseConfig.addCCDFieldToPage(page1, "YesOrNo", "showTestField", "Show Test Field?");
             testFieldShowYesNo.value = true;
 
             let complexField = caseConfig.addCCDFieldToPage(page1, scenario.fieldType, "complexField", "Complex field" );
-          
+
             complexField.retain_hidden_value = scenario.retainHiddenField;
             complexField.show_condition = `${testFieldShowYesNo.id}=\"Yes\"`;
             switch(scenario.fieldType){
@@ -154,7 +153,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
                             "PostCode": "AB12 3CD",
                             "Country": "United Kingdom"
                         }
-                    }; 
+                    };
                     break;
                 case "CaseLink":
                     complexField.value = {
@@ -162,7 +161,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
                         complexField: {
                             "CaseReference": "1573742075034100"
                         }
-                    };  
+                    };
                     break;
                 case "Organisation":
                     complexField.value = {
@@ -171,20 +170,20 @@ describe('CCD casefields, retain_hidden_field setting', function () {
                             "OrganisationID": "RH3TDV3",
                             "OrganisationName": "AutoTest7q8etj9eqz"
                         }
-                    };   
+                    };
                     break;
                 case "Document":
                     complexField.value = {
                             "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/a612199d-9972-4b99-b653-5ec7c310e21a",
                             "document_binary_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/a612199d-9972-4b99-b653-5ec7c310e21a/binary",
-                            "document_filename": "Redacted-dm-store135044941749889827327305460282199740737.pdf"     
-                    }; 
+                            "document_filename": "Redacted-dm-store135044941749889827327305460282199740737.pdf"
+                    };
                     break;
                 default:
                     throw new Error("Unrecognised comples filed type "+scenario.fieldType);
             }
             setUpcaseConfig(caseConfig.caseConfigTemplate);
-            // CCD case config setup end 
+            // CCD case config setup end
 
             await MockApp.startServer();
             await browser.get(`cases/case-details/1604309496714935/trigger/casetype_1/HiddenFieldPage_1`);
@@ -224,7 +223,6 @@ describe('CCD casefields, retain_hidden_field setting', function () {
 
             }
         });
-
     });
 
 
@@ -250,7 +248,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
         { fieldType: "MultiSelectList", showField: true, retainHiddenField: false },
     ].forEach(scenario => {
         it(`field ${scenario.fieldType} : retain_hidden_field "${scenario.retainHiddenField}" and field is Displayed ${scenario.showField}`, async function () {
-            // CCD case config setup start 
+            // CCD case config setup start
             const caseConfig = new CCDCaseConfig('TEST_CaseType', 'Test case type hidden field retain value', 'test description');
             const page1 = caseConfig.addWizardPage('HiddenFieldPage_1', 'Hidden field retain value test page');
 
@@ -261,7 +259,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
 
             complexField.retain_hidden_value = scenario.retainHiddenField;
             complexField.show_condition = `${testFieldShowYesNo.id}=\"Yes\"`;
-          
+
             switch (scenario.fieldType){
                 case "Collection":
                     complexField.acls.push({
@@ -288,7 +286,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
                         { "code": "item3", "label": "Item 3", "order": null }
                     ];
                     complexField.value = "item3";
-                    break; 
+                    break;
                 case "MultiSelectList":
                     complexField.field_type.fixed_list_items = [
                         { "code": "item1", "label": "Item 1", "order": null },
@@ -300,10 +298,10 @@ describe('CCD casefields, retain_hidden_field setting', function () {
                 default:
                     throw new Error("Unrecognised list/collection field type provided for test")
             }
-            
+
 
             setUpcaseConfig(caseConfig.caseConfigTemplate);
-            // CCD case config setup end 
+            // CCD case config setup end
 
             await MockApp.startServer();
             await browser.get(`cases/case-details/1604309496714935/trigger/casetype_1/HiddenFieldPage_1`);
@@ -344,7 +342,6 @@ describe('CCD casefields, retain_hidden_field setting', function () {
 
             }
         });
-
     });
 
 
@@ -411,10 +408,10 @@ describe('CCD casefields, retain_hidden_field setting', function () {
             childText: { display: true, retainValue: true },
             childComplex: { display: true, retainValue: true },
             grandchildText: { display: false, retainValue: true },
-        } 
+        }
     ].forEach(scenario => {
         it(`Deep complex field : ${scenario.testName}`, async function () {
-            // CCD case config setup start 
+            // CCD case config setup start
 
             const caseConfig = new CCDCaseConfig('TEST_CaseType', 'Test case type hidden field retain value', 'test description');
             const page1 = caseConfig.addWizardPage('HiddenFieldPage_1', 'Hidden field retain value test page');
@@ -426,7 +423,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
             parentComplexField.retain_hidden_value = scenario.parentComplex.retainValue;
             parentComplexField.show_condition = `${parentComplexShowYesNo.id}=\"Yes\"`;
 
-            //level 1 fields 
+            //level 1 fields
             const childTextShowCondition = caseConfig.getCCDFieldTemplateCopy("YesOrNo", "childTextShowCondition", "Show child text?");
             childTextShowCondition.value = true;
             const childText = caseConfig.getCCDFieldTemplateCopy("Text", "childText", "Child Text field");
@@ -460,8 +457,8 @@ describe('CCD casefields, retain_hidden_field setting', function () {
             parentComplexFieldValue[childComplexShowCondition.id] = true;
             parentComplexFieldValue[childComplex.id] = {};
             parentComplexFieldValue[childComplex.id][grandchildTextShowCindition.id] = true;
-            parentComplexFieldValue[childComplex.id][grandchildText.id] = "Grand child Text Value old"; 
- 
+            parentComplexFieldValue[childComplex.id][grandchildText.id] = "Grand child Text Value old";
+
             parentComplexField.value = parentComplexFieldValue;
 
             setUpcaseConfig(caseConfig.caseConfigTemplate);
@@ -476,16 +473,16 @@ describe('CCD casefields, retain_hidden_field setting', function () {
             await CCDCaseEditPage.inputCaseField(parentComplexField.id + '_' + childComplex.id + '_' + grandchildText.id, "Grand Child text value new");
 
             await CCDCaseEditPage.selectRadioYesOrNo(parentComplexShowYesNo.id, scenario.parentComplex.display);
-        
+
             if (scenario.parentComplex.display){
-                await CCDCaseEditPage.selectRadioYesOrNo(parentComplexField.id + '_' + childTextShowCondition.id, scenario.childText.display); 
+                await CCDCaseEditPage.selectRadioYesOrNo(parentComplexField.id + '_' + childTextShowCondition.id, scenario.childText.display);
                 await CCDCaseEditPage.selectRadioYesOrNo(parentComplexField.id + '_' +childComplexShowCondition.id, scenario.childComplex.display);
 
                 if (scenario.childComplex.display){
                     await CCDCaseEditPage.selectRadioYesOrNo(parentComplexField.id + '_' +childComplex.id+'_'+grandchildTextShowCindition.id, scenario.grandchildText.display);
-                }   
+                }
             }
-           
+
             await CCDCaseEditPage.clickContinue();
             await BrowserWaits.waitForCondition(async () => {
                 return !(await parentComplexShowYesNoEle.isPresent());
@@ -520,16 +517,16 @@ describe('CCD casefields, retain_hidden_field setting', function () {
             } else {
                 expect(caseEventSubmitRequestBody.data[parentComplexField.id][childComplex.id][grandchildText.id], "For field" + grandchildText.id).to.equal(null);
             }
- 
+
         });
     });
 
-  
+
 
 
     function setUpcaseConfig(caseConfig) {
         MockApp.onGet('/data/internal/cases/:caseid/event-triggers/:eventId', (req, res) => {
-            caseEventConfigOfTest = caseConfig; 
+            caseEventConfigOfTest = caseConfig;
             res.send(caseConfig);
         });
 
@@ -558,13 +555,12 @@ describe('CCD casefields, retain_hidden_field setting', function () {
             if (obj[key] instanceof Object){
                 if (!validateAllValuesNullInObject(obj[key])){
                     return false;
-                } 
+                }
             } else if (obj[key] !== null && obj[key] != ""){
                 return false;
             }
-           
+
         }
         return true;
     }
-
 });

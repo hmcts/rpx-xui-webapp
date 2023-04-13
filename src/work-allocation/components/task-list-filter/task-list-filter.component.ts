@@ -60,7 +60,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   public defaultTypesOfWork: string[] = [];
   public fieldsSettings: FilterSetting = {
     id: TaskListFilterComponent.FILTER_NAME,
-    fields: [],
+    fields: []
   };
   public selectedLocations: string[] = [];
   public bookingLocations: string[] = [];
@@ -262,7 +262,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
           });
           this.baseLocationServices = Array.from(new Set(this.baseLocationServices));
           this.defaultLocations = this.defaultLocations && this.defaultLocations.length > 0
-           ? this.defaultLocations : Array.from(new Set(baseLocations));
+            ? this.defaultLocations : Array.from(new Set(baseLocations));
         }
       });
   }

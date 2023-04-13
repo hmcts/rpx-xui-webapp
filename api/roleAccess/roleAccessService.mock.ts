@@ -14,12 +14,12 @@ export const init = () => {
     if (durationOfRole === '7 days') {
       return [
         500,
-        payload,
+        payload
       ];
     }
     return [
       200,
-      payload,
+      payload
     ];
   });
 
@@ -27,7 +27,7 @@ export const init = () => {
     const payload = JSON.parse(config.data);
     return [
       200,
-      payload,
+      payload
     ];
   });
 

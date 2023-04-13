@@ -10,7 +10,7 @@ import * as fromHearingStore from '../../store';
 @Component({
   selector: 'exui-hearing-summary',
   templateUrl: './hearing-summary.component.html',
-  styleUrls: ['./hearing-summary.component.scss'],
+  styleUrls: ['./hearing-summary.component.scss']
 })
 export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -25,7 +25,7 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly router: Router,
               protected readonly route: ActivatedRoute) {
-      this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
+    this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
   }
 
   public ngOnInit(): void {
@@ -65,7 +65,7 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
 
     const hearingCondition: HearingConditions = {
       fragmentId: id,
-      mode: this.mode,
+      mode: this.mode
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
     this.router.navigateByUrl(changeLink);

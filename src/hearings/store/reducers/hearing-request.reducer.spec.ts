@@ -22,7 +22,7 @@ describe('Hearing Request Reducer', () => {
           hearingRequestMainModel: {
             requestDetails: {
               timeStamp: null,
-              versionNumber: 1,
+              versionNumber: 1
             },
             hearingDetails: {
               duration: null,
@@ -30,12 +30,12 @@ describe('Hearing Request Reducer', () => {
               hearingChannels: [],
               hearingLocations: [{
                 locationId: '196538',
-                locationType: HMCLocationType.COURT,
+                locationType: HMCLocationType.COURT
               },
               {
                 locationId: '219164',
-                locationType: HMCLocationType.COURT,
-              },
+                locationType: HMCLocationType.COURT
+              }
               ],
               hearingIsLinkedFlag: false,
               hearingWindow: null,
@@ -67,11 +67,11 @@ describe('Hearing Request Reducer', () => {
               caseCategories: [],
               caseManagementLocationCode: null,
               caserestrictedFlag: false,
-              caseSLAStartDate: null,
+              caseSLAStartDate: null
             },
-            partyDetails: [],
+            partyDetails: []
           },
-          lastError: null,
+          lastError: null
         };
         const action = new fromHearingRequestActions.InitializeHearingRequest(initialHearingRequestState.hearingRequestMainModel);
         const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
@@ -84,7 +84,7 @@ describe('Hearing Request Reducer', () => {
         hearingRequestMainModel: {
           requestDetails: {
             timeStamp: null,
-            versionNumber: 1,
+            versionNumber: 1
           },
           hearingDetails: {
             duration: null,
@@ -92,12 +92,12 @@ describe('Hearing Request Reducer', () => {
             hearingChannels: [],
             hearingLocations: [{
               locationId: '196538',
-              locationType: HMCLocationType.COURT,
+              locationType: HMCLocationType.COURT
             },
             {
               locationId: '219164',
-              locationType: HMCLocationType.COURT,
-            },
+              locationType: HMCLocationType.COURT
+            }
             ],
             hearingIsLinkedFlag: false,
             hearingWindow: null,
@@ -129,11 +129,11 @@ describe('Hearing Request Reducer', () => {
             caseCategories: [],
             caseManagementLocationCode: null,
             caserestrictedFlag: false,
-            caseSLAStartDate: null,
+            caseSLAStartDate: null
           },
-          partyDetails: [],
+          partyDetails: []
         },
-        lastError: null,
+        lastError: null
       };
 
       it('should update hearing request action and reset hearingInWelshFlag if no Wales location', () => {
@@ -149,7 +149,7 @@ describe('Hearing Request Reducer', () => {
         const action = new fromHearingRequestActions.UpdateHearingRequest(initialHearingRequestState.hearingRequestMainModel, {
           isInit: false,
           region: 'North West',
-          regionId: '7',
+          regionId: '7'
         });
         const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
         expect(hearingsState.hearingRequestMainModel.hearingDetails.hearingInWelshFlag).toEqual(true);
@@ -174,7 +174,7 @@ describe('Hearing Request Reducer', () => {
             status: 403,
             errors: null,
             message: 'Http failure response: 403 Forbidden'
-          },
+          }
         };
         const action = new fromHearingRequestActions.SubmitHearingRequestFailure(initialHearingRequestState.lastError);
         const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
@@ -190,7 +190,7 @@ describe('Hearing Request Reducer', () => {
             status: 403,
             errors: null,
             message: 'Http failure response: 403 Forbidden'
-          },
+          }
         };
         const action = new fromHearingRequestActions.ResetHearingRequestLastError();
         const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
@@ -206,7 +206,7 @@ describe('Hearing Request Reducer', () => {
             status: 500,
             errors: null,
             message: 'Internal server error'
-          },
+          }
         };
         const action = new fromHearingRequestActions.UpdateHearingRequestFailure(initialHearingRequestState.lastError);
         const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);

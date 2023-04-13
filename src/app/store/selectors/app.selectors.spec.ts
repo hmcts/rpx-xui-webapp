@@ -5,8 +5,6 @@ import * as fromActions from '../actions';
 import * as fromReducers from '../reducers';
 import * as fromSelectors from './app.selectors';
 
-
-
 describe('App Selectors', () => {
   let store: Store<fromReducers.State>;
 
@@ -21,7 +19,7 @@ describe('App Selectors', () => {
     userDetails: {
       sessionTimeout: {
         idleModalDisplayTime: 0,
-        totalIdleTime: 0,
+        totalIdleTime: 0
       },
       canShareCases: false,
       userInfo: null
@@ -35,20 +33,20 @@ describe('App Selectors', () => {
         isEnabled: true,
         label: 'CCDCaseCreate'
       }
-    },
+    }
   };
 
   const appConfigLoaded = {
-      config: {
-        features: {
-          ccdCaseCreate: {
-            isEnabled: true,
-            label: 'CCDCaseCreate'
-          }
-        },
-      },
-      loaded: true,
-      loading: false,
+    config: {
+      features: {
+        ccdCaseCreate: {
+          isEnabled: true,
+          label: 'CCDCaseCreate'
+        }
+      }
+    },
+    loaded: true,
+    loading: false
   };
 
   const appConfigLoadedAfter = {
@@ -58,7 +56,7 @@ describe('App Selectors', () => {
           isEnabled: true,
           label: 'CCDCaseCreate'
         }
-      },
+      }
     },
     termsAndCondition: { isLoaded: false, hasUserAcceptedTC: false },
     loaded: true,
@@ -69,22 +67,22 @@ describe('App Selectors', () => {
     userDetails: {
       sessionTimeout: {
         idleModalDisplayTime: 0,
-        totalIdleTime: 0,
+        totalIdleTime: 0
       },
       canShareCases: false,
       userInfo: null
     },
     decorate16digitCaseReferenceSearchBoxInHeader: false
-};
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          products: combineReducers(fromReducers.reducers),
-        }),
-      ],
+          products: combineReducers(fromReducers.reducers)
+        })
+      ]
     });
 
     store = TestBed.inject(Store);
@@ -116,6 +114,4 @@ describe('App Selectors', () => {
       expect(result).toEqual(appConfigLoaded.config);
     });
   });
-
-
 });

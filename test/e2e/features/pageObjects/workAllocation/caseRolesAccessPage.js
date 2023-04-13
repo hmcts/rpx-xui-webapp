@@ -6,7 +6,7 @@ const BrowserUtil = require('../../../../ngIntegration/util/browserUtil');
 class CaseRolesAccessPage{
     constructor(){
         this.pageContainer = $('exui-roles-and-access-container');
-        
+
         this.legalOpsRolesAccessTable = new CaseRolesTable(`//h2[contains(text(),'Legal Ops')]/following-sibling::exui-case-roles-table[position()=1]`);
         this.addLegalOpsRoleLink = element(by.xpath(`//h2[contains(text(),'Legal Ops')]/following-sibling::p[position()=1]//exui-allocate-a-role-link//a[contains(text(),'Allocate a legal ops role')]`));
 
@@ -16,7 +16,7 @@ class CaseRolesAccessPage{
         this.judicialRolesAccessTable = new CaseRolesTable(`//h2[contains(text(),'Judiciary')]/following-sibling::exui-case-roles-table[position()=1]`);
         this.addJudicialRoleLink = element(by.xpath(`//h2[contains(text(),'Judiciary')]/following-sibling::p[position()=1]//exui-allocate-a-role-link//a[contains(text(),'Allocate a judicial role')]`));
 
-        
+
         this.exclusionTable = new CaseRolesTable(`//h2[contains(text(),'Exclusions')]/following-sibling::exui-exclusions-table[position()=1]`);
         this.addExcluusionLink = element(by.xpath(`//h2[contains(text(),'Exclusions')]/following-sibling::p[position()=1]//a[contains(text(),'Add')]`));
 
@@ -53,7 +53,7 @@ class CaseRolesAccessPage{
 
     async isTableColumnDisplayedForAccessRoleType(rolesFor, headerText){
         const table = this.getTableForRoleACcessType(rolesFor);
-        return await table.isTableHeaderDisplayed(headerText); 
+        return await table.isTableHeaderDisplayed(headerText);
     }
 
     async getTableColumnValueForAccessRoleType(rolesFor,atRow,headerText) {
@@ -114,7 +114,6 @@ class CaseRolesAccessPage{
     getExclusionAddLink() {
         return $(`exui-roles-and-access p a[href*="add-exclusion"]`);
     }
-
 }
 
 module.exports = new CaseRolesAccessPage();

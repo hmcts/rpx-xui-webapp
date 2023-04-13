@@ -1,8 +1,8 @@
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {hearingStatusMappings} from '../models/hearingStatusMappings';
-import {State} from '../store';
-import {AnswerConverter} from './answer.converter';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { hearingStatusMappings } from '../models/hearingStatusMappings';
+import { State } from '../store';
+import { AnswerConverter } from './answer.converter';
 
 export class StatusAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {

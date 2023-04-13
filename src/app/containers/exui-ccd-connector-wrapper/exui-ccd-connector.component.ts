@@ -33,7 +33,7 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
   @HostBinding('attr.data-selector') public hostBindingValue: string;
 
   public subscriptions: Subscription[] = [];
-  public dispatcherContainer: { type: string } | {};
+  public dispatcherContainer: { type: string } | object;
 
   public ngAfterContentInit() {
     if (this.ccdComponent) {
@@ -85,5 +85,4 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
       });
     }
   }
-
 }

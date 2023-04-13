@@ -7,6 +7,7 @@ describe('Share Case Service', () => {
   let httpClientGetSpy: { get: jasmine.Spy };
   let httpClientPostSpy: { post: jasmine.Spy };
   let service: CaseShareService;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [

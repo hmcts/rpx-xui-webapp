@@ -7,7 +7,7 @@ import { HearingsUtils } from '../utils/hearings.utils';
 import { AnswerConverter } from './answer.converter';
 
 export class JudicialMembersAnswerConverter implements AnswerConverter {
-  constructor(protected readonly route: ActivatedRoute) { }
+  constructor(protected readonly route: ActivatedRoute) {}
 
   public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
     const judicialUsersList: JudicialUserModel[] = this.route.snapshot.data.judicialResponseUsers || [];

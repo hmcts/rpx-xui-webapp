@@ -14,7 +14,7 @@ const stub: boolean = getConfigValue(STUB);
 export async function getUsers(req: EnhancedRequest, res: Response, next: NextFunction) {
   if (stub) {
     return stubAPI.getUsers(req, res);
-   } else {
+  } else {
     // TODO: call actual API if not for stub
     return realAPI.getUsers(req, res, next);
   }
@@ -32,10 +32,10 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
   }
 }
 
-export async function assignCasesToUsers(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function assignCasesToUsers(req: EnhancedRequest, res: Response) {
   if (stub) {
     return stubAPI.assignCases(req, res);
   } else {
-    return realAPI.assignCases(req, res, next);
+    return realAPI.assignCases(req, res);
   }
 }

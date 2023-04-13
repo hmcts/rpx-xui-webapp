@@ -47,7 +47,6 @@ class EXUIErrorMessageComponent{
     getFormGroupErrorFieldWithText(fieldtext){
         return element(by.xpath(`//div[contains(@class,'form-group-error')]//*[contains(text(),'${fieldtext}')]//ancestor::div[contains(@class,'form-group-error')]`));
     }
-
 }
 
 module.exports = new EXUIErrorMessageComponent();

@@ -6,7 +6,6 @@ import { reporterMsg, setTestContext } from '../utils/helper';
 import Request from '../utils/request';
 import CaseRequestBody from '../utils/wa/caseRequestBody';
 
-
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
 describe('Work allocation Release 2:  Case roles', () => {
@@ -23,13 +22,11 @@ describe('Work allocation Release 2:  Case roles', () => {
         Request.clearSession();
     });
 
-
     after(async function () {
         const authToken = await getAuthorisation(caseOfficer, caseofficerPass);
         const roleAssignmentCleanUp = require('../../../dataCleanup/roleAssignments');
         await roleAssignmentCleanUp.runCleanup(authToken);
     });
-
 
     it('Get Case roles', async function () {
         this.timeout(60000);
@@ -87,8 +84,6 @@ describe('Work allocation Release 2:  Case roles', () => {
         } else {
             reporterMsg(`No cases exclusions returned`)
         }
-
-
     });
 
     it(' allocate role', async function () {
@@ -96,7 +91,6 @@ describe('Work allocation Release 2:  Case roles', () => {
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
         const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
-
 
         const caseRolesRequest = {
             "caseId": caseId.toString(),
@@ -129,18 +123,13 @@ describe('Work allocation Release 2:  Case roles', () => {
         } else {
             reporterMsg(`No cases exclusions returned`);
         }
-
-
-
     });
-
 
     it('Remove allocate ', async function () {
         this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
         const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
-
 
         const caseRolesRequest = {
             caseId: caseId,
@@ -164,20 +153,13 @@ describe('Work allocation Release 2:  Case roles', () => {
         } else {
             reporterMsg(`No cases roles returned`);
         }
-
-
-
     });
-
-
 
     it('Get exclusion', async function () {
         this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
         const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
-
-
 
         const caseExclusionAddRequest = {
             caseId: caseId.toString(),
@@ -195,10 +177,7 @@ describe('Work allocation Release 2:  Case roles', () => {
         };
         const caseRoleExclusion = await Request.post(`api/role-access/exclusions/confirm`, caseExclusionAddRequest, headers, 201);
         addAssignmentIdToCleanUp(caseRoleExclusion);
-
-
     });
-
 
     async function getCases(view, users) {
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
@@ -215,7 +194,6 @@ describe('Work allocation Release 2:  Case roles', () => {
         const response = await Request.post(`workallocation/my-work/cases`, caseRequestObj.getRequestBody(), headers, 200);
         return response;
     }
-
 
     function getSearchCaseReqBody(view, users, locations, userType) {
         // const response = await Request.get('api/user/details', null, 200);
@@ -251,7 +229,6 @@ describe('Work allocation Release 2:  Case roles', () => {
         return caseRequestBody;
     }
 
-
     function addAssignmentIdToCleanUp(assignmentResponse){
         const roleAssignmentCleanUp = require('../../../dataCleanup/roleAssignments');
         const assignmentId = assignmentResponse.data.roleAssignmentResponse.requestedRoles[0].id;
@@ -268,14 +245,9 @@ describe('Work allocation Release 2:  Case roles', () => {
             'content-length': JSON.stringify(body).length,
             'accept' : 'application/json',
             'content-type': 'application/json'
-
         };
         const response = await Request.post(`data/internal/searchCases?ctid=Asylum&use_case=WORKBASKET&view=WORKBASKET&state=Any&page=1`, body,headers, 200);
 
         return response;
     }
-
-
 });
-
-

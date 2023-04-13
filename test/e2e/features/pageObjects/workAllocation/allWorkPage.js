@@ -41,7 +41,7 @@ class AllWork extends TaskList {
             'Select a role type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Select a role type")]/..//select'),
             'Person': element(by.xpath('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//xuilib-find-person//input')),
 
-        } 
+        }
 
         this.selectOrRadioFilterItems = ['Service', 'Case Location', 'Tasks by role type', 'Task type', 'Priority', 'Person', 'Tasks', 'Select a role type','Location radios'];
 
@@ -54,7 +54,7 @@ class AllWork extends TaskList {
 
     async isFilterItemDisplayed(filterItem){
 
-        
+
         const filtersItems = Object.keys(this.FILTER_ITEMS);
         if (!filtersItems.includes(filterItem)){
             throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test.${filtersItems}`);
@@ -72,7 +72,7 @@ class AllWork extends TaskList {
         if (!filtersItems.includes(filterItem)) {
             throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test.${filtersItems}`);
         }
-        return await this.FILTER_ITEMS[filterItem].isDisplayed() 
+        return await this.FILTER_ITEMS[filterItem].isDisplayed()
         && await this.FILTER_ITEMS[filterItem].isEnabled();
 
     }
@@ -85,7 +85,7 @@ class AllWork extends TaskList {
         if (this.selectOrRadioFilterItems.includes(filterItem)) {
             let options = await this.FILTER_ITEMS[filterItem].getOptions();
             options = options.filter(opt => opt !== "");
-            return options; 
+            return options;
         } else {
             throw new Error(`filter item ${filterItem} is not a select or a Radio item.`);
         }
@@ -137,7 +137,6 @@ class AllWork extends TaskList {
             cucumberReporter.AddMessage("All work page not displayed " + err.stack,LOG_LEVELS.Error);
             return false;
         }
-
     }
 
     // Task container methods
@@ -178,7 +177,7 @@ class AllWork extends TaskList {
         const results = [];
         for(let i = 0 ; i < count ; i ++){
             const e = await this.filterSearchResults.get(i);
-            results.push(await e.getText()); 
+            results.push(await e.getText());
         }
         return results;
     }
@@ -205,7 +204,7 @@ class AllWork extends TaskList {
                 return;
             }
         }
-        throw new Error(`Search result ${result} not found in results ${results}`); 
+        throw new Error(`Search result ${result} not found in results ${results}`);
     }
 
 

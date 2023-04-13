@@ -19,8 +19,7 @@ describe('JudgeTypesAmendedConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = ['tj'];
     const result$ = judgeTypesAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = true;
-    const expected = cold('(b|)', {b: isAmended});
+    const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
-
 });

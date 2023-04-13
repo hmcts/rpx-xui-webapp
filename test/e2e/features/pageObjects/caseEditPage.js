@@ -40,7 +40,7 @@ class caseEditPage {
                     }
                 }
             }catch(err){
-                const caseTypeToSelect = RuntimeTestData.workbasketInputs.casetype; 
+                const caseTypeToSelect = RuntimeTestData.workbasketInputs.casetype;
                 for (const caseType of RuntimeTestData.workbasketInputs.casetypes){
                     if (caseType !== caseTypeToSelect){
                         await this.caseListPage.selectCaseType(caseType);
@@ -48,12 +48,12 @@ class caseEditPage {
                     }
                 }
                 await BrowserWaits.waitForSeconds(2);
-                await this.caseListPage.selectCaseType(caseTypeToSelect); 
+                await this.caseListPage.selectCaseType(caseTypeToSelect);
                 throw new Error(err);
             }
-            
+
         });
-        
+
     }
 
     async validateSearchInputs(reqPath) {
@@ -116,11 +116,10 @@ class caseEditPage {
                 if (text.length !== 0){
                     caseResultsThTitle.push(`${text}`);
                 }
-                
+
             }
             return await caseResultsThTitle;
         }
-
     }
 
     async caseResultsThTitleApiRes(URL) {
@@ -212,7 +211,6 @@ class caseEditPage {
 
             }
         }
-
     }
 
     async _getFieldId(caseField, wizardPage1) {
@@ -234,7 +232,6 @@ class caseEditPage {
             default:
                 return $(`#${wizardPage1.case_field_id}`);;
         }
-
     }
     async validateSummeryPageLinks() {
         let checkURanswerPage = element.all(by.xpath(`//table[@class='form-table']/tbody/tr`));
@@ -282,7 +279,6 @@ class caseEditPage {
                 }
             }
         }
-
     }
 
     async _dlData(count) {
@@ -305,14 +301,14 @@ class caseEditPage {
         expect(buttonEnable).to.eql(true);
 
         await browser.executeScript('arguments[0].scrollIntoView()',
-            $('button[type=submit]').getWebElement()) 
+            $('button[type=submit]').getWebElement())
         await this.continueButton.click();
         let e = $("#TextField");
         await e.sendKeys(protractor.Key.ENTER);
         await e.sendKeys(protractor.Key.TAB);
         let errormsg = await $("ccd-write-text-field .error-message").getText();
         expect(errormsg).to.eql("Text Field is required");
-        
+
     }
 
     async eventPageDisplayShowCondition() {
@@ -338,7 +334,7 @@ class caseEditPage {
             let page3 = await element(by.css("ccd-case-edit-page h1"));
             expect(await page3.getText()).to.contains("Page 3");
         });
-        
+
     }
 
     async _getKeyVal(field) {

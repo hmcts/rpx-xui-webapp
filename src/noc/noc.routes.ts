@@ -20,7 +20,7 @@ export const ROUTES: Routes = [
         }
       }
     ]
-  },
+  }
 ];
 
 export const nocRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);

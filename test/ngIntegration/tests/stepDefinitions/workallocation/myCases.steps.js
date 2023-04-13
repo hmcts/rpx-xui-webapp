@@ -18,8 +18,8 @@ const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const waCasesTable = new WACasesTable();
-  
-    
+
+
     When('I click work allocation cases pagination link {string} and wait for req reference {string} not null', async function (paginationLinktext, reference) {
 
         await BrowserWaits.retryWithActionCallback(async () => {
@@ -34,7 +34,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 return global.scenarioData[reference] !== null
             }, 5000);
         });
-
     });
 
 
@@ -80,7 +79,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         }
         softAssert.finally();
-
     });
 
     Then('I validate work allocation cases search request with reference {string} does not have search parameters', async function (requestReference, datatable) {
@@ -99,7 +97,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         }
         softAssert.finally();
-
     });
 
 

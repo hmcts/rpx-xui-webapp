@@ -6,7 +6,7 @@ import { Task } from '../../../work-allocation/models/tasks';
   templateUrl: './task-alert-banner.component.html',
   styleUrls: ['./task-alert-banner.component.scss']
 })
-export class TaskAlertBannerComponent implements OnInit  {
+export class TaskAlertBannerComponent implements OnInit {
 
   @Input() public alertTitle;
   @Input() public alertMessage;

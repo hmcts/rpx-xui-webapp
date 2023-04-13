@@ -6,12 +6,13 @@ import { getHearingRequest } from './hearing-request.selectors';
 
 describe('Hearing Request selectors', () => {
   let store: Store<State>;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('hearings', reducers),
-      ],
+        StoreModule.forFeature('hearings', reducers)
+      ]
     });
     store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
@@ -26,5 +27,4 @@ describe('Hearing Request selectors', () => {
       expect(result).toEqual(initialHearingRequestState);
     });
   });
-
 });

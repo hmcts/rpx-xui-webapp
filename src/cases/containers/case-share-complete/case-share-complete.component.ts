@@ -43,7 +43,6 @@ export class CaseShareCompleteComponent implements OnInit, OnDestroy {
     this.removeUserFromCaseToggleOn$ = this.featureToggleService.getValue(LD_FLAG_REMOVE_USER_FROM_CASE_MC, false);
   }
 
-
   public ngOnDestroy() {
     if (this.completeScreenMode === 'COMPLETE') {
       this.store.dispatch(new fromCasesFeature.ResetCaseSelection());

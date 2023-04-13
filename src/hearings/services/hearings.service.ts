@@ -22,8 +22,7 @@ export class HearingsService {
 
   public navigateAction$: Observable<ACTION> = this.actionSubject.asObservable();
 
-  constructor(private readonly http: HttpClient) {
-  }
+  constructor(private readonly http: HttpClient) {}
 
   public navigateAction(action: ACTION): void {
     this.actionSubject.next(action);
@@ -35,7 +34,7 @@ export class HearingsService {
 
   public loadHearingValues(jurisdictionId: string, caseId: string): Observable<ServiceHearingValuesModel> {
     return this.http.post<ServiceHearingValuesModel>(`api/hearings/loadServiceHearingValues?jurisdictionId=${jurisdictionId}`,
-      {caseReference: caseId});
+      { caseReference: caseId });
   }
 
   public loadServiceLinkedCases(jurisdictionId: string, caseReference: string, hearingId?: string): Observable<ServiceLinkedCasesModel[]> {
@@ -61,7 +60,7 @@ export class HearingsService {
     const cancellationReasonCodes: string[] = reasons.map(reason => reason.key);
     const options = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       }),
       body: {
         cancellationReasonCodes
@@ -83,7 +82,7 @@ export class HearingsService {
       params: new HttpParams()
         .set('hearingId', hearingRequestMainModel.requestDetails.hearingRequestID)
     };
-    return this.http.put<ResponseDetailsModel>(`api/hearings/updateHearingRequest`, hearingRequestMainModel, options);
+    return this.http.put<ResponseDetailsModel>('api/hearings/updateHearingRequest', hearingRequestMainModel, options);
   }
 
   public getHearingActuals(hearingId: string): Observable<HearingActualsMainModel> {

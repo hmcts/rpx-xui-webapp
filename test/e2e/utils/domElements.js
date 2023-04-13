@@ -3,7 +3,7 @@ class Select{
     constructor(locatorType, selector){
         this.selectElement = locatorType.toLowerCase() === 'css' ? $(selector) : element(by.xpath(selector));
         this.selectElementOptions = locatorType.toLowerCase() === 'css' ? $$(`${selector} option`) : element.all(by.xpath(`${selector}//option`))
-        
+
     }
 
     async isDisplayed(){
@@ -40,7 +40,7 @@ class GovUKRadios{
     constructor(locatorType, selector) {
         this.locatorType = locatorType;
         this.selector = selector;
-       
+
     }
 
     async isDisplayed() {
@@ -56,7 +56,7 @@ class GovUKRadios{
     }
 
     async getRadioOptions(){
-       
+
         return this.getOptions();
     }
 
@@ -88,7 +88,6 @@ class GovUKRadios{
         }
         throw new Error(`Radio option "${option}" not found in options "${options}"`);
     }
-
 }
 
 module.exports = { Select, GovUKRadios }

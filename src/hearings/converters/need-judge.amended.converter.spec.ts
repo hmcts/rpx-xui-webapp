@@ -20,8 +20,7 @@ describe('NeedJudgeAmendedConverter', () => {
     };
     const result$ = needJudgeAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = true;
-    const expected = cold('(b|)', {b: isAmended});
+    const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
-
 });

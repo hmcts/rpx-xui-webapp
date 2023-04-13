@@ -25,7 +25,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             if(booking.locationId === ""){
                 continue;
             }
-            
+
             const bookingLocations = booking.locationId.split(",");
             for (const location of bookingLocations){
                 const bookingForLocation = {...booking}
@@ -38,16 +38,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     bookingForLocation["endTime"] = workAllocationDateUtil.getDateInDays(bookingForLocation["endTime"])
                 }
             }
-           
+
         }
-        CucumberReporter.AddJson(bookings, LOG_LEVELS.Debug); 
+        CucumberReporter.AddJson(bookings, LOG_LEVELS.Debug);
         bookingsMockData.setUpBookings(bookings);
     });
 
     Given('I set mock locations for bookings', async function (bookinglocations) {
         const locationsHashes = bookinglocations.hashes();
-      
+
         bookingsMockData.setupLocations(locationsHashes);
     });
-
 });

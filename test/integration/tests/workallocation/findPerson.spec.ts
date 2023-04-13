@@ -44,9 +44,5 @@ describe('Work allocation Release 2: Find person', () => {
 
         const expectedCases = workAllocationDataModels.getFindPersonObj();
         expect(response.data[0]).to.have.all.keys(Object.keys(expectedCases));
-
     });
-
 });
-
-

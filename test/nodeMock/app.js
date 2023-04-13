@@ -30,7 +30,7 @@ class MockApp{
         this.logMessageCallback = null;
         this.logJSONCallback = null;
         this.routesLogFile = `${__dirname}/RUNTIME_ROUTES.txt`;
-        this.uniqueRoutesCalled = new Set(); 
+        this.uniqueRoutesCalled = new Set();
     }
 
 
@@ -105,9 +105,9 @@ class MockApp{
     }
 
     async onRequest(endPoint, method,req,res,callback){
-        let scenarioMockPort; 
+        let scenarioMockPort;
         try{
-            
+
             const scenarioId = this.getCookieFromRequest(req, "scenarioId");
             scenarioMockPort = this.getCookieFromRequest(req, 'scenarioMockPort');
             const path = req.path;
@@ -181,7 +181,6 @@ class MockApp{
             CucumberReporter.AddMessage("*************************************************************** ");
             res.status(552).send({ message: 'MOCK onProxy error', err: err.message });
         }
-
     }
 
     getCookieFromRequest(req, cookieName){
@@ -195,7 +194,6 @@ class MockApp{
         if (scenarioId){
             delete this.scenarioRequestCallbacks[scenarioId];
         }
-
     }
 
     getScenarioCallBack(scenarioId, method, path){
@@ -269,7 +267,7 @@ class MockApp{
                 let send = res.send;
                 const logMessagesCallBackLocal = this.logMessageCallback;
                 const logJSONCallbackLocal = this.logJSONCallback;
-        
+
                 res.send = function (body) {
 
                     logMessagesCallBackLocal(` ------------------------------Mock response intercept from server with port "${MockApp.serverPort}" ---------------------------`);

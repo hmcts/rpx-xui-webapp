@@ -6,9 +6,7 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 
 export class AdditionalFacilitiesAnswerConverter implements AnswerConverter {
-
-  constructor(protected readonly route: ActivatedRoute) {
-  }
+  constructor(protected readonly route: ActivatedRoute) {}
 
   private static getFacilityValue(hearingFacilities: LovRefDataModel[], key: string): string {
     const lovData: LovRefDataModel = hearingFacilities.find(facility => facility.key === key);

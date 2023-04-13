@@ -33,9 +33,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
         catch(err){
             global.scenarioData[requesrRef] = null;
-            throw new Error(err); 
+            throw new Error(err);
         }
-
     });
-
 });

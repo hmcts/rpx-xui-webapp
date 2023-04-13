@@ -4,12 +4,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ErrorMessage } from '../../models';
 import { ErrorMessageComponent } from './error-message.component';
 
-
 @Component({
-  template: `<exui-error-message [title]="title" [error]="error"></exui-error-message>`
+  template: '<exui-error-message [title]="title" [error]="error"></exui-error-message>'
 })
 class WrapperComponent {
-  @ViewChild(ErrorMessageComponent, { static: true}) public appComponentRef: ErrorMessageComponent;
+  @ViewChild(ErrorMessageComponent, { static: true }) public appComponentRef: ErrorMessageComponent;
   @Input() public error: ErrorMessage;
 }
 
@@ -50,5 +49,4 @@ describe('ErrorMessageComponent', () => {
     fixture.detectChanges();
     expect(fixture.debugElement.nativeElement.innerText).toBe(description);
   });
-
 });

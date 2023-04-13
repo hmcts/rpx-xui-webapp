@@ -32,7 +32,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   let frUserPage = new FrUserPage();
   let applyForProbatePage = new ApplyForProbatePage();
 
-  let frCase = new FRCase(); 
+  let frCase = new FRCase();
   let probateCase = new ProbateCase();
 
   let caseManager = new CaseManager();
@@ -40,11 +40,10 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   When('I click on create case button', async function () {
     //await caseListPage.clickCreateNewCaseButton();
     await headerPage.clickCreateCase();
-
   });
 
   Then('Create case page should be displayed', async function () {
-     
+
     expect(await new CreateCaseStartPage().amOnPage()).to.be.true;
   });
 
@@ -85,11 +84,9 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
 
   When(/^I click on cancel button$/, async function () {
     await appealCreatedPage.clickCancelButton();
-
   });
   Then(/^I should be display the expert ui case list page$/, async function (){
     //await caseListPage.clickCreateNewCaseButton();
-
   });
   When(/^I click on previous button$/, async function (){
     await appealCreatedPage.clickPreviousButton();
@@ -137,7 +134,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
     //await createCaseStartPage.selectEvent(TestData.divorceseevent);
     await createCaseStartPage.clickStartButton();
   });
- 
+
   When(/^I enter mandatory fr fields jurisdiction,case type,event and click on start button$/, async function () {
     await createCaseStartPage.selectJurisdiction('Family Divorce');
     await createCaseStartPage.selectCaseType('Financial Remedy Consented');

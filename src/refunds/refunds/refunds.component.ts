@@ -14,7 +14,7 @@ export class RefundsComponent implements OnInit {
   public userRoles = [];
   public userDataLoaded = false;
 
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   public ngOnInit() {
     this.userService.getUserDetails().subscribe(details => {
@@ -23,5 +23,4 @@ export class RefundsComponent implements OnInit {
       this.userDataLoaded = true;
     });
   }
-
 }

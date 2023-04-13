@@ -77,7 +77,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     this.taskService.claimTask(taskId).subscribe(() => {
       this.infoMessageCommService.nextMessage({
         type: InfoMessageType.SUCCESS,
-        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
+        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
       });
       this.refreshTasks();
     }, error => {
@@ -115,7 +115,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     if (handledStatus > 0) {
       this.infoMessageCommService.nextMessage({
         type: InfoMessageType.WARNING,
-        message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
+        message: InfoMessage.TASK_NO_LONGER_AVAILABLE
       });
       if (handledStatus === 400) {
         this.refreshTasks();

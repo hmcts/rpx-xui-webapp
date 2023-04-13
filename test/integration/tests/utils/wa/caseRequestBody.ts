@@ -7,7 +7,7 @@ class CaseRequestBody {
             searchRequest: {
                 sorting_parameters: [],
                 search_parameters: [],
-                pagination_parameters: { page_number: 1, page_size: 25 }, 
+                pagination_parameters: { page_number: 1, page_size: 25 },
                 search_by: '',
             },
             view: '',
@@ -85,7 +85,6 @@ class CaseRequestBody {
     public getRequestBody() {
         return this.requestBody;
     }
-
 }
 
 export default CaseRequestBody;

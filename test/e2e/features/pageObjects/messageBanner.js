@@ -14,7 +14,7 @@ class MessageBanner{
     }
 
     async isBannerMessageDisplayed() {
-       
+
         try {
             if (this.parentCssLocator) {
                 await BrowserWaits.waitForElement($(this.parentCssLocator));
@@ -28,7 +28,7 @@ class MessageBanner{
     }
 
     async getBannerMessagesDisplayed() {
-       
+
         expect(await this.isBannerMessageDisplayed(), "Message banner not displayed").to.be.true;
         const messagescount = await this.infoMessages.count();
         const messages = [];
@@ -50,7 +50,6 @@ class MessageBanner{
 
         return matchingMessages.length > 0;
     }
-
 }
 
 module.exports = MessageBanner;

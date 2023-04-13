@@ -24,7 +24,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   public serviceIds: string = '';
   public findLocationFormGroup: FormGroup;
 
-  @ViewChild(SearchLocationComponent, {static: false}) public searchLocationComponent: SearchLocationComponent;
+  @ViewChild(SearchLocationComponent, { static: false }) public searchLocationComponent: SearchLocationComponent;
   public selectedLocations: LocationByEPIMMSModel[];
   public validationErrors: { id: string, message: string }[] = [];
 
@@ -69,7 +69,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
 
   private setLocationError(message: string) {
     this.findLocationFormGroup.controls.locationSelectedFormControl.markAsDirty();
-    this.validationErrors.push({id: 'input-selected-location-label', message});
+    this.validationErrors.push({ id: 'input-selected-location-label', message });
   }
 
   public appendLocation(selectedLocations: LocationByEPIMMSModel[]) {
@@ -87,7 +87,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
 
   public updateHearingConditions(): void {
     const strRegions = this.selectedLocations.map(location => location.region_id).join(',');
-    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions({regionId: strRegions}));
+    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions({ regionId: strRegions }));
   }
 
   public isLocationValid() {
@@ -118,7 +118,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
         locationType: HMCLocationType.COURT,
         locationId: locationByEPIMMSModel.epimms_id,
         locationName: locationByEPIMMSModel.court_name,
-        regionId: locationByEPIMMSModel.region_id,
+        regionId: locationByEPIMMSModel.region_id
       } as HearingLocationModel;
     });
     this.hearingRequestMainModel = {

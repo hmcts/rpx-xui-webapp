@@ -2,7 +2,8 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import { mockReq } from 'sinon-express-mock';
+import { mockReq, mockRes } from 'sinon-express-mock';
+import { http } from '../lib/http';
 import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { Role } from '../roleAccess/models/roleType';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
@@ -1247,6 +1248,8 @@ describe('workAllocation.utils', () => {
           }
         }
       ];
+      const res = mockRes({status: 200, data: mockRoleAssignments});
+      sandbox.stub(http, 'post').resolves(res);
       const data = await getRoleAssignmentsByQuery(caseAllocatorQuery, req);
       expect(data).to.deep.equal(mockRoleAssignments);
     });
@@ -1672,6 +1675,9 @@ describe('workAllocation.utils', () => {
         }
       ];
       const req = mockReq();
+      const res = mockRes({status: 200, data: typesOfWork});
+      sandbox.stub(http, 'get').resolves(res);
+
       const data = await getTypesOfWorkByUserId(req, req);
       expect(data).to.deep.equal(typesOfWork);
     });

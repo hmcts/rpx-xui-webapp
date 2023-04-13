@@ -2056,12 +2056,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.13.10-linked-cases-continue-button-validation-v6":
-  version: 6.13.10-linked-cases-continue-button-validation-v6
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.13.10-linked-cases-continue-button-validation-v6"
+"@hmcts/ccd-case-ui-toolkit@npm:6.13.11-linked-reasons-sorting-fix":
+  version: 6.13.11-linked-reasons-sorting-fix
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.13.11-linked-reasons-sorting-fix"
   dependencies:
     tslib: ^2.0.0
-  checksum: d011f6b3171b284e406687b1e15fb94533904fe4a7979166630ee7be8e23d51e4ee6dd915838ce73b35218338e8a8afe0c2cd4692b3e3027a939c37d957b2ca2
+  checksum: c6d8b4ca4746a82f490f154dbee4dd839d45a2a57d238eac3e19554fbbb4915cf75e3be466bd2e305605b8a13fc2cdb1bbb00f5858b90f75c2d4b0f00c7d97d8
   languageName: node
   linkType: hard
 
@@ -17719,7 +17719,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.13.10-linked-cases-continue-button-validation-v6
+    "@hmcts/ccd-case-ui-toolkit": 6.13.11-linked-reasons-sorting-fix
     "@hmcts/ccpay-web-component": 5.0.10-beta14
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

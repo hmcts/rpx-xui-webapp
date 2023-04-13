@@ -70,7 +70,7 @@ export async function specificAccessRequestCreateAmRole(req, res): Promise<Axios
     const fullPath = `${basePath}/am/role-assignments`;
     const headers = setHeaders(req);
     /* tslint:disable:no-string-literal */
-    delete headers['accept'];
+    delete headers.accept;
     const response = await http.post(fullPath, req.body, { headers });
     return response;
   } catch (error) {
@@ -182,7 +182,7 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
 
   const headers = setHeaders(req);
   /* tslint:disable:no-string-literal */
-  delete headers['accept'];
+  delete headers.accept;
   try {
     const userInfo = req.session.passport.user.userinfo;
     const actorId = userInfo.id ? userInfo.id : userInfo.uid;
@@ -197,7 +197,7 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
 
     const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse[0];
 
-    delete singleRoleAssignment['id'];
+    delete singleRoleAssignment.id;
     singleRoleAssignment.attributes = {
       ...singleRoleAssignment.attributes,
       ...req.body.attributesToUpdate

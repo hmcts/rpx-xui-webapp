@@ -16,7 +16,7 @@ export async function createLabellingRole(req: EnhancedRequest,
   const fullPath = `${basePath}/am/role-assignments`;
   const headers = setHeaders(req);
   /* tslint:disable:no-string-literal */
-  delete headers['accept'];
+  delete headers.accept;
   const response = await http.post(fullPath, body, { headers });
   return response;
 }

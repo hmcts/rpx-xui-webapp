@@ -231,7 +231,7 @@ export async function deleteSpecificAccessRequestedRole(req: EnhancedRequest, re
     const headers = setHeaders(req);
     const body = toDenySADletionRequestedRoleBody(requestId);
     /* tslint:disable:no-string-literal */
-    delete headers['accept'];
+    delete headers.accept;
     const response = await http.delete(fullPath, {
       data: body,
       headers

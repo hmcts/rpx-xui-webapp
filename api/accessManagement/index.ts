@@ -21,7 +21,7 @@ export async function getBookings(req, resp: Response, next: NextFunction) {
   const fullPath = `${basePath}/am/bookings/query`;
   const headers = setHeaders(req);
   /* tslint:disable:no-string-literal */
-  delete headers['accept'];
+  delete headers.accept;
 
   try {
     const bookings = await http.post(fullPath, { 'queryRequest': { 'userIds': [req.body.userId] } }, { headers });
@@ -46,7 +46,7 @@ export async function createBooking(req, resp: Response, next: NextFunction): Pr
   const fullPath = `${basePath}/am/bookings`;
   const headers = setHeaders(req);
   /* tslint:disable:no-string-literal */
-  delete headers['accept'];
+  delete headers.accept;
 
   try {
     const response = await http.post(fullPath, { 'bookingRequest': req.body }, { headers });

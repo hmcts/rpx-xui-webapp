@@ -10,7 +10,7 @@ export async function challengedAccessRouter(req: EnhancedRequest, resp, next) {
   const fullPath = `${basePath}/am/role-assignments`;
   const headers = setHeaders(req);
   /* tslint:disable:no-string-literal */
-  delete headers['accept'];
+  delete headers.accept;
   try {
     const response = await http.post(fullPath, req.body, { headers });
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
@@ -28,7 +28,7 @@ export async function challengedAccessUpdateAttributes(req: EnhancedRequest, res
 
   const headers = setHeaders(req);
   /* tslint:disable:no-string-literal */
-  delete headers['accept'];
+  delete headers.accept;
   try {
     const userInfo = req.session.passport.user.userinfo;
     const actorId = userInfo.id ? userInfo.id : userInfo.uid;
@@ -43,7 +43,7 @@ export async function challengedAccessUpdateAttributes(req: EnhancedRequest, res
 
     const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse[0];
 
-    delete singleRoleAssignment['id'];
+    delete singleRoleAssignment.id;
     singleRoleAssignment.attributes = {
       ...singleRoleAssignment.attributes,
       ...req.body.attributesToUpdate

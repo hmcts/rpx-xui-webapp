@@ -7,7 +7,7 @@ import * as fromActions from '../../store';
 import { AppHeaderSignedOutComponent } from './app-header-signed-out.component';
 
 const cookieService = {
-  get: key => {
+  get: (key) => {
     return cookieService[key];
   },
   set: (key, value) => {

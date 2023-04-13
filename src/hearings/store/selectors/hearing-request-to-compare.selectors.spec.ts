@@ -20,7 +20,7 @@ describe('Hearing Request to compare selectors', () => {
 
   describe('getHearingRequestToCompare', () => {
     it('should return hearings request to compare state', () => {
-      store.pipe(select(getHearingRequestToCompare)).subscribe(value => {
+      store.pipe(select(getHearingRequestToCompare)).subscribe((value) => {
         expect(value).toEqual(initialHearingRequestState);
       });
     });

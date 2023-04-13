@@ -246,8 +246,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
           attendanceType:
             null,
           organisation: null
-        }))
-    ;
+        }));
   });
 
   it('should add a FormGroup from the FormArray', () => {

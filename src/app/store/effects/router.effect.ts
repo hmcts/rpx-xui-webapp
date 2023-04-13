@@ -25,7 +25,7 @@ export class RouterEffects {
       tap(({ path, query: queryParams, extras, callback, errorHandler }) => {
         return this.router.navigate(path, { queryParams, ...extras })
           .then(() => callback ? callback() : false)
-          .catch(error => errorHandler ? errorHandler(error) : false);
+          .catch((error) => errorHandler ? errorHandler(error) : false);
       })
     );
 
@@ -52,5 +52,4 @@ export class RouterEffects {
       ofType(RouterActions.FORWARD),
       tap(() => this.location.forward())
     );
-
 }

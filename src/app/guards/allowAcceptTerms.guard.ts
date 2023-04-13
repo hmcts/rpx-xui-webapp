@@ -12,7 +12,7 @@ export class AllowAcceptTermsGuard implements CanActivate {
 
   public canActivate(): Observable<boolean> {
     return this.acceptGuard.canActivate().pipe(
-      map(accepted => !accepted)
+      map((accepted) => !accepted)
     );
   }
 }

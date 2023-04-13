@@ -15,7 +15,7 @@ export class TaskRoleResolverService implements Resolve<TaskRole[]> {
 
   public resolve(route: ActivatedRouteSnapshot): Observable<TaskRole[]> {
     return this.service.getTaskRoles(route.paramMap.get('taskId')).pipe(
-      catchError(error => {
+      catchError((error) => {
         handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
         return EMPTY;
       })

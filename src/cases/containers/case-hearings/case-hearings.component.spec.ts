@@ -524,7 +524,7 @@ describe('CaseHearingsComponent', () => {
 
   it('should getHearsList by EXUISectionStatus', (done) => {
     const hearingList = component.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
-    hearingList.subscribe(hearing => {
+    hearingList.subscribe((hearing) => {
       expect(hearing.length).toBe(7);
       done();
     });
@@ -532,14 +532,14 @@ describe('CaseHearingsComponent', () => {
 
   it('should getHearsList by EXUIDisplayStatus', (done) => {
     const hearingList = component.getHearingListByStatus(EXUIDisplayStatusEnum.LISTED);
-    hearingList.subscribe(hearing => {
+    hearingList.subscribe((hearing) => {
       expect(hearing.length).toBe(1);
       done();
     });
   });
 
   it('should have first Update section status hearing with hearing status as Waiting', (done) => {
-    component.upcomingHearings$.subscribe(hearing => {
+    component.upcomingHearings$.subscribe((hearing) => {
       expect(hearing[0].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.AWAITING_LISTING);
       done();
     });
@@ -579,19 +579,19 @@ describe('CaseHearingsComponent', () => {
     };
 
     const arrangeData = [testVM, testVM2];
-    const result = arrangeData[0].hearingDaySchedule.map(schedule => schedule.hearingStartDateTime);
+    const result = arrangeData[0].hearingDaySchedule.map((schedule) => schedule.hearingStartDateTime);
     expect(result).toBeDefined();
   });
 
   it('should have the Update section status hearings with out status as Waiting to be listed in hearing date order', (done) => {
-    component.upcomingHearings$.subscribe(hearing => {
+    component.upcomingHearings$.subscribe((hearing) => {
       expect(moment(hearing[3].hearingRequestDateTime).isAfter(moment(hearing[2].hearingRequestDateTime))).toBeFalsy();
       done();
     });
   });
 
   it('should have the cancel and passed section status hearings with Cancel listing state and no hearing date assigned in creation date order', (done) => {
-    component.pastAndCancelledHearings$.subscribe(hearings => {
+    component.pastAndCancelledHearings$.subscribe((hearings) => {
       expect(hearings[0].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.COMPLETED);
       expect(hearings[1].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.COMPLETED);
       done();

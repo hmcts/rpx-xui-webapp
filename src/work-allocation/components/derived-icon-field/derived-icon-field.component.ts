@@ -7,7 +7,6 @@ import { Task } from '../../models/tasks';
   templateUrl: './derived-icon-field.component.html'
 })
 export class DerivedIconFieldComponent {
-
   /**
    * The current task being examined
    */
@@ -35,7 +34,7 @@ export class DerivedIconFieldComponent {
     }
 
     const distinctMessages = this.task.warning_list.values.filter((thing, i, arr) => {
-      return arr.indexOf(arr.find(t => t.code === thing.code)) === i;
+      return arr.indexOf(arr.find((t) => t.code === thing.code)) === i;
     });
 
     if (!distinctMessages || distinctMessages.length === 0) {
@@ -43,7 +42,7 @@ export class DerivedIconFieldComponent {
     }
 
     // if one message left after dublicates removed, it should show that message.Otherwise it should show general message
-    if ( distinctMessages.length === 1 ) {
+    if (distinctMessages.length === 1) {
       this.message = distinctMessages[0].warningText;
     } else {
       this.message = 'There are warnings on this task';

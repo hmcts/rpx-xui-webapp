@@ -152,7 +152,6 @@ describe('Search Cases Elastic Search', () => {
     });
 
     it('should perform a wildcard search on "generatedSurname" field ', async () => {
-
       const queryParams = {
         'case.generatedSurname': 'Beckham',
         'ctid': 'Benefit',

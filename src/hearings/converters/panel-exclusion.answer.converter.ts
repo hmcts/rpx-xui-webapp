@@ -13,11 +13,11 @@ export class PanelExclusionAnswerConverter implements AnswerConverter {
     const judicialUsersList: JudicialUserModel[] = this.route.snapshot.data.judicialUsers;
 
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-        const excludedJudges: string[] = panelRequirements && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.EXCLUDE).map(preferences => preferences.memberID);
+        const excludedJudges: string[] = panelRequirements && panelRequirements.panelPreferences.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.EXCLUDE).map((preferences) => preferences.memberID);
         const excludedJudgeNames: string[] = [];
-        judicialUsersList.forEach(judgeInfo => {
+        judicialUsersList.forEach((judgeInfo) => {
           if (excludedJudges.includes(judgeInfo.personalCode)) {
             excludedJudgeNames.push(judgeInfo.fullName);
           }

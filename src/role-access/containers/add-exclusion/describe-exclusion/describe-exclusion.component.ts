@@ -12,7 +12,6 @@ import * as fromFeature from '../../../store';
   templateUrl: './describe-exclusion.component.html'
 })
 export class DescribeExclusionComponent implements OnInit, OnDestroy {
-
   @Input() public navEvent: ExclusionNavigation;
   @Input() public title: string = 'Describe the exclusion';
   @Input() public caption: string = 'Add an exclusion';
@@ -31,7 +30,7 @@ export class DescribeExclusionComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.submitted = false;
-    this.subscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(exclusion => this.setExclusionDescription(exclusion));
+    this.subscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe((exclusion) => this.setExclusionDescription(exclusion));
   }
 
   public setExclusionDescription(exclusion: ExclusionStateData): void {

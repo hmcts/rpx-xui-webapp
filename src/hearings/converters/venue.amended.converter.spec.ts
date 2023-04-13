@@ -5,7 +5,6 @@ import { State } from '../store/reducers';
 import { VenueAmendedConverter } from './venue.amended.converter';
 
 describe('VenueAmendedConverter', () => {
-
   let venueAmendedConverter: VenueAmendedConverter;
 
   beforeEach(() => {

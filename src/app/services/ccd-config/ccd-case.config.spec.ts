@@ -24,6 +24,7 @@ class MockConfigService {
       cam_role_assignments_api_url: 'dummy'
     };
   }
+
   public getEditorConfiguration = () => this.config;
 }
 

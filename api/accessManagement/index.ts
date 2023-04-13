@@ -24,10 +24,10 @@ export async function getBookings(req, resp: Response, next: NextFunction) {
   delete headers['accept'];
 
   try {
-    const bookings = await http.post(fullPath, { 'queryRequest' : { 'userIds' : [req.body.userId] } }, { headers });
+    const bookings = await http.post(fullPath, { 'queryRequest': { 'userIds': [req.body.userId] } }, { headers });
     const fullLocations = await getFullLocationsForServices(req);
-    const bookingAndLocationName = bookings.data.bookings.map(booking => {
-      const location = fullLocations.filter(thisLocation =>
+    const bookingAndLocationName = bookings.data.bookings.map((booking) => {
+      const location = fullLocations.filter((thisLocation) =>
         booking.locationId === thisLocation.epimms_id);
       const locationName = location && location.length !== 0 ? location[0].site_name : null;
       return {
@@ -61,7 +61,7 @@ export async function refreshRoleAssignments(req, res: Response, next: NextFunct
   const fullPath = `${basePath}/am/role-mapping/judicial/refresh`;
 
   try {
-    const response = await handlePost(fullPath, { 'refreshRequest' : { 'userIds' : [req.body.userId] } }, req, next);
+    const response = await handlePost(fullPath, { 'refreshRequest': { 'userIds': [req.body.userId] } }, req, next);
     return res.status(response.status).send(response.data);
   } catch (error) {
     next(error);

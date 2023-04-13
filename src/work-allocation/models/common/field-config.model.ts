@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { FieldType } from './../../enums';
 
 export default interface FieldConfig {
@@ -10,4 +11,4 @@ export default interface FieldConfig {
   sourceColumn?: string; // column to be matched with
   matchValue?: any; // value to be matched with
   isDate?: boolean;
-};
+}

@@ -9,19 +9,15 @@ import * as healthCheck from './index';
 chai.use(sinonChai);
 
 describe('health check', () => {
-
   describe('getPromises()', () => {
     it('Should take in a path and return an array.', () => {
-
       const path = '/cases';
       expect(healthCheck.getPromises(path)).to.be.an('array');
     });
   });
 
   describe('healthCheckRoute()', () => {
-
     xit('Should call getPromises() with path.', async () => {
-
       const requestQueryPath = '/cases';
       const req = mockReq({
         query: {

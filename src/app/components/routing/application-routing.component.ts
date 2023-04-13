@@ -16,6 +16,7 @@ export class ApplicationRoutingComponent implements OnInit {
     private readonly store: Store<fromActions.State>,
     private readonly featureToggleService: FeatureToggleService
   ) {}
+
   public static defaultWAPage = '/work/my-work/list';
   public static defaultPage = '/cases';
   public static bookingUrl: string = '../booking';
@@ -52,6 +53,5 @@ export class ApplicationRoutingComponent implements OnInit {
         this.router.navigate([ApplicationRoutingComponent.defaultPage]);
       }
     })).subscribe();
-
   }
 }

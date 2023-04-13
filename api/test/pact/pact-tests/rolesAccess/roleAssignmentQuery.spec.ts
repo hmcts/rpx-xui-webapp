@@ -34,7 +34,7 @@ describe('access management service, query role assignments', () => {
   const RESPONSE_BODY = {
     'roleAssignmentResponse': []
   };
-  for(const role of []){
+  for(const role of []) {
     const roleAssognmentRole = {
       'id': somethingLike('23a234567-eb80-4681-b62c-6ae2ed069a5g'),
       'actorId': somethingLike('14a21569-eb80-4681-b62c-6ae2ed069e5f'),
@@ -82,13 +82,12 @@ describe('access management service, query role assignments', () => {
       };
 
       const rolesResponseBody = [];
-      for (const role of roles){
+      for (const role of roles) {
         const dummyRole = getDummyCaseRole();
         dummyRole.name = role.roleName;
         dummyRole.category = role.roleCategory;
         dummyRole.label = role.displayName;
         rolesResponseBody.push(dummyRole);
-
       }
 
       const getRolesInteraction = {
@@ -137,7 +136,7 @@ describe('access management service, query role assignments', () => {
           'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
           'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
         },
-        body:{
+        body: {
           caseId: caseId,
           jurisdiction: 'IAC',
           caseType: 'asylum'
@@ -171,7 +170,7 @@ function assertResponses(dto: any) {
   expect(dto.length).to.be.equal(0);
 }
 
-function getDummyCaseRole(){
+function getDummyCaseRole() {
   return {
     'name': '[PETSOLICITOR]',
     'label': 'Petitioner\'s Solicitor',

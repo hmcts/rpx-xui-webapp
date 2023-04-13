@@ -20,7 +20,7 @@ export class HearingsGuard {
               protected readonly sessionStorageService: SessionStorageService,
               protected readonly featureToggleService: FeatureToggleService) {
     this.userRoles$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
-      map(userDetails => userDetails.userInfo.roles)
+      map((userDetails) => userDetails.userInfo.roles)
     );
   }
 
@@ -32,7 +32,7 @@ export class HearingsGuard {
       map(([featureVariations, userRoles]: [FeatureVariation[], string[]]) => {
         const caseInfo = JSON.parse(this.sessionStorageService.getItem(HearingsGuard.CASE_INFO));
         const jurisdiction = caseInfo && caseInfo.hasOwnProperty(HearingsGuard.JURISDICTION) ? caseInfo[HearingsGuard.JURISDICTION] : '';
-        return featureVariations.some(featureVariation =>
+        return featureVariations.some((featureVariation) =>
           Utils.hasMatchedJurisdictionAndRole(featureVariation, jurisdiction, userRoles));
       })
     );

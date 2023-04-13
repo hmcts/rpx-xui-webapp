@@ -129,7 +129,7 @@ describe('CancelHearingComponent', () => {
 
   it('should call cancelHearingRequest when executeAction is called with a valid form', () => {
     (component.hearingCancelForm.controls.reasons as FormArray).controls
-      .forEach(reason => reason.value.selected = true);
+      .forEach((reason) => reason.value.selected = true);
     component.executeContinue();
     expect(mockHearingService.cancelHearingRequest).toHaveBeenCalled();
     expect(component.getChosenReasons).toHaveBeenCalled();
@@ -137,7 +137,7 @@ describe('CancelHearingComponent', () => {
 
   it('should be true when calling isFormValid reasons selected', () => {
     (component.hearingCancelForm.controls.reasons as FormArray).controls
-      .forEach(reason => reason.value.selected = true);
+      .forEach((reason) => reason.value.selected = true);
     const formValid = component.isFormValid();
     expect(formValid).toEqual(true);
   });
@@ -150,7 +150,7 @@ describe('CancelHearingComponent', () => {
 
   it('should have a validation error message mapped when cancel hearing DELETE request failed', () => {
     (component.hearingCancelForm.controls.reasons as FormArray).controls
-      .forEach(reason => reason.value.selected = true);
+      .forEach((reason) => reason.value.selected = true);
     hearingsService.cancelHearingRequest = jasmine.createSpy().and.returnValue(throwError(''));
     component.executeContinue();
     expect(component.validationErrors).not.toBeNull();

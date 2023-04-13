@@ -111,7 +111,7 @@ describe('CaseListComponent', () => {
   it('should return the columns to be displayed by the Angular Component Dev Kit table.', async () => {
     // create mock getDisplayedColumn variables
     const caseFieldConfig = getFields();
-    const fields = caseFieldConfig.map(field => field.name);
+    const fields = caseFieldConfig.map((field) => field.name);
     const displayedColumns = component.addManageColumn(fields);
     // test actual function against mock variables
     expect(component.getDisplayedColumn(caseFieldConfig)).toEqual(displayedColumns);

@@ -129,7 +129,6 @@ describe('BookingHomeComponent', () => {
   });
 
   it('should display bookings list when there are existing bookings and first radio button is clicked', () => {
-
     // Click on the first radio button.
     const element = fixture.debugElement.nativeElement;
     const firstRadioButton = element.querySelector('#type-0');
@@ -178,7 +177,6 @@ describe('BookingHomeComponent', () => {
 
   describe('onSelectOption()', () => {
     it('should change selectedBookingOption', () => {
-
       // Click on the second radio button.
       const element = fixture.debugElement.nativeElement;
       const secondRadioButton = element.querySelector('#type-1');
@@ -189,7 +187,6 @@ describe('BookingHomeComponent', () => {
 
   describe('onEventTrigger()', () => {
     it('should emit a navigation enum', () => {
-
       const eventTriggerSpy = spyOn(component.eventTrigger, 'emit');
       // Click on the second radio button.
       const element = fixture.debugElement.nativeElement;
@@ -204,14 +201,12 @@ describe('BookingHomeComponent', () => {
 
   describe('assignBookingLocation()', () => {
     it('should assign locationName', () => {
-
       expect(component.existingBookings[0].locationName).toEqual('Glasgow Tribunals Centre');
     });
   });
 
   describe('onExistingBookingSelected()', () => {
-    it('should make a call to refreshRoleAssignments', fakeAsync( () => {
-
+    it('should make a call to refreshRoleAssignments', fakeAsync(() => {
       mockRouter = {
         navigate: jasmine.createSpy('navigate')
       };

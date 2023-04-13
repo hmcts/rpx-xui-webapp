@@ -19,10 +19,10 @@ export class HearingCompletedSummaryComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.hearingState$ = this.hearingStore.select(fromHearingStore.getHearingsFeatureState)
       .pipe(
-        filter(state => !!state.hearingActuals.hearingActualsMainModel),
+        filter((state) => !!state.hearingActuals.hearingActualsMainModel),
       );
 
-    this.sub = this.hearingState$.subscribe(state => {
+    this.sub = this.hearingState$.subscribe((state) => {
       this.hearingActualsMainModel = state.hearingActuals.hearingActualsMainModel;
     });
   }

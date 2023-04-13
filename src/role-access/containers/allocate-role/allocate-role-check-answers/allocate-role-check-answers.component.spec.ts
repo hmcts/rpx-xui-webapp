@@ -121,7 +121,7 @@ describe('AllocateRoleCheckAnswersComponent', () => {
       allocateTo: AllocateTo.REALLOCATE_TO_ANOTHER_PERSON
     };
     component.setAnswersFromAllocateRoleStateStore(allocateRoleStateData);
-    const theAnswer = component.answers.find(answer => answer.label === AnswerLabelText.WhoBeAllocatedTo);
+    const theAnswer = component.answers.find((answer) => answer.label === AnswerLabelText.WhoBeAllocatedTo);
     expect(theAnswer.value).toBe('Reallocate to another person');
   });
 
@@ -143,7 +143,7 @@ describe('AllocateRoleCheckAnswersComponent', () => {
       allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON
     };
     component.setAnswersFromAllocateRoleStateStore(allocateRoleStateData);
-    const person = component.answers.find(answer => answer.label === AnswerLabelText.Person);
+    const person = component.answers.find((answer) => answer.label === AnswerLabelText.Person);
     expect(person.value).toBe('test2\ntest2@test.com');
   });
 
@@ -166,7 +166,7 @@ describe('AllocateRoleCheckAnswersComponent', () => {
       typeOfRole: { id: 'case-manager', name: 'Case manager' }
     };
     component.setAnswersFromAllocateRoleStateStore(allocateRoleStateData);
-    const person = component.answers.find(answer => answer.label === AnswerLabelText.Person);
+    const person = component.answers.find((answer) => answer.label === AnswerLabelText.Person);
     expect(person.value).toBe('test2\ntest2@test.com');
   });
 

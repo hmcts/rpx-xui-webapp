@@ -6,7 +6,6 @@ import { State } from '../store/reducers';
 import { HearingSpecificDateAmendedConverter } from './hearing-specific-date.amended.converter';
 
 describe('HearingSpecificDateAmendedConverter', () => {
-
   let hearingSpecificDateAmendedConverter: HearingSpecificDateAmendedConverter;
 
   beforeEach(() => {

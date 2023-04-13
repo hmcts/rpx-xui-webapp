@@ -39,7 +39,7 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly formBuilder: FormBuilder,
               private readonly route: ActivatedRoute) {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.id = params.id;
     });
 
@@ -83,13 +83,13 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
           && this.hearingActualsMainModel.hearingActuals.hearingOutcome
           && this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingType)
           || (this.hearingActualsMainModel.hearingPlanned.plannedHearingType);
-      this.hearingStageResultForm.controls['hearingStage'].setValue(hearingType);
-      this.hearingStageResultForm.controls['hearingResult'].setValue(this.hearingResult);
+      this.hearingStageResultForm.controls.hearingStage.setValue(hearingType);
+      this.hearingStageResultForm.controls.hearingResult.setValue(this.hearingResult);
       if (this.hearingResult === HearingResult.ADJOURNED) {
-        this.hearingStageResultForm.controls['adjournedReason'].setValue(hearingResultReasonType);
+        this.hearingStageResultForm.controls.adjournedReason.setValue(hearingResultReasonType);
       }
       if (this.hearingResult === HearingResult.CANCELLED) {
-        this.hearingStageResultForm.controls['cancelledReason'].setValue(hearingResultReasonType);
+        this.hearingStageResultForm.controls.cancelledReason.setValue(hearingResultReasonType);
       }
       this.hearingDate = this.calculateEarliestHearingDate(this.hearingActualsMainModel.hearingPlanned.plannedHearingDays);
     });
@@ -187,7 +187,7 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   }
 
   public calculateEarliestHearingDate(hearingDays: PlannedHearingDayModel[]): string {
-    const moments: moment.Moment[] = hearingDays.map(d => moment(d.plannedStartTime));
+    const moments: moment.Moment[] = hearingDays.map((d) => moment(d.plannedStartTime));
     return moment.min(moments).toISOString();
   }
 }

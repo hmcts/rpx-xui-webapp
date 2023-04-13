@@ -25,7 +25,7 @@ export class HearingAdjournedSummaryComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.hearingState$ = this.hearingStore.select(fromHearingStore.getHearingsFeatureState)
       .pipe(
-        filter(state => !!state.hearingActuals.hearingActualsMainModel),
+        filter((state) => !!state.hearingActuals.hearingActualsMainModel),
       );
 
     this.subscription = this.hearingState$.subscribe({

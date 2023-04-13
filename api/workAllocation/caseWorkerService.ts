@@ -107,7 +107,7 @@ export async function handlePostJudicialWorkersRefData(path: string, userIds: an
 export function getUserIdsFromRoleApiResponse(response: any): string [] {
   let userIds = new Array<string>();
   if (response && response.roleAssignmentResponse) {
-    response.roleAssignmentResponse.forEach(roleAssignment => {
+    response.roleAssignmentResponse.forEach((roleAssignment) => {
       userIds = [...userIds, roleAssignment.actorId];
     });
   }
@@ -116,9 +116,9 @@ export function getUserIdsFromRoleApiResponse(response: any): string [] {
 
 export function getUserIdsFromJurisdictionRoleResponse(response: any): any [] {
   let userIdsByJurisdiction = [];
-  response.forEach(jurisdictionRoleResponse => {
+  response.forEach((jurisdictionRoleResponse) => {
     let userIds = [];
-    jurisdictionRoleResponse.data.roleAssignmentResponse.forEach(roleAssignment => {
+    jurisdictionRoleResponse.data.roleAssignmentResponse.forEach((roleAssignment) => {
       userIds = [...userIds, roleAssignment.actorId];
     });
     userIdsByJurisdiction = userIdsByJurisdiction.concat({ jurisdiction: jurisdictionRoleResponse.jurisdiction, userIds });

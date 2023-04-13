@@ -25,9 +25,9 @@ export class NocDateFieldComponent extends AbstractFieldWriteComponent implement
     });
     if (this.dateControl.value) {
       const dateValues = this.dateControl.value.split('-');
-      this.dateGroup.controls['year'].setValue(dateValues[0] || '');
-      this.dateGroup.controls['month'].setValue(dateValues[1] || '');
-      this.dateGroup.controls['day'].setValue(dateValues[2] || '');
+      this.dateGroup.controls.year.setValue(dateValues[0] || '');
+      this.dateGroup.controls.month.setValue(dateValues[1] || '');
+      this.dateGroup.controls.day.setValue(dateValues[2] || '');
     }
   }
 

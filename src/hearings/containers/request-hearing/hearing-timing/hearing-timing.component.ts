@@ -71,7 +71,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     this.initForm();
     this.priorities = this.route.snapshot.data.hearingPriorities.sort((currentPriority: { order: number; }, nextPriority: { order: number; }) => (currentPriority.order < nextPriority.order ? -1 : 1));
     // @ts-ignore
-    const unavailabilityDateList: UnavailabilityRangeModel[] = this.serviceHearingValuesModel.parties.flatMap(party => party.unavailabilityRanges);
+    const unavailabilityDateList: UnavailabilityRangeModel[] = this.serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRanges);
     this.checkUnavailableDatesList(unavailabilityDateList);
   }
 
@@ -181,7 +181,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   }
 
   public checkUnavailableDatesList(dateList: UnavailabilityRangeModel[]): void {
-    dateList.forEach(dateRange => {
+    dateList.forEach((dateRange) => {
       this.setUnavailableDates(dateRange);
     });
     this.partiesNotAvailableDates.sort((currentDate, previousDate) => new Date(currentDate).getTime() - new Date(previousDate).getTime());

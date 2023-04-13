@@ -39,6 +39,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   public serverErrors: { id: string, message: string }[] = [
     { id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.' }
   ];
+
   public error$: Observable<HttpError>;
   public isManageJourneyFinalPage: boolean;
   public showSpinner: boolean = true;
@@ -86,8 +87,8 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
       this.linkedHearingGroup = hearingLinksStateData.linkedHearingGroup;
       this.hearingsInGroup = hearingLinksStateData.linkedHearingGroup.hearingsInGroup;
       this.showPositionColumn = this.canDisplayPositionColumn();
-      hearingLinksStateData.serviceLinkedCasesWithHearings.forEach(linkedCaseWithHearings => {
-        const selectedHearings = linkedCaseWithHearings.caseHearings && linkedCaseWithHearings.caseHearings.filter(hearing => hearing.isSelected);
+      hearingLinksStateData.serviceLinkedCasesWithHearings.forEach((linkedCaseWithHearings) => {
+        const selectedHearings = linkedCaseWithHearings.caseHearings && linkedCaseWithHearings.caseHearings.filter((hearing) => hearing.isSelected);
         this.setDisplayRow(linkedCaseWithHearings, selectedHearings);
       });
       this.sortDisplayRecords();
@@ -101,10 +102,10 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
       this.hearingsInGroup = hearingLinksStateData.linkedHearingGroup.hearingsInGroup;
       this.showPositionColumn = this.canDisplayPositionColumn();
       // @ts-ignore
-      const allHearings: HearingDetailModel[] = hearingLinksStateData.serviceLinkedCasesWithHearings.flatMap(x => x.caseHearings);
-      this.hearingsInGroup.forEach(hearing => {
-        const foundHearing = allHearings.find(aHearing => aHearing.hearingID === hearing.hearingId);
-        const foundCase = hearingLinksStateData.serviceLinkedCasesWithHearings.find(linkedCase => linkedCase.caseHearings.some(aHaring => aHaring.hearingID === hearing.hearingId));
+      const allHearings: HearingDetailModel[] = hearingLinksStateData.serviceLinkedCasesWithHearings.flatMap((x) => x.caseHearings);
+      this.hearingsInGroup.forEach((hearing) => {
+        const foundHearing = allHearings.find((aHearing) => aHearing.hearingID === hearing.hearingId);
+        const foundCase = hearingLinksStateData.serviceLinkedCasesWithHearings.find((linkedCase) => linkedCase.caseHearings.some((aHaring) => aHaring.hearingID === hearing.hearingId));
         let linkedCaseHearingsResult: LinkedCaseHearingsResult = null;
         if (foundCase && foundHearing) {
           linkedCaseHearingsResult = {
@@ -115,7 +116,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
             position: hearing.hearingOrder
           };
         }
-        if (!this.linkedCaseHearingsResults.some(result => result.hearingID === hearing.hearingId) && linkedCaseHearingsResult) {
+        if (!this.linkedCaseHearingsResults.some((result) => result.hearingID === hearing.hearingId) && linkedCaseHearingsResult) {
           this.linkedCaseHearingsResults.push(linkedCaseHearingsResult);
         }
       });
@@ -134,8 +135,8 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
 
   public setDisplayRow(linkedCase: ServiceLinkedCasesWithHearingsModel, selectedHearings: HearingDetailModel[]): void {
     if (selectedHearings && selectedHearings.length > 0) {
-      selectedHearings.forEach(hearingDetailModel => {
-        if (!this.linkedCaseHearingsResults.some(result => result.hearingID === hearingDetailModel.hearingID)) {
+      selectedHearings.forEach((hearingDetailModel) => {
+        if (!this.linkedCaseHearingsResults.some((result) => result.hearingID === hearingDetailModel.hearingID)) {
           this.linkedCaseHearingsResults.push({
             caseName: linkedCase.caseName,
             caseRef: linkedCase.caseRef,
@@ -156,7 +157,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
 
   public getPosition(hearing: HearingDetailModel): number {
     if (this.showPositionColumn) {
-      const linkedHearings: LinkedHearingsDetailModel[] = this.hearingsInGroup.filter(x => x.hearingId === hearing.hearingID);
+      const linkedHearings: LinkedHearingsDetailModel[] = this.hearingsInGroup.filter((x) => x.hearingId === hearing.hearingID);
       if (linkedHearings && linkedHearings.length > 0) {
         return linkedHearings[0].hearingOrder;
       }

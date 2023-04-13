@@ -51,7 +51,7 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
    */
   public createDispatchers() {
     this.dispatcherContainer = {};
-    this.eventsBindings.forEach(event => {
+    this.eventsBindings.forEach((event) => {
       this.dispatcherContainer[event.type] = (obj) => {
         this.store.dispatch(new this.fromFeatureStore[event.action](this.deepClone(obj)));
       };
@@ -70,7 +70,6 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
         obj[key] = {
           value: copiedValue
         };
-
       } else if (obj[key] && typeof obj[key] === 'object') {
         this.simplifyFormGroup(obj[key]);
       }

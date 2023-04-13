@@ -13,5 +13,4 @@ export const init = () => {
       CASE_FLAG_REFERENCE_VALUES
     ];
   });
-
 };

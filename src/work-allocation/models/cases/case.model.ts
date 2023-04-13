@@ -1,3 +1,4 @@
+/* eslint-disable */
 import CaseAction from './case-action.model';
 
 export default interface Case {
@@ -17,4 +18,4 @@ export default interface Case {
   actions: CaseAction[];
   derivedIcon?: string;
   isNew?: boolean;
-};
+}

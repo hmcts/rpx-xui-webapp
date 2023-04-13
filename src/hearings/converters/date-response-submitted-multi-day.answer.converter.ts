@@ -9,7 +9,7 @@ import { AnswerConverter } from './answer.converter';
 export class DateResponseSubmittedMultiDayAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;
         let hearingDaySchedule = hearingResponse && hearingResponse.hearingDaySchedule;
         if (!hearingDaySchedule) {

@@ -13,7 +13,6 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
   styleUrls: ['available-tasks-filter.component.scss']
 })
 export class AvailableTasksFilterComponent implements OnInit {
-
   // Getting CheckboxListComponent from DOM ensures it will be defined
   @ViewChild('locationFilter', { static: false }) public locationFilter: CheckboxListComponent<Location>;
   @ViewChild('filterDetails', { static: false })
@@ -27,12 +26,14 @@ export class AvailableTasksFilterComponent implements OnInit {
   public get selection(): Location[] {
     return this.pSelection;
   }
+
   public set selection(value: Location[]) {
     /* istanbul ignore else*/
     if (this.pSelection !== value) {
       this.pSelection = value;
     }
   }
+
   private pSelection: Location[] = [];
 
   public locations: Location[];
@@ -64,9 +65,9 @@ export class AvailableTasksFilterComponent implements OnInit {
     }
     this.preselection = preselection;
     // Get the locations for the checkbox filter component.
-    this.locationService.getLocations().subscribe(locations => {
+    this.locationService.getLocations().subscribe((locations) => {
       this.locations = [ ...locations ];
-    }, error => {
+    }, (error) => {
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
   }

@@ -21,7 +21,7 @@ describe('Hearing Values selectors', () => {
   describe('getHearingValues', () => {
     it('should return hearing values state', () => {
       let result: HearingValuesStateData;
-      store.pipe(select(getHearingValues)).subscribe(value => {
+      store.pipe(select(getHearingValues)).subscribe((value) => {
         result = value;
       });
       expect(result).toEqual(initialHearingValuesState);

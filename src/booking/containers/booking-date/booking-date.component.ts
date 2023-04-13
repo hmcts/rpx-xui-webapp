@@ -21,7 +21,6 @@ import {
   templateUrl: './booking-date.component.html'
 })
 export class BookingDateComponent implements OnInit {
-
   @Input() public bookingProcess: BookingProcess;
   @Output() public eventTrigger = new EventEmitter();
   public title: string;

@@ -60,7 +60,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
               private readonly lovRefDataService: LovRefDataService) {
     this.caseId = this.activatedRoute.snapshot.params.cid;
     this.userRoles$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
-      map(userDetails => userDetails.userInfo.roles)
+      map((userDetails) => userDetails.userInfo.roles)
     );
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
     this.hearingListLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingListLastError));
@@ -74,9 +74,9 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
-    this.hearingValuesSubscription = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe(serviceHearingValuesModel => {
+    this.hearingValuesSubscription = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe((serviceHearingValuesModel) => {
       if (serviceHearingValuesModel && serviceHearingValuesModel.hmctsServiceID) {
-        this.refDataSubscription = this.lovRefDataService.getListOfValues(HearingCategory.HearingType, serviceHearingValuesModel.hmctsServiceID, false).subscribe(hearingStageOptions => {
+        this.refDataSubscription = this.lovRefDataService.getListOfValues(HearingCategory.HearingType, serviceHearingValuesModel.hmctsServiceID, false).subscribe((hearingStageOptions) => {
           this.hearingStageOptions = hearingStageOptions;
         });
       }
@@ -100,7 +100,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.listedHearings$ = this.getHearingListByStatus(EXUIDisplayStatusEnum.LISTED);
 
     this.roleCatSubscription = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).subscribe(
-      userRole => {
+      (userRole) => {
         this.hearingsActions = [Actions.READ];
         if (userRole === UserRole.LegalOps) {
           this.hearingsActions = [...this.hearingsActions, Actions.CREATE, Actions.UPDATE, Actions.DELETE];
@@ -116,16 +116,16 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
   public getHearingListByStatus(status: EXUISectionStatusEnum | EXUIDisplayStatusEnum): Observable<HearingListViewModel[]> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
-      map(hearingListStateData => {
+      map((hearingListStateData) => {
         if (hearingListStateData && hearingListStateData.hearingListMainModel && hearingListStateData.hearingListMainModel.caseHearings) {
           let caseHearingModels: HearingListModel[] = [];
           if (Object.values(EXUISectionStatusEnum).includes(status as EXUISectionStatusEnum)) {
-            caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
+            caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter((hearing) =>
               hearing.exuiSectionStatus === status
             );
           }
           if (Object.values(EXUIDisplayStatusEnum).includes(status as EXUIDisplayStatusEnum)) {
-            caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
+            caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter((hearing) =>
               hearing.exuiDisplayStatus === status
             );
           }
@@ -144,9 +144,9 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     hearings.forEach((hearing) => {
       const viewModel = {} as HearingListViewModel;
       viewModel.earliestHearingStartDateTime = null;
-      Object.keys(hearing).forEach(key => viewModel[key] = hearing[key]);
+      Object.keys(hearing).forEach((key) => viewModel[key] = hearing[key]);
       if (hearing.hearingDaySchedule && hearing.hearingDaySchedule.length) {
-        const moments = hearing.hearingDaySchedule.map(d => d.hearingStartDateTime !== null && moment(d.hearingStartDateTime));
+        const moments = hearing.hearingDaySchedule.map((d) => d.hearingStartDateTime !== null && moment(d.hearingStartDateTime));
         if (moments.length > 1 || (moments.length === 1 && moments[0])) {
           viewModel.earliestHearingStartDateTime = moment.min(moments).toString();
         }

@@ -29,14 +29,14 @@ export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent imple
     if (this.datetimeControl.value) {
       const [datePart, timePart] = this.datetimeControl.value.split('T');
       const dateValues = datePart.split('-');
-      this.datetimeGroup.controls['year'].setValue(dateValues[0] || '');
-      this.datetimeGroup.controls['month'].setValue(dateValues[1] || '');
-      this.datetimeGroup.controls['day'].setValue(dateValues[2] || '');
+      this.datetimeGroup.controls.year.setValue(dateValues[0] || '');
+      this.datetimeGroup.controls.month.setValue(dateValues[1] || '');
+      this.datetimeGroup.controls.day.setValue(dateValues[2] || '');
       if (timePart) {
         const timeParts = timePart.replace('.000', '').split(':');
-        this.datetimeGroup.controls['hour'].setValue(timeParts[0] || '');
-        this.datetimeGroup.controls['minute'].setValue(timeParts[1] || '');
-        this.datetimeGroup.controls['second'].setValue(timeParts[2] || '');
+        this.datetimeGroup.controls.hour.setValue(timeParts[0] || '');
+        this.datetimeGroup.controls.minute.setValue(timeParts[1] || '');
+        this.datetimeGroup.controls.second.setValue(timeParts[2] || '');
       }
     }
   }

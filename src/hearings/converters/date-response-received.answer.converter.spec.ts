@@ -5,7 +5,6 @@ import { State } from '../store/reducers';
 import { DateResponseReceivedAnswerConverter } from './date-response-received.answer.converter';
 
 describe('DateResponseReceivedAnswerConverter', () => {
-
   let dateRequestSubmittedAnswerConverter: DateResponseReceivedAnswerConverter;
 
   beforeEach(() => {

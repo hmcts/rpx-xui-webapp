@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { setTestContext } from './utils/helper';
 import Request from './utils/request';
 
-const nodeAppDataModels = require('../../dataModels/nodeApp')
+const nodeAppDataModels = require('../../dataModels/nodeApp');
 const testUsers = require('../../e2e/config/appTestConfig');
 const config = require('./config/config').config;
 
@@ -13,7 +13,7 @@ describe('nodeApp endpoint', () => {
   // const userName = 'peterxuisuperuser@mailnesia.com';
   // const password = 'Monday01';
 
-  beforeEach(function ()  {
+  beforeEach(function () {
     this.timeout(120000);
 
     setTestContext(this);
@@ -51,7 +51,7 @@ describe('nodeApp endpoint', () => {
     const expectedUserDetailsObj_oidc = nodeAppDataModels.getUserDetails_oidc();
     expect(actualLocationObjKeys).to.have.all.keys(Object.keys(expectedUserDetailsObj_oidc));
 
-    if (actualLocationObjKeys.roleAssignmentInfo.length > 0){
+    if (actualLocationObjKeys.roleAssignmentInfo.length > 0) {
       const actualRoleAssignmentObjKeys = Object.keys(actualLocationObjKeys.roleAssignmentInfo[0]);
       console.log(actualRoleAssignmentObjKeys);
       console.log(Object.keys(expectedUserDetailsObj_oidc.roleAssignmentInfo[0]));
@@ -71,7 +71,7 @@ describe('nodeApp endpoint', () => {
   // it('api/user/details role-assignment case allocator *****(to be enabled: localtionInfo on access-management integration)****', async () => {
 
   //   const matchingUsers = testUsers.users['aat'].filter(user => user.userIdentifier === 'IAC_Judge_WA_R2_CaseAllocator');
-  //   if (matchingUsers.length === 0){
+  //   if (matchingUsers.length === 0) {
   //     throw new Error(`Users details with identfier "IAC_Judge_WA_R2_CaseAllocator" not found in test user config`);
   //   }
 

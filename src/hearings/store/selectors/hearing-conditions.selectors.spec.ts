@@ -21,7 +21,7 @@ describe('Hearing Conditions selectors', () => {
   describe('getHearingConditions', () => {
     it('should return hearings navigation state', () => {
       let result = null;
-      store.pipe(select(getHearingConditions)).subscribe(value => {
+      store.pipe(select(getHearingConditions)).subscribe((value) => {
         result = value;
       });
       expect(result).toEqual({});

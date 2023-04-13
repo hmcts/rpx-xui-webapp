@@ -17,7 +17,7 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   public canActivate(): Observable<boolean> {
-    return this.authService.isAuthenticated().pipe(map(isAuth => {
+    return this.authService.isAuthenticated().pipe(map((isAuth) => {
       if (!isAuth) {
         this.storeRedirectUrl();
         this.authService.loginRedirect();
@@ -42,7 +42,9 @@ export class AuthGuard implements CanActivate {
     if (currentPathIsRoot) {
       const storedRedirectUrl = this.sessionStorage.getItem('redirectUrl', true);
 
-      if (!storedRedirectUrl) { return; }
+      if (!storedRedirectUrl) {
+        return;
+      }
 
       this.authService.setWindowLocationHref(storedRedirectUrl);
     }

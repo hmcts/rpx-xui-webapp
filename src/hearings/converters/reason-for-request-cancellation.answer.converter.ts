@@ -13,7 +13,7 @@ export class ReasonForRequestCancellationAnswerConverter implements AnswerConver
     const cancelHearingReasons: LovRefDataModel[] = this.route.snapshot.data.cancelHearingReasons;
 
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         const cancellationReasonCodes = state.hearingRequest.hearingRequestMainModel
           && state.hearingRequest.hearingRequestMainModel.requestDetails
           && state.hearingRequest.hearingRequestMainModel.requestDetails.cancellationReasonCodes;

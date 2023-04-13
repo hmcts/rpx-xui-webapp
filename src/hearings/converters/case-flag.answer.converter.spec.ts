@@ -7,7 +7,6 @@ import { State } from '../store/reducers';
 import { CaseFlagAnswerConverter } from './case-flag.answer.converter';
 
 describe('CaseFlagAnswerConverter', () => {
-
   let caseFlagConverter: CaseFlagAnswerConverter;
   let router: any;
 

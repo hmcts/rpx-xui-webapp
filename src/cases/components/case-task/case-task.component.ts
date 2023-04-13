@@ -26,6 +26,7 @@ export class CaseTaskComponent implements OnInit {
     CaseTaskComponent.CASE_ID_VARIABLE,
     CaseTaskComponent.TASK_ID_VARIABLE
   ];
+
   public manageOptions: {id: string, title: string }[];
   public isUserJudicial: boolean;
   private pTask: Task;
@@ -102,7 +103,7 @@ export class CaseTaskComponent implements OnInit {
        this.taskService.claimTask(task.id).subscribe(() => {
          this.alertService.success(InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS);
          this.taskRefreshRequired.emit();
-       }, error => {
+       }, (error) => {
          this.claimTaskErrors(error.status);
        });
        return;

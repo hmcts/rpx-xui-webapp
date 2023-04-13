@@ -125,7 +125,7 @@ describe('AllWorkCaseComponent', () => {
     mockLocationService.getLocations.and.returnValue(of(ALL_LOCATIONS as unknown as Location[]));
     mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
     mockjurisdictionsService.getJurisdictions.and.returnValue(of(['IA']));
-    mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of( caseRoles ));
+    mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of(caseRoles));
     mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue(undefined);
     fixture.detectChanges();

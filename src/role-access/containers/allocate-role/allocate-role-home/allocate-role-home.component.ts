@@ -42,7 +42,6 @@ import { ChooseRoleComponent } from '../choose-role/choose-role.component';
   styleUrls: ['./allocate-role-home.component.scss']
 })
 export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
-
   @ViewChild('chooseRole', { static: false, read: ChooseRoleComponent })
   public chooseRoleComponent: ChooseRoleComponent;
 
@@ -91,7 +90,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
               private readonly route: ActivatedRoute,
               private readonly router: Router) {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
-      userDetails => {
+      (userDetails) => {
         this.userRole = AppUtils.getUserRole(userDetails.userInfo.roles);
       }
     );
@@ -147,7 +146,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       this.store.dispatch(new fromFeature.LoadRoles({ jurisdiction: this.jurisdiction, roleCategory: this.roleCategory }));
     }
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
-      allocateRoleStateData => {
+      (allocateRoleStateData) => {
         this.navigationCurrentState = allocateRoleStateData.state;
         this.allocateTo = allocateRoleStateData.allocateTo;
         this.action = allocateRoleStateData.action;
@@ -161,7 +160,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 
   private setReallocatedRole(roleId: string): void {
     if (roleId) {
-      const role = DEFINED_ROLES.find(r => r.id === roleId);
+      const role = DEFINED_ROLES.find((r) => r.id === roleId);
       this.typeOfRole = role && role.name ? role : { id: roleId, name: convertToName(roleId) };
     }
   }

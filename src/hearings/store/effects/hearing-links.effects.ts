@@ -25,11 +25,11 @@ export class HearingLinksEffects {
   public loadServiceLinkedCases$ = this.actions$.pipe(
       ofType(hearingLinksActions.LOAD_SERVICE_LINKED_CASES),
       map((action: hearingLinksActions.LoadServiceLinkedCases) => action.payload),
-      switchMap(payload => {
+      switchMap((payload) => {
         const caseInfo = JSON.parse(this.sessionStorage.getItem('caseInfo'));
         const jurisdictionId = caseInfo && caseInfo.jurisdiction;
         return this.hearingsService.loadServiceLinkedCases(jurisdictionId, payload.caseReference, payload.hearingId).pipe(
-          map(response => new hearingLinksActions.LoadServiceLinkedCasesSuccess(response)),
+          map((response) => new hearingLinksActions.LoadServiceLinkedCasesSuccess(response)),
           catchError((error: HttpError) => of(new hearingLinksActions.LoadServiceLinkedCasesFailure(error)))
         );
       })
@@ -39,11 +39,11 @@ export class HearingLinksEffects {
   public loadServiceLinkedCasesWithHearing$ = this.actions$.pipe(
       ofType(hearingLinksActions.LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS),
       map((action: hearingLinksActions.LoadServiceLinkedCasesWithHearings) => action.payload),
-      switchMap(payload => {
+      switchMap((payload) => {
         const caseInfo = JSON.parse(this.sessionStorage.getItem('caseInfo'));
         const jurisdictionId = caseInfo && caseInfo.jurisdiction;
         return this.hearingsService.loadLinkedCasesWithHearings(jurisdictionId, payload.caseReference, payload.caseName, payload.hearingId).pipe(
-          map(response => new hearingLinksActions.LoadServiceLinkedCasesWithHearingsSuccess(response)),
+          map((response) => new hearingLinksActions.LoadServiceLinkedCasesWithHearingsSuccess(response)),
           catchError((error: HttpError) => of(new hearingLinksActions.LoadServiceLinkedCasesWithHearingsFailure(error)))
         );
       })
@@ -53,9 +53,9 @@ export class HearingLinksEffects {
   public loadLinkedHearingGroup$ = this.actions$.pipe(
       ofType(hearingLinksActions.LOAD_LINKED_HEARING_GROUP),
       map((action: hearingLinksActions.LoadLinkedHearingGroup) => action.payload),
-      switchMap(payload => {
+      switchMap((payload) => {
         return this.hearingsService.getLinkedHearingGroup(payload.groupId).pipe(
-          map(response => new hearingLinksActions.LoadLinkedHearingGroupSuccess(response)),
+          map((response) => new hearingLinksActions.LoadLinkedHearingGroupSuccess(response)),
           catchError((error: HttpError) => of(new hearingLinksActions.LoadLinkedHearingGroupFailure(error)))
         );
       })
@@ -65,7 +65,7 @@ export class HearingLinksEffects {
   public submitLinkedHearingGroup$ = this.actions$.pipe(
       ofType(hearingLinksActions.SUBMIT_LINKED_HEARING_GROUP),
       map((action: hearingLinksActions.SubmitLinkedHearingGroup) => action.payload),
-      switchMap(payload => {
+      switchMap((payload) => {
         return this.hearingsService.postLinkedHearingGroup(payload.linkedHearingGroup).pipe(
           tap(
             () => {
@@ -74,7 +74,7 @@ export class HearingLinksEffects {
               }
               return this.router.navigate(['/', 'hearings', 'link', payload.caseId, payload.hearingId, 'final-confirmation']);
             }),
-          catchError(error => {
+          catchError((error) => {
             this.hearingStore.dispatch(new hearingLinksActions.SubmitLinkedHearingGroupFailure(error));
             return of(error);
           })
@@ -86,7 +86,7 @@ export class HearingLinksEffects {
   public manageLinkedHearingGroup$ = this.actions$.pipe(
       ofType(hearingLinksActions.MANAGE_LINKED_HEARING_GROUP),
       map((action: hearingLinksActions.ManageLinkedHearingGroup) => action.payload),
-      switchMap(payload => {
+      switchMap((payload) => {
         let apiCall: any;
         if (payload.linkedHearingGroup && payload.linkedHearingGroup.hearingsInGroup && payload.linkedHearingGroup.hearingsInGroup.length > 0) {
           apiCall = this.hearingsService.putLinkedHearingGroup(payload.hearingGroupRequestId, payload.linkedHearingGroup);
@@ -98,7 +98,7 @@ export class HearingLinksEffects {
             () => {
               return this.router.navigate(['/', 'hearings', 'manage-links', payload.caseId, payload.hearingGroupRequestId, payload.hearingId, 'final-confirmation']);
             }),
-          catchError(error => {
+          catchError((error) => {
             this.hearingStore.dispatch(new hearingLinksActions.SubmitLinkedHearingGroupFailure(error));
             return of(error);
           })

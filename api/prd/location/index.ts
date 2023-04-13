@@ -30,9 +30,9 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     const { status, data }: { status: number, data: LocationModel[] } = await handleGet(markupPath, req, next);
     let result: LocationModel[] = data;
     if (locationType === LocationTypeEnum.HEARING) {
-      result = data.filter(location => location.is_hearing_location === 'Y');
+      result = data.filter((location) => location.is_hearing_location === 'Y');
     } else if (locationType === LocationTypeEnum.CASE_MANAGEMENT) {
-      result = data.filter(location => location.is_case_management_location === 'Y');
+      result = data.filter((location) => location.is_case_management_location === 'Y');
     }
     const identicalLocationByEpimmsId = getIdenticalLocationByEpimmsId(result);
     res.status(status).send(identicalLocationByEpimmsId);
@@ -59,7 +59,7 @@ export async function getLocationById(req: EnhancedRequest, res: Response, next:
 }
 
 function getIdenticalLocationByEpimmsId(data: LocationModel[]) {
-  return data.map(locationModel => toEpimmsLocation(locationModel))
+  return data.map((locationModel) => toEpimmsLocation(locationModel))
     .filter((locationByEPIMSModel, index, locationByEPIMSModelArray) =>
-      locationByEPIMSModelArray.findIndex(location => (location.epimms_id === locationByEPIMSModel.epimms_id)) === index);
+      locationByEPIMSModelArray.findIndex((location) => (location.epimms_id === locationByEPIMSModel.epimms_id)) === index);
 }

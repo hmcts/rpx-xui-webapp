@@ -441,7 +441,7 @@ describe('CaseListComponent', () => {
 
   describe('getShareableJurisdictions()', () => {
     it('should return shareable jurisdictions.', async () => {
-      component.getShareableJurisdictions().subscribe(jurisdictions => {
+      component.getShareableJurisdictions().subscribe((jurisdictions) => {
         expect(jurisdictions).toEqual(['dummy']);
       });
     });

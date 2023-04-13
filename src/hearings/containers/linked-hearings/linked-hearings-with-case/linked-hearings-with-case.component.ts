@@ -60,13 +60,13 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
-      state => {
+      (state) => {
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.publicCaseName : '';
         if (state.hearingLinks && state.hearingLinks.serviceLinkedCasesWithHearings) {
           this.isHearingsSelected(state.hearingLinks.serviceLinkedCasesWithHearings);
           this.linkedCases = state.hearingLinks.serviceLinkedCasesWithHearings;
           this.linkedCasesWithNoAccessToLoggedInUser = this.linkedCases &&
-            state.hearingLinks.serviceLinkedCases?.filter(linkedCase => !this.linkedCases.map(x => x.caseRef).includes(linkedCase.caseReference));
+            state.hearingLinks.serviceLinkedCases?.filter((linkedCase) => !this.linkedCases.map((x) => x.caseRef).includes(linkedCase.caseReference));
           this.linkedHearingGroup = state.hearingLinks.linkedHearingGroup;
           if (state.hearingLinks.lastError) {
             this.errors.push({ id: 'httpError', message: HearingSummaryEnum.BackendError });
@@ -132,7 +132,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
 
   public shouldSelected(hearingInfo): boolean {
     return this.isManageLink ? !!this.linkedHearingGroup.hearingsInGroup
-      && this.linkedHearingGroup.hearingsInGroup.some(x => x.hearingId === hearingInfo.hearingID) : hearingInfo.isSelected;
+      && this.linkedHearingGroup.hearingsInGroup.some((x) => x.hearingId === hearingInfo.hearingID) : hearingInfo.isSelected;
   }
 
   public initForm(): void {

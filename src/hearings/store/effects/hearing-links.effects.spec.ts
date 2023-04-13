@@ -198,7 +198,7 @@ describe('Hearing Links Effects', () => {
         status: 403,
         message: 'error'
       });
-      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
+      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });
   });
 });

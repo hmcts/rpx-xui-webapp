@@ -6,7 +6,6 @@ import { State } from '../store/reducers';
 import { HearingPriorityAmendedConverter } from './hearing-priority.amended.converter';
 
 describe('HearingPriorityAmendedConverter', () => {
-
   let hearingPriorityAmendedConverter: HearingPriorityAmendedConverter;
 
   beforeEach(() => {

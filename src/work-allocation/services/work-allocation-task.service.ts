@@ -54,7 +54,7 @@ export class WorkAllocationTaskService {
 
   public searchTask(body: { searchRequest: SearchTaskRequest, view: string, currentUser: string, refined: boolean }): Observable<TaskResponse> {
     return this.http.post<any>(`${BASE_URL}`, body).pipe(
-      tap(response => this.currentTasks$.next(response.tasks)),
+      tap((response) => this.currentTasks$.next(response.tasks)),
     );
   }
 
@@ -100,7 +100,7 @@ export class WorkAllocationTaskService {
         sorting_parameters: [],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker'
       };
-      return this.http.post<any>(`${BASE_URL}`, { searchRequest, view: 'MyTasks' }).pipe(map(response => response.tasks));
+      return this.http.post<any>(`${BASE_URL}`, { searchRequest, view: 'MyTasks' }).pipe(map((response) => response.tasks));
     }
     return of(null);
   }

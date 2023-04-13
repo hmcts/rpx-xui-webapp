@@ -96,7 +96,7 @@ describe('App Selectors', () => {
 
       store
         .select(fromSelectors.getConfigState)
-        .subscribe(value => (result = value));
+        .subscribe((value) => (result = value));
       expect(result).toEqual(appConfig);
 
       store.dispatch(new fromActions.LoadConfigSuccess(appPayload));
@@ -108,7 +108,7 @@ describe('App Selectors', () => {
 
       store
         .select(fromSelectors.getAppFeatures)
-        .subscribe(value => (result = value));
+        .subscribe((value) => (result = value));
 
       store.dispatch(new fromActions.LoadConfigSuccess(appPayload));
       expect(result).toEqual(appConfigLoaded.config);

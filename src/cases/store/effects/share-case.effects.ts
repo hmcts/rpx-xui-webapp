@@ -11,7 +11,6 @@ import * as shareCases from '../reducers/share-case.reducer';
 
 @Injectable()
 export class ShareCaseEffects {
-
   public payload: any;
 
   constructor(
@@ -25,7 +24,7 @@ export class ShareCaseEffects {
   public addShareCases$ = this.actions$.pipe(
       ofType(shareCaseActions.ADD_SHARE_CASES),
       map((action: shareCaseActions.AddShareCases) => action.payload),
-      map(newCases => {
+      map((newCases) => {
         return new shareCaseActions.AddShareCaseGo({
           path: ['/cases/case-share'],
           sharedCases: newCases.sharedCases
@@ -50,7 +49,7 @@ export class ShareCaseEffects {
   public loadShareCases$ = this.actions$.pipe(
       ofType(shareCaseActions.LOAD_SHARE_CASES),
       map((action: shareCaseActions.LoadShareCase) => action.payload),
-      switchMap(payload => {
+      switchMap((payload) => {
         this.payload = payload;
         return this.caseShareService.getShareCases(payload).pipe(
           map(
@@ -75,7 +74,7 @@ export class ShareCaseEffects {
   public assignUsersWithCases$ = this.actions$.pipe(
       ofType(shareCaseActions.ASSIGN_USERS_TO_CASE),
       map((action: shareCaseActions.AssignUsersToCase) => action.payload),
-      switchMap(payload => {
+      switchMap((payload) => {
         this.payload = payload;
         return this.caseShareService.assignUsersWithCases(payload).pipe(
           map(
@@ -84,5 +83,4 @@ export class ShareCaseEffects {
         );
       })
     );
-
 }

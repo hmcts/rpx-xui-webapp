@@ -18,7 +18,7 @@ export class TaskResolver implements Resolve<{ task: Task; caseworkers: Casework
 
   public resolve(route: ActivatedRouteSnapshot): Observable< { task: Task; caseworkers: Caseworker[]; } > {
     const task$ = this.service.getTask(route.paramMap.get('taskId')).pipe(
-      catchError(error => {
+      catchError((error) => {
         handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
         return EMPTY;
       })

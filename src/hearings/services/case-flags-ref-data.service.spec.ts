@@ -22,7 +22,7 @@ describe('CaseFlagsRefDataService', () => {
 
   describe('getCaseFlagsRefData', () => {
     it('should get case flags ref data', inject([HttpTestingController, CaseFlagsRefDataService], (httpMock: HttpTestingController, service: CaseFlagsRefDataService) => {
-      service.getCaseFlagsRefData('BBA3').subscribe(response => {
+      service.getCaseFlagsRefData('BBA3').subscribe((response) => {
         expect(response).toBeNull();
       });
 

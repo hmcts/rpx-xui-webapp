@@ -141,7 +141,7 @@ export function assignActionsToUpdatedTasks(tasks: any[], view: any, currentUser
       let actions: Action[] = getActionsByRefinedPermissions(thisView, permissions);
       // EUI-5549 - to do with cases
       if (task.assignee && currentUser !== task.assignee && view === ViewType.ACTIVE_TASKS) {
-        actions = actions.filter(action => action.id !== 'claim');
+        actions = actions.filter((action) => action.id !== 'claim');
       }
       const taskWithAction = { ...task, actions };
       tasksWithActions.push(taskWithAction);
@@ -179,7 +179,7 @@ export function assignActionsToTasks(tasks: any[], view: any, currentUser: strin
       let actions: Action[] = getActionsByPermissions(thisView, permissions);
       // EUI-5549
       if (task.assignee && currentUser !== task.assignee && view === ViewType.ACTIVE_TASKS) {
-        actions = actions.filter(action => action.id !== 'claim');
+        actions = actions.filter((action) => action.id !== 'claim');
       }
       const taskWithAction = { ...task, actions };
       tasksWithActions.push(taskWithAction);
@@ -212,8 +212,8 @@ export function getSessionCaseworkerInfo(serviceIds: string[], caseworkersByServ
  [string[], CaseworkersByService[]] {
   const caseworkersInSession: CaseworkersByService[] = [];
   const servicesNotInSession: string[] = [];
-  serviceIds.forEach(thisService => {
-    const currentCaseworkers = caseworkersByServices.find(caseworkerServiceList => caseworkerServiceList.service === thisService);
+  serviceIds.forEach((thisService) => {
+    const currentCaseworkers = caseworkersByServices.find((caseworkerServiceList) => caseworkerServiceList.service === thisService);
     if (currentCaseworkers && currentCaseworkers.caseworkers) {
       caseworkersInSession.push(currentCaseworkers);
     } else {
@@ -255,7 +255,7 @@ mapCaseworkerData(caseWorkerData: CaseworkerApi[], roleAssignments: RoleAssignme
 }
 
 export function getRoleCategory(roleAssignments: RoleAssignment[], caseWorkerApi: CaseworkerApi): string {
-  const roleAssignment = roleAssignments.find(roleAssign => roleAssign.actorId === caseWorkerApi.id);
+  const roleAssignment = roleAssignments.find((roleAssign) => roleAssign.actorId === caseWorkerApi.id);
   return roleAssignment ? roleAssignment.roleCategory : null;
 }
 
@@ -300,7 +300,7 @@ export function prepareServiceRoleApiRequest(jurisdictions: string[], roles: Rol
   // note that this could be moved to index method if required
   const roleIds = getRoleIdsFromRoles(roles);
   const payloads: CaseworkerPayload[] = [];
-  jurisdictions.forEach(jurisdiction => {
+  jurisdictions.forEach((jurisdiction) => {
     const attributes: any = {
       jurisdiction: [jurisdiction]
     };
@@ -321,7 +321,7 @@ export function prepareServiceRoleApiRequest(jurisdictions: string[], roles: Rol
 
 export function getRoleIdsFromRoles(roles: Role[]): string[] {
   const roleIds = [];
-  roles.forEach(role => roleIds.push(role.name));
+  roles.forEach((role) => roleIds.push(role.name));
   return roleIds;
 }
 
@@ -334,7 +334,7 @@ export function getRoleIdsFromRoles(roles: Role[]): string[] {
 export function getActionsByRefinedPermissions(view, permissions: TaskPermission[]): Action[] {
   let actionList: Action[] = [];
   actionList = getActionsFromRefinedMatrix(view, TaskPermission.DEFAULT, actionList);
-  permissions.forEach(permission => {
+  permissions.forEach((permission) => {
     switch (permission) {
       case TaskPermission.UNCLAIM:
         // unassign from self
@@ -427,8 +427,8 @@ export function getActionsByRefinedPermissions(view, permissions: TaskPermission
  */
 export function getActionsByPermissions(view, permissions: TaskPermission[]): Action[] {
   let actionList: Action[] = [];
-  permissions = permissions.map(permission => permission = permission.toString().toLowerCase() as TaskPermission);
-  permissions.forEach(permission => {
+  permissions = permissions.map((permission) => permission = permission.toString().toLowerCase() as TaskPermission);
+  permissions.forEach((permission) => {
     switch (permission) {
       case TaskPermission.MANAGE:
         actionList = getActionsFromMatrix(view, permission, actionList);
@@ -499,16 +499,16 @@ export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[
   const casePromises: Promise<CaseList>[] = getCaseListPromises(data, req);
 
   const response = await Promise.all(casePromises.map(reflect));
-  const caseResults = response.filter(x => x.status === 'fulfilled' && x.value ).map( x => x.value );
+  const caseResults = response.filter((x) => x.status === 'fulfilled' && x.value).map((x) => x.value);
 
   let cases = [];
-  caseResults.forEach( caseResult => cases = [...cases, ...caseResult.cases]);
+  caseResults.forEach((caseResult) => cases = [...cases, ...caseResult.cases]);
 
   return cases;
 }
 
 export function filterMyAccessRoleAssignments(roleAssignmentList: RoleAssignment[]) {
-  return roleAssignmentList.filter(roleAssignment =>
+  return roleAssignmentList.filter((roleAssignment) =>
     (
       roleAssignment.grantType === 'SPECIFIC' ||
       roleAssignment.roleName === 'specific-access-requested' ||
@@ -573,7 +573,7 @@ export async function searchCasesById(queryParams: string, query: any, req: expr
   const path = `${url}/searchCases`;
   const headers = setHeaders(req);
   try {
-    const result = await http.post(path, query, { headers , params: { ctid: queryParams } });
+    const result = await http.post(path, query, { headers, params: { ctid: queryParams } });
     return result.data;
   } catch (e) {
     console.error(e);
@@ -583,12 +583,12 @@ export async function searchCasesById(queryParams: string, query: any, req: expr
 
 // Only called in test function - why is it here?
 export function getCaseAllocatorLocations(roleAssignments: RoleAssignment[]): string[] {
-  return roleAssignments.filter(roleAssignment => roleAssignment.attributes && roleAssignment.attributes.baseLocation
+  return roleAssignments.filter((roleAssignment) => roleAssignment.attributes && roleAssignment.attributes.baseLocation
     && roleAssignment.roleName === CASE_ALLOCATOR_ROLE)
-    .map(roleAssignment => roleAssignment.attributes.baseLocation)
+    .map((roleAssignment) => roleAssignment.attributes.baseLocation)
     .reduce((acc, locationId) => acc.includes(locationId) ? acc : `${acc}${locationId},`, '')
     .split(',')
-    .filter(location => location.length);
+    .filter((location) => location.length);
 }
 
 export function constructRoleAssignmentQuery(
@@ -604,7 +604,7 @@ export function constructRoleAssignmentQuery(
           param.key = 'baseLocation';
           const values = param.values as string;
           param.values = [values]
-            .filter(location => location.length);
+            .filter((location) => location.length);
           return param;
         }
         if (param.key === 'role') {
@@ -618,7 +618,6 @@ export function constructRoleAssignmentQuery(
       })
       .filter((param: SearchTaskParameter) => param.values && param.values.length)
       .reduce((acc: any, param: SearchTaskParameter) => {
-
         if (param.key === 'jurisdiction') {
           const attributes = acc.attributes || {};
           return {
@@ -702,11 +701,11 @@ export function mapCasesFromData(
     return [];
   }
   const roleCaseList = [];
-  caseDetails.forEach(caseDetail => {
+  caseDetails.forEach((caseDetail) => {
     const rolesForCaseId = roleAssignmentList.filter(
-      role => role.attributes && caseDetail.id.toString() === role.attributes.caseId
+      (role) => role.attributes && caseDetail.id.toString() === role.attributes.caseId
     );
-    rolesForCaseId.forEach(roleAssignment => {
+    rolesForCaseId.forEach((roleAssignment) => {
       const roleCase = mapRoleCaseData(roleAssignment, caseDetail);
       roleCaseList.push(roleCase);
     });
@@ -809,7 +808,7 @@ export function formatDate(date: Date) {
 
 export function getAccessType(roleAssignment: RoleAssignment) {
   return roleAssignment.grantType ?
-    roleAssignment.grantType.replace(/\w+/g, replacableString => {
+    roleAssignment.grantType.replace(/\w+/g, (replacableString) => {
       return replacableString[0].toUpperCase() + replacableString.slice(1).toLowerCase();
     })
     :
@@ -831,13 +830,13 @@ export function getCaseName(caseDetail: Case): string {
 export function getCaseDataFromRoleAssignments(roleAssignments: RoleAssignment[]): CaseDataType {
   const result: CaseDataType = {};
 
-  const roleAssignmentsFiltered = roleAssignments.filter( roleAssignment =>
+  const roleAssignmentsFiltered = roleAssignments.filter((roleAssignment) =>
     exists(roleAssignment, 'attributes.jurisdiction') &&
       exists(roleAssignment, 'attributes.caseType') &&
       exists(roleAssignment, 'attributes.caseId')
   );
 
-  roleAssignmentsFiltered.forEach( roleAssignment => {
+  roleAssignmentsFiltered.forEach((roleAssignment) => {
     const { jurisdiction, caseType, caseId } = roleAssignment.attributes;
     if (!result[jurisdiction]) {
       result[jurisdiction] = {};
@@ -876,6 +875,6 @@ export async function getTypesOfWorkByUserId(path, req: express.Request): Promis
 }
 
 export function getUniqueCasesCount(caseData: RoleCaseData[]): number {
-  const caseIds = caseData ? caseData.map(caseResult => caseResult.case_id) : [];
+  const caseIds = caseData ? caseData.map((caseResult) => caseResult.case_id) : [];
   return new Set(caseIds).size;
 }

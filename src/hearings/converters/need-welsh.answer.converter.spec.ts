@@ -5,7 +5,6 @@ import { State } from '../store/reducers';
 import { NeedWelshAnswerConverter } from './need-welsh.answer.converter';
 
 describe('NeedWelshAnswerConverter', () => {
-
   let needWelshAnswerConverter: NeedWelshAnswerConverter;
 
   beforeEach(() => {

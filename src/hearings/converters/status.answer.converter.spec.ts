@@ -6,7 +6,6 @@ import { State } from '../store/reducers';
 import { StatusAnswerConverter } from './status.answer.converter';
 
 describe('StatusAnswerConverter', () => {
-
   let statusAnswerConverter: StatusAnswerConverter;
 
   beforeEach(() => {

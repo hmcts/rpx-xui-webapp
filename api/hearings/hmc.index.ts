@@ -24,8 +24,8 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
 
   try {
     const { status, data }: { status: number, data: HearingListMainModel } = await handleGet(markupPath, req, next);
-    data.caseHearings.forEach(hearing =>
-      hearingStatusMappings.filter(mapping => mapping.hmcStatus === hearing.hmcStatus).map(hearingStatusMapping => {
+    data.caseHearings.forEach((hearing) =>
+      hearingStatusMappings.filter((mapping) => mapping.hmcStatus === hearing.hmcStatus).map((hearingStatusMapping) => {
         hearing.exuiSectionStatus = hearingStatusMapping.exuiSectionStatus;
         hearing.exuiDisplayStatus = hearingStatusMapping.exuiDisplayStatus;
       }));

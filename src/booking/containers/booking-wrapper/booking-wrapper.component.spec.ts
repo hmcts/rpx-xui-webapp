@@ -72,7 +72,9 @@ describe('BookingWrapperComponent', () => {
 
       it('should throw an error if an unexpected back event occurs', () => {
         component.bookingNavigationCurrentState = BookingState.HOME as BookingState;
-        expect(() => { component.navigationHandler(BookingNavigationEvent.BACK); }).toThrow(new Error('Invalid Booking Back state'));
+        expect(() => {
+          component.navigationHandler(BookingNavigationEvent.BACK);
+        }).toThrow(new Error('Invalid Booking Back state'));
       });
     });
   });

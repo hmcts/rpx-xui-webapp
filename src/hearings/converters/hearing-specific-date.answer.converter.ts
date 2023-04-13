@@ -6,10 +6,9 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 
 export class HearingSpecificDateAnswerConverter implements AnswerConverter {
-
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
-      map(state => this.createAnswer(state))
+      map((state) => this.createAnswer(state))
     );
   }
 

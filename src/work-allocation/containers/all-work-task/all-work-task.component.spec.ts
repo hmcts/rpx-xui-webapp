@@ -235,7 +235,7 @@ xdescribe('AllWorkTaskComponent', () => {
   { statusCode: 401, routeUrl: '/not-authorised' },
   { statusCode: 500, routeUrl: '/service-down' },
   { statusCode: 400, routeUrl: '/service-down' }
-].forEach(scr => {
+].forEach((scr) => {
   xdescribe('AllWorkTaskComponent negative cases', () => {
     let component: AllWorkTaskComponent;
     let wrapper: WrapperComponent;

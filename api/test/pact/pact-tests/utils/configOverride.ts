@@ -1,5 +1,5 @@
 const defaultConfig = {
-  log4JConfig : {
+  log4JConfig: {
     'appenders': {
       'out': {
         'layout': {

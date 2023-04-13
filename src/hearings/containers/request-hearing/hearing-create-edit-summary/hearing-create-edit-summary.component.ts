@@ -11,7 +11,6 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   templateUrl: './hearing-create-edit-summary.component.html'
 })
 export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow implements OnDestroy {
-
   public template = HEARING_CREATE_EDIT_SUMMARY_TEMPLATE;
   public mode = Mode.CREATE_EDIT;
 

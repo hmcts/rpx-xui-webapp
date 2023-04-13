@@ -14,7 +14,6 @@ import { Location, PaginationParameter } from '../../models/dtos';
   styleUrls: ['work-case-list.component.scss']
 })
 export class WorkCaseListComponent implements OnChanges {
-
   /**
    * These are the cases & fields as returned from the WA Api.
    */
@@ -68,7 +67,7 @@ export class WorkCaseListComponent implements OnChanges {
       const hashValue = url.substring(url.indexOf('#') + 1);
       if (hashValue && hashValue.indexOf('manage_') === 0) {
         const selectedCaseId = hashValue.replace('manage_', '');
-        return this.cases.find(item => item.id === selectedCaseId) || null;
+        return this.cases.find((item) => item.id === selectedCaseId) || null;
       }
     }
     return null;
@@ -95,7 +94,7 @@ export class WorkCaseListComponent implements OnChanges {
    *
    */
   public getDisplayedColumn(caseFieldConfig: FieldConfig[]): string[] {
-    const fields: string[] = caseFieldConfig.map(field => field.name);
+    const fields: string[] = caseFieldConfig.map((field) => field.name);
     return this.addActionsColumn ? this.addManageColumn(fields) : fields;
   }
 
@@ -124,7 +123,6 @@ export class WorkCaseListComponent implements OnChanges {
    * Trigger an event to the parent when the User clicks on a Manage action.
    */
   public onActionHandler(caseItem: Case, action: CaseAction): void {
-
     const invokedCaseAction: InvokedCaseAction = {
       invokedCase: caseItem,
       action

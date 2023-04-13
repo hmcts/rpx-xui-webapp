@@ -18,7 +18,7 @@ export class CaseCreateEffects {
   public applyChangeCaseCreateFilter$ = this.actions$.pipe(
       ofType(fromActions.CREATE_CASE_FILTER_APPLY),
       map((action: fromActions.CaseCreateFilterApply) => action.payload),
-      map(param => {
+      map((param) => {
         return new fromRoot.Go({
           path: [`/cases/case-create/${param.jurisdictionId}/${param.caseTypeId}/${param.eventId}`]
         });
@@ -29,7 +29,7 @@ export class CaseCreateEffects {
   public applyCreateCase$ = this.actions$.pipe(
       ofType(fromActions.CREATE_CASE_APPLY),
       map((action: fromActions.ApplyChange) => action.payload),
-      map(newCases => {
+      map((newCases) => {
         return new fromRoot.CreateCaseGo({
           path: [`/cases/case-details/${newCases.caseId}`],
           caseId: newCases.caseId

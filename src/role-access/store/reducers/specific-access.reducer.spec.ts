@@ -29,7 +29,7 @@ describe('Specific Access Reducer', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.specificAccessInitialState;
         const specificAccessMoreInformationForm: SpecificAccessMoreInformationForm = {
-          InfoText : 'test text'
+          InfoText: 'test text'
         };
         const action = new fromActions.SetSpecificAccessInfoFormData(specificAccessMoreInformationForm);
         const specificAccessState = fromReducer.specificAccessReducer(initialState, action);

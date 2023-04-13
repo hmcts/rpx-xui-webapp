@@ -27,7 +27,7 @@ export class CaseFlagAnswerConverter implements AnswerConverter {
           (value, key) => {
             if (value.length > 0) {
               result += `<strong class='bold'>${key}</strong>\n<ul>`;
-              value.forEach(flag => result += `<li>${flag && flag.name ? flag.name : ''}</li>`);
+              value.forEach((flag) => result += `<li>${flag && flag.name ? flag.name : ''}</li>`);
               result += '</ul><br>';
             }
           }

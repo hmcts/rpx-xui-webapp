@@ -9,9 +9,11 @@ export class AcceptTermsService {
   public postUserAccepted(userId: string): Observable<boolean> {
     return this.http.post<boolean>('api/userTermsAndConditions', { userId });
   }
+
   public getIsUserAccepted(userId: string): Observable<boolean> {
     return this.http.get<boolean>(`api/userTermsAndConditions/${userId}`);
   }
+
   public getTermsAndConditionsContent(): Observable<any> {
     return this.http.get<any>('api/termsAndConditions');
   }

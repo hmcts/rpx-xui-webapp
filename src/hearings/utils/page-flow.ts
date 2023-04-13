@@ -11,7 +11,6 @@ import { AbstractPageFlow } from './abstract-page-flow';
 
 @Injectable()
 export class PageFlow implements AbstractPageFlow {
-
   public hearingConditions$: Observable<HearingConditions>;
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly router: Router) {
@@ -32,7 +31,7 @@ export class PageFlow implements AbstractPageFlow {
     combineLatest([this.hearingConditions$, screensNavigations$]).pipe(take(1))
       // @ts-ignore
       .subscribe(([hearingConditions, screenNavigationModels]: [HearingConditions, ScreenNavigationModel[]]) => {
-        const screenModel = screenNavigationModels.find(screenNavigationModel =>
+        const screenModel = screenNavigationModels.find((screenNavigationModel) =>
           screenNavigationModel.screenName === this.getCurrentPage());
         if (screenModel) {
           if (!screenModel.conditionKey) {
@@ -40,7 +39,7 @@ export class PageFlow implements AbstractPageFlow {
           } else {
             if (hearingConditions.hasOwnProperty(screenModel.conditionKey)) {
               const conditionValue = hearingConditions[screenModel.conditionKey];
-              screenModel.navigation.forEach(navigationModel => {
+              screenModel.navigation.forEach((navigationModel) => {
                 switch (navigationModel.conditionOperator) {
                   case ConditionOperator.INCLUDE:
                     nextPage = conditionValue.includes(navigationModel.conditionValue) ? navigationModel.resultValue : nextPage;
@@ -66,14 +65,14 @@ export class PageFlow implements AbstractPageFlow {
     combineLatest([this.hearingConditions$, screensNavigations$]).pipe(take(1))
       // @ts-ignore
       .subscribe(([hearingConditions, screenNavigationModels]: [HearingConditions, ScreenNavigationModel[]]) => {
-        const defaultScreen = screenNavigationModels.find(model => !model.conditionKey
+        const defaultScreen = screenNavigationModels.find((model) => !model.conditionKey
           && model.navigation[0].resultValue === this.getCurrentPage());
         lastPage = defaultScreen ? defaultScreen.screenName : '';
         if (Object.keys(hearingConditions) && Object.keys(hearingConditions).length > 0) {
           for (const navModel of screenNavigationModels) {
             if (navModel.conditionKey) {
               const conditionValue = hearingConditions[navModel.conditionKey];
-              const navigation = navModel.navigation.find(nav => nav.resultValue === this.getCurrentPage());
+              const navigation = navModel.navigation.find((nav) => nav.resultValue === this.getCurrentPage());
               if (navigation) {
                 if (navigation.conditionOperator === ConditionOperator.INCLUDE) {
                   lastPage = conditionValue.includes(navigation.conditionValue) ? navModel.screenName : lastPage;
@@ -90,7 +89,7 @@ export class PageFlow implements AbstractPageFlow {
             }
           }
         } else {
-          const screenModel = screenNavigationModels.find(screenNavigationModel =>
+          const screenModel = screenNavigationModels.find((screenNavigationModel) =>
             screenNavigationModel.navigation[0].resultValue === this.getCurrentPage());
           lastPage = screenModel ? screenModel.screenName : '';
         }

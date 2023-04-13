@@ -10,7 +10,6 @@ import * as fromFeature from '../../store';
   styleUrls: ['./noc-check-your-answers.component.scss']
 })
 export class NocCheckYourAnswersComponent implements OnInit {
-
   public caseReference$: Observable<string>;
 
   @Input()

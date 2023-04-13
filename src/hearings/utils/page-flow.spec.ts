@@ -158,5 +158,4 @@ describe('PageFlow', () => {
   afterEach(() => {
     pageFlow = null;
   });
-})
-;
+});

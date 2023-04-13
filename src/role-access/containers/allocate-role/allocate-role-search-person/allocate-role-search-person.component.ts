@@ -44,7 +44,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
-    this.subscription = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(allocateRoleStateData => this.setData(allocateRoleStateData));
+    this.subscription = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe((allocateRoleStateData) => this.setData(allocateRoleStateData));
   }
 
   private setData(allocateRoleStateData: AllocateRoleStateData): void {

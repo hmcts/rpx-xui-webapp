@@ -6,7 +6,6 @@ import { HearingsUtils } from '../utils/hearings.utils';
   name: 'convertToValue'
 })
 export class ConvertToValuePipe implements PipeTransform {
-
   public transform(key: string, lovRefDataModels: LovRefDataModel[]): any {
     return HearingsUtils.getValue(key, lovRefDataModels);
   }

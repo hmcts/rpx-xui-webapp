@@ -71,10 +71,10 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
       let hasWalesLocation;
       const hearingConditions: HearingConditions = action.hearingCondition;
       if (hearingConditions.hasOwnProperty('mode')) {
-        mode = hearingConditions['mode'];
+        mode = hearingConditions.mode;
       }
       if (hearingConditions.hasOwnProperty('regionId')) {
-        const regionId = hearingConditions['regionId'];
+        const regionId = hearingConditions.regionId;
         hasWalesLocation = regionId.includes('7');
       }
       let updatedHearingRequestMainModel: HearingRequestMainModel = action.hearingRequestMainModel;

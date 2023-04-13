@@ -7,7 +7,6 @@ import { NocQuestion } from '../../models';
   template: ''
 })
 export abstract class AbstractFormFieldComponent {
-
   @Input()
   public questionField: NocQuestion;
 
@@ -23,7 +22,7 @@ export abstract class AbstractFormFieldComponent {
   public answerValue: string = '';
 
   protected defaultControlRegister(): (control: FormControl) => AbstractControl {
-    return control => {
+    return (control) => {
       if (!this.formGroup) {
         return null;
       }
@@ -42,6 +41,6 @@ export abstract class AbstractFormFieldComponent {
   }
 
   protected setAnswer(): void {
-    this.answerValue$.subscribe(answer => this.answerValue = answer);
+    this.answerValue$.subscribe((answer) => this.answerValue = answer);
   }
 }

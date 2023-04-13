@@ -6,7 +6,6 @@ describe('initApplication', () => {
   const storeSpy = jasmine.createSpyObj<Store<fromApp.State>>('store', ['dispatch']);
 
   it('should return a function', () => {
-
     expect(initApplication(storeSpy)).toEqual(jasmine.any(Function));
   });
 });

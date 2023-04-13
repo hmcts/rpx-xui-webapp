@@ -60,8 +60,8 @@ export async function getHearings(caseId: string, req: EnhancedRequest) {
   const markupPath: string = `${hmcHearingsUrl}/hearings/${caseId}`;
   try {
     const { data }: {data: HearingListMainModel } = await sendGet(markupPath, req);
-    data.caseHearings.forEach(hearing =>
-      hearingStatusMappings.filter(mapping => mapping.hmcStatus === hearing.hmcStatus).map(hearingStatusMapping => {
+    data.caseHearings.forEach((hearing) =>
+      hearingStatusMappings.filter((mapping) => mapping.hmcStatus === hearing.hmcStatus).map((hearingStatusMapping) => {
         hearing.exuiSectionStatus = hearingStatusMapping.exuiSectionStatus;
         hearing.exuiDisplayStatus = hearingStatusMapping.exuiDisplayStatus;
       }));
@@ -90,13 +90,13 @@ export async function loadLinkedCasesWithHearings(req: EnhancedRequest, res: Res
       caseName: reqBody.caseName,
       reasonsForLink: []
     };
-    const linkedCaseIds = data.map(linkedCase => linkedCase.caseReference);
+    const linkedCaseIds = data.map((linkedCase) => linkedCase.caseReference);
 
     if (linkedCaseIds && linkedCaseIds.length) {
       const promises = [];
       const allCaseId = [currentCase.caseReference, ...linkedCaseIds];
       const allData = [currentCase, ...data];
-      allCaseId.forEach(caseId => {
+      allCaseId.forEach((caseId) => {
         const promise = getHearings(caseId, req);
         promises.push(promise);
       });
@@ -114,11 +114,11 @@ export async function loadLinkedCasesWithHearings(req: EnhancedRequest, res: Res
 
 function aggregateAllResults(data: ServiceLinkedCasesModel[], allResults: any): any {
   const aggregateResult = [];
-  allResults.forEach(result => {
+  allResults.forEach((result) => {
     const { status, value }: {status: string, value: any} = result;
     if (status === 'fulfilled') {
-      const caseDetails = data.find(d => d.caseReference === value.caseRef);
-      const caseHearings = value.caseHearings.filter(hearing =>
+      const caseDetails = data.find((d) => d.caseReference === value.caseRef);
+      const caseHearings = value.caseHearings.filter((hearing) =>
         hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING
         || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.UPDATE_REQUESTED
         || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.LISTED);

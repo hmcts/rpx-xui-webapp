@@ -13,7 +13,6 @@ import * as auth from './index';
 chai.use(sinonChai);
 
 describe('Auth', () => {
-
   describe('successCallback', () => {
     let req;
     let res;
@@ -44,7 +43,7 @@ describe('Auth', () => {
               userinfo: details
             }
           },
-          save: fun => {
+          save: (fun) => {
             fun();
           }
         }
@@ -58,7 +57,6 @@ describe('Auth', () => {
     });
 
     it('should set the cookies and redirect the user if not a refresh', () => {
-
       auth.successCallback(req, res, next);
       expect(res.cookie).to.be.calledWith(getConfigValue(COOKIES_TOKEN), accessToken);
       expect(res.cookie).to.be.calledWith(getConfigValue(COOKIES_USER_ID), details.uid);

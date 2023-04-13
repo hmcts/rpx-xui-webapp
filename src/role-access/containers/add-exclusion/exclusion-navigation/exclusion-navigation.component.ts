@@ -16,7 +16,6 @@ import * as fromFeature from '../../../store';
   templateUrl: 'exclusion-navigation.component.html'
 })
 export class ExclusionNavigationComponent implements OnInit {
-
   @Output() public eventTrigger = new EventEmitter();
 
   public navigationCurrentState$: Observable<ExclusionState>;

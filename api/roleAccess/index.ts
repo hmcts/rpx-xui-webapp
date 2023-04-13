@@ -40,8 +40,8 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
     );
     const substantiveRoles = await getSubstantiveRoles(req);
     const finalRoles = [];
-    judicialAndLegalOps.forEach(unknownRole => {
-      const substantiveRole = substantiveRoles.find(role => role.roleId === unknownRole.roleName);
+    judicialAndLegalOps.forEach((unknownRole) => {
+      const substantiveRole = substantiveRoles.find((role) => role.roleId === unknownRole.roleName);
       if (substantiveRole) {
         const currentRoleId = unknownRole.roleName;
         unknownRole.roleName = substantiveRole.roleName;
@@ -83,7 +83,7 @@ export async function getJudicialUsers(req: EnhancedRequest, res: Response, next
   let serviceCodes: string[] = [];
   const serviceRefDataMapping = getServiceRefDataMappingList();
   // add the service refernces in order to search by service
-  serviceRefDataMapping.forEach(serviceRef => {
+  serviceRefDataMapping.forEach((serviceRef) => {
     if (services.includes(serviceRef.service)) {
       serviceCodes = [...serviceCodes, ...serviceRef.serviceCodes];
     }
@@ -111,7 +111,7 @@ export async function getMyAccessNewCount(req, resp, next) {
 
     const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
     const cases = await getMyAccessMappedCaseList(roleAssignments, req);
-    const newAssignments = cases.filter(item => item.isNew);
+    const newAssignments = cases.filter((item) => item.isNew);
 
     return resp.status(200).send({ count: newAssignments.length });
   } catch (error) {
@@ -125,7 +125,7 @@ export async function manageLabellingRoleAssignment(req: EnhancedRequest, resp: 
       return resp.status(401);
     }
     const currentUserAssignments = (req.session.roleAssignmentResponse as RoleAssignment[]);
-    const challengedAccessRequest = currentUserAssignments.find(roleAssignment => roleAssignment.attributes
+    const challengedAccessRequest = currentUserAssignments.find((roleAssignment) => roleAssignment.attributes
       && roleAssignment.attributes.caseId === req.params.caseId
       && roleAssignment.attributes.isNew);
 
@@ -145,9 +145,9 @@ export function mapResponseToCaseRoles(
   req: EnhancedRequest
 ): CaseRole[] {
   if (assignmentId) {
-    roleAssignments = roleAssignments.filter(roleAssignment => roleAssignment.id === assignmentId);
+    roleAssignments = roleAssignments.filter((roleAssignment) => roleAssignment.id === assignmentId);
   }
-  return roleAssignments.map(roleAssignment => ({
+  return roleAssignments.map((roleAssignment) => ({
     actions: [
       { 'id': 'reallocate', 'title': 'Reallocate' },
       { 'id': 'remove', 'title': 'Remove Allocation' }

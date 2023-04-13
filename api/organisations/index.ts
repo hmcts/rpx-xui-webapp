@@ -23,7 +23,9 @@ export async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Res
 export async function handleOrganisationRoute(req: EnhancedRequest, res: Response) {
   try {
     const path = `${getConfigValue(SERVICES_PRD_API_URL)}/refdata/external/v1/organisations`;
-    const response = await handleGet(path, req, (err => { throw err; }));
+    const response = await handleGet(path, req, ((err) => {
+      throw err;
+    }));
     res.send(response.data);
   } catch (error) {
     const errReport = {

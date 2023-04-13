@@ -91,7 +91,7 @@ describe('NocCheckAndSubmitComponent', () => {
     component.answers$ = spyOnPipeToStore.and.returnValue(of(nocAnswers));
     component.ngOnInit();
     fixture.detectChanges();
-    component.qAndA$.toPromise().then(results => {
+    component.qAndA$.toPromise().then((results) => {
       expect(results.length).toBe(2);
     });
   });
@@ -115,7 +115,9 @@ describe('NocCheckAndSubmitComponent', () => {
   });
 
   it('should navigationHandler', () => {
-    expect(() => { component.navigationHandler(NocNavigationEvent.CONTINUE); }).toThrow(new Error('Invalid option'));
+    expect(() => {
+      component.navigationHandler(NocNavigationEvent.CONTINUE);
+    }).toThrow(new Error('Invalid option'));
   });
 
   it('should verify and submit NoC', () => {

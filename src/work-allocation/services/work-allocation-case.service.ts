@@ -38,6 +38,7 @@ export class WorkAllocationCaseService {
   public getMyAccess(body: { searchRequest: SearchCaseRequest, view: string }): Observable<any> {
     return this.http.post<any>('/workallocation/my-work/myaccess', body);
   }
+
   public getCases(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
     return this.http.post<Case[]>('/workallocation/all-work/cases', body);
   }

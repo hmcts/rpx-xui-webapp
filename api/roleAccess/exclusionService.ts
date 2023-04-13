@@ -96,9 +96,9 @@ export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
   assignmentId: string,
   req: EnhancedRequest): RoleExclusion[] {
   if (assignmentId) {
-    roleAssignments = roleAssignments.filter(roleAssignment => roleAssignment.id === assignmentId);
+    roleAssignments = roleAssignments.filter((roleAssignment) => roleAssignment.id === assignmentId);
   }
-  return roleAssignments.map(roleAssignment => ({
+  return roleAssignments.map((roleAssignment) => ({
     added: roleAssignment.created,
     actorId: roleAssignment.actorId,
     email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null,
@@ -112,7 +112,7 @@ export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
 
 export function getEmail(actorId: string, req: EnhancedRequest): string {
   if (req && req.session && req.session.caseworkers) {
-    const caseWorker = req.session.caseworkers.find(caseworker => caseworker.idamId === actorId);
+    const caseWorker = req.session.caseworkers.find((caseworker) => caseworker.idamId === actorId);
     if (caseWorker) {
       return caseWorker.email;
     }
@@ -121,7 +121,7 @@ export function getEmail(actorId: string, req: EnhancedRequest): string {
 
 export function getUserName(actorId: string, req: EnhancedRequest): string {
   if (req && req.session && req.session.caseworkers) {
-    const caseWorker = req.session.caseworkers.find(caseworker => caseworker.idamId === actorId);
+    const caseWorker = req.session.caseworkers.find((caseworker) => caseworker.idamId === actorId);
     if (caseWorker) {
       return `${caseWorker.firstName}-${caseWorker.lastName}`;
     }

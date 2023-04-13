@@ -13,7 +13,6 @@ class WrapperComponent {
 }
 
 describe('WorkAllocation', () => {
-
   describe('ImageFieldComponent', () => {
     let component: ImageFieldComponent;
     let wrapper: WrapperComponent;

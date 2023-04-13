@@ -67,7 +67,6 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
 
   if (metaCriteria) {
     for (const criterion of Object.keys(metaCriteria)) {
-
       if (metaCriteria[criterion]) {
         const keyName = fieldNameMapper(
           criterion.replace('[', '').replace(']', '').toLowerCase(),
@@ -172,7 +171,7 @@ function isKeywordSuffixNeeded(columnName, type): string {
 
 export function handleElasticSearchResponse(proxyRes, req, res, json): object {
   if (json.cases) {
-    const results = json.cases.map(caseObj => {
+    const results = json.cases.map((caseObj) => {
       caseObj.case_fields = caseObj.fields;
       caseObj.case_fields_formatted = caseObj.fields_formatted;
       delete caseObj.fields;

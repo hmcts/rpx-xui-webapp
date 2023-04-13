@@ -36,7 +36,7 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
   public executeAction(action: ACTION): void {
     if (action === ACTION.VIEW_EDIT_REASON) {
       this.initialAndCurrentStates$ = this.getInitialAndCurrentState();
-      this.initialAndCurrentStatesSubscription = this.initialAndCurrentStates$.pipe(take(1)).subscribe(state => {
+      this.initialAndCurrentStatesSubscription = this.initialAndCurrentStates$.pipe(take(1)).subscribe((state) => {
         const stateChanged = !_.isEqual(state[0], state[1]);
         if (stateChanged) {
           super.navigateAction(action);

@@ -75,9 +75,9 @@ xdescribe('Caseworker ref data api, get all caseworkers', () => {
       MockApp.setServerPort(8080);
       MockApp.init();
 
-      MockApp.onPost('/am/role-assignments/query', (req , res) => {
+      MockApp.onPost('/am/role-assignments/query', (req, res) => {
         res.send({
-          roleAssignmentResponse : [
+          roleAssignmentResponse: [
             { actorId: '004b7164-0943-41b5-95fc-39794af4a9fe', roleCategory: 'case-worker' },
             { actorId: '004b7164-0943-41b5-95fc-39794af4a9fe', roleCategory: 'case-worker' }
           ]

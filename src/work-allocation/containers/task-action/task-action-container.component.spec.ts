@@ -55,7 +55,7 @@ describe('WorkAllocation', () => {
     const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['getValue']);
     mockFeatureToggleService.getValue.and.returnValue(of(false));
 
-    beforeEach(waitForAsync (() => {
+    beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [
           TaskActionContainerComponent, WrapperComponent, TaskListComponent,
@@ -163,7 +163,7 @@ describe('WorkAllocation', () => {
     it('configured fields for judicial', () => {
       component.isJudicial = true;
       const fieldConfigs = component.fields;
-      const fieldLabels = fieldConfigs.map(fieldConfig => fieldConfig.columnLabel);
+      const fieldLabels = fieldConfigs.map((fieldConfig) => fieldConfig.columnLabel);
       expect(fieldLabels).toContain('Task created');
       expect(fieldLabels).not.toContain('Due date');
       expect(fieldLabels).not.toContain('Priority');
@@ -173,7 +173,7 @@ describe('WorkAllocation', () => {
       component.isJudicial = false;
 
       const fieldConfigs = component.fields;
-      const fieldLabels = fieldConfigs.map(fieldConfig => fieldConfig.columnLabel);
+      const fieldLabels = fieldConfigs.map((fieldConfig) => fieldConfig.columnLabel);
       expect(fieldLabels).not.toContain('Task created');
       expect(fieldLabels).toContain('Due date');
       expect(fieldLabels).toContain('Priority');

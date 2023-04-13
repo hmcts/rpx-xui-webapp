@@ -25,7 +25,7 @@ import * as log4jui from '../lib/log4jui';
 import { JUILogger } from '../lib/models';
 const logger: JUILogger = log4jui.getLogger('health');
 
-export const checkServiceHealth = service => HealthCheck.web(`${service}/health`, {
+export const checkServiceHealth = (service) => HealthCheck.web(`${service}/health`, {
   deadline: 6000,
   timeout: 6000
 });
@@ -71,7 +71,7 @@ if (showFeature(FEATURE_WORKALLOCATION_ENABLED)) {
   config.checks.judicialApi = checkServiceHealth(getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH));
 }
 
-export const addReformHealthCheck = app => {
+export const addReformHealthCheck = (app) => {
   if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
     config.checks = {
       ...config.checks, ...{

@@ -5,7 +5,6 @@ import { State } from '../store/reducers';
 import { AdditionalInstructionsAmendedConverter } from './additional-instructions.amended.converter';
 
 describe('AdditionalInstructionsAmendedConverter', () => {
-
   let additionalInstructionsAmendedConverter: AdditionalInstructionsAmendedConverter;
 
   beforeEach(() => {

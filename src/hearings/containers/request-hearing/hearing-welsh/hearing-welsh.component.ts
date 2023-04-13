@@ -29,7 +29,7 @@ export class HearingWelshComponent extends RequestHearingPageFlow implements OnI
   }
 
   public ngAfterViewInit(): void {
-    this.welshForm.controls['hearingInWelshFlag'].setValue(this.hearingInWelshFlag);
+    this.welshForm.controls.hearingInWelshFlag.setValue(this.hearingInWelshFlag);
   }
 
   public initForm(): void {
@@ -50,7 +50,7 @@ export class HearingWelshComponent extends RequestHearingPageFlow implements OnI
       ...this.hearingRequestMainModel,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        hearingInWelshFlag: this.welshForm.value['hearingInWelshFlag']
+        hearingInWelshFlag: this.welshForm.value.hearingInWelshFlag
       }
     };
   }

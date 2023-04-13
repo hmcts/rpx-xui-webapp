@@ -8,7 +8,6 @@ import * as fromHearingStore from '../../store';
   templateUrl: './hearing-case-name.component.html'
 })
 export class HearingCaseNameComponent implements OnInit, OnDestroy {
-
   public caseName: string;
   public serviceValueSub: Subscription;
 

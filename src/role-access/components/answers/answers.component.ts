@@ -8,7 +8,6 @@ import { Answer } from '../../models';
 })
 
 export class AnswersComponent {
-
   @Input() public caption: string;
   @Input() public heading: string;
   @Input() public hint: string;

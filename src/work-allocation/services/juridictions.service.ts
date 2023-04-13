@@ -20,7 +20,7 @@ export class JurisdictionsService {
       return of(jurisdictions as Jurisdiction[]);
     }
     return this.http.get<Jurisdiction[]>('/aggregated/caseworkers/:uid/jurisdictions?access=read', { headers }).pipe(
-      tap(jurisdictions => this.sessionStorageService.setItem('JURISDICTIONS', JSON.stringify(jurisdictions)))
+      tap((jurisdictions) => this.sessionStorageService.setItem('JURISDICTIONS', JSON.stringify(jurisdictions)))
     );
   }
 }

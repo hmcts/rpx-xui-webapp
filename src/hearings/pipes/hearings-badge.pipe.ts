@@ -5,7 +5,6 @@ import { EXUIDisplayStatusEnum } from '../models/hearings.enum';
   name: 'hearingsBadge'
 })
 export class HearingsBadgePipe implements PipeTransform {
-
   public transform(value: EXUIDisplayStatusEnum): string {
     switch (value) {
       case EXUIDisplayStatusEnum.VACATED:

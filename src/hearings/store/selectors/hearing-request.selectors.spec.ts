@@ -21,7 +21,7 @@ describe('Hearing Request selectors', () => {
   describe('getHearingRequest', () => {
     it('should return hearings navigation state', () => {
       let result;
-      store.pipe(select(getHearingRequest)).subscribe(value => {
+      store.pipe(select(getHearingRequest)).subscribe((value) => {
         result = value;
       });
       expect(result).toEqual(initialHearingRequestState);

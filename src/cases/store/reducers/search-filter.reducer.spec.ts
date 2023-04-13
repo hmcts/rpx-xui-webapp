@@ -4,7 +4,6 @@ import * as fromActions from '../actions/case-search.action';
 import * as fromFilter from './search-filter.reducer';
 
 describe('Search Filter Reducer', () => {
-
   describe('Actions', () => {
     it('should set correct object', () => {
       const initialState = fromFilter.initialSearchState;

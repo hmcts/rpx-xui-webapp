@@ -48,7 +48,6 @@ export class MonitorConfig implements Microsoft.ApplicationInsights.IConfig {
 
 @Injectable()
 export class MonitoringService implements IMonitoringService {
-
   public areCookiesEnabled: boolean = false;
 
   constructor(private readonly http: HttpClient, @Optional() private config?: MonitorConfig,
@@ -85,10 +84,10 @@ export class MonitoringService implements IMonitoringService {
     if (this.config && this.config.instrumentationKey) {
       func();
     } else {
-      this.http.get('/api/monitoring-tools').subscribe(it => {
+      this.http.get('/api/monitoring-tools').subscribe((it) => {
         this.config = {
           // tslint:disable-next-line: no-string-literal
-          instrumentationKey: it['key']
+          instrumentationKey: it.key
         };
         if (!this.areCookiesEnabled) {
           this.config = {

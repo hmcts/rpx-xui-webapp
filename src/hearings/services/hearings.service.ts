@@ -17,7 +17,6 @@ import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model'
 
 @Injectable()
 export class HearingsService {
-
   public actionSubject = new Subject<ACTION>();
 
   public navigateAction$: Observable<ACTION> = this.actionSubject.asObservable();
@@ -57,7 +56,7 @@ export class HearingsService {
   }
 
   public cancelHearingRequest(hearingId: string, reasons: LovRefDataModel[]): Observable<ResponseDetailsModel> {
-    const cancellationReasonCodes: string[] = reasons.map(reason => reason.key);
+    const cancellationReasonCodes: string[] = reasons.map((reason) => reason.key);
     const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'

@@ -272,7 +272,7 @@ describe('TaskAssignmentConfirmComponent', () => {
   });
 });
 
-['caseworker-ia-iacjudge', 'caseworker-ia-caseofficer'].forEach(role => {
+['caseworker-ia-iacjudge', 'caseworker-ia-caseofficer'].forEach((role) => {
   describe(`TaskAssignmentConfirmComponent by userType role ${role}`, () => {
     let component: TaskAssignmentConfirmComponent;
     let wrapper: WrapperComponent;
@@ -355,7 +355,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     it('configured fields for judicial', () => {
       const headers = fixture.debugElement.queryAll(By.css('th'));
       fixture.detectChanges();
-      const fieldLabels = headers.map(header => header.nativeElement.textContent);
+      const fieldLabels = headers.map((header) => header.nativeElement.textContent);
       if (role === 'caseworker-ia-iacjudge') {
         expect(fieldLabels).toContain('Task created');
         expect(fieldLabels).not.toContain('Due date');

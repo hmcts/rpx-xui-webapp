@@ -11,14 +11,13 @@ import { HearingsService } from '../../services/hearings.service';
 
 @Injectable()
 export class HearingActualsEffects {
-
   @Effect()
   public getHearingActuals$ = this.actions$.pipe(
       ofType(hearingActualsActions.GET_HEARING_ACTUALS),
       switchMap((action: hearingActualsActions.GetHearingActuals) => this.hearingsService.getHearingActuals(action.payload)
         .pipe(
           map((response) => new hearingActualsActions.GetHearingActualsSuccess(response)),
-          catchError(error => HearingActualsEffects.handleError(error))
+          catchError((error) => HearingActualsEffects.handleError(error))
         ))
     );
 
@@ -29,7 +28,7 @@ export class HearingActualsEffects {
         .pipe(
           map(() => new hearingActualsActions.UpdateHearingActualsSuccess(action.payload.hearingActuals)),
           tap(() => this.router.navigate([`/hearings/actuals/${action.payload.hearingId}/hearing-actual-add-edit-summary`])),
-          catchError(error => HearingActualsEffects.handleError(error))
+          catchError((error) => HearingActualsEffects.handleError(error))
         ))
     );
 
@@ -39,7 +38,7 @@ export class HearingActualsEffects {
       switchMap((action: any) => this.hearingsService.updateHearingActuals(action.payload.hearingId, action.payload.hearingActuals)
         .pipe(
           map(() => new hearingActualsActions.UpdateHearingActualsSuccess(action.payload.hearingActuals)),
-          catchError(error => HearingActualsEffects.handleError(error))
+          catchError((error) => HearingActualsEffects.handleError(error))
         ))
     );
 

@@ -25,7 +25,7 @@ describe('Configuration Service', () => {
 
   it('should have configuration service load method', () => {
     httpClientSpy.get.and.returnValue({});
-    service.load().subscribe(data => {
+    service.load().subscribe((data) => {
       expect(data.features).toBeDefined();
     });
   });

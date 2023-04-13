@@ -179,7 +179,6 @@ describe('AppComponent', () => {
   });
 
   describe('cookie actions', () => {
-
     describe('setCookieBannerVisibility()', () => {
       it('should set isCookieBannerVisible true when there is no cookie and there is a user and cookie banner is feature toggled on', () => {
         featureToggleService.isEnabled.and.returnValue(of(true));

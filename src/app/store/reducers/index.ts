@@ -47,8 +47,8 @@ export const getRouterState = createFeatureSelector<
 
 export const getRouterUrl = createSelector(
   getRouterState,
-  state => state.state.url
+  (state) => state.state.url
 );
 
-export const getAppConfigState = createFeatureSelector<any>( 'appConfig' );
+export const getAppConfigState = createFeatureSelector<any>('appConfig');
 

@@ -105,7 +105,7 @@ describe('Jurisdiction', () => {
     const next = sinon.mock().atLeast(1) as NextFunction;
     sandbox.stub(http, 'post').resolves(res);
     sandbox.stub(globalSearchServices, 'getSearchResults').returns(res);
-    const response = await globalSearchServices.getSearchResults(req, res,next);
+    const response = await globalSearchServices.getSearchResults(req, res, next);
     expect(response).to.deep.equal(res);
   });
 });

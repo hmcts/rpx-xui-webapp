@@ -18,7 +18,7 @@ export async function getUsers(req: EnhancedRequest, res: Response, next: NextFu
     const path = `${prdUrl}/refdata/external/v1/organisations/users?returnRoles=false&status=active`;
     const { status, data }: {status: number, data: any} = await handleGet(path, req, next);
     const users = [...data.users]
-      .map(user => prdToUserDetails(user));
+      .map((user) => prdToUserDetails(user));
     return res.status(status).send(users);
   } catch (error) {
     next(error);
@@ -36,7 +36,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
       const sharedCase: SharedCase = {
         caseId: caseUser.case_id,
         caseTitle: caseUser.case_title,
-        sharedWith: caseUser.shared_with.map(rawSharedWith => ccdToUserDetails(rawSharedWith))
+        sharedWith: caseUser.shared_with.map((rawSharedWith) => ccdToUserDetails(rawSharedWith))
       };
       sharedCases.push(sharedCase);
     }
@@ -83,9 +83,9 @@ function doShareCase(req: EnhancedRequest, shareCases: SharedCase[]): any[] {
   const path = `${ccdUrl}/case-assignments?use_user_token=true`;
   const promises = [];
   // @ts-ignore
-  shareCases.flatMap(sharedCase => {
+  shareCases.flatMap((sharedCase) => {
     if (sharedCase && sharedCase.pendingShares && sharedCase.pendingShares.length > 0) {
-      sharedCase.pendingShares.flatMap( pendingShare => {
+      sharedCase.pendingShares.flatMap((pendingShare) => {
         const caseAssigneeMappingModel: CaseAssigneeMappingModel = {
           assignee_id: pendingShare.idamId,
           case_id: sharedCase.caseId,
@@ -135,7 +135,7 @@ function handleRejectedResponse(allResults: any):
   let rejectedUnShareCaseReason: any = null;
   let rejectedCount: number = 0;
 
-  allResults.forEach(result => {
+  allResults.forEach((result) => {
     const { status, reason }: {status: string, reason: any} = result;
     if (status === 'rejected') {
       if (reason.config.method === 'post') {
@@ -156,8 +156,8 @@ function handleSharedCase(shareCases: SharedCase[], rejectedPayloads: CaseAssign
     const newPendingShares = aCase.pendingShares ? aCase.pendingShares.slice() : [];
     const newSharedWith = aCase.sharedWith ? aCase.sharedWith.slice() : [];
     for (let i = 0; i < newPendingShares.length; i++) {
-      const foundFailed = rejectedPayloads.filter(rejectedPayload => rejectedPayload.case_id === aCase.caseId)
-        .some(foundPayload => foundPayload.assignee_id === newPendingShares[i].idamId);
+      const foundFailed = rejectedPayloads.filter((rejectedPayload) => rejectedPayload.case_id === aCase.caseId)
+        .some((foundPayload) => foundPayload.assignee_id === newPendingShares[i].idamId);
       // can't find on rejected payload that mean it's successfully shared
       if (!foundFailed) {
         // add to shared with
@@ -183,7 +183,7 @@ function handleUnSharedCase(shareCases: SharedCase[], rejectedUnShareCaseReason:
   if (!rejectedUnShareCaseReason) {
     for (const aCase of updatedSharedCases) {
       if (aCase.pendingUnshares && aCase.pendingUnshares.length > 0) {
-        const filteredArray = aCase.sharedWith.filter(user => !aCase.pendingUnshares.some(pUser => pUser.idamId === user.idamId));
+        const filteredArray = aCase.sharedWith.filter((user) => !aCase.pendingUnshares.some((pUser) => pUser.idamId === user.idamId));
         const newCase: SharedCase = {
           ...aCase,
           pendingUnshares: [],

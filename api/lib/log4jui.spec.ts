@@ -14,7 +14,7 @@ describe('log4jui', () => {
   let sandbox;
   let spyObj;
 
-  beforeEach( () => {
+  beforeEach(() => {
     sandbox = sinon.createSandbox();
     spyObj = {
       addContext: sandbox.spy(),
@@ -25,12 +25,12 @@ describe('log4jui', () => {
     sandbox.stub(log4js, 'getLogger').returns(spyObj);
   });
 
-  afterEach( () => {
+  afterEach(() => {
     sandbox.restore();
   });
 
   describe('getLogger', () => {
-    beforeEach( () => {
+    beforeEach(() => {
       sandbox.restore();
     });
 

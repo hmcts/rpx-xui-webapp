@@ -192,7 +192,7 @@ describe('TasksContainerComponent', () => {
       email_id: '4920094EMP-@ejudiciary.net',
       personal_code: '4920094'
     }];
-    component.getJudicialNamedTasks(judicialUserData as any).subscribe( task => {
+    component.getJudicialNamedTasks(judicialUserData as any).subscribe((task) => {
       expect(task[0].assigneeName).toEqual('Joe Bloggs');
     });
   });

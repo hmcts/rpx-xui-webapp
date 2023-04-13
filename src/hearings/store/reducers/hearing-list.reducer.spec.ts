@@ -6,9 +6,7 @@ import * as fromHearingListActions from '../actions/hearing-list.action';
 import * as fromHearingListReducer from './hearing-list.reducer';
 
 describe('Hearing List Reducer', () => {
-
   describe('Actions', () => {
-
     describe('Reset action', () => {
       it('should set correct object', () => {
         const initialState = fromHearingListReducer.initialHearingListState;

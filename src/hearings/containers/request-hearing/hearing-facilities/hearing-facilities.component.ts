@@ -62,12 +62,12 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     if (this.hearingRequestMainModel.hearingDetails &&
       this.hearingRequestMainModel.hearingDetails.facilitiesRequired &&
       this.hearingRequestMainModel.hearingDetails.facilitiesRequired.length) {
-      const additionalFacilitiesValuated = this.additionalFacilities.filter(additionalFacility =>
+      const additionalFacilitiesValuated = this.additionalFacilities.filter((additionalFacility) =>
         this.hearingRequestMainModel.hearingDetails.facilitiesRequired.includes(additionalFacility.key));
-      additionalFacilitiesValuated.forEach(facailyValuated => facailyValuated.selected = true);
+      additionalFacilitiesValuated.forEach((facailyValuated) => facailyValuated.selected = true);
     }
 
-    return this.fb.array(this.additionalFacilities.map(val => this.fb.group({
+    return this.fb.array(this.additionalFacilities.map((val) => this.fb.group({
       key: [val.key],
       value_en: [val.value_en],
       value_cy: [val.value_cy],
@@ -100,7 +100,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
 
   public prepareHearingRequestData() {
     const facilitiesRequired: string[] = (this.hearingFactilitiesForm.controls['addition-securities'] as FormArray).controls
-      .filter(control => control.value.selected).map(mapControl => mapControl.value.key);
+      .filter((control) => control.value.selected).map((mapControl) => mapControl.value.key);
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       caseDetails: {

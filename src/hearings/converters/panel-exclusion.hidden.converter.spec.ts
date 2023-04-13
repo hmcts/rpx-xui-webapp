@@ -7,7 +7,6 @@ import { State } from '../store/reducers';
 import { PanelExclusionHiddenConverter } from './panel-exclusion.hidden.converter';
 
 describe('PanelExclusionHiddenConverter', () => {
-
   let panelExclusionHiddenConverter: PanelExclusionHiddenConverter;
   const JUDICAIL_USER_DETAILS = [{
     memberID: 'P0000001',

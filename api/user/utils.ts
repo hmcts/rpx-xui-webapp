@@ -42,7 +42,7 @@ export function isCurrentUserCaseAllocator(currentUserRoleAssignment: RoleAssign
 export function getOrganisationRoles(roleAssignments: RoleAssignment[]): string[] {
   const roles = [];
   if (roleAssignments) {
-    roleAssignments.forEach(roleAssignment => {
+    roleAssignments.forEach((roleAssignment) => {
       if (!roles.includes(roleAssignment.roleName) && roleAssignment.roleType === ORGANISATION_ROLE_TYPE) {
         roles.push(roleAssignment.roleName);
       }
@@ -79,9 +79,9 @@ export function getUserRoleCategory(roles: string[]): string {
 }
 
 export function hasRoleCategory(roles: string[], roleName: string): boolean {
-  return roles.some(x => x.toLowerCase() === roleName.toLowerCase());
+  return roles.some((x) => x.toLowerCase() === roleName.toLowerCase());
 }
 
 export function includesRoleCategory(roles: string[], roleName: string): boolean {
-  return roles.some(x => x.toLowerCase().includes(roleName.toLowerCase()));
+  return roles.some((x) => x.toLowerCase().includes(roleName.toLowerCase()));
 }

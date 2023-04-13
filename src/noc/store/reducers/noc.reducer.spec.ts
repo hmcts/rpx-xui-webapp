@@ -3,7 +3,6 @@ import * as fromActions from '../actions/noc.action';
 import * as fromReducer from './noc.reducer';
 
 describe('Noc Reducer', () => {
-
   describe('Actions', () => {
     it('should set correct object', () => {
       const initialState = fromReducer.initialState;

@@ -6,7 +6,6 @@ import { State } from '../store/reducers';
 import { HearingLengthAmendedConverter } from './hearing-length.amended.converter';
 
 describe('HearingLengthAmendedConverter', () => {
-
   let hearingLengthAmendedConverter: HearingLengthAmendedConverter;
 
   beforeEach(() => {

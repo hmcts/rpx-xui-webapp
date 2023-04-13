@@ -1,4 +1,3 @@
-import { RouterStateSnapshot } from '@angular/router';
 import { of } from 'rxjs';
 
 import { Caseworker } from '../models/dtos';
@@ -21,7 +20,7 @@ describe('Task Resolver', () => {
     };
 
     const taskCaseWorkers$ = taskResolver.resolve(route);
-    taskCaseWorkers$.subscribe(taskCaseWorkers => {
+    taskCaseWorkers$.subscribe((taskCaseWorkers) => {
       expect(taskCaseWorkers.task.task).toEqual(getMockTasks()[0]);
       expect(taskCaseWorkers.caseworkers).toEqual([]);
       expect(mockService.getTask).toHaveBeenCalledWith('somevalue');

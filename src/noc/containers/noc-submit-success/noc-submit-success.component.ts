@@ -10,7 +10,6 @@ import * as fromFeature from '../../store';
   styleUrls: ['./noc-submit-success.component.scss']
 })
 export class NocSubmitSuccessComponent implements OnInit {
-
   public caseReference$: Observable<string>;
   public currentNavigation$: Observable<NocState>;
   public nocState = NocState;

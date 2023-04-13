@@ -202,7 +202,6 @@ describe('AvailableTasksComponent', () => {
 
   describe('claimTask()', () => {
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
-
       mockTaskService.claimTask.and.returnValue(of({}));
 
       const taskId = '123456';
@@ -241,7 +240,6 @@ describe('AvailableTasksComponent', () => {
 
   describe('claimTaskAndGo()', () => {
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
-
       mockTaskService.claimTask.and.returnValue(of({}));
 
       const firstTask = getMockTasks()[1];
@@ -262,7 +260,6 @@ describe('AvailableTasksComponent', () => {
     });
 
     it('should call claimTaskErrors() with the error\'s status code, so that the User can see that the claim of a task has been unsuccessful.', () => {
-
       const errorStatusCode = 400;
 
       const claimTaskErrorsSpy = spyOn(component, 'claimTaskErrors');
@@ -353,7 +350,7 @@ describe('AvailableTasksComponent', () => {
       { statusCode: 401, routeUrl: '/not-authorised' },
       { statusCode: 500, routeUrl: '/service-down' },
       { statusCode: 400, routeUrl: '/service-down' }
-    ].forEach(scr => {
+    ].forEach((scr) => {
       it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
         mockTaskService.searchTask.and.returnValue(throwError({ status: scr.statusCode }));
 
@@ -371,7 +368,7 @@ describe('AvailableTasksComponent', () => {
       { statusCode: 401, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM_AND_GO },
       { statusCode: 500, routeUrl: '/service-down', action: TaskActionIds.CLAIM_AND_GO },
       { statusCode: 400, routeUrl: '/work/my-work/available', action: TaskActionIds.CLAIM_AND_GO }
-    ].forEach(scr => {
+    ].forEach((scr) => {
       it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
         mockTaskService.claimTask.and.returnValue(throwError({ status: scr.statusCode }));
 

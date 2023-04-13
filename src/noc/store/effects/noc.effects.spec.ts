@@ -64,7 +64,6 @@ describe('Noc Effects', () => {
     });
 
     it('should return SetCaseRefValidationFailure', () => {
-
       const action = new nocActions.SetCaseReference('1223-2212-4422131');
       const completion = new nocActions.SetCaseRefValidationFailure();
       actions$ = hot('-a', { a: action });
@@ -73,7 +72,6 @@ describe('Noc Effects', () => {
     });
 
     it('should return SetCaseRefValidationFailure when payload is null', () => {
-
       const action = new nocActions.SetCaseReference(null);
       const completion = new nocActions.SetCaseRefValidationFailure();
       actions$ = hot('-a', { a: action });
@@ -97,7 +95,6 @@ describe('Noc Effects', () => {
 
   describe('setAnswers$', () => {
     it('should return a response', () => {
-
       const dummy: NocAnswer[] = [{
         question_id: '0',
         value: 'dummy'
@@ -114,7 +111,6 @@ describe('Noc Effects', () => {
     });
 
     it('should return SetAnswersIncomplete', () => {
-
       const action = new nocActions.SetAnswers({
         case_id: '1234567812345678',
         answers: []
@@ -148,7 +144,6 @@ describe('Noc Effects', () => {
 
   describe('submitNoc$', () => {
     it('should return SetSubmissionSuccessPending', () => {
-
       const dummy: NocAnswer[] = [{
         question_id: '0',
         value: 'dummy'
@@ -167,7 +162,6 @@ describe('Noc Effects', () => {
     });
 
     it('should return SetSubmissionSuccessApproved', () => {
-
       const dummy: NocAnswer[] = [{
         question_id: '0',
         value: 'dummy'
@@ -209,14 +203,14 @@ describe('Noc Effects', () => {
   describe('handleError', () => {
     it('should handle 400', () => {
       const action$ = NocEffects.handleError({ status: 400, message: 'error' }, nocActions.SET_CASE_REFERENCE);
-      action$.subscribe(action => expect(action).toEqual(new nocActions.SetCaseRefSubmissionFailure({ status: 400, message: 'error' })));
+      action$.subscribe((action) => expect(action).toEqual(new nocActions.SetCaseRefSubmissionFailure({ status: 400, message: 'error' })));
     });
   });
 
   describe('handleError', () => {
     it('should handle 500', () => {
       const action$ = NocEffects.handleError({ status: 500, message: 'error' }, nocActions.SET_CASE_REFERENCE);
-      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/service-down'] })));
+      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/service-down'] })));
     });
   });
 });

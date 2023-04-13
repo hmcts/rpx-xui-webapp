@@ -161,7 +161,7 @@ describe('HearingFacilitiesComponent', () => {
   it('should filter selection from previous values', () => {
     component.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag = true;
 
-    const swapValue = component.hearingRequestMainModel.hearingDetails.facilitiesRequired ;
+    const swapValue = component.hearingRequestMainModel.hearingDetails.facilitiesRequired;
     component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['secureDock', 'witnessScreen'];
     component = fixture.componentInstance;
     component.ngOnInit();

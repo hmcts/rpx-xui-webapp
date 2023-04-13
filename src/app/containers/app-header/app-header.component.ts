@@ -30,7 +30,6 @@ import * as fromActions from '../../store';
  * @see app.constants.ts for application themes and defaults.
  */
 export class AppHeaderComponent implements OnInit, OnDestroy {
-
   public navItems: NavigationItem[];
   public appHeaderTitle: AppTitleModel;
   public userNav: UserNavModel;
@@ -67,7 +66,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * @return ["pui-organisation-manager","caseworker-publiclaw","caseworker-divorce-financialremedy-solicitor","caseworker"]
    */
   public deserialiseUserRoles(serialisedUserRoles: string): string[] {
-
     const serialisedUserRolesWithoutJsonPrefix: string = AppUtils.removeJsonPrefix(serialisedUserRoles);
     return AppUtils.getCookieRolesAsArray(serialisedUserRolesWithoutJsonPrefix);
   }
@@ -102,7 +100,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
       this.decorate16DigitCaseReferenceSearchBoxInHeader = decorate16DigitCaseReferenceSearchBoxInHeader;
 
       // Set up the active link whenever we detect that navigation has completed.
-      this.router.events.subscribe(event => {
+      this.router.events.subscribe((event) => {
         this.setNavigationEnd(event);
       });
     });
@@ -112,16 +110,15 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     if (userDetails.userInfo) {
       this.userRoles = userDetails.userInfo.roles;
       // const applicationTheme: ApplicationTheme = await this.getApplicationThemeForUser().pipe(first()).toPromise();
-      this.getApplicationThemeForUser().subscribe(theme => {
+      this.getApplicationThemeForUser().subscribe((theme) => {
         this.hideNavigationListener(this.store);
         this.setAppHeaderTheme(theme);
       });
       // const menuItems: NavigationItem[] = await this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).pipe(first()).toPromise();
-      this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).subscribe(menuItems => {
+      this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).subscribe((menuItems) => {
         this.hideNavigationListener(this.store);
         this.setAppHeaderNavItems(menuItems);
       });
-
     }
   }
 
@@ -198,25 +195,22 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * the Navigation Menu, as this is a business requirement.
    */
   public subscribe(observable: Observable<string>): Subscription {
-    return observable.subscribe(url => {
+    return observable.subscribe((url) => {
       this.showNavItems = of(AppUtils.showNavItems(url));
     });
   }
 
   public ngOnDestroy() {
-
     this.unsubscribe(this.subscription);
   }
 
   public unsubscribe(subscription: Subscription) {
-
     if (subscription) {
       subscription.unsubscribe();
     }
   }
 
   public onNavigate(event): void {
-
     if (event === 'sign-out') {
       this.store.dispatch(new fromActions.StopIdleSessionTimeout());
       return this.store.dispatch(new fromActions.Logout());

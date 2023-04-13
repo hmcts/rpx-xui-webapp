@@ -63,6 +63,7 @@ export class TaskActionContainerComponent implements OnInit {
     defaultSortFieldName: 'dueDate',
     fields: this.fields
   };
+
   public ngOnInit(): void {
     this.isJudicial = this.isCurrentUserJudicial();
     // Set up the default sorting.
@@ -80,14 +81,14 @@ export class TaskActionContainerComponent implements OnInit {
     if (this.tasks[0].assignee) {
       this.tasks[0].assigneeName = getAssigneeName(this.route.snapshot.data.taskAndCaseworkers.caseworkers, this.tasks[0].assignee);
       if (!this.tasks[0].assigneeName) {
-        this.roleService.getCaseRolesUserDetails([this.tasks[0].assignee], this.tasks[0].jurisdiction).subscribe(judicialDetails => {
+        this.roleService.getCaseRolesUserDetails([this.tasks[0].assignee], this.tasks[0].jurisdiction).subscribe((judicialDetails) => {
           this.tasks[0].assigneeName = judicialDetails[0].known_as;
         });
       }
     }
 
     this.isUpdatedTaskPermissions$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
-    this.isUpdatedTaskPermissions$.pipe(filter(v => !!v)).subscribe(value => {
+    this.isUpdatedTaskPermissions$.pipe(filter((v) => !!v)).subscribe((value) => {
       this.updatedTaskPermission = value;
     });
   }
@@ -145,7 +146,7 @@ export class TaskActionContainerComponent implements OnInit {
       } else {
         this.taskService.performActionOnTask(this.tasks[0].id, action, hasNoAssigneeOnComplete).subscribe(() => {
           this.reportSuccessAndReturn();
-        }, error => {
+        }, (error) => {
           const handledStatus = handleFatalErrors(error.status, this.router);
           if (handledStatus > 0) {
             this.reportUnavailableErrorAndReturn();

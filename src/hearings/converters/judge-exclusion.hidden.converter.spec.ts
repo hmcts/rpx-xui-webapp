@@ -7,7 +7,6 @@ import { State } from '../store/reducers';
 import { JudgeExclusionHiddenConverter } from './judge-exclusion.hidden.converter';
 
 describe('JudgeExclusionHiddenConverter', () => {
-
   let judgeExclusionHiddenConverter: JudgeExclusionHiddenConverter;
   const JUDICAIL_USER_DETAILS = [{
     memberID: 'P0000001',

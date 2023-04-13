@@ -66,7 +66,7 @@ describe('TaskManagerFilterComponent', () => {
       { name: 'locations', value: ['231596', '698118'] },
       {
         name: 'types-of-work',
-        value: ['types_of_work_all', ...typesOfWork.map(t => t.key)]
+        value: ['types_of_work_all', ...typesOfWork.map((t) => t.key)]
       }]
   };
   const mockFilterService: any = {

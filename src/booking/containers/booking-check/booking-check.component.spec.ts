@@ -148,7 +148,7 @@ describe('BookingCheckComponent', () => {
         mockBookingServiceSpy.createBooking.and.returnValue(of({ status: 403 }));
         const confirmButton = fixture.debugElement.query(By.css('button'));
         confirmButton.triggerEventHandler('click', null);
-        const mockComponentHandleError = spyOn(CdkWrapper , 'RefreshBookingHandleError').and.returnValue(true);
+        const mockComponentHandleError = spyOn(CdkWrapper, 'RefreshBookingHandleError').and.returnValue(true);
         fixture.detectChanges();
         expect(mockComponentHandleError).not.toHaveBeenCalled();
       });

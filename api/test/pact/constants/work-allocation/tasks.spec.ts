@@ -145,7 +145,7 @@ export const getUnassignedTasks = () => {
   });
 };
 export const freshTasks = (tasks: any[]): any[] => {
-  return tasks.map(task => {
+  return tasks.map((task) => {
     return { ...task };
   });
 };

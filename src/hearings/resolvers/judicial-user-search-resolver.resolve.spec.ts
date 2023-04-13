@@ -20,7 +20,7 @@ describe('Ref Data Resolver', () => {
         HttpClientTestingModule
       ],
       providers: [
-        provideMockStore({ initialState:initialStateImmutable }),
+        provideMockStore({ initialState: initialStateImmutable }),
         JudicialUserSearchResolver,
         JudicialRefDataService,
         { provide: APP_BASE_HREF, useValue: '/' }

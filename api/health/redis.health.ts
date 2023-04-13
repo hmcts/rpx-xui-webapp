@@ -5,7 +5,7 @@ import { JUILogger } from '../lib/models';
 const logger: JUILogger = log4jui.getLogger('RedisHealth');
 
 export const redisHealth = (): Promise<boolean> => {
-  return new Promise<boolean>( resolve => {
+  return new Promise<boolean>((resolve) => {
     try {
       app.locals.redisClient.ping((err, pong) => {
         if (err || (pong !== 'PONG')) {

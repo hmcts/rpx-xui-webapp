@@ -19,7 +19,7 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
   public resolve(): Observable<JudicialUserModel[]> {
     return this.getUsersByPanelRequirements$()
       .pipe(
-        switchMap(judicialMemberIds => {
+        switchMap((judicialMemberIds) => {
           return of(judicialMemberIds);
         }), take(1),
         switchMap((judicialMemberIds) => {
@@ -30,7 +30,7 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
 
   public getUsersByPanelRequirements$(): Observable<string[]> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).pipe(
-      map(hearingRequest => {
+      map((hearingRequest) => {
         const hearingJudgeIds: string[] = [];
         if (hearingRequest.hearingRequestMainModel?.hearingResponse?.hearingDaySchedule?.length) {
           const hearingJudgeId = hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingJudgeId;

@@ -28,7 +28,7 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
     this.fromCasesFeature = fromCases;
     // TODO try to be nice and remove subscription use pipe | instead
     this.$inputSubscription = this.store.pipe(select(fromCases.getCreateCaseFilterState))
-      .subscribe(caseFilterInput => {
+      .subscribe((caseFilterInput) => {
         // if state is reseated then redirect
         if (!caseFilterInput.jurisdictionId) {
           this.store.dispatch(new fromRoot.Go({
@@ -45,7 +45,6 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
       { type: 'cancelled', action: 'CreateCaseReset' },
       { type: 'submitted', action: 'ApplyChange' }
     ];
-
   }
 
   public ngOnDestroy(): void {

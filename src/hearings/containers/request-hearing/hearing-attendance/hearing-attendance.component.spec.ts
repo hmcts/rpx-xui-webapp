@@ -102,7 +102,7 @@ describe('HearingAttendanceComponent', () => {
 
   it('should call prepareHearingRequestData when executeAction is called with a valid form', () => {
     component.attendanceFormGroup.controls.estimation.setValue(1);
-    (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach(element => {
+    (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach((element) => {
       element.value.individualDetails.preferredHearingChannel = 'inperson';
     });
     (component.attendanceFormGroup.controls.hearingLevelChannels as FormArray).controls
@@ -184,7 +184,7 @@ describe('HearingAttendanceComponent', () => {
 
   it('should false when calling isFormValid without partyChannel', () => {
     component.attendanceFormGroup.controls.estimation.setValue(1);
-    (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach(element => {
+    (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach((element) => {
       (element as FormGroup).controls.individualDetails.get('preferredHearingChannel').setValue(null);
     });
     const formValid = component.isFormValid();

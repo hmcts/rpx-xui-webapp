@@ -13,7 +13,7 @@ export const generator = (schema, min = 1, max) => {
       max
     })
   }).map(() => {
-    const innerGen = anySchema => Object.keys(anySchema).reduce((entity, key) => {
+    const innerGen = (anySchema) => Object.keys(anySchema).reduce((entity, key) => {
       if (anySchema[key] instanceof Array || anySchema[key] === null) {
         entity[key] = anySchema[key];
         return entity;
@@ -247,10 +247,9 @@ export const init = () => {
   // mock.onGet(getNoCQuestionsUrl).timeoutOnce()
 
   mock.onGet(getNoCQuestionsUrl).reply(() => {
-
     let questions = [];
 
-    questionsSchema.map(schema => {
+    questionsSchema.map((schema) => {
       questions = [...questions, ...generator(schema, 1, 1)];
     });
 

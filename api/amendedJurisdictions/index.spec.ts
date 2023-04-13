@@ -28,7 +28,7 @@ describe('Amended Jurisdiction', () => {
         experimental: 'experiment/test'
       },
       session: {
-        save: fun => {
+        save: (fun) => {
           fun();
         }
       },

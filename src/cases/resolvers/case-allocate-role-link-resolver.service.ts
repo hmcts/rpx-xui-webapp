@@ -27,7 +27,7 @@ export class CaseAllocateRoleLinkResolverService implements Resolve<boolean> {
       .pipe(
         first(),
         tap((value) => this.showAllocateRoleLink = value),
-        catchError(error => {
+        catchError((error) => {
           handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
           return EMPTY;
         })

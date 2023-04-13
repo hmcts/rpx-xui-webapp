@@ -14,7 +14,7 @@ export class PanelMembersAnswerConverter implements AnswerConverter {
     return hearingState$.pipe(
       map(() => {
         const panelMemberNames: string[] = [];
-        panelMembers.forEach(panelMemberInfo => {
+        panelMembers.forEach((panelMemberInfo) => {
           panelMemberNames.push(panelMemberInfo.fullName);
         });
         return panelMemberNames.join('<br>');

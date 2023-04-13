@@ -15,7 +15,6 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
   templateUrl: 'available-tasks.component.html'
 })
 export class AvailableTasksComponent extends TaskListWrapperComponent {
-
   public get fields(): FieldConfig[] {
     return this.isCurrentUserJudicial() ? ConfigConstants.AvailableTasksForJudicial : ConfigConstants.AvailableTasksForLegalOps;
   }
@@ -73,15 +72,13 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    * A User 'Claims' themselves a task aka. 'Assign to me'.
    */
   public claimTask(taskId: string): void {
-
     this.taskService.claimTask(taskId).subscribe(() => {
       this.infoMessageCommService.nextMessage({
         type: InfoMessageType.SUCCESS,
         message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
       });
       this.refreshTasks();
-    }, error => {
-
+    }, (error) => {
       this.claimTaskErrors(error.status);
     });
   }
@@ -99,8 +96,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
           messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
         }
       });
-    }, error => {
-
+    }, (error) => {
       this.claimTaskErrors(error.status);
     });
   }

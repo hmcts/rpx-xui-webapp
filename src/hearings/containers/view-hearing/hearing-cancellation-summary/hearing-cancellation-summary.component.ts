@@ -7,7 +7,6 @@ import { Mode } from '../../../models/hearings.enum';
   templateUrl: './hearing-cancellation-summary.component.html'
 })
 export class HearingCancellationSummaryComponent {
-
   public template = HEARING_CANCELLATION_SUMMARY_TEMPLATE;
   public mode = Mode.VIEW;
 }

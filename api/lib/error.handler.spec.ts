@@ -24,7 +24,7 @@ describe('errorHandler', () => {
       cookies: [],
       headers: [],
       session: {
-        save: fun => {
+        save: (fun) => {
           fun();
         }
       }
@@ -37,7 +37,7 @@ describe('errorHandler', () => {
 
   it('should empty headers if it exists', () => {
     const err = {
-      config : {
+      config: {
         headers: {}
       }
     };
@@ -66,7 +66,7 @@ describe('errorHandler', () => {
 
   it('should empty _header if it exists', () => {
     const err = {
-      request : {
+      request: {
         _header: {
         }
       }

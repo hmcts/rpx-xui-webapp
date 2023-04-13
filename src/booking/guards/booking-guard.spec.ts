@@ -145,33 +145,33 @@ describe('BookingGuard', () => {
   it('should allow access if user has judicial role and bookable role assignment', () => {
     storeMock.pipe.and.returnValue(of(USER_1));
     featureToggleMock.getValueOnce.and.returnValue(of(true));
-    bookingGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeTruthy());
+    bookingGuard.canActivate().toPromise().then((canActivate) => expect(canActivate).toBeTruthy());
   });
 
   it('should deny access if user has no judicial role but has bookable role assignment', () => {
     storeMock.pipe.and.returnValue(of(USER_2));
     featureToggleMock.getValueOnce.and.returnValue(of(true));
-    bookingGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeFalsy());
+    bookingGuard.canActivate().toPromise().then((canActivate) => expect(canActivate).toBeFalsy());
   });
 
   it('should deny access if user has judicial role but no bookable role assignment', () => {
     storeMock.pipe.and.returnValue(of(USER_3));
     featureToggleMock.getValueOnce.and.returnValue(of(true));
-    bookingGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeFalsy());
+    bookingGuard.canActivate().toPromise().then((canActivate) => expect(canActivate).toBeFalsy());
   });
 
   it('should deny access if user has no judicial role AND no bookable role assignment', () => {
     storeMock.pipe.and.returnValue(of(USER_4));
     featureToggleMock.getValueOnce.and.returnValue(of(true));
-    bookingGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeFalsy());
+    bookingGuard.canActivate().toPromise().then((canActivate) => expect(canActivate).toBeFalsy());
   });
 
   it('should deny access if booking feature toggle is off', () => {
     storeMock.pipe.and.returnValue(of(USER_1));
     featureToggleMock.getValueOnce.and.returnValue(of(true));
-    bookingGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeTruthy());
+    bookingGuard.canActivate().toPromise().then((canActivate) => expect(canActivate).toBeTruthy());
 
     featureToggleMock.getValueOnce.and.returnValue(of(false));
-    bookingGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeFalsy());
+    bookingGuard.canActivate().toPromise().then((canActivate) => expect(canActivate).toBeFalsy());
   });
 });

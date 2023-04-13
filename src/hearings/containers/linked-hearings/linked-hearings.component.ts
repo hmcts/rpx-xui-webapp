@@ -20,7 +20,7 @@ export class LinkedHearingsComponent implements OnInit, OnDestroy {
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingId = this.route.snapshot.params.hearingId;
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe(
-      state => {
+      (state) => {
         this.caseName = state && state.publicCaseName;
       }
     );

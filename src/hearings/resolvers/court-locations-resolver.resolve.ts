@@ -19,7 +19,7 @@ export class CourtLocationsDataResolver implements Resolve<LocationModel> {
   public resolve(): Observable<LocationModel> {
     return this.getLocationId$()
       .pipe(
-        switchMap(id => of(id)),
+        switchMap((id) => of(id)),
         take(1),
         switchMap((locationId) => {
           return this.getCourtLocationData$(locationId);
@@ -29,7 +29,7 @@ export class CourtLocationsDataResolver implements Resolve<LocationModel> {
 
   public getLocationId$(): Observable<string> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).pipe(
-      map(hearingRequest =>
+      map((hearingRequest) =>
         hearingRequest.hearingRequestMainModel
         && hearingRequest.hearingRequestMainModel.hearingResponse
         && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule

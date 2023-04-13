@@ -30,7 +30,7 @@ export class AllocateRoleService {
 
   public specificAccessApproval(specificAccessStateData: SpecificAccessStateData, dtperiod: Period): Observable<any> {
     const period = {
-      startDate : this.durationService.setUTCTimezone(dtperiod.startDate),
+      startDate: this.durationService.setUTCTimezone(dtperiod.startDate),
       endDate: this.durationService.setUTCTimezone(dtperiod.endDate)
     };
     return this.http.post(`${AllocateRoleService.accessManagementUrl}/specific-access-approval`, { specificAccessStateData, period });
@@ -49,7 +49,7 @@ export class AllocateRoleService {
     const storedServices = [];
     const newServices = [];
     const storedRolesByService = [];
-    serviceIds.forEach(serviceId => {
+    serviceIds.forEach((serviceId) => {
       const serviceKey = getRoleSessionStorageKeyForServiceId(serviceId);
       if (this.sessionStorageService.getItem(serviceKey)) {
         storedServices.push(serviceId);
@@ -64,15 +64,15 @@ export class AllocateRoleService {
     }
     // all serviceIds passed in as node layer getting used anyway and caseworkers also stored there
     return this.http.post<RolesByService[]>(`${AllocateRoleService.allocateRoleBaseUrl}/valid-roles`, { serviceIds }).pipe(
-      tap(rolesByService => {
-        rolesByService.forEach(roleListByService => {
+      tap((rolesByService) => {
+        rolesByService.forEach((roleListByService) => {
           // for any new service, ensure that they are then stored in the session
           if (newServices.includes(roleListByService.service)) {
             setRoles(roleListByService.service, roleListByService.roles, this.sessionStorageService);
           }
         });
       }),
-      map(rolesByService => {
+      map((rolesByService) => {
         return getAllRolesFromServices(rolesByService);
       })
     );

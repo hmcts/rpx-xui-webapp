@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
   templateUrl: './task-assignment-person-not-authorised.component.html'
 })
 export class TaskAssignmentPersonNotAuthorisedComponent {
-
   public returnUrl = '/work/my-work/list';
 
   constructor(private readonly router: Router) {

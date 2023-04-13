@@ -19,7 +19,7 @@ export class CaseTasksResolverService implements Resolve<TaskList> {
     return this.http.get<TaskList>(`${CaseTasksResolverService.CASE_TASKS_URL}/${caseId}`)
       .pipe(
         first(),
-        catchError(error => {
+        catchError((error) => {
           handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
           return EMPTY;
         })

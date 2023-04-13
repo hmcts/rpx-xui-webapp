@@ -57,7 +57,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
       hearingOrder: this.fb.array([])
     });
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
-      state => {
+      (state) => {
         this.receivedCases = state.hearingLinks && state.hearingLinks.serviceLinkedCasesWithHearings;
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.publicCaseName : '';
         this.hearingsInGroup = state.hearingLinks && state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.hearingsInGroup;
@@ -94,7 +94,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   }
 
   public getPosition(hearing: HearingDetailModel): number {
-    const linkedHearings: LinkedHearingsDetailModel[] = this.hearingsInGroup && this.hearingsInGroup.filter(x => x.hearingId === hearing.hearingID);
+    const linkedHearings: LinkedHearingsDetailModel[] = this.hearingsInGroup && this.hearingsInGroup.filter((x) => x.hearingId === hearing.hearingID);
     if (linkedHearings && linkedHearings.length > 0) {
       return linkedHearings[0].hearingOrder;
     }
@@ -117,7 +117,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   }
 
   private mapLinkedCase(linkedCase: ServiceLinkedCasesWithHearingsModel): void {
-    const selectedHearings = linkedCase.caseHearings && linkedCase.caseHearings.filter(hearing => hearing.isSelected);
+    const selectedHearings = linkedCase.caseHearings && linkedCase.caseHearings.filter((hearing) => hearing.isSelected);
     if (selectedHearings && selectedHearings.length) {
       this.selectedLinkedCases.push({
         ...linkedCase,
@@ -139,9 +139,9 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
       }, hearingsInGroup: []
     };
     if (this.isFormValid()) {
-      this.hearingOrder.value.forEach(formValue => {
-        const hearing = this.selectedLinkedCases.find(linked => linked.caseRef === formValue.caseReference);
-        const selectedHearing = hearing && hearing.caseHearings.find(selected => selected.isSelected);
+      this.hearingOrder.value.forEach((formValue) => {
+        const hearing = this.selectedLinkedCases.find((linked) => linked.caseRef === formValue.caseReference);
+        const selectedHearing = hearing && hearing.caseHearings.find((selected) => selected.isSelected);
         if (selectedHearing) {
           if (this.form.value.hearingGroup === GroupLinkType.SAME_SLOT) {
             linkedHearingGroupMainModel.hearingsInGroup.push({

@@ -51,8 +51,8 @@ export class HearingActualAddEditSummaryComponent extends HearingActualSummaryBa
   public confirmActualHearingTimeAndParties(hearingDay: ActualHearingDayModel) {
     // Organisation parties do not have partyChannelSubType and can be ignored
     // as they do not attend the actual hearing
-    const individualPartyIds = this.individualParties.map(party => party.partyID);
-    const actualDayParties = hearingDay?.actualDayParties?.filter(party => individualPartyIds.includes(party.actualPartyId));
+    const individualPartyIds = this.individualParties.map((party) => party.partyID);
+    const actualDayParties = hearingDay?.actualDayParties?.filter((party) => individualPartyIds.includes(party.actualPartyId));
     const updatedActuals = {
       hearingDate: hearingDay.hearingDate,
       hearingStartTime: hearingDay.hearingStartTime,

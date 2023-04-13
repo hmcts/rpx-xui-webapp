@@ -62,6 +62,7 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
       }
     });
   }
+
   public navigationHandler(navEvent: SpecificAccessNavigationEvent): void {
     switch (navEvent) {
       case SpecificAccessNavigationEvent.CONTINUE:

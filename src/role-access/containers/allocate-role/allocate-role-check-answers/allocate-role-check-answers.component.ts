@@ -24,7 +24,6 @@ import * as fromFeature from '../../../store';
   templateUrl: './allocate-role-check-answers.component.html'
 })
 export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
-
   @Input() public navEvent: AllocateRoleNavigation;
 
   public answers: Answer[] = [];
@@ -40,7 +39,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.storeSubscription = this.store.pipe(select(fromFeature.getAllocateRoleState))
-      .subscribe(allocateRole => this.setAnswersFromAllocateRoleStateStore(allocateRole));
+      .subscribe((allocateRole) => this.setAnswersFromAllocateRoleStateStore(allocateRole));
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent) {

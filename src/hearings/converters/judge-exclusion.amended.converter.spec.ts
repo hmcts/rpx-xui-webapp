@@ -7,7 +7,6 @@ import { State } from '../store/reducers';
 import { JudgeExclusionAmendedConverter } from './judge-exclusion.amended.converter';
 
 describe('JudgeExclusionAmendedConverter', () => {
-
   let judgeExclusionAmendedConverter: JudgeExclusionAmendedConverter;
 
   beforeEach(() => {

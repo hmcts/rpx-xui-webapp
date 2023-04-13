@@ -132,7 +132,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   public combinePartiesWithIndOrOrg(partyDetails: PartyDetailsModel[]): PartyDetailsModel[] {
     const combinedPartyDetails: PartyDetailsModel[] = [];
-    partyDetails.forEach(partyDetail => {
+    partyDetails.forEach((partyDetail) => {
       const organisationDetails = partyDetail.organisationDetails;
       const party: PartyDetailsModel = {
         ...partyDetail,
@@ -150,15 +150,15 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     const allRAFs: PartyFlagsDisplayModel[] = this.reasonableAdjustmentFlags.reduce((previousValue, currentValue) =>
       [...previousValue, ...currentValue.partyFlags], []
     );
-    return allRAFs.filter(flag => flag.partyID === partyID).map(filterFlag => filterFlag.flagId);
+    return allRAFs.filter((flag) => flag.partyID === partyID).map((filterFlag) => filterFlag.flagId);
   }
 
   public initializeHearingCondition(): void {
     if (this.serviceHearingValuesModel && this.serviceHearingValuesModel.hearingLocations) {
-      const strLocationIds = this.serviceHearingValuesModel.hearingLocations.map(location => location.locationId).join(',');
+      const strLocationIds = this.serviceHearingValuesModel.hearingLocations.map((location) => location.locationId).join(',');
       this.locationsDataService.getLocationById(strLocationIds).toPromise()
-        .then(locations => {
-          this.strRegions = locations.map(location => location.region_id).join(',');
+        .then((locations) => {
+          this.strRegions = locations.map((location) => location.region_id).join(',');
         }).then(() => {
           const hearingCondition: HearingConditions = {
             isInit: false,

@@ -15,7 +15,6 @@ import { NocQAndAComponent } from '../noc-q-and-a/noc-q-and-a.component';
   styleUrls: ['noc-home.component.scss']
 })
 export class NocHomeComponent implements OnInit, OnDestroy {
-
   @ViewChild('nocCaseRef', { static: false, read: NocCaseRefComponent })
   public nocCaseRefComponent: NocCaseRefComponent;
 
@@ -43,7 +42,7 @@ export class NocHomeComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit() {
-    this.nocNavigationCurrentStateSub = this.store.pipe(select(fromFeature.currentNavigation)).subscribe(state => this.nocNavigationCurrentState = state);
+    this.nocNavigationCurrentStateSub = this.store.pipe(select(fromFeature.currentNavigation)).subscribe((state) => this.nocNavigationCurrentState = state);
   }
 
   public onNavEvent(event: NocNavigationEvent) {

@@ -13,11 +13,11 @@ chai.use(sinonChai);
 describe('postCreateTask', () => {
   let sandbox: sinon.SinonSandbox;
   let req: EnhancedRequest;
-  let next ;
+  let next;
   const data = {
     status: 204,
     statusText: 'No Content',
-    data:'',
+    data: '',
     duration: 2496
   };
 
@@ -66,7 +66,7 @@ describe('orchestrationSpecificAccessRequest', () => {
       },
       requestedRoles: [{
         attributes: {
-          caseId:101,
+          caseId: 101,
           jurisdiction: 'jurisdiction',
           caseType: 'caseType'
         }
@@ -83,10 +83,10 @@ describe('orchestrationSpecificAccessRequest', () => {
     next = sandbox.stub();
     const postSpy =sandbox.stub(http, 'post');
     postSpy.onCall(0).resolves({
-      data,status:201
+      data, status: 201
     });
     postSpy.onCall(1).resolves({
-      data,status:204
+      data, status: 204
     });
   });
 

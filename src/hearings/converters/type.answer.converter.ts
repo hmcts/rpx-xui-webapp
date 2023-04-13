@@ -8,7 +8,6 @@ import { CaseTypesUtils } from '../utils/case-types.utils';
 import { AnswerConverter } from './answer.converter';
 
 export class TypeAnswerConverter implements AnswerConverter {
-
   public caseTypeRefData: LovRefDataModel[];
 
   constructor(protected readonly route: ActivatedRoute) {
@@ -17,13 +16,13 @@ export class TypeAnswerConverter implements AnswerConverter {
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         const caseTypes: CaseCategoryDisplayModel[] = CaseTypesUtils.getCaseCategoryDisplayModels(this.caseTypeRefData, state.hearingValues.serviceHearingValuesModel.caseCategories);
         let result = '';
-        caseTypes.forEach(caseCategory => {
+        caseTypes.forEach((caseCategory) => {
           result += `${caseCategory.categoryDisplayValue} \n<ul>`;
           if (caseCategory.childNodes && caseCategory.childNodes.length) {
-            caseCategory.childNodes.forEach(child => {
+            caseCategory.childNodes.forEach((child) => {
               result += `<li>- ${child.categoryDisplayValue}</li>`;
             });
           }

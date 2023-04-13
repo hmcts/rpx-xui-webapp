@@ -108,7 +108,7 @@ export async function getTypesOfWork(req: EnhancedRequest, res: Response, next: 
     const response = await getTypesOfWorkByUserId(path, req);
     let typesOfWork = [];
     if (response && response.work_types) {
-      typesOfWork = response.work_types.map(work => ({ key: work.id, label: work.label }));
+      typesOfWork = response.work_types.map((work) => ({ key: work.id, label: work.label }));
     }
     res.status(200);
     res.send(typesOfWork);
@@ -146,7 +146,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
         searchRequest.sorting_parameters.splice(index, 1);
       }
     });
-    const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date');
+    const sortParam = searchRequest.sorting_parameters.find((sort) => sort.sort_by === 'created_date');
     if (sortParam) {
       sortParam.sort_by = 'dueDate';
     }
@@ -161,7 +161,6 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
       returnData = !!req.body.refined ?
         { tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records }
         : { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
-
     }
     res.send(returnData);
   } catch (error) {
@@ -350,8 +349,8 @@ export async function retrieveCaseWorkersForServices(req: EnhancedRequest): Prom
   const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
   const fullCaseworkerByServiceInfo = [];
   const userResponse = await handlePostCaseWorkersRefData(userUrl, userIdsByJurisdiction, req);
-  userResponse.forEach(userList => {
-    const jurisdictionData = data.find(caseworkerData => caseworkerData.jurisdiction === userList.jurisdiction);
+  userResponse.forEach((userList) => {
+    const jurisdictionData = data.find((caseworkerData) => caseworkerData.jurisdiction === userList.jurisdiction);
     const caseWorkerReferenceData = getCaseworkerDataForServices(userList.data, jurisdictionData);
     // note have to merge any new service caseworker data for full session as well as services specified in params
     fullCaseworkerByServiceInfo.push(caseWorkerReferenceData);
@@ -466,7 +465,7 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): P
       for (const caseType in data[jurisdiction]) {
         if (data[jurisdiction].hasOwnProperty(caseType)) {
           const queries = constructElasticSearchQuery(Array.from(data[jurisdiction][caseType]), 0, 10000);
-          queries.forEach(query => {
+          queries.forEach((query) => {
             casePromises.push(searchCasesById(caseType, query, req));
           });
         }
@@ -496,8 +495,8 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
 
     // get 'service' and 'location' filters from search_parameters on request
     const { search_parameters } = req.body.searchRequest;
-    const services = search_parameters.find(searchParam => searchParam.key === 'services');
-    const locations = search_parameters.find(searchParam => searchParam.key === 'locations');
+    const services = search_parameters.find((searchParam) => searchParam.key === 'services');
+    const locations = search_parameters.find((searchParam) => searchParam.key === 'locations');
 
     let serviceIds = [];
     let locationIds = [];
@@ -509,7 +508,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     }
 
     // filter role assignments by service id(s)
-    const filteredRoleAssignments = roleAssignments.filter(roleAssignment =>
+    const filteredRoleAssignments = roleAssignments.filter((roleAssignment) =>
       serviceIds.includes(roleAssignment.attributes.jurisdiction)
     );
 
@@ -556,7 +555,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
   try {
     // get case allocator locations
     const locations = [];
-    searchParameters.filter(param => param.key === 'location_id').forEach(location => {
+    searchParameters.filter((param) => param.key === 'location_id').forEach((location) => {
       if (location.values !== '') {
         locations.push(location.values);
       }

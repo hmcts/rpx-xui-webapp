@@ -19,7 +19,6 @@ import { getAssigneeName } from '../../../work-allocation/utils';
   styleUrls: ['./tasks-container.component.scss']
 })
 export class TasksContainerComponent implements OnInit {
-
   public caseDetails: CaseView;
   public tasks: Task[] = [];
   public tasksRefreshed: boolean = false;
@@ -45,16 +44,16 @@ export class TasksContainerComponent implements OnInit {
         first(),
         mergeMap((tasks) => {
           this.tasks = tasks;
-          this.warningIncluded = this.tasks.some(task => task.warnings);
+          this.warningIncluded = this.tasks.some((task) => task.warnings);
           if (tasks && tasks.length > 0) {
             return this.caseworkerService.getCaseworkersForServices([tasks[0].jurisdiction]);
           } else {
             return of([]);
           }
-        })).pipe(mergeMap(caseworkers => {
+        })).pipe(mergeMap((caseworkers) => {
         this.caseworkers = caseworkers;
         return this.tasks && this.tasks.length > 0 ? this.getAssignedNamesForTasks() : of(this.tasks);
-      })).subscribe(tasks => {
+      })).subscribe((tasks) => {
         this.tasks = tasks;
       });
     this.caseDetails = this.route.snapshot.data.case as CaseView;
@@ -63,32 +62,32 @@ export class TasksContainerComponent implements OnInit {
   public onTaskRefreshRequired(): void {
     const caseId = this.caseDetails.case_id;
     const tasksSearch$ = this.waCaseService.getTasksByCaseId(caseId);
-    tasksSearch$.pipe(first(), mergeMap(taskList => {
+    tasksSearch$.pipe(first(), mergeMap((taskList) => {
       this.tasks = taskList;
       return this.getAssignedNamesForTasks();
-    })).subscribe(tasks => {
+    })).subscribe((tasks) => {
       this.tasks = tasks;
       this.tasksRefreshed = true;
-      this.warningIncluded = this.tasks.some(task => task.warnings);
+      this.warningIncluded = this.tasks.some((task) => task.warnings);
     });
   }
 
   private getAssignedNamesForTasks(): Observable<Task[]> {
     const assignedJudicialUsers: string[] = [];
-    this.tasks.forEach(task => {
+    this.tasks.forEach((task) => {
       task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
       if (!task.assigneeName && task.assignee) {
         assignedJudicialUsers.push(task.assignee);
       }
     });
-    return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, [this.tasks[0].jurisdiction]).pipe(switchMap(judicialUserData => {
+    return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, [this.tasks[0].jurisdiction]).pipe(switchMap((judicialUserData) => {
       return this.getJudicialNamedTasks(judicialUserData);
     }));
   }
 
   public getJudicialNamedTasks(judicialUserData: CaseRoleDetails[]): Observable<Task[]> {
-    this.tasks.forEach(task => {
-      const judicialAssignedData = judicialUserData.find(judicialUser => judicialUser.sidam_id === task.assignee);
+    this.tasks.forEach((task) => {
+      const judicialAssignedData = judicialUserData.find((judicialUser) => judicialUser.sidam_id === task.assignee);
       task.assigneeName = judicialAssignedData ? judicialAssignedData.full_name : task.assigneeName;
     });
     return of(this.tasks);

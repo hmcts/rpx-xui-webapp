@@ -24,7 +24,7 @@ export abstract class RequestHearingPageFlow {
       (action: ACTION) => this.executeAction(action)
     );
     this.hearingStateSub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
-      hearingState => {
+      (hearingState) => {
         this.hearingListMainModel = hearingState.hearingList.hearingListMainModel;
         this.serviceHearingValuesModel = hearingState.hearingValues.serviceHearingValuesModel;
         this.hearingRequestMainModel = hearingState.hearingRequest.hearingRequestMainModel;
@@ -33,7 +33,7 @@ export abstract class RequestHearingPageFlow {
   }
 
   public fragmentFocus(): void {
-    this.route.fragment.subscribe(frag => {
+    this.route.fragment.subscribe((frag) => {
       const element = document.getElementById(frag);
       if (element) {
         element.scrollIntoView();

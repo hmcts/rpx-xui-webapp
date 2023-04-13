@@ -14,21 +14,21 @@ export class PartyChannelsAnswerConverter implements AnswerConverter {
   private static getPartyChannelValue(refData: LovRefDataModel[], party: PartyDetailsModel): string {
     let preferredHearingChannelRefData = null;
     if (party.individualDetails) {
-      preferredHearingChannelRefData = refData.find(ref => ref.key === party.individualDetails.preferredHearingChannel);
+      preferredHearingChannelRefData = refData.find((ref) => ref.key === party.individualDetails.preferredHearingChannel);
     }
     return preferredHearingChannelRefData && preferredHearingChannelRefData.value_en ? preferredHearingChannelRefData.value_en : '';
   }
 
   public transformAnswer(hearingState$: Observable<fromHearingStore.State>): Observable<string> {
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         const partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
         const partiesFromRequest = state.hearingRequest.hearingRequestMainModel.partyDetails;
         const partiesFromServiceValue = state.hearingValues.serviceHearingValuesModel.parties;
         let strReturn = '<ul>';
-        partiesFromRequest.filter(party => party.partyType === PartyType.IND)
+        partiesFromRequest.filter((party) => party.partyType === PartyType.IND)
           .forEach((party: PartyDetailsModel) => {
-            const foundPartyFromService = partiesFromServiceValue.find(pty => pty.partyID === party.partyID);
+            const foundPartyFromService = partiesFromServiceValue.find((pty) => pty.partyID === party.partyID);
             const name = this.getPartyName(party, foundPartyFromService);
             const value = PartyChannelsAnswerConverter.getPartyChannelValue(partyChannels, party);
             strReturn += `<li>${name} - ${value}</li>`;

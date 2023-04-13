@@ -207,18 +207,24 @@ export function getMockTaskServiceConfig(): TaskServiceConfig {
 
 export class MockRouter {
   public navigateByUrl = jasmine.createSpy();
-  public events = { subscribe(): Observable<RouterEvent> { return of(null); } };
+  public events = { subscribe(): Observable<RouterEvent> {
+    return of(null);
+  } };
+
   private pUrl: string = 'bob';
   public get url(): string {
     return this.pUrl;
   }
+
   public set url(value: string) {
     this.pUrl = value;
   }
+
   private readonly pNavigateCalls: any[] = [];
   public get navigateCalls(): any[] {
     return this.pNavigateCalls;
   }
+
   public navigate(commands: any[], extras?: NavigationExtras): Observable<boolean> {
     this.pNavigateCalls.push({ commands, extras });
     return of(true);

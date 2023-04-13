@@ -21,7 +21,7 @@ describe('Search filter selectors', () => {
   describe('getSearchState', () => {
     it('should return search state', () => {
       let result;
-      store.pipe(select(getSearchState)).subscribe(value => {
+      store.pipe(select(getSearchState)).subscribe((value) => {
         result = value;
       });
       expect(result).toEqual(initialSearchState);

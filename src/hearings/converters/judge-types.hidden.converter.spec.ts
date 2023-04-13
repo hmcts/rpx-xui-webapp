@@ -6,7 +6,6 @@ import { State } from '../store/reducers';
 import { JudgeTypesHiddenConverter } from './judge-types.hidden.converter';
 
 describe('JudgeTypesHiddenConverter', () => {
-
   let judgeTypesHiddenConverter: JudgeTypesHiddenConverter;
 
   beforeEach(() => {

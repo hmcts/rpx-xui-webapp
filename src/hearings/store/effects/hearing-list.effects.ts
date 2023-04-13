@@ -21,7 +21,7 @@ export class HearingListEffects {
   public loadHearingList$ = this.actions$.pipe(
       ofType(hearingListActions.LOAD_ALL_HEARINGS),
       map((action: hearingListActions.LoadAllHearings) => action.payload),
-      switchMap(payload => {
+      switchMap((payload) => {
         return this.hearingsService.getAllHearings(payload).pipe(
           map(
             (response) => new hearingListActions.LoadAllHearingsSuccess(response)),

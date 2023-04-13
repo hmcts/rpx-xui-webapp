@@ -99,7 +99,7 @@ export function toDenySARoleAssignmentBody(
 ) {
   const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
   let requestedrole;
-  switch ( allocateRoleData.roleCategory) {
+  switch (allocateRoleData.roleCategory) {
     case RoleCategory.JUDICIAL:
       requestedrole = 'specific-access-judiciary';
       break;

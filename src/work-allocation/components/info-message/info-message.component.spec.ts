@@ -14,7 +14,6 @@ class WrapperComponent {
 }
 
 describe('WorkAllocation', () => {
-
   describe('InfoMessageComponent', () => {
     let component: InfoMessageComponent;
     let wrapper: WrapperComponent;
@@ -39,7 +38,6 @@ describe('WorkAllocation', () => {
      * Hence we have to use .contain to check if the info message is part of the innerText.
      */
     it('should take in a message, and show the message to the User.', () => {
-
       component.type = InfoMessageType.SUCCESS;
       component.message = InfoMessage.TASK_NO_LONGER_AVAILABLE;
 
@@ -55,7 +53,6 @@ describe('WorkAllocation', () => {
      */
     it('should take in an info message type ie.\'success\', and the correct Information Message Visual should be shown' +
       'to the user.', () => {
-
       component.type = InfoMessageType.SUCCESS;
       component.message = InfoMessage.TASK_NO_LONGER_AVAILABLE;
 

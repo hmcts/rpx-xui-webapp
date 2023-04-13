@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { CaseFieldConfig } from '.';
 import { CaseService, SortOrder } from './../../enums';
 
@@ -6,4 +7,4 @@ export default interface CaseServiceConfig {
   defaultSortDirection: SortOrder;
   defaultSortFieldName: string;
   fields: CaseFieldConfig[];
-};
+}

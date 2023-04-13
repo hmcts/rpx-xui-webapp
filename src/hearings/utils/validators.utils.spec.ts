@@ -219,6 +219,5 @@ describe('ValidatorsUtils', () => {
     evaluatedForm.setParent(parties);
     const result = service.validateDuplicateEntries(1, 'Duplicate entry')(evaluatedForm);
     expect(result.hasOwnProperty('duplicateEntries')).toBeTruthy();
-
   }));
 });

@@ -82,7 +82,7 @@ export class SearchService {
       caseManagementRegionIds: null,
       // Ensure case references are sanitised, i.e. have been stripped of separators (spaces and '-' characters)
       caseReferences: searchParameters.caseReferences
-        ? searchParameters.caseReferences.map(caseRef => caseRef.replace(/[\s-]/g, ''))
+        ? searchParameters.caseReferences.map((caseRef) => caseRef.replace(/[\s-]/g, ''))
         : null,
       otherReferences: searchParameters.otherReferences,
       parties,

@@ -19,7 +19,7 @@ export class BookingGuard implements CanActivate {
 
   public hasAccess(userDetails: UserDetails): boolean {
     const { roleAssignmentInfo, userInfo } = userDetails;
-    return userInfo.roleCategory === RoleCategory.JUDICIAL && roleAssignmentInfo.some( roleAssignment => 'bookable' in roleAssignment && (roleAssignment.bookable === true || roleAssignment.bookable === 'true') );
+    return userInfo.roleCategory === RoleCategory.JUDICIAL && roleAssignmentInfo.some((roleAssignment) => 'bookable' in roleAssignment && (roleAssignment.bookable === true || roleAssignment.bookable === 'true'));
   }
 
   public canActivate(): Observable<boolean> {
@@ -33,7 +33,7 @@ export class BookingGuard implements CanActivate {
       // note: in order to enable booking url for guarded users just set return true for testing purposes
       // return true;
       return this.hasAccess(userDetails);
-    })).pipe(tap(hasAccesss => {
+    })).pipe(tap((hasAccesss) => {
       if (!hasAccesss) {
         this.router.navigate([BookingGuard.defaultUrl]);
       }

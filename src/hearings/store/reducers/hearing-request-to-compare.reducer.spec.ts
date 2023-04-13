@@ -4,9 +4,7 @@ import * as fromHearingRequestToCompareActions from '../actions/hearing-request-
 import * as fromHearingRequestToCompareReducer from './hearing-request-to-compare.reducer';
 
 describe('Hearing Request To Compare Reducer', () => {
-
   describe('Actions', () => {
-
     describe('Initialization action', () => {
       it('should initialize hearing request to compare', () => {
         const initialHearingRequestState: HearingRequestStateData = {

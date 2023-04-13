@@ -50,7 +50,7 @@ export class ExclusionEffects {
                 }
               });
             }),
-            catchError(error => {
+            catchError((error) => {
               return ExclusionEffects.handleError(error);
             })
           )

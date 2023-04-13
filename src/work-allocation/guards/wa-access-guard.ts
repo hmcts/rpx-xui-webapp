@@ -18,7 +18,7 @@ export class WorkAllocationAccessGuard implements CanActivate {
   }
 
   public canActivate(): Observable<boolean> {
-    return this.featureToggleService.getValueOnce<boolean>(AppConstants.FEATURE_NAMES.waAccess, false).pipe(tap(isfeatureEnabled => {
+    return this.featureToggleService.getValueOnce<boolean>(AppConstants.FEATURE_NAMES.waAccess, false).pipe(tap((isfeatureEnabled) => {
       WorkAllocationAccessGuard.navigateUrl(isfeatureEnabled, this.router, WorkAllocationAccessGuard.defaultUrl);
     }));
   }

@@ -107,14 +107,14 @@ describe('HearingChangeReasonsComponent', () => {
 
   it('should be true when calling isFormValid reasons selected', () => {
     (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach(reason => reason.value.selected = true);
+      .forEach((reason) => reason.value.selected = true);
     const formValid = component.isFormValid(ACTION.CONTINUE);
     expect(formValid).toEqual(true);
   });
 
   it('should be false when calling isFormValid with no reasons selected', () => {
     (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach(reason => reason.value.selected = false);
+      .forEach((reason) => reason.value.selected = false);
     const formValid = component.isFormValid(ACTION.VIEW_EDIT_SUBMIT);
     expect(formValid).toEqual(false);
   });
@@ -132,7 +132,7 @@ describe('HearingChangeReasonsComponent', () => {
 
   it('should prepareHearingRequestData', () => {
     (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach(reason => reason.value.selected = true);
+      .forEach((reason) => reason.value.selected = true);
     component.prepareHearingRequestData();
     expect(component.hearingRequestMainModel.hearingDetails.amendReasonCodes).toEqual(['reasonOne', 'reasonTwo', 'reasonThree']);
   });
@@ -145,7 +145,7 @@ describe('HearingChangeReasonsComponent', () => {
 
   it('should execute Action', () => {
     (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach(reason => reason.value.selected = true);
+      .forEach((reason) => reason.value.selected = true);
     component.executeAction(ACTION.VIEW_EDIT_SUBMIT);
     expect(component.isFormValid).toHaveBeenCalled();
     expect(component.errors.length).toBe(0);

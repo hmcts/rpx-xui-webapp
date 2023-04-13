@@ -32,6 +32,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     this.validatorsUtils.mandatory('Enter hearing start time'),
     this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
   ];
+
   private readonly defaultHearingEndTimeValidators = [
     this.validatorsUtils.mandatory('Enter hearing finish time'),
     this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
@@ -284,8 +285,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     if (!!endTimeField.value || (recordPauseValue === RadioOptionType.YES)) {
       startTimeField.setValidators(this.defaultHearingStartTimeValidators);
       endTimeField.setValidators(this.defaultHearingEndTimeValidators);
-    }
-    else {
+    } else {
       startTimeField.setValidators([
         this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
       ]);

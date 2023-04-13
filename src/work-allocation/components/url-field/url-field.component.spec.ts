@@ -16,7 +16,6 @@ class WrapperComponent {
 }
 
 describe('WorkAllocation', () => {
-
   describe('UrlFieldComponent', () => {
     let component: UrlFieldComponent;
     let wrapper: WrapperComponent;

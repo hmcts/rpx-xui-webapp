@@ -22,7 +22,6 @@ import * as fromFeature from '../../store';
   styleUrls: ['case-home.component.scss']
 })
 export class CaseHomeComponent implements OnInit, OnDestroy {
-
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';
   public static readonly DRAFT_DELETED_MSG = 'The draft has been successfully deleted';
 
@@ -47,7 +46,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
    * have yet to be logged in. ie. Viewing an accessibility page.
    */
   public ngOnInit(): void {
-    this.navigationSubscription = this.navigationNotifier.navigation.subscribe(navigation => {
+    this.navigationSubscription = this.navigationNotifier.navigation.subscribe((navigation) => {
       if (navigation.action) {
         this.actionDispatcher(this.paramHandler(navigation));
       }
@@ -58,7 +57,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       this.commonLibLoadingService.isLoading
     ]);
 
-    this.showSpinner$ = libServices$.pipe(delay(0), map(states => states.reduce((c, s) => c || s, false)));
+    this.showSpinner$ = libServices$.pipe(delay(0), map((states) => states.reduce((c, s) => c || s, false)));
   }
 
   public ngOnDestroy(): void {

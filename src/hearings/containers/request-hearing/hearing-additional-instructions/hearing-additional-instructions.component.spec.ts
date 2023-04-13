@@ -45,26 +45,26 @@ describe('HearingAdditionalInstructionsComponent', () => {
 
   it('should check form validity', () => {
     spyOn<HearingsService>(hearingsService, 'navigateAction$' as never);
-    component.instructionsForm.controls['instructions'].setValue('instructions');
+    component.instructionsForm.controls.instructions.setValue('instructions');
     component.executeAction(ACTION.CONTINUE);
     expect(component.isFormValid()).toBeTruthy();
   });
 
   it('should check AutoListFlag', () => {
     component.initForm();
-    component.instructionsForm.controls['instructions'].setValue(null);
+    component.instructionsForm.controls.instructions.setValue(null);
     component.serviceHearingValuesModel.autoListFlag = true;
     expect(component.getAutoListFlag()).toBeTruthy();
-    component.instructionsForm.controls['instructions'].setValue('instructions');
+    component.instructionsForm.controls.instructions.setValue('instructions');
     expect(component.getAutoListFlag()).toBeFalsy();
   });
 
   it('should getListingAutoChangeReasonCode', () => {
     component.initForm();
-    component.instructionsForm.controls['instructions'].setValue(null);
+    component.instructionsForm.controls.instructions.setValue(null);
     component.serviceHearingValuesModel.autoListFlag = true;
     expect(component.getListingAutoChangeReasonCode()).toBeNull();
-    component.instructionsForm.controls['instructions'].setValue('instructions');
+    component.instructionsForm.controls.instructions.setValue('instructions');
     expect(component.getListingAutoChangeReasonCode()).toBe('user-added-comments');
   });
 

@@ -17,7 +17,6 @@ import { handleError } from '../../utils';
   templateUrl: './delete-exclusion.component.html'
 })
 export class DeleteExclusionComponent implements OnInit {
-
   public caseworkers$: Observable<Caseworker[]>;
   public exclusionNavigationEvent = ExclusionNavigationEvent;
   public answers: Answer[] = [];
@@ -38,19 +37,18 @@ export class DeleteExclusionComponent implements OnInit {
               private readonly caseworkerDataService: CaseworkerDataService) {}
 
   public ngOnInit(): void {
-
     const paramMap$ = this.route.queryParamMap;
-    paramMap$.pipe(mergeMap(queryMap => {
+    paramMap$.pipe(mergeMap((queryMap) => {
       return this.getExclusionFromQuery(queryMap);
-    })).subscribe(exclusions => {
+    })).subscribe((exclusions) => {
       this.findAndSetExclusion(exclusions);
     });
   }
 
   public findAndSetExclusion(exclusions: RoleExclusion[]): void {
-    this.roleExclusion = exclusions.find(excl => excl.id === this.exclusionId);
+    this.roleExclusion = exclusions.find((excl) => excl.id === this.exclusionId);
     if (this.roleExclusion.userType.toUpperCase() === RoleCategory.JUDICIAL) {
-      this.allocateService.getCaseRolesUserDetails([this.roleExclusion.actorId], [this.jurisdiction]).subscribe(userDetails => {
+      this.allocateService.getCaseRolesUserDetails([this.roleExclusion.actorId], [this.jurisdiction]).subscribe((userDetails) => {
         if (userDetails[0]) {
           this.roleExclusion.name = userDetails[0].known_as;
           this.populateAnswers(this.roleExclusion);
@@ -79,8 +77,8 @@ export class DeleteExclusionComponent implements OnInit {
 
   private getNamesIfNeeded(): void {
     if (!this.roleExclusion.name) {
-      this.caseworkerDataService.getCaseworkersForServices([this.jurisdiction]).pipe(first()).subscribe(caseworkers => {
-        const caseworker = caseworkers.find(givenCaseworker => givenCaseworker.idamId === this.roleExclusion.actorId);
+      this.caseworkerDataService.getCaseworkersForServices([this.jurisdiction]).pipe(first()).subscribe((caseworkers) => {
+        const caseworker = caseworkers.find((givenCaseworker) => givenCaseworker.idamId === this.roleExclusion.actorId);
         this.roleExclusion.name = `${caseworker.firstName}-${caseworker.lastName}`;
         this.answers = [];
         this.populateAnswers(this.roleExclusion);
@@ -100,7 +98,7 @@ export class DeleteExclusionComponent implements OnInit {
               showMessage: true,
               messageText: ExclusionMessageText.Delete }
           });
-        }, error => {
+        }, (error) => {
           return handleError(error, this.router, goToCaseUrl);
         });
         break;

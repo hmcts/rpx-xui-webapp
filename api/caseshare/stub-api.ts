@@ -23,7 +23,7 @@ export function getUsers(req: EnhancedRequest, res: Response) {
     return res.send(org.users);
   } else {
     const users = org.users;
-    const filterUser = users.filter(aUser => aUser.idamId.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
+    const filterUser = users.filter((aUser) => aUser.idamId.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
         aUser.firstName.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
         aUser.lastName.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
         aUser.email.toLowerCase().indexOf(searchText.toLowerCase()) > -1);
@@ -68,5 +68,5 @@ export function assignCases(req: EnhancedRequest, res: Response) {
 }
 
 function getOrgById(orgId: string) {
-  return orgs.find(c => c.orgId === orgId);
+  return orgs.find((c) => c.orgId === orgId);
 }

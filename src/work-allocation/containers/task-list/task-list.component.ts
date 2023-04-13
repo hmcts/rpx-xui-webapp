@@ -68,7 +68,7 @@ export class TaskListComponent implements OnChanges {
       const hashValue = url.substring(url.indexOf('#') + 1);
       if (hashValue && hashValue.indexOf('manage_') === 0) {
         const selectedTaskId = hashValue.replace('manage_', '');
-        return this.tasks.find(task => task.id === selectedTaskId) || null;
+        return this.tasks.find((task) => task.id === selectedTaskId) || null;
       }
     }
     return null;
@@ -94,7 +94,7 @@ export class TaskListComponent implements OnChanges {
    *
    */
   public getDisplayedColumn(fieldConfig: FieldConfig[]): string[] {
-    const fields = fieldConfig.map(field => field.name);
+    const fields = fieldConfig.map((field) => field.name);
     return this.addActionsColumn ? this.addManageColumn(fields) : fields;
   }
 
@@ -123,7 +123,6 @@ export class TaskListComponent implements OnChanges {
    * Trigger an event to the parent when the User clicks on a Manage action.
    */
   public onActionHandler(task: Task, action: TaskAction): void {
-
     const invokedTaskAction: InvokedTaskAction = {
       task,
       action

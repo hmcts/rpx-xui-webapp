@@ -6,7 +6,7 @@ import { AnswerConverter } from './answer.converter';
 export class NeedWelshAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
-      map(state => state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingInWelshFlag ? 'Yes' : 'No')
+      map((state) => state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingInWelshFlag ? 'Yes' : 'No')
     );
   }
 }

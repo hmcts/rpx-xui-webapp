@@ -9,7 +9,6 @@ import * as fromHearingStore from '../../store';
   styleUrls: ['./error-page.component.scss']
 })
 export class ErrorPageComponent implements OnInit, OnDestroy {
-
   public caseId: string;
   public sub: Subscription;
 
@@ -17,7 +16,7 @@ export class ErrorPageComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.sub = this.hearingStore.select(fromHearingStore.getHearingsFeatureState).subscribe(
-      state => {
+      (state) => {
         this.caseId = state.hearingList.hearingListMainModel.caseRef;
       }
     );

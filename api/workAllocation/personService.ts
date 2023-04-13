@@ -24,9 +24,9 @@ export async function postFindPersonSearch(req: EnhancedRequest, res: Response) 
   const serviceCodes: string[] = [];
   const serviceRefDataMapping = getServiceRefDataMappingList();
   // add the service references in order to search by service
-  serviceRefDataMapping.forEach(serviceRef => {
+  serviceRefDataMapping.forEach((serviceRef) => {
     if (services.includes(serviceRef.service)) {
-      serviceRef.serviceCodes.forEach(serviceRefserviceCodes => {
+      serviceRef.serviceCodes.forEach((serviceRefserviceCodes) => {
         serviceCodes.push(serviceRefserviceCodes);
       });
     }
@@ -52,7 +52,7 @@ export async function postFindPersonSearch(req: EnhancedRequest, res: Response) 
       return;
     }
   } else {
-    searchResult = PERSON.filter(person => applySearchFilter(person, domain, searchString));
+    searchResult = PERSON.filter((person) => applySearchFilter(person, domain, searchString));
   }
 
   res.status(200);

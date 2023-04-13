@@ -60,9 +60,9 @@ describe('access management service, delete exclusion', () => {
           'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
           'content-type': 'application/json'
         },
-        body:{
-          roleExclusion:{
-            id:exclusionId
+        body: {
+          roleExclusion: {
+            id: exclusionId
           }
         }
       });

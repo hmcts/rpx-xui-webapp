@@ -50,7 +50,7 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
 
   public generateLinkedCasesWithReasonDescription(): void {
     this.hearingLinksSub = this.hearingsService.loadCaseLinkingReasonCodes().pipe(
-      switchMap(reasons => {
+      switchMap((reasons) => {
         this.caseLinkingReasons = reasons;
         return this.hearingStore.pipe(select(fromHearingStore.getHearingLinks));
       })
@@ -58,9 +58,9 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
       next: (hearingLinks: HearingLinksStateData) => {
         if (hearingLinks.serviceLinkedCases) {
           this.linkedCases = [];
-          hearingLinks.serviceLinkedCases.forEach(linkedCase => {
-            const caseLinkingReasons = this.caseLinkingReasons.list_of_values.filter(reason => linkedCase.reasonsForLink.some(reasonCode => reason.key === reasonCode));
-            const caseLinkingReasonsValues = caseLinkingReasons.map(x => x.value_en);
+          hearingLinks.serviceLinkedCases.forEach((linkedCase) => {
+            const caseLinkingReasons = this.caseLinkingReasons.list_of_values.filter((reason) => linkedCase.reasonsForLink.some((reasonCode) => reason.key === reasonCode));
+            const caseLinkingReasonsValues = caseLinkingReasons.map((x) => x.value_en);
             if (caseLinkingReasonsValues && caseLinkingReasonsValues.length > 0) {
               this.linkedCases.push({ caseName: linkedCase.caseName, caseReference: linkedCase.caseReference, reasonsForLink: caseLinkingReasonsValues });
             } else {
@@ -98,7 +98,7 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
 
   public isFormValid(): boolean {
     this.validationErrors = [];
-    if (!this.hearingLinkForm.controls['hearingLink'].valid) {
+    if (!this.hearingLinkForm.controls.hearingLink.valid) {
       this.validationErrors.push({
         id: 'yes',
         message: HearingLinkMessages.SELECT_HEARING_LINK_OPTION

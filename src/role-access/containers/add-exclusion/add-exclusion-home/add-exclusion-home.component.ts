@@ -69,7 +69,7 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.exclusionStateDataSub = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(
-      exclusionStateData => {
+      (exclusionStateData) => {
         this.navigationCurrentState = exclusionStateData.state;
         this.exclusionOption = exclusionStateData.exclusionOption;
       }

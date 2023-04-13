@@ -31,7 +31,7 @@ describe('Task Role Access Resolver', () => {
     };
 
     const taskAndRole$ = taskRoleAccessResolver.resolve(route);
-    taskAndRole$.subscribe(taskAndRole => {
+    taskAndRole$.subscribe((taskAndRole) => {
       expect(taskAndRole.task.task).toEqual(getMockTasks()[0]);
       expect(taskAndRole.role[0]).toEqual(mockCaseRole);
       expect(mockService.getTask).toHaveBeenCalledWith('somevalue');

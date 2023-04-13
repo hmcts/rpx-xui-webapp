@@ -112,7 +112,7 @@ describe('SpecificAccessReviewComponent', () => {
       component.reviewOptionControl.setValue(AccessReason.APPROVE_REQUEST);
       component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
       expect(mockStore.dispatch).toHaveBeenCalledWith(
-        new DecideSpecificAccessAndGo( { accessReason: AccessReason.APPROVE_REQUEST, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_DURATION } ));
+        new DecideSpecificAccessAndGo({ accessReason: AccessReason.APPROVE_REQUEST, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_DURATION }));
     });
 
     it('should correctly navigate on click of continue button for reject request', () => {
@@ -125,7 +125,7 @@ describe('SpecificAccessReviewComponent', () => {
       component.reviewOptionControl.setValue(AccessReason.REQUEST_MORE_INFORMATION);
       component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
       expect(mockStore.dispatch).toHaveBeenCalledWith(
-        new DecideSpecificAccessAndGo( { accessReason: AccessReason.REQUEST_MORE_INFORMATION, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_INFORMATION } ));
+        new DecideSpecificAccessAndGo({ accessReason: AccessReason.REQUEST_MORE_INFORMATION, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_INFORMATION }));
     });
   });
 

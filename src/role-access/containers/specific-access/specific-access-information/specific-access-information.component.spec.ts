@@ -60,7 +60,7 @@ describe('DescribeExclusionComponent', () => {
     };
 
     it('should correctly navigate on click of back link in the navigation handler', () => {
-      component.specificAccessBody = specificAccessState ;
+      component.specificAccessBody = specificAccessState;
       component.infoCtrl = new FormControl('');
       mockStore.pipe.and.returnValue(of(specificAccessState));
       component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);

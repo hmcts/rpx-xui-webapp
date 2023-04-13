@@ -5,7 +5,6 @@ import { State } from '../store/reducers';
 import { DateRequestSubmittedAnswerConverter } from './date-request-submitted.answer.converter';
 
 describe('DateRequestSubmittedAnswerConverter', () => {
-
   let dateRequestSubmittedAnswerConverter: DateRequestSubmittedAnswerConverter;
 
   beforeEach(() => {

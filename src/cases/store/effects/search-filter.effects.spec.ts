@@ -33,7 +33,6 @@ describe('Pending Organisation Effects', () => {
 
   describe('applySearchFilters$', () => {
     it('should return a collection', () => {
-
       SearchFilterServiceMock.search.and.returnValue(of(payload));
       const action = new ApplySearchFilter({});
       const completion = new ApplySearchFilterSuccess(payload);
@@ -45,7 +44,6 @@ describe('Pending Organisation Effects', () => {
 
   describe('applySearchFilters$ error', () => {
     it('should return a ApplySearchFilterFail', () => {
-
       SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));
       const action = new ApplySearchFilter({});
       const completion = new ApplySearchFilterFail(new Error());
@@ -57,7 +55,6 @@ describe('Pending Organisation Effects', () => {
 
   describe('applySearchFiltersForES$', () => {
     it('should return a collection', () => {
-
       SearchFilterServiceMock.search.and.returnValue(of(payload));
       const action = new ApplySearchFilterForES({});
       const completion = new ApplySearchFilterSuccess(payload);

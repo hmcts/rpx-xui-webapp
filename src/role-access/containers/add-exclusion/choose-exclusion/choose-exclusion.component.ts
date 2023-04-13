@@ -18,7 +18,6 @@ import * as fromFeature from '../../../store';
 })
 
 export class ChooseExclusionComponent implements OnInit, OnDestroy {
-
   public ERROR_MESSAGE = ERROR_MESSAGE;
   @Input() public navEvent: ExclusionNavigation;
   public title = RoleAllocationTitleText.ExclusionAllocate;
@@ -38,10 +37,12 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
     optionId: EnumUtil(ExcludeOption).getKeyOrDefault(ExcludeOption.EXCLUDE_ME),
     optionValue: ExcludeOption.EXCLUDE_ME
   };
+
   public excludeOther: OptionsModel = {
     optionId: EnumUtil(ExcludeOption).getKeyOrDefault(ExcludeOption.EXCLUDE_ANOTHER_PERSON),
     optionValue: ExcludeOption.EXCLUDE_ANOTHER_PERSON
   };
+
   public optionsList: OptionsModel[] = [this.excludeMe, this.excludeOther];
 
   constructor(private readonly store: Store<fromFeature.State>) {}
@@ -63,7 +64,7 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
     // with User's Jurisdiction and LocationId
     const caseJurisdictionAndLocation = userDetails.roleAssignmentInfo
     &&
-    userDetails.roleAssignmentInfo.some(roleAssignment => roleAssignment.isCaseAllocator && roleAssignment.jurisdiction === jurisdiction);
+    userDetails.roleAssignmentInfo.some((roleAssignment) => roleAssignment.isCaseAllocator && roleAssignment.jurisdiction === jurisdiction);
     this.optionsList = caseJurisdictionAndLocation ? [this.excludeMe, this.excludeOther] : [this.excludeMe];
   }
 

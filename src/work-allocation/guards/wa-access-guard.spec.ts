@@ -17,13 +17,13 @@ describe('WorkAllocationAccessGuard', () => {
   it('can activate with feature toggle on', () => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
     const canActivate = guard.canActivate();
-    canActivate.subscribe(activate => expect(activate).toBeTruthy());
+    canActivate.subscribe((activate) => expect(activate).toBeTruthy());
   });
 
   it('cannot activate with feature toggle off', () => {
     featureToggleMock.getValueOnce.and.returnValue(of(false));
     const canActivate = guard.canActivate();
-    canActivate.subscribe(activate => expect(activate).toBeFalsy());
+    canActivate.subscribe((activate) => expect(activate).toBeFalsy());
   });
 
   it('navigateUrl false', () => {

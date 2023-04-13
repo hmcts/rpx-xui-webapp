@@ -93,7 +93,7 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
       select(fromFeature.getSpecificAccessState),
     )
       .subscribe(
-        specificAccessReviewStateData => {
+        (specificAccessReviewStateData) => {
           this.navigationCurrentState = specificAccessReviewStateData.state;
           this.caseId = specificAccessReviewStateData.caseId;
         }
@@ -117,7 +117,7 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
     const selectedDurationPeriod = this.specificAccessDurationComponent ? this.specificAccessDurationComponent.getRawData() : null;
     const moreInformation = this.specificAccessInformationComponent ? this.specificAccessInformationComponent.getRawData() : null;
 
-    if ( this.specificAccessDurationComponent) {
+    if (this.specificAccessDurationComponent) {
       this.store.dispatch(new fromFeature.SetSpecificAccessFormData(
         {
           specificAccessDurationForm: { selectedOption: selectedDurationOption, selectedDuration: selectedDurationPeriod }
@@ -125,7 +125,7 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
       ));
     }
 
-    if ( this.specificAccessInformationComponent) {
+    if (this.specificAccessInformationComponent) {
       this.store.dispatch(new fromFeature.SetSpecificAccessInfoFormData(
         {
           InfoText: moreInformation

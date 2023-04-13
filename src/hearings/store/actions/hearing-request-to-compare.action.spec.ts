@@ -1,7 +1,6 @@
 import * as fromHearingRequestToCompareAction from './hearing-request-to-compare.action';
 
 describe('Hearing Request To Compare Actions', () => {
-
   describe('fromHearingRequestToCompareAction', () => {
     it('should initialize hearing request action', () => {
       const payload = {

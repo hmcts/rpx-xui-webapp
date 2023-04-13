@@ -39,7 +39,7 @@ export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.exclusionStateDataSub = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(
-      exclusionStateData => {
+      (exclusionStateData) => {
         this.personRole = exclusionStateData.personRole;
       }
     );
@@ -49,7 +49,7 @@ export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
 
     this.roles$ = this.roleExclusionsService.getRolesCategory();
     this.roles$.subscribe((roles) => {
-      this.optionsList = roles.map(role => {
+      this.optionsList = roles.map((role) => {
         return {
           optionId: role.roleId, optionValue: role.roleName
         } as OptionsModel;

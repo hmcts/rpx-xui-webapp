@@ -12,7 +12,7 @@ export class CourtLocationAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
     const courtLocations: LocationModel[] = this.route.snapshot.data.courtLocation || [];
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;
         let hearingDaySchedule = hearingResponse && hearingResponse.hearingDaySchedule;
         if (!hearingDaySchedule) {
@@ -20,7 +20,7 @@ export class CourtLocationAnswerConverter implements AnswerConverter {
         }
         hearingDaySchedule = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
         const hearingVenueId = hearingDaySchedule[index || 0].hearingVenueId;
-        const courtLocationInfo = courtLocations.find(courtLocation => courtLocation.epimms_id === hearingVenueId);
+        const courtLocationInfo = courtLocations.find((courtLocation) => courtLocation.epimms_id === hearingVenueId);
         return courtLocationInfo ? courtLocationInfo.site_name : '';
       })
     );

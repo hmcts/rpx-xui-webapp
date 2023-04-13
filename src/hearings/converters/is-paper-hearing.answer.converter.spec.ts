@@ -5,7 +5,6 @@ import { State } from '../store/reducers';
 import { IsPaperHearingAnswerConverter } from './is-paper-hearing.answer.converter';
 
 describe('IsPaperHearingAnswerConverter', () => {
-
   let isPaperHearingAnswerConverter: IsPaperHearingAnswerConverter;
 
   beforeEach(() => {

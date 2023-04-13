@@ -21,7 +21,7 @@ export class LocationDataService {
       return of(locations as Location[]);
     }
     return this.http.get<Location[]>(`${LocationDataService.locationUrl}`).pipe(
-      tap(allLocations => this.sessionStorageService.setItem(LocationDataService.allLocationsKey, JSON.stringify(allLocations)))
+      tap((allLocations) => this.sessionStorageService.setItem(LocationDataService.allLocationsKey, JSON.stringify(allLocations)))
     );
   }
 
@@ -31,7 +31,7 @@ export class LocationDataService {
       return of(locationRegions as LocationsByRegion[]);
     }
     return this.http.post<LocationsByRegion[]>(`${LocationDataService.regionLocationUrl}`, { serviceIds }).pipe(
-      tap(regionLocations => this.sessionStorageService.setItem(LocationDataService.regionLocationsKey, JSON.stringify(regionLocations)))
+      tap((regionLocations) => this.sessionStorageService.setItem(LocationDataService.regionLocationsKey, JSON.stringify(regionLocations)))
     );
   }
 
@@ -47,6 +47,6 @@ export class LocationDataService {
     };
     // note: may be better way of searching by epimms_id in future - previously getting location by epimms id was mocked
     return this.http.get<LocationByEPIMMSModel[]>(`${LocationDataService.fullLocationUrl}`, options).pipe(map(
-      allLocations => allLocations.filter(location => locationIds.includes(location.epimms_id))));
+      (allLocations) => allLocations.filter((location) => locationIds.includes(location.epimms_id))));
   }
 }

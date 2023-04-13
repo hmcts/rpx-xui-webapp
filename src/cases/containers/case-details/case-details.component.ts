@@ -14,7 +14,6 @@ import * as fromCaseCreate from '../../store';
   templateUrl: './case-details.component.html'
 })
 export class CaseDetailsComponent implements OnDestroy, OnInit {
-
   public caseId: string;
   public $caseIdSubscription: Subscription;
 
@@ -22,7 +21,7 @@ export class CaseDetailsComponent implements OnDestroy, OnInit {
 
   public ngOnInit(): void {
     this.$caseIdSubscription = this.store.pipe(select(fromCaseCreate.getCaseId))
-      .subscribe(caseId => this.caseId = caseId);
+      .subscribe((caseId) => this.caseId = caseId);
   }
 
   public ngOnDestroy(): void {

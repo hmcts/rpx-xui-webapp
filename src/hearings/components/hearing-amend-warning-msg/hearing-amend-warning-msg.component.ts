@@ -11,7 +11,6 @@ import { HearingsUtils } from '../../utils/hearings.utils';
   templateUrl: './hearing-amend-warning-msg.component.html'
 })
 export class HearingAmendWarningMsgComponent implements OnInit, OnDestroy {
-
   @Input() public warningMsg: string = '';
   public hearingConditionsSub: Subscription;
   public isViewEditMode: boolean = false;
@@ -19,7 +18,7 @@ export class HearingAmendWarningMsgComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.hearingConditionsSub = this.hearingStore.pipe(select(fromHearingStore.getHearingConditions)).subscribe(
-      hearingConditions => {
+      (hearingConditions) => {
         this.isViewEditMode = HearingsUtils.hasPropertyAndValue(
           hearingConditions, KEY_MODE, Mode.VIEW_EDIT);
       });

@@ -19,7 +19,6 @@ export function setHeaders(req: express.Request, contentType?: string) {
   const headers: any = {};
 
   if (req.headers) {
-
     if (contentType) {
       headers['content-type'] = contentType;
     } else if (req.headers['content-type']) {

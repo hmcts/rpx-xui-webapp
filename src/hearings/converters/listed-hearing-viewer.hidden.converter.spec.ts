@@ -22,7 +22,6 @@ const userDetails = {
 };
 
 describe('ListedHearingViewerHiddenConverter', () => {
-
   let listedHiddenConverter: ListedHearingViewerHiddenConverter;
   const storeMock = jasmine.createSpyObj('Store', [
     'dispatch', 'pipe'

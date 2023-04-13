@@ -9,7 +9,6 @@ import * as fromHearingStore from '../../store';
   templateUrl: './hearing-parties-title.component.html'
 })
 export class HearingPartiesTitleComponent implements OnInit, OnDestroy {
-
   public caseTitle: string;
   public serviceValueSub: Subscription;
 

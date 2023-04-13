@@ -6,7 +6,6 @@ import { AdditionalSecurityAnswerConverter } from './additional-security.answer.
 import { AnswerConverter } from './answer.converter';
 
 describe('AdditionalSecurityAnswerConverter', () => {
-
   let converter: AnswerConverter;
 
   beforeEach(() => {

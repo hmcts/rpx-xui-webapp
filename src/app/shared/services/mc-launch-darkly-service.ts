@@ -11,7 +11,6 @@ export const MCLAUNCHDARKLYKEY = new InjectionToken<string>('LAUNCHDARKLYKEY');
   providedIn: 'root'
 })
 export class McLaunchDarklyService extends RootInjectorGuard implements FeatureToggleService {
-
   private readonly client: LDClient.LDClient;
   private readonly ready = new BehaviorSubject<boolean>(false);
   private readonly features: Record<string, BehaviorSubject<any>> = {};
@@ -19,7 +18,9 @@ export class McLaunchDarklyService extends RootInjectorGuard implements FeatureT
   constructor(@Inject(MCLAUNCHDARKLYKEY) key: string) {
     super(FeatureToggleService);
     this.client = LDClient.initialize(key, { anonymous: true }, {});
-    this.client.on('ready', () => { this.ready.next(true); });
+    this.client.on('ready', () => {
+      this.ready.next(true);
+    });
   }
 
   public initialize(user: FeatureUser = { anonymous: true }): void {
@@ -39,9 +40,9 @@ export class McLaunchDarklyService extends RootInjectorGuard implements FeatureT
     if (!this.features.hasOwnProperty(feature)) {
       this.features[feature] = new BehaviorSubject<R>(defaultValue);
       this.ready.pipe(
-        filter(ready => ready),
+        filter((ready) => ready),
         map(() => this.client.variation(feature, defaultValue))
-      ).subscribe(value => {
+      ).subscribe((value) => {
         this.features[feature].next(value);
         this.client.on(`change:${feature}`, (val: R) => {
           this.features[feature].next(val);
@@ -64,7 +65,7 @@ export class McLaunchDarklyService extends RootInjectorGuard implements FeatureT
      */
   public getValueOnce<R>(feature: string, defaultValue: R): Observable<R> {
     return this.ready.pipe(
-      filter(ready => ready),
+      filter((ready) => ready),
       map(() => this.client.variation(feature, defaultValue))
     );
   }

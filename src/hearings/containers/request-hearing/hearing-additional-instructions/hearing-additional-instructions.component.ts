@@ -12,7 +12,6 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   templateUrl: './hearing-additional-instructions.component.html'
 })
 export class HearingAdditionalInstructionsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
-
   public instructionsForm: FormGroup;
   public instructionLength: number = HearingInstructionsEnum.InstructionLength;
 

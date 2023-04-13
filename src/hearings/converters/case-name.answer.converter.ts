@@ -6,7 +6,7 @@ import { AnswerConverter } from './answer.converter';
 export class CaseNameAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
-      map(state => state.hearingRequest.hearingRequestMainModel.caseDetails.hmctsInternalCaseName)
+      map((state) => state.hearingRequest.hearingRequestMainModel.caseDetails.hmctsInternalCaseName)
     );
   }
 }

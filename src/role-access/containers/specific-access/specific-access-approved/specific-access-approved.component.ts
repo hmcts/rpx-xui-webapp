@@ -27,6 +27,7 @@ export class SpecificAccessApprovedComponent {
         throw new Error('Invalid case');
     }
   }
+
   public dispatchEvent(navEvent: SpecificAccessNavigationEvent) {
     switch (navEvent) {
       case SpecificAccessNavigationEvent.BACK:

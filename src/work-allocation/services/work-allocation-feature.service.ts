@@ -10,7 +10,7 @@ export class WorkAllocationFeatureService {
   constructor(private readonly featureToggleService: FeatureToggleService) {}
 
   private checkForServiceConfig(serviceConfigs: ServiceConfig[], service: string, caseType: string): string {
-    serviceConfigs.forEach(serviceConfig => {
+    serviceConfigs.forEach((serviceConfig) => {
       if (serviceConfig.serviceName === service && serviceConfig.caseTypes.includes(caseType)) {
         return serviceConfig.releaseVersion;
       }
@@ -22,7 +22,8 @@ export class WorkAllocationFeatureService {
     return this.featureToggleService.getValue<WAFeatureConfig>(AppConstants.FEATURE_NAMES.waServiceConfig, null).pipe(map(
       (waServiceConfig) => {
         return waServiceConfig && waServiceConfig.configurations
-          ? this.checkForServiceConfig(waServiceConfig.configurations, service, caseType) : null; }
+          ? this.checkForServiceConfig(waServiceConfig.configurations, service, caseType) : null;
+      }
     )
     );
   }

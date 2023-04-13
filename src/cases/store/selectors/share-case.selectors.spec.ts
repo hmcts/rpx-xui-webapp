@@ -6,7 +6,7 @@ import { getShareCaseListState, reducers, State } from '../index';
 describe('Share case selectors', () => {
   let store: Store<State>;
 
-  beforeEach(waitForAsync( () => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
@@ -33,7 +33,7 @@ describe('Share case selectors', () => {
       }];
       caseListComponent.shareCaseSubmit();
       let result = [];
-      store.pipe(select(getShareCaseListState)).subscribe(value => {
+      store.pipe(select(getShareCaseListState)).subscribe((value) => {
         result = value;
       });
       expect(result.length).toEqual(2);

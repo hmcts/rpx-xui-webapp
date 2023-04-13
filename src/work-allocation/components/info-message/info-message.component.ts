@@ -7,7 +7,6 @@ import { InfoMessage, InfoMessageType } from './../../enums';
   templateUrl: './info-message.component.html'
 })
 export class InfoMessageComponent {
-
   /**
    * The type of message to display. ie. Success, Warning or Information message.
    */

@@ -6,9 +6,7 @@ import * as fromHearingLinksActions from '../actions/hearing-links.action';
 import * as fromHearingLinksReducer from './hearing-links.reducer';
 
 describe('Hearing Links Reducer', () => {
-
   describe('Actions', () => {
-
     describe('Reset action', () => {
       it('should reset init state', () => {
         const initialState = fromHearingLinksReducer.initialHearingLinksState;

@@ -27,7 +27,7 @@ export class CancelHearingComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService) {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.hearingId = params.hearingId;
     });
   }
@@ -38,10 +38,10 @@ export class CancelHearingComponent implements OnInit {
 
   public ngOnInit(): void {
     this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(
-      hearingList => {
+      (hearingList) => {
         this.caseId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
         if (hearingList.hearingListMainModel) {
-          const caseHearings = hearingList.hearingListMainModel.caseHearings.filter(caseHearing => caseHearing.hearingID === this.hearingId);
+          const caseHearings = hearingList.hearingListMainModel.caseHearings.filter((caseHearing) => caseHearing.hearingID === this.hearingId);
           this.caseHearing = caseHearings.length ? caseHearings[0] : undefined;
         }
       });
@@ -50,7 +50,7 @@ export class CancelHearingComponent implements OnInit {
   }
 
   public get getReasonsTypeFormArray(): FormArray {
-    return this.formBuilder.array(this.hearingCancelOptions.map(val => this.formBuilder.group({
+    return this.formBuilder.array(this.hearingCancelOptions.map((val) => this.formBuilder.group({
       key: [val.key],
       value_en: [val.value_en],
       value_cy: [val.value_cy],
@@ -71,7 +71,7 @@ export class CancelHearingComponent implements OnInit {
   public isFormValid(): boolean {
     this.selectionValid = true;
     const isReasons = (this.hearingCancelForm.controls.reasons as FormArray).controls
-      .filter(reason => reason.value.selected === true).length > 0;
+      .filter((reason) => reason.value.selected === true).length > 0;
     if (!isReasons) {
       this.validationErrors = [{
         id: 'hearing-option-container', message: CancelHearingMessages.NOT_SELECTED_A_REASON
@@ -99,8 +99,8 @@ export class CancelHearingComponent implements OnInit {
   public getChosenReasons(): LovRefDataModel[] {
     const mappedReason: LovRefDataModel[] = [];
     const reasonChosen = (this.hearingCancelForm.controls.reasons as FormArray).controls
-      .filter(reason => reason.value.selected === true);
-    reasonChosen.forEach(element => {
+      .filter((reason) => reason.value.selected === true);
+    reasonChosen.forEach((element) => {
       mappedReason.push({
         key: element.value.key,
         value_en: element.value.value_en,

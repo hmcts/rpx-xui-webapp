@@ -31,7 +31,6 @@ describe('CaseCreate Effects', () => {
 
   describe('applyCreateCase$', () => {
     it('should apply case action', () => {
-
       const action = new ApplyChange({});
       const completion = new CreateCaseGo({
         path: ['/cases/case-details/undefined'],
@@ -45,7 +44,6 @@ describe('CaseCreate Effects', () => {
 
   describe('cancel$', () => {
     it('should cancel case action', () => {
-
       const action = new CreateCaseReset();
       const completion = new Go({
         path: ['/cases']
@@ -58,7 +56,6 @@ describe('CaseCreate Effects', () => {
 
   describe('applyCreatedCaseLoaded$', () => {
     it('should apply load action', () => {
-
       const action = new CreateCaseLoaded({});
       const completion = new NewCaseLoadedSuccessfully();
       actions$ = hot('-a', { a: action });
@@ -69,7 +66,6 @@ describe('CaseCreate Effects', () => {
 
   describe('applyChangeCaseCreateFilter$', () => {
     it('should apply load action', () => {
-
       const action = new CaseCreateFilterApply({});
       const completion = new Go({
         path: ['/cases/case-create/undefined/undefined/undefined']

@@ -13,7 +13,7 @@ export class CaseShareService {
   }
 
   public getShareCases(shareCases: SharedCase[]): Observable<SharedCase[]> {
-    const caseIds = shareCases.map(aCase => aCase.caseId).join(',');
+    const caseIds = shareCases.map((aCase) => aCase.caseId).join(',');
     const options = {
       params: {
         case_ids: caseIds

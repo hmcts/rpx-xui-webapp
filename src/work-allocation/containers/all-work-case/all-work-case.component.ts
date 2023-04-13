@@ -18,12 +18,14 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     fieldName: '',
     order: SortOrder.NONE
   };
+
   public isFirsTimeLoad = true;
   public isCasesFiltered = false;
   public pagination: PaginationParameter = {
     page_number: 1,
     page_size: 25
   };
+
   public jurisdictions: string[];
   private selectedPerson: string = '';
   private selectedRole: string = 'All';

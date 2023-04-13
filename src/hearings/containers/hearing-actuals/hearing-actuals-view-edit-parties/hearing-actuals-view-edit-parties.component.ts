@@ -105,7 +105,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
 
   public isPlannedParty(actualDayParty: ActualDayPartyModel): boolean {
     return this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[this.plannedDayIndex]
-      .parties.some(plannedParty => plannedParty.partyID === actualDayParty.actualPartyId);
+      .parties.some((plannedParty) => plannedParty.partyID === actualDayParty.actualPartyId);
   }
 
   public ngOnInit(): void {
@@ -113,10 +113,10 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     // Get unique values to display in the dropdown
     // If a parent does not contain any child nodes then consider the parent
     const uniquePartyChannels: LovRefDataModel[] = [];
-    partyChannels.forEach(channel => {
+    partyChannels.forEach((channel) => {
       if (channel.child_nodes) {
-        channel.child_nodes.forEach(childNode => {
-          if (!uniquePartyChannels.map(node => node.key).includes(childNode.key)) {
+        channel.child_nodes.forEach((childNode) => {
+          if (!uniquePartyChannels.map((node) => node.key).includes(childNode.key)) {
             uniquePartyChannels.push(childNode);
           }
         });
@@ -138,7 +138,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
         this.caseTitle = this.hearingActualsMainModel.caseDetails.hmctsInternalCaseName;
 
         this.plannedDayIndex = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays
-          .findIndex(item => ActualHearingsUtils.getDate(item.plannedStartTime) === this.hearingDate);
+          .findIndex((item) => ActualHearingsUtils.getDate(item.plannedStartTime) === this.hearingDate);
         this.setUpRoleLists();
         this.createForm(this.hearingActualsMainModel);
         this.subscribeToFormChanges();
@@ -148,7 +148,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   private setUpRoleLists(): void {
     const plannedParties = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[this.plannedDayIndex].parties;
     for (const role of this.hearingRoles) {
-      const isPlannedRole = plannedParties.some(plannedParty => plannedParty.partyRole === role.key);
+      const isPlannedRole = plannedParties.some((plannedParty) => plannedParty.partyRole === role.key);
       if (isPlannedRole) {
         this.immutablePartyRoles.push(role);
       } else {
@@ -302,16 +302,16 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public getRole(value: string): string {
-    const hearingRole = this.hearingRoles.find(role => role.key === value);
+    const hearingRole = this.hearingRoles.find((role) => role.key === value);
     return hearingRole ? hearingRole.value_en : value;
   }
 
   private getAllRowErrors(controls: { [p: string]: AbstractControl }): { [p: string]: string } {
     const errors: { [p: string]: string } = {};
-    Object.keys(controls).forEach(key => {
+    Object.keys(controls).forEach((key) => {
       const controlErrors: ValidationErrors = controls[key].errors;
       if (controlErrors) {
-        Object.keys(controlErrors).forEach(keyError => {
+        Object.keys(controlErrors).forEach((keyError) => {
           errors[key] = controlErrors[keyError].message;
         });
       }

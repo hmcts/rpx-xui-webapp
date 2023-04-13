@@ -56,7 +56,7 @@ export class SpecificAccessDurationComponent implements OnInit {
   ) {
     this.durations = [
       { id: '1', duration: DurationType.SEVEN_DAYS, description: SpecificAccessDurationComponent.sevenDaysDesc, checked: false },
-      { id: '2', duration: DurationType.INDEFINITE, description:  SpecificAccessDurationComponent.indefiniteDesc, checked: false },
+      { id: '2', duration: DurationType.INDEFINITE, description: SpecificAccessDurationComponent.indefiniteDesc, checked: false },
       { id: '3', duration: DurationType.ANOTHER_PERIOD, description: SpecificAccessDurationComponent.anotherPeriodDesc, checked: false }
     ];
     this.configStart = {
@@ -106,7 +106,7 @@ export class SpecificAccessDurationComponent implements OnInit {
     if (specificAccessState.specificAccessFormData && specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedOption) {
       this.selectedDuration = specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedOption;
       if (this.selectedDuration === DurationType.ANOTHER_PERIOD) {
-        this.anotherPeriod = true ;
+        this.anotherPeriod = true;
         this.startDateDayCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.startDate.day);
         this.startDateMonthCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.startDate.month);
         this.startDateYearCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.startDate.year);
@@ -116,7 +116,7 @@ export class SpecificAccessDurationComponent implements OnInit {
       }
     }
 
-    this.durations.find(duration => duration.duration === this.selectedDuration).checked = true;
+    this.durations.find((duration) => duration.duration === this.selectedDuration).checked = true;
   }
 
   public navigationHandler(navEvent: SpecificAccessNavigationEvent): void {

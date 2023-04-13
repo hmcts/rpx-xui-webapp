@@ -39,6 +39,7 @@ export class AcceptTcWrapperComponent implements OnInit, OnDestroy {
       subscription.unsubscribe();
     }
   }
+
   public dispatchAction(store: Store<fromApp.State>, action: Action) {
     store.dispatch(action);
   }

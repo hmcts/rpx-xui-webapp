@@ -469,7 +469,7 @@ describe('workAllocation.utils', () => {
   });
 
   describe('getSessionCaseworkerInfo', () => {
-    it('should get correct session case worker info with no services', ()=> {
+    it('should get correct session case worker info with no services', () => {
       const serviceIds = ['IA'];
       const caseworkersByServices: CaseworkersByService[] = [
         {
@@ -725,8 +725,8 @@ describe('workAllocation.utils', () => {
       // check function works with data present
       expect(getUniqueCasesCount(mockRoleCaseData)).to.equal(3);
       expect(getUniqueCasesCount([mockRoleCaseData[0]])).to.equal(1);
-      expect(getUniqueCasesCount(mockRoleCaseData.slice(1,4))).to.equal(2);
-      expect(getUniqueCasesCount(mockRoleCaseData.slice(1,3))).to.equal(1);
+      expect(getUniqueCasesCount(mockRoleCaseData.slice(1, 4))).to.equal(2);
+      expect(getUniqueCasesCount(mockRoleCaseData.slice(1, 3))).to.equal(1);
     });
   });
 

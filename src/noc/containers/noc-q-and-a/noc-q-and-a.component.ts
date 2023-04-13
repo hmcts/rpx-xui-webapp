@@ -12,7 +12,6 @@ import * as fromFeature from '../../store';
   styleUrls: ['./noc-q-and-a.component.scss']
 })
 export class NocQAndAComponent implements OnInit, OnDestroy {
-
   public questions$: Observable<NocQuestion[]>;
   public answers$: Observable<NocAnswer[]>;
   public formGroup: FormGroup;
@@ -37,16 +36,16 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
     this.answers$ = this.store.pipe(select(fromFeature.answers));
     this.formGroup = new FormGroup({});
     this.nocNavigationCurrentStateSub = this.store.pipe(select(fromFeature.currentNavigation)).subscribe(
-      state => this.nocNavigationCurrentState = state);
+      (state) => this.nocNavigationCurrentState = state);
     this.nocCaseReferenceSub = this.store.pipe(select(fromFeature.caseReference)).subscribe(
-      caseReference => this.nocCaseReference = caseReference);
+      (caseReference) => this.nocCaseReference = caseReference);
   }
 
   public setPossibleIncorrectAnswerError(): void {
-    this.lastError$.subscribe( lastError => {
+    this.lastError$.subscribe((lastError) => {
       this.lastError = lastError;
       if (this.lastError && this.lastError.error && this.lastError.error.code === 'answers-not-matched-any-litigant') {
-        Object.keys(this.formGroup.controls).forEach(key => {
+        Object.keys(this.formGroup.controls).forEach((key) => {
           if (this.formGroup.controls[key].value) {
             this.formGroup.controls[key].setErrors({
               possibleIncorrectAnswer: true
@@ -58,7 +57,7 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
   }
 
   public setAllAnswerEmptyError(): void {
-    Object.keys(this.formGroup.controls).forEach(key => {
+    Object.keys(this.formGroup.controls).forEach((key) => {
       this.formGroup.controls[key].setErrors({
         allAnswerEmpty: true
       });
@@ -66,7 +65,7 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
   }
 
   public purgeAllAnswerEmptyError(): void {
-    Object.keys(this.formGroup.controls).forEach(key => {
+    Object.keys(this.formGroup.controls).forEach((key) => {
       if (this.formGroup.controls[key].errors
         && this.formGroup.controls[key].errors.hasOwnProperty('allAnswerEmpty')) {
         this.formGroup.controls[key].setErrors(null);
@@ -75,9 +74,9 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
   }
 
   public answerInStore(questionId: string): Observable<string> {
-    return this.answers$.pipe(map(answers => {
+    return this.answers$.pipe(map((answers) => {
       if (answers) {
-        const foundAnswer = answers.find(answer => answer.question_id === questionId);
+        const foundAnswer = answers.find((answer) => answer.question_id === questionId);
         return foundAnswer ? foundAnswer.value : '';
       } else {
         return '';
@@ -88,7 +87,7 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
   public navigationHandler(navEvent: NocNavigationEvent) {
     if (navEvent === NocNavigationEvent.SET_ANSWERS && this.formGroup) {
       const answers: NocAnswer[] = [];
-      Object.keys(this.formGroup.value).forEach(key => {
+      Object.keys(this.formGroup.value).forEach((key) => {
         answers.push({ question_id: key, value: this.formGroup.value[key] });
       });
       const nocEvent: NocEvent = {
@@ -105,7 +104,7 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
     // if all values are empty then the form is invalid
     const allControlValues: string[] = Object.values(this.formGroup.value);
     this.allAnswerValid = this.formGroup.valid;
-    this.allAnswerEmpty = allControlValues.every(value => value === null || value === '');
+    this.allAnswerEmpty = allControlValues.every((value) => value === null || value === '');
     if (this.allAnswerEmpty) {
       this.setAllAnswerEmptyError();
       return false;

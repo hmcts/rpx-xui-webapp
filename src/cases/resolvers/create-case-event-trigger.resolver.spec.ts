@@ -43,7 +43,7 @@ describe('CreateCaseFieldsResolver', () => {
       queryParamMap: createSpyObj('queryParamMap', ['get'])
     };
 
-    route.paramMap.get.and.callFake(key => {
+    route.paramMap.get.and.callFake((key) => {
       switch (key) {
         case PARAM_JURISDICTION_ID:
           return JURISDICTION;
@@ -56,7 +56,7 @@ describe('CreateCaseFieldsResolver', () => {
       }
     });
 
-    route.queryParamMap.get.and.callFake(key => {
+    route.queryParamMap.get.and.callFake((key) => {
       switch (key) {
         case QUERY_PARAM_IGNORE_WARNINGS:
           return IGNORE_WARNINGS;
@@ -70,7 +70,7 @@ describe('CreateCaseFieldsResolver', () => {
 
     createCaseFieldsResolver
       .resolve(route)
-      .subscribe(triggerData => {
+      .subscribe((triggerData) => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
@@ -89,7 +89,7 @@ describe('CreateCaseFieldsResolver', () => {
       firstChild: {
         url: ['someChild']
       },
-      queryParamMap : createSpyObj('queryParamMap', ['get']),
+      queryParamMap: createSpyObj('queryParamMap', ['get']),
       paramMap: createSpyObj('paramMap', ['get'])
     };
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
@@ -97,7 +97,7 @@ describe('CreateCaseFieldsResolver', () => {
 
     createCaseFieldsResolver
       .resolve(route)
-      .subscribe(triggerData => {
+      .subscribe((triggerData) => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
@@ -110,7 +110,7 @@ describe('CreateCaseFieldsResolver', () => {
       firstChild: {
         url: ['someChild']
       },
-      queryParamMap : createSpyObj('queryParamMap', ['get']),
+      queryParamMap: createSpyObj('queryParamMap', ['get']),
       paramMap: createSpyObj('paramMap', ['get'])
     };
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
@@ -118,7 +118,7 @@ describe('CreateCaseFieldsResolver', () => {
 
     createCaseFieldsResolver
       .resolve(route)
-      .subscribe(triggerData => {
+      .subscribe((triggerData) => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
@@ -127,7 +127,7 @@ describe('CreateCaseFieldsResolver', () => {
   });
 
   it('should use draftId when resuming create event ', () => {
-    route.queryParamMap.get.and.callFake(key => {
+    route.queryParamMap.get.and.callFake((key) => {
       switch (key) {
         case QUERY_PARAM_IGNORE_WARNINGS:
           return IGNORE_WARNINGS;
@@ -139,7 +139,7 @@ describe('CreateCaseFieldsResolver', () => {
 
     createCaseFieldsResolver
       .resolve(route)
-      .subscribe(triggerData => {
+      .subscribe((triggerData) => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
@@ -156,9 +156,9 @@ describe('CreateCaseFieldsResolver', () => {
 
     createCaseFieldsResolver
       .resolve(route)
-      .subscribe(data => {
+      .subscribe((data) => {
         fail(data);
-      }, err => {
+      }, (err) => {
         expect(err).toBeTruthy();
       });
   });

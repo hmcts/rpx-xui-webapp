@@ -13,7 +13,6 @@ const MEDIA_VIEWER = 'media-viewer-info';
   encapsulation: ViewEncapsulation.None
 })
 export class MediaViewerWrapperComponent implements OnInit {
-
   public mediaURL = '';
   public mediaFilename = '';
   public mediaContentType = '';
@@ -32,7 +31,6 @@ export class MediaViewerWrapperComponent implements OnInit {
   ) {}
 
   public async ngOnInit() {
-
     const localStorageMedia = this.windowService.getLocalStorage(MEDIA_VIEWER);
     let sessionStorageMedia = this.sessionStorageService.getItem(MEDIA_VIEWER);
 

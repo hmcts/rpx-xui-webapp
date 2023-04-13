@@ -1,7 +1,6 @@
 import * as fromHearingConditionAction from './hearing-conditions.action';
 
 describe('Hearing Conditions Actions', () => {
-
   describe('Reset', () => {
     it('should create an action', () => {
       const action = new fromHearingConditionAction.ResetHearingConditions();

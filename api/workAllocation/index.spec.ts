@@ -103,7 +103,7 @@ describe('workAllocation', () => {
       const response = {
         work_types: typesOfWork
       };
-      const typesOfWorkResponse = typesOfWork.map(work => ({ key: work.id, label: work.label }));
+      const typesOfWorkResponse = typesOfWork.map((work) => ({ key: work.id, label: work.label }));
       res = mockRes({
         data: response
       });

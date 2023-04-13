@@ -22,7 +22,6 @@ import { getTitleText } from '../../../utils';
 })
 
 export class ChooseDurationComponent implements OnInit {
-
   public static sevenDaysDesc = 'Starts from today and ends at midnight 7 days from now.';
   public static indefiniteDesc = 'Starts from today and lasts while the case is open.';
   public static anotherPeriodDesc = 'You’ll need to provide both a start and end date for the role.';
@@ -50,7 +49,7 @@ export class ChooseDurationComponent implements OnInit {
               private readonly builder: FormBuilder) {
     this.allDurations = [
       { id: '1', duration: DurationOfRole.SEVEN_DAYS, description: ChooseDurationComponent.sevenDaysDesc, checked: false },
-      { id: '2', duration: DurationOfRole.INDEFINITE, description:  ChooseDurationComponent.indefiniteDesc, checked: false },
+      { id: '2', duration: DurationOfRole.INDEFINITE, description: ChooseDurationComponent.indefiniteDesc, checked: false },
       { id: '3', duration: DurationOfRole.ANOTHER_PERIOD, description: ChooseDurationComponent.anotherPeriodDesc, checked: false }
     ];
     this.dayStartDate = new FormControl('', [Validators.required, Validators.min(1), Validators.max(31)]);
@@ -72,7 +71,7 @@ export class ChooseDurationComponent implements OnInit {
       yearEndDate: this.yearEndDate,
       radioSelected: this.radioSelected
     });
-    this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(roleAllocate => {
+    this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe((roleAllocate) => {
       this.selectDurationRole(roleAllocate);
     });
   }
@@ -82,7 +81,7 @@ export class ChooseDurationComponent implements OnInit {
     const typeOfRole = roleAllocate.typeOfRole;
     this.title = getTitleText(typeOfRole, action, roleAllocate.roleCategory);
     this.selectedDuration = roleAllocate.durationOfRole;
-    this.allDurations.find(duration => duration.duration === this.selectedDuration).checked = true;
+    this.allDurations.find((duration) => duration.duration === this.selectedDuration).checked = true;
     this.anotherPeriod = this.selectedDuration === DurationOfRole.ANOTHER_PERIOD;
     if (this.anotherPeriod && roleAllocate.period) {
       this.radioSelected.setValue(this.selectedDuration);
@@ -116,6 +115,7 @@ export class ChooseDurationComponent implements OnInit {
       }
     }
   }
+
   public resetPreviousErrors(): void {
     this.isStartDateError = false;
     this.isEndDateError = false;

@@ -59,7 +59,7 @@ export function fieldNameMapper(fieldName: string, mapping: object): string {
 
 export function reflect(promise: Promise<any>): Promise<any> {
   return promise.then(
-    value => ({ value, status: 'fulfilled' }),
-    error => ({ error, status: 'rejected' })
+    (value) => ({ value, status: 'fulfilled' }),
+    (error) => ({ error, status: 'rejected' })
   );
 }

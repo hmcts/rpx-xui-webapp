@@ -9,7 +9,6 @@ import { handleCaseGet, handleCasePost, handleCaseSearch } from './caseService';
 
 chai.use(sinonChai);
 describe('workAllocation.caseService', () => {
-
   let sandbox: sinon.SinonSandbox;
   let spy: any;
   const res = mockRes({ status: 200, data: 'ok' });

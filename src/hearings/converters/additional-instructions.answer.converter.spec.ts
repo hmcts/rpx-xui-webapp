@@ -5,7 +5,6 @@ import { State } from '../store';
 import { AdditionalInstructionsAnswerConverter } from './additional-instructions.answer.converter';
 
 describe('AdditionalInstructionsAnswerConverter', () => {
-
   let converter: AdditionalInstructionsAnswerConverter;
 
   beforeEach(() => {

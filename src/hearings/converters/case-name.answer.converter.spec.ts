@@ -5,7 +5,6 @@ import { State } from '../store/reducers';
 import { CaseNameAnswerConverter } from './case-name.answer.converter';
 
 describe('CaseNameAnswerConverter', () => {
-
   let caseNameAnswerConverter: CaseNameAnswerConverter;
 
   beforeEach(() => {

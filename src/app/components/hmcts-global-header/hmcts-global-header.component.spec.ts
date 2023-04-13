@@ -155,7 +155,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     }];
     component.ngOnInit();
     fixture.detectChanges();
-    component.isUserCaseManager$.subscribe(result => {
+    component.isUserCaseManager$.subscribe((result) => {
       expect(result).toBe(true);
     });
   });
@@ -181,7 +181,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     storeMock.pipe.and.returnValue(of(userDetails));
     component.ngOnInit();
     fixture.detectChanges();
-    component.isUserCaseManager$.subscribe(result => {
+    component.isUserCaseManager$.subscribe((result) => {
       expect(result).toBe(false);
     });
   });
@@ -211,7 +211,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     const rightItems = component.rightItems;
 
     leftItems.pipe(
-      switchMap(items => {
+      switchMap((items) => {
         expect(items).toEqual([{
           align: null,
           text: '2',
@@ -220,7 +220,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
         }]);
         return rightItems;
       })
-    ).subscribe(items => {
+    ).subscribe((items) => {
       expect(items).toEqual([{
         align: 'right',
         text: '1',
@@ -262,11 +262,11 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
     leftItems.pipe(
-      switchMap(items => {
+      switchMap((items) => {
         expect(items).toEqual([component.items[1]]);
         return rightItems;
       })
-    ).subscribe(items => {
+    ).subscribe((items) => {
       expect(items).toEqual([component.items[0]]);
     });
   });
@@ -299,11 +299,11 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
     leftItems.pipe(
-      switchMap(items => {
+      switchMap((items) => {
         expect(items).toEqual([component.items[1]]);
         return rightItems;
       })
-    ).subscribe(items => {
+    ).subscribe((items) => {
       expect(items).toEqual([component.items[0]]);
       done();
     });
@@ -339,11 +339,11 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
     leftItems.pipe(
-      switchMap(items => {
+      switchMap((items) => {
         expect(items).toEqual([]);
         return rightItems;
       })
-    ).subscribe(items => {
+    ).subscribe((items) => {
       expect(items).toEqual([component.items[0]]);
       done();
     });
@@ -468,11 +468,11 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
     leftItems.pipe(
-      switchMap(items => {
+      switchMap((items) => {
         expect(items).toEqual([]);
         return rightItems;
       })
-    ).subscribe(items => {
+    ).subscribe((items) => {
       expect(items).toEqual([]);
     });
   });
@@ -506,11 +506,11 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
     const rightItems = component.rightItems;
 
     leftItems.pipe(
-      switchMap(items => {
+      switchMap((items) => {
         expect(items).toEqual([]);
         return rightItems;
       })
-    ).subscribe(items => {
+    ).subscribe((items) => {
       expect(items).toEqual([]);
       done();
     });

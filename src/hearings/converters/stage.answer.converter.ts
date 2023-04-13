@@ -10,7 +10,7 @@ export class StageAnswerConverter implements AnswerConverter {
     protected readonly route: ActivatedRoute) {}
 
   private static getHearingTypeDisplayValue(hearingStageOptions: LovRefDataModel[], key: string): string {
-    const lovData: LovRefDataModel = hearingStageOptions.find(stage => stage.key === key);
+    const lovData: LovRefDataModel = hearingStageOptions.find((stage) => stage.key === key);
     return lovData ? lovData.value_en : '';
   }
 
@@ -18,7 +18,7 @@ export class StageAnswerConverter implements AnswerConverter {
     const hearingStageOptions = this.route.snapshot.data.hearingStageOptions;
 
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         const selection = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType;
 
         return StageAnswerConverter.getHearingTypeDisplayValue(hearingStageOptions, selection);

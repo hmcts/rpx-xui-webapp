@@ -2,7 +2,6 @@ import { AFFIRMATION_DEFAULT_DISAGREE_ERROR, AFFIRMATION_NOTIFY_EVERY_PARTY_ERRO
 import * as fromNocAction from './noc.action';
 
 describe('Noc Actions', () => {
-
   describe('ChangeNavigation', () => {
     it('should create an action', () => {
       const action = new fromNocAction.ChangeNavigation(null);

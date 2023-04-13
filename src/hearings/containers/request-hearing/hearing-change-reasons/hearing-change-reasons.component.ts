@@ -32,7 +32,7 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
   }
 
   public ngOnInit(): void {
-    this.lastErrorSubscription = this.hearingRequestLastError$.subscribe(lastError => {
+    this.lastErrorSubscription = this.hearingRequestLastError$.subscribe((lastError) => {
       if (lastError) {
         this.errors = [{
           id: 'backendError', message: HearingSummaryEnum.BackendError
@@ -44,7 +44,7 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
   }
 
   public get getReasonsTypeFormArray(): FormArray {
-    return this.formBuilder.array(this.hearingChangeReasons.map(val => this.formBuilder.group({
+    return this.formBuilder.array(this.hearingChangeReasons.map((val) => this.formBuilder.group({
       key: [val.key],
       value_en: [val.value_en],
       value_cy: [val.value_cy],
@@ -68,7 +68,7 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
     }
     this.selectionValid = true;
     const isReasons = (this.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .filter(reason => reason.value.selected === true).length > 0;
+      .filter((reason) => reason.value.selected === true).length > 0;
     if (!isReasons) {
       this.errors = [{
         id: 'hearing-option-container', message: HearingChangeReasonMessages.NOT_SELECTED_A_REASON
@@ -101,7 +101,7 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
 
   public getChosenReasons(): string[] {
     const chosenReasons: string[] = [];
-    (this.hearingChangeReasonForm.controls.reasons as FormArray).controls.forEach(reason => {
+    (this.hearingChangeReasonForm.controls.reasons as FormArray).controls.forEach((reason) => {
       if (reason.value.selected === true) {
         chosenReasons.push(reason.value.key);
       }

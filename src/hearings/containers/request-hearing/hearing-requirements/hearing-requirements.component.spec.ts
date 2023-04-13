@@ -2191,7 +2191,7 @@ describe('HearingRequirementsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [HearingRequirementsComponent, MockHearingPartiesComponent],
       providers: [
-        provideMockStore({ initialState:initialStateImmutable }),
+        provideMockStore({ initialState: initialStateImmutable }),
         { provide: HearingsService, useValue: hearingsService },
         { provide: LocationsDataService, useValue: locationsDataService },
         {

@@ -27,7 +27,7 @@ export class HearingJudgeNamesListComponent {
   }
 
   public removeSelectedJudge(selectedJudge: JudicialUserModel): void {
-    this.judgeList = this.judgeList.filter(judge => judge.idamId !== selectedJudge.idamId);
+    this.judgeList = this.judgeList.filter((judge) => judge.idamId !== selectedJudge.idamId);
   }
 
   public excludeJudge(): void {
@@ -39,6 +39,7 @@ export class HearingJudgeNamesListComponent {
       this.personFormGroup.controls.selectedFormControl.setValue(undefined);
     }
   }
+
   public isExcludeJudgeInputValid(): boolean {
     if (this.personFormGroup.controls.selectedFormControl.dirty || this.personFormGroup.controls.selectedFormControl.value) {
       const isJudgeSelected = !!this.personFormGroup.controls.selectedFormControl.value;

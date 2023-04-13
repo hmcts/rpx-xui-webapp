@@ -7,7 +7,6 @@ import { State } from '../store/reducers';
 import { AdditionalFacilitiesAnswerConverter } from './additional-facilities.answer.converter';
 
 describe('AdditionalFacilitiesAnswerConverter', () => {
-
   let converter: AdditionalFacilitiesAnswerConverter;
   let router: any;
 

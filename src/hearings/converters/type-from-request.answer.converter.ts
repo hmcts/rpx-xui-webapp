@@ -16,17 +16,17 @@ export class TypeFromRequestAnswerConverter implements AnswerConverter {
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         let result = '';
         if (state.hearingRequest && state.hearingRequest.hearingRequestMainModel
           && state.hearingRequest.hearingRequestMainModel.caseDetails
           && state.hearingRequest.hearingRequestMainModel.caseDetails.caseCategories) {
           const caseTypes: CaseCategoryDisplayModel[] = CaseTypesUtils.getCaseCategoryDisplayModels(this.caseTypeRefData,
             state.hearingRequest.hearingRequestMainModel.caseDetails.caseCategories);
-          caseTypes.forEach(caseCategory => {
+          caseTypes.forEach((caseCategory) => {
             result += `${caseCategory.categoryDisplayValue} \n<ul>`;
             if (caseCategory.childNodes && caseCategory.childNodes.length) {
-              caseCategory.childNodes.forEach(child => {
+              caseCategory.childNodes.forEach((child) => {
                 result += `<li>- ${child.categoryDisplayValue}</li>`;
               });
             }

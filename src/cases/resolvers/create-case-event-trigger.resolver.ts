@@ -6,7 +6,6 @@ import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class CreateCaseEventTriggerResolver implements Resolve<CaseEventTrigger> {
-
   public static readonly PARAM_JURISDICTION_ID = 'jid';
   public static readonly PARAM_CASE_TYPE_ID = 'ctid';
   public static readonly PARAM_EVENT_ID = 'eid';
@@ -40,7 +39,7 @@ export class CreateCaseEventTriggerResolver implements Resolve<CaseEventTrigger>
     }
 
     return ((this.casesService.getEventTrigger(caseTypeId, eventTriggerId, caseId, ignoreWarning) as any) as Observable<CaseEventTrigger>).pipe(
-      tap(eventTrigger => this.cachedEventTrigger = eventTrigger)
+      tap((eventTrigger) => this.cachedEventTrigger = eventTrigger)
     );
   }
 

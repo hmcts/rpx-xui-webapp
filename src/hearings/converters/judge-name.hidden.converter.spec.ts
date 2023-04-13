@@ -7,7 +7,6 @@ import { State } from '../store/reducers';
 import { JudgeNameHiddenConverter } from './judge-name.hidden.converter';
 
 describe('JudgeNameHiddenConverter', () => {
-
   let judgeNameHiddenConverter: JudgeNameHiddenConverter;
   const JUDICAIL_USER_DETAILS = [{
     memberID: 'P0000001',

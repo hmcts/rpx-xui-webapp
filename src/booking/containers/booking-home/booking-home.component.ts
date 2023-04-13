@@ -51,13 +51,13 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
             if (bookingResults) {
               this.existingBookings = bookingResults as any;
               this.orderByCurrentThenFuture();
-              this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any).filter(p => moment(new Date()).isSameOrAfter(p.beginTime) && moment(new Date()).isSameOrBefore(p.endTime)).sort(this.sortBookings).map(p => p.locationId) : null;
+              this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any).filter((p) => moment(new Date()).isSameOrAfter(p.beginTime) && moment(new Date()).isSameOrBefore(p.endTime)).sort(this.sortBookings).map((p) => p.locationId) : null;
               this.sessionStorageService.setItem('bookingLocations', JSON.stringify(Array.from(new Set(this.bookingProcess.selectedBookingLocationIds))));
             }
           })).subscribe();
         }
       },
-      err => {
+      (err) => {
         this.NavigationErrorHandler(err, this.router);
       });
     }
@@ -68,16 +68,24 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   }
 
   private orderByCurrentThenFuture() {
-    const featureBookings: Booking[] = this.existingBookings.filter(p => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings);
-    const currentBookings: Booking[] = this.existingBookings.filter(p => new Date().getTime() > new Date(p.beginTime).getTime()).sort(this.sortBookings);
+    const featureBookings: Booking[] = this.existingBookings.filter((p) => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings);
+    const currentBookings: Booking[] = this.existingBookings.filter((p) => new Date().getTime() > new Date(p.beginTime).getTime()).sort(this.sortBookings);
     this.existingBookings = currentBookings.sort(this.sortBookings).concat(featureBookings.sort(this.sortBookings));
   }
 
   private sortBookings(current, next) {
-    if (current.locationName > next.locationName) { return 1; }
-    if (current.locationName < next.locationName) { return -1; }
-    if (current.beginTime > next.beginTime) { return 1; }
-    if (current.beginTime < next.beginTime) { return -1; }
+    if (current.locationName > next.locationName) {
+      return 1;
+    }
+    if (current.locationName < next.locationName) {
+      return -1;
+    }
+    if (current.beginTime > next.beginTime) {
+      return 1;
+    }
+    if (current.beginTime < next.beginTime) {
+      return -1;
+    }
     return 0;
   }
 

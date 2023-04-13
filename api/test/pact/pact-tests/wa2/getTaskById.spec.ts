@@ -7,7 +7,7 @@ import { getSearchTaskOverrides } from '../utils/configOverride';
 import { DateTimeMatcher } from '../utils/matchers';
 import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
-const { somethingLike,term } = Matchers;
+const { somethingLike, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_get_task_by_id', port: 8000 });
 
 const taskId = 'f782bde3-8d51-11eb-a9a4-06d032acc76d';
@@ -92,7 +92,7 @@ describe('Task management api, get task by id', () => {
           ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
           'content-type': 'application/json'
         },
-        params:{
+        params: {
           taskId: taskId
         }
       });

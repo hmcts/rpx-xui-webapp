@@ -152,7 +152,6 @@ export async function orchestrationRequestMoreInformation(req: EnhancedRequest, 
       return restoreDeletedRole(req, res, next, taskResponse, rolesToDelete);
     }
     return res.send(taskResponse.data).status(taskResponse.status);
-
   } catch (e) {
     logger.error(e.status, e.statusText, JSON.stringify(e.data));
     throw e;

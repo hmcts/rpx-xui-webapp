@@ -1,6 +1,5 @@
 
 export default class JsonConfig {
-
   /**
    * Turns a JSON object, typically received from an api call,
    * into a strongly-typed Task object.

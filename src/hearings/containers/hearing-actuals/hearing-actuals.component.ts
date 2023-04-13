@@ -16,7 +16,7 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
   public constructor(private readonly store: Store<any>, private readonly route: ActivatedRoute) {}
 
   public ngOnInit(): void {
-    this.sub = this.route.params.subscribe(params => {
+    this.sub = this.route.params.subscribe((params) => {
       this.store.dispatch(new hearingRequestActions.LoadHearingRequest({ hearingID: params.id, targetURL: '' }));
       this.store.dispatch(new hearingActualsActions.GetHearingActuals(params.id));
     });

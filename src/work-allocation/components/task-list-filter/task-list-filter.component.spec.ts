@@ -116,7 +116,7 @@ describe('TaskListFilterComponent', () => {
       },
       {
         name: 'types-of-work',
-        value: ['types_of_work_all', ...typesOfWork.map(t => t.key)]
+        value: ['types_of_work_all', ...typesOfWork.map((t) => t.key)]
       }
     ]
   };

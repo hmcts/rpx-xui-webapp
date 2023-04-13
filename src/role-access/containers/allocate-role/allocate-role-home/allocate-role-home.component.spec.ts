@@ -221,7 +221,9 @@ describe('AllocateRoleHomeComponent', () => {
       component.userRole = UserRole.CTSC;
       component.roleCategory = RoleCategory.JUDICIAL;
       component.allocateTo = AllocateTo.ALLOCATE_TO_ANOTHER_PERSON;
-      expect(() => { component.navigationHandler(navEvent); }).toThrow(new Error('Invalid role category'));
+      expect(() => {
+        component.navigationHandler(navEvent);
+      }).toThrow(new Error('Invalid role category'));
     });
 
     it('on CHOOSE_DURATION page on invalid details Invalid allocate to', () => {
@@ -230,7 +232,9 @@ describe('AllocateRoleHomeComponent', () => {
       component.userRole = UserRole.CTSC;
       component.roleCategory = RoleCategory.CTSC;
       component.allocateTo = AllocateTo.REALLOCATE_TO_ANOTHER_PERSON;
-      expect(() => { component.navigationHandler(navEvent); }).toThrow(new Error('Invalid allocate to'));
+      expect(() => {
+        component.navigationHandler(navEvent);
+      }).toThrow(new Error('Invalid allocate to'));
     });
 
     it('on CHOOSE_DURATION page on invalid details invalid user role', () => {
@@ -239,7 +243,9 @@ describe('AllocateRoleHomeComponent', () => {
       component.userRole = UserRole.Ogd;
       component.roleCategory = RoleCategory.CTSC;
       component.allocateTo = AllocateTo.REALLOCATE_TO_ANOTHER_PERSON;
-      expect(() => { component.navigationHandler(navEvent); }).toThrow(new Error('invalid user role'));
+      expect(() => {
+        component.navigationHandler(navEvent);
+      }).toThrow(new Error('invalid user role'));
     });
 
     it('on CHOOSE_DURATION page when judicial user allocate judicial user if allocate to another person', () => {

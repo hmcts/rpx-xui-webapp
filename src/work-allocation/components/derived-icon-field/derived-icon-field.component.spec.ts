@@ -23,7 +23,6 @@ function getTasks(): Task[] {
 }
 
 describe('WorkAllocation', () => {
-
   describe('DerivedIconFieldComponent', () => {
     let component: DerivedIconFieldComponent;
     let wrapper: WrapperComponent;

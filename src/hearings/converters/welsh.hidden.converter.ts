@@ -12,13 +12,13 @@ export class WelshHiddenConverter implements HiddenConverter {
   public transformHidden(hearingState$: Observable<State>): Observable<boolean> {
     return hearingState$.pipe(
       take(1),
-      switchMap(state => {
+      switchMap((state) => {
         const hearingLocations: HearingLocationModel[] = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingLocations;
-        const locationIds = hearingLocations.map(location => location.locationId).join(',');
+        const locationIds = hearingLocations.map((location) => location.locationId).join(',');
         const locations$: Observable<LocationByEPIMMSModel[]> = this.locationsDataService.getLocationById(locationIds);
         return locations$.pipe(map(
-          locations => {
-            return !locations.some(location => location.region_id === '7');
+          (locations) => {
+            return !locations.some((location) => location.region_id === '7');
           })
         );
       }));

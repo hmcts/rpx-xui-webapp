@@ -7,7 +7,6 @@ import { State } from '../store/reducers';
 import { JudgeNameAmendedConverter } from './judge-name.amended.converter';
 
 describe('JudgeNameAmendedConverter', () => {
-
   let judgeNameAmendedConverter: JudgeNameAmendedConverter;
 
   beforeEach(() => {

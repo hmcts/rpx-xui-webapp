@@ -19,6 +19,7 @@ export class HearingActualSummaryComponent extends HearingActualSummaryBaseCompo
   public serverErrors: { id: string, message: string }[] = [
     { id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.' }
   ];
+
   public hearingTimingResultErrorMessage = '';
   public hearingPartiesResultErrorMessage = '';
   public hearingDaysRequiredErrorMessage = '';
@@ -48,7 +49,7 @@ export class HearingActualSummaryComponent extends HearingActualSummaryBaseCompo
       && hearingActualsMainModel.hearingActuals.actualHearingDays.length === hearingActualsMainModel.hearingPlanned.plannedHearingDays.length;
 
     return hasAllActualDays && hearingActualsMainModel.hearingActuals.actualHearingDays.every(
-      actualDay => this.isAcutalTimingAvailable(actualDay)
+      (actualDay) => this.isAcutalTimingAvailable(actualDay)
     );
   }
 

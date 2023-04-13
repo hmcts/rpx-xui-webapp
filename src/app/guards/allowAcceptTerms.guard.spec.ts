@@ -23,7 +23,7 @@ describe('Allow Accept Terms guard', () => {
 
   it('disallows access when accepted', (done: any) => {
     acceptGuard.canActivate.and.returnValue(of(true));
-    guard.canActivate().subscribe(ok => {
+    guard.canActivate().subscribe((ok) => {
       expect(ok).toBeFalsy();
       done();
     });
@@ -31,7 +31,7 @@ describe('Allow Accept Terms guard', () => {
 
   it('allows access when not accepted', (done: any) => {
     acceptGuard.canActivate.and.returnValue(of(false));
-    guard.canActivate().subscribe(ok => {
+    guard.canActivate().subscribe((ok) => {
       expect(ok).toBeTruthy();
       done();
     });

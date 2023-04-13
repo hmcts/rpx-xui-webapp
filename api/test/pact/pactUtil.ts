@@ -3,7 +3,7 @@ import axios from 'axios';
 export async function getUsers(path: string) {
   const axiosConfig = {
     headers: {
-      'Authorization':  'Bearer some-access-token',
+      'Authorization': 'Bearer some-access-token',
       'Content-Type': 'application/json',
       'ServiceAuthorization': 'serviceAuthToken'
     }
@@ -14,7 +14,7 @@ export async function getUsers(path: string) {
 export async function getOrganisationDetails(path: string) {
   const axiosConfig = {
     headers: {
-      'Authorization':  'Bearer some-access-token',
+      'Authorization': 'Bearer some-access-token',
       'Content-Type': 'application/json',
       'ServiceAuthorization': 'serviceAuthToken'
     }

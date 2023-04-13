@@ -21,7 +21,7 @@ export class FooterComponent implements OnInit {
     if (tAndCNavItem) {
       this.store.pipe(
         select(fromRoot.getIsTermsAndConditionsFeatureEnabled)
-      ).subscribe(isEnabled => {
+      ).subscribe((isEnabled) => {
         tAndCNavItem.href = isEnabled ? '/terms-and-conditions' : '/legacy-terms-and-conditions';
       });
     }
@@ -29,7 +29,7 @@ export class FooterComponent implements OnInit {
 
   public getNavigationItemForTandC(navigationItems: NavigationItems[]): NavigationItems {
     let navItem: NavigationItems = null;
-    navigationItems.forEach(currentNavItem => {
+    navigationItems.forEach((currentNavItem) => {
       if (currentNavItem.text === 'Terms and conditions') {
         navItem = currentNavItem;
       }

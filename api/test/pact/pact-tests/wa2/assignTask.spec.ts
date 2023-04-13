@@ -67,7 +67,7 @@ describe('Task management api, assign a task to user', () => {
         },
         params: {
           taskId: taskId,
-          action:'assign'
+          action: 'assign'
         },
         body: mockRequest
 

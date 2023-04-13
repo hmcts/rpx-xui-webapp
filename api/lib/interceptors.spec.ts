@@ -92,7 +92,7 @@ describe('interceptors', () => {
       const getLoggerStub = sinon.stub(log4js, 'getLogger');
       // @ts-ignore
       getLoggerStub.returns({ error: spy, addContext: sinon.spy(), level: 'debug' });
-      errorInterceptor(error).catch( () => {
+      errorInterceptor(error).catch(() => {
         expect(spy).to.be.called;
         getLoggerStub.restore();
       });

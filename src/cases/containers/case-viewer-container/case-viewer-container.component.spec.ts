@@ -277,7 +277,7 @@ describe('CaseViewerContainerComponent', () => {
   });
 
   it('should return Hearings as the last tab', () => {
-    component.appendedTabs$.subscribe(tab =>
+    component.appendedTabs$.subscribe((tab) =>
       expect(tab[0].id).toBe('hearings')
     );
   });

@@ -7,7 +7,6 @@ import { State } from '../store/reducers';
 import { TypeAnswerConverter } from './type.answer.converter';
 
 describe('TypeAnswerConverter', () => {
-
   let typeAnswerConverter: TypeAnswerConverter;
   let router: any;
 

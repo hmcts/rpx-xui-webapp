@@ -9,7 +9,6 @@ import { State } from '../store';
 import { IsAmendedPipe } from './is-amended.pipe';
 
 describe('IsAmendedPipe', () => {
-
   let isAmendedPipe: IsAmendedPipe;
   let router: any;
 

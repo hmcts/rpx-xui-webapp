@@ -113,7 +113,9 @@ describe('NocHomeComponent', () => {
 
     it('should throw error Invalid NoC state', () => {
       component.nocNavigationCurrentState = NocState.AFFIRMATION_NOT_AGREED;
-      expect(() => { component.navigationHandler(NocNavigationEvent.BACK); }).toThrow(new Error('Invalid NoC state'));
+      expect(() => {
+        component.navigationHandler(NocNavigationEvent.BACK);
+      }).toThrow(new Error('Invalid NoC state'));
     });
 
     it('should navigate to question page when click continue button if on case ref page', () => {
@@ -132,7 +134,9 @@ describe('NocHomeComponent', () => {
 
     it('should throw error Invalid NoC state', () => {
       component.nocNavigationCurrentState = NocState.CHECK_ANSWERS;
-      expect(() => { component.navigationHandler(NocNavigationEvent.CONTINUE); }).toThrow(new Error('Invalid NoC state'));
+      expect(() => {
+        component.navigationHandler(NocNavigationEvent.CONTINUE);
+      }).toThrow(new Error('Invalid NoC state'));
     });
 
     afterEach(() => {
@@ -155,7 +159,9 @@ describe('NocHomeComponent', () => {
 
     it('should throw error Invalid NoC state', () => {
       component.nocNavigationCurrentState = null;
-      expect(() => { component.navigationHandler(NocNavigationEvent.CHECK_ANSWERS); }).toThrow(new Error('Invalid NoC state'));
+      expect(() => {
+        component.navigationHandler(NocNavigationEvent.CHECK_ANSWERS);
+      }).toThrow(new Error('Invalid NoC state'));
     });
 
     afterEach(() => {

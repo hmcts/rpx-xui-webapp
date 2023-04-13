@@ -27,7 +27,7 @@ describe('Share Case Service', () => {
 
   it('should get users from organisation', () => {
     httpClientGetSpy.get.and.returnValue({});
-    service.getUsersFromOrg().subscribe(data => {
+    service.getUsersFromOrg().subscribe((data) => {
       expect(data).toBeDefined();
     });
   });
@@ -50,7 +50,7 @@ describe('Share Case Service', () => {
       }]
     }];
     httpClientGetSpy.get.and.returnValue({});
-    service.getShareCases(shareCases).subscribe(data => {
+    service.getShareCases(shareCases).subscribe((data) => {
       expect(data).toBeDefined();
     });
   });
@@ -73,7 +73,7 @@ describe('Share Case Service', () => {
       }]
     }];
     httpClientPostSpy.post.and.returnValue({});
-    service.assignUsersWithCases(shareCases).subscribe(data => {
+    service.assignUsersWithCases(shareCases).subscribe((data) => {
       expect(data).toBeDefined();
     });
   });

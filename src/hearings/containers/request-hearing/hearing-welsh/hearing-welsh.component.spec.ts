@@ -73,7 +73,7 @@ describe('HearingWelshComponent', () => {
   });
 
   it('should load default value', (): void => {
-    expect(component.welshForm.value['hearingInWelshFlag']).toBeTruthy();
+    expect(component.welshForm.value.hearingInWelshFlag).toBeTruthy();
   });
 
   it('should execute a continue action', (): void => {

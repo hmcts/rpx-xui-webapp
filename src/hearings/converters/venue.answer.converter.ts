@@ -12,7 +12,7 @@ export class VenueAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       take(1),
-      switchMap(state => {
+      switchMap((state) => {
         const hearingLocations: HearingLocationModel[] = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingLocations;
         const locationIds = hearingLocations.map((hearingLocationModel: HearingLocationModel) => hearingLocationModel.locationId).join(',');
         return this.locationsDataService.getLocationById(locationIds).pipe(

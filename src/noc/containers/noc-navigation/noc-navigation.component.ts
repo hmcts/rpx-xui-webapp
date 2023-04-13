@@ -11,7 +11,6 @@ import * as fromFeature from '../../store';
   styleUrls: ['noc-navigation.component.scss']
 })
 export class NocNavigationComponent implements OnInit {
-
   @Output() public eventTrigger = new EventEmitter();
 
   public nocNavigationCurrentState$: Observable<fromFeature.State>;

@@ -8,7 +8,7 @@ import { IsAmendedConverter } from './is-amended.converter';
 
 export class HearingSpecificDateAmendedConverter implements IsAmendedConverter {
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {
-    return hearingState$.pipe(map(state => {
+    return hearingState$.pipe(map((state) => {
       const objAHearingWindow = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingWindow;
       const objBHearingWindow = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow;
       if (objAHearingWindow.dateRangeStart && objBHearingWindow.dateRangeStart) {

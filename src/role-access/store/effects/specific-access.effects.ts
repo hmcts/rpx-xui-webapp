@@ -18,7 +18,7 @@ export class SpecificAccessEffects {
             map(() => {
               return new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED);
             }),
-            catchError(error => {
+            catchError((error) => {
               return AllocateRoleEffects.handleError(error);
             }
             )
@@ -35,12 +35,13 @@ export class SpecificAccessEffects {
             map(() => {
               return new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DENIED);
             }),
-            catchError(error => {
+            catchError((error) => {
               return AllocateRoleEffects.handleError(error);
             })
           )
       )
     );
+
   constructor(
     private readonly actions$: Actions,
     private readonly allocateRoleService: AllocateRoleService

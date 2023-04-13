@@ -14,7 +14,6 @@ import * as proxy from './proxy';
 chai.use(sinonChai);
 
 describe('proxy', () => {
-
   let next;
   let sandbox;
   let req;
@@ -47,7 +46,7 @@ describe('proxy', () => {
         'experimental': 'experiment/test'
       },
       session: {
-        save: fun => {
+        save: (fun) => {
           fun();
         }
       }

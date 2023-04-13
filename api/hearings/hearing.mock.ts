@@ -38,7 +38,7 @@ export const init = () => {
   const linkedHearingGroup = /linkedHearingGroup/;
   // ------ Mock HMC APIs End ------
 
-  mock.onPost(postServiceHearingValues).reply(config => {
+  mock.onPost(postServiceHearingValues).reply((config) => {
     const jsonData = JSON.parse(config.data);
     const caseReference = jsonData.caseReference;
     // START : This few lines code jus to faciliate testing for case references ending with 1
@@ -63,7 +63,7 @@ export const init = () => {
     ];
   });
 
-  mock.onGet(getHearingsUrl).reply(config => {
+  mock.onGet(getHearingsUrl).reply((config) => {
     const url = config.url;
     const caseIds = url.match(/[0-9]{16}/g);
     const mod = parseInt(caseIds[0], 10) % 2;
@@ -93,7 +93,7 @@ export const init = () => {
     }
   });
 
-  mock.onGet(getHearingInfoUrl).reply(config => {
+  mock.onGet(getHearingInfoUrl).reply((config) => {
     const urlPaths: string[] = config.url.split('/');
     const hearingId = urlPaths[urlPaths.length - 1];
     if (hearingId === 'h100004') {
@@ -102,7 +102,7 @@ export const init = () => {
         null
       ];
     }
-    const FOUND_A_HEARING = HEARING_REQUEST_RESULTS.find(hearing => hearing.caseDetails.hearingID === hearingId);
+    const FOUND_A_HEARING = HEARING_REQUEST_RESULTS.find((hearing) => hearing.caseDetails.hearingID === hearingId);
     return [
       200,
       FOUND_A_HEARING
@@ -123,7 +123,7 @@ export const init = () => {
     ];
   });
 
-  mock.onDelete(cancelHearingRequest).reply(config => {
+  mock.onDelete(cancelHearingRequest).reply((config) => {
     // START : This few lines code jus to faciliate testing for specific hearing id of 100002
     // so that even the failure scenarios can be verified
     if (config.url.includes('/h100002')) {
@@ -139,7 +139,7 @@ export const init = () => {
     ];
   });
 
-  mock.onGet(hearingActualsUrl).reply(config => {
+  mock.onGet(hearingActualsUrl).reply((config) => {
     // START : This few lines code jus to faciliate testing for specific hearing id of 100013
     // so that even the failure scenarios can be verified
     if (config.url.includes('/h100013')) {
@@ -193,7 +193,7 @@ export const init = () => {
     ];
   });
 
-  mock.onPost(linkedHearingGroup).reply(config => {
+  mock.onPost(linkedHearingGroup).reply((config) => {
     // START : This few lines code just to faciliate testing for specific hearing id of h100014
     // so that even the failure scenarios can be verified
     const jsonData = JSON.parse(config.data);

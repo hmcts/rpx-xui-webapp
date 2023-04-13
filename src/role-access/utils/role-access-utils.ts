@@ -43,7 +43,7 @@ export const convertToName = (id: string): string => {
 
 export const getAllRolesFromServices = (rolesByService: RolesByService[]): Role[] => {
   let allRoles: Role[] = [];
-  rolesByService.forEach(roleListByService => {
+  rolesByService.forEach((roleListByService) => {
     allRoles = allRoles.concat(roleListByService.roles);
   });
   return allRoles;

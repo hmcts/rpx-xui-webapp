@@ -17,15 +17,14 @@ export class NocEffects {
   public setCaseReference$ = this.actions$.pipe(
       ofType(nocActions.SET_CASE_REFERENCE),
       map((action: nocActions.SetCaseReference) => action.payload),
-      switchMap(payload => {
-        const caseReference = payload ? payload.replace(/-/g, '').replace(/ /g, '') : payload = '' ;
+      switchMap((payload) => {
+        const caseReference = payload ? payload.replace(/-/g, '').replace(/ /g, '') : payload = '';
 
         if (caseReference.length === 16) {
-
           return this.nocService.getNoCQuestions(caseReference).pipe(
             map(
               (response) => new nocActions.SetQuestions({ questions: response.questions, caseReference })),
-            catchError(error => {
+            catchError((error) => {
               return NocEffects.handleError(error, nocActions.SET_CASE_REFERENCE);
             })
           );
@@ -39,14 +38,13 @@ export class NocEffects {
   public setAnswers$ = this.actions$.pipe(
       ofType(nocActions.SET_ANSWERS),
       map((action: nocActions.SetAnswers) => action.payload),
-      switchMap(payload => {
+      switchMap((payload) => {
         const { answers } = payload;
 
         if (answers.length !== 0) {
-
           return this.nocService.validateNoCAnswers(payload).pipe(
             map(() => new nocActions.CheckAnswers(answers)),
-            catchError(error => {
+            catchError((error) => {
               return NocEffects.handleError(error, nocActions.SET_ANSWERS);
             })
           );
@@ -60,7 +58,7 @@ export class NocEffects {
   public submitNoc$ = this.actions$.pipe(
       ofType(nocActions.SUBMIT_NOC),
       map((action: nocActions.SubmitNoc) => action.payload),
-      switchMap(payload => {
+      switchMap((payload) => {
         return this.nocService.submitNoCEvent(payload).pipe(
           map(
             (response: {approval_status?: string}) => {
@@ -70,7 +68,7 @@ export class NocEffects {
                 return new nocActions.SetSubmissionSuccessApproved();
               }
             }),
-          catchError(error => {
+          catchError((error) => {
             return NocEffects.handleError(error, nocActions.SUBMIT_NOC);
           })
         );

@@ -6,7 +6,6 @@ import { State } from '../store/reducers';
 import { JudgeTypesAmendedConverter } from './judge-types.amended.converter';
 
 describe('JudgeTypesAmendedConverter', () => {
-
   let judgeTypesAmendedConverter: JudgeTypesAmendedConverter;
 
   beforeEach(() => {

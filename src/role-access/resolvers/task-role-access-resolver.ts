@@ -19,7 +19,7 @@ export class TaskRoleAccessResolver implements Resolve<{ task: Task; role: any }
   public resolve(route: ActivatedRouteSnapshot): Observable< { task: Task; role: any[]; } > {
     const assignmentId = route.paramMap.get('assignmentId');
     const task$ = this.taskService.getTask(route.paramMap.get('taskId')).pipe(
-      catchError(error => {
+      catchError((error) => {
         handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
         return EMPTY;
       })

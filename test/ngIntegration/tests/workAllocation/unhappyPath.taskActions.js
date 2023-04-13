@@ -45,8 +45,7 @@ describe('Unhappy path task actions: ', function () {
 
     if (responseCode >= 500 && responseCode < 600) {
       message = 'Sorry, there is a problem with the service';
-    }
-    else if (responseCode >= 400 && responseCode < 500) {
+    } else if (responseCode >= 400 && responseCode < 500) {
       if (responseCode === 401 || responseCode === 403) {
         message = 'Sorry, you\'re not authorised to perform this action';
       } else {
@@ -75,17 +74,17 @@ describe('Unhappy path task actions: ', function () {
 
   const testErrorResponseCodes = [500, 400, 401, 403];
   const myTask_actions = ['Reassign task', 'Unassign task'];
-  const availableTask_actions = ['Assign to me',];
+  const availableTask_actions = ['Assign to me'];
   const taskManager_action = ['Reassign task', 'Unassign task'];
 
   it('My Tasks - Reassign page errors', async function () {
     await BrowserUtil.browserInitWithAuth(['caseworker-ia-caseofficer', 'caseworker-ia-admofficer']);
-    await headerPage.waitForPrimaryNavDisplay()
+    await headerPage.waitForPrimaryNavDisplay();
     await BrowserUtil.waitForLD();
 
     // expect(await tasklistPage.amOnPage()).to.be.true;
     const reassignEndpoints = [
-      { name: 'Task details', url: '/workallocation/task/:taskId'},
+      { name: 'Task details', url: '/workallocation/task/:taskId' },
       { name: 'Locations', url: '/workallocation/location' },
       { name: 'caseworkers', url: '/workallocation/caseworker/location/:locationId' }
     ];
@@ -121,7 +120,7 @@ describe('Unhappy path task actions: ', function () {
 
   it('My Tasks - Reassign submit errors', async function () {
     await BrowserUtil.browserInitWithAuth(['caseworker-ia-caseofficer', 'caseworker-ia-admofficer']);
-    await headerPage.waitForPrimaryNavDisplay()
+    await headerPage.waitForPrimaryNavDisplay();
     await BrowserUtil.waitForLD();
 
     for (const responseCode of testErrorResponseCodes) {
@@ -139,7 +138,7 @@ describe('Unhappy path task actions: ', function () {
       expect(await tasklistPage.isTaskActionRowForTaskDisplayed(1), 'Task actions for selected task not displayed').to.be.true;
 
       await tasklistPage.clickTaskAction('Reassign task');
-      expect(await taskAssignmentPage.amOnPage(),'Not on task assignment page').to.be.true;
+      expect(await taskAssignmentPage.amOnPage(), 'Not on task assignment page').to.be.true;
 
       const locations = await taskAssignmentPage.getLocationOptions();
       const caseworkers = await taskAssignmentPage.getCaseworkerOptions();
@@ -149,7 +148,6 @@ describe('Unhappy path task actions: ', function () {
 
       setErrorRespondeCodeOnApi('POST', '/workallocation/task/:taskId/assign', responseCode);
       await taskAssignmentPage.clickReassignBtn();
-
 
       const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
       await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action Reassign on submit status code ${responseCode} status response, error page not displayed`).to.be.true);
@@ -164,7 +162,7 @@ describe('Unhappy path task actions: ', function () {
 
   it('Available - action link page errors', async function () {
     await BrowserUtil.browserInitWithAuth(['caseworker-ia-caseofficer', 'caseworker-ia-admofficer']);
-    await headerPage.waitForPrimaryNavDisplay()
+    await headerPage.waitForPrimaryNavDisplay();
     await BrowserUtil.waitForLD();
 
     // expect(await tasklistPage.amOnPage()).to.be.true;
@@ -203,7 +201,7 @@ describe('Unhappy path task actions: ', function () {
 
   it('Task Manager - action link page errors', async function () {
     await BrowserUtil.browserInitWithAuth(['caseworker-ia-caseofficer', 'caseworker-ia-admofficer']);
-    await headerPage.waitForPrimaryNavDisplay()
+    await headerPage.waitForPrimaryNavDisplay();
     await BrowserUtil.waitForLD();
 
     // expect(await tasklistPage.amOnPage()).to.be.true;

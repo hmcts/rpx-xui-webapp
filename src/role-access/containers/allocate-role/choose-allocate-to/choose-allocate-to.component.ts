@@ -15,7 +15,6 @@ import { getTitleText } from '../../../utils';
   templateUrl: './choose-allocate-to.component.html'
 })
 export class ChooseAllocateToComponent implements OnInit {
-
   public ERROR_MESSAGE = ERROR_MESSAGE;
   @Input() public navEvent: AllocateRoleNavigation;
 
@@ -37,7 +36,7 @@ export class ChooseAllocateToComponent implements OnInit {
 
   public ngOnInit(): void {
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
-      allocateRoleStateData => {
+      (allocateRoleStateData) => {
         this.typeOfRole = allocateRoleStateData.typeOfRole;
         this.allocateTo = allocateRoleStateData.allocateTo;
         const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);

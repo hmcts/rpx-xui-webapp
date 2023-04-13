@@ -18,7 +18,6 @@ import { AllocateRoleService } from '../../services';
   templateUrl: './remove-role.component.html'
 })
 export class RemoveRoleComponent implements OnInit {
-
   public removeAllocationNavigationEvent = RemoveAllocationNavigationEvent;
   public answers: Answer[] = [];
   public caption = null;
@@ -45,14 +44,14 @@ export class RemoveRoleComponent implements OnInit {
   public ngOnInit(): void {
     this.backUrl = window.history.state && window.history.state.backUrl ? window.history.state.backUrl : '';
     const paramMap$ = this.route.queryParamMap;
-    paramMap$.pipe(mergeMap(queryMap => {
+    paramMap$.pipe(mergeMap((queryMap) => {
       return this.getRoleAssignmentFromQuery(queryMap);
     })).subscribe((caseRoles: CaseRole[]) => {
-      this.role = caseRoles.find(role => role.id === this.assignmentId);
+      this.role = caseRoles.find((role) => role.id === this.assignmentId);
       if (!this.role.email && this.role.actorId) {
         const caseworkers = JSON.parse(this.sessionStorageService.getItem('caseworkers'));
         if (caseworkers) {
-          const caseWorker = (caseworkers as Caseworker[]).find(caseworker => caseworker.idamId === this.role.actorId);
+          const caseWorker = (caseworkers as Caseworker[]).find((caseworker) => caseworker.idamId === this.role.actorId);
           if (caseWorker) {
             this.role.email = caseWorker.email;
           }
@@ -96,7 +95,7 @@ export class RemoveRoleComponent implements OnInit {
             }
           });
         },
-        error => {
+        (error) => {
           handleFatalErrors(error.status, this.router);
         }
         );
@@ -115,8 +114,8 @@ export class RemoveRoleComponent implements OnInit {
 
   private getNamesIfNeeded(): void {
     if (!this.role.name) {
-      this.caseworkerDataService.getCaseworkersForServices([this.jurisdiction]).pipe(first()).subscribe(caseworkers => {
-        const caseworker = caseworkers.find(givenCaseworker => givenCaseworker.idamId === this.role.actorId);
+      this.caseworkerDataService.getCaseworkersForServices([this.jurisdiction]).pipe(first()).subscribe((caseworkers) => {
+        const caseworker = caseworkers.find((givenCaseworker) => givenCaseworker.idamId === this.role.actorId);
         this.role.name = `${caseworker.firstName}-${caseworker.lastName}`;
         this.role.email = caseworker.email;
         this.answers = [];

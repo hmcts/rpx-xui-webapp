@@ -100,7 +100,7 @@ describe('Judicial ref data api, get all judge users', () => {
         },
         body: {
           userIds: ['004b7164-0943-41b5-95fc-39794af4a9fe', '004b7164-0943-41b5-95fc-39794af4a9ff'],
-          services:['IA']
+          services: ['IA']
         }
 
       });
@@ -135,7 +135,7 @@ function assertResponses(dto: any) {
   expect(dto[0].email_id).to.be.equal('tom.cruz@hmcts.net');
 }
 
-function getDummyJudgeUserDetails(){
+function getDummyJudgeUserDetails() {
   return {
     'sidam_id': somethingLike('018a0310-f122-4377-9504-f635301f39ed-test2'),
     'object_id': somethingLike('018a0310-f122-4377-9504-f635301f39ed-test2'),

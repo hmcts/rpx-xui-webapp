@@ -138,7 +138,6 @@ describe('Router Effects', () => {
   describe('navigateBack$', () => {
     it('should call Angular\'s Location.back() on dispatch' +
       ' of RouterActions.BACK', () => {
-
       const action = new Back();
       actions$ = hot('-a', { a: action });
       effects.navigateBack$.subscribe(() => {
@@ -149,7 +148,6 @@ describe('Router Effects', () => {
 
   describe('navigateForward$', () => {
     it('should call Angular\'s Location.forward() on dispatch of RouterActions.FORWARD', () => {
-
       const action = new Forward();
       actions$ = hot('-a', { a: action });
       effects.navigateForward$.subscribe(() => {

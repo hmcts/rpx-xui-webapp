@@ -8,5 +8,6 @@ import { Component, Input } from '@angular/core';
 export class PartiesUnavailableDatesComponent {
   @Input()
   public unAvailableDates: string[];
+
   public maxScrollBarDatesLength: number = 10;
 }

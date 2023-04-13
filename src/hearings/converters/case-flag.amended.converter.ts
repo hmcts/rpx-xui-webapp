@@ -9,7 +9,6 @@ import { CaseFlagsUtils } from '../utils/case-flags.utils';
 import { IsAmendedConverter } from './is-amended.converter';
 
 export class CaseFlagAmendedConverter implements IsAmendedConverter {
-
   public caseFlagsRefData: CaseFlagReferenceModel[];
 
   constructor(protected readonly route: ActivatedRoute) {
@@ -17,7 +16,7 @@ export class CaseFlagAmendedConverter implements IsAmendedConverter {
   }
 
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {
-    return hearingState$.pipe(map(state => {
+    return hearingState$.pipe(map((state) => {
       const partiesFromServiceValue: PartyDetailsModel[] = state.hearingValues.serviceHearingValuesModel.parties;
       const partyDetailsA = state.hearingRequestToCompare.hearingRequestMainModel.partyDetails;
       const partyWithFlagsA = CaseFlagsUtils.convertPartiesToPartyWithFlags(this.caseFlagsRefData,

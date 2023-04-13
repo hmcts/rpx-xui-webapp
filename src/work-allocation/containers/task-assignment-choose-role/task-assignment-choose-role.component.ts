@@ -108,9 +108,9 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
 
   private taskWithOwnPermission(roles: TaskRole[]): string[] {
     // EUI-5236 - TaskPermission instead of Permission (i.e. not all caps)
-    const possibleRoles = roles.filter(role => role.permissions.includes(TaskPermission.OWN));
+    const possibleRoles = roles.filter((role) => role.permissions.includes(TaskPermission.OWN));
     const roleList = [];
-    possibleRoles.forEach(possibleRole => {
+    possibleRoles.forEach((possibleRole) => {
       if (!roleList.includes(possibleRole.role_category)) {
         roleList.push(possibleRole.role_category.toUpperCase());
       }

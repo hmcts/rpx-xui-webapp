@@ -290,8 +290,8 @@ describe('SpecificAccessDurationComponent', () => {
       component.endDateYearCtrl = new FormControl(2025);
 
       component.getPeriod(DurationType.ANOTHER_PERIOD);
-      expect(component.startDateErrorMessage).toEqual({ isInvalid : true, messages: ['Invalid Start date'] });
-      expect(component.endDateErrorMessage).toEqual({ isInvalid : true, messages: ['Invalid End date'] });
+      expect(component.startDateErrorMessage).toEqual({ isInvalid: true, messages: ['Invalid Start date'] });
+      expect(component.endDateErrorMessage).toEqual({ isInvalid: true, messages: ['Invalid End date'] });
     });
 
     it('should display start date in past error message', () => {
@@ -304,7 +304,7 @@ describe('SpecificAccessDurationComponent', () => {
       component.endDateYearCtrl = new FormControl(2021);
 
       component.getPeriod(DurationType.ANOTHER_PERIOD);
-      expect(component.startDateErrorMessage).toEqual({ isInvalid : true, messages: ['The access start date must not be in the past'] });
+      expect(component.startDateErrorMessage).toEqual({ isInvalid: true, messages: ['The access start date must not be in the past'] });
     });
 
     it('should display end date must be after start date message', () => {
@@ -317,7 +317,7 @@ describe('SpecificAccessDurationComponent', () => {
       component.endDateYearCtrl = new FormControl(2021);
 
       component.getPeriod(DurationType.ANOTHER_PERIOD);
-      expect(component.endDateErrorMessage).toEqual( { isInvalid: true, messages: ['The access end date must be after the access start date'] });
+      expect(component.endDateErrorMessage).toEqual({ isInvalid: true, messages: ['The access end date must be after the access start date'] });
     });
   });
 

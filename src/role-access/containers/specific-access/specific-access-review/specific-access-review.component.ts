@@ -30,6 +30,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
     title: 'There is a problem',
     description: SpecificAccessErrors.NO_SELECTION
   };
+
   public optionsList: OptionsModel[];
 
   public submitted: boolean = false;
@@ -61,19 +62,21 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.specificAccessStateDataSub = this.store.pipe(select(fromFeature.getSpecificAccessState)).subscribe(
-      specificAccessStateData => {
+      (specificAccessStateData) => {
         this.specificAccessStateData = specificAccessStateData;
       }
     );
     if (this.specificAccessStateData.roleCategory === RoleCategory.JUDICIAL) {
       this.allocateRoleService.getCaseRolesUserDetails([this.specificAccessStateData.actorId], [this.specificAccessStateData.jurisdiction]).subscribe(
-        (caseRoleUserDetails) => { this.requesterName = caseRoleUserDetails[0].full_name; }
+        (caseRoleUserDetails) => {
+          this.requesterName = caseRoleUserDetails[0].full_name;
+        }
       );
     } else {
       this.waSupportedJurisdictionsService.getWASupportedJurisdictions().subscribe((services) => {
         this.caseworkerDataService.getCaseworkersForServices(services).subscribe(
           (caseworkers) => {
-            const caseworker = caseworkers.find(thisCaseworker => thisCaseworker.idamId === this.specificAccessStateData.actorId);
+            const caseworker = caseworkers.find((thisCaseworker) => thisCaseworker.idamId === this.specificAccessStateData.actorId);
             if (caseworker) {
               this.requesterName = `${caseworker.firstName} ${caseworker.lastName}`;
             }

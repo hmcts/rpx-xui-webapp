@@ -23,13 +23,13 @@ export class CaseFlagsResolver extends ServiceIdResolverResolve implements Resol
   public resolve(): Observable<CaseFlagReferenceModel[]> {
     return this.getServiceId$()
       .pipe(
-        switchMap(id => {
+        switchMap((id) => {
           return of(
             id ? id : this.serviceId);
         }), take(1),
         switchMap((serviceId) => {
           return this.caseFlagsRefDataService.getCaseFlagsRefData(serviceId).pipe(
-            map(data => data.flags[0].FlagDetails),
+            map((data) => data.flags[0].FlagDetails),
             catchError(() => {
               return this.router.navigate(['/hearings/error']);
             })

@@ -43,6 +43,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     defaultSortFieldName: 'dueDate',
     fields: this.fields
   };
+
   protected userDetailsKey: string = 'userDetails';
   private readonly assignTask: Subscription;
 

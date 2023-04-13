@@ -14,7 +14,7 @@ describe('Idam API user details', () => {
     email: somethingLike('joe.bloggs@hmcts.net'),
     active: somethingLike(true),
     roles: somethingLike([
-      somethingLike('solicitor'),somethingLike('caseworker')
+      somethingLike('solicitor'), somethingLike('caseworker')
     ])
   };
 
@@ -48,7 +48,7 @@ describe('Idam API user details', () => {
     it('returns the correct response', async () => {
       const taskUrl = `${pactSetUp.provider.mockService.baseUrl}`;
 
-      const response:Promise<any> = getDetails(taskUrl,jwt);
+      const response:Promise<any> = getDetails(taskUrl, jwt);
 
       response.then((axiosResponse) => {
         const dto:IdamGetDetailsResponseDto = <IdamGetDetailsResponseDto> axiosResponse;
@@ -61,7 +61,7 @@ describe('Idam API user details', () => {
   });
 });
 
-function assertResponses(dto:IdamGetDetailsResponseDto){
+function assertResponses(dto:IdamGetDetailsResponseDto) {
   expect(dto.active).to.be.equal(true);
   expect(dto.email).to.be.equal('joe.bloggs@hmcts.net');
   expect(dto.forename).to.be.equal('Joe');

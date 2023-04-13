@@ -22,7 +22,7 @@ class DataModelConvertor {
 
   public convertRefDataModelToArray = (dataSource: LovRefDataModel[]) => {
     const dataSourceArray = this.fb.array([]);
-    dataSource.forEach(listOfValue => {
+    dataSource.forEach((listOfValue) => {
       (dataSourceArray as FormArray).push(this.patchValues({
         key: listOfValue.key,
         value_en: listOfValue.value_en,
@@ -230,7 +230,7 @@ describe('MultiLevelSelectorComponent', () => {
     }
   ];
 
-  beforeEach(waitForAsync (() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [MultiLevelSelectorComponent],
@@ -239,7 +239,6 @@ describe('MultiLevelSelectorComponent', () => {
       ]
     })
       .compileComponents();
-
   }));
 
   beforeEach(() => {
@@ -289,14 +288,14 @@ describe('MultiLevelSelectorComponent', () => {
   it('should deselect node', () => {
     component.deSelectChildNodes(component.multiLevelSelect.controls[1]);
     fixture.detectChanges();
-    component.multiLevelSelect.controls[1].value.child_nodes.forEach(node => {
+    component.multiLevelSelect.controls[1].value.child_nodes.forEach((node) => {
       expect(node.selected).toEqual(false);
     });
   });
 
   it('should assign selected option to item control', () => {
     component.level = 2;
-    component.multiLevelSelect = (component.multiLevelSelect.controls[1] as FormGroup).controls['child_nodes'] as FormArray;
+    component.multiLevelSelect = (component.multiLevelSelect.controls[1] as FormGroup).controls.child_nodes as FormArray;
     component.assignSelectedOptionToItemControl();
     fixture.detectChanges();
     expect(component.formGroup.controls.item.value).toEqual('BBA3-MQPM2-003');

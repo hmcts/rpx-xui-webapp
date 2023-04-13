@@ -202,7 +202,6 @@ describe('HearingPanelComponent', () => {
   }];
 
   beforeEach(() => {
-
     const STATE = _.cloneDeep(initialState);
     STATE.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
       panelPreferences: JUDICAIL_USER_DETAILS,
@@ -249,7 +248,7 @@ describe('HearingPanelComponent', () => {
   });
 
   it('should fail the form validation when no panel member/roles are selected', () => {
-    component.panelJudgeForm.controls.multiLevelSelect.value.forEach(node => {
+    component.panelJudgeForm.controls.multiLevelSelect.value.forEach((node) => {
       node.selected = false;
     });
     component.includedJudge.judgeList = [];

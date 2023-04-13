@@ -47,7 +47,7 @@ describe('AllocateRoleService', () => {
   it('should be able to set judicial and legal ops roles from session storage', () => {
     sessionStorageService.getItem.and.returnValue(JSON.stringify(mockRoles));
     mockHttp.post.and.returnValue(of(mockRolesByService));
-    roleAssignmentService.getValidRoles(['IA']).subscribe(res => {
+    roleAssignmentService.getValidRoles(['IA']).subscribe((res) => {
       expect(res).toEqual(mockRoles);
     });
   });
@@ -77,7 +77,7 @@ describe('AllocateRoleService', () => {
     });
 
     it('should confirm allocation', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
-      service.confirmAllocation(STATE_DATA).subscribe(response => {
+      service.confirmAllocation(STATE_DATA).subscribe((response) => {
         expect(response).toBeNull();
       });
 
@@ -88,7 +88,7 @@ describe('AllocateRoleService', () => {
 
     it('should confirm reallocation', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
       const CURRENT_STATE = { ...STATE_DATA, action: Actions.Reallocate };
-      service.confirmAllocation(CURRENT_STATE).subscribe(response => {
+      service.confirmAllocation(CURRENT_STATE).subscribe((response) => {
         expect(response).toBeNull();
       });
       const req = httpMock.expectOne('/api/role-access/allocate-role/reallocate');
@@ -97,7 +97,7 @@ describe('AllocateRoleService', () => {
     }));
 
     it('should remove allocation', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
-      service.removeAllocation('111111').subscribe(response => {
+      service.removeAllocation('111111').subscribe((response) => {
         expect(response).toBeNull();
       });
       const req = httpMock.expectOne('/api/role-access/allocate-role/delete');
@@ -107,7 +107,7 @@ describe('AllocateRoleService', () => {
     }));
 
     it('should remove labelling role', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
-      service.manageLabellingRoleAssignment('111111').subscribe(response => {
+      service.manageLabellingRoleAssignment('111111').subscribe((response) => {
         expect(response).toBeNull();
       });
       const req = httpMock.expectOne('/api/role-access/roles/manageLabellingRoleAssignment/111111');
@@ -154,7 +154,7 @@ describe('AllocateRoleService', () => {
         }
       };
 
-      service.specificAccessApproval(specificAccessStateData, { startDate: new Date('01-01-2000'), endDate: new Date('01-01-2025') }).subscribe(response => {
+      service.specificAccessApproval(specificAccessStateData, { startDate: new Date('01-01-2000'), endDate: new Date('01-01-2025') }).subscribe((response) => {
         expect(response).toBeNull();
       });
       const req = httpMock.expectOne('/api/am/specific-access-approval');
@@ -194,7 +194,7 @@ describe('AllocateRoleService', () => {
         }
       };
 
-      service.requestMoreInformation(specificAccessState).subscribe(response => {
+      service.requestMoreInformation(specificAccessState).subscribe((response) => {
         expect(response).toBeNull();
       });
       const req = httpMock.expectOne('/api/specific-access-request/request-more-information');
@@ -237,7 +237,7 @@ describe('AllocateRoleService', () => {
           start: '2021-12-09T00:00:00Z'
         }
       ];
-      service.getCaseRolesUserDetails(caseRoles, ['IA']).subscribe(response => {
+      service.getCaseRolesUserDetails(caseRoles, ['IA']).subscribe((response) => {
         expect(response.length).toBe(1);
         expect(response).toEqual(data);
       });
@@ -245,11 +245,11 @@ describe('AllocateRoleService', () => {
 
     it('should get specific access approved', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
       const approvedCount = {
-        count : 5
+        count: 5
       };
       mockHttp.post.and.returnValue(of(approvedCount));
-      service.getMyAccessNewCount().subscribe(response => {
-        expect(response).toEqual({ count : 5 });
+      service.getMyAccessNewCount().subscribe((response) => {
+        expect(response).toEqual({ count: 5 });
       });
     }));
   });

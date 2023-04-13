@@ -162,7 +162,7 @@ describe('CaseCreateSubmitComponent', () => {
       .compileComponents();
   }));
 
-  beforeEach(waitForAsync (() => {
+  beforeEach(waitForAsync(() => {
     fixture = TestBed.createComponent(CaseCreateSubmitComponent);
     component = fixture.componentInstance;
     casesService = fixture.debugElement.injector.get(CasesService);
@@ -170,7 +170,6 @@ describe('CaseCreateSubmitComponent', () => {
     draftService = fixture.debugElement.injector.get(DraftService);
 
     fixture.detectChanges();
-
   }));
 
   it('should create', () => {

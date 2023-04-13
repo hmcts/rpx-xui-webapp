@@ -86,7 +86,7 @@ describe('util', () => {
   describe('some', () => {
     it('Should return true if predicate matches array value', () => {
       const array = [{ 1: 0 }, { 1: 1 }];
-      const predicate = x => {
+      const predicate = (x) => {
         return x[1] === 1;
       };
       const result = some(array, predicate);
@@ -95,7 +95,7 @@ describe('util', () => {
 
     it('Should return null if predicate does not match array value', () => {
       const array = [{ 1: 0 }, { 1: 2 }];
-      const predicate = x => {
+      const predicate = (x) => {
         return x[1] === 1;
       };
       const result = some(array, predicate);

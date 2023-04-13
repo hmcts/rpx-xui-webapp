@@ -20,7 +20,7 @@ describe('Hearing Links selectors', () => {
   describe('getHearingLinks', () => {
     it('should return hearings links state', () => {
       let result;
-      store.pipe(select(getHearingLinks)).subscribe(value => {
+      store.pipe(select(getHearingLinks)).subscribe((value) => {
         result = value;
       });
       expect(result).toEqual(initialHearingLinksState);

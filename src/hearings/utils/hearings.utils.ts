@@ -10,7 +10,7 @@ export class HearingsUtils {
 
   public static flattenArray(models: LovRefDataModel[]): LovRefDataModel[] {
     if (Array.isArray(models)) {
-      return models.concat(...models.map(lovData => lovData.child_nodes && lovData.child_nodes.length ?
+      return models.concat(...models.map((lovData) => lovData.child_nodes && lovData.child_nodes.length ?
         this.flattenArray(lovData.child_nodes) : []));
     } else {
       return models;
@@ -19,14 +19,14 @@ export class HearingsUtils {
 
   public static getValue(key: string, lovRefDataModels: LovRefDataModel[]): string {
     const flatChannels = HearingsUtils.flattenArray(lovRefDataModels);
-    const foundChannel = flatChannels && flatChannels.find(channel => channel.key === key);
+    const foundChannel = flatChannels && flatChannels.find((channel) => channel.key === key);
     return foundChannel ? foundChannel.value_en : key;
   }
 
   public static getValues(keys: string[], lovRefDataModels: LovRefDataModel[]): string[] {
     const flatChannels = HearingsUtils.flattenArray(lovRefDataModels);
-    return keys && keys.length && keys.map(key => {
-      const foundChannel = flatChannels.find(channel => channel.key === key);
+    return keys && keys.length && keys.map((key) => {
+      const foundChannel = flatChannels.find((channel) => channel.key === key);
       return foundChannel ? foundChannel.value_en : key;
     });
   }

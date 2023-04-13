@@ -9,7 +9,6 @@ import * as waSupportedJurisdictions from './index';
 chai.use(sinonChai);
 
 describe('WA Supported Jurisdictions', () => {
-
   let sandbox;
   let res;
   let req;

@@ -25,9 +25,9 @@ export class NocTimeFieldComponent extends AbstractFieldWriteComponent implement
     });
     if (this.timeControl.value) {
       const timeParts = this.timeControl.value.split(':');
-      this.timeGroup.controls['hour'].setValue(timeParts[0] || '');
-      this.timeGroup.controls['minute'].setValue(timeParts[1] || '');
-      this.timeGroup.controls['second'].setValue(timeParts[2] || '');
+      this.timeGroup.controls.hour.setValue(timeParts[0] || '');
+      this.timeGroup.controls.minute.setValue(timeParts[1] || '');
+      this.timeGroup.controls.second.setValue(timeParts[2] || '');
     }
   }
 

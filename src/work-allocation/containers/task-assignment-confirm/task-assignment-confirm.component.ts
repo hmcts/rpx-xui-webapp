@@ -17,7 +17,6 @@ import { handleTasksFatalErrors } from '../../utils';
   templateUrl: './task-assignment-confirm.component.html'
 })
 export class TaskAssignmentConfirmComponent implements OnInit {
-
   public verb: TaskActionType;
   public taskId: string;
   public rootPath: string;
@@ -63,7 +62,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
       }
     }
     this.verb = this.route.snapshot.data.verb as TaskActionType;
-    this.taskId = this.route.snapshot.params['taskId'];
+    this.taskId = this.route.snapshot.params.taskId;
     if (this.router && this.router.url) {
       this.rootPath = this.router.url.split('/')[1];
     }

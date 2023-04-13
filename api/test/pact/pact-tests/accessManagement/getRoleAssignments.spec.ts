@@ -108,7 +108,7 @@ describe('access management service, get role assignments of actor', () => {
       };
 
       const userInfo = {
-        uid:'12345',
+        uid: '12345',
         roles: []
       };
       // let roleAssignments = null;

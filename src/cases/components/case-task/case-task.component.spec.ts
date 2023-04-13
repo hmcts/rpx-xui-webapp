@@ -175,21 +175,18 @@ describe('CaseTaskComponent', () => {
 
   describe('claimTaskErrors()', () => {
     it('should make a call to navigate the user to the /service-down page, if the error status code is 500.', () => {
-
       component.claimTaskErrors(500);
 
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/service-down']);
     });
 
     it('should make a call to navigate the user to the /not-authorised page, if the error status code is 401.', () => {
-
       component.claimTaskErrors(401);
 
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-authorised']);
     });
 
     it('should make a call to navigate the user to the /not-authorised page, if the error status code is 403.', () => {
-
       component.claimTaskErrors(403);
 
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-authorised']);

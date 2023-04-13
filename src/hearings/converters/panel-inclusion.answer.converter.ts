@@ -13,11 +13,11 @@ export class PanelInclusionAnswerConverter implements AnswerConverter {
     const judicialUsersList: JudicialUserModel[] = this.route.snapshot.data.judicialUsers;
 
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-        const includedJudges: string[] = panelRequirements && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.MUSTINC).map(preferences => preferences.memberID);
+        const includedJudges: string[] = panelRequirements && panelRequirements.panelPreferences.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.MUSTINC).map((preferences) => preferences.memberID);
         const includedJudgeNames: string[] = [];
-        judicialUsersList.forEach(judgeInfo => {
+        judicialUsersList.forEach((judgeInfo) => {
           if (includedJudges.includes(judgeInfo.personalCode)) {
             includedJudgeNames.push(judgeInfo.fullName);
           }

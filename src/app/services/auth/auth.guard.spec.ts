@@ -53,7 +53,7 @@ describe('AuthGuard', () => {
 
     const canActivate = guard.canActivate();
 
-    canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
+    canActivate.subscribe((isAct) => expect(isAct).toBeTruthy());
     expect(authService.isAuthenticated).toHaveBeenCalled();
     expect(authService.loginRedirect).not.toHaveBeenCalled();
   });
@@ -64,7 +64,7 @@ describe('AuthGuard', () => {
     const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
 
     const canActivate = guard.canActivate();
-    canActivate.subscribe(isAct => expect(isAct).toBeFalsy());
+    canActivate.subscribe((isAct) => expect(isAct).toBeFalsy());
     expect(authService.isAuthenticated).toHaveBeenCalled();
     expect(authService.loginRedirect).toHaveBeenCalled();
   });
@@ -77,7 +77,7 @@ describe('AuthGuard', () => {
       const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
 
       const canActivate = guard.canActivate();
-      canActivate.subscribe(isAct => expect(isAct).toBeFalsy());
+      canActivate.subscribe((isAct) => expect(isAct).toBeFalsy());
 
       expect(authService.isAuthenticated).toHaveBeenCalled();
       expect(authService.loginRedirect).toHaveBeenCalled();
@@ -94,7 +94,7 @@ describe('AuthGuard', () => {
       const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
 
       const canActivate = guard.canActivate();
-      canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
+      canActivate.subscribe((isAct) => expect(isAct).toBeTruthy());
 
       expect(authService.setWindowLocationHref).not.toHaveBeenCalled();
     });
@@ -108,7 +108,7 @@ describe('AuthGuard', () => {
       const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
 
       const canActivate = guard.canActivate();
-      canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
+      canActivate.subscribe((isAct) => expect(isAct).toBeTruthy());
 
       expect(authService.setWindowLocationHref).toHaveBeenCalledWith('/cheesecakes/1');
     });
@@ -122,7 +122,7 @@ describe('AuthGuard', () => {
       const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
 
       const canActivate = guard.canActivate();
-      canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
+      canActivate.subscribe((isAct) => expect(isAct).toBeTruthy());
 
       expect(authService.setWindowLocationHref).not.toHaveBeenCalledWith('/cheesecakes/1');
     });

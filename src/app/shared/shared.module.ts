@@ -19,7 +19,7 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
  * FormsModule, CommonModule, ReactiveForms etc..
  */
 
-@NgModule( {
+@NgModule({
   imports: [
     RouterModule,
     CommonModule,

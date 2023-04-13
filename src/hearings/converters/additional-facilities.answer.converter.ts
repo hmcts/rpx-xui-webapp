@@ -9,13 +9,13 @@ export class AdditionalFacilitiesAnswerConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) {}
 
   private static getFacilityValue(hearingFacilities: LovRefDataModel[], key: string): string {
-    const lovData: LovRefDataModel = hearingFacilities.find(facility => facility.key === key);
+    const lovData: LovRefDataModel = hearingFacilities.find((facility) => facility.key === key);
     return lovData ? lovData.value_en : '';
   }
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         let result = '<ul>';
         const facilities = this.route.snapshot.data.additionFacilitiesOptions;
         if (state.hearingRequest.hearingRequestMainModel.hearingDetails

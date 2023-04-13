@@ -24,27 +24,31 @@ export class AppConfigService {
       catchError(this.handleError)
     );
   }
+
   /**
    * Getting configuration from the store
    * and setting it to private var
    */
   public setConfiguration() {
-    this.store.pipe(select(fromApp.getAppFeatures), take(1)).subscribe(config => {
+    this.store.pipe(select(fromApp.getAppFeatures), take(1)).subscribe((config) => {
       this.configuration = config;
     });
   }
+
   /**
    * Returning features config
    */
   public getFeatureToggle() {
     return this.configuration.features;
   }
+
   /**
    * Returning caseEditorConfig config
    */
   public getEditorConfiguration() {
     return this.configuration.caseEditorConfig;
   }
+
   /**
    * Returning urls config
    */

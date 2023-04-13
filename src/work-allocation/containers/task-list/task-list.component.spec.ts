@@ -131,7 +131,7 @@ describe('TaskListComponent', () => {
     component = fixture.componentInstance.appComponentRef;
     // create mock getDisplayedColumn variables
     const fieldConfig = getFields();
-    const fields = fieldConfig.map(field => field.name);
+    const fields = fieldConfig.map((field) => field.name);
     const displayedColumns = component.addManageColumn(fields);
 
     // test actual function against mock variables
@@ -452,7 +452,7 @@ describe('TaskListComponent', () => {
   describe('act upon deep linking', () => {
     const id = '12345678';
 
-    it('should select appropriate task from location hash', fakeAsync(async ()=> {
+    it('should select appropriate task from location hash', fakeAsync(async () => {
       component = fixture.componentInstance.appComponentRef;
       const task = { id } as Task;
       wrapper.tasks = [ task ];

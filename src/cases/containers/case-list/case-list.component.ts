@@ -114,7 +114,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.resultView = null;
     this.definitionsService.getJurisdictions('read').subscribe(this.jurisdictionsBehaviourSubject$);
 
-    this.jurisdictionsBehaviourSubject$.pipe(takeUntil(this.unsubscribe$)).subscribe( jurisdictions => {
+    this.jurisdictionsBehaviourSubject$.pipe(takeUntil(this.unsubscribe$)).subscribe((jurisdictions) => {
       this.isVisible = jurisdictions.length > 0;
       this.jurisdictions = jurisdictions;
     });
@@ -140,46 +140,46 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.caseType$,
       this.caseState$,
       this.metadataFields$
-    ]).subscribe(result => this.onFilterSubscriptionHandler(result));
+    ]).subscribe((result) => this.onFilterSubscriptionHandler(result));
 
     this.caseFilterToggle$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterToggle));
-    this.caseFilterToggleSubscription = this.caseFilterToggle$.pipe(takeUntil(this.unsubscribe$)).subscribe( (result: boolean) => this.onToggleHandler(result));
+    this.caseFilterToggleSubscription = this.caseFilterToggle$.pipe(takeUntil(this.unsubscribe$)).subscribe((result: boolean) => this.onToggleHandler(result));
 
     this.listenToPaginationMetadata();
 
     this.resultView$ = this.store.pipe(select(fromCasesFeature.caselistFilterResultView));
-    this.resultSubscription = this.resultView$.subscribe(resultView =>
+    this.resultSubscription = this.resultView$.subscribe((resultView) =>
       this.onResultsViewHandler(resultView));
 
     this.triggerQuery();
 
-    this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe(value => this.elasticSearchFlag = value);
+    this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe((value) => this.elasticSearchFlag = value);
     this.userDetails = this.store.pipe(select(fromRoot.getUserDetails));
     this.pIsCaseShareVisible$ = combineLatest([
       this.userDetails, this.shareableJurisdictions$, this.jurisdiction$
-    ]).pipe(mergeMap(project => {
+    ]).pipe(mergeMap((project) => {
       this.cd.detectChanges();
       return of(this.caseShareIsVisible(project));
     }));
 
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
-    this.shareCases$.pipe(takeUntil(this.unsubscribe$)).subscribe(shareCases => this.selectedCases = converters.toSearchResultViewItemConverter(shareCases));
+    this.shareCases$.pipe(takeUntil(this.unsubscribe$)).subscribe((shareCases) => this.selectedCases = converters.toSearchResultViewItemConverter(shareCases));
     this.getOrganisationDetailsFromStore();
   }
 
   public listenToPaginationMetadata = () => {
     this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterPaginationMetadata));
-    this.paginationSubscription = this.paginationMetadata$.subscribe(paginationMetadata =>
+    this.paginationSubscription = this.paginationMetadata$.subscribe((paginationMetadata) =>
       this.onPaginationSubscribeHandler(paginationMetadata));
   };
 
   public doesIdExist(arr = [], id): boolean {
-    return arr.some(element => element.id === id);
+    return arr.some((element) => element.id === id);
   }
 
   public setCaseListFilterDefaults = () => {
     this.jurisdictionsBehaviourSubject$.asObservable()
-      .subscribe(jurisdictions => {
+      .subscribe((jurisdictions) => {
         if (jurisdictions.length > 0) {
           this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
           if (this.savedQueryParams && this.savedQueryParams.jurisdiction && !this.doesIdExist(this.jurisdictions, this.savedQueryParams.jurisdiction)) {
@@ -211,7 +211,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * ['[CASE_REFERENCE]']
    * ]
    */
-  public onFilterSubscriptionHandler = result => {
+  public onFilterSubscriptionHandler = (result) => {
     this.jurisdiction = {
       ...result[0]
     };
@@ -226,12 +226,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
     };
   };
 
-  public onToggleHandler = showFilter => {
+  public onToggleHandler = (showFilter) => {
     this.showFilter = showFilter;
     this.toggleButtonName = this.getToggleButtonName(this.showFilter);
   };
 
-  public onResultsViewHandler = resultView => {
+  public onResultsViewHandler = (resultView) => {
     if (this.elasticSearchFlag) {
       const paginationDataFromResult: PaginationMetadata = {
         total_results_count: resultView.total,
@@ -240,13 +240,15 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.onPaginationSubscribeHandler(paginationDataFromResult);
     }
 
-    if (typeof resultView.results !== 'undefined') { this.resultViewIsReady = true; }
+    if (typeof resultView.results !== 'undefined') {
+      this.resultViewIsReady = true;
+    }
 
     this.resultsArr = resultView.results;
     this.resultView = {
       ...resultView,
       columns: resultView.columns ? resultView.columns : [],
-      results: resultView.results ? resultView.results.map(item => {
+      results: resultView.results ? resultView.results.map((item) => {
         return {
           ...item,
           hydrated_case_fields: null
@@ -261,7 +263,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    *
    * @param paginationMetadata - {total_pages_count: 33, total_results_count: 811}
    */
-  public onPaginationSubscribeHandler = paginationMetadata => {
+  public onPaginationSubscribeHandler = (paginationMetadata) => {
     if (typeof paginationMetadata !== 'undefined' && typeof paginationMetadata.total_pages_count !== 'undefined') {
       this.paginationMetadata.total_pages_count = paginationMetadata.total_pages_count;
       this.paginationMetadata.total_results_count = paginationMetadata.total_results_count;
@@ -456,7 +458,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   public getOrganisationDetailsFromStore(): void {
     this.store.dispatch(new fromStore.LoadOrganisation());
-    this.orgStore.pipe(select(fromStore.getOrganisationSel)).subscribe(response => {
+    this.orgStore.pipe(select(fromStore.getOrganisationSel)).subscribe((response) => {
       this.organisationDetails = response;
       if (this.organisationDetails && this.organisationDetails.organisationIdentifier) {
         sessionStorage.setItem('organisationDetails', JSON.stringify(this.organisationDetails));

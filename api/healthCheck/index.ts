@@ -45,7 +45,7 @@ export function getPromises(path): any[] {
     }
   }
   if (healthCheckEndpointDictionary[path]) {
-    healthCheckEndpointDictionary[path].forEach(endpoint => {
+    healthCheckEndpointDictionary[path].forEach((endpoint) => {
       // TODO: Have health config for this.
       logger.info('healthEndpoints', endpoint);
       logger.info(healthEndpoints()[endpoint]);

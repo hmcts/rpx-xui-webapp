@@ -50,12 +50,13 @@ export class AllocateRoleEffects {
                 }
               });
             }),
-            catchError(error => {
+            catchError((error) => {
               return AllocateRoleEffects.handleError(error);
             })
           )
       )
     );
+
   private readonly payload: any;
 
   constructor(
@@ -90,6 +91,6 @@ export class AllocateRoleEffects {
   }
 }
 export function getRolesForRoleCategory(roles: Role[], roleCategory: string): Role [] {
-  return roles.filter(role => role.roleCategory === roleCategory);
+  return roles.filter((role) => role.roleCategory === roleCategory);
 }
 

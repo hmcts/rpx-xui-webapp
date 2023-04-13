@@ -45,6 +45,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       ]
     }
   };
+
   public appStoreSub: Subscription;
   private sub: Subscription;
 
@@ -54,7 +55,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   private static initServiceFilter(jurisdictions: string[]): FilterFieldConfig {
     return {
       name: 'jurisdiction',
-      options: jurisdictions.map(service => ({ key: service, label: service })),
+      options: jurisdictions.map((service) => ({ key: service, label: service })),
       minSelected: 1,
       maxSelected: 1,
       minSelectedError: 'You must select a service',
@@ -148,7 +149,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
-      userDetails => {
+      (userDetails) => {
         const isLegalOpsOrJudicialRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.getUserRole(userDetails.userInfo.roles) : null;
         const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);
         this.filterConfig.cancelSetting.fields.push({

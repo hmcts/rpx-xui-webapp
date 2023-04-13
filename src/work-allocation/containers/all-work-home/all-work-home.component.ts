@@ -24,7 +24,7 @@ export class AllWorkHomeComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
-    this.routeSubscription = this.router.events.subscribe(event => {
+    this.routeSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         // Set up the active navigation item.
         this.setupActiveSubNavigationItem(this.router.url);

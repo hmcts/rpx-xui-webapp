@@ -10,7 +10,6 @@ import * as fromRoot from '../../store';
   templateUrl: './terms-and-conditions.component.html'
 })
 export class TermsAndConditionsComponent implements OnInit, OnDestroy {
-
   public document: TCDocument = null;
   private readonly subscriptions = new Subscription();
 
@@ -20,12 +19,12 @@ export class TermsAndConditionsComponent implements OnInit, OnDestroy {
                 private readonly termsAndConditionsService: TermsConditionsService) {}
 
   public ngOnInit() {
-    this.termsAndConditionsService.isTermsConditionsFeatureEnabled().subscribe(enabled => {
+    this.termsAndConditionsService.isTermsConditionsFeatureEnabled().subscribe((enabled) => {
       if (enabled) {
         this.isTandCEnabled = true;
         const s = this.store.pipe(
           select(fromRoot.getTermsAndConditions)
-        ).subscribe(doc => {
+        ).subscribe((doc) => {
           if (doc) {
             this.document = doc;
           } else {

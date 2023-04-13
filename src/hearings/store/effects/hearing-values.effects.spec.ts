@@ -170,7 +170,7 @@ describe('Hearing Values Effects', () => {
         status: 500,
         message: 'error'
       }, '1111222233334444');
-      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/cases/case-details/1111222233334444/hearings'] })));
+      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/cases/case-details/1111222233334444/hearings'] })));
     });
 
     it('should handle 4xx related errors', () => {
@@ -178,7 +178,7 @@ describe('Hearing Values Effects', () => {
         status: 403,
         message: 'error'
       }, '1111222233334444');
-      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/cases/case-details/1111222233334444/hearings'] })));
+      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/cases/case-details/1111222233334444/hearings'] })));
     });
   });
 });

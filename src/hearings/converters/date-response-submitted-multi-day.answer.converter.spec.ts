@@ -5,7 +5,6 @@ import { State } from '../store/reducers';
 import { DateResponseSubmittedMultiDayAnswerConverter } from './date-response-submitted-multi-day.answer.converter';
 
 describe('DateResponseSubmittedMultiDayAnswerConverter', () => {
-
   let dateResponseSubmittedMultiDayAnswerConverter: DateResponseSubmittedMultiDayAnswerConverter;
 
   beforeEach(() => {

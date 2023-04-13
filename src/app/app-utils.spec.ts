@@ -140,7 +140,7 @@ describe('setActiveLink', () => {
     { href: '/cases/case-filter', active: false, text: 'D' }
   ];
 
-  it ('should check the tabs correctly', () => {
+  it('should check the tabs correctly', () => {
     // verify matching url returns true
     expect(AppUtils.checkTabs(mockItems, '/tasks/task-manager')).toEqual([ true, '' ]);
     // verify matching url given as longest matching href
@@ -230,7 +230,7 @@ describe('setThemeBasedOnUserType', () => {
     const theme = { appTitle: {} } as Theme;
     AppUtils.setThemeBasedOnUserType('Judicial', theme);
     expect(theme.appTitle.name).toEqual('Judicial Case Manager');
-    expect(theme.backgroundColor).toEqual( '#8d0f0e');
+    expect(theme.backgroundColor).toEqual('#8d0f0e');
     expect(theme.logo).toEqual('judicial');
   });
 

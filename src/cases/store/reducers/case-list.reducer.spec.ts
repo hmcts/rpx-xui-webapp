@@ -21,13 +21,13 @@ describe('CaseList Filter Reducer', () => {
             id: '1',
             name: 'One',
             description: 'One desc'
-          } ,
+          },
           jurisdiction: {
             id: '2',
             name: 'Two',
             description: 'Two desc',
             caseTypes: []
-          } ,
+          },
           caseType: {
             id: '3',
             name: 'case type',

@@ -88,7 +88,7 @@ export const JUDICIAL_WORKERS_LOCATIONS = [
     domain: PersonRole.JUDICIAL,
     location: {
       id: '231596',
-      locationName:'Birmingham'
+      locationName: 'Birmingham'
     }
   }
 ];

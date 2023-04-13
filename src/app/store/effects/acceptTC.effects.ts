@@ -18,7 +18,7 @@ export class AcceptTcEffects {
       ofType(acceptTandCActions.LOAD_HAS_ACCEPTED_TC),
       switchMap((action: any) => {
         return this.acceptTcService.getIsUserAccepted(action.payload).pipe(
-          map(userId => {
+          map((userId) => {
             return new acceptTandCActions.LoadHasAcceptedTCSuccess(userId);
           }),
           catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))
@@ -31,7 +31,7 @@ export class AcceptTcEffects {
       ofType(acceptTandCActions.ACCEPT_T_AND_C),
       switchMap((action: any) => {
         return this.acceptTcService.postUserAccepted(action.payload).pipe(
-          map(accepted => {
+          map((accepted) => {
             return new acceptTandCActions.AcceptTandCSuccess(accepted);
           }),
           catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))

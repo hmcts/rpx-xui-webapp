@@ -15,12 +15,12 @@ describe('Task management api, task roles', () => {
   const RESPONSE_BODY = { roles: [] };
 
   const roles = [
-    { roleName: 'case-worker', roleCategory:'LEGAL_OPERATIONS' },
+    { roleName: 'case-worker', roleCategory: 'LEGAL_OPERATIONS' },
     { roleName: 'lead-judge', roleCategory: 'JUDICIAL' },
     { roleName: 'hearing-judge', roleCategory: 'JUDICIAL' }
   ];
 
-  for(const role of roles){
+  for(const role of roles) {
     const testRole = {
       role_category: somethingLike(role.roleCategory),
       role_name: somethingLike(role.roleName),
@@ -120,6 +120,6 @@ function assertResponses(dto: any) {
   console.log(JSON.stringify(dto));
   expect(dto[0].role_category).to.be.equal('LEGAL_OPERATIONS');
   expect(dto[0].role_name).to.be.equal('case-worker');
-  expect(dto[0].permissions).to.include.members(['OWN','EXECUTE','READ','MANAGE','CANCEL']);
-  expect(dto[0].authorisations).to.include.members(['IAC','SSCS']);
+  expect(dto[0].permissions).to.include.members(['OWN', 'EXECUTE', 'READ', 'MANAGE', 'CANCEL']);
+  expect(dto[0].authorisations).to.include.members(['IAC', 'SSCS']);
 }

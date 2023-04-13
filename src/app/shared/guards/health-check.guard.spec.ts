@@ -6,7 +6,6 @@ import { HealthCheckService } from '../services/health-check.service';
 import { HealthCheckGuard } from './health-check.guard';
 
 class HttpClientMock {
-
   public get() {
     return { healthState: true };
   }

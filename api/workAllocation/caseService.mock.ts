@@ -17,7 +17,7 @@ export const init = () => {
 
   // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
-  mock.onPost(judicialMyCaseUrl).reply(config => {
+  mock.onPost(judicialMyCaseUrl).reply((config) => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
@@ -33,7 +33,7 @@ export const init = () => {
     ];
   });
 
-  mock.onPost(caseworkerMyCaseUrl).reply(config => {
+  mock.onPost(caseworkerMyCaseUrl).reply((config) => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
@@ -49,7 +49,7 @@ export const init = () => {
     ];
   });
 
-  mock.onPost(judicialAllCaseUrl).reply(config => {
+  mock.onPost(judicialAllCaseUrl).reply((config) => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     console.log(JSON.stringify(body, null, 2));
@@ -68,7 +68,7 @@ export const init = () => {
     ];
   });
 
-  mock.onPost(caseworkerAllCaseUrl).reply(config => {
+  mock.onPost(caseworkerAllCaseUrl).reply((config) => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;

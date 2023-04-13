@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { TaskAction } from '.';
 
 export default interface Task {
@@ -17,7 +18,7 @@ export default interface Task {
   derivedIcon?: string;
   jurisdiction?: string;
   isNew?: boolean;
-};
+}
 
 export interface TaskResponse {
   tasks: Task[];

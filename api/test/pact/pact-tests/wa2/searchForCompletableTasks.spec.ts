@@ -102,10 +102,10 @@ describe('Task management api, Search for completable tasks on case event', () =
         },
         body: {
           searchRequest: {
-            ccdId:mockRequest.case_id,
-            jurisdiction:mockRequest.case_jurisdiction,
-            caseTypeId:mockRequest.case_type,
-            eventId:mockRequest.event_id
+            ccdId: mockRequest.case_id,
+            jurisdiction: mockRequest.case_jurisdiction,
+            caseTypeId: mockRequest.case_type,
+            eventId: mockRequest.event_id
           }
         }
       });

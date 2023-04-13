@@ -47,7 +47,9 @@ describe('AddExclusionCheckAnswersComponent', () => {
     });
 
     it('should throw an error if there is an invalid navigation action', () => {
-      expect(() => { component.navigationHandler(ExclusionNavigationEvent.CONTINUE); }).toThrow(new Error('Invalid option'));
+      expect(() => {
+        component.navigationHandler(ExclusionNavigationEvent.CONTINUE);
+      }).toThrow(new Error('Invalid option'));
     });
   });
 

@@ -219,7 +219,6 @@ describe('RolesContainerComponent', () => {
 
   it('should get exclusions from the api', () => {
     component.exclusions$.subscribe((exclusions: RoleExclusion[]) => {
-
       expect(exclusions.length).toBe(1);
       expect(exclusions[0].name).toBe('Judge Birch');
     });
@@ -269,7 +268,7 @@ describe('RolesContainerComponent', () => {
     allocateService.getCaseRolesUserDetails.and.returnValue(of(caseUserDetails));
     const casefield = {};
     component.loadRoles(casefield);
-    component.roles$.subscribe(roles => {
+    component.roles$.subscribe((roles) => {
       expect(roles).not.toBeNull();
       expect(roles.length).toEqual(1);
       expect(roles[0].actorId).toEqual('234');

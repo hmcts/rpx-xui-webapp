@@ -15,7 +15,7 @@ const taskPermissions = ['Read', 'Execute', 'Manage', 'Refer', 'Own', ' Cancel']
 
 describe('Task management api, Search task', () => {
   const RESPONSE_BODY = {
-    'tasks':[
+    'tasks': [
       {
         'id': somethingLike('4d4b6fgh-c91f-433f-92ac-e456ae34f72a'),
         'name': somethingLike('Review the appeal'),
@@ -124,14 +124,14 @@ describe('Task management api, Search task', () => {
 
     it('returns the correct response', async () => {
       const configValues = getSearchTaskOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config,'get').callsFake((prop) =>{
+      sandbox.stub(config, 'get').callsFake((prop) => {
         return configValues[prop];
       });
 
       const { searchTask } = requireReloaded('../../../../workAllocation/index');
 
       const req = mockReq({
-        headers:{
+        headers: {
           Authorization: 'Bearer someAuthorizationToken',
           ServiceAuthorization: 'Bearer someServiceAuthorizationToken'
           // 'content-Type': 'application/json'
@@ -139,9 +139,9 @@ describe('Task management api, Search task', () => {
         body: {
           searchRequest: {
             ...mockSearchRequestBody,
-            pagination_parameters : {
-              page_number : 1,
-              page_size : 25
+            pagination_parameters: {
+              page_number: 1,
+              page_size: 25
             }
           },
           view: 'AllWork'
@@ -159,7 +159,7 @@ describe('Task management api, Search task', () => {
         assertResponses(returnedResponse);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
-      } catch(err){
+      } catch(err) {
         console.log(err.stack);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();

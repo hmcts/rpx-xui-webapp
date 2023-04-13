@@ -170,7 +170,6 @@ describe('SearchFilterService', () => {
 
   describe('findPaginationMetadata', () => {
     it('should httpService get call', () => {
-
       const nameControl = new FormControl();
       const NAME_VALUE = 'something';
 

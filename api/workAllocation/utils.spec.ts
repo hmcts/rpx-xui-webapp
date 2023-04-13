@@ -1248,7 +1248,7 @@ describe('workAllocation.utils', () => {
           }
         }
       ];
-      const res = mockRes({status: 200, data: mockRoleAssignments});
+      const res = mockRes({ status: 200, data: mockRoleAssignments });
       sandbox.stub(http, 'post').resolves(res);
       const data = await getRoleAssignmentsByQuery(caseAllocatorQuery, req);
       expect(data).to.deep.equal(mockRoleAssignments);
@@ -1675,7 +1675,7 @@ describe('workAllocation.utils', () => {
         }
       ];
       const req = mockReq();
-      const res = mockRes({status: 200, data: typesOfWork});
+      const res = mockRes({ status: 200, data: typesOfWork });
       sandbox.stub(http, 'get').resolves(res);
 
       const data = await getTypesOfWorkByUserId(req, req);

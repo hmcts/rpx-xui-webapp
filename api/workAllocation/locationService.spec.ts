@@ -12,7 +12,7 @@ chai.use(sinonChai);
 
 describe('Location Service', () => {
   let sandbox: sinon.SinonSandbox;
-  const res = mockRes({status: 200, data: ALL_LOCATIONS});
+  const res = mockRes({ status: 200, data: ALL_LOCATIONS });
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();

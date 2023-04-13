@@ -24,6 +24,6 @@ export class PriorityFieldComponent {
       return this.dueDate < today ? TaskPriority.HIGH : TaskPriority.LOW;
     }
 
-    return TaskPriority.LOW;
+    return undefined;
   }
 }

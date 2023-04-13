@@ -31,7 +31,7 @@ module.exports = {
     'comma-dangle': ['error', 'never'],
     'comma-spacing': 'error',
     'curly': ['error', 'all'],
-    'dot-notation': 'error',
+    // 'dot-notation': 'error',
     'eol-last': ['error', 'always'],
     'eqeqeq': 'error',
     'func-call-spacing': ['error', 'never'],

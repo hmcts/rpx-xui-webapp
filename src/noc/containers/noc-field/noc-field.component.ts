@@ -38,11 +38,11 @@ export class NocFieldComponent extends AbstractFieldWriteComponent implements On
     const component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
     // Provide component @Inputs
-    component.instance.questionField = plainToClassFromExist(new NocQuestion(), this.questionField);
-    component.instance.answerValue$ = this.answerValue$;
-    component.instance.formGroup = this.formGroup;
-    component.instance.registerControl = this.registerControl || this.defaultControlRegister();
-    component.instance.idPrefix = this.idPrefix;
+    component.instance['questionField'] = plainToClassFromExist(new NocQuestion(), this.questionField);
+    component.instance['answerValue$'] = this.answerValue$;
+    component.instance['formGroup'] = this.formGroup;
+    component.instance['registerControl'] = this.registerControl || this.defaultControlRegister();
+    component.instance['idPrefix'] = this.idPrefix;
     this.fieldContainer.insert(component.hostView);
   }
 }

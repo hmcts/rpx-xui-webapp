@@ -99,20 +99,16 @@ describe('CaseListComponent', () => {
   });
 
   describe('getToggleButtonName()', () => {
+    it('should return the toggle button name as \'Hide Filter\' if we have shown the filter', () => {
+      expect(component.getToggleButtonName(true)).toEqual('Hide Filter');
+    });
 
-    it('should return the toggle button name as \'Hide Filter\' if we have shown ' +
-      'the filter', () => {
-        expect(component.getToggleButtonName(true)).toEqual('Hide Filter');
-      });
-
-    it('should return the toggle button name as \'Show Filter\' if we do not show ' +
-      'the filter', () => {
-        expect(component.getToggleButtonName(false)).toEqual('Show Filter');
-      });
+    it('should return the toggle button name as \'Show Filter\' if we do not show the filter', () => {
+      expect(component.getToggleButtonName(false)).toEqual('Show Filter');
+    });
   });
 
   describe('findCaseListPaginationMetadata()', () => {
-
     /**
      * TODO: event should show the shape of event object.
      */
@@ -126,7 +122,6 @@ describe('CaseListComponent', () => {
   });
 
   describe('getElasticSearchResults', () => {
-
     it('should dispatch an action to get results from elastic search endpoint.', () => {
       const event = {
         test: 'test',
@@ -137,7 +132,6 @@ describe('CaseListComponent', () => {
   });
 
   describe('toggleFilter()', () => {
-
     /**
      * TODO: We should always give the payload a proper name, not just payload.
      */
@@ -149,14 +143,12 @@ describe('CaseListComponent', () => {
   });
 
   describe('createEvent()', () => {
-
     /**
      * We should think about calling the createEvent function
      * makePaginationMetadataQuery as it's only used to find the Case List Pagination
      * Metadata.
      */
     it('should be able to create an event.', async () => {
-
       const jurisdiction = { id: 'PROBATE' };
       const caseType = { id: 'GrantOfRepresentation' };
       const caseState = { id: 'CaseCreated' };
@@ -177,7 +169,6 @@ describe('CaseListComponent', () => {
   });
 
   describe('applyChangePage()', () => {
-
     /**
      * We initially check that page is undefined, so that we know that calling the
      * findCaseListPaginationMetadata() function is definitely changing the components page property.
@@ -205,7 +196,6 @@ describe('CaseListComponent', () => {
      * pagination metadata.
      */
     it('should call findCaseListPaginationMetadata() on page change.', async () => {
-
       const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
 
       const event = {
@@ -224,7 +214,6 @@ describe('CaseListComponent', () => {
     });
 
     it('should call getElasticSearchResults() on page change and LD elastic search enabled.', async () => {
-
       const spyOnGetElasticSearchResults = spyOn(component, 'getElasticSearchResults').and.callThrough();
 
       const event = {
@@ -239,9 +228,7 @@ describe('CaseListComponent', () => {
       component.elasticSearchFlag = false;
     });
 
-
     it('should call findCaseListPaginationMetadata() on page change with values from localStorage.', () => {
-
       const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
 
       const event = {
@@ -268,11 +255,9 @@ describe('CaseListComponent', () => {
   });
 
   describe('applyFilter()', () => {
-
     let event;
 
     beforeEach(async () => {
-
       const jurisdiction = { id: 'PROBATE' };
       const caseType = { id: 'GrantOfRepresentation' };
       const caseState = { id: 'CaseCreated' };
@@ -285,7 +270,6 @@ describe('CaseListComponent', () => {
     });
 
     it('should call findCaseListPaginationMetadata() on apply of filter.', async () => {
-
       const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
 
       component.elasticSearchFlag = false;
@@ -298,7 +282,6 @@ describe('CaseListComponent', () => {
     });
 
     it('should call getElasticSearchResults() on apply of filter and LD elastic search enabled.', async () => {
-
       const spyOnGetElasticSearchResults = spyOn(component, 'getElasticSearchResults').and.callThrough();
 
       component.elasticSearchFlag = true;

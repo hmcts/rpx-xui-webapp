@@ -39,6 +39,7 @@ import {
   NGXMapperService
 } from 'ngx-logger';
 import { RpxTranslationModule } from 'rpx-xui-translation';
+import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
 import { environment } from '../environments/environment';
 import {
   EnvironmentConfig,
@@ -51,7 +52,6 @@ import { AppComponent } from './containers/app/app.component';
 // common provider
 import { ProvidersModule } from './providers/providers.module';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
-import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
 import { CaseShareService } from './services/case/share-case.service';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { JurisdictionService } from './services/jurisdiction/jurisdiction.service';

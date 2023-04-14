@@ -1,33 +1,30 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
+import { UserRole } from 'src/app/models';
+import { AppUtils } from '../../../app/app-utils';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import * as fromActions from '../../../app/store';
 import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
 import { AllocateRoleService } from '../../../role-access/services';
+import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { ALL_LOCATIONS } from '../../components/constants/locations';
 import { Case } from '../../models/cases';
 import { Location } from '../../models/dtos';
 import {
-  CaseworkerDataService,
-  JurisdictionsService,
-  LocationDataService,
-  WASupportedJurisdictionsService,
-  WorkAllocationCaseService,
+	CaseworkerDataService,
+	JurisdictionsService,
+	LocationDataService,
+	WASupportedJurisdictionsService,
+	WorkAllocationCaseService
 } from '../../services';
 import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
 import { AllWorkCaseComponent } from './all-work-case.component';
-
-import { UserRole } from 'src/app/models';
-import { AppUtils } from '../../../app/app-utils';
-import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
-
-import * as fromActions from '../../../app/store';
 
 describe('AllWorkCaseComponent', () => {
   let component: AllWorkCaseComponent;

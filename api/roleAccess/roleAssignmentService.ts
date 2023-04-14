@@ -1,10 +1,10 @@
-import { getConfigValue } from '../configuration';
-import { NextFunction, Response } from 'express';
-import { EnhancedRequest } from '../lib/models';
-import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
-import { setHeaders } from '../lib/proxy';
-import { http } from '../lib/http';
 import { AxiosResponse } from 'axios';
+import { NextFunction, Response } from 'express';
+import { getConfigValue } from '../configuration';
+import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
+import { http } from '../lib/http';
+import { EnhancedRequest } from '../lib/models';
+import { setHeaders } from '../lib/proxy';
 import { Role, RolesByService } from './models/roleType';
 
 export async function getPossibleRoles(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
@@ -16,18 +16,18 @@ export async function getPossibleRoles(req: EnhancedRequest, res: Response, next
       serviceIds.forEach(serviceId => {
         // note: if service obtained, check role either includes service or does not specify service
         const serviceRoles = roles.filter(role =>
-          role.roleJurisdiction && (role.roleJurisdiction.values && role.roleJurisdiction.values.includes(serviceId)))
+          role.roleJurisdiction && (role.roleJurisdiction.values && role.roleJurisdiction.values.includes(serviceId)));
         rolesByService.push({service: serviceId, roles: serviceRoles});
-      })
+      });
     }
     return res.send(rolesByService).status(200);
   } catch (error) {
-      next(error);
+    next(error);
   }
 }
 export async function getSubstantiveRoles(req: EnhancedRequest) {
   if (req.session.subStantiveRoles) {
-    return req.session.subStantiveRoles as []
+    return req.session.subStantiveRoles as [];
   }
   const response = await getAllRoles(req);
   const results = (response.data as Role[]);
@@ -58,16 +58,14 @@ export async function getAllRoles(req: EnhancedRequest): Promise<AxiosResponse<R
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const fullPath = `${basePath}/am/role-assignments/roles`;
   const headers = setHeaders(req);
-  const response: AxiosResponse<Role[]> = await http.get(fullPath, { headers });
-  return response;
+  return await http.get(fullPath, { headers });
 }
 
 export async function getRolesByCaseId(req: EnhancedRequest): Promise<AxiosResponse<Role[]>> {
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const fullPath = `${basePath}/am/role-assignments/roles`;
   const headers = setHeaders(req);
-  const response: AxiosResponse<Role[]> = await http.get(fullPath, { headers });
-  return response;
+  return await http.get(fullPath, { headers });
 }
 
 function filterRoleAssignments(): (value: Role, index: number, array: Role[]) => unknown {

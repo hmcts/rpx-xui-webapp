@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { approveSpecificAccessRequest, getBookings, createBooking, refreshRoleAssignments } from '.';
+import { approveSpecificAccessRequest, createBooking, getBookings, refreshRoleAssignments } from '.';
 import authInterceptor from '../lib/middleware/auth';
 
 const router = express.Router({ mergeParams: true });

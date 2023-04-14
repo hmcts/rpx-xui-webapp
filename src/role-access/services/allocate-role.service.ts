@@ -14,7 +14,9 @@ export class AllocateRoleService {
   public static accessManagementUrl = '/api/am';
   public static specificAccessUrl = '/api/specific-access-request';
   public backUrl: string;
-  constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService, private durationService: DurationHelperService) { }
+  constructor(private readonly http: HttpClient,
+              private readonly sessionStorageService: SessionStorageService,
+              private readonly durationService: DurationHelperService) {}
 
   public confirmAllocation(allocateRoleStateData: AllocateRoleStateData) {
     const action: Actions = allocateRoleStateData.action;
@@ -30,7 +32,7 @@ export class AllocateRoleService {
     const period = {
       startDate : this.durationService.setUTCTimezone(dtperiod.startDate),
       endDate: this.durationService.setUTCTimezone(dtperiod.endDate)
-    }
+    };
     return this.http.post(`${AllocateRoleService.accessManagementUrl}/specific-access-approval`, {specificAccessStateData, period});
   }
 

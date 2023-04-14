@@ -22,7 +22,7 @@ class RpxTranslateMockPipe implements PipeTransform {
 describe('HmctsGlobalHeaderComponent - with active user', () => {
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
-  let mockRouter;
+  let mockRouter: any;
   let store: Store<fromRoot.State>;
   const storeMock = jasmine.createSpyObj('Store', [
     'dispatch', 'pipe'
@@ -360,7 +360,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
 describe('HmctsGlobalHeaderComponent - logged out', () => {
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
-  let mockRouter;
+  let mockRouter: any;
   let store: Store<fromRoot.State>;
   const storeMock = jasmine.createSpyObj('Store', [
     'dispatch', 'pipe'

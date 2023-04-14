@@ -1,11 +1,12 @@
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
+import { StaffUserStatus } from 'src/staff-administrator/models/staff-user-status.enum';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -83,6 +84,7 @@ describe('StaffUserDetailsComponent', () => {
       ],
       region: 'West Midlands',
       region_id: 12,
+      up_idam_status: StaffUserStatus.ACTIVE
     };
 
     TestBed.configureTestingModule({

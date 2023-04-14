@@ -8,7 +8,7 @@ describe('TaskAlertBannerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TaskAlertBannerComponent ]
+      declarations: [TaskAlertBannerComponent]
     })
       .compileComponents();
   }));

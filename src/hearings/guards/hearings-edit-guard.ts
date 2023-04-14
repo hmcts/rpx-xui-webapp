@@ -27,9 +27,9 @@ export class HearingsEditGuard extends HearingsGuard implements CanActivate {
           return this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).pipe(
             map((userRole) => userRole === UserRole.LegalOps)
           );
-        } else {
-          return of(false);
         }
+
+        return of(false);
       })
     ).pipe(tap((canActive) => {
       if (!canActive) {

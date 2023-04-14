@@ -144,8 +144,8 @@ describe('SearchResultsComponent', () => {
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getJurisdictions']);
     jurisdictionService.getJurisdictions.and.returnValue(of(jurisdictions));
     TestBed.configureTestingModule({
-      declarations: [ SearchResultsComponent, PaginationComponent ],
-      schemas: [ NO_ERRORS_SCHEMA ],
+      declarations: [SearchResultsComponent, PaginationComponent],
+      schemas: [NO_ERRORS_SCHEMA],
       imports: [
         HttpClientTestingModule,
         RouterTestingModule

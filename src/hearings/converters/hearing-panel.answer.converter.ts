@@ -13,9 +13,9 @@ export class HearingPanelAnswerConverter implements AnswerConverter {
         const panelSpecialisms: number = panelRequirements && panelRequirements.panelSpecialisms && panelRequirements.panelSpecialisms.length || 0;
         if (panelMembers > 0 || panelSpecialisms > 0) {
           return RadioOptions.YES;
-        } else {
-          return RadioOptions.NO;
         }
+
+        return RadioOptions.NO;
       })
     );
   }

@@ -18,7 +18,7 @@ describe('NocCheckYourAnswersComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ NocCheckYourAnswersComponent ],
+      declarations: [NocCheckYourAnswersComponent],
       imports: [
         UtilsModule
       ],

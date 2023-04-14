@@ -27,9 +27,9 @@ export class HearingsViewGuard extends HearingsGuard implements CanActivate {
           return this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).pipe(
             map((userRole) => userRole === UserRole.Ogd || userRole === UserRole.LegalOps || userRole === UserRole.Judicial)
           );
-        } else {
-          return of(false);
         }
+
+        return of(false);
       })
     ).pipe(tap((canActive) => {
       if (!canActive) {

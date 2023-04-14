@@ -187,7 +187,7 @@ describe('TaskListComponent', () => {
 
     // check the emitter had been called and that it gets called with the new field defined which is caseName
     expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('pageSessionKey', '1');
-    expect(component.defaultSortElement.click).toHaveBeenCalled;
+    expect(component.defaultSortElement.click).toHaveBeenCalled();
   }));
 
   it('should allow sorting for different columns.', fakeAsync(async () => {
@@ -455,7 +455,7 @@ describe('TaskListComponent', () => {
     it('should select appropriate task from location hash', fakeAsync(async () => {
       component = fixture.componentInstance.appComponentRef;
       const task = { id } as Task;
-      wrapper.tasks = [ task ];
+      wrapper.tasks = [task];
       component.addActionsColumn = true;
       fixture.detectChanges();
       component.setSelectedTask(task);
@@ -466,7 +466,7 @@ describe('TaskListComponent', () => {
     it('should handle a location hash for a task that does not exist', fakeAsync(async () => {
       component = fixture.componentInstance.appComponentRef;
       const task = { id: '99999999' } as Task;
-      wrapper.tasks = [ task ];
+      wrapper.tasks = [task];
       component.addActionsColumn = true;
       fixture.detectChanges();
       expect(component.getSelectedTask()).toBeNull();

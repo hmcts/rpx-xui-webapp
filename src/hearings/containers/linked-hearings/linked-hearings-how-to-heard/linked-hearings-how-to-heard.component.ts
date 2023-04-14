@@ -182,16 +182,17 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     this.validationErrors = [];
     if (this.form.value.hearingGroup === GroupLinkType.SAME_SLOT) {
       return true;
-    } else {
-      const validSelection = this.hearingOrder.valid && this.form.valid;
-      if (!validSelection) {
-        this.validationErrors.push({
-          id: 'selection-error',
-          message: !this.form.value.hearingGroup ? 'Please make a selection' : 'Check the position you have given to each hearing'
-        });
-        return false;
-      }
     }
+
+    const validSelection = this.hearingOrder.valid && this.form.valid;
+    if (!validSelection) {
+      this.validationErrors.push({
+        id: 'selection-error',
+        message: !this.form.value.hearingGroup ? 'Please make a selection' : 'Check the position you have given to each hearing'
+      });
+      return false;
+    }
+
     return true;
   }
 

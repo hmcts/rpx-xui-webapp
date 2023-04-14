@@ -7,7 +7,7 @@ describe('NocFillFormOfflineComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NocFillFormOfflineComponent ]
+      declarations: [NocFillFormOfflineComponent]
     })
       .compileComponents();
   }));

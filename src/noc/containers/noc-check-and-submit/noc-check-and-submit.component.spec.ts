@@ -64,7 +64,7 @@ describe('NocCheckAndSubmitComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ NocCheckAndSubmitComponent ],
+      declarations: [NocCheckAndSubmitComponent],
       providers: [
         provideMockStore()
       ]

@@ -150,9 +150,9 @@ export class BookingDateComponent implements OnInit {
     }
     if (this.isAnyError()) {
       return false;
-    } else {
-      return true;
     }
+
+    return true;
   }
 
   public resetValidationErrorMessages(): void {

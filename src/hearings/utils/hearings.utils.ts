@@ -12,9 +12,9 @@ export class HearingsUtils {
     if (Array.isArray(models)) {
       return models.concat(...models.map((lovData) => lovData.child_nodes && lovData.child_nodes.length ?
         this.flattenArray(lovData.child_nodes) : []));
-    } else {
-      return models;
     }
+
+    return models;
   }
 
   public static getValue(key: string, lovRefDataModels: LovRefDataModel[]): string {

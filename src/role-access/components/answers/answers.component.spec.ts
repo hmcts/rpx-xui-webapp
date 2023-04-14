@@ -16,7 +16,7 @@ describe('AnswersComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ AnswersComponent, WrapperComponent ]
+      declarations: [AnswersComponent, WrapperComponent]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;

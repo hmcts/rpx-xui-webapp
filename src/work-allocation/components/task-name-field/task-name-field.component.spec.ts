@@ -27,8 +27,8 @@ describe('WorkAllocation', () => {
 
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule, RouterTestingModule ]
+        declarations: [WrapperComponent],
+        imports: [WorkAllocationComponentsModule, RouterTestingModule]
       })
         .compileComponents();
     }));

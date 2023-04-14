@@ -28,7 +28,7 @@ describe('FooterComponent', () => {
       imports: [
         RouterTestingModule
       ],
-      declarations: [ FooterComponent, TestDummyHostComponent ],
+      declarations: [FooterComponent, TestDummyHostComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [{
         provide: Store,

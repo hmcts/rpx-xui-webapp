@@ -187,21 +187,22 @@ export class SpecificAccessDurationComponent implements OnInit {
             startDate,
             endDate
           };
-        } else { // display the errors in the UI
-          if (!datesValid) {
-            if (!dateCheck.isStartDateValid) {
-              this.startDateErrorMessage = { isInvalid: true, messages: ['Invalid Start date'] };
-            }
-            if (!dateCheck.isEndDateValid) {
-              this.endDateErrorMessage = { isInvalid: true, messages: ['Invalid End date'] };
-            }
-          } else {
-            if (!startDateNotInPast) {
-              this.startDateErrorMessage = { isInvalid: true, messages: ['The access start date must not be in the past'] };
-            }
-            if (!startDateBeforeEndDate) {
-              this.endDateErrorMessage = { isInvalid: true, messages: ['The access end date must be after the access start date'] };
-            }
+        }
+
+        // display the errors in the UI
+        if (!datesValid) {
+          if (!dateCheck.isStartDateValid) {
+            this.startDateErrorMessage = { isInvalid: true, messages: ['Invalid Start date'] };
+          }
+          if (!dateCheck.isEndDateValid) {
+            this.endDateErrorMessage = { isInvalid: true, messages: ['Invalid End date'] };
+          }
+        } else {
+          if (!startDateNotInPast) {
+            this.startDateErrorMessage = { isInvalid: true, messages: ['The access start date must not be in the past'] };
+          }
+          if (!startDateBeforeEndDate) {
+            this.endDateErrorMessage = { isInvalid: true, messages: ['The access end date must be after the access start date'] };
           }
         }
       }

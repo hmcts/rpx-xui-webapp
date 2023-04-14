@@ -31,14 +31,14 @@ export const treatAsFatal = (status: number, navigator: Navigator, fatals: Fatal
   if (fatals && fatals.length > 0) {
     const fatal = fatals.find((f) => f.status === status);
     if (fatal) {
-      navigator.navigate([ fatal.redirectTo ]);
+      navigator.navigate([fatal.redirectTo]);
       return 0;
-    } else {
-      const wildcardFatal = fatals.find((f) => f.status === 0);
-      if (wildcardFatal) {
-        navigator.navigate([ wildcardFatal.redirectTo ]);
-        return 0;
-      }
+    }
+
+    const wildcardFatal = fatals.find((f) => f.status === 0);
+    if (wildcardFatal) {
+      navigator.navigate([wildcardFatal.redirectTo]);
+      return 0;
     }
   }
   return status;
@@ -48,14 +48,14 @@ export const handleFatalErrors = (status: number, navigator: Navigator, fatals?:
   switch (status) {
     case 401:
     case 403:
-      navigator.navigate([ REDIRECTS.NotAuthorised ]);
+      navigator.navigate([REDIRECTS.NotAuthorised]);
       return 0; // 0 indicates it has been handled.
     case 500:
     case 503:
-      navigator.navigate([ REDIRECTS.ServiceDown ]);
+      navigator.navigate([REDIRECTS.ServiceDown]);
       return 0; // 0 indicates it has been handled.
     case 400:
-      navigator.navigate([ REDIRECTS.ServiceDown ]);
+      navigator.navigate([REDIRECTS.ServiceDown]);
       return 400;
     default:
       // If it's anything other than a 400, 401, 403, 500, or 503, we should not
@@ -76,14 +76,14 @@ export const handleTasksFatalErrors = (status: number, navigator: Navigator, fat
         // For certain conditions, we have to navigate to a different error page
         // if the selected person is not authorised to perform the task
         const destinationUrl = getDestinationUrl(navigator.url);
-        navigator.navigate([ destinationUrl ], { state: { returnUrl } });
+        navigator.navigate([destinationUrl], { state: { returnUrl } });
       } else {
-        navigator.navigate([ REDIRECTS.NotAuthorised ]);
+        navigator.navigate([REDIRECTS.NotAuthorised]);
       }
       return 0; // 0 indicates it has been handled.
     case 500:
     case 503:
-      navigator.navigate([ REDIRECTS.ServiceDown ]);
+      navigator.navigate([REDIRECTS.ServiceDown]);
       return 0; // 0 indicates it has been handled.
     case 400:
       return 400;

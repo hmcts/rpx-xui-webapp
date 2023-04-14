@@ -27,7 +27,7 @@ describe('CaseManagerFilterComponent', () => {
   let store: Store<fromStore.State>;
   let storePipeMock: any;
   const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase']);
-  const SELECTED_LOCATIONS = { id: 'locations', fields: [ { name: 'locations', value: ['231596', '698118'] }] };
+  const SELECTED_LOCATIONS = { id: 'locations', fields: [{ name: 'locations', value: ['231596', '698118'] }] };
   const mockFilterService: any = {
     getStream: () => of(SELECTED_LOCATIONS),
     get: jasmine.createSpy(),
@@ -46,7 +46,7 @@ describe('CaseManagerFilterComponent', () => {
         HttpClientTestingModule,
         RouterTestingModule
       ],
-      declarations: [CaseManagerFilterComponent, MockGenericFilterComponent ],
+      declarations: [CaseManagerFilterComponent, MockGenericFilterComponent],
       providers: [
         provideMockStore(),
         { provide: WorkAllocationCaseService, useValue: mockCaseService },

@@ -30,9 +30,9 @@ export class CaseFlagsUtils {
     const allNonRAFs = allActiveFlags.filter((activeFlag) => !allRAFs.includes(activeFlag));
     if (caseFlagType === CaseFlagType.REASONABLE_ADJUSTMENT) {
       return this.getAllRAFsWithGroup(allRAFs);
-    } else {
-      return this.getAllNonRAFsWithGroup(allNonRAFs);
     }
+
+    return this.getAllNonRAFsWithGroup(allNonRAFs);
   }
 
   private static getAllActiveDisplayFlags(partyFlags: PartyFlagsModel[], caseFlagsRefDataModels: CaseFlagReferenceModel[]): PartyFlagsDisplayModel[] {
@@ -44,13 +44,13 @@ export class CaseFlagsUtils {
           displayName: flagPath.name,
           displayPath: flagPath.Path
         };
-      } else {
-        return {
-          ...flag,
-          displayName: null,
-          displayPath: null
-        };
       }
+
+      return {
+        ...flag,
+        displayName: null,
+        displayPath: null
+      };
     });
     return displayCaseFlags.filter((flag) => flag.displayPath ? flag.flagStatus.toLowerCase() === CaseFlagsUtils.ACTIVE : false);
   }

@@ -73,7 +73,7 @@ describe('TaskAssignmentConfirmComponent', () => {
       }
     };
     mockRouter.getCurrentNavigation.and.returnValue(navigation);
-    mockRouter.url = 'localhost/test',
+    mockRouter.url = 'localhost/test';
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
@@ -148,7 +148,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     component.verb = TaskActionType.Assign;
     fixture.detectChanges();
     component.onChange();
-    expect(router.navigate).toHaveBeenCalledWith([ 'test', 'task1111111', 'assign' ], {
+    expect(router.navigate).toHaveBeenCalledWith(['test', 'task1111111', 'assign'], {
       state: {
         returnUrl: 'all-work/tasks',
         person: SELECTED_PERSON

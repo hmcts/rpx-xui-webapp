@@ -54,7 +54,7 @@ describe('ChooseAllocateToComponent', () => {
     mockStore = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ ChooseRadioOptionComponent, ChooseAllocateToComponent ],
+      declarations: [ChooseRadioOptionComponent, ChooseAllocateToComponent],
       imports: [
         ReactiveFormsModule
       ],

@@ -202,9 +202,9 @@ export class HearingActualSummaryBaseComponent implements OnInit, OnDestroy {
     const moments: moment.Moment[] = hearingDays.map((d) => moment(d.hearingDate));
     if (moments.length > 1) {
       return `${moment.min(moments).format('DD MMMM YYYY')} - ${moment.max(moments).format('DD MMMM YYYY')}`;
-    } else {
-      return moment.max(moments).format(HearingDateEnum.DisplayMonth);
     }
+
+    return moment.max(moments).format(HearingDateEnum.DisplayMonth);
   }
 
   public getPauseDateTime(day: ActualHearingDayModel, state: 'start' | 'end'): string {

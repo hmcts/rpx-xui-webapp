@@ -143,12 +143,12 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     if (this.selectedTaskCategory && this.selectedTaskCategory !== AllWorkTaskComponent.ALL_TASKS) {
       if (this.selectedTaskCategory === AllWorkTaskComponent.AVAILABLE_TASKS) {
         return { key: 'state', operator: 'IN', values: ['unassigned'] };
-      } else {
-        return { key: 'state', operator: 'IN', values: ['assigned'] };
       }
-    } else {
-      return { key: 'state', operator: 'IN', values: ['assigned', 'unassigned'] };
+
+      return { key: 'state', operator: 'IN', values: ['assigned'] };
     }
+
+    return { key: 'state', operator: 'IN', values: ['assigned', 'unassigned'] };
   }
 
   private getTaskTypeParameter(): any {

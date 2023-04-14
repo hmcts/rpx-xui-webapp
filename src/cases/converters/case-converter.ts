@@ -48,9 +48,9 @@ function combineCaseTitleByCaseType(caseTypeId: string, selectCase: SearchResult
     const marriagePetitionerName = getValueByPropertyName(selectCase, 'D8PetitionerFirstName') + BLANK_SPACE + getValueByPropertyName(selectCase, 'D8PetitionerLastName');
     const marriageRespondentName = getValueByPropertyName(selectCase, 'D8RespondentFirstName') + BLANK_SPACE + getValueByPropertyName(selectCase, 'D8RespondentLastName');
     return marriagePetitionerName + showVersus(marriagePetitionerName, marriageRespondentName) + marriageRespondentName;
-  } else {
-    return selectCase.case_id;
   }
+
+  return selectCase.case_id;
 }
 
 function getApplicantName(selectCase: SearchResultViewItem) {
@@ -74,7 +74,7 @@ function getRespondentName(selectCase: SearchResultViewItem) {
 function showVersus(v1, v2) {
   if (v1 && v2) {
     return VERSUS_SPACE;
-  } else {
-    return EMPTY_SPACE;
   }
+
+  return EMPTY_SPACE;
 }

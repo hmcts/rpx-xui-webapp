@@ -19,9 +19,9 @@ describe('NoResultsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NoResultsComponent ],
-      schemas: [ NO_ERRORS_SCHEMA ],
-      imports: [ RouterTestingModule.withRoutes([]) ],
+      declarations: [NoResultsComponent],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [RouterTestingModule.withRoutes([])],
       providers: [{ provide: Store, useValue: storeMock }]
     })
       .compileComponents();

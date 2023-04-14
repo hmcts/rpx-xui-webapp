@@ -150,7 +150,7 @@ describe('AllWorkCaseComponent', () => {
     it('should return a SearchCaseRequest', async () => {
       component = initializeComponent({ sessionStorageService: mockSessionStorageService });
 
-      const userInfo = { roles: [ UserRole.Admin] };
+      const userInfo = { roles: [UserRole.Admin] };
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
       spyOn(AppUtils, 'isLegalOpsOrJudicial').and.returnValue(UserRole.Admin);
 

@@ -25,10 +25,10 @@ describe('WorkAllocation', () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent ],
+        declarations: [WrapperComponent],
         imports: [
-          RouterTestingModule, WorkAllocationComponentsModule ],
-        providers: [ { provide: InfoMessageCommService, useValue: mockMessageService } ]
+          RouterTestingModule, WorkAllocationComponentsModule],
+        providers: [{ provide: InfoMessageCommService, useValue: mockMessageService }]
       })
         .compileComponents();
 

@@ -38,9 +38,9 @@ export class AlertComponent implements OnInit, OnDestroy {
     if (caseId) {
       const caseIdHyphen = msg.match(/(\d\d\d\d)/g).join('-');
       return msg.replace(caseId.toString(), caseIdHyphen);
-    } else {
-      return msg;
     }
+
+    return msg;
   }
 
   public ngOnDestroy(): void {

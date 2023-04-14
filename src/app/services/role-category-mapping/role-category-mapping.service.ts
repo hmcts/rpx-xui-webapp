@@ -52,9 +52,9 @@ export class RoleCategoryMappingService {
           return UserRole.Ogd;
         } else if (userRoles.some((userRole) => roleMappings.LEGAL_OPS_ROLE_LIST.some((role) => role === userRole))) {
           return UserRole.LegalOps;
-        } else {
-          return UserRole.Admin;
         }
+
+        return UserRole.Admin;
       }
       ));
   }

@@ -11,7 +11,7 @@ describe('NocSubmitSuccessComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NocSubmitSuccessComponent ],
+      declarations: [NocSubmitSuccessComponent],
       imports: [
         UtilsModule
       ],

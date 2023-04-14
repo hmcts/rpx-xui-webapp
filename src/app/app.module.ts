@@ -75,7 +75,7 @@ export function launchDarklyClientIdFactory(
 }
 
 @NgModule({
-  declarations: [AppComponent, BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent ],
+  declarations: [AppComponent, BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent],
   imports: [
     LoggerModule.forRoot({
       level: NgxLoggerLevel.TRACE,

@@ -97,9 +97,9 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
           return `${acc} and ${curr}.`;
         } else if (isSecondLast) {
           return `${acc} ${curr}`;
-        } else {
-          return `${acc} ${curr}, `;
         }
+
+        return `${acc} ${curr}, `;
       }, 'Enter ');
   }
 

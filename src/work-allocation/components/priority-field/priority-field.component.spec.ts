@@ -8,7 +8,7 @@ describe('PriorityFieldComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PriorityFieldComponent ]
+      declarations: [PriorityFieldComponent]
     })
       .compileComponents();
   }));

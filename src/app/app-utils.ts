@@ -242,9 +242,9 @@ export class AppUtils {
       return 'Solicitor';
     } else if (userRoles.some((userRole) => userTypeRoles.judicial && userTypeRoles.judicial.includes(userRole))) {
       return 'Judicial';
-    } else {
-      return 'LegalOps';
     }
+
+    return 'LegalOps';
   }
 
   public static isBookableAndJudicialRole(userDetails: UserDetails): boolean {

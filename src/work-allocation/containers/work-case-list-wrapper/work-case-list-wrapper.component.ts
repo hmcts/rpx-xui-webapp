@@ -273,9 +273,9 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
       return this.caseService.getCases({ searchRequest, view: this.view });
     } else if (this.view === 'MyCases') {
       return this.caseService.getMyCases({ searchRequest, view: this.view });
-    } else {
-      return this.caseService.getMyAccess({ searchRequest, view: this.view });
     }
+
+    return this.caseService.getMyAccess({ searchRequest, view: this.view });
   }
 
   /**
@@ -365,12 +365,12 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
             result.cases = judicialNamedCases;
             return of(result);
           }));
-        } else {
-          return of(result);
         }
-      } else {
+
         return of(result);
       }
+
+      return of(result);
     }));
 
     forkJoin([mappedSearchResult$, this.jurisdictionsService.getJurisdictions()]).subscribe((results) => {

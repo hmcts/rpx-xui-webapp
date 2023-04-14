@@ -318,14 +318,14 @@ describe('LocationResolver', () => {
   }));
 
   it('should get base location for the user', inject([LocationResolver], (service: LocationResolver) => {
-    const expectedLocationList = [{ id: '12345', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '12345', locationName: '', services: [ 'IA' ] }];
+    const expectedLocationList = [{ id: '12345', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '12345', locationName: '', services: ['IA'] }];
     const locationsByRegion: LocationsByRegion = { regionId: '1', locations: [expectedLocationList[0].id] };
     expect(service.getJudicialWorkersOrCaseWorkers([locationsByRegion], CASE_WORKER_WITH_BASE)).toEqual(expectedLocationList);
   }));
 
   it('should get base location for the judicial user', inject([LocationResolver], (service: LocationResolver) => {
     spyOn(sessionStorageService, 'setItem');
-    const expectedLocation = [{ id: '12345', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '12345', locationName: '', services: [ 'IA' ] }];
+    const expectedLocation = [{ id: '12345', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '12345', locationName: '', services: ['IA'] }];
     const locationsByRegion: LocationsByRegion = { regionId: '1', locations: ['12345'] };
     const expectedLocationList = [{ service: 'IA', locations:
       [{ id: '12345', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '12345', locationName: '', services: ['IA'] }], bookable: false }];
@@ -335,7 +335,7 @@ describe('LocationResolver', () => {
 
   it('should get locations for user within region', inject([LocationResolver], (service: LocationResolver) => {
     spyOn(sessionStorageService, 'setItem');
-    const expectedLocation = [{ id: undefined, userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', regionId: '3', locationName: '', locationId: undefined, services: [ 'IA' ] }];
+    const expectedLocation = [{ id: undefined, userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', regionId: '3', locationName: '', locationId: undefined, services: ['IA'] }];
     const locationsByRegion: LocationsByRegion[] = [{ regionId: '4', locations: ['12345'] }, { regionId: '3', locations: ['512345'] }];
     const expectedLocationList = [{ service: 'IA', locations:
       [{ userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationName: '', services: ['IA'], regionId: '3' }], bookable: false }];
@@ -345,7 +345,7 @@ describe('LocationResolver', () => {
 
   it('should get base locations for user within region', inject([LocationResolver], (service: LocationResolver) => {
     spyOn(sessionStorageService, 'setItem');
-    const expectedLocation = [{ id: '54321', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationName: '', locationId: '54321', services: [ 'IA' ] }];
+    const expectedLocation = [{ id: '54321', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationName: '', locationId: '54321', services: ['IA'] }];
     const locationsByRegion: LocationsByRegion[] = [{ regionId: '4', locations: ['12345'] }, { regionId: '3', locations: ['54321'] }];
     const expectedLocationList = [{ service: 'IA', locations:
       [{ id: '54321', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '54321', locationName: '', services: ['IA'] }], bookable: false }];
@@ -355,7 +355,7 @@ describe('LocationResolver', () => {
 
   it('should get base locations for user not in region', inject([LocationResolver], (service: LocationResolver) => {
     spyOn(sessionStorageService, 'setItem');
-    const expectedLocation = [{ id: null, userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationName: '', locationId: null, services: [ 'IA' ] }];
+    const expectedLocation = [{ id: null, userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationName: '', locationId: null, services: ['IA'] }];
     const locationsByRegion: LocationsByRegion[] = [{ regionId: '4', locations: ['12345', '2341'] }, { regionId: '3', locations: ['54321'] }];
     const expectedLocationList = [{ service: 'IA', locations: [], bookable: false }];
     expect(service.getJudicialWorkersOrCaseWorkers(locationsByRegion, CASE_WORKER_WITH_BASE_NOT_IN_REGION)).toEqual(expectedLocation);
@@ -372,7 +372,7 @@ describe('LocationResolver', () => {
   it('should get all relevant locations for user without location restrictions on individual role assignment', inject([LocationResolver], (service: LocationResolver) => {
     spyOn(sessionStorageService, 'setItem');
     const locationsByRegion: LocationsByRegion[] = [{ regionId: '4', locations: ['12345', '2341'] }, { regionId: '3', locations: ['54321'] }];
-    const expectedLocation = [{ id: null, userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationName: '', locationId: null, services: [ 'IA' ] }];
+    const expectedLocation = [{ id: null, userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationName: '', locationId: null, services: ['IA'] }];
     expect(service.getJudicialWorkersOrCaseWorkers(locationsByRegion, CASE_WORKER_SHOULD_HAVE_ALL_LOCATIONS)).toEqual(expectedLocation);
     expect(sessionStorageService.setItem).toHaveBeenCalledWith('userLocations', '[]');
   }));

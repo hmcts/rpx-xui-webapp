@@ -57,16 +57,16 @@ export class AvailableTasksFilterComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    let preselection: Location[] = [ FilterConstants.Defaults.LOCATION ];
+    let preselection: Location[] = [FilterConstants.Defaults.LOCATION];
     // See if we have anything stored in the session for the filter.
     const stored: string = this.sessionStorageService.getItem(FilterConstants.Session.AvailableTasks);
     if (stored) {
-      preselection = [ ...JSON.parse(stored) ];
+      preselection = [...JSON.parse(stored)];
     }
     this.preselection = preselection;
     // Get the locations for the checkbox filter component.
     this.locationService.getLocations().subscribe((locations) => {
-      this.locations = [ ...locations ];
+      this.locations = [...locations];
     }, (error) => {
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
@@ -93,7 +93,7 @@ export class AvailableTasksFilterComponent implements OnInit {
    */
   public applyFilter(): void {
     if (this.locationFilter) {
-      this.selection = [ ...this.locationFilter.selection ];
+      this.selection = [...this.locationFilter.selection];
     }
     const toStore: string = JSON.stringify(this.selection);
     this.sessionStorageService.setItem(FilterConstants.Session.AvailableTasks, toStore);

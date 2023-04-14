@@ -207,9 +207,9 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     const isLinkable = hearing.hearingIsLinkedFlag && !hearing.hearingGroupRequestId;
     if (this.isManageLink) {
       return this.hearingGroupRequestId === hearing.hearingGroupRequestId || isLinkable;
-    } else {
-      return isLinkable;
     }
+
+    return isLinkable;
   }
 
   public navigate(): void {

@@ -488,7 +488,7 @@ describe('HearingActualSummaryComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe],
-      imports: [ RouterTestingModule.withRoutes(
+      imports: [RouterTestingModule.withRoutes(
         [
           { path: 'hearings/actuals/1000000/hearing-actual-summary', component: NothingComponent }
         ]

@@ -299,9 +299,9 @@ export class CaseListComponent implements OnInit, OnDestroy {
     if (jurisdictionFromLS && caseTypeGroupFromLS && caseStateGroupFromLS && metadataFieldsGroupFromLS) {
       return this.createEvent(jurisdictionFromLS, caseTypeGroupFromLS, caseStateGroupFromLS, metadataFieldsGroupFromLS,
         formGroupFromLS, this.page, this.sortParameters);
-    } else {
-      return null;
     }
+
+    return null;
   }
 
   /**
@@ -378,7 +378,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public caseShareIsVisible(project: any[]): boolean {
-    const [ userDetails, shareableJurisdictions, jurisdiction ] = project;
+    const [userDetails, shareableJurisdictions, jurisdiction] = project;
     if (userDetails && shareableJurisdictions && jurisdiction) {
       return userDetails.canShareCases && shareableJurisdictions.includes(jurisdiction.id);
     }

@@ -24,7 +24,7 @@ describe('MyCasesFilterComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: Router;
   // const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
-  const SELECTED_LOCATIONS = { id: 'case_locations', fields: [ { name: 'case_locations', value: ['231596', '698118'] }] };
+  const SELECTED_LOCATIONS = { id: 'case_locations', fields: [{ name: 'case_locations', value: ['231596', '698118'] }] };
   const mockFilterService: any = {
     getStream: () => of(SELECTED_LOCATIONS),
     get: () => SELECTED_LOCATIONS,
@@ -44,7 +44,7 @@ describe('MyCasesFilterComponent', () => {
         RouterTestingModule,
         ExuiCommonLibModule
       ],
-      declarations: [MyCasesFilterComponent, WrapperComponent ],
+      declarations: [MyCasesFilterComponent, WrapperComponent],
       providers: [
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         {

@@ -152,9 +152,9 @@ xdescribe('AllWorkTaskComponent', () => {
             }
           ]
         });
-      } else {
-        return of(true);
       }
+
+      return of(true);
     });
     component.locations = [{ id: 'loc123', locationName: 'Test', services: [] }];
     mockLocationService.getLocations.and.returnValue(of([{ id: 'loc123', locationName: 'Test', services: [] }]));
@@ -293,9 +293,9 @@ xdescribe('AllWorkTaskComponent', () => {
               }
             ]
           });
-        } else {
-          return of(true);
         }
+
+        return of(true);
       });
       mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
       TestBed.configureTestingModule({

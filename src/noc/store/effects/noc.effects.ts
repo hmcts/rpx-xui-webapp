@@ -28,9 +28,9 @@ export class NocEffects {
               return NocEffects.handleError(error, nocActions.SET_CASE_REFERENCE);
             })
           );
-        } else {
-          return of(new nocActions.SetCaseRefValidationFailure());
         }
+
+        return of(new nocActions.SetCaseRefValidationFailure());
       })
     );
 
@@ -48,9 +48,9 @@ export class NocEffects {
               return NocEffects.handleError(error, nocActions.SET_ANSWERS);
             })
           );
-        } else {
-          return of(new nocActions.SetAnswersIncomplete());
         }
+
+        return of(new nocActions.SetAnswersIncomplete());
       })
     );
 
@@ -64,9 +64,8 @@ export class NocEffects {
             (response: {approval_status?: string}) => {
               if (response.approval_status === 'PENDING') {
                 return new nocActions.SetSubmissionSuccessPending();
-              } else {
-                return new nocActions.SetSubmissionSuccessApproved();
               }
+              return new nocActions.SetSubmissionSuccessApproved();
             }),
           catchError((error) => {
             return NocEffects.handleError(error, nocActions.SUBMIT_NOC);

@@ -48,11 +48,12 @@ export class HearingJudgeNamesListComponent {
       this.personFormGroup.controls.selectedFormControl.setValidators([this.validatorsUtils.errorValidator(message)]);
       this.personFormGroup.controls.selectedFormControl.updateValueAndValidity();
       return false;
-    } else {
-      this.validationError = null;
-      this.personFormGroup.controls.selectedFormControl.clearValidators();
-      this.personFormGroup.controls.selectedFormControl.updateValueAndValidity();
     }
+
+    this.validationError = null;
+    this.personFormGroup.controls.selectedFormControl.clearValidators();
+    this.personFormGroup.controls.selectedFormControl.updateValueAndValidity();
+
     return true;
   }
 

@@ -174,9 +174,9 @@ export class ActualHearingsUtils {
     if (party && party.individualDetails) {
       const names = [party.individualDetails.firstName, party.individualDetails.lastName].filter((item) => item);
       return names.join(' ');
-    } else {
-      return '';
     }
+
+    return '';
   }
 
   public static actualToDisplayModel(actualDayPartyModel: ActualDayPartyModel): DisplayDayPartyModel {

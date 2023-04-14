@@ -43,7 +43,7 @@ describe('TermsAndConditionsComponent', () => {
         RouterTestingModule,
         HttpClientTestingModule
       ],
-      declarations: [ TermsAndConditionsComponent, TestDummyHostComponent ],
+      declarations: [TermsAndConditionsComponent, TestDummyHostComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [{
         provide: Store,

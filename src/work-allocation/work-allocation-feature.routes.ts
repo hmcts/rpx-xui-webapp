@@ -32,7 +32,7 @@ export const ROUTES: Routes = [
       {
         path: 'my-work',
         component: TaskHomeComponent,
-        canActivate: [ HealthCheckGuard ],
+        canActivate: [HealthCheckGuard],
         resolve: {
           locations: LocationResolver
         },
@@ -75,7 +75,7 @@ export const ROUTES: Routes = [
       {
         path: 'all-work',
         component: AllWorkHomeComponent,
-        canActivate: [ HealthCheckGuard, TaskSupervisorGuard],
+        canActivate: [HealthCheckGuard, TaskSupervisorGuard],
         data: {
           title: 'HMCTS Manage cases | Task manager'
         },

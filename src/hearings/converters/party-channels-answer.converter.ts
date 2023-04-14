@@ -44,11 +44,11 @@ export class PartyChannelsAnswerConverter implements AnswerConverter {
       return party.partyName;
     }
     if (foundPartyFromService) {
-      if (foundPartyFromService.partyName && foundPartyFromService.partyName !== null) {
+      if (foundPartyFromService?.partyName !== null) {
         return foundPartyFromService.partyName;
-      } else {
-        return foundPartyFromService.partyID;
       }
+
+      return foundPartyFromService.partyID;
     }
     return '';
   }

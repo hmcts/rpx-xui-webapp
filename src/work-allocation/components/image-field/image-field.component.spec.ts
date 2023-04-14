@@ -20,8 +20,8 @@ describe('WorkAllocation', () => {
 
     beforeEach(async () => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule ]
+        declarations: [WrapperComponent],
+        imports: [WorkAllocationComponentsModule]
       })
         .compileComponents();
 

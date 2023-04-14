@@ -184,9 +184,9 @@ export class ValidatorsUtils {
           }
         });
         return isHearingSelected ? null : { error: true };
-      } else {
-        return null;
       }
+
+      return null;
     };
   }
 }

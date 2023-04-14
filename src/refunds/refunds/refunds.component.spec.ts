@@ -17,7 +17,7 @@ describe('RefundsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ RefundsComponent ],
+      declarations: [RefundsComponent],
       imports: [HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [{ provide: UserService, useValue: userMock }]

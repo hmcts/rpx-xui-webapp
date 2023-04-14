@@ -32,9 +32,9 @@ describe('BookingDateComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule, ExuiCommonLibModule, FormsModule],
-      declarations: [ BookingDateComponent ],
-      providers: [ FormBuilder]
+      imports: [ReactiveFormsModule, ExuiCommonLibModule, FormsModule],
+      declarations: [BookingDateComponent],
+      providers: [FormBuilder]
     })
       .compileComponents();
     fixture = TestBed.createComponent(BookingDateComponent);

@@ -71,21 +71,24 @@ export class HearingRequestEffects {
           case Mode.CREATE:
             if (nextPage) {
               return this.router.navigate(['hearings', 'request', nextPage]);
-            } else {
-              throw new Error('Next page not found');
             }
+
+            throw new Error('Next page not found');
+
           case Mode.CREATE_EDIT:
             if (nextPage === HearingRequestEffects.WELSH_PAGE) {
               return this.router.navigate(['hearings', 'request', nextPage]);
-            } else {
-              return this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId });
             }
+
+            return this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId });
+
           case Mode.VIEW_EDIT:
             if (nextPage === HearingRequestEffects.WELSH_PAGE) {
               return this.router.navigate(['hearings', 'request', nextPage]);
-            } else {
-              return this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: this.fragmentId });
             }
+
+            return this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: this.fragmentId });
+
           default:
             return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
         }

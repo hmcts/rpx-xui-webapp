@@ -78,9 +78,9 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
       if (answers) {
         const foundAnswer = answers.find((answer) => answer.question_id === questionId);
         return foundAnswer ? foundAnswer.value : '';
-      } else {
-        return '';
       }
+
+      return '';
     }));
   }
 
@@ -108,9 +108,10 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
     if (this.allAnswerEmpty) {
       this.setAllAnswerEmptyError();
       return false;
-    } else {
-      this.purgeAllAnswerEmptyError();
     }
+
+    this.purgeAllAnswerEmptyError();
+
     // if an error is found but the error is not 'possibleIncorrectAnswer'(back end validation error) then the form is invalid
     const allControlKeys: string[] = Object.keys(this.formGroup.controls);
     for (const controlKey of allControlKeys) {

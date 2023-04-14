@@ -95,10 +95,10 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
       this.findLocationFormGroup.controls.locationSelectedFormControl.errors.required &&
       this.findLocationFormGroup.controls.locationSelectedFormControl.dirty) {
       return false;
-    } else {
-      this.validationErrors = [];
-      return true;
     }
+
+    this.validationErrors = [];
+    return true;
   }
 
   public executeAction(action: ACTION): void {

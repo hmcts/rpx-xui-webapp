@@ -71,7 +71,7 @@ describe('MyCasesComponent', () => {
         order: SortOrder.ASC
       };
 
-      const userInfo = { roles: [ UserRole.Admin], id: 'One' };
+      const userInfo = { roles: [UserRole.Admin], id: 'One' };
       const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
       const locations = { fields: [{ name: 'services', value: 'serviceValue' }] };
 
@@ -105,7 +105,7 @@ describe('MyCasesComponent', () => {
         order: SortOrder.ASC
       };
 
-      const userInfo = { roles: [ UserRole.Admin], uid: 'UID' };
+      const userInfo = { roles: [UserRole.Admin], uid: 'UID' };
       const locations = { fields: [{ name: 'locations', value: [{ epimms_id: 'locationID' }] }] };
       mockSessionStorageService.getItem.withArgs('userDetails').and.returnValue(JSON.stringify(userInfo));
       spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify(locations));

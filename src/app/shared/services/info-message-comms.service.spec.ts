@@ -49,7 +49,7 @@ describe('WorkAllocation: InfoMessageCommService', () => {
 
       service.addMessage(message);
 
-      expect(service.getMessages()).toEqual([ message ]);
+      expect(service.getMessages()).toEqual([message]);
 
       service.removeAllMessages();
 
@@ -68,7 +68,7 @@ describe('WorkAllocation: InfoMessageCommService', () => {
 
       service.addMessage(message);
 
-      expect(service.getMessages()).toEqual([ message ]);
+      expect(service.getMessages()).toEqual([message]);
     });
 
     it('Should add an information messages into the message queue.', () => {
@@ -87,7 +87,7 @@ describe('WorkAllocation: InfoMessageCommService', () => {
       service.addMessage(warningMessage);
       service.addMessage(refreshMessage);
 
-      expect(service.getMessages()).toEqual([ warningMessage, refreshMessage ]);
+      expect(service.getMessages()).toEqual([warningMessage, refreshMessage]);
     });
   });
 

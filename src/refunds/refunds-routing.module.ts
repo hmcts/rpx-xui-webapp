@@ -6,7 +6,7 @@ import { RefundsComponent } from './refunds/refunds.component';
 const routes: Routes = [{
   path: '',
   component: RefundsComponent,
-  canActivate: [ RoleGuard ],
+  canActivate: [RoleGuard],
   data: {
     needsRole: ['payments-refund-approver', 'payments-refund'],
     roleMatching: RoleMatching.ANY,

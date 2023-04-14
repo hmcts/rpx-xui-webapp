@@ -131,9 +131,9 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
           }
           const caseHearingViewModels: HearingListViewModel[] = this.calculateEarliestHearingDate(caseHearingModels);
           return this.sortHearingsByHearingAndRequestDate(caseHearingViewModels);
-        } else {
-          return [];
         }
+
+        return [];
       }
       )
     );

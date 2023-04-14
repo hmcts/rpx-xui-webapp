@@ -142,19 +142,19 @@ describe('setActiveLink', () => {
 
   it('should check the tabs correctly', () => {
     // verify matching url returns true
-    expect(AppUtils.checkTabs(mockItems, '/tasks/task-manager')).toEqual([ true, '' ]);
+    expect(AppUtils.checkTabs(mockItems, '/tasks/task-manager')).toEqual([true, '']);
     // verify matching url given as longest matching href
-    expect(AppUtils.checkTabs(mockItems, '/tasks/task-manager/random-parameter')).toEqual([ false, '/tasks/task-manager' ]);
+    expect(AppUtils.checkTabs(mockItems, '/tasks/task-manager/random-parameter')).toEqual([false, '/tasks/task-manager']);
     // verify case-search returns true
-    expect(AppUtils.checkTabs(mockItems, '/cases/case-search')).toEqual([ true, '' ]);
+    expect(AppUtils.checkTabs(mockItems, '/cases/case-search')).toEqual([true, '']);
     // verify tasks matches (should this ever be the case)
-    expect(AppUtils.checkTabs(mockItems, '/tasks')).toEqual([ true, '' ]);
+    expect(AppUtils.checkTabs(mockItems, '/tasks')).toEqual([true, '']);
     // verify the internal task lists set the tab correctly
-    expect(AppUtils.checkTabs(mockItems, '/tasks/list')).toEqual([ false, '/tasks']);
-    expect(AppUtils.checkTabs(mockItems, '/tasks/available')).toEqual([ false, '/tasks']);
+    expect(AppUtils.checkTabs(mockItems, '/tasks/list')).toEqual([false, '/tasks']);
+    expect(AppUtils.checkTabs(mockItems, '/tasks/available')).toEqual([false, '/tasks']);
     // verify tab not set for action page within tasks and any additional url snippet for cases
-    expect(AppUtils.checkTabs(mockItems, '/tasks/assign')).toEqual([ false, '']);
-    expect(AppUtils.checkTabs(mockItems, '/cases/random-parameter')).toEqual([ false, '']);
+    expect(AppUtils.checkTabs(mockItems, '/tasks/assign')).toEqual([false, '']);
+    expect(AppUtils.checkTabs(mockItems, '/cases/random-parameter')).toEqual([false, '']);
   });
 
   it('should correctly set the fullUrl value', () => {

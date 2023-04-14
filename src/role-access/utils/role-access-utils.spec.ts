@@ -36,17 +36,17 @@ describe('WorkAllocationUtils', () => {
     // should get correct redirect for 500
     error.status = 500;
     handleError(error, mockRouter, exampleUrl);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([ REDIRECTS.ServiceDown ]);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([REDIRECTS.ServiceDown]);
 
     // correct redirect for 401
     error.status = 401;
     handleError(error, mockRouter, exampleUrl);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([ REDIRECTS.NotAuthorised ]);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([REDIRECTS.NotAuthorised]);
 
     // correct redirect for 403
     error.status = 403;
     handleError(error, mockRouter, exampleUrl);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([ REDIRECTS.NotAuthorised ]);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([REDIRECTS.NotAuthorised]);
   });
 
   it('should correctly set the title text', () => {

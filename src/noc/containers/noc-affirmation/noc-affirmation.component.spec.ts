@@ -13,7 +13,7 @@ describe('NocAffirmationComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NocAffirmationComponent ],
+      declarations: [NocAffirmationComponent],
       providers: [
         provideMockStore()
       ]

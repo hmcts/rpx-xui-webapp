@@ -25,7 +25,7 @@ describe('AuthService', () => {
 
   describe('isAuthenticated', () => {
     it('should make a call to check authentication', inject(
-      [ HttpTestingController, AuthService ],
+      [HttpTestingController, AuthService],
       (httpMock: HttpTestingController, service: AuthService) => {
         service.isAuthenticated().subscribe((response) => {
           expect(JSON.parse(String(response))).toBeFalsy();
@@ -40,7 +40,7 @@ describe('AuthService', () => {
 
   describe('logOut', () => {
     it('should make a call to logOut', inject(
-      [ HttpTestingController, AuthService, SessionStorageService ],
+      [HttpTestingController, AuthService, SessionStorageService],
       (httpMock: HttpTestingController, service: AuthService, sessionStorageService: SessionStorageService) => {
         spyOn(sessionStorageService, 'clear');
         service.logOut().subscribe((response) => {

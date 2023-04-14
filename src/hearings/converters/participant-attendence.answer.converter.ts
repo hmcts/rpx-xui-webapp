@@ -33,7 +33,7 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
           return '';
         }
         const partiesFromServiceValue = state.hearingValues.serviceHearingValuesModel.parties?.filter((party) => party.partyType === PartyType.IND);
-        if(!partiesFromServiceValue) {
+        if (!partiesFromServiceValue) {
           return '';
         }
         const partyIds = partiesFromServiceValue.map((party) => party.partyID);

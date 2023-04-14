@@ -26,8 +26,8 @@ describe('WorkAllocation', () => {
 
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule,
+        declarations: [WrapperComponent],
+        imports: [WorkAllocationComponentsModule,
           RouterTestingModule.withRoutes(
             [{ path: 'role-access/rejected-request', component: WrapperComponent }]
           )]

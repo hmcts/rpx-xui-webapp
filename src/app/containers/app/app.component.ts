@@ -18,9 +18,7 @@ import * as fromRoot from '../../store';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-
 export class AppComponent implements OnInit, OnDestroy {
-
   public timeoutModalConfig = {
     countdown: '0 seconds',
     isVisible: false,
@@ -300,7 +298,9 @@ export class AppComponent implements OnInit, OnDestroy {
    * @param totalIdleTime - Should reach here in minutes
    */
   public initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime) {
-    if (this.timeoutNotificationServiceInitialised) return;
+    if (this.timeoutNotificationServiceInitialised) {
+      return;
+    }
 
     const idleModalDisplayTimeInSeconds = idleModalDisplayTime * 60;
 

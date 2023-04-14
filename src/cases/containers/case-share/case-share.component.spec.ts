@@ -17,7 +17,7 @@ describe('CaseShareComponent', () => {
   let component: CaseShareComponent;
   let fixture: ComponentFixture<CaseShareComponent>;
 
-  let mockStore;
+  let mockStore: any;
   let dispatchSpy: jasmine.Spy;
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
 

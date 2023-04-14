@@ -11,7 +11,6 @@ import { AllocateRoleService } from '../../services';
   templateUrl: './rejected-request-view.component.html'
 })
 export class RejectedRequestViewComponent implements OnInit {
-
   public caseName: string;
   public caseReference: string;
   public jurisdiction: string;
@@ -26,10 +25,10 @@ export class RejectedRequestViewComponent implements OnInit {
   public reviewerRole: string;
 
   constructor(private readonly route: ActivatedRoute,
-              private router: Router,
-              private waSupportedJurisdictionsService: WASupportedJurisdictionsService,
-              private caseworkerDataService: CaseworkerDataService,
-              private allocateRoleService: AllocateRoleService) {
+              private readonly router: Router,
+              private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
+              private readonly caseworkerDataService: CaseworkerDataService,
+              private readonly allocateRoleService: AllocateRoleService) {
     this.caseName = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseName ?
       this.route.snapshot.queryParams.caseName : '';
     this.caseReference = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseReference ?
@@ -58,7 +57,7 @@ export class RejectedRequestViewComponent implements OnInit {
     }
     if (this.roleCategory === RoleCategory.JUDICIAL) {
       this.allocateRoleService.getCaseRolesUserDetails([this.reviewer], [this.jurisdiction]).subscribe(
-        (caseRoleUserDetails) => {this.reviewerName = caseRoleUserDetails[0].full_name}
+        (caseRoleUserDetails) => { this.reviewerName = caseRoleUserDetails[0].full_name; }
       );
     } else {
       this.waSupportedJurisdictionsService.getWASupportedJurisdictions().subscribe((services) => {

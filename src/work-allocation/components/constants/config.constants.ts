@@ -188,7 +188,7 @@ const ACCESS_END_DATE_DISABLE_SORT: FieldConfig = {
   columnLabel: 'End',
   sortName: 'endDate',
   views: TaskView.ALL_VIEWS
-}
+};
 const END_DATE: FieldConfig = {
   name: 'endDate',
   type: FieldType.FORMATTED_DATE,
@@ -256,7 +256,7 @@ const MY_TASKS: FieldConfig[] = [
 ];
 const MY_WORK_TASKS_FOR_JUDICIAL: FieldConfig[] = [
   CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, ...JUDICIAL_DATES
-]
+];
 const MY_WORK_TASKS_FOR_LEGAL_OPS: FieldConfig[] = [
   CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK,  DUE_DATE_AS_TEXT, PRIORITY
 ];

@@ -20,7 +20,7 @@ describe('Jurisdiction Service', () => {
   });
 
   it('should have configuration service', () => {
-    service = TestBed.get(JurisdictionService);
+    service = TestBed.inject(JurisdictionService);
     expect(service).toBeTruthy();
   });
 

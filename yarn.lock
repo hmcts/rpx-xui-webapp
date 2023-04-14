@@ -2181,15 +2181,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:1.8.7-generic-filter-clear-errors-on-destroy":
-  version: 1.8.7-generic-filter-clear-errors-on-destroy
-  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.7-generic-filter-clear-errors-on-destroy"
+"@hmcts/rpx-xui-common-lib@npm:1.8.7-generic-filter-clear-errors-on-destroy-2":
+  version: 1.8.7-generic-filter-clear-errors-on-destroy-2
+  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.7-generic-filter-clear-errors-on-destroy-2"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
-  checksum: 625176fa1efba2c4607028fd05cc0e1588ad18c8c3726dec628fe14aa106f54c0b017a540f39f958dbf4a0c0affdc14e255182f6261bca0ae48a74f9a5b74604
+  checksum: 5d6f0acc3d22ab01a3a78ae5458060cabca9cd9f708b701caa2553bf3533400995f7824c696224ba807751ed3a07c1797aa69e581ea9e660d7a51012cc29fdb7
   languageName: node
   linkType: hard
 
@@ -18697,7 +18697,7 @@ __metadata:
     "@hmcts/media-viewer": 2.9.3
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 1.8.7-generic-filter-clear-errors-on-destroy
+    "@hmcts/rpx-xui-common-lib": 1.8.7-generic-filter-clear-errors-on-destroy-2
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^8.0.0-beta.4
     "@ng-idle/keepalive": ^8.0.0-beta.4

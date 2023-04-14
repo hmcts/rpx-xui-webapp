@@ -2181,16 +2181,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@portal:/Users/mateibaciu/WebstormProjects/HMCTS/rpx-xui-common-lib/dist/exui-common-lib::locator=rpx-exui%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@hmcts/rpx-xui-common-lib@portal:/Users/mateibaciu/WebstormProjects/HMCTS/rpx-xui-common-lib/dist/exui-common-lib::locator=rpx-exui%40workspace%3A."
+"@hmcts/rpx-xui-common-lib@npm:1.8.7-generic-filter-clear-errors-on-destroy":
+  version: 1.8.7-generic-filter-clear-errors-on-destroy
+  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.7-generic-filter-clear-errors-on-destroy"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
+  checksum: 625176fa1efba2c4607028fd05cc0e1588ad18c8c3726dec628fe14aa106f54c0b017a540f39f958dbf4a0c0affdc14e255182f6261bca0ae48a74f9a5b74604
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "@hmcts/rpx-xui-node-lib@npm:2.25.12":
   version: 2.25.12
@@ -18696,7 +18697,7 @@ __metadata:
     "@hmcts/media-viewer": 2.9.3
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 1.8.7-release-4-yarn-3
+    "@hmcts/rpx-xui-common-lib": 1.8.7-generic-filter-clear-errors-on-destroy
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^8.0.0-beta.4
     "@ng-idle/keepalive": ^8.0.0-beta.4

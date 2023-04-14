@@ -36,7 +36,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     private readonly staffAddEditFormService: StaffAddEditFormService
   ) {
     this.isUpdateMode = this.activatedRoute.snapshot.data.isUpdateMode;
-    this.staffUser = staffAddEditFormService.valuesAsStaffUser;
+    this.staffUser = StaffUser.from(staffAddEditFormService.valuesAsStaffUser);
   }
 
   public ngOnInit() {

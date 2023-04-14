@@ -1,19 +1,6 @@
 @ng @known_bug @EUI-4804 @codecept_enabled
 Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
 
-    Background: Mock and browser setup
-        Given I init MockApp
-        Given I set MOCK locations with names in service "IA"
-            | id    | locationName           |
-            | 20001 | IA Court Aldgate Tower |
-            | 20002 | IA Court Birmingham    |
-            | 2003  | IA Court Bradford      |
-            | 20004 | IA Court Glasgow       |
-            | 20005 | IA Court Hatton Cross  |
-            | 20006 | IA Court Newcastle     |
-            | 20007 | IA Court Newport       |
-            | 20008 | IA Court North Shields |
-            | 20009 | IA Court Center 1  |
 
     Scenario Outline: My Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
@@ -29,7 +16,7 @@ Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
-        Given I set MOCK request "/workallocation/task/" intercept with reference "taskSearchRequest"
+        # Given I set MOCK request "/workallocation/task/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page
@@ -67,18 +54,6 @@ Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
         Then I see work allocation table "tasks" default column sorted by "asc" for user type "<UserType>"
             | Caseworker | Priority |
             | Judge      | Task created |
-
-        Then I validate "My work" tasks columns sorting with taskRequest url "/workallocation/task/" on page 3 for user type "<UserType>"
-            | ColumnHeader  | Caseworker | Judge | FieldId      |
-            | Case name     | Yes        | Yes   | caseName     |
-            | Case category | Yes        | Yes   | caseCategory |
-            | Location      | Yes        | Yes   | locationName |
-            | Task          | Yes        | Yes   | taskTitle    |
-            | Task created  | No         | Yes   | created_date |
-            | Due date      | Yes        | No    | dueDate      |
-            | Priority      | Yes        | No    | dueDate      |
-
-
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |

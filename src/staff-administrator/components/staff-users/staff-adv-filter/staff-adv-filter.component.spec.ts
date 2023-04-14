@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
+import { FilterError, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { filterConfig } from '@stryker-mutator/mocha-runner/src/utils';
 import { BehaviorSubject } from 'rxjs';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
@@ -52,8 +52,8 @@ describe('StaffAdvFilterComponent', () => {
     ],
     reset: false
   };
-  let mockFilterStreamSubject: BehaviorSubject<any>;
-  let mockFilterErrorsSubject: BehaviorSubject<any>;
+  let mockFilterStreamSubject: BehaviorSubject<FilterSetting>;
+  let mockFilterErrorsSubject: BehaviorSubject<FilterError[]>;
 
   beforeEach(() => {
     mockFilterStreamSubject = new BehaviorSubject(mockFilterServiceResponse);
@@ -209,6 +209,11 @@ describe('StaffAdvFilterComponent', () => {
         };
       });
 
+      it('should call setErrors null initially after subscription', () => {
+        // @ts-expect-error - private property
+        expect(component.staffDataFilterService.setErrors).toHaveBeenCalledWith(null);
+      });
+
       it('should set an error when filterService emits no values the genericFilter is submitted', () => {
         component.genericFilterComponent.submitted = true;
         fixture.detectChanges();
@@ -218,11 +223,6 @@ describe('StaffAdvFilterComponent', () => {
           // @ts-expect-error - private property
           [{ name: component.FILTER_NAME, error: component.ERROR_MESSAGE_MIN_ONE_CRITERIA }]
         );
-      });
-
-      it('should not set an error when filterService emits no values and the genericFilter is not submitted', () => {
-        // @ts-expect-error - private property
-        expect(component.staffDataFilterService.setErrors).not.toHaveBeenCalled();
       });
     });
   });

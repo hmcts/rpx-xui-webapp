@@ -316,7 +316,7 @@ const taskManagementApiMock = require('../../../../backendMock/services/task-man
             } 
         })
         const auth = await browser.driver.manage().getCookie('__auth__')
-        mockClient.setUserApiData(auth.value, 'OnTask', { status: 200, data: taskDetails });
+        mockClient.setUserApiData(auth.value, 'OnTaskDetails', { status: 200, data: taskDetails });
 
     });
 

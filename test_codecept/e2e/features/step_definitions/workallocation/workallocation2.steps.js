@@ -108,8 +108,8 @@ const { DataTableArgument } = require('codeceptjs');
 
 
     When('I click submit button {string} in task check your changes page', async function(buttonLabel){
-        expect(await caseAllocateCheckYourAnswersPage.submitButton.getText()).to.contains(buttonLabel);
-        await caseAllocateCheckYourAnswersPage.submitButton.click();
+        expect(await taskCheckYourChangesPage.submitButton.getText()).to.contains(buttonLabel);
+        await taskCheckYourChangesPage.submitButton.click();
     });
 
     Then('I see All work cases page displayed', async function(){

@@ -1,4 +1,4 @@
-@fullfunctional @codecept_enabled
+@fullfunctional @codecept_enabled @codecept_test
 Feature: Login
 
   Background:

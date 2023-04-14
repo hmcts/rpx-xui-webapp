@@ -162,6 +162,19 @@
         </div>
       </dl>
 
+      <ng-container *ngIf="isUpdateMode">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+          <div class="govuk-summary-list__row">
+            <div class="govuk-summary-list__key">Status</div>
+            <div class="govuk-summary-list__value">
+              <exui-staff-status [status]="staffUser.status"></exui-staff-status>
+            </div>
+            <div class="govuk-summary-list__actions">
+            </div>
+          </div>
+        </dl>
+      </ng-container>
+
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
           <button id="user-staff-check-answers-submit"

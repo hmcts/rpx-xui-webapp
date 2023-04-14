@@ -63,7 +63,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
         message: InfoMessage.ADD_NEW_USER,
         type: InfoMessageType.SUCCESS
       } as InformationMessage);
-      this.router.navigateByUrl('/staff');
+      this.router.navigateByUrl('/staff', { state: { retainMessages: true } });
     }, () => {
       this.router.navigateByUrl('/service-down');
     });

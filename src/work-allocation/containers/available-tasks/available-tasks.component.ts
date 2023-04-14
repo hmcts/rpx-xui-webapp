@@ -58,6 +58,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       ];
       const locationParameter = this.getLocationParameter();
       const typesOfWorkParameter = this.getTypesOfWorkParameter();
+
       if (locationParameter) {
         searchParameters.push(locationParameter);
       }

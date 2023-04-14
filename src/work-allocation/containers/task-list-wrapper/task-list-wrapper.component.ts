@@ -193,9 +193,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         }
         this.selectedWorkTypes = newWorkTypes.filter(workType => workType !== 'types_of_work_all');
         this.selectedServices = services.filter(service => service !== 'services_all');
-        if (this.selectedLocations.length) {
-          this.doLoad();
-        }
+
+        this.doLoad();
       });
   }
 
@@ -276,7 +275,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public getSortParameter(): SortParameter[] {
-    if (this.sortedBy.fieldName !== 'priority') {
+    if (this.sortedBy && this.sortedBy.fieldName !== 'priority') {
       return [{
         sort_by: this.sortedBy.fieldName,
         sort_order: this.sortedBy.order

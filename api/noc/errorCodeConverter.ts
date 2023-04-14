@@ -1,12 +1,12 @@
 export function generateErrorMessageWithCode(error) {
-  let data
+  let data;
   if (error.data && !error.data.code && error.data.message) {
-    const code = generateErrorCodeFromMessage(error.data.message)
-    data = {...error.data, code}
+    const code = generateErrorCodeFromMessage(error.data.message);
+    data = {...error.data, code};
   } else {
-    data = error.data
+    data = error.data;
   }
-  return {...error, data}
+  return {...error, data};
 }
 
 const NoCErrorCodeMessageMap = {
@@ -86,46 +86,46 @@ const NoCErrorCodeMessageMap = {
     code: 'no-org-policy',
     message: 'No OrganisationPolicy exists on the case for the case role',
   },
-}
+};
 
 function generateErrorCodeFromMessage(message: string) {
   switch (true) {
     case message.includes(NoCErrorCodeMessageMap.CASE_ID_EMPTY.message):
-      return NoCErrorCodeMessageMap.CASE_ID_EMPTY.code
+      return NoCErrorCodeMessageMap.CASE_ID_EMPTY.code;
     case message.includes(NoCErrorCodeMessageMap.CASE_ID_INVALID.message):
-      return NoCErrorCodeMessageMap.CASE_ID_INVALID.code
+      return NoCErrorCodeMessageMap.CASE_ID_INVALID.code;
     case message.includes(NoCErrorCodeMessageMap.CASE_ID_INVALID_LENGTH.message):
-      return NoCErrorCodeMessageMap.CASE_ID_INVALID_LENGTH.code
+      return NoCErrorCodeMessageMap.CASE_ID_INVALID_LENGTH.code;
     case message.includes(NoCErrorCodeMessageMap.CASE_NOT_FOUND.message):
-      return NoCErrorCodeMessageMap.CASE_NOT_FOUND.code
+      return NoCErrorCodeMessageMap.CASE_NOT_FOUND.code;
     case message.includes(NoCErrorCodeMessageMap.MULTIPLE_NOC_REQUESTS_ON_USER.message):
-      return NoCErrorCodeMessageMap.MULTIPLE_NOC_REQUESTS_ON_USER.code
+      return NoCErrorCodeMessageMap.MULTIPLE_NOC_REQUESTS_ON_USER.code;
     case message.includes(NoCErrorCodeMessageMap.MULTIPLE_NOC_REQUESTS_ON_CASE.message):
-      return NoCErrorCodeMessageMap.MULTIPLE_NOC_REQUESTS_ON_CASE.code
+      return NoCErrorCodeMessageMap.MULTIPLE_NOC_REQUESTS_ON_CASE.code;
     case message.includes(NoCErrorCodeMessageMap.INSUFFICIENT_PRIVILEGES.message):
-      return NoCErrorCodeMessageMap.INSUFFICIENT_PRIVILEGES.code
+      return NoCErrorCodeMessageMap.INSUFFICIENT_PRIVILEGES.code;
     case message.includes(NoCErrorCodeMessageMap.NO_ORG_POLICY.message):
     case message.includes(NoCErrorCodeMessageMap.NO_ORG_POLICY_CASE_ROLE.message):
-      return NoCErrorCodeMessageMap.NO_ORG_POLICY.code
+      return NoCErrorCodeMessageMap.NO_ORG_POLICY.code;
     case message.includes(NoCErrorCodeMessageMap.NOC_EVENT_UNAVAILABLE.message):
-      return NoCErrorCodeMessageMap.NOC_EVENT_UNAVAILABLE.code
+      return NoCErrorCodeMessageMap.NOC_EVENT_UNAVAILABLE.code;
     case message.includes(NoCErrorCodeMessageMap.NOC_IN_PROGRESS.message):
-      return NoCErrorCodeMessageMap.NOC_IN_PROGRESS.code
+      return NoCErrorCodeMessageMap.NOC_IN_PROGRESS.code;
     case message.includes(NoCErrorCodeMessageMap.ANSWERS_EMPTY.message):
-      return NoCErrorCodeMessageMap.ANSWERS_EMPTY.code
+      return NoCErrorCodeMessageMap.ANSWERS_EMPTY.code;
     case message.includes(NoCErrorCodeMessageMap.ANSWERS_MISMATCH_QUESTIONS.message):
-      return NoCErrorCodeMessageMap.ANSWERS_MISMATCH_QUESTIONS.code
+      return NoCErrorCodeMessageMap.ANSWERS_MISMATCH_QUESTIONS.code;
     case message.includes(NoCErrorCodeMessageMap.ANSWERS_NOT_MATCHED_ANY_LITIGANT.message):
-      return NoCErrorCodeMessageMap.ANSWERS_NOT_MATCHED_ANY_LITIGANT.code
+      return NoCErrorCodeMessageMap.ANSWERS_NOT_MATCHED_ANY_LITIGANT.code;
     case message.includes(NoCErrorCodeMessageMap.ANSWERS_NOT_IDENTIFY_LITIGANT.message):
-      return NoCErrorCodeMessageMap.ANSWERS_NOT_IDENTIFY_LITIGANT.code
+      return NoCErrorCodeMessageMap.ANSWERS_NOT_IDENTIFY_LITIGANT.code;
     case message.includes(NoCErrorCodeMessageMap.NO_ANSWER_PROVIDED_FOR_QUESTION.message):
-      return NoCErrorCodeMessageMap.NO_ANSWER_PROVIDED_FOR_QUESTION.code
+      return NoCErrorCodeMessageMap.NO_ANSWER_PROVIDED_FOR_QUESTION.code;
     case message.includes(NoCErrorCodeMessageMap.HAS_REPRESENTED.message):
-      return NoCErrorCodeMessageMap.HAS_REPRESENTED.code
+      return NoCErrorCodeMessageMap.HAS_REPRESENTED.code;
     case message.includes(NoCErrorCodeMessageMap.MISSING_COR_CASE_ROLE_ID.message):
-      return NoCErrorCodeMessageMap.MISSING_COR_CASE_ROLE_ID.code
+      return NoCErrorCodeMessageMap.MISSING_COR_CASE_ROLE_ID.code;
     default:
-      return NoCErrorCodeMessageMap.GENERIC_ERROR.code
+      return NoCErrorCodeMessageMap.GENERIC_ERROR.code;
   }
 }

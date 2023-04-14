@@ -10,10 +10,10 @@ import {
   getRoleCategoryToBeSelectedByDefault,
   handleFatalErrors,
   handleTasksFatalErrors,
+  locationWithinRegion,
   REDIRECTS,
   treatAsFatal,
-  WILDCARD_SERVICE_DOWN,
-  locationWithinRegion
+  WILDCARD_SERVICE_DOWN
 } from './work-allocation-utils';
 
 describe('WorkAllocationUtils', () => {
@@ -262,7 +262,7 @@ describe('WorkAllocationUtils', () => {
   });
 
   it('should verify that a location is within a region', () => {
-    const regionLocations: LocationsByRegion[] = [{regionId: '1', locations: ['123']}, {regionId: '2', locations: ['234']}]
+    const regionLocations: LocationsByRegion[] = [{regionId: '1', locations: ['123']}, {regionId: '2', locations: ['234']}];
     expect(locationWithinRegion(regionLocations, '1', '123')).toEqual(true);
     expect(locationWithinRegion(regionLocations, '2', '234')).toEqual(true);
     expect(locationWithinRegion(regionLocations, '1', '234')).toEqual(false);

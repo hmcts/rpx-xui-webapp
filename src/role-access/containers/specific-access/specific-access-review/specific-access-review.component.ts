@@ -5,7 +5,6 @@ import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { take } from 'rxjs/operators';
 import { $enum as EnumUtil } from 'ts-enum-util';
-
 import { UserDetails } from '../../../../app/models';
 import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../../work-allocation/services';
 import { ERROR_MESSAGE } from '../../../constants';
@@ -19,9 +18,7 @@ import * as fromFeature from '../../../store';
   selector: 'exui-specific-access-review',
   templateUrl: './specific-access-review.component.html'
 })
-
 export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
-
   public ERROR_MESSAGE = ERROR_MESSAGE;
   @Input() public navEvent: SpecificAccessNavigation;
   public title = SpecificAccessText.TITLE;
@@ -53,7 +50,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
     private readonly store: Store<fromFeature.State>,
     private readonly allocateRoleService: AllocateRoleService,
     private readonly caseworkerDataService: CaseworkerDataService,
-    private waSupportedJurisdictionsService: WASupportedJurisdictionsService
+    private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService
   ) {
     this.accessReasons = [
       { reason: AccessReason.APPROVE_REQUEST, checked: false },
@@ -78,7 +75,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
           (caseworkers) => {
             const caseworker = caseworkers.find(thisCaseworker => thisCaseworker.idamId === this.specificAccessStateData.actorId);
             if (caseworker) {
-              this.requesterName = `${caseworker.firstName} ${caseworker.lastName}`
+              this.requesterName = `${caseworker.firstName} ${caseworker.lastName}`;
             }
           });
       });
@@ -145,7 +142,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
                   requestCreated: specificAccess.requestCreated,
                   roleCategory: specificAccess.roleCategory,
                   person: { id: specificAccess.actorId, name: null, domain: null },
-                }
+                };
               }
             });
             this.store.dispatch(new fromFeature.RequestMoreInfoSpecificAccessRequest(specificAccessBody));

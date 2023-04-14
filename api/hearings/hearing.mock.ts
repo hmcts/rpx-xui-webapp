@@ -75,22 +75,23 @@ export const init = () => {
           caseRef: caseIds[0]
         }
       ];
-    } else {
-      // the below exclusion of return 500 just to faciliate testing
-      if (caseIds[0].endsWith('6')) {
-        return [
-          500,
-          null
-        ];
-      }
+    }
+
+    // the below exclusion of return 500 just to faciliate testing
+    if (caseIds[0].endsWith('6')) {
       return [
-        200,
-        {
-          ...EMPTY_HEARINGS_LIST,
-          caseRef: caseIds[0]
-        }
+        500,
+        null
       ];
     }
+
+    return [
+      200,
+      {
+        ...EMPTY_HEARINGS_LIST,
+        caseRef: caseIds[0]
+      }
+    ];
   });
 
   mock.onGet(getHearingInfoUrl).reply((config) => {

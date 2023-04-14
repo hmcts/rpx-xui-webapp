@@ -218,12 +218,12 @@ export const ALL_TASKS = {
 };
 
 export const TASKS_SORTED_BY = {
-  caseReference: [ ...SORTED_BY_CASE_REFERENCE ],
-  caseName: [ ...SORTED_BY_CASE_NAME ],
-  caseCategory: [ ...SORTED_BY_CATEGORY ],
-  location: [ ...SORTED_BY_LOCATION ],
-  taskName: [ ...SORTED_BY_TASK ],
-  dueDate: [ ...SORTED_BY_DUE_DATE ]
+  caseReference: [...SORTED_BY_CASE_REFERENCE],
+  caseName: [...SORTED_BY_CASE_NAME],
+  caseCategory: [...SORTED_BY_CATEGORY],
+  location: [...SORTED_BY_LOCATION],
+  taskName: [...SORTED_BY_TASK],
+  dueDate: [...SORTED_BY_DUE_DATE]
 };
 
 export const SORTABLE_FIELDS = [

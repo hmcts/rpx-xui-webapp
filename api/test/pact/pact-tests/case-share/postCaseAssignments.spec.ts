@@ -53,9 +53,9 @@ describe('Post Cases from CaseAssignment Api', () => {
       resp.then((axResponse) => {
         expect(axResponse.status).to.be.equal(201);
         const responseDto:AssignAccessWithinOrganisationDto = <AssignAccessWithinOrganisationDto> axResponse.data;
-        try{
+        try {
           assertCaseAssignmentResponses(responseDto);
-        }catch(e) {
+        } catch (e) {
           e.toString(`~~~~~ Error when trying to assert the response from the call to the ${taskUrl}` +e);
         }
       }).then(() => {

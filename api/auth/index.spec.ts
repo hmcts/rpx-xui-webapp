@@ -68,6 +68,7 @@ describe('Auth', () => {
       auth.successCallback(req, res, next);
       expect(res.cookie).to.be.calledWith(getConfigValue(COOKIES_TOKEN), accessToken);
       expect(res.cookie).to.be.calledWith(getConfigValue(COOKIES_USER_ID), details.uid);
+      // eslint-disable-next-line no-unused-expressions
       expect(next).to.have.been.called;
     });
   });

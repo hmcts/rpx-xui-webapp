@@ -161,7 +161,7 @@ export function toDenySADletionRequestedRoleBody(requestId: string) {
     },
     queryParams: null,
     body: {
-      userIds: [ requestId ]
+      userIds: [requestId]
     },
     multipart: false
   };
@@ -206,7 +206,7 @@ export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData
 export function getActorId(currentUserId: string, allocateRoleData: AllocateRoleData): string {
   if (allocateRoleData.allocateTo === AllocateTo.RESERVE_TO_ME) {
     return currentUserId;
-  } else {
-    return allocateRoleData.person.id;
   }
+
+  return allocateRoleData.person.id;
 }

@@ -34,7 +34,7 @@ describe('access management service, query role assignments', () => {
   const RESPONSE_BODY = {
     'roleAssignmentResponse': []
   };
-  for(const role of []) {
+  for (const role of []) {
     const roleAssognmentRole = {
       'id': somethingLike('23a234567-eb80-4681-b62c-6ae2ed069a5g'),
       'actorId': somethingLike('14a21569-eb80-4681-b62c-6ae2ed069e5f'),

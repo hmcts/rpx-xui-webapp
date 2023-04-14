@@ -758,9 +758,9 @@ export function getGrantType(roleAssignment: RoleAssignment) {
     return roleAssignment.grantType.replace(/(\w)(\w*)/g, (g0, second, third) => {
       return second.toUpperCase() + third.toLowerCase();
     });
-  } else {
-    return roleAssignment.grantType;
   }
+
+  return roleAssignment.grantType;
 }
 
 export function getStartDate(roleAssignment: RoleAssignment): Date | string {

@@ -218,11 +218,9 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
   try {
     const payload = { case_id: caseId, event_id: eventId, case_jurisdiction: jurisdiction, case_type: caseType };
     const jurisdictions = getWASupportedJurisdictionsList();
-    let status;
-    let data;
-    jurisdictions.includes(jurisdiction) ? { status, data } =
-     await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req)
-      : (status = 200, data = []);
+    const { status, data } = jurisdictions.includes(jurisdiction)
+      ? await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req)
+      : { status: 200, data: [] };
     return res.status(status).send(data);
   } catch (e) {
     next(e);
@@ -427,10 +425,9 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
       'case_type': req.body.searchRequest.caseTypeId,
       'event_id': req.body.searchRequest.eventId
     };
-    let status;
-    let data;
-    jurisdictions.includes(req.body.searchRequest.jurisdiction) ?
-      { status, data } = await handlePostSearch(postTaskPath, reqBody, req) : (status = 200, data = []);
+    const { status, data } = jurisdictions.includes(req.body.searchRequest.jurisdiction)
+      ? await handlePostSearch(postTaskPath, reqBody, req)
+      : { status: 200, data: [] };
     res.status(status);
     res.send(data);
   } catch (error) {

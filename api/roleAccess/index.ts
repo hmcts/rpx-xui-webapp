@@ -276,9 +276,9 @@ export async function reallocateRole(req: EnhancedRequest, res: Response, next: 
       const postResponse: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
       await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
       return res.status(postResponse.status).send(postResponse.data);
-    } else {
-      return res.status(status).send(data);
     }
+
+    return res.status(status).send(data);
   } catch (error) {
     next(error);
   }

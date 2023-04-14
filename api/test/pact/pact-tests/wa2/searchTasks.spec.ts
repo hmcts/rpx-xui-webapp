@@ -153,13 +153,13 @@ describe('Task management api, Search task', () => {
         returnedResponse = ret;
       };
 
-      try{
+      try {
         await searchTask(req, response, next);
 
         assertResponses(returnedResponse);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
-      } catch(err) {
+      } catch (err) {
         console.log(err.stack);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();

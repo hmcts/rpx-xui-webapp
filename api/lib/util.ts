@@ -30,15 +30,15 @@ export function exists(object: any, nestled: string, returnValue: boolean = fals
       dotArray.shift();
       if (object[current]) {
         return exists(object[current], dotArray.join('.'), returnValue);
-      } else {
-        return false;
       }
-    } else {
-      return returnValue ? object : true;
+
+      return false;
     }
-  } else {
-    return false;
+
+    return returnValue ? object : true;
   }
+
+  return false;
 }
 
 export function shorten(str: string, maxLen: number): string {

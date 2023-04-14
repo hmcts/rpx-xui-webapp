@@ -73,9 +73,9 @@ export function getUserRoleCategory(roles: string[]): string {
   } else if (hasRoleCategory(roles, LEGAL_OPERATIONS_ROLE_NAME) || hasRoleCategory(roles, TASK_SUPERVISOR)
     || hasRoleCategory(roles, PUI_CASE_MANAGER) || hasRoleCategory(roles, PUI_ORG_MANAGER)) {
     return PROFESSIONAL_ROLE;
-  } else {
-    return LEGAL_OPERATIONS_ROLE_NAME;
   }
+
+  return LEGAL_OPERATIONS_ROLE_NAME;
 }
 
 export function hasRoleCategory(roles: string[], roleName: string): boolean {

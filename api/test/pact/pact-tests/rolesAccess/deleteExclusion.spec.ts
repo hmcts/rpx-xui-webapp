@@ -53,7 +53,6 @@ describe('access management service, delete exclusion', () => {
       });
 
       const { deleteUserExclusion } = requireReloaded('../../../../roleAccess/exclusionService');
-      'req.session.passport.user.userinfo';
       const req = mockReq({
         headers: {
           'Authorization': 'Bearer someAuthorizationToken',

@@ -72,6 +72,7 @@ describe('interceptors', () => {
       // @ts-ignore
       getLoggerStub.returns({ info: spy, addContext: sinon.spy(), level: 'debug' });
       successInterceptor(response);
+      // eslint-disable-next-line no-unused-expressions
       expect(spy).to.be.called;
       getLoggerStub.restore();
     });
@@ -93,6 +94,7 @@ describe('interceptors', () => {
       // @ts-ignore
       getLoggerStub.returns({ error: spy, addContext: sinon.spy(), level: 'debug' });
       errorInterceptor(error).catch(() => {
+        // eslint-disable-next-line no-unused-expressions
         expect(spy).to.be.called;
         getLoggerStub.restore();
       });

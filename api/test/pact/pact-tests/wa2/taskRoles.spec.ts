@@ -20,7 +20,7 @@ describe('Task management api, task roles', () => {
     { roleName: 'hearing-judge', roleCategory: 'JUDICIAL' }
   ];
 
-  for(const role of roles) {
+  for (const role of roles) {
     const testRole = {
       role_category: somethingLike(role.roleCategory),
       role_name: somethingLike(role.roleName),

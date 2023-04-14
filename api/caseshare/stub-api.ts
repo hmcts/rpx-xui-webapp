@@ -21,17 +21,18 @@ export function getUsers(req: EnhancedRequest, res: Response) {
   }
   if (searchText === undefined) {
     return res.send(org.users);
-  } else {
-    const users = org.users;
-    const filterUser = users.filter((aUser) => aUser.idamId.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
+  }
+
+  const users = org.users;
+  const filterUser = users.filter((aUser) => aUser.idamId.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
         aUser.firstName.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
         aUser.lastName.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
         aUser.email.toLowerCase().indexOf(searchText.toLowerCase()) > -1);
-    if (!filterUser || filterUser.length === 0) {
-      return res.status(404).send('{"errorMessage": "User is not found}"');
-    }
-    return res.send(filterUser);
+  if (!filterUser || filterUser.length === 0) {
+    return res.status(404).send('{"errorMessage": "User is not found}"');
   }
+
+  return res.send(filterUser);
 }
 
 export function getCases(req: EnhancedRequest, res: Response) {

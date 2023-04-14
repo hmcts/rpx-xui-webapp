@@ -52,6 +52,7 @@ describe('RD Professional API call for get organisations', () => {
 });
 
 function assertResponse(dto: Organisation[]): void {
+  // eslint-disable-next-line no-unused-expressions
   expect(dto).to.be.not.null;
   for (const element of dto) {
     expect(element.name).to.equal('TheOrganisation');

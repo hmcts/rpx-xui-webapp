@@ -74,9 +74,9 @@ export async function assignCases(req: EnhancedRequest, res: Response): Promise<
   // when none of the apis successfully
   if (allPromises.length === rejectedCount) {
     return res.status(422).send(updatedErrorMessages);
-  } else {
-    return res.status(201).send(finalSharedCases);
   }
+
+  return res.status(201).send(finalSharedCases);
 }
 
 function doShareCase(req: EnhancedRequest, shareCases: SharedCase[]): any[] {
@@ -195,7 +195,7 @@ function handleUnSharedCase(shareCases: SharedCase[], rejectedUnShareCaseReason:
       }
     }
     return returnSharedCases;
-  } else {
-    return updatedSharedCases;
   }
+
+  return updatedSharedCases;
 }

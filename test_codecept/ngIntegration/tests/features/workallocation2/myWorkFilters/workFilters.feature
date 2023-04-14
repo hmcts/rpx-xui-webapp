@@ -1,4 +1,4 @@
-@ng @codecept_enabled 
+@ng @codecept_enabled
 Feature: WA Release 2: My work - Work filters
 
     Background: Mock and browser setup
@@ -110,19 +110,9 @@ Feature: WA Release 2: My work - Work filters
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 20001        |
-            | CIVIL         | Y           | ORGANISATION | 30001        |
+            | IA           | Y           | ORGANISATION | 30001        |
+            | CIVIL         | Y           | ORGANISATION | 20001        |
 
-
-
-
-        Given I set MOCK caseworkers for service "IA", base location
-            | email                   | locationId |
-            | caseworker_user1@gov.uk | 20001      |
-
-        Given I set MOCK caseworkers for service "SSCS", base location
-            | email                   | locationId |
-            | caseworker_user1@gov.uk | 20001      |
 
         Given I start MockApp
         # When I click on primary navigation header "My work"

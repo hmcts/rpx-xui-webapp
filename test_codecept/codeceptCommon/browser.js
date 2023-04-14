@@ -70,8 +70,9 @@ class Browser{
         return await getActor().grabCurrentUrl()
     }
    
-    refresh(){
-
+    async refresh(){
+        const currentUrl = await this.getCurrentUrl();
+        await this.get(currentUrl)
     }
 
 

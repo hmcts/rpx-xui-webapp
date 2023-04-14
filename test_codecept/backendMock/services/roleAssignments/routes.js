@@ -25,8 +25,8 @@ router.post('/query' , (req,res) => {
     if (reqProps.includes('queryRequests')){
         const serviceUsers = service.getQueryResults(req.body.queryRequests);
         res.send({ roleAssignmentResponse: serviceUsers });
-    } else if (reqProps.includes('roleName') && reqProps.includes('roleTy[pe')){
-        res.send(service.getServiceUsersRolesAssignments(req.body))
+    } else if (reqProps.includes('roleName') && reqProps.includes('roleType')){
+        res.send({roleAssignmentResponse: service.getServiceUsersRolesAssignments(req.body)})
     }
 
 

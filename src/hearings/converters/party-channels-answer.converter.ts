@@ -8,8 +8,7 @@ import * as fromHearingStore from '../store';
 import { AnswerConverter } from './answer.converter';
 
 export class PartyChannelsAnswerConverter implements AnswerConverter {
-  constructor(
-    protected readonly route: ActivatedRoute) {}
+  constructor(protected readonly route: ActivatedRoute) {}
 
   private static getPartyChannelValue(refData: LovRefDataModel[], party: PartyDetailsModel): string {
     let preferredHearingChannelRefData = null;
@@ -44,7 +43,7 @@ export class PartyChannelsAnswerConverter implements AnswerConverter {
       return party.partyName;
     }
     if (foundPartyFromService) {
-      if (foundPartyFromService?.partyName !== null) {
+      if (foundPartyFromService.partyName && foundPartyFromService.partyName !== null) {
         return foundPartyFromService.partyName;
       }
 

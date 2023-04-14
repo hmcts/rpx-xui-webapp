@@ -336,4 +336,31 @@ describe('getFilterPersistenceByRoleType', () => {
       expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(false);
     });
   });
+
+  describe('Date Checks', () => {
+    it('isPriorityDateTimePast works', () => {
+      let result = AppUtils.isPriorityDateTimePast(new Date(2023, 1, 1, 1, 1, 1), new Date(2023, 3, 10));
+      expect(result).toBeTruthy();
+      result = AppUtils.isPriorityDateTimePast(new Date(2023, 1, 1, 1, 1, 0), new Date(2023, 1, 1));
+      expect(result).toBeFalsy();
+    });
+    it('isPriorityDateTimeInNext24Hours works', () => {
+      const dateTime = new Date(2023, 1, 1, 12, 0, 0);
+      const currentTime = new Date(2023, 1, 1, 10, 0, 0);
+      const result = AppUtils.isPriorityDateTimeInNext24Hours(dateTime, currentTime);
+      expect(result).toBeTruthy();
+    });
+    it('isPriorityDateTimeInNext24Hours returns true', () => {
+      const dateTime = new Date(2023, 1, 1, 16, 0, 0);
+      const currentTime = new Date(2023, 1, 1, 12, 0, 0);
+      const result = AppUtils.isPriorityDateTimeInNext24Hours(dateTime, currentTime);
+      expect(result).toBeTruthy();
+    });
+    it('isPriorityDateTimeInNext24Hours returns false', () => {
+      const dateTime = new Date(2023, 1, 1, 12, 0, 0);
+      const currentTime = new Date(2023, 1, 2, 11, 0, 59);
+      const result = AppUtils.isPriorityDateTimeInNext24Hours(dateTime, currentTime);
+      expect(result).toBeFalsy();
+    });
+  });
 });

@@ -103,6 +103,11 @@ const { DataTableArgument } = require('codeceptjs');
         await taskCheckYourChangesPage.submitButton.click();
     });
 
+When('I click submit button {string} in case allocate check your changes page', async function (buttonLabel) {
+    expect(await caseAllocateCheckYourAnswersPage.submitButton.getText()).to.contains(buttonLabel);
+    await caseAllocateCheckYourAnswersPage.submitButton.click();
+});
+
     Then('I see All work cases page displayed', async function(){
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(await allWorkPage.isCasesContainerDisplayed()).to.be.true

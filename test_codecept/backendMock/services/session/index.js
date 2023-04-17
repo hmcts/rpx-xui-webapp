@@ -100,7 +100,7 @@ class MockSessionService{
     }
 
     async updateAuthSessionWithRoles(auth, roles){
-        await this.waitForSessionWithRoleAssignments(auth)
+        // await this.waitForSessionWithRoleAssignments(auth)
         const sessionFile = await this.getSessionFileAuth(auth);
         let sessionJson = await fs.readFileSync(sessionFile);
 
@@ -111,7 +111,7 @@ class MockSessionService{
     }
 
     async updateAuthSessionWithRoleAssignments(auth, roleAssignments) {
-        await this.waitForSessionWithRoleAssignments(auth)
+        // await this.waitForSessionWithRoleAssignments(auth)
 
         const sessionFile = await this.getSessionFileAuth(auth);
         let sessionJson = await fs.readFileSync(sessionFile);

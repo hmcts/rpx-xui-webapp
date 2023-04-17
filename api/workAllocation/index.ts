@@ -160,22 +160,6 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     let returnData;
 
     if (data) {
-      // TEMPORARY CODE: for next_hearing_date until it is enabled in Task API
-      data.tasks.forEach(task => {
-        task.hearing_date =
-          new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any) )).toString();
-      });
-      const payload = req.body;
-      const sortingParameters = payload.searchRequest.sorting_parameters;
-      if (sortingParameters && sortingParameters.length > 0) {
-        sortingParameters.forEach( sortParameter => {
-          if (sortParameter.sort_by === 'hearing_date') {
-            sortParameter.sort_by = 'caseName';
-          }
-        });
-      }
-      // TEMPORARY CODE: end
-
       returnData = {
         tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser),
         total_records: data.total_records,

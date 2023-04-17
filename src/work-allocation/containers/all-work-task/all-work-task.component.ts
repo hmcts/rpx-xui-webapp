@@ -90,13 +90,15 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       const searchParameters = [
-        {key: 'jurisdiction', operator: 'IN', values: this.selectedServices},
         this.getStateParameter()
       ];
       const personParameter = { key: 'user', operator: 'IN', values: [this.selectedPerson] };
       const locationParameter = this.getLocationParameter();
       const taskTypeParameter = this.getTaskTypeParameter();
       const taskNameParameter = this.getTaskNameParameter();
+      if (this.selectedServices?.length) {
+        searchParameters.push({ key: 'jurisdiction', operator: 'IN', values: this.selectedServices });
+      }
       if (this.selectedPerson) {
         searchParameters.push(personParameter);
       }

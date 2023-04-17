@@ -293,13 +293,15 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     const field: FilterFieldConfig = {
       name: 'locations',
       options: [],
-      locationTitle: 'Search for a location by name',
-      minSelected: 1,
+      title: 'Search for a location by name',
+      titleHint: '(optional)',
+      // locationTitle: 'Leave blank to return all locations available to you.',
+      hintText: 'Leave blank to return all locations available to you.',
+      minSelected: null,
       maxSelected: null,
       lineBreakBefore: true,
       findLocationField: 'services',
       displayMinSelectedError: true,
-      minSelectedError: 'Search for a location by name',
       type: 'find-location',
       enableAddButton: true,
       bookingCheckType: BookingCheckType.BOOKINGS_AND_BASE
@@ -429,8 +431,10 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     this.toggleFilter = !this.toggleFilter;
     if (this.toggleFilter) {
       setTimeout(() => {
-        const typesOfWorkParentElem = document.getElementById('types-of-work').closest('.contain-classes');
-        (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
+        const typesOfWorkParentElem = document.getElementById('types-of-work')?.closest('.contain-classes');
+        if (typesOfWorkParentElem) {
+          (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
+        }
       }, 0);
     }
   }

@@ -33,10 +33,10 @@
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Service</dt>
           <div class="govuk-summary-list__value">
-              <span *ngFor="let service of userDetails.services; let isLast=last">
-                {{service.service}}
-                <span *ngIf="!isLast"><br/></span>
-              </span>
+            <span *ngFor="let service of userDetails.services; let isLast=last">
+              {{service.service}}
+              <span *ngIf="!isLast"><br /></span>
+            </span>
           </div>
           <dd class="govuk-summary-list__actions">
             <a *ngIf="showAction" class="govuk-link" href="#">Change</a>
@@ -99,10 +99,10 @@
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Job title</dt>
           <div class="govuk-summary-list__value">
-              <span *ngFor="let jobTitle of userDetails.roles; let isLast=last">
-                {{jobTitle.role}}
-                <span *ngIf="!isLast"><br/></span>
-              </span>
+            <span *ngFor="let jobTitle of userDetails.roles; let isLast=last">
+              {{jobTitle.role}}
+              <span *ngIf="!isLast"><br /></span>
+            </span>
           </div>
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
         </div>
@@ -111,7 +111,8 @@
           <dt class="govuk-summary-list__key">Skills</dt>
           <dd class="govuk-summary-list__value">
             <span *ngFor="let skill of userDetails.skills; let isLast=last">
-              <span class="govuk-!-font-weight-bold">{{ getServiceNameFromSkillId(skill.skill_id) }}:</span> {{skill.description}}
+              <span class="govuk-!-font-weight-bold">{{ getServiceNameFromSkillId(skill.skill_id) }}:</span>
+              {{skill.description}}
               <span *ngIf="!isLast"><br /></span>
             </span>
           </dd>
@@ -122,28 +123,35 @@
           <dt class="govuk-summary-list__key">Status</dt>
           <dd class="govuk-summary-list__value">
             <exui-staff-status [status]="userDetails.status"></exui-staff-status>
-            <button *ngIf="userDetails.status==='PENDING'" class="govuk-button govuk-button--secondary ml15"
-              data-module="govuk-button" (click)="resendInvite()">
-              Resend activation email
-            </button>
           </dd>
           <dd class="govuk-summary-list__actions">
           </dd>
         </div>
       </dl>
 
+      <div *ngIf="userDetails.status==='PENDING'">
+        <p class="govuk-body-s">Users with the Pending status cannot be Updated or Suspended</p><br>
+      </div>
+
       <div class="govuk-button-group">
-        <button id="updateUserButton" class="govuk-button" data-module="govuk-button" (click)="onUpdateUser()">
-          Update
-        </button>
-        <div [matTooltip]="userDetails.suspended ? 'If you want to unsuspend a user raise a support request' : ''">
-          <button class="govuk-button govuk-button--secondary" data-module="govuk-button"
-            id="user-suspended-restore-button" [disabled]="userDetails.suspended"
-            [attr.aria-disabled]="userDetails.suspended" [class.govuk-button--disabled]="userDetails.suspended"
-            (click)="updateUserStatus()">
-            {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
+        <div *ngIf="userDetails.status==='PENDING'; else elseBlock">
+          <button class="govuk-button" data-module="govuk-button" (click)="resendInvite()">
+            Resend activation email
           </button>
         </div>
+        <ng-template #elseBlock>
+          <button id="updateUserButton" class="govuk-button" data-module="govuk-button" (click)="onUpdateUser()">
+            Update
+          </button>
+          <div [matTooltip]="userDetails.suspended ? 'If you want to unsuspend a user raise a support request' : ''">
+            <button class="govuk-button govuk-button--secondary" data-module="govuk-button"
+              id="user-suspended-restore-button" [disabled]="userDetails.suspended"
+              [attr.aria-disabled]="userDetails.suspended" [class.govuk-button--disabled]="userDetails.suspended"
+              (click)="updateUserStatus()">
+              {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
+            </button>
+          </div>
+        </ng-template>
 
         <button id="copyUserButton" class="govuk-button govuk-button--secondary" data-module="govuk-button"
           (click)="onCopyUser()">

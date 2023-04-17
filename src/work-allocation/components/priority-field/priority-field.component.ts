@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { PriorityLimits, TaskPriority } from '../../enums';
+import { AppUtils } from '../../../app/app-utils';
 
 @Component({
   selector: 'exui-priority-field',
@@ -15,29 +16,18 @@ export class PriorityFieldComponent {
   @Input() public majorPriority?: number;
 
   public get priority(): TaskPriority {
-
-    const dCount = this.daysBetween(this.date, new Date());
+    if (this.majorPriority === PriorityLimits.High) {
+      if(AppUtils.isPriorityDateTimePast(this.date)) {
+        return TaskPriority.HIGH;
+      }
+      return AppUtils.isPriorityDateTimeInNext24Hours(this.date) ? TaskPriority.MEDIUM : TaskPriority.LOW;
+    }
     if (this.majorPriority <= PriorityLimits.Urgent) {
       return TaskPriority.URGENT;
-    } else if (this.majorPriority < PriorityLimits.High) {
-      return TaskPriority.HIGH;
-    } else if (this.majorPriority === PriorityLimits.High) {
-      if (dCount < 0) {
-        return TaskPriority.HIGH;
-      } else if (dCount === 0) {
-        return TaskPriority.MEDIUM;
-      }
     }
-    return TaskPriority.LOW;
-  }
-
-  // returns the number of days that d1 is after d2
-  private daysBetween(d1: Date, d2: Date): number {
-    if (!(d1 && d2)) {
-      return 0;
+    if (this.majorPriority > PriorityLimits.High) {
+      return TaskPriority.LOW;
     }
-    const utc1 = Date.UTC(d1.getFullYear(), d1.getMonth(), d1.getDate());
-    const utc2 = Date.UTC(d2.getFullYear(), d2.getMonth(), d2.getDate());
-    return Math.floor((utc1 - utc2) / (1000 * 60 * 60 * 24));
+    return TaskPriority.HIGH;
   }
 }

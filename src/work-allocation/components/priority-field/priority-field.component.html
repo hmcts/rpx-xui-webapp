@@ -1,9 +1,9 @@
 <ng-container *ngIf="(isRelease4$ | async) as isRelease4">
   <ng-container *ngIf="isRelease4; else legacyField">
-    <exui-priority-field-current></exui-priority-field-current>
+    <exui-priority-field-current [date]="date" [majorPriority]="majorPriority"></exui-priority-field-current>
   </ng-container>
 
   <ng-template #legacyField>
-    <exui-priority-field-legacy></exui-priority-field-legacy>
+    <exui-priority-field-legacy [dueDate]="date"></exui-priority-field-legacy>
   </ng-template>
 </ng-container>

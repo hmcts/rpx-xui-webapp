@@ -6,14 +6,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { Observable, of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { PersonRole } from '../../../../api/workAllocation/interfaces/person';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
 import { InformationMessage } from '../../../app/shared/models';
-import { PersonRole } from '../../../../api/workAllocation/interfaces/person';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { TaskActionConstants } from '../../components/constants';
-import { PriorityFieldComponentModule } from '../../components/priority-field/priority.module';
+import { PriorityFieldModule } from '../../components/priority-field/priority-field.module';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskActionType } from '../../enums';
 import { WorkAllocationTaskService } from '../../services';
@@ -75,11 +75,11 @@ describe('TaskAssignmentConfirmComponent', () => {
       }
     };
     mockRouter.getCurrentNavigation.and.returnValue(navigation);
-    mockRouter.url = 'localhost/test',
+    mockRouter.url = 'localhost/test';
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
-        PriorityFieldComponentModule,
+        PriorityFieldModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
         ExuiCommonLibModule
@@ -314,7 +314,7 @@ describe('TaskAssignmentConfirmComponent', () => {
       TestBed.configureTestingModule({
         imports: [
           CdkTableModule,
-          PriorityFieldComponentModule,
+          PriorityFieldModule,
           RouterTestingModule,
           WorkAllocationComponentsModule,
           ExuiCommonLibModule

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { AppConstants } from '../../../app/app.constants';
 
 @Component({
@@ -13,8 +13,6 @@ export class PriorityFieldComponent implements OnInit {
   @Input() public date: Date;
   @Input() public majorPriority?: number;
 
-  // Legacy input
-  @Input() public dueDate: Date;
   @Input() public jurisdiction: string;
 
   public isRelease4$: Observable<boolean>;
@@ -27,7 +25,7 @@ export class PriorityFieldComponent implements OnInit {
       .pipe(
         map(features => {
           const jurisdictionConfig = features.configurations.find(config => config.serviceName === this.jurisdiction);
-          return parseInt(jurisdictionConfig.releaseVersion, 10) >= 4;
+          return parseInt(jurisdictionConfig?.releaseVersion, 10) >= 4;
       }));
   }
 }

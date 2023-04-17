@@ -79,7 +79,6 @@ describe('TaskAssignmentConfirmComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
-        PriorityFieldModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
         ExuiCommonLibModule

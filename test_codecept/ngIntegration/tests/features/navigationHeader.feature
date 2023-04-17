@@ -1,4 +1,4 @@
-@ng @ignore @codecept_test
+@ng @ignore @codecept_enabled
 Feature: Navigation header tabs
     https://tools.hmcts.net/confluence/display/EUI/Global+Search
 

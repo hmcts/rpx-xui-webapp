@@ -1,6 +1,7 @@
 
 
 const express = require('express')
+const minimist = require('minimist');
 
 const router = express.Router({ mergeParams: true });
 const service = require('./index')
@@ -10,7 +11,15 @@ const userApiData = require('../userApiData')
 
 router.get('/actors/:actorId', (req, res) => {
     // res.send(service.getActorRoles(req.params.actorId))
-    userApiData.sendResponse(req, res, "OnUserRoleAssignments", () => service.getActorRoles(req.params.actorId));
+    // userApiData.sendResponse(req, res, "OnUserRoleAssignments", () => service.getActorRoles(req.params.actorId));
+    
+    let roleAssignmentsDefault = service.getActorRoles(req.params.actorId);
+    const args = minimist(process.argv)
+    if (args.standalone) {
+        roleAssignmentsDefault = null
+    }
+    userApiData.sendResponse(req, res, "OnUserRoleAssignments", () => { return roleAssignmentsDefault });
+
 
 });
 

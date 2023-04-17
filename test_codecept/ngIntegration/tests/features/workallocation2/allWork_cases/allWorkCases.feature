@@ -1,4 +1,4 @@
-@ng  @wa2 @wa @codecept_enabled
+@ng  @wa2 @wa @codecept_enabled 
 Feature: WA Release 2: All work > Cases
 
     Background: Mock and browser setup

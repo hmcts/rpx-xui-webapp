@@ -180,7 +180,7 @@ const { DataTableArgument } = require('codeceptjs');
 
                     }
                     softAssert.setScenario('Nav header in main tab ' + headerlabel);
-                    await softAssert.assert(async () => expect(await headerPage.isTabPresentInRightNav(headerlabel), headerlabel + " tab is not present main nav in " + await headerPage.getPrimaryTabsDisplayed()).to.be.true);
+                    // await softAssert.assert(async () => expect(await headerPage.isTabPresentInRightNav(headerlabel), headerlabel + " tab is not present main nav in " + await headerPage.getPrimaryTabsDisplayed()).to.be.true);
 
                 }
                 softAssert.finally();

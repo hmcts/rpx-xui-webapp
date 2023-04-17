@@ -9,8 +9,8 @@ const userApiData = require('../userApiData')
 
 
 router.get('/actors/:actorId', (req, res) => {
-   
-    res.send(service.getActorRoles(req.params.actorId))
+    // res.send(service.getActorRoles(req.params.actorId))
+    userApiData.sendResponse(req, res, "OnUserRoleAssignments", () => service.getActorRoles(req.params.actorId));
 
 });
 

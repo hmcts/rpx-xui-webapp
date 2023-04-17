@@ -40,6 +40,7 @@ export class StaffAddEditFormService {
       roles: new FormArray([], Validators.required), // Job title heading
       skills: new FormGroup({}),
       suspended: new FormControl(false),
+      up_idam_status: new FormControl('PENDING')
     });
 
     // Services
@@ -90,6 +91,7 @@ export class StaffAddEditFormService {
       return [...previousValue, ...mappedValues];
     }, [] as any[]);
     staffUser.skills = selectedSkills.map(item => ({ skill_id: item.key, description: item.label }));
+
     return staffUser;
   }
 

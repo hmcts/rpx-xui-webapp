@@ -9,10 +9,12 @@ import { UserService } from '../../app/services/user/user.service';
 export class RefundsComponent implements OnInit {
 
   public refundsApiRoot = 'api/refund';
+  public notificationsApiRoot = 'api/notification';
   public ccdCaseNumber = 0;
   public userEmail = '';
   public userRoles = [];
   public userDataLoaded = false;
+  public apiRoot = '/payments';
 
   constructor(private readonly userService: UserService) { }
 

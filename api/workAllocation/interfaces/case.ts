@@ -44,6 +44,7 @@ export interface CaseInternalData {
   hmctsCaseCategory?: string;
   caseManagementLocation?: CaseManagementLocation;
   hmctsCaseNameInternal?: string;
+  nextHearingDetails?: {hearingDateTime: Date};
   caseNameHmctsInternal?: string;
 }
 

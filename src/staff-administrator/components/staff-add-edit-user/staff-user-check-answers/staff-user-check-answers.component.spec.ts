@@ -218,7 +218,7 @@ describe('StaffUserCheckAnswersComponent', () => {
     component.onSubmitAddUser();
     done();
     expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/staff');
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/staff', { state: { retainMessages: true } });
   });
 
   it('should display a banner once an user has been added successfully', (done) => {

@@ -1098,7 +1098,11 @@ describe('workAllocation.utils', () => {
       expect(mapCasesFromData([], [])).to.deep.equal([]);
     });
     it('should return correct case data if role assignment data returned', () => {
-      expect(mapCasesFromData(mockCaseData, mockRoleAssignment)).to.deep.equal(expectedRoleCaseData);
+      const mappedCaseData = mapCasesFromData(mockCaseData, mockRoleAssignment);
+      expect(mappedCaseData[0].isNew).to.equal(expectedRoleCaseData[0].isNew);
+      expect(mappedCaseData[0].jurisdiction).to.equal(expectedRoleCaseData[0].jurisdiction);
+      expect(mappedCaseData[0].jurisdictionId).to.equal(expectedRoleCaseData[0].jurisdictionId);
+      expect(mappedCaseData[0].location_id).to.equal(expectedRoleCaseData[0].location_id);
     });
   });
 

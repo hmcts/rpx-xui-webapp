@@ -36,7 +36,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     private readonly staffAddEditFormService: StaffAddEditFormService
   ) {
     this.isUpdateMode = this.activatedRoute.snapshot.data.isUpdateMode;
-    this.staffUser = staffAddEditFormService.valuesAsStaffUser;
+    this.staffUser = StaffUser.from(staffAddEditFormService.valuesAsStaffUser);
   }
 
   public ngOnInit() {
@@ -63,7 +63,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
         message: InfoMessage.ADD_NEW_USER,
         type: InfoMessageType.SUCCESS
       } as InformationMessage);
-      this.router.navigateByUrl('/staff');
+      this.router.navigateByUrl('/staff', { state: { retainMessages: true } });
     }, () => {
       this.router.navigateByUrl('/service-down');
     });

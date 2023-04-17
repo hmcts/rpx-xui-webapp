@@ -22,6 +22,7 @@ class MockConfigService {
       access_management_basic_view_mock: 'dummy',
       location_ref_api_url: 'dummy',
       cam_role_assignments_api_url: 'dummy',
+      notification_url: 'dummy',
     };
   }
   public getEditorConfiguration = () => this.config;
@@ -133,6 +134,14 @@ describe('AppConfiguration', () => {
 
   it('should have getAnnotationApiUrl', inject([AppConfig], (service: AppConfig) => {
     expect(service.getAnnotationApiUrl()).toBeUndefined();
+  }));
+
+  it('should have getNotificationUrl', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getNotificationUrl()).toBe('dummy');
+  }));
+
+  it('should have getNotificationUrl defined', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getNotificationUrl()).toBeDefined();
   }));
 
   it('should have getDocumentManagementUrlV2', inject([AppConfig], (service: AppConfig) => {

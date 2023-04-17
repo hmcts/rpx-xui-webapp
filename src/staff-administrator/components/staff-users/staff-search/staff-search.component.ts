@@ -48,7 +48,7 @@ export class StaffSearchComponent implements OnInit, OnDestroy {
     this.filterSub = this.filterService.getStream(this.FILTER_NAME)
       .subscribe(filterConfig => {
         if (filterConfig) {
-          const userPartialName = filterConfig.fields.find(item => item.name === 'user-partial-name').value[0];
+          const userPartialName = filterConfig.fields.find(item => item.name === 'user-partial-name')?.value[0];
           if (userPartialName) {
             this.staffDataFilterService.search({
               partialName: userPartialName,

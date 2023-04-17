@@ -211,7 +211,7 @@ describe('StaffAdvFilterComponent', () => {
 
       it('should call setErrors null initially after subscription', () => {
         // @ts-expect-error - private property
-        expect(component.staffDataFilterService.setErrors).toHaveBeenCalledWith(null);
+        expect(component.staffDataFilterService.setErrors).toHaveBeenCalledWith([]);
       });
 
       it('should set an error when filterService emits no values the genericFilter is submitted', () => {

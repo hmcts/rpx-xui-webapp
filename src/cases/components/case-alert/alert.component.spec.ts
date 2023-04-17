@@ -18,7 +18,7 @@ describe('AlertComponent', () => {
 
   const alertServiceMock = {
     alerts: of({ message: 'message', level: 'success' })
-  }
+  };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({

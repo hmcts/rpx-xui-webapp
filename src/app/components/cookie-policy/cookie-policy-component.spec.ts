@@ -6,7 +6,7 @@ import { CookiePolicyComponent } from './cookie-policy.component';
 describe('CookiePolicyComponentTest', () => {
   const translationServiceMock = {
     language: 'cy'
-  }
+  };
 
   @Component({selector: 'exui-app-header', template: ''})
   class HeaderStubComponent {

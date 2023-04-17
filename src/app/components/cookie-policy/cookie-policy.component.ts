@@ -200,6 +200,6 @@ export class CookiePolicyComponent {
       details
         .filter((c) => c.cat === category)
         .map((c) => ({...c, cat: c.catAlias || c.cat  }))
-    )
+    );
   }
 }

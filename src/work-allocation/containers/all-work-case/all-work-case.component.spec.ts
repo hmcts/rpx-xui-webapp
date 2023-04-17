@@ -17,11 +17,11 @@ import { ALL_LOCATIONS } from '../../components/constants/locations';
 import { Case } from '../../models/cases';
 import { Location } from '../../models/dtos';
 import {
-	CaseworkerDataService,
-	JurisdictionsService,
-	LocationDataService,
-	WASupportedJurisdictionsService,
-	WorkAllocationCaseService
+  CaseworkerDataService,
+  JurisdictionsService,
+  LocationDataService,
+  WASupportedJurisdictionsService,
+  WorkAllocationCaseService
 } from '../../services';
 import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
 import { AllWorkCaseComponent } from './all-work-case.component';

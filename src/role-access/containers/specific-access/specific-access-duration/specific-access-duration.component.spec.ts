@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
-	GovUkErrorMessageComponent,
-	GovUkFieldsetComponent,
-	GovUkLabelComponent
+  GovUkErrorMessageComponent,
+  GovUkFieldsetComponent,
+  GovUkLabelComponent
 } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { RpxTranslationService } from 'rpx-xui-translation';

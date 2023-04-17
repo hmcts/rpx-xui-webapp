@@ -11,7 +11,7 @@ describe('PrivacyPolicyComponent', () => {
 
   const translationServiceMock = {
     language: 'cy'
-  }
+  };
 
   class MockActivatedRoute {
     public get fragment() {

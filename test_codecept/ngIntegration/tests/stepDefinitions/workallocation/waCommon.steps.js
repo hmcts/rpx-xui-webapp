@@ -335,10 +335,10 @@ async function loginattemptCheckAndRelogin(username, password, world) {
             roles.push(...rolesForIdentifier);
         }
         const userDetails = nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
-        if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
-            workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
-        }
-        
+        // if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
+        //     workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
+        // }
+        await mockLoginWithRoles(roles)
 
     });
 

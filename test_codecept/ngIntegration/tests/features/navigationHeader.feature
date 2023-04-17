@@ -16,10 +16,6 @@ Feature: Navigation header tabs
       
         # Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         # Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA" allow empty service
-        #     | substantive | Y               |
-
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | caseType | substantive | roleType | caseId           |
             | IA           | Asylum   | Y           | CASE     | 1234567812345670 |
             | SSCS         | Asylum   | Y           | CASE     | 1234567812345671 |
 

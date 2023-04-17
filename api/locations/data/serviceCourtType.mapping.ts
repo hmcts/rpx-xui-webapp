@@ -4,4 +4,5 @@ export const SERVICES_COURT_TYPE_MAPPINGS = {
   SSCS: ['31'],       // 31: Social Security and Child Support Tribunal
   CIVIL: ['10'],
   PRIVATELAW: ['18'],
+  PUBLICLAW: ['18']
 };

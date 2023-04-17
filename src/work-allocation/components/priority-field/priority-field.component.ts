@@ -1,33 +1,34 @@
-import { Component, Input } from '@angular/core';
-import { PriorityLimits, TaskPriority } from '../../enums';
-import { AppUtils } from '../../../app/app-utils';
+import { Component, Input, OnInit } from '@angular/core';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { AppConstants } from '../../../app/app.constants';
 
 @Component({
   selector: 'exui-priority-field',
-  templateUrl: './priority-field.component.html'
+  templateUrl: './priority-field.component.html',
 })
-export class PriorityFieldComponent {
-
-  /**
-   * The current date being examined
-   */
+export class PriorityFieldComponent implements OnInit {
+  // Current Input
   @Input() public date: Date;
-
   @Input() public majorPriority?: number;
 
-  public get priority(): TaskPriority {
-    if (this.majorPriority === PriorityLimits.High) {
-      if(AppUtils.isPriorityDateTimePast(this.date)) {
-        return TaskPriority.HIGH;
-      }
-      return AppUtils.isPriorityDateTimeInNext24Hours(this.date) ? TaskPriority.MEDIUM : TaskPriority.LOW;
-    }
-    if (this.majorPriority <= PriorityLimits.Urgent) {
-      return TaskPriority.URGENT;
-    }
-    if (this.majorPriority > PriorityLimits.High) {
-      return TaskPriority.LOW;
-    }
-    return TaskPriority.HIGH;
+  // Legacy input
+  @Input() public dueDate: Date;
+  @Input() public jurisdiction: string;
+
+  public isRelease4$: Observable<boolean>;
+
+  constructor(private featureToggleService: FeatureToggleService) {}
+
+  public ngOnInit() {
+    this.isRelease4$ = this.featureToggleService
+      .getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null)
+      .pipe(
+        map(features => {
+          const jurisdictionConfig = features.configurations.find(config => config.serviceName === this.jurisdiction);
+          return parseInt(jurisdictionConfig.releaseVersion, 10) >= 4;
+      }));
   }
 }
+

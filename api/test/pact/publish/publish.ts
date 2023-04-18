@@ -24,7 +24,7 @@ const publish = async (): Promise<void> => {
       // @ts-ignore
       getConfigValue(PACT_CONSUMER_VERSION) : git.short();
 
-    process.env.SSL_CERT_FILE = path.resolve(__dirname, "../cer/ca-bundle.crt");
+    process.env.SSL_CERT_FILE = path.resolve(__dirname, '../cer/ca-bundle.crt');
 
     const opts = {
       consumerVersion,
@@ -32,13 +32,13 @@ const publish = async (): Promise<void> => {
       pactBrokerPassword: getConfigValue(PACT_BROKER_PASSWORD),
       pactBrokerUsername: getConfigValue(PACT_BROKER_USERNAME),
       pactFilesOrDirs: [
-        path.resolve(__dirname, '../pacts/'),
+        path.resolve(__dirname, '../pacts/')
       ],
       publishVerificationResult: true,
-      tags: [pactTag],
+      tags: [pactTag]
     };
 
-    if (pactTag === "master") {
+    if (pactTag === 'master') {
       await pact.publishPacts(opts);
 
       console.log('Pact contract publishing complete!');

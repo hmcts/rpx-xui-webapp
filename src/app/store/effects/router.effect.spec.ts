@@ -4,11 +4,9 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Store, StoreModule } from '@ngrx/store';
-import { MockStore } from '@ngrx/store/testing';
 import { hot } from 'jasmine-marbles';
 import { AppConfigService } from '../../services/config/configuration.services';
 import { Back, CreateCaseGo, Forward, Go } from '../actions/router.action';
-import { State } from '../reducers';
 import * as fromRouterEffects from './router.effect';
 
 describe('Router Effects', () => {
@@ -17,13 +15,14 @@ describe('Router Effects', () => {
   let store;
 
   const LocationMock = jasmine.createSpyObj('Location', [
-    'back', 'forward',
+    'back', 'forward'
   ]);
 
   const RouterMock = jasmine.createSpyObj('Router', [
     'navigate'
   ]);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let spyOnDispatchToStore = jasmine.createSpy();
 
   beforeEach(() => {
@@ -53,11 +52,11 @@ describe('Router Effects', () => {
   });
 
   describe('navigate$', () => {
-
     it('should call Angular\'s router on dispatch of RouterActions.Go and trigger "callback"', () => {
       const payload = {
         path: [],
-        callback: () => { }
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        callback: () => {}
       };
 
       RouterMock.navigate.and.returnValue(Promise.resolve(true));
@@ -88,7 +87,8 @@ describe('Router Effects', () => {
     it('should call Angular\'s router on dispatch of RouterActions.Go and trigger "errorHandler"', () => {
       const payload = {
         path: [],
-        errorHandler: () => { }
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        errorHandler: () => {}
       };
 
       RouterMock.navigate.and.returnValue(Promise.reject(false));
@@ -118,7 +118,6 @@ describe('Router Effects', () => {
   });
 
   describe('navigateNewCase$', () => {
-
     it('should call Angular\'s router on dispatch of RouterActions.CREATE_CASE_GO', () => {
       const payload = {
         path: [],
@@ -139,24 +138,21 @@ describe('Router Effects', () => {
   describe('navigateBack$', () => {
     it('should call Angular\'s Location.back() on dispatch' +
       ' of RouterActions.BACK', () => {
-
-        const action = new Back();
-        actions$ = hot('-a', { a: action });
-        effects.navigateBack$.subscribe(() => {
-          expect(LocationMock.back).toHaveBeenCalled();
-        });
+      const action = new Back();
+      actions$ = hot('-a', { a: action });
+      effects.navigateBack$.subscribe(() => {
+        expect(LocationMock.back).toHaveBeenCalled();
       });
+    });
   });
 
   describe('navigateForward$', () => {
-    it('should call Angular\'s Location.forward() on dispatch' +
-      ' of RouterActions.FORWARD', () => {
-
-        const action = new Forward();
-        actions$ = hot('-a', { a: action });
-        effects.navigateForward$.subscribe(() => {
-          expect(LocationMock.forward).toHaveBeenCalled();
-        });
+    it('should call Angular\'s Location.forward() on dispatch of RouterActions.FORWARD', () => {
+      const action = new Forward();
+      actions$ = hot('-a', { a: action });
+      effects.navigateForward$.subscribe(() => {
+        expect(LocationMock.forward).toHaveBeenCalled();
       });
+    });
   });
 });

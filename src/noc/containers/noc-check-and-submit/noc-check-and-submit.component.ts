@@ -52,19 +52,19 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
     this.questions$ = this.store.pipe(select(fromFeature.questions));
     this.answers$ = this.store.pipe(select(fromFeature.answers));
     this.qAndA$ = this.answers$.pipe(
-      map(answers => {
+      map((answers) => {
         const answersWithQuestionText: NocAnswer[] = [];
-        answers.forEach(answer => {
+        answers.forEach((answer) => {
           const nocAnswerWithQuestionText: NocAnswer = {
             question_id: answer.question_id,
             question_text: this.questions$.pipe(map(
-              questions => {
-                return questions.find(ques => ques.question_id === answer.question_id).question_text;
+              (questions) => {
+                return questions.find((ques) => ques.question_id === answer.question_id).question_text;
               }
             )),
             question_type: this.questions$.pipe(map(
-              questions => {
-                return questions.find(ques => ques.question_id === answer.question_id).answer_field_type.type;
+              (questions) => {
+                return questions.find((ques) => ques.question_id === answer.question_id).answer_field_type.type;
               }
             )),
             value: answer.value
@@ -74,20 +74,20 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
         return answersWithQuestionText;
       }));
     this.affirmationAgreedSub = this.store.pipe(select(fromFeature.affirmationAgreed)).subscribe(
-      affirmationAgree => this.affirmationAgreed = affirmationAgree);
+      (affirmationAgree) => this.affirmationAgreed = affirmationAgree);
     this.notifyEveryPartySub = this.store.pipe(select(fromFeature.notifyEveryParty)).subscribe(
-      notifyEveryParty => this.notifyEveryParty = notifyEveryParty);
+      (notifyEveryParty) => this.notifyEveryParty = notifyEveryParty);
     this.validationErrors$ = this.store.pipe(select(fromFeature.validationErrors));
-    this.hasDisagreeError$ = this.validationErrors$.pipe(map(errors => {
+    this.hasDisagreeError$ = this.validationErrors$.pipe(map((errors) => {
       return errors ? errors.hasOwnProperty(AFFIRMATION_DEFAULT_DISAGREE_ERROR.code) : false;
     }));
-    this.hasNotifyEveryPartyError$ = this.validationErrors$.pipe(map(errors => {
+    this.hasNotifyEveryPartyError$ = this.validationErrors$.pipe(map((errors) => {
       return errors ? errors.hasOwnProperty(AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR.code) : false;
     }));
     this.caseReferenceSub = this.store.pipe(select(fromFeature.caseReference)).subscribe(
-      caseReference => this.caseRefernce = caseReference);
+      (caseReference) => this.caseRefernce = caseReference);
     this.nocAnswersSub = this.store.pipe(select(fromFeature.answers)).subscribe(
-      nocAnswers => this.nocAnswers = nocAnswers);
+      (nocAnswers) => this.nocAnswers = nocAnswers);
   }
 
   public navigationHandler(navEvent: NocNavigationEvent) {

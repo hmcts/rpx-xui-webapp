@@ -16,8 +16,7 @@ import { getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { MyAccessComponent } from './my-access.component';
 
-@Component({ template: `<exui-my-access></exui-my-access>` })
-
+@Component({ template: '<exui-my-access></exui-my-access>' })
 class WrapperComponent {
   @ViewChild(MyAccessComponent) public appComponentRef: MyAccessComponent;
 }
@@ -27,6 +26,7 @@ xdescribe('MyAccessComponent', () => {
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: Router;
   const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase', 'getMyAccess']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
@@ -42,7 +42,7 @@ xdescribe('MyAccessComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        StoreModule.forRoot({...reducers}),
+        StoreModule.forRoot({ ...reducers }),
         WorkAllocationComponentsModule,
         PaginationModule
       ],

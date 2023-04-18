@@ -13,8 +13,8 @@ import { AnswerConverter } from './answer.converter';
 import { PanelExclusionAnswerConverter } from './panel-exclusion.answer.converter';
 
 describe('PanelExclusionAnswerConverter', () => {
-
   let converter: AnswerConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
   let router: any;
   const JUDICAIL_USER_DETAILS = [{
@@ -26,16 +26,16 @@ describe('PanelExclusionAnswerConverter', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                judicialUsers: judicialUsersRefData,
-              },
-            },
-          },
+                judicialUsers: judicialUsersRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -51,7 +51,7 @@ describe('PanelExclusionAnswerConverter', () => {
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = judgeRefData[0].knownAs;
-    const expected = cold('(b|)', {b: option});
+    const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });
 });

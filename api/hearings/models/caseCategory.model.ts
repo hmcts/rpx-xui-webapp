@@ -1,4 +1,4 @@
-import {CategoryType} from './hearings.enum';
+import { CategoryType } from './hearings.enum';
 
 export interface CaseCategoryModel {
   categoryType: CategoryType;

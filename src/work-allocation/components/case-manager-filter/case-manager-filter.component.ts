@@ -13,7 +13,7 @@ import * as fromAppStore from '../../../app/store';
   selector: 'exui-case-manager-filter',
   templateUrl: './case-manager-filter.component.html',
   styleUrls: ['./case-manager-filter.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+  encapsulation: ViewEncapsulation.None
 })
 export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME: string = 'all-work-cases-filter';
@@ -45,6 +45,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       ]
     }
   };
+
   public appStoreSub: Subscription;
   private sub: Subscription;
 
@@ -54,7 +55,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   private static initServiceFilter(jurisdictions: string[]): FilterFieldConfig {
     return {
       name: 'jurisdiction',
-      options: jurisdictions.map(service => ({ key: service, label: service })),
+      options: jurisdictions.map((service) => ({ key: service, label: service })),
       minSelected: 1,
       maxSelected: 1,
       minSelectedError: 'You must select a service',
@@ -108,11 +109,11 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
         },
         {
           key: PersonRole.CASEWORKER,
-          label: PersonRole.CASEWORKER,
+          label: PersonRole.CASEWORKER
         },
         {
           key: PersonRole.ADMIN,
-          label: PersonRole.ADMIN,
+          label: PersonRole.ADMIN
         }
       ],
       minSelected: 1,
@@ -128,7 +129,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
     };
   }
 
-  private static findPersonFilter(jurisdictions: string[]): FilterFieldConfig {
+  private static findPersonFilter(): FilterFieldConfig {
     return {
       name: 'person',
       options: [],
@@ -148,24 +149,24 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
-      userDetails => {
+      (userDetails) => {
         const isLegalOpsOrJudicialRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.getUserRole(userDetails.userInfo.roles) : null;
         const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);
         this.filterConfig.cancelSetting.fields.push({
-            name: 'jurisdiction',
-            value: [this.jurisdictions[0]]
-          },
-          {
-            name: 'role',
-            value: [roleType]
-          }
+          name: 'jurisdiction',
+          value: [this.jurisdictions[0]]
+        },
+        {
+          name: 'role',
+          value: [roleType]
+        }
         );
       }
     );
     this.filterConfig.fields = [
       CaseManagerFilterComponent.initServiceFilter(this.jurisdictions),
       CaseManagerFilterComponent.initRoleTypeFilter(),
-      CaseManagerFilterComponent.findPersonFilter(this.jurisdictions),
+      CaseManagerFilterComponent.findPersonFilter(),
       CaseManagerFilterComponent.initSelectLocationFilter(),
       CaseManagerFilterComponent.initLocationFilter()
     ];

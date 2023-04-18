@@ -1,4 +1,4 @@
-import {getConfigValue, showFeature} from './index';
+import { getConfigValue, showFeature } from './index';
 import {
   COOKIES_SESSION_ID,
   COOKIES_TOKEN,
@@ -89,6 +89,6 @@ export const applicationConfiguration = () => {
     servicesS2sPath: getConfigValue(SERVICE_S2S_PATH),
     servicesTermsAndConditionsPath: getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
     workAllocationTaskPath: getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH),
-    judicialApiPath: getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH),
+    judicialApiPath: getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH)
   };
 };

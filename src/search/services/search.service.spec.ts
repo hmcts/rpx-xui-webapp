@@ -43,9 +43,9 @@ describe('Search Service', () => {
 
   it('should get global search services', () => {
     const dummyResponse: GlobalSearchService[] = [
-      {serviceId: 'TEST', serviceName: 'Test service'}
+      { serviceId: 'TEST', serviceName: 'Test service' }
     ];
-    service.getServices().subscribe(response => {
+    service.getServices().subscribe((response) => {
       expect(response).toEqual(dummyResponse);
     });
 
@@ -114,11 +114,11 @@ describe('Search Service', () => {
       startRecordNumber: 1
     };
     const dummySearchResult: SearchResult = {
-      resultInfo : null,
+      resultInfo: null,
       results: [null, null]
     };
 
-    service.getResults().subscribe(result => {
+    service.getResults().subscribe((result) => {
       expect(result).toEqual(dummySearchResult);
     });
 
@@ -158,7 +158,7 @@ describe('Search Service', () => {
         caseManagementBaseLocationIds: null,
         caseManagementRegionIds: null,
         // Case references are expected to be sanitised of any separators (spaces and '-' characters)
-        caseReferences: searchParameters.caseReferences.map(caseRef => caseRef.replace(/[\s-]/g, '')),
+        caseReferences: searchParameters.caseReferences.map((caseRef) => caseRef.replace(/[\s-]/g, '')),
         otherReferences: searchParameters.otherReferences,
         parties: [{
           addressLine1: searchParameters.address,
@@ -175,11 +175,11 @@ describe('Search Service', () => {
       startRecordNumber: 1
     };
     const dummySearchResult: SearchResult = {
-      resultInfo : null,
+      resultInfo: null,
       results: [null, null]
     };
 
-    service.getResults().subscribe(result => {
+    service.getResults().subscribe((result) => {
       expect(result).toEqual(dummySearchResult);
     });
 
@@ -219,7 +219,7 @@ describe('Search Service', () => {
         caseManagementBaseLocationIds: null,
         caseManagementRegionIds: null,
         // Case references are expected to be sanitised of any separators (spaces and '-' characters)
-        caseReferences: searchParameters.caseReferences.map(caseRef => caseRef.replace(/[\s-]/g, '')),
+        caseReferences: searchParameters.caseReferences.map((caseRef) => caseRef.replace(/[\s-]/g, '')),
         otherReferences: searchParameters.otherReferences,
         parties: [{
           addressLine1: searchParameters.address,
@@ -237,11 +237,11 @@ describe('Search Service', () => {
       startRecordNumber: 1
     };
     const dummySearchResult: SearchResult = {
-      resultInfo : null,
+      resultInfo: null,
       results: [null, null]
     };
 
-    service.getResults().subscribe(result => {
+    service.getResults().subscribe((result) => {
       expect(result).toEqual(dummySearchResult);
     });
 

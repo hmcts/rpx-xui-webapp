@@ -15,8 +15,7 @@ import { PaletteService } from './palette.service';
   `
 })
 export class NocFieldComponent extends AbstractFieldWriteComponent implements OnInit {
-
-  @ViewChild('fieldContainer', {static: true, read: ViewContainerRef})
+  @ViewChild('fieldContainer', { static: true, read: ViewContainerRef })
   public fieldContainer: ViewContainerRef;
 
   constructor(private readonly resolver: ComponentFactoryResolver,
@@ -39,10 +38,15 @@ export class NocFieldComponent extends AbstractFieldWriteComponent implements On
     const component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
     // Provide component @Inputs
+    // eslint-disable-next-line dot-notation
     component.instance['questionField'] = plainToClassFromExist(new NocQuestion(), this.questionField);
+    // eslint-disable-next-line dot-notation
     component.instance['answerValue$'] = this.answerValue$;
+    // eslint-disable-next-line dot-notation
     component.instance['formGroup'] = this.formGroup;
+    // eslint-disable-next-line dot-notation
     component.instance['registerControl'] = this.registerControl || this.defaultControlRegister();
+    // eslint-disable-next-line dot-notation
     component.instance['idPrefix'] = this.idPrefix;
     this.fieldContainer.insert(component.hostView);
   }

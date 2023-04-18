@@ -1,17 +1,17 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {select, Store} from '@ngrx/store';
-import {Observable, Subscription} from 'rxjs';
-import {ACTION, HearingChangeReasonMessages, HearingSummaryEnum} from '../../../models/hearings.enum';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {HearingsService} from '../../../services/hearings.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import { ACTION, HearingChangeReasonMessages, HearingSummaryEnum } from '../../../models/hearings.enum';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-change-reasons',
-  templateUrl: './hearing-change-reasons.component.html',
+  templateUrl: './hearing-change-reasons.component.html'
 })
 export class HearingChangeReasonsComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
   public hearingChangeReasons: LovRefDataModel[];
@@ -32,7 +32,7 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
   }
 
   public ngOnInit(): void {
-    this.lastErrorSubscription = this.hearingRequestLastError$.subscribe(lastError => {
+    this.lastErrorSubscription = this.hearingRequestLastError$.subscribe((lastError) => {
       if (lastError) {
         this.errors = [{
           id: 'backendError', message: HearingSummaryEnum.BackendError
@@ -44,7 +44,7 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
   }
 
   public get getReasonsTypeFormArray(): FormArray {
-    return this.formBuilder.array(this.hearingChangeReasons.map(val => this.formBuilder.group({
+    return this.formBuilder.array(this.hearingChangeReasons.map((val) => this.formBuilder.group({
       key: [val.key],
       value_en: [val.value_en],
       value_cy: [val.value_cy],
@@ -58,7 +58,7 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
 
   public initForm(): void {
     this.hearingChangeReasonForm = this.formBuilder.group({
-      reasons: this.getReasonsTypeFormArray,
+      reasons: this.getReasonsTypeFormArray
     });
   }
 
@@ -68,10 +68,10 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
     }
     this.selectionValid = true;
     const isReasons = (this.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .filter(reason => reason.value.selected === true).length > 0;
+      .filter((reason) => reason.value.selected === true).length > 0;
     if (!isReasons) {
       this.errors = [{
-        id: `hearing-option-container`, message: HearingChangeReasonMessages.NOT_SELECTED_A_REASON
+        id: 'hearing-option-container', message: HearingChangeReasonMessages.NOT_SELECTED_A_REASON
       }];
       this.selectionValid = false;
     }
@@ -94,14 +94,14 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
       ...this.hearingRequestMainModel,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        amendReasonCodes: this.getChosenReasons(),
+        amendReasonCodes: this.getChosenReasons()
       }
     };
   }
 
   public getChosenReasons(): string[] {
     const chosenReasons: string[] = [];
-    (this.hearingChangeReasonForm.controls.reasons as FormArray).controls.forEach(reason => {
+    (this.hearingChangeReasonForm.controls.reasons as FormArray).controls.forEach((reason) => {
       if (reason.value.selected === true) {
         chosenReasons.push(reason.value.key);
       }

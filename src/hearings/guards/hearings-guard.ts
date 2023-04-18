@@ -21,7 +21,7 @@ export class HearingsGuard {
               protected readonly sessionStorageService: SessionStorageService,
               protected readonly featureToggleService: FeatureToggleService) {
     this.userRoles$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
-      map(userDetails => userDetails.userInfo.roles)
+      map((userDetails) => userDetails.userInfo.roles)
     );
   }
 

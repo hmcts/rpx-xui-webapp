@@ -9,12 +9,12 @@ export const TASK_ROLES: TaskRole[] = [
       'Execute',
       'Read',
       'Manage',
-      'Cancel',
+      'Cancel'
     ],
     'authorisations': [
       'IAC',
-      'SSCS',
-    ],
+      'SSCS'
+    ]
   },
   {
     'role_category': 'LEGAL_OPERATIONS',
@@ -23,22 +23,22 @@ export const TASK_ROLES: TaskRole[] = [
       'Execute',
       'Read',
       'Manage',
-      'Cancel',
+      'Cancel'
     ],
     'authorisations': [
       'IAC',
-      'SSCS',
-    ],
+      'SSCS'
+    ]
   },
   {
     'role_category': 'JUDICIAL',
     'role_name': 'judge',
     'permissions': [
       'Execute',
-      'Read',
+      'Read'
     ],
     'authorisations': [
-      'IAC',
-    ],
-  },
+      'IAC'
+    ]
+  }
 ];

@@ -33,8 +33,10 @@ import { CaseCreateSubmitComponent } from './case-create-submit.component';
 
 class MockSortService {
   public features = {};
-  public getFeatureToggle() { }
-  public getEditorConfiguration() { }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public getFeatureToggle() {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public getEditorConfiguration() {}
 }
 
 const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
@@ -98,8 +100,8 @@ describe('CaseCreateSubmitComponent', () => {
         RouterTestingModule,
         ExuiCommonLibModule,
         HttpClientTestingModule,
-        StoreModule.forRoot({...fromCases.reducers, cases: combineReducers(fromCases.reducers)}),
-        EffectsModule.forRoot([]),
+        StoreModule.forRoot({ ...fromCases.reducers, cases: combineReducers(fromCases.reducers) }),
+        EffectsModule.forRoot([])
       ],
       declarations: [CaseCreateSubmitComponent, FakeExuidCcdConnectorComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -108,9 +110,9 @@ describe('CaseCreateSubmitComponent', () => {
           provide: ActivatedRoute,
           useValue:
           {
-            queryParams: of({Origin: 'viewDraft'}),
+            queryParams: of({ Origin: 'viewDraft' }),
             snapshot: {
-              data: {eventTrigger: EVENT_TRIGGER},
+              data: { eventTrigger: EVENT_TRIGGER },
               params: {},
               pathFromRoot: [
                 {},
@@ -121,7 +123,7 @@ describe('CaseCreateSubmitComponent', () => {
                 }
               ]
             },
-            params: of({jid: 'jid', ctid: 'ctid'})
+            params: of({ jid: 'jid', ctid: 'ctid' })
           }
         },
         CasesService,
@@ -154,13 +156,13 @@ describe('CaseCreateSubmitComponent', () => {
           provide: AlertService,
           useValue: mockAlertService
         },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
     })
       .compileComponents();
   }));
 
-  beforeEach(waitForAsync (() => {
+  beforeEach(waitForAsync(() => {
     fixture = TestBed.createComponent(CaseCreateSubmitComponent);
     component = fixture.componentInstance;
     casesService = fixture.debugElement.injector.get(CasesService);
@@ -168,8 +170,8 @@ describe('CaseCreateSubmitComponent', () => {
     draftService = fixture.debugElement.injector.get(DraftService);
 
     fixture.detectChanges();
-
   }));
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -207,5 +209,4 @@ describe('CaseCreateSubmitComponent', () => {
     component.eventTrigger.can_save_draft = false;
     expect(component.saveDraft()).toBeUndefined();
   });
-
 });

@@ -16,6 +16,7 @@ describe('Ref Data Resolver', () => {
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const dataRef: LovRefDataModel[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mockStore: any;
   const initialState = {
     hearings: {
@@ -29,20 +30,19 @@ describe('Ref Data Resolver', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-        imports: [
-          RouterTestingModule.withRoutes([]),
-          HttpClientTestingModule,
-        ],
-        providers: [
-          provideMockStore({initialState}),
-          RefDataResolver,
-          LovRefDataService,
-          {provide: APP_BASE_HREF, useValue: '/'},
-          {provide: Router, useValue: mockRouter},
-          {provide: SessionStorageService, useValue: mockSessionStorageService}
-        ]
-      }
-    );
+      imports: [
+        RouterTestingModule.withRoutes([]),
+        HttpClientTestingModule
+      ],
+      providers: [
+        provideMockStore({ initialState }),
+        RefDataResolver,
+        LovRefDataService,
+        { provide: APP_BASE_HREF, useValue: '/' },
+        { provide: Router, useValue: mockRouter },
+        { provide: SessionStorageService, useValue: mockSessionStorageService }
+      ]
+    });
     lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
     mockStore = jasmine.createSpyObj('mockStore', ['pipe']);
   });
@@ -91,7 +91,7 @@ describe('Ref Data Resolver', () => {
       title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
       category: HearingCategory.HearingPriority
     };
-    service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
+    service.resolve(route).subscribe(() => {
       expect(service.getReferenceData$).toHaveBeenCalled();
       expect(lovRefDataService.getListOfValues).toHaveBeenCalled();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/hearings/error']);

@@ -53,6 +53,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     cancelSetting: null,
     showCancelFilterButton: false
   };
+
   public allLocations: string[] = [];
   public defaultLocations: any[] = null;
   public baseLocations: string[] = [];
@@ -60,8 +61,9 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   public defaultTypesOfWork: string[] = [];
   public fieldsSettings: FilterSetting = {
     id: TaskListFilterComponent.FILTER_NAME,
-    fields: [],
+    fields: []
   };
+
   public selectedLocations: string[] = [];
   public bookingLocations: string[] = [];
   public toggleFilter = false;
@@ -110,10 +112,10 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   }
 
   private static hasBeenFiltered(f: FilterSetting, cancelSetting: FilterSetting, assignedTasks: Task[], currentTasks: Task[], pathname): boolean {
-    const baseLocations = cancelSetting.fields.find(field => field.name === 'locations');
-    const locations = f.fields.find(field => field.name === 'locations');
-    const fieldsNoLocations = f.fields.filter(field => field.name !== 'locations');
-    const cancelFieldsNoLocations = cancelSetting.fields.filter(field => field.name !== 'locations');
+    const baseLocations = cancelSetting.fields.find((field) => field.name === 'locations');
+    const locations = f.fields.find((field) => field.name === 'locations');
+    const fieldsNoLocations = f.fields.filter((field) => field.name !== 'locations');
+    const cancelFieldsNoLocations = cancelSetting.fields.filter((field) => field.name !== 'locations');
     if (pathname.includes('work/my-work/list')) {
       return assignedTasks.length !== currentTasks.length;
     }
@@ -124,7 +126,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     if (!(locations.value && locations.value.length > 0)) {
       return false;
     }
-    const result = locations.value.filter(location => baseLocations.value.find(baseLocation => _.isEqual(location, baseLocation)));
+    const result = locations.value.filter((location) => baseLocations.value.find((baseLocation) => _.isEqual(location, baseLocation)));
     return result.length >= baseLocations.value.length;
   }
 
@@ -172,7 +174,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
 
     this.setErrors();
     this.setAllowTypesOfWorkFilter(this.router.url);
-    this.routeSubscription = this.router.events.subscribe(event => {
+    this.routeSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.setAllowTypesOfWorkFilter(this.router.url);
         this.toggleFilter = false;
@@ -229,7 +231,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   private setPersistenceAndDefaultLocations(): void {
     this.fieldsConfig.persistence = this.persistence || 'session';
     const filterService = this.filterService.get(TaskListFilterComponent.FILTER_NAME);
-    const availableLocations = filterService && filterService.fields && filterService.fields.find(field => field.name === 'locations');
+    const availableLocations = filterService && filterService.fields && filterService.fields.find((field) => field.name === 'locations');
     const isLocationsAvailable: boolean = availableLocations && availableLocations.value && availableLocations.value.length > 0;
     const regionLocations = JSON.parse(this.sessionStorageService.getItem('regionLocations'));
     const bookableServices = JSON.parse(this.sessionStorageService.getItem('bookableServices'));
@@ -241,15 +243,15 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       this.defaultLocations = [location.id];
     }
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
-      userDetails => {
+      (userDetails) => {
         const isFeePaidJudgeWithNoBooking: boolean = this.bookingLocations.length === 0
-         && userDetails.roleAssignmentInfo.filter(p => p.roleType && p.roleType === 'ORGANISATION'
+         && userDetails.roleAssignmentInfo.filter((p) => p.roleType && p.roleType === 'ORGANISATION'
           && !p.bookable).length === 0;
         if (isFeePaidJudgeWithNoBooking) {
           localStorage.removeItem(TaskListFilterComponent.FILTER_NAME);
         } else if (!isLocationsAvailable) {
           const baseLocations: string[] = [];
-          userDetails.roleAssignmentInfo.forEach(roleAssignment => {
+          userDetails.roleAssignmentInfo.forEach((roleAssignment) => {
             const roleJurisdiction = roleAssignment.jurisdiction;
             if (roleJurisdiction && roleAssignment.roleType === 'ORGANISATION' && !bookableServices.includes(roleAssignment.jurisdiction)
               && roleAssignment.baseLocation && roleAssignment.substantive.toLocaleLowerCase() === 'y') {
@@ -262,7 +264,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
           });
           this.baseLocationServices = Array.from(new Set(this.baseLocationServices));
           this.defaultLocations = this.defaultLocations && this.defaultLocations.length > 0
-           ? this.defaultLocations : Array.from(new Set(baseLocations));
+            ? this.defaultLocations : Array.from(new Set(baseLocations));
         }
       });
   }
@@ -339,7 +341,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       title: 'Types of work',
       type: 'checkbox'
     };
-    const defaultFields = typesOfWork.map(typeOfWork => typeOfWork.key);
+    const defaultFields = typesOfWork.map((typeOfWork) => typeOfWork.key);
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
       name: 'types-of-work',
       value: ['types_of_work_all', ...defaultFields]
@@ -351,17 +353,17 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   private setUpServicesFilter(services: any[]): void {
     // Available services need to be added to work-allocation-utils.ts -> servicesMap
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
-      userDetails => {
+      (userDetails) => {
         if (!services.length) {
           return;
         }
-        if (!userDetails.roleAssignmentInfo || !userDetails.roleAssignmentInfo.some(p => p.jurisdiction !== undefined)) {
+        if (!userDetails.roleAssignmentInfo || !userDetails.roleAssignmentInfo.some((p) => p.jurisdiction !== undefined)) {
           return;
         }
         const filteredServices = _.intersection.apply(_, [
           userDetails.roleAssignmentInfo
-            .filter(p => p.roleType && p.roleType === 'ORGANISATION')
-            .map(item => item.jurisdiction)
+            .filter((p) => p.roleType && p.roleType === 'ORGANISATION')
+            .map((item) => item.jurisdiction)
             .filter((value, index, self) => self.indexOf(value) === index && value !== undefined),
           services
         ]);
@@ -375,7 +377,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
             },
             ...filteredServices
               .sort()
-              .map(service => {
+              .map((service) => {
                 return {
                   key: service,
                   label: servicesMap[service] || service
@@ -391,7 +393,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
           type: 'checkbox-large'
         };
 
-        const fieldSetting = this.fieldsSettings.fields.find(f => f.name === 'services');
+        const fieldSetting = this.fieldsSettings.fields.find((f) => f.name === 'services');
         if (fieldSetting) {
           fieldSetting.value = ['services_all', ...filteredServices];
         } else {
@@ -402,7 +404,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         }
 
         this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
-        const fieldConfig = this.fieldsConfig.fields.find(f => f.name === 'services');
+        const fieldConfig = this.fieldsConfig.fields.find((f) => f.name === 'services');
         if (!fieldConfig) {
           this.fieldsConfig.fields.push(field);
         }

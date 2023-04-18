@@ -29,8 +29,8 @@ describe('LinkedHearingsWithCaseComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
-  const mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mockHearingService: any;
   const caseId = '1111-2222-3333-4444';
   const hearingId = 'h100002';
@@ -186,13 +186,13 @@ describe('LinkedHearingsWithCaseComponent', () => {
       imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([
         { path: 'hearings/link/4652724902696211/h000001/group-selection', redirectTo: '' }
       ]),
-        HearingsPipesModule,
-        RouterModule,
-        RouterTestingModule.withRoutes([])],
+      HearingsPipesModule,
+      RouterModule,
+      RouterTestingModule.withRoutes([])],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
-        {provide: Router, useValue: mockRouter},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
+        { provide: Router, useValue: mockRouter },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -202,9 +202,9 @@ describe('LinkedHearingsWithCaseComponent', () => {
                 mode: Mode.LINK_HEARINGS,
                 hearingStageOptions: HEARING_STAGE_OPTIONS
               },
-              params: {caseId: '4652724902696211', hearingId: 'h000001'},
+              params: { caseId: '4652724902696211', hearingId: 'h000001' }
             },
-            fragment: of('point-to-me'),
+            fragment: of('point-to-me')
           }
         },
         FormBuilder

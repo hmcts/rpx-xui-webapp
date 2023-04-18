@@ -2,7 +2,6 @@ import { CaseRole, CaseRoleDetails, RoleCategory, RoleExclusion } from '../../ro
 import { FeatureVariation } from '../models/feature-variation.model';
 
 export class Utils {
-
   public static isStringOrNumber(value: any): boolean {
     return (typeof value === 'string' && value.length !== 0) || (typeof value === 'number');
   }
@@ -28,32 +27,32 @@ export class Utils {
   }
 
   public static getJudicialUserIds(caseRoles: CaseRole[]): string[] {
-    return caseRoles.filter(role => role.roleCategory === RoleCategory.JUDICIAL).map(caseRole => caseRole.actorId);
+    return caseRoles.filter((role) => role.roleCategory === RoleCategory.JUDICIAL).map((caseRole) => caseRole.actorId);
   }
 
   public static getJudicialUserIdsFromExclusions(exclusions: RoleExclusion[]): string[] {
-    return exclusions.filter(role => role.userType.toUpperCase() === RoleCategory.JUDICIAL).map(exclusionRole => exclusionRole.actorId);
+    return exclusions.filter((role) => role.userType.toUpperCase() === RoleCategory.JUDICIAL).map((exclusionRole) => exclusionRole.actorId);
   }
 
   public static mapCaseRolesForExclusions(exclusions: RoleExclusion[], caseRolesWithUserDetails: CaseRoleDetails[]): RoleExclusion[] {
-    exclusions.forEach(exclusion => {
-      if (caseRolesWithUserDetails.find(detail => detail.sidam_id === exclusion.actorId)) {
-        exclusion.name = caseRolesWithUserDetails.find(detail => detail.sidam_id === exclusion.actorId).known_as;
+    exclusions.forEach((exclusion) => {
+      if (caseRolesWithUserDetails.find((detail) => detail.sidam_id === exclusion.actorId)) {
+        exclusion.name = caseRolesWithUserDetails.find((detail) => detail.sidam_id === exclusion.actorId).known_as;
       }
     });
     return exclusions;
   }
 
   public static mapCaseRoles(caseRoles: CaseRole[], caseRolesWithUserDetails: CaseRoleDetails[]): CaseRole[] {
-    return caseRoles.map(role => {
-      const userDetails = caseRolesWithUserDetails.find(detail => detail.sidam_id === role.actorId);
+    return caseRoles.map((role) => {
+      const userDetails = caseRolesWithUserDetails.find((detail) => detail.sidam_id === role.actorId);
       if (!userDetails) {
         return role;
       }
       return {
         ...role,
         name: userDetails.full_name,
-        email: userDetails.email_id,
+        email: userDetails.email_id
       };
     });
   }
@@ -72,7 +71,6 @@ export class Utils {
 export function escapeRegExp(string: string): string {
   return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
-
 
 export function replaceAll(str: string, find: string, replace: string): string {
   return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);

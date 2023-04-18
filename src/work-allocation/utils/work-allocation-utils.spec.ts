@@ -21,23 +21,23 @@ describe('WorkAllocationUtils', () => {
   let sessionStorageService: any;
 
   const taskRoles = [{
-      role_category: RoleCategory.ADMIN,
-      role_name: '',
-      permissions: [TaskPermission.OWN],
-      authorisations: []
-    },
-    {
-      role_category: RoleCategory.LEGAL_OPERATIONS,
-      role_name: '',
-      permissions: [TaskPermission.EXECUTE],
-      authorisations: []
-    },
-    {
-      role_category: RoleCategory.JUDICIAL,
-      role_name: '',
-      permissions: [TaskPermission.OWN],
-      authorisations: []
-    }
+    role_category: RoleCategory.ADMIN,
+    role_name: '',
+    permissions: [TaskPermission.OWN],
+    authorisations: []
+  },
+  {
+    role_category: RoleCategory.LEGAL_OPERATIONS,
+    role_name: '',
+    permissions: [TaskPermission.EXECUTE],
+    authorisations: []
+  },
+  {
+    role_category: RoleCategory.JUDICIAL,
+    role_name: '',
+    permissions: [TaskPermission.OWN],
+    authorisations: []
+  }
   ];
 
   const taskRolesWithOneOwnPermission = [{
@@ -94,17 +94,17 @@ describe('WorkAllocationUtils', () => {
     // should get correct redirect for 500
     const serviceDown = handleFatalErrors(500, mockRouter);
     expect(serviceDown).toEqual(0);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([ REDIRECTS.ServiceDown ]);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([REDIRECTS.ServiceDown]);
 
     // correct redirect for 401
     const unAuthorised = handleFatalErrors(401, mockRouter);
     expect(unAuthorised).toEqual(0);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([ REDIRECTS.NotAuthorised ]);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([REDIRECTS.NotAuthorised]);
 
     // correct redirect for 403
     const isForbidden = handleFatalErrors(403, mockRouter);
     expect(isForbidden).toEqual(0);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([ REDIRECTS.NotAuthorised ]);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([REDIRECTS.NotAuthorised]);
   });
 
   it('should allow setting a fatal redirect', () => {
@@ -231,22 +231,22 @@ describe('WorkAllocationUtils', () => {
     // should get correct redirect for 500
     const serviceDown = handleTasksFatalErrors(500, mockRouter);
     expect(serviceDown).toEqual(0);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([ REDIRECTS.ServiceDown ]);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([REDIRECTS.ServiceDown]);
 
     // correct redirect for 401
     const unAuthorised = handleTasksFatalErrors(401, mockRouter);
     expect(unAuthorised).toEqual(0);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([ REDIRECTS.NotAuthorised ]);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([REDIRECTS.NotAuthorised]);
 
     // correct redirect for 403
     const isForbidden = handleTasksFatalErrors(403, mockRouter);
     expect(isForbidden).toEqual(0);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([ REDIRECTS.NotAuthorised ]);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([REDIRECTS.NotAuthorised]);
 
     // correct redirect for 401 with url param set
     const personNotAuthorised = handleTasksFatalErrors(401, mockRouter, null, returnUrl);
     expect(personNotAuthorised).toEqual(0);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([ `/work/${taskId}/person-not-authorised` ], { state: { returnUrl }});
+    expect(mockRouter.navigate).toHaveBeenCalledWith([`/work/${taskId}/person-not-authorised`], { state: { returnUrl } });
   });
 
   it('should return correct destination url for task assignment error', () => {
@@ -262,7 +262,7 @@ describe('WorkAllocationUtils', () => {
   });
 
   it('should verify that a location is within a region', () => {
-    const regionLocations: LocationsByRegion[] = [{regionId: '1', locations: ['123']}, {regionId: '2', locations: ['234']}];
+    const regionLocations: LocationsByRegion[] = [{ regionId: '1', locations: ['123'] }, { regionId: '2', locations: ['234'] }];
     expect(locationWithinRegion(regionLocations, '1', '123')).toEqual(true);
     expect(locationWithinRegion(regionLocations, '2', '234')).toEqual(true);
     expect(locationWithinRegion(regionLocations, '1', '234')).toEqual(false);

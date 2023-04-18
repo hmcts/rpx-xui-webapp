@@ -1,5 +1,5 @@
-import {HttpError} from '../../models/httpError.model';
-import {ServiceHearingValuesModel} from './serviceHearingValues.model';
+import { HttpError } from '../../models/httpError.model';
+import { ServiceHearingValuesModel } from './serviceHearingValues.model';
 
 export interface HearingValuesStateData {
   serviceHearingValuesModel: ServiceHearingValuesModel;

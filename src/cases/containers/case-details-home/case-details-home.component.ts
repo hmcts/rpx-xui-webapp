@@ -3,10 +3,9 @@ import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { AlertService, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 @Component({
   selector: 'exui-case-details-home',
-  templateUrl: './case-details-home.component.html',
+  templateUrl: './case-details-home.component.html'
 })
 export class CaseDetailsHomeComponent implements OnInit {
-
   private readonly extras: NavigationExtras;
 
   constructor(
@@ -27,7 +26,7 @@ export class CaseDetailsHomeComponent implements OnInit {
       this.alertService.setPreserveAlerts(true);
       this.alertService.success(this.extras.state.messageText);
     }
-    this.activatedRoute.data.subscribe(data => {
+    this.activatedRoute.data.subscribe((data) => {
       if (data && data.case && data.case.case_type && data.case.case_type.jurisdiction) {
         const caseInfo = {
           cid: data.case.case_id,

@@ -26,7 +26,7 @@ import authInterceptor from '../lib/middleware/auth';
 import { getFullLocations, getLocationById, getLocations, getLocationsByRegion } from './locationController';
 import { postFindPersonSearch } from './personService';
 
-const router = Router({mergeParams: true});
+const router = Router({ mergeParams: true });
 
 router.use(authInterceptor);
 

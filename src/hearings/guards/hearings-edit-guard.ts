@@ -11,7 +11,6 @@ import { HearingsGuard } from './hearings-guard';
 
 @Injectable()
 export class HearingsEditGuard extends HearingsGuard implements CanActivate {
-
   constructor(protected readonly appStore: Store<fromAppStore.State>,
               protected readonly sessionStorageService: SessionStorageService,
               protected readonly featureToggleService: FeatureToggleService,
@@ -26,11 +25,11 @@ export class HearingsEditGuard extends HearingsGuard implements CanActivate {
           return this.userRoles$.pipe(
             map(userRoles => userRoles.includes(UserRole.HearingManager))
           );
-        } else {
-          return of(false);
         }
+
+        return of(false);
       })
-    ).pipe(tap(canActive => {
+    ).pipe(tap((canActive) => {
       if (!canActive) {
         this.router.navigate([HearingsGuard.DEFAULT_URL]);
       }

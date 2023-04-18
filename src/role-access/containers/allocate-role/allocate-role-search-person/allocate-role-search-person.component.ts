@@ -44,7 +44,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
-    this.subscription = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(allocateRoleStateData => this.setData(allocateRoleStateData));
+    this.subscription = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe((allocateRoleStateData) => this.setData(allocateRoleStateData));
   }
 
   private setData(allocateRoleStateData: AllocateRoleStateData): void {
@@ -72,10 +72,10 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
         case AllocateRoleNavigationEvent.CONTINUE:
           const person = this.person;
           this.store.dispatch(new fromFeature.ChoosePersonAndGo({
-              person,
-              allocateRoleState: AllocateRoleState.CHOOSE_DURATION,
-              allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON
-            }));
+            person,
+            allocateRoleState: AllocateRoleState.CHOOSE_DURATION,
+            allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON
+          }));
           break;
         default:
           throw new Error('Invalid option');

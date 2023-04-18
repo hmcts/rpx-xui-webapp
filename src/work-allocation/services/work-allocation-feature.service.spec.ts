@@ -16,11 +16,11 @@ describe('WorkAllocation', () => {
     });
 
     it('getFeatureName should call getValue', () => {
-        const service = new WorkAllocationFeatureService(
-          mockFeatureToggleService
-        );
-        mockFeatureToggleService.getValue.and.returnValue(of('WAFeature1'));
-        service.getActiveUpdatedTaskPermissionsFeature().subscribe(activeWAFeature => expect(typeof activeWAFeature).toEqual('string'));
-      });
+      const service = new WorkAllocationFeatureService(
+        mockFeatureToggleService
+      );
+      mockFeatureToggleService.getValue.and.returnValue(of('WAFeature1'));
+      service.getActiveUpdatedTaskPermissionsFeature().subscribe((activeWAFeature) => expect(typeof activeWAFeature).toEqual('string'));
+    });
   });
 });

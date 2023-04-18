@@ -1,13 +1,13 @@
-import {HearingListStateData} from '../../models/hearingListStateData.model';
+import { HearingListStateData } from '../../models/hearingListStateData.model';
 import * as fromActions from '../actions';
 
 export const initialHearingListState: HearingListStateData = {
   hearingListMainModel: null,
-  lastError: null,
+  lastError: null
 };
 
 export function hearingListReducer(currentState = initialHearingListState,
-                                   action: fromActions.HearingListAction): HearingListStateData {
+  action: fromActions.HearingListAction): HearingListStateData {
   switch (action.type) {
     case fromActions.RESET_HEARING_LIST: {
       return {

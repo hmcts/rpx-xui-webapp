@@ -6,8 +6,7 @@ import { State } from '../store/reducers';
 import { AdditionalSecurityAmendedConverter } from './additional-security.amended.converter';
 
 describe('AdditionalSecurityAmendedConverter', () => {
-
-   const initialState = {
+  const initialState = {
     hearings: {
       hearingList: {
         hearingListMainModel: {
@@ -24,13 +23,13 @@ describe('AdditionalSecurityAmendedConverter', () => {
             listAssistCaseStatus: '',
             hearingIsLinkedFlag: true,
             hearingGroupRequestId: null,
-            hearingDaySchedule: null,
+            hearingDaySchedule: null
           }]
         }
       },
       hearingActuals: {
         hearingActualsMainModel,
-        lastError: null,
+        lastError: null
       },
       hearingValues: {
         serviceHearingValuesModel,
@@ -40,7 +39,7 @@ describe('AdditionalSecurityAmendedConverter', () => {
         hearingRequestMainModel: {
           requestDetails: {
             timeStamp: null,
-            versionNumber: 1,
+            versionNumber: 1
           },
           hearingDetails: {
             duration: 60,
@@ -49,18 +48,18 @@ describe('AdditionalSecurityAmendedConverter', () => {
             hearingLocations: [
               {
                 locationId: '196538',
-                locationType: HMCLocationType.COURT,
+                locationType: HMCLocationType.COURT
               },
               {
                 locationId: '234850',
-                locationType: HMCLocationType.COURT,
-              },
+                locationType: HMCLocationType.COURT
+              }
             ],
             hearingIsLinkedFlag: false,
             hearingWindow: {
               dateRangeStart: '2022-12-12T09:00:00.000Z',
               dateRangeEnd: '2022-12-12T09:00:00.000Z',
-              firstDateTimeMustBe: '',
+              firstDateTimeMustBe: ''
             },
             privateHearingRequiredFlag: false,
             panelRequirements: null,
@@ -93,19 +92,19 @@ describe('AdditionalSecurityAmendedConverter', () => {
             caseCategories: [
               {
                 categoryType: CategoryType.CaseType,
-                categoryValue: 'BBA3-002',
+                categoryValue: 'BBA3-002'
               }, {
                 categoryType: CategoryType.CaseSubType,
                 categoryValue: 'BBA3-002CC',
-                categoryParent: 'BBA3-002',
+                categoryParent: 'BBA3-002'
               }, {
                 categoryType: CategoryType.CaseSubType,
                 categoryValue: 'BBA3-002GC',
-                categoryParent: 'BBA3-002',
+                categoryParent: 'BBA3-002'
               }, {
                 categoryType: CategoryType.CaseSubType,
                 categoryValue: 'BBA3-002RC',
-                categoryParent: 'BBA3-002',
+                categoryParent: 'BBA3-002'
               }],
             caseManagementLocationCode: null,
             caserestrictedFlag: false,
@@ -127,10 +126,10 @@ describe('AdditionalSecurityAmendedConverter', () => {
                   'RA0013',
                   'RA0016',
                   'RA0042',
-                  'RA0009',
+                  'RA0009'
                 ],
                 interpreterLanguage: 'PF0015',
-                preferredHearingChannel: 'byVideo',
+                preferredHearingChannel: 'byVideo'
               },
               organisationDetails: {},
               unavailabilityDOW: null,
@@ -138,9 +137,9 @@ describe('AdditionalSecurityAmendedConverter', () => {
                 {
                   unavailableFromDate: '2021-12-10T09:00:00.000Z',
                   unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY,
-                },
-              ],
+                  unavailabilityType: UnavailabilityType.ALL_DAY
+                }
+              ]
             },
             {
               partyID: 'P2',
@@ -152,23 +151,23 @@ describe('AdditionalSecurityAmendedConverter', () => {
                 lastName: null,
                 preferredHearingChannel: 'byVideo',
                 reasonableAdjustments: [
-                  'RA0005',
+                  'RA0005'
                 ],
-                interpreterLanguage: null,
+                interpreterLanguage: null
               },
               organisationDetails: {
                 name: 'DWP',
                 organisationType: 'GOV',
-                cftOrganisationID: 'O100000',
+                cftOrganisationID: 'O100000'
               },
               unavailabilityDOW: null,
               unavailabilityRanges: [
                 {
                   unavailableFromDate: '2021-12-20T09:00:00.000Z',
                   unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY,
-                },
-              ],
+                  unavailabilityType: UnavailabilityType.ALL_DAY
+                }
+              ]
             }
           ]
         },
@@ -208,7 +207,7 @@ describe('AdditionalSecurityAmendedConverter', () => {
                   individualDetails: {
                     firstName: 'Jane',
                     lastName: 'Smith',
-                    preferredHearingChannel: 'inPerson',
+                    preferredHearingChannel: 'inPerson'
                   }
                 },
                 {
@@ -220,10 +219,10 @@ describe('AdditionalSecurityAmendedConverter', () => {
                   individualDetails: {
                     firstName: 'DWP',
                     lastName: null,
-                    preferredHearingChannel: 'byVideo',
+                    preferredHearingChannel: 'byVideo'
                   }
-                },
-              ],
+                }
+              ]
             }]
           },
           hearingDetails: {
@@ -233,18 +232,18 @@ describe('AdditionalSecurityAmendedConverter', () => {
             hearingLocations: [
               {
                 locationId: '196538',
-                locationType: HMCLocationType.COURT,
+                locationType: HMCLocationType.COURT
               },
               {
                 locationId: '234850',
-                locationType: HMCLocationType.COURT,
-              },
+                locationType: HMCLocationType.COURT
+              }
             ],
             hearingIsLinkedFlag: false,
             hearingWindow: {
               dateRangeStart: '2022-12-12T09:00:00.000Z',
               dateRangeEnd: '2022-12-12T09:00:00.000Z',
-              firstDateTimeMustBe: '',
+              firstDateTimeMustBe: ''
             },
             privateHearingRequiredFlag: false,
             panelRequirements: null,
@@ -277,19 +276,19 @@ describe('AdditionalSecurityAmendedConverter', () => {
             caseCategories: [
               {
                 categoryType: CategoryType.CaseType,
-                categoryValue: 'BBA3-002',
+                categoryValue: 'BBA3-002'
               }, {
                 categoryType: CategoryType.CaseSubType,
                 categoryValue: 'BBA3-002CC',
-                categoryParent: 'BBA3-002',
+                categoryParent: 'BBA3-002'
               }, {
                 categoryType: CategoryType.CaseSubType,
                 categoryValue: 'BBA3-002GC',
-                categoryParent: 'BBA3-002',
+                categoryParent: 'BBA3-002'
               }, {
                 categoryType: CategoryType.CaseSubType,
                 categoryValue: 'BBA3-002RC',
-                categoryParent: 'BBA3-002',
+                categoryParent: 'BBA3-002'
               }],
             caseManagementLocationCode: null,
             caserestrictedFlag: false,
@@ -311,9 +310,9 @@ describe('AdditionalSecurityAmendedConverter', () => {
                   'RA0053',
                   'RA0013',
                   'RA0016',
-                  'RA0042',
+                  'RA0042'
                 ],
-                interpreterLanguage: 'PF0015',
+                interpreterLanguage: 'PF0015'
               },
               organisationDetails: {},
               unavailabilityDOW: null,
@@ -321,9 +320,9 @@ describe('AdditionalSecurityAmendedConverter', () => {
                 {
                   unavailableFromDate: '2021-12-10T09:00:00.000Z',
                   unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY,
-                },
-              ],
+                  unavailabilityType: UnavailabilityType.ALL_DAY
+                }
+              ]
             },
             {
               partyID: 'P2',
@@ -333,23 +332,23 @@ describe('AdditionalSecurityAmendedConverter', () => {
               individualDetails: {
                 preferredHearingChannel: 'byVideo',
                 reasonableAdjustments: [
-                  'RA0005',
+                  'RA0005'
                 ],
-                interpreterLanguage: null,
+                interpreterLanguage: null
               },
               organisationDetails: {
                 name: 'DWP',
                 organisationType: 'GOV',
-                cftOrganisationID: 'O100000',
+                cftOrganisationID: 'O100000'
               },
               unavailabilityDOW: null,
               unavailabilityRanges: [
                 {
                   unavailableFromDate: '2021-12-20T09:00:00.000Z',
                   unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY,
-                },
-              ],
+                  unavailabilityType: UnavailabilityType.ALL_DAY
+                }
+              ]
             }
           ]
         },
@@ -368,7 +367,7 @@ describe('AdditionalSecurityAmendedConverter', () => {
             caseName: 'Smith vs Peterson',
             reasonsForLink: [
               'Linked for a hearing'
-            ],
+            ]
           },
           {
             caseReference: '5283819672542864',
@@ -385,7 +384,7 @@ describe('AdditionalSecurityAmendedConverter', () => {
               'Familial',
               'Guardian',
               'Linked for a hearing'
-            ],
+            ]
           }
         ],
         serviceLinkedCasesWithHearings: [
@@ -409,7 +408,7 @@ describe('AdditionalSecurityAmendedConverter', () => {
               hearingIsLinkedFlag: true,
               hearingGroupRequestId: null,
               hearingDaySchedule: [],
-              isSelected: true,
+              isSelected: true
             }]
           },
           {
@@ -443,7 +442,7 @@ describe('AdditionalSecurityAmendedConverter', () => {
               hearingIsLinkedFlag: true,
               hearingGroupRequestId: null,
               hearingDaySchedule: [],
-              isSelected: true,
+              isSelected: true
             }, {
               hearingID: 'h100012',
               hearingType: 'Chambers Outcome',
@@ -458,7 +457,7 @@ describe('AdditionalSecurityAmendedConverter', () => {
               hearingIsLinkedFlag: true,
               hearingGroupRequestId: null,
               hearingDaySchedule: [],
-              isSelected: true,
+              isSelected: true
             }]
           }
         ],
@@ -467,27 +466,26 @@ describe('AdditionalSecurityAmendedConverter', () => {
             groupName: 'Group A',
             groupReason: 'Reason 1',
             groupLinkType: GroupLinkType.ORDERED,
-            groupComments: 'Comment 1',
+            groupComments: 'Comment 1'
           },
           hearingsInGroup: [
             {
               hearingId: 'h1000001',
-              hearingOrder: 1,
+              hearingOrder: 1
             },
             {
               hearingId: 'h1000003',
-              hearingOrder: 2,
+              hearingOrder: 2
             },
             {
               hearingId: 'h1000005',
-              hearingOrder: 3,
-            }],
+              hearingOrder: 3
+            }]
         },
         lastError: null
       }
-    },
+    }
   };
-
 
   let additionalSecurityAmendedConverter: AdditionalSecurityAmendedConverter;
 
@@ -499,8 +497,7 @@ describe('AdditionalSecurityAmendedConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = additionalSecurityAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = false;
-    const expected = cold('(b|)', {b: isAmended});
+    const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
-
 });

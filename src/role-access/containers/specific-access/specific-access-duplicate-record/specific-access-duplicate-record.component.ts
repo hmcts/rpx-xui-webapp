@@ -21,6 +21,7 @@ export class SpecificAccessDuplicateRecordComponent implements OnInit {
       this.activatedRoute.snapshot.data.taskAndRole.task.task.id;
 
     if (this.taskId) {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       this.workAllocationTaskService.performActionOnTask(this.taskId, ACTION.CANCEL, false).subscribe(() => {});
     }
   }

@@ -9,5 +9,5 @@ class BookingResponseModel {
 }
 
 export interface BookingResponseSuccess {
-    bookingResponse: BookingResponseModel;
+  bookingResponse: BookingResponseModel;
 }

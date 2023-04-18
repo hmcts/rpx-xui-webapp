@@ -10,8 +10,8 @@ describe('SpecificAccessDuplicateRecordComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ SpecificAccessDuplicateRecordComponent ],
-      imports: [ HttpClientTestingModule ],
+      declarations: [SpecificAccessDuplicateRecordComponent],
+      imports: [HttpClientTestingModule],
       providers: [
         {
           provide: ActivatedRoute,
@@ -27,10 +27,10 @@ describe('SpecificAccessDuplicateRecordComponent', () => {
               }
             }
           }
-        },
+        }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

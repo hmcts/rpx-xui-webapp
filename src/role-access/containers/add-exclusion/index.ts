@@ -13,7 +13,7 @@ export const containers: any[] = [
   ChoosePersonRoleComponent,
   AddExclusionSearchPersonComponent,
   DescribeExclusionComponent,
-  AddExclusionCheckAnswersComponent,
+  AddExclusionCheckAnswersComponent
 ];
 
 export * from './add-exclusion-check-answers/add-exclusion-check-answers.component';

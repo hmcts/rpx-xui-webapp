@@ -10,8 +10,8 @@ import { State } from '../store/reducers';
 import { CourtLocationAnswerConverter } from './court-location.answer.converter';
 
 describe('CourtLocationAnswerConverter', () => {
-
   let listedVenueAnswerConverter: CourtLocationAnswerConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
   let router: any;
   const COURT_LOCATION: LocationModel[] = [{
@@ -36,16 +36,16 @@ describe('CourtLocationAnswerConverter', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                courtLocation: COURT_LOCATION,
-              },
-            },
-          },
+                courtLocation: COURT_LOCATION
+              }
+            }
+          }
         }
       ]
     });
@@ -58,8 +58,7 @@ describe('CourtLocationAnswerConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = listedVenueAnswerConverter.transformAnswer(of(STATE), 0);
     const type = COURT_LOCATION[0].site_name;
-    const expected = cold('(b|)', {b: type});
+    const expected = cold('(b|)', { b: type });
     expect(result$).toBeObservable(expected);
   });
-
 });

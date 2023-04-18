@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
@@ -23,8 +23,8 @@ describe('LinkedHearingsFinalConfirmationComponent', () => {
     TestBed.configureTestingModule({
       declarations: [LinkedHearingsFinalConfirmationComponent],
       providers: [
-        provideMockStore({initialState}),
-        { provide: ActivatedRoute, useValue: mockRoute },
+        provideMockStore({ initialState }),
+        { provide: ActivatedRoute, useValue: mockRoute }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })

@@ -41,7 +41,7 @@ describe('CaseViewerContainerComponent', () => {
     triggers: [],
     case_id: '1234567890123456',
     case_type: {
-      id: 'Benefit',
+      id: 'TestAddressBookCase',
       name: 'Test Address Book Case',
       jurisdiction: {
         id: 'SSCS',
@@ -148,7 +148,6 @@ describe('CaseViewerContainerComponent', () => {
     public getValueOnce<R>(_key: string, _defaultValue: R): Observable<R> {
       return of([{
         jurisdiction: 'SSCS',
-        caseType: 'Benefit',
         roles: ['caseworker-sscs-judge', 'caseworker-sscs']
       }] as unknown as R);
     }
@@ -259,11 +258,12 @@ describe('CaseViewerContainerComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should return the two tabs', () => {
+  it('should return the two tabs', (done: DoneFn) => {
     component.prependedTabs$.subscribe((tabs: CaseTab[]) => {
       expect(tabs.length).toBe(TABS.length);
       expect(tabs[0].id).toBe('tasks');
       expect(tabs[1].id).toBe('roles-and-access');
+      done();
     });
   });
 

@@ -290,7 +290,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
             for(const attr of roleKeys){
                 const value = boolAttributes.includes(attr) ? roleAssignment[attr].includes('Y') : roleAssignment[attr];
-                if (attributeProperties.includes(attr)){
+                if (attributeProperties.includes(attr) && value !== ''){
                     roleAssignmentTemplate.attributes[attr] = value;
                 }else{
                     roleAssignmentTemplate[attr] = value;

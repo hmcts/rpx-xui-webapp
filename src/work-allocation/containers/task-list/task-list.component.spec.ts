@@ -4,6 +4,7 @@ import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { ConfigConstants } from '../../components/constants';
@@ -15,7 +16,6 @@ import { Task, TaskAction, TaskServiceConfig } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListComponent } from './task-list.component';
-import { RpxTranslationModule } from 'rpx-xui-translation';
 
 @Component({
   template: `

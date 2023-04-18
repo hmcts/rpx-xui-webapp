@@ -28,7 +28,7 @@ export class HearingActualsFinalConfirmationComponent implements OnInit, OnDestr
         this.caseId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
         this.heading = 'You have successfully submitted the hearing details.';
         this.subheading = 'What happens next';
-      }, error => {
+      }, () => {
         this.loadingService.unregister(loadingToken);
       });
   }

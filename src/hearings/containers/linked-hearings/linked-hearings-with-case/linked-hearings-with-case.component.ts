@@ -142,14 +142,14 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public getHearingsAvailable() {
-    this.linkedCases.forEach(caseInfo => {
+    this.linkedCases.forEach((caseInfo) => {
       if (caseInfo.caseRef !== this.caseId && caseInfo.caseHearings?.length > 0) {
         this.isHearingsAvailable = true;
       }
     });
     // No hearings available for linking, do not display the current case
     if (!this.isHearingsAvailable) {
-      this.linkedCases = this.linkedCases?.filter(linkedCase => linkedCase.caseRef !== this.caseId);
+      this.linkedCases = this.linkedCases?.filter((linkedCase) => linkedCase.caseRef !== this.caseId);
     }
   }
 

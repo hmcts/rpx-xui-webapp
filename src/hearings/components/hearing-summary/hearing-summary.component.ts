@@ -51,7 +51,7 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
         window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
       }
       this.loadingService.unregister(loadingToken);
-    }, error => {
+    }, () => {
       this.loadingService.unregister(loadingToken);
     });
   }

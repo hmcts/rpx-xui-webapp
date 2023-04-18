@@ -16,7 +16,6 @@ import { HearingActualsSummaryBaseComponent } from '../hearing-actuals-summary-b
   styleUrls: ['./hearing-actuals-edit-summary.component.scss']
 })
 export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBaseComponent {
-
   constructor(
     public readonly hearingStore: Store<fromHearingStore.State>,
     public readonly hearingsService: HearingsService,

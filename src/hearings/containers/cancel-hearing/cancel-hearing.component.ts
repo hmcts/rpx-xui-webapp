@@ -61,7 +61,7 @@ export class CancelHearingComponent implements OnInit {
           this.caseHearing = caseHearings.length ? caseHearings[0] : undefined;
         }
         this.loadingService.unregister(loadingToken);
-      }, error => {
+      }, () => {
         this.loadingService.unregister(loadingToken);
       });
     this.hearingCancelOptions = this.route.snapshot.data.hearingCancelOptions;

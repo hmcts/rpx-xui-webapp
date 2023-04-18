@@ -15,11 +15,11 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HearingActualsEditSummaryComponent } from './hearing-actuals-edit-summary.component';
 
-@Pipe({name: 'transformAnswer'})
+@Pipe({ name: 'transformAnswer' })
 export class MockHearingAnswersPipe implements PipeTransform {
-    public transform(answerSource, hearingState$, index?: number): string {
-        return '';
-    }
+  public transform(answerSource, hearingState$, index?: number): string {
+    return '';
+  }
 }
 
 @Component({
@@ -82,9 +82,9 @@ describe('HearingActualSummaryComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualsEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe],
-      imports: [ RouterTestingModule.withRoutes(
+      imports: [RouterTestingModule.withRoutes(
         [
-          {path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent}
+          { path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent }
         ]
       )],
       providers: [
@@ -94,20 +94,20 @@ describe('HearingActualSummaryComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             paramMap: of(convertToParamMap({
-              id: '1',
+              id: '1'
             })),
             snapshot: {
               params: {
-                id: '1',
+                id: '1'
               },
               data: {
                 partyChannels: partyChannelsRefData,
                 partySubChannels: partySubChannelsRefData,
                 hearingRole
-              },
-            },
-          },
-        },
+              }
+            }
+          }
+        }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -195,7 +195,7 @@ describe('HearingActualSummaryComponent', () => {
 
   it('should return updated notRequired', () => {
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
-      (component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
+    (component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
     expect(patchedHearingActuals.actualHearingDays[0].notRequired).toBe(true);
   });
 

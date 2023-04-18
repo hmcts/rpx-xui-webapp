@@ -31,7 +31,7 @@ export class CaseShareConfirmComponent implements OnInit {
     this.shareCases$.subscribe((shareCases) => {
       this.shareCases = shareCases;
       this.loadingService.unregister(loadingToken);
-    }, error => {
+    }, () => {
       this.loadingService.unregister(loadingToken);
     });
   }

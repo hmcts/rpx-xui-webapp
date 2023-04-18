@@ -59,6 +59,9 @@ export class TasksContainerComponent implements OnInit {
         return this.tasks && this.tasks.length > 0 ? this.getAssignedNamesForTasks() : of(this.tasks);
       })).subscribe((tasks) => {
         this.tasks = tasks;
+        this.loadingService.unregister(loadingToken);
+      }, () => {
+        this.loadingService.unregister(loadingToken);
       });
     this.caseDetails = this.route.snapshot.data.case as CaseView;
   }

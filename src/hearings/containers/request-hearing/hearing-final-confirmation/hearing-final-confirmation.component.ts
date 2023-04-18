@@ -43,7 +43,7 @@ export class HearingFinalConfirmationComponent implements OnInit, OnDestroy {
         this.additionalDescription = `If the hearing cannot be listed automatically, it will be sent to a member of staff to be processed.<br>
           A notice of hearing will be issued once the hearing is listed, you will not be notified of the listing.`;
         this.loadingService.unregister(loadingToken);
-      }, error => {
+      }, () => {
         this.loadingService.unregister(loadingToken);
       });
   }

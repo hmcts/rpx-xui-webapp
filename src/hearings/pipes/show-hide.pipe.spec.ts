@@ -56,7 +56,7 @@ describe('ShowHidePipe', () => {
               }
             })
           }
-        },
+        }
       ]
     });
     showHidePipe = new ShowHidePipe(locationsDataService, storeMock);

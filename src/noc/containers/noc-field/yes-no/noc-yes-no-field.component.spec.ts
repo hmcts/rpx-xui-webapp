@@ -1,12 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocYesNoFieldComponent } from './noc-yes-no-field.component';
 import { YesNoService } from './yes-no.service';
-
 
 describe('NocYesNoFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
@@ -31,7 +30,7 @@ describe('NocYesNoFieldComponent', () => {
     display_context_parameter: '6',
     challenge_question_id: 'NoC',
     answer_field: '',
-    question_id: 'question6',
+    question_id: 'question6'
   };
   const ANSWER_VALUE = of('Yes');
   let component: NocYesNoFieldComponent;
@@ -41,7 +40,7 @@ describe('NocYesNoFieldComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
-        NocYesNoFieldComponent,
+        NocYesNoFieldComponent
       ],
       imports: [
         ReactiveFormsModule,

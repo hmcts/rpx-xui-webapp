@@ -9,13 +9,13 @@ import { ElasticSearchQuery } from './interfaces/ElasticSearchQuery';
  * Manually creating Elastic search query
  */
 export function modifyRequest(proxyReq, req) {
-  const userInfo = getUserInfoFromRequest(req);
+  const userInfo: UserInfo = getUserInfoFromRequest(req);
 
   if (userInfo) {
-    const request = prepareElasticQuery(req.query, req.body, userInfo);
+    const request: ElasticSearchQuery = prepareElasticQuery(req.query, req.body, userInfo);
 
     // Write out body changes to the proxyReq stream
-    const body = JSON.stringify(request);
+    const body: string = JSON.stringify(request);
 
     // Update header
     proxyReq.setHeader('content-type', 'application/json');
@@ -31,7 +31,7 @@ export function modifyRequest(proxyReq, req) {
 }
 
 export function userCanPerformWildCardSearch(userInfo: UserInfo): boolean {
-  const allowedRoles = getConfigValue(WILDCARD_SEARCH_ROLES) as string[];
+  const allowedRoles: string[] = getConfigValue(WILDCARD_SEARCH_ROLES) as string[];
   return userInfo && userInfo.roles && userInfo.roles.filter((role: string) => allowedRoles
     .map((allowedRole: string) => allowedRole.toLowerCase())
     .indexOf(role.toLowerCase()) >= 0).length > 0;
@@ -39,28 +39,27 @@ export function userCanPerformWildCardSearch(userInfo: UserInfo): boolean {
 
 export function prepareElasticQuery(queryParams: { page?}, body: any, user: UserInfo): ElasticSearchQuery {
   const metaCriteria: { [key: string]: string } = queryParams;
-  let caseCriteria = {};
-  let nativeEsQuery: {};
+  let caseCriteria: object = {};
   const matchList: any[] = [];
   const size = body.size || 10;
   const sort = body.sort ? prepareSort(body.sort) : [];
-  const page = (queryParams.page || 1) - 1;
-  const from = page * size;
+  const page: number = (queryParams.page || 1) - 1;
+  const from: number = page * size;
   const canPerformWildCardSearch: boolean = userCanPerformWildCardSearch(user);
   const caseType: string = metaCriteria.ctid;
   const fieldsToApplyWildCardSearchesTo = getConfigValue(WILDCARD_SEARCH_FIELDS) as { [key: string]: string[] };
-  const hasESQueryTypeInPayload = Object.keys(body) && Object.keys(body).length && Object.keys(body)[0] === 'query';
+  const hasESQueryTypeInPayload: boolean = Object.keys(body) && Object.keys(body).length && Object.keys(body)[0] === 'query';
 
-  Object.keys(metaCriteria).map(key => {
+  Object.keys(metaCriteria).map((key: string): void => {
     if (key === 'ctid' || key === 'use_case' || key === 'view' || key === 'page') {
       delete metaCriteria[key];
     }
 
     if (key.indexOf('case.') > -1) {
-      const newKey = key.replace('case.', '');
+      const newKey: string = key.replace('case.', '');
       caseCriteria = {
         ...caseCriteria,
-        [newKey]: metaCriteria[key],
+        [newKey]: metaCriteria[key]
       };
       delete metaCriteria[key];
     }
@@ -68,7 +67,6 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
 
   if (metaCriteria) {
     for (const criterion of Object.keys(metaCriteria)) {
-
       if (metaCriteria[criterion]) {
         const keyName = fieldNameMapper(
           criterion.replace('[', '').replace(']', '').toLowerCase(),
@@ -78,14 +76,13 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
           match: {
             [keyName]: {
               operator: 'and',
-              query: metaCriteria[criterion],
-            },
-          },
+              query: metaCriteria[criterion]
+            }
+          }
         };
         matchList.push(match);
       }
     }
-
   }
 
   if (caseCriteria) {
@@ -99,14 +96,14 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
           if (phraseHasSpecialCharacters(searchTerm)) {
             match = {
               match_phrase: {
-                [field]: searchTerm,
-              },
+                [field]: searchTerm
+              }
             };
           } else {
             match = {
               wildcard: {
-                [field]: `*${searchTerm.toLowerCase()}*`,
-              },
+                [field]: `*${searchTerm.toLowerCase()}*`
+              }
             };
           }
         } else {
@@ -114,9 +111,9 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
             match: {
               [field]: {
                 operator: 'and',
-                query: searchTerm,
-              },
-            },
+                query: searchTerm
+              }
+            }
           };
         }
         matchList.push(match);
@@ -124,20 +121,20 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
     }
   }
 
-  nativeEsQuery = {
+  const nativeEsQuery: object = {
     from,
     query: {
       bool: {
-        must: matchList,
-      },
+        must: matchList
+      }
     },
     size,
-    sort,
+    sort
   };
 
   return {
-    native_es_query: hasESQueryTypeInPayload ? {...body} : nativeEsQuery,
-    supplementary_data: ['*'],
+    native_es_query: hasESQueryTypeInPayload ? { ...body } : nativeEsQuery,
+    supplementary_data: ['*']
   };
 }
 
@@ -155,10 +152,10 @@ function prepareSort(params) {
       );
       columnName = `${mappedName}${isKeywordSuffixNeeded(mappedName, params.type)}`;
     }
-    const orderDirection = params.order === 0 ? 'ASC' : 'DESC';
+    const orderDirection: 'ASC' | 'DESC' = params.order === 0 ? 'ASC' : 'DESC';
     sortQuery.push(
       {
-        [columnName]: orderDirection,
+        [columnName]: orderDirection
       }
     );
   }
@@ -166,15 +163,15 @@ function prepareSort(params) {
 }
 
 function isKeywordSuffixNeeded(columnName, type): string {
-  const types = ['Text', 'TextArea', 'FixedList', 'FixedListEdit', 'MultiSelectList', 'FixedRadioList', 'DynamicList'];
-  const specialFields = ['reference', 'jurisdiction', 'state', 'case_type_id'];
-  const isText = types.includes(type) || specialFields.includes(columnName);
+  const types: string[] = ['Text', 'TextArea', 'FixedList', 'FixedListEdit', 'MultiSelectList', 'FixedRadioList', 'DynamicList'];
+  const specialFields: string[] = ['reference', 'jurisdiction', 'state', 'case_type_id'];
+  const isText: boolean = types.includes(type) || specialFields.includes(columnName);
   return isText ? '.keyword' : '';
 }
 
-export function handleElasticSearchResponse(proxyRes, req, res, json): {} {
+export function handleElasticSearchResponse(proxyRes, req, res, json): object {
   if (json.cases) {
-    const results = json.cases.map(caseObj => {
+    const results = json.cases.map((caseObj) => {
       caseObj.case_fields = caseObj.fields;
       caseObj.case_fields_formatted = caseObj.fields_formatted;
       delete caseObj.fields;
@@ -185,7 +182,7 @@ export function handleElasticSearchResponse(proxyRes, req, res, json): {} {
     return {
       'columns': json.headers[0].fields,
       'results': results,
-      'total': json.total,
+      'total': json.total
     };
   }
   return {};
@@ -204,13 +201,12 @@ function canApplyWildCardSearch(
 
 function phraseHasSpecialCharacters(phrase: string): boolean {
   const specialCharacters: string[] = [' ', '-', '_'];
-  return specialCharacters.filter((specialCharacter: string) => phrase.indexOf(specialCharacter) >= 0).length > 0;
+  return specialCharacters.filter((specialCharacter: string): boolean => phrase.indexOf(specialCharacter) >= 0).length > 0;
 }
 
 function getUserInfoFromRequest(req: any): UserInfo {
   try {
-    const userInfo = req.session.passport.user.userinfo as UserInfo;
-    return userInfo;
+    return req.session.passport.user.userinfo as UserInfo;
   } catch (error) {
     return null;
   }

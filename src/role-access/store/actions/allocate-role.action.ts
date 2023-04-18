@@ -19,8 +19,7 @@ export enum AllocateRoleActionTypes {
 
 export class ChooseDurationAndGo implements Action {
   public readonly type = AllocateRoleActionTypes.CHOOSE_DURATION_AND_GO;
-  constructor(public payload: { durationOfRole: DurationOfRole, period: Period, allocateRoleState: AllocateRoleState }) {
-  }
+  constructor(public payload: { durationOfRole: DurationOfRole, period: Period, allocateRoleState: AllocateRoleState }) {}
 }
 
 export class AllocateRoleReset implements Action {
@@ -29,61 +28,51 @@ export class AllocateRoleReset implements Action {
 
 export class AllocateRoleSetInitData implements Action {
   public readonly type = AllocateRoleActionTypes.SET_INITIAL_DATA;
-  constructor(public payload: { caseId: string, jurisdiction: string, roleCategory: RoleCategory }) {
-  }
+  constructor(public payload: { caseId: string, jurisdiction: string, roleCategory: RoleCategory }) {}
 }
 
 export class AllocateRoleInstantiate implements Action {
   public readonly type = AllocateRoleActionTypes.ALLOCATE_ROLE_INSTANTIATE;
-  constructor(public payload: AllocateRoleStateData) {
-  }
+  constructor(public payload: AllocateRoleStateData) {}
 }
 
 export class NoRolesFound implements Action {
   public readonly type = AllocateRoleActionTypes.NO_ROLES_FOUND;
-  constructor() {}
 }
 
 export class LoadRolesComplete implements Action {
   public readonly type = AllocateRoleActionTypes.LOAD_ROLES_COMPLETE;
-  constructor(public payload: { roles: Role []}) {
-  }
+  constructor(public payload: { roles: Role []}) {}
 }
 
 export class LoadRoles implements Action {
   public readonly type = AllocateRoleActionTypes.LOAD_ROLES;
-  constructor(public payload: { jurisdiction: string, roleCategory: RoleCategory }) {
-  }
+  constructor(public payload: { jurisdiction: string, roleCategory: RoleCategory }) {}
 }
 
 export class AllocateRoleChangeNavigation implements Action {
   public readonly type = AllocateRoleActionTypes.CHANGE_NAVIGATION;
-  constructor(public payload: AllocateRoleState) {
-  }
+  constructor(public payload: AllocateRoleState) {}
 }
 
 export class ChooseRoleAndGo implements Action {
   public readonly type = AllocateRoleActionTypes.CHOOSE_ROLE_AND_GO;
-  constructor(public payload: { typeOfRole: SpecificRole, allocateRoleState: AllocateRoleState }) {
-  }
+  constructor(public payload: { typeOfRole: SpecificRole, allocateRoleState: AllocateRoleState }) {}
 }
 
 export class ChooseAllocateToAndGo implements Action {
   public readonly type = AllocateRoleActionTypes.CHOOSE_ALLOCATE_TO_AND_GO;
-  constructor(public payload: { allocateTo: AllocateTo, allocateRoleState: AllocateRoleState }) {
-  }
+  constructor(public payload: { allocateTo: AllocateTo, allocateRoleState: AllocateRoleState }) {}
 }
 
 export class ChoosePersonAndGo implements Action {
   public readonly type = AllocateRoleActionTypes.CHOOSE_PERSON_AND_GO;
-  constructor(public payload: { person: Person, allocateRoleState: AllocateRoleState, allocateTo: AllocateTo }) {
-  }
+  constructor(public payload: { person: Person, allocateRoleState: AllocateRoleState, allocateTo: AllocateTo }) {}
 }
 
 export class ConfirmAllocation implements Action {
   public readonly type = AllocateRoleActionTypes.CONFIRM_ALLOCATION;
-  constructor(public payload: AllocateRoleStateData) {
-  }
+  constructor(public payload: AllocateRoleStateData) {}
 }
 
 export type AllocateRoleAction =

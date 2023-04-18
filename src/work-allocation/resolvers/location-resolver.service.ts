@@ -23,18 +23,21 @@ import { addLocationToLocationsByService, handleFatalErrors, locationWithinRegio
 })
 // Note: used before my work and booking screens
 export class LocationResolver implements Resolve<LocationModel[]> {
-
   private userRole: string;
   // Note that bookableServices only used for ease of use
   // - i.e. removing non-bookable services from booking ui functionality
   private readonly bookableServices: string[] = [];
   private userId: string;
-  private locations: Location[] = [];
+  // EUI-7909 - comment out below code
+  /* private locations: Location[] = [];
   private feePaidLocations: Location[] = [];
   private locationServices = new Set<string>();
   private feePaidLocationServices = new Set<string>();
   private allLocationServices = [];
-  private allFeePaidLocationServices = [];
+  private allFeePaidLocationServices = []; */
+  // EUI-7909 remove below two lines
+  private readonly locations: Location[] = [];
+  private readonly locationServices = new Set<string>();
 
   constructor(
     private readonly store: Store<fromCaseList.State>,
@@ -42,9 +45,9 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     private readonly http: HttpClient,
     private readonly sessionStorageService: SessionStorageService,
     private readonly locationService: LocationDataService,
-    private readonly userService: UserService
-  ) {
-  }
+    // EUI-7909 - comment out this line
+    // private readonly userService: UserService
+  ) {}
 
   public resolve(): Observable<LocationModel[]> {
     return this.userDetails()
@@ -56,7 +59,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
           )
         ),
         mergeMap((locations: Location[]) => this.getLocations(locations)),
-        catchError(error => {
+        catchError((error) => {
           handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
           return EMPTY;
         })
@@ -74,19 +77,22 @@ export class LocationResolver implements Resolve<LocationModel[]> {
   public getRegionLocations(userDetails: UserDetails): Observable<LocationsByRegion[]> {
     const possibleServices = [];
     // simple loop as idea is just to get list of possible services to check
-    userDetails.roleAssignmentInfo.forEach(roleAssignment => {
+    userDetails.roleAssignmentInfo.forEach((roleAssignment) => {
       if (roleAssignment.jurisdiction && !possibleServices.includes(roleAssignment.jurisdiction)) {
         possibleServices.push(roleAssignment.jurisdiction);
       }
-    })
+    });
     return this.locationService.getLocationsByRegion(possibleServices);
   }
 
   public getJudicialWorkersOrCaseWorkers(regionLocations: LocationsByRegion[], userDetails: UserDetails): Location[] {
     this.userId = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
     let userLocationsByService: LocationsByService[] = [];
-    let feePaidUserLocationsByService: LocationsByService[] = [];
-    userDetails.roleAssignmentInfo.forEach(roleAssignment => {
+    // EUI-7909 - uncomment code below
+    // let feePaidUserLocationsByService: LocationsByService[] = [];
+    // EUI-7909 remove line below
+    const allLocationServices: string[] = [];
+    userDetails.roleAssignmentInfo.forEach((roleAssignment) => {
       const roleJurisdiction = roleAssignment.jurisdiction;
       if (roleJurisdiction && !this.bookableServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
         && (roleAssignment.bookable === true || roleAssignment.bookable === 'true')
@@ -103,7 +109,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
         this.setRegionsAndBaseLocations(roleAssignment, roleJurisdiction, regionLocations, true);
       }
     });
-    this.locations.forEach(location => {
+    this.locations.forEach((location) => {
       location.services.map((service) => {
         userLocationsByService = addLocationToLocationsByService(userLocationsByService, location, service, this.allLocationServices);
       });
@@ -122,12 +128,12 @@ export class LocationResolver implements Resolve<LocationModel[]> {
   public addBookingLocations(locations: Location[], bookings: Booking[]): Location[] {
     // TODO: Check if user still has valid bookable role assignment for service
     const bookingLocations: string[] = [];
-    bookings.forEach(booking => {
+    bookings.forEach((booking) => {
       // if this is an active booking
       if (moment(new Date()).isSameOrAfter(booking.beginTime) && moment(new Date()).isSameOrBefore(booking.endTime)) {
         bookingLocations.push(booking.locationId);
       } else {
-        locations = locations.filter(location => location.id !== booking.locationId);
+        locations = locations.filter((location) => location.id !== booking.locationId);
       }
     });
     this.saveBookingLocation(bookingLocations);
@@ -189,7 +195,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     if (stored) {
       bookingLocations = new Set(JSON.parse(stored));
     }
-    newBookingLocations.forEach(location => {
+    newBookingLocations.forEach((location) => {
       bookingLocations.add(location);
     });
 
@@ -211,11 +217,11 @@ export class LocationResolver implements Resolve<LocationModel[]> {
   }
 
   private getLocations(locations: Location[]): Observable<LocationModel[]> {
-    locations = locations.filter(location => !!location.id);
+    locations = locations.filter((location) => !!location.id);
     if (!locations || locations.length === 0) {
       return of(null);
     }
-    return this.http.post<LocationModel[]>(`api/locations/getLocationsById`, { locations });
+    return this.http.post<LocationModel[]>('api/locations/getLocationsById', { locations });
   }
 
   // check that the role assignment is within the begin and end times

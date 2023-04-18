@@ -1,5 +1,5 @@
-import {CaseDetailsModel} from './caseDetails.model';
-import {HearingResult, HMCStatus} from './hearings.enum';
+import { CaseDetailsModel } from './caseDetails.model';
+import { HearingResult, HMCStatus } from './hearings.enum';
 
 export interface PauseDateTimeModel {
   pauseStartTime: string;

@@ -12,10 +12,9 @@ import { getTitleText } from '../../../utils';
 
 @Component({
   selector: 'exui-choose-allocate-to',
-  templateUrl: './choose-allocate-to.component.html',
+  templateUrl: './choose-allocate-to.component.html'
 })
 export class ChooseAllocateToComponent implements OnInit {
-
   public ERROR_MESSAGE = ERROR_MESSAGE;
   @Input() public navEvent: AllocateRoleNavigation;
 
@@ -33,11 +32,11 @@ export class ChooseAllocateToComponent implements OnInit {
   public typeOfRole: SpecificRole;
   public allocateTo: AllocateTo;
 
-  constructor(private readonly store: Store<fromFeature.State>) { }
+  constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
-      allocateRoleStateData => {
+      (allocateRoleStateData) => {
         this.typeOfRole = allocateRoleStateData.typeOfRole;
         this.allocateTo = allocateRoleStateData.allocateTo;
         const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
@@ -46,7 +45,7 @@ export class ChooseAllocateToComponent implements OnInit {
     );
 
     this.radioOptionControl = new FormControl(this.allocateTo ? this.allocateTo : '', [Validators.required]);
-    this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
+    this.formGroup = new FormGroup({ [this.radioControlName]: this.radioOptionControl });
     this.optionsList = [
       {
         optionId: EnumUtil(AllocateTo).getKeyOrDefault(AllocateTo.RESERVE_TO_ME),

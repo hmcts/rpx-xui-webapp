@@ -7,15 +7,15 @@ import { Actions, AllocateRoleState, AllocateRoleStateData, AllocateTo, CaseRole
 import { AccessReason, DurationType } from '../models/enums';
 
 const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
-{ roleId: '2', roleName: 'Role 2' },
-{ roleId: '3', roleName: 'Role 3' },
-{ roleId: '4', roleName: 'Role 4' }];
+  { roleId: '2', roleName: 'Role 2' },
+  { roleId: '3', roleName: 'Role 3' },
+  { roleId: '4', roleName: 'Role 4' }];
 
 const mockRolesByService = [{
   service: 'IA',
   roles: [{ roleId: '1', roleName: 'Role 1' },
-  { roleId: '2', roleName: 'Role 2' },
-  { roleId: '3', roleName: 'Role 3' }]
+    { roleId: '2', roleName: 'Role 2' },
+    { roleId: '3', roleName: 'Role 3' }]
 },
 {
   service: 'SSCS', roles: {
@@ -28,11 +28,13 @@ describe('AllocateRoleService', () => {
   let sessionStorageService: any;
   let mockHttp: any;
   const durationHelperService: DurationHelperService = null;
+
   beforeEach(() => {
     mockHttp = jasmine.createSpyObj('HttpClient', ['get', 'post']);
     sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem', 'setItem']);
     roleAssignmentService = new AllocateRoleService(mockHttp, sessionStorageService, durationHelperService);
   });
+
   it('should be able to set judicial and legal ops roles', () => {
     mockHttp.post.and.returnValue(of(mockRolesByService));
     roleAssignmentService.getValidRoles(['IA']).subscribe((roles) => {
@@ -45,7 +47,7 @@ describe('AllocateRoleService', () => {
   it('should be able to set judicial and legal ops roles from session storage', () => {
     sessionStorageService.getItem.and.returnValue(JSON.stringify(mockRoles));
     mockHttp.post.and.returnValue(of(mockRolesByService));
-    roleAssignmentService.getValidRoles(['IA']).subscribe(res => {
+    roleAssignmentService.getValidRoles(['IA']).subscribe((res) => {
       expect(res).toEqual(mockRoles);
     });
   });
@@ -66,16 +68,16 @@ describe('AllocateRoleService', () => {
       TestBed.configureTestingModule({
         imports: [
           HttpClientTestingModule,
-          StoreModule.forRoot({}),
+          StoreModule.forRoot({})
         ],
         providers: [
-          AllocateRoleService,
+          AllocateRoleService
         ]
       });
     });
 
     it('should confirm allocation', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
-      service.confirmAllocation(STATE_DATA).subscribe(response => {
+      service.confirmAllocation(STATE_DATA).subscribe((response) => {
         expect(response).toBeNull();
       });
 
@@ -86,7 +88,7 @@ describe('AllocateRoleService', () => {
 
     it('should confirm reallocation', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
       const CURRENT_STATE = { ...STATE_DATA, action: Actions.Reallocate };
-      service.confirmAllocation(CURRENT_STATE).subscribe(response => {
+      service.confirmAllocation(CURRENT_STATE).subscribe((response) => {
         expect(response).toBeNull();
       });
       const req = httpMock.expectOne('/api/role-access/allocate-role/reallocate');
@@ -95,7 +97,7 @@ describe('AllocateRoleService', () => {
     }));
 
     it('should remove allocation', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
-      service.removeAllocation('111111').subscribe(response => {
+      service.removeAllocation('111111').subscribe((response) => {
         expect(response).toBeNull();
       });
       const req = httpMock.expectOne('/api/role-access/allocate-role/delete');
@@ -105,7 +107,7 @@ describe('AllocateRoleService', () => {
     }));
 
     it('should remove labelling role', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
-      service.manageLabellingRoleAssignment('111111').subscribe(response => {
+      service.manageLabellingRoleAssignment('111111').subscribe((response) => {
         expect(response).toBeNull();
       });
       const req = httpMock.expectOne('/api/role-access/roles/manageLabellingRoleAssignment/111111');
@@ -121,7 +123,7 @@ describe('AllocateRoleService', () => {
       const specificAccessStateData: SpecificAccessStateData = {
         state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
         accessReason: AccessReason.APPROVE_REQUEST,
-        typeOfRole: {id: 'specific-access-granted', name: 'specific-access-granted'},
+        typeOfRole: { id: 'specific-access-granted', name: 'specific-access-granted' },
         period,
         actorId: 'N/A',
         caseName: 'example name',
@@ -132,7 +134,7 @@ describe('AllocateRoleService', () => {
         jurisdiction: 'IA',
         roleCategory: 'LEGAL_OPERATIONS',
         requestedRole: 'specific-access-legal-ops',
-        person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null},
+        person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null },
         specificAccessFormData: {
           specificAccessDurationForm: {
             selectedOption: DurationType.SEVEN_DAYS,
@@ -152,7 +154,7 @@ describe('AllocateRoleService', () => {
         }
       };
 
-      service.specificAccessApproval(specificAccessStateData, {startDate: new Date('01-01-2000'), endDate: new Date('01-01-2025')}).subscribe(response => {
+      service.specificAccessApproval(specificAccessStateData, { startDate: new Date('01-01-2000'), endDate: new Date('01-01-2025') }).subscribe((response) => {
         expect(response).toBeNull();
       });
       const req = httpMock.expectOne('/api/am/specific-access-approval');
@@ -160,12 +162,11 @@ describe('AllocateRoleService', () => {
       req.flush(null);
     }));
 
-
     it('should deny specific access request', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
       const specificAccessState: SpecificAccessStateData = {
         state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
         accessReason: AccessReason.APPROVE_REQUEST,
-        typeOfRole: {id: 'specific-access-granted', name: 'specific-access-granted'},
+        typeOfRole: { id: 'specific-access-granted', name: 'specific-access-granted' },
         comment: 'comment',
         caseId: '1594717367271986',
         taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
@@ -173,7 +174,7 @@ describe('AllocateRoleService', () => {
         jurisdiction: 'IA',
         roleCategory: 'LEGAL_OPERATIONS',
         requestedRole: 'specific-access-legal-ops',
-        person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null},
+        person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null },
         specificAccessFormData: {
           specificAccessDurationForm: {
             selectedOption: DurationType.SEVEN_DAYS,
@@ -193,7 +194,7 @@ describe('AllocateRoleService', () => {
         }
       };
 
-      service.requestMoreInformation(specificAccessState).subscribe(response => {
+      service.requestMoreInformation(specificAccessState).subscribe((response) => {
         expect(response).toBeNull();
       });
       const req = httpMock.expectOne('/api/specific-access-request/request-more-information');
@@ -210,7 +211,7 @@ describe('AllocateRoleService', () => {
           known_as: 'Tom',
           surname: 'Cruz',
           full_name: 'Tom Cruz',
-          email_id: '330085EMP-@ejudiciary.net',
+          email_id: '330085EMP-@ejudiciary.net'
         }
       ];
       mockHttp.post.and.returnValue(of(data));
@@ -236,7 +237,7 @@ describe('AllocateRoleService', () => {
           start: '2021-12-09T00:00:00Z'
         }
       ];
-      service.getCaseRolesUserDetails(caseRoles, ['IA']).subscribe(response => {
+      service.getCaseRolesUserDetails(caseRoles, ['IA']).subscribe((response) => {
         expect(response.length).toBe(1);
         expect(response).toEqual(data);
       });
@@ -244,11 +245,11 @@ describe('AllocateRoleService', () => {
 
     it('should get specific access approved', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
       const approvedCount = {
-        count : 5
+        count: 5
       };
       mockHttp.post.and.returnValue(of(approvedCount));
-      service.getMyAccessNewCount().subscribe(response => {
-        expect(response).toEqual({count : 5 });
+      service.getMyAccessNewCount().subscribe((response) => {
+        expect(response).toEqual({ count: 5 });
       });
     }));
   });

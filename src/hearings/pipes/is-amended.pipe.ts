@@ -33,9 +33,7 @@ import { State } from '../store';
   name: 'isAmended'
 })
 export class IsAmendedPipe implements PipeTransform {
-
-  constructor(protected readonly route: ActivatedRoute) {
-  }
+  constructor(protected readonly route: ActivatedRoute) {}
 
   public transform(answerSource: AnswerSource, hearingState$: Observable<State>): Observable<boolean> {
     let converter: IsAmendedConverter = new DefaultAmendedConverter();
@@ -114,5 +112,4 @@ export class IsAmendedPipe implements PipeTransform {
     }
     return converter.transformIsAmended(hearingState$);
   }
-
 }

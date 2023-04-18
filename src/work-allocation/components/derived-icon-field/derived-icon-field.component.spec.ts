@@ -5,12 +5,11 @@ import { getMockTasks } from '../../tests/utils.spec';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { DerivedIconFieldComponent } from './derived-icon-field.component';
 
-
 @Component({
-  template: `<exui-derived-icon-field [task]="task" [sourceColumn]="sourceColumn" [matchValue]="matchValue"></exui-derived-icon-field>`
+  template: '<exui-derived-icon-field [task]="task" [sourceColumn]="sourceColumn" [matchValue]="matchValue"></exui-derived-icon-field>'
 })
 class WrapperComponent {
-  @ViewChild(DerivedIconFieldComponent, {static: true}) public appComponentRef: DerivedIconFieldComponent;
+  @ViewChild(DerivedIconFieldComponent, { static: true }) public appComponentRef: DerivedIconFieldComponent;
   @Input() public task: Task = null;
   @Input() public sourceColumn: string;
   @Input() public matchValue: any;
@@ -24,7 +23,6 @@ function getTasks(): Task[] {
 }
 
 describe('WorkAllocation', () => {
-
   describe('DerivedIconFieldComponent', () => {
     let component: DerivedIconFieldComponent;
     let wrapper: WrapperComponent;
@@ -32,10 +30,10 @@ describe('WorkAllocation', () => {
 
     beforeEach(async () => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule ]
+        declarations: [WrapperComponent],
+        imports: [WorkAllocationComponentsModule]
       })
-      .compileComponents();
+        .compileComponents();
 
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
@@ -85,7 +83,6 @@ describe('WorkAllocation', () => {
       fixture.detectChanges();
       element = fixture.debugElement.nativeElement.querySelector('svg');
       expect(element).toBeNull();
-
     });
 
     it('should allow swapping the match for different constraints', () => {
@@ -120,25 +117,23 @@ describe('WorkAllocation', () => {
     });
 
     it('should show the correct text content', () => {
-        // Expect the nativeElement to be empty (no icon yet)
-        let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('svg');
+      // Expect the nativeElement to be empty (no icon yet)
+      let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('svg');
 
-        // Set up the column names
-        const firstExampleColumn: string = 'location';
-        const hoverWarning: string = 'this is a warning message 3';
+      // Set up the column names
+      const firstExampleColumn: string = 'location';
+      const hoverWarning: string = 'this is a warning message 3';
 
-        // Set the task, column and value to match with
-        component.task = getTasks()[0];
-        component.sourceColumn = firstExampleColumn;
-        component.matchValue = 'Taylor House';
-        fixture.detectChanges();
-        element = fixture.debugElement.nativeElement.querySelector('svg');
-        expect(element).not.toBe(null);
+      // Set the task, column and value to match with
+      component.task = getTasks()[0];
+      component.sourceColumn = firstExampleColumn;
+      component.matchValue = 'Taylor House';
+      fixture.detectChanges();
+      element = fixture.debugElement.nativeElement.querySelector('svg');
+      expect(element).not.toBe(null);
 
-        // ensure the text content is correct
-        expect(element.textContent).toBe(hoverWarning);
+      // ensure the text content is correct
+      expect(element.textContent).toBe(hoverWarning);
     });
-
   });
-
 });

@@ -10,7 +10,7 @@ export interface OrganisationState {
 export const initialState: OrganisationState = {
   organisationDetails: new Organisation({}),
   loaded: false,
-  loading: false,
+  loading: false
 };
 
 export function reducer(

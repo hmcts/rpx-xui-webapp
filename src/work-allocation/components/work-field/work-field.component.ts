@@ -2,9 +2,9 @@ import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angu
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { FieldType } from '../../enums';
+import { Case } from '../../models/cases';
 import { FieldConfig } from '../../models/common';
-import { Case } from '.././../models/cases';
-import { Task } from '.././../models/tasks';
+import { Task } from '../../models/tasks';
 
 @Component({
   selector: 'exui-work-field',
@@ -35,8 +35,9 @@ export class WorkFieldComponent {
   constructor() {
     this.clickSubject.pipe(
       take(1)
-    ).subscribe(item => this.itemClick.emit(item));
+    ).subscribe((item) => this.itemClick.emit(item));
   }
+
   /**
    * Convert a string, number, or Date to date object.
    */

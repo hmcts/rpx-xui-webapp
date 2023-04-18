@@ -5,7 +5,6 @@ import { CheckDatesResult } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class DurationHelperService {
-
   public dateFormat = 'YYYY-MM-DD';
 
   /**
@@ -76,7 +75,7 @@ export class DurationHelperService {
     return {
       isStartDateValid,
       isEndDateValid
-    }
+    };
   }
 
   /**

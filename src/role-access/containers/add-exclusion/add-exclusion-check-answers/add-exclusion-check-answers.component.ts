@@ -11,7 +11,6 @@ import * as fromFeature from '../../../store';
   templateUrl: './add-exclusion-check-answers.component.html'
 })
 export class AddExclusionCheckAnswersComponent implements OnDestroy {
-
   @Input() public navEvent: ExclusionNavigation;
 
   public answers: Answer[] = [];
@@ -24,7 +23,7 @@ export class AddExclusionCheckAnswersComponent implements OnDestroy {
 
   constructor(private readonly store: Store<fromFeature.State>) {
     this.storeSubscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(
-      exclusion => this.setAnswersFromExclusionStore(exclusion));
+      (exclusion) => this.setAnswersFromExclusionStore(exclusion));
   }
 
   public ngOnDestroy(): void {

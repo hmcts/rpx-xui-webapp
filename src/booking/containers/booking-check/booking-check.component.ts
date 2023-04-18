@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { throwError } from 'rxjs';
@@ -14,8 +14,7 @@ import { CreateBookingHandleError, RefreshBookingHandleError } from '../utils/bo
   templateUrl: './booking-check.component.html',
   styleUrls: ['./booking-check.component.scss']
 })
-export class BookingCheckComponent implements OnInit {
-
+export class BookingCheckComponent {
   @Input() public selectedBookingOption: number;
   @Input() public bookingProcess: BookingProcess;
   @Input() public userId: string;
@@ -30,10 +29,7 @@ export class BookingCheckComponent implements OnInit {
     private readonly router: Router,
     private readonly sessionStorageService: SessionStorageService,
     private readonly windowService: WindowService
-  ) { }
-
-  public ngOnInit() {
-  }
+  ) {}
 
   public onEventTrigger(navEvent: BookingNavigationEvent): void {
     if (navEvent === BookingNavigationEvent.CONFIRM) {
@@ -74,17 +70,17 @@ export class BookingCheckComponent implements OnInit {
     this.bookingService.createBooking(payload).pipe(
       switchMap(() => {
         return this.bookingService.refreshRoleAssignments(this.userId).pipe(
-          catchError(err => {
-            return throwError({...err, case : 'refreshRoleAssignments'});
+          catchError((err) => {
+            return throwError({ ...err, case: 'refreshRoleAssignments' });
           })
         );
       }),
-      catchError(err => {
-        if ( !err.case) {
-        return throwError({...err, case : 'createBooking'});
-      }
-        return throwError({...err, case : 'refreshRoleAssignments'});
-    })
+      catchError((err) => {
+        if (!err.case) {
+          return throwError({ ...err, case: 'createBooking' });
+        }
+        return throwError({ ...err, case: 'refreshRoleAssignments' });
+      })
     ).subscribe(() => {
       this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
       this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
@@ -97,11 +93,11 @@ export class BookingCheckComponent implements OnInit {
         }
       });
     },
-    err => {
-      if ( err.case === 'createBooking') {
-        CreateBookingHandleError(err, this.router)
+    (err) => {
+      if (err.case === 'createBooking') {
+        CreateBookingHandleError(err, this.router);
       } else {
-        RefreshBookingHandleError(err, this.router)
+        RefreshBookingHandleError(err, this.router);
       }
     });
   }

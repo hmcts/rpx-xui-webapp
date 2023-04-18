@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { SortOrder } from './../../enums';
 
 export default interface SortField {

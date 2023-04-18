@@ -6,12 +6,13 @@ import { getNocState } from './noc.selectors';
 
 describe('Noc selectors', () => {
   let store: Store<State>;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('noc', reducers),
-      ],
+        StoreModule.forFeature('noc', reducers)
+      ]
     });
     store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
@@ -20,11 +21,10 @@ describe('Noc selectors', () => {
   describe('getNocState', () => {
     it('should return noc navigation state', () => {
       let result;
-      store.pipe(select(getNocState)).subscribe(value => {
+      store.pipe(select(getNocState)).subscribe((value) => {
         result = value;
       });
       expect(result).toEqual(initialState);
     });
   });
-
 });

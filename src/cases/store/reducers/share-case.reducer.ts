@@ -9,7 +9,7 @@ export interface ShareCasesState {
   users: UserDetails[];
 }
 
-export let initialSharedCasesState: ShareCasesState = {
+export const initialSharedCasesState: ShareCasesState = {
   shareCases: [],
   loading: false,
   error: undefined,
@@ -17,12 +17,12 @@ export let initialSharedCasesState: ShareCasesState = {
 };
 
 export function shareCasesReducer(state: ShareCasesState = initialSharedCasesState,
-                                  action: ShareCasesActions.Actions): ShareCasesState {
+  action: ShareCasesActions.Actions): ShareCasesState {
   switch (action.type) {
     case ShareCasesActions.NAVIGATE_TO_SHARE_CASES:
       const navigateToShareCases = state.shareCases.slice();
       for (const aCase of action.payload) {
-        if (!navigateToShareCases.some(hasACase => hasACase.caseId === aCase.caseId)) {
+        if (!navigateToShareCases.some((hasACase) => hasACase.caseId === aCase.caseId)) {
           navigateToShareCases.push(aCase);
         }
       }
@@ -41,7 +41,7 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
       const casesWithTypes: SharedCase[] = [];
       for (const aCase of casesFromNode) {
         if (!aCase.hasOwnProperty('caseTypeId')) {
-          const caseExists = casesInStore.find(theCase => theCase.caseId === aCase.caseId);
+          const caseExists = casesInStore.find((theCase) => theCase.caseId === aCase.caseId);
           const caseTypeId = caseExists && caseExists.caseTypeId ? caseExists.caseTypeId : null;
           const caseTitle = caseExists && caseExists.caseTitle ? caseExists.caseTitle : null;
           const newCase: SharedCase = {
@@ -66,7 +66,7 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
     case ShareCasesActions.ADD_SHARE_CASES:
       const addShareCases = state.shareCases.slice();
       for (const aCase of action.payload.sharedCases) {
-        if (!addShareCases.some(hasACase => hasACase.caseId === aCase.caseId)) {
+        if (!addShareCases.some((hasACase) => hasACase.caseId === aCase.caseId)) {
           addShareCases.push(aCase);
         }
       }
@@ -77,7 +77,7 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
     case ShareCasesActions.ADD_SHARE_CASE_GO:
       const addShareCasesGo = state.shareCases.slice();
       for (const aCase of action.payload.sharedCases) {
-        if (!addShareCasesGo.some(hasACase => hasACase.caseId === aCase.caseId)) {
+        if (!addShareCasesGo.some((hasACase) => hasACase.caseId === aCase.caseId)) {
           addShareCasesGo.push(aCase);
         }
       }

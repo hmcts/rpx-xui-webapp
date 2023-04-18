@@ -10,20 +10,18 @@ import { of } from 'rxjs';
 
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
-import { reducers } from '../../../app/store';
+import * as fromActions from '../../../app/store';
 import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
 import { AllocateRoleService } from '../../../role-access/services';
 import { JurisdictionsService } from '../../../work-allocation/services/juridictions.service';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Case } from '../../models/cases';
-import * as dtos from '../../models/dtos';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
-import { getMockCaseRoles, getMockCases, getMockLocations } from '../../tests/utils.spec';
+import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
 import { MyAccessComponent } from '../my-access/my-access.component';
 import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { WorkCaseListWrapperComponent } from './work-case-list-wrapper.component';
-import * as fromActions from '../../../app/store';
 
 const USER_DETAILS = {
   canShareCases: true,
@@ -49,6 +47,7 @@ const JURISDICTIONS = [{
   description: '',
   caseTypes: []
 }];
+
 describe('WorkCaseListWrapperComponent', () => {
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
   mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
@@ -56,11 +55,9 @@ describe('WorkCaseListWrapperComponent', () => {
   const mockJurisdictionService = jasmine.createSpyObj('mockJurisdictionService', ['getJurisdictions']);
   mockJurisdictionService.getJurisdictions.and.returnValue(of(JURISDICTIONS));
 
-
   let component: WorkCaseListWrapperComponent;
   let fixture: ComponentFixture<WorkCaseListWrapperComponent>;
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
-  const mockLocations: dtos.Location[] = getMockLocations();
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
   const mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchCase', 'getCase', 'getMyCases', 'getMyAccess']);
@@ -73,7 +70,9 @@ describe('WorkCaseListWrapperComponent', () => {
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
   const mockAllocateRoleService = jasmine.createSpyObj('mockAllocateRoleService', ['getCaseRolesUserDetails', 'getValidRoles']);
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
+
   beforeEach((() => {
     storeMock = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
     storeMock.pipe.and.returnValue(of(USER_DETAILS));
@@ -82,7 +81,7 @@ describe('WorkCaseListWrapperComponent', () => {
         WorkAllocationComponentsModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        StoreModule.forRoot({ ...reducers }),
+        StoreModule.forRoot({ ...fromActions.reducers }),
         CdkTableModule,
         PaginationModule
       ],
@@ -102,7 +101,7 @@ describe('WorkCaseListWrapperComponent', () => {
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
         { provide: AllocateRoleService, useValue: mockAllocateRoleService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
-        { provide: Store, useValue: storeMock },
+        { provide: Store, useValue: storeMock }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WorkCaseListWrapperComponent);
@@ -137,8 +136,8 @@ describe('WorkCaseListWrapperComponent', () => {
     const secondAction = exampleCase.actions[1];
     const firstCaseAction = { invokedCase: exampleCase, action: firstAction };
     const secondCaseAction = { invokedCase: exampleCase, action: secondAction };
-    it('should handle a reallocate action', fakeAsync(async () => {
 
+    it('should handle a reallocate action', fakeAsync(async () => {
       // need to check that navigate has been called
       component.onActionHandler(firstCaseAction);
       expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('reallocate'), { state: { backUrl: null } });

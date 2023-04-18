@@ -1,6 +1,6 @@
 /* tslint:disable */
-import {Person, PersonRole} from "../interfaces/person";
-import {v4 as uuidv4} from 'uuid';
+import { Person, PersonRole } from '../interfaces/person';
+import { v4 as uuidv4 } from 'uuid';
 
 export const PERSON: Person[] = [
   {
@@ -76,8 +76,8 @@ export const PERSON: Person[] = [
     name: 'Michael Jackson',
     email: 'michael.jackson@admin.com',
     domain: PersonRole.ADMIN
-  },
-]
+  }
+];
 
 export const JUDICIAL_WORKERS_LOCATIONS = [
   {
@@ -88,10 +88,10 @@ export const JUDICIAL_WORKERS_LOCATIONS = [
     domain: PersonRole.JUDICIAL,
     location: {
       id: '231596',
-      locationName:'Birmingham'
+      locationName: 'Birmingham'
     }
   }
-]
+];
 
 export const ASSIGNED_TASKS = { tasks: [
   {
@@ -106,7 +106,7 @@ export const ASSIGNED_TASKS = { tasks: [
     case_category: 'EEA',
     case_name: 'James Priest',
     permissions: ['Read', 'Manage'],
-    task_type: 'Judicial',
+    task_type: 'Judicial'
   },
   {
     id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba1',
@@ -120,9 +120,9 @@ export const ASSIGNED_TASKS = { tasks: [
     case_category: 'EEA',
     case_name: 'James Priest',
     permissions: ['Read', 'Manage'],
-    task_type: 'Judicial',
+    task_type: 'Judicial'
   }
-]}
+] };
 
 export const JUDICIAL_MY_TASKS = {
   tasks: [
@@ -139,7 +139,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'James Priest',
       permissions: ['Read', 'Manage'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba2',
@@ -153,7 +153,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Ryan',
       permissions: ['Execute', 'Manage'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba3',
@@ -167,7 +167,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jackson',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba4',
@@ -195,7 +195,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'James Patrick',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba6',
@@ -209,7 +209,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Frank',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba7',
@@ -223,7 +223,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Johnson',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba8',
@@ -237,7 +237,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Shrub',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba9',
@@ -251,7 +251,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'James Pequequer',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb0',
@@ -265,7 +265,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Roderick',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb1',
@@ -279,7 +279,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jehovan',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb2',
@@ -293,7 +293,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Badger',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb3',
@@ -307,7 +307,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'James Patronus',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb4',
@@ -321,7 +321,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Farthing',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb5',
@@ -335,7 +335,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jumping',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb6',
@@ -349,7 +349,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Shrew',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb7',
@@ -363,7 +363,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'James Parrot',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb8',
@@ -377,7 +377,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Ran',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb9',
@@ -391,7 +391,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jeffries',
       permissions: ['Read'],
-      task_type: 'Legal Ops',
+      task_type: 'Legal Ops'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc0',
@@ -405,7 +405,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Bawler',
       permissions: ['Read'],
-      task_type: 'Admin',
+      task_type: 'Admin'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc1',
@@ -419,7 +419,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'James Patricia',
       permissions: ['Read'],
-      task_type: 'Admin',
+      task_type: 'Admin'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc2',
@@ -433,7 +433,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Forthorn',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc3',
@@ -447,7 +447,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jail',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc4',
@@ -461,7 +461,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Slither',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc5',
@@ -475,7 +475,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'James Shiraz',
       permissions: ['Read'],
-      task_type: 'Admin',
+      task_type: 'Admin'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
@@ -489,7 +489,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Redan',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc7',
@@ -503,7 +503,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Joret',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc8',
@@ -517,7 +517,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Bear',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc9',
@@ -531,7 +531,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'James Porkie',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd0',
@@ -545,7 +545,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Ferry',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd1',
@@ -559,7 +559,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jackdaw',
       permissions: ['Read'],
-      task_type: 'Legal Ops',
+      task_type: 'Legal Ops'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd2',
@@ -573,7 +573,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Starling',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7b1',
@@ -587,7 +587,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'Tanya Boris',
       permissions: ['Read', 'Manage'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7b2',
@@ -601,7 +601,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Victoria King',
       permissions: ['Read', 'Manage'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7b3',
@@ -615,7 +615,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Ryan Lee',
       permissions: ['Read', 'Manage'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7b4',
@@ -629,9 +629,9 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Kim Lee',
       permissions: ['Read'],
-      task_type: 'Judicial',
-    },
-  ],
+      task_type: 'Judicial'
+    }
+  ]
 };
 
 export const JUDICIAL_MY_CASES = {
@@ -662,7 +662,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'Protection',
       case_role: 'Lead Judge',
       case_name: 'Ella Ryan',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba3',
@@ -676,7 +676,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'refusalOfHumanRights',
       case_role: 'Lead Judge',
       case_name: 'Jo Jackson',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba4',
@@ -690,7 +690,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'asylum',
       case_role: 'Lead Judge',
       case_name: 'Boris Bush',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
@@ -704,7 +704,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'EEA',
       case_role: 'Hearing Judge',
       case_name: 'James Patrick',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba6',
@@ -718,7 +718,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'Protection',
       case_role: 'Hearing Judge',
       case_name: 'Ella Frank',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba7',
@@ -732,7 +732,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'refusalOfHumanRights',
       case_role: 'Hearing Judge',
       case_name: 'Jo Johnson',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba8',
@@ -746,7 +746,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'asylum',
       case_role: 'Hearing Judge',
       case_name: 'Boris Shrub',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba9',
@@ -760,7 +760,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'EEA',
       case_role: 'Lead Judge',
       case_name: 'James Pequequer',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb0',
@@ -774,7 +774,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'Protection',
       case_role: 'Lead Judge',
       case_name: 'Ella Roderick',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb1',
@@ -788,7 +788,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'refusalOfHumanRights',
       case_role: 'Lead Judge',
       case_name: 'Jo Jehovan',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb2',
@@ -802,7 +802,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'asylum',
       case_role: 'Lead Judge',
       case_name: 'Boris Badger',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb3',
@@ -816,7 +816,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'EEA',
       case_role: 'Hearing Judge',
       case_name: 'James Patronus',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb4',
@@ -830,7 +830,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'Protection',
       case_role: 'Hearing Judge',
       case_name: 'Ella Farthing',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb5',
@@ -844,7 +844,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'refusalOfHumanRights',
       case_role: 'Hearing Judge',
       case_name: 'Jo Jumping',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb6',
@@ -858,7 +858,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'asylum',
       case_role: 'Hearing Judge',
       case_name: 'Boris Shrew',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb7',
@@ -872,7 +872,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'EEA',
       case_role: 'Lead Judge',
       case_name: 'James Parrot',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb8',
@@ -886,7 +886,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'Protection',
       case_role: 'Lead Judge',
       case_name: 'Ella Ran',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb9',
@@ -900,7 +900,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'refusalOfHumanRights',
       case_role: 'Lead Judge',
       case_name: 'Jo Jeffries',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc0',
@@ -914,7 +914,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'asylum',
       case_role: 'Lead Judge',
       case_name: 'Boris Bawler',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc1',
@@ -928,7 +928,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'EEA',
       case_role: 'Hearing Judge',
       case_name: 'James Patricia',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc2',
@@ -942,7 +942,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'Protection',
       case_role: 'Hearing Judge',
       case_name: 'Ella Forthorn',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc3',
@@ -956,7 +956,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'refusalOfHumanRights',
       case_role: 'Hearing Judge',
       case_name: 'Jo Jail',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc4',
@@ -970,7 +970,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'asylum',
       case_role: 'Hearing Judge',
       case_name: 'Boris Slither',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc5',
@@ -984,7 +984,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'EEA',
       case_role: 'Lead Judge',
       case_name: 'James Shiraz',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
@@ -998,7 +998,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'Protection',
       case_role: 'Lead Judge',
       case_name: 'Ella Redan',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc7',
@@ -1012,7 +1012,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'refusalOfHumanRights',
       case_role: 'Lead Judge',
       case_name: 'Jo Joret',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc8',
@@ -1026,7 +1026,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'asylum',
       case_role: 'Lead Judge',
       case_name: 'Boris Bear',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc9',
@@ -1040,7 +1040,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'EEA',
       case_role: 'Hearing Judge',
       case_name: 'James Porkie',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd0',
@@ -1054,7 +1054,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'Protection',
       case_role: 'Hearing Judge',
       case_name: 'Ella Ferry',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd1',
@@ -1068,7 +1068,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'refusalOfHumanRights',
       case_role: 'Hearing Judge',
       case_name: 'Jo Jackdaw',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd2',
@@ -1082,9 +1082,9 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'asylum',
       case_role: 'Hearing Judge',
       case_name: 'Boris Starling',
-      permissions: ['Read'],
-    },
-  ],
+      permissions: ['Read']
+    }
+  ]
 };
 
 export const JUDICIAL_ALL_CASES = {
@@ -1117,7 +1117,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'Protection',
       role: 'Lead Judge',
       case_name: 'Ella Ryan',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba3',
@@ -1132,7 +1132,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'refusalOfHumanRights',
       role: 'Lead Judge',
       case_name: 'Jo Jackson',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba4',
@@ -1147,7 +1147,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'asylum',
       role: 'Lead Judge',
       case_name: 'Boris Bush',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
@@ -1162,7 +1162,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'EEA',
       role: 'Hearing Judge',
       case_name: 'James Patrick',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba6',
@@ -1177,7 +1177,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'Protection',
       role: 'Hearing Judge',
       case_name: 'Ella Frank',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba7',
@@ -1192,7 +1192,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'refusalOfHumanRights',
       role: 'Hearing Judge',
       case_name: 'Jo Johnson',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba8',
@@ -1207,7 +1207,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'asylum',
       role: 'Hearing Judge',
       case_name: 'Boris Shrub',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba9',
@@ -1222,7 +1222,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'EEA',
       role: 'Lead Judge',
       case_name: 'James Pequequer',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb0',
@@ -1237,7 +1237,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'Protection',
       role: 'Lead Judge',
       case_name: 'Ella Roderick',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb1',
@@ -1252,7 +1252,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'refusalOfHumanRights',
       role: 'Lead Judge',
       case_name: 'Jo Jehovan',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb2',
@@ -1267,7 +1267,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'asylum',
       role: 'Lead Judge',
       case_name: 'Boris Badger',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb3',
@@ -1282,7 +1282,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'EEA',
       role: 'Hearing Judge',
       case_name: 'James Patronus',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb4',
@@ -1297,7 +1297,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'Protection',
       role: 'Hearing Judge',
       case_name: 'Ella Farthing',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb5',
@@ -1312,7 +1312,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'refusalOfHumanRights',
       role: 'Hearing Judge',
       case_name: 'Jo Jumping',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb6',
@@ -1327,7 +1327,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'asylum',
       role: 'Hearing Judge',
       case_name: 'Boris Shrew',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb7',
@@ -1342,7 +1342,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'EEA',
       role: 'Lead Judge',
       case_name: 'James Parrot',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb8',
@@ -1357,7 +1357,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'Protection',
       role: 'Lead Judge',
       case_name: 'Ella Ran',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb9',
@@ -1372,7 +1372,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'refusalOfHumanRights',
       role: 'Lead Judge',
       case_name: 'Jo Jeffries',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc0',
@@ -1387,7 +1387,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'asylum',
       role: 'Lead Judge',
       case_name: 'Boris Bawler',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc1',
@@ -1402,7 +1402,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'EEA',
       role: 'Hearing Judge',
       case_name: 'James Patricia',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc2',
@@ -1417,7 +1417,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'Protection',
       role: 'Hearing Judge',
       case_name: 'Ella Forthorn',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc3',
@@ -1432,7 +1432,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'refusalOfHumanRights',
       role: 'Hearing Judge',
       case_name: 'Jo Jail',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc4',
@@ -1447,7 +1447,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'asylum',
       role: 'Hearing Judge',
       case_name: 'Boris Slither',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc5',
@@ -1462,7 +1462,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'EEA',
       role: 'Lead Judge',
       case_name: 'James Shiraz',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
@@ -1477,7 +1477,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'Protection',
       role: 'Lead Judge',
       case_name: 'Ella Redan',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc7',
@@ -1492,7 +1492,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'refusalOfHumanRights',
       role: 'Lead Judge',
       case_name: 'Jo Joret',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc8',
@@ -1507,7 +1507,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'asylum',
       role: 'Lead Judge',
       case_name: 'Boris Bear',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc9',
@@ -1522,7 +1522,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'EEA',
       role: 'Hearing Judge',
       case_name: 'James Porkie',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd0',
@@ -1537,7 +1537,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'Protection',
       role: 'Hearing Judge',
       case_name: 'Ella Ferry',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd1',
@@ -1552,7 +1552,7 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'refusalOfHumanRights',
       role: 'Hearing Judge',
       case_name: 'Jo Jackdaw',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd2',
@@ -1567,9 +1567,9 @@ export const JUDICIAL_ALL_CASES = {
       case_category: 'asylum',
       role: 'Hearing Judge',
       case_name: 'Boris Starling',
-      permissions: ['Read'],
-    },
-  ],
+      permissions: ['Read']
+    }
+  ]
 };
 
 export const CASEWORKER_MY_CASES = {
@@ -1587,7 +1587,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Tanya Boris',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb2',
@@ -1602,7 +1602,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Victoria King',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb3',
@@ -1617,7 +1617,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Ryan Lee',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb4',
@@ -1632,7 +1632,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Kim Lee',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb5',
@@ -1647,7 +1647,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Tanya Baker',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb6',
@@ -1662,7 +1662,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Victoria Kingship',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb7',
@@ -1677,7 +1677,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Ryan Lesley',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb8',
@@ -1692,7 +1692,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Kim Large',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb9',
@@ -1707,7 +1707,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Tanya Bore',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc0',
@@ -1722,7 +1722,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Victoria Knight',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc1',
@@ -1737,7 +1737,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Ryan Lovely',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc2',
@@ -1752,7 +1752,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Kim Lovelier',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc3',
@@ -1767,7 +1767,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Tanya Baker',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc4',
@@ -1782,7 +1782,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Victoria Kingsley',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc5',
@@ -1797,7 +1797,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Ryan Laughing',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc6',
@@ -1812,7 +1812,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Kim Laughter',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc7',
@@ -1827,7 +1827,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Tanya Bye',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc8',
@@ -1842,7 +1842,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Victoria Knightingale',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc9',
@@ -1857,7 +1857,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Ryan Leech',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd0',
@@ -1872,7 +1872,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Kim Leehes',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd1',
@@ -1887,7 +1887,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Tanya Bills',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd2',
@@ -1902,7 +1902,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Victoria Kristal',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd3',
@@ -1917,7 +1917,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Ryan Lrella',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd4',
@@ -1932,7 +1932,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Kim Lavellan',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd5',
@@ -1947,7 +1947,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Tanya Breakage',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd6',
@@ -1962,7 +1962,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Victoria Knarle',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd7',
@@ -1977,7 +1977,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Ryan Lost',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd8',
@@ -1992,7 +1992,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Kim Lewes',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd9',
@@ -2007,7 +2007,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Tanya Bringin',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7be0',
@@ -2022,7 +2022,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Victoria Keep',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7be1',
@@ -2037,7 +2037,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Ryan Leeching',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7be2',
@@ -2052,9 +2052,9 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Kim Bellow',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read'],
-    },
-  ],
+      permissions: ['Read']
+    }
+  ]
 };
 
 export const CASEWORKER_MY_TASKS = {
@@ -2070,7 +2070,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Tanya Boris',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb2',
@@ -2083,7 +2083,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Victoria King',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb3',
@@ -2096,7 +2096,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Ryan Lee',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb4',
@@ -2109,7 +2109,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Kim Lee',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb5',
@@ -2122,7 +2122,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Tanya Baker',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb6',
@@ -2135,7 +2135,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Victoria Kingship',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb7',
@@ -2148,7 +2148,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Ryan Lesley',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb8',
@@ -2161,7 +2161,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Kim Large',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb9',
@@ -2174,7 +2174,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Tanya Bore',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc0',
@@ -2187,7 +2187,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Victoria Knight',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc1',
@@ -2200,7 +2200,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Ryan Lovely',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc2',
@@ -2213,7 +2213,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Kim Lovelier',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc3',
@@ -2226,7 +2226,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Tanya Baker',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc4',
@@ -2239,7 +2239,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Victoria Kingsley',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc5',
@@ -2252,7 +2252,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Ryan Laughing',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc6',
@@ -2265,7 +2265,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Kim Laughter',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc7',
@@ -2278,7 +2278,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Tanya Bye',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc8',
@@ -2291,7 +2291,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Victoria Knightingale',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc9',
@@ -2304,7 +2304,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Ryan Leech',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd0',
@@ -2317,7 +2317,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Kim Leehes',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd1',
@@ -2330,7 +2330,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Tanya Bills',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd2',
@@ -2343,7 +2343,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Victoria Kristal',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd3',
@@ -2356,7 +2356,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Ryan Lrella',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd4',
@@ -2369,7 +2369,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Kim Lavellan',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd5',
@@ -2382,7 +2382,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Tanya Breakage',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd6',
@@ -2395,7 +2395,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Victoria Knarle',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd7',
@@ -2408,7 +2408,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Ryan Lost',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd8',
@@ -2421,7 +2421,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Kim Lewes',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd9',
@@ -2434,7 +2434,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Tanya Bringin',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7be0',
@@ -2447,7 +2447,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Victoria Keep',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7be1',
@@ -2460,7 +2460,7 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Ryan Leeching',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7be2',
@@ -2473,9 +2473,9 @@ export const CASEWORKER_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Kim Bellow',
-      permissions: ['Read'],
-    },
-  ],
+      permissions: ['Read']
+    }
+  ]
 };
 
 export const CASEWORKER_ALL_CASES = {
@@ -2508,7 +2508,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'Protection',
       role: 'Lead Judge',
       case_name: 'Ella Ryan',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba3',
@@ -2523,7 +2523,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'refusalOfHumanRights',
       role: 'Lead Judge',
       case_name: 'Jo Jackson',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba4',
@@ -2538,7 +2538,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'asylum',
       role: 'Lead Judge',
       case_name: 'Boris Bush',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
@@ -2553,7 +2553,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'EEA',
       role: 'Hearing Judge',
       case_name: 'James Patrick',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba6',
@@ -2568,7 +2568,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'Protection',
       role: 'Hearing Judge',
       case_name: 'Ella Frank',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba7',
@@ -2582,7 +2582,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'refusalOfHumanRights',
       role: 'Hearing Judge',
       case_name: 'Jo Johnson',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba8',
@@ -2597,7 +2597,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'asylum',
       role: 'Hearing Judge',
       case_name: 'Boris Shrub',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba9',
@@ -2612,7 +2612,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'EEA',
       role: 'Lead Judge',
       case_name: 'James Pequequer',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb0',
@@ -2627,7 +2627,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'Protection',
       role: 'Lead Judge',
       case_name: 'Ella Roderick',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb1',
@@ -2642,7 +2642,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'refusalOfHumanRights',
       role: 'Lead Judge',
       case_name: 'Jo Jehovan',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb2',
@@ -2657,7 +2657,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'asylum',
       role: 'Lead Judge',
       case_name: 'Boris Badger',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb3',
@@ -2672,7 +2672,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'EEA',
       role: 'Hearing Judge',
       case_name: 'James Patronus',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb4',
@@ -2687,7 +2687,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'Protection',
       role: 'Hearing Judge',
       case_name: 'Ella Farthing',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb5',
@@ -2702,7 +2702,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'refusalOfHumanRights',
       role: 'Hearing Judge',
       case_name: 'Jo Jumping',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb6',
@@ -2717,7 +2717,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'asylum',
       role: 'Hearing Judge',
       case_name: 'Boris Shrew',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb7',
@@ -2732,7 +2732,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'EEA',
       role: 'Lead Judge',
       case_name: 'James Parrot',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb8',
@@ -2747,7 +2747,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'Protection',
       role: 'Lead Judge',
       case_name: 'Ella Ran',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb9',
@@ -2762,7 +2762,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'refusalOfHumanRights',
       role: 'Lead Judge',
       case_name: 'Jo Jeffries',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc0',
@@ -2777,7 +2777,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'asylum',
       role: 'Lead Judge',
       case_name: 'Boris Bawler',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc1',
@@ -2792,7 +2792,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'EEA',
       role: 'Hearing Judge',
       case_name: 'James Patricia',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc2',
@@ -2807,7 +2807,7 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'Protection',
       role: 'Admin',
       case_name: 'Ella Forthorn',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc3',
@@ -2822,23 +2822,23 @@ export const CASEWORKER_ALL_CASES = {
       case_category: 'refusalOfHumanRights',
       role: 'Legal Ops',
       case_name: 'Jo Jail',
-      permissions: ['Read'],
-    },
-  ],
+      permissions: ['Read']
+    }
+  ]
 };
 
 export const JUDICIAL_WORKERS = [
   {
-    "email": "CWR-func-test-user1-#s@justice.gov.uk",
-    "firstName": "IAC",
-    "idamId": "998db99b-08aa-43d4-bc6b-0aabbb0e3c6f",
-    "lastName": "CW2",
-    "location": {
-      "id": 231596,
-      "locationName": "Birmingham"
+    'email': 'CWR-func-test-user1-#s@justice.gov.uk',
+    'firstName': 'IAC',
+    'idamId': '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f',
+    'lastName': 'CW2',
+    'location': {
+      'id': 231596,
+      'locationName': 'Birmingham'
     }
   }
-]
+];
 
 export const ASSIGNED_CASE_TASKS = {
   tasks: [
@@ -2855,7 +2855,7 @@ export const ASSIGNED_CASE_TASKS = {
       case_category: 'EEA',
       case_name: 'William Priest',
       warnings: true,
-      permissions: ['Own', 'Execute', 'Manage'],
+      permissions: ['Own', 'Execute', 'Manage']
     },
     {
       assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
@@ -2873,7 +2873,7 @@ export const ASSIGNED_CASE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Jo Fly',
-      permissions: ['Manage', 'Execute'],
+      permissions: ['Manage', 'Execute']
     },
     {
       assignee: 'bce92ab6-0023-46e3-886b-7f61384df090',
@@ -2887,7 +2887,7 @@ export const ASSIGNED_CASE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Francis Gigs',
-      permissions: ['Own', 'Execute', 'Manage'],
+      permissions: ['Own', 'Execute', 'Manage']
     },
     {
       assignee: 'bce92ab6-0023-46e3-886b-7f61384df090',
@@ -2901,7 +2901,7 @@ export const ASSIGNED_CASE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Alan Jonson',
-      permissions: ['Manage', 'Execute'],
+      permissions: ['Manage', 'Execute']
     },
     {
       assignee: 'bce92ab6-0023-46e3-886b-7f61384df090',
@@ -2915,7 +2915,7 @@ export const ASSIGNED_CASE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Alan Jonson',
-      permissions: ['Manage'],
+      permissions: ['Manage']
     },
     {
       assignee: 'bce92ab6-0023-46e3-886b-7f61384df090',
@@ -2928,7 +2928,7 @@ export const ASSIGNED_CASE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Alan Jonson',
-      permissions: [],
+      permissions: []
     }
   ]
 };
@@ -2948,7 +2948,7 @@ export const UNASSIGNED_CASE_TASKS = {
       case_category: 'EEA',
       case_name: 'William Priest',
       warnings: true,
-      permissions: ['Own', 'Execute', 'Manage'],
+      permissions: ['Own', 'Execute', 'Manage']
     },
     {
       assignee: null,
@@ -2961,7 +2961,7 @@ export const UNASSIGNED_CASE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Jo Fly',
-      permissions: ['Manage', 'Execute'],
+      permissions: ['Manage', 'Execute']
     },
     {
       assignee: null,
@@ -2974,7 +2974,7 @@ export const UNASSIGNED_CASE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Francis Gigs',
-      permissions: ['Manage'],
+      permissions: ['Manage']
     },
     {
       assignee: null,
@@ -2987,7 +2987,7 @@ export const UNASSIGNED_CASE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Alan Jonson',
-      permissions: [],
+      permissions: []
     }
   ]
 };
@@ -3009,7 +3009,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_name: 'William Priest',
       warnings: true,
       permissions: ['Read', 'Manage'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       assignee: null,
@@ -3024,7 +3024,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'Protection',
       case_name: 'Jo Fly',
       permissions: ['Read', 'Manage', 'Execute'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       assignee: null,
@@ -3039,7 +3039,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Francis Gigs',
       permissions: ['Execute'],
-      task_type: 'Admin',
+      task_type: 'Admin'
     },
     {
       assignee: null,
@@ -3054,7 +3054,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'asylum',
       case_name: 'Alan Jonson',
       permissions: ['Read', 'Manage'],
-      task_type: 'Admin',
+      task_type: 'Admin'
     },
     {
       assignee: null,
@@ -3069,7 +3069,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'EEA',
       case_name: 'Michael Jackson',
       permissions: ['Cancel', 'Manage'],
-      task_type: 'Legal Ops',
+      task_type: 'Legal Ops'
     },
     {
       assignee: null,
@@ -3084,7 +3084,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'Protection',
       case_name: 'George Bush',
       permissions: ['Manage', 'Cancel'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       assignee: null,
@@ -3099,7 +3099,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Taylor Swift',
       permissions: ['Read', 'Manage'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       assignee: null,
@@ -3114,7 +3114,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'asylum',
       case_name: 'Kenny Young',
       permissions: ['Read'],
-      task_type: 'Judicial',
+      task_type: 'Judicial'
     },
     {
       assignee: null,
@@ -3128,7 +3128,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'William Paraphrase',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3142,7 +3142,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Jo Flying',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3156,7 +3156,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Francis Giggs',
-      permissions: ['Execute'],
+      permissions: ['Execute']
     },
     {
       assignee: null,
@@ -3170,7 +3170,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Alan Jordan',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3184,7 +3184,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Michael Jordanian',
-      permissions: ['Cancel', 'Manage'],
+      permissions: ['Cancel', 'Manage']
     },
     {
       assignee: null,
@@ -3198,7 +3198,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'George Barking',
-      permissions: ['Manage', 'Cancel'],
+      permissions: ['Manage', 'Cancel']
     },
     {
       assignee: null,
@@ -3212,7 +3212,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Taylor Swiftly',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3226,7 +3226,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Kenny Younger',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       assignee: null,
@@ -3241,7 +3241,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'William Priest',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3255,7 +3255,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Jo Fly',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3269,7 +3269,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Francis Gigs',
-      permissions: ['Execute'],
+      permissions: ['Execute']
     },
     {
       assignee: null,
@@ -3283,7 +3283,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Alan Jonson',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3297,7 +3297,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Michael Jackson',
-      permissions: ['Cancel', 'Manage'],
+      permissions: ['Cancel', 'Manage']
     },
     {
       assignee: null,
@@ -3311,7 +3311,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'George Bush',
-      permissions: ['Manage', 'Cancel'],
+      permissions: ['Manage', 'Cancel']
     },
     {
       assignee: null,
@@ -3325,7 +3325,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Taylor Swift',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3339,7 +3339,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Kenny Young',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       assignee: null,
@@ -3353,7 +3353,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'William Paraphrase',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3367,7 +3367,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Jo Flying',
-      permissions: ['Read', 'Manage', 'Execute'],
+      permissions: ['Read', 'Manage', 'Execute']
     },
     {
       assignee: null,
@@ -3381,7 +3381,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Francis Giggs',
-      permissions: ['Execute'],
+      permissions: ['Execute']
     },
     {
       assignee: null,
@@ -3395,9 +3395,9 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Alan Jordan',
-      permissions: ['Read', 'Manage'],
-    },
-  ],
+      permissions: ['Read', 'Manage']
+    }
+  ]
 };
 
 export const JUDICIAL_AVAILABLE_TASKS_COPY = {
@@ -3431,7 +3431,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'xJo Fly',
-      permissions: ['Read', 'Manage', 'Execute'],
+      permissions: ['Read', 'Manage', 'Execute']
     },
     {
       assignee: null,
@@ -3445,7 +3445,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'xFrancis Gigs',
-      permissions: ['Execute'],
+      permissions: ['Execute']
     },
     {
       assignee: null,
@@ -3459,7 +3459,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'xAlan Jonson',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3473,7 +3473,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'xMichael Jackson',
-      permissions: ['Cancel', 'Manage'],
+      permissions: ['Cancel', 'Manage']
     },
     {
       assignee: null,
@@ -3487,7 +3487,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'xGeorge Bush',
-      permissions: ['Manage', 'Cancel'],
+      permissions: ['Manage', 'Cancel']
     },
     {
       assignee: null,
@@ -3501,7 +3501,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'xTaylor Swift',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3515,7 +3515,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'xKenny Young',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       assignee: null,
@@ -3529,7 +3529,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'xWilliam Paraphrase',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3543,7 +3543,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'xJo Flying',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3557,7 +3557,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'xFrancis Giggs',
-      permissions: ['Execute'],
+      permissions: ['Execute']
     },
     {
       assignee: null,
@@ -3571,7 +3571,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'xAlan Jordan',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3585,7 +3585,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'xMichael Jordanian',
-      permissions: ['Cancel', 'Manage'],
+      permissions: ['Cancel', 'Manage']
     },
     {
       assignee: null,
@@ -3599,7 +3599,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'xGeorge Barking',
-      permissions: ['Manage', 'Cancel'],
+      permissions: ['Manage', 'Cancel']
     },
     {
       assignee: null,
@@ -3613,7 +3613,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'xTaylor Swiftly',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3627,7 +3627,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'xKenny Younger',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       assignee: null,
@@ -3642,7 +3642,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'xWilliam Priest',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3656,7 +3656,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'xJo Fly',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3670,7 +3670,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'xFrancis Gigs',
-      permissions: ['Execute'],
+      permissions: ['Execute']
     },
     {
       assignee: null,
@@ -3684,7 +3684,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'xAlan Jonson',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3698,7 +3698,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'xMichael Jackson',
-      permissions: ['Cancel', 'Manage'],
+      permissions: ['Cancel', 'Manage']
     },
     {
       assignee: null,
@@ -3712,7 +3712,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'xGeorge Bush',
-      permissions: ['Manage', 'Cancel'],
+      permissions: ['Manage', 'Cancel']
     },
     {
       assignee: null,
@@ -3726,7 +3726,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'xTaylor Swift',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3740,7 +3740,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'xKenny Young',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       assignee: null,
@@ -3754,7 +3754,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'xWilliam Paraphrase',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       assignee: null,
@@ -3768,7 +3768,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'yJo Flying',
-      permissions: ['Read', 'Manage', 'Execute'],
+      permissions: ['Read', 'Manage', 'Execute']
     },
     {
       assignee: null,
@@ -3782,7 +3782,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'yFrancis Giggs',
-      permissions: ['Execute'],
+      permissions: ['Execute']
     },
     {
       assignee: null,
@@ -3796,9 +3796,9 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'yAlan Jordan',
-      permissions: ['Read', 'Manage'],
-    },
-  ],
+      permissions: ['Read', 'Manage']
+    }
+  ]
 };
 
 export const CASEWORKER_AVAILABLE_TASKS = {
@@ -3813,7 +3813,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Kimberly Julian',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7bd2',
@@ -3825,7 +3825,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'James Carter',
-      permissions: ['Execute'],
+      permissions: ['Execute']
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7bd3',
@@ -3837,7 +3837,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Bruce Willis',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7bd4',
@@ -3849,7 +3849,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Martin Wyatt',
-      permissions: ['Cancel', 'Manage'],
+      permissions: ['Cancel', 'Manage']
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7bd5',
@@ -3861,7 +3861,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Evelyn Madison',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7bd6',
@@ -3873,7 +3873,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Harper Eleanor',
-      permissions: ['Manage', 'Cancel'],
+      permissions: ['Manage', 'Cancel']
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7bd7',
@@ -3885,7 +3885,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Jamie Jack',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7bd8',
@@ -3897,7 +3897,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Mason Scarlett',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7bd9',
@@ -3909,7 +3909,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Kimberly July',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7be0',
@@ -3921,7 +3921,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'James Cartoff',
-      permissions: ['Execute'],
+      permissions: ['Execute']
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7be1',
@@ -3933,7 +3933,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Bruce Willthe',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7be2',
@@ -3945,7 +3945,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Martin Watt',
-      permissions: ['Cancel', 'Manage'],
+      permissions: ['Cancel', 'Manage']
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7be3',
@@ -3957,7 +3957,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Evelyn Maddson',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7be4',
@@ -3969,7 +3969,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Harper Eliza',
-      permissions: ['Manage', 'Cancel'],
+      permissions: ['Manage', 'Cancel']
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7be5',
@@ -3981,7 +3981,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Jamie Jackdaw',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7be6',
@@ -3993,7 +3993,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Mason Scarface',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd17',
@@ -4005,7 +4005,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Kimberly Julian',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd18',
@@ -4017,7 +4017,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'James Carter',
-      permissions: ['Execute'],
+      permissions: ['Execute']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd19',
@@ -4029,7 +4029,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Bruce Willis',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd20',
@@ -4041,7 +4041,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Martin Wyatt',
-      permissions: ['Cancel', 'Manage'],
+      permissions: ['Cancel', 'Manage']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd21',
@@ -4053,7 +4053,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Evelyn Madison',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd22',
@@ -4065,7 +4065,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Harper Eleanor',
-      permissions: ['Manage', 'Cancel'],
+      permissions: ['Manage', 'Cancel']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd23',
@@ -4077,7 +4077,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Jamie Jack',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd24',
@@ -4089,7 +4089,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Mason Scarlett',
-      permissions: ['Read'],
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd25',
@@ -4101,7 +4101,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Kimberly July',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd26',
@@ -4113,7 +4113,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'James Cartoff',
-      permissions: ['Execute'],
+      permissions: ['Execute']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd27',
@@ -4125,7 +4125,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Bruce Willthe',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd28',
@@ -4137,7 +4137,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Martin Watt',
-      permissions: ['Cancel', 'Manage'],
+      permissions: ['Cancel', 'Manage']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd29',
@@ -4149,7 +4149,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Evelyn Maddson',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd30',
@@ -4161,7 +4161,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Harper Eliza',
-      permissions: ['Manage', 'Cancel'],
+      permissions: ['Manage', 'Cancel']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd31',
@@ -4173,7 +4173,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Jamie Jackdaw',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd32',
@@ -4185,9 +4185,9 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Mason Scarface',
-      permissions: ['Read'],
-    },
-  ],
+      permissions: ['Read']
+    }
+  ]
 };
 
 export const ALL_TASKS = {
@@ -4221,7 +4221,7 @@ export const MY_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'go',
       'title': 'Go to case'
     }],
@@ -4251,7 +4251,7 @@ export const MY_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'go',
       'title': 'Go to case'
     }],
@@ -4281,7 +4281,7 @@ export const MY_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'go',
       'title': 'Go to case'
     }],
@@ -4311,7 +4311,7 @@ export const MY_TASKS = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'go',
       'title': 'Go to case'
     }],
@@ -4341,7 +4341,7 @@ export const MY_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'go',
       'title': 'Go to case'
     }],
@@ -4371,7 +4371,7 @@ export const MY_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'go',
       'title': 'Go to case'
     }],
@@ -4401,7 +4401,7 @@ export const MY_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'go',
       'title': 'Go to case'
     }],
@@ -4431,7 +4431,7 @@ export const MY_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'go',
       'title': 'Go to case'
     }],
@@ -4461,7 +4461,7 @@ export const MY_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'go',
       'title': 'Go to case'
     }],
@@ -4491,7 +4491,7 @@ export const MY_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'go',
       'title': 'Go to case'
     }],
@@ -4521,7 +4521,7 @@ export const MY_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'go',
       'title': 'Go to case'
     }],
@@ -4554,7 +4554,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-22T10:00:59.155+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4580,7 +4580,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-22T10:54:19.280+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4606,7 +4606,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-22T11:04:39.501+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4632,7 +4632,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-22T11:07:58.708+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4658,7 +4658,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-22T11:22:09.850+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4684,7 +4684,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-22T11:25:28.718+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4710,7 +4710,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-22T11:26:18.975+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4736,7 +4736,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-22T12:47:21.406+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4762,7 +4762,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-22T12:47:31.212+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4788,7 +4788,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-22T18:57:19.982+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4814,7 +4814,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-22T18:57:21.055+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4840,7 +4840,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-22T18:57:30.332+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4866,7 +4866,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-22T18:58:29.350+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4892,7 +4892,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-22T18:58:58.782+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4918,7 +4918,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -4944,7 +4944,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -4970,7 +4970,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'José González',
@@ -4996,7 +4996,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'José González',
@@ -5022,7 +5022,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5048,7 +5048,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5074,7 +5074,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5100,7 +5100,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5126,7 +5126,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'José González',
@@ -5152,7 +5152,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5178,7 +5178,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5204,7 +5204,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5230,7 +5230,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5256,7 +5256,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5282,7 +5282,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5308,7 +5308,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5334,7 +5334,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5360,7 +5360,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5386,7 +5386,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5412,7 +5412,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5438,7 +5438,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5464,7 +5464,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5490,7 +5490,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5516,7 +5516,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'José González',
@@ -5542,7 +5542,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5568,7 +5568,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5594,7 +5594,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5620,7 +5620,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'José González',
@@ -5646,7 +5646,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5672,7 +5672,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5698,7 +5698,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5724,7 +5724,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5750,7 +5750,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'José González',
@@ -5776,7 +5776,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5802,7 +5802,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5828,7 +5828,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5854,7 +5854,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5880,7 +5880,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'José González',
@@ -5906,7 +5906,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5932,7 +5932,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5958,7 +5958,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5985,7 +5985,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6011,7 +6011,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'perftest team',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'perftest team',
@@ -6037,7 +6037,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6063,7 +6063,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6089,7 +6089,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6115,7 +6115,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6141,7 +6141,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6167,7 +6167,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6193,7 +6193,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6219,7 +6219,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6245,7 +6245,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6271,7 +6271,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6297,7 +6297,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6323,7 +6323,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6349,7 +6349,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6375,7 +6375,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6401,7 +6401,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6427,7 +6427,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6453,7 +6453,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6479,7 +6479,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6505,7 +6505,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6531,7 +6531,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6557,7 +6557,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6583,7 +6583,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6609,7 +6609,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6635,7 +6635,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6661,7 +6661,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6687,7 +6687,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6713,7 +6713,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6739,7 +6739,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6765,7 +6765,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6791,7 +6791,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6817,7 +6817,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6843,7 +6843,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6869,7 +6869,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6895,7 +6895,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6921,7 +6921,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6947,7 +6947,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6973,7 +6973,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6999,7 +6999,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7025,7 +7025,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7051,7 +7051,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7077,7 +7077,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7103,7 +7103,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7129,7 +7129,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7155,7 +7155,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7181,7 +7181,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7207,7 +7207,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7233,7 +7233,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -7259,7 +7259,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7285,7 +7285,7 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{ 'id': 'claim', 'title': 'Assign to me' }, { 'id': 'claim-and-go', 'title': 'Assign to me and go to case' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7316,10 +7316,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-22T09:58:39.066+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -7346,10 +7346,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-22T09:58:39.145+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -7376,10 +7376,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-22T10:00:19.873+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -7405,7 +7405,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7434,7 +7434,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7463,7 +7463,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7493,10 +7493,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-22T10:06:29.761+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -7522,7 +7522,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7551,7 +7551,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7580,7 +7580,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7609,7 +7609,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7638,7 +7638,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7667,7 +7667,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7696,7 +7696,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7725,7 +7725,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7754,7 +7754,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7783,7 +7783,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7812,7 +7812,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7841,7 +7841,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7870,7 +7870,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7899,7 +7899,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7928,7 +7928,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7957,7 +7957,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -7986,7 +7986,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8015,7 +8015,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8044,7 +8044,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8073,7 +8073,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8102,7 +8102,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8131,7 +8131,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8160,7 +8160,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8189,7 +8189,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8218,7 +8218,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8247,7 +8247,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8276,7 +8276,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8305,7 +8305,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8334,7 +8334,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8363,7 +8363,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8392,7 +8392,7 @@ export const TASK_MANAGER = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8421,7 +8421,7 @@ export const TASK_MANAGER = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8450,7 +8450,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8479,7 +8479,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8508,7 +8508,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8537,7 +8537,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8566,7 +8566,7 @@ export const TASK_MANAGER = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8595,7 +8595,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8624,7 +8624,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8653,7 +8653,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8682,7 +8682,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8711,7 +8711,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8740,7 +8740,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8769,7 +8769,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8798,7 +8798,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8828,10 +8828,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -8857,7 +8857,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8886,7 +8886,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -8916,10 +8916,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -8946,10 +8946,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -8976,10 +8976,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -9006,10 +9006,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -9036,10 +9036,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -9065,7 +9065,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9094,7 +9094,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9123,7 +9123,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9152,7 +9152,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9182,10 +9182,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -9211,7 +9211,7 @@ export const TASK_MANAGER = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9240,7 +9240,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9269,7 +9269,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9299,10 +9299,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -9328,7 +9328,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9357,7 +9357,7 @@ export const TASK_MANAGER = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9386,7 +9386,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9415,7 +9415,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9444,7 +9444,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9473,7 +9473,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9502,7 +9502,7 @@ export const TASK_MANAGER = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9531,7 +9531,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9560,7 +9560,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9589,7 +9589,7 @@ export const TASK_MANAGER = {
     'case_name': 'PA Test1',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9619,10 +9619,10 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -9648,7 +9648,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9677,7 +9677,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9706,7 +9706,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9735,7 +9735,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9764,7 +9764,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9793,7 +9793,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9822,7 +9822,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9851,7 +9851,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9880,7 +9880,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9909,7 +9909,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9938,7 +9938,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9967,7 +9967,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -9996,7 +9996,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10025,7 +10025,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10054,7 +10054,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10083,7 +10083,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10112,7 +10112,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10141,7 +10141,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10170,7 +10170,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10199,7 +10199,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10228,7 +10228,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10257,7 +10257,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10286,7 +10286,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10315,7 +10315,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10344,7 +10344,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10373,7 +10373,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10402,7 +10402,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10431,7 +10431,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10460,7 +10460,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10489,7 +10489,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10518,7 +10518,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10547,7 +10547,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10576,7 +10576,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10605,7 +10605,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10634,7 +10634,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10663,7 +10663,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10693,10 +10693,10 @@ export const TASK_MANAGER = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'José González',
@@ -10722,7 +10722,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10751,7 +10751,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10780,7 +10780,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10809,7 +10809,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10838,7 +10838,7 @@ export const TASK_MANAGER = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10867,7 +10867,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10896,7 +10896,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10925,7 +10925,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10954,7 +10954,7 @@ export const TASK_MANAGER = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -10983,7 +10983,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11012,7 +11012,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11041,7 +11041,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11070,7 +11070,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11099,7 +11099,7 @@ export const TASK_MANAGER = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11128,7 +11128,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11157,7 +11157,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11186,7 +11186,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11215,7 +11215,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11244,7 +11244,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11274,10 +11274,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -11304,10 +11304,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -11333,7 +11333,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11362,7 +11362,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11392,10 +11392,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -11421,7 +11421,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11451,10 +11451,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -11481,10 +11481,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -11511,10 +11511,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -11541,10 +11541,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -11570,7 +11570,7 @@ export const TASK_MANAGER = {
     'case_name': 'perftest team',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11599,7 +11599,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11629,10 +11629,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -11658,7 +11658,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11687,7 +11687,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11716,7 +11716,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11745,7 +11745,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11774,7 +11774,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11803,7 +11803,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11832,7 +11832,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11861,7 +11861,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11890,7 +11890,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11919,7 +11919,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11948,7 +11948,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -11977,7 +11977,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12006,7 +12006,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12035,7 +12035,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12064,7 +12064,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12093,7 +12093,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12122,7 +12122,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12151,7 +12151,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12180,7 +12180,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12209,7 +12209,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12239,10 +12239,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -12268,7 +12268,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12297,7 +12297,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12326,7 +12326,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12355,7 +12355,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12384,7 +12384,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12413,7 +12413,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12442,7 +12442,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12471,7 +12471,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12500,7 +12500,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12529,7 +12529,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12558,7 +12558,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12587,7 +12587,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12616,7 +12616,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12645,7 +12645,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12674,7 +12674,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12703,7 +12703,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12732,7 +12732,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12761,7 +12761,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12790,7 +12790,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12819,7 +12819,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12848,7 +12848,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12877,7 +12877,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12906,7 +12906,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12935,7 +12935,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12964,7 +12964,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -12993,7 +12993,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13022,7 +13022,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13052,10 +13052,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -13081,7 +13081,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13110,7 +13110,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13139,7 +13139,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13168,7 +13168,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13197,7 +13197,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13226,7 +13226,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13255,7 +13255,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13284,7 +13284,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13313,7 +13313,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13342,7 +13342,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13371,7 +13371,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13400,7 +13400,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13429,7 +13429,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13458,7 +13458,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13487,7 +13487,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13516,7 +13516,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13545,7 +13545,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13574,7 +13574,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13603,7 +13603,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13632,7 +13632,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13661,7 +13661,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13690,7 +13690,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13719,7 +13719,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13748,7 +13748,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13777,7 +13777,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13806,7 +13806,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13835,7 +13835,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13864,7 +13864,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13893,7 +13893,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13922,7 +13922,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13951,7 +13951,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -13980,7 +13980,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14009,7 +14009,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14038,7 +14038,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14067,7 +14067,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14096,7 +14096,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14125,7 +14125,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14154,7 +14154,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14183,7 +14183,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14212,7 +14212,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14241,7 +14241,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14270,7 +14270,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14299,7 +14299,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14328,7 +14328,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14357,7 +14357,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14386,7 +14386,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14415,7 +14415,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14444,7 +14444,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14473,7 +14473,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14502,7 +14502,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14531,7 +14531,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14560,7 +14560,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14589,7 +14589,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14618,7 +14618,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14647,7 +14647,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14676,7 +14676,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14705,7 +14705,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14734,7 +14734,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14763,7 +14763,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14792,7 +14792,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14822,10 +14822,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -14851,7 +14851,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14880,7 +14880,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14909,7 +14909,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14938,7 +14938,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14967,7 +14967,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -14996,7 +14996,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15026,10 +15026,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -15055,7 +15055,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15084,7 +15084,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15113,7 +15113,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15142,7 +15142,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15171,7 +15171,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15200,7 +15200,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15229,7 +15229,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15258,7 +15258,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15287,7 +15287,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15316,7 +15316,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15345,7 +15345,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15374,7 +15374,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15403,7 +15403,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15432,7 +15432,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15461,7 +15461,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15490,7 +15490,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15519,7 +15519,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15548,7 +15548,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15577,7 +15577,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15606,7 +15606,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15635,7 +15635,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15664,7 +15664,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15693,7 +15693,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15722,7 +15722,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15751,7 +15751,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15780,7 +15780,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15809,7 +15809,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15838,7 +15838,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15867,7 +15867,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15896,7 +15896,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15925,7 +15925,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15954,7 +15954,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -15983,7 +15983,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16012,7 +16012,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16041,7 +16041,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16070,7 +16070,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16099,7 +16099,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16128,7 +16128,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16157,7 +16157,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16186,7 +16186,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16215,7 +16215,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16244,7 +16244,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16273,7 +16273,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16302,7 +16302,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16331,7 +16331,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16360,7 +16360,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16389,7 +16389,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16418,7 +16418,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16448,10 +16448,10 @@ export const TASK_MANAGER = {
     'case_name': 'HU Test3',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'HU Test3',
@@ -16477,7 +16477,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16506,7 +16506,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16535,7 +16535,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16564,7 +16564,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16593,7 +16593,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16622,7 +16622,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16651,7 +16651,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16680,7 +16680,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16709,7 +16709,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16738,7 +16738,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16767,7 +16767,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16796,7 +16796,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16825,7 +16825,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16854,7 +16854,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16883,7 +16883,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16912,7 +16912,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16941,7 +16941,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16970,7 +16970,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -16999,7 +16999,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17028,7 +17028,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17057,7 +17057,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17086,7 +17086,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17115,7 +17115,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17144,7 +17144,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17173,7 +17173,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17202,7 +17202,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17231,7 +17231,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17260,7 +17260,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17289,7 +17289,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17318,7 +17318,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17347,7 +17347,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17376,7 +17376,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17405,7 +17405,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17434,7 +17434,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17463,7 +17463,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17492,7 +17492,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17521,7 +17521,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17550,7 +17550,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17579,7 +17579,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17608,7 +17608,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17637,7 +17637,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17666,7 +17666,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17695,7 +17695,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17724,7 +17724,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17753,7 +17753,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17782,7 +17782,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17811,7 +17811,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17840,7 +17840,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17869,7 +17869,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17898,7 +17898,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17927,7 +17927,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17956,7 +17956,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -17985,7 +17985,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18014,7 +18014,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18043,7 +18043,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18072,7 +18072,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18101,7 +18101,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18130,7 +18130,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18159,7 +18159,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18188,7 +18188,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18217,7 +18217,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18246,7 +18246,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18275,7 +18275,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18304,7 +18304,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18333,7 +18333,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18362,7 +18362,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18391,7 +18391,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18420,7 +18420,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18449,7 +18449,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18478,7 +18478,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18507,7 +18507,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18536,7 +18536,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18565,7 +18565,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18594,7 +18594,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18623,7 +18623,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18652,7 +18652,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18681,7 +18681,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18711,10 +18711,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -18740,7 +18740,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18769,7 +18769,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18798,7 +18798,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18827,7 +18827,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18857,10 +18857,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -18886,7 +18886,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18915,7 +18915,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18944,7 +18944,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -18973,7 +18973,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19002,7 +19002,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19031,7 +19031,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19060,7 +19060,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19089,7 +19089,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19118,7 +19118,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19147,7 +19147,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19176,7 +19176,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19205,7 +19205,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19234,7 +19234,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19263,7 +19263,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19292,7 +19292,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19321,7 +19321,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19350,7 +19350,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19379,7 +19379,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19408,7 +19408,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19437,7 +19437,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19466,7 +19466,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19495,7 +19495,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19524,7 +19524,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19553,7 +19553,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19582,7 +19582,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19611,7 +19611,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19640,7 +19640,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19669,7 +19669,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19698,7 +19698,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19727,7 +19727,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19756,7 +19756,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19786,10 +19786,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -19815,7 +19815,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19844,7 +19844,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19873,7 +19873,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19902,7 +19902,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19931,7 +19931,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19960,7 +19960,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -19989,7 +19989,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20018,7 +20018,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20047,7 +20047,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20076,7 +20076,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20106,10 +20106,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -20135,7 +20135,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20164,7 +20164,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20193,7 +20193,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20222,7 +20222,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20251,7 +20251,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20280,7 +20280,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20309,7 +20309,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20338,7 +20338,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20367,7 +20367,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20396,7 +20396,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20425,7 +20425,7 @@ export const TASK_MANAGER = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20454,7 +20454,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20483,7 +20483,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20512,7 +20512,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20542,10 +20542,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -20572,10 +20572,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -20602,10 +20602,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -20632,10 +20632,10 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'reassign', 'title': 'Reassign task'}, {'id': 'unclaim', 'title': 'Unassign task'}, {
+    'actions': [{ 'id': 'reassign', 'title': 'Reassign task' }, { 'id': 'unclaim', 'title': 'Unassign task' }, {
       'id': 'complete',
       'title': 'Mark as done'
-    }, {'id': 'cancel', 'title': 'Cancel task'}],
+    }, { 'id': 'cancel', 'title': 'Cancel task' }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -20661,7 +20661,7 @@ export const TASK_MANAGER = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'assign', 'title': 'Assign task'}, {'id': 'complete', 'title': 'Mark as done'}, {
+    'actions': [{ 'id': 'assign', 'title': 'Assign task' }, { 'id': 'complete', 'title': 'Mark as done' }, {
       'id': 'cancel',
       'title': 'Cancel task'
     }],
@@ -20687,7 +20687,7 @@ export const CASE_EVENT_TASKS = {
       case_category: 'EEA',
       case_name: 'William Priest',
       warnings: true,
-      permissions: ['Own', 'Execute', 'Manage'],
+      permissions: ['Own', 'Execute', 'Manage']
     },
     {
       assignee: null,
@@ -20701,7 +20701,7 @@ export const CASE_EVENT_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Jo Fly',
-      permissions: ['Manage', 'Execute'],
+      permissions: ['Manage', 'Execute']
     },
     {
       assignee: null,
@@ -20715,7 +20715,7 @@ export const CASE_EVENT_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Francis Gigs',
-      permissions: ['Manage'],
+      permissions: ['Manage']
     },
     {
       assignee: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
@@ -20729,7 +20729,7 @@ export const CASE_EVENT_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Alan Jonson',
-      permissions: [],
+      permissions: []
     },
     {
       assignee: null,
@@ -20743,7 +20743,7 @@ export const CASE_EVENT_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Alan Jonson',
-      permissions: [],
+      permissions: []
     },
     {
       assignee: null,
@@ -20757,7 +20757,7 @@ export const CASE_EVENT_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Alan Jonson',
-      permissions: [],
+      permissions: []
     }
   ]
 };

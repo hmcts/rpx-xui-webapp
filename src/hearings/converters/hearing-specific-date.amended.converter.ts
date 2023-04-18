@@ -8,7 +8,7 @@ import { IsAmendedConverter } from './is-amended.converter';
 
 export class HearingSpecificDateAmendedConverter implements IsAmendedConverter {
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {
-    return hearingState$.pipe(map(state => {
+    return hearingState$.pipe(map((state) => {
       const objAHearingWindow = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingWindow;
       const objBHearingWindow = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow;
       if (objAHearingWindow.dateRangeStart && objBHearingWindow.dateRangeStart) {
@@ -16,11 +16,10 @@ export class HearingSpecificDateAmendedConverter implements IsAmendedConverter {
         const isEndDatesUpdated = moment(objAHearingWindow.dateRangeEnd).format(HearingDateEnum.DefaultFormat) !== moment(objBHearingWindow.dateRangeEnd).format(HearingDateEnum.DefaultFormat);
         return isStartDatesUpdated || isEndDatesUpdated;
       } else if (objAHearingWindow.firstDateTimeMustBe && objBHearingWindow.firstDateTimeMustBe) {
-        const isSelectedDatesUpdated = moment(objAHearingWindow.firstDateTimeMustBe).format(HearingDateEnum.DefaultFormat) !== moment(objBHearingWindow.firstDateTimeMustBe).format(HearingDateEnum.DefaultFormat);
-        return isSelectedDatesUpdated;
-      } else {
-        return !_.isEqual(_.omitBy(objAHearingWindow, _.isNil), _.omitBy(objBHearingWindow, _.isNil));
+        return moment(objAHearingWindow.firstDateTimeMustBe).format(HearingDateEnum.DefaultFormat) !== moment(objBHearingWindow.firstDateTimeMustBe).format(HearingDateEnum.DefaultFormat);
       }
+
+      return !_.isEqual(_.omitBy(objAHearingWindow, _.isNil), _.omitBy(objBHearingWindow, _.isNil));
     }));
   }
 }

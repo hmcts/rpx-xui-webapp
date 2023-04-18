@@ -32,12 +32,14 @@ export class MyCasesFilterComponent implements OnInit, OnDestroy {
     applyButtonText: 'Apply',
     cancelSetting: null
   };
+
   public allLocations: string[] = [];
   public defaultLocations: string[] = [];
   public fieldsSettings: FilterSetting = {
     fields: [],
-    id: MyCasesFilterComponent.FILTER_NAME,
+    id: MyCasesFilterComponent.FILTER_NAME
   };
+
   public selectedLocations: string[] = [];
   public toggleFilter = false;
 
@@ -50,8 +52,7 @@ export class MyCasesFilterComponent implements OnInit, OnDestroy {
    */
   constructor(private readonly route: ActivatedRoute,
               private readonly filterService: FilterService,
-              private readonly locationService: LocationDataService) {
-  }
+              private readonly locationService: LocationDataService) {}
 
   public ngOnInit(): void {
     this.locationSubscription = this.locationService.getLocations()
@@ -104,7 +105,7 @@ export class MyCasesFilterComponent implements OnInit, OnDestroy {
   // if there is no local storage available, default locations need to be reset
   public getDefaultLocations(): string[] {
     if (this.fieldsConfig && this.fieldsConfig.cancelSetting) {
-      this.fieldsConfig.cancelSetting.fields.forEach(field => {
+      this.fieldsConfig.cancelSetting.fields.forEach((field) => {
         if (field.name === 'case_locations') {
           this.defaultLocations = field.value;
         }
@@ -126,7 +127,7 @@ export class MyCasesFilterComponent implements OnInit, OnDestroy {
   }
 
   private hasBeenFiltered(f: FilterSetting, defaultLocations: string[]): boolean {
-    const selectedFields = f.fields.find(field => field.name === MyCasesFilterComponent.FILTER_NAME);
+    const selectedFields = f.fields.find((field) => field.name === MyCasesFilterComponent.FILTER_NAME);
     // check if selected fields are the same as cancelled filter settings
     const containsNonDefaultFields = selectedFields.value.filter((v: string) => defaultLocations.indexOf(v) === -1).length > 0;
     // check if the amount of fields selected is the same as the amount in the cancel settings

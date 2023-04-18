@@ -5,7 +5,6 @@ import { Observable, of } from 'rxjs';
 
 @Injectable()
 export class ActivityResolver implements Resolve<boolean> {
-
   constructor(private readonly activityService: ActivityService) {}
 
   public resolve(): Observable<boolean> {

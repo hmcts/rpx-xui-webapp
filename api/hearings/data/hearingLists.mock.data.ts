@@ -1,4 +1,3 @@
-/* tslint:disable:object-literal-sort-keys */
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingListModel } from '../models/hearingList.model';
 import { HearingListMainModel } from '../models/hearingListMain.model';

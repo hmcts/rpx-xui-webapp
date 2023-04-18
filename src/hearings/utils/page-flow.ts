@@ -29,7 +29,6 @@ export class PageFlow implements AbstractPageFlow {
   public getNextPage(screensNavigations$: Observable<ScreenNavigationModel[]>): string {
     let nextPage = '';
     combineLatest([this.hearingConditions$, screensNavigations$]).pipe(take(1))
-      // @ts-ignore
       .subscribe(([hearingConditions, screenNavigationModels]: [HearingConditions, ScreenNavigationModel[]]) => {
         const screenModel = screenNavigationModels.find((screenNavigationModel) =>
           screenNavigationModel.screenName === this.getCurrentPage());
@@ -63,7 +62,6 @@ export class PageFlow implements AbstractPageFlow {
   public getLastPage(screensNavigations$: Observable<ScreenNavigationModel[]>): string {
     let lastPage = '';
     combineLatest([this.hearingConditions$, screensNavigations$]).pipe(take(1))
-      // @ts-ignore
       .subscribe(([hearingConditions, screenNavigationModels]: [HearingConditions, ScreenNavigationModel[]]) => {
         const defaultScreen = screenNavigationModels.find((model) => !model.conditionKey
           && model.navigation[0].resultValue === this.getCurrentPage());

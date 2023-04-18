@@ -103,15 +103,14 @@ Feature: WA Release 2: My work - Work filters
             | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
     # | Judge          | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
-
     Scenario Outline:  Work filters mandatory field validations and filter selection
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<Roles>" with reference "userDetails"
         # Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION |         |
-            | CIVIL         | Y           | ORGANISATION |         |
+            | IA | Y | ORGANISATION | 20001 |
+            | CIVIL | Y | ORGANISATION |  |
 
 
         Given I start MockApp
@@ -130,12 +129,12 @@ Feature: WA Release 2: My work - Work filters
 
         When I select service "Immigration and Asylum" in my work filter
 
-        When I remove slected location "IA Court" from my work filters
+        When I remove slected location "IA Court Center 1" from my work filters
 
         When I click work location filter Apply button
         Then I see error message of type "message" displayed with message "Enter a location"
 
-        When I search for location text "IA Court" in my work filters
+        When I search for location text "IA Court Center 1" in my work filters
         Then I see location search results in my work filter
             | name                  |
             | IA Court Center 1 |

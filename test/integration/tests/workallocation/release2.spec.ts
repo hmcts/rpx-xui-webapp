@@ -19,7 +19,6 @@ describe('Work allocations Release 2', () => {
     Request.clearSession();
   });
 
-  // tslint:disable-next-line: only-arrow-functions
   it('case officer,get locations /workallocation/location', async function () {
     this.timeout(60000);
     await Request.withSession(caseOfficer, caseofficerPass);
@@ -60,7 +59,6 @@ describe('Work allocations Release 2', () => {
     expect(actual.location).to.have.all.keys(Object.keys(expected.location));
   });
 
-  // tslint:disable-next-line: only-arrow-functions
   it('case officer,search for completable tasks of a case /workallocation/searchForCompletable', async function () {
     this.timeout(60000);
     await Request.withSession(caseOfficer, caseofficerPass);

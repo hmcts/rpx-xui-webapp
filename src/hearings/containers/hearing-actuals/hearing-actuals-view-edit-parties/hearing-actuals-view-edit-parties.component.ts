@@ -149,7 +149,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
         this.createForm(this.hearingActualsMainModel);
         this.subscribeToFormChanges();
         this.loadingService.unregister(loadingToken);
-      }, error => {
+      }, () => {
         this.loadingService.unregister(loadingToken);
       });
   }

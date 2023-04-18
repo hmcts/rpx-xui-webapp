@@ -54,20 +54,20 @@ export class ActualHearingsUtils {
 
     return existingActualData?.actualDayParties?.length > 0
       ? existingActualData.actualDayParties
-      : plannedDay.parties.map(party => {
-          return {
-            actualPartyId: party.partyID,
-            partyRole: party.partyRole,
-            partyChannelSubType: party.partyChannelSubType,
-            representedParty: null,
-            didNotAttendFlag: false,
-            individualDetails: party.individualDetails ? {
-              firstName: party.individualDetails.firstName,
-              lastName: party.individualDetails.lastName
-            } : null,
-            actualOrganisationName: party.organisationDetails ? party.organisationDetails.name : null
-          };
-        });
+      : plannedDay.parties.map((party) => {
+        return {
+          actualPartyId: party.partyID,
+          partyRole: party.partyRole,
+          partyChannelSubType: party.partyChannelSubType,
+          representedParty: null,
+          didNotAttendFlag: false,
+          individualDetails: party.individualDetails ? {
+            firstName: party.individualDetails.firstName,
+            lastName: party.individualDetails.lastName
+          } : null,
+          actualOrganisationName: party.organisationDetails ? party.organisationDetails.name : null
+        };
+      });
   }
 
   public static mergeSingleHearingPartActuals(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string,
@@ -138,7 +138,7 @@ export class ActualHearingsUtils {
     return index;
   }
 
-  public static getParties(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string): DisplayDayPartyModel[]  {
+  public static getParties(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string): DisplayDayPartyModel[] {
     const plannedDayIndex = ActualHearingsUtils.getPlannedDayIndexFromHearingDate(hearingActualsMainModel, hearingDate);
     const actualHearingDay = hearingActualsMainModel.hearingActuals?.actualHearingDays?.find((actualDay) => actualDay.hearingDate === hearingDate);
     const actualDayParties = actualHearingDay?.actualDayParties;
@@ -158,7 +158,7 @@ export class ActualHearingsUtils {
   }
 
   public static getPartiesCYA(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string): ActualDayPartyModel[] {
-    return hearingActualsMainModel.hearingActuals?.actualHearingDays?.find(actualDay => actualDay.hearingDate === hearingDate)?.actualDayParties;
+    return hearingActualsMainModel.hearingActuals?.actualHearingDays?.find((actualDay) => actualDay.hearingDate === hearingDate)?.actualDayParties;
   }
 
   public static getAttendees(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string): ActualDayPartyModel[] {

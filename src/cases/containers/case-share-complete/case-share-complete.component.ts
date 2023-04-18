@@ -44,7 +44,7 @@ export class CaseShareCompleteComponent implements OnInit, OnDestroy {
       this.completeScreenMode = this.checkIfIncomplete(shareCases);
       this.newShareCases = shareCases;
       this.loadingService.unregister(loadingToken);
-    }, error => {
+    }, () => {
       this.loadingService.unregister(loadingToken);
     });
     this.removeUserFromCaseToggleOn$ = this.featureToggleService.getValue(LD_FLAG_REMOVE_USER_FROM_CASE_MC, false);

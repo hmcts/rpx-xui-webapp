@@ -21,12 +21,8 @@ describe('HearingAdjournedSummaryComponent', () => {
       imports: [RouterTestingModule],
       declarations: [HearingAdjournedSummaryComponent],
       providers: [
-<<<<<<< HEAD
-        provideMockStore({ initialState })
-=======
-        LoadingService,
         provideMockStore({ initialState }),
->>>>>>> 5d20462e7 (CR comments fix)
+        LoadingService,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })

@@ -102,7 +102,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         this.serverError = null;
       }
       this.loadingService.unregister(loadingToken);
-    }, error => {
+    }, () => {
       this.loadingService.unregister(loadingToken);
     });
     this.upcomingHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);

@@ -52,14 +52,14 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
       hearingDate: hearingDay.hearingDate,
       hearingStartTime: hearingDay.hearingStartTime,
       hearingEndTime: hearingDay.hearingEndTime,
-      pauseDateTimes: hearingDay.pauseDateTimes,
+      pauseDateTimes: hearingDay.pauseDateTimes
     } as ActualHearingDayModel;
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(
       this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals
     );
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
-      hearingActuals: patchedHearingActuals,
+      hearingActuals: patchedHearingActuals
     }));
     this.showSuccessBannerMessage();
   }
@@ -68,8 +68,8 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
     this.resetErrorMessages();
     // Organisation parties do not have partyChannelSubType and can be ignored
     // as they do not attend the actual hearing
-    const individualPartyIds = this.individualParties.map(party => party.partyID);
-    const actualDayParties = hearingDay?.actualDayParties?.filter(party => individualPartyIds.includes(party.actualPartyId));
+    const individualPartyIds = this.individualParties.map((party) => party.partyID);
+    const actualDayParties = hearingDay?.actualDayParties?.filter((party) => individualPartyIds.includes(party.actualPartyId));
     const updatedActuals = {
       actualDayParties: [...actualDayParties]
     } as ActualHearingDayModel;
@@ -104,6 +104,6 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
 
   private showSuccessBannerMessage(): void {
     this.successBanner = true;
-    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }
 }

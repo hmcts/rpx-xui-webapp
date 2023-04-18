@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { applicationConfiguration } from './appConfig';
 
-export const router = express.Router({mergeParams: true});
+export const router = express.Router({ mergeParams: true });
 
 router.get('/', configurationCheckRoute);
 

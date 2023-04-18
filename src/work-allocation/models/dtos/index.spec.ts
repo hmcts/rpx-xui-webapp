@@ -3,7 +3,6 @@ import JsonConfig from '../json-config';
 
 describe('WorkAllocation', () => {
   describe('JsonConfig', () => {
-
     it('should correctly coerce a partial JSON object to a Task', () => {
       const JSON: object = {
         assignee: { userId: 'id1', userName: 'userName' },
@@ -11,7 +10,7 @@ describe('WorkAllocation', () => {
           category: 'category',
           location: { id: 'locationId', locationName: 'locationName' },
           name: 'caseDataName',
-          reference: 'referenceName',
+          reference: 'referenceName'
         },
         dueDate: new Date(2020, 11, 11),
         name: 'taskName',
@@ -31,7 +30,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should correctly coerce a partial JSON object to a TaskSearchParameters', () => {
-      const JSON: object = {parameters: [{
+      const JSON: object = { parameters: [{
         ccdId: '123456',
         eventId: 'eventId',
         jurisdiction: ['DIVORCE', 'FPLA'],
@@ -40,7 +39,7 @@ describe('WorkAllocation', () => {
         preEventState: 'preevent',
         state: ['active'],
         user: ['user1']
-      }]};
+      }] };
 
       const PARAMETERS: TaskSearchParameters = JsonConfig.fromJson(JSON);
       expect(PARAMETERS).toBeDefined();
@@ -54,6 +53,5 @@ describe('WorkAllocation', () => {
       expect(PARAMETERS.parameters[0].state).toEqual(['active']);
       expect(PARAMETERS.parameters[0].user).toEqual(['user1']);
     });
-
   });
 });

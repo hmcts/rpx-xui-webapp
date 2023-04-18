@@ -1,100 +1,100 @@
-import {ScreenNavigationModel} from '../models/screenNavigation.model';
+import { ScreenNavigationModel } from '../models/screenNavigation.model';
 
 export const DEFAULT_SCREEN_FLOW: ScreenNavigationModel[] = [
   {
-   screenName: 'hearing-requirements',
-   navigation: [
+    screenName: 'hearing-requirements',
+    navigation: [
       {
-       resultValue: 'hearing-facilities',
-      },
-    ],
+        resultValue: 'hearing-facilities'
+      }
+    ]
   },
   {
-   screenName: 'hearing-facilities',
-   navigation: [
+    screenName: 'hearing-facilities',
+    navigation: [
       {
-       resultValue: 'hearing-stage',
-      },
-    ],
+        resultValue: 'hearing-stage'
+      }
+    ]
   },
   {
-   screenName: 'hearing-stage',
-   navigation: [
+    screenName: 'hearing-stage',
+    navigation: [
       {
-       resultValue: 'hearing-attendance',
-      },
-    ],
+        resultValue: 'hearing-attendance'
+      }
+    ]
   },
   {
-   screenName: 'hearing-attendance',
-   navigation: [
+    screenName: 'hearing-attendance',
+    navigation: [
       {
-       resultValue: 'hearing-venue',
-      },
-    ],
+        resultValue: 'hearing-venue'
+      }
+    ]
   },
   {
-   screenName: 'hearing-venue',
-   conditionKey: 'regionId',
-   navigation: [
+    screenName: 'hearing-venue',
+    conditionKey: 'regionId',
+    navigation: [
       {
-       conditionOperator: 'INCLUDE',
-       conditionValue: '7',
-       resultValue: 'hearing-welsh',
+        conditionOperator: 'INCLUDE',
+        conditionValue: '7',
+        resultValue: 'hearing-welsh'
       },
       {
-       conditionOperator: 'NOT INCLUDE',
-       conditionValue: '7',
-       resultValue: 'hearing-judge',
-      },
-    ],
+        conditionOperator: 'NOT INCLUDE',
+        conditionValue: '7',
+        resultValue: 'hearing-judge'
+      }
+    ]
   },
   {
-   screenName: 'hearing-welsh',
-   navigation: [
+    screenName: 'hearing-welsh',
+    navigation: [
       {
-       resultValue: 'hearing-judge',
-      },
-    ],
+        resultValue: 'hearing-judge'
+      }
+    ]
   },
   {
-   screenName: 'hearing-judge',
-   navigation: [
+    screenName: 'hearing-judge',
+    navigation: [
       {
-       resultValue: 'hearing-panel',
-      },
-    ],
+        resultValue: 'hearing-panel'
+      }
+    ]
   },
   {
-   screenName: 'hearing-panel',
-   navigation: [
+    screenName: 'hearing-panel',
+    navigation: [
       {
-       resultValue: 'hearing-timing',
-      },
-    ],
+        resultValue: 'hearing-timing'
+      }
+    ]
   },
   {
-   screenName: 'hearing-timing',
-   navigation: [
+    screenName: 'hearing-timing',
+    navigation: [
       {
-       resultValue: 'hearing-link',
-      },
-    ],
+        resultValue: 'hearing-link'
+      }
+    ]
   },
   {
-   screenName: 'hearing-link',
-   navigation: [
+    screenName: 'hearing-link',
+    navigation: [
       {
-       resultValue: 'hearing-additional-instructions',
-      },
-    ],
+        resultValue: 'hearing-additional-instructions'
+      }
+    ]
   },
   {
-   screenName: 'hearing-additional-instructions',
-   navigation: [
+    screenName: 'hearing-additional-instructions',
+    navigation: [
       {
-       resultValue: 'hearing-create-edit-summary',
-      },
-    ],
-  },
+        resultValue: 'hearing-create-edit-summary'
+      }
+    ]
+  }
 ];

@@ -9,7 +9,7 @@ describe('Hearing Actuals Reducer', () => {
     // Check testing
     describe('Reset action', () => {
       it('should set correct object', () => {
-        const initialState = {...fromHearingActualsReducer.initialHearingActualsState};
+        const initialState = { ...fromHearingActualsReducer.initialHearingActualsState };
         const action = new fromHearingActualsActions.ResetHearingActuals();
         const hearingsState = fromHearingActualsReducer.hearingActualsReducer(initialState, action);
         expect(hearingsState).toEqual(initialState);
@@ -30,11 +30,11 @@ describe('Hearing Actuals Reducer', () => {
           hearingActualsMainModel: {
             hearingActuals: {
               hearingOutcome: null,
-              actualHearingDays: [],
+              actualHearingDays: []
             },
             hearingPlanned: null,
             hmcStatus: null,
-            caseDetails: null,
+            caseDetails: null
           }
         };
         const action = new fromHearingActualsActions.SaveHearingActualsPlannedDays([]);
@@ -50,6 +50,7 @@ describe('Hearing Actuals Reducer', () => {
         const state = fromHearingActualsReducer.hearingActualsReducer(initialHearingActualsState, action);
         expect(state.hearingActualsMainModel).toEqual(null);
       });
+
       it('should reset the last error', () => {
         const { initialHearingActualsState } = fromHearingActualsReducer;
         const action = new fromHearingActualsActions.SubmitHearingActuals('1111222233334444');
@@ -63,7 +64,7 @@ describe('Hearing Actuals Reducer', () => {
           status: 400,
           statusText: 'Bad Request',
           message: 'Bad Request',
-          errors: [],
+          errors: []
         };
         const action = new fromHearingActualsActions.SubmitHearingActualsFailure(error);
         const state = fromHearingActualsReducer.hearingActualsReducer(initialHearingActualsState, action);

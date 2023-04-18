@@ -2,43 +2,43 @@ import { Action } from '../interfaces/common';
 
 export const ASSIGN: Action = {
   id: 'assign',
-  title: 'Assign task',
+  title: 'Assign task'
 };
 export const CANCEL: Action = {
   id: 'cancel',
-  title: 'Cancel task',
+  title: 'Cancel task'
 };
 export const CLAIM: Action = {
   id: 'claim',
-  title: 'Assign to me',
+  title: 'Assign to me'
 };
 export const COMPLETE: Action = {
   id: 'complete',
-  title: 'Mark as done',
+  title: 'Mark as done'
 };
 export const RELEASE: Action = {
   id: 'unclaim',
-  title: 'Unassign task',
+  title: 'Unassign task'
 };
 export const CLAIM_AND_GO: Action = {
   id: 'claim-and-go',
-  title: 'Assign to me and go to task',
+  title: 'Assign to me and go to task'
 };
 export const GO: Action = {
   id: 'go',
-  title: 'Go to task',
+  title: 'Go to task'
 };
 export const REASSIGN: Action = {
   id: 'reassign',
-  title: 'Reassign task',
+  title: 'Reassign task'
 };
 export const RE_ALLOCATE: Action = {
   id: 'reallocate',
-  title: 'Reallocate',
+  title: 'Reallocate'
 };
 export const REMOVE_ALLOCATE: Action = {
   id: 'remove',
-  title: 'Remove Allocation',
+  title: 'Remove Allocation'
 };
 
 export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
@@ -50,39 +50,39 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
   // Execute presumes either Manage is not a permission
   ActiveTasksAssignedCurrentUser: {
     cancel: [CANCEL],
-    own: [REASSIGN, RELEASE, COMPLETE],
+    own: [REASSIGN, RELEASE, COMPLETE]
   },
   ActiveTasksAssignedOtherUser: {
     cancel: [CANCEL],
     manage: [REASSIGN, RELEASE, COMPLETE],
-    own: [CLAIM],
+    own: [CLAIM]
   },
   ActiveTasksUnassigned: {
     cancel: [CANCEL],
     execute: [CLAIM],
     manage: [ASSIGN],
-    own: [CLAIM, COMPLETE],
+    own: [CLAIM, COMPLETE]
   },
   AllCases: {
-    manage: [RE_ALLOCATE, REMOVE_ALLOCATE],
+    manage: [RE_ALLOCATE, REMOVE_ALLOCATE]
   },
   AllWorkAssigned: {
     cancel: [CANCEL],
-    manage: [REASSIGN, RELEASE, GO, COMPLETE],
+    manage: [REASSIGN, RELEASE, GO, COMPLETE]
   },
   AllWorkUnassigned: {
     cancel: [CANCEL],
-    manage: [ASSIGN, GO, COMPLETE],
+    manage: [ASSIGN, GO, COMPLETE]
   },
   AvailableTasks: {
-    execute: [CLAIM, CLAIM_AND_GO],
+    execute: [CLAIM, CLAIM_AND_GO]
   },
   MyCases: {
-    manage: [REASSIGN, RELEASE, GO],
+    manage: [REASSIGN, RELEASE, GO]
   },
   MyTasks: {
-    manage: [REASSIGN, RELEASE, GO],
-  },
+    manage: [REASSIGN, RELEASE, GO]
+  }
 };
 
 export const VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED = {
@@ -96,7 +96,7 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED = {
     completeown: [COMPLETE],
     unassign: [RELEASE],
     unclaimassign: [REASSIGN],
-    unassignassign: [REASSIGN],
+    unassignassign: [REASSIGN]
   },
   ActiveTasksAssignedOtherUser: {
     assign: [REASSIGN],
@@ -104,14 +104,14 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED = {
     complete: [COMPLETE],
     claim: [CLAIM],
     unassign: [RELEASE],
-    unassignassign: [REASSIGN],
+    unassignassign: [REASSIGN]
   },
   ActiveTasksUnassigned: {
     assign: [ASSIGN],
-    claim: [CLAIM],
+    claim: [CLAIM]
   },
   AllCases: {
-    manage: [RE_ALLOCATE, REMOVE_ALLOCATE],
+    manage: [RE_ALLOCATE, REMOVE_ALLOCATE]
   },
   AllWorkAssignedCurrentUser: {
     assign: [REASSIGN],
@@ -122,7 +122,7 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED = {
     default: [GO],
     unassign: [RELEASE],
     unclaimassign: [REASSIGN],
-    unassignassign: [REASSIGN],
+    unassignassign: [REASSIGN]
   },
   AllWorkAssignedOtherUser: {
     assign: [REASSIGN],
@@ -131,18 +131,18 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED = {
     default: [GO],
     claim: [CLAIM],
     unassign: [RELEASE],
-    unassignassign: [REASSIGN],
+    unassignassign: [REASSIGN]
   },
   AllWorkUnassigned: {
     assign: [ASSIGN],
     claim: [CLAIM],
-    default: [GO], // Note: was not specified so assumed default
+    default: [GO] // Note: was not specified so assumed default
   },
   AvailableTasks: {
-    execute: [CLAIM, CLAIM_AND_GO],
+    execute: [CLAIM, CLAIM_AND_GO]
   },
   MyCases: {
-    manage: [REASSIGN, RELEASE, GO],
+    manage: [REASSIGN, RELEASE, GO]
   },
   MyTasks: {
     default: [GO], // not permission but go needed to be added
@@ -151,8 +151,8 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED = {
     complete: [COMPLETE],
     completeown: [COMPLETE],
     cancel: [CANCEL],
-    cancelown: [CANCEL],
-  },
+    cancelown: [CANCEL]
+  }
 };
 
 export enum TaskPermission {

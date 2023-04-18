@@ -35,22 +35,21 @@ export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
   public personRole: PersonRole;
 
   constructor(private readonly store: Store<fromFeature.State>,
-              private readonly roleExclusionsService: RoleExclusionsService) {
-  }
+              private readonly roleExclusionsService: RoleExclusionsService) {}
 
   public ngOnInit(): void {
     this.exclusionStateDataSub = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(
-      exclusionStateData => {
+      (exclusionStateData) => {
         this.personRole = exclusionStateData.personRole;
       }
     );
 
     this.radioOptionControl = new FormControl(this.personRole ? this.personRole : '', [Validators.required]);
-    this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
+    this.formGroup = new FormGroup({ [this.radioControlName]: this.radioOptionControl });
 
     this.roles$ = this.roleExclusionsService.getRolesCategory();
     this.roles$.subscribe((roles) => {
-      this.optionsList = roles.map(role => {
+      this.optionsList = roles.map((role) => {
         return {
           optionId: role.roleId, optionValue: role.roleName
         } as OptionsModel;

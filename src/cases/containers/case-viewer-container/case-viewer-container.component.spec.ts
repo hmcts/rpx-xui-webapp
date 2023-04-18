@@ -45,7 +45,7 @@ describe('CaseViewerContainerComponent', () => {
       name: 'Test Address Book Case',
       jurisdiction: {
         id: 'SSCS',
-        name: 'SSCS',
+        name: 'SSCS'
       },
       printEnabled: true
     },
@@ -127,40 +127,43 @@ describe('CaseViewerContainerComponent', () => {
         order: 3,
         fields: [],
         show_condition: ''
-      },
+      }
     ]
   };
 
   const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
 
   class MockFeatureToggleService implements FeatureToggleService {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getValue<R>(_key: string, _defaultValue: R): Observable<R> {
       if (_key === 'wa-service-config') {
         // @ts-ignore
-        return of({configurations: [{serviceName: 'SSCS', caseTypes: ['Benefit'], releaseVersion: '3.0'}]});
+        return of({ configurations: [{ serviceName: 'SSCS', caseTypes: ['TestAddressBookCase'], releaseVersion: '3.0' }] });
       }
       // @ts-ignore
       return of([]);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getValueOnce<R>(_key: string, _defaultValue: R): Observable<R> {
       return of([{
         jurisdiction: 'SSCS',
         caseType: 'Benefit',
         roles: ['caseworker-sscs-judge', 'caseworker-sscs']
-      }
-      ] as unknown as R);
+      }] as unknown as R);
     }
 
-    public initialize(_user: FeatureUser, _clientId: string): void {
-    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+    public initialize(_user: FeatureUser, _clientId: string): void {}
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public isEnabled(_feature: string): Observable<boolean> {
       return undefined;
     }
   }
 
   class MockAllocateRoleService {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public manageLabellingRoleAssignment(caseId: string): Observable<string[]> {
       return of([]);
     }
@@ -228,7 +231,7 @@ describe('CaseViewerContainerComponent', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -239,9 +242,9 @@ describe('CaseViewerContainerComponent', () => {
             }
           }
         },
-        {provide: FeatureToggleService, useClass: MockFeatureToggleService},
-        {provide: AllocateRoleService, useClass: MockAllocateRoleService },
-        {provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService}
+        { provide: FeatureToggleService, useClass: MockFeatureToggleService },
+        { provide: AllocateRoleService, useClass: MockAllocateRoleService },
+        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService }
       ],
       declarations: [CaseViewerContainerComponent, CaseViewerComponent]
     })
@@ -275,7 +278,7 @@ describe('CaseViewerContainerComponent', () => {
   });
 
   it('should return Hearings as the last tab', () => {
-    component.appendedTabs$.subscribe(tab =>
+    component.appendedTabs$.subscribe((tab) =>
       expect(tab[0].id).toBe('hearings')
     );
   });

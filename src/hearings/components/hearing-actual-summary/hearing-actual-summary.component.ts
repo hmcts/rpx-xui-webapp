@@ -32,12 +32,12 @@ export class HearingActualSummaryComponent implements OnInit {
     this.isAdjourned = hearingOutcome && hearingOutcome.hearingResult === HearingResult.ADJOURNED;
 
     if (this.isAdjourned) {
-      const adjournReasonType = this.adjournReasons.find(reason => reason.key === hearingOutcome.hearingResultReasonType);
+      const adjournReasonType = this.adjournReasons.find((reason) => reason.key === hearingOutcome.hearingResultReasonType);
       this.adjournReasonTypeValue = adjournReasonType ? adjournReasonType.value_en : hearingOutcome.hearingResultReasonType;
     }
 
     this.isPaperHearing$ = this.hearingState$ && this.hearingState$.pipe(
-      map(state => state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR))
+      map((state) => state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR))
     );
   }
 

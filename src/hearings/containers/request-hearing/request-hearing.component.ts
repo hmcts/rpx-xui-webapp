@@ -11,7 +11,6 @@ import { AbstractPageFlow } from '../../utils/abstract-page-flow';
   styleUrls: ['./request-hearing.component.scss']
 })
 export class RequestHearingComponent implements OnDestroy {
-
   private static readonly HEARING_CREATE_EDIT_SUMMARY = 'hearing-create-edit-summary';
   private static readonly HEARING_VIEW_EDIT_SUMMARY = 'hearing-view-edit-summary';
   private static readonly HEARING_CHANGE_REASON = 'hearing-change-reason';
@@ -19,8 +18,7 @@ export class RequestHearingComponent implements OnDestroy {
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly pageFlow: AbstractPageFlow,
-              private readonly hearingsService: HearingsService) {
-  }
+              private readonly hearingsService: HearingsService) {}
 
   public onBack(): void {
     this.hearingsService.navigateAction(ACTION.BACK);

@@ -13,10 +13,9 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
   styleUrls: ['available-tasks-filter.component.scss']
 })
 export class AvailableTasksFilterComponent implements OnInit {
-
   // Getting CheckboxListComponent from DOM ensures it will be defined
-  @ViewChild('locationFilter', {static: false}) public locationFilter: CheckboxListComponent<Location>;
-  @ViewChild('filterDetails', {static: false})
+  @ViewChild('locationFilter', { static: false }) public locationFilter: CheckboxListComponent<Location>;
+  @ViewChild('filterDetails', { static: false })
   public filterDetails: ElementRef<HTMLDetailsElement>;
 
   public get detailsElement(): HTMLDetailsElement {
@@ -27,12 +26,14 @@ export class AvailableTasksFilterComponent implements OnInit {
   public get selection(): Location[] {
     return this.pSelection;
   }
+
   public set selection(value: Location[]) {
     /* istanbul ignore else*/
     if (this.pSelection !== value) {
       this.pSelection = value;
     }
   }
+
   private pSelection: Location[] = [];
 
   public locations: Location[];
@@ -55,19 +56,18 @@ export class AvailableTasksFilterComponent implements OnInit {
     private readonly router: Router
   ) {}
 
-
   public ngOnInit(): void {
-    let preselection: Location[] = [ FilterConstants.Defaults.LOCATION ];
+    let preselection: Location[] = [FilterConstants.Defaults.LOCATION];
     // See if we have anything stored in the session for the filter.
     const stored: string = this.sessionStorageService.getItem(FilterConstants.Session.AvailableTasks);
     if (stored) {
-      preselection = [ ...JSON.parse(stored) ];
+      preselection = [...JSON.parse(stored)];
     }
     this.preselection = preselection;
     // Get the locations for the checkbox filter component.
-    this.locationService.getLocations().subscribe(locations => {
-      this.locations = [ ...locations ];
-    }, error => {
+    this.locationService.getLocations().subscribe((locations) => {
+      this.locations = [...locations];
+    }, (error) => {
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
   }
@@ -93,7 +93,7 @@ export class AvailableTasksFilterComponent implements OnInit {
    */
   public applyFilter(): void {
     if (this.locationFilter) {
-      this.selection = [ ...this.locationFilter.selection ];
+      this.selection = [...this.locationFilter.selection];
     }
     const toStore: string = JSON.stringify(this.selection);
     this.sessionStorageService.setItem(FilterConstants.Session.AvailableTasks, toStore);

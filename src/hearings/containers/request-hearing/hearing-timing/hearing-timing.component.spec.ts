@@ -18,7 +18,7 @@ import { HearingTimingComponent } from './hearing-timing.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
-  template: '',
+  template: ''
 })
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
@@ -31,6 +31,7 @@ describe('HearingTimingComponent', () => {
 
   let component: HearingTimingComponent;
   let fixture: ComponentFixture<HearingTimingComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: Router;
   const priorities: LovRefDataModel[] = [
     {
@@ -44,7 +45,7 @@ describe('HearingTimingComponent', () => {
       category_key: 'HearingPriority',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'standard',
@@ -57,8 +58,8 @@ describe('HearingTimingComponent', () => {
       category_key: 'HearingPriority',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
-    },
+      child_nodes: null
+    }
   ];
 
   beforeEach(() => {
@@ -78,11 +79,11 @@ describe('HearingTimingComponent', () => {
                 hearingPriorities: priorities
               }
             },
-            fragment: of('point-to-me'),
+            fragment: of('point-to-me')
           }
-        },
+        }
       ],
-      schemas: [NO_ERRORS_SCHEMA],
+      schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
     fixture = TestBed.createComponent(HearingTimingComponent);
@@ -114,7 +115,6 @@ describe('HearingTimingComponent', () => {
   });
 
   it('should set showHearingDateError', () => {
-    const hearingAvailability = component.priorityForm.controls.specificDate;
     component.showHearingDateError();
     expect(component.hearingPriorityDateError).toBe(null);
   });
@@ -125,13 +125,13 @@ describe('HearingTimingComponent', () => {
       {
         unavailableFromDate: '2021-12-10T09:00:00.000Z',
         unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY,
+        unavailabilityType: UnavailabilityType.ALL_DAY
       },
       {
         unavailableFromDate: '2021-12-10T09:00:00.000Z',
         unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY,
-      },
+        unavailabilityType: UnavailabilityType.ALL_DAY
+      }
     ];
     component.checkUnavailableDatesList(unavailabilityDates);
     expect(component.partiesNotAvailableDates[2]).toBe('14 December 2021');
@@ -143,7 +143,7 @@ describe('HearingTimingComponent', () => {
     const unavailabilityDate: UnavailabilityRangeModel = {
       unavailableFromDate: '2021-12-10T09:00:00.000Z',
       unavailableToDate: '2021-12-11T09:00:00.000Z',
-      unavailabilityType: UnavailabilityType.ALL_DAY,
+      unavailabilityType: UnavailabilityType.ALL_DAY
     };
     component.checkUnavailableDatesList([unavailabilityDate]);
     expect(component.partiesNotAvailableDates[0]).toBe('10 December 2021');

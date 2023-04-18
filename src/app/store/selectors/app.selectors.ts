@@ -19,12 +19,12 @@ export const getAppFeatures = createSelector(
 
 export const getTermsAndConditions = createSelector(
   getConfigState,
-  state => state.termsAndConditions
+  (state) => state.termsAndConditions
 );
 
 export const getIsTermsAndConditionsFeatureEnabled = createSelector(
   getConfigState,
-  state => state.isTermsAndConditionsFeatureEnabled
+  (state) => state.isTermsAndConditionsFeatureEnabled
 );
 
 export const getUserDetails = createSelector(

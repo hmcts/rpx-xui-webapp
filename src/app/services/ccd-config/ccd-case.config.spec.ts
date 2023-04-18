@@ -22,9 +22,10 @@ class MockConfigService {
       access_management_basic_view_mock: 'dummy',
       location_ref_api_url: 'dummy',
       cam_role_assignments_api_url: 'dummy',
-      notification_url: 'dummy',
+      notification_url: 'dummy'
     };
   }
+
   public getEditorConfiguration = () => this.config;
 }
 
@@ -37,6 +38,7 @@ mockEnvironmentService = {
 
 describe('AppConfiguration', () => {
   mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -48,7 +50,7 @@ describe('AppConfiguration', () => {
         AppConfigService,
         { provide: AppConfigService, useClass: MockConfigService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        { provide: EnvironmentService, useValue: mockEnvironmentService}
+        { provide: EnvironmentService, useValue: mockEnvironmentService }
       ]
     });
     spyOn(mockEnvironmentService, 'get').and.returnValue('someUrl');

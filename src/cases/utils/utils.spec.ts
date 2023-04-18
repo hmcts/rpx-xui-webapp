@@ -30,7 +30,7 @@ describe('Utils', () => {
       known_as: 'Tom',
       surname: 'Cruz',
       full_name: 'Tom Cruz',
-      email_id: '330085EMP-@ejudiciary.net',
+      email_id: '330085EMP-@ejudiciary.net'
     }
   ];
 

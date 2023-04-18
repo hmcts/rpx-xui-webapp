@@ -81,9 +81,9 @@ describe('HearingAnswersPipe', () => {
                 caseFlags: caseFlagsRefData,
                 partyChannels: partyChannelsRefData,
                 partySubChannels: partySubChannelsRefData
-              },
-            },
-          },
+              }
+            }
+          }
         },
         {
           provide: LocationsDataService,
@@ -183,7 +183,7 @@ describe('HearingAnswersPipe', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = {
       dateRangeStart: '2022-12-12T09:00:00.000Z',
       dateRangeEnd: '2022-12-12T09:00:00.000Z',
-      firstDateTimeMustBe: '',
+      firstDateTimeMustBe: ''
     };
     const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_SPECIFIC_DATE, of(STATE), 0);
     const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<br>Earliest start date: 12 December 2022<br>Latest end date: 12 December 2022`;

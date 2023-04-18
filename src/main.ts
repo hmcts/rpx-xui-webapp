@@ -9,10 +9,10 @@ if (environment.production) {
   enableProdMode();
 }
 
-fetch('/external/configuration-ui/').then(async response => {
+fetch('/external/configuration-ui/').then(async (response) => {
   let config = await response.json();
   config = config || {};
   platformBrowserDynamic([{ provide: ENVIRONMENT_CONFIG, useValue: config }])
     .bootstrapModule(AppModule)
-    .catch(err => console.log(err));
+    .catch((err) => console.log(err));
 });

@@ -6,8 +6,8 @@ import { State } from '../store/reducers';
 import { PanelRolesHiddenConverter } from './panel-roles.hidden.converter';
 
 describe('PanelRolesHiddenConverter', () => {
-
   let panelRolesHiddenConverter: PanelRolesHiddenConverter;
+
   beforeEach(() => {
     panelRolesHiddenConverter = new PanelRolesHiddenConverter();
   });
@@ -17,7 +17,7 @@ describe('PanelRolesHiddenConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;
     const result$ = panelRolesHiddenConverter.transformHidden(of(STATE));
     const showAnswer = true;
-    const expected = cold('(b|)', {b: showAnswer});
+    const expected = cold('(b|)', { b: showAnswer });
     expect(result$).toBeObservable(expected);
   });
 
@@ -28,9 +28,7 @@ describe('PanelRolesHiddenConverter', () => {
     };
     const result$ = panelRolesHiddenConverter.transformHidden(of(STATE));
     const showAnswer = false;
-    const expected = cold('(b|)', {b: showAnswer});
+    const expected = cold('(b|)', { b: showAnswer });
     expect(result$).toBeObservable(expected);
   });
-
-
 });

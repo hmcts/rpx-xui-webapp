@@ -21,8 +21,7 @@ export class ExclusionReset implements Action {
 export class ChangeNavigation implements Action {
   public readonly type = ExclusionActionTypes.CHANGE_NAVIGATION;
 
-  constructor(public payload: ExclusionState) {
-  }
+  constructor(public payload: ExclusionState) {}
 }
 
 export class ExclusionSetCaseId implements Action {
@@ -33,40 +32,34 @@ export class ExclusionSetCaseId implements Action {
 export class UpdateDescribeExclusionText implements Action {
   public readonly type = ExclusionActionTypes.UPDATE_DESCRIBE_EXCLUSION_TEXT;
 
-  constructor(public payload: ExclusionState, public describeExclusionText: string) {
-  }
+  constructor(public payload: ExclusionState, public describeExclusionText: string) {}
 }
 
 export class SaveExclusionOptionAndGo implements Action {
   public readonly type = ExclusionActionTypes.SAVE_EXCLUSION_OPTION_AND_GO;
 
-  constructor(public payload: { exclusionOption: ExcludeOption, exclusionState: ExclusionState }) {
-  }
+  constructor(public payload: { exclusionOption: ExcludeOption, exclusionState: ExclusionState }) {}
 }
 
 export class SavePersonRoleAndGo implements Action {
   public readonly type = ExclusionActionTypes.SAVE_PERSON_ROLE_AND_GO;
 
-  constructor(public payload: { personRole: PersonRole, exclusionState: ExclusionState }) {
-  }
+  constructor(public payload: { personRole: PersonRole, exclusionState: ExclusionState }) {}
 }
 
 export class UpdatePersonExclusion implements Action {
   public readonly type = ExclusionActionTypes.UPDATE_PERSON_EXCLUSION;
-  constructor(public payload: ExclusionState, public person: Person) {
-  }
+  constructor(public payload: ExclusionState, public person: Person) {}
 }
 
 export class ConfirmExclusionAction implements Action {
   public readonly type = ExclusionActionTypes.CONFIRM_EXCLUSION;
-  constructor(public payload: ExclusionStateData) {
-  }
+  constructor(public payload: ExclusionStateData) {}
 }
 
 export class ConfirmExclusionFailureAction implements Action {
   public readonly type = ExclusionActionTypes.CONFIRM_EXCLUSION_FAILURE;
-  constructor(public payload: RoleAccessHttpError) {
-  }
+  constructor(public payload: RoleAccessHttpError) {}
 }
 
 export type ExclusionAction =

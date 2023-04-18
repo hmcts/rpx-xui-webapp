@@ -3,7 +3,7 @@ import { ConfigurationModel, TermsAndCondition, UserDetails } from '../../models
 import * as fromActions from '../actions/';
 
 export interface AppConfigState {
-  config: ConfigurationModel | {};
+  config: ConfigurationModel | object;
   termsAndCondition: TermsAndCondition;
   loaded: boolean;
   loading: boolean;
@@ -25,7 +25,7 @@ export const initialState: AppConfigState = {
   userDetails: {
     sessionTimeout: {
       idleModalDisplayTime: 0,
-      totalIdleTime: 0,
+      totalIdleTime: 0
     },
     canShareCases: false,
     userInfo: null
@@ -87,9 +87,9 @@ export function reducer(
       };
     case fromActions.LOAD_FEATURE_TOGGLE_CONFIG_SUCCESS:
       return {
-          ...state,
-          isTermsAndConditionsFeatureEnabled: action.payload
-        };
+        ...state,
+        isTermsAndConditionsFeatureEnabled: action.payload
+      };
     case fromActions.LOAD_USER_DETAILS_SUCCESS:
       return {
         ...state,

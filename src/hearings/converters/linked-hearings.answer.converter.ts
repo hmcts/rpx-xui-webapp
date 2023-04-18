@@ -6,7 +6,7 @@ import { AnswerConverter } from './answer.converter';
 export class LinkedHearingsAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$?: Observable<State>): Observable<string> {
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         const hearingIsLinkedFlag = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingIsLinkedFlag;
         return hearingIsLinkedFlag ? 'Yes' : 'No';
       })

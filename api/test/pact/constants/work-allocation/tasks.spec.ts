@@ -7,7 +7,7 @@ const KILI_MUSO = {
   caseCategory: 'Grant of representation',
   location: 'Taylor House',
   taskName: 'Apply for probate',
-  dueDate: new Date(1604938789000),
+  dueDate: new Date(1604938789000)
   //assignee: toAssignee(CASEWORKERS.JOHN_SMITH).userName
 };
 
@@ -145,10 +145,10 @@ export const getUnassignedTasks = () => {
   });
 };
 export const freshTasks = (tasks: any[]): any[] => {
-  return tasks.map(task => {
+  return tasks.map((task) => {
     return { ...task };
   });
-}
+};
 export const sortTasks = (tasks: any[], field: string, order: string) => {
   return tasks.sort((a: any, b: any) => {
     const aVal = a[field], bVal = b[field];
@@ -210,8 +210,7 @@ export const BAD_TASKS = {
   NAT_AUTHORISED,
   ANNE_SUPPORTED,
   SIR_VAN_ERROR
-}
-
+};
 
 export const ALL_TASKS = {
   ...TASKS,
@@ -219,12 +218,12 @@ export const ALL_TASKS = {
 };
 
 export const TASKS_SORTED_BY = {
-  caseReference: [ ...SORTED_BY_CASE_REFERENCE ],
-  caseName: [ ...SORTED_BY_CASE_NAME ],
-  caseCategory: [ ...SORTED_BY_CATEGORY ],
-  location: [ ...SORTED_BY_LOCATION ],
-  taskName: [ ...SORTED_BY_TASK ],
-  dueDate: [ ...SORTED_BY_DUE_DATE ]
+  caseReference: [...SORTED_BY_CASE_REFERENCE],
+  caseName: [...SORTED_BY_CASE_NAME],
+  caseCategory: [...SORTED_BY_CATEGORY],
+  location: [...SORTED_BY_LOCATION],
+  taskName: [...SORTED_BY_TASK],
+  dueDate: [...SORTED_BY_DUE_DATE]
 };
 
 export const SORTABLE_FIELDS = [

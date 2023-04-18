@@ -7,19 +7,18 @@ import { initialState } from '../hearing.test.data';
 import { ActualSummaryResponseResolver } from './actual-summary-response-resolver.resolve';
 
 describe('ActualSummaryResponseResolver', () => {
-
   beforeEach(() => {
     TestBed.configureTestingModule({
-        imports: [
-          RouterTestingModule.withRoutes([]),
-          HttpClientTestingModule,
-        ],
-        providers: [
-          provideMockStore({initialState}),
-          ActualSummaryResponseResolver,
-          {provide: APP_BASE_HREF, useValue: '/'}
-        ]
-      }
+      imports: [
+        RouterTestingModule.withRoutes([]),
+        HttpClientTestingModule
+      ],
+      providers: [
+        provideMockStore({ initialState }),
+        ActualSummaryResponseResolver,
+        { provide: APP_BASE_HREF, useValue: '/' }
+      ]
+    }
     );
   });
 
@@ -27,5 +26,4 @@ describe('ActualSummaryResponseResolver', () => {
     const service: ActualSummaryResponseResolver = TestBed.inject(ActualSummaryResponseResolver);
     expect(service).toBeTruthy();
   });
-
 });

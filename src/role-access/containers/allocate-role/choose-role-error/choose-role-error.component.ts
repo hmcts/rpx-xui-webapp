@@ -8,7 +8,7 @@ import {
 
 @Component({
   selector: 'exui-choose-role-error',
-  templateUrl: './choose-role-error.component.html',
+  templateUrl: './choose-role-error.component.html'
 })
 export class ChooseRoleErrorComponent implements OnInit {
   @Input() public navEvent: AllocateRoleNavigation;
@@ -16,8 +16,7 @@ export class ChooseRoleErrorComponent implements OnInit {
   public roleCategory: string;
   public jurisdiction: string;
 
-  constructor(private readonly route: ActivatedRoute) {
-  }
+  constructor(private readonly route: ActivatedRoute) {}
 
   public ngOnInit(): void {
     // roleCategory: 1. JUDICIAL/2. LEGAL_OPERATIONS which is exactly matched with back end

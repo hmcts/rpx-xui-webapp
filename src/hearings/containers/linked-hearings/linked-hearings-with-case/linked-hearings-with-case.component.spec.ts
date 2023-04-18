@@ -1,21 +1,21 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-import {FormBuilder, ReactiveFormsModule} from '@angular/forms';
-import {ActivatedRoute, Router, RouterModule} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
-import {initialState} from '../../../hearing.test.data';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import { initialState } from '../../../hearing.test.data';
 import {
   ACTION,
   Mode
 } from '../../../models/hearings.enum';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {HearingsPipesModule} from '../../../pipes/hearings.pipes.module';
-import {HearingsService} from '../../../services/hearings.service';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { HearingsPipesModule } from '../../../pipes/hearings.pipes.module';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {LinkedHearingsWithCaseComponent} from './linked-hearings-with-case.component';
+import { LinkedHearingsWithCaseComponent } from './linked-hearings-with-case.component';
 
 describe('LinkedHearingsWithCaseComponent', () => {
   let component: LinkedHearingsWithCaseComponent;
@@ -24,8 +24,8 @@ describe('LinkedHearingsWithCaseComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
-  const mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mockHearingService: any;
   const caseId = '1111-2222-3333-4444';
   const hearingId = 'h100002';
@@ -78,13 +78,13 @@ describe('LinkedHearingsWithCaseComponent', () => {
       imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([
         { path: 'hearings/link/4652724902696211/h000001/group-selection', redirectTo: '' }
       ]),
-        HearingsPipesModule,
-        RouterModule,
-        RouterTestingModule.withRoutes([])],
+      HearingsPipesModule,
+      RouterModule,
+      RouterTestingModule.withRoutes([])],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
-        {provide: Router, useValue: mockRouter},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
+        { provide: Router, useValue: mockRouter },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -94,9 +94,9 @@ describe('LinkedHearingsWithCaseComponent', () => {
                 mode: Mode.LINK_HEARINGS,
                 hearingStageOptions: HEARING_STAGE_OPTIONS
               },
-              params: {caseId: '4652724902696211', hearingId: 'h000001'},
+              params: { caseId: '4652724902696211', hearingId: 'h000001' }
             },
-            fragment: of('point-to-me'),
+            fragment: of('point-to-me')
           }
         },
         FormBuilder

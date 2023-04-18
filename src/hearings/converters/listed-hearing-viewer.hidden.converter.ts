@@ -7,10 +7,10 @@ import { HiddenConverter } from './hidden.converter';
 export class ListedHearingViewerHiddenConverter implements HiddenConverter {
   public userRoles$: Observable<string[]>;
 
-  constructor(private readonly store: Store<fromRoot.State>) { }
+  constructor(private readonly store: Store<fromRoot.State>) {}
 
   public transformHidden(): Observable<boolean> {
     return this.store.pipe(select(fromRoot.getUserDetails)).pipe(
-      map(userDetails => userDetails.userInfo.roles.includes('listed-hearing-viewer')));
+      map((userDetails) => userDetails.userInfo.roles.includes('listed-hearing-viewer')));
   }
 }

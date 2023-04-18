@@ -13,7 +13,6 @@ import { RefDataResolver } from './ref-data-resolver.resolve';
   providedIn: 'root'
 })
 export class HearingActualPartyChannelResolverService extends RefDataResolver implements Resolve<LovRefDataModel[]> {
-
   constructor(
     protected readonly lovRefDataService: LovRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>,

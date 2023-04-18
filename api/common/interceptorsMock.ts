@@ -1,13 +1,13 @@
 import * as exceptionFormatter from 'exception-formatter';
 import { getConfigValue } from '../configuration';
 import {
-  MAX_LOG_LINE,
+  MAX_LOG_LINE
 } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import { shorten, valueOrNull } from '../lib/util';
 
 const exceptionOptions = {
-  maxLines: 1,
+  maxLines: 1
 };
 
 export function requestInterceptor(request) {
@@ -15,7 +15,7 @@ export function requestInterceptor(request) {
 
   logger.info(`${request.method.toUpperCase()} to ${request.url}`);
   //add timings to requests
-  request.metadata = {startTime: new Date()};
+  request.metadata = { startTime: new Date() };
 
   return request;
 }

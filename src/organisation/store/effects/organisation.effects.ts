@@ -12,19 +12,19 @@ export class OrganisationEffects {
     private readonly actions$: Actions,
     private readonly organisationService: OrganisationService,
     private readonly loggerService: LoggerService
-  ) { }
+  ) {}
 
   @Effect()
   public loadOrganisation$ = this.actions$.pipe(
-    ofType(organisationActions.LOAD_ORGANISATION),
-    switchMap(() => {
-      return this.organisationService.fetchOrganisation().pipe(
-        map(orgDetails => new organisationActions.LoadOrganisationSuccess(orgDetails)),
-        catchError(error => {
-          this.loggerService.error(error.message);
-          return of(new organisationActions.LoadOrganisationFail(error));
-        })
-      );
-    })
-  );
+      ofType(organisationActions.LOAD_ORGANISATION),
+      switchMap(() => {
+        return this.organisationService.fetchOrganisation().pipe(
+          map((orgDetails) => new organisationActions.LoadOrganisationSuccess(orgDetails)),
+          catchError((error) => {
+            this.loggerService.error(error.message);
+            return of(new organisationActions.LoadOrganisationFail(error));
+          })
+        );
+      })
+    );
 }

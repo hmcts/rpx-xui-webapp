@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { NocAnswer, NocState } from '../../models';
 import * as fromFeature from '../../store';
@@ -18,7 +18,7 @@ describe('NocCheckYourAnswersComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ NocCheckYourAnswersComponent ],
+      declarations: [NocCheckYourAnswersComponent],
       imports: [
         UtilsModule
       ],
@@ -26,7 +26,7 @@ describe('NocCheckYourAnswersComponent', () => {
         provideMockStore()
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -65,7 +65,7 @@ describe('NocCheckYourAnswersComponent', () => {
     const answer: NocAnswer = {
       question_id: 'q1',
       question_text: of('name'),
-      value: 'James',
+      value: 'James'
     };
     component.navToQAndA(answer);
     expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.ChangeNavigation(NocState.QUESTION));

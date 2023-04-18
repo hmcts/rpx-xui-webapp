@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   AbstractAppConfig, AlertService, AuthService as CCDAuthService, CaseEditWizardGuard, CasesService, CreateCaseFiltersModule, DocumentManagementService, DraftService, HttpErrorService, HttpService, PageValidationService,
@@ -16,8 +16,10 @@ import { CaseFilterComponent } from './case-filter.component';
 
 class MockSortService {
   public features = {};
-  public getFeatureToggle() { }
-  public getEditorConfiguration() { }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public getFeatureToggle() {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public getEditorConfiguration() {}
 }
 describe('Case Filter Component', () => {
   let component: CaseFilterComponent;
@@ -32,7 +34,7 @@ describe('Case Filter Component', () => {
         HttpClientTestingModule,
         SharedModule,
         SearchFiltersModule,
-        CreateCaseFiltersModule,
+        CreateCaseFiltersModule
       ],
       declarations: [CaseFilterComponent],
       providers: [
@@ -83,7 +85,4 @@ describe('Case Filter Component', () => {
   xit('should create', () => {
     //  expect(component).toBeTruthy();
   });
-
-
-
 });

@@ -35,8 +35,9 @@ export class WorkFieldComponent {
   constructor() {
     this.clickSubject.pipe(
       take(1)
-    ).subscribe(item => this.itemClick.emit(item));
+    ).subscribe((item) => this.itemClick.emit(item));
   }
+
   /**
    * Convert a string, number, or Date to date object.
    */
@@ -47,5 +48,4 @@ export class WorkFieldComponent {
     }
     return null;
   }
-
 }

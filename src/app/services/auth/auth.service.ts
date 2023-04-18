@@ -8,8 +8,7 @@ export class AuthService {
   constructor(
     private readonly httpService: HttpClient,
     private readonly sessionStorageService: SessionStorageService
-  ) {
-  }
+  ) {}
 
   public loginRedirect() {
     const href = '/auth/login';
@@ -34,7 +33,7 @@ export class AuthService {
   }
 
   public logOutAndRedirect() {
-    this.logOut().subscribe( () => {
+    this.logOut().subscribe(() => {
       this.setWindowLocationHref('/idle-sign-out');
     });
   }

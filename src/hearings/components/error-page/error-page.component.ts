@@ -4,21 +4,19 @@ import { Subscription } from 'rxjs';
 import * as fromHearingStore from '../../store';
 
 @Component({
-    selector: 'exui-hearings-error-page',
-    templateUrl: './error-page.component.html',
-    styleUrls: ['./error-page.component.scss']
+  selector: 'exui-hearings-error-page',
+  templateUrl: './error-page.component.html',
+  styleUrls: ['./error-page.component.scss']
 })
 export class ErrorPageComponent implements OnInit, OnDestroy {
-
   public caseId: string;
   public sub: Subscription;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>) {
-  }
+  constructor(private readonly hearingStore: Store<fromHearingStore.State>) {}
 
   public ngOnInit(): void {
     this.sub = this.hearingStore.select(fromHearingStore.getHearingsFeatureState).subscribe(
-      state => {
+      (state) => {
         this.caseId = state.hearingList.hearingListMainModel.caseRef;
       }
     );

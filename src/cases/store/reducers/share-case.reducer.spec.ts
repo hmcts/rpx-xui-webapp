@@ -7,7 +7,7 @@ describe('Share case reducer', () => {
     let initialState;
 
     beforeEach(() => {
-      initialState = {...fromReducer.initialSharedCasesState};
+      initialState = { ...fromReducer.initialSharedCasesState };
     });
 
     it('should set correct object', async () => {

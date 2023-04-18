@@ -1,6 +1,7 @@
 
 
 const roles = require('./roles')
+const { v4 } = require('uuid')
 class RoleAssignments{
 
     constructor(){
@@ -99,7 +100,7 @@ class RoleAssignments{
             "classification": "PUBLIC",
             "created": "2022-01-13T17:44:42.15304Z",
             "grantType": "STANDARD",
-            "id": "92aef8e3-ef7b-4bd4-a0c7-13b6414db239",
+            "id": v4(),
             "readOnly": false,
             "roleCategory": "LEGAL_OPERATIONS",
             "roleName": "senior-tribunal-caseworker",

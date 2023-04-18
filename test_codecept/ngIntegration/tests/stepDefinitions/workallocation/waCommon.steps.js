@@ -104,7 +104,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         await browser.get('http://localhost:3000/get-help');
 
         await idamLogin.do();
-      
+
         await BrowserWaits.retryWithActionCallback(async () => {
             const userDetails = idamLogin.userDetailsResponse.details.data;
             const sessionUserName = userDetails.userInfo ? userDetails.userInfo.sub : '';
@@ -122,12 +122,12 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
         })
 
-        const authCookies = await browser.driver.manage().getCookies()
+        const authCookies = idamLogin.xuiCallbackResponse.details.setCookies
         const authCookie = authCookies.find(cookie => cookie.name === '__auth__')
         await browser.sleep(10)
         await mockClient.updateAuthSessionWithRoles(authCookie.value, roles)
 
-        await browser.get('http://localhost:3000/');
+        // await browser.get('http://localhost:3000/');
     }
 
     Given('I set MOCK with {string} release user and roles', async function (releaseUer,datatableroles ) {
@@ -303,10 +303,21 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
         const cookies = await browser.driver.manage().getCookies();
         const authCookie = cookies.find(cookie => cookie.name === '__auth__')
-        CucumberReporter.AddJson(nodeAppMock.userDetails);
-        const newRoleAssignmentsInSession = await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr)
-        CucumberReporter.AddJson(newRoleAssignmentsInSession.data);
-        await browser.get(await browser.getCurrentUrl());
+
+        
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr)
+
+            const userDetails = await idamLogin.getUserDetails();
+            if (!userDetails.roleAssignmentInfo.length === roleAssignmentArr.length) {
+                reportLogger.AddMessage(`Mock role assignments not updated in user session. Retrying user session update`);
+                throw new Error('Mock role assignments not updated');
+            }
+        })
+
+        const userDetails = await idamLogin.getUserDetails();
+        CucumberReporter.AddJson(userDetails.roleAssignmentInfo);
+        // await browser.get(await browser.getCurrentUrl());
 
         const userSession = await mockClient.getSessionRolesAndRoleAssignments(authCookie.value);
         console.log(userSession)

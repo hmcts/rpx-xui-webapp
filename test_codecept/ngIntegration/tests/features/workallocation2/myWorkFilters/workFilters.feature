@@ -110,8 +110,8 @@ Feature: WA Release 2: My work - Work filters
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 30001        |
-            | CIVIL         | Y           | ORGANISATION | 20001        |
+            | IA           | Y           | ORGANISATION |         |
+            | CIVIL         | Y           | ORGANISATION |         |
 
 
         Given I start MockApp

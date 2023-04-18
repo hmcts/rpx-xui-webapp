@@ -92,7 +92,7 @@ describe('HearingsGuard', () => {
   it('should return false if case type do not match', () => {
     storeMock.pipe.and.returnValue(of(USER));
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
-    sessionStorageMock.getItem.and.returnValue(JSON.stringify({cid: '1546518523959179', caseType: 'PRLAPPS', jurisdiction: 'SSCS'}));
+    sessionStorageMock.getItem.and.returnValue(JSON.stringify({ cid: '1546518523959179', caseType: 'PRLAPPS', jurisdiction: 'SSCS' }));
     hearingsGuard = new HearingsGuard(storeMock, sessionStorageMock, featureToggleMock);
     const result$ = hearingsGuard.hasMatchedPermissions();
     const canActive = false;

@@ -259,12 +259,11 @@ describe('CaseViewerContainerComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should return the two tabs', (done: DoneFn) => {
+  it('should return the two tabs', () => {
     component.prependedTabs$.subscribe((tabs: CaseTab[]) => {
       expect(tabs.length).toBe(TABS.length);
       expect(tabs[0].id).toBe('tasks');
       expect(tabs[1].id).toBe('roles-and-access');
-      done();
     });
   });
 

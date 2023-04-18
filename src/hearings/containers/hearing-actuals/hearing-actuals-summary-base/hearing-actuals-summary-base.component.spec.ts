@@ -14,12 +14,11 @@ import { HearingsService } from '../../../services/hearings.service';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { HearingActualsSummaryBaseComponent } from './hearing-actuals-summary-base.component';
 
-
-@Pipe({name: 'transformAnswer'})
+@Pipe({ name: 'transformAnswer' })
 export class MockHearingAnswersPipe implements PipeTransform {
-    public transform(answerSource, hearingState$, index?: number): string {
-        return '';
-    }
+  public transform(answerSource, hearingState$, index?: number): string {
+    return '';
+  }
 }
 
 @Component({
@@ -84,7 +83,7 @@ describe('HearingActualsSummaryBaseComponent', () => {
       declarations: [HearingActualsSummaryBaseComponent, ConvertToValuePipe, MockHearingAnswersPipe],
       imports: [RouterTestingModule.withRoutes(
         [
-          {path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent}
+          { path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent }
         ]
       )],
       providers: [
@@ -94,20 +93,20 @@ describe('HearingActualsSummaryBaseComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             paramMap: of(convertToParamMap({
-              id: '1',
+              id: '1'
             })),
             snapshot: {
               params: {
-                id: '1',
+                id: '1'
               },
               data: {
                 partyChannels: partyChannelsRefData,
                 partySubChannels: partySubChannelsRefData,
                 hearingRole
-              },
-            },
-          },
-        },
+              }
+            }
+          }
+        }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -185,8 +184,9 @@ describe('HearingActualsSummaryBaseComponent', () => {
   });
 
   it('should return updated notRequired', () => {
-    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
-      (component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
+    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(
+      component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel
+    );
     expect(patchedHearingActuals.actualHearingDays[0].notRequired).toBe(true);
   });
 
@@ -198,45 +198,45 @@ describe('HearingActualsSummaryBaseComponent', () => {
   describe('getPauseDateTime', () => {
     it('should return start time', () => {
       const actualHearingDays = {
-          hearingDate: '2021-03-12',
-          hearingStartTime: '2021-03-12T09:00:00.000Z',
-          hearingEndTime: '2021-03-12T10:00:00.000Z',
-          pauseDateTimes: [{
-            pauseStartTime: '2021-03-12T10:10:00.000Z',
-            pauseEndTime: '2021-03-12T11:15:00.000Z',
-          }],
-          notRequired: false,
-          actualDayParties: []
-        };
+        hearingDate: '2021-03-12',
+        hearingStartTime: '2021-03-12T09:00:00.000Z',
+        hearingEndTime: '2021-03-12T10:00:00.000Z',
+        pauseDateTimes: [{
+          pauseStartTime: '2021-03-12T10:10:00.000Z',
+          pauseEndTime: '2021-03-12T11:15:00.000Z'
+        }],
+        notRequired: false,
+        actualDayParties: []
+      };
       const actual = component.getPauseDateTime(actualHearingDays, 'start');
       expect(actual).toEqual('10:10');
     });
 
     it('should return end time', () => {
       const actualHearingDays = {
-          hearingDate: '2021-03-12',
-          hearingStartTime: '2021-03-12T09:00:00.000Z',
-          hearingEndTime: '2021-03-12T10:00:00.000Z',
-          pauseDateTimes: [{
-            pauseStartTime: '2021-03-12T10:10:00.000Z',
-            pauseEndTime: '2021-03-12T11:15:00.000Z',
-          }],
-          notRequired: false,
-          actualDayParties: []
-        };
+        hearingDate: '2021-03-12',
+        hearingStartTime: '2021-03-12T09:00:00.000Z',
+        hearingEndTime: '2021-03-12T10:00:00.000Z',
+        pauseDateTimes: [{
+          pauseStartTime: '2021-03-12T10:10:00.000Z',
+          pauseEndTime: '2021-03-12T11:15:00.000Z'
+        }],
+        notRequired: false,
+        actualDayParties: []
+      };
       const actual = component.getPauseDateTime(actualHearingDays, 'end');
       expect(actual).toEqual('11:15');
     });
 
     it('should return null as no pause times are present', () => {
       const actualHearingDays = {
-          hearingDate: '2021-03-12',
-          hearingStartTime: '2021-03-12T09:00:00.000Z',
-          hearingEndTime: '2021-03-12T10:00:00.000Z',
-          pauseDateTimes: [],
-          notRequired: false,
-          actualDayParties: []
-        };
+        hearingDate: '2021-03-12',
+        hearingStartTime: '2021-03-12T09:00:00.000Z',
+        hearingEndTime: '2021-03-12T10:00:00.000Z',
+        pauseDateTimes: [],
+        notRequired: false,
+        actualDayParties: []
+      };
       const actual = component.getPauseDateTime(actualHearingDays, 'start');
       expect(actual).toEqual(null);
     });

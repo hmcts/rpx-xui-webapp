@@ -96,20 +96,20 @@ describe('LinkedHearingsWithCaseComponent', () => {
           hearingIsLinkedFlag: true,
           hearingGroupRequestId: null,
           hearingDaySchedule: [],
-          isSelected: true,
+          isSelected: true
         }
-      ],
+      ]
     },
     {
       caseRef: '5283819672542864',
       caseName: 'Smith vs Peterson',
-      reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case'],
+      reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case']
     },
     {
       caseRef: '8254902572336147',
       caseName: 'Smith vs Peterson',
-      reasonsForLink: ['Familial', 'Guardian', 'Linked for a hearing'],
-    },
+      reasonsForLink: ['Familial', 'Guardian', 'Linked for a hearing']
+    }
   ];
   const linkedCasesWithHearings: ServiceLinkedCasesWithHearingsModel[] = [
     {
@@ -131,14 +131,14 @@ describe('LinkedHearingsWithCaseComponent', () => {
           hearingIsLinkedFlag: true,
           hearingGroupRequestId: null,
           hearingDaySchedule: [],
-          isSelected: true,
+          isSelected: true
         }
-      ],
+      ]
     },
     {
       caseRef: '5283819672542864',
       caseName: 'Smith vs Peterson',
-      reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case'],
+      reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case']
     },
     {
       caseRef: '8254902572336147',
@@ -159,7 +159,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
           hearingIsLinkedFlag: true,
           hearingGroupRequestId: null,
           hearingDaySchedule: [],
-          isSelected: true,
+          isSelected: true
         }, {
           hearingID: 'h1000003',
           hearingType: 'Chambers Outcome',
@@ -174,10 +174,10 @@ describe('LinkedHearingsWithCaseComponent', () => {
           hearingIsLinkedFlag: true,
           hearingGroupRequestId: null,
           hearingDaySchedule: [],
-          isSelected: true,
+          isSelected: true
         }
-      ],
-    },
+      ]
+    }
   ];
 
   beforeEach(waitForAsync(() => {

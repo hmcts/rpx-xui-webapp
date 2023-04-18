@@ -26,7 +26,7 @@ describe('HearingsEditGuard', () => {
         'caseworker',
         'caseworker-sscs',
         'hearing-manager'
-      ],
+      ]
     }
   };
 
@@ -45,7 +45,7 @@ describe('HearingsEditGuard', () => {
       roles: [
         'caseworker',
         'caseworker-sscs'
-      ],
+      ]
     }
   };
 

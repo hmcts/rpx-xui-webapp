@@ -26,7 +26,7 @@ describe('HearingsViewGuard', () => {
         'caseworker',
         'caseworker-sscs',
         'hearing-manager'
-      ],
+      ]
     }
   };
 
@@ -46,7 +46,7 @@ describe('HearingsViewGuard', () => {
         'caseworker',
         'caseworker-sscs',
         'hearing-viewer'
-      ],
+      ]
     }
   };
 
@@ -66,7 +66,7 @@ describe('HearingsViewGuard', () => {
         'caseworker',
         'caseworker-sscs',
         'listed-hearing-viewer'
-      ],
+      ]
     }
   };
 
@@ -84,8 +84,8 @@ describe('HearingsViewGuard', () => {
       active: true,
       roles: [
         'caseworker',
-        'caseworker-sscs',
-      ],
+        'caseworker-sscs'
+      ]
     }
   };
 
@@ -153,7 +153,7 @@ describe('HearingsViewGuard', () => {
     hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, routerMock);
     const result$ = hearingsViewGuard.canActivate();
     const canActive = false;
-    const expected = cold('(b|)', {b: canActive});
+    const expected = cold('(b|)', { b: canActive });
     expect(result$).toBeObservable(expected);
   });
 });

@@ -20,10 +20,10 @@ export class HearingsViewGuard extends HearingsGuard implements CanActivate {
 
   public canActivate(): Observable<boolean> {
     return super.hasMatchedPermissions().pipe(
-      switchMap(hasMatchedPermissions => {
+      switchMap((hasMatchedPermissions) => {
         if (hasMatchedPermissions) {
           return this.userRoles$.pipe(
-            map(userRoles =>
+            map((userRoles) =>
               userRoles.includes(UserRole.HearingViewer) ||
               userRoles.includes(UserRole.ListedHearingViewer) ||
               userRoles.includes(UserRole.HearingManager)

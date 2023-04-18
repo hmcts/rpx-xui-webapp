@@ -16,7 +16,7 @@ router.get('/actors/:actorId', (req, res) => {
     let roleAssignmentsDefault = service.getActorRoles(req.params.actorId);
     const args = minimist(process.argv)
     if (!args.standalone) {
-        roleAssignmentsDefault = []
+        roleAssignmentsDefault = { roleAssignmentResponse :[]}
     }
     userApiData.sendResponse(req, res, "OnUserRoleAssignments", () => { return {status:200, data: roleAssignmentsDefault} });
 

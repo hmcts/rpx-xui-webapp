@@ -18,11 +18,12 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           baseLocation: '231596',
-          jurisdiction: 'IA',
-        },
+          jurisdiction: 'IA'
+        }
       };
       expect(isCurrentUserCaseAllocator(ROLE_ASSIGNMENT_EXAMPLE)).to.equal(true);
     });
+
     it('should return false', () => {
       const ROLE_ASSIGNMENT_EXAMPLE = {
         id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
@@ -37,12 +38,11 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           baseLocation: '231596',
-          jurisdiction: 'IA',
-        },
+          jurisdiction: 'IA'
+        }
       };
       expect(isCurrentUserCaseAllocator(ROLE_ASSIGNMENT_EXAMPLE)).to.equal(false);
     });
-
   });
 
   describe('isCurrentUserCaseAllocator with jurisdiction and location', () => {
@@ -60,11 +60,12 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           baseLocation: '231596',
-          jurisdiction: 'IA',
-        },
+          jurisdiction: 'IA'
+        }
       };
       expect(isCurrentUserCaseAllocator(ROLE_ASSIGNMENT_EXAMPLE, 'IA', '231596')).to.equal(true);
     });
+
     it('should return false', () => {
       const ROLE_ASSIGNMENT_EXAMPLE = {
         id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
@@ -79,8 +80,8 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           baseLocation: '231596',
-          jurisdiction: 'IA',
-        },
+          jurisdiction: 'IA'
+        }
       };
       expect(isCurrentUserCaseAllocator(ROLE_ASSIGNMENT_EXAMPLE, 'DIVORCE', '123123')).to.equal(false);
     });
@@ -92,11 +93,13 @@ describe('user.utils', () => {
       const response = getOrganisationRoles(roleAssignmentInfo);
       expect(response.length).to.equal(0);
     });
+
     it('should return empty when null', () => {
       const roleAssignmentInfo = null;
       const response = getOrganisationRoles(roleAssignmentInfo);
       expect(response.length).to.equal(0);
     });
+
     it('should return 1 row', () => {
       const roleAssignmentInfo = [{
         id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
@@ -111,8 +114,8 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           baseLocation: '231596',
-          jurisdiction: 'IA',
-        },
+          jurisdiction: 'IA'
+        }
       },
       {
         id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac3',
@@ -127,8 +130,8 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           baseLocation: '231596',
-          jurisdiction: 'IA',
-        },
+          jurisdiction: 'IA'
+        }
       }];
       const response = getOrganisationRoles(roleAssignmentInfo);
       expect(response.length).to.equal(1);
@@ -139,9 +142,9 @@ describe('user.utils', () => {
   describe('getUserRoleCategory', () => {
     it('should return UserRoleCategory', () => {
       const roles = ['ADMIN', 'caseworker-ia',
-                     'caseworker-ia-caseofficer', 'cwd-user',
-                     'case-allocator', 'tribunal-caseworker',
-                     'hmcts-legal-operations', 'task-supervisor'];
+        'caseworker-ia-caseofficer', 'cwd-user',
+        'case-allocator', 'tribunal-caseworker',
+        'hmcts-legal-operations', 'task-supervisor'];
       expect(getUserRoleCategory(roles)).to.equal('admin');
     });
   });

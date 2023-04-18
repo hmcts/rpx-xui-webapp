@@ -3,7 +3,7 @@ import * as fromActions from '../actions';
 
 export const initialHearingActualsState: HearingActualsStateData = {
   hearingActualsMainModel: null,
-  lastError: null,
+  lastError: null
 };
 
 export function hearingActualsReducer(

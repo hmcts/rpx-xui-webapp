@@ -21,64 +21,55 @@ export class ResetHearingActuals implements Action {
 export class SaveHearingActualsPlannedDays implements Action {
   public readonly type = SAVE_HEARING_ACTUALS_PLANNED_DAYS;
 
-  constructor(public actualHearingDays: ActualHearingDayModel[]) {
-  }
+  constructor(public actualHearingDays: ActualHearingDayModel[]) {}
 }
 
 export class GetHearingActuals implements Action {
   public readonly type = GET_HEARING_ACTUALS;
 
-  constructor(public payload: string) {
-  }
+  constructor(public payload: string) {}
 }
 
 export class GetHearingActualsSuccess implements Action {
   public readonly type = GET_HEARING_ACTUALS_SUCCESS;
 
-  constructor(public payload: HearingActualsMainModel) {
-  }
+  constructor(public payload: HearingActualsMainModel) {}
 }
 
 export class UpdateHearingActuals implements Action {
   public readonly type = UPDATE_HEARING_ACTUALS;
 
-  constructor(public payload: { hearingId: string, hearingActuals: HearingActualsModel }) {
-  }
+  constructor(public payload: { hearingId: string, hearingActuals: HearingActualsModel }) {}
 }
 
 export class UpdateHearingActualsStage implements Action {
   public readonly type = UPDATE_HEARING_ACTUALS_STAGE;
 
-  constructor(public payload: { hearingId: string, hearingActuals: HearingActualsModel }) {
-  }
+  constructor(public payload: { hearingId: string, hearingActuals: HearingActualsModel }) {}
 }
 
 export class UpdateHearingActualsSuccess implements Action {
   public readonly type = UPDATE_HEARING_ACTUALS_SUCCESS;
 
-  constructor(public payload: HearingActualsModel) {
-  }
+  constructor(public payload: HearingActualsModel) {}
 }
 
 export class SubmitHearingActuals implements Action {
   public readonly type = SUBMIT_HEARING_ACTUALS;
 
-  constructor(public payload: string) {
-  }
+  constructor(public payload: string) {}
 }
 
 export class SubmitHearingActualsSuccess implements Action {
   public readonly type = SUBMIT_HEARING_ACTUALS_SUCCESS;
 
-  constructor(public payload: string) {
-  }
+  constructor(public payload: string) {}
 }
 
 export class SubmitHearingActualsFailure implements Action {
   public readonly type = SUBMIT_HEARING_ACTUALS_FAILURE;
 
-  constructor(public payload: HttpError) {
-  }
+  constructor(public payload: HttpError) {}
 }
 
 export class ResetHearingActualsLastError implements Action {

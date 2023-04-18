@@ -47,7 +47,9 @@ describe('AddExclusionCheckAnswersComponent', () => {
     });
 
     it('should throw an error if there is an invalid navigation action', () => {
-      expect(() => { component.navigationHandler(ExclusionNavigationEvent.CONTINUE); }).toThrow(new Error('Invalid option'));
+      expect(() => {
+        component.navigationHandler(ExclusionNavigationEvent.CONTINUE);
+      }).toThrow(new Error('Invalid option'));
     });
   });
 
@@ -73,7 +75,6 @@ describe('AddExclusionCheckAnswersComponent', () => {
   });
 
   describe('setAnswersFromExclusionStore()', () => {
-
     it('should set all answers if excluding another person', () => {
       setup(ExcludeOption.EXCLUDE_ANOTHER_PERSON);
       expect(component.answers.length).toEqual(4);
@@ -93,5 +94,4 @@ describe('AddExclusionCheckAnswersComponent', () => {
       expect(component.storeSubscription.unsubscribe).toHaveBeenCalled();
     });
   });
-
 });

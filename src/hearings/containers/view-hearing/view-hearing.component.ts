@@ -7,10 +7,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./view-hearing.component.scss']
 })
 export class ViewHearingComponent {
-
   constructor(
-    private readonly location: Location) { }
-
+    private readonly location: Location) {}
 
   public onBack(): void {
     this.location.back();

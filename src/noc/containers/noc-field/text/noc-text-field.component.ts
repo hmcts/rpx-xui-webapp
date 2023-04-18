@@ -7,7 +7,6 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
   templateUrl: './noc-text-field.component.html'
 })
 export class NocTextFieldComponent extends AbstractFieldWriteComponent implements OnInit {
-
   public textControl: FormControl;
 
   public ngOnInit() {

@@ -11,7 +11,6 @@ import * as fromFeature from '../../../store';
   templateUrl: './specific-access-denied.component.html'
 })
 export class SpecificAccessDeniedComponent implements OnDestroy {
-
   @Input() public navEvent: SpecificAccessNavigation;
 
   public answers: Answer[] = [];

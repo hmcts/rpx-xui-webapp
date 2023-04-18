@@ -10,7 +10,9 @@ import { HearingViewActualSummaryComponent } from './hearing-view-actual-summary
 describe('HearingViewActualSummaryComponent', () => {
   let component: HearingViewActualSummaryComponent;
   let fixture: ComponentFixture<HearingViewActualSummaryComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: Router;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mockStore: any;
 
   beforeEach(() => {
@@ -18,9 +20,9 @@ describe('HearingViewActualSummaryComponent', () => {
       imports: [RouterTestingModule],
       declarations: [HearingViewActualSummaryComponent],
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState })
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
     mockStore = TestBed.inject(Store);

@@ -21,8 +21,8 @@ export class AlertComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit() {
-    this.alertMessageObservable = this.alertService.alerts.pipe(select( alert => alert));
-    this.alertMessageSubscription = this.alertMessageObservable.subscribe(alert => {
+    this.alertMessageObservable = this.alertService.alerts.pipe(select((alert) => alert));
+    this.alertMessageSubscription = this.alertMessageObservable.subscribe((alert) => {
       if (alert) {
         const msg = alert.message;
         this.level = alert.level;
@@ -38,9 +38,9 @@ export class AlertComponent implements OnInit, OnDestroy {
     if (caseId) {
       const caseIdHyphen = msg.match(/(\d\d\d\d)/g).join('-');
       return msg.replace(caseId.toString(), caseIdHyphen);
-    } else {
-      return msg;
     }
+
+    return msg;
   }
 
   public ngOnDestroy(): void {

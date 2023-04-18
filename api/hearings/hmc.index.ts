@@ -23,9 +23,9 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
   const markupPath: string = `${hmcHearingsUrl}/hearings/${caseId}`;
 
   try {
-    const {status, data}: { status: number, data: HearingListMainModel } = await handleGet(markupPath, req, next);
-    data.caseHearings.forEach(hearing =>
-      hearingStatusMappings.filter(mapping => mapping.hmcStatus === hearing.hmcStatus).map(hearingStatusMapping => {
+    const { status, data }: { status: number, data: HearingListMainModel } = await handleGet(markupPath, req, next);
+    data.caseHearings.forEach((hearing) =>
+      hearingStatusMappings.filter((mapping) => mapping.hmcStatus === hearing.hmcStatus).map((hearingStatusMapping) => {
         hearing.exuiSectionStatus = hearingStatusMapping.exuiSectionStatus;
         hearing.exuiDisplayStatus = hearingStatusMapping.exuiDisplayStatus;
       }));
@@ -44,7 +44,7 @@ export async function getHearing(req: EnhancedRequest, res: Response, next: Next
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
 
   try {
-    const {status, data}: { status: number, data: HearingRequestMainModel } = await handleGet(markupPath, req, next);
+    const { status, data }: { status: number, data: HearingRequestMainModel } = await handleGet(markupPath, req, next);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -75,7 +75,7 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
 
   try {
     const reqBody = req.body;
-    const {status, data}: { status: number, data: any } = await handleDelete(markupPath, reqBody, req, next);
+    const { status, data }: { status: number, data: any } = await handleDelete(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -90,7 +90,7 @@ export async function updateHearingRequest(req: EnhancedRequest, res: Response, 
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
   try {
-    const {status, data}: { status: number, data: any } = await handlePut(markupPath, reqBody, req, next);
+    const { status, data }: { status: number, data: any } = await handlePut(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -103,7 +103,7 @@ export async function updateHearingRequest(req: EnhancedRequest, res: Response, 
 export async function getHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
   const hearingId = req.params.hearingId;
   try {
-    const {status, data}: { status: number, data: HearingActualsMainModel } =
+    const { status, data }: { status: number, data: HearingActualsMainModel } =
       await handleGet(`${hmcHearingsUrl}/hearingActuals/${hearingId}`, req, next);
     res.status(status).send(data);
   } catch (error) {
@@ -119,7 +119,7 @@ export async function updateHearingActuals(req: EnhancedRequest, res: Response, 
   const hearingId = req.query.hearingId;
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
   try {
-    const {status, data}: { status: number, data: HearingActualsModel } = await sendPut(markupPath, reqBody, req);
+    const { status, data }: { status: number, data: HearingActualsModel } = await sendPut(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -133,7 +133,7 @@ export async function submitHearingActuals(req: EnhancedRequest, res: Response, 
   const hearingId = req.params.hearingId;
   const markupPath = `${hmcHearingsUrl}/hearingActualsCompletion/${hearingId}`;
   try {
-    const {status}: { status: number } = await handlePost(markupPath, null, req, next);
+    const { status }: { status: number } = await handlePost(markupPath, null, req, next);
     res.status(status).send(null);
   } catch (error) {
     next(error);
@@ -147,7 +147,7 @@ export async function getLinkedHearingGroup(req: EnhancedRequest, res: Response,
   const groupId: string = req.query.groupId as string;
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${groupId}`;
   try {
-    const {status, data}: { status: number, data: LinkedHearingGroupMainModel } = await handleGet(markupPath, req, next);
+    const { status, data }: { status: number, data: LinkedHearingGroupMainModel } = await handleGet(markupPath, req, next);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -162,7 +162,7 @@ export async function postLinkedHearingGroup(req: EnhancedRequest, res: Response
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup`;
   try {
     // tslint:disable-next-line:max-line-length
-    const {status, data}: { status: number, data: LinkedHearingGroupResponseModel } = await handlePost(markupPath, reqBody, req, next);
+    const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handlePost(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -178,7 +178,7 @@ export async function putLinkedHearingGroup(req: EnhancedRequest, res: Response,
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup?id=${groupId}`;
   try {
     // tslint:disable-next-line:max-line-length
-    const {status, data}: { status: number, data: LinkedHearingGroupResponseModel } = await handlePut(markupPath, reqBody, req, next);
+    const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handlePut(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -194,7 +194,7 @@ export async function deleteLinkedHearingGroup(req: EnhancedRequest, res: Respon
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${hearingGroupId}`;
   try {
     // tslint:disable-next-line:max-line-length
-    const {status, data}: { status: number, data: LinkedHearingGroupResponseModel } = await handleDelete(markupPath, reqBody, req, next);
+    const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handleDelete(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
     next(error);

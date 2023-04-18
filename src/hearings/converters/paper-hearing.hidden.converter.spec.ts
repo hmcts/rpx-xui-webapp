@@ -7,8 +7,8 @@ import { State } from '../store/reducers';
 import { PaperHearingHiddenConverter } from './paper-hearing.hidden.converter';
 
 describe('PaperHearingHiddenConverter', () => {
-
   let panelRolesHiddenConverter: PaperHearingHiddenConverter;
+
   beforeEach(() => {
     panelRolesHiddenConverter = new PaperHearingHiddenConverter();
   });

@@ -9,7 +9,7 @@ describe('HearingConfirmationComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       declarations: [HearingConfirmationComponent],
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingConfirmationComponent);

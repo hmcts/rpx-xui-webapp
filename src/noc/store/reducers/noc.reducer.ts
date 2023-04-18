@@ -35,7 +35,7 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
       return {
         ...currentState,
         state: NocState.CASE_REF_VALIDATION_FAILURE,
-        validationErrors: CASE_REF_DEFAULT_VALIDATION_ERROR,
+        validationErrors: CASE_REF_DEFAULT_VALIDATION_ERROR
       };
     }
     case fromActions.SET_CASE_REF_SUBMISSION_FAILURE: {

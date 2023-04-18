@@ -92,12 +92,12 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
     this.specificAccessStateDataSub = this.store.pipe(
       select(fromFeature.getSpecificAccessState),
     )
-        .subscribe(
-      specificAccessReviewStateData => {
-        this.navigationCurrentState = specificAccessReviewStateData.state;
-        this.caseId = specificAccessReviewStateData.caseId;
-      }
-    );
+      .subscribe(
+        (specificAccessReviewStateData) => {
+          this.navigationCurrentState = specificAccessReviewStateData.state;
+          this.caseId = specificAccessReviewStateData.caseId;
+        }
+      );
   }
 
   public onNavEvent(event: SpecificAccessNavigationEvent): void {
@@ -117,7 +117,7 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
     const selectedDurationPeriod = this.specificAccessDurationComponent ? this.specificAccessDurationComponent.getRawData() : null;
     const moreInformation = this.specificAccessInformationComponent ? this.specificAccessInformationComponent.getRawData() : null;
 
-    if ( this.specificAccessDurationComponent) {
+    if (this.specificAccessDurationComponent) {
       this.store.dispatch(new fromFeature.SetSpecificAccessFormData(
         {
           specificAccessDurationForm: { selectedOption: selectedDurationOption, selectedDuration: selectedDurationPeriod }
@@ -125,7 +125,7 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
       ));
     }
 
-    if ( this.specificAccessInformationComponent) {
+    if (this.specificAccessInformationComponent) {
       this.store.dispatch(new fromFeature.SetSpecificAccessInfoFormData(
         {
           InfoText: moreInformation
@@ -139,12 +139,12 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
             this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_REVIEW));
             break;
           case SpecificAccessState.SPECIFIC_ACCESS_APPROVED:
-              this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DURATION));
-              break;
+            this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DURATION));
+            break;
           case SpecificAccessState.SPECIFIC_ACCESS_INFORMATION:
             this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_REVIEW));
             break;
-            default:
+          default:
             throw new Error('Invalid specific access state');
         }
         break;
@@ -158,9 +158,9 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
           case SpecificAccessState.SPECIFIC_ACCESS_DURATION:
             this.specificAccessDurationComponent.navigationHandler(navEvent);
             break;
-            case SpecificAccessState.SPECIFIC_ACCESS_INFORMATION:
-              this.specificAccessInformationComponent.navigationHandler(navEvent);
-              break;
+          case SpecificAccessState.SPECIFIC_ACCESS_INFORMATION:
+            this.specificAccessInformationComponent.navigationHandler(navEvent);
+            break;
           default:
             break;
           // throw new Error('Invalid specific access state');
@@ -169,7 +169,7 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
       }
 
       case SpecificAccessNavigationEvent.RETURNTOMYTASKS: {
-        this.router.navigateByUrl(`/work/my-work/list`);
+        this.router.navigateByUrl('/work/my-work/list');
         break;
       }
       case SpecificAccessNavigationEvent.RETURNTOTASKSTAB: {

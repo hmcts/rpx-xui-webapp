@@ -5,7 +5,7 @@ export interface ElasticSearchQuery {
 
 export interface RequestBodySearch {
   from?: number;
-  sort?: { [key: string]: {} }[];
+  sort?: { [key: string]: object }[];
   query?: Query;
   size?: number;
 }
@@ -26,9 +26,9 @@ export interface Must {
 }
 
 export interface Match {
-  match: { [key: string]: {} };
+  match: { [key: string]: object };
 }
 
 export interface WildCard {
-  wildcard: { [key: string]: {} };
+  wildcard: { [key: string]: object };
 }

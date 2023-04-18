@@ -1,4 +1,5 @@
+/* eslint-disable */
 export default interface ServiceRefData {
-    service: string;
-    serviceCodes: string[];
+  service: string;
+  serviceCodes: string[];
 }

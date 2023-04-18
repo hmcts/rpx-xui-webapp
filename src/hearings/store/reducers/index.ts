@@ -1,10 +1,10 @@
-import {ActionReducerMap, createFeatureSelector} from '@ngrx/store';
-import {HearingActualsStateData} from '../../models/hearingActualsStateData.model';
-import {HearingConditions} from '../../models/hearingConditions';
-import {HearingLinksStateData} from '../../models/hearingLinksStateData.model';
-import {HearingListStateData} from '../../models/hearingListStateData.model';
-import {HearingRequestStateData} from '../../models/hearingRequestStateData.model';
-import {HearingValuesStateData} from '../../models/hearingValuesStateData';
+import { ActionReducerMap, createFeatureSelector } from '@ngrx/store';
+import { HearingActualsStateData } from '../../models/hearingActualsStateData.model';
+import { HearingConditions } from '../../models/hearingConditions';
+import { HearingLinksStateData } from '../../models/hearingLinksStateData.model';
+import { HearingListStateData } from '../../models/hearingListStateData.model';
+import { HearingRequestStateData } from '../../models/hearingRequestStateData.model';
+import { HearingValuesStateData } from '../../models/hearingValuesStateData';
 import * as fromHearingActuals from './hearing-actuals.reducer';
 import * as fromHearingConditions from './hearing-conditions.reducer';
 import * as fromHearingLinks from './hearing-links.reducer';
@@ -30,7 +30,7 @@ export const reducers: ActionReducerMap<State> = {
   hearingRequest: fromHearingRequest.hearingRequestReducer,
   hearingConditions: fromHearingConditions.hearingConditionsReducer,
   hearingActuals: fromHearingActuals.hearingActualsReducer,
-  hearingLinks: fromHearingLinks.hearingLinksReducer,
+  hearingLinks: fromHearingLinks.hearingLinksReducer
 };
 
 export const getHearingsFeatureState = createFeatureSelector<State>(

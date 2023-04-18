@@ -14,16 +14,14 @@ import * as fromCaseCreate from '../../store';
   templateUrl: './case-details.component.html'
 })
 export class CaseDetailsComponent implements OnDestroy, OnInit {
-
   public caseId: string;
   public $caseIdSubscription: Subscription;
 
-  constructor(private readonly store: Store<fromCaseCreate.State>) {
-  }
+  constructor(private readonly store: Store<fromCaseCreate.State>) {}
 
   public ngOnInit(): void {
     this.$caseIdSubscription = this.store.pipe(select(fromCaseCreate.getCaseId))
-      .subscribe(caseId => this.caseId = caseId);
+      .subscribe((caseId) => this.caseId = caseId);
   }
 
   public ngOnDestroy(): void {

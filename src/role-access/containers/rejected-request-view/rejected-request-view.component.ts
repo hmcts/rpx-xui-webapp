@@ -57,13 +57,15 @@ export class RejectedRequestViewComponent implements OnInit {
     }
     if (this.roleCategory === RoleCategory.JUDICIAL) {
       this.allocateRoleService.getCaseRolesUserDetails([this.reviewer], [this.jurisdiction]).subscribe(
-        (caseRoleUserDetails) => { this.reviewerName = caseRoleUserDetails[0].full_name; }
+        (caseRoleUserDetails) => {
+          this.reviewerName = caseRoleUserDetails[0].full_name;
+        }
       );
     } else {
       this.waSupportedJurisdictionsService.getWASupportedJurisdictions().subscribe((services) => {
         this.caseworkerDataService.getCaseworkersForServices(services).subscribe(
           (caseworkers) => {
-            const caseworker = caseworkers.find(thisCaseworker => thisCaseworker.idamId === this.reviewer);
+            const caseworker = caseworkers.find((thisCaseworker) => thisCaseworker.idamId === this.reviewer);
             if (caseworker) {
               this.reviewerName = `${caseworker.firstName} ${caseworker.lastName}`;
             }

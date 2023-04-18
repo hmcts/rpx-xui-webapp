@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { CaseFieldConfig } from '.';
 import { CaseService, SortOrder } from './../../enums';
 

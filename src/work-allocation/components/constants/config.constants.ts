@@ -18,13 +18,13 @@ const CASE_REFERENCE_AS_LINK: FieldConfig = {
   sortName: 'caseId',
   views: TaskView.ALL_VIEWS
 };
-const CASE_REFERENCE_AS_TEXT: FieldConfig = {
-  name: 'case_id',
-  type: FieldType.CASE_REFERENCE_STRING,
-  columnLabel: 'Case reference',
-  sortName: 'caseId',
-  views: TaskView.ALL_VIEWS
-};
+// const CASE_REFERENCE_AS_TEXT: FieldConfig = {
+//   name: 'case_id',
+//   type: FieldType.CASE_REFERENCE_STRING,
+//   columnLabel: 'Case reference',
+//   sortName: 'caseId',
+//   views: TaskView.ALL_VIEWS
+// };
 const CASE_NAME_AS_LINK: FieldConfig = {
   name: 'case_name',
   type: FieldType.CASE_NAME,
@@ -133,13 +133,13 @@ const TASK_NAME_AS_TEXT: FieldConfig = {
   sortName: 'taskTitle',
   views: TaskView.ALL_VIEWS
 };
-const DUE_DATE: FieldConfig = {
-  name: 'dueDate',
-  type: FieldType.DATE_DUE,
-  columnLabel: 'Date',
-  sortName: 'dueDate',
-  views: TaskView.ALL_VIEWS
-};
+// const DUE_DATE: FieldConfig = {
+//   name: 'dueDate',
+//   type: FieldType.DATE_DUE,
+//   columnLabel: 'Date',
+//   sortName: 'dueDate',
+//   views: TaskView.ALL_VIEWS
+// };
 const DUE_DATE_AS_TEXT: FieldConfig = {
   isDate: false,
   name: 'dueDate',
@@ -252,13 +252,13 @@ const MY_ACCESS: FieldConfig[] = [
   CASE_NAME_AS_LINK_DISABLE_SORT, JURISDICTION_DISABLE_SORT, CASE_CATEGORY_DISABLE_SORT, DATE_SUBMITTED_DISABLE_SORT, ACCESS_DISABLE_SORT, ACCESS_START_DATE_DISABLE_SORT, ACCESS_END_DATE_DISABLE_SORT, ACCESS_VIEW_LINK
 ];
 const MY_TASKS: FieldConfig[] = [
-  CASE_REFERENCE_AS_LINK, CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT,  DUE_DATE_AS_TEXT, PRIORITY
+  CASE_REFERENCE_AS_LINK, CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, DUE_DATE_AS_TEXT, PRIORITY
 ];
 const MY_WORK_TASKS_FOR_JUDICIAL: FieldConfig[] = [
   CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, ...JUDICIAL_DATES
 ];
 const MY_WORK_TASKS_FOR_LEGAL_OPS: FieldConfig[] = [
-  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK,  DUE_DATE_AS_TEXT, PRIORITY
+  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, DUE_DATE_AS_TEXT, PRIORITY
 ];
 const TASK_MANAGER: FieldConfig[] = [
   CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, TASK_NAME_AS_TEXT, ...STAFF_DATES, ASSIGNEE

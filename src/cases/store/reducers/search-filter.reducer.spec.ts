@@ -4,19 +4,17 @@ import * as fromActions from '../actions/case-search.action';
 import * as fromFilter from './search-filter.reducer';
 
 describe('Search Filter Reducer', () => {
-
   describe('Actions', () => {
-
     it('should set correct object', () => {
       const initialState = fromFilter.initialSearchState;
-      const action = new fromActions.ApplySearchFilter({selected: {filter: mockedSearchFilters}});
+      const action = new fromActions.ApplySearchFilter({ selected: { filter: mockedSearchFilters } });
       const state = fromFilter.reducer(initialState, action);
       expect(state).toBeDefined();
     });
 
     it('should set correct object with caseState', () => {
       const initialState = fromFilter.initialSearchState;
-      const action = new fromActions.ApplySearchFilter({selected: {filter: mockedSearchFiltersCaseState}});
+      const action = new fromActions.ApplySearchFilter({ selected: { filter: mockedSearchFiltersCaseState } });
       const state = fromFilter.reducer(initialState, action);
       expect(state).toBeDefined();
     });
@@ -48,6 +46,4 @@ describe('Search Filter Reducer', () => {
       expect(state).toBe(initialState);
     });
   });
-
-
 });

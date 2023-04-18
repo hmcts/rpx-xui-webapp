@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-import {CaseFlagGroup} from '../../models/caseFlagGroup.model';
+import { Component, Input } from '@angular/core';
+import { CaseFlagGroup } from '../../models/caseFlagGroup.model';
 
 @Component({
   selector: 'exui-case-flags',

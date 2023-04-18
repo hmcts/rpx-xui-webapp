@@ -16,7 +16,7 @@ describe('Lov RefData service', () => {
           .set('isChildRequired', 'N')
       };
 
-      expect(mockHttpService.get).toHaveBeenCalledWith(`api/prd/lov/getLovRefData`, options);
+      expect(mockHttpService.get).toHaveBeenCalledWith('api/prd/lov/getLovRefData', options);
     });
   });
 });

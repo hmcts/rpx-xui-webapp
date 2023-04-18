@@ -38,7 +38,7 @@ export class AppConfig extends AbstractAppConfig {
       }
     });
 
-    this.environmentService.config$.subscribe(config => {
+    this.environmentService.config$.subscribe((config) => {
       this.featureToggleService.getValue('wa-service-config', config.waSupportedServices).subscribe({
         next: (val) => this.config = {
           ...this.config,
@@ -195,7 +195,7 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.wa_service_config;
   }
 
-  public getAccessManagementBasicViewMock(): {} {
+  public getAccessManagementBasicViewMock(): unknown {
     return this.config.access_management_basic_view_mock;
   }
 
@@ -218,10 +218,12 @@ export class AppConfig extends AbstractAppConfig {
   public getDocumentDataUrl(): string {
     return this.config.document_data_url;
   }
-  public  getRDCommonDataApiUrl(): string {
+
+  public getRDCommonDataApiUrl(): string {
     return this.config.rd_common_data_api_url;
   }
-  public  getCaseDataStoreApiUrl(): string {
+
+  public getCaseDataStoreApiUrl(): string {
     return this.config.case_data_store_api_url;
   }
 }

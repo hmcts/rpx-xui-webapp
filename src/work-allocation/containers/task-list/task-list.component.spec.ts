@@ -36,14 +36,14 @@ class WrapperComponent {
   @Input() public sortedBy: SortField;
 }
 
-@Component({
-  selector: 'exui-task-field',
-  template: '<div class="xui-task-field">{{task.taskName}}</div>'
-})
-class TaskFieldComponent {
-  @Input() public config: FieldConfig;
-  @Input() public task: Task;
-}
+// @Component({
+//   selector: 'exui-task-field',
+//   template: '<div class="xui-task-field">{{task.taskName}}</div>'
+// })
+// class TaskFieldComponent {
+//   @Input() public config: FieldConfig;
+//   @Input() public task: Task;
+// }
 
 /**
  * Mock tasks
@@ -67,7 +67,7 @@ function getTaskService(): TaskServiceConfig {
     service: TaskService.IAC,
     defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
-    fields: getFields(),
+    fields: getFields()
   };
 }
 
@@ -75,12 +75,14 @@ describe('TaskListComponent', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let routerSpy: jasmine.SpyObj<any>;
   const mockRouter: MockRouter = new MockRouter();
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['setItem']);
+
   beforeEach((() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
@@ -118,23 +120,22 @@ describe('TaskListComponent', () => {
 
   it('should return the fields as an array with a \'manage\' entry, so that we can ' +
     'display the manage column in the table.', () => {
-      component = fixture.componentInstance.appComponentRef;
-      const fields = ['caseReference', 'caseName', 'caseCategory', 'location', 'task', 'dueDate'];
-      const fieldsWithManage = [...fields, 'manage'];
+    component = fixture.componentInstance.appComponentRef;
+    const fields = ['caseReference', 'caseName', 'caseCategory', 'location', 'task', 'dueDate'];
+    const fieldsWithManage = [...fields, 'manage'];
 
-      expect(component.addManageColumn(fields)).toEqual(fieldsWithManage);
-    });
+    expect(component.addManageColumn(fields)).toEqual(fieldsWithManage);
+  });
 
   it('should return the columns to be displayed by the Angular Component Dev Kit table.', async () => {
     component = fixture.componentInstance.appComponentRef;
     // create mock getDisplayedColumn variables
     const fieldConfig = getFields();
-    const fields = fieldConfig.map(field => field.name);
+    const fields = fieldConfig.map((field) => field.name);
     const displayedColumns = component.addManageColumn(fields);
 
     // test actual function against mock variables
     expect(component.getDisplayedColumn(fieldConfig)).toEqual(displayedColumns);
-
   });
 
   it('should take in the field name and trigger a new Request to the API to get a sorted result set.', async () => {
@@ -186,7 +187,7 @@ describe('TaskListComponent', () => {
 
     // check the emitter had been called and that it gets called with the new field defined which is caseName
     expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('pageSessionKey', '1');
-    expect(component.defaultSortElement.click).toHaveBeenCalled;
+    expect(component.defaultSortElement.click).toHaveBeenCalled();
   }));
 
   it('should allow sorting for different columns.', fakeAsync(async () => {
@@ -374,7 +375,6 @@ describe('TaskListComponent', () => {
     const firstActionId: string = firstAction.id;
     const secondActionId: string = secondAction.id;
 
-
     // mock the emitter and click the first manage button
     spyOn(component.actionEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
@@ -452,10 +452,10 @@ describe('TaskListComponent', () => {
   describe('act upon deep linking', () => {
     const id = '12345678';
 
-    it('should select appropriate task from location hash', fakeAsync(async ()=> {
+    it('should select appropriate task from location hash', fakeAsync(async () => {
       component = fixture.componentInstance.appComponentRef;
       const task = { id } as Task;
-      wrapper.tasks = [ task ];
+      wrapper.tasks = [task];
       component.addActionsColumn = true;
       fixture.detectChanges();
       component.setSelectedTask(task);
@@ -466,7 +466,7 @@ describe('TaskListComponent', () => {
     it('should handle a location hash for a task that does not exist', fakeAsync(async () => {
       component = fixture.componentInstance.appComponentRef;
       const task = { id: '99999999' } as Task;
-      wrapper.tasks = [ task ];
+      wrapper.tasks = [task];
       component.addActionsColumn = true;
       fixture.detectChanges();
       expect(component.getSelectedTask()).toBeNull();

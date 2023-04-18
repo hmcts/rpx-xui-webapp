@@ -7,8 +7,8 @@ import { State } from '../store/reducers';
 import { NotListedHiddenConverter } from './not-listed.hidden.converter';
 
 describe('NotListedHiddenConverter', () => {
-
   let notListedHiddenConverter: NotListedHiddenConverter;
+
   beforeEach(() => {
     notListedHiddenConverter = new NotListedHiddenConverter();
   });
@@ -18,7 +18,7 @@ describe('NotListedHiddenConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingResponse.laCaseStatus = LaCaseStatus.CLOSED;
     const result$ = notListedHiddenConverter.transformHidden(of(STATE));
     const showAnswer = true;
-    const expected = cold('(b|)', {b: showAnswer});
+    const expected = cold('(b|)', { b: showAnswer });
     expect(result$).toBeObservable(expected);
   });
 
@@ -27,9 +27,7 @@ describe('NotListedHiddenConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingResponse.laCaseStatus = LaCaseStatus.LISTED;
     const result$ = notListedHiddenConverter.transformHidden(of(STATE));
     const showAnswer = false;
-    const expected = cold('(b|)', {b: showAnswer});
+    const expected = cold('(b|)', { b: showAnswer });
     expect(result$).toBeObservable(expected);
   });
-
-
 });

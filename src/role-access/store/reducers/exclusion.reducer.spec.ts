@@ -3,9 +3,7 @@ import * as fromActions from '../actions/exclusion.action';
 import * as fromReducer from './exclusion.reducer';
 
 describe('Exclusion Reducer', () => {
-
   describe('Actions', () => {
-
     describe('Change Navigation action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
@@ -24,5 +22,4 @@ describe('Exclusion Reducer', () => {
       });
     });
   });
-
 });

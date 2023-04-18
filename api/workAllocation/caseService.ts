@@ -11,7 +11,7 @@ const logger: JUILogger = log4jui.getLogger('case-service');
 export async function handleCaseGet(path: string, req: EnhancedRequest): Promise<any> {
   logger.info('getting cases for', path);
   const headers = setHeaders(req);
-  const response: AxiosResponse = await http.get(path, {headers});
+  const response: AxiosResponse = await http.get(path, { headers });
   return response.data;
 }
 
@@ -31,7 +31,7 @@ export const filterAllWorkCases = (cases: any[], parameters: SearchTaskParameter
   if (!parameters) {
     return cases;
   }
-  return cases.filter(item => {
+  return cases.filter((item) => {
     return parameters.every((param: SearchTaskParameter) => {
       const value: string = param.values as string;
       if (!value) {

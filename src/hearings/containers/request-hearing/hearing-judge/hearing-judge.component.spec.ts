@@ -34,7 +34,7 @@ describe('HearingJudgeComponent', () => {
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
-      from: 'exui-default',
+      from: 'exui-default'
     },
     {
       key: 'dtj',
@@ -48,7 +48,7 @@ describe('HearingJudgeComponent', () => {
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
-      from: 'exui-default',
+      from: 'exui-default'
     },
     {
       key: 'rtj',
@@ -62,8 +62,8 @@ describe('HearingJudgeComponent', () => {
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
-      from: 'exui-default',
-    },
+      from: 'exui-default'
+    }
   ];
 
   beforeEach(() => {
@@ -79,14 +79,14 @@ describe('HearingJudgeComponent', () => {
             snapshot: {
               data: {
                 hearingJudgeTypes: judgeTypes,
-                judicialUsers: [{personalCode:'p1000000'}]
+                judicialUsers: [{ personalCode: 'p1000000' }]
               }
             },
-            fragment: of('point-to-me'),
+            fragment: of('point-to-me')
           }
-        },
+        }
       ],
-      schemas: [NO_ERRORS_SCHEMA],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingJudgeComponent);
@@ -179,7 +179,6 @@ describe('HearingJudgeComponent', () => {
     component.hearingJudgeForm.controls.specificJudge.setValue(RadioOptions.NO);
     component.prepareHearingRequestData();
     expect(component.hearingRequestMainModel.hearingDetails.panelRequirements.roleType.length).toBe(0);
-
   });
 
   it('should get getFormData', () => {

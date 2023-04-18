@@ -4,7 +4,7 @@ import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
-import { Utils} from '../../../cases/utils/utils';
+import { Utils } from '../../../cases/utils/utils';
 import { InfoMessage } from '../../../work-allocation/enums';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { Task } from '../../../work-allocation/models/tasks';
@@ -26,6 +26,7 @@ export class CaseTaskComponent implements OnInit {
     CaseTaskComponent.CASE_ID_VARIABLE,
     CaseTaskComponent.TASK_ID_VARIABLE
   ];
+
   public manageOptions: {id: string, title: string }[];
   public isUserJudicial: boolean;
   private pTask: Task;
@@ -33,8 +34,7 @@ export class CaseTaskComponent implements OnInit {
   constructor(private readonly alertService: AlertService,
               private readonly router: Router,
               private readonly sessionStorageService: SessionStorageService,
-              protected taskService: WorkAllocationTaskService) {
-  }
+              protected taskService: WorkAllocationTaskService) {}
 
   public get returnUrl(): string {
     return this.router ? this.router.url : `case-details/${this.task.case_id}/tasks`;
@@ -57,96 +57,96 @@ export class CaseTaskComponent implements OnInit {
    * Emit an event to refresh tasks
    */
    @Output() public taskRefreshRequired: EventEmitter<void>
-   = new EventEmitter();
+     = new EventEmitter();
 
-  public static replaceVariablesWithRealValues(task: Task): string {
-    if (!task.description) {
-      return '';
-    }
+   public static replaceVariablesWithRealValues(task: Task): string {
+     if (!task.description) {
+       return '';
+     }
 
-    // Append task id as querystring to task description markdown
-    task.description = appendTaskIdAsQueryStringToTaskDescription(task);
+     // Append task id as querystring to task description markdown
+     task.description = appendTaskIdAsQueryStringToTaskDescription(task);
 
-    return CaseTaskComponent.VARIABLES.reduce((description: string, variable: string) => {
-      if (variable === CaseTaskComponent.TASK_ID_VARIABLE) {
-        return Utils.replaceAll(description, variable, task.id);
-      }
-      return Utils.replaceAll(description, variable, task.case_id);
-    }, task.description);
-  }
+     return CaseTaskComponent.VARIABLES.reduce((description: string, variable: string) => {
+       if (variable === CaseTaskComponent.TASK_ID_VARIABLE) {
+         return Utils.replaceAll(description, variable, task.id);
+       }
+       return Utils.replaceAll(description, variable, task.case_id);
+     }, task.description);
+   }
 
-  public ngOnInit(): void {
-    this.manageOptions = this.task.actions;
-  }
+   public ngOnInit(): void {
+     this.manageOptions = this.task.actions;
+   }
 
-  public getAssigneeName(task: Task): string {
-    return task.assignee ? task.assigneeName : 'Unassigned';
-  }
+   public getAssigneeName(task: Task): string {
+     return task.assignee ? task.assigneeName : 'Unassigned';
+   }
 
-  public isTaskAssignedToCurrentUser(task: Task): boolean {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const userId = userInfo.id ? userInfo.id : userInfo.uid;
-      this.isUserJudicial = AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
-      return task.assignee && task.assignee === userId;
-    }
-    return false;
-  }
+   public isTaskAssignedToCurrentUser(task: Task): boolean {
+     const userInfoStr = this.sessionStorageService.getItem('userDetails');
+     if (userInfoStr) {
+       const userInfo: UserInfo = JSON.parse(userInfoStr);
+       const userId = userInfo.id ? userInfo.id : userInfo.uid;
+       this.isUserJudicial = AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
+       return task.assignee && task.assignee === userId;
+     }
+     return false;
+   }
 
-  public getDueDateTitle(): string {
-    return this.isUserJudicial ? 'Task created' : 'Due date';
-  }
+   public getDueDateTitle(): string {
+     return this.isUserJudicial ? 'Task created' : 'Due date';
+   }
 
-  public onActionHandler(task: Task, option: any): void {
-    if (option.id === 'claim') {
-      this.taskService.claimTask(task.id).subscribe(() => {
-        this.alertService.success(InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS);
-        this.taskRefreshRequired.emit();
-      }, error => {
-        this.claimTaskErrors(error.status);
-      });
-      return;
-    }
-    const state = {
-      returnUrl: this.returnUrl,
-      keepUrl: true,
-      showAssigneeColumn: true
-    };
-    const actionUrl = `/work/${task.id}/${option.id}`;
-    this.router.navigate([actionUrl], { queryParams: {service: task.jurisdiction}, state });
-  }
+   public onActionHandler(task: Task, option: any): void {
+     if (option.id === 'claim') {
+       this.taskService.claimTask(task.id).subscribe(() => {
+         this.alertService.success(InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS);
+         this.taskRefreshRequired.emit();
+       }, (error) => {
+         this.claimTaskErrors(error.status);
+       });
+       return;
+     }
+     const state = {
+       returnUrl: this.returnUrl,
+       keepUrl: true,
+       showAssigneeColumn: true
+     };
+     const actionUrl = `/work/${task.id}/${option.id}`;
+     this.router.navigate([actionUrl], { queryParams: { service: task.jurisdiction }, state });
+   }
 
-  /**
+   /**
    * Navigate the User to the correct error page, or throw an on page warning
    * that the Task is no longer available.
    */
    public claimTaskErrors(status: number): void {
-    const REDIRECT_404 = [{status: 404, redirectTo: REDIRECTS.ServiceDown}];
-    const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
-    if (handledStatus > 0) {
-      this.alertService.warning(InfoMessage.TASK_NO_LONGER_AVAILABLE);
-      if (handledStatus === 400) {
-        this.taskRefreshRequired.emit();
-      }
-    }
-  }
+     const REDIRECT_404 = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }];
+     const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
+     if (handledStatus > 0) {
+       this.alertService.warning(InfoMessage.TASK_NO_LONGER_AVAILABLE);
+       if (handledStatus === 400) {
+         this.taskRefreshRequired.emit();
+       }
+     }
+   }
 
-  public toDate(value: string | number | Date): Date {
-    if (value) {
-      const d = new Date(value);
-      return isNaN(d.getTime()) ? null : d;
-    }
-    return null;
-  }
+   public toDate(value: string | number | Date): Date {
+     if (value) {
+       const d = new Date(value);
+       return isNaN(d.getTime()) ? null : d;
+     }
+     return null;
+   }
 
-  public onClick(event: string) {
-    const url = event.substring(event.indexOf('(') + 1, event.indexOf(')'));
-    const urls = url.split('?');
-    this.router.navigate([urls[0]], {
-      queryParams: {
-        tid: urls[1].split('=')[1]
-      }
-    });
-  }
+   public onClick(event: string) {
+     const url = event.substring(event.indexOf('(') + 1, event.indexOf(')'));
+     const urls = url.split('?');
+     this.router.navigate([urls[0]], {
+       queryParams: {
+         tid: urls[1].split('=')[1]
+       }
+     });
+   }
 }

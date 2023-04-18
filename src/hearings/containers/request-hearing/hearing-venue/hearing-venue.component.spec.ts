@@ -18,15 +18,15 @@ import { HearingVenueComponent } from './hearing-venue.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
-  template: '',
+  template: ''
 })
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
 class NativeElement {
-  public focus() {
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public focus() {}
 }
 
 class MockAutoCompleteInputBox {
@@ -35,7 +35,7 @@ class MockAutoCompleteInputBox {
 
 @Component({
   selector: 'exui-search-location',
-  template: '',
+  template: ''
 })
 class MockLocationSearchContainerComponent {
   @Input() public serviceIds: string = '';
@@ -82,14 +82,14 @@ describe('HearingVenueComponent', () => {
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingVenueComponent, MockLocationSearchContainerComponent, MockHearingPartiesComponent],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
-        {provide: LocationsDataService, useValue: locationsDataService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
+        { provide: LocationsDataService, useValue: locationsDataService },
         {
           provide: ActivatedRoute,
           useValue: {
-            fragment: of('point-to-me'),
-          },
+            fragment: of('point-to-me')
+          }
         },
         FormBuilder
       ],

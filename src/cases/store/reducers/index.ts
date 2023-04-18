@@ -1,4 +1,4 @@
-import {ActionReducerMap, createFeatureSelector} from '@ngrx/store';
+import { ActionReducerMap, createFeatureSelector } from '@ngrx/store';
 
 import * as fromCaseListFilters from './case-list.reducer';
 import * as fromCaseCreate from './create-case.reducer';

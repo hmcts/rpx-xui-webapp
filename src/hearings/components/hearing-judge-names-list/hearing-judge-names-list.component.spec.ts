@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { JudicialUserModel } from '../../models/judicialUser.model';
 import { HearingJudgeNamesListComponent } from './hearing-judge-names-list.component';
@@ -18,14 +18,14 @@ describe('HearingJudgeNamesListComponent', () => {
     knownAs: 'Hearing Judge',
     personalCode: 'P100001',
     surname: 'Jacky',
-    title: '',
+    title: ''
   };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [HearingJudgeNamesListComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
   }));

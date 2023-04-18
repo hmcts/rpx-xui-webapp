@@ -32,17 +32,17 @@ describe('CourtLocationsData Resolver', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-        imports: [
-          RouterTestingModule.withRoutes([]),
-          HttpClientTestingModule,
-        ],
-        providers: [
-          provideMockStore({initialState}),
-          CourtLocationsDataResolver,
-          LocationsDataService,
-          {provide: APP_BASE_HREF, useValue: '/'}
-        ]
-      }
+      imports: [
+        RouterTestingModule.withRoutes([]),
+        HttpClientTestingModule
+      ],
+      providers: [
+        provideMockStore({ initialState }),
+        CourtLocationsDataResolver,
+        LocationsDataService,
+        { provide: APP_BASE_HREF, useValue: '/' }
+      ]
+    }
     );
     locationsDataService = TestBed.inject(LocationsDataService) as LocationsDataService;
   });

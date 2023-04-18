@@ -71,6 +71,6 @@ export function toEpimmsLocation(locationModel: LocationModel): LocationByEPIMMS
     welsh_court_address: locationModel.welsh_court_address,
     venue_name: locationModel.venue_name,
     is_case_management_location: locationModel.is_case_management_location,
-    is_hearing_location: locationModel.is_hearing_location,
+    is_hearing_location: locationModel.is_hearing_location
   };
 }

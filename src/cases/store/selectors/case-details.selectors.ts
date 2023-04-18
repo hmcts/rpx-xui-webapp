@@ -1,4 +1,4 @@
-import {createSelector} from '@ngrx/store';
+import { createSelector } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
 
 export const getCaseId = createSelector(

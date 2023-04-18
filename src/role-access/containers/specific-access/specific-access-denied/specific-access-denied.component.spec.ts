@@ -44,7 +44,6 @@ describe('SpecificAccessDeniedComponent', () => {
   });
 
   describe('navigation', () => {
-
     it('should create component and show the correct message', () => {
       expect(component).toBeDefined();
       const confirmationMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-panel__title');
@@ -60,7 +59,5 @@ describe('SpecificAccessDeniedComponent', () => {
       component.onNavigate(SpecificAccessState.SPECIFIC_ACCESS_DENIED);
       expect(mockStore.dispatch).toHaveBeenCalled();
     });
-
   });
-
 });

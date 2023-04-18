@@ -1,4 +1,4 @@
-import {PanelPreferenceModel} from './panelPreference.model';
+import { PanelPreferenceModel } from './panelPreference.model';
 
 export interface PanelRequirementsModel {
   roleType?: string[];

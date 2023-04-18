@@ -25,7 +25,7 @@ describe('WorkAllocation', () => {
       sessionStorageService.getItem.and.returnValue(null);
       mockHttpService.post.and.returnValue(of([]));
       service.getLocationsByRegion(['IA']);
-      expect(mockHttpService.post).toHaveBeenCalledWith(LocationDataService.regionLocationUrl, {serviceIds: ['IA']});
+      expect(mockHttpService.post).toHaveBeenCalledWith(LocationDataService.regionLocationUrl, { serviceIds: ['IA'] });
     });
 
     it('getSpecificLocations should make correct api call', () => {

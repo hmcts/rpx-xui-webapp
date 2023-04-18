@@ -98,7 +98,7 @@ export class CaseViewerContainerComponent implements OnInit {
       map((featureVariations: FeatureVariation[]) => {
         const jurisdictionId = this.caseDetails.case_type.jurisdiction.id;
         const caseTypeId = this.caseDetails.case_type.id;
-        const hasMatchedPermissions = featureVariations.some(featureVariation =>
+        const hasMatchedPermissions = featureVariations.some((featureVariation) =>
           Utils.hasMatchedPermissions(featureVariation, jurisdictionId, caseTypeId)
         );
         return hasMatchedPermissions ? this.appendedTabs : [];

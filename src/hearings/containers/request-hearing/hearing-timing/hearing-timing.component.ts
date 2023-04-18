@@ -182,7 +182,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   }
 
   public checkUnavailableDatesList(dateList: UnavailabilityRangeModel[]): void {
-    dateList.forEach(dateRange => {
+    dateList.forEach((dateRange) => {
       if (dateRange) {
         this.setUnavailableDates(dateRange);
       }
@@ -283,9 +283,9 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
         id: this.earliestHearingDate.id,
         message: HearingDatePriorityEnum.EarliestHearingDateError
       });
-      this.earliestDateOfHearingError = {isInvalid: true, messages: [HearingDatePriorityEnum.EarliestHearingDateError]};
+      this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.EarliestHearingDateError] };
     } else if ((isEarliestDateWeekendDate || isLatestDateWeekendDate) && numberOfBusinessDays === 0) {
-      this.validationErrors.push({id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.WeekDayError});
+      this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.WeekDayError });
       this.dateRangeWeekendError = HearingDatePriorityEnum.WeekDayError;
     } else if (isEarliestDateValid && isLatestHearingDate && (numberOfBusinessDays * 6 * 60) < this.calculateDuration()) {
       this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.NotEnoughDaysInDateRangeError });

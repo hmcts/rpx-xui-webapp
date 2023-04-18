@@ -263,9 +263,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
    *
    * @param paginationMetadata - {totalPagesCount: 33, totalResultsCount: 811}
    */
-  public onPaginationSubscribeHandler = paginationMetadata => {
-
-    if (typeof paginationMetadata !== 'undefined'  && typeof paginationMetadata.totalPagesCount !== 'undefined') {
+  public onPaginationSubscribeHandler = (paginationMetadata) => {
+    if (typeof paginationMetadata !== 'undefined' && typeof paginationMetadata.totalPagesCount !== 'undefined') {
       this.paginationMetadata.totalPagesCount = paginationMetadata.totalPagesCount;
       this.paginationMetadata.totalResultsCount = paginationMetadata.totalResultsCount;
 

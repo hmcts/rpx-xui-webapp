@@ -9,10 +9,10 @@ import { ALL_LOCATIONS } from './constants/locations';
 import { handleLocationGet } from './locationService';
 
 chai.use(sinonChai);
-describe('Location Service', () => {
 
+describe('Location Service', () => {
   let sandbox: sinon.SinonSandbox;
-  const res = mockRes({status: 200, data: ALL_LOCATIONS});
+  const res = mockRes({ status: 200, data: ALL_LOCATIONS });
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -23,15 +23,12 @@ describe('Location Service', () => {
   });
 
   describe('handleLocationGet()', () => {
-
     it('should make a get request', async () => {
       const path = '/location';
       const req = mockReq();
-      const spy = sandbox.stub(http, 'get').resolves(res);
-
-      const {data} = await handleLocationGet(path, req);
+      sandbox.stub(http, 'get').resolves(res);
+      const { data } = await handleLocationGet(path, req);
       expect(data).to.equal(ALL_LOCATIONS);
     });
   });
-
 });

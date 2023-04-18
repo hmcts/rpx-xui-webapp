@@ -1,13 +1,13 @@
 export const environment = {
   production: true,
   loggingLevel: 'OFF',
-   cookies: {
-     token: '__auth__',
-     userId: '__userid__',
-     roles: 'roles',
-   },
-   googleAnalyticsKey: 'UA-124734893-1',
-   googleTagManagerKey: 'GTM-TQ7PKDF'
+  cookies: {
+    token: '__auth__',
+    userId: '__userid__',
+    roles: 'roles'
+  },
+  googleAnalyticsKey: 'UA-124734893-1',
+  googleTagManagerKey: 'GTM-TQ7PKDF'
 };
 
 /**

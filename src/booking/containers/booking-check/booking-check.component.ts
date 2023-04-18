@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { throwError } from 'rxjs';
@@ -70,17 +70,17 @@ export class BookingCheckComponent {
     this.bookingService.createBooking(payload).pipe(
       switchMap(() => {
         return this.bookingService.refreshRoleAssignments(this.userId).pipe(
-          catchError(err => {
-            return throwError({...err, case : 'refreshRoleAssignments'});
+          catchError((err) => {
+            return throwError({ ...err, case: 'refreshRoleAssignments' });
           })
         );
       }),
-      catchError(err => {
-        if ( !err.case) {
-        return throwError({...err, case : 'createBooking'});
-      }
-        return throwError({...err, case : 'refreshRoleAssignments'});
-    })
+      catchError((err) => {
+        if (!err.case) {
+          return throwError({ ...err, case: 'createBooking' });
+        }
+        return throwError({ ...err, case: 'refreshRoleAssignments' });
+      })
     ).subscribe(() => {
       this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
       this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
@@ -92,8 +92,8 @@ export class BookingCheckComponent {
         }
       });
     },
-    err => {
-      if ( err.case === 'createBooking') {
+    (err) => {
+      if (err.case === 'createBooking') {
         CreateBookingHandleError(err, this.router);
       } else {
         RefreshBookingHandleError(err, this.router);

@@ -1,7 +1,7 @@
-import {Action} from '@ngrx/store';
-import {HttpError} from '../../../models/httpError.model';
-import {HearingConditions} from '../../models/hearingConditions';
-import {HearingRequestMainModel} from '../../models/hearingRequestMain.model';
+import { Action } from '@ngrx/store';
+import { HttpError } from '../../../models/httpError.model';
+import { HearingConditions } from '../../models/hearingConditions';
+import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
 
 export const RESET_HEARING_REQUEST = '[HEARING REQUEST] Reset Hearing Request';
 export const NAVIGATE_BACK_HEARING_REQUEST = '[HEARING REQUEST] Navigate Back Hearing Request';
@@ -26,58 +26,50 @@ export class NavigateBackHearingRequest implements Action {
 export class InitializeHearingRequest implements Action {
   public readonly type = INITIALIZE_HEARING_REQUEST;
 
-  constructor(public payload: HearingRequestMainModel) {
-  }
+  constructor(public payload: HearingRequestMainModel) {}
 }
 
 export class LoadHearingRequest implements Action {
   public readonly type = LOAD_HEARING_REQUEST;
 
-  constructor(public payload: { hearingID: string, targetURL: string }) {
-  }
+  constructor(public payload: { hearingID: string, targetURL: string }) {}
 }
 
 export class UpdateHearingRequest implements Action {
   public readonly type = UPDATE_HEARING_REQUEST;
 
   constructor(public hearingRequestMainModel: HearingRequestMainModel,
-              public hearingCondition: HearingConditions) {
-  }
+              public hearingCondition: HearingConditions) {}
 }
 
 export class UpdateHearingRequestFailure implements Action {
   public readonly type = UPDATE_HEARING_REQUEST_FAILURE;
 
-  constructor(public payload: HttpError) {
-  }
+  constructor(public payload: HttpError) {}
 }
 
 export class SubmitHearingRequest implements Action {
   public readonly type = SUBMIT_HEARING_REQUEST;
 
-  constructor(public payload: HearingRequestMainModel) {
-  }
+  constructor(public payload: HearingRequestMainModel) {}
 }
 
 export class SubmitHearingRequestFailure implements Action {
   public readonly type = SUBMIT_HEARING_REQUEST_FAILURE;
 
-  constructor(public payload: HttpError) {
-  }
+  constructor(public payload: HttpError) {}
 }
 
 export class ViewEditSubmitHearingReason implements Action {
   public readonly type = VIEW_EDIT_SUBMIT_HEARING_REASON;
 
-  constructor(public payload: HearingRequestMainModel) {
-  }
+  constructor(public payload: HearingRequestMainModel) {}
 }
 
 export class ViewEditSubmitHearingRequest implements Action {
   public readonly type = VIEW_EDIT_SUBMIT_HEARING_REQUEST;
 
-  constructor(public payload: HearingRequestMainModel) {
-  }
+  constructor(public payload: HearingRequestMainModel) {}
 }
 
 export class ResetHearingRequestLastError implements Action {

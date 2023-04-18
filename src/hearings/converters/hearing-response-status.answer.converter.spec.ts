@@ -6,7 +6,6 @@ import { State } from '../store/reducers';
 import { HearingResponseStatusAnswerConverter } from './hearing-response-status.answer.converter';
 
 describe('HearingResponseStageAnswerConverter', () => {
-
   let hearingResponseStatusAnswerConverter: HearingResponseStatusAnswerConverter;
 
   beforeEach(() => {

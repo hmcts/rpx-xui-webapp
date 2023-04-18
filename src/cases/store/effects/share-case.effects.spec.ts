@@ -26,6 +26,7 @@ describe('Share Case Effects', () => {
   const routerMock = jasmine.createSpyObj('Router', [
     'navigate'
   ]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let spyOnDispatchToStore = jasmine.createSpy();
   const caseShareServiceMock = jasmine.createSpyObj('CaseShareService', ['getShareCases', 'getUsersFromOrg', 'assignUsersWithCases']);
 
@@ -38,7 +39,7 @@ describe('Share Case Effects', () => {
       providers: [
         {
           provide: CaseShareService,
-          useValue: caseShareServiceMock,
+          useValue: caseShareServiceMock
         },
         {
           provide: Router,

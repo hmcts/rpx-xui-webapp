@@ -9,25 +9,24 @@ import { Observable, of } from 'rxjs';
 import { ActualHearingsUtils } from 'src/hearings/utils/actual-hearings.utils';
 import { hearingActualsMainModel, hearingStageRefData, initialState, partyChannelsRefData, partySubChannelsRefData } from '../../../hearing.test.data';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
-import { ACTION, HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
+import { ACTION, HearingResult } from '../../../models/hearings.enum';
 import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HearingActualSummaryComponent } from './hearing-actual-summary.component';
 
-@Pipe({name: 'transformAnswer'})
+@Pipe({ name: 'transformAnswer' })
 export class MockHearingAnswersPipe implements PipeTransform {
-    public transform(answerSource, hearingState$, index?: number): string {
-        return '';
-    }
+  public transform(): string {
+    return '';
+  }
 }
 
 @Component({
   template: `
     <div>Nothing</div>`
 })
-class NothingComponent {
-}
+class NothingComponent {}
 
 describe('HearingActualSummaryComponent', () => {
   let component: HearingActualSummaryComponent;
@@ -49,7 +48,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'postponedDueToOtherReasons',
@@ -62,7 +61,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'postponedIncompleteTribunal',
@@ -75,7 +74,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'postponedNoReasonGiven',
@@ -88,7 +87,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'postponedOtherPartyUnableToAttend',
@@ -101,7 +100,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'adjournedAppellantToAttendOralRequestedDidNotAttendReasonGiven',
@@ -114,7 +113,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'adjournedAppellantToAttendOralRequestedDidNotAttendNoReason',
@@ -127,7 +126,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'adjournedAppellantToAttendPaperRequestedOrNoEnquiryFormReturned',
@@ -140,7 +139,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'adjournedFurtherMedicalEvidenceEssential',
@@ -153,7 +152,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'adjournedEvidenceOrFurtherResponseFromRespondentRequired',
@@ -166,7 +165,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'adjournedEvidenceOrSubmissionFromAppellantRequired',
@@ -179,7 +178,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'adjournedNoInterpreter',
@@ -192,7 +191,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'adjournedInsufficientTimeToDealWithCase',
@@ -205,7 +204,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'adjournedDocumentsSuppliedButNotBeforeTheTribunalAtTheHearing',
@@ -218,7 +217,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'adjournedPresentingOfficerToAttend',
@@ -231,7 +230,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'adjournedRespondentFailedToComplyWithDirection',
@@ -244,7 +243,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'adjournedOtherAdministrativeErrors',
@@ -257,7 +256,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'adjournedOtherReasonsForAdjourning',
@@ -270,7 +269,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'adjournedElementsOutstanding',
@@ -283,7 +282,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'adjournedAllElementsAdjourned',
@@ -296,7 +295,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'adjournedListedPaperCaseNotHeardDueToLackOfTime',
@@ -309,8 +308,8 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null,
-    },
+      child_nodes: null
+    }
   ];
   const actualCancellationReasonCodes = [
     {
@@ -489,9 +488,9 @@ describe('HearingActualSummaryComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe],
-      imports: [ RouterTestingModule.withRoutes(
+      imports: [RouterTestingModule.withRoutes(
         [
-          {path: 'hearings/actuals/1000000/hearing-actual-summary', component: NothingComponent}
+          { path: 'hearings/actuals/1000000/hearing-actual-summary', component: NothingComponent }
         ]
       )],
       providers: [
@@ -501,20 +500,20 @@ describe('HearingActualSummaryComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             paramMap: of(convertToParamMap({
-              id: '1',
+              id: '1'
             })),
             snapshot: {
               params: {
-                id: '1',
+                id: '1'
               },
               data: {
                 partyChannels: partyChannelsRefData,
                 partySubChannels: partySubChannelsRefData,
                 hearingRole
-              },
-            },
-          },
-        },
+              }
+            }
+          }
+        }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -604,7 +603,7 @@ describe('HearingActualSummaryComponent', () => {
         pauseDateTimes: [],
         notRequired: false,
         actualDayParties: []
-      },
+      }
     ];
     expect(component.isHearingActualsDaysAvailable('2021-03-12')).toBeTruthy();
     expect(component.isHearingActualsPartiesAvailable('2021-03-12')).toBeTruthy();
@@ -622,39 +621,39 @@ describe('HearingActualSummaryComponent', () => {
           actualPartyId: '1',
           individualDetails: {
             firstName: 'Bob',
-            lastName: 'Jones',
+            lastName: 'Jones'
           },
           actualOrganisationName: 'Company A',
           didNotAttendFlag: false,
           partyChannelSubType: 'inPerson',
           partyRole: 'appellant',
-          representedParty: '',
+          representedParty: ''
         },
         {
           actualPartyId: '2',
           individualDetails: {
             firstName: 'Mary',
-            lastName: 'Jones',
+            lastName: 'Jones'
           },
           actualOrganisationName: 'Company B',
           didNotAttendFlag: false,
           partyChannelSubType: 'inPerson',
           partyRole: 'claimant',
-          representedParty: '',
+          representedParty: ''
         },
         {
           actualPartyId: '3',
           individualDetails: {
             firstName: 'James',
-            lastName: 'Gods',
+            lastName: 'Gods'
           },
           actualOrganisationName: 'Solicitors A',
           didNotAttendFlag: false,
           partyChannelSubType: 'inPerson',
           partyRole: 'interpreter',
-          representedParty: '1',
-        },
-      ],
+          representedParty: '1'
+        }
+      ]
     };
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.confirmActualHearingTimeForDay(hearingDay);
@@ -704,8 +703,7 @@ describe('HearingActualSummaryComponent', () => {
   });
 
   it('should return updated notRequired', () => {
-    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
-      (component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
+    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
     expect(patchedHearingActuals.actualHearingDays[0].notRequired).toBe(true);
   });
 

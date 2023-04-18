@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { AlertService, CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -24,7 +24,7 @@ const CASE_VIEW: CaseView = {
     name: 'Test Address Book Case',
     jurisdiction: {
       id: 'TEST',
-      name: 'Test',
+      name: 'Test'
     },
     printEnabled: true
   },
@@ -106,7 +106,7 @@ const CASE_VIEW: CaseView = {
       order: 3,
       fields: [],
       show_condition: ''
-    },
+    }
   ]
 };
 
@@ -126,11 +126,11 @@ describe('TasksContainerComponent', () => {
         HttpClientTestingModule
       ],
       providers: [
-        {provide: AlertService, useValue: mockAlertService},
-        {provide: WorkAllocationCaseService, useValue: mockWACaseService},
-        {provide: CaseworkerDataService, useValue: mockCaseworkerService},
-        {provide: AllocateRoleService, useValue: mockRoleService},
-        {provide: FeatureToggleService, useValue: mockFeatureToggleService},
+        { provide: AlertService, useValue: mockAlertService },
+        { provide: WorkAllocationCaseService, useValue: mockWACaseService },
+        { provide: CaseworkerDataService, useValue: mockCaseworkerService },
+        { provide: AllocateRoleService, useValue: mockRoleService },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -142,10 +142,10 @@ describe('TasksContainerComponent', () => {
                 },
                 case: CASE_VIEW
               },
-              paramMap: convertToParamMap({cId: '1234567890123456'}),
+              paramMap: convertToParamMap({ cId: '1234567890123456' })
             }
           }
-        },
+        }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
@@ -183,17 +183,17 @@ describe('TasksContainerComponent', () => {
       } as any
     ];
     const judicialUserData = [{
-        sidam_id: '09f1f25d-7d7e-4481-b8e3-8624227438ef',
-        object_id: 'e97296ca-8182-45ef-82d0-7e4eeb6dab49-test2',
-        known_as: 'Joe',
-        surname: 'Bloggs',
-        full_name: 'Joe Bloggs',
-        post_nominals: 'Judge',
-        email_id: '4920094EMP-@ejudiciary.net',
-        personal_code: '4920094'
+      sidam_id: '09f1f25d-7d7e-4481-b8e3-8624227438ef',
+      object_id: 'e97296ca-8182-45ef-82d0-7e4eeb6dab49-test2',
+      known_as: 'Joe',
+      surname: 'Bloggs',
+      full_name: 'Joe Bloggs',
+      post_nominals: 'Judge',
+      email_id: '4920094EMP-@ejudiciary.net',
+      personal_code: '4920094'
     }];
-    component.getJudicialNamedTasks(judicialUserData as any).subscribe( task => {
-        expect(task[0].assigneeName).toEqual('Joe Bloggs');
+    component.getJudicialNamedTasks(judicialUserData as any).subscribe((task) => {
+      expect(task[0].assigneeName).toEqual('Joe Bloggs');
     });
   });
 

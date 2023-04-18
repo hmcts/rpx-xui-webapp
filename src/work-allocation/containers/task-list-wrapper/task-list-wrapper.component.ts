@@ -29,7 +29,7 @@ import {
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
-  templateUrl: 'task-list-wrapper.component.html',
+  templateUrl: 'task-list-wrapper.component.html'
 })
 export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public specificPage: string = '';
@@ -139,13 +139,13 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     return {
       service: TaskService.IAC,
       defaultSortDirection: SortOrder.ASC,
-      defaultSortFieldName: this.fields.some(f => f.name === 'priority') ? 'priority' : 'created_date',
+      defaultSortFieldName: this.fields.some((f) => f.name === 'priority') ? 'priority' : 'created_date',
       fields: this.fields
     };
   }
 
   public getDateField(defaultSortColumn: string): string {
-    const field = this.fields.find(currentField => currentField.isDate);
+    const field = this.fields.find((currentField) => currentField.isDate);
     if (field) {
       return field.sortName;
     }
@@ -156,7 +156,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
     this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
     this.isUpdatedTaskPermissions$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
-    this.isUpdatedTaskPermissions$.pipe(filter(v => !!v)).subscribe(value => {
+    this.isUpdatedTaskPermissions$.pipe(filter((v) => !!v)).subscribe((value) => {
       this.updatedTaskPermission = value;
     });
 
@@ -186,8 +186,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         if (newLocations) {
           this.selectedLocations = (newLocations).map((l) => l.epimms_id);
         }
-        this.selectedWorkTypes = newWorkTypes.filter(workType => workType !== 'types_of_work_all');
-        this.selectedServices = services.filter(service => service !== 'services_all');
+        this.selectedWorkTypes = newWorkTypes.filter((workType) => workType !== 'types_of_work_all');
+        this.selectedServices = services.filter((service) => service !== 'services_all');
         if (this.selectedLocations.length) {
           this.doLoad();
         }
@@ -195,13 +195,13 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public setupTaskList() {
-    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap(jurisdictions =>
+    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
       this.caseworkerService.getCaseworkersForServices(jurisdictions)
     ));
     // similar to case list wrapper changes
-    caseworkersByService$.subscribe(caseworkers => {
+    caseworkersByService$.subscribe((caseworkers) => {
       this.caseworkers = caseworkers;
-    }, error => {
+    }, (error) => {
       handleFatalErrors(error.status, this.router);
     });
     // Try to get the sort order out of the session.
@@ -243,7 +243,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public refreshTasks(): void {
     this.infoMessageCommService.addMessage({
       type: InfoMessageType.INFO,
-      message: InfoMessage.LIST_OF_TASKS_REFRESHED,
+      message: InfoMessage.LIST_OF_TASKS_REFRESHED
     });
     this.doLoad();
   }
@@ -255,7 +255,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   public performSearchPreviousTaskPermissions(): Observable<TaskResponse> {
     const searchRequest = this.getSearchTaskRequestPagination();
-    return this.taskService.searchTask({ searchRequest, view: this.view, refined: false, currentUser: this.currentUser});
+    return this.taskService.searchTask({ searchRequest, view: this.view, refined: false, currentUser: this.currentUser });
   }
 
   /**
@@ -327,7 +327,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
       };
       const actionUrl = `/work/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
-      this.router.navigate([actionUrl], {queryParams: {service: taskAction.task.jurisdiction},  state });
+      this.router.navigate([actionUrl], { queryParams: { service: taskAction.task.jurisdiction }, state });
     } catch (error) {
       console.error('onActionHandler', error, taskAction);
     }
@@ -360,7 +360,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     const tasksSearch$ = this.performSearchPreviousTaskPermissions();
     const mappedSearchResult$ = tasksSearch$.pipe(mergeMap(((result: TaskResponse) => {
       const assignedJudicialUsers: string[] = [];
-      result.tasks.forEach(task => {
+      result.tasks.forEach((task) => {
         task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
         if (!task.assigneeName && task.assignee) {
           assignedJudicialUsers.push(task.assignee);
@@ -370,19 +370,19 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         return of(result);
       }
       return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, this.selectedServices).pipe(switchMap(((judicialUserData) => {
-        result.tasks.map(task => {
-          const judicialAssignedData = judicialUserData.find(judicialUser => judicialUser.sidam_id === task.assignee);
+        result.tasks.map((task) => {
+          const judicialAssignedData = judicialUserData.find((judicialUser) => judicialUser.sidam_id === task.assignee);
           task.assigneeName = judicialAssignedData ? judicialAssignedData.full_name : task.assigneeName;
         });
         return of(result);
       })));
     })));
-    mappedSearchResult$.subscribe(result => {
+    mappedSearchResult$.subscribe((result) => {
       this.loadingService.unregister(loadingToken);
       this.tasks = result.tasks;
       this.tasksTotal = result.total_records;
       this.ref.detectChanges();
-    }, error => {
+    }, (error) => {
       this.loadingService.unregister(loadingToken);
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });

@@ -8,8 +8,7 @@ export const init = () => {
   mock.onGet(getCaseRolesUrl).reply(() => {
     return [
       200,
-      CASEROLES,
+      CASEROLES
     ];
   });
-
 };

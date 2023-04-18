@@ -32,6 +32,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     this.validatorsUtils.mandatory('Enter hearing start time'),
     this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
   ];
+
   private readonly defaultHearingEndTimeValidators = [
     this.validatorsUtils.mandatory('Enter hearing finish time'),
     this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
@@ -43,8 +44,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
                      private readonly route: ActivatedRoute,
                      private readonly ngZone: NgZone,
                      private readonly validatorsUtils: ValidatorsUtils,
-  ) {
-  }
+  ) {}
 
   private static getStartTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
     let actualStartTime: string;
@@ -92,7 +92,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   private static replaceTime(dateTime: string, time: moment.Moment): string {
     return moment(dateTime, 'YYYY-MM-DDTHH:mm:ssZ').set({
       hour: time.get('hour'),
-      minute: time.get('minute'),
+      minute: time.get('minute')
     }).format('YYYY-MM-DDTHH:mm:ss');
   }
 
@@ -101,7 +101,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
- this.sub1$ = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
+    this.sub1$ = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
       .pipe(
         filter(([state]: [HearingActualsStateData, ParamMap]) => !!state.hearingActualsMainModel),
         first()
@@ -134,7 +134,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     const actualIndex = ActualHearingsUtils.getActualDayIndexFromHearingDate(this.hearingActuals, this.hearingDate);
     const pauseStartTime = actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes.length
       && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0] && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0].pauseStartTime;
-    const pauseEndTime =  actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes.length
+    const pauseEndTime = actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes.length
       && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0] && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0].pauseEndTime;
 
     const isPauseStartTimeValid = moment(pauseStartTime, 'YYYY-MM-DDTHH:mm:ssZ', true).isValid();
@@ -169,12 +169,11 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
       hearingEndTime: this.getHearingTime(value.hearingEndTime, actualIndex, plannedIndex, 'endTime'),
       pauseDateTimes
     };
-    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
-    (this.hearingActuals, this.hearingDate, {...updatedTimings} as ActualHearingDayModel);
+    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(this.hearingActuals, this.hearingDate, { ...updatedTimings } as ActualHearingDayModel);
 
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
-      hearingActuals: patchedHearingActuals,
+      hearingActuals: patchedHearingActuals
     }));
 
     if (this.id) {
@@ -189,9 +188,8 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     const hearingTime = (actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex][hearingActual])
     || (plannedIndex && this.hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex][plannedTime]);
 
-    return  !!value ? HearingActualsTimingComponent.replaceTime(hearingTime, moment(value, 'HH:mm')) : null;
+    return !!value ? HearingActualsTimingComponent.replaceTime(hearingTime, moment(value, 'HH:mm')) : null;
   }
-
 
   public updateControl(event: any, control: AbstractControl): void {
     control.setValue(event.target.value);
@@ -218,7 +216,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
       pauseStartTime: [HearingActualsTimingComponent.getPauseStartTime(hearingActuals, actualIndex), [
         this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]],
       pauseEndTime: [HearingActualsTimingComponent.getPauseEndTime(hearingActuals, actualIndex), [
-        this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]],
+        this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]]
     }, {
       updateOn: 'blur',
       validators: [
@@ -241,7 +239,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
           HearingActualsTimingErrorMessages.RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES,
           'invalidPauseEndTimeRange'
         )
-      ],
+      ]
     });
   }
 
@@ -284,12 +282,10 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     const endTimeField = this.formGroup.get('hearingEndTime');
     const recordPauseValue = this.formGroup.get('recordTimes').value;
 
-
     if (!!endTimeField.value || (recordPauseValue === RadioOptionType.YES)) {
       startTimeField.setValidators(this.defaultHearingStartTimeValidators);
       endTimeField.setValidators(this.defaultHearingEndTimeValidators);
-    }
-    else {
+    } else {
       startTimeField.setValidators([
         this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
       ]);

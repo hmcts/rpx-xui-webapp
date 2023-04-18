@@ -1,8 +1,7 @@
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertComponent as CCDAlertComponent, AlertIconClassPipe, AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { AlertComponent } from './alert.component';
-
 
 describe('AlertComponent', () => {
   let component: AlertComponent;
@@ -29,7 +28,8 @@ describe('AlertComponent', () => {
   });
 
   afterEach(() => {
-    spyOn(component, 'ngOnDestroy').and.callFake(() => { });
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    spyOn(component, 'ngOnDestroy').and.callFake(() => {});
     fixture.destroy();
   });
 
@@ -72,5 +72,4 @@ describe('AlertComponent', () => {
     component.message = '1234567890123456';
     expect(component.hyphenate('1234567890123456')).toBe('1234-5678-9012-3456');
   });
-
 });

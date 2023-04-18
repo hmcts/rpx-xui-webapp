@@ -4,10 +4,9 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { WASupportedJurisdictionsService } from 'src/work-allocation/services';
-import { State } from '../../../../app/store';
 import { RoleCategory, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { AccessReason, SpecificAccessText } from '../../../models/enums';
 import { DecideSpecificAccessAndGo } from '../../../store';
@@ -19,7 +18,9 @@ describe('SpecificAccessReviewComponent', () => {
   let mockStore: any;
   const FORM_GROUP: FormGroup = new FormGroup({});
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let spyOnPipeToStore = jasmine.createSpy();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let spyOnStoreDispatch = jasmine.createSpy();
 
   const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
@@ -32,7 +33,7 @@ describe('SpecificAccessReviewComponent', () => {
       providers: [
         provideMockStore(),
         FormBuilder,
-        {provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService}
+        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService }
       ]
     })
       .compileComponents();
@@ -51,7 +52,7 @@ describe('SpecificAccessReviewComponent', () => {
       requestedRole: 'specific-access-judicial',
       requestCreated: '01-01-2001',
       accessReason: null,
-      period: {startDate: new Date('01-01-2001'), endDate: null},
+      period: { startDate: new Date('01-01-2001'), endDate: null },
       person: null,
       requestId: 'requestId'
     };
@@ -111,7 +112,7 @@ describe('SpecificAccessReviewComponent', () => {
       component.reviewOptionControl.setValue(AccessReason.APPROVE_REQUEST);
       component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
       expect(mockStore.dispatch).toHaveBeenCalledWith(
-        new DecideSpecificAccessAndGo( { accessReason: AccessReason.APPROVE_REQUEST, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_DURATION } ));
+        new DecideSpecificAccessAndGo({ accessReason: AccessReason.APPROVE_REQUEST, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_DURATION }));
     });
 
     it('should correctly navigate on click of continue button for reject request', () => {
@@ -124,7 +125,7 @@ describe('SpecificAccessReviewComponent', () => {
       component.reviewOptionControl.setValue(AccessReason.REQUEST_MORE_INFORMATION);
       component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
       expect(mockStore.dispatch).toHaveBeenCalledWith(
-        new DecideSpecificAccessAndGo( { accessReason: AccessReason.REQUEST_MORE_INFORMATION, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_INFORMATION } ));
+        new DecideSpecificAccessAndGo({ accessReason: AccessReason.REQUEST_MORE_INFORMATION, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_INFORMATION }));
     });
   });
 

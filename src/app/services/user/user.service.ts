@@ -11,6 +11,6 @@ export class UserService {
   constructor(private readonly http: HttpClient) {}
 
   public getUserDetails(): Observable<UserDetails> {
-    return this.http.get<UserDetails>(`api/user/details`);
+    return this.http.get<UserDetails>('api/user/details');
   }
 }

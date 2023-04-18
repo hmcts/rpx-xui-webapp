@@ -18,8 +18,7 @@ export class ExclusionEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly roleExclusionsService: RoleExclusionsService
-  ) {
-  }
+  ) {}
 
   @Effect() public confirmExclusion$ = this.actions$
     .pipe(
@@ -30,7 +29,7 @@ export class ExclusionEffects {
             map(() => {
               if (data.payload.exclusionOption === ExcludeOption.EXCLUDE_ME) {
                 return new routeAction.Go({
-                  path: [`/work/my-work/list`],
+                  path: ['/work/my-work/list'],
                   extras: {
                     state: {
                       showMessage: true,
@@ -51,15 +50,14 @@ export class ExclusionEffects {
                 }
               });
             }),
-            catchError(error => {
-              return ExclusionEffects.handleError(error, ExclusionActionTypes.CONFIRM_EXCLUSION);
-            }
-            )
+            catchError((error) => {
+              return ExclusionEffects.handleError(error);
+            })
           )
       )
     );
 
-  public static handleError(error: RoleAccessHttpError, action?: string): Observable<Action> {
+  public static handleError(error: RoleAccessHttpError): Observable<Action> {
     if (error && error.status) {
       switch (error.status) {
         case 401:

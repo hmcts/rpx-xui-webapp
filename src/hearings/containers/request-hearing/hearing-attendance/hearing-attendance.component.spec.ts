@@ -27,7 +27,7 @@ const refData: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'TEL',
@@ -42,13 +42,13 @@ const refData: LovRefDataModel[] = [
     active_flag: 'Y',
     child_nodes: null,
     from: 'exui-default',
-    selected: true,
+    selected: true
   }
 ];
 
 @Component({
   selector: 'exui-hearing-parties-title',
-  template: '',
+  template: ''
 })
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
@@ -78,8 +78,8 @@ describe('HearingAttendanceComponent', () => {
                 hearingChannels: refData
               }
             },
-            fragment: of('point-to-me'),
-          },
+            fragment: of('point-to-me')
+          }
         },
         ValidatorsUtils,
         FormBuilder
@@ -95,12 +95,14 @@ describe('HearingAttendanceComponent', () => {
     lovRefDataService.getListOfValues.and.returnValue(of([]));
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should call prepareHearingRequestData when executeAction is called with a valid form', () => {
     component.attendanceFormGroup.controls.estimation.setValue(1);
-    (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach(element => {
+    (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach((element) => {
       element.value.individualDetails.preferredHearingChannel = 'inperson';
     });
     (component.attendanceFormGroup.controls.hearingLevelChannels as FormArray).controls
@@ -111,7 +113,7 @@ describe('HearingAttendanceComponent', () => {
 
   it('should NOT call prepareHearingRequestData when executeAction is called as form is invalid', () => {
     component.attendanceFormGroup.controls.estimation.setValue('10 days');
-    component.attendanceFormGroup.controls.hearingLevelChannels.setErrors({ incoreect: true});
+    component.attendanceFormGroup.controls.hearingLevelChannels.setErrors({ incoreect: true });
     component.executeAction(ACTION.CONTINUE);
     expect(component.prepareHearingRequestData).not.toHaveBeenCalled();
   });
@@ -167,6 +169,7 @@ describe('HearingAttendanceComponent', () => {
     fixture.detectChanges();
     expect(component.isFormValid()).toEqual(true);
   });
+
   it('should true when calling isFormValid with partyChannel', () => {
     component.attendanceFormGroup.controls.estimation.setValue(1);
     (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach((element: AbstractControl) => {
@@ -178,15 +181,17 @@ describe('HearingAttendanceComponent', () => {
     expect((component.attendanceFormGroup.controls.parties as FormArray).length).toBeGreaterThan(0);
     expect(formValid).toEqual(true);
   });
+
   it('should false when calling isFormValid without partyChannel', () => {
     component.attendanceFormGroup.controls.estimation.setValue(1);
-    (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach(element => {
+    (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach((element) => {
       (element as FormGroup).controls.individualDetails.get('preferredHearingChannel').setValue(null);
     });
     const formValid = component.isFormValid();
     expect((component.attendanceFormGroup.controls.parties as FormArray).length).toBeGreaterThan(0);
     expect(formValid).toEqual(false);
   });
+
   it('should render parties from the hearingvaluemodel', () => {
     const store = jasmine.createSpyObj('store', ['pipe', 'dispatch', 'select']);
     store.select.and.returnValue(of(initialState));
@@ -210,7 +215,7 @@ describe('HearingAttendanceComponent', () => {
   const lovRefDataService = jasmine.createSpyObj('lovRefDataService', ['getListOfValues']);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
-  const updatedInitialState =  _.cloneDeep(initialState);
+  const updatedInitialState = _.cloneDeep(initialState);
 
   updatedInitialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels = ['byPhone', HearingChannelEnum.ONPPR];
   updatedInitialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails = [];
@@ -231,8 +236,8 @@ describe('HearingAttendanceComponent', () => {
                 hearingChannels: refData
               }
             },
-            fragment: of('point-to-me'),
-          },
+            fragment: of('point-to-me')
+          }
         },
         ValidatorsUtils,
         FormBuilder
@@ -245,6 +250,7 @@ describe('HearingAttendanceComponent', () => {
     lovRefDataService.getListOfValues.and.returnValue(of([]));
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });

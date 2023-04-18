@@ -7,12 +7,10 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
   templateUrl: './noc-phone-uk-field.component.html'
 })
 export class NocPhoneUkFieldComponent extends AbstractFieldWriteComponent implements OnInit {
-
   public phoneUkControl: FormControl;
 
   public ngOnInit() {
     this.setAnswer();
     this.phoneUkControl = this.registerControl(new FormControl(this.answerValue));
   }
-
 }

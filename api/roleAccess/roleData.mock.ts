@@ -1,4 +1,4 @@
-import { RoleCategory } from "./models/allocate-role.enum";
+import { RoleCategory } from './models/allocate-role.enum';
 
 export const mockAdminRoles: any[] = [{
   name: 'Admin Role',
@@ -12,8 +12,8 @@ export const mockAdminRoles: any[] = [{
   email: 'admin-role@admin.com',
   actions: [
     { 'id': 'reallocate', 'title': 'Reallocate' },
-    { 'id': 'remove', 'title': 'Remove Allocation' },
-  ],
+    { 'id': 'remove', 'title': 'Remove Allocation' }
+  ]
 },
 {
   name: 'Admin Role 2',
@@ -27,19 +27,19 @@ export const mockAdminRoles: any[] = [{
   email: 'admin-role-2@admin.com',
   actions: [
     { 'id': 'reallocate', 'title': 'Reallocate' },
-    { 'id': 'remove', 'title': 'Remove Allocation' },
-  ],
+    { 'id': 'remove', 'title': 'Remove Allocation' }
+  ]
 }];
 
 export const mockAdminRefinedRoles: any[] = [{
   roleCategory: 'ADMIN',
   roleId: 'admin-role',
   roleName: 'Admin Role',
-  roleJurisdiction: {values: ['IA']},
+  roleJurisdiction: { values: ['IA'] }
 },
 {
   roleCategory: 'ADMIN',
   roleId: 'admin-role-2',
   roleName: 'Admin Role the second',
-  roleJurisdiction: {values: ['IA']},
+  roleJurisdiction: { values: ['IA'] }
 }];

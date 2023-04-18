@@ -36,7 +36,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     private readonly sessionStorageService: SessionStorageService,
     private readonly windowService: WindowService,
     private readonly featureToggleService: FeatureToggleService,
-  ) { }
+  ) {}
 
   public ngOnInit() {
     this.bookingTypeForm = this.fb.group({
@@ -51,15 +51,15 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
             if (bookingResults) {
               this.existingBookings = bookingResults as any;
               this.orderByCurrentThenFuture();
-              this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any).filter(p => moment(new Date()).isSameOrAfter(p.beginTime) && moment(new Date()).isSameOrBefore(p.endTime)).sort(this.sortBookings).map(p => p.locationId) : null;
+              this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any).filter((p) => moment(new Date()).isSameOrAfter(p.beginTime) && moment(new Date()).isSameOrBefore(p.endTime)).sort(this.sortBookings).map((p) => p.locationId) : null;
               this.sessionStorageService.setItem('bookingLocations', JSON.stringify(Array.from(new Set(this.bookingProcess.selectedBookingLocationIds))));
             }
           })).subscribe();
         }
       },
-        err => {
-          this.NavigationErrorHandler(err, this.router);
-        });
+      (err) => {
+        this.NavigationErrorHandler(err, this.router);
+      });
     }
   }
 
@@ -68,16 +68,24 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   }
 
   private orderByCurrentThenFuture() {
-    const featureBookings: Booking[] = this.existingBookings.filter(p => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings);
-    const currentBookings: Booking[] = this.existingBookings.filter(p => new Date().getTime() > new Date(p.beginTime).getTime()).sort(this.sortBookings);
+    const featureBookings: Booking[] = this.existingBookings.filter((p) => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings);
+    const currentBookings: Booking[] = this.existingBookings.filter((p) => new Date().getTime() > new Date(p.beginTime).getTime()).sort(this.sortBookings);
     this.existingBookings = currentBookings.sort(this.sortBookings).concat(featureBookings.sort(this.sortBookings));
   }
 
   private sortBookings(current, next) {
-    if (current.locationName > next.locationName) { return 1; }
-    if (current.locationName < next.locationName) { return -1; }
-    if (current.beginTime > next.beginTime) { return 1; }
-    if (current.beginTime < next.beginTime) { return -1; }
+    if (current.locationName > next.locationName) {
+      return 1;
+    }
+    if (current.locationName < next.locationName) {
+      return -1;
+    }
+    if (current.beginTime > next.beginTime) {
+      return 1;
+    }
+    if (current.beginTime < next.beginTime) {
+      return -1;
+    }
     return 0;
   }
 
@@ -105,7 +113,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   }
 
   public onExistingBookingSelected(locationId) {
-    this.refreshAssignmentsSubscription = this.bookingService.refreshRoleAssignments(this.userId).subscribe(response => {
+    this.refreshAssignmentsSubscription = this.bookingService.refreshRoleAssignments(this.userId).subscribe(() => {
       this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
       this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
       this.router.navigate(
@@ -138,5 +146,5 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
         }
       }
     }
-  }
+  };
 }

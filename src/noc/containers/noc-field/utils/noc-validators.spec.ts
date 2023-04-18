@@ -11,7 +11,7 @@ describe('NocValidators', () => {
   it('numberValidator invalid case', () => {
     control.setValue('invalidNumber');
     const numberValidator = NocValidators.numberValidator();
-    expect(numberValidator(control)).toEqual({number: true});
+    expect(numberValidator(control)).toEqual({ number: true });
   });
 
   it('numberValidator valid case', () => {
@@ -23,7 +23,7 @@ describe('NocValidators', () => {
   it('postcodeValidator invalid case', () => {
     control.setValue('l15');
     const postcodeValidator = NocValidators.postcodeValidator();
-    expect(postcodeValidator(control)).toEqual({postcode: true});
+    expect(postcodeValidator(control)).toEqual({ postcode: true });
   });
 
   it('postcodeValidator valid case', () => {
@@ -35,7 +35,7 @@ describe('NocValidators', () => {
   it('phoneUKValidator invalid case', () => {
     control.setValue('123546547897');
     const phoneUKValidator = NocValidators.phoneUKValidator();
-    expect(phoneUKValidator(control)).toEqual({phoneUK: true});
+    expect(phoneUKValidator(control)).toEqual({ phoneUK: true });
   });
 
   it('phoneUKValidator valid case', () => {
@@ -53,7 +53,7 @@ describe('NocValidators', () => {
   it('dateValidator invalid case', () => {
     control.setValue('2019-13-24');
     const validator = NocValidators.dateValidator();
-    expect(validator(control)).toEqual({date: true, month: true, valid: false});
+    expect(validator(control)).toEqual({ date: true, month: true, valid: false });
   });
 
   it('dateTimeValidator valid 12 hour case', () => {
@@ -71,7 +71,7 @@ describe('NocValidators', () => {
   it('dateTimeValidator invalid case', () => {
     control.setValue('2019-13-24T30:15:00.000');
     const validator = NocValidators.dateTimeValidator();
-    expect(validator(control)).toEqual({datetime: true, month: true, valid: false});
+    expect(validator(control)).toEqual({ datetime: true, month: true, valid: false });
   });
 
   it('timeValidator valid 12 hour case', () => {
@@ -89,6 +89,6 @@ describe('NocValidators', () => {
   it('timeValidator invalid case', () => {
     control.setValue('30:15:00');
     const validator = NocValidators.timeValidator();
-    expect(validator(control)).toEqual({time: true, hour: true, valid: false, message: ''});
+    expect(validator(control)).toEqual({ time: true, hour: true, valid: false, message: '' });
   });
 });

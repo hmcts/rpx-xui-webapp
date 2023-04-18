@@ -10,8 +10,7 @@ import { PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-tool
 import { ExuiCommonLibModule, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
-
+import { of } from 'rxjs';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -28,7 +27,7 @@ import { TaskAssignmentContainerComponent } from './task-assignment-container.co
     <exui-task-container-assignment></exui-task-container-assignment>`
 })
 class WrapperComponent {
-  @ViewChild(TaskAssignmentContainerComponent, {static: true}) public appComponentRef: TaskAssignmentContainerComponent;
+  @ViewChild(TaskAssignmentContainerComponent, { static: true }) public appComponentRef: TaskAssignmentContainerComponent;
   @Input() public tasks: Task[];
 }
 
@@ -36,8 +35,7 @@ class WrapperComponent {
   template: `
     <div>Nothing</div>`
 })
-class NothingComponent {
-}
+class NothingComponent {}
 
 describe('TaskAssignmentContainerComponent2', () => {
   let component: TaskAssignmentContainerComponent;
@@ -83,21 +81,21 @@ describe('TaskAssignmentContainerComponent2', () => {
         StoreModule.forRoot({}),
         RouterTestingModule.withRoutes(
           [
-            {path: 'my-work/list', component: NothingComponent}
+            { path: 'my-work/list', component: NothingComponent }
           ]
-        ),
+        )
       ],
       providers: [
-        {provide: Location, useValue: locationStub},
-        {provide: WorkAllocationTaskService, useValue: mockWorkAllocationService},
-        {provide: SessionStorageService, useValue: mockSessionStorageService},
+        { provide: Location, useValue: locationStub },
+        { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
                 taskAndCaseworkers: {
-                  task: {task: mockTasks[0]}, caseworkers: []
+                  task: { task: mockTasks[0] }, caseworkers: []
                 },
                 ...TaskActionConstants.Reassign
               },
@@ -105,19 +103,19 @@ describe('TaskAssignmentContainerComponent2', () => {
                 taskId: 'task1111111'
               }
             },
-            params: of({task: mockTasks[0]}),
-            paramMap: of({selectedPerson: SELECTED_PERSON})
+            params: of({ task: mockTasks[0] }),
+            paramMap: of({ selectedPerson: SELECTED_PERSON })
           }
         },
-        {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},
-        {provide: Router, useValue: {url: 'localhost/test'}}
+        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+        { provide: Router, useValue: { url: 'localhost/test' } }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
     wrapper.tasks = null;
-    window.history.pushState({returnUrl: 'my-work/list', showAssigneeColumn: false}, '', 'my-work/list');
+    window.history.pushState({ returnUrl: 'my-work/list', showAssigneeColumn: false }, '', 'my-work/list');
 
     // Deliberately defer fixture.detectChanges() call to each test, to allow overriding the ActivatedRoute snapshot
     // data with a different verb ("Assign")
@@ -153,7 +151,7 @@ describe('TaskAssignmentContainerComponent2', () => {
   });
 
   it('should redirect to the "All work" page on cancelling task assignment', () => {
-    window.history.pushState({returnUrl: 'all-work/tasks#manage_0d22d838', showAssigneeColumn: false}, '',
+    window.history.pushState({ returnUrl: 'all-work/tasks#manage_0d22d838', showAssigneeColumn: false }, '',
       'all-work/tasks#manage_0d22d838');
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
     const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, locationStub, mockSessionStorageService);
@@ -176,11 +174,11 @@ describe('TaskAssignmentContainerComponent2', () => {
   it('should display the correct verb on screen', () => {
     const activatedRoute: any = fixture.debugElement.injector.get(ActivatedRoute) as any;
     activatedRoute.snapshot = {
-      paramMap: convertToParamMap({taskId: 'task1111111', role: 'LEGAL_OPERATIONS'}),
-      queryParamMap: convertToParamMap({taskId: 'task1111111', role: 'LEGAL_OPERATIONS'}),
+      paramMap: convertToParamMap({ taskId: 'task1111111', role: 'LEGAL_OPERATIONS' }),
+      queryParamMap: convertToParamMap({ taskId: 'task1111111', role: 'LEGAL_OPERATIONS' }),
       data: {
         taskAndCaseworkers: {
-          task: {task: mockTasks[0]}, caseworkers: []
+          task: { task: mockTasks[0] }, caseworkers: []
         },
         ...TaskActionConstants.Assign
       }

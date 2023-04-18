@@ -1,16 +1,16 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-import {FormArray, FormBuilder, ReactiveFormsModule} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of, throwError} from 'rxjs';
-import {initialState} from '../../../hearing.test.data';
-import {ACTION} from '../../../models/hearings.enum';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {HearingsService} from '../../../services/hearings.service';
-import {HearingChangeReasonsComponent} from './hearing-change-reasons.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of, throwError } from 'rxjs';
+import { initialState } from '../../../hearing.test.data';
+import { ACTION } from '../../../models/hearings.enum';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { HearingsService } from '../../../services/hearings.service';
+import { HearingChangeReasonsComponent } from './hearing-change-reasons.component';
 
 describe('HearingChangeReasonsComponent', () => {
   let component: HearingChangeReasonsComponent;
@@ -40,7 +40,7 @@ describe('HearingChangeReasonsComponent', () => {
       category_key: 'ChangeReasons',
       parent_category: '',
       parent_key: '',
-      active_flag: '',
+      active_flag: ''
     },
     {
       key: 'reasonThree',
@@ -52,8 +52,8 @@ describe('HearingChangeReasonsComponent', () => {
       category_key: 'ChangeReasons',
       parent_category: '',
       parent_key: '',
-      active_flag: '',
-    },
+      active_flag: ''
+    }
   ];
 
   let mockStore: any;
@@ -63,22 +63,22 @@ describe('HearingChangeReasonsComponent', () => {
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingChangeReasonsComponent],
       providers: [
-        {provide: HearingsService, useValue: hearingsService},
+        { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                hearingChangeReasons: reasons,
-              },
-            },
-          },
+                hearingChangeReasons: reasons
+              }
+            }
+          }
         },
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
         FormBuilder
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
   }));
@@ -107,14 +107,14 @@ describe('HearingChangeReasonsComponent', () => {
 
   it('should be true when calling isFormValid reasons selected', () => {
     (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach(reason => reason.value.selected = true);
+      .forEach((reason) => reason.value.selected = true);
     const formValid = component.isFormValid(ACTION.CONTINUE);
     expect(formValid).toEqual(true);
   });
 
   it('should be false when calling isFormValid with no reasons selected', () => {
     (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach(reason => reason.value.selected = false);
+      .forEach((reason) => reason.value.selected = false);
     const formValid = component.isFormValid(ACTION.VIEW_EDIT_SUBMIT);
     expect(formValid).toEqual(false);
   });
@@ -132,7 +132,7 @@ describe('HearingChangeReasonsComponent', () => {
 
   it('should prepareHearingRequestData', () => {
     (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach(reason => reason.value.selected = true);
+      .forEach((reason) => reason.value.selected = true);
     component.prepareHearingRequestData();
     expect(component.hearingRequestMainModel.hearingDetails.amendReasonCodes).toEqual(['reasonOne', 'reasonTwo', 'reasonThree']);
   });
@@ -145,7 +145,7 @@ describe('HearingChangeReasonsComponent', () => {
 
   it('should execute Action', () => {
     (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach(reason => reason.value.selected = true);
+      .forEach((reason) => reason.value.selected = true);
     component.executeAction(ACTION.VIEW_EDIT_SUBMIT);
     expect(component.isFormValid).toHaveBeenCalled();
     expect(component.errors.length).toBe(0);

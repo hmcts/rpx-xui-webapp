@@ -1,13 +1,13 @@
-import {Component, Input} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {HearingJudgeSelectionEnum} from '../../models/hearings.enum';
-import {JudicialUserModel} from '../../models/judicialUser.model';
-import {ValidatorsUtils} from '../../utils/validators.utils';
+import { Component, Input } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { HearingJudgeSelectionEnum } from '../../models/hearings.enum';
+import { JudicialUserModel } from '../../models/judicialUser.model';
+import { ValidatorsUtils } from '../../utils/validators.utils';
 
 @Component({
   selector: 'exui-hearing-judge-names-list',
   templateUrl: './hearing-judge-names-list.component.html',
-  styleUrls: ['./hearing-judge-names-list.component.scss'],
+  styleUrls: ['./hearing-judge-names-list.component.scss']
 })
 export class HearingJudgeNamesListComponent {
   @Input() public subTitle: string;
@@ -27,7 +27,7 @@ export class HearingJudgeNamesListComponent {
   }
 
   public removeSelectedJudge(selectedJudge: JudicialUserModel): void {
-    this.judgeList = this.judgeList.filter(judge => judge.idamId !== selectedJudge.idamId);
+    this.judgeList = this.judgeList.filter((judge) => judge.idamId !== selectedJudge.idamId);
   }
 
   public excludeJudge(): void {
@@ -39,6 +39,7 @@ export class HearingJudgeNamesListComponent {
       this.personFormGroup.controls.selectedFormControl.setValue(undefined);
     }
   }
+
   public isExcludeJudgeInputValid(): boolean {
     if (this.personFormGroup.controls.selectedFormControl.dirty || this.personFormGroup.controls.selectedFormControl.value) {
       const isJudgeSelected = !!this.personFormGroup.controls.selectedFormControl.value;
@@ -47,11 +48,12 @@ export class HearingJudgeNamesListComponent {
       this.personFormGroup.controls.selectedFormControl.setValidators([this.validatorsUtils.errorValidator(message)]);
       this.personFormGroup.controls.selectedFormControl.updateValueAndValidity();
       return false;
-    } else {
-      this.validationError = null;
-      this.personFormGroup.controls.selectedFormControl.clearValidators();
-      this.personFormGroup.controls.selectedFormControl.updateValueAndValidity();
     }
+
+    this.validationError = null;
+    this.personFormGroup.controls.selectedFormControl.clearValidators();
+    this.personFormGroup.controls.selectedFormControl.updateValueAndValidity();
+
     return true;
   }
 

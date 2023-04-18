@@ -1,4 +1,4 @@
-import {getConfigValue, showFeature} from './index';
+import { getConfigValue, showFeature } from './index';
 import {
   COOKIES_SESSION_ID,
   COOKIES_TOKEN,
@@ -14,7 +14,6 @@ import {
   FEATURE_WORKALLOCATION_ENABLED,
   HEALTH, LOGGING, MAX_LOG_LINE,
   PROTOCOL,
-  SERVICE_S2S_PATH,
   SERVICES_CASE_CASEWORKER_REF_PATH,
   SERVICES_CASE_JUDICIAL_REF_PATH,
   SERVICES_CCD_CASE_ASSIGNMENT_API_PATH,
@@ -36,7 +35,8 @@ import {
   SERVICES_PRD_LOCATION_API,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH,
-  SERVICES_TERMS_AND_CONDITIONS_URL, SERVICES_WORK_ALLOCATION_TASK_API_PATH
+  SERVICES_TERMS_AND_CONDITIONS_URL, SERVICES_WORK_ALLOCATION_TASK_API_PATH,
+  SERVICE_S2S_PATH
 } from './references';
 
 /**
@@ -89,6 +89,6 @@ export const applicationConfiguration = () => {
     servicesS2sPath: getConfigValue(SERVICE_S2S_PATH),
     servicesTermsAndConditionsPath: getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
     workAllocationTaskPath: getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH),
-    judicialApiPath: getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH),
+    judicialApiPath: getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH)
   };
 };

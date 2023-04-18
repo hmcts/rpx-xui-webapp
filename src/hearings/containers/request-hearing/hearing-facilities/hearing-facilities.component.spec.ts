@@ -23,7 +23,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Immigration detention centre',
       hintTextCY: '',
       order: 1,
-      parentKey: null,
+      parentKey: null
     },
     {
       key: 'inCameraCourt',
@@ -32,7 +32,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'In camera court',
       hintTextCY: '',
       order: 2,
-      parentKey: null,
+      parentKey: null
     },
     {
       key: 'sameSexCourtroom',
@@ -41,7 +41,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Same sex courtroom',
       hintTextCY: '',
       order: 3,
-      parentKey: null,
+      parentKey: null
     },
     {
       key: 'secureDock',
@@ -50,7 +50,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Secure Dock',
       hintTextCY: '',
       order: 4,
-      parentKey: null,
+      parentKey: null
     },
     {
       key: 'witnessScreen',
@@ -59,7 +59,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Witness Screen',
       hintTextCY: '',
       order: 4,
-      parentKey: null,
+      parentKey: null
     },
     {
       key: 'witnessRoom',
@@ -68,7 +68,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Witness Room',
       hintTextCY: '',
       order: 5,
-      parentKey: null,
+      parentKey: null
     },
     {
       key: 'videoConferencing',
@@ -77,7 +77,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Video Conferencing',
       hintTextCY: '',
       order: 5,
-      parentKey: null,
+      parentKey: null
     },
     {
       key: 'VideoFacility',
@@ -86,7 +86,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Video Facility',
       hintTextCY: '',
       order: 5,
-      parentKey: null,
+      parentKey: null
     },
     {
       key: 'prisonVideoLink',
@@ -95,8 +95,8 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Prison Video Link',
       hintTextCY: '',
       order: 5,
-      parentKey: null,
-    },
+      parentKey: null
+    }
   ];
 
   beforeEach(() => {
@@ -104,19 +104,19 @@ describe('HearingFacilitiesComponent', () => {
       imports: [ReactiveFormsModule],
       declarations: [HearingFacilitiesComponent],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
                 caseFlags: caseFlagsRefData,
-                additionFacilitiesOptions: ADDITIONAL_FACILITIES_OPTIONS,
-              },
+                additionFacilitiesOptions: ADDITIONAL_FACILITIES_OPTIONS
+              }
             },
-            fragment: of('point-to-me'),
-          },
+            fragment: of('point-to-me')
+          }
         }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -161,7 +161,7 @@ describe('HearingFacilitiesComponent', () => {
   it('should filter selection from previous values', () => {
     component.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag = true;
 
-    const swapValue = component.hearingRequestMainModel.hearingDetails.facilitiesRequired ;
+    const swapValue = component.hearingRequestMainModel.hearingDetails.facilitiesRequired;
     component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['secureDock', 'witnessScreen'];
     component = fixture.componentInstance;
     component.ngOnInit();

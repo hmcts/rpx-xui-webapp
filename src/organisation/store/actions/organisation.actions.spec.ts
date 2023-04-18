@@ -29,7 +29,7 @@ describe('LoadOrganisationSuccess', () => {
     const action = new LoadOrganisationSuccess(payload);
     expect({ ...action }).toEqual({
       type: LOAD_ORGANISATION_SUCCESS,
-      payload,
+      payload
     });
   });
 });
@@ -40,7 +40,7 @@ describe('LoadOrganisationFail', () => {
     const action = new LoadOrganisationFail(payload);
     expect({ ...action }).toEqual({
       type: LOAD_ORGANISATION_FAIL,
-      payload,
+      payload
     });
   });
 });

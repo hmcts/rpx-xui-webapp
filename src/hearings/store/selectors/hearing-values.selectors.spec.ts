@@ -6,12 +6,13 @@ import { initialHearingValuesState, State } from '../reducers';
 
 describe('Hearing Values selectors', () => {
   let store: Store<State>;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('hearings', reducers),
-      ],
+        StoreModule.forFeature('hearings', reducers)
+      ]
     });
     store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
@@ -20,7 +21,7 @@ describe('Hearing Values selectors', () => {
   describe('getHearingValues', () => {
     it('should return hearing values state', () => {
       let result: HearingValuesStateData;
-      store.pipe(select(getHearingValues)).subscribe(value => {
+      store.pipe(select(getHearingValues)).subscribe((value) => {
         result = value;
       });
       expect(result).toEqual(initialHearingValuesState);

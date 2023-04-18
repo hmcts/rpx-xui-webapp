@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
@@ -10,16 +10,16 @@ import { RoleExclusionsService } from '../../../services';
 import { ChoosePersonRoleComponent } from './choose-person-role.component';
 
 const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
-      { roleId: '2', roleName: 'Role 2' },
-      { roleId: '3', roleName: 'Role 3' }];
+  { roleId: '2', roleName: 'Role 2' },
+  { roleId: '3', roleName: 'Role 3' }];
 
 const mockRoleOptions = [{ optionId: '1', optionValue: 'Role 1' },
-      { optionId: '2', optionValue: 'Role 2' },
-      { optionId: '3', optionValue: 'Role 3' }];
+  { optionId: '2', optionValue: 'Role 2' },
+  { optionId: '3', optionValue: 'Role 3' }];
 
 describe('ChoosePersonRoleComponent', () => {
   const radioOptionControl: FormControl = new FormControl('');
-  const formGroup: FormGroup = new FormGroup({[PERSON_ROLE]: radioOptionControl});
+  const formGroup: FormGroup = new FormGroup({ [PERSON_ROLE]: radioOptionControl });
 
   let component: ChoosePersonRoleComponent;
   let fixture: ComponentFixture<ChoosePersonRoleComponent>;

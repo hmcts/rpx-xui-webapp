@@ -6,7 +6,7 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 
 export class PanelMembersAnswerConverter implements AnswerConverter {
-  constructor(protected readonly route: ActivatedRoute) { }
+  constructor(protected readonly route: ActivatedRoute) {}
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     const panelMembers: JudicialUserModel[] = this.route.snapshot.data.panelMemberResponseUsers || [];
@@ -14,7 +14,7 @@ export class PanelMembersAnswerConverter implements AnswerConverter {
     return hearingState$.pipe(
       map(() => {
         const panelMemberNames: string[] = [];
-        panelMembers.forEach(panelMemberInfo => {
+        panelMembers.forEach((panelMemberInfo) => {
           panelMemberNames.push(panelMemberInfo.fullName);
         });
         return panelMemberNames.join('<br>');

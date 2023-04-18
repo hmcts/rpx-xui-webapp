@@ -19,7 +19,7 @@ import {
   LaunchDarklyService,
   LoadingService,
   RoleService,
-  TimeoutNotificationsService,
+  TimeoutNotificationsService
 } from '@hmcts/rpx-xui-common-lib';
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 // ngrx modules - START
@@ -38,6 +38,7 @@ import {
   NgxLoggerLevel,
   NGXMapperService
 } from 'ngx-logger';
+import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
 import { environment } from '../environments/environment';
 import {
   EnvironmentConfig,
@@ -50,7 +51,6 @@ import { AppComponent } from './containers/app/app.component';
 // common provider
 import { ProvidersModule } from './providers/providers.module';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
-import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
 import { CaseShareService } from './services/case/share-case.service';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { JurisdictionService } from './services/jurisdiction/jurisdiction.service';
@@ -75,18 +75,18 @@ export function launchDarklyClientIdFactory(
 }
 
 @NgModule({
-  declarations: [AppComponent, BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent  ],
+  declarations: [AppComponent, BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent],
   imports: [
     LoggerModule.forRoot({
       level: NgxLoggerLevel.TRACE,
-      disableConsoleLogging: false,
+      disableConsoleLogging: false
     }),
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
     HttpClientXsrfModule.withOptions({
       cookieName: 'XSRF-TOKEN',
-      headerName: 'X-XSRF-TOKEN',
+      headerName: 'X-XSRF-TOKEN'
     }),
     ProvidersModule.forRoot(),
     RouterModule.forRoot(ROUTES, routingConfiguration),
@@ -94,12 +94,12 @@ export function launchDarklyClientIdFactory(
     EffectsModule.forRoot(effects),
     StoreRouterConnectingModule,
     StoreDevtoolsModule.instrument({
-      logOnly: environment.production,
+      logOnly: environment.production
     }),
     SharedModule,
     ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),
-    PaymentLibModule,
+    PaymentLibModule
   ],
   providers: [
     NGXLogger,
@@ -107,24 +107,24 @@ export function launchDarklyClientIdFactory(
     NGXMapperService,
     {
       provide: RouterStateSerializer,
-      useClass: CustomSerializer,
+      useClass: CustomSerializer
     },
     {
       provide: APP_INITIALIZER,
       useFactory: initApplication,
       deps: [Store, ENVIRONMENT_CONFIG],
-      multi: true,
+      multi: true
     },
     CryptoWrapper,
     MonitoringService,
     LoggerService,
     {
       provide: AbstractAppInsights,
-      useClass: AppInsightsWrapper,
+      useClass: AppInsightsWrapper
     },
     {
       provide: ErrorHandler,
-      useClass: DefaultErrorHandler,
+      useClass: DefaultErrorHandler
     },
     AcceptTermsService,
     CaseShareService,
@@ -139,6 +139,6 @@ export function launchDarklyClientIdFactory(
     RoleService
   ],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class AppModule { }
+export class AppModule {}

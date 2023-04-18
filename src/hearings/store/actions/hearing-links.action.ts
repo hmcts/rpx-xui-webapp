@@ -1,5 +1,5 @@
-import {Action} from '@ngrx/store';
-import {HttpError} from '../../../models/httpError.model';
+import { Action } from '@ngrx/store';
+import { HttpError } from '../../../models/httpError.model';
 import {
   LinkedHearingGroupMainModel,
   ServiceLinkedCasesModel,
@@ -29,86 +29,72 @@ export class ResetHearingLinks implements Action {
 
 export class LoadServiceLinkedCases implements Action {
   public readonly type = LOAD_SERVICE_LINKED_CASES;
-  constructor(public payload: { caseReference: string, hearingId: string }) {
-  }
+  constructor(public payload: { caseReference: string, hearingId: string }) {}
 }
 
 export class LoadServiceLinkedCasesSuccess implements Action {
   public readonly type = LOAD_SERVICE_LINKED_CASES_SUCCESS;
-  constructor(public payload: ServiceLinkedCasesModel[]) {
-  }
+  constructor(public payload: ServiceLinkedCasesModel[]) {}
 }
 
 export class LoadServiceLinkedCasesFailure implements Action {
   public readonly type = LOAD_SERVICE_LINKED_CASES_FAILURE;
-  constructor(public payload: HttpError) {
-  }
+  constructor(public payload: HttpError) {}
 }
 
 export class LoadServiceLinkedCasesWithHearings implements Action {
   public readonly type = LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS;
-  constructor(public payload: { caseReference: string, caseName: string, hearingId?: string }) {
-  }
+  constructor(public payload: { caseReference: string, caseName: string, hearingId?: string }) {}
 }
 
 export class LoadServiceLinkedCasesWithHearingsSuccess implements Action {
   public readonly type = LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS_SUCCESS;
-  constructor(public payload: ServiceLinkedCasesWithHearingsModel[]) {
-  }
+  constructor(public payload: ServiceLinkedCasesWithHearingsModel[]) {}
 }
 
 export class LoadServiceLinkedCasesWithHearingsFailure implements Action {
   public readonly type = LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS_FAILURE;
-  constructor(public payload: HttpError) {
-  }
+  constructor(public payload: HttpError) {}
 }
 
 export class LoadServiceLinkedCasesGroupDetail implements Action {
   public readonly type = LOAD_SERVICE_LINKED_CASES_GROUP_DETAILS;
-  constructor(public payload: LinkedHearingGroupMainModel) {
-  }
+  constructor(public payload: LinkedHearingGroupMainModel) {}
 }
 
 export class LoadLinkedHearingGroup implements Action {
   public readonly type = LOAD_LINKED_HEARING_GROUP;
-  constructor(public payload: { groupId: string }) {
-  }
+  constructor(public payload: { groupId: string }) {}
 }
 
 export class LoadLinkedHearingGroupSuccess implements Action {
   public readonly type = LOAD_LINKED_HEARING_GROUP_SUCCESS;
-  constructor(public payload: LinkedHearingGroupMainModel) {
-  }
+  constructor(public payload: LinkedHearingGroupMainModel) {}
 }
 
 export class LoadLinkedHearingGroupFailure implements Action {
   public readonly type = LOAD_LINKED_HEARING_GROUP_FAILURE;
-  constructor(public payload: HttpError) {
-  }
+  constructor(public payload: HttpError) {}
 }
 
 export class SubmitLinkedHearingGroup implements Action {
   public readonly type = SUBMIT_LINKED_HEARING_GROUP;
-  constructor(public payload: { linkedHearingGroup: LinkedHearingGroupMainModel, caseId: string, hearingId: string, hearingGroupRequestId: string, isManageLink: boolean }) {
-  }
+  constructor(public payload: { linkedHearingGroup: LinkedHearingGroupMainModel, caseId: string, hearingId: string, hearingGroupRequestId: string, isManageLink: boolean }) {}
 }
 
 export class SubmitLinkedHearingGroupFailure implements Action {
   public readonly type = SUBMIT_LINKED_HEARING_GROUP_FAILURE;
-  constructor(public payload: HttpError) {
-  }
+  constructor(public payload: HttpError) {}
 }
 
 export class ManageLinkedHearingGroup implements Action {
   public readonly type = MANAGE_LINKED_HEARING_GROUP;
-  constructor(public payload: { linkedHearingGroup: LinkedHearingGroupMainModel, caseId: string, hearingGroupRequestId: string, hearingId: string }) {
-  }
+  constructor(public payload: { linkedHearingGroup: LinkedHearingGroupMainModel, caseId: string, hearingGroupRequestId: string, hearingId: string }) {}
 }
 
 export class ManageLinkedHearingGroupFailure implements Action {
   public readonly type = MANAGE_LINKED_HEARING_GROUP_FAILURE;
-  constructor(public payload: HttpError) {
-  }
+  constructor(public payload: HttpError) {}
 }
 
 export class ResetLinkedHearingLastError implements Action {

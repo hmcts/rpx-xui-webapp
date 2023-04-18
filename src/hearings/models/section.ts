@@ -1,5 +1,5 @@
-import {Answer} from './answer';
-import {IsHiddenSource} from './hearings.enum';
+import { Answer } from './answer';
+import { IsHiddenSource } from './hearings.enum';
 
 export interface Section {
   insetInfo?: string;

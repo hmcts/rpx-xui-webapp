@@ -13,7 +13,7 @@ describe('Router Actions', () => {
 
   describe('CreateCaseGo', () => {
     it('should create an action', () => {
-      const payload = {path: [], caseId: ''};
+      const payload = { path: [], caseId: '' };
       const action = new fromRouter.CreateCaseGo(payload);
 
       expect({ ...action }).toEqual({
@@ -42,5 +42,4 @@ describe('Router Actions', () => {
       });
     });
   });
-
 });

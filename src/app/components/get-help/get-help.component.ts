@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -7,17 +7,17 @@ import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../store';
 
 @Component({
-    selector: 'exui-get-help',
-    templateUrl: './get-help.component.html'
+  selector: 'exui-get-help',
+  templateUrl: './get-help.component.html'
 })
 export class GetHelpComponent implements OnInit {
-    public userDetails$: Observable<any>;
-    public helpContactDetails: ContactDetailsDataModel[] = AppConstants.HELP_CONTACT_DETAILS;
-    public caseManager = false;
+  public userDetails$: Observable<any>;
+  public helpContactDetails: ContactDetailsDataModel[] = AppConstants.HELP_CONTACT_DETAILS;
+  public caseManager = false;
 
-    constructor(
+  constructor(
       private readonly store: Store<fromRoot.State>,
-    ) {}
+  ) {}
 
   public ngOnInit() {
     this.store.dispatch(new fromRoot.LoadUserDetails());

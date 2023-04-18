@@ -8,7 +8,6 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
   templateUrl: './noc-datetime-field.component.html'
 })
 export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
-
   public datetimeControl: FormControl;
   public datetimeGroup: FormGroup;
 
@@ -30,30 +29,30 @@ export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent imple
     if (this.datetimeControl.value) {
       const [datePart, timePart] = this.datetimeControl.value.split('T');
       const dateValues = datePart.split('-');
-      this.datetimeGroup.controls['year'].setValue(dateValues[0] || '');
-      this.datetimeGroup.controls['month'].setValue(dateValues[1] || '');
-      this.datetimeGroup.controls['day'].setValue(dateValues[2] || '');
+      this.datetimeGroup.controls.year.setValue(dateValues[0] || '');
+      this.datetimeGroup.controls.month.setValue(dateValues[1] || '');
+      this.datetimeGroup.controls.day.setValue(dateValues[2] || '');
       if (timePart) {
         const timeParts = timePart.replace('.000', '').split(':');
-        this.datetimeGroup.controls['hour'].setValue(timeParts[0] || '');
-        this.datetimeGroup.controls['minute'].setValue(timeParts[1] || '');
-        this.datetimeGroup.controls['second'].setValue(timeParts[2] || '');
+        this.datetimeGroup.controls.hour.setValue(timeParts[0] || '');
+        this.datetimeGroup.controls.minute.setValue(timeParts[1] || '');
+        this.datetimeGroup.controls.second.setValue(timeParts[2] || '');
       }
     }
   }
 
   public ngAfterViewInit(): void {
-    this.datetimeGroup.valueChanges.subscribe(data => {
+    this.datetimeGroup.valueChanges.subscribe(() => {
       const date = [
         this.datetimeGroup.value.year !== null ? this.datetimeGroup.value.year : '',
         this.datetimeGroup.value.month !== null ? AppUtils.pad(this.datetimeGroup.value.month) : '',
-        this.datetimeGroup.value.day !== null ? AppUtils.pad(this.datetimeGroup.value.day) : '',
+        this.datetimeGroup.value.day !== null ? AppUtils.pad(this.datetimeGroup.value.day) : ''
       ].join('-');
       const time = [
         this.datetimeGroup.value.hour !== null ? AppUtils.pad(this.datetimeGroup.value.hour) : '',
         this.datetimeGroup.value.minute !== null ? AppUtils.pad(this.datetimeGroup.value.minute) : '',
         this.datetimeGroup.value.second !== null ? AppUtils.pad(this.datetimeGroup.value.second) : ''
-        ].join(':');
+      ].join(':');
       this.datetimeControl.setValue(`${date}T${time}.000`);
     });
   }

@@ -1,7 +1,6 @@
 import { ConvertArrayToStringPipe } from './convert-array-to-string.pipe';
 
 describe('ConvertArrayToStringPipe', () => {
-
   let convertArrayToString: ConvertArrayToStringPipe;
 
   beforeEach(() => {

@@ -1,4 +1,4 @@
 export interface GlobalSearchService {
-  serviceId: string,
-  serviceName: string
+  serviceId: string;
+  serviceName: string;
 }

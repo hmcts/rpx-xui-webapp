@@ -1,5 +1,5 @@
-import * as express from 'express'
-import { getConfigValue, showFeature } from './index'
+import * as express from 'express';
+import { getConfigValue, showFeature } from './index';
 import {
   FEATURE_ACCESS_MANAGEMENT_ENABLED,
   FEATURE_OIDC_ENABLED,
@@ -13,13 +13,12 @@ import {
   SERVICES_JUDICIAL_BOOKING_API_PATH,
   SERVICES_PAYMENT_RETURN_URL,
   SERVICES_WA_WORKFLOW_API_URL,
-  WA_SUPPORTED_JURISDICTIONS
-} from './references'
-import { getFormattedSupportedServicesCaseTypes } from './waSupportedServicesCaseTypesHelper'
+  WA_SUPPORTED_SERVICE_CASETYPES
+} from './references';
 
-export const router = express.Router({mergeParams: true})
+export const router = express.Router({ mergeParams: true });
 
-router.get('/', uiConfigurationRouter)
+router.get('/', uiConfigurationRouter);
 
 /**
  * UI Configuration Route
@@ -43,8 +42,8 @@ async function uiConfigurationRouter(req, res) {
     paymentReturnUrl: getConfigValue(SERVICES_PAYMENT_RETURN_URL),
     waWorkflowApi: getConfigValue(SERVICES_WA_WORKFLOW_API_URL),
     judicialBookingApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
-    waSupportedServices: getFormattedSupportedServicesCaseTypes(getConfigValue(WA_SUPPORTED_JURISDICTIONS)),
-  })
+    waSupportedServices: getConfigValue(WA_SUPPORTED_SERVICE_CASETYPES)
+  });
 }
 
-export default router
+export default router;

@@ -3,7 +3,7 @@ import { handleGet } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_PRD_API_URL } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
-import {exists} from '../lib/util';
+import { exists } from '../lib/util';
 
 export async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
@@ -20,16 +20,18 @@ export async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Res
   }
 }
 
-export async function handleOrganisationRoute(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function handleOrganisationRoute(req: EnhancedRequest, res: Response) {
   try {
     const path = `${getConfigValue(SERVICES_PRD_API_URL)}/refdata/external/v1/organisations`;
-    const response = await handleGet(path, req, (err => { throw err; }));
+    const response = await handleGet(path, req, ((err) => {
+      throw err;
+    }));
     res.send(response.data);
   } catch (error) {
     const errReport = {
       apiError: exists(error, 'data.message') ? error.data.message : 'Unknown Error Occurred',
       apiStatusCode: exists(error, 'status') ? error.status : 500,
-      message: 'Organisation route error',
+      message: 'Organisation route error'
     };
     res.status(errReport.apiStatusCode).send(errReport);
   }
@@ -39,7 +41,7 @@ function getOrganisationUri(): string {
   return `${getConfigValue(SERVICES_PRD_API_URL)}/refdata/external/v1/organisations/status/ACTIVE?address=true`;
 }
 
-export const router = Router({mergeParams: true});
+export const router = Router({ mergeParams: true });
 
 router.get('', handleOrganisationRoute);
 

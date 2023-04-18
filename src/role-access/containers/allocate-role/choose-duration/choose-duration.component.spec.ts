@@ -1,18 +1,16 @@
-import { async, waitForAsync } from '@angular/core/testing';
+import { waitForAsync } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { of } from 'rxjs';
-import { UserRole } from '../../../../app/models';
 import {
-    Actions, AllocateRoleNavigationEvent,
-    AllocateRoleState,
-    AllocateRoleStateData,
-    AllocateTo,
-    DurationOfRole,
-    RoleCategory
+  Actions, AllocateRoleNavigationEvent,
+  AllocateRoleState,
+  AllocateRoleStateData,
+  AllocateTo,
+  DurationOfRole,
+  RoleCategory
 } from '../../../models';
 import * as fromFeature from '../../../store';
 import { ChooseDurationComponent } from './choose-duration.component';
-
 
 describe('ChooseDurationComponent', () => {
   let component: ChooseDurationComponent;
@@ -23,26 +21,27 @@ describe('ChooseDurationComponent', () => {
     jurisdiction: 'IA',
     assignmentId: 'a123456',
     state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
-    typeOfRole: {id: 'lead-judge', name: 'Lead judge'},
+    typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
     allocateTo: AllocateTo.RESERVE_TO_ME,
     personToBeRemoved: {
       id: 'p111111',
       name: 'test1',
-      domain: '',
+      domain: ''
     },
     person: {
       id: 'p222222',
       name: 'test2',
-      domain: '',
+      domain: ''
     },
     durationOfRole: DurationOfRole.SEVEN_DAYS,
     action: Actions.Allocate,
     period: {
       startDate: new Date(),
-      endDate: new Date(),
+      endDate: new Date()
     },
-    roleCategory: RoleCategory.LEGAL_OPERATIONS,
+    roleCategory: RoleCategory.LEGAL_OPERATIONS
   };
+
   beforeEach(waitForAsync(() => {
     mockStore = jasmine.createSpyObj('mockStore', ['pipe', 'dispatch']);
     formBuilder = new FormBuilder();
@@ -70,8 +69,8 @@ describe('ChooseDurationComponent', () => {
       durationOfRole: DurationOfRole.ANOTHER_PERIOD,
       period: {
         startDate: new Date('2021-12-17T03:24:00'),
-        endDate: new Date('2021-12-27T03:24:00'),
-      },
+        endDate: new Date('2021-12-27T03:24:00')
+      }
     };
     component.selectDurationRole(STATE_DATA);
     expect(component.dayStartDate.value).toBe(17);
@@ -84,8 +83,6 @@ describe('ChooseDurationComponent', () => {
 
   it('should navigationHandler', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
-    const roleCategory: RoleCategory = RoleCategory.JUDICIAL;
-    const userRole: UserRole = UserRole.Judicial;
     component.selectedDuration = DurationOfRole.SEVEN_DAYS;
     component.navigationHandler(navEvent);
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseDurationAndGo({
@@ -94,7 +91,7 @@ describe('ChooseDurationComponent', () => {
         startDate: component.getTodayDate(),
         endDate: new Date(component.getTodayDate().setDate(new Date().getDate() + 7))
       },
-      allocateRoleState: AllocateRoleState.CHECK_ANSWERS}
+      allocateRoleState: AllocateRoleState.CHECK_ANSWERS }
     ));
   });
 
@@ -278,6 +275,7 @@ describe('ChooseDurationComponent', () => {
     const startDateValid = component.isDateValid();
     expect(startDateValid).toBeFalsy();
   });
+
   it('isEndDateValid to be false', () => {
     component.yearStartDate.setValue(2020);
     component.monthStartDate.setValue(2);
@@ -289,6 +287,7 @@ describe('ChooseDurationComponent', () => {
     const startDateValid = component.isDateValid();
     expect(startDateValid).toBeFalsy();
   });
+
   it('isEndDateValid to be false', () => {
     component.yearStartDate.setValue(2020);
     component.monthStartDate.setValue(2);
@@ -300,6 +299,7 @@ describe('ChooseDurationComponent', () => {
     const startDateValid = component.isDateValid();
     expect(startDateValid).toBeFalsy();
   });
+
   it('isEndDateValid to be true', () => {
     component.yearStartDate.setValue(2020);
     component.monthStartDate.setValue(2);
@@ -311,6 +311,7 @@ describe('ChooseDurationComponent', () => {
     const startDateValid = component.isDateValid();
     expect(startDateValid).toBeTruthy();
   });
+
   it('isStartDateValid to be falsy with invalid month', () => {
     component.yearStartDate.setValue(2020);
     component.monthStartDate.setValue(13);
@@ -322,6 +323,7 @@ describe('ChooseDurationComponent', () => {
     const startDateValid = component.isDateValid();
     expect(startDateValid).toBeFalsy();
   });
+
   it('isEndDateValid to be falsy with invalid month', () => {
     component.yearStartDate.setValue(2020);
     component.monthStartDate.setValue(1);
@@ -333,6 +335,7 @@ describe('ChooseDurationComponent', () => {
     const startDateValid = component.isDateValid();
     expect(startDateValid).toBeFalsy();
   });
+
   it('isStartDateValid to be falsy with invalid year', () => {
     component.yearStartDate.setValue(20201);
     component.monthStartDate.setValue(12);
@@ -344,6 +347,7 @@ describe('ChooseDurationComponent', () => {
     const startDateValid = component.isDateValid();
     expect(startDateValid).toBeFalsy();
   });
+
   it('isEndDateValid to be falsy with invalid year', () => {
     component.yearStartDate.setValue(2020);
     component.monthStartDate.setValue(1);
@@ -355,6 +359,7 @@ describe('ChooseDurationComponent', () => {
     const startDateValid = component.isDateValid();
     expect(startDateValid).toBeFalsy();
   });
+
   it('isDateValid to be falsy with invalid start and end date', () => {
     component.yearStartDate.setValue(2020);
     component.monthStartDate.setValue(13);
@@ -366,5 +371,4 @@ describe('ChooseDurationComponent', () => {
     const startDateValid = component.isDateValid();
     expect(startDateValid).toBeFalsy();
   });
-
 });

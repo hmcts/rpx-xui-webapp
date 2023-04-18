@@ -33,17 +33,17 @@ export const ROUTES: Routes = [
   {
     path: 'cases',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: () => import('../cases/cases.module').then(m => m.CasesModule)
+    loadChildren: () => import('../cases/cases.module').then((m) => m.CasesModule)
   },
   {
     path: 'booking',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: () => import('../booking/booking.module').then(m => m.BookingModule)
+    loadChildren: () => import('../booking/booking.module').then((m) => m.BookingModule)
   },
   {
     path: 'work',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: () => import('../work-allocation/work-allocation.module').then(m => m.WorkAllocationModule)
+    loadChildren: () => import('../work-allocation/work-allocation.module').then((m) => m.WorkAllocationModule)
   },
   {
     // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
@@ -60,7 +60,7 @@ export const ROUTES: Routes = [
   {
     path: 'role-access',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: () => import('../role-access/role-access.module').then(m => m.RoleAccessModule)
+    loadChildren: () => import('../role-access/role-access.module').then((m) => m.RoleAccessModule)
   },
   // TODO: remove redundant redirections
   { path: 'case/:jurisdiction/:case-type/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },
@@ -78,12 +78,12 @@ export const ROUTES: Routes = [
   {
     path: 'noc',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: () => import('../noc/noc.module').then(m => m.NocModule)
+    loadChildren: () => import('../noc/noc.module').then((m) => m.NocModule)
   },
   {
     path: 'hearings',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: () => import('../hearings/hearings.module').then(m => m.HearingsModule)
+    loadChildren: () => import('../hearings/hearings.module').then((m) => m.HearingsModule)
   },
   {
     path: 'cookies',
@@ -182,7 +182,7 @@ export const ROUTES: Routes = [
   {
     path: 'search',
     canActivate: [AuthGuard, AcceptTermsGuard, FeatureToggleGuard],
-    loadChildren: () => import('../search/search.module').then(m => m.SearchModule),
+    loadChildren: () => import('../search/search.module').then((m) => m.SearchModule),
     data: {
       title: 'Search cases',
       needsFeaturesEnabled: ['feature-global-search'],
@@ -192,7 +192,7 @@ export const ROUTES: Routes = [
   {
     path: 'refunds',
     canActivate: [AuthGuard, AcceptTermsGuard, FeatureToggleGuard],
-    loadChildren: () => import('../refunds/refunds.module').then(m => m.RefundsModule),
+    loadChildren: () => import('../refunds/refunds.module').then((m) => m.RefundsModule),
     data: {
       title: 'Refunds',
       needsFeaturesEnabled: ['feature-refunds'],

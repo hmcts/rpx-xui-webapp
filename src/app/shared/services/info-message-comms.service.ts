@@ -5,7 +5,6 @@ import { InformationMessage } from '../../../work-allocation/models/comms';
 
 @Injectable({ providedIn: 'root' })
 export class InfoMessageCommService {
-
   public infoMessageSource: BehaviorSubject<InformationMessage[]> = new BehaviorSubject<InformationMessage[]>([]);
 
   public infoMessageChangeEmitted$: Observable<InformationMessage[]> = this.infoMessageSource.asObservable();

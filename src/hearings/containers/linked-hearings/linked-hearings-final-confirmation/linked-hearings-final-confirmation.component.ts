@@ -8,7 +8,6 @@ import * as fromHearingStore from '../../../store';
   templateUrl: './linked-hearings-final-confirmation.component.html'
 })
 export class LinkedHearingsFinalConfirmationComponent implements OnInit {
-
   public heading: string;
   public caseId: string;
   public linkedHearingsCount: number;
@@ -17,7 +16,7 @@ export class LinkedHearingsFinalConfirmationComponent implements OnInit {
               private readonly route: ActivatedRoute) {
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
-      state => {
+      (state) => {
         this.linkedHearingsCount = state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.hearingsInGroup.length;
       }
     );

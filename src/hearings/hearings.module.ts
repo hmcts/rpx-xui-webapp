@@ -31,7 +31,7 @@ import { PageFlow } from './utils/page-flow';
     FormsModule,
     ReactiveFormsModule,
     ExuiCommonLibModule,
-    HearingsPipesModule,
+    HearingsPipesModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers],
   entryComponents: [],
@@ -39,21 +39,22 @@ import { PageFlow } from './utils/page-flow';
     PageFlow,
     {
       provide: AbstractAppConfig,
-      useExisting: AppConfig,
+      useExisting: AppConfig
     },
     {
       provide: AbstractPageFlow,
-      useExisting: PageFlow,
+      useExisting: PageFlow
     },
     HearingsService,
     HearingsEditGuard,
-    HearingsViewGuard,
+    HearingsViewGuard
   ]
 })
 /**
  * Entry point for Hearings Module that is also lazy loaded.
  */
 export class HearingsModule {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   constructor(@Optional() @SkipSelf() parentModule: HearingsModule) {
     HearingsModule.forRoot();
   }

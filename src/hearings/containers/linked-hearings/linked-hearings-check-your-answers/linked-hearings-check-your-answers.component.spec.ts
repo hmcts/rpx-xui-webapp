@@ -1,10 +1,10 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {initialState} from '../../../hearing.test.data';
-import {HearingLinksStateData} from '../../../models/hearingLinksStateData.model';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { initialState } from '../../../hearing.test.data';
+import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
 import {
   EXUIDisplayStatusEnum,
   EXUISectionStatusEnum,
@@ -14,14 +14,14 @@ import {
 } from '../../../models/hearings.enum';
 import {
   HearingDetailModel,
-  LinkedCaseHearingsResult,
+  LinkedCaseHearingsResult
 } from '../../../models/linkHearings.model';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {CaseReferencePipe} from '../../../pipes/case-reference.pipe';
-import {ConvertToValuePipe} from '../../../pipes/convert-to-value.pipe';
-import {HearingsService} from '../../../services/hearings.service';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { CaseReferencePipe } from '../../../pipes/case-reference.pipe';
+import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {LinkedHearingsCheckYourAnswersComponent} from './linked-hearings-check-your-answers.component';
+import { LinkedHearingsCheckYourAnswersComponent } from './linked-hearings-check-your-answers.component';
 
 const HEARING_STAGE_OPTIONS: LovRefDataModel[] = [
   {
@@ -79,8 +79,8 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
   const mockRoute = {
     snapshot: {
       params: {
-        caseId: {caseId},
-        hearingId: {hearingId}
+        caseId: { caseId },
+        hearingId: { hearingId }
       },
       data: {
         mode: Mode.MANAGE_HEARINGS,
@@ -93,21 +93,21 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
       groupName: 'Group A',
       groupReason: 'Reason 1',
       groupLinkType: GroupLinkType.ORDERED,
-      groupComments: 'Comment 1',
+      groupComments: 'Comment 1'
     },
     hearingsInGroup: [
       {
         hearingId: 'h1000001',
-        hearingOrder: 1,
+        hearingOrder: 1
       },
       {
         hearingId: 'h1000003',
-        hearingOrder: 2,
+        hearingOrder: 2
       },
       {
         hearingId: 'h1000005',
-        hearingOrder: 3,
-      }],
+        hearingOrder: 3
+      }]
   };
 
   const linkedCases: LinkedCaseHearingsResult[] = [
@@ -131,10 +131,10 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     TestBed.configureTestingModule({
       declarations: [CaseReferencePipe, LinkedHearingsCheckYourAnswersComponent, ConvertToValuePipe],
       providers: [
-        provideMockStore({initialState}),
-        {provide: ActivatedRoute, useValue: mockRoute},
-        {provide: Router, useValue: mockRouter},
-        {provide: HearingsService, useValue: hearingsService}
+        provideMockStore({ initialState }),
+        { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: Router, useValue: mockRouter },
+        { provide: HearingsService, useValue: hearingsService }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -194,7 +194,7 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
       listAssistCaseStatus: '',
       hearingIsLinkedFlag: true,
       hearingGroupRequestId: null,
-      hearingDaySchedule: [],
+      hearingDaySchedule: []
     };
     component.hearingsInGroup = linkedHearingGroup.hearingsInGroup;
     component.showPositionColumn = true;
@@ -216,7 +216,7 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
       listAssistCaseStatus: '',
       hearingIsLinkedFlag: true,
       hearingGroupRequestId: null,
-      hearingDaySchedule: [],
+      hearingDaySchedule: []
     };
     component.hearingsInGroup = linkedHearingGroup.hearingsInGroup;
     component.showPositionColumn = true;

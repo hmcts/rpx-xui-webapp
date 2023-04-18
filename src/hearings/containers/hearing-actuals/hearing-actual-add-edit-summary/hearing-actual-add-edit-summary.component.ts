@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
-  ActualHearingDayModel,
+  ActualHearingDayModel
 } from '../../../models/hearingActualsMainModel';
 import {
   HearingActualAddEditSummaryEnum,
@@ -44,15 +44,15 @@ export class HearingActualAddEditSummaryComponent extends HearingActualSummaryBa
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(this.hearingActualsMainModel, hearingDay.hearingDate, { notRequired: !hearingDay.notRequired } as ActualHearingDayModel);
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
-      hearingActuals: patchedHearingActuals,
+      hearingActuals: patchedHearingActuals
     }));
   }
 
   public confirmActualHearingTimeAndParties(hearingDay: ActualHearingDayModel) {
     // Organisation parties do not have partyChannelSubType and can be ignored
     // as they do not attend the actual hearing
-    const individualPartyIds = this.individualParties.map(party => party.partyID);
-    const actualDayParties = hearingDay?.actualDayParties?.filter(party => individualPartyIds.includes(party.actualPartyId));
+    const individualPartyIds = this.individualParties.map((party) => party.partyID);
+    const actualDayParties = hearingDay?.actualDayParties?.filter((party) => individualPartyIds.includes(party.actualPartyId));
     const updatedActuals = {
       hearingDate: hearingDay.hearingDate,
       hearingStartTime: hearingDay.hearingStartTime,
@@ -65,7 +65,7 @@ export class HearingActualAddEditSummaryComponent extends HearingActualSummaryBa
     );
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
-      hearingActuals: patchedHearingActuals,
+      hearingActuals: patchedHearingActuals
     }));
   }
 

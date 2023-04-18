@@ -21,7 +21,7 @@ export function getServiceRefDataMappingList(): any {
   }
 }
 
-export const router = Router({mergeParams: true});
+export const router = Router({ mergeParams: true });
 
 router.get('/get', getServiceRefDataMapping);
 

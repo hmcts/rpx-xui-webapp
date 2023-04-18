@@ -1,4 +1,4 @@
-import {AnswerSource, IsHiddenSource} from './hearings.enum';
+import { AnswerSource, IsHiddenSource } from './hearings.enum';
 
 export interface Answer {
   id: string;

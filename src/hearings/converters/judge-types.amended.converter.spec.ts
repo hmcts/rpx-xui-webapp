@@ -6,7 +6,6 @@ import { State } from '../store/reducers';
 import { JudgeTypesAmendedConverter } from './judge-types.amended.converter';
 
 describe('JudgeTypesAmendedConverter', () => {
-
   let judgeTypesAmendedConverter: JudgeTypesAmendedConverter;
 
   beforeEach(() => {
@@ -19,8 +18,7 @@ describe('JudgeTypesAmendedConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = ['tj'];
     const result$ = judgeTypesAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = true;
-    const expected = cold('(b|)', {b: isAmended});
+    const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
-
 });

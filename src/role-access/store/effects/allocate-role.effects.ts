@@ -12,20 +12,19 @@ import { AllocateRoleActionTypes, ConfirmAllocation, LoadRolesComplete, NoRolesF
 
 @Injectable()
 export class AllocateRoleEffects {
-
   @Effect() public getRoles$ = this.actions$
-  .pipe(
-    ofType<ConfirmAllocation>(AllocateRoleActionTypes.LOAD_ROLES),
-    mergeMap(
-      (data) => this.allocateRoleService.getValidRoles([data.payload.jurisdiction])
-      .pipe(
-        map((roles) => {
-          const jurisdictionRoles = getRolesForRoleCategory(roles, data.payload.roleCategory, data.payload.jurisdiction);
-          return jurisdictionRoles && jurisdictionRoles.length > 0 ? new LoadRolesComplete({roles: jurisdictionRoles}) : new NoRolesFound();
-        })
+    .pipe(
+      ofType<ConfirmAllocation>(AllocateRoleActionTypes.LOAD_ROLES),
+      mergeMap(
+        (data) => this.allocateRoleService.getValidRoles([data.payload.jurisdiction])
+          .pipe(
+            map((roles) => {
+              const jurisdictionRoles = getRolesForRoleCategory(roles, data.payload.roleCategory);
+              return jurisdictionRoles && jurisdictionRoles.length > 0 ? new LoadRolesComplete({ roles: jurisdictionRoles }) : new NoRolesFound();
+            })
+          )
       )
-    )
-  );
+    );
 
   @Effect() public confirmAllocation$ = this.actions$
     .pipe(
@@ -46,27 +45,26 @@ export class AllocateRoleEffects {
                     showMessage: true,
                     retainMessages: true,
                     message,
-                    messageText: data.payload.action === RoleActions.Allocate ? RoleAllocationMessageText.Add : RoleAllocationMessageText.Reallocate,
+                    messageText: data.payload.action === RoleActions.Allocate ? RoleAllocationMessageText.Add : RoleAllocationMessageText.Reallocate
                   }
                 }
               });
             }),
-            catchError(error => {
-                return AllocateRoleEffects.handleError(error, AllocateRoleActionTypes.CONFIRM_ALLOCATION);
-              }
-            )
+            catchError((error) => {
+              return AllocateRoleEffects.handleError(error);
+            })
           )
       )
     );
+
   private readonly payload: any;
 
   constructor(
     private readonly actions$: Actions,
     private readonly allocateRoleService: AllocateRoleService
-  ) {
-  }
+  ) {}
 
-  public static handleError(error: RoleAccessHttpError, action?: string): Observable<Action> {
+  public static handleError(error: RoleAccessHttpError): Observable<Action> {
     if (error && error.status) {
       switch (error.status) {
         case 401:
@@ -92,7 +90,7 @@ export class AllocateRoleEffects {
     }
   }
 }
-export function getRolesForRoleCategory(roles: Role[], roleCategory: string, jurisdiction: string): Role [] {
-  return roles.filter(role => role.roleCategory === roleCategory);
+export function getRolesForRoleCategory(roles: Role[], roleCategory: string): Role [] {
+  return roles.filter((role) => role.roleCategory === roleCategory);
 }
 

@@ -2,9 +2,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { State } from '../../../app/store/reducers';
 import { CaseShareComponent } from './case-share.component';
 
 describe('CaseShareComponent', () => {
@@ -30,7 +29,7 @@ describe('CaseShareComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ CaseShareComponent ],
+      declarations: [CaseShareComponent],
       providers: [
         provideMockStore(),
         {

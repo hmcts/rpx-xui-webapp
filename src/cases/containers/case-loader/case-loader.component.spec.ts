@@ -7,13 +7,14 @@ import { CaseLoaderComponent } from './case-loader.component';
 
 describe('Loader Component', () => {
   let component: CaseLoaderComponent;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let fixture: ComponentFixture<CaseLoaderComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CaseLoaderComponent, PhaseBannerComponent],
       imports: [HttpClientModule, RouterTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));
 
@@ -25,5 +26,4 @@ describe('Loader Component', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
 });

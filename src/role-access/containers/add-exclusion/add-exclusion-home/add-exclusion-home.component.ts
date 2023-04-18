@@ -24,19 +24,19 @@ import { DescribeExclusionComponent } from '../describe-exclusion/describe-exclu
   styleUrls: ['./add-exclusion-home.component.scss']
 })
 export class AddExclusionHomeComponent implements OnInit, OnDestroy {
-  @ViewChild('chooseExclusion', {static: false, read: ChooseExclusionComponent})
+  @ViewChild('chooseExclusion', { static: false, read: ChooseExclusionComponent })
   public chooseExclusionComponent: ChooseExclusionComponent;
 
-  @ViewChild('choosePersonRole', {static: false, read: ChoosePersonRoleComponent})
+  @ViewChild('choosePersonRole', { static: false, read: ChoosePersonRoleComponent })
   public choosePersonRoleComponent: ChoosePersonRoleComponent;
 
-  @ViewChild('findPerson', {static: false, read: AddExclusionSearchPersonComponent})
+  @ViewChild('findPerson', { static: false, read: AddExclusionSearchPersonComponent })
   public findPersonComponent: AddExclusionSearchPersonComponent;
 
-  @ViewChild('describeExclusion', {static: false, read: DescribeExclusionComponent})
+  @ViewChild('describeExclusion', { static: false, read: DescribeExclusionComponent })
   public describeExclusionComponent: DescribeExclusionComponent;
 
-  @ViewChild('checkAnswers', {static: false, read: AddExclusionCheckAnswersComponent})
+  @ViewChild('checkAnswers', { static: false, read: AddExclusionCheckAnswersComponent })
   public checkAnswersComponent: AddExclusionCheckAnswersComponent;
 
   private exclusionStateDataSub: Subscription;
@@ -69,7 +69,7 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.exclusionStateDataSub = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(
-      exclusionStateData => {
+      (exclusionStateData) => {
         this.navigationCurrentState = exclusionStateData.state;
         this.exclusionOption = exclusionStateData.exclusionOption;
       }

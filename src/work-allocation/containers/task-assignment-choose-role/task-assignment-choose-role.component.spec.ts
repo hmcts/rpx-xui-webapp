@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -8,7 +8,6 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { TASK_ROLES } from '../../../../api/workAllocation/constants/task-roles.mock.data';
 import { ChooseRadioOptionComponent } from '../../../role-access/components';
 import { TaskAssignmentChooseRoleComponent } from './task-assignment-choose-role.component';
-
 
 describe('TaskAssignmentChooseRoleComponent', () => {
   let component: TaskAssignmentChooseRoleComponent;
@@ -30,21 +29,21 @@ describe('TaskAssignmentChooseRoleComponent', () => {
       imports: [ReactiveFormsModule, ExuiCommonLibModule, RouterTestingModule.withRoutes([]), HttpClientTestingModule],
       declarations: [TaskAssignmentChooseRoleComponent, ChooseRadioOptionComponent],
       providers: [
-        {provide: SessionStorageService, useValue: mockSessionStorageService},
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
                 verb: 'Reassign',
-                roles: TASK_ROLES,
+                roles: TASK_ROLES
               },
-              paramMap: convertToParamMap({taskId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8'}),
-              queryParamMap: convertToParamMap({taskId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8'})
+              paramMap: convertToParamMap({ taskId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8' }),
+              queryParamMap: convertToParamMap({ taskId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8' })
             }
-          },
+          }
         },
-        {provide: Router, useValue: router}
+        { provide: Router, useValue: router }
       ]
     })
       .compileComponents();
@@ -78,12 +77,12 @@ describe('TaskAssignmentChooseRoleComponent', () => {
   });
 
   it('should send user to find person', () => {
-    window.history.pushState({returnUrl: '/case-details/123243430403904/tasks'}, 'state');
+    window.history.pushState({ returnUrl: '/case-details/123243430403904/tasks' }, 'state');
     const state = window.history.state;
     component.submit(component.form.value, component.form.valid);
     expect(router.navigate).toHaveBeenCalledWith(
       ['work', 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', 'reassign', 'person'],
-      {queryParams: {role: 'LEGAL_OPERATIONS', service: null}, state}
+      { queryParams: { role: 'LEGAL_OPERATIONS', service: null }, state }
     );
   });
 });

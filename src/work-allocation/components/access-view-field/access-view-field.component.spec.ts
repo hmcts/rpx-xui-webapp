@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -7,7 +7,7 @@ import { WorkAllocationComponentsModule } from '../work-allocation.components.mo
 import { AccessViewFieldComponent } from './access-view-field.component';
 
 @Component({
-  template: `<exui-access-view-field [workField]="workField"></exui-access-view-field>`
+  template: '<exui-access-view-field [workField]="workField"></exui-access-view-field>'
 })
 class WrapperComponent {
   @ViewChild(AccessViewFieldComponent) public appComponentRef: AccessViewFieldComponent;
@@ -16,8 +16,9 @@ class WrapperComponent {
 
 describe('WorkAllocation', () => {
   describe('AccessViewFieldComponent', () => {
-    const REJECTED_REQUEST_URL: string = `/role-access/rejected-request`;
+    const REJECTED_REQUEST_URL: string = '/role-access/rejected-request';
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: AccessViewFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
@@ -25,13 +26,13 @@ describe('WorkAllocation', () => {
 
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule,
+        declarations: [WrapperComponent],
+        imports: [WorkAllocationComponentsModule,
           RouterTestingModule.withRoutes(
-            [{path: 'role-access/rejected-request', component: WrapperComponent}]
-        )]
+            [{ path: 'role-access/rejected-request', component: WrapperComponent }]
+          )]
       })
-      .compileComponents();
+        .compileComponents();
     }));
 
     beforeEach(() => {
@@ -48,7 +49,7 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
 
       // Add the role denied and it should work (showing the link).
-      wrapper.workField = {role: 'specific-access-denied'};
+      wrapper.workField = { role: 'specific-access-denied' };
       fixture.detectChanges();
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
@@ -59,14 +60,14 @@ describe('WorkAllocation', () => {
       // No anchor shown yet.
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
 
-      wrapper.workField = {role: 'specific-access-denied'};
+      wrapper.workField = { role: 'specific-access-denied' };
       fixture.detectChanges();
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe('View');
 
       // Change the value of role and we should no longer have the anchor.
-      wrapper.workField = {role: 'specific-access-granted'};
+      wrapper.workField = { role: 'specific-access-granted' };
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
     });
@@ -89,7 +90,7 @@ describe('WorkAllocation', () => {
       fixture.detectChanges();
       wrapper.appComponentRef.viewRejection();
 
-      expect(router.navigate).toHaveBeenCalledWith([REJECTED_REQUEST_URL], {queryParams: {
+      expect(router.navigate).toHaveBeenCalledWith([REJECTED_REQUEST_URL], { queryParams: {
         caseName: 'Example name',
         caseReference: '123456789',
         roleCategory: 'specific',
@@ -101,7 +102,7 @@ describe('WorkAllocation', () => {
         specificAccessReason: 'I want to test',
         reviewerRoleCategory: 'Judicial',
         infoRequiredComment: 'Need more Infomation'
-      }});
+      } });
     });
   });
 });

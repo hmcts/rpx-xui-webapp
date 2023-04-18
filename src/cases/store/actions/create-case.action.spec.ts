@@ -10,7 +10,7 @@ describe('Create Cases Actions', () => {
 
         expect({ ...action }).toEqual({
           type: fromCreateCases.CREATE_CASE_APPLY,
-          payload,
+          payload
         });
       });
     });
@@ -20,7 +20,7 @@ describe('Create Cases Actions', () => {
         const action = new fromCreateCases.CreateCaseReset();
 
         expect({ ...action }).toEqual({
-          type: fromCreateCases.CREATE_CASE_RESET,
+          type: fromCreateCases.CREATE_CASE_RESET
         });
       });
     });
@@ -39,7 +39,7 @@ describe('Create Cases Actions', () => {
 
     describe('Case Create Filter Apply', () => {
       it('should create an action', () => {
-        const payload = {jurisdiction: 'SSCS'};
+        const payload = { jurisdiction: 'SSCS' };
         const action = new fromCreateCases.CaseCreateFilterApply(payload);
 
         expect({ ...action }).toEqual({
@@ -51,7 +51,7 @@ describe('Create Cases Actions', () => {
 
     describe('Case Create Filter Changed', () => {
       it('should create an action', () => {
-        const payload = {jurisdiction: 'SSCS'};
+        const payload = { jurisdiction: 'SSCS' };
         const action = new fromCreateCases.CaseCreateFilterChanged(payload);
 
         expect({ ...action }).toEqual({
@@ -60,7 +60,5 @@ describe('Create Cases Actions', () => {
         });
       });
     });
-
   });
-
 });

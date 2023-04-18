@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { UserService } from 'src/app/services/user/user.service';
 import { RefundsComponent } from './refunds.component';
@@ -17,12 +17,12 @@ describe('RefundsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ RefundsComponent ],
+      declarations: [RefundsComponent],
       imports: [HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [{ provide: UserService, useValue: userMock }]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

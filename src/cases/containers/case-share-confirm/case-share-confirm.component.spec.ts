@@ -1,22 +1,21 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { State } from '../../../app/store/reducers';
+import { provideMockStore } from '@ngrx/store/testing';
 import { CaseShareConfirmComponent } from './case-share-confirm.component';
 
 describe('CaseShareConfirmComponent', () => {
   let component: CaseShareConfirmComponent;
   let fixture: ComponentFixture<CaseShareConfirmComponent>;
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ CaseShareConfirmComponent ],
+      declarations: [CaseShareConfirmComponent],
       providers: [
-        provideMockStore(),
+        provideMockStore()
       ]
     }).compileComponents();
     store = TestBed.inject(Store);

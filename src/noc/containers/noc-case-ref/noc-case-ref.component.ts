@@ -12,7 +12,6 @@ import * as fromFeature from '../../store';
   styleUrls: ['noc-case-ref.component.scss']
 })
 export class NocCaseRefComponent implements OnInit, OnDestroy {
-
   @Input() public navEvent: NocNavigation;
 
   public caseRefConfig: GovUiConfigModel;
@@ -38,7 +37,7 @@ export class NocCaseRefComponent implements OnInit, OnDestroy {
       type: 'text'
     };
 
-    this.caseRefForm = this.formBuilder.group({caseRef: null});
+    this.caseRefForm = this.formBuilder.group({ caseRef: null });
 
     this.validationErrors$ = this.store.pipe(select(fromFeature.validationErrors));
     this.lastError$ = this.store.pipe(select(fromFeature.lastError));
@@ -50,7 +49,7 @@ export class NocCaseRefComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.nocNavigationCurrentStateSub = this.store.pipe(select(fromFeature.currentNavigation)).subscribe(
-      state => this.nocNavigationCurrentState = state);
+      (state) => this.nocNavigationCurrentState = state);
   }
 
   public onSubmit() {
@@ -68,7 +67,7 @@ export class NocCaseRefComponent implements OnInit, OnDestroy {
         break;
       }
       case NocNavigationEvent.CONTINUE: {
-        this.store.dispatch(new fromFeature.SetCaseReference(this.caseRefForm.controls['caseRef'].value));
+        this.store.dispatch(new fromFeature.SetCaseReference(this.caseRefForm.controls.caseRef.value));
         break;
       }
       default:

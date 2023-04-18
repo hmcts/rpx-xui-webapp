@@ -1,4 +1,4 @@
-import {CaseCategoryModel} from './caseCategory.model';
+import { CaseCategoryModel } from './caseCategory.model';
 
 export interface CaseDetailsModel {
   hmctsServiceCode: string;

@@ -24,7 +24,6 @@ import * as fromFeature from '../../../store';
   templateUrl: './allocate-role-check-answers.component.html'
 })
 export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
-
   @Input() public navEvent: AllocateRoleNavigation;
 
   public answers: Answer[] = [];
@@ -36,12 +35,11 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
   public typeOfRole: string;
   public allocateTo: AllocateTo;
 
-  constructor(private readonly store: Store<fromFeature.State>) {
-  }
+  constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
     this.storeSubscription = this.store.pipe(select(fromFeature.getAllocateRoleState))
-      .subscribe(allocateRole => this.setAnswersFromAllocateRoleStateStore(allocateRole));
+      .subscribe((allocateRole) => this.setAnswersFromAllocateRoleStateStore(allocateRole));
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent) {
@@ -96,10 +94,10 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     if (allocateRoleStateData.allocateTo === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON ||
       (allocateRoleStateData.allocateTo === null && allocateRoleStateData.typeOfRole.name === TypeOfRole.CaseManager) ||
       allocateRoleStateData.action === Actions.Reallocate) {
-      this.answers.push({label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON});
+      this.answers.push({ label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON });
     } else if (allocateRoleStateData.allocateTo === AllocateTo.RESERVE_TO_ME) {
       if (personDetails) {
-        this.answers.push({label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON});
+        this.answers.push({ label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON });
       }
     }
   }
@@ -116,7 +114,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
       endDate = moment.parseZone(allocateRoleStateData.period.endDate).format('D MMMM YYYY');
       durationOfRole = `${startDate} to ${endDate}`;
     }
-    this.answers.push({label: AnswerLabelText.DurationOfRole, value: durationOfRole, action: AllocateRoleState.CHOOSE_DURATION});
+    this.answers.push({ label: AnswerLabelText.DurationOfRole, value: durationOfRole, action: AllocateRoleState.CHOOSE_DURATION });
   }
 
   public onNavigate(action) {

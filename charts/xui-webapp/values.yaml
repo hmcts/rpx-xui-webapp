@@ -68,6 +68,8 @@ nodejs:
     SERVICES_CASE_JUDICIAL_API: http://rd-judicial-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services refunds  endpoints
     SERVICES_REFUNDS_API_URL: http://ccpay-refunds-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Notification Url (for Ways To Pay)
+    SERVICES_NOTIFICATIONS_API_URL:  http://ccpay-notifications-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services case endpoints
     SERVICES_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services judicial endpoints

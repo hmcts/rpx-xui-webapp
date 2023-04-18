@@ -23,7 +23,7 @@ describe('getEnvironment', () => {
   });
 
   it('should return the aat environment for a PR url.', () => {
-    expect(AppUtils.getEnvironment('https://xui-mo-webapp-pr-84.service.core-compute-preview.internal')).toEqual(
+    expect(AppUtils.getEnvironment('https://xui-mo-webapp-pr-84.preview.platform.hmcts.net')).toEqual(
       AppConstants.ENVIRONMENT_NAMES.aat);
   });
 

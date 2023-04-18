@@ -2056,12 +2056,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.14.5-case-flag-dual-error":
-  version: 6.14.5-case-flag-dual-error
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.14.5-case-flag-dual-error"
+"@hmcts/ccd-case-ui-toolkit@npm:6.14.5-case-flag-dual-error-msg-fix":
+  version: 6.14.5-case-flag-dual-error-msg-fix
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.14.5-case-flag-dual-error-msg-fix"
   dependencies:
     tslib: ^2.0.0
-  checksum: b5d9b23d039e52c7ec8b504b29828ad59206e9251d31c7ca5d88ccec90f9f8a39d01ebd7e638c31ccda4e7c01d0710147802d56862c4c8059155352b8621a3c3
+  checksum: 4eb2830ff98dee8e4a67c6fd896f7b246c61ed51aca5de0aaa7413b52195439394e8176824eddea8629aa8b68c24c8ad4be404fbb6549a091a8c0650687cfb0d
   languageName: node
   linkType: hard
 
@@ -17719,7 +17719,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.14.5-case-flag-dual-error
+    "@hmcts/ccd-case-ui-toolkit": 6.14.5-case-flag-dual-error-msg-fix
     "@hmcts/ccpay-web-component": 5.0.10-beta14
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

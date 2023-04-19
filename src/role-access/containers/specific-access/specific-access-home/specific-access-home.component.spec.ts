@@ -1,13 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { getMockTasks } from 'src/work-allocation/tests/utils.spec';
 import { UtilsModule } from '../../../../noc/containers/noc-field/utils/utils.module';
 import { CaseRole, RoleCategory, SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
@@ -30,13 +29,10 @@ describe('SpecificAccessHomeComponent', () => {
   const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseRolesUserDetails']);
   const mockCaseworkerDataService = jasmine.createSpyObj('CaseworkerDataService', ['getCaseworkersForServices']);
   const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
-  let mockStore: MockStore<fromFeature.State>;
+  let mockStore: any;
   let mockFormBuilder: FormBuilder;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let storeDispatchMock: any;
-  const specificAccessStateData = {
-    caseId: '111111',
-    state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW
-  };
   const caseRole: CaseRole = {
     id: '123456789',
     name: 'name',
@@ -47,7 +43,7 @@ describe('SpecificAccessHomeComponent', () => {
     actorId: 'person',
     actions: null,
     email: 'N/A'
-  }
+  };
 
   beforeEach(() => {
     durationHelperService = new DurationHelperService();
@@ -87,12 +83,12 @@ describe('SpecificAccessHomeComponent', () => {
               }
             }
           }
-        },
+        }
       ]
     })
       .compileComponents();
-    mockStore = TestBed.get(Store);
-    mockFormBuilder = TestBed.get(FormBuilder);
+    mockStore = TestBed.inject(Store);
+    mockFormBuilder = TestBed.inject(FormBuilder);
     storeDispatchMock = spyOn(mockStore, 'dispatch').and.callThrough();
     fixture = TestBed.createComponent(SpecificAccessHomeComponent);
     component = fixture.componentInstance;
@@ -127,14 +123,14 @@ describe('SpecificAccessHomeComponent', () => {
       component.specificAccessReviewComponent.reviewOptionControl.setValue(AccessReason.APPROVE_REQUEST);
       component.navigationHandler(continueNavEvent);
       expect(mockStore.dispatch).toHaveBeenCalledWith(
-        new fromFeature.DecideSpecificAccessAndGo({accessReason: AccessReason.APPROVE_REQUEST, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_DURATION}));
+        new fromFeature.DecideSpecificAccessAndGo({ accessReason: AccessReason.APPROVE_REQUEST, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_DURATION }));
     });
 
     it('should correctly navigate to the specific access approved page on pressing continue on the specific access duration page', () => {
       component.specificAccessDurationComponent = new SpecificAccessDurationComponent(durationHelperService, new FormBuilder(), mockStore);
       component.navigationCurrentState = SpecificAccessState.SPECIFIC_ACCESS_DURATION;
       component.specificAccessDurationComponent.selectedDuration = DurationType.SEVEN_DAYS;
-      spyOn(component.specificAccessDurationComponent, 'getRawData').and.returnValue({day: 11});
+      spyOn(component.specificAccessDurationComponent, 'getRawData').and.returnValue({ day: 11 });
 
       component.navigationHandler(continueNavEvent);
       expect(mockStore.dispatch).toHaveBeenCalled();
@@ -142,7 +138,7 @@ describe('SpecificAccessHomeComponent', () => {
 
     it('should correctly redirect to the work list if the return to tasks event is triggered', () => {
       component.navigationHandler(returnToMyTasksNavEvent);
-      expect(routerMock.navigateByUrl).toHaveBeenCalledWith(`/work/my-work/list`);
+      expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/work/my-work/list');
     });
 
     it('should correctly redirect to the tasks tab on the case details page if the return to my tasks event is triggered', () => {

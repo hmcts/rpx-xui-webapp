@@ -17,8 +17,7 @@ export enum SpecificAccessActionTypes {
 export class ChangeSpecificAccessNavigation implements Action {
   public readonly type = SpecificAccessActionTypes.CHANGE_NAVIGATION;
 
-  constructor(public payload: SpecificAccessState) {
-  }
+  constructor(public payload: SpecificAccessState) {}
 }
 
 export class SetSpecificAccessInitData implements Action {
@@ -36,43 +35,34 @@ export class SetSpecificAccessInitData implements Action {
     specificAccessReason: string,
     roleCategory: RoleCategory,
     requestedRole: string
-  }) {
-  }
+  }) {}
 }
 
 export class DecideSpecificAccessAndGo implements Action {
   public readonly type = SpecificAccessActionTypes.DECIDE_SPECIFIC_ACCESS_AND_GO;
-  constructor(public payload: { accessReason: AccessReason, specificAccessState: SpecificAccessState }) {
-  }
+  constructor(public payload: { accessReason: AccessReason, specificAccessState: SpecificAccessState }) {}
 }
 
 export class SetSpecificAccessFormData implements Action {
   public readonly type = SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_FORM_DATA;
 
-  constructor(public payload: SpecificAccessFormData) {
-  }
+  constructor(public payload: SpecificAccessFormData) {}
 }
 
 export class SetSpecificAccessInfoFormData implements Action {
   public readonly type = SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_INFO_FORM_DATA;
 
-  constructor(public payload: SpecificAccessMoreInformationForm) {
-  }
+  constructor(public payload: SpecificAccessMoreInformationForm) {}
 }
 
 export class RequestMoreInfoSpecificAccessRequest implements Action {
   public readonly type = SpecificAccessActionTypes.REQUEST_MORE_INFO_SPECIFIC_ACCESS_REQUEST;
-  constructor(public payload: SpecificAccessStateData) {
-  }
+  constructor(public payload: SpecificAccessStateData) {}
 }
 export class ApproveSpecificAccessRequest implements Action {
   public readonly type = SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST;
-  constructor(public payload: { specificAccessStateData: SpecificAccessStateData, period: Period }) {
-  }
+  constructor(public payload: { specificAccessStateData: SpecificAccessStateData, period: Period }) {}
 }
-
-
-
 
 export type SpecificAccessAction =
   | ApproveSpecificAccessRequest

@@ -1,9 +1,9 @@
-import 'reflect-metadata';
+import 'core-js/es/array';
+import 'core-js/es/object';
 import 'core-js/es/reflect';
 import 'core-js/es/symbol';
-import 'core-js/es/array';
 import 'core-js/es/typed-array';
-import 'core-js/es/object';
+import 'reflect-metadata';
 
 /** IE10 and IE11 requires the following for NgClass support on SVG elements */
 import 'eligrey-classlist.js'; // Run `yarn add eligrey-classlist.js`.
@@ -42,12 +42,9 @@ import 'web-animations-js'; // Run `npm install --save web-animations-js`.
  *
  */
 
-
-
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
 import 'zone.js/dist/zone';
-
 
 (window as any).global = window; // added to prevent issues with some libraries

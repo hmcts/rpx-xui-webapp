@@ -32,7 +32,7 @@ export const containers: any[] = [
   CaseShareComponent,
   CaseShareConfirmComponent,
   CaseShareCompleteComponent,
-  CaseHearingsComponent,
+  CaseHearingsComponent
 ];
 
 export * from './case-create-submit/case-create-submit.component';

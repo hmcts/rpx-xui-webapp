@@ -41,14 +41,14 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       estimation: [null, [Validators.pattern(/^\d+$/)]],
       parties: fb.array([]),
       hearingLevelChannels: this.getHearingLevelChannels,
-      paperHearing: [this.hearingRequestMainModel.hearingDetails.hearingChannels && this.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR) ? RadioOptions.YES : RadioOptions.NO],
+      paperHearing: [this.hearingRequestMainModel.hearingDetails.hearingChannels && this.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR) ? RadioOptions.YES : RadioOptions.NO]
     });
     this.partiesFormArray = fb.array([]);
   }
 
   public get getHearingLevelChannels(): FormArray {
     const hearingLevelParticipantChannels = this.hearingRequestMainModel.hearingDetails.hearingChannels;
-    return this.fb.array(this.hearingLevelChannels.map(val => this.fb.group({
+    return this.fb.array(this.hearingLevelChannels.map((val) => this.fb.group({
       key: [val.key],
       value_en: [val.value_en],
       value_cy: [val.value_cy],
@@ -64,8 +64,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     if (!this.hearingRequestMainModel.partyDetails.length) {
       this.initialiseFromHearingValues();
     } else {
-      this.hearingRequestMainModel.partyDetails.filter(party => party.partyType === PartyType.IND)
-        .forEach(partyDetail => {
+      this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND)
+        .forEach((partyDetail) => {
           (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues({
             partyID: partyDetail.partyID,
             partyType: partyDetail.partyType,
@@ -115,7 +115,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
 
   public getIndividualParties(): PartyDetailsModel[] {
     const individualParties: PartyDetailsModel[] = [];
-    (this.attendanceFormGroup.controls.parties as FormArray).controls.forEach(control => {
+    (this.attendanceFormGroup.controls.parties as FormArray).controls.forEach((control) => {
       const partyDetail: PartyDetailsModel = {
         partyID: control.value.partyID,
         partyType: control.value.partyType,
@@ -131,14 +131,14 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public getOrganisationParties(): PartyDetailsModel[] {
-    return this.serviceHearingValuesModel.parties.filter(party => party.partyType === PartyType.ORG);
+    return this.serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.ORG);
   }
 
   public getHearingChannels(): string[] {
     if (this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES) {
       return [HearingChannelEnum.ONPPR];
     }
-    return this.attendanceFormGroup.controls.hearingLevelChannels.value.filter((channel) => channel.selected).map(channel => channel.key);
+    return this.attendanceFormGroup.controls.hearingLevelChannels.value.filter((channel) => channel.selected).map((channel) => channel.key);
   }
 
   public isFormValid(): boolean {
@@ -151,7 +151,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       return formValid;
     }
 
-    (this.attendanceFormGroup.controls.parties as FormArray).controls.forEach(element => {
+    (this.attendanceFormGroup.controls.parties as FormArray).controls.forEach((element) => {
       if (!element.valid) {
         formValid = false;
         selectionValid = false;
@@ -189,7 +189,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       ...individualDetails && ({ individualDetails }),
       ...organisationDetails && ({ organisationDetails }),
       unavailabilityDOW: [party.unavailabilityDOW],
-      unavailabilityRanges: [party.unavailabilityRanges],
+      unavailabilityRanges: [party.unavailabilityRanges]
     });
   }
 

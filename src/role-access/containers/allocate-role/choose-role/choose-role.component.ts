@@ -21,7 +21,7 @@ import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-choose-role',
-  templateUrl: './choose-role.component.html',
+  templateUrl: './choose-role.component.html'
 })
 export class ChooseRoleComponent implements OnInit, OnDestroy {
   public ERROR_MESSAGE = ERROR_MESSAGE;
@@ -45,8 +45,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
   public jurisdiction: string;
 
   constructor(private readonly store: Store<fromFeature.State>,
-              private readonly route: ActivatedRoute) {
-  }
+              private readonly route: ActivatedRoute) {}
 
   public ngOnInit(): void {
     // roleCategory: 1. JUDICIAL/2. LEGAL_OPERATIONS which is exactly matched with back end
@@ -65,14 +64,14 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       this.caption = `Allocate a ${userTypePlaceHolder} role`;
     }
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
-      allocateRoleStateData => {
+      (allocateRoleStateData) => {
         this.typeOfRole = allocateRoleStateData.typeOfRole;
         this.radioOptionControl = new FormControl(this.typeOfRole ? this.typeOfRole.name : '', [Validators.required]);
         this.formGroup = new FormGroup({ [this.radioControlName]: this.radioOptionControl });
       }
     );
-    this.store.pipe(select(fromFeature.getAvailableRolesForService)).subscribe(roles =>
-      this.optionsList = this.getOptions(roles.filter(role => role.roleCategory === this.roleCategory))
+    this.store.pipe(select(fromFeature.getAvailableRolesForService)).subscribe((roles) =>
+      this.optionsList = this.getOptions(roles.filter((role) => role.roleCategory === this.roleCategory))
     );
   }
 
@@ -92,7 +91,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.CONTINUE:
         const roleChosen = this.radioOptionControl.value;
-        const roleOption = this.optionsList.filter(option => option.optionValue === roleChosen)[0];
+        const roleOption = this.optionsList.filter((option) => option.optionValue === roleChosen)[0];
         const typeOfRole: SpecificRole = {
           id: roleOption ? roleOption.optionId : roleChosen,
           name: roleChosen
@@ -160,7 +159,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
   }
 
   public getOptions(roles: Role[]): OptionsModel[] {
-    return roles.map(role => ({ optionId: role.roleId, optionValue: role.roleName }));
+    return roles.map((role) => ({ optionId: role.roleId, optionValue: role.roleName }));
   }
 
   public ngOnDestroy(): void {

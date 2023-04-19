@@ -6,8 +6,8 @@ import { State } from '../store/reducers';
 import { JudgeTypesHiddenConverter } from './judge-types.hidden.converter';
 
 describe('JudgeTypesHiddenConverter', () => {
-
   let judgeTypesHiddenConverter: JudgeTypesHiddenConverter;
+
   beforeEach(() => {
     judgeTypesHiddenConverter = new JudgeTypesHiddenConverter();
   });
@@ -17,7 +17,7 @@ describe('JudgeTypesHiddenConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;
     const result$ = judgeTypesHiddenConverter.transformHidden(of(STATE));
     const showWelshPage = true;
-    const expected = cold('(b|)', {b: showWelshPage});
+    const expected = cold('(b|)', { b: showWelshPage });
     expect(result$).toBeObservable(expected);
   });
 
@@ -28,8 +28,7 @@ describe('JudgeTypesHiddenConverter', () => {
     };
     const result$ = judgeTypesHiddenConverter.transformHidden(of(STATE));
     const showWelshPage = false;
-    const expected = cold('(b|)', {b: showWelshPage});
+    const expected = cold('(b|)', { b: showWelshPage });
     expect(result$).toBeObservable(expected);
   });
-
 });

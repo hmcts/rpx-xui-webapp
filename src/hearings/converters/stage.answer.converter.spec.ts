@@ -10,24 +10,24 @@ import { AnswerConverter } from './answer.converter';
 import { StageAnswerConverter } from './stage.answer.converter';
 
 describe('StageAnswerConverter', () => {
-
   let converter: AnswerConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
   let router: any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                hearingStageOptions: hearingStageRefData,
-              },
-            },
-          },
+                hearingStageOptions: hearingStageRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -40,8 +40,7 @@ describe('StageAnswerConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingType = 'Final';
-    const expected = cold('(b|)', {b: hearingType});
+    const expected = cold('(b|)', { b: hearingType });
     expect(result$).toBeObservable(expected);
   });
-
 });

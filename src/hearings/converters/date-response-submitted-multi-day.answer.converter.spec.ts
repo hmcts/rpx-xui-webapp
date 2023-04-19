@@ -5,7 +5,6 @@ import { State } from '../store/reducers';
 import { DateResponseSubmittedMultiDayAnswerConverter } from './date-response-submitted-multi-day.answer.converter';
 
 describe('DateResponseSubmittedMultiDayAnswerConverter', () => {
-
   let dateResponseSubmittedMultiDayAnswerConverter: DateResponseSubmittedMultiDayAnswerConverter;
 
   beforeEach(() => {
@@ -19,5 +18,4 @@ describe('DateResponseSubmittedMultiDayAnswerConverter', () => {
     const expected = cold('(b|)', { b: type });
     expect(result$).toBeObservable(expected);
   });
-
 });

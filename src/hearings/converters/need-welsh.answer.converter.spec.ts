@@ -5,7 +5,6 @@ import { State } from '../store/reducers';
 import { NeedWelshAnswerConverter } from './need-welsh.answer.converter';
 
 describe('NeedWelshAnswerConverter', () => {
-
   let needWelshAnswerConverter: NeedWelshAnswerConverter;
 
   beforeEach(() => {
@@ -16,8 +15,7 @@ describe('NeedWelshAnswerConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = needWelshAnswerConverter.transformAnswer(of(STATE));
     const needWelsh = 'Yes';
-    const expected = cold('(b|)', {b: needWelsh});
+    const expected = cold('(b|)', { b: needWelsh });
     expect(result$).toBeObservable(expected);
   });
-
 });

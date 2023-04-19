@@ -12,6 +12,7 @@ export class NocQuestion {
     complex_fields: [];
     collection_field_type: null | any;
   };
+
   public display_context_parameter: string;
   public challenge_question_id: string;
   public answer_field: string;

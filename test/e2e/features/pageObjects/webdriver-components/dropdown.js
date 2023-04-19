@@ -1,14 +1,11 @@
 let CustomError = require('../../../utils/errors/custom-error.js');
 let RandomUtils = require('../../../utils/euiDataGenerationUtils.js');
 
-
 /**
  * Wrapper object to handle all interactions around dealing with a dropdown box. constructor takes locator in plain string
  */
 const DEFAULT_TIMEOUT = 5000;
 class Dropdown {
-
-
   /**
    * Should be parsed ccs 'select' tag for a dropdown
    * @param css
@@ -34,7 +31,7 @@ class Dropdown {
       const optionText = await option.getText();
       stringArray.push(optionText);
     }
-    return stringArray
+    return stringArray;
   }
 
   /**
@@ -72,19 +69,18 @@ class Dropdown {
     let options = await this._getOptionElements();
     let optionsTextArray = [];
 
-
     for (const option of options){
-        const optionText = await option.getText();
-        await optionsTextArray.push(optionText);
-        if (optionText.trim().toLowerCase() === dropdownOption.trim().toLowerCase()){
-           optionToSelect = option;
-           found = true;
-           break;
-        }
+      const optionText = await option.getText();
+      await optionsTextArray.push(optionText);
+      if (optionText.trim().toLowerCase() === dropdownOption.trim().toLowerCase()){
+        optionToSelect = option;
+        found = true;
+        break;
+      }
     }
     if (!found){
-      let message = `option '${dropdownOption}' not found in dropdown '${this._dropdownElement.toString()}'. Available options: ${optionsTextArray}`
-      throw new CustomError(message)
+      let message = `option '${dropdownOption}' not found in dropdown '${this._dropdownElement.toString()}'. Available options: ${optionsTextArray}`;
+      throw new CustomError(message);
     }
 
     await optionToSelect.click();
@@ -113,10 +109,9 @@ class Dropdown {
       }
     }
 
-
     if (!found){
-      let message = `option '${dropdownIndex}' not found in dropdown '${this._dropdownElement.toString()}'. Available options: ${optionsTextArray}`
-      throw new CustomError(message)
+      let message = `option '${dropdownIndex}' not found in dropdown '${this._dropdownElement.toString()}'. Available options: ${optionsTextArray}`;
+      throw new CustomError(message);
     }
 
     await optionToSelect.click();
@@ -129,8 +124,9 @@ class Dropdown {
   async isPresent(expectedTextsValues){
     let actualTextsValues = await this.getOptionsTextValues();
     for (var i = actualTextsValues.length; i--;) {
-      if(!expectedTextsValues.includes(actualTextsValues[i].trim()))
+      if(!expectedTextsValues.includes(actualTextsValues[i].trim())) {
         return false;
+      }
     }
     return await $(this._dropdownElement).isPresent();
   }
@@ -172,7 +168,6 @@ class Dropdown {
    * @param dropdownOption
    */
   async selectFromDropdownByText(dropdownOption){
-
     let fail = true;
     let failmessage = null;
 
@@ -185,18 +180,16 @@ class Dropdown {
         failmessage = e;
         console.log(e);
         console.log(`Attempt ${i}/3 failed, Retry after wait`);
-        await browser.sleep(2000 * i)
+        await browser.sleep(2000 * i);
       }
     }
 
     if (fail){
-      throw new CustomError(failmessage, 'failed 3 retry attempts')
+      throw new CustomError(failmessage, 'failed 3 retry attempts');
     }
   }
 
-
   async selectFromDropdownByIndex(dropdownOption){
-
     let fail = true;
     let failmessage = null;
 
@@ -209,16 +202,14 @@ class Dropdown {
         failmessage = e;
         console.log(e);
         console.log(`Attempt ${i}/3 failed, Retry after wait`);
-        await browser.sleep(2000 * i)
+        await browser.sleep(2000 * i);
       }
     }
 
     if (fail){
-      throw new CustomError(failmessage, 'failed 3 retry attempts')
+      throw new CustomError(failmessage, 'failed 3 retry attempts');
     }
   }
 }
-
-
 
 module.exports = Dropdown;

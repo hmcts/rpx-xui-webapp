@@ -1,6 +1,6 @@
 import * as express from 'express';
 import authInterceptor from '../../lib/middleware/auth';
-import {getJudicialUsersSearch, searchJudicialUserByPersonalCodes} from "./index";
+import { getJudicialUsersSearch, searchJudicialUserByPersonalCodes } from './index';
 
 export const router = express.Router({ mergeParams: true });
 

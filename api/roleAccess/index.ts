@@ -367,10 +367,10 @@ export function getAccessRolesRequestPayloadForCaseId(caseId: string): CaseRoleR
     queryRequests: [
       {
         attributes: {
-          caseId: [caseId],
-        },
-      },
-    ],
+          caseId: [caseId]
+        }
+      }
+    ]
   };
 }
 

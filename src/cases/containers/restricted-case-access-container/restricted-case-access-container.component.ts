@@ -14,7 +14,6 @@ import { RestrictedCase } from '../../models/restricted-case.model';
   templateUrl: './restricted-case-access-container.component.html'
 })
 export class RestrictedCaseAccessContainerComponent implements OnInit {
-
   public caseId: string;
   public caseRoles: CaseRole[];
   public caseWorkers: Caseworker[];
@@ -31,32 +30,32 @@ export class RestrictedCaseAccessContainerComponent implements OnInit {
   public ngOnInit(): void {
     this.caseId = this.route.snapshot.params.cid;
     this.allocateService.getCaseAccessRolesByCaseId(this.caseId).pipe(
-      switchMap(caseRoles => {
+      switchMap((caseRoles) => {
         this.caseRoles = caseRoles;
         return of(this.getUniqueIdamIds());
       }), take(1),
       switchMap(() => this.waSupportedJurisdictionsService.getWASupportedJurisdictions()),
       take(1),
-      switchMap(jurisdictions => this.caseworkerDataService.getCaseworkersForServices(jurisdictions)),
+      switchMap((jurisdictions) => this.caseworkerDataService.getCaseworkersForServices(jurisdictions)),
       take(1),
-      switchMap(caseworkers => of(this.getRestrictedCases(caseworkers)))
+      switchMap((caseworkers) => of(this.getRestrictedCases(caseworkers)))
     ).subscribe(
-      restrictedCases => this.restrictedCases = restrictedCases,
+      (restrictedCases) => this.restrictedCases = restrictedCases,
       () => this.router.navigate(['/', 'service-down'])
     );
   }
 
   private getUniqueIdamIds(): string[] {
-    const idamIds = this.caseRoles.map(role => role.actorId);
+    const idamIds = this.caseRoles.map((role) => role.actorId);
     this.idamIds = idamIds.filter((value, index) => idamIds.indexOf(value) === index);
     return this.idamIds;
   }
 
   private getRestrictedCases(caseworkers: Caseworker[]): RestrictedCase[] {
     const restrictedCases: RestrictedCase[] = [];
-    this.idamIds.forEach(id => {
-      const user = caseworkers.find(caseworker => caseworker.idamId === id);
-      const caseRole = this.caseRoles.find(role => role.actorId === id);
+    this.idamIds.forEach((id) => {
+      const user = caseworkers.find((caseworker) => caseworker.idamId === id);
+      const caseRole = this.caseRoles.find((role) => role.actorId === id);
       if (user && caseRole) {
         restrictedCases.push({
           user: `${user.firstName} ${user.lastName}`,

@@ -40,7 +40,7 @@ describe('RestrictedCaseAccessContainerComponent', () => {
         { provide: Router, useValue: mockRouter }
       ]
     })
-    .compileComponents();
+      .compileComponents();
     mockAllocateService.getCaseAccessRolesByCaseId.and.returnValue(of(CASEROLES));
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
     mockCaseworkerDataService.getCaseworkersForServices.and.returnValue(of([CASEWORKERS.JANE_DOE, CASEWORKERS.JOHN_SMITH]));
@@ -58,7 +58,7 @@ describe('RestrictedCaseAccessContainerComponent', () => {
   });
 
   it('should navigate to service down page if error', () => {
-    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(throwError({status: 500}));
+    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(throwError({ status: 500 }));
     component.ngOnInit();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'service-down']);
   });

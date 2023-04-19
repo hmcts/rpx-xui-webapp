@@ -7,7 +7,6 @@ import { RpxTranslationService } from 'rpx-xui-translation';
   templateUrl: './privacy-policy.component.html'
 })
 export class PrivacyPolicyComponent implements OnInit {
-
   constructor(private readonly route: ActivatedRoute, private readonly langService: RpxTranslationService) {}
 
   public get showWelshTranslation(): boolean {

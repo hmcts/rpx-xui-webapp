@@ -51,10 +51,10 @@ describe('NocTextFieldComponent', () => {
       ],
       imports: [
         ReactiveFormsModule,
-        UtilsModule,
+        UtilsModule
       ],
       providers: [
-        provideMockStore(),
+        provideMockStore()
       ]
     }).compileComponents();
   }));

@@ -28,16 +28,16 @@ import { effects, reducers } from './store';
 
 @NgModule({
   imports: [
-      CommonModule,
-      HttpClientModule,
-      StoreModule.forFeature('noc', reducers),
-      EffectsModule.forFeature(effects),
-      nocRouting,
-      SharedModule,
-      FormsModule,
-      ReactiveFormsModule,
-      UtilsModule,
-      ExuiCommonLibModule,
+    CommonModule,
+    HttpClientModule,
+    StoreModule.forFeature('noc', reducers),
+    EffectsModule.forFeature(effects),
+    nocRouting,
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule,
+    UtilsModule,
+    ExuiCommonLibModule
   ],
   declarations: [...fromContainers.containers],
   entryComponents: [

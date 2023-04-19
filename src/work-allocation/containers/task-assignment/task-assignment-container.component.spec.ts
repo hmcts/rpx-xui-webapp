@@ -7,11 +7,11 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
 import { RpxTranslationService } from 'rpx-xui-translation';
+import { of } from 'rxjs';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -64,6 +64,7 @@ describe('TaskAssignmentContainerComponent2', () => {
   const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
 
   beforeEach(waitForAsync(() => {
@@ -114,9 +115,9 @@ describe('TaskAssignmentContainerComponent2', () => {
             paramMap: of({ selectedPerson: SELECTED_PERSON })
           }
         },
-        {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},
-        {provide: Router, useValue: {url: 'localhost/test'}},
-        {provide: RpxTranslationService, useFactory: rpxTranslationServiceStub}
+        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+        { provide: Router, useValue: { url: 'localhost/test' } },
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);

@@ -71,9 +71,9 @@ describe('NocCheckAndSubmitComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ NocCheckAndSubmitComponent, RpxTranslateMockPipe ],
+      declarations: [NocCheckAndSubmitComponent, RpxTranslateMockPipe],
       providers: [
-        provideMockStore(),
+        provideMockStore()
       ]
     })
       .compileComponents();

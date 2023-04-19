@@ -24,7 +24,7 @@ describe('AlertComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule.withRoutes([
-        ]),
+        ])
       ],
       declarations: [AlertComponent, CCDAlertComponent, AlertIconClassPipe, RpxTranslateMockPipe],
       providers: [{

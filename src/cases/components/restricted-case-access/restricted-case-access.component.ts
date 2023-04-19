@@ -6,6 +6,5 @@ import { RestrictedCase } from '../../models/restricted-case.model';
   templateUrl: './restricted-case-access.component.html'
 })
 export class RestrictedCaseAccessComponent {
-
   @Input() restrictedCases: RestrictedCase[];
 }

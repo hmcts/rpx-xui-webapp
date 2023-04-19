@@ -10,7 +10,7 @@ describe('RestrictedCaseAccessComponent', () => {
       imports: [],
       declarations: [RestrictedCaseAccessComponent]
     })
-    .compileComponents();
+      .compileComponents();
     fixture = TestBed.createComponent(RestrictedCaseAccessComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

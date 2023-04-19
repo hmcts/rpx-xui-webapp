@@ -12,7 +12,7 @@ import {expect} from "chai";
 const pactSetUp = new PactTestSetup({ provider: 'acc_manageCaseAssignment_Noc', port: 8000 });
 
 describe('getNoCQuestions API', () => {
-
+    const caseId = '1234567890123456'
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
     afterEach(() => {
         sinon.reset();
@@ -21,8 +21,24 @@ describe('getNoCQuestions API', () => {
         pactSetUp.provider.verify()
     });
 
+    function setUpMockConfigForFunction() {
+        const configValues = getNocAPIOverrides(pactSetUp.provider.mockService.baseUrl)
+        sandbox.stub(config, 'get').callsFake((prop) => {
+            return configValues[prop];
+        });
+        const {getNoCQuestions} = requireReloaded('../../../../noc/index');
+        return getNoCQuestions;
+    }
+
+    const req = mockReq({
+        headers:{
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken'
+        },
+        query: { caseId: '1234567890123456' },
+    });
+
     describe('when a request is made to retrieve NoC questions', () => {
-        const caseId = '1234567890123456'
         const expectedResponse = {
           questions: eachLike({
                 case_type_id: somethingLike('Probate'),
@@ -63,22 +79,7 @@ describe('getNoCQuestions API', () => {
         })
 
         it('returns the expected NoC questions', async () => {
-
-
-            const configValues = getNocAPIOverrides(pactSetUp.provider.mockService.baseUrl)
-            sandbox.stub(config,'get').callsFake((prop) =>{
-                return configValues[prop];
-            });
-
-            const { getNoCQuestions } = requireReloaded('../../../../noc/index');
-
-            const req = mockReq({
-                headers:{
-                    'Authorization': 'Bearer someAuthorizationToken',
-                    'ServiceAuthorization': 'Bearer someServiceAuthorizationToken'
-                },
-                query: { caseId: '1234567890123456' },
-            });
+            const getNoCQuestions = setUpMockConfigForFunction();
 
             let returnedResponse = null;
             const response = mockRes();
@@ -92,12 +93,50 @@ describe('getNoCQuestions API', () => {
                 assertResponse(returnedResponse);
             }catch(err){
                 console.log(err.stack);
-                pactSetUp.provider.verify()
-                pactSetUp.provider.finalize()
                 throw new Error(err)
             }
         })
     })
+    describe('when an error occurs', () => {
+        before(async () => {
+            await pactSetUp.provider.setup();
+            await pactSetUp.provider.addInteraction({
+                state: `a case with an error exists`,
+                uponReceiving: 'a request to verify NoC answers',
+                withRequest: {
+                    method: 'GET',
+                    path: `/noc/noc-questions`,
+                    query: "case_id=" + caseId
+                },
+                willRespondWith: {
+                    status: 400,
+                    body: {
+                        status: 'BAD_REQUEST',
+                        message: 'Case ID has to be a valid 16-digit Luhn number',
+                        code: 'case-id-invalid'
+                    },
+                },
+            });
+        });
+
+        it('should return an error response', async () => {
+            const getNoCQuestions = setUpMockConfigForFunction();
+            let returnedResponse = null;
+            const response = mockRes();
+            response.send = (ret) => {
+                returnedResponse = ret
+            };
+            const nextSpy = sinon.spy();
+            try{
+                await getNoCQuestions(req, response,nextSpy);
+                let error = nextSpy.args[0][0];
+                assertError(error);
+            }catch(err){
+                console.log(err.stack);
+                throw new Error(err)
+            }
+        });
+    });
 })
 
 function assertResponse(returnedResponse: any) {
@@ -114,7 +153,12 @@ function assertResponse(returnedResponse: any) {
     expect(returnedResponse.questions[0].challenge_question_id).to.be.equal('NoC');
     expect(returnedResponse.questions[0].answer_field).to.be.equal('');
     expect(returnedResponse.questions[0].question_id).to.be.equal('QuestionId67745');
-
 }
 
+function assertError(error: any) {
+    expect(error.status).to.be.equal(400);
+    expect(error.statusText).to.be.equal('Bad Request ');
+    expect(error.data.message).to.be.equal('Case ID has to be a valid 16-digit Luhn number' );
+    expect(error.data.code).to.be.equal('case-id-invalid');
+}
 

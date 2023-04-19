@@ -103,14 +103,13 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
         await browser.get('http://localhost:3000/get-help');
 
-        await idamLogin.do();
+       
 
         await BrowserWaits.retryWithActionCallback(async () => {
+            await idamLogin.do();
             const userDetails = idamLogin.userDetailsResponse.details.data;
             const sessionUserName = userDetails.userInfo ? userDetails.userInfo.sub : '';
             if (sessionUserName !== 'lukesuperuserxui@mailnesia.com' ){
-                await idamLogin.do();
-                await browser.sleep(2)
                 throw new Error('session not updated with user, retrying');
             }
 
@@ -317,10 +316,8 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
         const userDetails = await idamLogin.getUserDetails();
         CucumberReporter.AddJson(userDetails.roleAssignmentInfo);
-        // await browser.get(await browser.getCurrentUrl());
+        await browser.get(await browser.getCurrentUrl());
 
-        const userSession = await mockClient.getSessionRolesAndRoleAssignments(authCookie.value);
-        console.log(userSession)
     });
 
     Given('I set MOCK with user identifer {string} role type {string} and role identifiers {string}', async function (useridentifier,roleType ,roleIdentifiers) {

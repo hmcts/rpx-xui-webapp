@@ -641,7 +641,7 @@ describe('HearingActualsSummaryBaseComponent', () => {
 
   it('should return updated notRequired', () => {
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(component.hearingActualsMainModel,
-    component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
+      component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
     expect(patchedHearingActuals.actualHearingDays[0].notRequired).toBe(true);
   });
 

@@ -69,17 +69,14 @@ export async function specificAccessRequestCreateAmRole(req, res): Promise<Axios
     const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
     const fullPath = `${basePath}/am/role-assignments`;
     const headers = setHeaders(req);
-    /* tslint:disable:no-string-literal */
     delete headers.accept;
-    const response = await http.post(fullPath, req.body, { headers });
-    return response;
+    return await http.post(fullPath, req.body, { headers });
   } catch (error) {
     logger.info(error);
     return res.status(error.status).send(error);
   }
 }
 
-// tslint:disable-next-line:max-line-length
 export async function postCreateTask(req: EnhancedRequest, next: NextFunction, createTask: { caseId, jurisdiction, caseType, taskType, dueDate, name, roleAssignmentId }): Promise<any> {
   try {
     const waWorkFlowApi = getConfigValue(SERVICES_WA_WORKFLOW_API_URL);
@@ -181,7 +178,6 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
   const updatePath = `${basePath}/am/role-assignments`;
 
   const headers = setHeaders(req);
-  /* tslint:disable:no-string-literal */
   delete headers.accept;
   try {
     const userInfo = req.session.passport.user.userinfo;

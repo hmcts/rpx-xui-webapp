@@ -20,7 +20,6 @@ export function leftPad(str: string, length = 20): string {
 
 export function getLogger(category: string): JUILogger {
   const logger: log4js.Logger = log4js.getLogger(category);
-  // @ts-ignore
   logger.level = getConfigValue(LOGGING) || 'off';
 
   const catFormatted = leftPad(category, maxCatLength);

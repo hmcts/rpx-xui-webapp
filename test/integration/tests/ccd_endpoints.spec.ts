@@ -16,7 +16,6 @@ describe('CCD Endpoints', () => {
     Request.clearSession();
   });
 
-  // tslint:disable-next-line: only-arrow-functions
   it('Jurisdictions for user role', async function() {
     await Request.withSession(userName, password);
     const response = await Request.get('aggregated/caseworkers/:uid/jurisdictions?access=read', null, 200);

@@ -20,7 +20,6 @@ export async function getBookings(req, resp: Response, next: NextFunction) {
   const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
   const fullPath = `${basePath}/am/bookings/query`;
   const headers = setHeaders(req);
-  /* tslint:disable:no-string-literal */
   delete headers.accept;
 
   try {
@@ -45,7 +44,6 @@ export async function createBooking(req, resp: Response, next: NextFunction): Pr
   const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
   const fullPath = `${basePath}/am/bookings`;
   const headers = setHeaders(req);
-  /* tslint:disable:no-string-literal */
   delete headers.accept;
 
   try {
@@ -99,7 +97,6 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
 }
 
 // attempts to delete
-// tslint:disable-next-line:max-line-length
 export async function deleteSpecificAccessRoles(req, res: Response, next: NextFunction, previousResponse: AxiosResponse<any>, rolesToDelete: RoleAssignment[]): Promise<Response> {
   try {
     const specificAccessDeletionResponse = await deleteRoleByAssignmentId(req, res, next, rolesToDelete[1].id);
@@ -124,7 +121,6 @@ export async function deleteSpecificAccessRoles(req, res: Response, next: NextFu
 }
 
 // attempts to restore the deleted specific access requested role on task completion failure
-// tslint:disable-next-line:max-line-length
 export async function restoreDeletedRole(req, res: Response, next: NextFunction, previousResponse: AxiosResponse<any>, rolesToDelete: RoleAssignment[]): Promise<Response> {
   try {
     const restoreResponse = await restoreSpecificAccessRequestRole(req, res, next);

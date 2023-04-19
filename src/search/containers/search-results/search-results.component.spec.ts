@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -135,7 +135,7 @@ describe('SearchResultsComponent', () => {
     ]
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     searchService = createSpyObj<SearchService>(
       'searchService', ['getResults', 'decrementStartRecord', 'incrementStartRecord']);
     searchService.getResults.and.returnValue(of(searchResultWithCaseList));
@@ -144,8 +144,8 @@ describe('SearchResultsComponent', () => {
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getJurisdictions']);
     jurisdictionService.getJurisdictions.and.returnValue(of(jurisdictions));
     TestBed.configureTestingModule({
-      declarations: [ SearchResultsComponent, PaginationComponent ],
-      schemas: [ NO_ERRORS_SCHEMA ],
+      declarations: [SearchResultsComponent, PaginationComponent],
+      schemas: [NO_ERRORS_SCHEMA],
       imports: [
         HttpClientTestingModule,
         RouterTestingModule
@@ -156,16 +156,16 @@ describe('SearchResultsComponent', () => {
         { provide: JurisdictionService, useValue: jurisdictionService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SearchResultsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     spyOn(router, 'navigate');
-    route = TestBed.get(ActivatedRoute);
+    route = TestBed.inject(ActivatedRoute);
   });
 
   it('should create', () => {
@@ -210,7 +210,7 @@ describe('SearchResultsComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS }, relativeTo: route });
   });
 
-  it('should set \"more results to go\" flag correctly', () => {
+  it('should set "more results to go" flag correctly', () => {
     component.onSearchSubscriptionHandler([searchResultWithMoreResultsToGo, jurisdictions]);
     expect(component.moreResultsToGo).toBe(true);
   });

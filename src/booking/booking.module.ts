@@ -25,7 +25,7 @@ import { BookingService } from './services';
     ExuiCommonLibModule
   ],
   declarations: [
-    ...fromContainers.containers,
+    ...fromContainers.containers
   ],
   providers: [
     AlertService,
@@ -34,4 +34,4 @@ import { BookingService } from './services';
     BookingService
   ]
 })
-export class BookingModule { }
+export class BookingModule {}

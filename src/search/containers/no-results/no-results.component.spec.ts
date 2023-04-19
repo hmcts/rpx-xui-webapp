@@ -1,5 +1,5 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
@@ -10,28 +10,29 @@ import { NoResultsComponent } from './no-results.component';
 describe('NoResultsComponent', () => {
   let component: NoResultsComponent;
   let fixture: ComponentFixture<NoResultsComponent>;
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockRouter: any;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
   const storeMock = jasmine.createSpyObj('Store', [
     'dispatch'
   ]);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NoResultsComponent ],
-      schemas: [ NO_ERRORS_SCHEMA ],
-      imports: [ RouterTestingModule.withRoutes([]) ],
+      declarations: [NoResultsComponent],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [RouterTestingModule.withRoutes([])],
       providers: [{ provide: Store, useValue: storeMock }]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(NoResultsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    mockRouter = TestBed.get(Router);
-    store = TestBed.get(Store);
+    mockRouter = TestBed.inject(Router);
+    store = TestBed.inject(Store);
   });
 
   it('should create', () => {

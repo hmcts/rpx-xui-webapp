@@ -1,7 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TaskSupervisorGuard } from '../app/guards/task-supervisor.guard';
-
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { TaskActionConstants } from './components/constants';
 import {
@@ -14,16 +13,16 @@ import {
   TaskAssignmentConfirmComponent,
   TaskAssignmentContainerComponent,
   TaskHomeComponent,
-  WorkAllocationHomeComponent,
+  WorkAllocationHomeComponent
 } from './containers';
-import { MyAccessComponent } from './containers/my-access/my-access.component';
 import { TaskAssignmentPersonNotAuthorisedComponent } from './containers/messages-container/task-assignment-person-not-authorised/task-assignment-person-not-authorised.component';
+import { MyAccessComponent } from './containers/my-access/my-access.component';
 import { MyCasesComponent } from './containers/my-cases/my-cases.component';
 import { TaskAssignmentChooseRoleComponent } from './containers/task-assignment-choose-role/task-assignment-choose-role.component';
+import { WorkAllocationAccessGuard } from './guards';
 import { TaskResolver } from './resolvers';
 import { LocationResolver } from './resolvers/location-resolver.service';
 import { TaskRoleResolverService } from './resolvers/task-role-resolver.service';
-import { WorkAllocationAccessGuard } from './guards';
 
 export const ROUTES: Routes = [
   {
@@ -33,7 +32,7 @@ export const ROUTES: Routes = [
       {
         path: 'my-work',
         component: TaskHomeComponent,
-        canActivate: [ HealthCheckGuard ],
+        canActivate: [HealthCheckGuard],
         resolve: {
           locations: LocationResolver
         },
@@ -76,7 +75,7 @@ export const ROUTES: Routes = [
       {
         path: 'all-work',
         component: AllWorkHomeComponent,
-        canActivate: [ HealthCheckGuard, TaskSupervisorGuard],
+        canActivate: [HealthCheckGuard, TaskSupervisorGuard],
         data: {
           title: 'HMCTS Manage cases | Task manager'
         },
@@ -103,7 +102,7 @@ export const ROUTES: Routes = [
       },
       {
         path: ':taskId',
-        resolve: { taskAndCaseworkers: TaskResolver, roles: TaskRoleResolverService},
+        resolve: { taskAndCaseworkers: TaskResolver, roles: TaskRoleResolverService },
         children: [
           {
             path: 'assign',

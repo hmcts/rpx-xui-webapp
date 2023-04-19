@@ -1,4 +1,4 @@
-import {UnavailabilityType} from './hearings.enum';
+import { UnavailabilityType } from './hearings.enum';
 
 export interface UnavailabilityRangeModel {
   unavailableFromDate: string;

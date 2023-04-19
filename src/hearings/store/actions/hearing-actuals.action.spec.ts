@@ -4,7 +4,6 @@ import { HMCStatus } from '../../models/hearings.enum';
 import * as fromHearingActualsAction from './hearing-actuals.action';
 
 describe('Hearing Actuals Actions', () => {
-
   const payload: HearingActualsMainModel = {
     hearingActuals: null,
     hearingPlanned: null,
@@ -44,7 +43,7 @@ describe('Hearing Actuals Actions', () => {
         status: 400,
         statusText: 'Bad Request',
         message: 'Bad Request',
-        errors: [],
+        errors: []
       };
       const action = new fromHearingActualsAction.SubmitHearingActualsFailure(error);
       expect(action.type).toBe(fromHearingActualsAction.SUBMIT_HEARING_ACTUALS_FAILURE);

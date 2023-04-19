@@ -1,9 +1,9 @@
 import * as _ from 'underscore';
-import {CaseFlagGroup} from '../models/caseFlagGroup.model';
-import {CaseFlagReferenceModel} from '../models/caseFlagReference.model';
-import {CaseFlagType} from '../models/hearings.enum';
-import {PartyDetailsModel} from '../models/partyDetails.model';
-import {PartyFlagsDisplayModel, PartyFlagsModel} from '../models/partyFlags.model';
+import { CaseFlagGroup } from '../models/caseFlagGroup.model';
+import { CaseFlagReferenceModel } from '../models/caseFlagReference.model';
+import { CaseFlagType } from '../models/hearings.enum';
+import { PartyDetailsModel } from '../models/partyDetails.model';
+import { PartyFlagsDisplayModel, PartyFlagsModel } from '../models/partyFlags.model';
 
 export class CaseFlagsUtils {
   public static ACTIVE = 'active';
@@ -21,38 +21,38 @@ export class CaseFlagsUtils {
    * @return CaseFlagGroup[] - Flags group by case flags type
    */
   public static displayCaseFlagsGroup(partyFlags: PartyFlagsModel[],
-                                      caseFlagsRefDataModels: CaseFlagReferenceModel[],
-                                      caseFlagType: CaseFlagType): CaseFlagGroup[] {
+    caseFlagsRefDataModels: CaseFlagReferenceModel[],
+    caseFlagType: CaseFlagType): CaseFlagGroup[] {
     const allActiveFlags = this.getAllActiveDisplayFlags(partyFlags, caseFlagsRefDataModels);
-    const allRAFs = allActiveFlags.filter(caseFlag =>
+    const allRAFs = allActiveFlags.filter((caseFlag) =>
       (caseFlag.displayPath.includes(CaseFlagType.REASONABLE_ADJUSTMENT)
         || caseFlag.flagId === CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID));
-    const allNonRAFs = allActiveFlags.filter(activeFlag => !allRAFs.includes(activeFlag));
+    const allNonRAFs = allActiveFlags.filter((activeFlag) => !allRAFs.includes(activeFlag));
     if (caseFlagType === CaseFlagType.REASONABLE_ADJUSTMENT) {
       return this.getAllRAFsWithGroup(allRAFs);
-    } else {
-      return this.getAllNonRAFsWithGroup(allNonRAFs);
     }
+
+    return this.getAllNonRAFsWithGroup(allNonRAFs);
   }
 
   private static getAllActiveDisplayFlags(partyFlags: PartyFlagsModel[], caseFlagsRefDataModels: CaseFlagReferenceModel[]): PartyFlagsDisplayModel[] {
-    const displayCaseFlags: PartyFlagsDisplayModel[] = partyFlags.map(flag => {
+    const displayCaseFlags: PartyFlagsDisplayModel[] = partyFlags.map((flag) => {
       const flagPath: CaseFlagReferenceModel = this.findFlagByFlagId(caseFlagsRefDataModels, flag.flagId);
       if (flagPath) {
         return {
           ...flag,
           displayName: flagPath.name,
-          displayPath: flagPath.Path,
-        };
-      } else {
-        return {
-          ...flag,
-          displayName: null,
-          displayPath: null,
+          displayPath: flagPath.Path
         };
       }
+
+      return {
+        ...flag,
+        displayName: null,
+        displayPath: null
+      };
     });
-    return displayCaseFlags.filter(flag => flag.displayPath ? flag.flagStatus.toLowerCase() === CaseFlagsUtils.ACTIVE : false);
+    return displayCaseFlags.filter((flag) => flag.displayPath ? flag.flagStatus.toLowerCase() === CaseFlagsUtils.ACTIVE : false);
   }
 
   private static getAllRAFsWithGroup(flags: PartyFlagsDisplayModel[]): CaseFlagGroup[] {
@@ -61,11 +61,11 @@ export class CaseFlagsUtils {
   }
 
   private static getAllNonRAFsWithGroup(flags: PartyFlagsDisplayModel[]): CaseFlagGroup[] {
-    const nonRAPFs = flags.filter(nonRAF => nonRAF.displayPath.includes(CaseFlagType.PARTY_FLAGS));
+    const nonRAPFs = flags.filter((nonRAF) => nonRAF.displayPath.includes(CaseFlagType.PARTY_FLAGS));
     const nonRAPFsWithGroup = _.groupBy(nonRAPFs, CaseFlagsUtils.PARTY_NAME);
-    const caseFlags = flags.filter(nonRAF => nonRAF.displayPath.includes(CaseFlagType.CASE_FLAG));
+    const caseFlags = flags.filter((nonRAF) => nonRAF.displayPath.includes(CaseFlagType.CASE_FLAG));
     const caseFlagsWithGroup = _.groupBy(caseFlags, CaseFlagsUtils.PARTY_NAME);
-    return this.convertMapToArray({...nonRAPFsWithGroup, ...caseFlagsWithGroup});
+    return this.convertMapToArray({ ...nonRAPFsWithGroup, ...caseFlagsWithGroup });
   }
 
   public static findFlagByFlagId(caseFlagReferenceModels: CaseFlagReferenceModel[], flagId: string): CaseFlagReferenceModel {
@@ -84,18 +84,18 @@ export class CaseFlagsUtils {
   }
 
   public static convertPartiesToPartyWithFlags(caseFlagReferenceModels: CaseFlagReferenceModel[],
-                                               partyDetails: PartyDetailsModel[],
-                                               partiesFromServiceValue?: PartyDetailsModel[]): Map<string, CaseFlagReferenceModel[]> {
+    partyDetails: PartyDetailsModel[],
+    partiesFromServiceValue?: PartyDetailsModel[]): Map<string, CaseFlagReferenceModel[]> {
     const partyWithFlags: Map<string, CaseFlagReferenceModel[]> = new Map();
-    partyDetails.forEach(party => {
-      const foundPartyFromService = partiesFromServiceValue.find(pt => pt.partyID === party.partyID);
+    partyDetails.forEach((party) => {
+      const foundPartyFromService = partiesFromServiceValue.find((pt) => pt.partyID === party.partyID);
       const partyName = party.partyName ? party.partyName : (foundPartyFromService ? foundPartyFromService.partyName : '');
       const reasonableAdjustments: string[] = party.individualDetails && party.individualDetails.reasonableAdjustments ? party.individualDetails.reasonableAdjustments : [];
       const allFlagsId: string[] = reasonableAdjustments.slice();
       if (party.individualDetails && party.individualDetails.interpreterLanguage) {
         allFlagsId.push(party.individualDetails.interpreterLanguage);
       }
-      const allFlags: CaseFlagReferenceModel[] = allFlagsId.map(flagId => CaseFlagsUtils.findFlagByFlagId(caseFlagReferenceModels, flagId));
+      const allFlags: CaseFlagReferenceModel[] = allFlagsId.map((flagId) => CaseFlagsUtils.findFlagByFlagId(caseFlagReferenceModels, flagId));
       if (partyName) {
         partyWithFlags.set(partyName, allFlags);
       }

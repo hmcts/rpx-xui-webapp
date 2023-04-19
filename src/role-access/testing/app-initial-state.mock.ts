@@ -34,14 +34,14 @@ export const initialMockState: State = {
         {
           baseLocation: '',
           jurisdiction: 'JUDICIAL',
-          isCaseAllocator: true,
+          isCaseAllocator: true
         },
         {
           baseLocation: '',
           jurisdiction: 'DIVORCE',
-          isCaseAllocator: false,
+          isCaseAllocator: false
         }
-      ],
+      ]
     },
     decorate16digitCaseReferenceSearchBoxInHeader: false
   }

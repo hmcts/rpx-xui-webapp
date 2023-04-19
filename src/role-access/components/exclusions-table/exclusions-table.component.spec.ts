@@ -1,11 +1,10 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { ExclusionsTableComponent } from './exclusions-table.component';
-
 
 describe('ExclusionsTableComponent', () => {
   let component: ExclusionsTableComponent;
@@ -19,7 +18,7 @@ describe('ExclusionsTableComponent', () => {
       name: 'Test Address Book Case',
       jurisdiction: {
         id: 'TEST',
-        name: 'Test',
+        name: 'Test'
       },
       printEnabled: true
     },
@@ -101,7 +100,7 @@ describe('ExclusionsTableComponent', () => {
         order: 3,
         fields: [],
         show_condition: ''
-      },
+      }
     ]
   };
 
@@ -145,6 +144,5 @@ describe('ExclusionsTableComponent', () => {
     expect(tableBodyHTMLElement.children.length).toBe(1);
     expect(tableBodyHTMLElement.children[0].children[0].textContent).toBe('Judge Birch');
     expect(tableBodyHTMLElement.children[0].children[1].textContent).toBe('Judicial');
-
   });
 });

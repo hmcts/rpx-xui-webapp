@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Optional } from '@angular/core';
 import { AppInsights } from 'applicationinsights-js';
-import { AbstractAppInsights} from './appInsightsWrapper';
+import { AbstractAppInsights } from './appInsightsWrapper';
 
 export interface IMonitoringService {
   logPageView(name?: string, url?: string, properties?: any,
@@ -46,22 +46,19 @@ export class MonitorConfig implements Microsoft.ApplicationInsights.IConfig {
   public enableCorsCorrelation?: boolean;
 }
 
-
-
 @Injectable()
 export class MonitoringService implements IMonitoringService {
-
   public areCookiesEnabled: boolean = false;
 
   constructor(private readonly http: HttpClient, @Optional() private config?: MonitorConfig,
               @Optional() private readonly appInsights?: AbstractAppInsights) {
-                if (!appInsights) {
-                appInsights = AppInsights;
-              }
-            }
+    if (!appInsights) {
+      appInsights = AppInsights;
+    }
+  }
 
   public logPageView(name?: string, url?: string, properties?: any,
-              measurements?: any, duration?: number) {
+    measurements?: any, duration?: number) {
     this.send(() => {
       this.appInsights.trackPageView(name, url, properties, measurements, duration);
     });
@@ -87,9 +84,9 @@ export class MonitoringService implements IMonitoringService {
     if (this.config && this.config.instrumentationKey) {
       func();
     } else {
-      this.http.get('/api/monitoring-tools').subscribe(it => {
+      this.http.get('/api/monitoring-tools').subscribe((it) => {
         this.config = {
-          // tslint:disable-next-line: no-string-literal
+          // eslint-disable-next-line dot-notation
           instrumentationKey: it['key']
         };
         if (!this.areCookiesEnabled) {

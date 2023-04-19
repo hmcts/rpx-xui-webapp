@@ -1,4 +1,4 @@
-import {RelatedPartiesModel} from './relatedParties.model';
+import { RelatedPartiesModel } from './relatedParties.model';
 
 export interface IndividualDetailsModel {
   title?: string;

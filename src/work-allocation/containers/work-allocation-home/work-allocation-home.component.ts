@@ -4,5 +4,4 @@ import { Component } from '@angular/core';
   selector: 'exui-work-allocation-home',
   templateUrl: 'work-allocation-home.component.html'
 })
-export class WorkAllocationHomeComponent {
-}
+export class WorkAllocationHomeComponent {}

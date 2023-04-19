@@ -11,8 +11,8 @@ import { AnswerConverter } from './answer.converter';
 import { HearingPanelAnswerConverter } from './hearing-panel.answer.converter';
 
 describe('HearingPanelAnswerConverter', () => {
-
   let converter: AnswerConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
   const JUDICAIL_USER_DETAILS = [{
     memberID: 'P0000001',
@@ -23,7 +23,7 @@ describe('HearingPanelAnswerConverter', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState })
       ]
     });
     store = TestBed.inject(Store);

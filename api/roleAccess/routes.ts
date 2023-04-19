@@ -33,7 +33,7 @@ router.post('/roles/access-get-by-caseId', getAccessRolesByCaseId);
 router.post('/roles/getJudicialUsers', getJudicialUsers);
 
 router.get('/roles/get-my-access-new-count', getMyAccessNewCount);
-router.post('/roles/manageLabellingRoleAssignment/:caseId', manageLabellingRoleAssignment );
+router.post('/roles/manageLabellingRoleAssignment/:caseId', manageLabellingRoleAssignment);
 
 router.post('/allocate-role/specific-access-approval', createSpecificAccessApprovalRole);
 

@@ -1,16 +1,16 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
 import * as fromHearingStore from '../../../../hearings/store';
-import {ACTION, HearingStageEnum} from '../../../models/hearings.enum';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {HearingsService} from '../../../services/hearings.service';
-import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+import { ACTION, HearingStageEnum } from '../../../models/hearings.enum';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { HearingsService } from '../../../services/hearings.service';
+import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-stage',
-  templateUrl: './hearing-stage.component.html',
+  templateUrl: './hearing-stage.component.html'
 })
 export class HearingStageComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public hearingStageOptions: LovRefDataModel[];
@@ -31,7 +31,7 @@ export class HearingStageComponent extends RequestHearingPageFlow implements OnI
       this.hearingRequestMainModel.hearingDetails.hearingType : this.hearingType;
     this.hearingStageOptions = this.route.snapshot.data.hearingStages;
     this.stageForm = this.fb.group({
-      'stage-option': ['', Validators.required],
+      'stage-option': ['', Validators.required]
     });
     this.stageForm.controls['stage-option'].setValue(this.hearingType);
   }

@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
@@ -23,35 +23,35 @@ describe('RejectedRequestViewComponent', () => {
   const mockAllocateRoleService = jasmine.createSpyObj('allocateRoleService', ['getCaseRolesUserDetails']);
   const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getCaseworkersForServices']);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [RejectedRequestViewComponent],
       imports: [PipesModule, HttpClientTestingModule],
       providers: [
-        {provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService},
-        {provide: AllocateRoleService, useValue: mockAllocateRoleService},
-        {provide: CaseworkerDataService, useValue: mockCaseworkerDataService},
-        {provide: Router, useValue: router},
+        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
+        { provide: AllocateRoleService, useValue: mockAllocateRoleService },
+        { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
+        { provide: Router, useValue: router },
         {
-            provide: ActivatedRoute,
-            useValue: {
-              snapshot: {
-                queryParams: {
-                    caseName: 'case name',
-                    caseReference: '123456789',
-                    roleCategory: RoleCategory.JUDICIAL,
-                    jurisdiction: 'IA',
-                    // date of role created is actually date rejected, not originally requested
-                    dateRejected: '01-01-2020',
-                    infoRequired: false,
-                    reviewer: 'example',
-                    dateSubmitted: '01-01-2019',
-                    specificAccessReason: 'I would like access'
-                },
-              },
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParams: {
+                caseName: 'case name',
+                caseReference: '123456789',
+                roleCategory: RoleCategory.JUDICIAL,
+                jurisdiction: 'IA',
+                // date of role created is actually date rejected, not originally requested
+                dateRejected: '01-01-2020',
+                infoRequired: false,
+                reviewer: 'example',
+                dateSubmitted: '01-01-2019',
+                specificAccessReason: 'I would like access'
+              }
             }
-          },
+          }
+        }
       ]
     })
       .compileComponents();
@@ -64,7 +64,7 @@ describe('RejectedRequestViewComponent', () => {
     component.roleCategory = RoleCategory.JUDICIAL;
     mockCaseworkerDataService.getCaseworkersForServices.and.returnValue(of([]));
     mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of(caseRoles));
-    mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA']))
+    mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
     fixture.detectChanges();
   });
 
@@ -82,7 +82,7 @@ describe('RejectedRequestViewComponent', () => {
 
   it('should allow the user to go to request again', () => {
     component.goToRequest();
-    expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/123456789/specific-access-request`]);
+    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/123456789/specific-access-request']);
   });
 
   it('should show default message if infoRequired is false', () => {
@@ -108,5 +108,4 @@ describe('RejectedRequestViewComponent', () => {
     component = null;
     fixture.destroy();
   });
-
 });

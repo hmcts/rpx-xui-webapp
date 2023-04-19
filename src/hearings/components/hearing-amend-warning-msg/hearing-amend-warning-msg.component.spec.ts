@@ -11,8 +11,8 @@ describe('HearingAmendWarningMsgComponent', () => {
     TestBed.configureTestingModule({
       declarations: [HearingAmendWarningMsgComponent],
       providers: [
-        provideMockStore({initialState}),
-      ],
+        provideMockStore({ initialState })
+      ]
     })
       .compileComponents();
     fixture = TestBed.createComponent(HearingAmendWarningMsgComponent);

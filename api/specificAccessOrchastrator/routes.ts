@@ -6,7 +6,7 @@ import {
   specificAccessRequestUpdateAttributes
 } from './index';
 
-export const router = express.Router({mergeParams: true});
+export const router = express.Router({ mergeParams: true });
 
 router.use(authInterceptor);
 router.post('/', orchestrationSpecificAccessRequest);

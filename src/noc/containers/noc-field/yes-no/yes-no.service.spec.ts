@@ -1,7 +1,6 @@
 import { YesNoService } from './yes-no.service';
 
 describe('YesNoService', () => {
-
   const YES = 'Yes';
   const NO = 'No';
   const EMPTY = null;

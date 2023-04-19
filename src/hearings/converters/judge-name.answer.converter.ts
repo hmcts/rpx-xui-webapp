@@ -7,15 +7,15 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 
 export class JudgeNameAnswerConverter implements AnswerConverter {
-  constructor(protected readonly route: ActivatedRoute) { }
+  constructor(protected readonly route: ActivatedRoute) {}
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     const judicialUsersList: JudicialUserModel[] = this.route.snapshot.data.judicialUsers;
 
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-        const includedJudgeMemberId: string[] = panelRequirements && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).map(preferences => preferences.memberID);
+        const includedJudgeMemberId: string[] = panelRequirements && panelRequirements.panelPreferences.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).map((preferences) => preferences.memberID);
         const includedJudge: JudicialUserModel = judicialUsersList.find((judgeInfo) => includedJudgeMemberId.includes(judgeInfo.personalCode));
         return includedJudge.fullName;
       })

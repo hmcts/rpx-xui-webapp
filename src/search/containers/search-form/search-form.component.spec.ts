@@ -1,16 +1,15 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { JurisdictionsService } from '../../../work-allocation/services/juridictions.service';
 import { SearchFormControl, SearchFormErrorMessage, SearchStatePersistenceKey } from '../../enums';
 import { SearchParameters } from '../../models';
 import { SearchService } from '../../services/search.service';
 import { SearchFormComponent } from './search-form.component';
-
 import createSpyObj = jasmine.createSpyObj;
 
 describe('SearchFormComponent', () => {
@@ -22,7 +21,7 @@ describe('SearchFormComponent', () => {
   let router: Router;
   let route: ActivatedRoute;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     searchService = createSpyObj<SearchService>('searchService', ['getServices', 'storeState', 'retrieveState']);
     searchService.getServices.and.returnValue(of([
       { serviceName: 'Test service', serviceId: 'TEST' },
@@ -54,9 +53,9 @@ describe('SearchFormComponent', () => {
     fixture = TestBed.createComponent(SearchFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     spyOn(router, 'navigate');
-    route = TestBed.get(ActivatedRoute);
+    route = TestBed.inject(ActivatedRoute);
   });
 
   it('should create component', () => {
@@ -114,7 +113,7 @@ describe('SearchFormComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['results'], { relativeTo: route });
   });
 
-  it('should store the selected service in the search parameters when the selected value is not \"All\"', () => {
+  it('should store the selected service in the search parameters when the selected value is not "All"', () => {
     component.formGroup.get(SearchFormControl.CASE_REF).setValue('1234123412341234');
     component.formGroup.get(SearchFormControl.SERVICES_LIST).setValue('TEST');
     component.onSubmit();
@@ -271,7 +270,7 @@ describe('SearchFormComponent', () => {
     expect(component.formGroup.get(SearchFormControl.SERVICES_LIST).value).toEqual('TEST');
   });
 
-  it('should leave the selected service as \"All\" if existing search parameters contain more than one service', () => {
+  it('should leave the selected service as "All" if existing search parameters contain more than one service', () => {
     searchService.retrieveState.and.returnValue({
       caseReferences: ['1234123412341234'],
       CCDJurisdictionIds: ['TEST', 'TEST2'],

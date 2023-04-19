@@ -15,27 +15,22 @@ const browserUtil = require('../../../util/browserUtil');
 
 const waMockData = require('../../../../nodeMock/workAllocation/mockData');
 
-const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
+const ArrayUtil = require('../../../../e2e/utils/ArrayUtil');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
-    const waCasesTable = new WACasesTable();
+  const waCasesTable = new WACasesTable();
 
-
-    Then('I validate find person request body from reference {string}', async function (requesrRef, datatable) {
-
-        try{
-            await BrowserWaits.waitForCondition(() => global.scenarioData[requesrRef] !== null);
-            const res = global.scenarioData[requesrRef];
-            const datatableHashes = datatable.rowsHash();
-            for (const key of Object.keys(datatableHashes)) {
-                expect(res.searchOptions[key], `${key} value is mismatched`).to.equal(datatableHashes[key]);
-            }
-        }
-        catch(err){
-            global.scenarioData[requesrRef] = null;
-            throw new Error(err); 
-        }
-
-    });
-
+  Then('I validate find person request body from reference {string}', async function (requesrRef, datatable) {
+    try{
+      await BrowserWaits.waitForCondition(() => global.scenarioData[requesrRef] !== null);
+      const res = global.scenarioData[requesrRef];
+      const datatableHashes = datatable.rowsHash();
+      for (const key of Object.keys(datatableHashes)) {
+        expect(res.searchOptions[key], `${key} value is mismatched`).to.equal(datatableHashes[key]);
+      }
+    } catch(err){
+      global.scenarioData[requesrRef] = null;
+      throw new Error(err);
+    }
+  });
 });

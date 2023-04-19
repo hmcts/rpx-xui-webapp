@@ -22,7 +22,7 @@ describe('getNoCQuestions API', () => {
     });
 
     describe('when a request is made to retrieve NoC questions', () => {
-        const caseId = '123'
+        const caseId = '1234567890123456'
         const expectedResponse = {
           questions: eachLike({
                 case_type_id: somethingLike('Probate'),
@@ -63,13 +63,7 @@ describe('getNoCQuestions API', () => {
         })
 
         it('returns the expected NoC questions', async () => {
-            const req = mockReq({
-                headers:{
-                    'Authorization': 'Bearer someAuthorizationToken',
-                    'ServiceAuthorization': 'Bearer someServiceAuthorizationToken'
-                },
-                query: { caseId: '123' },
-            });
+
 
             const configValues = getNocAPIOverrides(pactSetUp.provider.mockService.baseUrl)
             sandbox.stub(config,'get').callsFake((prop) =>{
@@ -77,6 +71,14 @@ describe('getNoCQuestions API', () => {
             });
 
             const { getNoCQuestions } = requireReloaded('../../../../noc/index');
+
+            const req = mockReq({
+                headers:{
+                    'Authorization': 'Bearer someAuthorizationToken',
+                    'ServiceAuthorization': 'Bearer someServiceAuthorizationToken'
+                },
+                query: { caseId: '1234567890123456' },
+            });
 
             let returnedResponse = null;
             const response = mockRes();

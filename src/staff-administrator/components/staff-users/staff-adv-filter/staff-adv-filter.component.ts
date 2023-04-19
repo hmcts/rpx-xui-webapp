@@ -187,9 +187,8 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
       });
 
     this.filterErrorsSub = this.filterService.givenErrors.subscribe((filterErrors) => {
-      if (filterErrors && filterErrors.length) {
-        this.staffDataFilterService.setErrors([...filterErrors]);
-      }
+      const errors = filterErrors ? [...filterErrors] : [];
+      this.staffDataFilterService.setErrors([...errors]);
     });
   }
 

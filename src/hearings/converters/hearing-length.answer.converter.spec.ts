@@ -11,24 +11,25 @@ import { AnswerConverter } from './answer.converter';
 import { HearingLengthAnswerConverter } from './hearing-length.answer.converter';
 
 describe('HearingLengthAnswerConverter', () => {
-
   let converter: AnswerConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                hearingStageOptions: hearingStageRefData,
-              },
-            },
-          },
+                hearingStageOptions: hearingStageRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -42,7 +43,7 @@ describe('HearingLengthAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 360;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDuration = '1 Day';
-    const expected = cold('(b|)', {b: hearingDuration});
+    const expected = cold('(b|)', { b: hearingDuration });
     expect(result$).toBeObservable(expected);
   });
 
@@ -51,7 +52,7 @@ describe('HearingLengthAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 60;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDuration = '1 Hour';
-    const expected = cold('(b|)', {b: hearingDuration});
+    const expected = cold('(b|)', { b: hearingDuration });
     expect(result$).toBeObservable(expected);
   });
 
@@ -60,7 +61,7 @@ describe('HearingLengthAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 45;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDuration = '45 Minutes';
-    const expected = cold('(b|)', {b: hearingDuration});
+    const expected = cold('(b|)', { b: hearingDuration });
     expect(result$).toBeObservable(expected);
   });
 
@@ -69,7 +70,7 @@ describe('HearingLengthAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 1365;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDuration = '3 Days 4 Hours 45 Minutes';
-    const expected = cold('(b|)', {b: hearingDuration});
+    const expected = cold('(b|)', { b: hearingDuration });
     expect(result$).toBeObservable(expected);
   });
 
@@ -78,7 +79,7 @@ describe('HearingLengthAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 960;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDuration = '2 Days 4 Hours';
-    const expected = cold('(b|)', {b: hearingDuration});
+    const expected = cold('(b|)', { b: hearingDuration });
     expect(result$).toBeObservable(expected);
   });
 
@@ -87,7 +88,7 @@ describe('HearingLengthAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 750;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDuration = '2 Days 30 Minutes';
-    const expected = cold('(b|)', {b: hearingDuration});
+    const expected = cold('(b|)', { b: hearingDuration });
     expect(result$).toBeObservable(expected);
   });
 
@@ -96,7 +97,7 @@ describe('HearingLengthAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 70;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDuration = '1 Hour 10 Minutes';
-    const expected = cold('(b|)', {b: hearingDuration});
+    const expected = cold('(b|)', { b: hearingDuration });
     expect(result$).toBeObservable(expected);
   });
 
@@ -105,7 +106,7 @@ describe('HearingLengthAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = null;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDuration = '';
-    const expected = cold('(b|)', {b: hearingDuration});
+    const expected = cold('(b|)', { b: hearingDuration });
     expect(result$).toBeObservable(expected);
   });
 });

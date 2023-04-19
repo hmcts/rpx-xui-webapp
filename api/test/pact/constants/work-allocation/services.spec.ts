@@ -6,4 +6,4 @@ export const SERVICES = {
   A: SERVICE_A,
   B: SERVICE_B,
   C: SERVICE_C
-}
+};

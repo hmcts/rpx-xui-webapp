@@ -89,21 +89,21 @@ describe('NocQAndAComponent', () => {
         }
       });
       component.setPossibleIncorrectAnswerError();
-      Object.keys(component.formGroup.controls).forEach(key => {
+      Object.keys(component.formGroup.controls).forEach((key) => {
         expect(component.formGroup.controls[key].getError('possibleIncorrectAnswer')).toBeTruthy();
       });
     });
 
     it('should setAllAnswerEmptyError', () => {
       component.setAllAnswerEmptyError();
-      Object.keys(component.formGroup.controls).forEach(key => {
+      Object.keys(component.formGroup.controls).forEach((key) => {
         expect(component.formGroup.controls[key].getError('allAnswerEmpty')).toBeTruthy();
       });
     });
 
     it('should purgeAllAnswerEmptyError', () => {
       component.purgeAllAnswerEmptyError();
-      Object.keys(component.formGroup.controls).forEach(key => {
+      Object.keys(component.formGroup.controls).forEach((key) => {
         expect(component.formGroup.controls[key].getError('allAnswerEmpty')).toBeFalsy();
       });
     });
@@ -114,15 +114,14 @@ describe('NocQAndAComponent', () => {
         value: 'A111111'
       }]);
       const answer1$ = component.answerInStore('Q111111');
-      answer1$.toPromise().then(result => {
+      answer1$.toPromise().then((result) => {
         expect(result).toBe('A111111');
       });
       const answer2$ = component.answerInStore('Q222222');
-      answer2$.toPromise().then(result => {
+      answer2$.toPromise().then((result) => {
         expect(result).toBeFalsy();
       });
     });
-
   });
 
   afterEach(() => {

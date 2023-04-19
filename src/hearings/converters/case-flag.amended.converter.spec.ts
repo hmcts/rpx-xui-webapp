@@ -7,7 +7,6 @@ import { State } from '../store/reducers';
 import { CaseFlagAmendedConverter } from './case-flag.amended.converter';
 
 describe('CaseFlagAmendedConverter', () => {
-
   let caseFlagAmendedConverter: CaseFlagAmendedConverter;
   let router: any;
 
@@ -19,10 +18,10 @@ describe('CaseFlagAmendedConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                caseFlags: caseFlagsRefData,
-              },
-            },
-          },
+                caseFlags: caseFlagsRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -34,8 +33,7 @@ describe('CaseFlagAmendedConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = caseFlagAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = true;
-    const expected = cold('(b|)', {b: isAmended});
+    const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
-
 });

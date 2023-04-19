@@ -5,7 +5,7 @@ import { ControlTypeEnum } from '../../models/hearings.enum';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 
 class DataModelConvertor {
-  constructor(private readonly fb: FormBuilder) { }
+  constructor(private readonly fb: FormBuilder) {}
   public patchValues = (refDataModel: LovRefDataModel) => {
     return this.fb.group({
       key: [refDataModel.key],
@@ -18,11 +18,11 @@ class DataModelConvertor {
       selected: [refDataModel.selected, Validators.required],
       child_nodes: refDataModel.child_nodes && refDataModel.child_nodes.length > 0 ? this.convertRefDataModelToArray(refDataModel.child_nodes) : []
     });
-  }
+  };
 
   public convertRefDataModelToArray = (dataSource: LovRefDataModel[]) => {
     const dataSourceArray = this.fb.array([]);
-    dataSource.forEach(listOfValue => {
+    dataSource.forEach((listOfValue) => {
       (dataSourceArray as FormArray).push(this.patchValues({
         key: listOfValue.key,
         value_en: listOfValue.value_en,
@@ -32,11 +32,11 @@ class DataModelConvertor {
         lov_order: listOfValue.lov_order,
         parent_key: listOfValue.parent_key,
         child_nodes: listOfValue.child_nodes,
-        selected: listOfValue.selected,
+        selected: listOfValue.selected
       } as LovRefDataModel) as FormGroup);
     });
     return dataSourceArray;
-  }
+  };
 }
 
 describe('MultiLevelSelectorComponent', () => {
@@ -56,7 +56,7 @@ describe('MultiLevelSelectorComponent', () => {
       parent_key: '',
       active_flag: 'Y',
       child_nodes: null,
-      selected: false,
+      selected: false
     },
     {
       category_key: 'PanelMemberType',
@@ -83,7 +83,7 @@ describe('MultiLevelSelectorComponent', () => {
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
           child_nodes: null,
-          selected: true,
+          selected: true
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -97,7 +97,7 @@ describe('MultiLevelSelectorComponent', () => {
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
           child_nodes: null,
-          selected: false,
+          selected: false
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -111,7 +111,7 @@ describe('MultiLevelSelectorComponent', () => {
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
           child_nodes: null,
-          selected: false,
+          selected: false
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -125,9 +125,9 @@ describe('MultiLevelSelectorComponent', () => {
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
           child_nodes: null,
-          selected: false,
-        },
-      ],
+          selected: false
+        }
+      ]
     },
     {
       category_key: 'PanelMemberType',
@@ -154,7 +154,7 @@ describe('MultiLevelSelectorComponent', () => {
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
           child_nodes: null,
-          selected: false,
+          selected: false
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -168,7 +168,7 @@ describe('MultiLevelSelectorComponent', () => {
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
           child_nodes: null,
-          selected: false,
+          selected: false
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -182,7 +182,7 @@ describe('MultiLevelSelectorComponent', () => {
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
           child_nodes: null,
-          selected: false,
+          selected: false
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -196,9 +196,9 @@ describe('MultiLevelSelectorComponent', () => {
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
           child_nodes: null,
-          selected: false,
-        },
-      ],
+          selected: false
+        }
+      ]
     },
     {
       category_key: 'PanelMemberType',
@@ -212,7 +212,7 @@ describe('MultiLevelSelectorComponent', () => {
       parent_key: '',
       active_flag: 'Y',
       child_nodes: null,
-      selected: false,
+      selected: false
     },
     {
       category_key: 'PanelMemberType',
@@ -226,11 +226,11 @@ describe('MultiLevelSelectorComponent', () => {
       parent_key: '',
       active_flag: 'Y',
       child_nodes: null,
-      selected: false,
-    },
+      selected: false
+    }
   ];
 
-  beforeEach(waitForAsync (() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [MultiLevelSelectorComponent],
@@ -239,13 +239,13 @@ describe('MultiLevelSelectorComponent', () => {
       ]
     })
       .compileComponents();
-
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MultiLevelSelectorComponent);
     component = fixture.componentInstance;
-    spyOn(component, 'ngAfterViewInit').and.callFake(() => { });
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    spyOn(component, 'ngAfterViewInit').and.callFake(() => {});
     const modelConvertor = new DataModelConvertor(component.fb);
     component.level = 2;
     component.hasValidationRequested = true;
@@ -253,15 +253,15 @@ describe('MultiLevelSelectorComponent', () => {
     component.configLevels = [
       {
         controlType: ControlTypeEnum.CHECK_BOX,
-        level: 1,
+        level: 1
       },
       {
         controlType: ControlTypeEnum.SELECT,
-        level: 2,
+        level: 2
       }
     ];
     fixture.detectChanges();
-});
+  });
 
   it('should create', () => {
     fixture.detectChanges();
@@ -279,7 +279,7 @@ describe('MultiLevelSelectorComponent', () => {
       lov_order: 1,
       parent_key: '3',
       child_nodes: [],
-      selected: false,
+      selected: false
     });
     fixture.detectChanges();
     expect(component.checkValidationWhenRequested).toEqual(true);
@@ -288,14 +288,14 @@ describe('MultiLevelSelectorComponent', () => {
   it('should deselect node', () => {
     component.deSelectChildNodes(component.multiLevelSelect.controls[1]);
     fixture.detectChanges();
-    component.multiLevelSelect.controls[1].value.child_nodes.forEach(node => {
+    component.multiLevelSelect.controls[1].value.child_nodes.forEach((node) => {
       expect(node.selected).toEqual(false);
     });
   });
 
   it('should assign selected option to item control', () => {
     component.level = 2;
-    component.multiLevelSelect = (component.multiLevelSelect.controls[1] as FormGroup).controls['child_nodes'] as FormArray;
+    component.multiLevelSelect = (component.multiLevelSelect.controls[1] as FormGroup).controls.child_nodes as FormArray;
     component.assignSelectedOptionToItemControl();
     fixture.detectChanges();
     expect(component.formGroup.controls.item.value).toEqual('BBA3-MQPM2-003');

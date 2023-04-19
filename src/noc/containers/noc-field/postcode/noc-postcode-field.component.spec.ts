@@ -36,7 +36,7 @@ describe('NocPostcodeFieldComponent', () => {
     display_context_parameter: '4',
     challenge_question_id: 'NoC',
     answer_field: '',
-    question_id: 'question4',
+    question_id: 'question4'
   };
   const ANSWER_VALUE = of('L155AA');
   let component: NocPostcodeFieldComponent;

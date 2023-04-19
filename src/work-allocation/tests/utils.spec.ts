@@ -77,11 +77,11 @@ export function getMockCases(): Case[] {
       actions: [
         {
           id: 'reallocate',
-          title: 'Reallocate',
+          title: 'Reallocate'
         },
         {
           id: 'remove',
-          title: 'Remove Allocation',
+          title: 'Remove Allocation'
         }
       ]
     },
@@ -98,11 +98,11 @@ export function getMockCases(): Case[] {
       actions: [
         {
           id: 'reallocate',
-          title: 'Reallocate',
+          title: 'Reallocate'
         },
         {
           id: 'remove',
-          title: 'Remove Allocation',
+          title: 'Remove Allocation'
         }
       ]
     }
@@ -134,15 +134,15 @@ export function getMockTasks(): Task[] {
             code: '125',
             warningText: 'this is a warning message 3'
           }
-      ]},
+        ] },
       actions: [
         {
           id: 'actionId1',
-          title: 'Reassign task',
+          title: 'Reassign task'
         },
         {
           id: 'actionId2',
-          title: 'Release this task',
+          title: 'Release this task'
         }
       ]
     },
@@ -162,7 +162,7 @@ export function getMockTasks(): Task[] {
       actions: [
         {
           id: 'actionId2',
-          title: 'Release this task',
+          title: 'Release this task'
         }
       ]
     }
@@ -207,18 +207,24 @@ export function getMockTaskServiceConfig(): TaskServiceConfig {
 
 export class MockRouter {
   public navigateByUrl = jasmine.createSpy();
-  public events = {subscribe(): Observable<RouterEvent> { return of(null); }};
+  public events = { subscribe(): Observable<RouterEvent> {
+    return of(null);
+  } };
+
   private pUrl: string = 'bob';
   public get url(): string {
     return this.pUrl;
   }
+
   public set url(value: string) {
     this.pUrl = value;
   }
+
   private readonly pNavigateCalls: any[] = [];
   public get navigateCalls(): any[] {
     return this.pNavigateCalls;
   }
+
   public navigate(commands: any[], extras?: NavigationExtras): Observable<boolean> {
     this.pNavigateCalls.push({ commands, extras });
     return of(true);

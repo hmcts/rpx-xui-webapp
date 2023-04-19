@@ -6,7 +6,7 @@ import { SessionStorageService } from 'src/app/services';
   selector: 'exui-phase-banner',
   templateUrl: './phase-banner.component.html'
 })
-export class PhaseBannerComponent implements OnInit {
+export class PhaseBannerComponent {
   @Input() public type: string;
   public noBanner: boolean;
   private readonly noBannerSessionKey = 'noBanner';

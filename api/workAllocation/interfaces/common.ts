@@ -1,75 +1,75 @@
 export interface Assignee {
-    id: string;
-    userName: string;
+  id: string;
+  userName: string;
 }
 
 export interface CaseData {
-    category: string;
-    location: LocationSummary;
-    name: string;
-    reference: string;
+  category: string;
+  location: LocationSummary;
+  name: string;
+  reference: string;
 }
 
 export interface LocationSummary {
-    id: string;
-    locationName: string;
+  id: string;
+  locationName: string;
 }
 
 export interface Location {
-    id: string;
-    locationName: string;
-    services: string[];
+  id: string;
+  locationName: string;
+  services: string[];
 }
 
 export interface LocationApi {
-    location_id: string;
-    location: string;
-    is_primary: boolean;
-    services: string[];
+  location_id: string;
+  location: string;
+  is_primary: boolean;
+  services: string[];
 }
 
 export interface CaseworkersByService {
-    service: string;
-    caseworkers: Caseworker[];
+  service: string;
+  caseworkers: Caseworker[];
 }
 
 export interface Caseworker {
-    firstName: string;
-    lastName: string;
-    idamId: string;
-    email: string;
-    location: Location;
-    roleCategory: string;
-    service?: string;
+  firstName: string;
+  lastName: string;
+  idamId: string;
+  email: string;
+  location: Location;
+  roleCategory: string;
+  service?: string;
 }
 
 export interface Judicialworker {
-    firstName: string;
-    lastName: string;
-    idamId: string;
-    email: string;
-    location: Location;
+  firstName: string;
+  lastName: string;
+  idamId: string;
+  email: string;
+  location: Location;
 }
 
 export interface CaseworkerApi {
-    first_name: string;
-    last_name: string;
-    id: string;
-    email_id: string;
-    base_location: LocationApi[];
+  first_name: string;
+  last_name: string;
+  id: string;
+  email_id: string;
+  base_location: LocationApi[];
 }
 
 export interface Judicialworker {
-    firstName: string;
-    lastName: string;
-    idamId: string;
-    email: string;
-    location: Location;
+  firstName: string;
+  lastName: string;
+  idamId: string;
+  email: string;
+  location: Location;
 }
 
 export interface Action {
-    id: string;
-    title: string;
+  id: string;
+  title: string;
 }
 
 export interface CaseDataType {

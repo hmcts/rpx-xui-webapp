@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { FeatureUser } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
@@ -16,9 +15,9 @@ import * as fromHearingStore from '../../../hearings/store';
 import { CaseHearingsListComponent } from './case-hearings-list.component';
 
 class MockRoleCategoryMappingService {
-  public initialize = (user: FeatureUser, clientId: string): void => {
-  }
-  public isEnabled = (feature: string): Observable<boolean> => of(true);
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public initialize = (): void => {};
+  public isEnabled = (): Observable<boolean> => of(true);
   public getValue = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
   public getValueOnce = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
 }
@@ -83,7 +82,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson',
+          preferredHearingChannel: 'inPerson'
         }
       },
       {
@@ -95,10 +94,10 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'DWP',
           lastName: null,
-          preferredHearingChannel: 'byVideo',
-        },
-      },
-    ],
+          preferredHearingChannel: 'byVideo'
+        }
+      }
+    ]
   }, {
     hearingStartDateTime: '2021-05-05T09:00:00.000Z',
     hearingEndDateTime: '2021-05-05T16:00:00.000Z',
@@ -117,7 +116,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson',
+          preferredHearingChannel: 'inPerson'
         }
       },
       {
@@ -129,10 +128,10 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'DWP',
           lastName: null,
-          preferredHearingChannel: 'byVideo',
-        },
-      },
-    ],
+          preferredHearingChannel: 'byVideo'
+        }
+      }
+    ]
   }],
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.LISTED
@@ -166,7 +165,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson',
+          preferredHearingChannel: 'inPerson'
         }
       },
       {
@@ -178,10 +177,10 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'DWP',
           lastName: null,
-          preferredHearingChannel: 'byVideo',
-        },
-      },
-    ],
+          preferredHearingChannel: 'byVideo'
+        }
+      }
+    ]
   }, {
     hearingStartDateTime: '2021-03-13T09:00:00.000Z',
     hearingEndDateTime: '2021-03-13T16:00:00.000Z',
@@ -200,7 +199,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson',
+          preferredHearingChannel: 'inPerson'
         }
       },
       {
@@ -212,10 +211,10 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'DWP',
           lastName: null,
-          preferredHearingChannel: 'byVideo',
-        },
-      },
-    ],
+          preferredHearingChannel: 'byVideo'
+        }
+      }
+    ]
   }],
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.UPDATE_REQUESTED
@@ -249,7 +248,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson',
+          preferredHearingChannel: 'inPerson'
         }
       },
       {
@@ -261,10 +260,10 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'DWP',
           lastName: null,
-          preferredHearingChannel: 'byVideo',
-        },
-      },
-    ],
+          preferredHearingChannel: 'byVideo'
+        }
+      }
+    ]
   }],
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.UPDATE_REQUESTED
@@ -298,7 +297,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson',
+          preferredHearingChannel: 'inPerson'
         }
       },
       {
@@ -310,10 +309,10 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'DWP',
           lastName: null,
-          preferredHearingChannel: 'byVideo',
-        },
-      },
-    ],
+          preferredHearingChannel: 'byVideo'
+        }
+      }
+    ]
   }],
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.FAILURE
@@ -347,16 +346,16 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson',
+          preferredHearingChannel: 'inPerson'
         }
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
-        partyRole: 'claimant',
-      },
-    ],
+        partyRole: 'claimant'
+      }
+    ]
   }, {
     hearingStartDateTime: '2021-02-13T09:00:00.000Z',
     hearingEndDateTime: '2021-02-13T16:00:00.000Z',
@@ -375,7 +374,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson',
+          preferredHearingChannel: 'inPerson'
         }
       },
       {
@@ -387,10 +386,10 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'DWP',
           lastName: null,
-          preferredHearingChannel: 'byVideo',
-        },
-      },
-    ],
+          preferredHearingChannel: 'byVideo'
+        }
+      }
+    ]
   }],
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLATION_REQUESTED
@@ -419,7 +418,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
-        partyRole: 'appellant',
+        partyRole: 'appellant'
       },
       {
         partyID: 'P2',
@@ -430,10 +429,10 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'DWP',
           lastName: null,
-          preferredHearingChannel: 'byVideo',
-        },
-      },
-    ],
+          preferredHearingChannel: 'byVideo'
+        }
+      }
+    ]
   }],
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_ACTUALS
@@ -484,7 +483,7 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson',
+          preferredHearingChannel: 'inPerson'
         }
       },
       {
@@ -496,10 +495,10 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'DWP',
           lastName: null,
-          preferredHearingChannel: 'byVideo',
-        },
-      },
-    ],
+          preferredHearingChannel: 'byVideo'
+        }
+      }
+    ]
   }],
   exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
   exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED
@@ -533,7 +532,7 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson',
+          preferredHearingChannel: 'inPerson'
         }
       },
       {
@@ -545,10 +544,10 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
           title: null,
           firstName: 'DWP',
           lastName: null,
-          preferredHearingChannel: 'byVideo',
-        },
-      },
-    ],
+          preferredHearingChannel: 'byVideo'
+        }
+      }
+    ]
   }],
   exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
   exuiDisplayStatus: EXUIDisplayStatusEnum.ADJOURNED
@@ -581,7 +580,7 @@ const HEARING_TYPES_REF_DATA: LovRefDataModel[] = [
     parent_category: '',
     parent_key: '',
     value_cy: '',
-    value_en: 'Chambers Outcome',
+    value_en: 'Chambers Outcome'
   },
   {
     active_flag: 'Y',
@@ -613,13 +612,13 @@ const HEARING_TYPES_REF_DATA: LovRefDataModel[] = [
 
 describe('CaseHearingsListComponent', () => {
   let component: CaseHearingsListComponent;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let roleCategoryMappingService: RoleCategoryMappingService;
   let fixture: ComponentFixture<CaseHearingsListComponent>;
   const mockFeatureService = new MockRoleCategoryMappingService();
   let mockStore: Store<fromHearingStore.State>;
-  let mockRouter: any;
 
-  mockRouter = {
+  const mockRouter = {
     navigate: jasmine.createSpy('navigate'),
     navigateByUrl: jasmine.createSpy('navigateByUrl')
   };
@@ -633,7 +632,7 @@ describe('CaseHearingsListComponent', () => {
       ],
       declarations: [CaseHearingsListComponent],
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -858,7 +857,7 @@ describe('CaseHearingsListComponent', () => {
     const loadHearingRequestAndRedirect = spyOn(component, 'LoadHearingRequestAndRedirect');
     component.status = EXUISectionStatusEnum.UPCOMING;
     component.viewAndEdit('h100000');
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({mode: 'view'})));
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view' })));
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/request/hearing-view-edit-summary');
   });
 

@@ -15,17 +15,18 @@ describe('Organisation Effects', () => {
   let loggerService: LoggerService;
 
   const organisationServiceMock = jasmine.createSpyObj('OrganisationService', [
-    'fetchOrganisation',
+    'fetchOrganisation'
   ]);
 
   const mockedLoggerService = jasmine.createSpyObj('mockedLoggerService', ['trace', 'info', 'debug', 'log', 'warn', 'error', 'fatal']);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         {
           provide: OrganisationService,
-          useValue: organisationServiceMock,
+          useValue: organisationServiceMock
         },
         {
           provide: LoggerService,
@@ -38,7 +39,6 @@ describe('Organisation Effects', () => {
 
     effects = TestBed.inject(OrganisationEffects);
     loggerService = TestBed.inject(LoggerService);
-
   });
 
   describe('loadOrganisation$', () => {
@@ -71,5 +71,4 @@ describe('Organisation Effects', () => {
       expect(loggerService.error).toHaveBeenCalled();
     });
   });
-
 });

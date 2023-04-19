@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   AlertService,
@@ -28,7 +28,7 @@ describe('CaseHomeComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         RouterTestingModule,
-        StoreModule.forRoot({...reducers, cases: combineReducers(fromFeature.reducers)}),
+        StoreModule.forRoot({ ...reducers, cases: combineReducers(fromFeature.reducers) })
       ],
       declarations: [CaseHomeComponent],
       providers: [
@@ -43,7 +43,6 @@ describe('CaseHomeComponent', () => {
   }));
 
   beforeEach(() => {
-
     store = TestBed.inject(Store);
     storeDispatchMock = spyOn(store, 'dispatch');
 
@@ -57,7 +56,6 @@ describe('CaseHomeComponent', () => {
   });
 
   describe('paramHandler', () => {
-
     it('should create params for DRAFT_DELETED', () => {
       const navigation = {
         action: NavigationOrigin.DRAFT_DELETED
@@ -149,7 +147,6 @@ describe('CaseHomeComponent', () => {
   });
 
   describe('actionDispatcher', () => {
-
     it('should dispatch an action', () => {
       const params = {
         path: []
@@ -161,7 +158,6 @@ describe('CaseHomeComponent', () => {
   });
 
   describe('handleError', () => {
-
     it('should handle error', () => {
       const error: HttpError = new HttpError();
       error.status = 400;

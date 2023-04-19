@@ -1,7 +1,6 @@
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TaskPriority } from '../../enums';
 import { PriorityFieldComponent } from './priority-field.component';
-
 
 describe('PriorityFieldComponent', () => {
   let component: PriorityFieldComponent;
@@ -9,11 +8,10 @@ describe('PriorityFieldComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PriorityFieldComponent ]
+      declarations: [PriorityFieldComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
-
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PriorityFieldComponent);

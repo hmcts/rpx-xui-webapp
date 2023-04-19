@@ -1,9 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs/internal/observable/of';
 import { CaseDetailsComponent } from './case-details.component';
-
 
 describe('CaseDetailsComponent', () => {
   let component: CaseDetailsComponent;
@@ -37,6 +36,7 @@ describe('CaseDetailsComponent', () => {
   it('should assign case id', () => {
     expect(component.caseId).toEqual('dummy');
   });
+
   it('should unsubscribe', () => {
     spyOn(component.$caseIdSubscription, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();

@@ -15,12 +15,12 @@ export class SpecificAccessEffects {
       mergeMap(
         (data) => this.allocateRoleService.specificAccessApproval(data.payload.specificAccessStateData, data.payload.period)
           .pipe(
-          map(() => {
+            map(() => {
               return new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED);
             }),
-            catchError(error => {
-                return AllocateRoleEffects.handleError(error, SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST);
-              }
+            catchError((error) => {
+              return AllocateRoleEffects.handleError(error);
+            }
             )
           )
       )
@@ -32,15 +32,16 @@ export class SpecificAccessEffects {
       mergeMap(
         (data) => this.allocateRoleService.requestMoreInformation(data.payload)
           .pipe(
-          map(() => {
+            map(() => {
               return new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DENIED);
             }),
-            catchError(error => {
-              return AllocateRoleEffects.handleError(error, SpecificAccessActionTypes.REQUEST_MORE_INFO_SPECIFIC_ACCESS_REQUEST);
+            catchError((error) => {
+              return AllocateRoleEffects.handleError(error);
             })
           )
       )
     );
+
   constructor(
     private readonly actions$: Actions,
     private readonly allocateRoleService: AllocateRoleService

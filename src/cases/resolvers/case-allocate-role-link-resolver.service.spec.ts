@@ -7,8 +7,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { CaseAllocateRoleLinkResolverService } from './case-allocate-role-link-resolver.service';
 
-
-
 describe('CaseAllocateRoleLinkResolverService', () => {
   let httpClient: HttpClient;
   const routerSpy = jasmine.createSpy('Router');
@@ -17,7 +15,7 @@ describe('CaseAllocateRoleLinkResolverService', () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule.withRoutes([]),
-        HttpClientTestingModule,
+        HttpClientTestingModule
       ],
       providers: [
         CaseAllocateRoleLinkResolverService,
@@ -35,7 +33,7 @@ describe('CaseAllocateRoleLinkResolverService', () => {
     activatedRoute.params = {
       cid: '1546883526751282'
     };
-    service.resolve(activatedRoute, null).subscribe((value: boolean) => {
+    service.resolve(activatedRoute).subscribe((value: boolean) => {
       expect(value).toBeTruthy();
     });
   });

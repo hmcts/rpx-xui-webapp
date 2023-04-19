@@ -1,8 +1,8 @@
-import {getConfigValue} from '../configuration';
+import { getConfigValue } from '../configuration';
 import {
-  SERVICES_IDAM_API_URL,
+  SERVICES_IDAM_API_URL
 } from '../configuration/references';
-import {http} from '../lib/http';
+import { http } from '../lib/http';
 
 const url = getConfigValue(SERVICES_IDAM_API_URL);
 

@@ -17,8 +17,8 @@ describe('ExclusionNavigationComponent', () => {
       imports: [
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromStore.reducers),
-        }),
+          feature: combineReducers(fromStore.reducers)
+        })
       ],
       declarations: [
         ExclusionNavigationComponent

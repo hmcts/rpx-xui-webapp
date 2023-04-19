@@ -1,27 +1,28 @@
-import {caseTypeRefData} from '../hearing.test.data';
-import {CaseCategoryDisplayModel} from '../models/caseCategory.model';
-import {CategoryType} from '../models/hearings.enum';
-import {CaseTypesUtils} from './case-types.utils';
+import { caseTypeRefData } from '../hearing.test.data';
+import { CaseCategoryDisplayModel } from '../models/caseCategory.model';
+import { CategoryType } from '../models/hearings.enum';
+import { CaseTypesUtils } from './case-types.utils';
 
 describe('CaseTypesUtils', () => {
   const caseCatgories = [
     {
       categoryType: CategoryType.CaseType,
-      categoryValue: 'BBA3-002',
+      categoryValue: 'BBA3-002'
     }, {
       categoryType: CategoryType.CaseSubType,
       categoryValue: 'BBA3-002CC',
-      categoryParent: 'BBA3-002',
+      categoryParent: 'BBA3-002'
     }, {
       categoryType: CategoryType.CaseSubType,
       categoryValue: 'BBA3-002GC',
-      categoryParent: 'BBA3-002',
+      categoryParent: 'BBA3-002'
     }, {
       categoryType: CategoryType.CaseSubType,
       categoryValue: 'BBA3-002RC',
-      categoryParent: 'BBA3-002',
-    },
+      categoryParent: 'BBA3-002'
+    }
   ];
+
   it('should generateCaseTypesRefDataMap', () => {
     const caseTypesRefDataMap = CaseTypesUtils.generateCaseTypesRefDataMap(caseTypeRefData);
     expect(caseTypesRefDataMap['BBA3-002']).toBe('PERSONAL INDEPENDENT PAYMENT (NEW CLAIM)');

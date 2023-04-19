@@ -10,8 +10,8 @@ import { State } from '../store';
 import { ParticipantAttendenceAnswerConverter } from './participant-attendence.answer.converter';
 
 describe('ParticipantAttendenceAnswerConverter', () => {
-
   let converter: ParticipantAttendenceAnswerConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
   let router: any;
 
@@ -26,9 +26,9 @@ describe('ParticipantAttendenceAnswerConverter', () => {
               data: {
                 partyChannels: partyChannelsRefData,
                 partySubChannels: partySubChannelsRefData
-              },
-            },
-          },
+              }
+            }
+          }
         }
       ]
     });
@@ -65,7 +65,7 @@ describe('ParticipantAttendenceAnswerConverter', () => {
           hearingWindow: {
             dateRangeStart: '2022-11-23T09:00:00.000Z',
             dateRangeEnd: '2022-11-30T09:00:00.000Z',
-            firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+            firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
           },
           duration: 45,
           hearingPriorityType: 'standard',
@@ -92,15 +92,15 @@ describe('ParticipantAttendenceAnswerConverter', () => {
                 title: 'Mrs',
                 firstName: 'Jane',
                 lastName: 'Smith',
-                preferredHearingChannel: 'inPerson',
+                preferredHearingChannel: 'inPerson'
               },
               unavailabilityRanges: [
                 {
                   unavailableFromDate: '2021-12-10T09:00:00.000Z',
                   unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY,
-                },
-              ],
+                  unavailabilityType: UnavailabilityType.ALL_DAY
+                }
+              ]
             },
             {
               partyID: 'P2',
@@ -111,7 +111,7 @@ describe('ParticipantAttendenceAnswerConverter', () => {
                 title: null,
                 firstName: 'DWP',
                 lastName: null,
-                preferredHearingChannel: 'inPerson',
+                preferredHearingChannel: 'inPerson'
               },
               organisationDetails: {
                 name: 'DWP',
@@ -122,9 +122,9 @@ describe('ParticipantAttendenceAnswerConverter', () => {
                 {
                   unavailableFromDate: '2021-12-20T09:00:00.000Z',
                   unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY,
-                },
-              ],
+                  unavailabilityType: UnavailabilityType.ALL_DAY
+                }
+              ]
             }
           ],
           caseFlags: null,
@@ -161,7 +161,7 @@ describe('ParticipantAttendenceAnswerConverter', () => {
                   individualDetails: {
                     firstName: 'Jane',
                     lastName: 'Smith',
-                    preferredHearingChannel: 'invalidChannel',
+                    preferredHearingChannel: 'invalidChannel'
                   }
                 },
                 {
@@ -173,11 +173,11 @@ describe('ParticipantAttendenceAnswerConverter', () => {
                   individualDetails: {
                     firstName: 'DWP',
                     lastName: null,
-                    preferredHearingChannel: 'byVideo',
+                    preferredHearingChannel: 'byVideo'
                   }
-                },
-              ],
-            }],
+                }
+              ]
+            }]
           },
           hearingDetails: null,
           caseDetails: null,

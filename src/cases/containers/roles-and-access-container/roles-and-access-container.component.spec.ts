@@ -27,7 +27,7 @@ const CASE_VIEW: CaseView = {
     name: 'Test Address Book Case',
     jurisdiction: {
       id: 'TEST',
-      name: 'Test',
+      name: 'Test'
     },
     printEnabled: true
   },
@@ -109,13 +109,11 @@ const CASE_VIEW: CaseView = {
       order: 3,
       fields: [],
       show_condition: ''
-    },
+    }
   ]
 };
 
 describe('RolesContainerComponent', () => {
-  let featureToggleService: FeatureToggleService;
-  featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   let component: RolesAndAccessContainerComponent;
 
   const route = {
@@ -142,7 +140,7 @@ describe('RolesContainerComponent', () => {
       known_as: 'Tom',
       surname: 'Cruz',
       full_name: 'Tom Cruz',
-      email_id: '330085EMP-@ejudiciary.net',
+      email_id: '330085EMP-@ejudiciary.net'
     }
   ];
   const caseRolesData: any[] = [
@@ -251,7 +249,7 @@ describe('RolesContainerComponent', () => {
       jurisdiction: {
         id: '',
         name: '',
-        description: '',
+        description: ''
       },
       printEnabled: false
     };
@@ -262,7 +260,7 @@ describe('RolesContainerComponent', () => {
     allocateService.getCaseRolesUserDetails.and.returnValue(of(caseUserDetails));
     const casefield = {};
     component.loadRoles(casefield);
-    component.roles$.subscribe(roles => {
+    component.roles$.subscribe((roles) => {
       expect(roles).not.toBeNull();
       expect(roles.length).toEqual(1);
       expect(roles[0].actorId).toEqual('234');
@@ -327,8 +325,7 @@ describe('RolesContainerComponent', () => {
 
     const jurisdiction = { value: 'ia' };
     const exclusions = [];
-    const caseDetails = { case_id: '12344', case_type: { id: '345' } } as CaseView;
-    component.caseDetails = caseDetails;
+    component.caseDetails = { case_id: '12344', case_type: { id: '345' } } as CaseView;
     roleExclusionsService.getCurrentUserRoleExclusions.and.returnValue(of(exclusions));
     component.loadExclusions(jurisdiction);
     component.exclusions$.subscribe((actual) => {
@@ -345,6 +342,5 @@ describe('RolesContainerComponent', () => {
 
     expect(component.setDisplayAllocateLink).toHaveBeenCalled();
     expect(component.caseJurisdiction).toEqual('JUDICIAL');
-
   });
 });

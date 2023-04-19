@@ -8,14 +8,12 @@ import CaseServiceConfig from '../../models/cases/case-service-config.model';
 import { FieldConfig, SortField } from '../../models/common';
 import { Location, PaginationParameter } from '../../models/dtos';
 
-
 @Component({
   selector: 'exui-work-case-list',
   templateUrl: './work-case-list.component.html',
   styleUrls: ['work-case-list.component.scss']
 })
 export class WorkCaseListComponent implements OnChanges {
-
   /**
    * These are the cases & fields as returned from the WA Api.
    */
@@ -60,7 +58,7 @@ export class WorkCaseListComponent implements OnChanges {
     if (!this.sortedBy) {
       return false;
     }
-    const {defaultSortFieldName, defaultSortDirection} = this.caseServiceConfig;
+    const { defaultSortFieldName, defaultSortDirection } = this.caseServiceConfig;
     return !(this.sortedBy.fieldName === defaultSortFieldName && this.sortedBy.order === defaultSortDirection);
   }
 
@@ -69,7 +67,7 @@ export class WorkCaseListComponent implements OnChanges {
       const hashValue = url.substring(url.indexOf('#') + 1);
       if (hashValue && hashValue.indexOf('manage_') === 0) {
         const selectedCaseId = hashValue.replace('manage_', '');
-        return this.cases.find(item => item.id === selectedCaseId) || null;
+        return this.cases.find((item) => item.id === selectedCaseId) || null;
       }
     }
     return null;
@@ -96,7 +94,7 @@ export class WorkCaseListComponent implements OnChanges {
    *
    */
   public getDisplayedColumn(caseFieldConfig: FieldConfig[]): string[] {
-    const fields: string[] = caseFieldConfig.map(field => field.name);
+    const fields: string[] = caseFieldConfig.map((field) => field.name);
     return this.addActionsColumn ? this.addManageColumn(fields) : fields;
   }
 
@@ -125,7 +123,6 @@ export class WorkCaseListComponent implements OnChanges {
    * Trigger an event to the parent when the User clicks on a Manage action.
    */
   public onActionHandler(caseItem: Case, action: CaseAction): void {
-
     const invokedCaseAction: InvokedCaseAction = {
       invokedCase: caseItem,
       action
@@ -211,7 +208,7 @@ export class WorkCaseListComponent implements OnChanges {
       if (c.assignee && c.assignee.length && caseworkers && caseworkers.length > 0) {
         const actorName = caseworkers.find((caseworker) => caseworker.idamId === c.assignee);
         if (actorName) {
-          c.actorName =  `${actorName.firstName} ${actorName.lastName}`;
+          c.actorName = `${actorName.firstName} ${actorName.lastName}`;
         }
       }
       if (c.location_id && c.location_id.length) {
@@ -225,8 +222,8 @@ export class WorkCaseListComponent implements OnChanges {
   }
 
   private setDefaultSort(): void {
-    const {defaultSortFieldName, defaultSortDirection} = this.caseServiceConfig;
-    this.sortedBy = {fieldName: defaultSortFieldName, order: defaultSortDirection};
+    const { defaultSortFieldName, defaultSortDirection } = this.caseServiceConfig;
+    this.sortedBy = { fieldName: defaultSortFieldName, order: defaultSortDirection };
   }
 
   private setupHash(): void {
@@ -245,5 +242,4 @@ export class WorkCaseListComponent implements OnChanges {
   private getCurrentCaseCount(): number {
     return this.cases ? this.cases.length : 0;
   }
-
 }

@@ -16,7 +16,7 @@ export async function getNoCQuestions(req: EnhancedRequest, res: Response, next:
   const markupPath: string = `${url}/noc/noc-questions?case_id=${caseId}`;
 
   try {
-    const {status, data}: { status: number, data: NoCQuestions } = await handleGet(markupPath, req);
+    const { status, data }: { status: number, data: NoCQuestions } = await handleGet(markupPath, req);
     res.status(status).send(data);
   } catch (error) {
     next(generateErrorMessageWithCode(error));
@@ -28,7 +28,7 @@ export async function validateNoCQuestions(req: EnhancedRequest, res: Response, 
   const body: any = req.body;
 
   try {
-    const {status, data}: { status: number, data: NoCQuestions } = await handlePost(markupPath, body, req);
+    const { status, data }: { status: number, data: NoCQuestions } = await handlePost(markupPath, body, req);
     res.status(status).send(data);
   } catch (error) {
     next(generateErrorMessageWithCode(error));
@@ -40,7 +40,7 @@ export async function submitNoCEvents(req: EnhancedRequest, res: Response, next:
   const body: any = req.body;
 
   try {
-    const {status, data}: { status: number, data: NoCQuestions } = await handlePost(markupPath, body, req);
+    const { status, data }: { status: number, data: NoCQuestions } = await handlePost(markupPath, body, req);
     res.status(status).send(data);
   } catch (error) {
     next(generateErrorMessageWithCode(error));

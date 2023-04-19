@@ -23,7 +23,7 @@ import {
   SERVICE_S2S_PATH,
   SESSION_SECRET,
   SYSTEM_USER_NAME,
-  SYSTEM_USER_PASSWORD,
+  SYSTEM_USER_PASSWORD
 } from '../configuration/references';
 import { client } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
@@ -32,9 +32,9 @@ import { EnhancedRequest } from '../lib/models';
 const logger = log4jui.getLogger('auth');
 
 export const successCallback = (req: EnhancedRequest, res: Response, next: NextFunction) => {
-  const {user} = req.session.passport;
-  const {userinfo} = user;
-  const {accessToken} = user.tokenset;
+  const { user } = req.session.passport;
+  const { userinfo } = user;
+  const { accessToken } = user.tokenset;
   const cookieToken = getConfigValue(COOKIES_TOKEN);
   const cookieUserId = getConfigValue(COOKIES_USER_ID);
 
@@ -49,13 +49,13 @@ export const successCallback = (req: EnhancedRequest, res: Response, next: NextF
   next();
 };
 
-export const failureCallback = (req: EnhancedRequest, res: Response, next: NextFunction) => {
+export const failureCallback = (req: EnhancedRequest, res: Response) => {
   const errorMsg = `Auth Error: ${res.locals.message}`;
 
   logger.warn(errorMsg);
 
   if (client) {
-    client.trackEvent({name: errorMsg});
+    client.trackEvent({ name: errorMsg });
   }
 };
 
@@ -63,7 +63,6 @@ xuiNode.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback);
 xuiNode.on(AUTH.EVENT.AUTHENTICATE_FAILURE, failureCallback);
 
 export const getXuiNodeMiddleware = () => {
-
   const idamWebUrl = getConfigValue(SERVICES_IDAM_LOGIN_URL);
   const authorizationUrl = `${idamWebUrl}/login`;
   const secret = getConfigValue(IDAM_SECRET);
@@ -83,10 +82,10 @@ export const getXuiNodeMiddleware = () => {
       '/workallocation/retrieveCaseWorkersForServices',
       '/workallocation/retrieveCaseWorkersForSpecificService',
       '/workallocation/getJudicialUsers',
-      '/api/prd/judicial/searchJudicialUserByPersonalCodes',
+      '/api/prd/judicial/searchJudicialUserByPersonalCodes'
     ],
     scope: 'openid profile roles manage-user create-user search-user',
-    userName,
+    userName
   };
 
   //TODO: we can move these out into proper config at some point to tidy up even further
@@ -105,19 +104,19 @@ export const getXuiNodeMiddleware = () => {
     sessionKey: 'xui-webapp',
     tokenEndpointAuthMethod: 'client_secret_post',
     tokenURL: tokenUrl,
-    useRoutes: true,
+    useRoutes: true
   };
 
   const baseStoreOptions = {
     cookie: {
       httpOnly: true,
       maxAge: 28800000,
-      secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
+      secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED)
     },
     name: 'xui-webapp',
     resave: false,
     saveUninitialized: false,
-    secret: getConfigValue(SESSION_SECRET),
+    secret: getConfigValue(SESSION_SECRET)
   };
 
   const redisStoreOptions = {
@@ -126,20 +125,20 @@ export const getXuiNodeMiddleware = () => {
         redisStoreOptions: {
           redisCloudUrl: getConfigValue(REDIS_CLOUD_URL),
           redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
-          redisTtl: getConfigValue(REDIS_TTL),
-        },
-      },
-    },
+          redisTtl: getConfigValue(REDIS_TTL)
+        }
+      }
+    }
   };
 
   const fileStoreOptions = {
     fileStore: {
       ...baseStoreOptions, ...{
         fileStoreOptions: {
-          filePath: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
-        },
-      },
-    },
+          filePath: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions'
+        }
+      }
+    }
   };
 
   const nodeLibOptions = {
@@ -147,10 +146,10 @@ export const getXuiNodeMiddleware = () => {
       s2s: {
         microservice: getConfigValue(MICROSERVICE),
         s2sEndpointUrl: `${getConfigValue(SERVICE_S2S_PATH)}/lease`,
-        s2sSecret: s2sSecret.trim(),
-      },
+        s2sSecret: s2sSecret.trim()
+      }
     },
-    session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions,
+    session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions
   };
 
   const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2';

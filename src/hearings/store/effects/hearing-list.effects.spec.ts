@@ -16,27 +16,29 @@ import { HearingListEffects } from './hearing-list.effects';
 
 describe('Hearing List Effects', () => {
   let actions$;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromHearingStore.State>;
 
   let effects: HearingListEffects;
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
-    'getAllHearings',
+    'getAllHearings'
   ]);
 
   const initialState = {
     hearings: {
       hearingList: {
         hearingListMainModel: {}
-      },
+      }
     }
   };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         provideMockStore({ initialState }),
         {
           provide: HearingsService,
-          useValue: hearingsServiceMock,
+          useValue: hearingsServiceMock
         },
         HearingListEffects,
         provideMockActions(() => actions$)
@@ -44,7 +46,6 @@ describe('Hearing List Effects', () => {
     });
     effects = TestBed.inject(HearingListEffects);
     store = TestBed.inject(Store) as Store<fromHearingStore.State>;
-
   });
 
   describe('loadHearingList$', () => {
@@ -57,7 +58,7 @@ describe('Hearing List Effects', () => {
         hearingRoomId: 'room 1',
         hearingJudgeId: 'hearingJudgeId1',
         panelMemberIds: ['hearingJudgeId1'],
-        attendees: [],
+        attendees: []
       };
       const CASE_HEARING_1: HearingListModel = {
         hearingID: 'h111111',
@@ -71,12 +72,12 @@ describe('Hearing List Effects', () => {
         exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
         hearingIsLinkedFlag: true,
         hearingGroupRequestId: null,
-        hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
+        hearingDaySchedule: [HEARING_DAY_SCHEDULE_1]
       };
       const HEARINGS_LIST: HearingListMainModel = {
         hmctsServiceID: 'BBA3',
         caseRef: '1568642646198441',
-        caseHearings: [CASE_HEARING_1],
+        caseHearings: [CASE_HEARING_1]
       };
       hearingsServiceMock.getAllHearings.and.returnValue(of(HEARINGS_LIST));
       const action = new hearingListActions.LoadAllHearings('1111222233334444');
@@ -91,7 +92,7 @@ describe('Hearing List Effects', () => {
     it('should error when loading all hearings request failure', () => {
       const errorResponse: HttpError = {
         status: 500,
-        message: 'Internal server error',
+        message: 'Internal server error'
       };
       hearingsServiceMock.getAllHearings.and.returnValue(throwError(errorResponse));
       const action = new hearingListActions.LoadAllHearings('h1000000');

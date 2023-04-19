@@ -50,7 +50,7 @@ describe('RolesAndAccessComponent', () => {
         name: 'Test Address Book Case',
         jurisdiction: {
           id: 'TEST',
-          name: 'Test',
+          name: 'Test'
         }
       },
       channels: [],
@@ -229,7 +229,6 @@ describe('RolesAndAccessComponent', () => {
     expect(component.namedCTSCRoles).toBeDefined();
     expect(component.namedCTSCRoles[0].name).toBe('A Test');
   });
-
 
   it('should set names for unnamed exclusions', () => {
     const mockExclusions: RoleExclusion[] = [{

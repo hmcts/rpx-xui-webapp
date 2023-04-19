@@ -20,7 +20,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-requirements',
-  templateUrl: './hearing-requirements.component.html',
+  templateUrl: './hearing-requirements.component.html'
 })
 export class HearingRequirementsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public caseFlagsRefData: CaseFlagReferenceModel[];
@@ -132,14 +132,14 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   public combinePartiesWithIndOrOrg(partyDetails: PartyDetailsModel[]): PartyDetailsModel[] {
     const combinedPartyDetails: PartyDetailsModel[] = [];
-    partyDetails.forEach(partyDetail => {
+    partyDetails.forEach((partyDetail) => {
       const organisationDetails = partyDetail.organisationDetails;
       const party: PartyDetailsModel = {
         ...partyDetail,
         individualDetails: {
-          ...partyDetail.individualDetails,
+          ...partyDetail.individualDetails
         },
-        ...organisationDetails && ({ organisationDetails }),
+        ...organisationDetails && ({ organisationDetails })
       };
       combinedPartyDetails.push(party);
     });
@@ -150,15 +150,15 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     const allRAFs: PartyFlagsDisplayModel[] = this.reasonableAdjustmentFlags.reduce((previousValue, currentValue) =>
       [...previousValue, ...currentValue.partyFlags], []
     );
-    return allRAFs.filter(flag => flag.partyID === partyID).map(filterFlag => filterFlag.flagId);
+    return allRAFs.filter((flag) => flag.partyID === partyID).map((filterFlag) => filterFlag.flagId);
   }
 
   public initializeHearingCondition(): void {
     if (this.serviceHearingValuesModel && this.serviceHearingValuesModel.hearingLocations) {
-      const strLocationIds = this.serviceHearingValuesModel.hearingLocations.map(location => location.locationId).join(',');
+      const strLocationIds = this.serviceHearingValuesModel.hearingLocations.map((location) => location.locationId).join(',');
       this.locationsDataService.getLocationById(strLocationIds).toPromise()
-        .then(locations => {
-          this.strRegions = locations.map(location => location.region_id).join(',');
+        .then((locations) => {
+          this.strRegions = locations.map((location) => location.region_id).join(',');
         }).then(() => {
           const hearingCondition: HearingConditions = {
             isInit: false,

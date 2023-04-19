@@ -1,4 +1,3 @@
-/* tslint:disable-next-line */
 import 'zone.js/dist/zone-testing';
 
 import { getTestBed } from '@angular/core/testing';

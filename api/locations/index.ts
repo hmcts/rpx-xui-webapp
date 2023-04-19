@@ -37,7 +37,6 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     serviceIds = serviceIds.split(',');
   }
   const courtTypeIds = getCourtTypeIdsByService(serviceIds);
-  // tslint:disable-next-line:max-line-length
   const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}`;
   try {
     const headers = setHeaders(req);

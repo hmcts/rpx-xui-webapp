@@ -56,5 +56,4 @@ router.use('/hearings', hearingsRouter);
 router.use('/specific-access-request', specificAccessRouter);
 router.use('/challenged-access-request', challengedAccessRouter);
 
-// @ts-ignore
 export default router;

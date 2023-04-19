@@ -33,11 +33,6 @@ describe('submitNoCEvents API', () => {
         answers: answers
     };
 
-    const mockErrorRequest = {
-        case_id: '123456',
-        answers: answers
-    };
-
     const req = mockReq({
         headers:{
             'Authorization': 'Bearer someAuthorizationToken',
@@ -47,7 +42,6 @@ describe('submitNoCEvents API', () => {
         body: mockRequest,
     });
 
-
     function setUpMockConfigForFunction() {
         const configValues = getNocAPIOverrides(pactSetUp.provider.mockService.baseUrl)
         sandbox.stub(config, 'get').callsFake((prop) => {
@@ -56,7 +50,6 @@ describe('submitNoCEvents API', () => {
         const {submitNoCEvents} = requireReloaded('../../../../noc/index');
         return submitNoCEvents;
     }
-
 
     describe('when a request is made to submit an NoC event', () => {
         const expectedResponse = {

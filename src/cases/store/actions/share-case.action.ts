@@ -19,7 +19,6 @@ export const RESET_CASE_SELECTION = '[ShareCase] Reset Case Selection';
 
 export class LoadUserFromOrgForCase implements Action {
   public readonly type = LOAD_USERS_FROM_ORG_FOR_CASE;
-  constructor() {}
 }
 
 export class NavigateToShareCase implements Action {
@@ -95,7 +94,6 @@ export class AssignUsersToCaseSuccess implements Action {
 
 export class ResetCaseSelection implements Action {
   public readonly type = RESET_CASE_SELECTION;
-  constructor() {}
 }
 
 export type Actions = NavigateToShareCase | LoadShareCase | LoadShareCaseSuccess | LoadShareCaseFailure

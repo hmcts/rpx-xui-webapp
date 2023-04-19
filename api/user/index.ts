@@ -22,7 +22,7 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
     const { roles } = req.session.passport.user.userinfo;
 
     const permissions = CASE_SHARE_PERMISSIONS.split(',');
-    const canShareCases = roles.some(role => permissions.includes(role));
+    const canShareCases = roles.some((role) => permissions.includes(role));
     const sessionTimeouts = getConfigValue(SESSION_TIMEOUTS) as RoleGroupSessionTimeout[];
     const sessionTimeout = getUserSessionTimeout(roles, sessionTimeouts);
     const roleAssignmentInfo = await getUserRoleAssignments(req.session.passport.user.userinfo, req);
@@ -31,7 +31,7 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
       canShareCases,
       roleAssignmentInfo,
       sessionTimeout,
-      userInfo,
+      userInfo
     });
   } catch (error) {
     next(error);
@@ -45,15 +45,15 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
   const path = `${baseUrl}/am/role-assignments/actors/${id}`;
   const headers = setHeaders(req);
   /* tslint:disable:no-string-literal */
-  delete headers['accept'];
+  delete headers.accept;
   try {
     const response: AxiosResponse = await http.get(path, { headers });
     const activeRoleAssignments = getActiveRoleAssignments(response.data.roleAssignmentResponse, new Date());
     userRoleAssignments = getRoleAssignmentInfo(activeRoleAssignments);
     const idamRoles = getOrganisationRoles(activeRoleAssignments);
     userInfo.roles = userInfo.roles.concat(idamRoles);
-    const roleAssignments: string[] = userRoleAssignments.filter(role => !!role.roleCategory).length > 0 ?
-      userRoleAssignments.map(roles => roles.roleCategory) : [];
+    const roleAssignments: string[] = userRoleAssignments.filter((role) => !!role.roleCategory).length > 0 ?
+      userRoleAssignments.map((roles) => roles.roleCategory) : [];
     // We check for the roleAssignments to determine the roleCategory. If not we try IDAM roles
     userInfo.roleCategory = getRoleCategoryFromRoleAssignments(roleAssignments) || getUserRoleCategory(userInfo.roles);
     req.session.roleAssignmentResponse = activeRoleAssignments;
@@ -64,7 +64,7 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
 }
 
 export function getActiveRoleAssignments(roleAssignments: RoleAssignment[], filterDate: Date): RoleAssignment[] {
-  const activeRoleAssignments = roleAssignments.filter(rm => {
+  const activeRoleAssignments = roleAssignments.filter((rm) => {
     return rm.endTime ? filterDate <= new Date(rm.endTime) : true;
   });
   return activeRoleAssignments;
@@ -72,7 +72,7 @@ export function getActiveRoleAssignments(roleAssignments: RoleAssignment[], filt
 
 export function getRoleAssignmentInfo(roleAssignmentResponse: RoleAssignment[]): LocationInfo[] {
   const roleAssignmentInfo = [];
-  roleAssignmentResponse.forEach(roleAssignment => {
+  roleAssignmentResponse.forEach((roleAssignment) => {
     const isCaseAllocator = isCurrentUserCaseAllocator(roleAssignment);
     const attributes = { ...roleAssignment.attributes };
     attributes.isCaseAllocator = isCaseAllocator;

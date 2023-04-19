@@ -11,7 +11,6 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
   templateUrl: 'my-cases.component.html'
 })
 export class MyCasesComponent extends WorkCaseListWrapperComponent {
-
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.MyCases;
   }
@@ -45,13 +44,13 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
       let locationFilters = [];
       /* istanbul ignore else */
       if (locationsFromLS && locationsFromLS.fields) {
-        const services = locationsFromLS.fields.find(field => field.name === 'services');
-        const locations = locationsFromLS.fields.find(field => field.name === 'locations');
+        const services = locationsFromLS.fields.find((field) => field.name === 'services');
+        const locations = locationsFromLS.fields.find((field) => field.name === 'locations');
         if (services && services.hasOwnProperty('value')) {
           serviceFilters = services.value;
         }
         if (locations && locations.hasOwnProperty('value')) {
-          locationFilters = locations.value.map(l => l.epimms_id);
+          locationFilters = locations.value.map((l) => l.epimms_id);
         }
       }
 

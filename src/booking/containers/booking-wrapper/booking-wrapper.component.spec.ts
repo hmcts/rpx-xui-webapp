@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SessionStorageService } from '../../../app/services';
 import { BookingNavigationEvent, BookingState } from '../../models';
@@ -28,7 +28,7 @@ describe('BookingWrapperComponent', () => {
     fixture = TestBed.createComponent(BookingWrapperComponent);
     component = fixture.componentInstance;
     const userIdType = 'uid';
-    sessionStorageService.getItem.and.returnValue(`{\"sub\":\"juser8@mailinator.com\",\"${userIdType}\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}`);
+    sessionStorageService.getItem.and.returnValue(`{"sub":"juser8@mailinator.com","${userIdType}":"44d5d2c2-7112-4bef-8d05-baaa610bf463","roles":["caseworker","caseworker-ia","caseworker-ia-iacjudge"],"name":"XUI test Judge","given_name":"XUI test","family_name":"Judge","token":""}`);
     fixture.detectChanges();
   });
 
@@ -58,7 +58,6 @@ describe('BookingWrapperComponent', () => {
         expect(expected).toBeFalsy();
       });
 
-
       it('should navigate to the location page when back is clicked on the select booking date page', () => {
         component.bookingNavigationCurrentState = BookingState.BOOKDATE as BookingState;
         component.navigationHandler(BookingNavigationEvent.BACK);
@@ -73,10 +72,11 @@ describe('BookingWrapperComponent', () => {
 
       it('should throw an error if an unexpected back event occurs', () => {
         component.bookingNavigationCurrentState = BookingState.HOME as BookingState;
-        expect(() => { component.navigationHandler(BookingNavigationEvent.BACK); }).toThrow(new Error('Invalid Booking Back state'));
+        expect(() => {
+          component.navigationHandler(BookingNavigationEvent.BACK);
+        }).toThrow(new Error('Invalid Booking Back state'));
       });
     });
-
   });
 
   describe('button events', () => {
@@ -95,7 +95,5 @@ describe('BookingWrapperComponent', () => {
       component.navigationHandler(BookingNavigationEvent.BOOKINGDATESUBMIT);
       expect(component.bookingNavigationCurrentState).toBe(BookingState.CHECK);
     });
-
   });
-
 });

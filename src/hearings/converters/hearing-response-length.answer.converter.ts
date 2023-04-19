@@ -6,10 +6,9 @@ import { HearingsUtils } from '../utils/hearings.utils';
 import { AnswerConverter } from './answer.converter';
 
 export class HearingResponseLengthAnswerConverter implements AnswerConverter {
-
   public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;
         let hearingDaySchedule = hearingResponse && hearingResponse.hearingDaySchedule;
         if (!hearingDaySchedule) {
@@ -69,7 +68,7 @@ export class HearingResponseLengthAnswerConverter implements AnswerConverter {
 
   public calculateFormattedMinutes(minutes: number): string {
     return minutes > 0
-    ? `${minutes} Minutes`
-    : '';
+      ? `${minutes} Minutes`
+      : '';
   }
 }

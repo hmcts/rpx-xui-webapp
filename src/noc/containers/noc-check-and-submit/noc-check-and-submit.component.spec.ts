@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { AFFIRMATION_DEFAULT_DISAGREE_ERROR, AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR } from '../../constants/nocErrorMap.enum';
 import { NocAnswer, NocEvent, NocNavigationEvent, NocQuestion } from '../../models';
@@ -27,7 +27,7 @@ describe('NocCheckAndSubmitComponent', () => {
       regular_expression: null,
       fixed_list_items: null,
       complex_fields: null,
-      collection_field_type: null,
+      collection_field_type: null
     },
     display_context_parameter: '',
     challenge_question_id: '',
@@ -45,7 +45,7 @@ describe('NocCheckAndSubmitComponent', () => {
       regular_expression: null,
       fixed_list_items: null,
       complex_fields: null,
-      collection_field_type: null,
+      collection_field_type: null
     },
     display_context_parameter: '',
     challenge_question_id: '',
@@ -60,15 +60,16 @@ describe('NocCheckAndSubmitComponent', () => {
     question_id: 'q2',
     value: 'Priest'
   }];
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ NocCheckAndSubmitComponent ],
+      declarations: [NocCheckAndSubmitComponent],
       providers: [
         provideMockStore()
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -90,7 +91,7 @@ describe('NocCheckAndSubmitComponent', () => {
     component.answers$ = spyOnPipeToStore.and.returnValue(of(nocAnswers));
     component.ngOnInit();
     fixture.detectChanges();
-    component.qAndA$.toPromise().then(results => {
+    component.qAndA$.toPromise().then((results) => {
       expect(results.length).toBe(2);
     });
   });
@@ -114,7 +115,9 @@ describe('NocCheckAndSubmitComponent', () => {
   });
 
   it('should navigationHandler', () => {
-    expect(() => { component.navigationHandler(NocNavigationEvent.CONTINUE); }).toThrow(new Error('Invalid option'));
+    expect(() => {
+      component.navigationHandler(NocNavigationEvent.CONTINUE);
+    }).toThrow(new Error('Invalid option'));
   });
 
   it('should verify and submit NoC', () => {
@@ -166,7 +169,6 @@ describe('NocCheckAndSubmitComponent', () => {
     component.verifyAndSubmitNoC();
     expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.SetAffirmationError(affirmationError));
   });
-
 
   afterEach(() => {
     component = null;

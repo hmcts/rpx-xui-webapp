@@ -7,7 +7,7 @@ import {
   FormBuilder,
   FormControl,
   FormGroup,
-  Validators,
+  Validators
 } from '@angular/forms';
 import {
   BookingDateFormErrorMessage,
@@ -21,7 +21,6 @@ import {
   templateUrl: './booking-date.component.html'
 })
 export class BookingDateComponent implements OnInit {
-
   @Input() public bookingProcess: BookingProcess;
   @Output() public eventTrigger = new EventEmitter();
   public title: string;
@@ -42,7 +41,7 @@ export class BookingDateComponent implements OnInit {
     this.dateInterval = [
       { date: BookingDateOption.TODAY, checked: false },
       { date: BookingDateOption.WEEK, checked: false },
-      { date: BookingDateOption.DATERANGE, checked: false },
+      { date: BookingDateOption.DATERANGE, checked: false }
     ];
     this.configStart = {
       id: 'startDate',
@@ -151,9 +150,9 @@ export class BookingDateComponent implements OnInit {
     }
     if (this.isAnyError()) {
       return false;
-    } else {
-      return true;
     }
+
+    return true;
   }
 
   public resetValidationErrorMessages(): void {
@@ -194,15 +193,15 @@ export class BookingDateComponent implements OnInit {
         break;
       case BookingDateOption.DATERANGE:
         startDate = new Date(
-                      this.formGroup.get(DateFormControl.BOOKING_START_YEAR).value,
-                      this.formGroup.get(DateFormControl.BOOKING_START_MONTH).value - 1,
-                      this.formGroup.get(DateFormControl.BOOKING_START_DAY).value
-                    );
+          this.formGroup.get(DateFormControl.BOOKING_START_YEAR).value,
+          this.formGroup.get(DateFormControl.BOOKING_START_MONTH).value - 1,
+          this.formGroup.get(DateFormControl.BOOKING_START_DAY).value
+        );
         const endDateMidnight = new Date(
-                                  this.formGroup.get(DateFormControl.BOOKING_END_YEAR).value,
-                                  this.formGroup.get(DateFormControl.BOOKING_END_MONTH).value - 1,
-                                  this.formGroup.get(DateFormControl.BOOKING_END_DAY).value
-                                ).setUTCHours(23, 59, 59, 999);
+          this.formGroup.get(DateFormControl.BOOKING_END_YEAR).value,
+          this.formGroup.get(DateFormControl.BOOKING_END_MONTH).value - 1,
+          this.formGroup.get(DateFormControl.BOOKING_END_DAY).value
+        ).setUTCHours(23, 59, 59, 999);
         endDate = new Date(endDateMidnight);
         break;
       default:
@@ -225,7 +224,7 @@ export class BookingDateComponent implements OnInit {
   }
 
   public onEventTrigger() {
-    const {startDate, endDate} = this.getStartEndDate(this.formGroup.get('dateOption').value);
+    const { startDate, endDate } = this.getStartEndDate(this.formGroup.get('dateOption').value);
     if (startDate && endDate) {
       this.bookingProcess.startDate = startDate;
       this.bookingProcess.endDate = endDate;

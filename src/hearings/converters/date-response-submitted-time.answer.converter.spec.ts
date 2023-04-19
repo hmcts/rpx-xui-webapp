@@ -5,7 +5,6 @@ import { State } from '../store/reducers';
 import { DateResponseSubmittedTimeAnswerConverter } from './date-response-submitted-time.answer.converter';
 
 describe('DateResponseSubmittedTimeAnswerConverter', () => {
-
   let dateRequestSubmittedTimeAnswerConverter: DateResponseSubmittedTimeAnswerConverter;
 
   beforeEach(() => {
@@ -19,5 +18,4 @@ describe('DateResponseSubmittedTimeAnswerConverter', () => {
     const expected = cold('(b|)', { b: type });
     expect(result$).toBeObservable(expected);
   });
-
 });

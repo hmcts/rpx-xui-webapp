@@ -2,7 +2,7 @@ import {
   Actions,
   AllocateRoleState,
   AllocateRoleStateData,
-  DurationOfRole,
+  DurationOfRole
 } from '../../models';
 import { AllocateRoleAction, AllocateRoleActionTypes } from '../actions';
 
@@ -21,7 +21,7 @@ export const allocateRoleInitialState: AllocateRoleStateData = {
 };
 
 export function allocateRoleReducer(currentState = allocateRoleInitialState,
-                                    action: AllocateRoleAction): AllocateRoleStateData {
+  action: AllocateRoleAction): AllocateRoleStateData {
   switch (action.type) {
     case AllocateRoleActionTypes.CHANGE_NAVIGATION: {
       return {
@@ -93,13 +93,13 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
         ...currentState,
         roles: action.payload.roles,
         state: AllocateRoleState.CHOOSE_ROLE
-      }
+      };
     }
     case AllocateRoleActionTypes.NO_ROLES_FOUND: {
       return {
         ...currentState,
         state: AllocateRoleState.NO_ROLES_FOUND
-      }
+      };
     }
     default: {
       return {

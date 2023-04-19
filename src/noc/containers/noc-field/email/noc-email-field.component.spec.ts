@@ -1,11 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocEmailFieldComponent } from './noc-email-field.component';
-
 
 describe('NocEmailFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
@@ -30,7 +29,7 @@ describe('NocEmailFieldComponent', () => {
     display_context_parameter: '1',
     challenge_question_id: 'NoC',
     answer_field: '',
-    question_id: 'question1',
+    question_id: 'question1'
   };
   const ANSWER_VALUE = of('test@test.com');
 
@@ -41,7 +40,7 @@ describe('NocEmailFieldComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
-        NocEmailFieldComponent,
+        NocEmailFieldComponent
       ],
       imports: [
         ReactiveFormsModule,

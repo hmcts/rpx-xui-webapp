@@ -1,14 +1,14 @@
 {
-    "compileOnSave": false,
-    "compilerOptions": {
-        "outDir": "../dist/rpx-exui/api",
-        "target": "esnext",
-        "module": "commonjs",
-        "skipLibCheck": true,
-        "types": ["node", "mocha", "rxjs"],
-        "baseUrl": ".",
-        "lib": ["es2017", "dom"],
-    },
-    "include": ["**/*.ts", "../*.ts"],
-    "exclude": ["**/*.spec.ts"]
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "../dist/rpx-exui/api",
+    "target": "esnext",
+    "module": "commonjs",
+    "skipLibCheck": true,
+    "types": ["node", "mocha", "rxjs"],
+    "baseUrl": ".",
+    "lib": ["es2017", "dom"],
+  },
+  "include": ["**/*.ts", "../*.ts"],
+  "exclude": ["**/*.spec.ts"]
 }

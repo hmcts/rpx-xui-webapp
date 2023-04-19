@@ -4,7 +4,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { Observable, of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { Go } from '../../../app/store/actions';
 import * as fromHearingStore from '../../../hearings/store';
 import { HttpError } from '../../../models/httpError.model';
@@ -32,17 +32,18 @@ describe('Hearing Links Effects', () => {
       }
     }
   };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         provideMockStore({ initialState }),
         {
           provide: Router,
-          useValue: mockRouter,
+          useValue: mockRouter
         },
         {
           provide: HearingsService,
-          useValue: hearingsServiceMock,
+          useValue: hearingsServiceMock
         },
         HearingLinksEffects,
         provideMockActions(() => actions$)
@@ -99,21 +100,21 @@ describe('Hearing Links Effects', () => {
           groupName: 'Group A',
           groupReason: 'Reason 1',
           groupLinkType: GroupLinkType.ORDERED,
-          groupComments: 'Comment 1',
+          groupComments: 'Comment 1'
         },
         hearingsInGroup: [
           {
             hearingId: 'h1000001',
-            hearingOrder: 1,
+            hearingOrder: 1
           },
           {
             hearingId: 'h1000003',
-            hearingOrder: 2,
+            hearingOrder: 2
           },
           {
             hearingId: 'h1000005',
-            hearingOrder: 3,
-          }],
+            hearingOrder: 3
+          }]
       };
       const caseId = '1111222233334444';
       const hearingId = 'h100002';
@@ -129,7 +130,7 @@ describe('Hearing Links Effects', () => {
     it('should error submitting linked hearing group', () => {
       const error: HttpError = {
         status: 403,
-        message: 'Http failure response: 403 Forbidden',
+        message: 'Http failure response: 403 Forbidden'
       };
       const dispatchSpy = spyOn(store, 'dispatch');
       const linkedHearingGroup = {
@@ -137,21 +138,21 @@ describe('Hearing Links Effects', () => {
           groupName: 'Group A',
           groupReason: 'Reason 1',
           groupLinkType: GroupLinkType.ORDERED,
-          groupComments: 'Comment 1',
+          groupComments: 'Comment 1'
         },
         hearingsInGroup: [
           {
             hearingId: 'h1000001',
-            hearingOrder: 1,
+            hearingOrder: 1
           },
           {
             hearingId: 'h1000003',
-            hearingOrder: 2,
+            hearingOrder: 2
           },
           {
             hearingId: 'h1000005',
-            hearingOrder: 3,
-          }],
+            hearingOrder: 3
+          }]
       };
       const caseId = '1111222233334444';
       const hearingId = 'h100002';
@@ -166,11 +167,10 @@ describe('Hearing Links Effects', () => {
   });
 
   describe('manageLinkedHearingGroup$', () => {
-
     it('should error managing linked hearing group', () => {
       const error: HttpError = {
         status: 403,
-        message: 'Http failure response: 403 Forbidden',
+        message: 'Http failure response: 403 Forbidden'
       };
       const payload = {
         linkedHearingGroup: {
@@ -198,7 +198,7 @@ describe('Hearing Links Effects', () => {
         status: 403,
         message: 'error'
       });
-      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
+      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });
   });
 });

@@ -5,7 +5,6 @@ import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { take } from 'rxjs/operators';
 import { $enum as EnumUtil } from 'ts-enum-util';
-
 import { UserDetails } from '../../../../app/models';
 import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../../work-allocation/services';
 import { ERROR_MESSAGE } from '../../../constants';
@@ -19,9 +18,7 @@ import * as fromFeature from '../../../store';
   selector: 'exui-specific-access-review',
   templateUrl: './specific-access-review.component.html'
 })
-
 export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
-
   public ERROR_MESSAGE = ERROR_MESSAGE;
   @Input() public navEvent: SpecificAccessNavigation;
   public title = SpecificAccessText.TITLE;
@@ -31,8 +28,9 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
   public userDetails$: Observable<UserDetails>;
   public errorMessage = {
     title: 'There is a problem',
-    description: SpecificAccessErrors.NO_SELECTION,
+    description: SpecificAccessErrors.NO_SELECTION
   };
+
   public optionsList: OptionsModel[];
 
   public submitted: boolean = false;
@@ -53,39 +51,41 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
     private readonly store: Store<fromFeature.State>,
     private readonly allocateRoleService: AllocateRoleService,
     private readonly caseworkerDataService: CaseworkerDataService,
-    private waSupportedJurisdictionsService: WASupportedJurisdictionsService
+    private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService
   ) {
     this.accessReasons = [
       { reason: AccessReason.APPROVE_REQUEST, checked: false },
       { reason: AccessReason.REJECT_REQUEST, checked: false },
-      { reason: AccessReason.REQUEST_MORE_INFORMATION, checked: false },
+      { reason: AccessReason.REQUEST_MORE_INFORMATION, checked: false }
     ];
   }
 
   public ngOnInit(): void {
     this.specificAccessStateDataSub = this.store.pipe(select(fromFeature.getSpecificAccessState)).subscribe(
-      specificAccessStateData => {
+      (specificAccessStateData) => {
         this.specificAccessStateData = specificAccessStateData;
       }
     );
     if (this.specificAccessStateData.roleCategory === RoleCategory.JUDICIAL) {
       this.allocateRoleService.getCaseRolesUserDetails([this.specificAccessStateData.actorId], [this.specificAccessStateData.jurisdiction]).subscribe(
-        (caseRoleUserDetails) => { this.requesterName = caseRoleUserDetails[0].full_name; }
+        (caseRoleUserDetails) => {
+          this.requesterName = caseRoleUserDetails[0].full_name;
+        }
       );
     } else {
       this.waSupportedJurisdictionsService.getWASupportedJurisdictions().subscribe((services) => {
         this.caseworkerDataService.getCaseworkersForServices(services).subscribe(
           (caseworkers) => {
-            const caseworker = caseworkers.find(thisCaseworker => thisCaseworker.idamId === this.specificAccessStateData.actorId);
+            const caseworker = caseworkers.find((thisCaseworker) => thisCaseworker.idamId === this.specificAccessStateData.actorId);
             if (caseworker) {
-              this.requesterName = `${caseworker.firstName} ${caseworker.lastName}`
+              this.requesterName = `${caseworker.firstName} ${caseworker.lastName}`;
             }
           });
       });
     }
     this.reviewOptionControl = new FormControl(this.initialAccessReason ? this.initialAccessReason : '', [Validators.required]);
     this.formGroup = this.fb.group({
-      radioSelected: this.reviewOptionControl,
+      radioSelected: this.reviewOptionControl
     });
     this.optionsList = [
       {
@@ -144,8 +144,8 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
                   caseName: specificAccess.caseName,
                   requestCreated: specificAccess.requestCreated,
                   roleCategory: specificAccess.roleCategory,
-                  person: { id: specificAccess.actorId, name: null, domain: null },
-                }
+                  person: { id: specificAccess.actorId, name: null, domain: null }
+                };
               }
             });
             this.store.dispatch(new fromFeature.RequestMoreInfoSpecificAccessRequest(specificAccessBody));

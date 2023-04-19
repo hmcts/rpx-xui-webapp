@@ -10,7 +10,9 @@ import { HearingAdjournedSummaryComponent } from './hearing-adjourned-summary.co
 describe('HearingAdjournedSummaryComponent', () => {
   let component: HearingAdjournedSummaryComponent;
   let fixture: ComponentFixture<HearingAdjournedSummaryComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: Router;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mockStore: any;
 
   beforeEach(() => {
@@ -18,9 +20,9 @@ describe('HearingAdjournedSummaryComponent', () => {
       imports: [RouterTestingModule],
       declarations: [HearingAdjournedSummaryComponent],
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState })
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
     mockStore = TestBed.inject(Store);

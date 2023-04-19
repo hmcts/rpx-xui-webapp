@@ -5,7 +5,13 @@
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
   <a href="javascript:void(0)" [routerLink]="'../'" class="govuk-back-link">Back</a>
 
-  <ng-content select="[pageHeader]"></ng-content>
+  <div>
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-7">{{ this.activatedRoute.snapshot.data.title }}</h1>
+    <div class="govuk-body">
+      {{ this.activatedRoute.snapshot.data.description }}
+    </div>
+  </div>
+
   <form [formGroup]="form" (ngSubmit)="submitForm(form)">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
       <h2 class="govuk-heading-m">
@@ -223,8 +229,6 @@
                 Task supervisor
               </label>
             </div>
-            Dirty: {{ form.get('staff_admin').dirty }}
-            Touched: {{ form.get('staff_admin').touched }}
 
             <div class="govuk-checkboxes__item">
               <input type="checkbox" class="govuk-checkboxes__input" [formControlName]="'staff_admin'"
@@ -241,7 +245,7 @@
       </div>
 
       <div *ngIf="updateMode && form.get('staff_admin').value && !form.get('staff_admin').dirty">
-        Note: some roles can only be removed using the IDAM Dashboard
+        Note: the Staff administrator role can only be removed using the IDAM Dashboard.
       </div>
     </div>
 

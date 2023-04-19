@@ -32,7 +32,7 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
   public groupItemsByGroupSize = groupItemsByGroupSize;
 
   constructor(
-    private readonly activatedRoute: ActivatedRoute,
+    public readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
     public readonly staffAddEditFormService: StaffAddEditFormService,
   ) {}
@@ -51,6 +51,7 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
       services: this.activatedRoute.snapshot.data.services,
       regions: this.activatedRoute.snapshot.data.regions,
     };
+
     this.skillOptionGroups$ = this.staffAddEditFormService.selectedServiceCodes$.pipe(
       tap((selectedServiceCodes) => {
         const skillsControl = this.form.get('skills') as FormGroup;

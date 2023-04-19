@@ -7,7 +7,6 @@ import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { InfoMessageType } from '../../../role-access/models/enums';
 import { StaffUser } from '../../models/staff-user.model';
-import { StaffAddEditFormService } from '../../services/staff-add-edit-form/staff-add-edit-form.service';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 
 @Component({
@@ -28,7 +27,6 @@ export class StaffUserDetailsComponent {
     private readonly router: Router,
     private staffDataAccessService: StaffDataAccessService,
     private readonly messageService: InfoMessageCommService,
-    private readonly staffAddEditFormService: StaffAddEditFormService
   ) {
     const userDetailsFromSnapshot = this.route.snapshot.data.staffUserDetails;
 
@@ -71,18 +69,20 @@ export class StaffUserDetailsComponent {
   }
 
   public onUpdateUser() {
-    this.staffAddEditFormService.patchFormValues(this.userDetails);
-    this.router.navigateByUrl(`/staff/user-details/${this.route.snapshot.params.id}/update`);
+    const formValues = this.userDetails;
+    this.router.navigateByUrl(`/staff/user-details/${this.route.snapshot.params.id}/update`,
+      { state: { formValues } });
   }
 
   public onCopyUser() {
-    this.staffAddEditFormService.patchFormValues({
+    const formValues = {
       ...this.userDetails,
       first_name: '',
       last_name: '',
       email_id: ''
-    } as StaffUser);
-    this.router.navigateByUrl(`/staff/user-details/${this.route.snapshot.params.id}/copy`);
+    };
+    this.router.navigateByUrl(`/staff/user-details/${this.route.snapshot.params.id}/copy`,
+      { state: { formValues } });
   }
 
   public resendInvite(): void {

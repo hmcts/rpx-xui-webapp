@@ -10,8 +10,8 @@
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.PRIORITY">
     <ng-container *ngIf="(isUserJudicial && isTaskUrgent) || (!isUserJudicial)" >
-      <exui-priority-field [date]="toDate(task.priority_date)" [majorPriority]="task.major_priority"
-                           [jurisdiction]="task.jurisdiction">
+      <exui-priority-field [priorityDate]="toDate(task.priority_date)" [majorPriority]="task.major_priority"
+                           [dueDate]="toDate(task.dueDate)" [jurisdiction]="task.jurisdiction">
       </exui-priority-field>
     </ng-container>
   </ng-container>

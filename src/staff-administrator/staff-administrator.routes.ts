@@ -55,7 +55,7 @@ export const ROUTES: Routes = [
                 component: StaffAddEditUserFormComponent,
                 data: {
                   title: 'Edit user',
-                  subtitle: 'Change the details of this user.'
+                  description: 'Change the details of this user.'
                 }
               },
               { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }
@@ -66,7 +66,7 @@ export const ROUTES: Routes = [
             component: StaffAddEditUserContainerComponent,
             data: {
               title: 'Add user',
-              subtitle: 'Enter the details of the user you want to add.'
+              description: 'Enter the details of the user you want to add.'
             },
             children: [
               { path: '', component: StaffAddEditUserFormComponent },
@@ -80,7 +80,7 @@ export const ROUTES: Routes = [
         component: StaffAddEditUserContainerComponent,
         data: {
           title: 'Add user',
-          subtitle: 'Enter the details of the user you want to add.'
+          description: 'Enter the details of the user you want to add.'
         },
         children: [
           { path: '', component: StaffAddEditUserFormComponent },

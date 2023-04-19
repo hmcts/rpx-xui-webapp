@@ -57,7 +57,8 @@ describe('StaffAddEditUserContainerComponent', () => {
 
       // @ts-expect-error - private property
       spyOn(component.staffAddEditFormService, 'patchFormValues');
-      component.ngOnInit();
+      // @ts-expect-error - private property
+      component.setValuesToFormFromState();
       // @ts-expect-error - private property
       expect(component.staffAddEditFormService.patchFormValues).toHaveBeenCalledWith(formValuesFromState);
     });
@@ -67,8 +68,8 @@ describe('StaffAddEditUserContainerComponent', () => {
       // @ts-expect-error - private property
       spyOn(component.staffAddEditFormService, 'patchFormValues');
 
-      component.ngOnInit();
-
+      // @ts-expect-error - private property
+      component.setValuesToFormFromState();
       // @ts-expect-error - private property
       expect(component.staffAddEditFormService.patchFormValues).not.toHaveBeenCalled();
     });

@@ -16,9 +16,9 @@ const defaultConfig = {
     },
      "maxLogLine": 80,
 };
-export function getSearchTaskOverrides(waTaskAPiUrl) {
+export function getNocAPIOverrides(nocAPiUrl) {
     return {
-        "services.work_allocation.taskApi": waTaskAPiUrl,
+        "services.ccd.caseAssignmentApi": nocAPiUrl,
         "waSupportedJurisdictions": 'IA',
         ...defaultConfig,
     }

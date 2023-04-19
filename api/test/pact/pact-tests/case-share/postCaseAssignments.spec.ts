@@ -22,7 +22,7 @@ describe('Post Cases from CaseAssignment Api', () => {
 
   describe('When Cases are assigned to Users', () => {
     before(async () =>{
-      await pactSetUp.provider.setup()
+      await pactSetUp.provider.setup();
       const interaction = {
         state: 'Assign a user to a case',
         uponReceiving: 'A request for that case to be assigned',

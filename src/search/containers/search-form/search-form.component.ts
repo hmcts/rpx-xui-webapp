@@ -135,12 +135,13 @@ export class SearchFormComponent implements OnInit {
     if (searchParameters) {
       // Note: Intentional use of != throughout this if block, to check for search parameter values being not null and not undefined
       /* eslint-disable eqeqeq */
+      /* tslint:disable:triple-equals */
       const caseReferences = searchParameters.caseReferences;
-      if (caseReferences != null) {
+      if (caseReferences !== null) {
         this.formGroup.get(SearchFormControl.CASE_REF).setValue(caseReferences[0] || '');
       }
       const otherReferences = searchParameters.otherReferences;
-      if (otherReferences != null) {
+      if (otherReferences !== null) {
         this.formGroup.get(SearchFormControl.OTHER_REF).setValue(otherReferences[0] || '');
       }
       this.formGroup.get(SearchFormControl.FULL_NAME).setValue(searchParameters.fullName || '');
@@ -148,14 +149,14 @@ export class SearchFormComponent implements OnInit {
       this.formGroup.get(SearchFormControl.POSTCODE).setValue(searchParameters.postcode || '');
       this.formGroup.get(SearchFormControl.EMAIL).setValue(searchParameters.emailAddress || '');
       const dateOfBirth = searchParameters.dateOfBirth;
-      if (dateOfBirth != null) {
+      if (dateOfBirth !== null) {
         // Date is stored in format yyyy-mm-dd
         this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue(dateOfBirth.split('-')[2]);
         this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).setValue(dateOfBirth.split('-')[1]);
         this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).setValue(dateOfBirth.split('-')[0]);
       }
       const dateOfDeath = searchParameters.dateOfDeath;
-      if (dateOfDeath != null) {
+      if (dateOfDeath !== null) {
         // Date is stored in format yyyy-mm-dd
         this.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).setValue(dateOfDeath.split('-')[2]);
         this.formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).setValue(dateOfDeath.split('-')[1]);
@@ -164,9 +165,11 @@ export class SearchFormComponent implements OnInit {
       const serviceSelection = searchParameters.CCDJurisdictionIds;
       // Set service selection if there is exactly one service present. The value defaults to "All" if no service is present, or if
       // more than one service is present (in this case, it is "All" because the user can choose either a single service or "All" only)
-      if (serviceSelection != null && serviceSelection.length === 1) {
+      if (serviceSelection !== null && serviceSelection.length === 1) {
         this.formGroup.get(SearchFormControl.SERVICES_LIST).setValue(serviceSelection[0]);
       }
+      /* eslint-enable eqeqeq */
+      /* tslint:enable:triple-equals */
     }
   }
 

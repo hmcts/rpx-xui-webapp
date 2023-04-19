@@ -58,5 +58,4 @@ describe('PrivacyPolicyComponent', () => {
       expect(component.showWelshTranslation).toEqual(false);
     });
   });
-
 });

@@ -63,8 +63,8 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
   beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     TestBed.configureTestingModule({
-      declarations: [ HmctsGlobalHeaderComponent, RpxTranslateMockPipe ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      declarations: [HmctsGlobalHeaderComponent, RpxTranslateMockPipe],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         HttpClientTestingModule,
         RouterTestingModule,

@@ -21,9 +21,9 @@ describe('NocAffirmationComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NocAffirmationComponent, RpxTranslateMockPipe ],
+      declarations: [NocAffirmationComponent, RpxTranslateMockPipe],
       providers: [
-        provideMockStore(),
+        provideMockStore()
       ]
     })
       .compileComponents();

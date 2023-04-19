@@ -53,7 +53,8 @@ describe('WorkAllocation', () => {
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
     const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
-    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {  }, getTranslation: (phrase: string) => phrase });
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
     const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['getValue']);
     mockFeatureToggleService.getValue.and.returnValue(of(false));
 
@@ -89,11 +90,11 @@ describe('WorkAllocation', () => {
               params: of({ task: mockTasks[0] })
             }
           },
-          {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
           {
             provide: RpxTranslationService,
             useFactory: rpxTranslationServiceStub
-          },
+          }
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);

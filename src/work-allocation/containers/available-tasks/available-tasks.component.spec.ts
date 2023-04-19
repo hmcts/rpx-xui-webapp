@@ -68,14 +68,15 @@ describe('AvailableTasksComponent', () => {
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
-  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {  }, getTranslation: (phrase: string) => phrase });
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
 
   beforeEach(() => {
     storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
-        RouterTestingModule,
+        RouterTestingModule
       ],
       declarations: [
         AvailableTasksComponent,
@@ -100,7 +101,7 @@ describe('AvailableTasksComponent', () => {
         {
           provide: RpxTranslationService,
           useFactory: rpxTranslationServiceStub
-        },
+        }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);

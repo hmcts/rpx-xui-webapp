@@ -20,8 +20,8 @@ describe('ErrorMessageComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ WrapperComponent, ErrorMessageComponent, MockRpxTranslatePipe ],
-      imports: [ RouterTestingModule ]
+      declarations: [WrapperComponent, ErrorMessageComponent, MockRpxTranslatePipe],
+      imports: [RouterTestingModule]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;

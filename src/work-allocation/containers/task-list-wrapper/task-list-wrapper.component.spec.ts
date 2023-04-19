@@ -47,7 +47,8 @@ describe('TaskListWrapperComponent', () => {
       unsubscribe: () => null
     }
   };
-  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {  }, getTranslation: (phrase: string) => phrase });
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
 
   beforeEach((() => {
     storeMock = jasmine.createSpyObj('Store', ['dispatch']);
@@ -56,7 +57,7 @@ describe('TaskListWrapperComponent', () => {
         WorkAllocationComponentsModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        CdkTableModule,
+        CdkTableModule
       ],
       declarations: [TaskListComponent, TaskListWrapperComponent],
       providers: [

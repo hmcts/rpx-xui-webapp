@@ -107,7 +107,7 @@ export function launchDarklyClientIdFactory(
       validity: {
         days: 1
       },
-      testMode: true,
+      testMode: true
     })
   ],
   providers: [

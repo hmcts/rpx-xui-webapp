@@ -13,31 +13,26 @@ class RpxTranslateMockPipe implements PipeTransform {
   }
 }
 describe('HmctsGlobalFooterComponent', () => {
-  let component: HmctsGlobalFooterComponent;
-  let fixture: ComponentFixture<HmctsGlobalFooterComponent>;
-
-  const helpData: Helper = AppConstants.FOOTER_DATA;
-  const navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [HmctsGlobalFooterComponent],
-      imports: [
-        RouterTestingModule
-      ]
+    @Component({
+      selector: 'exui-app-host-dummy-component',
+      template: `<exui-app-hmcts-global-footer
+                    [reference]="iconFallbackText"
+                    [title]="type"
+                    [items]="text"></exui-app-hmcts-global-footer>`
     })
-    class TestDummyHostComponent {
+  class TestDummyHostComponent {
         @Input() public help: Helper;
         @Input() public navigation: Navigation;
-        @ViewChild(HmctsGlobalFooterComponent, {static: false})
+        @ViewChild(HmctsGlobalFooterComponent, { static: false })
         public hmctsGlobalFooterComponent: HmctsGlobalFooterComponent;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const testHostComponent = TestDummyHostComponent;
-    // tslint:disable-next-line
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let testHostFixture: ComponentFixture<TestDummyHostComponent>;
-    // tslint:disable-next-line
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let el: DebugElement;
-    // tslint:disable-next-line
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let de: any;
     let component: HmctsGlobalFooterComponent;
     let fixture: ComponentFixture<HmctsGlobalFooterComponent>;
@@ -46,10 +41,11 @@ describe('HmctsGlobalFooterComponent', () => {
     const navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
 
     beforeEach(waitForAsync(() => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {} });
 
       TestBed.configureTestingModule({
-        declarations: [ HmctsGlobalFooterComponent, RpxTranslateMockPipe ],
+        declarations: [HmctsGlobalFooterComponent, RpxTranslateMockPipe],
         imports: [
           RouterTestingModule
         ],
@@ -60,22 +56,21 @@ describe('HmctsGlobalFooterComponent', () => {
           }
         ]
       })
-      .compileComponents();
-  }));
+        .compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(HmctsGlobalFooterComponent);
-    component = fixture.componentInstance;
-    component.help = helpData;
-    component.navigation = navigationData;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+      fixture = TestBed.createComponent(HmctsGlobalFooterComponent);
+      component = fixture.componentInstance;
+      component.help = helpData;
+      component.navigation = navigationData;
+      fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should be created by angular', () => {
-    expect(fixture).not.toBeNull();
-  });
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
+    it('should be created by angular', () => {
+      expect(fixture).not.toBeNull();
+    });
 });

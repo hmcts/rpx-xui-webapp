@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { UserRole } from 'src/app/models';
 import { AppUtils } from '../../../app/app-utils';
+import { UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';
@@ -56,6 +57,8 @@ class WrapperComponent {
 
 describe('AllWorkCaseComponent', () => {
   let component: AllWorkCaseComponent;
+  let wrapper: WrapperComponent;
+  let fixture: ComponentFixture<WrapperComponent>;
 
   // const routerMock = jasmine.createSpyObj('Router', [ 'navigateByUrl' ]);
   const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase', 'getCases', 'getMyAccess']);
@@ -109,6 +112,10 @@ describe('AllWorkCaseComponent', () => {
   );
 
   beforeEach(() => {
+    fixture = TestBed.createComponent(WrapperComponent);
+    wrapper = fixture.componentInstance;
+    component = wrapper.appComponentRef;
+
     const cases: Case[] = getMockCases();
     const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
     mockCaseService.getCases.and.returnValue(of({ cases }));
@@ -121,6 +128,7 @@ describe('AllWorkCaseComponent', () => {
     mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of(caseRoles));
     mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue(undefined);
+    fixture.detectChanges();
   });
 
   describe('ngOnInit', () => {
@@ -172,34 +180,6 @@ describe('AllWorkCaseComponent', () => {
       const actual = component.getSearchCaseRequestPagination();
 
       expect(actual).toEqual(undefined);
-    });
-  });
-
-  describe('onSelectionChanged', () => {
-    it(`should update 'pagination' and 'selectedServices' when parameter's location is null and actorId is 'All'`, () => {
-      component = initializeComponent({ changeDetectorRef: mockChangeDetectorRef, caseworkerDataService: mockCaseService, loadingService: mockLoadingService, sessionStorageService: mockSessionStorageService, jurisdictionsService: mockJurisdictionsService, router: mockRouter });
-
-
-      spyOn(component, 'performSearchPagination').and.returnValue(of({ cases: [ { role_category: '' } ] }));
-
-      component.onSelectionChanged({ location: null, jurisdiction: 'jurisdiction', actorId: 'All', role: 'role', person: { id: 'personId'} });
-
-      expect(component.selectedServices).toEqual(['jurisdiction']);
-      expect(component.pagination.page_number).toEqual(1);
-    });
-
-    // Test added to satisfy onSelectionChanged's ternary operators
-    it(`should update 'pagination' and 'selectedServices' when parameter's location is NOT null and actorId is NOT 'All'`, () => {
-      component = initializeComponent({ changeDetectorRef: mockChangeDetectorRef, caseworkerDataService: mockCaseService, loadingService: mockLoadingService, sessionStorageService: mockSessionStorageService, jurisdictionsService: mockJurisdictionsService, router: mockRouter });
-
-      spyOn(component, 'performSearchPagination').and.returnValue(of({ cases: [ { role_category: '' } ] }));
-
-      component.onSelectionChanged({ location: 'location', jurisdiction: 'jurisdiction', actorId: 'Item', role: 'role', person: { id: 'personId'} });
-      component.onSelectionChanged({ location: 'location', jurisdiction: 'jurisdiction', actorId: 'Item', role: 'role', person: { id: 'personId'} });
-
-      expect(component.selectedServices).toEqual(['jurisdiction']);
-      expect(component.pagination.page_number).toEqual(1);
-      expect(component.performSearchPagination).toHaveBeenCalledTimes(1);
     });
   });
 

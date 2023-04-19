@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { SessionStorageService } from 'src/app/services';
 
@@ -34,5 +34,4 @@ export class PhaseBannerComponent {
     this.noBanner = false;
     this.sessionStorageService.setItem(this.noBannerSessionKey, 'false');
   }
-
 }

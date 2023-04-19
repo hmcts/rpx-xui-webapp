@@ -28,7 +28,8 @@ describe('PhaseBannerComponent', () => {
   }));
 
   beforeEach(() => {
-    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {  }, getTranslation: (phrase: string) => phrase });
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
     TestBed.configureTestingModule({
       imports: [],
       schemas: [NO_ERRORS_SCHEMA],
@@ -38,7 +39,7 @@ describe('PhaseBannerComponent', () => {
           provide: RpxTranslationService,
           useFactory: rpxTranslationServiceStub
         },
-        { provide: SessionStorageService, useValue: mockSessionStorageService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService }
       ]
     });
     fixture = TestBed.createComponent(PhaseBannerComponent);
@@ -63,5 +64,4 @@ describe('PhaseBannerComponent', () => {
     component.toggleLanguage('en');
     expect(component.currentLang).toBe('en');
   });
-
 });

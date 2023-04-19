@@ -25,7 +25,7 @@ describe('NocCaseRefComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
-        UtilsModule,
+        UtilsModule
       ],
       schemas: [
         NO_ERRORS_SCHEMA
@@ -35,7 +35,7 @@ describe('NocCaseRefComponent', () => {
         RpxTranslateMockPipe
       ],
       providers: [
-        provideMockStore(),
+        provideMockStore()
       ]
     }).compileComponents();
 

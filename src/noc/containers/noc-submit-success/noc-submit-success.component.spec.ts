@@ -7,14 +7,11 @@ import { NocSubmitSuccessComponent } from './noc-submit-success.component';
 
 @Pipe({ name: 'rpxTranslate' })
 class RpxTranslateMockPipe implements PipeTransform {
-  public transform(value: string): string {
     return value;
   }
 }
 
 describe('NocSubmitSuccessComponent', () => {
-  let store;
-  let component: NocSubmitSuccessComponent;
   let fixture: ComponentFixture<NocSubmitSuccessComponent>;
 
   beforeEach(waitForAsync(() => {
@@ -27,7 +24,7 @@ describe('NocSubmitSuccessComponent', () => {
         provideMockStore(),
       ]
     })
-    .compileComponents();
+      .compileComponents();
     store = TestBed.inject(Store);
     spyOn(store, 'pipe').and.callThrough();
   }));

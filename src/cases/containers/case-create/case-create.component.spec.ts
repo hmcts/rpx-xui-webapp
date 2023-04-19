@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   AbstractAppConfig,
@@ -28,10 +28,13 @@ import { SharedModule } from '../../../app/shared/shared.module';
 import { reducers } from '../../../app/store';
 import * as fromCases from '../../store/reducers';
 import { CasesCreateComponent } from './case-create.component';
+
 class MockSortService {
   public features = {};
-  public getFeatureToggle() { }
-  public getEditorConfiguration() { }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public getFeatureToggle() {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public getEditorConfiguration() {}
 }
 
 describe('CaseCreateComponent', () => {
@@ -47,10 +50,10 @@ describe('CaseCreateComponent', () => {
       imports: [
         RouterTestingModule,
         HttpClientTestingModule,
-        StoreModule.forRoot({...reducers, cases: combineReducers(fromCases.reducers)}),
+        StoreModule.forRoot({ ...reducers, cases: combineReducers(fromCases.reducers) }),
         EffectsModule.forRoot([]),
         SharedModule,
-        SearchFiltersModule,
+        SearchFiltersModule
       ],
       declarations: [CasesCreateComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -93,14 +96,14 @@ describe('CaseCreateComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CasesCreateComponent);
     component = fixture.componentInstance;
-    component.caseCreateInputs = {jurisdictionId: '', caseTypeId: '', eventId: ''};
+    component.caseCreateInputs = { jurisdictionId: '', caseTypeId: '', eventId: '' };
 
     fixture.detectChanges();
-
   });
 
   afterEach(() => {
-    spyOn(component, 'ngOnDestroy').and.callFake(() => { });
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    spyOn(component, 'ngOnDestroy').and.callFake(() => {});
     fixture.destroy();
   });
 
@@ -125,5 +128,4 @@ describe('CaseCreateComponent', () => {
     component.unSubscribe(null);
     expect(subscription.unsubscribe).not.toHaveBeenCalled();
   });
-
 });

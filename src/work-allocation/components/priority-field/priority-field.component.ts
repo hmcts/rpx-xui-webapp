@@ -7,21 +7,23 @@ import { TaskPriority } from '../../enums';
   templateUrl: './priority-field.component.html'
 })
 export class PriorityFieldComponent {
-
   /**
    * The current date being examined
    */
   @Input() public dueDate: Date;
 
   public get priority(): TaskPriority {
-    const today = new Date();
     if (this.dueDate) {
+      const today = new Date();
       const isToday = this.dueDate.toDateString() === today.toDateString();
+
       if (isToday) {
         return TaskPriority.MEDIUM;
-      } else {
-        return this.dueDate < today ? TaskPriority.HIGH : TaskPriority.LOW;
       }
+
+      return this.dueDate < today ? TaskPriority.HIGH : TaskPriority.LOW;
     }
+
+    return undefined;
   }
 }

@@ -8,19 +8,19 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
       {
         id: 'caseName',
         answerTitle: 'Case name',
-        answerSource: AnswerSource.CASE_NAME,
+        answerSource: AnswerSource.CASE_NAME
       },
       {
         id: 'caseNumber',
         answerTitle: 'Case number',
-        answerSource: AnswerSource.CASE_NUMBER,
+        answerSource: AnswerSource.CASE_NUMBER
       },
       {
         id: 'type',
         answerTitle: 'Type',
-        answerSource: AnswerSource.Type,
+        answerSource: AnswerSource.Type
       }
-    ],
+    ]
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing requirements</h2>',
@@ -29,9 +29,9 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'caseFlags',
         answerTitle: 'Reasonable adjustments',
         answerSource: AnswerSource.CASE_FLAGS,
-        changeLink: '/hearings/request/hearing-requirements#linkAmendFlags',
+        changeLink: '/hearings/request/hearing-requirements#linkAmendFlags'
       }
-    ],
+    ]
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional facilities</h2>',
@@ -40,15 +40,15 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'additionalSecurityRequired',
         answerTitle: 'Will additional security be required?',
         answerSource: AnswerSource.ADDITIONAL_SECURITY_REQUIRED,
-        changeLink: '/hearings/request/hearing-facilities#additionalSecurityYes',
+        changeLink: '/hearings/request/hearing-facilities#additionalSecurityYes'
       },
       {
         id: 'additionalFacilitiesRequired',
         answerTitle: 'Select any additional facilities required',
         answerSource: AnswerSource.ADDITIONAL_FACILITIES_REQUIRED,
-        changeLink: '/hearings/request/hearing-facilities#immigrationDetentionCentre',
+        changeLink: '/hearings/request/hearing-facilities#immigrationDetentionCentre'
       }
-    ],
+    ]
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Stage</h2>',
@@ -58,8 +58,8 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'What stage is this hearing at?',
         answerSource: AnswerSource.STAGE,
         changeLink: '/hearings/request/hearing-stage#initial'
-      },
-    ],
+      }
+    ]
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Participant attendance</h2>',
@@ -68,30 +68,30 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'paperHearing',
         answerTitle: 'Will this be a paper hearing?',
         answerSource: AnswerSource.IS_PAPER_HEARING,
-        changeLink: '/hearings/request/hearing-attendance#paperHearingYes',
+        changeLink: '/hearings/request/hearing-attendance#paperHearingYes'
       },
       {
         id: 'howParticipantsAttendant',
         answerTitle: 'What will be the methods of attendance for this hearing?',
         answerSource: AnswerSource.HOW_PARTICIPANTS_ATTEND,
         isHiddenSource: IsHiddenSource.PAPER_HEARING,
-        changeLink: '/hearings/request/hearing-attendance#hearingLevelChannelList',
+        changeLink: '/hearings/request/hearing-attendance#hearingLevelChannelList'
       },
       {
         id: 'howAttendant',
         answerTitle: 'How will each participant attend the hearing?',
         answerSource: AnswerSource.HOW_ATTENDANT,
         isHiddenSource: IsHiddenSource.PAPER_HEARING,
-        changeLink: '/hearings/request/hearing-attendance#partyChannel0',
+        changeLink: '/hearings/request/hearing-attendance#partyChannel0'
       },
       {
         id: 'attendantPersonAmount',
         answerTitle: 'How many people will attend the hearing in person?',
         answerSource: AnswerSource.ATTENDANT_PERSON_AMOUNT,
         isHiddenSource: IsHiddenSource.PAPER_HEARING,
-        changeLink: '/hearings/request/hearing-attendance#attendance-number',
-      },
-    ],
+        changeLink: '/hearings/request/hearing-attendance#attendance-number'
+      }
+    ]
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing venue</h2>',
@@ -101,8 +101,8 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'What are the hearing venue details?',
         answerSource: AnswerSource.VENUE,
         changeLink: '/hearings/request/hearing-venue#inputLocationSearch'
-      },
-    ],
+      }
+    ]
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Language requirements</h2>',
@@ -112,7 +112,7 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'Does this hearing need to be in Welsh?',
         answerSource: AnswerSource.NEED_WELSH,
         changeLink: '/hearings/request/hearing-welsh#welsh_hearing_yes'
-      },
+      }
     ],
     isHiddenSource: IsHiddenSource.WELSH_LOCATION
   },
@@ -123,7 +123,7 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'needJudge',
         answerTitle: 'Do you want a specific judge?',
         answerSource: AnswerSource.NEED_JUDGE,
-        changeLink: '/hearings/request/hearing-judge#specificJudgeName',
+        changeLink: '/hearings/request/hearing-judge#specificJudgeName'
       },
       {
         id: 'judgeName',
@@ -145,8 +145,8 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.JUDGE_EXCLUSION,
         changeLink: '/hearings/request/hearing-judge#inputSelectPersonExclude',
         isHiddenSource: IsHiddenSource.JUDGE_EXCLUSION
-      },
-    ],
+      }
+    ]
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Panel details</h2>',
@@ -177,7 +177,7 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.PANEL_ROLES,
         changeLink: '/hearings/request/hearing-panel#specificPanelSelection',
         isHiddenSource: IsHiddenSource.PANEL_ROLES
-      },
+      }
     ],
     isHiddenSource: IsHiddenSource.PANEL_DETAILS_EXCLUSION
   },
@@ -188,21 +188,21 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'hearingLength',
         answerTitle: 'Length of hearing',
         answerSource: AnswerSource.HEARING_LENGTH,
-        changeLink: '/hearings/request/hearing-timing#durationhours',
+        changeLink: '/hearings/request/hearing-timing#durationhours'
       },
       {
         id: 'hearingSpecificDate',
         answerTitle: 'Does the hearing need to take place on a specific date?',
         answerSource: AnswerSource.HEARING_SPECIFIC_DATE,
-        changeLink: '/hearings/request/hearing-timing#noSpecificDate',
+        changeLink: '/hearings/request/hearing-timing#noSpecificDate'
       },
       {
         id: 'hearingPriority',
         answerTitle: 'What is the priority of this hearing?',
         answerSource: AnswerSource.HEARING_PRIORITY,
-        changeLink: '/hearings/request/hearing-timing#urgent',
-      },
-    ],
+        changeLink: '/hearings/request/hearing-timing#urgent'
+      }
+    ]
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Linked hearings</h2>',
@@ -211,9 +211,9 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'linkedHearings',
         answerTitle: 'Will this hearing need to be linked to other hearings?',
         answerSource: AnswerSource.LINKED_HEARINGS,
-        changeLink: '/hearings/request/hearing-link#yes',
-      },
-    ],
+        changeLink: '/hearings/request/hearing-link#yes'
+      }
+    ]
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional instructions</h2>',
@@ -222,8 +222,8 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'additionalInstruction',
         answerTitle: 'Enter any additional instructions for the hearing',
         answerSource: AnswerSource.ADDITIONAL_INSTRUCTION,
-        changeLink: '/hearings/request/hearing-additional-instructions#additionalInstructionsTextarea',
-      },
-    ],
-  },
+        changeLink: '/hearings/request/hearing-additional-instructions#additionalInstructionsTextarea'
+      }
+    ]
+  }
 ];

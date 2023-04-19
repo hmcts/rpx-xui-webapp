@@ -11,22 +11,22 @@ describe('GetHelpComponent', () => {
   let component: GetHelpComponent;
   let fixture: ComponentFixture<GetHelpComponent>;
   let mockStore: any;
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [GetHelpComponent, ContactDetailsComponent, RpxTranslatePipe],
       providers: [
-      {
-        provide: Store,
-        useValue: mockStore
-      }
-    ]
+        {
+          provide: Store,
+          useValue: mockStore
+        }
+      ]
     })
       .compileComponents();
   }));
 
   describe('Testing using store of component', () => {
-
     beforeEach(() => {
       mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
       component = new GetHelpComponent(mockStore);
@@ -37,12 +37,11 @@ describe('GetHelpComponent', () => {
     });
 
     describe('ngOnInit()', () => {
-
       it('should initially set caseManager to be true, if there is a pui-case-manager user role.', () => {
         const userDetails = {
           sessionTimeout: {
             idleModalDisplayTime: 10,
-            totalIdleTime: 1,
+            totalIdleTime: 1
           },
           canShareCases: true,
           userInfo: {
@@ -63,7 +62,7 @@ describe('GetHelpComponent', () => {
         const userDetails = {
           sessionTimeout: {
             idleModalDisplayTime: 10,
-            totalIdleTime: 1,
+            totalIdleTime: 1
           },
           canShareCases: true,
           userInfo: {
@@ -82,23 +81,20 @@ describe('GetHelpComponent', () => {
     });
 
     describe('isCaseManager()', () => {
-
       it('should return true if there is a pui-case-manager user role as part of the userRoles string, so that a pui-case-manager is' +
         'able to view the MyHMCTS contact details.', () => {
-          const userRoles = 'j:["caseworker", "pui-case-manager"]';
-          expect(component.isCaseManager(userRoles)).toBeTruthy();
-        });
+        const userRoles = 'j:["caseworker", "pui-case-manager"]';
+        expect(component.isCaseManager(userRoles)).toBeTruthy();
+      });
 
       it('should return false if there is not a pui-case-manager user role.', () => {
         const userRoles = 'j:["caseworker"]';
         expect(component.isCaseManager(userRoles)).toBeFalsy();
       });
     });
-
   });
 
   describe('Testing HTML', () => {
-
     beforeEach(() => {
       fixture = TestBed.createComponent(GetHelpComponent);
       component = fixture.componentInstance;
@@ -108,7 +104,6 @@ describe('GetHelpComponent', () => {
     });
 
     describe('Verify HTML content on Get help page', () => {
-
       it('header title should be "Get help"', () => {
         const getHelpDe: DebugElement = fixture.debugElement;
         const headerElementDe: DebugElement = getHelpDe.query(By.css('h1'));

@@ -4,15 +4,14 @@ import { StoreModule } from '@ngrx/store';
 import { NocService } from './noc.service';
 
 describe('NocService', () => {
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        StoreModule.forRoot({}),
+        StoreModule.forRoot({})
       ],
       providers: [
-        NocService,
+        NocService
       ]
     });
   });
@@ -23,7 +22,7 @@ describe('NocService', () => {
 
   describe('getNoCQuestions', () => {
     it('should get getNoCQuestions', inject([HttpTestingController, NocService], (httpMock: HttpTestingController, service: NocService) => {
-      service.getNoCQuestions('123456').subscribe(response => {
+      service.getNoCQuestions('123456').subscribe((response) => {
         expect(response).toBeNull();
       });
 
@@ -31,12 +30,11 @@ describe('NocService', () => {
       expect(req.request.method).toEqual('GET');
       req.flush(null);
     }));
-
   });
 
   describe('validateNoCAnswers', () => {
     it('should validateNoCAnswers', inject([HttpTestingController, NocService], (httpMock: HttpTestingController, service: NocService) => {
-      service.validateNoCAnswers({ case_id: '123', answers: [] }).subscribe(response => {
+      service.validateNoCAnswers({ case_id: '123', answers: [] }).subscribe((response) => {
         expect(response).toBeNull();
       });
 
@@ -44,12 +42,11 @@ describe('NocService', () => {
       expect(req.request.method).toEqual('POST');
       req.flush(null);
     }));
-
   });
 
   describe('submitNoCEvent', () => {
     it('should submitNoCEvent', inject([HttpTestingController, NocService], (httpMock: HttpTestingController, service: NocService) => {
-      service.submitNoCEvent({ case_id: '123', answers: [] }).subscribe(response => {
+      service.submitNoCEvent({ case_id: '123', answers: [] }).subscribe((response) => {
         expect(response).toBeNull();
       });
 
@@ -57,6 +54,5 @@ describe('NocService', () => {
       expect(req.request.method).toEqual('POST');
       req.flush(null);
     }));
-
   });
 });

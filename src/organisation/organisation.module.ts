@@ -20,9 +20,9 @@ import { effects, reducers } from './store';
     })
   ],
   providers: [
-      fromServices.services,
-      LoggerService,
+    fromServices.services,
+    LoggerService
   ]
 })
 
-export class OrganisationModule { }
+export class OrganisationModule {}

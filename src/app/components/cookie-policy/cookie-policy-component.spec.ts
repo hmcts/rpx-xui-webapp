@@ -8,13 +8,8 @@ describe('CookiePolicyComponentTest', () => {
     language: 'cy'
   };
 
-  @Component({selector: 'exui-app-header', template: ''})
-  class HeaderStubComponent {
-  }
-
-  @Component({selector: 'exui-app-footer', template: ''})
-  class FooterStubComponent {
-  }
+  @Component({ selector: 'exui-app-footer', template: '' })
+  class FooterStubComponent {}
 
   let component: CookiePolicyComponent;
   let fixture: ComponentFixture<CookiePolicyComponent>;
@@ -38,9 +33,11 @@ describe('CookiePolicyComponentTest', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should be created by angular', () => {
     expect(fixture).not.toBeNull();
   });
+
   it('should include 4 security cookies', () => {
     expect(component.countCookies(component.SECURITY)).toBe(4);
   });
@@ -48,7 +45,8 @@ describe('CookiePolicyComponentTest', () => {
     const cookieName = component.cookiesByCat(component.IDENTIFY)[0].name;
     expect (cookieName).toBe('__id defnyddiwr__');
   });
-  it ('cookiesByCat should be consistent with countCookies', () => {
+
+  it('cookiesByCat should be consistent with countCookies', () => {
     const cookies = component.cookiesByCat(component.SECURITY);
     let cc = 0;
     for (const ccc of cookies) {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { EMPTY, forkJoin, Observable } from 'rxjs';
 import { catchError, mergeMap } from 'rxjs/operators';
 
@@ -19,7 +19,7 @@ export class TaskRoleAccessResolver implements Resolve<{ task: Task; role: any }
   public resolve(route: ActivatedRouteSnapshot): Observable< { task: Task; role: any[]; } > {
     const assignmentId = route.paramMap.get('assignmentId');
     const task$ = this.taskService.getTask(route.paramMap.get('taskId')).pipe(
-      catchError(error => {
+      catchError((error) => {
         handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
         return EMPTY;
       })
@@ -28,6 +28,6 @@ export class TaskRoleAccessResolver implements Resolve<{ task: Task; role: any }
       const thisTask: Task = task.task;
       return this.allocateRoleService.getCaseAccessRoles(thisTask.case_id, thisTask.jurisdiction, thisTask.case_type_id, assignmentId);
     }));
-    return forkJoin({task: task$, role: role$});
+    return forkJoin({ task: task$, role: role$ });
   }
 }

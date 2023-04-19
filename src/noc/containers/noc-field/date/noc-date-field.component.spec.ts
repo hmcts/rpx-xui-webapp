@@ -36,7 +36,7 @@ describe('NocDateFieldComponent', () => {
     display_context_parameter: '2',
     challenge_question_id: 'NoC',
     answer_field: '',
-    question_id: 'question2',
+    question_id: 'question2'
   };
   const ANSWER_VALUE = of('24/12/2019');
   let component: NocDateFieldComponent;

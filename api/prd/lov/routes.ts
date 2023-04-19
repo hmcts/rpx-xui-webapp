@@ -1,6 +1,6 @@
 import * as express from 'express';
 import authInterceptor from '../../lib/middleware/auth';
-import {getLovRefData} from './index';
+import { getLovRefData } from './index';
 
 export const router = express.Router({ mergeParams: true });
 

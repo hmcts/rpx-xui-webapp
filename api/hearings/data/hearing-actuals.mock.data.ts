@@ -8,7 +8,7 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
       hearingResult: null,
       hearingResultDate: '2019-01-01',
       hearingResultReasonType: '',
-      hearingType: 'final',
+      hearingType: 'final'
     },
     actualHearingDays: [
       {
@@ -17,9 +17,9 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
         hearingEndTime: '2021-03-13T10:00:00.000Z',
         pauseDateTimes: [],
         actualDayParties: [],
-        notRequired: false,
-      },
-    ],
+        notRequired: false
+      }
+    ]
   },
   hearingPlanned: {
     plannedHearingType: 'final',
@@ -32,31 +32,31 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
             individualDetails: {
               title: 'Ms',
               firstName: 'Jane',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company D',
+              name: 'Company D'
             },
             partyID: '3',
             partyRole: 'appellant',
-            partyChannelSubType: 'video-teams',
+            partyChannelSubType: 'video-teams'
           },
           {
             individualDetails: {
               title: '',
               firstName: 'DWP',
-              lastName: '',
+              lastName: ''
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company C',
+              name: 'Company C'
             },
             partyID: '5',
             partyRole: 'claimant',
-            partyChannelSubType: 'video-teams',
-          },
-        ],
+            partyChannelSubType: 'video-teams'
+          }
+        ]
       },
       {
         plannedStartTime: '2021-03-12T09:00:00.000Z',
@@ -66,31 +66,31 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             organisationDetails: {
               cftOrganisationID: '12345',
-              name: 'Company E',
+              name: 'Company E'
             },
             partyID: '2',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Email',
+            partyChannelSubType: 'Email'
           },
           {
             individualDetails: {
               title: 'Mr',
               firstName: 'Tom',
-              lastName: 'Jones',
+              lastName: 'Jones'
             },
             organisationDetails: {
               cftOrganisationID: '12345',
-              name: 'Company C',
+              name: 'Company C'
             },
             partyID: '3',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Email',
-          },
-        ],
+            partyChannelSubType: 'Email'
+          }
+        ]
       },
       {
         plannedStartTime: '2021-03-12T09:00:00.000Z',
@@ -100,31 +100,31 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
             individualDetails: {
               title: 'Mr',
               firstName: 'John',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             organisationDetails: {
               cftOrganisationID: '67890',
-              name: 'Company B',
+              name: 'Company B'
             },
             partyID: '1',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Fax',
+            partyChannelSubType: 'Fax'
           },
           {
             individualDetails: {
               title: 'Mr',
               firstName: 'Jane',
-              lastName: 'Jones',
+              lastName: 'Jones'
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company E',
+              name: 'Company E'
             },
             partyID: '3',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Other',
-          },
-        ],
+            partyChannelSubType: 'Other'
+          }
+        ]
       },
       {
         plannedStartTime: '2021-03-12T09:00:00.000Z',
@@ -134,33 +134,33 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
             individualDetails: {
               title: 'Miss',
               firstName: 'Tom',
-              lastName: 'Jones',
+              lastName: 'Jones'
             },
             organisationDetails: {
               cftOrganisationID: '67890',
-              name: 'Company D',
+              name: 'Company D'
             },
             partyID: '3',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Fax',
+            partyChannelSubType: 'Fax'
           },
           {
             individualDetails: {
               title: 'Mrs',
               firstName: 'Jane',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company C',
+              name: 'Company C'
             },
             partyID: '4',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Letter',
-          },
-        ],
-      },
-    ],
+            partyChannelSubType: 'Letter'
+          }
+        ]
+      }
+    ]
   },
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,
   caseDetails: {
@@ -177,24 +177,24 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
     caseCategories: [
       {
         categoryType: CategoryType.CaseType,
-        categoryValue: 'BBA3-002',
+        categoryValue: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002CC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002GC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002RC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
-    caseSLAStartDate: '2021-11-23T09:00:00.000Z',
-  },
+    caseSLAStartDate: '2021-11-23T09:00:00.000Z'
+  }
 };
 
 export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
@@ -204,7 +204,7 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
       hearingResult: HearingResult.COMPLETED,
       hearingResultDate: '2019-01-01',
       hearingResultReasonType: 'Result reason',
-      hearingType: 'final',
+      hearingType: 'final'
     },
     actualHearingDays: [
       {
@@ -214,7 +214,7 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
         notRequired: false,
         pauseDateTimes: [{
           pauseStartTime: '2021-03-12T10:10:00.000Z',
-          pauseEndTime: '2021-03-12T11:15:00.000Z',
+          pauseEndTime: '2021-03-12T11:15:00.000Z'
         }],
         actualDayParties: [
           {
@@ -222,40 +222,40 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
             didNotAttendFlag: false,
             individualDetails: {
               firstName: 'Jane',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             actualOrganisationName: 'Company A',
             partyChannelSubType: 'video-teams',
             partyRole: 'Interpreter',
-            representedParty: null,
+            representedParty: null
           },
           {
             actualPartyId: '5',
             didNotAttendFlag: false,
             individualDetails: {
               firstName: 'DWP',
-              lastName: '',
+              lastName: ''
             },
             actualOrganisationName: 'Company A',
             partyChannelSubType: 'telephone-btMeetMe',
             partyRole: 'Interpreter',
-            representedParty: null,
+            representedParty: null
           },
           {
             actualPartyId: '10',
             didNotAttendFlag: false,
             individualDetails: {
               firstName: 'Tom',
-              lastName: 'Cruise',
+              lastName: 'Cruise'
             },
             actualOrganisationName: 'Company A',
             partyChannelSubType: 'telephone-CVP',
             partyRole: 'Interpreter',
-            representedParty: '3',
-          },
-        ],
-      },
-    ],
+            representedParty: '3'
+          }
+        ]
+      }
+    ]
   },
   hearingPlanned: {
     plannedHearingType: 'final',
@@ -268,31 +268,31 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
             individualDetails: {
               title: 'Ms',
               firstName: 'Jane',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company D',
+              name: 'Company D'
             },
             partyID: '3',
             partyRole: 'appellant',
-            partyChannelSubType: 'telephone-CVP',
+            partyChannelSubType: 'telephone-CVP'
           },
           {
             individualDetails: {
               title: '',
               firstName: 'DWP',
-              lastName: '',
+              lastName: ''
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company C',
+              name: 'Company C'
             },
             partyID: '5',
             partyRole: 'claimant',
-            partyChannelSubType: 'video-teams',
-          },
-        ],
+            partyChannelSubType: 'video-teams'
+          }
+        ]
       },
       {
         plannedStartTime: '2021-03-12T09:00:00.000Z',
@@ -302,31 +302,31 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             organisationDetails: {
               cftOrganisationID: '12345',
-              name: 'Company E',
+              name: 'Company E'
             },
             partyID: '2',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Email',
+            partyChannelSubType: 'Email'
           },
           {
             individualDetails: {
               title: 'Mr',
               firstName: 'Tom',
-              lastName: 'Jones',
+              lastName: 'Jones'
             },
             organisationDetails: {
               cftOrganisationID: '12345',
-              name: 'Company C',
+              name: 'Company C'
             },
             partyID: '3',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Email',
-          },
-        ],
+            partyChannelSubType: 'Email'
+          }
+        ]
       },
       {
         plannedStartTime: '2021-03-12T09:00:00.000Z',
@@ -336,31 +336,31 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
             individualDetails: {
               title: 'Mr',
               firstName: 'John',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             organisationDetails: {
               cftOrganisationID: '67890',
-              name: 'Company B',
+              name: 'Company B'
             },
             partyID: '1',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Fax',
+            partyChannelSubType: 'Fax'
           },
           {
             individualDetails: {
               title: 'Mr',
               firstName: 'Jane',
-              lastName: 'Jones',
+              lastName: 'Jones'
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company E',
+              name: 'Company E'
             },
             partyID: '3',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Other',
-          },
-        ],
+            partyChannelSubType: 'Other'
+          }
+        ]
       },
       {
         plannedStartTime: '2021-03-12T09:00:00.000Z',
@@ -370,33 +370,33 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
             individualDetails: {
               title: 'Miss',
               firstName: 'Tom',
-              lastName: 'Jones',
+              lastName: 'Jones'
             },
             organisationDetails: {
               cftOrganisationID: '67890',
-              name: 'Company D',
+              name: 'Company D'
             },
             partyID: '3',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Fax',
+            partyChannelSubType: 'Fax'
           },
           {
             individualDetails: {
               title: 'Mrs',
               firstName: 'Jane',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company C',
+              name: 'Company C'
             },
             partyID: '4',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Letter',
-          },
-        ],
-      },
-    ],
+            partyChannelSubType: 'Letter'
+          }
+        ]
+      }
+    ]
   },
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,
   caseDetails: {
@@ -413,24 +413,24 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
     caseCategories: [
       {
         categoryType: CategoryType.CaseType,
-        categoryValue: 'BBA3-002',
+        categoryValue: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002CC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002GC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002RC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
-    caseSLAStartDate: '2021-11-23T09:00:00.000Z',
-  },
+    caseSLAStartDate: '2021-11-23T09:00:00.000Z'
+  }
 };
 
 export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
@@ -440,7 +440,7 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
       hearingResult: HearingResult.ADJOURNED,
       hearingResultDate: '2019-01-01',
       hearingResultReasonType: 'Result reason',
-      hearingType: 'final',
+      hearingType: 'final'
     },
     actualHearingDays: [
       {
@@ -450,7 +450,7 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
         notRequired: false,
         pauseDateTimes: [{
           pauseStartTime: '2021-03-12T10:10:00.000Z',
-          pauseEndTime: '2021-03-12T11:15:00.000Z',
+          pauseEndTime: '2021-03-12T11:15:00.000Z'
         }],
         actualDayParties: [
           {
@@ -458,40 +458,40 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
             didNotAttendFlag: false,
             individualDetails: {
               firstName: 'Jane',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             actualOrganisationName: 'Company A',
             partyChannelSubType: 'video-teams',
             partyRole: 'Interpreter',
-            representedParty: null,
+            representedParty: null
           },
           {
             actualPartyId: '5',
             didNotAttendFlag: false,
             individualDetails: {
               firstName: 'DWP',
-              lastName: '',
+              lastName: ''
             },
             actualOrganisationName: 'Company A',
             partyChannelSubType: 'telephone-btMeetMe',
             partyRole: 'Interpreter',
-            representedParty: null,
+            representedParty: null
           },
           {
             actualPartyId: '10',
             didNotAttendFlag: false,
             individualDetails: {
               firstName: 'Tom',
-              lastName: 'Cruise',
+              lastName: 'Cruise'
             },
             actualOrganisationName: 'Company A',
             partyChannelSubType: 'telephone-CVP',
             partyRole: 'Interpreter',
-            representedParty: '3',
-          },
-        ],
-      },
-    ],
+            representedParty: '3'
+          }
+        ]
+      }
+    ]
   },
   hearingPlanned: {
     plannedHearingType: 'final',
@@ -504,31 +504,31 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
             individualDetails: {
               title: 'Ms',
               firstName: 'Jane',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company D',
+              name: 'Company D'
             },
             partyID: '3',
             partyRole: 'appellant',
-            partyChannelSubType: 'telephone-CVP',
+            partyChannelSubType: 'telephone-CVP'
           },
           {
             individualDetails: {
               title: '',
               firstName: 'DWP',
-              lastName: '',
+              lastName: ''
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company C',
+              name: 'Company C'
             },
             partyID: '5',
             partyRole: 'claimant',
-            partyChannelSubType: 'video-teams',
-          },
-        ],
+            partyChannelSubType: 'video-teams'
+          }
+        ]
       },
       {
         plannedStartTime: '2021-03-12T09:00:00.000Z',
@@ -538,31 +538,31 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             organisationDetails: {
               cftOrganisationID: '12345',
-              name: 'Company E',
+              name: 'Company E'
             },
             partyID: '2',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Email',
+            partyChannelSubType: 'Email'
           },
           {
             individualDetails: {
               title: 'Mr',
               firstName: 'Tom',
-              lastName: 'Jones',
+              lastName: 'Jones'
             },
             organisationDetails: {
               cftOrganisationID: '12345',
-              name: 'Company C',
+              name: 'Company C'
             },
             partyID: '3',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Email',
-          },
-        ],
+            partyChannelSubType: 'Email'
+          }
+        ]
       },
       {
         plannedStartTime: '2021-03-12T09:00:00.000Z',
@@ -572,31 +572,31 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
             individualDetails: {
               title: 'Mr',
               firstName: 'John',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             organisationDetails: {
               cftOrganisationID: '67890',
-              name: 'Company B',
+              name: 'Company B'
             },
             partyID: '1',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Fax',
+            partyChannelSubType: 'Fax'
           },
           {
             individualDetails: {
               title: 'Mr',
               firstName: 'Jane',
-              lastName: 'Jones',
+              lastName: 'Jones'
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company E',
+              name: 'Company E'
             },
             partyID: '3',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Other',
-          },
-        ],
+            partyChannelSubType: 'Other'
+          }
+        ]
       },
       {
         plannedStartTime: '2021-03-12T09:00:00.000Z',
@@ -606,33 +606,33 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
             individualDetails: {
               title: 'Miss',
               firstName: 'Tom',
-              lastName: 'Jones',
+              lastName: 'Jones'
             },
             organisationDetails: {
               cftOrganisationID: '67890',
-              name: 'Company D',
+              name: 'Company D'
             },
             partyID: '3',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Fax',
+            partyChannelSubType: 'Fax'
           },
           {
             individualDetails: {
               title: 'Mrs',
               firstName: 'Jane',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company C',
+              name: 'Company C'
             },
             partyID: '4',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Letter',
-          },
-        ],
-      },
-    ],
+            partyChannelSubType: 'Letter'
+          }
+        ]
+      }
+    ]
   },
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,
   caseDetails: {
@@ -649,24 +649,24 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
     caseCategories: [
       {
         categoryType: CategoryType.CaseType,
-        categoryValue: 'BBA3-002',
+        categoryValue: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002CC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002GC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002RC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
-    caseSLAStartDate: '2021-11-23T09:00:00.000Z',
-  },
+    caseSLAStartDate: '2021-11-23T09:00:00.000Z'
+  }
 };
 
 export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
@@ -676,7 +676,7 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
       hearingResult: HearingResult.CANCELLED,
       hearingResultDate: '2019-01-01',
       hearingResultReasonType: 'Result reason',
-      hearingType: 'final',
+      hearingType: 'final'
     },
     actualHearingDays: [
       {
@@ -686,7 +686,7 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
         notRequired: false,
         pauseDateTimes: [{
           pauseStartTime: '2021-03-12T10:10:00.000+0000',
-          pauseEndTime: '2021-03-12T11:15:00.000+0000',
+          pauseEndTime: '2021-03-12T11:15:00.000+0000'
         }],
         actualDayParties: [
           {
@@ -694,40 +694,40 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
             didNotAttendFlag: false,
             individualDetails: {
               firstName: 'Jane',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             actualOrganisationName: 'Company A',
             partyChannelSubType: 'video-teams',
             partyRole: 'Interpreter',
-            representedParty: null,
+            representedParty: null
           },
           {
             actualPartyId: '5',
             didNotAttendFlag: false,
             individualDetails: {
               firstName: 'DWP',
-              lastName: '',
+              lastName: ''
             },
             actualOrganisationName: 'Company A',
             partyChannelSubType: 'telephone-btMeetMe',
             partyRole: 'Interpreter',
-            representedParty: null,
+            representedParty: null
           },
           {
             actualPartyId: '10',
             didNotAttendFlag: false,
             individualDetails: {
               firstName: 'Tom',
-              lastName: 'Cruise',
+              lastName: 'Cruise'
             },
             actualOrganisationName: 'Company A',
             partyChannelSubType: 'telephone-CVP',
             partyRole: 'Interpreter',
-            representedParty: '3',
-          },
-        ],
-      },
-    ],
+            representedParty: '3'
+          }
+        ]
+      }
+    ]
   },
   hearingPlanned: {
     plannedHearingType: 'final',
@@ -740,31 +740,31 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
             individualDetails: {
               title: 'Ms',
               firstName: 'Jane',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company D',
+              name: 'Company D'
             },
             partyID: '3',
             partyRole: 'appellant',
-            partyChannelSubType: 'telephone-CVP',
+            partyChannelSubType: 'telephone-CVP'
           },
           {
             individualDetails: {
               title: '',
               firstName: 'DWP',
-              lastName: '',
+              lastName: ''
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company C',
+              name: 'Company C'
             },
             partyID: '5',
             partyRole: 'claimant',
-            partyChannelSubType: 'video-teams',
-          },
-        ],
+            partyChannelSubType: 'video-teams'
+          }
+        ]
       },
       {
         plannedStartTime: '2021-03-12T09:00:00.000+0000',
@@ -774,31 +774,31 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             organisationDetails: {
               cftOrganisationID: '12345',
-              name: 'Company E',
+              name: 'Company E'
             },
             partyID: '2',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Email',
+            partyChannelSubType: 'Email'
           },
           {
             individualDetails: {
               title: 'Mr',
               firstName: 'Tom',
-              lastName: 'Jones',
+              lastName: 'Jones'
             },
             organisationDetails: {
               cftOrganisationID: '12345',
-              name: 'Company C',
+              name: 'Company C'
             },
             partyID: '3',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Email',
-          },
-        ],
+            partyChannelSubType: 'Email'
+          }
+        ]
       },
       {
         plannedStartTime: '2021-03-12T09:00:00.000+0000',
@@ -808,31 +808,31 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
             individualDetails: {
               title: 'Mr',
               firstName: 'John',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             organisationDetails: {
               cftOrganisationID: '67890',
-              name: 'Company B',
+              name: 'Company B'
             },
             partyID: '1',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Fax',
+            partyChannelSubType: 'Fax'
           },
           {
             individualDetails: {
               title: 'Mr',
               firstName: 'Jane',
-              lastName: 'Jones',
+              lastName: 'Jones'
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company E',
+              name: 'Company E'
             },
             partyID: '3',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Other',
-          },
-        ],
+            partyChannelSubType: 'Other'
+          }
+        ]
       },
       {
         plannedStartTime: '2021-03-12T09:00:00.000+0000',
@@ -842,33 +842,33 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
             individualDetails: {
               title: 'Miss',
               firstName: 'Tom',
-              lastName: 'Jones',
+              lastName: 'Jones'
             },
             organisationDetails: {
               cftOrganisationID: '67890',
-              name: 'Company D',
+              name: 'Company D'
             },
             partyID: '3',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Fax',
+            partyChannelSubType: 'Fax'
           },
           {
             individualDetails: {
               title: 'Mrs',
               firstName: 'Jane',
-              lastName: 'Smith',
+              lastName: 'Smith'
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company C',
+              name: 'Company C'
             },
             partyID: '4',
             partyRole: 'Interpreter',
-            partyChannelSubType: 'Letter',
-          },
-        ],
-      },
-    ],
+            partyChannelSubType: 'Letter'
+          }
+        ]
+      }
+    ]
   },
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,
   caseDetails: {
@@ -885,22 +885,22 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
     caseCategories: [
       {
         categoryType: CategoryType.CaseType,
-        categoryValue: 'BBA3-002',
+        categoryValue: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002CC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002GC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002RC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
-    caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
-  },
+    caseSLAStartDate: '2021-11-23T09:00:00.000+0000'
+  }
 };

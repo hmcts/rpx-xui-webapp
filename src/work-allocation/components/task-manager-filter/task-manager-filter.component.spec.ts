@@ -13,11 +13,10 @@ import * as fromStore from '../../../app/store';
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
 import { ALL_LOCATIONS } from '../constants/locations';
 
-
 /* tslint:disable:component-selector */
 @Component({
   selector: 'xuilib-generic-filter',
-  template: '<span></span>',
+  template: '<span></span>'
 })
 class MockGenericFilterComponent {
   @Input() public config;
@@ -68,7 +67,7 @@ describe('TaskManagerFilterComponent', () => {
       { name: 'locations', value: ['231596', '698118'] },
       {
         name: 'types-of-work',
-        value: ['types_of_work_all', ...typesOfWork.map(t => t.key)]
+        value: ['types_of_work_all', ...typesOfWork.map((t) => t.key)]
       }]
   };
   const mockFilterService: any = {
@@ -81,6 +80,7 @@ describe('TaskManagerFilterComponent', () => {
       unsubscribe: () => null
     }
   };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -98,7 +98,7 @@ describe('TaskManagerFilterComponent', () => {
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         {
           provide: FilterService, useValue: mockFilterService
-        },
+        }
       ]
     }).compileComponents();
     store = TestBed.inject(Store);
@@ -124,5 +124,4 @@ describe('TaskManagerFilterComponent', () => {
   afterAll(() => {
     component.ngOnDestroy();
   });
-
 });

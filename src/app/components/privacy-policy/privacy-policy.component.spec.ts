@@ -22,13 +22,13 @@ describe('PrivacyPolicyComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ PrivacyPolicyComponent ],
+      declarations: [PrivacyPolicyComponent],
       providers: [
         { provide: ActivatedRoute, useClass: MockActivatedRoute },
         { provide: RpxTranslationService, useValue: translationServiceMock }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

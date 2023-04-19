@@ -11,9 +11,10 @@ import { State } from '../store';
 import { HearingPanelAmendedConverter } from './hearing-panel.amended.converter';
 
 describe('HearingPanelAmendedConverter', () => {
-
   let converter: HearingPanelAmendedConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: any;
   const JUDICAIL_USER_DETAILS = [{
     memberID: 'P0000001',
@@ -30,10 +31,10 @@ describe('HearingPanelAmendedConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingStageOptions: hearingStageRefData,
-              },
-            },
-          },
+                hearingStageOptions: hearingStageRefData
+              }
+            }
+          }
         }
       ]
     });

@@ -1,4 +1,4 @@
-import {HttpError} from '../../models/httpError.model';
+import { HttpError } from '../../models/httpError.model';
 import {
   LinkedHearingGroupMainModel,
   ServiceLinkedCasesModel,

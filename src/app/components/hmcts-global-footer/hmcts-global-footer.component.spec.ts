@@ -13,12 +13,18 @@ class RpxTranslateMockPipe implements PipeTransform {
   }
 }
 describe('HmctsGlobalFooterComponent', () => {
-    @Component({
-        selector: `exui-app-host-dummy-component`,
-        template: `<exui-app-hmcts-global-footer
-                    [reference]="iconFallbackText"
-                    [title]="type"
-                    [items]="text"></exui-app-hmcts-global-footer>`
+  let component: HmctsGlobalFooterComponent;
+  let fixture: ComponentFixture<HmctsGlobalFooterComponent>;
+
+  const helpData: Helper = AppConstants.FOOTER_DATA;
+  const navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
+
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [HmctsGlobalFooterComponent],
+      imports: [
+        RouterTestingModule
+      ]
     })
     class TestDummyHostComponent {
         @Input() public help: Helper;
@@ -55,20 +61,21 @@ describe('HmctsGlobalFooterComponent', () => {
         ]
       })
       .compileComponents();
-    }));
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(HmctsGlobalFooterComponent);
-        component = fixture.componentInstance;
-        component.help = helpData;
-        component.navigation = navigationData;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(HmctsGlobalFooterComponent);
+    component = fixture.componentInstance;
+    component.help = helpData;
+    component.navigation = navigationData;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-    it('should be created by angular', () => {
-        expect(fixture).not.toBeNull();
-    });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should be created by angular', () => {
+    expect(fixture).not.toBeNull();
+  });
 });

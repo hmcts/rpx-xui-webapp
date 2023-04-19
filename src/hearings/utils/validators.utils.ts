@@ -5,7 +5,6 @@ import { HearingDateEnum } from '../models/hearings.enum';
 
 @Injectable({ providedIn: 'root' })
 export class ValidatorsUtils {
-
   private static validPauseTime(formGroup: FormGroup, pauseTime, startTimes: any, message: string, errorName): any {
     const startTimeControl = formGroup.controls[startTimes.startTime];
     const finishTimeControl = formGroup.controls[startTimes.endTime];
@@ -56,7 +55,7 @@ export class ValidatorsUtils {
 
   public hearingDateValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-      const isValidDate = Object.values(control.value).every(value => value !== null);
+      const isValidDate = Object.values(control.value).every((value) => value !== null);
       const selectedDate = moment(Object.values(control.value).join('-'), HearingDateEnum.DefaultFormat);
       return isValidDate && selectedDate.isValid() &&
         (!selectedDate.isBefore() || selectedDate.isSame(new Date(), 'd')) &&
@@ -89,8 +88,8 @@ export class ValidatorsUtils {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const firstDateRangeList = Object.values(control.value[Object.keys(control.value)[0]]);
       const secondDateRangeList = Object.values(control.value[Object.keys(control.value)[1]]);
-      const isValidFirstDate = firstDateRangeList.every(value => value !== null);
-      const isValidSecondDate = secondDateRangeList.every(value => value !== null);
+      const isValidFirstDate = firstDateRangeList.every((value) => value !== null);
+      const isValidSecondDate = secondDateRangeList.every((value) => value !== null);
       const firstDateNullLength = firstDateRangeList.filter((value) => value === null).length;
       const secondDateNullLength = secondDateRangeList.filter((value) => value === null).length;
       const firstDate = moment(firstDateRangeList.join('-'), HearingDateEnum.DefaultFormat);
@@ -108,7 +107,7 @@ export class ValidatorsUtils {
   }
 
   public errorValidator(message: string): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
+    return (): { [key: string]: any } | null => {
       return { error: message };
     };
   }
@@ -185,9 +184,9 @@ export class ValidatorsUtils {
           }
         });
         return isHearingSelected ? null : { error: true };
-      } else {
-        return null;
       }
+
+      return null;
     };
   }
 }

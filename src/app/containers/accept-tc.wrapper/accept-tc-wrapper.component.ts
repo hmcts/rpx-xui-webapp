@@ -15,8 +15,7 @@ import * as fromStore from '../../store';
 export class AcceptTcWrapperComponent implements OnInit, OnDestroy {
   public subscription: Subscription;
   constructor(private readonly store: Store<fromApp.State>,
-              private readonly actions$: Actions) {
-  }
+              private readonly actions$: Actions) {}
 
   public ngOnInit(): void {
     this.subscription = this.getObservable(this.actions$, fromApp.ACCEPT_T_AND_C_SUCCESS).subscribe(() => {
@@ -28,8 +27,8 @@ export class AcceptTcWrapperComponent implements OnInit, OnDestroy {
     return actions$.pipe(ofType(action));
   }
 
-  public onAcceptTandC() {
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public onAcceptTandC() {}
 
   public ngOnDestroy() {
     this.unsubscribe(this.subscription);
@@ -40,6 +39,7 @@ export class AcceptTcWrapperComponent implements OnInit, OnDestroy {
       subscription.unsubscribe();
     }
   }
+
   public dispatchAction(store: Store<fromApp.State>, action: Action) {
     store.dispatch(action);
   }

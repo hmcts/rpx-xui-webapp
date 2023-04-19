@@ -9,6 +9,7 @@ import { LinkedHearingsAnswerConverter } from './linked-hearings.answer.converte
 
 describe('LinkedHearingsAnswerConverter', () => {
   let converter: AnswerConverter;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
 

@@ -5,7 +5,6 @@ import { State } from '../store/reducers';
 import { IsPaperHearingAnswerConverter } from './is-paper-hearing.answer.converter';
 
 describe('IsPaperHearingAnswerConverter', () => {
-
   let isPaperHearingAnswerConverter: IsPaperHearingAnswerConverter;
 
   beforeEach(() => {
@@ -19,5 +18,4 @@ describe('IsPaperHearingAnswerConverter', () => {
     const expected = cold('(b|)', { b: paperHearing });
     expect(result$).toBeObservable(expected);
   });
-
 });

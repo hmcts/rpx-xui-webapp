@@ -17,7 +17,6 @@ import { handleTasksFatalErrors } from '../../utils';
   templateUrl: './task-assignment-confirm.component.html'
 })
 export class TaskAssignmentConfirmComponent implements OnInit {
-
   public verb: TaskActionType;
   public taskId: string;
   public rootPath: string;
@@ -35,11 +34,11 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService,
     private readonly sessionStorageService: SessionStorageService) {
-      const navigation = this.router.getCurrentNavigation();
-      if (navigation && navigation.extras && navigation.extras.state) {
-          this.selectedPerson = navigation.extras.state.selectedPerson;
-          this.roleCategory = navigation.extras.state.roleCategory;
-      }
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation && navigation.extras && navigation.extras.state) {
+      this.selectedPerson = navigation.extras.state.selectedPerson;
+      this.roleCategory = navigation.extras.state.roleCategory;
+    }
   }
 
   private get returnUrl(): string {
@@ -63,7 +62,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
       }
     }
     this.verb = this.route.snapshot.data.verb as TaskActionType;
-    this.taskId = this.route.snapshot.params['taskId'];
+    this.taskId = this.route.snapshot.params.taskId;
     if (this.router && this.router.url) {
       this.rootPath = this.router.url.split('/')[1];
     }
@@ -128,7 +127,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   private reportUnavailableErrorAndReturn(): void {
     this.returnWithMessage({
       type: InfoMessageType.WARNING,
-      message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
+      message: InfoMessage.TASK_NO_LONGER_AVAILABLE
     }, { badRequest: true });
   }
 

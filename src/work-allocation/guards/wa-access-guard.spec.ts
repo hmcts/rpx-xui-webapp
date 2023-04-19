@@ -4,34 +4,35 @@ import { of } from 'rxjs';
 import { WorkAllocationAccessGuard } from './wa-access-guard';
 
 describe('WorkAllocationAccessGuard', () => {
-    let featureToggleMock: jasmine.SpyObj<FeatureToggleService>;
-    let guard: WorkAllocationAccessGuard;
-    let routerMock: jasmine.SpyObj<Router>;
-    beforeEach(async () => {
-        featureToggleMock = jasmine.createSpyObj<FeatureToggleService>('FeatureToggleService', ['isEnabled', 'getValueOnce']);
-        routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
-        guard = new WorkAllocationAccessGuard(featureToggleMock, routerMock);
-    });
+  let featureToggleMock: jasmine.SpyObj<FeatureToggleService>;
+  let guard: WorkAllocationAccessGuard;
+  let routerMock: jasmine.SpyObj<Router>;
 
-    it('can activate with feature toggle on', () => {
-        featureToggleMock.getValueOnce.and.returnValue(of(true));
-        const canActivate = guard.canActivate();
-        canActivate.subscribe(activate => expect(activate).toBeTruthy());
-    });
+  beforeEach(async () => {
+    featureToggleMock = jasmine.createSpyObj<FeatureToggleService>('FeatureToggleService', ['isEnabled', 'getValueOnce']);
+    routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
+    guard = new WorkAllocationAccessGuard(featureToggleMock, routerMock);
+  });
 
-    it('cannot activate with feature toggle off', () => {
-        featureToggleMock.getValueOnce.and.returnValue(of(false));
-        const canActivate = guard.canActivate();
-        canActivate.subscribe(activate => expect(activate).toBeFalsy());
-    });
+  it('can activate with feature toggle on', () => {
+    featureToggleMock.getValueOnce.and.returnValue(of(true));
+    const canActivate = guard.canActivate();
+    canActivate.subscribe((activate) => expect(activate).toBeTruthy());
+  });
 
-    it('navigateUrl false', () => {
-        WorkAllocationAccessGuard.navigateUrl(true, routerMock, 'someURL');
-        expect(routerMock.navigate).not.toHaveBeenCalled();
-    });
+  it('cannot activate with feature toggle off', () => {
+    featureToggleMock.getValueOnce.and.returnValue(of(false));
+    const canActivate = guard.canActivate();
+    canActivate.subscribe((activate) => expect(activate).toBeFalsy());
+  });
 
-    it('navigateUrl true', () => {
-        WorkAllocationAccessGuard.navigateUrl(false, routerMock, 'someURL');
-        expect(routerMock.navigate).toHaveBeenCalledWith(['someURL']);
-    });
+  it('navigateUrl false', () => {
+    WorkAllocationAccessGuard.navigateUrl(true, routerMock, 'someURL');
+    expect(routerMock.navigate).not.toHaveBeenCalled();
+  });
+
+  it('navigateUrl true', () => {
+    WorkAllocationAccessGuard.navigateUrl(false, routerMock, 'someURL');
+    expect(routerMock.navigate).toHaveBeenCalledWith(['someURL']);
+  });
 });

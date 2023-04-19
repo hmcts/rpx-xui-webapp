@@ -3,7 +3,6 @@
  */
 const DEFAULT_TIMEOUT = 5000;
 class RadioField{
-
   /**
    * This css should be an <input> tag
    * @param css
@@ -61,8 +60,6 @@ class RadioField{
   async isEnabled(){
     return await $(this.css).isEnabled();
   }
-
-
 }
 
 module.exports = RadioField;

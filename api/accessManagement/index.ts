@@ -21,23 +21,23 @@ export async function getBookings(req, resp: Response, next: NextFunction) {
   const fullPath = `${basePath}/am/bookings/query`;
   const headers = setHeaders(req);
   /* tslint:disable:no-string-literal */
-  delete headers['accept'];
+  delete headers.accept;
 
   try {
-    const bookings = await http.post(fullPath, {"queryRequest" : {"userIds" : [req.body.userId]}}, { headers });
+    const bookings = await http.post(fullPath, { 'queryRequest': { 'userIds': [req.body.userId] } }, { headers });
     const fullLocations = await getFullLocationsForServices(req);
-    const bookingAndLocationName = bookings.data.bookings.map(booking => {
-      const location = fullLocations.filter(thisLocation =>
+    const bookingAndLocationName = bookings.data.bookings.map((booking) => {
+      const location = fullLocations.filter((thisLocation) =>
         booking.locationId === thisLocation.epimms_id);
       const locationName = location && location.length !== 0 ? location[0].site_name : null;
       return {
         ...booking,
-        locationName,
+        locationName
       };
     });
     return resp.status(bookings.status).send(bookingAndLocationName);
   } catch (error) {
-      next(error);
+    next(error);
   }
 }
 
@@ -46,13 +46,13 @@ export async function createBooking(req, resp: Response, next: NextFunction): Pr
   const fullPath = `${basePath}/am/bookings`;
   const headers = setHeaders(req);
   /* tslint:disable:no-string-literal */
-  delete headers['accept'];
+  delete headers.accept;
 
   try {
-    const response = await http.post(fullPath, {"bookingRequest": req.body }, { headers });
+    const response = await http.post(fullPath, { 'bookingRequest': req.body }, { headers });
     return resp.status(response.status).send(response.data);
   } catch (error) {
-      next(error);
+    next(error);
   }
 }
 
@@ -61,7 +61,7 @@ export async function refreshRoleAssignments(req, res: Response, next: NextFunct
   const fullPath = `${basePath}/am/role-mapping/judicial/refresh`;
 
   try {
-    const response = await handlePost(fullPath, {'refreshRequest' : {'userIds' : [req.body.userId]}}, req, next);
+    const response = await handlePost(fullPath, { 'refreshRequest': { 'userIds': [req.body.userId] } }, req, next);
     return res.status(response.status).send(response.data);
   } catch (error) {
     next(error);
@@ -76,7 +76,7 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
     // 201
     if (!firstRoleResponse || firstRoleResponse.status !== 201) {
       return firstRoleResponse && firstRoleResponse.status
-       ? res.status(firstRoleResponse.status) : res.status(400);
+        ? res.status(firstRoleResponse.status) : res.status(400);
     }
     const deletionResponse = await deleteRoleByAssignmentId(req, res, next, req.body.specificAccessStateData.requestId);
     const rolesToDelete: RoleAssignment[] = firstRoleResponse.data.roleAssignmentResponse.requestedRoles;
@@ -106,17 +106,17 @@ export async function deleteSpecificAccessRoles(req, res: Response, next: NextFu
     if (!specificAccessDeletionResponse || specificAccessDeletionResponse.status !== 204) {
       // TODO: retry x 3
       return previousResponse && previousResponse.status
-       ? res.status(previousResponse.status) : res.status(400);
+        ? res.status(previousResponse.status) : res.status(400);
     }
     // Note - the functionality is present but this does not currently work due to AM team restrictions - gives 422 error
     const grantedDeletionResponse = await deleteRoleByAssignmentId(req, res, next, rolesToDelete[0].id);
     if (!grantedDeletionResponse || grantedDeletionResponse.status !== 204) {
       // TODO: retry x 3
       return previousResponse && previousResponse.status
-       ? res.status(previousResponse.status) : res.status(400);
+        ? res.status(previousResponse.status) : res.status(400);
     }
     return previousResponse && previousResponse.status
-     ? res.status(previousResponse.status) : res.status(400);
+      ? res.status(previousResponse.status) : res.status(400);
   } catch (error) {
     next(error);
     return res.status(error.status).send(error);
@@ -131,7 +131,7 @@ export async function restoreDeletedRole(req, res: Response, next: NextFunction,
     if (!restoreResponse || restoreResponse.status !== 201) {
       // TODO: retry x 3
       return previousResponse && previousResponse.status
-       ? res.status(previousResponse.status) : res.status(400);
+        ? res.status(previousResponse.status) : res.status(400);
     }
     return deleteSpecificAccessRoles(req, res, next, previousResponse, rolesToDelete);
   } catch (error) {
@@ -143,6 +143,6 @@ export async function restoreDeletedRole(req, res: Response, next: NextFunction,
 /**
  * Manually creating Elastic search query
  */
-export function removeAcceptHeader(proxyReq, req) {
-    proxyReq.removeHeader('accept');
+export function removeAcceptHeader(proxyReq) {
+  proxyReq.removeHeader('accept');
 }

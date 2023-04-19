@@ -17,7 +17,7 @@ describe('NocFillFormOfflineComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ NocFillFormOfflineComponent, RpxTranslateMockPipe ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

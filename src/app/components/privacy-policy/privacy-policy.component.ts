@@ -15,10 +15,11 @@ export class PrivacyPolicyComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.route.fragment.subscribe(fragment => {
+    this.route.fragment.subscribe((fragment) => {
       try {
         document.querySelector(`#${fragment}`).scrollIntoView();
-      } catch (e) { }
+        // eslint-disable-next-line no-empty
+      } catch (e) {}
     });
   }
 }

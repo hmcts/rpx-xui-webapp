@@ -16,7 +16,6 @@ import { roleAccessRouting } from './role-access.routes';
 import { RoleExclusionsService } from './services';
 import { effects, reducers } from './store';
 
-
 @NgModule({
   imports: [
     CommonModule,
@@ -37,17 +36,18 @@ import { effects, reducers } from './store';
   ],
   providers: [{
     provide: AbstractAppConfig,
-    useExisting: AppConfig,
+    useExisting: AppConfig
   },
-    RoleExclusionsService,
-    CaseworkerDataService,
-    WASupportedJurisdictionsService
+  RoleExclusionsService,
+  CaseworkerDataService,
+  WASupportedJurisdictionsService
   ]
 })
 /**
  * Entry point for Role Access Module that is also lazy loaded.
  */
 export class RoleAccessModule {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   constructor(@Optional() @SkipSelf() parentModule: RoleAccessModule) {
     RoleAccessModule.forRoot();
   }

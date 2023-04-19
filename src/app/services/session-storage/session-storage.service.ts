@@ -4,7 +4,6 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class SessionStorageService {
-
   /**
    * Get an item from the session storage.
    * If remove is true, the item will be removed once read
@@ -13,7 +12,9 @@ export class SessionStorageService {
   public getItem(key: string, removeAfterRead: boolean = false): string {
     const item = sessionStorage.getItem(key);
 
-    if (removeAfterRead) { this.removeItem(key); }
+    if (removeAfterRead) {
+      this.removeItem(key);
+    }
 
     return item;
   }

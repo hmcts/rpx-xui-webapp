@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AccessibilityComponent } from './accessibility.component';
 
 describe('AccessibilityComponent', () => {
@@ -9,9 +9,9 @@ describe('AccessibilityComponent', () => {
   beforeEach(waitForAsync((() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ AccessibilityComponent ]
+      declarations: [AccessibilityComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(AccessibilityComponent);
     component = fixture.componentInstance;
@@ -21,5 +21,4 @@ describe('AccessibilityComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
 });

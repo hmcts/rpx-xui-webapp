@@ -9,8 +9,7 @@ import { AppConstants } from '../../app/app.constants';
 export class WorkAllocationAccessGuard implements CanActivate {
   public static defaultUrl: string = '/cases';
   constructor(private readonly featureToggleService: FeatureToggleService,
-              private readonly router: Router) {
-  }
+              private readonly router: Router) {}
 
   public static navigateUrl(isfeatureEnabled: boolean, router: Router, url: string): void {
     if (!isfeatureEnabled) {
@@ -19,7 +18,7 @@ export class WorkAllocationAccessGuard implements CanActivate {
   }
 
   public canActivate(): Observable<boolean> {
-    return this.featureToggleService.getValueOnce<boolean>(AppConstants.FEATURE_NAMES.waAccess, false).pipe(tap(isfeatureEnabled => {
+    return this.featureToggleService.getValueOnce<boolean>(AppConstants.FEATURE_NAMES.waAccess, false).pipe(tap((isfeatureEnabled) => {
       WorkAllocationAccessGuard.navigateUrl(isfeatureEnabled, this.router, WorkAllocationAccessGuard.defaultUrl);
     }));
   }

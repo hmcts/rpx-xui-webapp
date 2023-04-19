@@ -44,6 +44,6 @@ export function transformToJudicialUserModel(rawJudicialUserModel: RawJudicialUs
     knownAs: rawJudicialUserModel.known_as,
     personalCode: rawJudicialUserModel.personal_code,
     surname: rawJudicialUserModel.surname,
-    title: rawJudicialUserModel.title,
+    title: rawJudicialUserModel.title
   };
 }

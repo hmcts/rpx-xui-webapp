@@ -16,7 +16,7 @@ import { HearingStageComponent } from './hearing-stage.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
-  template: '',
+  template: ''
 })
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
@@ -42,7 +42,7 @@ describe('HearingStageComponent', () => {
       category_key: 'HearingType',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'final',
@@ -55,7 +55,7 @@ describe('HearingStageComponent', () => {
       category_key: 'HearingType',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'substantial',
@@ -68,7 +68,7 @@ describe('HearingStageComponent', () => {
       category_key: 'HearingType',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       key: 'case-management',
@@ -81,8 +81,8 @@ describe('HearingStageComponent', () => {
       category_key: 'HearingType',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null,
-    },
+      child_nodes: null
+    }
   ];
 
   beforeEach(() => {
@@ -90,8 +90,8 @@ describe('HearingStageComponent', () => {
       imports: [ReactiveFormsModule, RouterTestingModule],
       declarations: [HearingStageComponent, MockHearingPartiesComponent],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -100,12 +100,12 @@ describe('HearingStageComponent', () => {
                 hearingStages: source
               }
             },
-            fragment: of('point-to-me'),
+            fragment: of('point-to-me')
           }
         },
         FormBuilder
       ],
-      schemas: [NO_ERRORS_SCHEMA],
+      schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
 

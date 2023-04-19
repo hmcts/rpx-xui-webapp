@@ -11,9 +11,9 @@ import * as fromFeature from '../../store';
   styleUrls: ['./noc-affirmation.component.scss']
 })
 export class NocAffirmationComponent implements OnInit {
-
   @Input()
   public affirmationAgreed: boolean = false;
+
   @Input()
   public notifyEveryParty: boolean = false;
 
@@ -21,14 +21,14 @@ export class NocAffirmationComponent implements OnInit {
   public hasDisagreeError$: Observable<boolean>;
   public hasNotifyEveryPartyError$: Observable<boolean>;
 
-  constructor(private readonly store: Store<fromFeature.State>) { }
+  constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit() {
     this.validationErrors$ = this.store.pipe(select(fromFeature.validationErrors));
-    this.hasDisagreeError$ = this.validationErrors$.pipe(map(errors => {
+    this.hasDisagreeError$ = this.validationErrors$.pipe(map((errors) => {
       return errors ? errors.hasOwnProperty(AFFIRMATION_DEFAULT_DISAGREE_ERROR.code) : false;
     }));
-    this.hasNotifyEveryPartyError$ = this.validationErrors$.pipe(map(errors => {
+    this.hasNotifyEveryPartyError$ = this.validationErrors$.pipe(map((errors) => {
       return errors ? errors.hasOwnProperty(AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR.code) : false;
     }));
   }

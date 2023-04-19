@@ -1,7 +1,7 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {select, Store} from '@ngrx/store';
-import {Subscription} from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import * as fromHearingStore from '../../store';
 
 @Component({
@@ -20,7 +20,7 @@ export class LinkedHearingsComponent implements OnInit, OnDestroy {
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingId = this.route.snapshot.params.hearingId;
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe(
-      state => {
+      (state) => {
         this.caseName = state && state.publicCaseName;
       }
     );
@@ -28,9 +28,9 @@ export class LinkedHearingsComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases(
-      {caseReference: this.caseId, hearingId: this.hearingId }));
+      { caseReference: this.caseId, hearingId: this.hearingId }));
     this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesWithHearings(
-      {caseReference: this.caseId, caseName: this.caseName, hearingId: this.hearingId }));
+      { caseReference: this.caseId, caseName: this.caseName, hearingId: this.hearingId }));
   }
 
   public ngOnDestroy(): void {
@@ -39,5 +39,4 @@ export class LinkedHearingsComponent implements OnInit, OnDestroy {
       this.sub.unsubscribe();
     }
   }
-
 }

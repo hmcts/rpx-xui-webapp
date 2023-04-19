@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { select, Store } from '@ngrx/store';
+import { Component, Input } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
 import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
@@ -15,8 +15,7 @@ export class SpecificAccessApprovedComponent {
   public services: string[];
   public assignedUser: string;
 
-  constructor(private readonly store: Store<fromFeature.State>) {
-  }
+  constructor(private readonly store: Store<fromFeature.State>) {}
 
   public navigationHandler(navEvent: SpecificAccessNavigationEvent): void {
     switch (navEvent) {
@@ -28,6 +27,7 @@ export class SpecificAccessApprovedComponent {
         throw new Error('Invalid case');
     }
   }
+
   public dispatchEvent(navEvent: SpecificAccessNavigationEvent) {
     switch (navEvent) {
       case SpecificAccessNavigationEvent.BACK:

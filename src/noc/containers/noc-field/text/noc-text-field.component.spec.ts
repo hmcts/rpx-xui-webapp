@@ -1,11 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocTextFieldComponent } from './noc-text-field.component';
-
 
 describe('NocTextFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
@@ -30,7 +29,7 @@ describe('NocTextFieldComponent', () => {
     display_context_parameter: '5',
     challenge_question_id: 'NoC',
     answer_field: '',
-    question_id: 'question5',
+    question_id: 'question5'
   };
   const ANSWER_VALUE = of('John');
   let component: NocTextFieldComponent;
@@ -40,7 +39,7 @@ describe('NocTextFieldComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
-        NocTextFieldComponent,
+        NocTextFieldComponent
       ],
       imports: [
         ReactiveFormsModule,

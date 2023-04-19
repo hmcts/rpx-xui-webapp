@@ -34,17 +34,19 @@ describe('TaskListWrapperComponent', () => {
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
   const mockFilterService: any = {
     getStream: () => of(null),
     get: () => SELECTED_LOCATIONS,
-    persist: (setting, persistence) => null,
+    persist: () => null,
     givenErrors: {
       subscribe: () => null,
       next: () => null,
       unsubscribe: () => null
     }
   };
+
   beforeEach((() => {
     storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
@@ -69,7 +71,7 @@ describe('TaskListWrapperComponent', () => {
         { provide: FilterService, useValue: mockFilterService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
-        { provide: Store, useValue: storeMock },
+        { provide: Store, useValue: storeMock }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
@@ -97,9 +99,10 @@ describe('TaskListWrapperComponent', () => {
     const secondAction = exampleTask.actions[1];
     const firstTaskAction = { task: exampleTask, action: firstAction };
     const secondTaskAction = { task: exampleTask, action: secondAction };
+
     it('should handle an action', () => {
       // need to spy on the router and set up the task action
-      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`/mywork/list`);
+      spyOnProperty(mockRouter, 'url', 'get').and.returnValue('/mywork/list');
       const navigateCallsBefore = mockRouter.navigateCalls.length;
 
       // need to check that navigate has been called
@@ -115,7 +118,7 @@ describe('TaskListWrapperComponent', () => {
 
     it('should handle an action returned via the task manager page', () => {
       // need to spy on the router and set up the task action
-      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`/mywork/manager`);
+      spyOnProperty(mockRouter, 'url', 'get').and.returnValue('/mywork/manager');
       const navigateCallsBefore = mockRouter.navigateCalls.length;
 
       // need to check that navigate has been called
@@ -128,9 +131,10 @@ describe('TaskListWrapperComponent', () => {
       const exampleNavigateCall = { queryParams: { service: 'IA' }, state: { returnUrl: '/mywork/manager', showAssigneeColumn: true } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
+
     it('should go to tasks page on GO', () => {
       // need to spy on the router and set up the task action
-      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`/mywork/list`);
+      spyOnProperty(mockRouter, 'url', 'get').and.returnValue('/mywork/list');
       const navigateCallsBefore = mockRouter.navigateCalls.length;
 
       secondTaskAction.action.id = TaskActionIds.GO;
@@ -142,13 +146,15 @@ describe('TaskListWrapperComponent', () => {
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall.commands).toEqual([`/cases/case-details/${secondTaskAction.task.case_id}/tasks`]);
     });
+
     it('User should be Judicial', () => {
-      mockSessionStorageService.getItem.and.returnValue('{\"sub\":\"juser8@mailinator.com\",\"uid\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}');
+      mockSessionStorageService.getItem.and.returnValue('{"sub":"juser8@mailinator.com","uid":"44d5d2c2-7112-4bef-8d05-baaa610bf463","roles":["caseworker","caseworker-ia-iacjudge"],"name":"XUI test Judge","given_name":"XUI test","family_name":"Judge","token":""}');
       const isJudicial = component.isCurrentUserJudicial();
       expect(isJudicial).toBeTruthy();
     });
+
     it('User should not be Judicial', () => {
-      mockSessionStorageService.getItem.and.returnValue('{\"sub\":\"juser8@mailinator.com\",\"uid\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}');
+      mockSessionStorageService.getItem.and.returnValue('{"sub":"juser8@mailinator.com","uid":"44d5d2c2-7112-4bef-8d05-baaa610bf463","roles":["caseworker","caseworker-ia"],"name":"XUI test Judge","given_name":"XUI test","family_name":"Judge","token":""}');
       const isJudicial = component.isCurrentUserJudicial();
       expect(isJudicial).toBeFalsy();
     });

@@ -29,6 +29,7 @@ import {
   HttpErrorService,
   HttpService,
   IsCompoundPipe,
+  JurisdictionService,
   LoadingModule,
   NavigationNotifierService,
   OrganisationConverter,
@@ -41,8 +42,7 @@ import {
   RouterHelperService,
   SearchFiltersModule,
   SearchResultModule,
-  WorkbasketFiltersModule,
-  JurisdictionService
+  WorkbasketFiltersModule
 } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
@@ -139,6 +139,7 @@ import { effects, reducers } from './store';
  * Entry point for Cases Module that is also lazy loaded.
  */
 export class CasesModule {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   constructor(@Optional() @SkipSelf() parentModule: CasesModule) {
     CasesModule.forRoot();
   }

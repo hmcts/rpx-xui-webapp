@@ -9,9 +9,10 @@ import { State } from '../store';
 import { IsPaperHearingAmendedConverter } from './is-paper-hearing.amended.converter';
 
 describe('IsPaperHearingAmendedConverter', () => {
-
   let converter: IsPaperHearingAmendedConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: any;
 
   beforeEach(() => {
@@ -23,15 +24,15 @@ describe('IsPaperHearingAmendedConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingStageOptions: hearingStageRefData,
-              },
-            },
-          },
+                hearingStageOptions: hearingStageRefData
+              }
+            }
+          }
         }
       ]
     });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
+    store = TestBed.inject(Store);
+    router = TestBed.inject(ActivatedRoute);
     converter = new IsPaperHearingAmendedConverter();
   });
 

@@ -41,8 +41,7 @@ describe('VenueAnswerConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = venueAnswerConverter.transformAnswer(of(STATE));
     const type = '<ul><li>LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL</li></ul>';
-    const expected = cold('(b|)', {b: type});
+    const expected = cold('(b|)', { b: type });
     expect(result$).toBeObservable(expected);
   });
-
 });

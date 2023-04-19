@@ -9,6 +9,7 @@ import { HearingActualSummarySingleDayComponent } from './hearing-actual-summary
 describe('HearingActualSummarySingleDayComponent', () => {
   let component: HearingActualSummarySingleDayComponent;
   let fixture: ComponentFixture<HearingActualSummarySingleDayComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: Router;
 
   beforeEach(() => {
@@ -26,10 +27,10 @@ describe('HearingActualSummarySingleDayComponent', () => {
                 hearingRoles
               }
             },
-            fragment: of('point-to-me'),
+            fragment: of('point-to-me')
           }
-        },
-      ],
+        }
+      ]
     })
       .compileComponents();
 

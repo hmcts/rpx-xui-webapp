@@ -9,9 +9,6 @@ import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { Task, TaskRole } from '../models/tasks';
 import { TaskResponse } from '../models/tasks/task.model';
 
-
-
-
 const BASE_URL: string = '/workallocation/task';
 
 export enum ACTION {
@@ -57,7 +54,7 @@ export class WorkAllocationTaskService {
 
   public searchTask(body: { searchRequest: SearchTaskRequest, view: string, currentUser: string, refined: boolean }): Observable<TaskResponse> {
     return this.http.post<any>(`${BASE_URL}`, body).pipe(
-      tap(response => this.currentTasks$.next(response.tasks)),
+      tap((response) => this.currentTasks$.next(response.tasks)),
     );
   }
 
@@ -81,7 +78,7 @@ export class WorkAllocationTaskService {
 
   public performActionOnTask(taskId: string, action: ACTION, hasNoAssigneeOnComplete?: boolean): Observable<Response> {
     // Make a POST with an empty payload.
-    return this.http.post<any>(this.getActionUrl(taskId, action), {hasNoAssigneeOnComplete});
+    return this.http.post<any>(this.getActionUrl(taskId, action), { hasNoAssigneeOnComplete });
   }
 
   public getActionUrl(taskId: string, action: ACTION): string {
@@ -101,9 +98,9 @@ export class WorkAllocationTaskService {
       const searchRequest: SearchTaskRequest = {
         search_parameters: searchParameters,
         sorting_parameters: [],
-        search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
+        search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker'
       };
-      return this.http.post<any>(`${BASE_URL}`, { searchRequest, view: 'MyTasks' }).pipe(map(response => response.tasks));
+      return this.http.post<any>(`${BASE_URL}`, { searchRequest, view: 'MyTasks' }).pipe(map((response) => response.tasks));
     }
     return of(null);
   }

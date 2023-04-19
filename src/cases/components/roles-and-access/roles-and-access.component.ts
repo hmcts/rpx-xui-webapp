@@ -45,21 +45,20 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   public set roles(value: CaseRole[]) {
     this.pRoles = value;
     if (this.roles) {
-      this.legalOpsRoles = this.roles.filter(role => role.roleCategory === RoleCategory.LEGAL_OPERATIONS);
-      this.judicialRoles = this.roles.filter(role => role.roleCategory === RoleCategory.JUDICIAL);
-      this.adminRoles = this.roles.filter(role => role.roleCategory === RoleCategory.ADMIN);
-      this.ctscRoles = this.roles.filter(role => role.roleCategory === RoleCategory.CTSC);
+      this.legalOpsRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.LEGAL_OPERATIONS);
+      this.judicialRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.JUDICIAL);
+      this.adminRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.ADMIN);
+      this.ctscRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.CTSC);
     }
     this.showLegalOpsAllocate = this.showAllocateRoleLink && this.legalOpsRoles.length === 0;
   }
 
   constructor(
-    private readonly caseNotifier: CaseNotifier) {
-  }
+    private readonly caseNotifier: CaseNotifier) {}
 
   public ngOnInit(): void {
     this.caseId = this.caseDetails.case_id;
-    const jurisdictionField = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
+    const jurisdictionField = this.caseDetails.metadataFields.find((field) => field.id === this.jurisdictionFieldId);
     if (jurisdictionField) {
       this.jurisdiction = jurisdictionField.value;
     }
@@ -104,7 +103,7 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
     if (this.waServiceConfig) {
       const caseJurisdiction = this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction ? this.caseDetails.case_type.jurisdiction.id : null;
       const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
-      this.waServiceConfig.configurations.forEach(serviceConfig => {
+      this.waServiceConfig.configurations.forEach((serviceConfig) => {
         if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType) && parseFloat(serviceConfig.releaseVersion) >= 3.5) {
           this.isCTSCRoleEnabled = true;
         }
@@ -115,8 +114,8 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   private checkSetNamedRoles(roles: any[], notNamed: boolean): any[] {
     if (notNamed) {
       roles.forEach(
-        role => {
-          const caseWorker = this.caseworkers.find(caseworker => caseworker.idamId === role.actorId);
+        (role) => {
+          const caseWorker = this.caseworkers.find((caseworker) => caseworker.idamId === role.actorId);
           if (caseWorker) {
             role.name = `${caseWorker.firstName} ${caseWorker.lastName}`;
           }

@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of } from 'rxjs';
@@ -14,7 +14,6 @@ import { CaseRoleDetails } from '../../models/case-role-details.interface';
 import { AnswerLabelText, RemoveRoleText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
 import { RemoveRoleComponent } from './remove-role.component';
-
 
 @Component({
   template: `
@@ -44,14 +43,16 @@ describe('RemoveRoleComponent', () => {
     'back'
   ]);
   const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll']);
-  const allworkUrl = `work/all-work/cases`;
+  const allworkUrl = 'work/all-work/cases';
   window.history.pushState({ backUrl: allworkUrl }, '', allworkUrl);
 
   class AllocateRoleMockService extends AllocateRoleService {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public confirmAllocation(allocateRoleStateData: AllocateRoleStateData): Observable<any> {
       return of(null);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getCaseRoles(caseId: string, jurisdiction: string, caseType: string, assignmentId?: string): Observable<CaseRole[]> {
       return of([
         {
@@ -71,10 +72,12 @@ describe('RemoveRoleComponent', () => {
       return of(null);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public removeAllocation(assigmentId: string): Observable<any> {
       return of(null);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getCaseRolesUserDetails(caseRoles: string[]): Observable<CaseRoleDetails[]> {
       const caseRoleDetail: CaseRoleDetails = {
         idam_id: '999999999',
@@ -118,14 +121,14 @@ describe('RemoveRoleComponent', () => {
               },
               queryParams: {
                 caseId: '123456789',
-                assignmentId: '999999999',
-              },
+                assignmentId: '999999999'
+              }
             },
             queryParamMap: of(convertToParamMap({
               caseId: '123456789',
               assignmentId: '999999999',
               jurisdiction: 'IA',
-              caseType: 'Alsyum',
+              caseType: 'Alsyum'
             }))
           }
         },

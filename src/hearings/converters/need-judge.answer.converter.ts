@@ -5,13 +5,12 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 
 export class NeedJudgeAnswerConverter implements AnswerConverter {
-
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
         const panelPreferences = panelRequirements && panelRequirements.panelPreferences;
-        const hasJudgeDetails = panelPreferences && panelPreferences.filter(panel => panel.memberType === MemberType.JUDGE);
+        const hasJudgeDetails = panelPreferences && panelPreferences.filter((panel) => panel.memberType === MemberType.JUDGE);
         if (panelRequirements && panelRequirements.roleType && panelRequirements.roleType.length) {
           return RadioOptions.NO;
         } else if (hasJudgeDetails && hasJudgeDetails.length) {

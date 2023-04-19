@@ -1,4 +1,4 @@
 export interface CheckDatesResult {
-  isStartDateValid: boolean,
-  isEndDateValid: boolean
+  isStartDateValid: boolean;
+  isEndDateValid: boolean;
 }

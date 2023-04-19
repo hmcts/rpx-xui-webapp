@@ -10,6 +10,7 @@ import {
   COOKIES_USER_ID
 } from '../configuration/references';
 import * as auth from './index';
+
 chai.use(sinonChai);
 
 describe('Auth', () => {
@@ -27,6 +28,7 @@ describe('Auth', () => {
       ],
       uid: 1
     };
+
     beforeEach(() => {
       sandbox = sinon.createSandbox();
       req = mockReq({

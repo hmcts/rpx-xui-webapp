@@ -1,6 +1,5 @@
 import { BookingResponse, BookingResponseError, Bookings } from '../models';
 /* disabling linting on this file as we don't want to sort the keys or add a comma at the end of the last key */
-/* tslint:disable */
 export const bookings: Bookings = {
   'bookings':
     [

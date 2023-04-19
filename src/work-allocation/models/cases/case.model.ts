@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable semi */
 import CaseAction from './case-action.model';
 
 export default interface Case {

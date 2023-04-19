@@ -33,7 +33,6 @@ export async function findExclusionsForCaseId(req: EnhancedRequest, res: Respons
 
 export async function confirmUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
   const body = req.body;
-  // @ts-ignore
   const currentUser: UserInfo = req.session.passport.user.userinfo;
   const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
   let roleCategory: string;

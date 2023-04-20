@@ -37,8 +37,8 @@ export const initialSearchState: SearchState = {
   filter: new SearchStateFilter(),
   results: new SearchStateResults(),
   paginationMetadata: {
-    totalPagesCount: 0,
-    totalResultsCount: 0
+    total_pages_count: 0,
+    total_results_count: 0
   },
   showFilter: true,
   loading: false,
@@ -70,8 +70,8 @@ export function reducer(
       return {
         ...state,
         paginationMetadata: {
-          totalPagesCount: action.payload.totalPagesCount,
-          totalResultsCount: action.payload.totalResultsCount
+          total_pages_count: action.payload.total_pages_count,
+          total_results_count: action.payload.total_results_count
         },
         loading: true,
         loaded: false

@@ -8,12 +8,12 @@ import { AppConstants } from '../../../app/app.constants';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
-import { Utils} from '../../../cases/utils/utils';
+import { Utils } from '../../../cases/utils/utils';
 import { PriorityLimits } from '../../../work-allocation/enums';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { Task } from '../../../work-allocation/models/tasks';
 import { WorkAllocationTaskService } from '../../../work-allocation/services';
-import { handleTasksFatalErrors, REDIRECTS } from '../../../work-allocation/utils';
+import { REDIRECTS, handleTasksFatalErrors } from '../../../work-allocation/utils';
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
 
 @Component({

@@ -23,7 +23,6 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
     jobTitles: StaffFilterOption[],
     skills: GroupOptions[],
     services: StaffFilterOption[],
-    userRoles: StaffFilterOption[],
     regions: RefDataRegion[]
   };
   public errors: ErrorMessage | false;
@@ -33,7 +32,7 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
   public groupItemsByGroupSize = groupItemsByGroupSize;
 
   constructor(
-    private readonly activatedRoute: ActivatedRoute,
+    public readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
     public readonly staffAddEditFormService: StaffAddEditFormService,
   ) {}
@@ -51,12 +50,8 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
       skills: this.activatedRoute.snapshot.data.skills,
       services: this.activatedRoute.snapshot.data.services,
       regions: this.activatedRoute.snapshot.data.regions,
-      userRoles: [
-        { key: 'case_allocator', label: 'Case allocator' },
-        { key: 'task_supervisor', label: 'Task supervisor' },
-        { key: 'staff_admin', label: 'Staff administrator' },
-      ]
     };
+
     this.skillOptionGroups$ = this.staffAddEditFormService.selectedServiceCodes$.pipe(
       tap((selectedServiceCodes) => {
         const skillsControl = this.form.get('skills') as FormGroup;

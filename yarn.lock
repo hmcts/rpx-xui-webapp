@@ -2181,15 +2181,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:1.8.7-my-work-filter-location-optional":
-  version: 1.8.7-my-work-filter-location-optional
-  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.7-my-work-filter-location-optional"
+"@hmcts/rpx-xui-common-lib@npm:1.8.7-generic-filter-clear-errors-on-destroy-2":
+  version: 1.8.7-generic-filter-clear-errors-on-destroy-2
+  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.7-generic-filter-clear-errors-on-destroy-2"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
-  checksum: 759a6344a2b17fd86af1acc778b99ad3a279c7bfc05eb3614c2856f071fa99b9452cfbda831401c2529c083d9b6fecf76fc151603eae6c17722c6920086a959a
+  checksum: 5d6f0acc3d22ab01a3a78ae5458060cabca9cd9f708b701caa2553bf3533400995f7824c696224ba807751ed3a07c1797aa69e581ea9e660d7a51012cc29fdb7
   languageName: node
   linkType: hard
 
@@ -18697,7 +18697,7 @@ __metadata:
     "@hmcts/media-viewer": 2.9.3
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 1.8.7-my-work-filter-location-optional
+    "@hmcts/rpx-xui-common-lib": 1.8.7-generic-filter-clear-errors-on-destroy-2
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^8.0.0-beta.4
     "@ng-idle/keepalive": ^8.0.0-beta.4

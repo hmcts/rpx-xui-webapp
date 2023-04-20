@@ -13,9 +13,8 @@ export class StaffUsersComponent  {
 
   constructor(
     public staffDataFilterService: StaffDataFilterService,
-    private infoMessageCommService: InfoMessageCommService
-  ) {
-  }
+    private infoMessageCommService: InfoMessageCommService,
+  ) {}
 
   public advancedSearchClicked(): void {
     this.advancedSearchEnabled = !this.advancedSearchEnabled;

@@ -6,6 +6,8 @@ const browser = require('./browser')
 const codeceptMochawesomeLog = require('./reportLogger')
 
 const e2eTestDataManager = require('../e2e/utils/testDataManager/index');
+const mockClient = require('../backendMock/client/index')
+const idamLogin = require('../ngIntegration/util/idamLogin');
 
 module.exports = async function () {
 
@@ -16,6 +18,14 @@ module.exports = async function () {
     event.dispatcher.on(event.test.after, async function (test) {
         output.print(`Test ${test.state} : ${test.title}`)
         actor().flushLogsToReport();
+        if (test.state === 'failed'){
+            const authCookies = idamLogin.xuiCallbackResponse.details?.setCookies?.find(cookie => cookie.name === '__auth__')
+            const mockSessiondataResponse = await mockClient.getUserSesionData(authCookies ? authCookies.value : null);
+            codeceptMochawesomeLog.AddMessage('---------------------- Session mock data and requests ----------------------');
+            codeceptMochawesomeLog.AddJson(mockSessiondataResponse.data)
+            codeceptMochawesomeLog.AddMessage('---------------------- Session mock data and requests ----------------------');
+        }
+       
         await e2eTestDataManager.cleanupForTags(test.tags);
     });
 

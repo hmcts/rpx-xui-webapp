@@ -45,6 +45,7 @@ class CustomHelper extends Helper {
            this.attachBrowserLog(log)
         //    await getActor().saveScreenshot()
        }
+   
     }
 
     async flushLogsToReport(){

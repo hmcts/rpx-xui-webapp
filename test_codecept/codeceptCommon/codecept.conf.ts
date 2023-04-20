@@ -13,7 +13,7 @@ const backendMockApp = require('../backendMock/app');
 
 let appWithMockBackend = null;
 const testType = process.env.TEST_TYPE
-const parallel = process.env.PARALLEL
+const parallel = process.env.PARALLEL ? process.env.PARALLEL === "true" : false
 const head = process.env.HEAD
 
 if (process.env.TEST_URL.includes('pr-29751') ||
@@ -169,13 +169,13 @@ exports.config = {
 
   },
   bootstrap:async () =>{
-    if (testType === "ngIntegration" && !parallel){
+    if (testType === "ngIntegration" && parallel){
       await setup()
     }
   },
   teardown: async () => {
     const status = await mochawesomeGenerateReport()
-      if (testType === "ngIntegration" && !parallel){
+      if (testType === "ngIntegration" && parallel){
         await teardown()
       }
     process.exit(status === 'PASS' ? 0 : 1)

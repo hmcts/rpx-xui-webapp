@@ -1,4 +1,3 @@
-/* tslint:disable:object-literal-sort-keys */
 export interface LocationModel {
   court_venue_id: string;
   site_name: string;

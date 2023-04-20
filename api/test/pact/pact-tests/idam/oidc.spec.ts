@@ -32,7 +32,6 @@ describe('OpenId Connect API', () => {
     it('returns a json configuration', async () => {
       const oidcUrl = `${pactSetUp.provider.mockService.baseUrl}/o`;
 
-      // @ts-ignore
       const issuer = await oidc.configure({
         allowRolesRegex: '.',
         authorizationURL: `${oidcUrl}/authorize`,

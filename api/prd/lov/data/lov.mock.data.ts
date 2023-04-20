@@ -1,4 +1,3 @@
-/* tslint:disable:object-literal-sort-keys */
 import { LovRefDataByCategoryModel, LovRefDataByServiceModel, LovRefDataModel } from '../models/lovRefData.model';
 
 export const DEFAULT_JUDGE_TYPES_REF: LovRefDataModel[] = [

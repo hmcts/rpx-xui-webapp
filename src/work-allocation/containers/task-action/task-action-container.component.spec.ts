@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseNotifier, PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
@@ -52,6 +53,8 @@ describe('WorkAllocation', () => {
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
     const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
     const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['getValue']);
     mockFeatureToggleService.getValue.and.returnValue(of(false));
 
@@ -87,7 +90,11 @@ describe('WorkAllocation', () => {
               params: of({ task: mockTasks[0] })
             }
           },
-          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+          {
+            provide: RpxTranslationService,
+            useFactory: rpxTranslationServiceStub
+          }
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);

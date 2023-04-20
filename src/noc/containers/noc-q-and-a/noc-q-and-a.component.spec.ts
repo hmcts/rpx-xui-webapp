@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -9,6 +9,13 @@ import * as fromNocStore from '../../store';
 import { NocErrorPipe } from '../noc-field/utils';
 import { NocQAndAComponent } from './noc-q-and-a.component';
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
+
 describe('NocQAndAComponent', () => {
   const FORM_GROUP = new FormGroup({});
   let store;
@@ -18,7 +25,7 @@ describe('NocQAndAComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [NocQAndAComponent],
+      declarations: [NocQAndAComponent, RpxTranslateMockPipe],
       imports: [
         ReactiveFormsModule
       ],

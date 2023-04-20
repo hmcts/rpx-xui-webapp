@@ -31,6 +31,10 @@ export class HearingActualAddEditSummaryComponent extends HearingActualSummaryBa
     this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
   }
 
+  public getHearingDateText(): string {
+    return this.actualHearingDays && this.actualHearingDays.length > 1 ? 'Hearing date(s)' : 'Hearing date';
+  }
+
   public onSubmitHearingDetails(): void {
     this.submitted = true;
 

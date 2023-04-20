@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -7,6 +7,13 @@ import { NocAnswer, NocState } from '../../models';
 import * as fromFeature from '../../store';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocCheckYourAnswersComponent } from './noc-check-your-answers.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('NocCheckYourAnswersComponent', () => {
   let store;
@@ -18,7 +25,7 @@ describe('NocCheckYourAnswersComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [NocCheckYourAnswersComponent],
+      declarations: [NocCheckYourAnswersComponent, RpxTranslateMockPipe],
       imports: [
         UtilsModule
       ],

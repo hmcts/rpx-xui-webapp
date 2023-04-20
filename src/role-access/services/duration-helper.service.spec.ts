@@ -46,7 +46,7 @@ describe('DurationHelperService', () => {
   describe('getTodaysDate', () => {
     it('should return todays date', () => {
       const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      today.setUTCHours(0, 0, 0, 0);
       expect(today).toEqual(durationHelperService.getTodaysDate());
     });
   });
@@ -139,7 +139,7 @@ describe('DurationHelperService', () => {
       // get date a week from todays date
       const weekFromToday = new Date();
       weekFromToday.setDate(today.getDate() + 7);
-      weekFromToday.setHours(23, 59, 59, 999);
+      weekFromToday.setUTCHours(23, 59, 59, 999);
 
       // get date a week from today using duration helper service method
       const dateInFuture = durationHelperService.getDateInFuture(7);

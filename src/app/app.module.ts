@@ -38,6 +38,7 @@ import {
   NgxLoggerLevel,
   NGXMapperService
 } from 'ngx-logger';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
 import { environment } from '../environments/environment';
 import {
@@ -99,7 +100,15 @@ export function launchDarklyClientIdFactory(
     SharedModule,
     ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),
-    PaymentLibModule
+    PaymentLibModule,
+    RpxTranslationModule.forRoot({
+      baseUrl: '',
+      debounceTimeMs: 300,
+      validity: {
+        days: 1
+      },
+      testMode: true
+    })
   ],
   providers: [
     NGXLogger,

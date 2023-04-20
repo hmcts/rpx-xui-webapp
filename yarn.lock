@@ -2098,12 +2098,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.14.1-v1":
-  version: 6.14.1-v1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.14.1-v1"
+"@hmcts/ccd-case-ui-toolkit@npm:6.13.11-welsh-release-v4":
+  version: 6.13.11-welsh-release-v4
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.13.11-welsh-release-v4"
   dependencies:
     tslib: ^2.0.0
-  checksum: 91b81bfcbde9d73c30b855c446f993a861ca0691a5ef16022c5c2ac105836280c7d23fda3ae9d126eedfab74971fe1fa12ae55d75c500bef781f2530e4d90bf9
+  checksum: 1c1172f363a8a806f373edb94a80a86af456f5105a5701a54886c4e3297aa3cb23a8f6f63f752e597d742281dbd7493e76755d9b29980d5025542357217a2b06
   languageName: node
   linkType: hard
 
@@ -2197,15 +2197,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:1.8.7-find-persn-by-service":
-  version: 1.8.7-find-persn-by-service
-  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.7-find-persn-by-service"
+"@hmcts/rpx-xui-common-lib@npm:2.1.6-welsh-translation-v6":
+  version: 2.1.6-welsh-translation-v6
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.6-welsh-translation-v6"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
-  checksum: 41694e193fc9d5946edddbf999e56da577bdfa21a2e0e40973afc5d86acbf89e429ed7316128115ec885e6fae9480065dd54d79da30a185a47da1c860732ae2f
+    rpx-xui-translation: ^0.1.1
+  checksum: 8232ec02f26e126f22dbd7c736b27c9b9e24e671348bc01b7ce994d915313a84c1c5e2ca1eafd719215716a362bc088e283e81e862fd8a0a6fdf1221c7ff7faf
   languageName: node
   linkType: hard
 
@@ -7974,6 +7975,13 @@ __metadata:
   version: 0.0.981744
   resolution: "devtools-protocol@npm:0.0.981744"
   checksum: 609901bff551f5fbe98e272bdda7269de527e28fab138de371ffd7e9a06fa68ca2eec2e961bd1cd6fd98223ccee562c55b7ce3235d4e37cc8d85d6681bc45593
+  languageName: node
+  linkType: hard
+
+"dexie@npm:^3.2.2":
+  version: 3.2.3
+  resolution: "dexie@npm:3.2.3"
+  checksum: 54fd7bc94364ed601dc2d53f8b488e49ac61d4ec532f001a68fde9ffccb4bf3c6a8af310b41d8f52c94c1a99c0e165437d7b223b655df582ceda90b9bfcd60e7
   languageName: node
   linkType: hard
 
@@ -13808,6 +13816,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"luxon@npm:^2.4.0":
+  version: 2.5.2
+  resolution: "luxon@npm:2.5.2"
+  checksum: d8b671ffd2ff0b438af862ac11082a81b3aedd9f8b6a4ca636f944224f8dd381125cd4d274ca0a8aedcaf2cfca0fc2ca96fe4cc1b16a28b7af701afb95c0bff8
+  languageName: node
+  linkType: hard
+
 "magic-string@npm:0.25.7":
   version: 0.25.7
   resolution: "magic-string@npm:0.25.7"
@@ -18131,13 +18146,13 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.14.1-v1
+    "@hmcts/ccd-case-ui-toolkit": 6.13.11-welsh-release-v4
     "@hmcts/ccpay-web-component": 5.2.2
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 1.8.7-find-persn-by-service
+    "@hmcts/rpx-xui-common-lib": 2.1.6-welsh-translation-v6
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^8.0.0-beta.4
     "@ng-idle/keepalive": ^8.0.0-beta.4
@@ -18251,6 +18266,7 @@ __metadata:
     protractor-cucumber-framework: 6.1.1
     protractor-multiple-cucumber-html-reporter-plugin: 1.8.0
     protractor-screenshot-utils: ^1.0.5
+    rpx-xui-translation: ^0.1.6
     rx-polling: 1.1.0
     rxjs: ^6.5.3
     rxjs-compat: ^6.6.7
@@ -18279,6 +18295,20 @@ __metadata:
     zone.js: ~0.10.2
   languageName: unknown
   linkType: soft
+
+"rpx-xui-translation@npm:^0.1.6":
+  version: 0.1.8
+  resolution: "rpx-xui-translation@npm:0.1.8"
+  dependencies:
+    dexie: ^3.2.2
+    luxon: ^2.4.0
+    tslib: ^1.10.0
+  peerDependencies:
+    "@angular/common": ^9.1.13
+    "@angular/core": ^9.1.13
+  checksum: 24893242255be711e7a67dcf18b79f28d2f34598eaa9116bcb0495134a7a87c15cb604a4665c1b995927ca3203884ed89c8e74b86ee89e61939d8ef8467436b6
+  languageName: node
+  linkType: hard
 
 "run-async@npm:^2.4.0":
   version: 2.4.1

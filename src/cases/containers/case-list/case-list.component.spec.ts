@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { AlertService, DefinitionsService, PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
@@ -9,6 +9,13 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { CaseListComponent } from './case-list.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -30,7 +37,7 @@ describe('CaseListComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      declarations: [CaseListComponent],
+      declarations: [CaseListComponent, RpxTranslateMockPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
@@ -307,13 +314,13 @@ describe('CaseListComponent', () => {
   describe('onPaginationSubscribeHandler()', () => {
     it('should update the components paginationMetadata property, on return of subscription.', async () => {
       const paginationMetadata = new PaginationMetadata();
-      paginationMetadata.total_pages_count = 33;
-      paginationMetadata.total_results_count = 811;
+      paginationMetadata.totalPagesCount = 33;
+      paginationMetadata.totalResultsCount = 811;
 
       component.onPaginationSubscribeHandler(paginationMetadata);
 
-      expect(component.paginationMetadata.total_pages_count).toEqual(paginationMetadata.total_pages_count);
-      expect(component.paginationMetadata.total_results_count).toEqual(paginationMetadata.total_results_count);
+      expect(component.paginationMetadata.totalPagesCount).toEqual(paginationMetadata.totalPagesCount);
+      expect(component.paginationMetadata.totalResultsCount).toEqual(paginationMetadata.totalResultsCount);
     });
   });
 

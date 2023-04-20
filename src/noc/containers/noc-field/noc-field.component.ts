@@ -1,4 +1,11 @@
-import { Component, ComponentFactoryResolver, Injector, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ComponentFactoryResolver,
+  Injector,
+  ViewChild,
+  ViewContainerRef
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 import { NocQuestion } from '../../models';
@@ -14,7 +21,7 @@ import { PaletteService } from './palette.service';
     </div>
   `
 })
-export class NocFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+export class NocFieldComponent extends AbstractFieldWriteComponent implements AfterViewInit {
   @ViewChild('fieldContainer', { static: true, read: ViewContainerRef })
   public fieldContainer: ViewContainerRef;
 
@@ -28,7 +35,7 @@ export class NocFieldComponent extends AbstractFieldWriteComponent implements On
     this.formValidatorsService.addValidators(nocQuestion, control);
   }
 
-  public ngOnInit(): void {
+  public ngAfterViewInit(): void {
     const componentClass = this.paletteService.getFieldComponentClass(this.questionField);
 
     const injector = Injector.create({

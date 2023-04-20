@@ -15,10 +15,15 @@ let appWithMockBackend = null;
 const testType = process.env.TEST_TYPE
 const parallel = process.env.PARALLEL ? process.env.PARALLEL === "true" : false
 const head = process.env.HEAD
+console.log(`testType : ${testType}`)
+console.log(`parallel : ${parallel}`)
+console.log(`headless : ${!head}`)
 
-if (process.env.TEST_URL && process.env.TEST_URL.includes('pr-2807') || 
+
+if (testType === 'e2e' && 
+    (process.env.TEST_URL && process.env.TEST_URL.includes('pr-2807') || 
     process.env.TEST_URL.includes('pr-2421') ||
-    process.env.TEST_URL.includes('localhost'))
+    process.env.TEST_URL.includes('localhost')))
   {
     process.env.TEST_ENV='demo';
     process.env.TEST_URL = 'https://manage-case-int1.demo.platform.hmcts.net/';
@@ -170,13 +175,13 @@ exports.config = {
 
   },
   bootstrap:async () =>{
-    if (testType === "ngIntegration" && parallel){
+    if (testType === "ngIntegration" && !parallel){
       await setup()
     }
   },
   teardown: async () => {
     const status = await mochawesomeGenerateReport()
-      if (testType === "ngIntegration" && parallel){
+      if (testType === "ngIntegration" && !parallel){
         await teardown()
       }
     process.exit(status === 'PASS' ? 0 : 1)

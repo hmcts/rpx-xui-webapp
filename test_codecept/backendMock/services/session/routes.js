@@ -43,6 +43,10 @@ router.post('/session/getUserRolesAndRoleAssignments', async (req, res) => {
     res.send(data)
 })
 
+router.post('/session/user/sessionData', async (req, res) => {
+    res.send(userApiData.getUserSessionData(req.body.auth))
+})
+
 
 
 

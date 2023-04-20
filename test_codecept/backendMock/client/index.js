@@ -41,6 +41,12 @@ class BackendMockClient{
         })
     }
 
+    async getUserSesionData(auth) {
+        return await axiosInstance.post(`${this.baseUrl}session/user/sessionData`, {
+            auth: auth
+        })
+    }
+
 }
 
 

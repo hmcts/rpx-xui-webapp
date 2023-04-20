@@ -26,7 +26,7 @@ export class CookiePolicyComponent {
   public readonly SECURITY = 'Security';
   public readonly GOOGLE = 'Google';
 
-  public cookieDetails: CookieDetails[] = [
+  public readonly cookieDetails: CookieDetails[] = [
     {
       name: 'xui-mo-webapp',
       cat: this.SECURITY,
@@ -103,7 +103,7 @@ export class CookiePolicyComponent {
     }
   ];
 
-  public cookieDetailsWelsh: CookieDetails[] = [
+  public readonly cookieDetailsWelsh: CookieDetails[] = [
     {
       name: 'xui-mo-webapp',
       cat: this.SECURITY,

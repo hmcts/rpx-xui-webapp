@@ -50,7 +50,7 @@ class WAListTable {
         await BrowserWaits.waitForConditionAsync(async () => {
             let tableRowsCount = await this.tableRows.count();
             let isTableFooterDispayed = await this.tableFooter.isDisplayed();
-            cucumberReporter.AddMessage(`Waiting for WA list table condition : row count is ${tableRowsCount} or table foorter displayed ${isTableFooterDispayed}`, LOG_LEVELS.Info);
+            // cucumberReporter.AddMessage(`Waiting for WA list table condition : row count is ${tableRowsCount} or table foorter displayed ${isTableFooterDispayed}`, LOG_LEVELS.Info);
             return tableRowsCount > 0 || isTableFooterDispayed;
         }, BrowserWaits.waitTime);
     }

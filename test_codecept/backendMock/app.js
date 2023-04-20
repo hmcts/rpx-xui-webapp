@@ -29,7 +29,7 @@ const idamOpenId = require('./services/idam/routes')
 const sessionRoutes = require('./services/session/routes')
 
 const users = require('./services/users');
-
+const userApiData = require('./services/userApiData');
 class MockApp {
 
     constructor() {
@@ -70,6 +70,12 @@ class MockApp {
 
         app.use((req,res,next) => {
             // console.log(`${req.method} : ${req.url}`);
+            const authToken = req.headers.authorization;
+            if (authToken){
+                const token = authToken.replace('Bearer ','')
+                userApiData.logSessionRequest(token, req);
+
+            }
             next();
         })
 

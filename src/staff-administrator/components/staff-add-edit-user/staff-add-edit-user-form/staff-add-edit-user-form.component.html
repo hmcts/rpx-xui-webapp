@@ -5,7 +5,13 @@
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
   <a href="javascript:void(0)" [routerLink]="'../'" class="govuk-back-link">Back</a>
 
-  <ng-content select="[pageHeader]"></ng-content>
+  <div>
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-7">{{ this.activatedRoute.snapshot.data.title }}</h1>
+    <div class="govuk-body">
+      {{ this.activatedRoute.snapshot.data.description }}
+    </div>
+  </div>
+
   <form [formGroup]="form" (ngSubmit)="submitForm(form)">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
       <h2 class="govuk-heading-m">
@@ -195,27 +201,54 @@
     </div>
     <hr/>
 
-    <div id="userRoles" class="govuk-form-group govuk-form-group--limited-width">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-        <h2 class="govuk-heading-m">
-          Role <span class="govuk-label govuk-label-optional">(optional)</span>
-        </h2>
-      </legend>
-      <div class="govuk-body">
-        <div class="govuk-checkboxes govuk-checkboxes--small">
-          <div *ngFor="let item of staffFilterOptions.userRoles; let i = index" class="govuk-checkboxes__item">
-            <input type="checkbox" class="govuk-checkboxes__input"
-                   [formControlName]="item.key"
-                   [id]="'checkbox_userRoles' + item.key"
-                   [name]="'checkbox_userRoles' + item.key"
-            />
-            <label [for]="'checkbox_userRoles' + item.key" class="govuk-label govuk-checkboxes__label">
-              {{item.label}}
-            </label>
+    <div id="userRoles">
+      <div class="govuk-form-group govuk-form-group--limited-width">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+          <h2 class="govuk-heading-m">
+            Role <span class="govuk-label govuk-label-optional">(optional)</span>
+          </h2>
+        </legend>
+        <div class="govuk-body">
+          <div class="govuk-checkboxes govuk-checkboxes--small">
+            <div class="govuk-checkboxes__item">
+              <input type="checkbox" class="govuk-checkboxes__input" [formControlName]="'case_allocator'"
+                     [id]="'checkbox_userRoles_case_allocator'"
+                     [name]="'checkbox_userRoles_case_allocator'"
+              />
+              <label [for]="'checkbox_userRoles_case_allocator'" class="govuk-label govuk-checkboxes__label">
+                Case allocator
+              </label>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input type="checkbox" class="govuk-checkboxes__input" [formControlName]="'task_supervisor'"
+                     [id]="'checkbox_userRoles_task_supervisor'"
+                     [name]="'checkbox_userRoles_task_supervisor'"
+              />
+              <label [for]="'checkbox_userRoles_task_supervisor'" class="govuk-label govuk-checkboxes__label">
+                Task supervisor
+              </label>
+            </div>
+
+            <div class="govuk-checkboxes__item">
+              <input type="checkbox" class="govuk-checkboxes__input" [formControlName]="'staff_admin'"
+                     [id]="'checkbox_userRoles_staff_admin'"
+                     [name]="'checkbox_userRoles_staff_admin'"
+                     [attr.disabled]="updateMode && form.get('staff_admin').value && !form.get('staff_admin').dirty ? '' : null"
+              />
+              <label [for]="'checkbox_userRoles_staff_admin'" class="govuk-label govuk-checkboxes__label">
+                Staff administrator
+              </label>
+            </div>
           </div>
         </div>
       </div>
+
+      <div *ngIf="updateMode && form.get('staff_admin').value && !form.get('staff_admin').dirty">
+        Note: the Staff administrator role can only be removed using the IDAM Dashboard.
+      </div>
     </div>
+
     <hr/>
 
     <div id="roles" class="govuk-form-group"

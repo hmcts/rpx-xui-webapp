@@ -12,16 +12,12 @@ import {
   StaffSelectLocationComponent
 } from './components/staff-add-edit-user/staff-add-edit-user-form/staff-select-location/staff-select-location.component';
 import { StaffUserCheckAnswersComponent } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
-import { StaffAddUserComponent } from './components/staff-add-user/staff-add-user.component';
 import { StaffStatusComponent } from './components/staff-user-details/staff-status/staff-status.component';
 import { StaffUserDetailsComponent } from './components/staff-user-details/staff-user-details.component';
 import { StaffAdvFilterComponent } from './components/staff-users/staff-adv-filter/staff-adv-filter.component';
 import { StaffSearchComponent } from './components/staff-users/staff-search/staff-search.component';
 import { StaffUserListComponent } from './components/staff-users/staff-user-list/staff-user-list.component';
-import { StaffAddUserContainerComponent } from './containers/staff-add-user-container/staff-add-user-container.component';
-import {
-  StaffEditUserContainerComponent
-} from './containers/staff-edit-user-container/staff-edit-user-container.component';
+import { StaffAddEditUserContainerComponent } from './containers/staff-add-edit-user-container/staff-add-edit-user-container.component';
 import { StaffMainContainerComponent } from './containers/staff-main-container/staff-main-container.component';
 import { StaffUserDetailsContainerComponent } from './containers/staff-user-details-container/staff-user-details-container.component';
 import { StaffUsersComponent } from './containers/staff-users/staff-users.component';
@@ -36,19 +32,20 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
 @NgModule({
   declarations: [
     StaffMainContainerComponent,
-    StaffAddUserContainerComponent,
-    StaffEditUserContainerComponent,
-    StaffUserDetailsContainerComponent,
+
     StaffUsersComponent,
     StaffSearchComponent,
-    StaffUserListComponent,
     StaffAdvFilterComponent,
-    StaffAddEditUserFormComponent,
-    StaffAddUserComponent,
-    StaffUserCheckAnswersComponent,
+    StaffUserListComponent,
+
+    StaffUserDetailsContainerComponent,
     StaffUserDetailsComponent,
     StaffStatusComponent,
-    StaffSelectLocationComponent
+
+    StaffAddEditUserContainerComponent,
+    StaffAddEditUserFormComponent,
+    StaffSelectLocationComponent,
+    StaffUserCheckAnswersComponent
   ],
   imports: [
     CommonModule,

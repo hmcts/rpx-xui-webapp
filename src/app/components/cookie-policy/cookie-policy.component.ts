@@ -132,9 +132,9 @@ export class CookiePolicyComponent {
       expires: '6 months'
     },
     {
+      purpose: 'Defnyddir i ddiogelu eich sesiwn mewngofnodi',
       name: '_oauth2_proxy',
       cat: this.SECURITY,
-      purpose: 'Defnyddir i ddiogelu eich sesiwn mewngofnodi',
       expires: '4 awr'
     },
     {
@@ -144,9 +144,9 @@ export class CookiePolicyComponent {
       expires: '1 day'
     },
     {
+      purpose: 'This stores information about your session',
       name: '_ga',
       cat: this.GOOGLE,
-      purpose: 'This stores information about your session',
       expires: '2 years'
     },
     {
@@ -158,8 +158,7 @@ export class CookiePolicyComponent {
     {
       name: '_gat_XXXXXXXXXX',
       cat: this.GOOGLE,
-      purpose:
-        'This is used to control the rate at which requests to the analytics software are made',
+      purpose: 'This is used to control the rate at which requests to the analytics software are made',
       expires: '1 day'
     },
     {
@@ -177,8 +176,7 @@ export class CookiePolicyComponent {
     {
       name: 'XSRF-TOKEN',
       cat: this.SECURITY,
-      purpose:
-        'Defnyddir i ddiogelu eich sesiwn rhag ymosodiadau sgriptio ar draws safleoedd',
+      purpose: 'Defnyddir i ddiogelu eich sesiwn rhag ymosodiadau sgriptio ar draws safleoedd',
       expires: 'Pan fyddwch yn cau eich porwr'
     }
   ];

@@ -22,6 +22,7 @@ class UserApiData{
         let userSession = this.sessionUsers.find(sess => sess.token === token)
         if (!userSession) {
             userSession = {
+                requests:[],
                 token: token,
                 apiData: []
             };
@@ -46,6 +47,30 @@ class UserApiData{
         }
         const apiResponse = userSession.apiData.find(methodData => methodData.method === apiMethod)
         return apiResponse ? apiResponse.response : null
+    }
+
+    getUserSessionData(token){
+        let userSession = this.sessionUsers.find(sess => sess.token === token.replace('Bearer ', ''))
+        return userSession
+    }
+
+    logSessionRequest(token, req){
+        let userSession = this.sessionUsers.find(sess => sess.token === token)
+        if (!userSession) {
+            userSession = {
+                requests: [],
+                token: token,
+                apiData: []
+            };
+            this.sessionUsers.push(userSession)
+        }
+        userSession.requests.push({
+            method: req.method,
+            url: req.url,
+            body:req.body ? req.body : null,
+            time:new Date()
+        })
+
     }
 
     clearUserData(token){

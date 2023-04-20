@@ -58,7 +58,7 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
     userInfo.roleCategory = getRoleCategoryFromRoleAssignments(roleAssignments) || getUserRoleCategory(userInfo.roles);
     req.session.roleAssignmentResponse = activeRoleAssignments;
   } catch (error) {
-    trackException(error, { functionCall: 'refreshRoleAssignmentForUser' })
+    trackException(error, { functionCall: 'refreshRoleAssignmentForUser' });
   }
   return userRoleAssignments;
 }

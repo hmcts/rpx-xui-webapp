@@ -9,7 +9,6 @@ export async function challengedAccessRouter(req: EnhancedRequest, resp, next) {
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const fullPath = `${basePath}/am/role-assignments`;
   const headers = setHeaders(req);
-  /* tslint:disable:no-string-literal */
   delete headers.accept;
   try {
     const response = await http.post(fullPath, req.body, { headers });
@@ -27,7 +26,6 @@ export async function challengedAccessUpdateAttributes(req: EnhancedRequest, res
   const updatePath = `${basePath}/am/role-assignments`;
 
   const headers = setHeaders(req);
-  /* tslint:disable:no-string-literal */
   delete headers.accept;
   try {
     const userInfo = req.session.passport.user.userinfo;

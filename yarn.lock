@@ -2197,15 +2197,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:1.8.7-fee-paid-filter-change":
-  version: 1.8.7-fee-paid-filter-change
-  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.7-fee-paid-filter-change"
+"@hmcts/rpx-xui-common-lib@npm:1.8.7-7909-removal-changes":
+  version: 1.8.7-7909-removal-changes
+  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.7-7909-removal-changes"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
-  checksum: 1a8dec2da5bf117c2370e22e3592c608b21f2e6700a9d5d25e286e1a188467a306f220043bc2c81f1b48d382115a9266009ee71342cc4a1c1d7d73e80af4a88f
+  checksum: 55136fc8babd270b092cfb0531c4204868f88980de68ab102251c9791549c0edd1f706337092d093c2cc9ee357ad5f2be4bafada1b9295efcd928e1cd3c79793
   languageName: node
   linkType: hard
 
@@ -18137,7 +18137,7 @@ __metadata:
     "@hmcts/media-viewer": 2.9.3
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 1.8.7-fee-paid-filter-change
+    "@hmcts/rpx-xui-common-lib": 1.8.7-7909-removal-changes
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^8.0.0-beta.4
     "@ng-idle/keepalive": ^8.0.0-beta.4

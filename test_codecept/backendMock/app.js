@@ -100,7 +100,7 @@ class MockApp {
         // await this.stopServer();
         this.server = await app.listen(8080);
 
-        console.log("mock server started on port : " + this.serverPort);
+        console.log("mock server started on port : " + 8080);
         // return "Mock started successfully"
 
     }

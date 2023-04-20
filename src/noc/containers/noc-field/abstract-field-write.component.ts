@@ -5,7 +5,6 @@ import { AbstractFormFieldComponent } from './abstract-form-field.component';
   template: ''
 })
 export abstract class AbstractFieldWriteComponent extends AbstractFormFieldComponent {
-
   @Input()
   public idPrefix = '';
 

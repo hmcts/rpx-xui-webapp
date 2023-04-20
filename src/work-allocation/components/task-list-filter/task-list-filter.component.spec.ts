@@ -20,7 +20,7 @@ import { TaskListFilterComponent } from './task-list-filter.component';
     <exui-task-list-filter></exui-task-list-filter>`
 })
 class WrapperComponent {
-  @ViewChild(TaskListFilterComponent, {static: true}) public appComponentRef: TaskListFilterComponent;
+  @ViewChild(TaskListFilterComponent, { static: true }) public appComponentRef: TaskListFilterComponent;
 }
 
 describe('TaskListFilterComponent', () => {
@@ -116,7 +116,7 @@ describe('TaskListFilterComponent', () => {
       },
       {
         name: 'types-of-work',
-        value: ['types_of_work_all', ...typesOfWork.map(t => t.key)]
+        value: ['types_of_work_all', ...typesOfWork.map((t) => t.key)]
       }
     ]
   };
@@ -143,7 +143,7 @@ describe('TaskListFilterComponent', () => {
         RouterTestingModule,
         ExuiCommonLibModule,
         HttpClientTestingModule,
-        StoreModule,
+        StoreModule
       ],
       declarations: [TaskListFilterComponent, WrapperComponent],
       providers: [
@@ -172,7 +172,7 @@ describe('TaskListFilterComponent', () => {
     component = wrapper.appComponentRef;
     component.persistence = 'local';
     mockFilterService.get.and.returnValue(null);
-    mockSessionStorageService.getItem.and.returnValue(JSON.stringify([{regionId: '1', locations: ['219164']}, {regionId: '9', locations: ['123456']}]));
+    mockSessionStorageService.getItem.and.returnValue(JSON.stringify([{ regionId: '1', locations: ['219164'] }, { regionId: '9', locations: ['123456'] }]));
     fixture.detectChanges();
   });
 

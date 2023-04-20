@@ -2,9 +2,7 @@ import JsonConfig from './json-config';
 import { Task } from './tasks';
 
 describe('WorkAllocation', () => {
-
   describe('JsonConfig', () => {
-
     it('should correctly coerce a partial JSON object to a Task', () => {
       const JSON: object = { id: 'Bob' };
       const TASK: Task = JsonConfig.fromJson(JSON);
@@ -58,7 +56,5 @@ describe('WorkAllocation', () => {
       expect(TASK).toBeDefined();
       expect(Object.keys.length).toEqual(1);
     });
-
   });
-
 });

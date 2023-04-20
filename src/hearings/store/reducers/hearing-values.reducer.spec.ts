@@ -29,20 +29,20 @@ describe('Hearing Values Reducer', () => {
           caseCategories: [
             {
               categoryType: CategoryType.CaseType,
-              categoryValue: 'BBA3-002',
+              categoryValue: 'BBA3-002'
             }, {
               categoryType: CategoryType.CaseSubType,
               categoryValue: 'BBA3-002CC',
-              categoryParent: 'BBA3-002',
+              categoryParent: 'BBA3-002'
             }, {
               categoryType: CategoryType.CaseSubType,
               categoryValue: 'BBA3-002GC',
-              categoryParent: 'BBA3-002',
+              categoryParent: 'BBA3-002'
             }, {
               categoryType: CategoryType.CaseSubType,
               categoryValue: 'BBA3-002RC',
-              categoryParent: 'BBA3-002',
-            },
+              categoryParent: 'BBA3-002'
+            }
           ],
           caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
           caserestrictedFlag: false,
@@ -52,7 +52,7 @@ describe('Hearing Values Reducer', () => {
           hearingWindow: {
             dateRangeStart: '2021-11-23T09:00:00.000Z',
             dateRangeEnd: '2021-11-30T09:00:00.000Z',
-            firstDateTimeMustBe: '2021-12-01T09:00:00.000Z',
+            firstDateTimeMustBe: '2021-12-01T09:00:00.000Z'
           },
           duration: 45,
           hearingPriorityType: 'standard',
@@ -72,16 +72,16 @@ describe('Hearing Values Reducer', () => {
             authorisationSubType: [''],
             panelComposition: [{
               memberType: '',
-              count: 1,
+              count: 1
             }],
             judiciaryPreferences: [
               {
                 memberID: 'p1000000',
                 memberType: MemberType.JUDGE,
-                requirementType: RequirementType.EXCLUDE,
-              },
+                requirementType: RequirementType.EXCLUDE
+              }
             ],
-            judiciarySpecialisms: [''],
+            judiciarySpecialisms: ['']
           },
           hearingIsLinkedFlag: false,
           parties: [
@@ -94,9 +94,9 @@ describe('Hearing Values Reducer', () => {
                 {
                   unavailableFromDate: '2021-12-10T09:00:00.000Z',
                   unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY,
-                },
-              ],
+                  unavailabilityType: UnavailabilityType.ALL_DAY
+                }
+              ]
             },
             {
               partyID: 'P2',
@@ -107,9 +107,9 @@ describe('Hearing Values Reducer', () => {
                 {
                   unavailableFromDate: '2021-12-20T09:00:00.000Z',
                   unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY,
-                },
-              ],
+                  unavailabilityType: UnavailabilityType.ALL_DAY
+                }
+              ]
             }],
           caseFlags: {
             flags: [
@@ -118,25 +118,25 @@ describe('Hearing Values Reducer', () => {
                 partyName: 'Jane and Smith',
                 flagId: 'Language Interpreter',
                 flagDescription: 'Spanish interpreter required',
-                flagStatus: 'ACTIVE',
+                flagStatus: 'ACTIVE'
               },
               {
                 partyID: 'P2',
                 partyName: 'DWP',
                 flagId: 'case flag 1',
                 flagDescription: 'case flag 1 description',
-                flagStatus: 'ACTIVE',
-              },
+                flagStatus: 'ACTIVE'
+              }
             ],
-            flagAmendURL: '/',
+            flagAmendURL: '/'
           },
           screenFlow: [
           ],
           vocabulary: [
             {
-              word1: '',
-            },
-          ],
+              word1: ''
+            }
+          ]
         };
         const action = new fromHearingValuesActions.LoadHearingValuesSuccess(SERVICE_HEARING_VALUES);
         const hearingsState = fromHearingValuesReducer.hearingValuesReducer(fromHearingValuesReducer.initialHearingValuesState, action);
@@ -150,7 +150,7 @@ describe('Hearing Values Reducer', () => {
             status: 403,
             errors: null,
             message: 'Http failure response: 403 Forbidden'
-          },
+          }
         };
         const action = new fromHearingValuesActions.LoadHearingValuesFailure(initialHearingValuesState.lastError);
         const hearingsState = fromHearingValuesReducer.hearingValuesReducer(initialHearingValuesState, action);
@@ -166,7 +166,7 @@ describe('Hearing Values Reducer', () => {
             status: 403,
             errors: null,
             message: 'Http failure response: 403 Forbidden'
-          },
+          }
         };
         const action = new fromHearingValuesActions.ResetHearingValuesLastError();
         const hearingsState = fromHearingValuesReducer.hearingValuesReducer(initialHearingValuesState, action);

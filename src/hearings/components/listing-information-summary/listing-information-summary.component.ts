@@ -13,7 +13,6 @@ import { HearingsUtils } from '../../utils/hearings.utils';
   styleUrls: ['./listing-information-summary.component.scss']
 })
 export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
-
   private static readonly HEARING_PANEL_SCREEN_NAME = 'hearing-panel';
 
   public hearingState$: Observable<fromHearingStore.State>;
@@ -33,7 +32,7 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.serviceValueSub = this.hearingState$.subscribe((state) => {
       this.isListedCaseStatus = state.hearingRequest.hearingRequestMainModel.hearingResponse.laCaseStatus === LaCaseStatus.LISTED;
-      state.hearingList.hearingListMainModel.caseHearings.forEach(caseHearing => {
+      state.hearingList.hearingListMainModel.caseHearings.forEach((caseHearing) => {
         if (caseHearing.hearingID === state.hearingRequest.hearingRequestMainModel.caseDetails.hearingID) {
           this.caseStatusName = caseHearing.exuiDisplayStatus;
         }
@@ -43,14 +42,13 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
         && HearingsUtils.sortHearingDaySchedule(state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule);
       this.isPaperHearing = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR);
       const screenFlow = state.hearingValues && state.hearingValues.serviceHearingValuesModel && state.hearingValues.serviceHearingValuesModel.screenFlow;
-      this.displayPanelMembersSection = screenFlow && screenFlow.findIndex(screen => screen.screenName === ListingInformationSummaryComponent.HEARING_PANEL_SCREEN_NAME) !== -1;
+      this.displayPanelMembersSection = screenFlow && screenFlow.findIndex((screen) => screen.screenName === ListingInformationSummaryComponent.HEARING_PANEL_SCREEN_NAME) !== -1;
     });
   }
 
   public isCaseStatusListed(): boolean {
     return this.exuiDisplayStatus.LISTED === this.caseStatusName;
   }
-
 
   public ngOnDestroy(): void {
     if (this.serviceValueSub) {

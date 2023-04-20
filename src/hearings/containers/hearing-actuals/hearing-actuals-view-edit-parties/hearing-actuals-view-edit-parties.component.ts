@@ -20,7 +20,7 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
 @Component({
   selector: 'exui-hearing-actuals-view-edit-parties',
   styleUrls: ['./hearing-actuals-view-edit-parties.component.scss'],
-  templateUrl: './hearing-actuals-view-edit-parties.component.html',
+  templateUrl: './hearing-actuals-view-edit-parties.component.html'
 })
 export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy {
   public partyChannels: LovRefDataModel[];
@@ -35,7 +35,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     'Attendance type',
     'Organisation (optional)',
     'Attendee representing',
-    'Action',
+    'Action'
   ];
 
   public form: FormGroup;
@@ -60,7 +60,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
                      private readonly ngZone: NgZone
   ) {
     this.form = this.fb.group({
-      parties: this.fb.array([], [Validators.maxLength(50)]),
+      parties: this.fb.array([], [Validators.maxLength(50)])
     });
   }
 
@@ -74,14 +74,14 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       .map((party: any) => ({
         individualDetails: {
           firstName: party.firstName,
-          lastName: party.lastName,
+          lastName: party.lastName
         },
         actualOrganisationName: party.organisation,
         actualPartyId: party.partyId,
         didNotAttendFlag: false,
         partyChannelSubType: party.attendanceType,
         partyRole: party.role,
-        representedParty: party.attendeeRepresenting,
+        representedParty: party.attendeeRepresenting
       }));
   }
 
@@ -97,15 +97,15 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
           return `${acc} and ${curr}.`;
         } else if (isSecondLast) {
           return `${acc} ${curr}`;
-        } else {
-          return `${acc} ${curr}, `;
         }
+
+        return `${acc} ${curr}, `;
       }, 'Enter ');
   }
 
   public isPlannedParty(actualDayParty: ActualDayPartyModel): boolean {
     return this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[this.plannedDayIndex]
-      .parties.some(plannedParty => plannedParty.partyID === actualDayParty.actualPartyId);
+      .parties.some((plannedParty) => plannedParty.partyID === actualDayParty.actualPartyId);
   }
 
   public ngOnInit(): void {
@@ -113,10 +113,10 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     // Get unique values to display in the dropdown
     // If a parent does not contain any child nodes then consider the parent
     const uniquePartyChannels: LovRefDataModel[] = [];
-    partyChannels.forEach(channel => {
+    partyChannels.forEach((channel) => {
       if (channel.child_nodes) {
-        channel.child_nodes.forEach(childNode => {
-          if (!uniquePartyChannels.map(node => node.key).includes(childNode.key)) {
+        channel.child_nodes.forEach((childNode) => {
+          if (!uniquePartyChannels.map((node) => node.key).includes(childNode.key)) {
             uniquePartyChannels.push(childNode);
           }
         });
@@ -138,7 +138,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
         this.caseTitle = this.hearingActualsMainModel.caseDetails.hmctsInternalCaseName;
 
         this.plannedDayIndex = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays
-          .findIndex(item => ActualHearingsUtils.getDate(item.plannedStartTime) === this.hearingDate);
+          .findIndex((item) => ActualHearingsUtils.getDate(item.plannedStartTime) === this.hearingDate);
         this.setUpRoleLists();
         this.createForm(this.hearingActualsMainModel);
         this.subscribeToFormChanges();
@@ -148,7 +148,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   private setUpRoleLists(): void {
     const plannedParties = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[this.plannedDayIndex].parties;
     for (const role of this.hearingRoles) {
-      const isPlannedRole = plannedParties.some(plannedParty => plannedParty.partyRole === role.key);
+      const isPlannedRole = plannedParties.some((plannedParty) => plannedParty.partyRole === role.key);
       if (isPlannedRole) {
         this.immutablePartyRoles.push(role);
       } else {
@@ -180,7 +180,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     if (this.isPlannedParty(actualParty)) {
       this.participants.push({
         name: `${actualParty.individualDetails.firstName} ${actualParty.individualDetails.lastName}`,
-        id: actualParty.actualPartyId,
+        id: actualParty.actualPartyId
       });
     }
     this.parties.push(this.fb.group({
@@ -191,7 +191,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       organisation: [actualParty.actualOrganisationName],
       attendeeRepresenting: [actualParty.representedParty, this.isPlannedParty(actualParty) ? [] : [this.validators.mandatory('Enter attendee representing')]],
       partyId: [actualParty.actualPartyId],
-      isPlannedParty: [this.isPlannedParty(actualParty)],
+      isPlannedParty: [this.isPlannedParty(actualParty)]
     }));
   }
 
@@ -199,7 +199,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     if (plannedParty.partyID) {
       this.participants.push({
         name: `${plannedParty.individualDetails.firstName} ${plannedParty.individualDetails.lastName}`,
-        id: plannedParty.partyID,
+        id: plannedParty.partyID
       });
     }
     this.parties.push(this.fb.group({
@@ -247,7 +247,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       organisation: [null],
       attendeeRepresenting: [null, [this.validators.mandatory('Enter attendee representing')]],
       isPlannedParty: [false]
-    }, {validator: this.validators.validateDuplicateEntries(index, 'Participant details already entered.')});
+    }, { validator: this.validators.validateDuplicateEntries(index, 'Participant details already entered.') });
   }
 
   public addRow($event: Event): void {
@@ -285,7 +285,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     if (valid) {
       const actualDayParties = HearingActualsViewEditPartiesComponent.toActualParties(parties);
       const hearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(
-        this.hearingActualsMainModel, this.hearingDate, {actualDayParties} as ActualHearingDayModel
+        this.hearingActualsMainModel, this.hearingDate, { actualDayParties } as ActualHearingDayModel
       );
 
       this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
@@ -302,16 +302,16 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public getRole(value: string): string {
-    const hearingRole = this.hearingRoles.find(role => role.key === value);
+    const hearingRole = this.hearingRoles.find((role) => role.key === value);
     return hearingRole ? hearingRole.value_en : value;
   }
 
   private getAllRowErrors(controls: { [p: string]: AbstractControl }): { [p: string]: string } {
     const errors: { [p: string]: string } = {};
-    Object.keys(controls).forEach(key => {
+    Object.keys(controls).forEach((key) => {
       const controlErrors: ValidationErrors = controls[key].errors;
       if (controlErrors) {
-        Object.keys(controlErrors).forEach(keyError => {
+        Object.keys(controlErrors).forEach((keyError) => {
           errors[key] = controlErrors[keyError].message;
         });
       }
@@ -331,7 +331,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       if (!message) {
         return acc;
       }
-      return [...acc, {id: `participant${index}`, message}];
+      return [...acc, { id: `participant${index}`, message }];
     }, []);
   }
 }

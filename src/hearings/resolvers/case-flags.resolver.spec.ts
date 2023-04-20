@@ -30,9 +30,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'CF0002',
                 isParent: false,
                 Path: [
-                  'Case',
+                  'Case'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Potentially harmful medical evidence',
@@ -41,9 +41,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'CF0003',
                 isParent: false,
                 Path: [
-                  'Case',
+                  'Case'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Gender recognition',
@@ -52,9 +52,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'CF0004',
                 isParent: false,
                 Path: [
-                  'Case',
+                  'Case'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Domestic violence allegation',
@@ -63,9 +63,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'CF0005',
                 isParent: false,
                 Path: [
-                  'Case',
+                  'Case'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Potential fraud',
@@ -74,9 +74,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'CF0006',
                 isParent: false,
                 Path: [
-                  'Case',
+                  'Case'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Urgent flag',
@@ -85,9 +85,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'CF0007',
                 isParent: false,
                 Path: [
-                  'Case',
+                  'Case'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Exclusion order with Police',
@@ -96,11 +96,11 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'CF0008',
                 isParent: false,
                 Path: [
-                  'Case',
+                  'Case'
                 ],
-                childFlags: [],
-              },
-            ],
+                childFlags: []
+              }
+            ]
           },
           {
             name: 'Party',
@@ -117,9 +117,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'PF0002',
                 isParent: false,
                 Path: [
-                  'Party',
+                  'Party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Potentially suicidal',
@@ -128,9 +128,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'PF0003',
                 isParent: false,
                 Path: [
-                  'Party',
+                  'Party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Confidential address',
@@ -139,9 +139,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'PF0004',
                 isParent: false,
                 Path: [
-                  'Party',
+                  'Party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Anonymous party',
@@ -150,9 +150,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'PF0005',
                 isParent: false,
                 Path: [
-                  'Party',
+                  'Party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Potentially Violent Person',
@@ -161,9 +161,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'PF0006',
                 isParent: false,
                 Path: [
-                  'Party',
+                  'Party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Unacceptable customer behaviour',
@@ -172,9 +172,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'PF0007',
                 isParent: false,
                 Path: [
-                  'Party',
+                  'Party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Vexatious litigant',
@@ -183,9 +183,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'PF0008',
                 isParent: false,
                 Path: [
-                  'Party',
+                  'Party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Civil restraint order',
@@ -194,9 +194,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'PF0009',
                 isParent: false,
                 Path: [
-                  'Party',
+                  'Party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Extended civil restraint order',
@@ -205,9 +205,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'PF0010',
                 isParent: false,
                 Path: [
-                  'Party',
+                  'Party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Banning order',
@@ -216,9 +216,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'PF0011',
                 isParent: false,
                 Path: [
-                  'Party',
+                  'Party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Foreign national offender',
@@ -227,9 +227,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'PF0012',
                 isParent: false,
                 Path: [
-                  'Party',
+                  'Party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Unaccompanied minor',
@@ -238,9 +238,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'PF0013',
                 isParent: false,
                 Path: [
-                  'Party',
+                  'Party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Audio/Video Evidence',
@@ -249,9 +249,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'PF0014',
                 isParent: false,
                 Path: [
-                  'Party',
+                  'Party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Language Interpreter',
@@ -260,9 +260,9 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'PF0015',
                 isParent: false,
                 Path: [
-                  'Party',
+                  'Party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Reasonable adjustment',
@@ -271,7 +271,7 @@ describe('Case Flags Resolver', () => {
                 flagCode: 'RA0001',
                 isParent: true,
                 Path: [
-                  'Party',
+                  'Party'
                 ],
                 childFlags: [
                   {
@@ -281,7 +281,7 @@ describe('Case Flags Resolver', () => {
                     flagCode: 'RA0002',
                     isParent: true,
                     Path: [
-                      'Party', 'Reasonable adjustment',
+                      'Party', 'Reasonable adjustment'
                     ],
                     childFlags: [
                       {
@@ -291,9 +291,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0009',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Alternative formats of our information',
+                          'Party', 'Reasonable adjustment', 'Alternative formats of our information'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Braille',
@@ -302,9 +302,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0010',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Alternative formats of our information',
+                          'Party', 'Reasonable adjustment', 'Alternative formats of our information'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Coloured paper',
@@ -313,9 +313,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0011',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Alternative formats of our information',
+                          'Party', 'Reasonable adjustment', 'Alternative formats of our information'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Easy Read',
@@ -324,9 +324,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0012',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Alternative formats of our information',
+                          'Party', 'Reasonable adjustment', 'Alternative formats of our information'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Larger font size',
@@ -335,11 +335,11 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0013',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Alternative formats of our information',
+                          'Party', 'Reasonable adjustment', 'Alternative formats of our information'
                         ],
-                        childFlags: [],
-                      },
-                    ],
+                        childFlags: []
+                      }
+                    ]
                   },
                   {
                     name: 'Assistance with court and tribunal processes and forms',
@@ -348,7 +348,7 @@ describe('Case Flags Resolver', () => {
                     flagCode: 'RA0003',
                     isParent: true,
                     Path: [
-                      'Party', 'Reasonable adjustment',
+                      'Party', 'Reasonable adjustment'
                     ],
                     childFlags: [
                       {
@@ -358,9 +358,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0014',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms',
+                          'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Face to face explanations to help customer to complete forms',
@@ -369,9 +369,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0015',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms',
+                          'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Reading documents for customer',
@@ -380,9 +380,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0016',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms',
+                          'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Time and opportunity for customer to explain their needs and preferences',
@@ -391,11 +391,11 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0017',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms',
+                          'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'
                         ],
-                        childFlags: [],
-                      },
-                    ],
+                        childFlags: []
+                      }
+                    ]
                   },
                   {
                     name: 'Pre- Hearing visit',
@@ -404,9 +404,9 @@ describe('Case Flags Resolver', () => {
                     flagCode: 'RA0004',
                     isParent: false,
                     Path: [
-                      'Party', 'Reasonable adjustment',
+                      'Party', 'Reasonable adjustment'
                     ],
-                    childFlags: [],
+                    childFlags: []
                   },
                   {
                     name: 'Physical access and facilities',
@@ -415,7 +415,7 @@ describe('Case Flags Resolver', () => {
                     flagCode: 'RA0005',
                     isParent: true,
                     Path: [
-                      'Party', 'Reasonable adjustment',
+                      'Party', 'Reasonable adjustment'
                     ],
                     childFlags: [
                       {
@@ -425,9 +425,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0018',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                          'Party', 'Reasonable adjustment', 'Physical access and facilities'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Assistance to get to court or tribunal',
@@ -436,9 +436,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0019',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                          'Party', 'Reasonable adjustment', 'Physical access and facilities'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Assistance using lifts',
@@ -447,9 +447,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0020',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                          'Party', 'Reasonable adjustment', 'Physical access and facilities'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Lift required',
@@ -458,9 +458,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0021',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                          'Party', 'Reasonable adjustment', 'Physical access and facilities'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Parking space close to court or tribunal',
@@ -469,9 +469,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0022',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                          'Party', 'Reasonable adjustment', 'Physical access and facilities'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Personal Evacuation Emergency Plan (PEEP) arrangements',
@@ -480,9 +480,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0023',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                          'Party', 'Reasonable adjustment', 'Physical access and facilities'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Ramps',
@@ -491,9 +491,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0024',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                          'Party', 'Reasonable adjustment', 'Physical access and facilities'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Relocation to another building / hearing room / ground floor room',
@@ -502,9 +502,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0025',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                          'Party', 'Reasonable adjustment', 'Physical access and facilities'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Use of venue wheelchair',
@@ -513,9 +513,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0026',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                          'Party', 'Reasonable adjustment', 'Physical access and facilities'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Wheelchair access',
@@ -524,11 +524,11 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0027',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                          'Party', 'Reasonable adjustment', 'Physical access and facilities'
                         ],
-                        childFlags: [],
-                      },
-                    ],
+                        childFlags: []
+                      }
+                    ]
                   },
                   {
                     name: 'Within our buildings and hearing room environment',
@@ -537,7 +537,7 @@ describe('Case Flags Resolver', () => {
                     flagCode: 'RA0006',
                     isParent: true,
                     Path: [
-                      'Party', 'Reasonable adjustment',
+                      'Party', 'Reasonable adjustment'
                     ],
                     childFlags: [
                       {
@@ -547,9 +547,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0028',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
+                          'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Chair in the witness box',
@@ -558,9 +558,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0030',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
+                          'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Chair with back support / cushion / arms / adjustable / extra leg room',
@@ -569,9 +569,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0031',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
+                          'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Hearing Enhancement System (hearing loops infra red receiver)',
@@ -580,7 +580,7 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0032',
                         isParent: true,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
+                          'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
                         ],
                         childFlags: [
                           {
@@ -591,9 +591,9 @@ describe('Case Flags Resolver', () => {
                             isParent: false,
                             Path: [
                               'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
-                              'Hearing Enhancement System (hearing loops infra red receiver)',
+                              'Hearing Enhancement System (hearing loops infra red receiver)'
                             ],
-                            childFlags: [],
+                            childFlags: []
                           },
                           {
                             name: 'Infra Red Receiver',
@@ -603,9 +603,9 @@ describe('Case Flags Resolver', () => {
                             isParent: false,
                             Path: [
                               'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
-                              'Hearing Enhancement System (hearing loops infra red receiver)',
+                              'Hearing Enhancement System (hearing loops infra red receiver)'
                             ],
-                            childFlags: [],
+                            childFlags: []
                           },
                           {
                             name: 'Induction Loop',
@@ -615,11 +615,11 @@ describe('Case Flags Resolver', () => {
                             isParent: false,
                             Path: [
                               'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
-                              'Hearing Enhancement System (hearing loops infra red receiver)',
+                              'Hearing Enhancement System (hearing loops infra red receiver)'
                             ],
-                            childFlags: [],
-                          },
-                        ],
+                            childFlags: []
+                          }
+                        ]
                       },
                       {
                         name: 'Natural light',
@@ -628,9 +628,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0033',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
+                          'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Need to be close to who is speaking',
@@ -639,9 +639,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0034',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
+                          'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Separate waiting area / Private room',
@@ -650,11 +650,11 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0035',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
+                          'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
                         ],
-                        childFlags: [],
-                      },
-                    ],
+                        childFlags: []
+                      }
+                    ]
                   },
                   {
                     name: 'The Hearing',
@@ -663,7 +663,7 @@ describe('Case Flags Resolver', () => {
                     flagCode: 'RA0007',
                     isParent: true,
                     Path: [
-                      'Party', 'Reasonable adjustment',
+                      'Party', 'Reasonable adjustment'
                     ],
                     childFlags: [
                       {
@@ -673,9 +673,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0036',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'The Hearing',
+                          'Party', 'Reasonable adjustment', 'The Hearing'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Facility to be able to get up and move around',
@@ -684,9 +684,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0037',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'The Hearing',
+                          'Party', 'Reasonable adjustment', 'The Hearing'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'On-line hearing',
@@ -695,9 +695,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0038',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'The Hearing',
+                          'Party', 'Reasonable adjustment', 'The Hearing'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Regular or extra breaks (eg for medication, food and drink or lavatory needs',
@@ -706,9 +706,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0039',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'The Hearing',
+                          'Party', 'Reasonable adjustment', 'The Hearing'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Telephone hearing',
@@ -717,9 +717,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0040',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'The Hearing',
+                          'Party', 'Reasonable adjustment', 'The Hearing'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Video link',
@@ -728,11 +728,11 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0041',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'The Hearing',
+                          'Party', 'Reasonable adjustment', 'The Hearing'
                         ],
-                        childFlags: [],
-                      },
-                    ],
+                        childFlags: []
+                      }
+                    ]
                   },
                   {
                     name: 'Help or support from a third party',
@@ -741,7 +741,7 @@ describe('Case Flags Resolver', () => {
                     flagCode: 'RA0008',
                     isParent: true,
                     Path: [
-                      'Party', 'Reasonable adjustment',
+                      'Party', 'Reasonable adjustment'
                     ],
                     childFlags: [
                       {
@@ -751,9 +751,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0042',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                          'Party', 'Reasonable adjustment', 'Help or support from a third party'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'CA Witness Services',
@@ -762,9 +762,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0043',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                          'Party', 'Reasonable adjustment', 'Help or support from a third party'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Clock (Community Legal Outreach Collaboration) representative',
@@ -773,9 +773,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0044',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                          'Party', 'Reasonable adjustment', 'Help or support from a third party'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Good Things foundation',
@@ -784,9 +784,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0045',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                          'Party', 'Reasonable adjustment', 'Help or support from a third party'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Intermediary',
@@ -795,9 +795,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0046',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                          'Party', 'Reasonable adjustment', 'Help or support from a third party'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Lip Speaker',
@@ -806,9 +806,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0047',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                          'Party', 'Reasonable adjustment', 'Help or support from a third party'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Mackenzie Friend',
@@ -817,9 +817,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0048',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                          'Party', 'Reasonable adjustment', 'Help or support from a third party'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Other Charity representative',
@@ -828,9 +828,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0049',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                          'Party', 'Reasonable adjustment', 'Help or support from a third party'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Personal Support Unit',
@@ -839,9 +839,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0050',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                          'Party', 'Reasonable adjustment', 'Help or support from a third party'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Speech to text reporter (Palantypist)',
@@ -850,9 +850,9 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0051',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                          'Party', 'Reasonable adjustment', 'Help or support from a third party'
                         ],
-                        childFlags: [],
+                        childFlags: []
                       },
                       {
                         name: 'Support Worker / Carer',
@@ -861,16 +861,16 @@ describe('Case Flags Resolver', () => {
                         flagCode: 'RA0052',
                         isParent: false,
                         Path: [
-                          'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                          'Party', 'Reasonable adjustment', 'Help or support from a third party'
                         ],
-                        childFlags: [],
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
+                        childFlags: []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
         ]
       }
     ]
@@ -878,15 +878,15 @@ describe('Case Flags Resolver', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-        imports: [
-          RouterTestingModule.withRoutes([]),
-          HttpClientTestingModule,
-        ],
-        providers: [
-          provideMockStore({initialState}),
-          CaseFlagsRefDataService
-        ]
-      }
+      imports: [
+        RouterTestingModule.withRoutes([]),
+        HttpClientTestingModule
+      ],
+      providers: [
+        provideMockStore({ initialState }),
+        CaseFlagsRefDataService
+      ]
+    }
     );
     caseFlagsRefDataService = TestBed.inject(CaseFlagsRefDataService) as CaseFlagsRefDataService;
   });
@@ -900,9 +900,9 @@ describe('Case Flags Resolver', () => {
     spyOn(caseFlagsRefDataService, 'getCaseFlagsRefData').and.returnValue(of(CASE_FLAGS_REF_DATA));
     const route = new ActivatedRouteSnapshot();
     route.data = {
-      title: 'HMCTS Manage cases | Request Hearing | Hearing Requirement',
+      title: 'HMCTS Manage cases | Request Hearing | Hearing Requirement'
     };
-    resolver.resolve(route).subscribe((refData: CaseFlagReferenceModel[]) => {
+    resolver.resolve().subscribe((refData: CaseFlagReferenceModel[]) => {
       expect(refData).toEqual(CASE_FLAGS_REF_DATA.flags[0].FlagDetails);
     });
   }));

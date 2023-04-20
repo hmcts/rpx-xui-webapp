@@ -1,7 +1,7 @@
-import {select, Store} from '@ngrx/store';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 import * as fromHearingStore from '../store';
 
 export class ServiceIdResolverResolve {
@@ -9,7 +9,7 @@ export class ServiceIdResolverResolve {
 
   constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>
-  ) { }
+  ) {}
 
   public getServiceId$(): Observable<string> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).pipe(

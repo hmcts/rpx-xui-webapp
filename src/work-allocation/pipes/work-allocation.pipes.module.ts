@@ -8,7 +8,6 @@ import { CaseworkerDisplayName, DaysFromTodayPipe, YesNoPipe } from '.';
 import { IntegerPipe } from './integer.pipe';
 import { TwoDPPipe } from './two-dp.pipe';
 
-
 // from containers
 @NgModule({
   imports: [

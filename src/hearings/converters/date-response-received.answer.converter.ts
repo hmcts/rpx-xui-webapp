@@ -8,7 +8,7 @@ import { AnswerConverter } from './answer.converter';
 export class DateResponseReceivedAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;
         return moment(hearingResponse.receivedDateTime).format(HearingDateEnum.DisplayMonth);
       })

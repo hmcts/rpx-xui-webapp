@@ -38,11 +38,11 @@ describe('HearingSummaryComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                caseFlags: caseFlagsRefData,
-              },
+                caseFlags: caseFlagsRefData
+              }
             },
-            fragment: of('point-to-me'),
-          },
+            fragment: of('point-to-me')
+          }
         }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -66,13 +66,14 @@ describe('HearingSummaryComponent', () => {
   });
 
   it('should change answer', () => {
-    const mockMouseEvent = { preventDefault: () => { } } as MouseEvent;
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const mockMouseEvent = { preventDefault: () => {} } as MouseEvent;
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.mode = Mode.CREATE_EDIT;
     component.changeAnswer(mockMouseEvent, 'venue', 'hearing/request/venue');
     const hearingCondition: HearingConditions = {
       fragmentId: 'venue',
-      mode: Mode.CREATE_EDIT,
+      mode: Mode.CREATE_EDIT
     };
     expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.SaveHearingConditions(hearingCondition));
     expect(routerMock.navigateByUrl).toHaveBeenCalledWith('hearing/request/venue');

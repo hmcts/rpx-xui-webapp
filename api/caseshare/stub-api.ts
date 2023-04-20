@@ -8,37 +8,36 @@ import { OrganisationModel } from './models/organisation.model';
 import * as dbJson from './stubs/db.json';
 
 const dbModule = plainToClass(DataBaseModel, dbJson);
-// @ts-ignore
 const orgs: OrganisationModel[] = dbModule.organisations;
-// @ts-ignore
 const cases: SharedCase[] = dbModule.sharedCases;
 
 export function getUsers(req: EnhancedRequest, res: Response) {
-    const searchText = req.query.q.toString();
-    const org = getOrgById('o111111');
-    if (!org) {
-      return res.status(404).send('{"errorMessage": "Organisation is not found}"');
-    }
-    if (searchText === undefined) {
-      return res.send(org.users);
-    } else {
-      const users = org.users;
-      const filterUser = users.filter(aUser => aUser.idamId.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
+  const searchText = req.query.q.toString();
+  const org = getOrgById('o111111');
+  if (!org) {
+    return res.status(404).send('{"errorMessage": "Organisation is not found}"');
+  }
+  if (searchText === undefined) {
+    return res.send(org.users);
+  }
+
+  const users = org.users;
+  const filterUser = users.filter((aUser) => aUser.idamId.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
         aUser.firstName.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
         aUser.lastName.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
         aUser.email.toLowerCase().indexOf(searchText.toLowerCase()) > -1);
-      if (!filterUser || filterUser.length === 0) {
-        return res.status(404).send('{"errorMessage": "User is not found}"');
-      }
-      return res.send(filterUser);
-    }
+  if (!filterUser || filterUser.length === 0) {
+    return res.status(404).send('{"errorMessage": "User is not found}"');
+  }
+
+  return res.send(filterUser);
 }
 
 export function getCases(req: EnhancedRequest, res: Response) {
-    if (!cases) {
-      return res.status(404).send('{"errorMessage": "Cases are not found}"');
-    }
-    return res.send(cases);
+  if (!cases) {
+    return res.status(404).send('{"errorMessage": "Cases are not found}"');
+  }
+  return res.send(cases);
 }
 
 export function assignCases(req: EnhancedRequest, res: Response) {
@@ -52,16 +51,14 @@ export function assignCases(req: EnhancedRequest, res: Response) {
       if (assignmentId === 'u222222') {
         newSharedWith.push(user);
         newPendingShares = [];
-        // tslint:disable-next-line:no-empty
-      } else  if (assignmentId === 'u333333') {
-      } else  {
+      } else if (assignmentId !== 'u333333') {
         return res.sendStatus(500);
       }
     }
     const newSharedCase = {
       ...aCase,
       pendingShares: newPendingShares,
-      sharedWith: newSharedWith,
+      sharedWith: newSharedWith
     };
     updatedSharedCases.push(newSharedCase);
   }
@@ -69,5 +66,5 @@ export function assignCases(req: EnhancedRequest, res: Response) {
 }
 
 function getOrgById(orgId: string) {
-  return orgs.find(c => c.orgId === orgId);
+  return orgs.find((c) => c.orgId === orgId);
 }

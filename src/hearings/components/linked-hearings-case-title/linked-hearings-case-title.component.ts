@@ -4,7 +4,7 @@ import { Mode } from '../../models/hearings.enum';
 
 @Component({
   selector: 'exui-linked-hearings-case-title',
-  templateUrl: './linked-hearings-case-title.component.html',
+  templateUrl: './linked-hearings-case-title.component.html'
 })
 export class LinkedHearingsCaseTitleComponent {
   @Input() public caseName: string;
@@ -14,6 +14,6 @@ export class LinkedHearingsCaseTitleComponent {
   constructor(
     protected readonly route: ActivatedRoute,
   ) {
-      this.hearingTitleTextPrefix = this.route.snapshot.data.mode === Mode.MANAGE_HEARINGS ? 'Manage hearings linked to' : 'Link hearings for';
+    this.hearingTitleTextPrefix = this.route.snapshot.data.mode === Mode.MANAGE_HEARINGS ? 'Manage hearings linked to' : 'Link hearings for';
   }
 }

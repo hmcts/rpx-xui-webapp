@@ -1,20 +1,20 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {Component, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-import {ReactiveFormsModule} from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
-import {initialState} from '../../../hearing.test.data';
-import {HearingsService} from '../../../services/hearings.service';
-import {ValidatorsUtils} from '../../../utils/validators.utils';
-import {HearingActualsTimingComponent} from './hearing-actuals-timing.component';
+import { initialState } from '../../../hearing.test.data';
+import { HearingsService } from '../../../services/hearings.service';
+import { ValidatorsUtils } from '../../../utils/validators.utils';
+import { HearingActualsTimingComponent } from './hearing-actuals-timing.component';
 
 import * as _ from 'lodash';
 
-@Component({selector: 'exui-app-blank', template: ''})
+@Component({ selector: 'exui-app-blank', template: '' })
 class BlankComponent {}
 
 const mockActivatedRoute = {
@@ -23,7 +23,7 @@ const mockActivatedRoute = {
     hearingDate: '2021-03-12'
   })),
   snapshot: {
-    data: {},
+    data: {}
   },
   navigate: (): boolean => true
 };
@@ -36,13 +36,13 @@ describe('HearingActualsTimingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([{ path: 'hearings/actuals/1/hearing-actual-add-edit-summary',  component: BlankComponent}]), HttpClientTestingModule],
+      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([{ path: 'hearings/actuals/1/hearing-actual-add-edit-summary', component: BlankComponent }]), HttpClientTestingModule],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
-          useValue: mockActivatedRoute,
+          useValue: mockActivatedRoute
         },
         ValidatorsUtils
       ],
@@ -126,7 +126,6 @@ describe('HearingActualsTimingComponent', () => {
     expect(component.formGroup.get('hearingEndTime').hasError('invalidTime')).toBeTruthy();
   });
 
-
   it('should set errors invalid time range if start time is greater than finish time', () => {
     component.formGroup.patchValue({
       hearingStartTime: '10:00',
@@ -165,10 +164,9 @@ describe('HearingActualsTimingComponent', () => {
   });
 });
 
-
-
 describe('HearingActualsTimingComponent', () => {
   const hearingsService = jasmine.createSpyObj('HearingsService', ['updateHearingActuals']);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
   let component: HearingActualsTimingComponent;
   let fixture: ComponentFixture<HearingActualsTimingComponent>;
@@ -182,13 +180,13 @@ describe('HearingActualsTimingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([{ path: 'hearings/actuals/1/hearing-actual-add-edit-summary',  component: BlankComponent}]), HttpClientTestingModule],
+      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([{ path: 'hearings/actuals/1/hearing-actual-add-edit-summary', component: BlankComponent }]), HttpClientTestingModule],
       providers: [
-        provideMockStore({initialState: updatedInitialState}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState: updatedInitialState }),
+        { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
-          useValue: mockActivatedRoute,
+          useValue: mockActivatedRoute
         },
         ValidatorsUtils
       ],
@@ -215,8 +213,5 @@ describe('HearingActualsTimingComponent', () => {
       expect(component.formGroup.value.hearingStartTime).toBeNull();
       expect(component.formGroup.value.hearingEndTime).toBeNull();
     });
-
-
   });
-
 });

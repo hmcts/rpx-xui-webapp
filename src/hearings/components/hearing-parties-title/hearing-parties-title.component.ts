@@ -6,15 +6,13 @@ import * as fromHearingStore from '../../store';
 
 @Component({
   selector: 'exui-hearing-parties-title',
-  templateUrl: './hearing-parties-title.component.html',
+  templateUrl: './hearing-parties-title.component.html'
 })
 export class HearingPartiesTitleComponent implements OnInit, OnDestroy {
-
   public caseTitle: string;
   public serviceValueSub: Subscription;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>) {
-  }
+  constructor(private readonly hearingStore: Store<fromHearingStore.State>) {}
 
   public ngOnInit(): void {
     this.serviceValueSub = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe((hearingValueModel: ServiceHearingValuesModel) =>

@@ -1,5 +1,5 @@
 export class Entity {
-  public id: string | string[] ;
+  public id: string | string[];
   public value: {id: string; [key: string]: any};
   [key: string]: {id: string; [key: string]: any} | string[] | string;
   constructor(obj: any) {

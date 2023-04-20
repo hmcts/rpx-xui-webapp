@@ -1,106 +1,84 @@
-import * as chai from 'chai'
-import { expect } from 'chai'
-import 'mocha'
-import * as sinon from 'sinon'
-import * as sinonChai from 'sinon-chai'
-import { mockReq, mockRes } from 'sinon-express-mock'
-import * as amendedJurisdictions from './index'
+import * as chai from 'chai';
+import { expect } from 'chai';
+import 'mocha';
+import * as sinon from 'sinon';
+import * as sinonChai from 'sinon-chai';
+import { mockReq, mockRes } from 'sinon-express-mock';
+import * as amendedJurisdictions from './index';
 
-chai.use(sinonChai)
+chai.use(sinonChai);
 
 describe('Amended Jurisdiction', () => {
-
-  let sandbox
-  let result0
-  let result1
-  let res
-  let req
-  let proxyRes
+  let sandbox;
+  let res;
+  let req;
+  let proxyRes;
 
   beforeEach(() => {
-    sandbox = sinon.createSandbox()
+    sandbox = sinon.createSandbox();
 
-    proxyRes = {}
-    res = mockRes()
+    proxyRes = {};
+    res = mockRes();
     req = mockReq({
       baseUrl: '/api/documents/',
       cookies: [],
       headers: {
-          'accept': '*/*',
-          'content-type': 'text/test',
-          'experimental': 'experiment/test',
+        accept: '*/*',
+        'content-type': 'text/test',
+        experimental: 'experiment/test'
       },
       session: {
-          save: fun => {
-              fun()
-          },
+        save: (fun) => {
+          fun();
+        }
       },
-      url: 'fdafu4543543/binary',
-  })
-
-    result0 = {
-        data: [
-            {
-                id: 'PROBATE',
-            },
-            {
-                id: 'data',
-            },
-        ],
-    }
-
-    result1 = {
-        data: [
-
-        ],
-    }
-
-  })
+      url: 'fdafu4543543/binary'
+    });
+  });
 
   afterEach(() => {
-    sandbox.restore()
-  })
+    sandbox.restore();
+  });
 
-  it('should filter jurisdictions for the jurisdictions endpoint',  () => {
+  it('should filter jurisdictions for the jurisdictions endpoint', () => {
     const data = [
       {
-        id: 'PROBATE',
+        id: 'PROBATE'
       },
       {
-        id: 'RANDOM',
-      },
-    ]
-    req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read'
-    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data)
+        id: 'RANDOM'
+      }
+    ];
+    req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
+    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
     // Unknown jurisdiction should be filtered
     const expected = [
       {
-        id: 'PROBATE',
-      },
-    ]
-    expect(response).to.eql(expected)
-  })
+        id: 'PROBATE'
+      }
+    ];
+    expect(response).to.eql(expected);
+  });
 
-  it('should not filter jurisdictions for non-jurisdictions endpoint',  () => {
+  it('should not filter jurisdictions for non-jurisdictions endpoint', () => {
     const expected = [
       {
-        id: 'PROBATE',
+        id: 'PROBATE'
       },
       {
-        id: 'RANDOM',
-      },
-    ]
-    req.url = '/aggregated/some/other/url'
+        id: 'RANDOM'
+      }
+    ];
+    req.url = '/aggregated/some/other/url';
 
-    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, expected)
-    expect(response).to.eql(expected)
-  })
+    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, expected);
+    expect(response).to.eql(expected);
+  });
 
   it('should send empty array', () => {
-    const expected = []
+    const expected = [];
 
-    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, expected)
-    expect(response).to.eql(expected)
-  })
-
-})
+    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, expected);
+    expect(response).to.eql(expected);
+  });
+});

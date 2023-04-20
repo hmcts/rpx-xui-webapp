@@ -21,7 +21,7 @@ describe('CaseTasksResolverService', () => {
         case_id: '1620409659381330',
         case_category: 'EEA',
         case_name: 'Kimberly Julian',
-        permissions: ['Read', 'Manage'],
+        permissions: ['Read', 'Manage']
       },
       {
         id: '0d22d839-b25a-11eb-a18c-f2d58a9b7bd2',
@@ -32,21 +32,22 @@ describe('CaseTasksResolverService', () => {
         case_id: '1620409659381330',
         case_category: 'Protection',
         case_name: 'James Carter',
-        permissions: ['Execute'],
-      },
-    ],
+        permissions: ['Execute']
+      }
+    ]
   };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
-        imports: [
-          RouterTestingModule.withRoutes([]),
-          HttpClientTestingModule,
-        ],
-        providers: [
-          CaseTasksResolverService,
-          {provide: APP_BASE_HREF, useValue: '/'}
-        ]
-      }
+      imports: [
+        RouterTestingModule.withRoutes([]),
+        HttpClientTestingModule
+      ],
+      providers: [
+        CaseTasksResolverService,
+        { provide: APP_BASE_HREF, useValue: '/' }
+      ]
+    }
     );
     httpClient = TestBed.inject(HttpClient) as HttpClient;
   });
@@ -58,7 +59,7 @@ describe('CaseTasksResolverService', () => {
     activatedRoute.params = {
       cid: '1620409659381330'
     };
-    service.resolve(activatedRoute, null).subscribe((tasks: TaskList) => {
+    service.resolve(activatedRoute).subscribe((tasks: TaskList) => {
       expect(tasks.tasks.length).toBe(2);
       done();
     });

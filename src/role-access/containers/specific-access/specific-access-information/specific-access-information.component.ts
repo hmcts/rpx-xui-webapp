@@ -1,10 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
+import { SpecificAccessNavigationEvent, SpecificAccessStateData } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import * as fromFeature from '../../../store';
 
@@ -29,7 +28,7 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
   public controlName = 'infoCtrl';
   public submitted: boolean = true;
   public specificAccessBody: SpecificAccessStateData;
-  private readonly rejectedRole = {id: 'specific-access-denied', name: 'specific-access-denied'};
+  private readonly rejectedRole = { id: 'specific-access-denied', name: 'specific-access-denied' };
 
   constructor(public readonly store: Store<fromFeature.State>,
               private readonly fb: FormBuilder) {}
@@ -58,11 +57,12 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
           comment: this.infoCtrl.value,
           roleCategory: specificAccessState.roleCategory,
           requestCreated: specificAccessState.requestCreated,
-          person: {id: specificAccessState.actorId, name: null, domain: null},
+          person: { id: specificAccessState.actorId, name: null, domain: null }
         };
       }
     });
   }
+
   public navigationHandler(navEvent: SpecificAccessNavigationEvent): void {
     switch (navEvent) {
       case SpecificAccessNavigationEvent.CONTINUE:
@@ -71,7 +71,7 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
           this.error = this.getErrorObject();
           return;
         }
-        this.specificAccessBody.comment =  this.infoCtrl.value;
+        this.specificAccessBody.comment = this.infoCtrl.value;
         this.store.dispatch(new fromFeature.RequestMoreInfoSpecificAccessRequest(this.specificAccessBody));
         break;
       default:

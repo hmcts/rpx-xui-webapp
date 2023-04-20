@@ -2,7 +2,6 @@ import { AxiosInstance } from 'axios';
 import { HttpMockClient } from './httpMockClient';
 
 export class HttpMock extends HttpMockClient {
-
   public static getInstance(): AxiosInstance {
     if (!this.axiosInstance) {
       this.axiosInstance = new HttpMock();
@@ -15,5 +14,4 @@ export class HttpMock extends HttpMockClient {
   private constructor() {
     super('');
   }
-
 }

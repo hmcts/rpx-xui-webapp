@@ -1,4 +1,4 @@
-import {Action} from '@ngrx/store';
+import { Action } from '@ngrx/store';
 
 export const CASELIST_JURISDICTION_SELECTED = '[CreateCaselist] Jurisdiction Selected';
 export const CASELIST_APPLIED = '[CreateCaselist] Applied';
@@ -28,32 +28,27 @@ export class CaseListReset implements Action {
 
 export class ApplyCaselistFilter implements Action {
   public readonly type = APPLY_CASELIST_FILTER;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export class ApplyCaselistFilterForES implements Action {
   public readonly type = APPLY_CASELIST_FILTER_FOR_ES;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export class FindCaselistPaginationMetadata implements Action {
   public readonly type = FIND_CASELIST_PAGINATION_METADATA;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export class CaselistResultPageChange implements Action {
   public readonly type = CASELIST_RESULT_PAGE_CHANGE;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export class FindCaselistPaginationMetadataSuccess implements Action {
   public readonly type = FIND_CASELIST_PAGINATION_METADATA_SUCCESS;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export class ApplyCaselistFilterSuccess implements Action {
@@ -63,19 +58,16 @@ export class ApplyCaselistFilterSuccess implements Action {
 
 export class ApplyCaselistFilterFail implements Action {
   public readonly type = APPLY_CASELIST_FILTER_FAIL;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export class CaseFilterToggle implements Action {
   public readonly type = CASE_FILTER_DISPLAY_TOGGLE;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 export class CaseFilterToggleSuccess implements Action {
   public readonly type = CASE_FILTER_DISPLAY_TOGGLE_SUCCESS;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export type CaselistAction =

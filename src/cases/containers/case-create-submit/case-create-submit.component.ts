@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { CaseEventData, CaseEventTrigger, CasesService, Draft, DraftService } from '@hmcts/ccd-case-ui-toolkit';
-import {Store} from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { ActionBindingModel } from '../../../cases/models/create-case-actions.model';
 import * as fromCases from '../../../cases/store';
@@ -12,7 +12,6 @@ import * as fromCaseCreate from '../../store';
   templateUrl: 'case-create-submit.component.html'
 })
 export class CaseCreateSubmitComponent implements OnInit {
-
   public eventTrigger: CaseEventTrigger = new CaseEventTrigger();
 
   public jurisdictionId: string;
@@ -41,8 +40,8 @@ export class CaseCreateSubmitComponent implements OnInit {
      * Mapping CCD components eventsBindings to ExUI Actions
      */
     this.caseCreateSubmitEventsBindings = [
-      {type: 'cancelled', action: 'CreateCaseReset'},
-      {type: 'submitted', action: 'ApplyChange'}
+      { type: 'cancelled', action: 'CreateCaseReset' },
+      { type: 'submitted', action: 'ApplyChange' }
     ];
   }
 
@@ -61,9 +60,8 @@ export class CaseCreateSubmitComponent implements OnInit {
   public saveDraft(): (caseEventData: CaseEventData) => Observable<Draft> {
     if (this.eventTrigger.can_save_draft) {
       return (caseEventData: CaseEventData) => this.draftService.createOrUpdateDraft(this.caseTypeId,
-            this.eventTrigger.case_id,
-            caseEventData) as any;
+        this.eventTrigger.case_id,
+        caseEventData) as any;
     }
   }
-
 }

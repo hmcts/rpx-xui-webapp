@@ -4,7 +4,9 @@ import * as moment from 'moment';
 export class NocValidators {
   public static numberValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value === null || control.value === '') { return; }
+      if (control.value === null || control.value === '') {
+        return;
+      }
       if (!control.value.toString().match(/^[0-9]+(\.?[0-9]+)?$/)) {
         return { number: true };
       }
@@ -14,7 +16,9 @@ export class NocValidators {
 
   public static postcodeValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value === null || control.value === '') { return; }
+      if (control.value === null || control.value === '') {
+        return;
+      }
       if (!control.value.toString().match(/^(([A-Za-z]{1,2}[0-9][A-Za-z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA) ?[0-9][A-Za-z]{2}|BFPO ?[0-9]{1,4}|(KY[0-9]|MSR|VG|AI)[ -]?[0-9]{4}|[A-Za-z]{2} ?[0-9]{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1)$/)) {
         return { postcode: true };
       }
@@ -24,7 +28,10 @@ export class NocValidators {
 
   public static phoneUKValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value === null || control.value === '') { return; }
+      if (control.value === null || control.value === '') {
+        return;
+      }
+      // eslint-disable-next-line no-useless-escape
       if (!control.value.toString().match(/^(?:(?:\(?(?:0(?:0|11)\)?[\s-]?\(?|\+)44\)?[\s-]?(?:\(?0\)?[\s-]?)?)|(?:\(?0))(?:(?:\d{5}\)?[\s-]?\d{4,5})|(?:\d{4}\)?[\s-]?(?:\d{5}|\d{3}[\s-]?\d{3}))|(?:\d{3}\)?[\s-]?\d{3}[\s-]?\d{3,4})|(?:\d{2}\)?[\s-]?\d{4}[\s-]?\d{4}))(?:[\s-]?(?:x|ext\.?|\#)\d{3,4})?$/)) {
         return { phoneUK: true };
       }
@@ -34,7 +41,9 @@ export class NocValidators {
 
   public static dateValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value === null || control.value === '') { return; }
+      if (control.value === null || control.value === '') {
+        return;
+      }
       const dateValues = control.value.toString().split('-');
       if (dateValues) {
         if (dateValues[0]) {
@@ -71,7 +80,9 @@ export class NocValidators {
 
   public static dateTimeValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value === null || control.value === '') { return; }
+      if (control.value === null || control.value === '') {
+        return;
+      }
       const [datePart, timePart] = control.value.toString().split('T');
       const dateValues = datePart.split('-');
       if (dateValues) {
@@ -137,7 +148,9 @@ export class NocValidators {
 
   public static timeValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value === null || control.value === '') { return; }
+      if (control.value === null || control.value === '') {
+        return;
+      }
       const timeValues = control.value.toString().split(':');
       if (timeValues) {
         if (timeValues[0]) {

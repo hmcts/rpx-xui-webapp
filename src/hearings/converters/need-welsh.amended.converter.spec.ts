@@ -5,7 +5,6 @@ import { State } from '../store/reducers';
 import { NeedWelshAmendedConverter } from './need-welsh.amended.converter';
 
 describe('NeedWelshAmendedConverter', () => {
-
   let needWelshAmendedConverter: NeedWelshAmendedConverter;
 
   beforeEach(() => {
@@ -16,8 +15,7 @@ describe('NeedWelshAmendedConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = needWelshAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = false;
-    const expected = cold('(b|)', {b: isAmended});
+    const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
-
 });

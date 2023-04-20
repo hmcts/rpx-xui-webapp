@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
@@ -30,7 +30,7 @@ describe('HearingStageResultComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       category_key: 'ActualCancellationReasonCodes',
@@ -43,7 +43,7 @@ describe('HearingStageResultComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       category_key: 'ActualCancellationReasonCodes',
@@ -56,8 +56,8 @@ describe('HearingStageResultComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null,
-    },
+      child_nodes: null
+    }
   ];
 
   beforeEach(waitForAsync(() => {
@@ -70,11 +70,11 @@ describe('HearingStageResultComponent', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService}
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

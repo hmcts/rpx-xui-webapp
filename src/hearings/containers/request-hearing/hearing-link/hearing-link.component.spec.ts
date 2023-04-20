@@ -1,7 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -29,7 +28,7 @@ const reasons: LovRefDataByServiceModel = {
       parent_category: '',
       parent_key: '',
       active_flag: '',
-      from: 'exui-default',
+      from: 'exui-default'
     },
     {
       key: 'judgereq',
@@ -42,7 +41,7 @@ const reasons: LovRefDataByServiceModel = {
       parent_category: '',
       parent_key: '',
       active_flag: '',
-      from: 'exui-default',
+      from: 'exui-default'
     },
     {
       key: 'adminreq',
@@ -55,7 +54,7 @@ const reasons: LovRefDataByServiceModel = {
       parent_category: '',
       parent_key: '',
       active_flag: '',
-      from: 'exui-default',
+      from: 'exui-default'
     },
     {
       key: 'adminerr',
@@ -68,14 +67,15 @@ const reasons: LovRefDataByServiceModel = {
       parent_category: '',
       parent_key: '',
       active_flag: '',
-      from: 'exui-default',
-    },
+      from: 'exui-default'
+    }
   ]
 };
 
 describe('HearingLinkComponent', () => {
   let component: HearingLinkComponent;
   let fixture: ComponentFixture<HearingLinkComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mockStore: any;
   const mockHttpClient = createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockHttpClient);
@@ -93,8 +93,8 @@ describe('HearingLinkComponent', () => {
         HearingLinkComponent
       ],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();

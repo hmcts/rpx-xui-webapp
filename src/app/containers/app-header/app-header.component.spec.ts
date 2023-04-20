@@ -1,8 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Action, Store, StoreModule } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { AppConstants } from '../../app.constants';
 import { ApplicationThemeLogo } from '../../enums';
@@ -12,8 +12,8 @@ import { AppHeaderComponent } from './app-header.component';
 
 const storeMock = {
   pipe: () => of([]),
-  dispatch: (action: Action) => {
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  dispatch: () => {}
 };
 
 const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
@@ -26,6 +26,7 @@ describe('AppHeaderComponent', () => {
 
   let component: AppHeaderComponent;
   let fixture: ComponentFixture<AppHeaderComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
   const subscriptionMock: Subscription = new Subscription();
   const stateStoreMock: Store<fromActions.State> = new Store<fromActions.State>(null, null, null);
@@ -47,11 +48,11 @@ describe('AppHeaderComponent', () => {
       providers: [
         {
           provide: Store,
-          useValue: storeMock,
+          useValue: storeMock
         },
         {
           provide: FeatureToggleService,
-          useValue: featureToggleServiceMock,
+          useValue: featureToggleServiceMock
         },
         {
           provide: Router,
@@ -65,7 +66,7 @@ describe('AppHeaderComponent', () => {
           useValue: loggerServiceMock
         },
         AppHeaderComponent
-      ],
+      ]
     }).compileComponents();
 
     store = TestBed.inject(Store);
@@ -78,9 +79,7 @@ describe('AppHeaderComponent', () => {
   });
 
   describe('deserialiseUserRoles()', () => {
-
     it('should take in serialised roles, and deserialise them into an array.', () => {
-
       const serialisedRoles = 'j:["pui-organisation-manager","caseworker-publiclaw","caseworker-divorce-financialremedy-solicitor","caseworker"]';
       expect(component.deserialiseUserRoles(serialisedRoles)).toEqual([
         'pui-organisation-manager',
@@ -92,9 +91,7 @@ describe('AppHeaderComponent', () => {
   });
 
   describe('setAppHeaderProperties()', () => {
-
     it('should take a theme and update the app header properties.', () => {
-
       const defaultTheme = AppConstants.DEFAULT_USER_THEME;
       const menuItems = AppConstants.DEFAULT_MENU_ITEMS;
 
@@ -115,41 +112,30 @@ describe('AppHeaderComponent', () => {
       };
       component.setHeaderContent(userDetails);
       expect(themeSpy).toHaveBeenCalled();
-
     });
 
     it('should call userThems on getApplicationThemeForUser', () => {
       const userThemeSpy = spyOn(component, 'getUsersTheme').and.callThrough();
 
-      const userDetails = {
-        userInfo: ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker-divorce-financialremedy-solicitor', 'caseworker']
-      };
       component.getApplicationThemeForUser();
       expect(userThemeSpy).toHaveBeenCalled();
-
     });
 
-    it('should call userThems on getApplicationThemeForUser with no roles', () => {
+    it('should call usersTheme on getApplicationThemeForUser with no roles', () => {
       const userThemeSpy = spyOn(component, 'getUsersTheme').and.callThrough();
 
-      const userDetails = {
-        userInfo: []
-      };
       component.getApplicationThemeForUser();
       expect(userThemeSpy).toHaveBeenCalled();
       expect(component.userNav.items).toEqual([]);
     });
 
     it('should update theme app header properties.', () => {
-
       const menuItems = AppConstants.DEFAULT_MENU_ITEMS;
       component.setAppHeaderNavItems(menuItems);
       expect(component.navItems).toEqual(AppConstants.DEFAULT_MENU_ITEMS);
-
     });
 
-    it('should updatee navItems app header properties.', () => {
-
+    it('should update navItems app header properties.', () => {
       const defaultTheme = AppConstants.DEFAULT_USER_THEME;
       component.setAppHeaderTheme(defaultTheme);
 
@@ -161,11 +147,10 @@ describe('AppHeaderComponent', () => {
   });
 
   describe('setNavigationEnd()', () => {
-
     it('should set the navigation items once the navigation has ended', () => {
       // set the navigation end and original navigation items (note that active set to false)
       const endNav = new NavigationEnd(1, '/something-or-other', '/something-or-other');
-      component.navItems = [{text: 'example', href: '/something-or-other', active: false}];
+      component.navItems = [{ text: 'example', href: '/something-or-other', active: false }];
 
       // start evaluating the url and navigation items and run setNavigationEnd
       expect(component.router.url).toBe(component.navItems[0].href);
@@ -180,7 +165,6 @@ describe('AppHeaderComponent', () => {
   });
 
   describe('onNavigate()', () => {
-
     it('should logout when onNavigate sign-out is called ', () => {
       component.onNavigate('anything');
       expect(dispatchSpy).toHaveBeenCalledTimes(0);

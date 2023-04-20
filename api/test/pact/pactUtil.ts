@@ -1,127 +1,105 @@
-import axios, {AxiosResponse} from 'axios';
+import axios from 'axios';
 
 export async function getUsers(path: string) {
   const axiosConfig = {
     headers: {
-      'Authorization':  'Bearer some-access-token',
+      'Authorization': 'Bearer some-access-token',
       'Content-Type': 'application/json',
-      'ServiceAuthorization': 'serviceAuthToken',
-    },
+      'ServiceAuthorization': 'serviceAuthToken'
+    }
   };
-  return  axios.get(path, axiosConfig);
+  return axios.get(path, axiosConfig);
 }
 
 export async function getOrganisationDetails(path: string) {
   const axiosConfig = {
     headers: {
-      'Authorization':  'Bearer some-access-token',
+      'Authorization': 'Bearer some-access-token',
       'Content-Type': 'application/json',
-      'ServiceAuthorization': 'serviceAuthToken',
-    },
+      'ServiceAuthorization': 'serviceAuthToken'
+    }
   };
   return axios.get(path, axiosConfig);
 }
 
 export async function getCaseAssignments(taskUrl: string) {
-
   const axiosConfig = {
     headers: {
       'Authorization': 'Bearer some-access-token',
       'Content-Type': 'application/json',
-      'ServiceAuthorization': 'ServiceAuthToken',
-    },
+      'ServiceAuthorization': 'ServiceAuthToken'
+    }
   };
 
-  let response: AxiosResponse;
-  response = await axios.get(taskUrl, axiosConfig);
-  return response;
-
+  return await axios.get(taskUrl, axiosConfig);
 }
 
 export async function postAssignCasesToUsers(taskUrl: string, payload: any) {
-
   const axiosConfig = {
     headers: {
       'Authorization': 'Bearer some-access-token',
       'Content-Type': 'application/json',
-      'ServiceAuthorization': 'ServiceAuthToken',
-    },
+      'ServiceAuthorization': 'ServiceAuthToken'
+    }
   };
 
-  let response: AxiosResponse;
-  response = await axios.post(taskUrl, payload, axiosConfig);
-  return response;
-
+  return await axios.post(taskUrl, payload, axiosConfig);
 }
 
 export async function getIdamUsersByEmail(taskUrl: string) {
-
   const axiosConfig = {
     headers: {
       'Authorization': 'Bearer some-access-token',
-      'Content-Type': 'application/json',
-    },
+      'Content-Type': 'application/json'
+    }
   };
 
-  let response: AxiosResponse;
-  response = await axios.get(taskUrl, axiosConfig);
-  return response;
-
+  return await axios.get(taskUrl, axiosConfig);
 }
 
 export async function getTaskById(taskUrl: string) {
   const axiosConfig = {
     headers: {
-      Authorization: "Bearer someAuthorizationToken",
-      "Content-Type": "application/json",
-      ServiceAuthorization: "Bearer someServiceAuthorizationToken",
-    },
+      Authorization: 'Bearer someAuthorizationToken',
+      'Content-Type': 'application/json',
+      ServiceAuthorization: 'Bearer someServiceAuthorizationToken'
+    }
   };
 
-  let response: AxiosResponse;
-  response = await axios.get(taskUrl, axiosConfig);
-  return response;
+  return await axios.get(taskUrl, axiosConfig);
 }
 
 export async function searchTasks(taskUrl: string, payload: any) {
   const axiosConfig = {
     headers: {
-      Authorization: "Bearer someAuthorizationToken",
+      Authorization: 'Bearer someAuthorizationToken',
       'Content-Type': 'application/json',
-      ServiceAuthorization: "Bearer someServiceAuthorizationToken",
-    },
+      ServiceAuthorization: 'Bearer someServiceAuthorizationToken'
+    }
   };
 
-  let response: AxiosResponse;
-  response = await axios.post(taskUrl, payload, axiosConfig);
-  return response;
+  return await axios.post(taskUrl, payload, axiosConfig);
 }
 
-export async function markTaskAs(taskUrl: string, taskActionState: string) {
-
+export async function markTaskAs(taskUrl: string) {
   const axiosConfig = {
     headers: {
-      Authorization: "Bearer someAuthorizationToken",
+      Authorization: 'Bearer someAuthorizationToken',
       'Content-Type': 'application/json',
-      ServiceAuthorization: "Bearer someServiceAuthorizationToken",
-    },
+      ServiceAuthorization: 'Bearer someServiceAuthorizationToken'
+    }
   };
 
-  let response: AxiosResponse;
-  response = await axios.post(taskUrl, null, axiosConfig);
-  return response;
-
+  return await axios.post(taskUrl, null, axiosConfig);
 }
 
 export async function assignTaskToUser(taskUrl: string, payLoad: any) {
   const axiosConfig = {
     headers: {
-      Authorization: "Bearer someAuthorizationToken",
-      ServiceAuthorization: "Bearer someServiceAuthorizationToken",
-    },
+      Authorization: 'Bearer someAuthorizationToken',
+      ServiceAuthorization: 'Bearer someServiceAuthorizationToken'
+    }
   };
 
-  let response: AxiosResponse;
-  response = await axios.post(taskUrl, payLoad, axiosConfig);
-  return response;
+  return await axios.post(taskUrl, payLoad, axiosConfig);
 }

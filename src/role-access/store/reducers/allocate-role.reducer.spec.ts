@@ -15,6 +15,7 @@ describe('Allocate Role Reducer', () => {
       action: Actions.Allocate,
       period: null
     };
+
     it('should set correct object', () => {
       const initialState = fromReducer.allocateRoleInitialState;
       const action = new fromActions.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO);
@@ -50,9 +51,9 @@ describe('Allocate Role Reducer', () => {
       });
 
       it('should go to choose role if there are roles', () => {
-        const mockRoles: Role[] = [{roleId: 'test-role', roleName: 'Test role'}];
+        const mockRoles: Role[] = [{ roleId: 'test-role', roleName: 'Test role' }];
         const initialState = fromReducer.allocateRoleInitialState;
-        const action = new fromActions.LoadRolesComplete({roles: mockRoles});
+        const action = new fromActions.LoadRolesComplete({ roles: mockRoles });
         const state = fromReducer.allocateRoleReducer(initialState, action);
         expect(state.state).toEqual(AllocateRoleState.CHOOSE_ROLE);
       });

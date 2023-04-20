@@ -2,8 +2,8 @@ import * as express from 'express';
 import accessManagementRouter from './accessManagement/routes';
 import { router as caseShareRoutes } from './caseshare/routes';
 import { router as challengedAccessRouter } from './challengedAccess/routes';
-import {getConfigValue, showFeature} from './configuration';
-import {APP_INSIGHTS_KEY} from './configuration/references';
+import { getConfigValue, showFeature } from './configuration';
+import { APP_INSIGHTS_KEY } from './configuration/references';
 import { router as globalSearchRoutes } from './globalSearch/routes';
 import healthCheck from './healthCheck';
 import { router as hearingsRouter } from './hearings/routes';
@@ -18,12 +18,12 @@ import { router as specificAccessRouter } from './specificAccessOrchastrator/rou
 import userRouter from './user/routes';
 import { router as waSupportedJurisdictionRouter } from './waSupportedJurisdictions';
 
-const router = express.Router({mergeParams: true});
+const router = express.Router({ mergeParams: true });
 
 router.use('/healthCheck', healthCheck);
 
 router.get('/monitoring-tools', (req, res) => {
-  res.send({key: getConfigValue(APP_INSIGHTS_KEY)});
+  res.send({ key: getConfigValue(APP_INSIGHTS_KEY) });
 });
 
 router.get('/configuration', (req, res) => {
@@ -56,5 +56,4 @@ router.use('/hearings', hearingsRouter);
 router.use('/specific-access-request', specificAccessRouter);
 router.use('/challenged-access-request', challengedAccessRouter);
 
-// @ts-ignore
 export default router;

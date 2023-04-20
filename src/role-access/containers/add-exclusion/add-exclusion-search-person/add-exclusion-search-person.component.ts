@@ -27,7 +27,7 @@ export class AddExclusionSearchPersonComponent implements OnInit {
   constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
-    this.subscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(exclusion => this.setPerson(exclusion));
+    this.subscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe((exclusion) => this.setPerson(exclusion));
   }
 
   private setPerson(exclusion: ExclusionStateData): void {

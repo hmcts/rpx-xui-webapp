@@ -4,10 +4,9 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 
 export class AdditionalInstructionsAnswerConverter implements AnswerConverter {
-
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         const additionalInstructions = state.hearingRequest.hearingRequestMainModel.hearingDetails.listingComments;
         if (!additionalInstructions) {
           return additionalInstructions;

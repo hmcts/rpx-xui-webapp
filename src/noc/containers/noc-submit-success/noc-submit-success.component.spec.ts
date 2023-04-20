@@ -1,10 +1,8 @@
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import * as fromNocStore from '../../store';
+import { provideMockStore } from '@ngrx/store/testing';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocSubmitSuccessComponent } from './noc-submit-success.component';
-
 
 describe('NocSubmitSuccessComponent', () => {
   let store;
@@ -13,7 +11,7 @@ describe('NocSubmitSuccessComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NocSubmitSuccessComponent ],
+      declarations: [NocSubmitSuccessComponent],
       imports: [
         UtilsModule
       ],
@@ -21,7 +19,7 @@ describe('NocSubmitSuccessComponent', () => {
         provideMockStore()
       ]
     })
-    .compileComponents();
+      .compileComponents();
     store = TestBed.inject(Store);
     spyOn(store, 'pipe').and.callThrough();
   }));

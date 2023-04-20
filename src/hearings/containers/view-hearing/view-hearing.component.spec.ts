@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ViewHearingComponent } from './view-hearing.component';
 
 describe('ViewHearingComponent', () => {
@@ -14,8 +14,8 @@ describe('ViewHearingComponent', () => {
       providers: [
         {
           provide: Location,
-          useValue: mockLocation,
-        },
+          useValue: mockLocation
+        }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })

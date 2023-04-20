@@ -15,7 +15,7 @@ export const containers: any[] = [
   ChooseDurationComponent,
   ChooseRoleComponent,
   ChooseRoleErrorComponent,
-  AllocateRoleSearchPersonComponent,
+  AllocateRoleSearchPersonComponent
 ];
 
 export * from './allocate-role-home/allocate-role-home.component';

@@ -33,7 +33,6 @@ describe('CaseHearingsComponent', () => {
   let spyStore: any;
   let mockRoleCategoryMappingService: RoleCategoryMappingService;
   let mockLovRefDataService: any;
-  let mockRouter: any;
 
   const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
     hearingStartDateTime: '',
@@ -43,7 +42,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 1',
     hearingJudgeId: 'hearingJudgeId1',
     panelMemberIds: ['hearingJudgeId1'],
-    attendees: [],
+    attendees: []
   };
 
   const HEARING_DAY_SCHEDULE_2: HearingDayScheduleModel = {
@@ -54,7 +53,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 2',
     hearingJudgeId: 'hearingJudgeId1',
     panelMemberIds: ['hearingJudgeId1'],
-    attendees: [],
+    attendees: []
   };
 
   const HEARING_DAY_SCHEDULE_3: HearingDayScheduleModel = {
@@ -65,7 +64,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 3',
     hearingJudgeId: 'hearingJudgeId1',
     panelMemberIds: ['hearingJudgeId1'],
-    attendees: [],
+    attendees: []
   };
 
   const HEARING_DAY_SCHEDULE_4: HearingDayScheduleModel = {
@@ -76,7 +75,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 4',
     hearingJudgeId: 'hearingJudgeId2',
     panelMemberIds: ['hearingJudgeId2'],
-    attendees: [],
+    attendees: []
   };
 
   const HEARING_DAY_SCHEDULE_5: HearingDayScheduleModel = {
@@ -87,7 +86,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 5',
     hearingJudgeId: 'hearingJudgeId3',
     panelMemberIds: ['hearingJudgeId3'],
-    attendees: [],
+    attendees: []
   };
 
   const HEARING_DAY_SCHEDULE_6: HearingDayScheduleModel = {
@@ -98,7 +97,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 1',
     hearingJudgeId: 'hearingJudgeId1',
     panelMemberIds: ['hearingJudgeId1'],
-    attendees: [],
+    attendees: []
   };
 
   const HEARING_DAY_SCHEDULE_7: HearingDayScheduleModel = {
@@ -109,7 +108,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 2',
     hearingJudgeId: 'hearingJudgeId1',
     panelMemberIds: ['hearingJudgeId1'],
-    attendees: [],
+    attendees: []
   };
 
   const HEARING_DAY_SCHEDULE_8: HearingDayScheduleModel = {
@@ -120,7 +119,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 3',
     hearingJudgeId: 'hearingJudgeId1',
     panelMemberIds: ['hearingJudgeId1'],
-    attendees: [],
+    attendees: []
   };
 
   const HEARING_DAY_SCHEDULE_9: HearingDayScheduleModel = {
@@ -131,7 +130,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 4',
     hearingJudgeId: 'hearingJudgeId1',
     panelMemberIds: ['hearingJudgeId1'],
-    attendees: [],
+    attendees: []
   };
 
   const HEARING_DAY_SCHEDULE_10: HearingDayScheduleModel = {
@@ -142,7 +141,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 5',
     hearingJudgeId: 'hearingJudgeId1',
     panelMemberIds: ['hearingJudgeId1'],
-    attendees: [],
+    attendees: []
   };
 
   const HEARING_DAY_SCHEDULE_11: HearingDayScheduleModel = {
@@ -153,7 +152,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 11',
     hearingJudgeId: 'child',
     panelMemberIds: ['child'],
-    attendees: [],
+    attendees: []
   };
 
   const CASE_HEARING_1: HearingListModel = {
@@ -169,7 +168,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingIsLinkedFlag: true,
     hearingGroupRequestId: null,
-    hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
+    hearingDaySchedule: [HEARING_DAY_SCHEDULE_1]
   };
 
   const CASE_HEARING_2: HearingListModel = {
@@ -185,7 +184,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
-    hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
+    hearingDaySchedule: [HEARING_DAY_SCHEDULE_2]
   };
 
   const CASE_HEARING_3: HearingListModel = {
@@ -201,7 +200,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
-    hearingDaySchedule: [HEARING_DAY_SCHEDULE_3],
+    hearingDaySchedule: [HEARING_DAY_SCHEDULE_3]
   };
 
   const CASE_HEARING_4: HearingListModel = {
@@ -217,7 +216,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
-    hearingDaySchedule: [HEARING_DAY_SCHEDULE_4],
+    hearingDaySchedule: [HEARING_DAY_SCHEDULE_4]
   };
 
   const CASE_HEARING_5: HearingListModel = {
@@ -233,7 +232,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
-    hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
+    hearingDaySchedule: [HEARING_DAY_SCHEDULE_5]
   };
 
   const CASE_HEARING_6: HearingListModel = {
@@ -249,7 +248,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
-    hearingDaySchedule: [HEARING_DAY_SCHEDULE_6],
+    hearingDaySchedule: [HEARING_DAY_SCHEDULE_6]
   };
 
   const CASE_HEARING_7: HearingListModel = {
@@ -265,7 +264,7 @@ describe('CaseHearingsComponent', () => {
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_7],
-    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING
   };
 
   const CASE_HEARING_8: HearingListModel = {
@@ -281,7 +280,7 @@ describe('CaseHearingsComponent', () => {
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_8],
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED
   };
 
   const CASE_HEARING_9: HearingListModel = {
@@ -297,7 +296,7 @@ describe('CaseHearingsComponent', () => {
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_9],
     exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
-    exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_ACTUALS,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_ACTUALS
   };
 
   const CASE_HEARING_10: HearingListModel = {
@@ -313,7 +312,7 @@ describe('CaseHearingsComponent', () => {
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_10],
     exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
-    exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED
   };
 
   const CASE_HEARING_11: HearingListModel = {
@@ -329,13 +328,13 @@ describe('CaseHearingsComponent', () => {
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_11],
     exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED,
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED
   };
 
   const HEARINGS_LIST: HearingListMainModel = {
     hmctsServiceID: 'BBA3',
     caseRef: '1568642646198441',
-    caseHearings: [CASE_HEARING_1, CASE_HEARING_2, CASE_HEARING_3, CASE_HEARING_4, CASE_HEARING_5, CASE_HEARING_6, CASE_HEARING_7, CASE_HEARING_8, CASE_HEARING_9, CASE_HEARING_10, CASE_HEARING_11],
+    caseHearings: [CASE_HEARING_1, CASE_HEARING_2, CASE_HEARING_3, CASE_HEARING_4, CASE_HEARING_5, CASE_HEARING_6, CASE_HEARING_7, CASE_HEARING_8, CASE_HEARING_9, CASE_HEARING_10, CASE_HEARING_11]
   };
 
   const initialState = {
@@ -364,7 +363,7 @@ describe('CaseHearingsComponent', () => {
       parent_category: '',
       parent_key: '',
       value_cy: '',
-      value_en: 'Chambers Outcome',
+      value_en: 'Chambers Outcome'
     },
     {
       active_flag: 'Y',
@@ -394,7 +393,7 @@ describe('CaseHearingsComponent', () => {
     }
   ];
 
-  mockRouter = {
+  const mockRouter = {
     navigate: jasmine.createSpy('navigate')
   };
 
@@ -417,7 +416,7 @@ describe('CaseHearingsComponent', () => {
             snapshot: {
               params: {
                 cid: '1234'
-              },
+              }
             }
           }
         },
@@ -427,7 +426,7 @@ describe('CaseHearingsComponent', () => {
         },
         {
           provide: RoleCategoryMappingService,
-          useValue: mockRoleCategoryMappingService,
+          useValue: mockRoleCategoryMappingService
         },
         {
           provide: LovRefDataService,
@@ -475,7 +474,7 @@ describe('CaseHearingsComponent', () => {
     const USER_DETAILS = {
       sessionTimeout: {
         idleModalDisplayTime: 12,
-        totalIdleTime: 10,
+        totalIdleTime: 10
       },
       canShareCases: true,
       userInfo: {
@@ -484,7 +483,7 @@ describe('CaseHearingsComponent', () => {
         surname: 'test',
         email: 'test@test.com',
         active: 'true',
-        roles: ['caseworker-sscs'],
+        roles: ['caseworker-sscs']
       }
     };
 
@@ -502,7 +501,7 @@ describe('CaseHearingsComponent', () => {
     const USER_DETAILS = {
       sessionTimeout: {
         idleModalDisplayTime: 12,
-        totalIdleTime: 10,
+        totalIdleTime: 10
       },
       canShareCases: true,
       userInfo: {
@@ -511,7 +510,7 @@ describe('CaseHearingsComponent', () => {
         surname: 'test',
         email: 'test@test.com',
         active: 'true',
-        roles: ['caseworker-sscs'],
+        roles: ['caseworker-sscs']
       }
     };
 
@@ -525,7 +524,7 @@ describe('CaseHearingsComponent', () => {
 
   it('should getHearsList by EXUISectionStatus', (done) => {
     const hearingList = component.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
-    hearingList.subscribe(hearing => {
+    hearingList.subscribe((hearing) => {
       expect(hearing.length).toBe(7);
       done();
     });
@@ -533,14 +532,14 @@ describe('CaseHearingsComponent', () => {
 
   it('should getHearsList by EXUIDisplayStatus', (done) => {
     const hearingList = component.getHearingListByStatus(EXUIDisplayStatusEnum.LISTED);
-    hearingList.subscribe(hearing => {
+    hearingList.subscribe((hearing) => {
       expect(hearing.length).toBe(1);
       done();
     });
   });
 
   it('should have first Update section status hearing with hearing status as Waiting', (done) => {
-    component.upcomingHearings$.subscribe(hearing => {
+    component.upcomingHearings$.subscribe((hearing) => {
       expect(hearing[0].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.AWAITING_LISTING);
       done();
     });
@@ -560,7 +559,7 @@ describe('CaseHearingsComponent', () => {
       listAssistCaseStatus: '',
       hearingIsLinkedFlag: false,
       hearingGroupRequestId: null,
-      hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
+      hearingDaySchedule: [HEARING_DAY_SCHEDULE_2]
     };
 
     const testVM2: HearingListViewModel = {
@@ -576,23 +575,23 @@ describe('CaseHearingsComponent', () => {
       listAssistCaseStatus: '',
       hearingIsLinkedFlag: false,
       hearingGroupRequestId: null,
-      hearingDaySchedule: [HEARING_DAY_SCHEDULE_10],
+      hearingDaySchedule: [HEARING_DAY_SCHEDULE_10]
     };
 
     const arrangeData = [testVM, testVM2];
-    const result = arrangeData[0].hearingDaySchedule.map(schedule => schedule.hearingStartDateTime);
+    const result = arrangeData[0].hearingDaySchedule.map((schedule) => schedule.hearingStartDateTime);
     expect(result).toBeDefined();
   });
 
   it('should have the Update section status hearings with out status as Waiting to be listed in hearing date order', (done) => {
-    component.upcomingHearings$.subscribe(hearing => {
+    component.upcomingHearings$.subscribe((hearing) => {
       expect(moment(hearing[3].hearingRequestDateTime).isAfter(moment(hearing[2].hearingRequestDateTime))).toBeFalsy();
       done();
     });
   });
 
   it('should have the cancel and passed section status hearings with Cancel listing state and no hearing date assigned in creation date order', (done) => {
-    component.pastAndCancelledHearings$.subscribe(hearings => {
+    component.pastAndCancelledHearings$.subscribe((hearings) => {
       expect(hearings[0].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.COMPLETED);
       expect(hearings[1].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.COMPLETED);
       done();
@@ -614,7 +613,7 @@ describe('CaseHearingsComponent', () => {
 
   it('should call the reloadhearings when reload clicked', () => {
     spyOn(component, 'reloadHearings');
-    component.serverError = {id: '', message: 'server error'};
+    component.serverError = { id: '', message: 'server error' };
     fixture.detectChanges();
     const cancelledReasonElement: HTMLSelectElement = fixture.nativeElement.querySelector('#reload-hearing-tab');
     cancelledReasonElement.click();

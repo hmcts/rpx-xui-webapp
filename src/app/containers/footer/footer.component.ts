@@ -5,36 +5,35 @@ import * as fromRoot from '../../store';
 import { Helper, Navigation, NavigationItems } from './footer.model';
 
 @Component({
-    selector: 'exui-app-footer',
-    templateUrl: './footer.component.html',
-    styleUrls: ['./footer.component.scss']
+  selector: 'exui-app-footer',
+  templateUrl: './footer.component.html',
+  styleUrls: ['./footer.component.scss']
 })
 
 export class FooterComponent implements OnInit {
-    public helpData: Helper = AppConstants.FOOTER_DATA;
-    public navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
+  public helpData: Helper = AppConstants.FOOTER_DATA;
+  public navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
 
-    constructor(private readonly store: Store<fromRoot.State>) {
-    }
+  constructor(private readonly store: Store<fromRoot.State>) {}
 
-    public ngOnInit() {
-        const tAndCNavItem = this.getNavigationItemForTandC(this.navigationData.items);
-        if (tAndCNavItem) {
-            this.store.pipe(
-                select(fromRoot.getIsTermsAndConditionsFeatureEnabled)
-            ).subscribe(isEnabled => {
-                tAndCNavItem.href = isEnabled ?  '/terms-and-conditions' : '/legacy-terms-and-conditions';
-            });
-        }
+  public ngOnInit() {
+    const tAndCNavItem = this.getNavigationItemForTandC(this.navigationData.items);
+    if (tAndCNavItem) {
+      this.store.pipe(
+        select(fromRoot.getIsTermsAndConditionsFeatureEnabled)
+      ).subscribe((isEnabled) => {
+        tAndCNavItem.href = isEnabled ? '/terms-and-conditions' : '/legacy-terms-and-conditions';
+      });
     }
+  }
 
-    public getNavigationItemForTandC(navigationItems: NavigationItems[]): NavigationItems {
-        let navItem: NavigationItems = null;
-        navigationItems.forEach(currentNavItem => {
-            if (currentNavItem.text === 'Terms and conditions') {
-                navItem = currentNavItem;
-            }
-        });
-        return navItem;
-    }
+  public getNavigationItemForTandC(navigationItems: NavigationItems[]): NavigationItems {
+    let navItem: NavigationItems = null;
+    navigationItems.forEach((currentNavItem) => {
+      if (currentNavItem.text === 'Terms and conditions') {
+        navItem = currentNavItem;
+      }
+    });
+    return navItem;
+  }
 }

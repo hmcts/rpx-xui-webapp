@@ -37,20 +37,19 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     serviceIds = serviceIds.split(',');
   }
   const courtTypeIds = getCourtTypeIdsByService(serviceIds);
-  // tslint:disable-next-line:max-line-length
   const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}`;
   try {
     const headers = setHeaders(req);
     const response: AxiosResponse<any> = await http.get(markupPath, { headers });
     let results: LocationModel[] = response.data;
     if (locationType === LocationTypeEnum.HEARING) {
-      results = results.filter(location => location.is_hearing_location === 'Y');
+      results = results.filter((location) => location.is_hearing_location === 'Y');
     } else if (locationType === LocationTypeEnum.CASE_MANAGEMENT) {
-      results = results.filter(location => location.is_case_management_location === 'Y');
+      results = results.filter((location) => location.is_case_management_location === 'Y');
     }
     // if service not present all locations available for service
     // else check locations/regions, if there are none, provide no locations for service
-    userLocations.forEach(userLocation => {
+    userLocations.forEach((userLocation) => {
       const courtTypes = getCourtTypeIdsByService([userLocation.service]);
       const locationIds = getLocationIdsFromLocationList(userLocation.locations);
       const regionIds = getRegionIdsFromLocationList(userLocation.locations);
@@ -63,9 +62,9 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     });
     // added line below to ensure any locations from non-used services are removes
     // (API occasionally sending irrelevant location previously)
-    results = results.filter(location => courtTypeIds.includes(location.court_type_id));
+    results = results.filter((location) => courtTypeIds.includes(location.court_type_id));
     response.data.results = results.filter((locationInfo, index, self) =>
-      index === self.findIndex(location => (
+      index === self.findIndex((location) => (
         location.epimms_id === locationInfo.epimms_id
       ))
     );
@@ -73,12 +72,11 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   } catch (error) {
     next(error);
   }
-
 }
 
 export function filterOutResults(locations: LocationModel[], locationIds: string[],
-                                 regions: string[], courtTypes: string[]): LocationModel[] {
-return locations.filter(location => !(courtTypes.includes(location.court_type_id))
+  regions: string[], courtTypes: string[]): LocationModel[] {
+  return locations.filter((location) => !(courtTypes.includes(location.court_type_id))
 || (locationIds.includes(location.epimms_id) || regions.includes(location.region_id)));
 }
 
@@ -97,7 +95,7 @@ export async function getLocationsById(req: EnhancedRequest, res: Response, next
       const path: string = prepareGetSpecificLocationUrl(basePath, id);
       // no longer LocationResponse but CourtVenue
       const response: AxiosResponse<CourtVenue[]> = await handleLocationGet(path, req);
-      const filteredResults = response.data.filter(courtVenue =>
+      const filteredResults = response.data.filter((courtVenue) =>
         courtVenue.epimms_id === id.toString()
       );
       const mappedLocationModel = mapCourtVenuesToLocationModels(filteredResults);
@@ -115,7 +113,7 @@ function getLocationIdsFromLocationList(locations: any): string[] {
   if (!locations) {
     return [];
   }
-  locations.forEach(location => {
+  locations.forEach((location) => {
     if (location.id) {
       locationIds.push(location.id.toString());
     }
@@ -128,7 +126,7 @@ function getRegionIdsFromLocationList(locations: any): string[] {
   if (!locations) {
     return [];
   }
-  locations.forEach(region => {
+  locations.forEach((region) => {
     if (region.regionId) {
       regionIds.push(region.regionId.toString());
     }
@@ -137,7 +135,7 @@ function getRegionIdsFromLocationList(locations: any): string[] {
 }
 
 function getCourtTypeIdsByService(serviceIdArray: string[]): string[] {
-  const courtTypeIdsArray = serviceIdArray.map(serviceId => SERVICES_COURT_TYPE_MAPPINGS[serviceId])
+  const courtTypeIdsArray = serviceIdArray.map((serviceId) => SERVICES_COURT_TYPE_MAPPINGS[serviceId])
     .reduce(concatCourtTypeWithoutDuplicates, []);
   if (courtTypeIdsArray) {
     return courtTypeIdsArray;
@@ -146,7 +144,7 @@ function getCourtTypeIdsByService(serviceIdArray: string[]): string[] {
 }
 
 function concatCourtTypeWithoutDuplicates(array1: number[], array2: number[]) {
-  return array2 ? array1.concat(array2.filter(item => array1.indexOf(item) < 0)) : array1;
+  return array2 ? array1.concat(array2.filter((item) => array1.indexOf(item) < 0)) : array1;
 }
 
 function mapCourtVenuesToLocationModels(courtVenues: CourtVenue[]): CourtVenue {

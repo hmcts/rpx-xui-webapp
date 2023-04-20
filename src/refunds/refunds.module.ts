@@ -17,4 +17,4 @@ import { RefundsComponent } from './refunds/refunds.component';
   declarations: [RefundsComponent],
   exports: [RefundsComponent]
 })
-export class RefundsModule { }
+export class RefundsModule {}

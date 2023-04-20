@@ -8,24 +8,25 @@ import { hearingStageRefData, initialState } from '../hearing.test.data';
 import { ParticipantChannelAttendenceAmendedConverter } from './participant-channel-attendence.amended.converter';
 
 describe('ParticipantChannelAttendenceAmendedConverter', () => {
-
   let converter: ParticipantChannelAttendenceAmendedConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                hearingStageOptions: hearingStageRefData,
-              },
-            },
-          },
+                hearingStageOptions: hearingStageRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -37,7 +38,7 @@ describe('ParticipantChannelAttendenceAmendedConverter', () => {
   it('should transform the amended flag when previous vs current party attending type are not equal', () => {
     const result$ = converter.transformIsAmended(of(initialState.hearings));
     const isAmended = true;
-    const expected = cold('(b|)', {b: isAmended});
+    const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
 });

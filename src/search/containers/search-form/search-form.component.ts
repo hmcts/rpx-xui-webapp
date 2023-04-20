@@ -135,7 +135,6 @@ export class SearchFormComponent implements OnInit {
     if (searchParameters) {
       // Note: Intentional use of != throughout this if block, to check for search parameter values being not null and not undefined
       /* eslint-disable eqeqeq */
-      /* tslint:disable:triple-equals */
       const caseReferences = searchParameters.caseReferences;
       if (caseReferences != null) {
         this.formGroup.get(SearchFormControl.CASE_REF).setValue(caseReferences[0] || '');
@@ -169,7 +168,6 @@ export class SearchFormComponent implements OnInit {
         this.formGroup.get(SearchFormControl.SERVICES_LIST).setValue(serviceSelection[0]);
       }
       /* eslint-enable eqeqeq */
-      /* tslint:enable:triple-equals */
     }
   }
 

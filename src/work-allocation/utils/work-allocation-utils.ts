@@ -256,7 +256,9 @@ export function getCurrentUserRoleCategory(sessionStorageService: ISessionStorag
   return null;
 }
 
-export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, allLocationServices: string[]): LocationsByService[] {
+// EUI-7909 - replace function definition with comment
+// export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, allLocationServices: string[]): LocationsByService[] {
+  export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, allLocationServices: string[], bookable = false): LocationsByService[] {
   if (allLocationServices.includes(service)) {
     // if we know that all location services includes the current service we need to ensure this is present
     return locationsByServices;

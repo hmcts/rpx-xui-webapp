@@ -8,12 +8,14 @@ import { EMPTY } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
 import { Observable } from 'rxjs/Observable';
 import { catchError, first, map, mergeMap } from 'rxjs/operators';
-import { RoleAssignmentInfo, UserDetails } from '../../app/models';
+import { AppUtils } from '../../app/app-utils';
+import { RoleAssignmentInfo, UserDetails, UserRole } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
 import { UserService } from '../../app/services/user/user.service';
 import * as fromRoot from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';
 import { Booking } from '../../booking/models';
+import { BookingService } from '../../booking/services';
 import { Location, LocationsByRegion, LocationsByService } from '../models/dtos';
 import { LocationDataService } from '../services';
 import { addLocationToLocationsByService, handleFatalErrors, locationWithinRegion, WILDCARD_SERVICE_DOWN } from '../utils';
@@ -43,6 +45,8 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     private readonly store: Store<fromCaseList.State>,
     private readonly router: Router,
     private readonly http: HttpClient,
+    // EUI-7909 - remove line below
+    private readonly bookingService: BookingService,
     private readonly sessionStorageService: SessionStorageService,
     private readonly locationService: LocationDataService,
     // EUI-7909 - comment out this line
@@ -58,6 +62,12 @@ export class LocationResolver implements Resolve<LocationModel[]> {
             map((regionLocations) => this.getJudicialWorkersOrCaseWorkers(regionLocations, userDetails))
           )
         ),
+        // EUI-7909 - remove 5 lines below
+        mergeMap((locations: Location[]) => (this.userRole.toLocaleLowerCase() === UserRole.Judicial && this.bookableServices.length > 0 ? this.bookingService.getBookings(this.userId, this.bookableServices) : of([]))
+          .pipe(
+            map((bookings: Booking[]) => this.addBookingLocations(locations, bookings)),
+          )
+        ),
         mergeMap((locations: Location[]) => this.getLocations(locations)),
         catchError((error) => {
           handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
@@ -67,10 +77,13 @@ export class LocationResolver implements Resolve<LocationModel[]> {
   }
 
   private userDetails(): Observable<UserDetails> {
-    const newBookingCreated = (this.router.getCurrentNavigation() &&
+    // EUI-7909 - uncomment out code below
+    /* const newBookingCreated = (this.router.getCurrentNavigation() &&
       this.router.getCurrentNavigation().extras.state &&
       this.router.getCurrentNavigation().extras.state.newBooking === true);
-    return newBookingCreated ? this.userService.getUserDetails(true) : this.store.pipe(select(fromRoot.getUserDetails));
+    return newBookingCreated ? this.userService.getUserDetails(true) : this.store.pipe(select(fromRoot.getUserDetails)); */
+    // EUI-7909 - remove line below
+    return this.store.pipe(select(fromRoot.getUserDetails));
   }
 
   // Will call location service API with list of derived possible services to get locations by region
@@ -87,12 +100,15 @@ export class LocationResolver implements Resolve<LocationModel[]> {
 
   public getJudicialWorkersOrCaseWorkers(regionLocations: LocationsByRegion[], userDetails: UserDetails): Location[] {
     this.userId = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
+    // EUI-7909 - remove line below
+    this.userRole = AppUtils.isBookableAndJudicialRole(userDetails) ? UserRole.Judicial : AppUtils.getUserRole(userDetails.userInfo.roles);
     let userLocationsByService: LocationsByService[] = [];
     // EUI-7909 - uncomment code below
     // let feePaidUserLocationsByService: LocationsByService[] = [];
     // EUI-7909 remove line below
     const allLocationServices: string[] = [];
-    userDetails.roleAssignmentInfo.forEach((roleAssignment) => {
+    // EUI-7909 - uncomment out code
+    /* userDetails.roleAssignmentInfo.forEach((roleAssignment) => {
       const roleJurisdiction = roleAssignment.jurisdiction;
       if (roleJurisdiction && !this.bookableServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
         && (roleAssignment.bookable === true || roleAssignment.bookable === 'true')
@@ -123,7 +139,52 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     this.sessionStorageService.setItem('bookableUserLocations', JSON.stringify(feePaidUserLocationsByService));
     this.sessionStorageService.setItem('bookableServices', JSON.stringify(this.bookableServices));
     return this.locations;
+  } */
+  // EUI-7909 - remove
+    userDetails.roleAssignmentInfo.forEach((roleAssignment) => {
+      const roleJurisdiction = roleAssignment.jurisdiction;
+      if (roleJurisdiction && !this.bookableServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
+        && (roleAssignment.bookable === true || roleAssignment.bookable === 'true')
+      ) {
+        this.bookableServices.push(roleJurisdiction);
+      }
+      if (roleJurisdiction && !allLocationServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
+        && roleAssignment.substantive.toLocaleLowerCase() === 'y') {
+        if (!roleAssignment.region && !roleAssignment.baseLocation) {
+          // if there are no restrictions, via union logic, all locations selectable
+          allLocationServices.push(roleJurisdiction);
+        } else if (roleAssignment.region && roleAssignment.baseLocation) {
+          if (locationWithinRegion(regionLocations, roleAssignment.region, roleAssignment.baseLocation)) {
+            this.setBaseLocationForAdding(roleAssignment, roleJurisdiction);
+          } else {
+            if (!this.locations.find((location) => location.services.includes(roleJurisdiction))) {
+              const location = { id: null, userId: this.userId, locationId: null, locationName: '', services: [roleAssignment.jurisdiction] };
+              this.locations.push(location);
+              this.locationServices.add(roleAssignment.jurisdiction);
+            }
+          }
+        } else if (roleAssignment.region) {
+          if (!this.locations.find((location) => location.regionId === roleAssignment.region && location.services.includes(roleJurisdiction))) {
+            const location = { id: undefined, userId: this.userId, locationId: undefined, locationName: '', services: [roleAssignment.jurisdiction], regionId: roleAssignment.region };
+            this.locations.push(location);
+            this.locationServices.add(roleAssignment.jurisdiction);
+          }
+        } else {
+          this.setBaseLocationForAdding(roleAssignment, roleJurisdiction);
+        }
+      }
+    });
+    this.locations.forEach((location) => {
+      location.services.map((service) => {
+        userLocationsByService = this.bookableServices.includes(service) ? addLocationToLocationsByService(userLocationsByService, location, service, allLocationServices, true) : addLocationToLocationsByService(userLocationsByService, location, service, allLocationServices);
+      });
+    });
+    this.sessionStorageService.setItem('userLocations', JSON.stringify(userLocationsByService));
+    this.sessionStorageService.setItem('bookableServices', JSON.stringify(this.bookableServices));
+    return this.locations;
   }
+  // EUI-7909 - remove stops
+  
 
   public addBookingLocations(locations: Location[], bookings: Booking[]): Location[] {
     // TODO: Check if user still has valid bookable role assignment for service
@@ -140,7 +201,8 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     return locations;
   }
 
-  private setRegionsAndBaseLocations(roleAssignment: RoleAssignmentInfo, roleJurisdiction: string, regionLocations: LocationsByRegion[], feePaid: boolean): void {
+  // EUI-7909 - uncomment code
+  /* private setRegionsAndBaseLocations(roleAssignment: RoleAssignmentInfo, roleJurisdiction: string, regionLocations: LocationsByRegion[], feePaid: boolean): void {
     if (!roleAssignment.region && !roleAssignment.baseLocation) {
       // if there are no restrictions, via union logic, all locations selectable
       if (feePaid) {
@@ -186,7 +248,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
       this.feePaidLocations.push(location);
       this.feePaidLocationServices.add(roleAssignment.jurisdiction);
     }
-  }
+  } */
 
   private saveBookingLocation(newBookingLocations: string[]) {
     // Since bookings are given without service data we just need record of locations to match against
@@ -204,7 +266,8 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     this.sessionStorageService.setItem('bookingLocations', JSON.stringify(Array.from(bookingLocations)));
   }
 
-  private setBaseLocationForAdding(roleAssignment: RoleAssignmentInfo, service: string, feePaid: boolean): void {
+  // EUI-7909 - uncomment out code below
+  /* private setBaseLocationForAdding(roleAssignment: RoleAssignmentInfo, service: string, feePaid: boolean): void {
     if (!this.locations.find((location) => location.id === roleAssignment.baseLocation && location.services.includes(service))) {
       const location =
         { id: roleAssignment.baseLocation,
@@ -213,6 +276,14 @@ export class LocationResolver implements Resolve<LocationModel[]> {
           locationName: '',
           services: [roleAssignment.jurisdiction] };
       this.setAllLocations(location, roleAssignment, feePaid);
+    }
+  } */
+  // EUI-7909 - remove function below
+  private setBaseLocationForAdding(roleAssignment: RoleAssignmentInfo, service: string): void {
+    if (!this.locations.find((location) => location.id === roleAssignment.baseLocation && location.services.includes(service))) {
+      const location = { id: roleAssignment.baseLocation, userId: this.userId, locationId: roleAssignment.baseLocation, locationName: '', services: [roleAssignment.jurisdiction] };
+      this.locations.push(location);
+      this.locationServices.add(roleAssignment.jurisdiction);
     }
   }
 

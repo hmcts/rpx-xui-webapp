@@ -146,11 +146,9 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
       };
       this.onPaginationSubscribeHandler(paginationDataFromResult);
     }
-
     if (typeof resultView.results !== 'undefined') {
       this.resultViewIsReady = true;
     }
-
     this.resultsArr = resultView.results;
     this.resultView = {
       ...resultView,

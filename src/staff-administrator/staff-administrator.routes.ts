@@ -1,16 +1,15 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {
+  StaffAddEditUserFormComponent
+} from './components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form.component';
+import {
   StaffUserCheckAnswersComponent
 } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
-import { StaffAddUserComponent } from './components/staff-add-user/staff-add-user.component';
 import { StaffUserDetailsComponent } from './components/staff-user-details/staff-user-details.component';
 import {
-  StaffAddUserContainerComponent
-} from './containers/staff-add-user-container/staff-add-user-container.component';
-import {
-  StaffEditUserContainerComponent
-} from './containers/staff-edit-user-container/staff-edit-user-container.component';
+  StaffAddEditUserContainerComponent
+} from './containers/staff-add-edit-user-container/staff-add-edit-user-container.component';
 import { StaffMainContainerComponent } from './containers/staff-main-container/staff-main-container.component';
 import {
   StaffUserDetailsContainerComponent
@@ -49,16 +48,28 @@ export const ROUTES: Routes = [
           },
           {
             path: 'update',
+            component: StaffAddEditUserContainerComponent,
             data: { isUpdateMode: true },
             children: [
-              { path: '', component: StaffEditUserContainerComponent },
+              { path: '',
+                component: StaffAddEditUserFormComponent,
+                data: {
+                  title: 'Edit user',
+                  description: 'Change the details of this user.'
+                }
+              },
               { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }
             ]
           },
           {
             path: 'copy',
+            component: StaffAddEditUserContainerComponent,
+            data: {
+              title: 'Add user',
+              description: 'Enter the details of the user you want to add.'
+            },
             children: [
-              { path: '', component: StaffAddUserComponent },
+              { path: '', component: StaffAddEditUserFormComponent },
               { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }
             ]
           }
@@ -66,9 +77,13 @@ export const ROUTES: Routes = [
       },
       {
         path: 'add-user',
-        component: StaffAddUserContainerComponent,
+        component: StaffAddEditUserContainerComponent,
+        data: {
+          title: 'Add user',
+          description: 'Enter the details of the user you want to add.'
+        },
         children: [
-          { path: '', component: StaffAddUserComponent },
+          { path: '', component: StaffAddEditUserFormComponent },
           { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }
         ]
       }

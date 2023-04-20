@@ -1,4 +1,3 @@
-/* tslint:disable:object-literal-sort-keys */
 import { CaseFlagReferenceModel } from '../models/caseFlagReference.model';
 
 export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [

@@ -1,4 +1,3 @@
-/* tslint:disable:max-line-length */
 import MockAdapter from 'axios-mock-adapter';
 import { HttpMockAdapter } from '../../common/httpMockAdapter';
 import { ALL_JUDICIAL_USERS, RAW_JUDICIAL_USERS } from './data/judicial.mock.data';

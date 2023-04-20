@@ -19,7 +19,6 @@ describe('Evidence Manager Endpoints', () => {
     Request.clearSession();
   });
 
-  // tslint:disable-next-line: only-arrow-functions
   it('Get document binary', async function() {
     await Request.withSession(userName, password);
     const xsrfToken = await getXSRFToken(userName, password);

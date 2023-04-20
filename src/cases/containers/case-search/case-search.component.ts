@@ -139,6 +139,8 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   };
 
   public onResultsViewHandler = (resultView) => {
+    // If elastic search flag is set then initialise pagination meta data
+    // and call onPaginationSubscribeHandler method
     if (this.elasticSearchFlag) {
       const paginationDataFromResult: PaginationMetadata = {
         totalResultsCount: resultView.total,
@@ -146,10 +148,12 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
       };
       this.onPaginationSubscribeHandler(paginationDataFromResult);
     }
+    // Set resultViewIsReady to true if resultView results is defined
     if (typeof resultView.results !== 'undefined') {
       this.resultViewIsReady = true;
     }
     this.resultsArr = resultView.results;
+    // Initialise resultView
     this.resultView = {
       ...resultView,
       columns: resultView.columns ? resultView.columns : [],

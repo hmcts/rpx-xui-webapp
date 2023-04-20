@@ -138,32 +138,32 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     }
   };
 
-  public onResultsViewHandler = (resultView) => {
+  public onResultsViewHandler = (resultViewForCaseSearch) => {
     // If elastic search flag is set then initialise pagination meta data
     // and call onPaginationSubscribeHandler method
     if (this.elasticSearchFlag) {
       const paginationDataFromResult: PaginationMetadata = {
-        totalResultsCount: resultView.total,
-        totalPagesCount: Math.ceil(resultView.total / this.appConfig.getPaginationPageSize())
+        totalResultsCount: resultViewForCaseSearch.total,
+        totalPagesCount: Math.ceil(resultViewForCaseSearch.total / this.appConfig.getPaginationPageSize())
       };
       this.onPaginationSubscribeHandler(paginationDataFromResult);
     }
     // Set resultViewIsReady to true if resultView results is defined
-    if (typeof resultView.results !== 'undefined') {
+    if (typeof resultViewForCaseSearch.results !== 'undefined') {
       this.resultViewIsReady = true;
     }
-    this.resultsArr = resultView.results;
+    this.resultsArr = resultViewForCaseSearch.results;
     // Initialise resultView
     this.resultView = {
-      ...resultView,
-      columns: resultView.columns ? resultView.columns : [],
-      results: resultView.results ? resultView.results.map((item) => {
+      ...resultViewForCaseSearch,
+      columns: resultViewForCaseSearch.columns ? resultViewForCaseSearch.columns : [],
+      results: resultViewForCaseSearch.results ? resultViewForCaseSearch.results.map((item) => {
         return {
           ...item,
           hydrated_case_fields: null
         };
       }) : [],
-      hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
+      hasDrafts: resultViewForCaseSearch.hasDrafts ? resultViewForCaseSearch.hasDrafts : () => false
     };
   };
 

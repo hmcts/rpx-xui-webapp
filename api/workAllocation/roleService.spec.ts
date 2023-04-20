@@ -1,4 +1,3 @@
-/* tslint:disable:object-literal-sort-keys */
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';

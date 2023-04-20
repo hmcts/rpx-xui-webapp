@@ -8,9 +8,7 @@ import { OrganisationModel } from './models/organisation.model';
 import * as dbJson from './stubs/db.json';
 
 const dbModule = plainToClass(DataBaseModel, dbJson);
-// @ts-ignore
 const orgs: OrganisationModel[] = dbModule.organisations;
-// @ts-ignore
 const cases: SharedCase[] = dbModule.sharedCases;
 
 export function getUsers(req: EnhancedRequest, res: Response) {
@@ -53,7 +51,6 @@ export function assignCases(req: EnhancedRequest, res: Response) {
       if (assignmentId === 'u222222') {
         newSharedWith.push(user);
         newPendingShares = [];
-        // tslint:disable-next-line:no-empty
       } else if (assignmentId !== 'u333333') {
         return res.sendStatus(500);
       }

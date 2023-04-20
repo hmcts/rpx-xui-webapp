@@ -9,7 +9,6 @@ export const generator = (schema, min = 1, max) => {
   return Array.from({
     length: faker.random.number({
       min,
-      // tslint:disable-next-line:object-literal-sort-keys
       max
     })
   }).map(() => {
@@ -34,8 +33,6 @@ export const init = () => {
   const mock = new MockAdapter(httpMock);
 
   // schema
-  // tslint:disable:object-literal-sort-keys
-  // tslint:disable:max-line-length
   const questionsSchema: NoCQuestion[] = [
     {
       case_type_id: 'AAT',
@@ -53,7 +50,6 @@ export const init = () => {
       },
       display_context_parameter: '1',
       challenge_question_id: 'NoC',
-      // tslint:disable-next-line:max-line-length
       answer_field: null,
       question_id: 'QuestionId{{random.number}}'
     },
@@ -73,7 +69,6 @@ export const init = () => {
       },
       display_context_parameter: '1',
       challenge_question_id: 'NoC',
-      // tslint:disable-next-line:max-line-length
       answer_field: null,
       question_id: 'QuestionId{{random.number}}'
     },
@@ -93,7 +88,6 @@ export const init = () => {
       },
       display_context_parameter: '1',
       challenge_question_id: 'NoC',
-      // tslint:disable-next-line:max-line-length
       answer_field: null,
       question_id: 'QuestionId{{random.number}}'
     },
@@ -170,7 +164,6 @@ export const init = () => {
       },
       display_context_parameter: '1',
       challenge_question_id: 'NoC',
-      // tslint:disable-next-line:max-line-length
       answer_field: null,
       question_id: 'QuestionId{{random.number}}'
     },
@@ -190,7 +183,6 @@ export const init = () => {
       },
       display_context_parameter: '1',
       challenge_question_id: 'NoC',
-      // tslint:disable-next-line:max-line-length
       answer_field: null,
       question_id: 'QuestionId{{random.number}}'
     },
@@ -210,7 +202,6 @@ export const init = () => {
       },
       display_context_parameter: '1',
       challenge_question_id: 'NoC',
-      // tslint:disable-next-line:max-line-length
       answer_field: null,
       question_id: 'QuestionId{{random.number}}'
     },
@@ -230,13 +221,10 @@ export const init = () => {
       },
       display_context_parameter: '1',
       challenge_question_id: 'NoC',
-      // tslint:disable-next-line:max-line-length
       answer_field: null,
       question_id: 'QuestionId{{random.number}}'
     }
   ];
-  // tslint:enable:object-literal-sort-keys
-  // tslint:enable:max-line-length
 
   const getNoCQuestionsUrl = /\/api\/noc\/nocQuestions\?caseId/;
   const validateNoCQuestionsUrl = /\/api\/noc\/validateNoCQuestions/;

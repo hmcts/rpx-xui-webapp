@@ -1,4 +1,3 @@
-/* tslint:disable:object-literal-sort-keys trailing-comma max-line-length */
 import { JudicialUserModel, RawJudicialUserModel } from '../models/judicialUser.model';
 
 export const RAW_JUDICIAL_USERS: RawJudicialUserModel[] = [

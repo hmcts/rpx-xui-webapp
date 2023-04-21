@@ -87,9 +87,9 @@ export function getRoleAssignmentInfo(roleAssignmentResponse: RoleAssignment[]):
 
 export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<any[]> {
   const refreshRoleAssignments = req.query && req.query.refreshRoleAssignments
-   ? req.query.refreshRoleAssignments === 'true' : false;
+    ? req.query.refreshRoleAssignments === 'true' : false;
   const roleAssignmentInfo =
-  req.session.roleAssignmentResponse && !refreshRoleAssignments ? getRoleAssignmentInfo(req.session.roleAssignmentResponse)
-  : await refreshRoleAssignmentForUser(userInfo, req);
+    req.session.roleAssignmentResponse && !refreshRoleAssignments ? getRoleAssignmentInfo(req.session.roleAssignmentResponse)
+      : await refreshRoleAssignmentForUser(userInfo, req);
   return roleAssignmentInfo;
 }

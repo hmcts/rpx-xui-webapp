@@ -109,7 +109,7 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED = {
   ActiveTasksUnassigned: {
     assign: [ASSIGN],
     cancel: [CANCEL],
-    claim: [CLAIM],
+    claim: [CLAIM]
   },
   AllCases: {
     manage: [RE_ALLOCATE, REMOVE_ALLOCATE]

@@ -317,12 +317,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       if (taskAction.action.id === TaskActionIds.CLAIM) {
         this.claimTask(taskAction.task.id);
         return;
-      }
-      else if (taskAction.action.id === TaskActionIds.CLAIM_AND_GO) {
+      } else if (taskAction.action.id === TaskActionIds.CLAIM_AND_GO) {
         this.claimTaskAndGo(taskAction.task);
         return;
-      }
-      else if (taskAction.action.id === TaskActionIds.GO) {
+      } else if (taskAction.action.id === TaskActionIds.GO) {
         const goToTaskUrl = `/cases/case-details/${taskAction.task.case_id}/tasks`;
         this.router.navigate([goToTaskUrl]);
         return;
@@ -344,16 +342,14 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   /**
    * A User 'Claims' themselves a task aka. 'Assign to me'.
    */
-   public claimTask(taskId: string): void {
-
+  public claimTask(taskId: string): void {
     this.taskService.claimTask(taskId).subscribe(() => {
       this.infoMessageCommService.nextMessage({
         type: InfoMessageType.SUCCESS,
-        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
+        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
       });
       this.refreshTasks();
-    }, error => {
-
+    }, (error) => {
       this.claimTaskErrors(error.status);
     });
   }
@@ -371,8 +367,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
           messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
         }
       });
-    }, error => {
-
+    }, (error) => {
       this.claimTaskErrors(error.status);
     });
   }
@@ -387,7 +382,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     if (handledStatus > 0) {
       this.infoMessageCommService.nextMessage({
         type: InfoMessageType.WARNING,
-        message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
+        message: InfoMessage.TASK_NO_LONGER_AVAILABLE
       });
     }
   }

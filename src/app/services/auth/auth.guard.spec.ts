@@ -13,22 +13,31 @@ class HttpClientMock {
 }
 
 class SessionStorageMock implements SessionStorageService {
-  public removeItem(key: string): void { }
-  public clear(): void { }
-  public getItem(key: string, removeAfterRead?: boolean) {
-    switch(key) {
+  public removeItem(): void {
+    return undefined;
+  }
+
+  public clear(): void {
+    return undefined;
+  }
+
+  public getItem(key: string) {
+    switch (key) {
       case 'userDetails': {
-        return JSON.stringify({roles: ['someRoles']});
+        return JSON.stringify({ roles: ['someRoles'] });
       }
       case 'redirectUrl': {
         return '/cheesecakes/1';
       }
       default: {
-        return null
+        return null;
       }
     }
   }
-  public setItem(key: string, value: string) { }
+
+  public setItem() {
+    return undefined;
+  }
 }
 
 describe('AuthGuard', () => {
@@ -123,7 +132,7 @@ describe('AuthGuard', () => {
       authService.setWindowLocationHref.and.callThrough();
       windowLocationService.getPathName.and.returnValue('/');
 
-      const sessionStorageServiceStub = new SessionStorageMock()
+      const sessionStorageServiceStub = new SessionStorageMock();
 
       const guard = new AuthGuard(authService, sessionStorageServiceStub, windowLocationService);
 
@@ -149,7 +158,7 @@ describe('AuthGuard', () => {
     it('Get JSON object Handles errors', () => {
       const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
       const result = guard.getJSONObject('someobject');
-      expect(result).toBeNull()
+      expect(result).toBeNull();
     });
   });
 });

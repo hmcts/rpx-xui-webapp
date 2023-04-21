@@ -196,11 +196,11 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
     }, { headers });
 
     const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse
-      .find(role => role.roleName === 'specific-access-granted' ||  role.roleName === 'specific-access-denied');
+      .find((role) => role.roleName === 'specific-access-granted' || role.roleName === 'specific-access-denied');
 
     //Delete secondary role assignment
     if (singleRoleAssignment.roleName === 'specific-access-granted') {
-      await http.delete(`${updatePath}/${singleRoleAssignment.id}`, {headers});
+      await http.delete(`${updatePath}/${singleRoleAssignment.id}`, { headers });
     }
 
     //Create new role assignment
@@ -208,7 +208,7 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
       singleRoleAssignment.notes = [{
         userId: actorId,
         time: new Date(),
-        comment: JSON.stringify(singleRoleAssignment.attributes.specificAccessReason),
+        comment: JSON.stringify(singleRoleAssignment.attributes.specificAccessReason)
       }];
 
       singleRoleAssignment.attributes.isNew = req.body.attributesToUpdate.isNew;
@@ -218,14 +218,14 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
           assignerId: actorId,
           process: 'specific-access',
           reference: `${caseId}/${singleRoleAssignment.attributes.requestedRole}/${actorId}`,
-          replaceExisting: true,
+          replaceExisting: true
         },
-        requestedRoles: [singleRoleAssignment],
+        requestedRoles: [singleRoleAssignment]
       };
 
       delete roleAssignmentUpdate.requestedRoles[0].id;
 
-      await http.post(updatePath, {...roleAssignmentUpdate}, {headers});
+      await http.post(updatePath, { ...roleAssignmentUpdate }, { headers });
     }
 
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);

@@ -159,7 +159,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     if (data) {
       returnData = {
         tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser),
-        total_records: data.total_records,
+        total_records: data.total_records
       };
     }
     res.send(returnData);

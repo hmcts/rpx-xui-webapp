@@ -29,8 +29,8 @@ export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: Al
 
 export function toSARoleAssignmentBody(
   currentUserId: string, specificAccessData: { specificAccessStateData: AllocateRoleData, period: Period },
-  extraAttributesForBasicRole: {[x: string]: string | boolean} = {},
-  extraAttributesForSpecificRole: {[x: string]: string | boolean} = {}
+  extraAttributesForBasicRole: { [x: string]: string | boolean } = {},
+  extraAttributesForSpecificRole: { [x: string]: string | boolean } = {}
 ) {
   const todayDate = new Date();
   const allocateRoleData = specificAccessData.specificAccessStateData;
@@ -63,9 +63,11 @@ export function toSARoleAssignmentBody(
         ? period.endDate : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
       // TODO: Include notes once we have that information
       notes: [
-        { comment: `{"specificReason":${allocateRoleData.accessReason}}`,
+        {
+          comment: `{"specificReason":${allocateRoleData.accessReason}}`,
           time: new Date().toISOString(),
-          userId: allocateRoleData.actorId }
+          userId: allocateRoleData.actorId
+        }
       ]
     },
     {
@@ -86,16 +88,18 @@ export function toSARoleAssignmentBody(
       endTime: period.endDate,
       // TODO: Include notes once we have that information
       notes: [
-        { comment: '{"specificReason":"Request approved"}',
+        {
+          comment: '{"specificReason":"Request approved"}',
           time: new Date().toISOString,
-          userId: allocateRoleData.actorId }
+          userId: allocateRoleData.actorId
+        }
       ]
     }]
   };
 }
 
 export function toDenySARoleAssignmentBody(
-  currentUser: UserInfo, allocateRoleData: AllocateRoleData, extraAttributesForBasicRole: {[x: string]: string | boolean} = {}
+  currentUser: UserInfo, allocateRoleData: AllocateRoleData, extraAttributesForBasicRole: { [x: string]: string | boolean } = {}
 ) {
   const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
   let requestedrole;
@@ -145,12 +149,14 @@ export function toDenySARoleAssignmentBody(
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
       actorId: allocateRoleData.assigneeId,
-      endTime: new Date(new Date(new Date().setDate(new Date().getDate() + 14)).setUTCHours(0,0,0,0)),
-      notes: [{comment: allocateRoleData.comment,
-      time: new Date(),
-      userId: currentUserId}],
-    },
-  ],
+      endTime: new Date(new Date(new Date().setDate(new Date().getDate() + 14)).setUTCHours(0, 0, 0, 0)),
+      notes: [{
+        comment: allocateRoleData.comment,
+        time: new Date(),
+        userId: currentUserId
+      }]
+    }
+    ]
   };
 }
 export function toDenySADletionRequestedRoleBody(requestId: string) {
@@ -168,7 +174,7 @@ export function toDenySADletionRequestedRoleBody(requestId: string) {
 }
 
 export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData,
-  extraAttributesForBasicRole: {[x: string]: string | boolean} = {}
+  extraAttributesForBasicRole: { [x: string]: string | boolean } = {}
 ) {
   const todayDate = new Date();
   return {
@@ -196,9 +202,11 @@ export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData
       endTime: allocateRoleData.period && allocateRoleData.period.endDate ? allocateRoleData.period.endDate
         : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
       // TODO: Include notes once we have that information
-      notes: [{ comment: `{"specificReason":${allocateRoleData.specificReason}}`,
+      notes: [{
+        comment: `{"specificReason":${allocateRoleData.specificReason}}`,
         time: new Date().toISOString(),
-        userId: allocateRoleData.person.id }]
+        userId: allocateRoleData.person.id
+      }]
     }]
   };
 }

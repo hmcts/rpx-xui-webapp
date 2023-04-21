@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { first } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { UserInfo, UserRole } from '../../../app/models';
@@ -55,6 +56,7 @@ export class CaseTaskComponent implements OnInit {
     value.description = CaseTaskComponent.replaceVariablesWithRealValues(value);
     this.pTask = value;
     this.isTaskUrgent = this.pTask.major_priority <= PriorityLimits.Urgent ? true : false;
+    this.setReleaseVersion();
   }
 
   @Input()
@@ -84,7 +86,6 @@ export class CaseTaskComponent implements OnInit {
 
   public ngOnInit(): void {
     this.manageOptions = this.task.actions;
-    this.checkForReleaseVersion();
   }
 
   public getAssigneeName(task: Task): string {
@@ -158,9 +159,13 @@ export class CaseTaskComponent implements OnInit {
     });
   }
 
-  public checkForReleaseVersion(): void {
-    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null).subscribe(features => {
-      this.isRelease4 = features.configurations.findIndex(serviceConfig =>  parseFloat(serviceConfig.releaseVersion) === 4) > -1;
-    });
+  public async setReleaseVersion(): Promise<void> {
+     const featureConfigurations = await this.featureToggleService
+       .getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null)
+       .pipe(first())
+       .toPromise();
+     const jurisdictionConfiguration = featureConfigurations.configurations
+       .find(serviceConfig => serviceConfig.serviceName === this.task.jurisdiction);
+     this.isRelease4 = jurisdictionConfiguration?.releaseVersion === '4';
   }
 }

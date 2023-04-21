@@ -241,7 +241,6 @@ describe('Noc Reducer', () => {
         },
         display_context_parameter: '1',
         challenge_question_id: 'NoC',
-        // tslint:disable-next-line:max-line-length
         answer_field: null,
         question_id: 'QuestionId-1'
       }, {

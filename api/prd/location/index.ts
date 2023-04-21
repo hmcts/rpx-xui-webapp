@@ -17,14 +17,12 @@ const url: string = getConfigValue(SERVICES_PRD_LOCATION_API);
  * @example searchTerm = any search term for postcode | site name | venue name |court name | court address etc.
  */
 export async function getLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
-  // @ts-ignore
   const searchTerm = req.query.searchTerm as string;
   const serviceIds = req.query.serviceIds as string;
   const locationType = req.query.locationType as string;
   const serviceIdArray = serviceIds.split(',');
   const courtTypeIdsArray: string[] = getCourtTypeIdsByServices(serviceIdArray);
   const strCourtTypeIds = courtTypeIdsArray ? courtTypeIdsArray.join(',') : '';
-  // tslint:disable-next-line:max-line-length
   const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${strCourtTypeIds}`;
   try {
     const { status, data }: { status: number, data: LocationModel[] } = await handleGet(markupPath, req, next);

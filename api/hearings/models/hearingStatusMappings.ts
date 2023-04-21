@@ -1,4 +1,3 @@
-/* tslint:disable:object-literal-sort-keys */
 import { EXUIDisplayStatusEnum, EXUISectionStatusEnum, HMCStatus } from './hearings.enum';
 import { HearingStatusMapping } from './hearingStatusMapping';
 

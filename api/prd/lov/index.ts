@@ -11,9 +11,7 @@ const prdUrl: string = getConfigValue(SERVICES_PRD_COMMONDATA_API);
  * getRefData from category and service ID
  */
 export async function getLovRefData(req: EnhancedRequest, res: Response, next: NextFunction) {
-  // @ts-ignore
-  const { serviceId, categoryId, isChildRequired }
-    = req.query as { serviceId: string, categoryId: string, isChildRequired: string };
+  const { serviceId, categoryId, isChildRequired } = req.query as { serviceId: string, categoryId: string, isChildRequired: string };
 
   const params = new URLSearchParams({ serviceId, isChildRequired });
   const markupPath: string = `${prdUrl}/refdata/commondata/lov/categories/${categoryId}?${params}`;

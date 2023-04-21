@@ -16,7 +16,6 @@ import { WASupportedJurisdictionsService } from '../../../work-allocation/servic
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'ccd-case-viewer',
   template: `
     <mat-tab-group>

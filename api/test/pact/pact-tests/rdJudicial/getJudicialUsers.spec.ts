@@ -82,6 +82,7 @@ describe('Judicial ref data api, get all judge users', () => {
       const configValues = getJudicialRefDataAPIOverrides(pactSetUp.provider.mockService.baseUrl);
       configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
 
+      // @ts-ignore
       configValues.serviceRefDataMapping = [
         { 'service': 'IA', 'serviceCodes': ['BFA1'] }, { 'service': 'CIVIL', 'serviceCodes': ['AAA6', 'AAA7'] }
       ];

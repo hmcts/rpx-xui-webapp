@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, iif, Observable } from 'rxjs';
-import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
+import { catchError, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { ErrorMessage, MultipleErrorMessage } from '../../../../../app/models';
 import { StaffSearchFilters } from '../../../../models/staff-search-filters.model';
 import { StaffUserListData } from '../../../../models/staff-user-list-data.model';
@@ -24,9 +24,19 @@ export class StaffDataFilterService {
       switchMap((searchFilters) => iif(
         () => !!searchFilters.advancedSearchFilters,
         this.staffDataAccessService.getFilteredUsers(searchFilters),
-        this.staffDataAccessService.getUsersByPartialName(searchFilters),
+        this.staffDataAccessService.getUsersByPartialName(searchFilters).pipe(
+          catchError(error => {
+            if (error.status === 400) {
+              this.setErrors([{
+                error: 'Invalid search string. Please input a valid string.',
+                name: 'user-partial-name'
+              }]);
+            }
+            return [];
+          })
+        ),
       )),
-      shareReplay(1),
+      shareReplay(1)
     );
 
     this.errors = new BehaviorSubject([]);

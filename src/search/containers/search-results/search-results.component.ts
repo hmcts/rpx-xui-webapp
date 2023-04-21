@@ -13,7 +13,6 @@ import { SearchService } from '../../services/search.service';
   styleUrls: ['./search-results.component.scss']
 })
 export class SearchResultsComponent implements OnInit, OnDestroy {
-
   public searchSubscription$: Subscription;
   public jurisdictions: Jurisdiction[];
   public searchResultDisplay: SearchResultDisplay[];
@@ -24,7 +23,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
   constructor(private readonly searchService: SearchService,
               private readonly jurisdictionService: JurisdictionService,
               private readonly router: Router,
-              private readonly route: ActivatedRoute) { }
+              private readonly route: ActivatedRoute) {}
 
   public ngOnInit(): void {
     this.retrieveSearchResults();
@@ -47,7 +46,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
 
     // Generate search result to display
     this.searchResultDisplay = [];
-    searchResult.results.forEach(result => {
+    searchResult.results.forEach((result) => {
       const searchResultDisplay: SearchResultDisplay = {
         caseReference: result.caseReference,
         caseName: result.caseNameHmctsInternal,
@@ -90,8 +89,8 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
       this.searchService.getResults(),
       this.jurisdictionService.getJurisdictions()
     ]).subscribe(
-      results => this.onSearchSubscriptionHandler(results),
-      error => this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.ERROR }, relativeTo: this.route })
+      (results) => this.onSearchSubscriptionHandler(results),
+      () => this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.ERROR }, relativeTo: this.route })
     );
   }
 
@@ -101,11 +100,11 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
    *
    */
   private getStateName(stateId: string, jurisdictionId: string, caseTypeId: string): string {
-    const jurisdiction = this.jurisdictions.find(x => x.id === jurisdictionId);
+    const jurisdiction = this.jurisdictions.find((x) => x.id === jurisdictionId);
     if (jurisdiction !== undefined) {
-      const caseType = jurisdiction.caseTypes.find(x => x.id === caseTypeId);
+      const caseType = jurisdiction.caseTypes.find((x) => x.id === caseTypeId);
       if (caseType !== undefined) {
-        const state = caseType.states.find(x => x.id === stateId);
+        const state = caseType.states.find((x) => x.id === stateId);
         if (state !== undefined) {
           return state.name !== '' ? state.name : stateId;
         }

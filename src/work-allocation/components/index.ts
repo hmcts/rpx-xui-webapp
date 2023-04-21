@@ -27,7 +27,7 @@ export const components: any[] = [
   TaskManagerFilterComponent,
   TaskNameFieldComponent,
   UrlFieldComponent,
-  WorkFieldComponent,
+  WorkFieldComponent
 ];
 
 export * from './available-tasks-filter/available-tasks-filter.component';

@@ -22,7 +22,6 @@ import * as fromFeature from '../../store';
   styleUrls: ['case-home.component.scss']
 })
 export class CaseHomeComponent implements OnInit, OnDestroy {
-
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';
   public static readonly DRAFT_DELETED_MSG = 'The draft has been successfully deleted';
 
@@ -37,7 +36,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     private readonly store: Store<fromFeature.State>,
     private readonly commonLibLoadingService: CommonLibLoadingService,
     private readonly ccdLibLoadingService: CCDLoadingService,
-  ) { }
+  ) {}
 
   /**
    * We dispatch an action to start the idle session timeout. We
@@ -47,7 +46,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
    * have yet to be logged in. ie. Viewing an accessibility page.
    */
   public ngOnInit(): void {
-    this.navigationSubscription = this.navigationNotifier.navigation.subscribe(navigation => {
+    this.navigationSubscription = this.navigationNotifier.navigation.subscribe((navigation) => {
       if (navigation.action) {
         this.actionDispatcher(this.paramHandler(navigation));
       }
@@ -58,7 +57,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       this.commonLibLoadingService.isLoading
     ]);
 
-    this.showSpinner$ = libServices$.pipe(delay(0), map(states => states.reduce((c, s) => c || s, false)));
+    this.showSpinner$ = libServices$.pipe(delay(0), map((states) => states.reduce((c, s) => c || s, false)));
   }
 
   public ngOnDestroy(): void {
@@ -69,7 +68,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     }
   }
 
-// TODO: please revisit
+  // TODO: please revisit
   public paramHandler(navigation: any): GoActionParams {
     let params: GoActionParams;
     switch (navigation.action) {
@@ -105,7 +104,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
             navigation.relativeTo.snapshot.params.cid,
             'trigger',
             navigation.etid],
-          query: {...query},
+          query: { ...query },
           errorHandler: (error) => this.handleError(error, navigation.etid)
         };
         break;

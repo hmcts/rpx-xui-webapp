@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { Mode } from '../../models/hearings.enum';
 import { HearingsPipesModule } from '../../pipes/hearings.pipes.module';
@@ -21,7 +21,7 @@ describe('LinkedHearingsCaseTitleComponent', () => {
       imports: [HearingsPipesModule],
       declarations: [LinkedHearingsCaseTitleComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [{provide: ActivatedRoute, useValue: mockRoute}]
+      providers: [{ provide: ActivatedRoute, useValue: mockRoute }]
     })
       .compileComponents();
   }));

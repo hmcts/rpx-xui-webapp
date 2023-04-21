@@ -11,8 +11,8 @@ import { AnswerConverter } from './answer.converter';
 import { JudgeTypesAnswerConverter } from './judge-types.answer.converter';
 
 describe('JudgeTypesAnswerConverter', () => {
-
   let converter: AnswerConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
   let router: any;
   const ROLE_TYPE = ['initial'];
@@ -20,16 +20,16 @@ describe('JudgeTypesAnswerConverter', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                judgeTypes: hearingStageRefData,
-              },
-            },
-          },
+                judgeTypes: hearingStageRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -45,7 +45,7 @@ describe('JudgeTypesAnswerConverter', () => {
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = 'Initial';
-    const expected = cold('(b|)', {b: option});
+    const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });
 
@@ -54,7 +54,7 @@ describe('JudgeTypesAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;
     const result$ = converter.transformAnswer(of(STATE));
     const option = '';
-    const expected = cold('(b|)', {b: option});
+    const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });
 });

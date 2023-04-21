@@ -18,7 +18,7 @@ export class HealthCheckService implements OnDestroy {
     const result: { healthState } = { healthState };
     let path = '';
 
-    this.routeSubscription = this.store.pipe(select(fromRoot.getRouterUrl)).subscribe(value => {
+    this.routeSubscription = this.store.pipe(select(fromRoot.getRouterUrl)).subscribe((value) => {
       path = value;
     });
 

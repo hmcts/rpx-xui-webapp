@@ -11,8 +11,6 @@ import { ExuiCommonLibModule, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
-import { CheckReleaseVersionService } from 'src/work-allocation/services/check-release-version.service';
-
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -21,6 +19,7 @@ import { WorkAllocationComponentsModule } from '../../components/work-allocation
 import { TaskActionType } from '../../enums';
 import { Task } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskAssignmentContainerComponent } from './task-assignment-container.component';
 
@@ -29,7 +28,7 @@ import { TaskAssignmentContainerComponent } from './task-assignment-container.co
     <exui-task-container-assignment></exui-task-container-assignment>`
 })
 class WrapperComponent {
-  @ViewChild(TaskAssignmentContainerComponent, {static: true}) public appComponentRef: TaskAssignmentContainerComponent;
+  @ViewChild(TaskAssignmentContainerComponent, { static: true }) public appComponentRef: TaskAssignmentContainerComponent;
   @Input() public tasks: Task[];
 }
 
@@ -37,8 +36,7 @@ class WrapperComponent {
   template: `
     <div>Nothing</div>`
 })
-class NothingComponent {
-}
+class NothingComponent {}
 
 describe('TaskAssignmentContainerComponent2', () => {
   let component: TaskAssignmentContainerComponent;
@@ -92,9 +90,9 @@ describe('TaskAssignmentContainerComponent2', () => {
         StoreModule.forRoot({}),
         RouterTestingModule.withRoutes(
           [
-            {path: 'my-work/list', component: NothingComponent}
+            { path: 'my-work/list', component: NothingComponent }
           ]
-        ),
+        )
       ],
       providers: [
         {provide: Location, useValue: locationStub},
@@ -107,7 +105,7 @@ describe('TaskAssignmentContainerComponent2', () => {
             snapshot: {
               data: {
                 taskAndCaseworkers: {
-                  task: {task: mockTasks[0]}, caseworkers: []
+                  task: { task: mockTasks[0] }, caseworkers: []
                 },
                 ...TaskActionConstants.Reassign
               },
@@ -115,8 +113,8 @@ describe('TaskAssignmentContainerComponent2', () => {
                 taskId: 'task1111111'
               }
             },
-            params: of({task: mockTasks[0]}),
-            paramMap: of({selectedPerson: SELECTED_PERSON})
+            params: of({ task: mockTasks[0] }),
+            paramMap: of({ selectedPerson: SELECTED_PERSON })
           }
         },
         {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},
@@ -127,7 +125,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
     wrapper.tasks = null;
-    window.history.pushState({returnUrl: 'my-work/list', showAssigneeColumn: false}, '', 'my-work/list');
+    window.history.pushState({ returnUrl: 'my-work/list', showAssigneeColumn: false }, '', 'my-work/list');
 
     // Deliberately defer fixture.detectChanges() call to each test, to allow overriding the ActivatedRoute snapshot
     // data with a different verb ("Assign")
@@ -160,7 +158,7 @@ describe('TaskAssignmentContainerComponent2', () => {
   });
 
   it('should redirect to the "All work" page on cancelling task assignment', () => {
-    window.history.pushState({returnUrl: 'all-work/tasks#manage_0d22d838', showAssigneeColumn: false}, '',
+    window.history.pushState({ returnUrl: 'all-work/tasks#manage_0d22d838', showAssigneeColumn: false }, '',
       'all-work/tasks#manage_0d22d838');
     const findPersonControl = new FormControl('test');
     component.formGroup.addControl('findPersonControl', findPersonControl);

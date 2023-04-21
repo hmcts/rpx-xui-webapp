@@ -1,25 +1,25 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { CHOOSE_ALLOCATE_TO } from '../../../constants';
 import {
-    Actions,
-    AllocateRoleNavigationEvent,
-    AllocateRoleState,
-    AllocateRoleStateData,
-    AllocateTo,
-    DurationOfRole,
-    RoleCategory
+  Actions,
+  AllocateRoleNavigationEvent,
+  AllocateRoleState,
+  AllocateRoleStateData,
+  AllocateTo,
+  DurationOfRole,
+  RoleCategory
 } from '../../../models';
 import * as fromFeature from '../../../store';
 import { ChooseAllocateToComponent } from './choose-allocate-to.component';
 
 describe('ChooseAllocateToComponent', () => {
   const radioOptionControl: FormControl = new FormControl('');
-  const formGroup: FormGroup = new FormGroup({[CHOOSE_ALLOCATE_TO]: radioOptionControl});
+  const formGroup: FormGroup = new FormGroup({ [CHOOSE_ALLOCATE_TO]: radioOptionControl });
 
   let component: ChooseAllocateToComponent;
   let fixture: ComponentFixture<ChooseAllocateToComponent>;
@@ -29,31 +29,32 @@ describe('ChooseAllocateToComponent', () => {
     jurisdiction: 'IA',
     assignmentId: 'a123456',
     state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
-    typeOfRole: {id: 'lead-judge', name: 'Lead judge'},
+    typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
     allocateTo: AllocateTo.RESERVE_TO_ME,
     personToBeRemoved: {
       id: 'p111111',
       name: 'test1',
-      domain: '',
+      domain: ''
     },
     person: {
       id: 'p222222',
       name: 'test2',
-      domain: '',
+      domain: ''
     },
     durationOfRole: DurationOfRole.SEVEN_DAYS,
     action: Actions.Allocate,
     period: {
       startDate: new Date(),
-      endDate: new Date(),
+      endDate: new Date()
     },
-    roleCategory: RoleCategory.LEGAL_OPERATIONS,
+    roleCategory: RoleCategory.LEGAL_OPERATIONS
   };
+
   beforeEach(waitForAsync(() => {
     mockStore = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ ChooseRadioOptionComponent, ChooseAllocateToComponent ],
+      declarations: [ChooseRadioOptionComponent, ChooseAllocateToComponent],
       imports: [
         ReactiveFormsModule
       ],
@@ -64,7 +65,7 @@ describe('ChooseAllocateToComponent', () => {
         }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -82,7 +83,7 @@ describe('ChooseAllocateToComponent', () => {
 
   it('should set data in ngOnInit', () => {
     component.ngOnInit();
-    expect(component.typeOfRole).toEqual({id: 'lead-judge', name: 'Lead judge'});
+    expect(component.typeOfRole).toEqual({ id: 'lead-judge', name: 'Lead judge' });
     expect(component.allocateTo).toBe('Reserve to me');
     expect(component.caption).toBe('Allocate a Lead judge');
   });

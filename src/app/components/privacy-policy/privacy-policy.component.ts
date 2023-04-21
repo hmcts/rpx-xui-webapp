@@ -6,13 +6,14 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './privacy-policy.component.html'
 })
 export class PrivacyPolicyComponent implements OnInit {
-  constructor(private readonly route: ActivatedRoute) { }
+  constructor(private readonly route: ActivatedRoute) {}
 
   public ngOnInit() {
-    this.route.fragment.subscribe(fragment => {
+    this.route.fragment.subscribe((fragment) => {
       try {
         document.querySelector(`#${fragment}`).scrollIntoView();
-      } catch (e) { }
+        // eslint-disable-next-line no-empty
+      } catch (e) {}
     });
   }
 }

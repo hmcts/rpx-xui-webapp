@@ -1,7 +1,6 @@
 import { DefaultHiddenConverter } from './default.hidden.converter';
 
 describe('DefaultHiddenConverter', () => {
-
   let defaultHiddenConverter: DefaultHiddenConverter;
 
   beforeEach(() => {
@@ -11,7 +10,6 @@ describe('DefaultHiddenConverter', () => {
   it('should return default hidden converter', () => {
     const result$ = defaultHiddenConverter.transformHidden();
     const isHidden = false;
-    result$.subscribe(result => expect(result).toBe(isHidden));
+    result$.subscribe((result) => expect(result).toBe(isHidden));
   });
-
 });

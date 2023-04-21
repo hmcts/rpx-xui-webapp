@@ -17,9 +17,8 @@ import { CheckReleaseVersionService } from '../../../work-allocation/services/ch
 import { JurisdictionsService } from '../../../work-allocation/services/juridictions.service';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Case } from '../../models/cases';
-import * as dtos from '../../models/dtos';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
-import { getMockCaseRoles, getMockCases, getMockLocations } from '../../tests/utils.spec';
+import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
 import { MyAccessComponent } from '../my-access/my-access.component';
 import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
@@ -57,11 +56,9 @@ describe('WorkCaseListWrapperComponent', () => {
   const mockJurisdictionService = jasmine.createSpyObj('mockJurisdictionService', ['getJurisdictions']);
   mockJurisdictionService.getJurisdictions.and.returnValue(of(JURISDICTIONS));
 
-
   let component: WorkCaseListWrapperComponent;
   let fixture: ComponentFixture<WorkCaseListWrapperComponent>;
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
-  const mockLocations: dtos.Location[] = getMockLocations();
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
   const mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchCase', 'getCase', 'getMyCases', 'getMyAccess']);
@@ -81,6 +78,7 @@ describe('WorkCaseListWrapperComponent', () => {
     }
   };
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
 
   beforeEach((() => {

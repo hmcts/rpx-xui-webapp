@@ -12,33 +12,33 @@ describe('PageFlow', () => {
       screenName: 'hearing-requirements',
       navigation: [
         {
-          resultValue: 'hearing-facilities',
-        },
-      ],
+          resultValue: 'hearing-facilities'
+        }
+      ]
     },
     {
       screenName: 'hearing-facilities',
       navigation: [
         {
-          resultValue: 'hearing-stage',
-        },
-      ],
+          resultValue: 'hearing-stage'
+        }
+      ]
     },
     {
       screenName: 'hearing-stage',
       navigation: [
         {
-          resultValue: 'hearing-attendance',
-        },
-      ],
+          resultValue: 'hearing-attendance'
+        }
+      ]
     },
     {
       screenName: 'hearing-attendance',
       navigation: [
         {
-          resultValue: 'hearing-venue',
-        },
-      ],
+          resultValue: 'hearing-venue'
+        }
+      ]
     },
     {
       screenName: 'hearing-venue',
@@ -47,55 +47,55 @@ describe('PageFlow', () => {
         {
           conditionOperator: 'INCLUDE',
           conditionValue: '7',
-          resultValue: 'hearing-welsh',
+          resultValue: 'hearing-welsh'
         },
         {
           conditionOperator: 'NOT INCLUDE',
           conditionValue: '7',
-          resultValue: 'hearing-judge',
-        },
-      ],
+          resultValue: 'hearing-judge'
+        }
+      ]
     },
     {
       screenName: 'hearing-welsh',
       navigation: [
         {
-          resultValue: 'hearing-judge',
-        },
-      ],
+          resultValue: 'hearing-judge'
+        }
+      ]
     },
     {
       screenName: 'hearing-judge',
       navigation: [
         {
-          resultValue: 'hearing-panel',
-        },
-      ],
+          resultValue: 'hearing-panel'
+        }
+      ]
     },
     {
       screenName: 'hearing-panel',
       navigation: [
         {
-          resultValue: 'hearing-timing',
-        },
-      ],
+          resultValue: 'hearing-timing'
+        }
+      ]
     },
     {
       screenName: 'hearing-timing',
       navigation: [
         {
-          resultValue: 'hearing-additional-instructions',
-        },
-      ],
+          resultValue: 'hearing-additional-instructions'
+        }
+      ]
     },
     {
       screenName: 'hearing-additional-instructions',
       navigation: [
         {
-          resultValue: 'hearing-create-edit-summary',
-        },
-      ],
-    },
+          resultValue: 'hearing-create-edit-summary'
+        }
+      ]
+    }
   ];
 
   beforeEach(() => {
@@ -117,16 +117,15 @@ describe('PageFlow', () => {
 
   it('should get last page hearing-welsh if regionId is including Wales', () => {
     const screensNavigations$: Observable<ScreenNavigationModel[]> = of(SCREEN_FLOW);
-    pageFlow.hearingConditions$ = of({regionId: '7'});
+    pageFlow.hearingConditions$ = of({ regionId: '7' });
     mockRoute.url = '/request/hearing/hearing-judge';
     const lastPage = pageFlow.getLastPage(screensNavigations$);
     expect(lastPage).toBe('hearing-welsh');
   });
 
-
   it('should get last page hearing-venue if regionId is not including Wales', () => {
     const screensNavigations$: Observable<ScreenNavigationModel[]> = of(SCREEN_FLOW);
-    pageFlow.hearingConditions$ = of({regionId: '8'});
+    pageFlow.hearingConditions$ = of({ regionId: '8' });
     mockRoute.url = '/request/hearing/hearing-judge';
     const lastPage = pageFlow.getLastPage(screensNavigations$);
     expect(lastPage).toBe('hearing-venue');
@@ -142,7 +141,7 @@ describe('PageFlow', () => {
 
   it('should get next page hearing-welsh if regionId is including Wales', () => {
     const screensNavigations$: Observable<ScreenNavigationModel[]> = of(SCREEN_FLOW);
-    pageFlow.hearingConditions$ = of({regionId: '7'});
+    pageFlow.hearingConditions$ = of({ regionId: '7' });
     mockRoute.url = '/request/hearing/hearing-venue';
     const nextPage = pageFlow.getNextPage(screensNavigations$);
     expect(nextPage).toBe('hearing-welsh');
@@ -150,7 +149,7 @@ describe('PageFlow', () => {
 
   it('should get next page hearing-judge if regionId is not including Wales', () => {
     const screensNavigations$: Observable<ScreenNavigationModel[]> = of(SCREEN_FLOW);
-    pageFlow.hearingConditions$ = of({regionId: '8'});
+    pageFlow.hearingConditions$ = of({ regionId: '8' });
     mockRoute.url = '/request/hearing/hearing-venue';
     const nextPage = pageFlow.getNextPage(screensNavigations$);
     expect(nextPage).toBe('hearing-judge');
@@ -159,5 +158,4 @@ describe('PageFlow', () => {
   afterEach(() => {
     pageFlow = null;
   });
-})
-;
+});

@@ -6,7 +6,6 @@ import { SessionStorageService } from '../session-storage/session-storage.servic
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 
-
 class HttpClientMock {
   public get() {
     return 'response';
@@ -41,7 +40,7 @@ describe('AuthGuard', () => {
       providers: [
         AuthService,
         SessionStorageService,
-        { provide: HttpClient, useClass: HttpClientMock },
+        { provide: HttpClient, useClass: HttpClientMock }
       ]
     });
   });
@@ -73,7 +72,7 @@ describe('AuthGuard', () => {
 
     const canActivate = guard.canActivate();
 
-    canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
+    canActivate.subscribe((isAct) => expect(isAct).toBeTruthy());
     expect(authService.isAuthenticated).toHaveBeenCalled();
     expect(authService.loginRedirect).not.toHaveBeenCalled();
   });
@@ -84,11 +83,10 @@ describe('AuthGuard', () => {
     const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
 
     const canActivate = guard.canActivate();
-    canActivate.subscribe(isAct => expect(isAct).toBeFalsy());
+    canActivate.subscribe((isAct) => expect(isAct).toBeFalsy());
     expect(authService.isAuthenticated).toHaveBeenCalled();
     expect(authService.loginRedirect).toHaveBeenCalled();
   });
-
 
   describe('storeRedirectUrl', () => {
     it('store current path when unauthenticated', () => {
@@ -98,7 +96,7 @@ describe('AuthGuard', () => {
       const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
 
       const canActivate = guard.canActivate();
-      canActivate.subscribe(isAct => expect(isAct).toBeFalsy());
+      canActivate.subscribe((isAct) => expect(isAct).toBeFalsy());
 
       expect(authService.isAuthenticated).toHaveBeenCalled();
       expect(authService.loginRedirect).toHaveBeenCalled();
@@ -115,7 +113,7 @@ describe('AuthGuard', () => {
       const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
 
       const canActivate = guard.canActivate();
-      canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
+      canActivate.subscribe((isAct) => expect(isAct).toBeTruthy());
 
       expect(authService.setWindowLocationHref).not.toHaveBeenCalled();
     });
@@ -130,7 +128,7 @@ describe('AuthGuard', () => {
       const guard = new AuthGuard(authService, sessionStorageServiceStub, windowLocationService);
 
       const canActivate = guard.canActivate();
-      canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
+      canActivate.subscribe((isAct) => expect(isAct).toBeTruthy());
 
       expect(authService.setWindowLocationHref).toHaveBeenCalledWith('/cheesecakes/1');
     });
@@ -144,7 +142,7 @@ describe('AuthGuard', () => {
       const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
 
       const canActivate = guard.canActivate();
-      canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
+      canActivate.subscribe((isAct) => expect(isAct).toBeTruthy());
 
       expect(authService.setWindowLocationHref).not.toHaveBeenCalledWith('/cheesecakes/1');
     });

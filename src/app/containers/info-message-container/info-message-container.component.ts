@@ -33,7 +33,7 @@ export class InfoMessageContainerComponent implements OnInit {
 
   public ngOnInit(): void {
     this.router.events
-      .subscribe(event => {
+      .subscribe((event) => {
         if (event instanceof NavigationStart) {
           // keep the current url the navigation started from
           this.currentUrl = this.router.url;
@@ -53,7 +53,7 @@ export class InfoMessageContainerComponent implements OnInit {
 
   public getInfoMessages(): void {
     // subscribe to the info message communication service
-    this.messageService.infoMessageChangeEmitted$.subscribe(messages => {
+    this.messageService.infoMessageChangeEmitted$.subscribe((messages) => {
       this.infoMessages = messages;
 
       // add any additional information messages that have been passed in the state (i.e. role access exclusion)
@@ -81,7 +81,7 @@ export class InfoMessageContainerComponent implements OnInit {
     // EUI-4754 - intermittent instances of duplicate messages being accumulated
     // this will stop this from occuring again
     const refinedMessages = [];
-    this.infoMessages.forEach(infoMessage => {
+    this.infoMessages.forEach((infoMessage) => {
       if (!refinedMessages.includes(infoMessage)) {
         refinedMessages.push(infoMessage);
       }

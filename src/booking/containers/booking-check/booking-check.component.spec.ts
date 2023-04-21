@@ -1,5 +1,5 @@
-import { supportsScrollBehavior as cdkSupportsScrollBehavior} from '@angular/cdk/platform';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { supportsScrollBehavior as cdkSupportsScrollBehavior } from '@angular/cdk/platform';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -7,11 +7,11 @@ import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
 import { BookingProcess } from '../../models';
 import { BookingService } from '../../services';
-import * as HandleError from '../utils/booking-error-handler';
 import { BookingCheckComponent } from './booking-check.component';
 
 export class CdkWrapper {
   public static RefreshBookingHandleError(...args) {
+    // eslint-disable-next-line prefer-spread
     return cdkSupportsScrollBehavior.apply(null, args);
   }
 }
@@ -133,8 +133,10 @@ describe('BookingCheckComponent', () => {
     });
 
     describe('page link events', () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       let mockRouter: any;
       let eventTriggerSpy: jasmine.Spy;
+
       beforeEach(() => {
         eventTriggerSpy = spyOn(component, 'onEventTrigger').and.callThrough();
       });
@@ -146,7 +148,7 @@ describe('BookingCheckComponent', () => {
         mockBookingServiceSpy.createBooking.and.returnValue(of({ status: 403 }));
         const confirmButton = fixture.debugElement.query(By.css('button'));
         confirmButton.triggerEventHandler('click', null);
-        const mockComponentHandleError = spyOn(CdkWrapper , 'RefreshBookingHandleError').and.returnValue(true);
+        const mockComponentHandleError = spyOn(CdkWrapper, 'RefreshBookingHandleError').and.returnValue(true);
         fixture.detectChanges();
         expect(mockComponentHandleError).not.toHaveBeenCalled();
       });

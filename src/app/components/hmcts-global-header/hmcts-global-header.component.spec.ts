@@ -16,6 +16,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
   let mockRouter: any;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromRoot.State>;
   const storeMock = jasmine.createSpyObj('Store', [
     'dispatch', 'pipe'
@@ -37,7 +38,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
   const userDetails = {
     sessionTimeout: {
       idleModalDisplayTime: 10,
-      totalIdleTime: 1,
+      totalIdleTime: 1
     },
     canShareCases: true,
     userInfo: {
@@ -154,7 +155,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     }];
     component.ngOnInit();
     fixture.detectChanges();
-    component.isUserCaseManager$.subscribe(result => {
+    component.isUserCaseManager$.subscribe((result) => {
       expect(result).toBe(true);
     });
   });
@@ -180,7 +181,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     storeMock.pipe.and.returnValue(of(userDetails));
     component.ngOnInit();
     fixture.detectChanges();
-    component.isUserCaseManager$.subscribe(result => {
+    component.isUserCaseManager$.subscribe((result) => {
       expect(result).toBe(false);
     });
   });
@@ -210,7 +211,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     const rightItems = component.rightItems;
 
     leftItems.pipe(
-      switchMap(items => {
+      switchMap((items) => {
         expect(items).toEqual([{
           align: null,
           text: '2',
@@ -219,7 +220,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
         }]);
         return rightItems;
       })
-    ).subscribe(items => {
+    ).subscribe((items) => {
       expect(items).toEqual([{
         align: 'right',
         text: '1',
@@ -261,11 +262,11 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
     leftItems.pipe(
-      switchMap(items => {
+      switchMap((items) => {
         expect(items).toEqual([component.items[1]]);
         return rightItems;
       })
-    ).subscribe(items => {
+    ).subscribe((items) => {
       expect(items).toEqual([component.items[0]]);
     });
   });
@@ -298,11 +299,11 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
     leftItems.pipe(
-      switchMap(items => {
+      switchMap((items) => {
         expect(items).toEqual([component.items[1]]);
         return rightItems;
       })
-    ).subscribe(items => {
+    ).subscribe((items) => {
       expect(items).toEqual([component.items[0]]);
       done();
     });
@@ -338,11 +339,11 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
     leftItems.pipe(
-      switchMap(items => {
+      switchMap((items) => {
         expect(items).toEqual([]);
         return rightItems;
       })
-    ).subscribe(items => {
+    ).subscribe((items) => {
       expect(items).toEqual([component.items[0]]);
       done();
     });
@@ -353,6 +354,7 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
   let mockRouter: any;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromRoot.State>;
   const storeMock = jasmine.createSpyObj('Store', [
     'dispatch', 'pipe'
@@ -466,13 +468,12 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
     leftItems.pipe(
-      switchMap(items => {
+      switchMap((items) => {
         expect(items).toEqual([]);
         return rightItems;
       })
-    ).subscribe(items => {
+    ).subscribe((items) => {
       expect(items).toEqual([]);
-
     });
   });
 
@@ -505,11 +506,11 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
     const rightItems = component.rightItems;
 
     leftItems.pipe(
-      switchMap(items => {
+      switchMap((items) => {
         expect(items).toEqual([]);
         return rightItems;
       })
-    ).subscribe(items => {
+    ).subscribe((items) => {
       expect(items).toEqual([]);
       done();
     });

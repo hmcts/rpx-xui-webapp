@@ -20,8 +20,7 @@ export class CaseRolesTableComponent implements OnInit {
   @Input() public roleCategory: RoleCategory;
   public roleCategoryTitle: string;
 
-  constructor(private readonly router: Router) {
-  }
+  constructor(private readonly router: Router) {}
 
   private _roles: CaseRole[] = [];
 

@@ -7,7 +7,6 @@ import { AppUtils } from '../../../app/app-utils';
   templateUrl: './priority-field.component.html'
 })
 export class PriorityFieldComponent {
-
   /**
    * The current date being examined
    */

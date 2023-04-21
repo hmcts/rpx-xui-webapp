@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 
-
 @Component({
   selector: 'exui-access-view-field',
   templateUrl: './access-view-field.component.html',
@@ -14,7 +13,7 @@ export class AccessViewFieldComponent {
   @Input() public id: string;
   @Input() public workField: any;
 
-  constructor(private readonly router: Router) { }
+  constructor(private readonly router: Router) {}
 
   public viewRejection(): void {
     const thisRole = this.workField;
@@ -33,6 +32,6 @@ export class AccessViewFieldComponent {
       infoRequiredComment: thisRole.infoRequiredComment,
       endDate: thisRole.endDate
     };
-    this.router.navigate([`/role-access/rejected-request`], { queryParams });
+    this.router.navigate(['/role-access/rejected-request'], { queryParams });
   }
 }

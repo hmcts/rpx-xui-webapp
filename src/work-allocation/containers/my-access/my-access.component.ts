@@ -40,7 +40,7 @@ export class MyAccessComponent extends WorkCaseListWrapperComponent {
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       return {
         search_parameters: [
-          { key: 'user', operator: 'IN', values: [id] },
+          { key: 'user', operator: 'IN', values: [id] }
         ],
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole

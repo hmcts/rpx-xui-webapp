@@ -1,12 +1,11 @@
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {LocationByEPIMMSModel} from '../models/location.model';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { LocationByEPIMMSModel } from '../models/location.model';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class LocationsDataService {
-  public constructor(private readonly http: HttpClient) {
-  }
+  public constructor(private readonly http: HttpClient) {}
 
   public getLocationById(locationIds: string): Observable<LocationByEPIMMSModel[]> {
     return this.http.get<LocationByEPIMMSModel[]>(`api/prd/location/getLocationById?epimms_id=${locationIds}`);

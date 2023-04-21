@@ -8,7 +8,6 @@ import { State } from '../store/reducers';
 import { PanelInclusionHiddenConverter } from './panel-inclusion.hidden.converter';
 
 describe('PanelInclusionHiddenConverter', () => {
-
   let panelInclusionHiddenConverter: PanelInclusionHiddenConverter;
   const JUDICAIL_USER_DETAILS = [{
     memberID: 'P0000001',
@@ -25,7 +24,7 @@ describe('PanelInclusionHiddenConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;
     const result$ = panelInclusionHiddenConverter.transformHidden(of(STATE));
     const showWelshPage = true;
-    const expected = cold('(b|)', {b: showWelshPage});
+    const expected = cold('(b|)', { b: showWelshPage });
     expect(result$).toBeObservable(expected);
   });
 
@@ -36,8 +35,7 @@ describe('PanelInclusionHiddenConverter', () => {
     };
     const result$ = panelInclusionHiddenConverter.transformHidden(of(STATE));
     const showWelshPage = false;
-    const expected = cold('(b|)', {b: showWelshPage});
+    const expected = cold('(b|)', { b: showWelshPage });
     expect(result$).toBeObservable(expected);
   });
-
 });

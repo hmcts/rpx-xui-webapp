@@ -11,7 +11,7 @@ import { NocErrorPipe } from './noc-error.pipe';
   declarations: [
     CaseReferencePipe,
     DateTimePipe,
-    NocErrorPipe,
+    NocErrorPipe
   ],
   exports: [
     CaseReferencePipe,

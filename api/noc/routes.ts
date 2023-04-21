@@ -1,6 +1,6 @@
 import * as express from 'express';
 import authInterceptor from '../lib/middleware/auth';
-import {getNoCQuestions, submitNoCEvents, validateNoCQuestions} from './index';
+import { getNoCQuestions, submitNoCEvents, validateNoCQuestions } from './index';
 
 export const router = express.Router({ mergeParams: true });
 

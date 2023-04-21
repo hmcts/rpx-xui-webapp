@@ -12,8 +12,8 @@ import { AnswerConverter } from './answer.converter';
 import { JudgeNameAnswerConverter } from './judge-name.answer.converter';
 
 describe('JudgeNameAnswerConverter', () => {
-
   let converter: AnswerConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
   let router: any;
   const JUDICAIL_USER_DETAILS = [{
@@ -25,16 +25,16 @@ describe('JudgeNameAnswerConverter', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                judicialUsers: judicialUsersRefData,
-              },
-            },
-          },
+                judicialUsers: judicialUsersRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -50,7 +50,7 @@ describe('JudgeNameAnswerConverter', () => {
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = judgeRefData[0].knownAs;
-    const expected = cold('(b|)', {b: option});
+    const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });
 });

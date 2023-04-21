@@ -22,14 +22,15 @@ export const getTitleText = (role: SpecificRole, action: string, roleCategory: s
   if (role && role.name) {
     const aOrAn = vowels.includes(role.name.toLowerCase().charAt(0)) ? 'an' : 'a';
     return role.name === TypeOfRole.CaseManager ? `${action} ${RoleCaptionText.ALegalOpsCaseManager}` : `${action} ${aOrAn} ${role.name}`;
-  } else {
-    if (roleCategory === RoleCategory.ADMIN) {
-      return `${action} an admin role`;
-    } else if (roleCategory === RoleCategory.CTSC) {
-      return `${action} a CTSC role`;
-    }
-    return roleCategory  ? `${action} a ${roleCategory.replace('_', ' ')} role` : `${action} a role`;
   }
+
+  if (roleCategory === RoleCategory.ADMIN) {
+    return `${action} an admin role`;
+  } else if (roleCategory === RoleCategory.CTSC) {
+    return `${action} a CTSC role`;
+  }
+
+  return roleCategory ? `${action} a ${roleCategory.replace('_', ' ')} role` : `${action} a role`;
 };
 
 // converts non-specific id to name when no known role connected
@@ -43,7 +44,7 @@ export const convertToName = (id: string): string => {
 
 export const getAllRolesFromServices = (rolesByService: RolesByService[]): Role[] => {
   let allRoles: Role[] = [];
-  rolesByService.forEach(roleListByService => {
+  rolesByService.forEach((roleListByService) => {
     allRoles = allRoles.concat(roleListByService.roles);
   });
   return allRoles;

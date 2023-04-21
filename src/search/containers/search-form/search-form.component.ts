@@ -13,7 +13,6 @@ import { SearchValidators } from '../../utils';
   styleUrls: ['./search-form.component.scss']
 })
 export class SearchFormComponent implements OnInit {
-
   public formGroup: FormGroup;
   public caseRefConfig: GovUiConfigModel;
   public otherRefConfig: GovUiConfigModel;
@@ -36,7 +35,6 @@ export class SearchFormComponent implements OnInit {
               private readonly searchService: SearchService,
               private readonly router: Router,
               private readonly route: ActivatedRoute) {
-
     this.caseRefConfig = {
       id: 'caseRef',
       name: 'caseRef',
@@ -100,7 +98,7 @@ export class SearchFormComponent implements OnInit {
       label: 'Services'
     };
     this.services = [
-      {label: 'All', value: 'ALL', id: 'ALL'}
+      { label: 'All', value: 'ALL', id: 'ALL' }
     ];
   }
 
@@ -123,8 +121,8 @@ export class SearchFormComponent implements OnInit {
       validators: [SearchValidators.dateComparisonValidator(), SearchValidators.searchFormValidator()]
     });
 
-    this.searchService.getServices().subscribe(services => {
-      services.forEach(service => {
+    this.searchService.getServices().subscribe((services) => {
+      services.forEach((service) => {
         this.services.push({ label: service.serviceName, value: service.serviceId, id: service.serviceId });
       });
     });
@@ -272,7 +270,7 @@ export class SearchFormComponent implements OnInit {
           // If the selected value is not "All", use it; else, use the entire Services list (except the "All") item
           this.formGroup.get(SearchFormControl.SERVICES_LIST).value !== 'ALL'
             ? [this.formGroup.get(SearchFormControl.SERVICES_LIST).value]
-            : this.services.slice(1).map(service => service.id),
+            : this.services.slice(1).map((service) => service.id),
         otherReferences: this.formGroup.get(SearchFormControl.OTHER_REF).value !== '' ? [this.formGroup.get(SearchFormControl.OTHER_REF).value] : null,
         fullName: this.formGroup.get(SearchFormControl.FULL_NAME).value !== '' ? this.formGroup.get(SearchFormControl.FULL_NAME).value : null,
         address: this.formGroup.get(SearchFormControl.ADDRESS_LINE_1).value !== '' ? this.formGroup.get(SearchFormControl.ADDRESS_LINE_1).value : null,
@@ -290,7 +288,7 @@ export class SearchFormComponent implements OnInit {
       this.searchService.storeState(SearchStatePersistenceKey.START_RECORD, 1);
 
       // Navigate to the Search Results page
-      this.router.navigate(['results'], {relativeTo: this.route});
+      this.router.navigate(['results'], { relativeTo: this.route });
     }
   }
 

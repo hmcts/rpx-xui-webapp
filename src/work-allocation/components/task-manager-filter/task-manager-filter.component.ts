@@ -67,7 +67,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   private static initServiceFilter(jurisdictions: string[]): FilterFieldConfig {
     return {
       name: 'service',
-      options: jurisdictions.map(service => ({ key: service, label: service })),
+      options: jurisdictions.map((service) => ({ key: service, label: service })),
       minSelected: 1,
       maxSelected: 1,
       minSelectedError: 'You must select a service',
@@ -185,7 +185,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       enableCondition: 'selectPerson=Specific person',
       type: 'find-person',
       radioSelectionChange: 'selectPerson=Specific person',
-      servicesField: 'service',
+      servicesField: 'service'
     };
   }
 
@@ -242,7 +242,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.checkForReleaseVersion();
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
-      userDetails => {
+      (userDetails) => {
         this.userRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.getUserRole(userDetails.userInfo.roles) : null;
         this.roleType = AppUtils.convertDomainToLabel(this.userRole);
         this.fieldsConfig.cancelSetting.fields.push({

@@ -7,7 +7,7 @@ import { Pipe, PipeTransform } from '@angular/core';
  *  * Today is shown as 0.
  *  * After today is shown as negative.
  */
-@Pipe({name: 'integer'})
+@Pipe({ name: 'integer' })
 export class IntegerPipe implements PipeTransform {
   private readonly DIGITS_INFO: string = '1.0-0';
   private readonly decimalPipe: DecimalPipe = new DecimalPipe('en-US');

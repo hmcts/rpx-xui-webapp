@@ -34,5 +34,4 @@ describe('OrganisationReducer', () => {
       expect(state).toEqual(initialState);
     });
   });
-
 });

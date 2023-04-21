@@ -21,8 +21,8 @@ const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
-      },
+        preferredHearingChannel: 'inPerson'
+      }
     },
     {
       partyID: 'P2',
@@ -32,10 +32,10 @@ const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'byVideo',
-      },
-    },
-  ],
+        preferredHearingChannel: 'byVideo'
+      }
+    }
+  ]
 };
 
 const HEARING_DAY_SCHEDULE_2: HearingDayScheduleModel = {
@@ -55,8 +55,8 @@ const HEARING_DAY_SCHEDULE_2: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
-      },
+        preferredHearingChannel: 'inPerson'
+      }
     },
     {
       partyID: 'P2',
@@ -66,10 +66,10 @@ const HEARING_DAY_SCHEDULE_2: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'DWP',
         lastName: null,
-        preferredHearingChannel: 'byVideo',
-      },
-    },
-  ],
+        preferredHearingChannel: 'byVideo'
+      }
+    }
+  ]
 };
 
 const HEARING_DAY_SCHEDULE_3: HearingDayScheduleModel = {
@@ -85,7 +85,7 @@ const HEARING_DAY_SCHEDULE_3: HearingDayScheduleModel = {
       partyID: 'P1',
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
-      partyRole: 'appellant',
+      partyRole: 'appellant'
     },
     {
       partyID: 'P2',
@@ -95,10 +95,10 @@ const HEARING_DAY_SCHEDULE_3: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'DWP',
         lastName: null,
-        preferredHearingChannel: 'byVideo',
-      },
-    },
-  ],
+        preferredHearingChannel: 'byVideo'
+      }
+    }
+  ]
 };
 
 const HEARING_DAY_SCHEDULE_4: HearingDayScheduleModel = {
@@ -118,8 +118,8 @@ const HEARING_DAY_SCHEDULE_4: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
-      },
+        preferredHearingChannel: 'inPerson'
+      }
     },
     {
       partyID: 'P2',
@@ -129,10 +129,10 @@ const HEARING_DAY_SCHEDULE_4: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'DWP',
         lastName: null,
-        preferredHearingChannel: 'byVideo',
-      },
-    },
-  ],
+        preferredHearingChannel: 'byVideo'
+      }
+    }
+  ]
 };
 
 const HEARING_DAY_SCHEDULE_5: HearingDayScheduleModel = {
@@ -148,7 +148,7 @@ const HEARING_DAY_SCHEDULE_5: HearingDayScheduleModel = {
       partyID: 'P1',
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
-      partyRole: 'appellant',
+      partyRole: 'appellant'
     },
     {
       partyID: 'P2',
@@ -158,10 +158,10 @@ const HEARING_DAY_SCHEDULE_5: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'DWP',
         lastName: null,
-        preferredHearingChannel: 'byVideo',
-      },
-    },
-  ],
+        preferredHearingChannel: 'byVideo'
+      }
+    }
+  ]
 };
 
 const HEARING_DAY_SCHEDULE_6: HearingDayScheduleModel = {
@@ -181,8 +181,8 @@ const HEARING_DAY_SCHEDULE_6: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
-      },
+        preferredHearingChannel: 'inPerson'
+      }
     },
     {
       partyID: 'P2',
@@ -192,10 +192,10 @@ const HEARING_DAY_SCHEDULE_6: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'DWP',
         lastName: null,
-        preferredHearingChannel: 'byVideo',
-      },
-    },
-  ],
+        preferredHearingChannel: 'byVideo'
+      }
+    }
+  ]
 };
 
 const HEARING_DAY_SCHEDULE_7: HearingDayScheduleModel = {
@@ -215,8 +215,8 @@ const HEARING_DAY_SCHEDULE_7: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
-      },
+        preferredHearingChannel: 'inPerson'
+      }
     },
     {
       partyID: 'P2',
@@ -226,10 +226,10 @@ const HEARING_DAY_SCHEDULE_7: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'DWP',
         lastName: null,
-        preferredHearingChannel: 'byVideo',
-      },
-    },
-  ],
+        preferredHearingChannel: 'byVideo'
+      }
+    }
+  ]
 };
 
 const HEARING_DAY_SCHEDULE_8: HearingDayScheduleModel = {
@@ -249,8 +249,8 @@ const HEARING_DAY_SCHEDULE_8: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
-      },
+        preferredHearingChannel: 'inPerson'
+      }
     },
     {
       partyID: 'P2',
@@ -260,10 +260,10 @@ const HEARING_DAY_SCHEDULE_8: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'DWP',
         lastName: null,
-        preferredHearingChannel: 'byVideo',
-      },
-    },
-  ],
+        preferredHearingChannel: 'byVideo'
+      }
+    }
+  ]
 };
 
 const HEARING_DAY_SCHEDULE_9: HearingDayScheduleModel = {
@@ -283,8 +283,8 @@ const HEARING_DAY_SCHEDULE_9: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
-      },
+        preferredHearingChannel: 'inPerson'
+      }
     },
     {
       partyID: 'P2',
@@ -294,10 +294,10 @@ const HEARING_DAY_SCHEDULE_9: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'DWP',
         lastName: null,
-        preferredHearingChannel: 'byVideo',
-      },
-    },
-  ],
+        preferredHearingChannel: 'byVideo'
+      }
+    }
+  ]
 };
 
 const HEARING_DAY_SCHEDULE_10: HearingDayScheduleModel = {
@@ -317,8 +317,8 @@ const HEARING_DAY_SCHEDULE_10: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
-      },
+        preferredHearingChannel: 'inPerson'
+      }
     },
     {
       partyID: 'P2',
@@ -328,10 +328,10 @@ const HEARING_DAY_SCHEDULE_10: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'DWP',
         lastName: null,
-        preferredHearingChannel: 'byVideo',
-      },
-    },
-  ],
+        preferredHearingChannel: 'byVideo'
+      }
+    }
+  ]
 };
 
 const HEARING_DAY_SCHEDULE_11: HearingDayScheduleModel = {
@@ -351,8 +351,8 @@ const HEARING_DAY_SCHEDULE_11: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
-      },
+        preferredHearingChannel: 'inPerson'
+      }
     },
     {
       partyID: 'P2',
@@ -362,10 +362,10 @@ const HEARING_DAY_SCHEDULE_11: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'DWP',
         lastName: null,
-        preferredHearingChannel: 'byVideo',
-      },
-    },
-  ],
+        preferredHearingChannel: 'byVideo'
+      }
+    }
+  ]
 };
 
 const HEARING_DAY_SCHEDULE_13: HearingDayScheduleModel = {
@@ -385,8 +385,8 @@ const HEARING_DAY_SCHEDULE_13: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
-      },
+        preferredHearingChannel: 'inPerson'
+      }
     },
     {
       partyID: 'P2',
@@ -396,10 +396,10 @@ const HEARING_DAY_SCHEDULE_13: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'DWP',
         lastName: null,
-        preferredHearingChannel: 'byVideo',
-      },
-    },
-  ],
+        preferredHearingChannel: 'byVideo'
+      }
+    }
+  ]
 };
 
 const HEARING_DAY_SCHEDULE_14: HearingDayScheduleModel = {
@@ -419,8 +419,8 @@ const HEARING_DAY_SCHEDULE_14: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
-      },
+        preferredHearingChannel: 'inPerson'
+      }
     },
     {
       partyID: 'P2',
@@ -430,10 +430,10 @@ const HEARING_DAY_SCHEDULE_14: HearingDayScheduleModel = {
       individualDetails: {
         firstName: 'DWP',
         lastName: null,
-        preferredHearingChannel: 'byVideo',
-      },
-    },
-  ],
+        preferredHearingChannel: 'byVideo'
+      }
+    }
+  ]
 };
 
 const CASE_HEARING_1: HearingListModel = {
@@ -447,7 +447,7 @@ const CASE_HEARING_1: HearingListModel = {
   listAssistCaseStatus: '',
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: 'g1000000',
-  hearingDaySchedule: null,
+  hearingDaySchedule: null
 };
 
 const CASE_HEARING_2: HearingListModel = {
@@ -461,7 +461,7 @@ const CASE_HEARING_2: HearingListModel = {
   listAssistCaseStatus: '',
   hearingIsLinkedFlag: true,
   hearingGroupRequestId: null,
-  hearingDaySchedule: [],
+  hearingDaySchedule: []
 };
 
 const CASE_HEARING_3: HearingListModel = {
@@ -475,7 +475,7 @@ const CASE_HEARING_3: HearingListModel = {
   listAssistCaseStatus: '',
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_1, HEARING_DAY_SCHEDULE_2],
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_1, HEARING_DAY_SCHEDULE_2]
 };
 
 const CASE_HEARING_4: HearingListModel = {
@@ -489,7 +489,7 @@ const CASE_HEARING_4: HearingListModel = {
   listAssistCaseStatus: '',
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_3, HEARING_DAY_SCHEDULE_4],
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_3, HEARING_DAY_SCHEDULE_4]
 };
 
 const CASE_HEARING_5: HearingListModel = {
@@ -503,7 +503,7 @@ const CASE_HEARING_5: HearingListModel = {
   listAssistCaseStatus: '',
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_5]
 };
 
 const CASE_HEARING_6: HearingListModel = {
@@ -517,7 +517,7 @@ const CASE_HEARING_6: HearingListModel = {
   listAssistCaseStatus: '',
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_6],
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_6]
 };
 
 const CASE_HEARING_7: HearingListModel = {
@@ -531,7 +531,7 @@ const CASE_HEARING_7: HearingListModel = {
   listAssistCaseStatus: '',
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_7, HEARING_DAY_SCHEDULE_8],
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_7, HEARING_DAY_SCHEDULE_8]
 };
 
 const CASE_HEARING_8: HearingListModel = {
@@ -545,7 +545,7 @@ const CASE_HEARING_8: HearingListModel = {
   listAssistCaseStatus: '',
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
-  hearingDaySchedule: [],
+  hearingDaySchedule: []
 };
 
 const CASE_HEARING_9: HearingListModel = {
@@ -559,7 +559,7 @@ const CASE_HEARING_9: HearingListModel = {
   listAssistCaseStatus: '',
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_9],
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_9]
 };
 
 const CASE_HEARING_10: HearingListModel = {
@@ -573,7 +573,7 @@ const CASE_HEARING_10: HearingListModel = {
   listAssistCaseStatus: '',
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_10],
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_10]
 };
 
 const CASE_HEARING_11: HearingListModel = {
@@ -587,7 +587,7 @@ const CASE_HEARING_11: HearingListModel = {
   listAssistCaseStatus: '',
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_11],
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_11]
 };
 
 const CASE_HEARING_12: HearingListModel = {
@@ -601,7 +601,7 @@ const CASE_HEARING_12: HearingListModel = {
   listAssistCaseStatus: '',
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
-  hearingDaySchedule: [],
+  hearingDaySchedule: []
 };
 
 const CASE_HEARING_13: HearingListModel = {
@@ -615,7 +615,7 @@ const CASE_HEARING_13: HearingListModel = {
   listAssistCaseStatus: '',
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_13],
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_13]
 };
 
 const CASE_HEARING_14: HearingListModel = {
@@ -629,13 +629,13 @@ const CASE_HEARING_14: HearingListModel = {
   listAssistCaseStatus: '',
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_14],
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_14]
 };
 
 export const EMPTY_HEARINGS_LIST: HearingListMainModel = {
   hmctsServiceID: 'BBA3',
   caseRef: '1584618195804035',
-  caseHearings: [],
+  caseHearings: []
 };
 
 export const HEARINGS_LIST: HearingListMainModel = {
@@ -655,5 +655,5 @@ export const HEARINGS_LIST: HearingListMainModel = {
     CASE_HEARING_11,
     CASE_HEARING_12,
     CASE_HEARING_13,
-    CASE_HEARING_14],
+    CASE_HEARING_14]
 };

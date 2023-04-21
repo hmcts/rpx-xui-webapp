@@ -3,7 +3,6 @@ import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.mode
 import * as converts from '../../cases/converters/case-converter';
 
 describe('case converters', () => {
-
   it('should convert to share case', async () => {
     const selectedCases = [{
       case_id: '1',
@@ -25,7 +24,7 @@ describe('case converters', () => {
       }
     }];
     const expectedShareCases = [{ caseId: '1', caseTitle: 'James Priest Vs Charlotte Godard', caseTypeId: 'FinancialRemedyContested' },
-    { caseId: '2', caseTitle: 'Kenneth Priest Vs Kathy Godard', caseTypeId: 'FinancialRemedyContested' }];
+      { caseId: '2', caseTitle: 'Kenneth Priest Vs Kathy Godard', caseTypeId: 'FinancialRemedyContested' }];
     const shareCases: SharedCase[] = converts.toShareCaseConverter(selectedCases);
     expect(shareCases).toEqual(expectedShareCases);
   });
@@ -51,7 +50,7 @@ describe('case converters', () => {
       }
     }];
     const expectedShareCases = [{ caseId: '1', caseTitle: 'James Priest Vs Charlotte Godard', caseTypeId: 'DIVORCE' },
-    { caseId: '2', caseTitle: 'Kenneth Priest Vs Kathy Godard', caseTypeId: 'DIVORCE' }];
+      { caseId: '2', caseTitle: 'Kenneth Priest Vs Kathy Godard', caseTypeId: 'DIVORCE' }];
     const shareCases: SharedCase[] = converts.toShareCaseConverter(selectedCases);
     expect(shareCases).toEqual(expectedShareCases);
   });

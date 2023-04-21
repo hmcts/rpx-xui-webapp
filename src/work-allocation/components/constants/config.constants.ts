@@ -18,13 +18,13 @@ const CASE_REFERENCE_AS_LINK: FieldConfig = {
   sortName: 'caseId',
   views: TaskView.ALL_VIEWS
 };
-const CASE_REFERENCE_AS_TEXT: FieldConfig = {
-  name: 'case_id',
-  type: FieldType.CASE_REFERENCE_STRING,
-  columnLabel: 'Case reference',
-  sortName: 'caseId',
-  views: TaskView.ALL_VIEWS
-};
+// const CASE_REFERENCE_AS_TEXT: FieldConfig = {
+//   name: 'case_id',
+//   type: FieldType.CASE_REFERENCE_STRING,
+//   columnLabel: 'Case reference',
+//   sortName: 'caseId',
+//   views: TaskView.ALL_VIEWS
+// };
 const CASE_NAME_AS_LINK: FieldConfig = {
   name: 'case_name',
   type: FieldType.CASE_NAME,
@@ -146,13 +146,13 @@ const TASK_NAME_AS_TEXT: FieldConfig = {
   sortName: 'taskTitle',
   views: TaskView.ALL_VIEWS
 };
-const DUE_DATE: FieldConfig = {
-  name: 'dueDate',
-  type: FieldType.DATE_DUE,
-  columnLabel: 'Date',
-  sortName: 'dueDate',
-  views: TaskView.ALL_VIEWS
-};
+// const DUE_DATE: FieldConfig = {
+//   name: 'dueDate',
+//   type: FieldType.DATE_DUE,
+//   columnLabel: 'Date',
+//   sortName: 'dueDate',
+//   views: TaskView.ALL_VIEWS
+// };
 const DUE_DATE_AS_TEXT: FieldConfig = {
   isDate: false,
   name: 'dueDate',
@@ -202,8 +202,9 @@ const ACCESS_END_DATE_DISABLE_SORT: FieldConfig = {
   type: FieldType.STRING,
   columnLabel: 'End',
   sortName: 'endDate',
-  views: TaskView.ALL_VIEWS
-};
+  views: TaskView.ALL_VIEWS,
+  disableSort: true
+}
 const END_DATE: FieldConfig = {
   name: 'endDate',
   type: FieldType.FORMATTED_DATE,

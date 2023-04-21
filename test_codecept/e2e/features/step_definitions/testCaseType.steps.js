@@ -73,6 +73,7 @@ var { defineSupportCode } = require('cucumber');
             "Appicant Postcode": "SW19 8JW"
         };
         await caseManager.createCase(caseData, false, true);
+        await caseManager.submitCase();
     });
     
     Then('I should be able to fill the form pages', async function () {

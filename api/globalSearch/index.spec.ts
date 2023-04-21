@@ -27,6 +27,7 @@ describe('Jurisdiction', () => {
     { serviceId: 'IA', serviceName: 'Immigration & Asylum' },
     { serviceId: 'CIVIL', serviceName: 'CIVIL'},
     { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW'},
+    { serviceId: 'PUBLICLAW', serviceName: 'Public Law'},
   ];
 
   beforeEach(() => {
@@ -63,13 +64,13 @@ describe('Jurisdiction', () => {
 
   it('should return global search services', async() => {
     let services = globalSearchServices.generateServices(undefined);
-    expect(services.length).to.equal(3);
+    expect(services.length).to.equal(4);
 
     services = globalSearchServices.generateServices(null);
-    expect(services.length).to.equal(3);
+    expect(services.length).to.equal(4);
 
     services = globalSearchServices.generateServices([]);
-    expect(services.length).to.equal(3);
+    expect(services.length).to.equal(4);
   });
 
   it('should return global search services', async() => {

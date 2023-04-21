@@ -59,7 +59,7 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
       userInfo.roleCategory = getRoleCategoryFromRoleAssignments(roleAssignments) || getUserRoleCategory(userInfo.roles);
       req.session.roleAssignmentResponse = activeRoleAssignments;
     } catch (error) {
-      let err = error
+      let err = error;
       if (typeof error === 'object' && error !== null) {
         err = JSON.stringify(error);
       }

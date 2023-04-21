@@ -125,6 +125,46 @@ describe('access management service, get role assignments of actor', () => {
         throw new Error(err);
       }
     });
+
+    it('returns the correct response given null userInfo', async () => {
+      const configValues = getAccessManagementServiceAPIOverrides(pactSetUp.provider.mockService.baseUrl);
+      sandbox.stub(config, 'get').callsFake((prop) => {
+        return configValues[prop];
+      });
+
+      const { refreshRoleAssignmentForUser } = requireReloaded('../../../../user/index');
+
+      const req = mockReq({
+        headers: {
+          'Authorization': 'Bearer someAuthorizationToken',
+          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+          'content-type': 'application/json'
+        },
+        params: {
+          actorId: actorId
+        }
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      let returnedResponse = null;
+      const response = mockRes();
+      response.send = (ret) => {
+        returnedResponse = ret;
+      };
+
+      // let roleAssignments = null;
+      try {
+        await refreshRoleAssignmentForUser(null, req);
+        // roleAssignments = await refreshRoleAssignmentForUser(userInfo, req);
+        // assertResponses(roleAssignments);
+        pactSetUp.provider.verify();
+        pactSetUp.provider.finalize();
+      } catch (err) {
+        console.log(err.stack);
+        pactSetUp.provider.verify();
+        pactSetUp.provider.finalize();
+        throw new Error(err);
+      }
+    });
   });
 });
 

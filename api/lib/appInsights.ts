@@ -34,8 +34,8 @@ export function appInsights(req: express.Request, res: express.Response, next) {
   next();
 }
 
-export function trackException(exception: Error, properties?: {[key: string]: any}) {
+export function trackTrace(trace: string, properties?: {[key: string]: any}) {
   if (client) {
-    client.trackException({ exception, properties });
+    client.trackTrace({ message: trace, properties });
   }
 }

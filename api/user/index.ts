@@ -59,10 +59,11 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
       userInfo.roleCategory = getRoleCategoryFromRoleAssignments(roleAssignments) || getUserRoleCategory(userInfo.roles);
       req.session.roleAssignmentResponse = activeRoleAssignments;
     } catch (error) {
+      let err = error;
       if (typeof error === 'object' && error !== null) {
-        JSON.stringify(error);
+        err = JSON.stringify(error);
       }
-      trackTrace(error, { functionCall: 'refreshRoleAssignmentForUser' });
+      trackTrace(err, { functionCall: 'refreshRoleAssignmentForUser' });
     }
   } else {
     trackTrace('userInfo is null', { functionCall: 'refreshRoleAssignmentForUser' });

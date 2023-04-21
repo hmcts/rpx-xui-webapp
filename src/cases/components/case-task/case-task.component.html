@@ -5,12 +5,14 @@
 </p>
 <dl class="govuk-summary-list govuk-summary-list--no-border">
   <!-- Display priority label:  Judges will be able to see only URGENT priority labels; others can see all priority labels (URGENT/HIGH/LOW)-->
-    <div *ngIf="isRelease4 && ((isUserJudicial && isTaskUrgent) || (!isUserJudicial))" class="govuk-summary-list__row">
+  <div *ngIf="isRelease4 && ((isUserJudicial && isTaskUrgent) || (!isUserJudicial))" class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
             <span class="row-padding">Priority</span>
         </dt>
         <dd class="govuk-summary-list__value">
-            <exui-priority-field [date]="toDate(task.priority_date)" [majorPriority]="task.major_priority">
+            <exui-priority-field [priorityDate]="toDate(task.priority_date)" [majorPriority]="task.major_priority"
+                                 [dueDate]="toDate(task.dueDate)" [jurisdiction]="task.jurisdiction"
+            >
             </exui-priority-field>
         </dd>
     </div>

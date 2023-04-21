@@ -1,4 +1,3 @@
-/* tslint:disable:object-literal-sort-keys trailing-comma max-line-length */
 import { LocationModel } from '../models/location.model';
 
 export const ALL_COURT_LOCATIONS: LocationModel[] = [

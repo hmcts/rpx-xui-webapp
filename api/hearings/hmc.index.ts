@@ -18,7 +18,6 @@ export const hmcHearingsUrl: string = getConfigValue(SERVICES_HMC_HEARINGS_COMPO
  * getHearings from case ID
  */
 export async function getHearings(req: EnhancedRequest, res: Response, next: NextFunction) {
-  // @ts-ignore
   const caseId = req.query.caseId;
   const markupPath: string = `${hmcHearingsUrl}/hearings/${caseId}`;
 
@@ -58,7 +57,6 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/hearing`;
   try {
-    // tslint:disable-next-line:max-line-length
     const { status, data }: { status: number, data: any } = await handlePost(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
@@ -161,7 +159,6 @@ export async function postLinkedHearingGroup(req: EnhancedRequest, res: Response
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup`;
   try {
-    // tslint:disable-next-line:max-line-length
     const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handlePost(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
@@ -177,7 +174,6 @@ export async function putLinkedHearingGroup(req: EnhancedRequest, res: Response,
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup?id=${groupId}`;
   try {
-    // tslint:disable-next-line:max-line-length
     const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handlePut(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
@@ -193,7 +189,6 @@ export async function deleteLinkedHearingGroup(req: EnhancedRequest, res: Respon
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${hearingGroupId}`;
   try {
-    // tslint:disable-next-line:max-line-length
     const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handleDelete(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {

@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable semi */
 import { Case, CaseAction } from '.';
 
 export default interface InvokedCaseAction {

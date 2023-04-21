@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable semi */
 import { TaskAction } from '.';
 
 export default interface Task {

@@ -12,6 +12,7 @@ import {
   getOrganisationRoles, getRoleCategoryFromRoleAssignments,
   getUserRoleCategory, isCurrentUserCaseAllocator
 } from './utils';
+import { trackException } from '../lib/appInsights';
 
 export async function getUserDetails(req, res: Response, next: NextFunction): Promise<Response> {
   if (!exists(req, 'session.passport.user')) {
@@ -44,7 +45,6 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
   const id = userInfo.id ? userInfo.id : userInfo.uid;
   const path = `${baseUrl}/am/role-assignments/actors/${id}`;
   const headers = setHeaders(req);
-  /* tslint:disable:no-string-literal */
   delete headers.accept;
   try {
     const response: AxiosResponse = await http.get(path, { headers });
@@ -58,7 +58,7 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
     userInfo.roleCategory = getRoleCategoryFromRoleAssignments(roleAssignments) || getUserRoleCategory(userInfo.roles);
     req.session.roleAssignmentResponse = activeRoleAssignments;
   } catch (error) {
-    console.log(error);
+    trackException(error, { functionCall: 'refreshRoleAssignmentForUser' });
   }
   return userRoleAssignments;
 }

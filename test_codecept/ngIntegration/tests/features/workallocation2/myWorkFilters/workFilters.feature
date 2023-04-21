@@ -14,8 +14,8 @@ Feature: WA Release 2: My work - Work filters
             | IA           | Y           | ORGANISATION | 20001        |
             | SSCS         | Y           | ORGANISATION | 30001        |
 
-        Given I navigate to home page
-        # When I click on primary navigation header "My work"
+        # Given I navigate to home page
+        When I click on primary navigation header tab "My work", I see selected tab page displayed
         Then I see work filter button displayed
         Then I validate work filter button text is "Show work filter"
         # Then I validate work location filter batch and hint labels are not displayed
@@ -50,10 +50,9 @@ Feature: WA Release 2: My work - Work filters
             | IA | Y | ORGANISATION | 20001 |
             | SSCS         | Y           | ORGANISATION | 30001        |
 
-        Given I navigate to home page
 
         Given I start MockApp
-        # When I click on primary navigation header "My work"
+        When I click on primary navigation header tab "My work", I see selected tab page displayed
         Then I see work filter button displayed
         Then I validate work filter button text is "Show work filter"
         # Then I validate work location filter batch and hint labels are not displayed
@@ -114,7 +113,7 @@ Feature: WA Release 2: My work - Work filters
 
 
         Given I start MockApp
-        # When I click on primary navigation header "My work"
+        When I click on primary navigation header tab "My work", I see selected tab page displayed
 
         Then I see work filter button displayed
         Then I validate work filter button text is "Show work filter"
@@ -162,8 +161,7 @@ Feature: WA Release 2: My work - Work filters
 
 
         Given I start MockApp
-        Given I navigate to home page
-        # When I click on primary navigation header "My work"
+        When I click on primary navigation header tab "My work", I see selected tab page displayed
         Then I see work filter button displayed
         Then I validate work filter button text is "Show work filter"
         # Then I validate work location filter batch and hint labels are not displayed

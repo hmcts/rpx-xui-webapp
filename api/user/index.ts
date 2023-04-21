@@ -12,7 +12,7 @@ import {
   getOrganisationRoles, getRoleCategoryFromRoleAssignments,
   getUserRoleCategory, isCurrentUserCaseAllocator
 } from './utils';
-import { trackException } from '../lib/appInsights';
+import { trackTrace } from '../lib/appInsights';
 
 export async function getUserDetails(req, res: Response, next: NextFunction): Promise<Response> {
   if (!exists(req, 'session.passport.user')) {
@@ -41,24 +41,31 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
 
 export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any): Promise<any[]> {
   let userRoleAssignments = [];
-  const baseUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-  const id = userInfo.id ? userInfo.id : userInfo.uid;
-  const path = `${baseUrl}/am/role-assignments/actors/${id}`;
-  const headers = setHeaders(req);
-  delete headers.accept;
-  try {
-    const response: AxiosResponse = await http.get(path, { headers });
-    const activeRoleAssignments = getActiveRoleAssignments(response.data.roleAssignmentResponse, new Date());
-    userRoleAssignments = getRoleAssignmentInfo(activeRoleAssignments);
-    const idamRoles = getOrganisationRoles(activeRoleAssignments);
-    userInfo.roles = userInfo.roles.concat(idamRoles);
-    const roleAssignments: string[] = userRoleAssignments.filter((role) => !!role.roleCategory).length > 0 ?
-      userRoleAssignments.map((roles) => roles.roleCategory) : [];
-    // We check for the roleAssignments to determine the roleCategory. If not we try IDAM roles
-    userInfo.roleCategory = getRoleCategoryFromRoleAssignments(roleAssignments) || getUserRoleCategory(userInfo.roles);
-    req.session.roleAssignmentResponse = activeRoleAssignments;
-  } catch (error) {
-    trackException(error, { functionCall: 'refreshRoleAssignmentForUser' });
+  if (userInfo) {
+    const baseUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+    const id = userInfo.id ? userInfo.id : userInfo.uid;
+    const path = `${baseUrl}/am/role-assignments/actors/${id}`;
+    const headers = setHeaders(req);
+    delete headers.accept;
+    try {
+      const response: AxiosResponse = await http.get(path, { headers });
+      const activeRoleAssignments = getActiveRoleAssignments(response.data.roleAssignmentResponse, new Date());
+      userRoleAssignments = getRoleAssignmentInfo(activeRoleAssignments);
+      const idamRoles = getOrganisationRoles(activeRoleAssignments);
+      userInfo.roles = userInfo.roles.concat(idamRoles);
+      const roleAssignments: string[] = userRoleAssignments.filter((role) => role && !!role.roleCategory).length > 0 ?
+        userRoleAssignments.map((roles) => roles.roleCategory) : [];
+      // We check for the roleAssignments to determine the roleCategory. If not we try IDAM roles
+      userInfo.roleCategory = getRoleCategoryFromRoleAssignments(roleAssignments) || getUserRoleCategory(userInfo.roles);
+      req.session.roleAssignmentResponse = activeRoleAssignments;
+    } catch (error) {
+      if (typeof error === 'object' && error !== null) {
+        JSON.stringify(error);
+      }
+      trackTrace(error, { functionCall: 'refreshRoleAssignmentForUser' });
+    }
+  } else {
+    trackTrace('userInfo is null', { functionCall: 'refreshRoleAssignmentForUser' });
   }
   return userRoleAssignments;
 }

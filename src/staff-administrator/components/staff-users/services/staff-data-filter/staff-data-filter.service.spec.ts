@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { StaffUsersFilterResult } from '../../../../models/staff-users-filter-result.model';
 import { StaffDataAccessService } from '../../../../services/staff-data-access/staff-data-access.service';
@@ -109,6 +109,15 @@ describe('StaffDataFilterService', () => {
       service.tableData$.subscribe(() => {
         fail('should not emit');
       });
+    });
+
+    it('should catch error and set errors when searching for a user by partial name and ' +
+      'getUsersByPartialName is returning 400', () => {
+      mockStaffDataAccessService.getUsersByPartialName.and.returnValue(throwError({ status: 400 }));
+      spyOn(service, 'setErrors').and.callThrough();
+
+      service.search({ partialName: '123$', pageSize: 10, pageNumber: 1 });
+      expect(service.setErrors).toHaveBeenCalled();
     });
   });
 });

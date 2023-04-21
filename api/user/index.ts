@@ -60,7 +60,7 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
       req.session.roleAssignmentResponse = activeRoleAssignments;
     } catch (error) {
       if (typeof error === 'object' && error !== null) {
-        JSON.stringify(error);
+        error = JSON.stringify(error);
       }
       trackTrace(error, { functionCall: 'refreshRoleAssignmentForUser' });
     }

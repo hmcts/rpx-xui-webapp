@@ -82,7 +82,6 @@ export function getRoleAssignmentInfo(roleAssignmentResponse: RoleAssignment[]):
   roleAssignmentResponse.forEach((roleAssignment) => {
     const isCaseAllocator = isCurrentUserCaseAllocator(roleAssignment);
     const attributes = { ...roleAssignment.attributes };
-    // = { ...roleAssignment.attributes };
     attributes.isCaseAllocator = isCaseAllocator;
     attributes.roleType = roleAssignment.roleType;
     attributes.roleName = roleAssignment.roleName;

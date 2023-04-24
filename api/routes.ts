@@ -58,5 +58,4 @@ router.use('/specific-access-request', specificAccessRouter);
 router.use('/challenged-access-request', challengedAccessRouter);
 router.use('/staff-ref-data', staffRefDataRouter);
 
-// @ts-ignore
 export default router;

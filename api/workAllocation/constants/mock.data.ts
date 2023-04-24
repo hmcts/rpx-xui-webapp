@@ -1,4 +1,3 @@
-/* tslint:disable */
 import { Person, PersonRole } from '../interfaces/person';
 import { v4 as uuidv4 } from 'uuid';
 

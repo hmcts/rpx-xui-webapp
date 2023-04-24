@@ -20,8 +20,6 @@ describe('Work allocations Release 2: Tasks', () => {
     Request.clearSession();
   });
 
-  // tslint:disable-next-line: only-arrow-functions
-
   it('case officer, My tasks', async function () {
     this.timeout(60000);
     await Request.withSession(caseOfficer, caseofficerPass);

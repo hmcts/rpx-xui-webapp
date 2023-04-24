@@ -8,11 +8,9 @@ export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
 
   const judicialMyCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myCases\?view=judicial/;
-  // tslint:disable-next-line:max-line-length
   const caseworkerMyCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myCases\?view=legalops/;
 
   const judicialAllCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allWorkCases\?view=judicial/;
-  // tslint:disable-next-line:max-line-length
   const caseworkerAllCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allWorkCases\?view=legalops/;
 
   // simulate some error if needed

@@ -69,17 +69,14 @@ export async function specificAccessRequestCreateAmRole(req, res): Promise<Axios
     const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
     const fullPath = `${basePath}/am/role-assignments`;
     const headers = setHeaders(req);
-    /* tslint:disable:no-string-literal */
     delete headers.accept;
-    const response = await http.post(fullPath, req.body, { headers });
-    return response;
+    return await http.post(fullPath, req.body, { headers });
   } catch (error) {
     logger.info(error);
     return res.status(error.status).send(error);
   }
 }
 
-// tslint:disable-next-line:max-line-length
 export async function postCreateTask(req: EnhancedRequest, next: NextFunction, createTask: { caseId, jurisdiction, caseType, taskType, dueDate, name, roleAssignmentId }): Promise<any> {
   try {
     const waWorkFlowApi = getConfigValue(SERVICES_WA_WORKFLOW_API_URL);
@@ -181,7 +178,6 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
   const updatePath = `${basePath}/am/role-assignments`;
 
   const headers = setHeaders(req);
-  /* tslint:disable:no-string-literal */
   delete headers.accept;
   try {
     const userInfo = req.session.passport.user.userinfo;
@@ -196,11 +192,11 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
     }, { headers });
 
     const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse
-      .find(role => role.roleName === 'specific-access-granted' ||  role.roleName === 'specific-access-denied');
+      .find((role) => role.roleName === 'specific-access-granted' || role.roleName === 'specific-access-denied');
 
     //Delete secondary role assignment
     if (singleRoleAssignment.roleName === 'specific-access-granted') {
-      await http.delete(`${updatePath}/${singleRoleAssignment.id}`, {headers});
+      await http.delete(`${updatePath}/${singleRoleAssignment.id}`, { headers });
     }
 
     //Create new role assignment
@@ -208,7 +204,7 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
       singleRoleAssignment.notes = [{
         userId: actorId,
         time: new Date(),
-        comment: JSON.stringify(singleRoleAssignment.attributes.specificAccessReason),
+        comment: JSON.stringify(singleRoleAssignment.attributes.specificAccessReason)
       }];
 
       singleRoleAssignment.attributes.isNew = req.body.attributesToUpdate.isNew;
@@ -218,14 +214,14 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
           assignerId: actorId,
           process: 'specific-access',
           reference: `${caseId}/${singleRoleAssignment.attributes.requestedRole}/${actorId}`,
-          replaceExisting: true,
+          replaceExisting: true
         },
-        requestedRoles: [singleRoleAssignment],
+        requestedRoles: [singleRoleAssignment]
       };
 
       delete roleAssignmentUpdate.requestedRoles[0].id;
 
-      await http.post(updatePath, {...roleAssignmentUpdate}, {headers});
+      await http.post(updatePath, { ...roleAssignmentUpdate }, { headers });
     }
 
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);

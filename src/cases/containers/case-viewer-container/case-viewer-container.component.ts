@@ -101,7 +101,6 @@ export class CaseViewerContainerComponent implements OnInit {
       this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []),
       this.userRoles$
     ]).pipe(
-      // @ts-ignore
       map(([featureVariations, userRoles]: [FeatureVariation[], string[]]) => {
         const jurisdictionID = this.caseDetails.case_type.jurisdiction.id;
         const hasMatchedJurisdictionAndRole = featureVariations.some((featureVariation) =>

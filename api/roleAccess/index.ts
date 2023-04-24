@@ -173,7 +173,6 @@ export function mapResponseToCaseRoles(
 export async function confirmAllocateRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
     const body = req.body;
-    // @ts-ignore
     const currentUser = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
     const roleAssignmentsBody = toRoleAssignmentBody(currentUserId, body);
@@ -188,11 +187,9 @@ export async function confirmAllocateRole(req: EnhancedRequest, res: Response, n
 }
 
 // this creates the two specific access approved roles
-// tslint:disable-next-line:max-line-length
 export async function createSpecificAccessApprovalRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
   try {
     const body = req.body;
-    // @ts-ignore
     const currentUser = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
     const roleAssignmentsBody = toSARoleAssignmentBody(currentUserId, body, {}, { isNew: true });
@@ -206,22 +203,18 @@ export async function createSpecificAccessApprovalRole(req: EnhancedRequest, res
   }
 }
 
-// tslint:disable-next-line:max-line-length
 export async function createSpecificAccessDenyRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
   try {
     const currentUser = req.session.passport.user.userinfo;
     const roleAssignmentsBody = toDenySARoleAssignmentBody(currentUser, req.body, { isNew: true });
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
-    const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
-
-    return response;
+    return await sendPost(basePath, roleAssignmentsBody, req);
   } catch (error) {
     next(error);
     return error;
   }
 }
 
-// tslint:disable-next-line:max-line-length
 export async function deleteSpecificAccessRequestedRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
   try {
     const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
@@ -230,21 +223,17 @@ export async function deleteSpecificAccessRequestedRole(req: EnhancedRequest, re
     const fullPath = `${basePath}/am/role-assignments${queryString}`;
     const headers = setHeaders(req);
     const body = toDenySADletionRequestedRoleBody(requestId);
-    /* tslint:disable:no-string-literal */
     delete headers.accept;
-    const response = await http.delete(fullPath, {
+    return await http.delete(fullPath, {
       data: body,
       headers
     });
-
-    return response;
   } catch (error) {
     next(error);
   }
 }
 
 // this restores the specific access request role if task completion goes wrong
-// tslint:disable-next-line:max-line-length
 export async function restoreSpecificAccessRequestRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
   try {
     const body = req.body;
@@ -259,7 +248,6 @@ export async function restoreSpecificAccessRequestRole(req: EnhancedRequest, res
   }
 }
 
-// tslint:disable-next-line:max-line-length
 export async function reallocateRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
     const body = req.body;
@@ -269,7 +257,6 @@ export async function reallocateRole(req: EnhancedRequest, res: Response, next: 
     const deleteResponse: AxiosResponse = await sendDelete(deletePath, body, req);
     const { status, data } = deleteResponse;
     if (status >= 200 && status <= 204) {
-      // @ts-ignore
       const currentUser = req.session.passport.user.userinfo;
       const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
       const roleAssignmentsBody = toRoleAssignmentBody(currentUserId, body);
@@ -298,7 +285,6 @@ export async function deleteRoleByCaseAndRoleId(req: EnhancedRequest, res: Respo
 }
 
 // Same as above but for node layer use
-// tslint:disable-next-line:max-line-length
 export async function deleteRoleByAssignmentId(req: EnhancedRequest, res: Response, next: NextFunction, assignmentId: string): Promise<AxiosResponse> {
   const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
   const body = req.body;

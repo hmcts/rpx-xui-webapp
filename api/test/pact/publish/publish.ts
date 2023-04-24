@@ -21,7 +21,6 @@ const publish = async (): Promise<void> => {
       getConfigValue(PACT_BRANCH_NAME) : 'Dev';
 
     const consumerVersion = getConfigValue(PACT_CONSUMER_VERSION) !== '' ?
-      // @ts-ignore
       getConfigValue(PACT_CONSUMER_VERSION) : git.short();
 
     process.env.SSL_CERT_FILE = path.resolve(__dirname, '../cer/ca-bundle.crt');

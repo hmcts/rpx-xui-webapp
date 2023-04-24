@@ -87,6 +87,7 @@ xdescribe('Caseworker ref data api, get all caseworkers', () => {
       const configValues = getCaseworkerRefDataAPIOverrides(pactSetUp.provider.mockService.baseUrl);
       configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
 
+      // @ts-ignore
       configValues.waSupportedJurisdictions = ['IA'];
       sandbox.stub(config, 'get').callsFake((prop) => {
         return configValues[prop];

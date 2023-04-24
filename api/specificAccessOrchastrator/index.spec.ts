@@ -39,7 +39,7 @@ describe('postCreateTask', () => {
   });
 
   it('should create task successfully', async () => {
-    const createTask = { caseId: '101', jurisdiction: 'IA', caseType: 'caseType', taskType: 'access_requests', dueDate: '2022-06-30T16:53:10+0100', name: 'name', roleAssignmentId: 'example' }
+    const createTask = { caseId: '101', jurisdiction: 'IA', caseType: 'caseType', taskType: 'access_requests', dueDate: '2022-06-30T16:53:10+0100', name: 'name', roleAssignmentId: 'example' };
     const response = await postCreateTask(req, next, createTask);
     expect(response.data).to.deep.equal(data);
   });
@@ -108,7 +108,6 @@ describe('orchestrationSpecificAccessRequest', () => {
   });
 });
 
-
 describe('specificAccessRequestUpdateAttributes', () => {
   let sandbox: sinon.SinonSandbox;
   let res;
@@ -131,7 +130,7 @@ describe('specificAccessRequestUpdateAttributes', () => {
   };
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    res = mockRes()
+    res = mockRes();
     req = mockReq({
       params: {}
     });
@@ -139,13 +138,13 @@ describe('specificAccessRequestUpdateAttributes', () => {
       passport: {
         user: {
           userinfo: {
-            id: 'someId',
-          },
-        },
-      },
+            id: 'someId'
+          }
+        }
+      }
     };
     next = sandbox.stub();
-    postSpy = sandbox.stub(http, 'post')
+    postSpy = sandbox.stub(http, 'post');
     postSpy.onCall(0).resolves({
       data, status: 201
     });
@@ -153,8 +152,8 @@ describe('specificAccessRequestUpdateAttributes', () => {
       data1, status: 201
     });
     spyDelete = sinon.stub(http, 'delete').callsFake(() => {
-      return Promise.resolve(res)
-    })
+      return Promise.resolve(res);
+    });
   });
 
   afterEach(() => {

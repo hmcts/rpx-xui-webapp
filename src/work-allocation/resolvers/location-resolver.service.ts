@@ -11,7 +11,6 @@ import { catchError, first, map, mergeMap } from 'rxjs/operators';
 import { AppUtils } from '../../app/app-utils';
 import { RoleAssignmentInfo, UserDetails, UserRole } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
-import { UserService } from '../../app/services/user/user.service';
 import * as fromRoot from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';
 import { Booking } from '../../booking/models';
@@ -140,7 +139,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     this.sessionStorageService.setItem('bookableServices', JSON.stringify(this.bookableServices));
     return this.locations;
   } */
-  // EUI-7909 - remove
+    // EUI-7909 - remove
     userDetails.roleAssignmentInfo.forEach((roleAssignment) => {
       const roleJurisdiction = roleAssignment.jurisdiction;
       if (roleJurisdiction && !this.bookableServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
@@ -174,7 +173,6 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     return this.locations;
   }
   // EUI-7909 - remove stops
-  
 
   public addBookingLocations(locations: Location[], bookings: Booking[]): Location[] {
     // TODO: Check if user still has valid bookable role assignment for service

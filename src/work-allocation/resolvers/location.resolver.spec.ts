@@ -231,10 +231,10 @@ describe('LocationResolver', () => {
     }]
   };
 
-  const JUDICIAL_WORKER_WITH_BOOKABLE: UserDetails = {
+  /* const JUDICIAL_WORKER_WITH_BOOKABLE: UserDetails = {
     sessionTimeout: {
       idleModalDisplayTime: 10,
-      totalIdleTime: 10,
+      totalIdleTime: 10
     },
     canShareCases: true,
     userInfo: {
@@ -256,7 +256,7 @@ describe('LocationResolver', () => {
       substantive: 'n',
       bookable: true
     }]
-  };
+  }; */
 
   const JUDICIAL_WORKERS = [
     {
@@ -422,7 +422,7 @@ describe('LocationResolver', () => {
   it('should get all relevant locations for user without location restrictions on individual role assignment', inject([LocationResolver], (service: LocationResolver) => {
     spyOn(sessionStorageService, 'setItem');
     // EUI-7909 - uncomment out code
-/*     const locationsByRegion: LocationsByRegion[] = [{regionId: '4', locations: ['12345', '2341']}, {regionId: '3', locations: ['54321']}];
+    /*     const locationsByRegion: LocationsByRegion[] = [{regionId: '4', locations: ['12345', '2341']}, {regionId: '3', locations: ['54321']}];
     const expectedLocation = [{id: null, userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationName: '', locationId: null, services: [ 'IA' ]}];
     expect(service.getJudicialWorkersOrCaseWorkers(locationsByRegion, CASE_WORKER_SHOULD_HAVE_ALL_LOCATIONS)).toEqual(expectedLocation);
     expect(sessionStorageService.setItem).toHaveBeenCalledWith('userLocations', '[]');
@@ -437,7 +437,7 @@ describe('LocationResolver', () => {
     expect(sessionStorageService.setItem).toHaveBeenCalledWith('bookableUserLocations', JSON.stringify(expectedLocationList));
   }));
  */
-  // EUI-7909 - Remove next five lines of code
+    // EUI-7909 - Remove next five lines of code
     const locationsByRegion: LocationsByRegion[] = [{ regionId: '4', locations: ['12345', '2341'] }, { regionId: '3', locations: ['54321'] }];
     const expectedLocation = [{ id: null, userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationName: '', locationId: null, services: ['IA'] }];
     expect(service.getJudicialWorkersOrCaseWorkers(locationsByRegion, CASE_WORKER_SHOULD_HAVE_ALL_LOCATIONS)).toEqual(expectedLocation);

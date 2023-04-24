@@ -160,7 +160,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     if (data) {
       returnData = {
         tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser),
-        total_records: data.total_records,
+        total_records: data.total_records
       };
     }
     res.send(returnData);
@@ -255,7 +255,6 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
 /**
  * Post to invoke an action on a Task.
  */
-// tslint:disable-next-line:max-line-length
 export async function postTaskCompletionForAccess(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
   try {
     // Additional setting to mark unassigned tasks as done - need to assign task before completing
@@ -391,7 +390,6 @@ export async function getCaseWorkersForService(req: EnhancedRequest, res: Respon
  */
 export async function getCaseWorkersForLocationAndService(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    // tslint:disable-next-line:max-line-length
     const getCaseWorkerPath: string = prepareCaseWorkerForLocationAndService(baseUrl, req.params.locationId, req.params.serviceId);
     const jsonResponse = await handleCaseWorkerForLocationAndService(getCaseWorkerPath, req);
     res.status(200);

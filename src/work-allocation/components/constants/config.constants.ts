@@ -204,7 +204,7 @@ const ACCESS_END_DATE_DISABLE_SORT: FieldConfig = {
   sortName: 'endDate',
   views: TaskView.ALL_VIEWS,
   disableSort: true
-}
+};
 const END_DATE: FieldConfig = {
   name: 'endDate',
   type: FieldType.FORMATTED_DATE,

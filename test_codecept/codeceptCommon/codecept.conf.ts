@@ -108,17 +108,24 @@ exports.config = {
       reportName:'XUI_MC',
       "overwrite": false,
       "html": false,
-      "json": true
-      // inlineAssets: true
+      "json": true,
+      "codeceptjs-cli-reporter": {
+        "stdout": "-",
+        "options": {
+          "verbose": false,
+          "steps": true,
+        }
+      },
+      "mocha-junit-reporter": {
+        "stdout": `${functional_output_dir}/console.log`,
+        "options": {
+          "mochaFile": "./output/result.xml"
+        }
+      }
+      // inlineAssets: true,
+
     },
-    // "reporterOptions":{
-    //   "codeceptjs-cli-reporter": {
-    //     "stdout": "-",
-    //     "options": {
-    //       "verbose": true,
-    //       "steps": true,
-    //     }
-    //   },
+    
       "mochawesome": {
         "stdout": `${functional_output_dir}/`,
         "options": {

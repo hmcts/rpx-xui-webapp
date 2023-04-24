@@ -231,7 +231,6 @@ const caseManager = new CaseManager()
             }catch(err){
                 const baseUrl = process.env.TEST_URL ? process.env.TEST_URL : 'http://localhost:3000/';
                 await browser.get(baseUrl);
-                await headerpage.click();
                 await browserUtil.waitForLD();
                 throw new Error(err);
             }

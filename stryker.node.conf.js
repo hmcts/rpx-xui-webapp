@@ -21,27 +21,24 @@ const modulesArr = [
 
 const modulesString = modulesArr.join(",");
 
-module.exports = function (config) {
-  config.set({
-    // fileLogLevel: 'trace',
-    // logLevel: 'trace',
-    mutate: [`api/{${modulesString}}/*.ts`, "!api/**/*.spec.ts", "!api/test/**/*.ts"],
-    mutator: 'typescript',
-    transpilers: [
-      'typescript'
-    ],
-    testFramework: "mocha",
-    testRunner: "mocha",
-    reporters: ["clear-text", "progress", "html"],
-    tsconfigFile: 'tsconfig.json',
-    mochaOptions: {
-      spec: [ "dist/out-tsc/api/{,!(test)/**/}*.spec.js" ],
-      // timeout: 5000
-    },
-    htmlReporter: {
-      baseDir: 'reports/tests/mutation/node/'
-    },
-    maxConcurrentTestRunners: 2
-  });
+module.exports = {
+  fileLogLevel: 'trace',
+  // logLevel: 'trace',
+  mutate: [`api/{${modulesString}}/*.ts`, "!api/**/*.spec.ts", "!api/test/**/*.ts"],
+  checkers: ["typescript"],
+  testRunner: "mocha",
+  reporters: ["clear-text", "progress", "html"],
+  tsconfigFile: 'tsconfig.json',
+  typescriptChecker: {
+    prioritizePerformanceOverAccuracy: true
+  },
+  mochaOptions: {
+    spec: ["api/{,!(test)/**/}*.spec.ts"],
+    require: ['ts-node/register']
+  },
+  htmlReporter: {
+    fileName: 'reports/tests/mutation/node/index.html'
+  },
+  ignoreStatic: true
 }
 

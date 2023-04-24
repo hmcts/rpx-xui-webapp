@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { UtilsModule } from '../noc-field/utils/utils.module';
@@ -19,15 +19,15 @@ describe('NocSubmitSuccessComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NocSubmitSuccessComponent, RpxTranslateMockPipe ],
+      declarations: [NocSubmitSuccessComponent, RpxTranslateMockPipe],
       imports: [
-        UtilsModule,
+        UtilsModule
       ],
       providers: [
-        provideMockStore(),
+        provideMockStore()
       ]
     })
-    .compileComponents();
+      .compileComponents();
     store = TestBed.inject(Store);
     spyOn(store, 'pipe').and.callThrough();
   }));

@@ -5,15 +5,15 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
-import { initialState, partyChannelsRefData } from '../hearing.test.data';
+import { initialState, partyChannelsRefData, partySubChannelsRefData } from '../hearing.test.data';
 import { PartyType } from '../models/hearings.enum';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { State } from '../store';
 import { PartyChannelsAnswerConverter } from './party-channels-answer.converter';
 
 describe('PartyChannelsAnswerConverter', () => {
-
   let converter: PartyChannelsAnswerConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
   let router: any;
   const partyDetails = [
@@ -26,7 +26,7 @@ describe('PartyChannelsAnswerConverter', () => {
         title: null,
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
+        preferredHearingChannel: 'inPerson'
       }
     },
     {
@@ -38,24 +38,25 @@ describe('PartyChannelsAnswerConverter', () => {
         title: null,
         firstName: 'DWP',
         lastName: null,
-        preferredHearingChannel: 'byVideo',
-      },
+        preferredHearingChannel: 'byVideo'
+      }
     }
   ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
                 partyChannels: partyChannelsRefData,
-              },
-            },
-          },
+                partySubChannels: partySubChannelsRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -69,7 +70,7 @@ describe('PartyChannelsAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.partyDetails = partyDetails;
     const result$ = converter.transformAnswer(of(STATE));
     const option = '<ul><li>Jane and Smith - In person</li></ul>';
-    const expected = cold('(b|)', {b: option});
+    const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });
 

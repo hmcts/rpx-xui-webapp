@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Observable } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
+import { AppConstants } from '../../../app/app.constants';
 import { UserInfo, UserRole } from '../../../app/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { Actions } from '../../../role-access/models';
@@ -17,7 +20,6 @@ import { WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { getAssigneeName, handleFatalErrors } from '../../utils';
 
-
 @Component({
   selector: 'exui-task-action-container',
   templateUrl: 'task-action-container.component.html'
@@ -28,13 +30,16 @@ export class TaskActionContainerComponent implements OnInit {
   public routeData: RouteData;
   protected userDetailsKey: string = 'userDetails';
   public isJudicial: boolean;
+  public isUpdatedTaskPermissions$: Observable<boolean>;
+  public updatedTaskPermission: boolean;
   constructor(
     private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly roleService: AllocateRoleService
+    private readonly roleService: AllocateRoleService,
+    private readonly featureToggleService: FeatureToggleService
   ) {}
 
   public get fields(): FieldConfig[] {
@@ -46,7 +51,7 @@ export class TaskActionContainerComponent implements OnInit {
       const url = window.history.state.returnUrl;
       if (window.history.state.keepUrl) {
         return url;
-      };
+      }
       return url.split('/').splice(0, 3).join('/');
     }
     return '/work/my-work/list';
@@ -56,8 +61,9 @@ export class TaskActionContainerComponent implements OnInit {
     service: TaskService.IAC,
     defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
-    fields: this.fields,
+    fields: this.fields
   };
+
   public ngOnInit(): void {
     this.isJudicial = this.isCurrentUserJudicial();
     // Set up the default sorting.
@@ -67,7 +73,7 @@ export class TaskActionContainerComponent implements OnInit {
     };
 
     // Get the task from the route, which will have been put there by the resolver.
-    this.tasks = [ this.route.snapshot.data.taskAndCaseworkers.task.task ];
+    this.tasks = [this.route.snapshot.data.taskAndCaseworkers.task.task];
     this.routeData = this.route.snapshot.data as RouteData;
     if (!this.routeData.actionTitle) {
       this.routeData.actionTitle = `${this.routeData.verb} task`;
@@ -75,21 +81,25 @@ export class TaskActionContainerComponent implements OnInit {
     if (this.tasks[0].assignee) {
       this.tasks[0].assigneeName = getAssigneeName(this.route.snapshot.data.taskAndCaseworkers.caseworkers, this.tasks[0].assignee);
       if (!this.tasks[0].assigneeName) {
-        this.roleService.getCaseRolesUserDetails([this.tasks[0].assignee], this.tasks[0].jurisdiction).subscribe(judicialDetails => {
+        this.roleService.getCaseRolesUserDetails([this.tasks[0].assignee], this.tasks[0].jurisdiction).subscribe((judicialDetails) => {
           this.tasks[0].assigneeName = judicialDetails[0].known_as;
-        })
+        });
       }
     }
+
+    this.isUpdatedTaskPermissions$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
+    this.isUpdatedTaskPermissions$.pipe(filter((v) => !!v)).subscribe((value) => {
+      this.updatedTaskPermission = value;
+    });
   }
 
   public isCurrentUserJudicial(): boolean {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const isJudge = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
-      return isJudge;
+      return AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
     }
-    return false
+    return false;
   }
 
   public performAction(): void {
@@ -103,6 +113,17 @@ export class TaskActionContainerComponent implements OnInit {
         break;
       case TaskActionType.Unassign:
         action = ACTION.UNCLAIM;
+        if (this.updatedTaskPermission) {
+          const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+          let userId: string;
+          if (userInfoStr) {
+            const userInfo: UserInfo = JSON.parse(userInfoStr);
+            userId = userInfo.id ? userInfo.id : userInfo.uid;
+            if (this.tasks[0].assignee !== userId) {
+              action = ACTION.UNASSIGN;
+            }
+          }
+        }
         break;
       default:
         // If we get here, something has gone wrong as the only actions that should
@@ -112,14 +133,26 @@ export class TaskActionContainerComponent implements OnInit {
     // add hasNoAssigneeOnComplete - only false if complete action and assignee not present
     const hasNoAssigneeOnComplete = action === Actions.Complete.toString() ? this.isTaskUnAssignedOrReAssigned(this.tasks[0]) : false;
     if (action) {
-      this.taskService.performActionOnTask(this.tasks[0].id, action, hasNoAssigneeOnComplete).subscribe(() => {
-        this.reportSuccessAndReturn();
-      }, error => {
-        const handledStatus = handleFatalErrors(error.status, this.router);
-        if (handledStatus > 0) {
-          this.reportUnavailableErrorAndReturn();
-        }
-      });
+      if (action === ACTION.UNASSIGN) {
+        this.taskService.assignTask(this.tasks[0].id, { userId: null }).subscribe({
+          next: () => this.reportSuccessAndReturn(),
+          error: (error: any) => {
+            const handledStatus = handleFatalErrors(error.status, this.router);
+            if (handledStatus > 0) {
+              this.reportUnavailableErrorAndReturn();
+            }
+          }
+        });
+      } else {
+        this.taskService.performActionOnTask(this.tasks[0].id, action, hasNoAssigneeOnComplete).subscribe(() => {
+          this.reportSuccessAndReturn();
+        }, (error) => {
+          const handledStatus = handleFatalErrors(error.status, this.router);
+          if (handledStatus > 0) {
+            this.reportUnavailableErrorAndReturn();
+          }
+        });
+      }
     }
   }
 

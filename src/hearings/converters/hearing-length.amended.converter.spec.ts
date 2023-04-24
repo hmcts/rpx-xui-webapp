@@ -6,7 +6,6 @@ import { State } from '../store/reducers';
 import { HearingLengthAmendedConverter } from './hearing-length.amended.converter';
 
 describe('HearingLengthAmendedConverter', () => {
-
   let hearingLengthAmendedConverter: HearingLengthAmendedConverter;
 
   beforeEach(() => {
@@ -18,8 +17,7 @@ describe('HearingLengthAmendedConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 30;
     const result$ = hearingLengthAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = true;
-    const expected = cold('(b|)', {b: isAmended});
+    const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
-
 });

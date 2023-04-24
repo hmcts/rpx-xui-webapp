@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { caseFlagsRefData, initialState } from '../../hearing.test.data';
+import { EXUIDisplayStatusEnum } from '../../models/hearings.enum';
 import { HearingsPipesModule } from '../../pipes/hearings.pipes.module';
 import { ListingInformationSummaryComponent } from './listing-information-summary.component';
 
@@ -24,14 +25,14 @@ describe('ListingInformationSummaryComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                caseFlags: caseFlagsRefData,
-              },
+                caseFlags: caseFlagsRefData
+              }
             },
-            fragment: of('point-to-me'),
-          },
+            fragment: of('point-to-me')
+          }
         }
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ListingInformationSummaryComponent);
@@ -41,5 +42,17 @@ describe('ListingInformationSummaryComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should case status listed be true', () => {
+    component.caseStatusName = EXUIDisplayStatusEnum.LISTED;
+    expect(component.isCaseStatusListed()).toEqual(true);
+  });
+
+  it('should destroy subscription', () => {
+    component.serviceValueSub = of().subscribe();
+    const unsubscribeSpy = spyOn(component.serviceValueSub, 'unsubscribe');
+    component.ngOnDestroy();
+    expect(unsubscribeSpy).toHaveBeenCalled();
   });
 });

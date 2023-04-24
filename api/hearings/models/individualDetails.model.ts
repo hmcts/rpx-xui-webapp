@@ -1,4 +1,4 @@
-import {RelatedPartiesModel} from './relatedParties.model';
+import { RelatedPartiesModel } from './relatedParties.model';
 
 export interface IndividualDetailsModel {
   title?: string;
@@ -13,4 +13,5 @@ export interface IndividualDetailsModel {
   hearingChannelPhone?: string[];
   relatedParties?: RelatedPartiesModel[];
   custodyStatus?: string;
+  otherReasonableAdjustmentDetails?: string;
 }

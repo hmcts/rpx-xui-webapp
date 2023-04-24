@@ -5,12 +5,9 @@ import { of } from 'rxjs/internal/observable/of';
 import { map, tap } from 'rxjs/operators';
 import { AppUtils } from '../../app/app-utils';
 import { UserInfo, UserRole } from '../../app/models';
-
 import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
-import { Task } from '../models/tasks';
+import { Task, TaskRole } from '../models/tasks';
 import { TaskResponse } from '../models/tasks/task.model';
-import { TaskRole } from '../models/tasks';
-
 
 const BASE_URL: string = '/workallocation/task';
 
@@ -19,7 +16,8 @@ export enum ACTION {
   CANCEL = 'cancel',
   CLAIM = 'claim',
   COMPLETE = 'complete',
-  UNCLAIM = 'unclaim'
+  UNCLAIM = 'unclaim',
+  UNASSIGN = 'unassign'
 }
 
 @Injectable({ providedIn: 'root' })
@@ -54,9 +52,9 @@ export class WorkAllocationTaskService {
     return this.http.post<any>(`${BASE_URL}`, task);
   }
 
-  public searchTask(body: { searchRequest: SearchTaskRequest, view: string }): Observable<TaskResponse> {
+  public searchTask(body: { searchRequest: SearchTaskRequest, view: string, currentUser: string, refined: boolean }): Observable<TaskResponse> {
     return this.http.post<any>(`${BASE_URL}`, body).pipe(
-      tap(response => this.currentTasks$.next(response.tasks)),
+      tap((response) => this.currentTasks$.next(response.tasks)),
     );
   }
 
@@ -80,7 +78,7 @@ export class WorkAllocationTaskService {
 
   public performActionOnTask(taskId: string, action: ACTION, hasNoAssigneeOnComplete?: boolean): Observable<Response> {
     // Make a POST with an empty payload.
-    return this.http.post<any>(this.getActionUrl(taskId, action), {hasNoAssigneeOnComplete});
+    return this.http.post<any>(this.getActionUrl(taskId, action), { hasNoAssigneeOnComplete });
   }
 
   public getActionUrl(taskId: string, action: ACTION): string {
@@ -92,7 +90,7 @@ export class WorkAllocationTaskService {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const id = userInfo.id ? userInfo.id : userInfo.uid;
-      const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
+      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       const searchParameters = [
         { key: 'user', operator: 'IN', values: [id] },
         { key: 'state', operator: 'IN', values: ['assigned'] }
@@ -100,9 +98,9 @@ export class WorkAllocationTaskService {
       const searchRequest: SearchTaskRequest = {
         search_parameters: searchParameters,
         sorting_parameters: [],
-        search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
+        search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker'
       };
-      return this.http.post<any>(`${BASE_URL}`, { searchRequest, view: 'MyTasks' }).pipe(map(response => response.tasks));
+      return this.http.post<any>(`${BASE_URL}`, { searchRequest, view: 'MyTasks' }).pipe(map((response) => response.tasks));
     }
     return of(null);
   }

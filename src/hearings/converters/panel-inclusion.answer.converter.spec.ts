@@ -5,15 +5,15 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
-import { initialState, judgeRefData, judicailUsersRefData } from '../hearing.test.data';
+import { initialState, judgeRefData, judicialUsersRefData } from '../hearing.test.data';
 import { MemberType, RequirementType } from '../models/hearings.enum';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { PanelInclusionAnswerConverter } from './panel-inclusion.answer.converter';
 
 describe('PanelInclusionAnswerConverter', () => {
-
   let converter: AnswerConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
   let router: any;
   const JUDICAIL_USER_DETAILS = [{
@@ -25,16 +25,16 @@ describe('PanelInclusionAnswerConverter', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                judicialUsers: judicailUsersRefData,
-              },
-            },
-          },
+                judicialUsers: judicialUsersRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -50,7 +50,7 @@ describe('PanelInclusionAnswerConverter', () => {
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = judgeRefData[0].knownAs;
-    const expected = cold('(b|)', {b: option});
+    const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });
 });

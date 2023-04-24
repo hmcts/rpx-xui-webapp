@@ -1,10 +1,13 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import * as fromRoot from '../../app/store';
 import { DefaultHiddenConverter } from '../converters/default.hidden.converter';
 import { HiddenConverter } from '../converters/hidden.converter';
 import { JudgeExclusionHiddenConverter } from '../converters/judge-exclusion.hidden.converter';
 import { JudgeNameHiddenConverter } from '../converters/judge-name.hidden.converter';
 import { JudgeTypesHiddenConverter } from '../converters/judge-types.hidden.converter';
+import { ListedHearingViewerHiddenConverter } from '../converters/listed-hearing-viewer.hidden.converter';
 import { ListedHiddenConverter } from '../converters/listed.hidden.converter';
 import { NotListedHiddenConverter } from '../converters/not-listed.hidden.converter';
 import { PanelDetailsExclusionHiddenConverter } from '../converters/panel-details-exclusion.hidden.converter';
@@ -21,9 +24,8 @@ import { State } from '../store';
   name: 'isHidden'
 })
 export class ShowHidePipe implements PipeTransform {
-
-  constructor(protected readonly locationsDataService: LocationsDataService) {
-  }
+  constructor(protected readonly locationsDataService: LocationsDataService,
+    private readonly store: Store<fromRoot.State>) {}
 
   public transform(isHiddenSource: IsHiddenSource, hearingState$: Observable<State>): Observable<boolean> {
     let converter: HiddenConverter = new DefaultHiddenConverter();
@@ -55,6 +57,9 @@ export class ShowHidePipe implements PipeTransform {
       case IsHiddenSource.PANEL_ROLES:
         converter = new PanelRolesHiddenConverter();
         break;
+      case IsHiddenSource.LISTED_HEARING_VIEWER:
+        converter = new ListedHearingViewerHiddenConverter(this.store);
+        break;
       case IsHiddenSource.LISTED:
         converter = new ListedHiddenConverter();
         break;
@@ -66,5 +71,4 @@ export class ShowHidePipe implements PipeTransform {
     }
     return converter.transformHidden(hearingState$);
   }
-
 }

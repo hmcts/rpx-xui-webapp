@@ -1,11 +1,10 @@
 import { NavigationExtras } from '@angular/router';
 
+import { RoleCategory } from 'api/roleAccess/models/allocate-role.enum';
 import { ISessionStorageService } from '../../work-allocation/interfaces/common';
 import { Role, RoleAccessHttpError, RolesByService, SpecificRole, TypeOfRole } from '../models';
 import { InfoMessageType } from '../models/enums';
 import { RoleCaptionText } from '../models/enums/allocation-text';
-
-import { RoleCategory } from 'api/roleAccess/models/allocate-role.enum';
 
 interface Navigator {
   navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>;
@@ -22,13 +21,16 @@ export const vowels = ['a', 'e', 'i', 'o', 'u'];
 export const getTitleText = (role: SpecificRole, action: string, roleCategory: string): string => {
   if (role && role.name) {
     const aOrAn = vowels.includes(role.name.toLowerCase().charAt(0)) ? 'an' : 'a';
-    return role.name === TypeOfRole.CaseManager ? `${action} ${RoleCaptionText.ALegalOpsCaseManager}` : `${action} ${aOrAn} ${role.name.toLowerCase()}`;
-  } else {
-    if (roleCategory === RoleCategory.ADMIN) {
-      return `${action} an admin role`;
-    }
-    return roleCategory  ? `${action} a ${roleCategory.replace('_', ' ').toLowerCase()} role` : `${action} a role`;
+    return role.name === TypeOfRole.CaseManager ? `${action} ${RoleCaptionText.ALegalOpsCaseManager}` : `${action} ${aOrAn} ${role.name}`;
   }
+
+  if (roleCategory === RoleCategory.ADMIN) {
+    return `${action} an admin role`;
+  } else if (roleCategory === RoleCategory.CTSC) {
+    return `${action} a CTSC role`;
+  }
+
+  return roleCategory ? `${action} a ${roleCategory.replace('_', ' ')} role` : `${action} a role`;
 };
 
 // converts non-specific id to name when no known role connected
@@ -42,7 +44,7 @@ export const convertToName = (id: string): string => {
 
 export const getAllRolesFromServices = (rolesByService: RolesByService[]): Role[] => {
   let allRoles: Role[] = [];
-  rolesByService.forEach(roleListByService => {
+  rolesByService.forEach((roleListByService) => {
     allRoles = allRoles.concat(roleListByService.roles);
   });
   return allRoles;

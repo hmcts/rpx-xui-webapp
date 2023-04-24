@@ -25,13 +25,13 @@ describe('NocNavigationComponent', () => {
       imports: [
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromNocStore.reducers),
-        }),
+          feature: combineReducers(fromNocStore.reducers)
+        })
       ],
       declarations: [
         NocNavigationComponent,
         RpxTranslateMockPipe
-      ],
+      ]
     }).compileComponents();
 
     store = TestBed.inject(Store);
@@ -63,5 +63,4 @@ describe('NocNavigationComponent', () => {
       expect(backSpy).toHaveBeenCalledWith(NocNavigationEvent.BACK);
     });
   });
-
 });

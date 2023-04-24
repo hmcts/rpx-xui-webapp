@@ -57,7 +57,7 @@ function getCaseService(): CaseServiceConfig {
     service: CaseService.IAC,
     defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
-    fields: getFields(),
+    fields: getFields()
   };
 }
 
@@ -65,11 +65,12 @@ describe('CaseListComponent', () => {
   let component: WorkCaseListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let routerSpy: jasmine.SpyObj<any>;
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getCase']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
-  const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {  }, getTranslation: (phrase: string) => phrase });
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
 
   beforeEach(() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
@@ -111,10 +112,9 @@ describe('CaseListComponent', () => {
   // });
 
   it('should return the columns to be displayed by the Angular Component Dev Kit table.', async () => {
-
     // create mock getDisplayedColumn variables
     const caseFieldConfig = getFields();
-    const fields = caseFieldConfig.map(field => field.name);
+    const fields = caseFieldConfig.map((field) => field.name);
     const displayedColumns = component.addManageColumn(fields);
     // test actual function against mock variables
     expect(component.getDisplayedColumn(caseFieldConfig)).toEqual(displayedColumns);
@@ -122,7 +122,6 @@ describe('CaseListComponent', () => {
 
   // required no sorting on EUI-4476 so exclude the test
   xit('should take in the field name and trigger a new Request to the API to get a sorted result set.', async () => {
-
     // mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
@@ -141,7 +140,6 @@ describe('CaseListComponent', () => {
 
   // required no sorting on EUI-4476 so exclude the test
   xit('show reset sort button after clicking column header', async () => {
-
     /// mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
@@ -155,7 +153,6 @@ describe('CaseListComponent', () => {
 
   // required no sorting on EUI-4476 so exclude the test
   xit('should allow sorting for different columns.', async () => {
-
     // mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
     let element = fixture.debugElement.nativeElement;
@@ -335,7 +332,6 @@ describe('CaseListComponent', () => {
     const firstActionId: string = firstAction.id;
     const secondActionId: string = secondAction.id;
 
-
     // mock the emitter and click the first manage button
     spyOn(component.actionEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
@@ -440,5 +436,4 @@ describe('CaseListComponent', () => {
       expect(paginationSummary.textContent).toContain('Showing 1 to 2 of 2 results');
     });
   });
-
 });

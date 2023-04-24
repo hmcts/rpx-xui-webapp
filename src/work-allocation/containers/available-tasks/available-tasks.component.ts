@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
+import { InfoMessage, InfoMessageType, TaskActionIds, TaskContext } from '../../enums';
 import { FieldConfig } from '../../models/common';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
@@ -15,7 +15,6 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
   templateUrl: 'available-tasks.component.html'
 })
 export class AvailableTasksComponent extends TaskListWrapperComponent {
-
   public get fields(): FieldConfig[] {
     return this.isCurrentUserJudicial() ? ConfigConstants.AvailableTasksForJudicial : ConfigConstants.AvailableTasksForLegalOps;
   }
@@ -44,9 +43,8 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
+      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       const searchParameters: SearchTaskParameter [] = [
-        { key: 'available_tasks_only', operator: 'BOOLEAN', value: true },
         { key: 'jurisdiction', operator: 'IN', values: this.selectedServices }
       ];
       const locationParameter = this.getLocationParameter();
@@ -57,12 +55,16 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       if (typesOfWorkParameter) {
         searchParameters.push(typesOfWorkParameter);
       }
-      return {
+      const searchTaskParameter: SearchTaskRequest = {
         search_parameters: searchParameters,
-        sorting_parameters: [this.getSortParameter()],
+        sorting_parameters: [...this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter()
       };
+      if (this.updatedTaskPermission) {
+        searchTaskParameter.request_context = TaskContext.AVAILABLE_TASKS;
+      }
+      return searchTaskParameter;
     }
   }
 
@@ -70,15 +72,13 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    * A User 'Claims' themselves a task aka. 'Assign to me'.
    */
   public claimTask(taskId: string): void {
-
     this.taskService.claimTask(taskId).subscribe(() => {
       this.infoMessageCommService.nextMessage({
         type: InfoMessageType.SUCCESS,
-        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
+        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
       });
       this.refreshTasks();
-    }, error => {
-
+    }, (error) => {
       this.claimTaskErrors(error.status);
     });
   }
@@ -96,8 +96,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
           messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
         }
       });
-    }, error => {
-
+    }, (error) => {
       this.claimTaskErrors(error.status);
     });
   }
@@ -112,7 +111,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     if (handledStatus > 0) {
       this.infoMessageCommService.nextMessage({
         type: InfoMessageType.WARNING,
-        message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
+        message: InfoMessage.TASK_NO_LONGER_AVAILABLE
       });
       if (handledStatus === 400) {
         this.refreshTasks();
@@ -144,16 +143,16 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   private getLocationParameter(): SearchTaskParameter {
     if (this.selectedLocations && this.selectedLocations.length > 0) {
       return { key: 'location', operator: 'IN', values: this.selectedLocations };
-    } else {
-      return null;
     }
+
+    return null;
   }
 
   private getTypesOfWorkParameter(): SearchTaskParameter {
     if (this.selectedWorkTypes && this.selectedWorkTypes.length > 0) {
       return { key: 'work_type', operator: 'IN', values: this.selectedWorkTypes };
-    } else {
-      return null;
     }
+
+    return null;
   }
 }

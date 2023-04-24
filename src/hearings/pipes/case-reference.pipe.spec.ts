@@ -1,7 +1,6 @@
 import { CaseReferencePipe } from './case-reference.pipe';
 
 describe('CaseReferencePipe', () => {
-
   let caseReference: CaseReferencePipe;
 
   beforeEach(() => {

@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {select, Store} from '@ngrx/store';
-import {Observable, throwError} from 'rxjs';
-import {catchError, take} from 'rxjs/operators';
-import {ConfigurationModel} from '../../models/configuration.model';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { select, Store } from '@ngrx/store';
+import { Observable, throwError } from 'rxjs';
+import { catchError, take } from 'rxjs/operators';
+import { ConfigurationModel } from '../../models/configuration.model';
 import * as fromApp from '../../store';
 
 /**
@@ -13,39 +13,42 @@ import * as fromApp from '../../store';
  */
 @Injectable()
 export class AppConfigService {
-
-  constructor(private readonly http: HttpClient,  private readonly store: Store<fromApp.State>) {}
+  constructor(private readonly http: HttpClient, private readonly store: Store<fromApp.State>) {}
   private configuration: ConfigurationModel | any;
   /**
    * Loading configuration json file
    */
   public load(): Observable<any> {
-    const jsonFile = `assets/config/config.json`;
+    const jsonFile = 'assets/config/config.json';
     return this.http.get(jsonFile).pipe(
       catchError(this.handleError)
     );
   }
+
   /**
    * Getting configuration from the store
    * and setting it to private var
    */
   public setConfiguration() {
-    this.store.pipe(select(fromApp.getAppFeatures), take(1)).subscribe(config => {
+    this.store.pipe(select(fromApp.getAppFeatures), take(1)).subscribe((config) => {
       this.configuration = config;
     });
   }
+
   /**
    * Returning features config
    */
   public getFeatureToggle() {
     return this.configuration.features;
   }
+
   /**
    * Returning caseEditorConfig config
    */
   public getEditorConfiguration() {
     return this.configuration.caseEditorConfig;
   }
+
   /**
    * Returning urls config
    */
@@ -69,6 +72,4 @@ export class AppConfigService {
     return throwError(
       'Something bad happened; please try again later.');
   }
-
-
 }

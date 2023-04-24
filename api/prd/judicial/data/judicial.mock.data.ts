@@ -1,5 +1,4 @@
-/* tslint:disable:object-literal-sort-keys trailing-comma max-line-length */
-import {JudicialUserModel, RawJudicialUserModel} from '../models/judicialUser.model';
+import { JudicialUserModel, RawJudicialUserModel } from '../models/judicialUser.model';
 
 export const RAW_JUDICIAL_USERS: RawJudicialUserModel[] = [
   {
@@ -14,7 +13,7 @@ export const RAW_JUDICIAL_USERS: RawJudicialUserModel[] = [
     title: 'Mr',
     is_judge: 'Y',
     is_panel_number: 'Y',
-    is_magistrate: 'Y',
+    is_magistrate: 'Y'
   },
   {
     sidam_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c2',
@@ -28,7 +27,7 @@ export const RAW_JUDICIAL_USERS: RawJudicialUserModel[] = [
     title: 'Mr',
     is_judge: 'Y',
     is_panel_number: 'Y',
-    is_magistrate: 'Y',
+    is_magistrate: 'Y'
   },
   {
     sidam_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
@@ -42,7 +41,7 @@ export const RAW_JUDICIAL_USERS: RawJudicialUserModel[] = [
     title: 'Mr',
     is_judge: 'Y',
     is_panel_number: 'Y',
-    is_magistrate: 'Y',
+    is_magistrate: 'Y'
   },
   {
     sidam_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c4',
@@ -56,8 +55,8 @@ export const RAW_JUDICIAL_USERS: RawJudicialUserModel[] = [
     title: 'Mr',
     is_judge: 'Y',
     is_panel_number: 'Y',
-    is_magistrate: 'Y',
-  },
+    is_magistrate: 'Y'
+  }
 ];
 
 export const ALL_JUDICIAL_USERS: JudicialUserModel[] = [
@@ -108,5 +107,5 @@ export const ALL_JUDICIAL_USERS: JudicialUserModel[] = [
     personalCode: 'p1000003',
     surname: 'Priest',
     title: 'Mr'
-  },
+  }
 ];

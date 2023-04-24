@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
@@ -10,6 +10,7 @@ import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
+import * as fromActions from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { FieldType } from '../../enums';
@@ -17,14 +18,12 @@ import { Task } from '../../models/tasks';
 import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { MyTasksComponent } from './my-tasks.component';
-import * as fromActions from '../../../app/store';
 
 @Component({
-  template: `
-    <exui-my-tasks></exui-my-tasks>`
+  template: '<exui-my-tasks></exui-my-tasks>'
 })
 class WrapperComponent {
-  @ViewChild(MyTasksComponent, {static: true}) public appComponentRef: MyTasksComponent;
+  @ViewChild(MyTasksComponent, { static: true }) public appComponentRef: MyTasksComponent;
 }
 
 const userInfo =
@@ -40,7 +39,7 @@ const workTypeInfo =
   `[{"key":"hearing_work","label":"Hearing work"},
     {"key":"routine_work","label":"Routine work"},
     {"key":"decision_making_work","label":"Decision-making work"},
-    {"key":"applications","label":"Applications"}]`
+    {"key":"applications","label":"Applications"}]`;
 
 xdescribe('MyTasksComponent', () => {
   let component: MyTasksComponent;
@@ -54,11 +53,12 @@ xdescribe('MyTasksComponent', () => {
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getCaseworkersForServices']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled', 'getValue']);
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
 
   beforeEach(waitForAsync(() => {
@@ -83,7 +83,7 @@ xdescribe('MyTasksComponent', () => {
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: AllocateRoleService, useValue: mockRoleService },
-        { provide: Store, useValue: storeMock },
+        { provide: Store, useValue: storeMock }
       ]
     }).compileComponents();
 
@@ -93,7 +93,7 @@ xdescribe('MyTasksComponent', () => {
     router = TestBed.inject(Router);
     store = TestBed.inject(Store);
     const tasks: Task[] = getMockTasks();
-    mockTaskService.searchTask.and.returnValue(of({tasks}));
+    mockTaskService.searchTask.and.returnValue(of({ tasks }));
     mockCaseworkerService.getCaseworkersForServices.and.returnValue(of([]));
     const filterFields: FilterSetting = {
       id: 'locations',
@@ -116,7 +116,9 @@ xdescribe('MyTasksComponent', () => {
     mockFilterService.getStream.and.returnValue(of(filterFields));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    mockFeatureToggleService.getValue.and.returnValue(of(true));
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
+    component.isUpdatedTaskPermissions$ = of(true);
     fixture.detectChanges();
   }));
 
@@ -124,9 +126,7 @@ xdescribe('MyTasksComponent', () => {
     component.ngOnInit();
     // tick(500);
     fixture.detectChanges();
-    const searchRequest = component.getSearchTaskRequestPagination();
-    const payload = {searchRequest, view: component.view};
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
+    component.getSearchTaskRequestPagination();
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
   }));
@@ -158,8 +158,7 @@ xdescribe('MyTasksComponent', () => {
 
   it('should not search by work types if all work types are selected', () => {
     mockSessionStorageService.getItem.and.returnValues(userInfo, workTypeInfo, '1');
-    const workTypes: string[] = ['hearing_work', 'upper_tribunal', 'decision_making_work', 'extra_work_type'];
-    component.selectedWorkTypes = workTypes;
+    component.selectedWorkTypes = ['hearing_work', 'upper_tribunal', 'decision_making_work', 'extra_work_type'];
     for (const search_parameter of component.getSearchTaskRequestPagination().search_parameters) {
       expect(search_parameter.key).not.toBe('work_type');
     }

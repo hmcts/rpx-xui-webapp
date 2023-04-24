@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { Router, RoutesRecognized } from '@angular/router';
+import { NavigationStart, Router, RoutesRecognized } from '@angular/router';
 import { CookieService, FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Subscription } from 'rxjs';
-
+import { SessionStorageService } from 'src/app/services';
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
 import { UserDetails, UserInfo } from '../../models/user-details.model';
@@ -18,12 +18,10 @@ import * as fromRoot from '../../store';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-
 export class AppComponent implements OnInit, OnDestroy {
-
   public timeoutModalConfig = {
     countdown: '0 seconds',
-    isVisible: false,
+    isVisible: false
   };
 
   private userId: string = null;
@@ -31,6 +29,11 @@ export class AppComponent implements OnInit, OnDestroy {
   public isCookieBannerVisible: boolean = false;
   private cookieBannerEnabledSubscription: Subscription;
   private cookieBannerEnabled: boolean = false;
+  public subscription: Subscription;
+  private pageReloading: boolean = false;
+  private timeoutNotificationServiceInitialised: boolean = false;
+  private idleModalDisplayTimeInMilliseconds: number;
+  private totalIdleTimeInMilliseconds: number;
 
   constructor(
     private readonly store: Store<fromRoot.State>,
@@ -41,9 +44,9 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly featureService: FeatureToggleService,
     private readonly loggerService: LoggerService,
     private readonly cookieService: CookieService,
-    private readonly environmentService: EnvironmentService
+    private readonly environmentService: EnvironmentService,
+    private readonly sessionStorageService: SessionStorageService
   ) {
-
     this.router.events.subscribe((data) => {
       if (data instanceof RoutesRecognized) {
         let child = data.state.root;
@@ -56,10 +59,17 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    this.subscription = router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.pageReloading = !router.navigated;
+        this.sessionStorageService.setItem('isPageRefreshed', this.pageReloading.toString());
+      }
+    });
   }
 
   public ngOnInit() {
-    this.store.pipe(select(fromRoot.getUseIdleSessionTimeout)).subscribe(useIdleTimeout => {
+    this.store.pipe(select(fromRoot.getUseIdleSessionTimeout)).subscribe((useIdleTimeout) => {
       if (useIdleTimeout) {
         this.loadAndListenForUserDetails();
       }
@@ -78,14 +88,18 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.cookieBannerEnabledSubscription) {
       this.cookieBannerEnabledSubscription.unsubscribe();
     }
+
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   public handleCookieBannerFeatureToggle(): void {
     this.cookieBannerEnabledSubscription = this.featureService.isEnabled('mc-cookie-banner-enabled')
-                                            .subscribe(flag => {
-                                              this.cookieBannerEnabled = flag;
-                                              this.setCookieBannerVisibility();
-                                            });
+      .subscribe((flag) => {
+        this.cookieBannerEnabled = flag;
+        this.setCookieBannerVisibility();
+      });
   }
 
   /**
@@ -95,7 +109,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromRoot.LoadUserDetails());
     const userDetails$ = this.store.pipe(select(fromRoot.getUserDetails));
     const envConfigAndUserDetails$ = combineLatest([this.environmentService.config$, userDetails$]);
-    envConfigAndUserDetails$.subscribe(envConfigAndUserDetails => {
+    envConfigAndUserDetails$.subscribe((envConfigAndUserDetails) => {
       this.userDetailsHandler(envConfigAndUserDetails[0].launchDarklyClientId, envConfigAndUserDetails[1]);
     });
   }
@@ -117,9 +131,8 @@ export class AppComponent implements OnInit, OnDestroy {
   public userDetailsHandler(ldClientId: string, userDetails: UserDetails) {
     if (userDetails) {
       this.initializeFeature(userDetails.userInfo, ldClientId);
-      if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
+      if (propsExist(userDetails, ['sessionTimeout']) && userDetails.sessionTimeout.totalIdleTime > 0) {
         const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
-        this.addTimeoutNotificationServiceListener();
         /**
          * Fix for EUI-4469 Live Defect - Google Tag Manager broken
          *
@@ -187,18 +200,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Add Timeout Notification Service Listener
-   *
-   * We listen for Timeout Notification Service events.
-   */
-  public addTimeoutNotificationServiceListener() {
-
-    this.timeoutNotificationsService.notificationOnChange().subscribe(event => {
-      this.timeoutNotificationEventHandler(event);
-    });
-  }
-
-  /**
    * Timeout Notification Event Handler
    *
    * The Timeout Notification Service currently has three events that we can handle. These are:
@@ -220,7 +221,6 @@ export class AppComponent implements OnInit, OnDestroy {
    * }
    */
   public timeoutNotificationEventHandler(event) {
-
     switch (event.eventType) {
       case 'countdown': {
         this.updateTimeoutModal(event.readableCountdown, true);
@@ -250,8 +250,8 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   public updateTimeoutModal(countdown: string, isVisible: boolean): void {
     this.timeoutModalConfig = {
-        countdown,
-        isVisible
+      countdown,
+      isVisible
     };
   }
 
@@ -259,12 +259,11 @@ export class AppComponent implements OnInit, OnDestroy {
    * Stay Signed in Handler
    */
   public staySignedInHandler() {
-
     this.updateTimeoutModal(undefined, false);
+    this.setupTimeoutNotificationService();
   }
 
   public signOutHandler() {
-
     this.store.dispatch(new fromRoot.StopIdleSessionTimeout());
     this.store.dispatch(new fromRoot.Logout());
   }
@@ -295,23 +294,33 @@ export class AppComponent implements OnInit, OnDestroy {
    * @param totalIdleTime - Should reach here in minutes
    */
   public initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime) {
+    if (this.timeoutNotificationServiceInitialised) {
+      return;
+    }
 
     const idleModalDisplayTimeInSeconds = idleModalDisplayTime * 60;
-    const idleModalDisplayTimeInMilliseconds = idleModalDisplayTimeInSeconds * 1000;
 
-    const totalIdleTimeInMilliseconds = (totalIdleTime * 60) * 1000;
+    this.idleModalDisplayTimeInMilliseconds = idleModalDisplayTimeInSeconds * 1000;
+    this.totalIdleTimeInMilliseconds = (totalIdleTime * 60) * 1000;
 
+    this.setupTimeoutNotificationService();
+  }
+
+  private setupTimeoutNotificationService(): void {
     const timeoutNotificationConfig: any = {
-      idleModalDisplayTime: idleModalDisplayTimeInMilliseconds,
-      totalIdleTime: totalIdleTimeInMilliseconds,
+      idleModalDisplayTime: this.idleModalDisplayTimeInMilliseconds,
+      totalIdleTime: this.totalIdleTimeInMilliseconds,
       idleServiceName: 'idleSession'
     };
 
+    this.timeoutNotificationsService.notificationOnChange().subscribe((event) => {
+      this.timeoutNotificationEventHandler(event);
+    });
     this.timeoutNotificationsService.initialise(timeoutNotificationConfig);
+    this.timeoutNotificationServiceInitialised = true;
   }
 
   public setCookieBannerVisibility(): void {
     this.isCookieBannerVisible = this.cookieBannerEnabled && !!this.userId;
   }
-
 }

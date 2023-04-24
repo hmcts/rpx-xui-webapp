@@ -24,9 +24,8 @@ export class RoleCategoryMappingService {
   // noinspection JSUnusedGlobalSymbols
   public isJudicialCategory(userRoles$: Observable<string[]>): Observable<boolean> {
     return combineLatest([this.roleMappings$, userRoles$]).pipe(
-      // @ts-ignore
       map(([roleMappings, userRoles]: [RoleMapping, string[]]) =>
-        userRoles.some(userRole => roleMappings.JUDICIAL_ROLE_LIST.some(role => role === userRole))
+        userRoles.some((userRole) => roleMappings.JUDICIAL_ROLE_LIST.some((role) => role === userRole))
       )
     );
   }
@@ -34,9 +33,8 @@ export class RoleCategoryMappingService {
   // noinspection JSUnusedGlobalSymbols
   public isLegalOpsCategory(userRoles$: Observable<string[]>): Observable<boolean> {
     return combineLatest([this.roleMappings$, userRoles$]).pipe(
-      // @ts-ignore
       map(([roleMappings, userRoles]: [RoleMapping, string[]]) =>
-        userRoles.some(userRole => roleMappings.LEGAL_OPS_ROLE_LIST.some(role => role === userRole))
+        userRoles.some((userRole) => roleMappings.LEGAL_OPS_ROLE_LIST.some((role) => role === userRole))
       )
     );
   }
@@ -44,18 +42,17 @@ export class RoleCategoryMappingService {
   // noinspection JSUnusedGlobalSymbols
   public getUserRoleCategory(userRoles$: Observable<string[]>): Observable<UserRole> {
     return combineLatest([this.roleMappings$, userRoles$]).pipe(
-      // @ts-ignore
       map(([roleMappings, userRoles]: [RoleMapping, string[]]) => {
-          if (userRoles.some(userRole => roleMappings.JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
-            return UserRole.Judicial;
-          } else if (userRoles.some(userRole => roleMappings.OGD_ROLE_LIST.some(role => role === userRole))) {
-            return UserRole.Ogd;
-          } else if (userRoles.some(userRole => roleMappings.LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
-            return UserRole.LegalOps;
-          } else {
-            return UserRole.Admin;
-          }
+        if (userRoles.some((userRole) => roleMappings.JUDICIAL_ROLE_LIST.some((role) => role === userRole))) {
+          return UserRole.Judicial;
+        } else if (userRoles.some((userRole) => roleMappings.OGD_ROLE_LIST.some((role) => role === userRole))) {
+          return UserRole.Ogd;
+        } else if (userRoles.some((userRole) => roleMappings.LEGAL_OPS_ROLE_LIST.some((role) => role === userRole))) {
+          return UserRole.LegalOps;
         }
+
+        return UserRole.Admin;
+      }
       ));
   }
 }

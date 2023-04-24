@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-
 import { WAFeatureConfig } from '../../../work-allocation/models/common/service-config.model';
 import { EnvironmentService } from '../../shared/services/environment.service';
 import { AppConfigService } from '../config/configuration.services';
@@ -39,11 +38,13 @@ export class AppConfig extends AbstractAppConfig {
       }
     });
 
-    this.featureToggleService.getValue('wa-service-config', null).subscribe({
-      next: (val) => this.config = {
-        ...this.config,
-        wa_service_config: val
-      }
+    this.environmentService.config$.subscribe((config) => {
+      this.featureToggleService.getValue('wa-service-config', config.waSupportedServices).subscribe({
+        next: (val) => this.config = {
+          ...this.config,
+          wa_service_config: val
+        }
+      });
     });
 
     this.featureToggleService.getValue('access-management-basic-view-mock', {}).subscribe({
@@ -190,7 +191,7 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.wa_service_config;
   }
 
-  public getAccessManagementBasicViewMock(): {} {
+  public getAccessManagementBasicViewMock(): unknown {
     return this.config.access_management_basic_view_mock;
   }
 
@@ -213,10 +214,12 @@ export class AppConfig extends AbstractAppConfig {
   public getDocumentDataUrl(): string {
     return this.config.document_data_url;
   }
-  public  getRDCommonDataApiUrl(): string {
+
+  public getRDCommonDataApiUrl(): string {
     return this.config.rd_common_data_api_url;
   }
-  public  getCaseDataStoreApiUrl(): string {
+
+  public getCaseDataStoreApiUrl(): string {
     return this.config.case_data_store_api_url;
   }
 }

@@ -36,7 +36,7 @@ describe('NocTextFieldComponent', () => {
     display_context_parameter: '5',
     challenge_question_id: 'NoC',
     answer_field: '',
-    question_id: 'question5',
+    question_id: 'question5'
   };
   const ANSWER_VALUE = of('John');
   let component: NocTextFieldComponent;
@@ -51,10 +51,10 @@ describe('NocTextFieldComponent', () => {
       ],
       imports: [
         ReactiveFormsModule,
-        UtilsModule,
+        UtilsModule
       ],
       providers: [
-        provideMockStore(),
+        provideMockStore()
       ]
     }).compileComponents();
   }));

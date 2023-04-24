@@ -21,7 +21,7 @@ import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-choose-role',
-  templateUrl: './choose-role.component.html',
+  templateUrl: './choose-role.component.html'
 })
 export class ChooseRoleComponent implements OnInit, OnDestroy {
   public ERROR_MESSAGE = ERROR_MESSAGE;
@@ -45,8 +45,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
   public jurisdiction: string;
 
   constructor(private readonly store: Store<fromFeature.State>,
-              private readonly route: ActivatedRoute) {
-  }
+              private readonly route: ActivatedRoute) {}
 
   public ngOnInit(): void {
     // roleCategory: 1. JUDICIAL/2. LEGAL_OPERATIONS which is exactly matched with back end
@@ -57,20 +56,26 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     this.jurisdiction = this.route.snapshot.queryParams && this.route.snapshot.queryParams.jurisdiction ?
       this.route.snapshot.queryParams.jurisdiction : '';
     const userTypePlaceHolder = getLabel(this.roleCategory as RoleCategory).toLowerCase();
-    this.caption = this.roleCategory === RoleCategory.ADMIN ? 'Allocate an admin role' : `Allocate a ${userTypePlaceHolder} role`;
+    if (this.roleCategory === RoleCategory.ADMIN) {
+      this.caption = 'Allocate an admin role';
+    } else if (this.roleCategory === RoleCategory.CTSC) {
+      this.caption = 'Allocate a CTSC role';
+    } else {
+      this.caption = `Allocate a ${userTypePlaceHolder} role`;
+    }
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
-      allocateRoleStateData => {
+      (allocateRoleStateData) => {
         this.typeOfRole = allocateRoleStateData.typeOfRole;
         this.radioOptionControl = new FormControl(this.typeOfRole ? this.typeOfRole.name : '', [Validators.required]);
         this.formGroup = new FormGroup({ [this.radioControlName]: this.radioOptionControl });
       }
     );
-    this.store.pipe(select(fromFeature.getAvailableRolesForService)).subscribe(roles =>
-      this.optionsList = this.getOptions(roles.filter(role => role.roleCategory === this.roleCategory))
+    this.store.pipe(select(fromFeature.getAvailableRolesForService)).subscribe((roles) =>
+      this.optionsList = this.getOptions(roles.filter((role) => role.roleCategory === this.roleCategory))
     );
   }
 
-  public navigationHandler(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, isLegalOpsOrJudicialRole: UserRole): void {
+  public navigationHandler(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, userRole: UserRole): void {
     this.submitted = true;
     if (this.radioOptionControl.invalid) {
       this.radioOptionControl.setErrors({
@@ -79,14 +84,14 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       this.error = ERROR_MESSAGE;
       return;
     }
-    this.dispatchEvent(navEvent, roleCategory, isLegalOpsOrJudicialRole);
+    this.dispatchEvent(navEvent, roleCategory, userRole);
   }
 
-  public dispatchEvent(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, isLegalOpsOrJudicialRole: UserRole): void {
+  public dispatchEvent(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, userRole: UserRole): void {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.CONTINUE:
         const roleChosen = this.radioOptionControl.value;
-        const roleOption = this.optionsList.filter(option => option.optionValue === roleChosen)[0];
+        const roleOption = this.optionsList.filter((option) => option.optionValue === roleChosen)[0];
         const typeOfRole: SpecificRole = {
           id: roleOption ? roleOption.optionId : roleChosen,
           name: roleChosen
@@ -94,36 +99,47 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
 
         switch (roleCategory) {
           case RoleCategory.JUDICIAL: {
-            switch (isLegalOpsOrJudicialRole) {
+            switch (userRole) {
               case UserRole.LegalOps:
                 this.store.dispatch(new fromFeature.ChooseRoleAndGo({
                   typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
                 }));
                 break;
-              case UserRole.Judicial:
+              default:
                 this.store.dispatch(new fromFeature.ChooseRoleAndGo({
                   typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
                 }));
                 break;
-              default:
-                throw new Error('Invalid user role');
             }
             break;
           }
           case RoleCategory.LEGAL_OPERATIONS: {
-            switch (isLegalOpsOrJudicialRole) {
+            switch (userRole) {
               case UserRole.LegalOps:
                 this.store.dispatch(new fromFeature.ChooseRoleAndGo({
                   typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
                 }));
                 break;
-              case UserRole.Judicial:
+              default:
                 this.store.dispatch(new fromFeature.ChooseRoleAndGo({
                   typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
                 }));
                 break;
+            }
+            break;
+          }
+          case RoleCategory.CTSC: {
+            switch (userRole) {
+              case UserRole.CTSC:
+                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+                  typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
+                }));
+                break;
               default:
-                throw new Error('Invalid user role');
+                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+                  typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
+                }));
+                break;
             }
             break;
           }
@@ -143,7 +159,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
   }
 
   public getOptions(roles: Role[]): OptionsModel[] {
-    return roles.map(role => ({ optionId: role.roleId, optionValue: role.roleName }));
+    return roles.map((role) => ({ optionId: role.roleId, optionValue: role.roleName }));
   }
 
   public ngOnDestroy(): void {

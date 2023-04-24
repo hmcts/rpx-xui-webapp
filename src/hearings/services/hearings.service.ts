@@ -1,29 +1,27 @@
-import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {Observable, Subject} from 'rxjs';
-import {HearingActualsMainModel, HearingActualsModel} from '../models/hearingActualsMainModel';
-import {HearingListMainModel} from '../models/hearingListMain.model';
-import {HearingRequestMainModel} from '../models/hearingRequestMain.model';
-import {ACTION} from '../models/hearings.enum';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { HearingActualsMainModel, HearingActualsModel } from '../models/hearingActualsMainModel';
+import { HearingListMainModel } from '../models/hearingListMain.model';
+import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
+import { ACTION } from '../models/hearings.enum';
 import {
   LinkedHearingGroupMainModel,
   LinkedHearingGroupResponseModel,
   ServiceLinkedCasesModel,
   ServiceLinkedCasesWithHearingsModel
 } from '../models/linkHearings.model';
-import {LovRefDataModel} from '../models/lovRefData.model';
-import {ResponseDetailsModel} from '../models/requestDetails.model';
-import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
+import { LovRefDataByServiceModel, LovRefDataModel } from '../models/lovRefData.model';
+import { ResponseDetailsModel } from '../models/requestDetails.model';
+import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 
 @Injectable()
 export class HearingsService {
-
   public actionSubject = new Subject<ACTION>();
 
   public navigateAction$: Observable<ACTION> = this.actionSubject.asObservable();
 
-  constructor(private readonly http: HttpClient) {
-  }
+  constructor(private readonly http: HttpClient) {}
 
   public navigateAction(action: ACTION): void {
     this.actionSubject.next(action);
@@ -35,7 +33,7 @@ export class HearingsService {
 
   public loadHearingValues(jurisdictionId: string, caseId: string): Observable<ServiceHearingValuesModel> {
     return this.http.post<ServiceHearingValuesModel>(`api/hearings/loadServiceHearingValues?jurisdictionId=${jurisdictionId}`,
-      {caseReference: caseId});
+      { caseReference: caseId });
   }
 
   public loadServiceLinkedCases(jurisdictionId: string, caseReference: string, hearingId?: string): Observable<ServiceLinkedCasesModel[]> {
@@ -53,11 +51,15 @@ export class HearingsService {
     });
   }
 
+  public loadCaseLinkingReasonCodes(): Observable<LovRefDataByServiceModel> {
+    return this.http.get<LovRefDataByServiceModel>('/refdata/commondata/lov/categories/CaseLinkingReasonCode');
+  }
+
   public cancelHearingRequest(hearingId: string, reasons: LovRefDataModel[]): Observable<ResponseDetailsModel> {
-    const cancellationReasonCodes: string[] = reasons.map(reason => reason.key);
+    const cancellationReasonCodes: string[] = reasons.map((reason) => reason.key);
     const options = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       }),
       body: {
         cancellationReasonCodes
@@ -79,7 +81,7 @@ export class HearingsService {
       params: new HttpParams()
         .set('hearingId', hearingRequestMainModel.requestDetails.hearingRequestID)
     };
-    return this.http.put<ResponseDetailsModel>(`api/hearings/updateHearingRequest`, hearingRequestMainModel, options);
+    return this.http.put<ResponseDetailsModel>('api/hearings/updateHearingRequest', hearingRequestMainModel, options);
   }
 
   public getHearingActuals(hearingId: string): Observable<HearingActualsMainModel> {

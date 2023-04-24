@@ -1,19 +1,18 @@
-import {ActivatedRoute} from '@angular/router';
-import {LocationModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {State} from '../store';
+import { ActivatedRoute } from '@angular/router';
+import { LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { State } from '../store';
 import { HearingsUtils } from '../utils/hearings.utils';
-import {AnswerConverter} from './answer.converter';
+import { AnswerConverter } from './answer.converter';
 
 export class CourtLocationAnswerConverter implements AnswerConverter {
-  constructor(protected readonly route: ActivatedRoute) {
-  }
+  constructor(protected readonly route: ActivatedRoute) {}
 
   public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
     const courtLocations: LocationModel[] = this.route.snapshot.data.courtLocation || [];
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;
         let hearingDaySchedule = hearingResponse && hearingResponse.hearingDaySchedule;
         if (!hearingDaySchedule) {
@@ -21,7 +20,7 @@ export class CourtLocationAnswerConverter implements AnswerConverter {
         }
         hearingDaySchedule = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
         const hearingVenueId = hearingDaySchedule[index || 0].hearingVenueId;
-        const courtLocationInfo = courtLocations.find(courtLocation => courtLocation.epimms_id === hearingVenueId);
+        const courtLocationInfo = courtLocations.find((courtLocation) => courtLocation.epimms_id === hearingVenueId);
         return courtLocationInfo ? courtLocationInfo.site_name : '';
       })
     );

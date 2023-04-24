@@ -1,4 +1,4 @@
-import {HearingListModel} from './hearingList.model';
+import { HearingListModel } from './hearingList.model';
 import { GroupLinkType } from './hearings.enum';
 
 export interface ServiceLinkedCasesModel {
@@ -27,15 +27,15 @@ export interface LinkedCaseHearingsResult {
 }
 
 export interface GroupDetailsModel {
-  groupName: string;
-  groupReason: string;
+  groupName?: string;
+  groupReason?: string;
   groupLinkType: GroupLinkType;
-  groupComments: string;
+  groupComments?: string;
 }
 
 export interface LinkedHearingsDetailModel {
   hearingId: string;
-  hearingOrder: number;
+  hearingOrder?: number;
   caseRef?: string;
 }
 

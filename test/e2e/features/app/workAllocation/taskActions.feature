@@ -1,4 +1,4 @@
-@fullfunctional @demo1 @test
+@fullfunctional @demo
 Feature: WA Release 2: : Task Assign/Reassign
 
     Scenario: Reassign task from All work
@@ -42,7 +42,7 @@ Feature: WA Release 2: : Task Assign/Reassign
 
 
         Then I see task check your changes page for action "Assign task" displayed
- 
+
         When I click submit button "Assign" in task check your changes page
         Then I see navigation header tab page "All work"
         Then I validate notification message banner is displayed in "All work" page

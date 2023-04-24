@@ -38,12 +38,12 @@ export const initialCaselistState: CaselistState = {
   filter: new CaselistStateFilter(),
   results: new CaselistStateResults(),
   paginationMetadata: {
-    total_pages_count: 0,
-    total_results_count: 0
+    totalPagesCount: 0,
+    totalResultsCount: 0
   },
   showFilter: true,
   loading: false,
-  loaded: false,
+  loaded: false
 };
 
 export function caselistReducer(
@@ -71,8 +71,8 @@ export function caselistReducer(
       return {
         ...state,
         paginationMetadata: {
-          total_pages_count: action.payload.total_pages_count,
-          total_results_count: action.payload.total_results_count
+          totalPagesCount: action.payload.totalPagesCount,
+          totalResultsCount: action.payload.totalResultsCount
         },
         loading: true,
         loaded: false
@@ -93,7 +93,7 @@ export function caselistReducer(
     case fromCases.CASE_FILTER_DISPLAY_TOGGLE_SUCCESS: {
       return {
         ...state,
-        showFilter: action.payload,
+        showFilter: action.payload
       };
     }
 

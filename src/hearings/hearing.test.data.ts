@@ -1,5 +1,5 @@
-import {HearingActualsMainModel} from './models/hearingActualsMainModel';
-import {HearingRequestMainModel} from './models/hearingRequestMain.model';
+import { HearingActualsMainModel } from './models/hearingActualsMainModel';
+import { HearingRequestMainModel } from './models/hearingRequestMain.model';
 import {
   CategoryType, EXUIDisplayStatusEnum, EXUISectionStatusEnum,
   GroupLinkType,
@@ -14,8 +14,8 @@ import {
   RequirementType,
   UnavailabilityType
 } from './models/hearings.enum';
-import {JudicialUserModel} from './models/judicialUser.model';
-import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
+import { JudicialUserModel } from './models/judicialUser.model';
+import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 
 export const hearingStageRefData = [
   {
@@ -29,7 +29,7 @@ export const hearingStageRefData = [
     category_key: 'HearingType',
     parent_category: '',
     active_flag: 'Y',
-    child_nodes: null,
+    child_nodes: null
   },
   {
     key: 'final',
@@ -42,7 +42,7 @@ export const hearingStageRefData = [
     category_key: 'HearingType',
     parent_category: '',
     active_flag: 'Y',
-    child_nodes: null,
+    child_nodes: null
   },
   {
     key: 'substantial',
@@ -55,7 +55,7 @@ export const hearingStageRefData = [
     category_key: 'HearingType',
     parent_category: '',
     active_flag: 'Y',
-    child_nodes: null,
+    child_nodes: null
   },
   {
     key: 'case-management',
@@ -68,11 +68,11 @@ export const hearingStageRefData = [
     category_key: 'HearingType',
     parent_category: '',
     active_flag: 'Y',
-    child_nodes: null,
-  },
+    child_nodes: null
+  }
 ];
 
-export const judicailUsersRefData: JudicialUserModel[] = [{
+export const judicialUsersRefData: JudicialUserModel[] = [{
   emailId: 'jacky.collins@judicial.com',
   fullName: 'Jacky Collins',
   idamId: '1102839232',
@@ -190,6 +190,165 @@ export const partyChannelsRefData = [
     hintTextCY: '',
     order: 5,
     parentKey: null
+  }
+];
+
+export const partySubChannelsRefData = [
+  {
+    category_key: 'HearingSubChannel',
+    key: 'VIDSKYPE',
+    value_en: 'Video - Skype',
+    value_cy: 'Drwy Fideo - Skype',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'VID',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'TELOTHER',
+    value_en: 'Telephone - Other',
+    value_cy: 'Dros y Ffôn - Arall',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'TEL',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'VIDTEAMS',
+    value_en: 'Video - Teams',
+    value_cy: 'Drwy Fideo - Teams',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'VID',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'VIDCVP',
+    value_en: 'Video - CVP',
+    value_cy: 'Drwy Fideo - CVP',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'VID',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'VIDOTHER',
+    value_en: 'Video - Other',
+    value_cy: 'Drwy Fideo - Arall',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'VID',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'TELCVP',
+    value_en: 'Telephone - CVP',
+    value_cy: 'Dros y Ffôn - CVP',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'TEL',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'NA',
+    value_en: 'Not in Attendance',
+    value_cy: 'Ddim yn Bresennol',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'NA',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'INTER',
+    value_en: 'In Person',
+    value_cy: 'Yn Bersonol',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'INTER',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'TELBTM',
+    value_en: 'Telephone - BTMeetme',
+    value_cy: 'Dros y Ffôn - BTMeetme',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'TEL',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'VIDPVL',
+    value_en: 'Prison Video',
+    value_cy: 'Cyswllt Fideo â Charchar',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'VID',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'TELSKYP',
+    value_en: 'Telephone - Skype',
+    value_cy: 'Dros y Ffôn - Skype',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'TEL',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'VIDVHS',
+    value_en: 'Video - Video Hearing Service',
+    value_cy: 'Drwy Fideo - Gwasanaeth Gwrandawiadau Fideo',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'VID',
+    active_flag: 'Y',
+    child_nodes: null
   }
 ];
 
@@ -519,7 +678,7 @@ export const caseTypeRefData = [
         child_nodes: null
       }
     ]
-  },
+  }
 ];
 
 export const caseFlagsRefData = [
@@ -538,9 +697,9 @@ export const caseFlagsRefData = [
         flagCode: 'CF0002',
         isParent: false,
         Path: [
-          'Case',
+          'Case'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Potentially harmful medical evidence',
@@ -549,9 +708,9 @@ export const caseFlagsRefData = [
         flagCode: 'CF0003',
         isParent: false,
         Path: [
-          'Case',
+          'Case'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Gender recognition',
@@ -560,9 +719,9 @@ export const caseFlagsRefData = [
         flagCode: 'CF0004',
         isParent: false,
         Path: [
-          'Case',
+          'Case'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Domestic violence allegation',
@@ -571,9 +730,9 @@ export const caseFlagsRefData = [
         flagCode: 'CF0005',
         isParent: false,
         Path: [
-          'Case',
+          'Case'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Potential fraud',
@@ -582,9 +741,9 @@ export const caseFlagsRefData = [
         flagCode: 'CF0006',
         isParent: false,
         Path: [
-          'Case',
+          'Case'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Urgent flag',
@@ -593,9 +752,9 @@ export const caseFlagsRefData = [
         flagCode: 'CF0007',
         isParent: false,
         Path: [
-          'Case',
+          'Case'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Exclusion order with Police',
@@ -604,11 +763,11 @@ export const caseFlagsRefData = [
         flagCode: 'CF0008',
         isParent: false,
         Path: [
-          'Case',
+          'Case'
         ],
-        childFlags: [],
-      },
-    ],
+        childFlags: []
+      }
+    ]
   },
   {
     name: 'Party',
@@ -625,9 +784,9 @@ export const caseFlagsRefData = [
         flagCode: 'PF0002',
         isParent: false,
         Path: [
-          'Party',
+          'Party'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Potentially suicidal',
@@ -636,9 +795,9 @@ export const caseFlagsRefData = [
         flagCode: 'PF0003',
         isParent: false,
         Path: [
-          'Party',
+          'Party'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Confidential address',
@@ -647,9 +806,9 @@ export const caseFlagsRefData = [
         flagCode: 'PF0004',
         isParent: false,
         Path: [
-          'Party',
+          'Party'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Anonymous party',
@@ -658,9 +817,9 @@ export const caseFlagsRefData = [
         flagCode: 'PF0005',
         isParent: false,
         Path: [
-          'Party',
+          'Party'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Potentially Violent Person',
@@ -669,9 +828,9 @@ export const caseFlagsRefData = [
         flagCode: 'PF0006',
         isParent: false,
         Path: [
-          'Party',
+          'Party'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Unacceptable customer behaviour',
@@ -680,9 +839,9 @@ export const caseFlagsRefData = [
         flagCode: 'PF0007',
         isParent: false,
         Path: [
-          'Party',
+          'Party'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Vexatious litigant',
@@ -691,9 +850,9 @@ export const caseFlagsRefData = [
         flagCode: 'PF0008',
         isParent: false,
         Path: [
-          'Party',
+          'Party'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Civil restraint order',
@@ -702,9 +861,9 @@ export const caseFlagsRefData = [
         flagCode: 'PF0009',
         isParent: false,
         Path: [
-          'Party',
+          'Party'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Extended civil restraint order',
@@ -713,9 +872,9 @@ export const caseFlagsRefData = [
         flagCode: 'PF0010',
         isParent: false,
         Path: [
-          'Party',
+          'Party'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Banning order',
@@ -724,9 +883,9 @@ export const caseFlagsRefData = [
         flagCode: 'PF0011',
         isParent: false,
         Path: [
-          'Party',
+          'Party'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Foreign national offender',
@@ -735,9 +894,9 @@ export const caseFlagsRefData = [
         flagCode: 'PF0012',
         isParent: false,
         Path: [
-          'Party',
+          'Party'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Unaccompanied minor',
@@ -746,9 +905,9 @@ export const caseFlagsRefData = [
         flagCode: 'PF0013',
         isParent: false,
         Path: [
-          'Party',
+          'Party'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Audio/Video Evidence',
@@ -757,9 +916,9 @@ export const caseFlagsRefData = [
         flagCode: 'PF0014',
         isParent: false,
         Path: [
-          'Party',
+          'Party'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Language Interpreter',
@@ -768,9 +927,9 @@ export const caseFlagsRefData = [
         flagCode: 'PF0015',
         isParent: false,
         Path: [
-          'Party',
+          'Party'
         ],
-        childFlags: [],
+        childFlags: []
       },
       {
         name: 'Reasonable adjustment',
@@ -779,7 +938,7 @@ export const caseFlagsRefData = [
         flagCode: 'RA0001',
         isParent: true,
         Path: [
-          'Party',
+          'Party'
         ],
         childFlags: [
           {
@@ -789,7 +948,7 @@ export const caseFlagsRefData = [
             flagCode: 'RA0002',
             isParent: true,
             Path: [
-              'Party', 'Reasonable adjustment',
+              'Party', 'Reasonable adjustment'
             ],
             childFlags: [
               {
@@ -799,9 +958,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0009',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Alternative formats of our information',
+                  'Party', 'Reasonable adjustment', 'Alternative formats of our information'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Braille',
@@ -810,9 +969,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0010',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Alternative formats of our information',
+                  'Party', 'Reasonable adjustment', 'Alternative formats of our information'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Coloured paper',
@@ -821,9 +980,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0011',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Alternative formats of our information',
+                  'Party', 'Reasonable adjustment', 'Alternative formats of our information'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Easy Read',
@@ -832,9 +991,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0012',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Alternative formats of our information',
+                  'Party', 'Reasonable adjustment', 'Alternative formats of our information'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Larger font size',
@@ -843,11 +1002,11 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0013',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Alternative formats of our information',
+                  'Party', 'Reasonable adjustment', 'Alternative formats of our information'
                 ],
-                childFlags: [],
-              },
-            ],
+                childFlags: []
+              }
+            ]
           },
           {
             name: 'Assistance with court and tribunal processes and forms',
@@ -856,7 +1015,7 @@ export const caseFlagsRefData = [
             flagCode: 'RA0003',
             isParent: true,
             Path: [
-              'Party', 'Reasonable adjustment',
+              'Party', 'Reasonable adjustment'
             ],
             childFlags: [
               {
@@ -866,9 +1025,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0014',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms',
+                  'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Face to face explanations to help customer to complete forms',
@@ -877,9 +1036,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0015',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms',
+                  'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Reading documents for customer',
@@ -888,9 +1047,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0016',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms',
+                  'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Time and opportunity for customer to explain their needs and preferences',
@@ -899,11 +1058,11 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0017',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms',
+                  'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'
                 ],
-                childFlags: [],
-              },
-            ],
+                childFlags: []
+              }
+            ]
           },
           {
             name: 'Pre- Hearing visit',
@@ -912,9 +1071,9 @@ export const caseFlagsRefData = [
             flagCode: 'RA0004',
             isParent: false,
             Path: [
-              'Party', 'Reasonable adjustment',
+              'Party', 'Reasonable adjustment'
             ],
-            childFlags: [],
+            childFlags: []
           },
           {
             name: 'Physical access and facilities',
@@ -923,7 +1082,7 @@ export const caseFlagsRefData = [
             flagCode: 'RA0005',
             isParent: true,
             Path: [
-              'Party', 'Reasonable adjustment',
+              'Party', 'Reasonable adjustment'
             ],
             childFlags: [
               {
@@ -933,9 +1092,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0018',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Assistance to get to court or tribunal',
@@ -944,9 +1103,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0019',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Assistance using lifts',
@@ -955,9 +1114,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0020',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Lift required',
@@ -966,9 +1125,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0021',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Parking space close to court or tribunal',
@@ -977,9 +1136,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0022',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Personal Evacuation Emergency Plan (PEEP) arrangements',
@@ -988,9 +1147,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0023',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Ramps',
@@ -999,9 +1158,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0024',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Relocation to another building / hearing room / ground floor room',
@@ -1010,9 +1169,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0025',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Use of venue wheelchair',
@@ -1021,9 +1180,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0026',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Wheelchair access',
@@ -1032,11 +1191,11 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0027',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities',
+                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
                 ],
-                childFlags: [],
-              },
-            ],
+                childFlags: []
+              }
+            ]
           },
           {
             name: 'Within our buildings and hearing room environment',
@@ -1045,7 +1204,7 @@ export const caseFlagsRefData = [
             flagCode: 'RA0006',
             isParent: true,
             Path: [
-              'Party', 'Reasonable adjustment',
+              'Party', 'Reasonable adjustment'
             ],
             childFlags: [
               {
@@ -1055,9 +1214,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0028',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
+                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Chair in the witness box',
@@ -1066,9 +1225,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0030',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
+                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Chair with back support / cushion / arms / adjustable / extra leg room',
@@ -1077,9 +1236,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0031',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
+                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Hearing Enhancement System (hearing loops infra red receiver)',
@@ -1088,7 +1247,7 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0032',
                 isParent: true,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
+                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
                 ],
                 childFlags: [
                   {
@@ -1099,9 +1258,9 @@ export const caseFlagsRefData = [
                     isParent: false,
                     Path: [
                       'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
-                      'Hearing Enhancement System (hearing loops infra red receiver)',
+                      'Hearing Enhancement System (hearing loops infra red receiver)'
                     ],
-                    childFlags: [],
+                    childFlags: []
                   },
                   {
                     name: 'Infra Red Receiver',
@@ -1111,9 +1270,9 @@ export const caseFlagsRefData = [
                     isParent: false,
                     Path: [
                       'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
-                      'Hearing Enhancement System (hearing loops infra red receiver)',
+                      'Hearing Enhancement System (hearing loops infra red receiver)'
                     ],
-                    childFlags: [],
+                    childFlags: []
                   },
                   {
                     name: 'Induction Loop',
@@ -1123,11 +1282,11 @@ export const caseFlagsRefData = [
                     isParent: false,
                     Path: [
                       'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
-                      'Hearing Enhancement System (hearing loops infra red receiver)',
+                      'Hearing Enhancement System (hearing loops infra red receiver)'
                     ],
-                    childFlags: [],
-                  },
-                ],
+                    childFlags: []
+                  }
+                ]
               },
               {
                 name: 'Natural light',
@@ -1136,9 +1295,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0033',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
+                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Need to be close to who is speaking',
@@ -1147,9 +1306,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0034',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
+                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Separate waiting area / Private room',
@@ -1158,11 +1317,11 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0035',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
+                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
                 ],
-                childFlags: [],
-              },
-            ],
+                childFlags: []
+              }
+            ]
           },
           {
             name: 'The Hearing',
@@ -1171,7 +1330,7 @@ export const caseFlagsRefData = [
             flagCode: 'RA0007',
             isParent: true,
             Path: [
-              'Party', 'Reasonable adjustment',
+              'Party', 'Reasonable adjustment'
             ],
             childFlags: [
               {
@@ -1181,9 +1340,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0036',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'The Hearing',
+                  'Party', 'Reasonable adjustment', 'The Hearing'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Facility to be able to get up and move around',
@@ -1192,9 +1351,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0037',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'The Hearing',
+                  'Party', 'Reasonable adjustment', 'The Hearing'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'On-line hearing',
@@ -1203,9 +1362,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0038',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'The Hearing',
+                  'Party', 'Reasonable adjustment', 'The Hearing'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Regular or extra breaks (eg for medication, food and drink or lavatory needs',
@@ -1214,9 +1373,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0039',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'The Hearing',
+                  'Party', 'Reasonable adjustment', 'The Hearing'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Telephone hearing',
@@ -1225,9 +1384,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0040',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'The Hearing',
+                  'Party', 'Reasonable adjustment', 'The Hearing'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Video link',
@@ -1236,11 +1395,11 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0041',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'The Hearing',
+                  'Party', 'Reasonable adjustment', 'The Hearing'
                 ],
-                childFlags: [],
-              },
-            ],
+                childFlags: []
+              }
+            ]
           },
           {
             name: 'Help or support from a third party',
@@ -1249,7 +1408,7 @@ export const caseFlagsRefData = [
             flagCode: 'RA0008',
             isParent: true,
             Path: [
-              'Party', 'Reasonable adjustment',
+              'Party', 'Reasonable adjustment'
             ],
             childFlags: [
               {
@@ -1259,9 +1418,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0042',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'CA Witness Services',
@@ -1270,9 +1429,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0043',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Clock (Community Legal Outreach Collaboration) representative',
@@ -1281,9 +1440,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0044',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Good Things foundation',
@@ -1292,9 +1451,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0045',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Intermediary',
@@ -1303,9 +1462,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0046',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Lip Speaker',
@@ -1314,9 +1473,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0047',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Mackenzie Friend',
@@ -1325,9 +1484,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0048',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Other Charity representative',
@@ -1336,9 +1495,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0049',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Personal Support Unit',
@@ -1347,9 +1506,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0050',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Speech to text reporter (Palantypist)',
@@ -1358,9 +1517,9 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0051',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
                 ],
-                childFlags: [],
+                childFlags: []
               },
               {
                 name: 'Support Worker / Carer',
@@ -1369,16 +1528,16 @@ export const caseFlagsRefData = [
                 flagCode: 'RA0052',
                 isParent: false,
                 Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party',
+                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
                 ],
-                childFlags: [],
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
+                childFlags: []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 ];
 
 export const serviceHearingValuesModel: ServiceHearingValuesModel = {
@@ -1391,20 +1550,20 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   caseCategories: [
     {
       categoryType: CategoryType.CaseType,
-      categoryValue: 'BBA3-002',
+      categoryValue: 'BBA3-002'
     }, {
       categoryType: CategoryType.CaseSubType,
       categoryValue: 'BBA3-002CC',
-      categoryParent: 'BBA3-002',
+      categoryParent: 'BBA3-002'
     }, {
       categoryType: CategoryType.CaseSubType,
       categoryValue: 'BBA3-002GC',
-      categoryParent: 'BBA3-002',
+      categoryParent: 'BBA3-002'
     }, {
       categoryType: CategoryType.CaseSubType,
       categoryValue: 'BBA3-002RC',
-      categoryParent: 'BBA3-002',
-    },
+      categoryParent: 'BBA3-002'
+    }
   ],
   caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
   caserestrictedFlag: false,
@@ -1414,7 +1573,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   hearingWindow: {
     dateRangeStart: '2022-11-23T09:00:00.000Z',
     dateRangeEnd: '2022-11-30T09:00:00.000Z',
-    firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+    firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
   },
   duration: 45,
   hearingPriorityType: 'standard',
@@ -1422,12 +1581,12 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   hearingInWelshFlag: false,
   hearingLocations: [{
     locationId: '196538',
-    locationType: HMCLocationType.COURT,
+    locationType: HMCLocationType.COURT
   },
-    {
-      locationId: '234850',
-      locationType: HMCLocationType.COURT,
-    },
+  {
+    locationId: '234850',
+    locationType: HMCLocationType.COURT
+  }
   ],
   caseAdditionalSecurityFlag: false,
   facilitiesRequired: [],
@@ -1468,7 +1627,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     roleType: [
       'tj',
       'dtj',
-      'rtj',
+      'rtj'
     ],
     panelPreferences: [],
     panelSpecialisms: [
@@ -1476,8 +1635,8 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
       'BBA3-MQPM2-003',
       'BBA3-MQPM2-004',
       'BBA3-FQPM',
-      'BBA3-RMM',
-    ],
+      'BBA3-RMM'
+    ]
   },
   parties: [
     {
@@ -1489,15 +1648,15 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         title: 'Mrs',
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
+        preferredHearingChannel: 'inPerson'
       },
       unavailabilityRanges: [
         {
           unavailableFromDate: '2021-12-10T09:00:00.000Z',
           unavailableToDate: '2021-12-31T09:00:00.000Z',
-          unavailabilityType: UnavailabilityType.ALL_DAY,
-        },
-      ],
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        }
+      ]
     },
     {
       partyID: 'P2',
@@ -1508,7 +1667,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         title: null,
         firstName: 'DWP',
         lastName: null,
-        preferredHearingChannel: 'inPerson',
+        preferredHearingChannel: 'inPerson'
       },
       organisationDetails: {
         name: 'DWP',
@@ -1519,9 +1678,9 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         {
           unavailableFromDate: '2021-12-20T09:00:00.000Z',
           unavailableToDate: '2021-12-31T09:00:00.000Z',
-          unavailabilityType: UnavailabilityType.ALL_DAY,
-        },
-      ],
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        }
+      ]
     }],
   caseFlags: {
     flags: [
@@ -1531,7 +1690,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagParentId: 'RA0008',
         flagId: 'RA0042',
         flagDescription: 'Sign language interpreter required',
-        flagStatus: 'ACTIVE',
+        flagStatus: 'ACTIVE'
       },
       {
         partyID: 'P1',
@@ -1539,7 +1698,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagParentId: 'RA0032',
         flagId: 'RA0053',
         flagDescription: 'Hearing loop required',
-        flagStatus: 'ACTIVE',
+        flagStatus: 'ACTIVE'
       },
       {
         partyID: 'P1',
@@ -1547,7 +1706,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagParentId: 'RA0002',
         flagId: 'RA0013',
         flagDescription: 'Larger font size',
-        flagStatus: 'ACTIVE',
+        flagStatus: 'ACTIVE'
       },
       {
         partyID: 'P1',
@@ -1555,7 +1714,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagParentId: 'RA0003',
         flagId: 'RA0016',
         flagDescription: 'Reading documents for customer',
-        flagStatus: 'ACTIVE',
+        flagStatus: 'ACTIVE'
       },
       {
         partyID: 'P1',
@@ -1563,7 +1722,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagParentId: 'RA0008',
         flagId: 'RA0042',
         flagDescription: 'Sign Language Interpreter',
-        flagStatus: 'ACTIVE',
+        flagStatus: 'ACTIVE'
       },
       {
         partyID: 'P1',
@@ -1571,7 +1730,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagParentId: 'PF0001',
         flagId: 'PF0015',
         flagDescription: 'Language Interpreter',
-        flagStatus: 'ACTIVE',
+        flagStatus: 'ACTIVE'
       },
       {
         partyID: 'P1',
@@ -1579,7 +1738,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagParentId: 'PF0001',
         flagId: 'PF0002',
         flagDescription: 'Vulnerable user',
-        flagStatus: 'ACTIVE',
+        flagStatus: 'ACTIVE'
       },
       {
         partyID: 'P2',
@@ -1587,7 +1746,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagParentId: 'RA0001',
         flagId: 'RA0005',
         flagDescription: 'Physical access and facilities',
-        flagStatus: 'ACTIVE',
+        flagStatus: 'ACTIVE'
       },
       {
         partyID: 'P2',
@@ -1595,7 +1754,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagParentId: 'PF0001',
         flagId: 'PF0011',
         flagDescription: 'Banning order',
-        flagStatus: 'ACTIVE',
+        flagStatus: 'ACTIVE'
       },
       {
         partyID: 'P2',
@@ -1603,7 +1762,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagParentId: 'CF0001',
         flagId: 'CF0002',
         flagDescription: 'Complex Case',
-        flagStatus: 'ACTIVE',
+        flagStatus: 'ACTIVE'
       },
       {
         partyID: 'P2',
@@ -1611,7 +1770,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagParentId: 'CF0001',
         flagId: 'CF0006',
         flagDescription: 'Potential fraud',
-        flagStatus: 'ACTIVE',
+        flagStatus: 'ACTIVE'
       },
       {
         partyID: 'P2',
@@ -1619,8 +1778,8 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagParentId: 'CF0001',
         flagId: 'CF0007',
         flagDescription: 'Urgent flag',
-        flagStatus: 'ACTIVE',
-      },
+        flagStatus: 'ACTIVE'
+      }
     ],
     flagAmendURL: '/'
   },
@@ -1629,102 +1788,102 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
       screenName: 'hearing-requirements',
       navigation: [
         {
-          resultValue: 'hearing-facilities',
-        },
-      ],
+          resultValue: 'hearing-facilities'
+        }
+      ]
     },
     {
       screenName: 'hearing-facilities',
       navigation: [
         {
-          resultValue: 'hearing-stage',
-        },
-      ],
+          resultValue: 'hearing-stage'
+        }
+      ]
     },
     {
       screenName: 'hearing-stage',
       navigation: [
         {
-          resultValue: 'hearing-attendance',
-        },
-      ],
+          resultValue: 'hearing-attendance'
+        }
+      ]
     },
     {
       screenName: 'hearing-attendance',
       navigation: [
         {
-          resultValue: 'hearing-venue',
-        },
-      ],
+          resultValue: 'hearing-venue'
+        }
+      ]
     },
     {
       screenName: 'hearing-venue',
-      conditionKey: 'region',
+      conditionKey: 'regionId',
       navigation: [
         {
           conditionOperator: 'INCLUDE',
-          conditionValue: 'Wales',
-          resultValue: 'hearing-welsh',
+          conditionValue: '7',
+          resultValue: 'hearing-welsh'
         },
         {
           conditionOperator: 'NOT INCLUDE',
-          conditionValue: 'Wales',
-          resultValue: 'hearing-judge',
-        },
-      ],
+          conditionValue: '7',
+          resultValue: 'hearing-judge'
+        }
+      ]
     },
     {
       screenName: 'hearing-welsh',
       navigation: [
         {
-          resultValue: 'hearing-judge',
-        },
-      ],
+          resultValue: 'hearing-judge'
+        }
+      ]
     },
     {
       screenName: 'hearing-judge',
       navigation: [
         {
-          resultValue: 'hearing-panel',
-        },
-      ],
+          resultValue: 'hearing-panel'
+        }
+      ]
     },
     {
       screenName: 'hearing-panel',
       navigation: [
         {
-          resultValue: 'hearing-timing',
-        },
-      ],
+          resultValue: 'hearing-timing'
+        }
+      ]
     },
     {
       screenName: 'hearing-timing',
       navigation: [
         {
-          resultValue: 'hearing-additional-instructions',
-        },
-      ],
+          resultValue: 'hearing-additional-instructions'
+        }
+      ]
     },
     {
       screenName: 'hearing-additional-instructions',
       navigation: [
         {
-          resultValue: 'hearing-create-edit-summary',
-        },
-      ],
-    },
+          resultValue: 'hearing-create-edit-summary'
+        }
+      ]
+    }
   ],
   vocabulary: [
     {
-      word1: '',
-    },
-  ],
+      word1: ''
+    }
+  ]
 };
 
 export const hearingRequestMainModel: HearingRequestMainModel = {
   requestDetails: {
     timeStamp: '2022-02-23T09:00:00.000Z',
-    versionNumber: 1,
+    versionNumber: 1
   },
   hearingDetails: {
     duration: 45,
@@ -1733,14 +1892,14 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     hearingLocations: [
       {
         locationId: '196538',
-        locationType: HMCLocationType.COURT,
-      },
+        locationType: HMCLocationType.COURT
+      }
     ],
     hearingIsLinkedFlag: false,
     hearingWindow: {
       dateRangeStart: '2022-11-23T09:00:00.000Z',
       dateRangeEnd: '2022-11-30T09:00:00.000Z',
-      firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+      firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
     },
     privateHearingRequiredFlag: false,
     panelRequirements: null,
@@ -1751,7 +1910,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     facilitiesRequired: [
       'immigrationDetentionCentre',
       'inCameraCourt',
-      'sameSexCourtroom',
+      'sameSexCourtroom'
     ],
     listingComments: 'Interpreter required',
     hearingRequester: '',
@@ -1773,23 +1932,23 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     caseCategories: [
       {
         categoryType: CategoryType.CaseType,
-        categoryValue: 'BBA3-002',
+        categoryValue: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002CC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002GC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002RC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
-    caseSLAStartDate: '2021-11-23T09:00:00.000Z',
+    caseSLAStartDate: '2021-11-23T09:00:00.000Z'
   },
   partyDetails: [
     {
@@ -1801,7 +1960,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
         title: null,
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
+        preferredHearingChannel: 'inPerson'
       }
     },
     {
@@ -1813,9 +1972,9 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
         title: null,
         firstName: 'DWP',
         lastName: null,
-        preferredHearingChannel: 'byVideo',
-      },
-    },
+        preferredHearingChannel: 'byVideo'
+      }
+    }
   ],
   hearingResponse: {
     listAssistTransactionID: '123456789',
@@ -1842,7 +2001,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
             title: null,
             firstName: 'Jane',
             lastName: 'Smith',
-            preferredHearingChannel: 'inPerson',
+            preferredHearingChannel: 'inPerson'
           }
         },
         {
@@ -1854,12 +2013,12 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
             title: null,
             firstName: 'DWP',
             lastName: null,
-            preferredHearingChannel: 'byVideo',
-          },
-        },
-      ],
-    }],
-  },
+            preferredHearingChannel: 'byVideo'
+          }
+        }
+      ]
+    }]
+  }
 };
 
 export const hearingActualsMainModel: HearingActualsMainModel = {
@@ -1869,7 +2028,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
       hearingResult: HearingResult.CANCELLED,
       hearingResultDate: '2019-01-01',
       hearingResultReasonType: 'unable',
-      hearingType: 'Pre-hearing review',
+      hearingType: 'Pre-hearing review'
     },
     actualHearingDays: [
       {
@@ -1883,39 +2042,39 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
             actualPartyId: '1',
             individualDetails: {
               firstName: 'Bob',
-              lastName: 'Jones',
+              lastName: 'Jones'
             },
             actualOrganisationName: 'Company A',
             didNotAttendFlag: false,
             partyChannelSubType: 'inPerson',
             partyRole: 'appellant',
-            representedParty: '',
+            representedParty: ''
           },
           {
             actualPartyId: '2',
             individualDetails: {
               firstName: 'Mary',
-              lastName: 'Jones',
+              lastName: 'Jones'
             },
             actualOrganisationName: 'Company B',
             didNotAttendFlag: false,
             partyChannelSubType: 'inPerson',
             partyRole: 'claimant',
-            representedParty: '',
+            representedParty: ''
           },
           {
             actualPartyId: '3',
             individualDetails: {
               firstName: 'James',
-              lastName: 'Gods',
+              lastName: 'Gods'
             },
             actualOrganisationName: 'Solicitors A',
             didNotAttendFlag: false,
             partyChannelSubType: 'inPerson',
             partyRole: 'interpreter',
-            representedParty: '1',
-          },
-        ],
+            representedParty: '1'
+          }
+        ]
       },
       {
         hearingDate: '2021-03-14',
@@ -1928,41 +2087,41 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
             actualPartyId: '1',
             individualDetails: {
               firstName: 'Bob',
-              lastName: 'Jones',
+              lastName: 'Jones'
             },
             actualOrganisationName: 'Company A',
             didNotAttendFlag: false,
             partyChannelSubType: 'inPerson',
             partyRole: 'appellant',
-            representedParty: '',
+            representedParty: ''
           },
           {
             actualPartyId: '2',
             individualDetails: {
               firstName: 'Mary',
-              lastName: 'Jones',
+              lastName: 'Jones'
             },
             actualOrganisationName: 'Company B',
             didNotAttendFlag: false,
             partyChannelSubType: 'inPerson',
             partyRole: 'claimant',
-            representedParty: '',
+            representedParty: ''
           },
           {
             actualPartyId: '3',
             individualDetails: {
               firstName: 'James',
-              lastName: 'Gods',
+              lastName: 'Gods'
             },
             actualOrganisationName: 'Solicitors A',
             didNotAttendFlag: false,
             partyChannelSubType: 'inPerson',
             partyRole: 'interpreter',
-            representedParty: '1',
-          },
-        ],
-      },
-    ],
+            representedParty: '1'
+          }
+        ]
+      }
+    ]
   },
   hearingPlanned: {
     plannedHearingType: 'final',
@@ -1975,31 +2134,31 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
             individualDetails: {
               title: 'Miss',
               firstName: 'Bob',
-              lastName: 'Jones',
+              lastName: 'Jones'
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company A',
+              name: 'Company A'
             },
             partyID: '1',
             partyRole: 'interpreter',
-            partyChannelSubType: 'appellant',
+            partyChannelSubType: 'appellant'
           },
           {
             individualDetails: {
               title: '',
               firstName: 'DWP',
-              lastName: '',
+              lastName: ''
             },
             organisationDetails: {
               cftOrganisationID: 'ogd1',
-              name: 'DWP',
+              name: 'DWP'
             },
             partyID: '2',
             partyRole: 'interpreter',
-            partyChannelSubType: 'claimant',
-          },
-        ],
+            partyChannelSubType: 'claimant'
+          }
+        ]
       },
       {
         plannedStartTime: '2021-03-14T09:00:00.000Z',
@@ -2009,33 +2168,33 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
             individualDetails: {
               title: 'Miss',
               firstName: 'Jo',
-              lastName: 'Blogg',
+              lastName: 'Blogg'
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company A',
+              name: 'Company A'
             },
             partyID: '1',
             partyRole: 'interpreter',
-            partyChannelSubType: 'appellant',
+            partyChannelSubType: 'appellant'
           },
           {
             individualDetails: {
               title: '',
               firstName: 'DWP',
-              lastName: '',
+              lastName: ''
             },
             organisationDetails: {
               cftOrganisationID: 'ogd1',
-              name: 'DWP',
+              name: 'DWP'
             },
             partyID: '2',
             partyRole: 'interpreter',
-            partyChannelSubType: 'claimant',
-          },
-        ],
-      },
-    ],
+            partyChannelSubType: 'claimant'
+          }
+        ]
+      }
+    ]
   },
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,
   caseDetails: {
@@ -2052,24 +2211,24 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
     caseCategories: [
       {
         categoryType: CategoryType.CaseType,
-        categoryValue: 'BBA3-002',
+        categoryValue: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002CC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002GC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }, {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002RC',
-        categoryParent: 'BBA3-002',
+        categoryParent: 'BBA3-002'
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
-    caseSLAStartDate: '2021-11-23T09:00:00.000Z',
-  },
+    caseSLAStartDate: '2021-11-23T09:00:00.000Z'
+  }
 };
 
 export const initialState = {
@@ -2089,13 +2248,13 @@ export const initialState = {
           listAssistCaseStatus: '',
           hearingIsLinkedFlag: true,
           hearingGroupRequestId: null,
-          hearingDaySchedule: null,
+          hearingDaySchedule: null
         }]
       }
     },
     hearingActuals: {
       hearingActualsMainModel,
-      lastError: null,
+      lastError: null
     },
     hearingValues: {
       serviceHearingValuesModel,
@@ -2105,7 +2264,7 @@ export const initialState = {
       hearingRequestMainModel: {
         requestDetails: {
           timeStamp: null,
-          versionNumber: 1,
+          versionNumber: 1
         },
         hearingDetails: {
           duration: 60,
@@ -2114,18 +2273,18 @@ export const initialState = {
           hearingLocations: [
             {
               locationId: '196538',
-              locationType: HMCLocationType.COURT,
+              locationType: HMCLocationType.COURT
             },
             {
               locationId: '234850',
-              locationType: HMCLocationType.COURT,
-            },
+              locationType: HMCLocationType.COURT
+            }
           ],
           hearingIsLinkedFlag: false,
           hearingWindow: {
             dateRangeStart: '2022-12-12T09:00:00.000Z',
             dateRangeEnd: '2022-12-12T09:00:00.000Z',
-            firstDateTimeMustBe: '',
+            firstDateTimeMustBe: ''
           },
           privateHearingRequiredFlag: false,
           panelRequirements: null,
@@ -2158,19 +2317,19 @@ export const initialState = {
           caseCategories: [
             {
               categoryType: CategoryType.CaseType,
-              categoryValue: 'BBA3-002',
+              categoryValue: 'BBA3-002'
             }, {
               categoryType: CategoryType.CaseSubType,
               categoryValue: 'BBA3-002CC',
-              categoryParent: 'BBA3-002',
+              categoryParent: 'BBA3-002'
             }, {
               categoryType: CategoryType.CaseSubType,
               categoryValue: 'BBA3-002GC',
-              categoryParent: 'BBA3-002',
+              categoryParent: 'BBA3-002'
             }, {
               categoryType: CategoryType.CaseSubType,
               categoryValue: 'BBA3-002RC',
-              categoryParent: 'BBA3-002',
+              categoryParent: 'BBA3-002'
             }],
           caseManagementLocationCode: null,
           caserestrictedFlag: false,
@@ -2192,10 +2351,10 @@ export const initialState = {
                 'RA0013',
                 'RA0016',
                 'RA0042',
-                'RA0009',
+                'RA0009'
               ],
               interpreterLanguage: 'PF0015',
-              preferredHearingChannel: 'byVideo',
+              preferredHearingChannel: 'byVideo'
             },
             organisationDetails: {},
             unavailabilityDOW: null,
@@ -2203,9 +2362,9 @@ export const initialState = {
               {
                 unavailableFromDate: '2021-12-10T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           },
           {
             partyID: 'P2',
@@ -2217,23 +2376,23 @@ export const initialState = {
               lastName: null,
               preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
-                'RA0005',
+                'RA0005'
               ],
-              interpreterLanguage: null,
+              interpreterLanguage: null
             },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
-              cftOrganisationID: 'O100000',
+              cftOrganisationID: 'O100000'
             },
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
                 unavailableFromDate: '2021-12-20T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           }
         ]
       },
@@ -2273,7 +2432,7 @@ export const initialState = {
                 individualDetails: {
                   firstName: 'Jane',
                   lastName: 'Smith',
-                  preferredHearingChannel: 'inPerson',
+                  preferredHearingChannel: 'inPerson'
                 }
               },
               {
@@ -2285,31 +2444,31 @@ export const initialState = {
                 individualDetails: {
                   firstName: 'DWP',
                   lastName: null,
-                  preferredHearingChannel: 'byVideo',
+                  preferredHearingChannel: 'byVideo'
                 }
-              },
-            ],
+              }
+            ]
           }]
         },
         hearingDetails: {
           duration: 60,
           hearingType: 'final',
-          hearingChannels: [],
+          hearingChannels: ['byPhone'],
           hearingLocations: [
             {
               locationId: '196538',
-              locationType: HMCLocationType.COURT,
+              locationType: HMCLocationType.COURT
             },
             {
               locationId: '234850',
-              locationType: HMCLocationType.COURT,
-            },
+              locationType: HMCLocationType.COURT
+            }
           ],
           hearingIsLinkedFlag: false,
           hearingWindow: {
             dateRangeStart: '2022-12-12T09:00:00.000Z',
             dateRangeEnd: '2022-12-12T09:00:00.000Z',
-            firstDateTimeMustBe: '',
+            firstDateTimeMustBe: ''
           },
           privateHearingRequiredFlag: false,
           panelRequirements: null,
@@ -2342,19 +2501,19 @@ export const initialState = {
           caseCategories: [
             {
               categoryType: CategoryType.CaseType,
-              categoryValue: 'BBA3-002',
+              categoryValue: 'BBA3-002'
             }, {
               categoryType: CategoryType.CaseSubType,
               categoryValue: 'BBA3-002CC',
-              categoryParent: 'BBA3-002',
+              categoryParent: 'BBA3-002'
             }, {
               categoryType: CategoryType.CaseSubType,
               categoryValue: 'BBA3-002GC',
-              categoryParent: 'BBA3-002',
+              categoryParent: 'BBA3-002'
             }, {
               categoryType: CategoryType.CaseSubType,
               categoryValue: 'BBA3-002RC',
-              categoryParent: 'BBA3-002',
+              categoryParent: 'BBA3-002'
             }],
           caseManagementLocationCode: null,
           caserestrictedFlag: false,
@@ -2376,9 +2535,9 @@ export const initialState = {
                 'RA0053',
                 'RA0013',
                 'RA0016',
-                'RA0042',
+                'RA0042'
               ],
-              interpreterLanguage: 'PF0015',
+              interpreterLanguage: 'PF0015'
             },
             organisationDetails: {},
             unavailabilityDOW: null,
@@ -2386,9 +2545,9 @@ export const initialState = {
               {
                 unavailableFromDate: '2021-12-10T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           },
           {
             partyID: 'P2',
@@ -2398,23 +2557,23 @@ export const initialState = {
             individualDetails: {
               preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
-                'RA0005',
+                'RA0005'
               ],
-              interpreterLanguage: null,
+              interpreterLanguage: null
             },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
-              cftOrganisationID: 'O100000',
+              cftOrganisationID: 'O100000'
             },
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
                 unavailableFromDate: '2021-12-20T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           }
         ]
       },
@@ -2433,7 +2592,7 @@ export const initialState = {
           caseName: 'Smith vs Peterson',
           reasonsForLink: [
             'Linked for a hearing'
-          ],
+          ]
         },
         {
           caseReference: '5283819672542864',
@@ -2450,7 +2609,7 @@ export const initialState = {
             'Familial',
             'Guardian',
             'Linked for a hearing'
-          ],
+          ]
         }
       ],
       serviceLinkedCasesWithHearings: [
@@ -2474,7 +2633,7 @@ export const initialState = {
             hearingIsLinkedFlag: true,
             hearingGroupRequestId: null,
             hearingDaySchedule: [],
-            isSelected: true,
+            isSelected: true
           }]
         },
         {
@@ -2508,7 +2667,7 @@ export const initialState = {
             hearingIsLinkedFlag: true,
             hearingGroupRequestId: null,
             hearingDaySchedule: [],
-            isSelected: true,
+            isSelected: true
           }, {
             hearingID: 'h100012',
             hearingType: 'Chambers Outcome',
@@ -2523,7 +2682,7 @@ export const initialState = {
             hearingIsLinkedFlag: true,
             hearingGroupRequestId: null,
             hearingDaySchedule: [],
-            isSelected: true,
+            isSelected: true
           }]
         }
       ],
@@ -2532,25 +2691,25 @@ export const initialState = {
           groupName: 'Group A',
           groupReason: 'Reason 1',
           groupLinkType: GroupLinkType.ORDERED,
-          groupComments: 'Comment 1',
+          groupComments: 'Comment 1'
         },
         hearingsInGroup: [
           {
             hearingId: 'h1000001',
-            hearingOrder: 1,
+            hearingOrder: 1
           },
           {
             hearingId: 'h1000003',
-            hearingOrder: 2,
+            hearingOrder: 2
           },
           {
             hearingId: 'h1000005',
-            hearingOrder: 3,
-          }],
+            hearingOrder: 3
+          }]
       },
       lastError: null
     }
-  },
+  }
 };
 
 export const hearingRoles = [
@@ -2742,13 +2901,13 @@ export const initialStateImmutable = {
           listAssistCaseStatus: '',
           hearingIsLinkedFlag: true,
           hearingGroupRequestId: null,
-          hearingDaySchedule: null,
+          hearingDaySchedule: null
         }]
       }
     },
     hearingActuals: {
       hearingActualsMainModel,
-      lastError: null,
+      lastError: null
     },
     hearingValues: {
       serviceHearingValuesModel,
@@ -2758,7 +2917,7 @@ export const initialStateImmutable = {
       hearingRequestMainModel: {
         requestDetails: {
           timeStamp: null,
-          versionNumber: 1,
+          versionNumber: 1
         },
         hearingDetails: {
           duration: 60,
@@ -2767,18 +2926,18 @@ export const initialStateImmutable = {
           hearingLocations: [
             {
               locationId: '196538',
-              locationType: HMCLocationType.COURT,
+              locationType: HMCLocationType.COURT
             },
             {
               locationId: '234850',
-              locationType: HMCLocationType.COURT,
-            },
+              locationType: HMCLocationType.COURT
+            }
           ],
           hearingIsLinkedFlag: false,
           hearingWindow: {
             dateRangeStart: '2022-12-12T09:00:00.000Z',
             dateRangeEnd: '2022-12-12T09:00:00.000Z',
-            firstDateTimeMustBe: '',
+            firstDateTimeMustBe: ''
           },
           privateHearingRequiredFlag: false,
           panelRequirements: null,
@@ -2811,19 +2970,19 @@ export const initialStateImmutable = {
           caseCategories: [
             {
               categoryType: CategoryType.CaseType,
-              categoryValue: 'BBA3-002',
+              categoryValue: 'BBA3-002'
             }, {
               categoryType: CategoryType.CaseSubType,
               categoryValue: 'BBA3-002CC',
-              categoryParent: 'BBA3-002',
+              categoryParent: 'BBA3-002'
             }, {
               categoryType: CategoryType.CaseSubType,
               categoryValue: 'BBA3-002GC',
-              categoryParent: 'BBA3-002',
+              categoryParent: 'BBA3-002'
             }, {
               categoryType: CategoryType.CaseSubType,
               categoryValue: 'BBA3-002RC',
-              categoryParent: 'BBA3-002',
+              categoryParent: 'BBA3-002'
             }],
           caseManagementLocationCode: null,
           caserestrictedFlag: false,
@@ -2845,10 +3004,10 @@ export const initialStateImmutable = {
                 'RA0013',
                 'RA0016',
                 'RA0042',
-                'RA0009',
+                'RA0009'
               ],
               interpreterLanguage: 'PF0015',
-              preferredHearingChannel: 'byVideo',
+              preferredHearingChannel: 'byVideo'
             },
             organisationDetails: {},
             unavailabilityDOW: null,
@@ -2856,9 +3015,9 @@ export const initialStateImmutable = {
               {
                 unavailableFromDate: '2021-12-10T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           },
           {
             partyID: 'P2',
@@ -2870,23 +3029,23 @@ export const initialStateImmutable = {
               lastName: null,
               preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
-                'RA0005',
+                'RA0005'
               ],
-              interpreterLanguage: null,
+              interpreterLanguage: null
             },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
-              cftOrganisationID: 'O100000',
+              cftOrganisationID: 'O100000'
             },
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
                 unavailableFromDate: '2021-12-20T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           }
         ]
       },
@@ -2926,7 +3085,7 @@ export const initialStateImmutable = {
                 individualDetails: {
                   firstName: 'Jane',
                   lastName: 'Smith',
-                  preferredHearingChannel: 'inPerson',
+                  preferredHearingChannel: 'inPerson'
                 }
               },
               {
@@ -2938,10 +3097,10 @@ export const initialStateImmutable = {
                 individualDetails: {
                   firstName: 'DWP',
                   lastName: null,
-                  preferredHearingChannel: 'byVideo',
+                  preferredHearingChannel: 'byVideo'
                 }
-              },
-            ],
+              }
+            ]
           }]
         },
         hearingDetails: {
@@ -2951,18 +3110,18 @@ export const initialStateImmutable = {
           hearingLocations: [
             {
               locationId: '196538',
-              locationType: HMCLocationType.COURT,
+              locationType: HMCLocationType.COURT
             },
             {
               locationId: '234850',
-              locationType: HMCLocationType.COURT,
-            },
+              locationType: HMCLocationType.COURT
+            }
           ],
           hearingIsLinkedFlag: false,
           hearingWindow: {
             dateRangeStart: '2022-12-12T09:00:00.000Z',
             dateRangeEnd: '2022-12-12T09:00:00.000Z',
-            firstDateTimeMustBe: '',
+            firstDateTimeMustBe: ''
           },
           privateHearingRequiredFlag: false,
           panelRequirements: null,
@@ -2995,19 +3154,19 @@ export const initialStateImmutable = {
           caseCategories: [
             {
               categoryType: CategoryType.CaseType,
-              categoryValue: 'BBA3-002',
+              categoryValue: 'BBA3-002'
             }, {
               categoryType: CategoryType.CaseSubType,
               categoryValue: 'BBA3-002CC',
-              categoryParent: 'BBA3-002',
+              categoryParent: 'BBA3-002'
             }, {
               categoryType: CategoryType.CaseSubType,
               categoryValue: 'BBA3-002GC',
-              categoryParent: 'BBA3-002',
+              categoryParent: 'BBA3-002'
             }, {
               categoryType: CategoryType.CaseSubType,
               categoryValue: 'BBA3-002RC',
-              categoryParent: 'BBA3-002',
+              categoryParent: 'BBA3-002'
             }],
           caseManagementLocationCode: null,
           caserestrictedFlag: false,
@@ -3029,9 +3188,9 @@ export const initialStateImmutable = {
                 'RA0053',
                 'RA0013',
                 'RA0016',
-                'RA0042',
+                'RA0042'
               ],
-              interpreterLanguage: 'PF0015',
+              interpreterLanguage: 'PF0015'
             },
             organisationDetails: {},
             unavailabilityDOW: null,
@@ -3039,9 +3198,9 @@ export const initialStateImmutable = {
               {
                 unavailableFromDate: '2021-12-10T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           },
           {
             partyID: 'P2',
@@ -3051,23 +3210,23 @@ export const initialStateImmutable = {
             individualDetails: {
               preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
-                'RA0005',
+                'RA0005'
               ],
-              interpreterLanguage: null,
+              interpreterLanguage: null
             },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
-              cftOrganisationID: 'O100000',
+              cftOrganisationID: 'O100000'
             },
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
                 unavailableFromDate: '2021-12-20T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           }
         ]
       },
@@ -3086,7 +3245,7 @@ export const initialStateImmutable = {
           caseName: 'Smith vs Peterson',
           reasonsForLink: [
             'Linked for a hearing'
-          ],
+          ]
         },
         {
           caseReference: '5283819672542864',
@@ -3103,7 +3262,7 @@ export const initialStateImmutable = {
             'Familial',
             'Guardian',
             'Linked for a hearing'
-          ],
+          ]
         }
       ],
       serviceLinkedCasesWithHearings: [
@@ -3127,7 +3286,7 @@ export const initialStateImmutable = {
             hearingIsLinkedFlag: true,
             hearingGroupRequestId: null,
             hearingDaySchedule: [],
-            isSelected: true,
+            isSelected: true
           }]
         },
         {
@@ -3161,7 +3320,7 @@ export const initialStateImmutable = {
             hearingIsLinkedFlag: true,
             hearingGroupRequestId: null,
             hearingDaySchedule: [],
-            isSelected: true,
+            isSelected: true
           }, {
             hearingID: 'h100012',
             hearingType: 'Chambers Outcome',
@@ -3176,7 +3335,7 @@ export const initialStateImmutable = {
             hearingIsLinkedFlag: true,
             hearingGroupRequestId: null,
             hearingDaySchedule: [],
-            isSelected: true,
+            isSelected: true
           }]
         }
       ],
@@ -3185,23 +3344,23 @@ export const initialStateImmutable = {
           groupName: 'Group A',
           groupReason: 'Reason 1',
           groupLinkType: GroupLinkType.ORDERED,
-          groupComments: 'Comment 1',
+          groupComments: 'Comment 1'
         },
         hearingsInGroup: [
           {
             hearingId: 'h1000001',
-            hearingOrder: 1,
+            hearingOrder: 1
           },
           {
             hearingId: 'h1000003',
-            hearingOrder: 2,
+            hearingOrder: 2
           },
           {
             hearingId: 'h1000005',
-            hearingOrder: 3,
-          }],
+            hearingOrder: 3
+          }]
       },
       lastError: null
     }
-  },
+  }
 };

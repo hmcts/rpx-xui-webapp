@@ -20,8 +20,7 @@ export class CaseRolesTableComponent implements OnInit {
   @Input() public roleCategory: RoleCategory;
   public roleCategoryTitle: string;
 
-  constructor(private readonly router: Router) {
-  }
+  constructor(private readonly router: Router) {}
 
   private _roles: CaseRole[] = [];
 
@@ -39,7 +38,33 @@ export class CaseRolesTableComponent implements OnInit {
 
   public ngOnInit(): void {
     this.backUrl = this.router.url;
-    this.roleCategoryTitle = this.roleCategory === RoleCategory.JUDICIAL ? 'judicial' : (this.roleCategory === RoleCategory.ADMIN ? 'admin' : 'legal Ops');
+    this.roleCategoryTitle = this.getRoleCategoryTitle(this.roleCategory);
+  }
+
+  public getRoleCategoryTitle(roleCategory: string): string {
+    switch (roleCategory) {
+      case RoleCategory.LEGAL_OPERATIONS: {
+        roleCategory = 'legal Ops';
+        break;
+      }
+      case RoleCategory.JUDICIAL: {
+        roleCategory = 'judicial';
+        break;
+      }
+      case RoleCategory.ADMIN: {
+        roleCategory = 'admin';
+        break;
+      }
+      case RoleCategory.CTSC: {
+        roleCategory = 'CTSC';
+        break;
+      }
+
+      default:
+        roleCategory = 'legal Ops';
+        break;
+    }
+    return roleCategory;
   }
 
   public queryParams(caseRole: CaseRole): any {

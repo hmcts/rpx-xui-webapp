@@ -6,11 +6,10 @@ import { mockedSearchFilters } from '../../../cases/mock/search-filter.mock';
 import { SearchFilterService } from '../../../cases/services';
 import { ApplySearchFilter, ApplySearchFilterFail, ApplySearchFilterForES, ApplySearchFilterSuccess } from '../actions';
 import * as fromSearchFilterEffects from './search-filter.effects';
-import { SearchFilterEffects } from './search-filter.effects';
 
 describe('Pending Organisation Effects', () => {
   let actions$;
-  let effects: SearchFilterEffects;
+  let effects: fromSearchFilterEffects.SearchFilterEffects;
   const SearchFilterServiceMock = jasmine.createSpyObj('SearchFilterService', [
     'search'
   ]);
@@ -22,20 +21,18 @@ describe('Pending Organisation Effects', () => {
       providers: [
         {
           provide: SearchFilterService,
-          useValue: SearchFilterServiceMock,
+          useValue: SearchFilterServiceMock
         },
         fromSearchFilterEffects.SearchFilterEffects,
         provideMockActions(() => actions$)
       ]
     });
 
-    effects = TestBed.inject(SearchFilterEffects);
-
+    effects = TestBed.inject(fromSearchFilterEffects.SearchFilterEffects);
   });
 
   describe('applySearchFilters$', () => {
     it('should return a collection', () => {
-
       SearchFilterServiceMock.search.and.returnValue(of(payload));
       const action = new ApplySearchFilter({});
       const completion = new ApplySearchFilterSuccess(payload);
@@ -47,7 +44,6 @@ describe('Pending Organisation Effects', () => {
 
   describe('applySearchFilters$ error', () => {
     it('should return a ApplySearchFilterFail', () => {
-
       SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));
       const action = new ApplySearchFilter({});
       const completion = new ApplySearchFilterFail(new Error());
@@ -59,7 +55,6 @@ describe('Pending Organisation Effects', () => {
 
   describe('applySearchFiltersForES$', () => {
     it('should return a collection', () => {
-
       SearchFilterServiceMock.search.and.returnValue(of(payload));
       const action = new ApplySearchFilterForES({});
       const completion = new ApplySearchFilterSuccess(payload);
@@ -79,5 +74,4 @@ describe('Pending Organisation Effects', () => {
       expect(effects.applySearchFiltersForES$).toBeObservable(expected);
     });
   });
-
 });

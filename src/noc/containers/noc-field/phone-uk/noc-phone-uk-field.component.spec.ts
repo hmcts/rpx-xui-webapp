@@ -36,7 +36,7 @@ describe('NocPhoneUkFieldComponent', () => {
     display_context_parameter: '3',
     challenge_question_id: 'NoC',
     answer_field: '',
-    question_id: 'question3',
+    question_id: 'question3'
   };
   const ANSWER_VALUE = of('07777777777');
   let component: NocPhoneUkFieldComponent;

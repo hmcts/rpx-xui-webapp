@@ -8,7 +8,6 @@ import { of } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromCaseSearchStore from '../../store';
-import { ApplySearchFilterForES, SearchFilterToggle } from '../../store';
 import { CaseSearchComponent } from './case-search.component';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -36,8 +35,8 @@ describe('CaseSearchComponent', () => {
         RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromCaseSearchStore.reducers),
-        }),
+          feature: combineReducers(fromCaseSearchStore.reducers)
+        })
       ],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
@@ -73,16 +72,14 @@ describe('CaseSearchComponent', () => {
   }));
 
   describe('applyChangePage()', () => {
-
     /**
      * We initially check that page is undefined, so that we know that calling the
      * findCaseListPaginationMetadata() function is definitely changing the components page property.
      */
     it('should update the components page property on page change.', () => {
-
       const event = {
         selected: {
-          page: 2,
+          page: 2
         }
       };
 
@@ -95,12 +92,11 @@ describe('CaseSearchComponent', () => {
      * pagination metadata.
      */
     it('should call findCaseListPaginationMetadata() on page change.', () => {
-
       const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
 
       const event = {
         selected: {
-          page: 1,
+          page: 1
         }
       };
 
@@ -111,29 +107,18 @@ describe('CaseSearchComponent', () => {
   });
 
   describe('applyFilter()', () => {
-
     let event;
 
     beforeEach(() => {
-
-      const jurisdiction = { id: 'PROBATE' };
-      const caseType = { id: 'GrantOfRepresentation' };
-      const caseState = { id: 'CaseCreated' };
-      const metadataFields = ['[CASE_REFERENCE]'];
-      const formGroupValues = {};
-      const page = 1;
-
       event = component.getEvent();
     });
 
     it('should call findCaseListPaginationMetadata() on apply of filter.', () => {
-
       const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
-      const spyOnGetEvent = spyOn(component, 'getEvent');
 
       event = {
         selected: {
-          page: 2,
+          page: 2
         }
       };
 
@@ -143,10 +128,9 @@ describe('CaseSearchComponent', () => {
     });
 
     it('should update the components page property on apply of a filter change.', () => {
-
       event = {
         selected: {
-          page: 2,
+          page: 2
         }
       };
       component.applyFilter(event);
@@ -156,43 +140,38 @@ describe('CaseSearchComponent', () => {
   });
 
   describe('getElasticSearchResults', () => {
-
     it('should dispatch an action to get results from elastic search endpoint.', () => {
-      const spyOnGetEvent = spyOn(component, 'getEvent').and.returnValue({});
+      spyOn(component, 'getEvent').and.returnValue({});
       component.getElasticSearchResults();
-      expect(storeDispatchMock).toHaveBeenCalledWith(new ApplySearchFilterForES({}));
+      expect(storeDispatchMock).toHaveBeenCalledWith(new fromCaseSearchStore.ApplySearchFilterForES({}));
     });
   });
 
   describe('toggleFilter()', () => {
-
     /**
      * TODO: We should always give the payload a proper name, not just payload.
      */
     it('should dispatch an action on toggle of the filter to show and hide the filter.', () => {
       component.showFilter = false;
       component.toggleFilter();
-      expect(storeDispatchMock).toHaveBeenCalledWith(new SearchFilterToggle(true));
+      expect(storeDispatchMock).toHaveBeenCalledWith(new fromCaseSearchStore.SearchFilterToggle(true));
     });
   });
 
   describe('onPaginationSubscribeHandler()', () => {
-
     it('should update the components paginationMetadata property, on return of subscription.', () => {
-
       const paginationMetadata = new PaginationMetadata();
-      paginationMetadata.total_pages_count = 33;
-      paginationMetadata.total_results_count = 811;
+      paginationMetadata.totalPagesCount = 33;
+      paginationMetadata.totalResultsCount = 811;
 
       component.onPaginationSubscribeHandler(paginationMetadata);
 
-      expect(component.paginationMetadata.total_pages_count).toEqual(paginationMetadata.total_pages_count);
-      expect(component.paginationMetadata.total_results_count).toEqual(paginationMetadata.total_results_count);
+      expect(component.paginationMetadata.totalPagesCount).toEqual(paginationMetadata.totalPagesCount);
+      expect(component.paginationMetadata.totalResultsCount).toEqual(paginationMetadata.totalResultsCount);
     });
   });
 
   describe('sort()', () => {
-
     it('should update sortParameters', () => {
       const sortParameters = {
         column: 'dummy',
@@ -205,5 +184,4 @@ describe('CaseSearchComponent', () => {
       expect(component.sortParameters).toEqual(sortParameters);
     });
   });
-
 });

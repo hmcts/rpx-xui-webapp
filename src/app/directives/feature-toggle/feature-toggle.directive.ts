@@ -1,6 +1,6 @@
 import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
-import {ConfigurationModel} from '../../models/configuration.model';
-import {AppConfigService} from '../../services/config/configuration.services';
+import { ConfigurationModel } from '../../models/configuration.model';
+import { AppConfigService } from '../../services/config/configuration.services';
 
 @Directive({
   selector: '[exuiFeatureToggle]'

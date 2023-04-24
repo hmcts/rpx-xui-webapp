@@ -13,15 +13,13 @@ import * as fromStore from '../../../app/store';
 import { LocationDataService, WorkAllocationCaseService } from '../../services';
 import { ALL_LOCATIONS } from '../constants/locations';
 
-/* tslint:disable:component-selector */
 @Component({
   selector: 'xuilib-generic-filter',
-  template: '<span></span>',
+  template: '<span></span>'
 })
 class MockGenericFilterComponent {
   @Input() public config;
 }
-
 
 describe('CaseManagerFilterComponent', () => {
   let component: CaseManagerFilterComponent;
@@ -29,7 +27,7 @@ describe('CaseManagerFilterComponent', () => {
   let store: Store<fromStore.State>;
   let storePipeMock: any;
   const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase']);
-  const SELECTED_LOCATIONS = { id: 'locations', fields: [ { name: 'locations', value: ['231596', '698118'] }] };
+  const SELECTED_LOCATIONS = { id: 'locations', fields: [{ name: 'locations', value: ['231596', '698118'] }] };
   const mockFilterService: any = {
     getStream: () => of(SELECTED_LOCATIONS),
     get: jasmine.createSpy(),
@@ -40,6 +38,7 @@ describe('CaseManagerFilterComponent', () => {
       unsubscribe: () => null
     }
   };
+
   beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
@@ -48,7 +47,7 @@ describe('CaseManagerFilterComponent', () => {
         RouterTestingModule,
         RpxTranslationModule.forChild()
       ],
-      declarations: [CaseManagerFilterComponent, MockGenericFilterComponent ],
+      declarations: [CaseManagerFilterComponent, MockGenericFilterComponent],
       providers: [
         RpxTranslationService, RpxTranslationConfig,
         provideMockStore(),
@@ -56,7 +55,7 @@ describe('CaseManagerFilterComponent', () => {
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         {
           provide: FilterService, useValue: mockFilterService
-        },
+        }
       ]
     }).compileComponents();
     store = TestBed.inject(Store);
@@ -77,7 +76,7 @@ describe('CaseManagerFilterComponent', () => {
   it('should subscribe to the store and the filterService', () => {
     expect(storePipeMock).toHaveBeenCalled();
     expect(component.appStoreSub).toBeDefined();
-    expect(component.filterConfig.fields.length).toBe(6);
+    expect(component.filterConfig.fields.length).toBe(5);
   });
 
   afterAll(() => {

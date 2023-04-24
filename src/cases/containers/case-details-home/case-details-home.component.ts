@@ -3,10 +3,9 @@ import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { AlertService, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 @Component({
   selector: 'exui-case-details-home',
-  templateUrl: './case-details-home.component.html',
+  templateUrl: './case-details-home.component.html'
 })
 export class CaseDetailsHomeComponent implements OnInit {
-
   private readonly extras: NavigationExtras;
 
   constructor(
@@ -25,9 +24,9 @@ export class CaseDetailsHomeComponent implements OnInit {
     if (this.extras && this.extras.state && this.extras.state.showMessage && this.extras.state.messageText) {
       // EUI-4488 - preserve alerts on initialisation so messages are not removed when first entering page
       this.alertService.setPreserveAlerts(true);
-      this.alertService.success(this.extras.state.messageText);
+      this.alertService.success({ phrase: this.extras.state.messageText });
     }
-    this.activatedRoute.data.subscribe(data => {
+    this.activatedRoute.data.subscribe((data) => {
       if (data && data.case && data.case.case_type && data.case.case_type.jurisdiction) {
         const caseInfo = {
           cid: data.case.case_id,

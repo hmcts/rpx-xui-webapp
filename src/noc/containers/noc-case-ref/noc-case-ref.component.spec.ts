@@ -25,7 +25,7 @@ describe('NocCaseRefComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
-        UtilsModule,
+        UtilsModule
       ],
       schemas: [
         NO_ERRORS_SCHEMA
@@ -35,7 +35,7 @@ describe('NocCaseRefComponent', () => {
         RpxTranslateMockPipe
       ],
       providers: [
-        provideMockStore(),
+        provideMockStore()
       ]
     }).compileComponents();
 
@@ -63,13 +63,11 @@ describe('NocCaseRefComponent', () => {
 
   describe('navigationHandler', () => {
     it('should dispatch an action', () => {
-
       const storeDispatchMock = spyOn(store, 'dispatch');
       component.navigationHandler(NocNavigationEvent.CONTINUE);
 
       expect(storeDispatchMock).toHaveBeenCalled();
     });
-
   });
 
   afterEach(() => {

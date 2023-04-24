@@ -5,14 +5,13 @@ import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
+import { isEqual } from 'underscore';
 import { ActualHearingDayModel, HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
-import { HearingActualsTimingErrorMessages } from '../../../models/hearings.enum';
-import { HearingsService } from '../../../services/hearings.service';
+import { HearingActualsTimingErrorMessages, RadioOptionType } from '../../../models/hearings.enum';
 import * as fromHearingStore from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
-
 @Component({
   selector: 'exui-hearing-actuals-timing',
   templateUrl: './hearing-actuals-timing.component.html'
@@ -23,9 +22,21 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   public submitted: boolean = false;
   public errors: any[] = [];
   private hearingActuals: HearingActualsMainModel;
-  private sub: Subscription;
+  private sub1$: Subscription;
+  private sub2$: Subscription;
   private id: string;
   private hearingDate: string;
+
+  private readonly defaultHearingStartTimeValidators = [
+    Validators.required,
+    this.validatorsUtils.mandatory('Enter hearing start time'),
+    this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
+  ];
+
+  private readonly defaultHearingEndTimeValidators = [
+    this.validatorsUtils.mandatory('Enter hearing finish time'),
+    this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
+  ];
 
   public constructor(private readonly fb: FormBuilder,
                      private readonly hearingStore: Store<fromHearingStore.State>,
@@ -33,27 +44,22 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
                      private readonly route: ActivatedRoute,
                      private readonly ngZone: NgZone,
                      private readonly validatorsUtils: ValidatorsUtils,
-  ) {
-  }
+  ) {}
 
   private static getStartTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
-    const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex].plannedStartTime;
     let actualStartTime: string;
     if (actualIndex >= 0) {
       actualStartTime = hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingStartTime;
     }
-
-    return actualStartTime ? HearingActualsTimingComponent.getTime(actualStartTime) : HearingActualsTimingComponent.getTime(plannedTime);
+    return actualStartTime ? HearingActualsTimingComponent.getTime(actualStartTime) : actualStartTime;
   }
 
   private static getEndTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
-    const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex].plannedEndTime;
     let actualEndTime: string;
     if (actualIndex >= 0) {
       actualEndTime = hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingEndTime;
     }
-
-    return actualEndTime ? HearingActualsTimingComponent.getTime(actualEndTime) : HearingActualsTimingComponent.getTime(plannedTime);
+    return actualEndTime ? HearingActualsTimingComponent.getTime(actualEndTime) : actualEndTime;
   }
 
   private static getPauseStartTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null {
@@ -86,7 +92,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   private static replaceTime(dateTime: string, time: moment.Moment): string {
     return moment(dateTime, 'YYYY-MM-DDTHH:mm:ssZ').set({
       hour: time.get('hour'),
-      minute: time.get('minute'),
+      minute: time.get('minute')
     }).format('YYYY-MM-DDTHH:mm:ss');
   }
 
@@ -95,7 +101,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    this.sub = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
+    this.sub1$ = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
       .pipe(
         filter(([state]: [HearingActualsStateData, ParamMap]) => !!state.hearingActualsMainModel),
         first()
@@ -112,7 +118,8 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this.sub.unsubscribe();
+    this.sub1$.unsubscribe();
+    this.sub2$.unsubscribe();
   }
 
   public onSubmit(value: any, valid: boolean): void {
@@ -125,13 +132,9 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     this.submitted = false;
     const plannedIndex = ActualHearingsUtils.getPlannedDayIndexFromHearingDate(this.hearingActuals, this.hearingDate);
     const actualIndex = ActualHearingsUtils.getActualDayIndexFromHearingDate(this.hearingActuals, this.hearingDate);
-    const hearingStartTime = (actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingStartTime)
-      || (plannedIndex && this.hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex].plannedStartTime);
-    const hearingEndTime = (actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingEndTime)
-      || (plannedIndex && this.hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex].plannedEndTime);
     const pauseStartTime = actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes.length
       && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0] && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0].pauseStartTime;
-    const pauseEndTime =  actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes.length
+    const pauseEndTime = actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes.length
       && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0] && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0].pauseEndTime;
 
     const isPauseStartTimeValid = moment(pauseStartTime, 'YYYY-MM-DDTHH:mm:ssZ', true).isValid();
@@ -162,16 +165,15 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     }
 
     const updatedTimings = {
-      hearingStartTime: HearingActualsTimingComponent.replaceTime(hearingStartTime, moment(value.hearingStartTime, 'HH:mm')),
-      hearingEndTime: HearingActualsTimingComponent.replaceTime(hearingEndTime, moment(value.hearingEndTime, 'HH:mm')),
+      hearingStartTime: this.getHearingTime(value.hearingStartTime, actualIndex, plannedIndex, 'startTime'),
+      hearingEndTime: this.getHearingTime(value.hearingEndTime, actualIndex, plannedIndex, 'endTime'),
       pauseDateTimes
     };
-    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
-    (this.hearingActuals, this.hearingDate, {...updatedTimings} as ActualHearingDayModel);
+    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(this.hearingActuals, this.hearingDate, { ...updatedTimings } as ActualHearingDayModel);
 
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
-      hearingActuals: patchedHearingActuals,
+      hearingActuals: patchedHearingActuals
     }));
 
     if (this.id) {
@@ -179,6 +181,14 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
       });
     }
+  }
+
+  private getHearingTime(value:string, actualIndex: number, plannedIndex: number, time: 'startTime' | 'endTime'): string {
+    const [hearingActual, plannedTime] = time === 'startTime' ? ['hearingStartTime', 'plannedStartTime'] : ['hearingEndTime', 'plannedEndTime'];
+    const hearingTime = (actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex][hearingActual])
+    || (plannedIndex && this.hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex][plannedTime]);
+
+    return !!value ? HearingActualsTimingComponent.replaceTime(hearingTime, moment(value, 'HH:mm')) : null;
   }
 
   public updateControl(event: any, control: AbstractControl): void {
@@ -191,27 +201,22 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     const actualIndex = ActualHearingsUtils.getActualDayIndexFromHearingDate(hearingActuals, this.hearingDate);
 
     return this.fb.group({
-      hearingStartTime: [HearingActualsTimingComponent.getStartTime(hearingActuals, plannedIndex, actualIndex), [
-        Validators.required,
-        this.validatorsUtils.mandatory('Enter hearing start time'),
-        this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
-      ]
+      hearingStartTime: [HearingActualsTimingComponent.getStartTime(hearingActuals, plannedIndex, actualIndex),
+        this.defaultHearingStartTimeValidators
       ],
-      hearingEndTime: [HearingActualsTimingComponent.getEndTime(hearingActuals, plannedIndex, actualIndex), [
-        this.validatorsUtils.mandatory('Enter hearing finish time'),
-        this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
-      ]
+      hearingEndTime: [HearingActualsTimingComponent.getEndTime(hearingActuals, plannedIndex, actualIndex),
+        this.defaultHearingEndTimeValidators
       ],
       recordTimes: [
         !HearingActualsTimingComponent.getPauseStartTime(hearingActuals, actualIndex)
         && !HearingActualsTimingComponent.getPauseEndTime(hearingActuals, actualIndex)
-          ? null : 'yes',
+          ? null : RadioOptionType.YES,
         [this.validatorsUtils.mandatory('Select if you need to record times the hearing was paused')]
       ],
       pauseStartTime: [HearingActualsTimingComponent.getPauseStartTime(hearingActuals, actualIndex), [
         this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]],
       pauseEndTime: [HearingActualsTimingComponent.getPauseEndTime(hearingActuals, actualIndex), [
-        this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]],
+        this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]]
     }, {
       updateOn: 'blur',
       validators: [
@@ -234,19 +239,24 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
           HearingActualsTimingErrorMessages.RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES,
           'invalidPauseEndTimeRange'
         )
-      ],
+      ]
     });
   }
 
   private subscribeToFormChanges(formGroup: FormGroup): void {
-    formGroup.valueChanges.subscribe(() => {
+    let currentValue = {};
+    this.sub2$ = formGroup.valueChanges.pipe(filter((values) => {
+      return !isEqual(values, currentValue);
+    })).subscribe((values) => {
+      currentValue = values;
       this.submitted = false;
+      this.updateHearingTimesValidators();
     });
   }
 
   private subscribeToRecordPauseControl(control: FormControl): void {
     control.valueChanges.subscribe((value: string) => {
-      if (value === 'yes') {
+      if (value === RadioOptionType.YES) {
         this.formGroup.get('pauseStartTime').setValidators([
           this.validatorsUtils.mandatory('Enter pause time'),
           this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
@@ -265,6 +275,27 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         this.formGroup.get('pauseEndTime').updateValueAndValidity();
       }
     });
+  }
+
+  private updateHearingTimesValidators(): void {
+    const startTimeField = this.formGroup.get('hearingStartTime');
+    const endTimeField = this.formGroup.get('hearingEndTime');
+    const recordPauseValue = this.formGroup.get('recordTimes').value;
+
+    if (!!endTimeField.value || (recordPauseValue === RadioOptionType.YES)) {
+      startTimeField.setValidators(this.defaultHearingStartTimeValidators);
+      endTimeField.setValidators(this.defaultHearingEndTimeValidators);
+    } else {
+      startTimeField.setValidators([
+        this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
+      ]);
+      endTimeField.setValidators([
+        this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
+      ]);
+    }
+
+    startTimeField.updateValueAndValidity();
+    endTimeField.updateValueAndValidity();
   }
 
   private setErrors(errors: { [key: string]: string }): void {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { SessionStorageService } from 'src/app/services';
 
@@ -6,7 +6,7 @@ import { SessionStorageService } from 'src/app/services';
   selector: 'exui-phase-banner',
   templateUrl: './phase-banner.component.html'
 })
-export class PhaseBannerComponent implements OnInit {
+export class PhaseBannerComponent {
   @Input() public type: string;
   public noBanner: boolean;
   private readonly noBannerSessionKey = 'noBanner';
@@ -34,5 +34,4 @@ export class PhaseBannerComponent implements OnInit {
     this.noBanner = false;
     this.sessionStorageService.setItem(this.noBannerSessionKey, 'false');
   }
-
 }

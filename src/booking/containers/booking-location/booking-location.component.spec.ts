@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { Store, StoreModule } from '@ngrx/store';
@@ -18,14 +18,14 @@ describe('BookingLocationComponent', () => {
   const userDetails: UserDetails = {
     sessionTimeout: {
       idleModalDisplayTime: 100,
-      totalIdleTime: 0,
+      totalIdleTime: 0
     },
     canShareCases: true,
     userInfo,
     roleAssignmentInfo
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [BookingLocationComponent],
       imports: [
@@ -38,7 +38,7 @@ describe('BookingLocationComponent', () => {
           useValue: storeMock
         }
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
   }));
@@ -74,7 +74,6 @@ describe('BookingLocationComponent', () => {
       continueButton.triggerEventHandler('click', null);
       expect(eventTriggerSpy).toHaveBeenCalledWith(BookingNavigationEvent.LOCATIONCONTINUE);
     });
-
   });
 
   describe('on events', () => {
@@ -100,11 +99,9 @@ describe('BookingLocationComponent', () => {
       component.onLocationChanged(component.bookingProcess.location);
       expect(component.formError).toBeFalsy();
     });
-
   });
 
   describe('getJurisdictions()', () => {
-
     beforeEach(() => {
       fixture.detectChanges();
     });
@@ -120,6 +117,5 @@ describe('BookingLocationComponent', () => {
       component.ngOnInit();
       expect(component.jurisdictions).toEqual('IA,SSCS');
     });
-
   });
 });

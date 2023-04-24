@@ -1,4 +1,4 @@
-const ALL_LOCATIONS =  {
+const ALL_LOCATIONS = {
   id: '**ALL_LOCATIONS**',
   locationName: 'All locations',
   services: []

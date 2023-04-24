@@ -5,14 +5,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UtilsModule } from '../../../../noc/containers/noc-field/utils/utils.module';
 import { ExcludeOption, ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import * as fromFeature from '../../../store';
 import * as fromContainers from '../../add-exclusion';
 import { AddExclusionHomeComponent } from './add-exclusion-home.component';
-
 
 describe('ExclusionHomeComponent', () => {
   let component: AddExclusionHomeComponent;
@@ -59,11 +58,11 @@ describe('ExclusionHomeComponent', () => {
           useValue: {
             snapshot: {
               queryParams: {
-                caseId: '111111',
+                caseId: '111111'
               }
             }
           }
-        },
+        }
       ]
     })
       .compileComponents();
@@ -169,7 +168,9 @@ describe('ExclusionHomeComponent', () => {
     it('on choose exclusion page click continue button state set incorrectly', () => {
       component.navigationCurrentState = ExclusionState.FIND_PERSON;
       fixture.detectChanges();
-      expect(() => { component.navigationHandler(ExclusionNavigationEvent.CONFIRM_EXCLUSION); }).toThrow(new Error('Invalid exclusion state'));
+      expect(() => {
+        component.navigationHandler(ExclusionNavigationEvent.CONFIRM_EXCLUSION);
+      }).toThrow(new Error('Invalid exclusion state'));
       expect(component.showSpinner).toBe(false);
     });
   });
@@ -183,7 +184,9 @@ describe('ExclusionHomeComponent', () => {
 
   describe('Unidentified state', () => {
     it('should stop showing spinner and throw error', () => {
-      expect(() => { component.navigationHandler(null); }).toThrow(new Error('Invalid exclusion navigation event'));
+      expect(() => {
+        component.navigationHandler(null);
+      }).toThrow(new Error('Invalid exclusion navigation event'));
       expect(component.showSpinner).toBe(false);
     });
   });

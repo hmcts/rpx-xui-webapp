@@ -18,7 +18,7 @@ export interface Caseworker {
   lastName: string;
   email: string;
   location: Location;
-  roleCategory: RoleCategory
+  roleCategory: RoleCategory;
 }
 
 export interface CaseworkersByService {
@@ -37,6 +37,7 @@ export interface JudicialWorker {
 export interface LocationSummary {
   id: string;
   locationName: string;
+  regionId?: string;
 }
 
 export interface Location extends LocationSummary {
@@ -70,8 +71,17 @@ export interface LocationByEPIMMSModel {
 export interface LocationsByService {
   service?: string;
   serviceCode?: string;
-  bookable?: boolean;
+  regions?: string[];
   locations: Location[];
+  // switch to mark whether we should get all locations for this service
+  getAllLocations?: boolean;
+  bookable?: boolean;
+}
+
+// different to above - groups locations by region for location filter logic
+export interface LocationsByRegion {
+  regionId: string;
+  locations: string[];
 }
 
 export interface CaseSearchParameter {
@@ -124,6 +134,7 @@ export interface SearchTaskRequest {
   sorting_parameters: SortParameter[];
   search_by?: string;
   pagination_parameters?: PaginationParameter;
+  request_context?: string;
 }
 
 export interface Task {

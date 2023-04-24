@@ -18,17 +18,21 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     fieldName: '',
     order: SortOrder.NONE
   };
+
+  public isFirsTimeLoad = true;
+  public isCasesFiltered = false;
   public pagination: PaginationParameter = {
     page_number: 1,
     page_size: 25
   };
+
   public jurisdictions: string[];
   private selectedPerson: string = '';
   private selectedRole: string = 'All';
   private readonly selectedLocation: Location = {
     id: '231596',
     locationName: 'Birmingham',
-    services: [],
+    services: []
   };
 
   public get emptyMessage(): string {
@@ -63,14 +67,13 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
 
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
-
+      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       return {
         search_parameters: [
-          {key: 'jurisdiction', operator: 'EQUAL', values: this.selectedServices[0]},
-          {key: 'location_id', operator: 'EQUAL', values: this.selectedLocation.id},
-          {key: 'actorId', operator: 'EQUAL', values: this.selectedPerson},
-          {key: 'role', operator: 'EQUAL', values: this.selectedRole},
+          { key: 'jurisdiction', operator: 'EQUAL', values: this.selectedServices[0] },
+          { key: 'location_id', operator: 'EQUAL', values: this.selectedLocation.id },
+          { key: 'actorId', operator: 'EQUAL', values: this.selectedPerson },
+          { key: 'role', operator: 'EQUAL', values: this.selectedRole }
         ],
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole,
@@ -92,7 +95,11 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     this.selectedPerson = selection.actorId === 'All' ? '' : selection.person.id;
     this.selectedRole = selection.role;
     this.pagination.page_number = 1;
-    this.doLoad();
+    if (this.isFirsTimeLoad) {
+      this.isFirsTimeLoad = false;
+    } else {
+      this.doLoad();
+      this.isCasesFiltered = true;
+    }
   }
-
 }

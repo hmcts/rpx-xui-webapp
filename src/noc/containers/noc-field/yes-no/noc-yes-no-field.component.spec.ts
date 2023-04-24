@@ -37,7 +37,7 @@ describe('NocYesNoFieldComponent', () => {
     display_context_parameter: '6',
     challenge_question_id: 'NoC',
     answer_field: '',
-    question_id: 'question6',
+    question_id: 'question6'
   };
   const ANSWER_VALUE = of('Yes');
   let component: NocYesNoFieldComponent;

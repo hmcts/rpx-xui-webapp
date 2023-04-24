@@ -6,9 +6,11 @@ import { Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
+import { AppConstants } from '../../../app/app.constants';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import * as fromActions from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { TaskListFilterComponent } from '../../components';
 import { ListConstants } from '../../components/constants';
@@ -25,13 +27,11 @@ import {
   WorkAllocationTaskService
 } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
-import * as fromActions from '../../../app/store';
 
 @Component({
-  templateUrl: 'task-list-wrapper.component.html',
+  templateUrl: 'task-list-wrapper.component.html'
 })
 export class TaskListWrapperComponent implements OnDestroy, OnInit {
-
   public specificPage: string = '';
   public caseworkers: Caseworker[];
   public locations: Location[] = new Array<Location>();
@@ -47,7 +47,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private pTasks: Task[] = [];
   private myWorkSubscription: Subscription;
   private pTasksTotal: number;
+  private currentUser: string;
   public routeEventsSubscription: Subscription;
+  public isUpdatedTaskPermissions$: Observable<boolean>;
+  public updatedTaskPermission: boolean;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -68,6 +71,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected rolesService: AllocateRoleService,
     protected store: Store<fromActions.State>
   ) {
+    this.isUpdatedTaskPermissions$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
   }
 
   public get tasks(): Task[] {
@@ -135,13 +139,13 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     return {
       service: TaskService.IAC,
       defaultSortDirection: SortOrder.ASC,
-      defaultSortFieldName: this.getDateField('dueDate'),
+      defaultSortFieldName: this.fields.some((f) => f.name === 'priority') ? 'priority' : 'created_date',
       fields: this.fields
     };
   }
 
   public getDateField(defaultSortColumn: string): string {
-    const field = this.fields.find(currentField => currentField.isDate);
+    const field = this.fields.find((currentField) => currentField.isDate);
     if (field) {
       return field.sortName;
     }
@@ -151,6 +155,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public ngOnInit(): void {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
     this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
+    this.isUpdatedTaskPermissions$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
+    this.isUpdatedTaskPermissions$.pipe(filter((v) => !!v)).subscribe((value) => {
+      this.updatedTaskPermission = value;
+    });
 
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
@@ -178,8 +186,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         if (newLocations) {
           this.selectedLocations = (newLocations).map((l) => l.epimms_id);
         }
-        this.selectedWorkTypes = newWorkTypes.filter(workType => workType !== 'types_of_work_all');
-        this.selectedServices = services.filter(service => service !== 'services_all');
+        this.selectedWorkTypes = newWorkTypes.filter((workType) => workType !== 'types_of_work_all');
+        this.selectedServices = services.filter((service) => service !== 'services_all');
         if (this.selectedLocations.length) {
           this.doLoad();
         }
@@ -187,13 +195,13 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public setupTaskList() {
-    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap(jurisdictions =>
+    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
       this.caseworkerService.getCaseworkersForServices(jurisdictions)
     ));
     // similar to case list wrapper changes
-    caseworkersByService$.subscribe(caseworkers => {
+    caseworkersByService$.subscribe((caseworkers) => {
       this.caseworkers = caseworkers;
-    }, error => {
+    }, (error) => {
       handleFatalErrors(error.status, this.router);
     });
     // Try to get the sort order out of the session.
@@ -235,14 +243,19 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public refreshTasks(): void {
     this.infoMessageCommService.addMessage({
       type: InfoMessageType.INFO,
-      message: InfoMessage.LIST_OF_TASKS_REFRESHED,
+      message: InfoMessage.LIST_OF_TASKS_REFRESHED
     });
     this.doLoad();
   }
 
-  public performSearchPagination(): Observable<TaskResponse> {
+  public performSearchUpdatedTaskPermissions(): Observable<TaskResponse> {
     const searchRequest = this.getSearchTaskRequestPagination();
-    return this.taskService.searchTask({ searchRequest, view: this.view });
+    return this.taskService.searchTask({ searchRequest, view: this.view, refined: true, currentUser: this.currentUser });
+  }
+
+  public performSearchPreviousTaskPermissions(): Observable<TaskResponse> {
+    const searchRequest = this.getSearchTaskRequestPagination();
+    return this.taskService.searchTask({ searchRequest, view: this.view, refined: false, currentUser: this.currentUser });
   }
 
   /**
@@ -252,16 +265,20 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public getSearchTaskRequestPagination(): SearchTaskRequest {
     return {
       search_parameters: [],
-      sorting_parameters: [this.getSortParameter()],
+      sorting_parameters: this.getSortParameter(),
       pagination_parameters: this.getPaginationParameter()
     };
   }
 
-  public getSortParameter(): SortParameter {
-    return {
-      sort_by: this.sortedBy.fieldName,
-      sort_order: this.sortedBy.order
-    };
+  public getSortParameter(): SortParameter[] {
+    if (this.sortedBy.fieldName !== 'priority') {
+      return [{
+        sort_by: this.sortedBy.fieldName,
+        sort_order: this.sortedBy.order
+      }];
+    }
+
+    return [] as SortParameter[];
   }
 
   public getPaginationParameter(): PaginationParameter {
@@ -310,7 +327,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
       };
       const actionUrl = `/work/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
-      this.router.navigate([actionUrl], {queryParams: {service: taskAction.task.jurisdiction},  state });
+      this.router.navigate([actionUrl], { queryParams: { service: taskAction.task.jurisdiction }, state });
     } catch (error) {
       console.error('onActionHandler', error, taskAction);
     }
@@ -326,19 +343,24 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
+      return AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
     }
     return false;
   }
 
   // Do the actual load. This is separate as it's called from two methods.
   private doLoad(): void {
+    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      this.currentUser = userInfo.uid ? userInfo.uid : userInfo.id;
+    }
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
-    const tasksSearch$ = this.performSearchPagination();
+    const tasksSearch$ = this.performSearchPreviousTaskPermissions();
     const mappedSearchResult$ = tasksSearch$.pipe(mergeMap(((result: TaskResponse) => {
       const assignedJudicialUsers: string[] = [];
-      result.tasks.forEach(task => {
+      result.tasks.forEach((task) => {
         task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
         if (!task.assigneeName && task.assignee) {
           assignedJudicialUsers.push(task.assignee);
@@ -348,19 +370,19 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         return of(result);
       }
       return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, this.selectedServices).pipe(switchMap(((judicialUserData) => {
-        result.tasks.map(task => {
-          const judicialAssignedData = judicialUserData.find(judicialUser => judicialUser.sidam_id === task.assignee);
+        result.tasks.map((task) => {
+          const judicialAssignedData = judicialUserData.find((judicialUser) => judicialUser.sidam_id === task.assignee);
           task.assigneeName = judicialAssignedData ? judicialAssignedData.full_name : task.assigneeName;
         });
         return of(result);
       })));
     })));
-    mappedSearchResult$.subscribe(result => {
+    mappedSearchResult$.subscribe((result) => {
       this.loadingService.unregister(loadingToken);
       this.tasks = result.tasks;
       this.tasksTotal = result.total_records;
       this.ref.detectChanges();
-    }, error => {
+    }, (error) => {
       this.loadingService.unregister(loadingToken);
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });

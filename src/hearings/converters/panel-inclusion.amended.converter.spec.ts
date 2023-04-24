@@ -11,9 +11,10 @@ import { State } from '../store';
 import { PanelInclusionAmendedConverter } from './panel-inclusion.amended.converter';
 
 describe('PanelInclusionAmendedConverter', () => {
-
   let converter: PanelInclusionAmendedConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: any;
   const JUDICAIL_USER_DETAILS = [{
     memberID: 'P0000001',
@@ -24,16 +25,16 @@ describe('PanelInclusionAmendedConverter', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                hearingStageOptions: hearingStageRefData,
-              },
-            },
-          },
+                hearingStageOptions: hearingStageRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -49,7 +50,7 @@ describe('PanelInclusionAmendedConverter', () => {
     };
     const result$ = converter.transformIsAmended(of(STATE));
     const isAmended = true;
-    const expected = cold('(b|)', {b: isAmended});
+    const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
 });

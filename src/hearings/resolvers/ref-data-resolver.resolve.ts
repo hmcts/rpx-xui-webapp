@@ -28,19 +28,19 @@ export class RefDataResolver extends ServiceIdResolverResolve implements Resolve
   public resolve(route?: ActivatedRouteSnapshot): Observable<LovRefDataModel[]> {
     return this.getServiceId$()
       .pipe(
-        switchMap(serviceId => {
+        switchMap((serviceId) => {
           this.serviceId = serviceId ? serviceId : '';
           return this.hearingStore.pipe(select(fromHearingStore.getHearingValues));
         }), take(1),
-        switchMap(hearingValues => {
-          const category = route.data['category'] ? route.data['category'] as HearingCategory : HearingCategory.HearingPriority;
+        switchMap((hearingValues) => {
+          const category = route.data.category ? route.data.category as HearingCategory : HearingCategory.HearingPriority;
           if (category === HearingCategory.PanelMemberType) {
             const screenFlow = hearingValues && hearingValues.serviceHearingValuesModel && hearingValues.serviceHearingValuesModel.screenFlow;
-            if (screenFlow && screenFlow.findIndex(screen => screen.screenName === 'hearing-panel') === -1) {
+            if (screenFlow && screenFlow.findIndex((screen) => screen.screenName === 'hearing-panel') === -1) {
               return of(null);
             }
           }
-          return this.getReferenceData$(this.serviceId, category, route.data.isChildRequired && route.data.isChildRequired.includes(route.data['category']));
+          return this.getReferenceData$(this.serviceId, category, route.data.isChildRequired && route.data.isChildRequired.includes(route.data.category));
         })
       );
   }
@@ -54,7 +54,9 @@ export class RefDataResolver extends ServiceIdResolverResolve implements Resolve
     return this.lovRefDataService.getListOfValues(category, serviceId, isChildRequired).pipe(
       tap((lovData) => {
         // by pass EntityRoleCode/HearingChannel and not put them in session storage as it causes inconsistency between request/actual hearing
-        if (category !== HearingCategory.EntityRoleCode && category !== HearingCategory.HearingChannel) {
+        if (category !== HearingCategory.EntityRoleCode
+            && category !== HearingCategory.HearingChannel
+            && category !== HearingCategory.HearingSubChannel) {
           this.sessionStorageService.setItem(sessionKey, JSON.stringify(lovData));
         }
       }),

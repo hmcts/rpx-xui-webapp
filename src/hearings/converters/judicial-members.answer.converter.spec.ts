@@ -5,14 +5,14 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
-import { initialState, judicailUsersRefData } from '../hearing.test.data';
+import { initialState, judicialUsersRefData } from '../hearing.test.data';
 import { MemberType, RequirementType } from '../models/hearings.enum';
 import { State } from '../store';
 import { JudicialMembersAnswerConverter } from './judicial-members.answer.converter';
 
 describe('JudicialMembersAnswerConverter', () => {
-
   let converter: JudicialMembersAnswerConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
   let router: any;
   const JUDICAIL_USER_DETAILS = [{
@@ -24,16 +24,16 @@ describe('JudicialMembersAnswerConverter', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                judicialUsers: judicailUsersRefData,
-              },
-            },
-          },
+                judicialUsers: judicialUsersRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -49,7 +49,7 @@ describe('JudicialMembersAnswerConverter', () => {
     };
     const result$ = converter.transformAnswer(of(STATE), 0);
     const option = '';
-    const expected = cold('(b|)', {b: option});
+    const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });
 });

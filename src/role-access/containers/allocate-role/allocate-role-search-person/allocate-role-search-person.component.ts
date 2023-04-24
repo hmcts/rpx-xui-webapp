@@ -39,12 +39,12 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   public appStoreSub: Subscription;
   public subscription: Subscription;
   public roleType: SpecificRole;
-  public services: string[];
+  public services: string;
 
   constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
-    this.subscription = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(allocateRoleStateData => this.setData(allocateRoleStateData));
+    this.subscription = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe((allocateRoleStateData) => this.setData(allocateRoleStateData));
   }
 
   private setData(allocateRoleStateData: AllocateRoleStateData): void {
@@ -53,6 +53,8 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
       this.domain = PersonRole.CASEWORKER;
     } else if (allocateRoleStateData.roleCategory === RoleCategory.ADMIN) {
       this.domain = PersonRole.ADMIN;
+    } else if (allocateRoleStateData.roleCategory === RoleCategory.CTSC) {
+      this.domain = PersonRole.CTSC;
     }
     this.title = getTitleText(allocateRoleStateData.typeOfRole, action, allocateRoleStateData.roleCategory);
     this.personName = allocateRoleStateData && allocateRoleStateData.person ? this.getDisplayName(allocateRoleStateData.person) : null;
@@ -61,7 +63,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
     this.userIncluded = !(allocateRoleStateData.action === Actions.Allocate);
     this.assignedUser = allocateRoleStateData.personToBeRemoved ? allocateRoleStateData.personToBeRemoved.id : null;
     this.roleType = allocateRoleStateData.typeOfRole;
-    this.services = [allocateRoleStateData.jurisdiction];
+    this.services = allocateRoleStateData.jurisdiction;
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent): void {
@@ -70,10 +72,10 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
         case AllocateRoleNavigationEvent.CONTINUE:
           const person = this.person;
           this.store.dispatch(new fromFeature.ChoosePersonAndGo({
-              person,
-              allocateRoleState: AllocateRoleState.CHOOSE_DURATION,
-              allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON
-            }));
+            person,
+            allocateRoleState: AllocateRoleState.CHOOSE_DURATION,
+            allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON
+          }));
           break;
         default:
           throw new Error('Invalid option');

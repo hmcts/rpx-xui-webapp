@@ -1,12 +1,12 @@
-import {ActivatedRoute} from '@angular/router';
-import {select, Store} from '@ngrx/store';
-import {Subscription} from 'rxjs';
-import {HearingConditions} from '../../models/hearingConditions';
-import {HearingListMainModel} from '../../models/hearingListMain.model';
-import {HearingRequestMainModel} from '../../models/hearingRequestMain.model';
-import {ACTION} from '../../models/hearings.enum';
-import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
-import {HearingsService} from '../../services/hearings.service';
+import { ActivatedRoute } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { HearingConditions } from '../../models/hearingConditions';
+import { HearingListMainModel } from '../../models/hearingListMain.model';
+import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
+import { ACTION } from '../../models/hearings.enum';
+import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
+import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
 
 export abstract class RequestHearingPageFlow {
@@ -24,7 +24,7 @@ export abstract class RequestHearingPageFlow {
       (action: ACTION) => this.executeAction(action)
     );
     this.hearingStateSub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
-      hearingState => {
+      (hearingState) => {
         this.hearingListMainModel = hearingState.hearingList.hearingListMainModel;
         this.serviceHearingValuesModel = hearingState.hearingValues.serviceHearingValuesModel;
         this.hearingRequestMainModel = hearingState.hearingRequest.hearingRequestMainModel;
@@ -33,7 +33,7 @@ export abstract class RequestHearingPageFlow {
   }
 
   public fragmentFocus(): void {
-    this.route.fragment.subscribe(frag => {
+    this.route.fragment.subscribe((frag) => {
       const element = document.getElementById(frag);
       if (element) {
         element.scrollIntoView();

@@ -13,10 +13,9 @@ import * as fromAppStore from '../../../app/store';
   selector: 'exui-case-manager-filter',
   templateUrl: './case-manager-filter.component.html',
   styleUrls: ['./case-manager-filter.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+  encapsulation: ViewEncapsulation.None
 })
 export class CaseManagerFilterComponent implements OnInit, OnDestroy {
-
   private static readonly FILTER_NAME: string = 'all-work-cases-filter';
   @Input() public jurisdictions: string[] = [];
   @Output() public selectChanged: EventEmitter<any> = new EventEmitter<any>();
@@ -27,14 +26,10 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
     fields: [],
     cancelButtonText: 'Reset to default',
     applyButtonText: 'Apply',
-    showCancelFilterButton:  true,
+    showCancelFilterButton: true,
     cancelSetting: {
       id: CaseManagerFilterComponent.FILTER_NAME,
       fields: [
-        {
-          name: 'jurisdiction',
-          value: ['IA', 'SSCS']
-        },
         {
           name: 'selectLocation',
           value: ['location_all']
@@ -50,17 +45,17 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       ]
     }
   };
+
   public appStoreSub: Subscription;
   private sub: Subscription;
 
-  constructor(private readonly filterService: FilterService, private readonly appStore: Store<fromAppStore.State>) {
-
-  }
+  constructor(private readonly filterService: FilterService,
+              private readonly appStore: Store<fromAppStore.State>) {}
 
   private static initServiceFilter(jurisdictions: string[]): FilterFieldConfig {
     return {
       name: 'jurisdiction',
-      options: jurisdictions.map(service => ({ key: service, label: service })),
+      options: jurisdictions.map((service) => ({ key: service, label: service })),
       minSelected: 1,
       maxSelected: 1,
       minSelectedError: 'You must select a service',
@@ -72,7 +67,6 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   }
 
   private static initLocationFilter(): FilterFieldConfig {
-
     return {
       name: 'location',
       options: [],
@@ -100,7 +94,8 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       minSelectedError: 'You must select a location',
       maxSelectedError: null,
       title: 'Location',
-      type: 'radio'
+      type: 'radio',
+      lineBreakBefore: true
     };
   }
 
@@ -114,11 +109,11 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
         },
         {
           key: PersonRole.CASEWORKER,
-          label: PersonRole.CASEWORKER,
+          label: PersonRole.CASEWORKER
         },
         {
           key: PersonRole.ADMIN,
-          label: PersonRole.ADMIN,
+          label: PersonRole.ADMIN
         }
       ],
       minSelected: 1,
@@ -129,33 +124,8 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       lineBreakBefore: true,
       minSelectedError: 'You must select a role type',
       maxSelectedError: null,
-      title: 'Role type',
+      title: 'Select a role type',
       type: 'select'
-    };
-  }
-
-  private static initPersonFilter(): FilterFieldConfig {
-    return {
-      name: 'actorId',
-      options: [
-        {
-          key: PersonRole.ALL,
-          label: PersonRole.ALL
-        },
-        {
-          key: 'Specific person',
-          label: 'Specific person'
-        }
-      ],
-      minSelected: 1,
-      maxSelected: 1,
-      lineBreakBefore: true,
-      findPersonField: 'person',
-      changeResetFields: ['findPersonControl', 'person'],
-      minSelectedError: 'You must select a person',
-      maxSelectedError: null,
-      title: 'Person',
-      type: 'radio'
     };
   }
 
@@ -163,36 +133,42 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
     return {
       name: 'person',
       options: [],
-      minSelected: 0,
-      maxSelected: 0,
+      minSelected: 1,
+      maxSelected: 1,
       minSelectedError: 'You must select a person',
       maxSelectedError: null,
       domainField: 'role',
-      enableCondition: 'actorId=Specific person',
       type: 'find-person',
-      radioSelectionChange: 'actorId=Specific person'
+      title: 'Person',
+      subTitle: 'Search for a person',
+      lineBreakBefore: true,
+      servicesField: 'jurisdiction',
+      placeholderContent: 'You must specify a person...'
     };
   }
 
   public ngOnInit(): void {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
-      userDetails => {
-        const isLegalOpsOrJudicialRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles) : null;
+      (userDetails) => {
+        const isLegalOpsOrJudicialRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.getUserRole(userDetails.userInfo.roles) : null;
         const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);
         this.filterConfig.cancelSetting.fields.push({
-            name: 'role',
-            value: [roleType]
-          }
+          name: 'jurisdiction',
+          value: [this.jurisdictions[0]]
+        },
+        {
+          name: 'role',
+          value: [roleType]
+        }
         );
       }
     );
     this.filterConfig.fields = [
       CaseManagerFilterComponent.initServiceFilter(this.jurisdictions),
-      CaseManagerFilterComponent.initSelectLocationFilter(),
-      CaseManagerFilterComponent.initLocationFilter(),
       CaseManagerFilterComponent.initRoleTypeFilter(),
-      CaseManagerFilterComponent.initPersonFilter(),
-      CaseManagerFilterComponent.findPersonFilter()
+      CaseManagerFilterComponent.findPersonFilter(),
+      CaseManagerFilterComponent.initSelectLocationFilter(),
+      CaseManagerFilterComponent.initLocationFilter()
     ];
     this.sub = this.filterService.getStream(CaseManagerFilterComponent.FILTER_NAME)
       .pipe(

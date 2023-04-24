@@ -3,12 +3,12 @@ import { DurationHelperService } from '.';
 
 describe('DurationHelperService', () => {
   let durationHelperService: DurationHelperService;
+
   beforeEach(() => {
     durationHelperService = new DurationHelperService();
   });
 
   describe('getDateFromControls', () => {
-
     it('should return a Date object for the provided form controls', () => {
       const dayControl = new FormControl('7');
       const monthControl = new FormControl('7');
@@ -24,11 +24,9 @@ describe('DurationHelperService', () => {
       const date = durationHelperService.getDateFromControls(dayControl, monthControl, yearControl);
       expect(date.toString()).toEqual('Invalid Date');
     });
-
   });
 
   describe('formatString', () => {
-
     it('should return the expected strings for the provided numbers', () => {
       const num1 = durationHelperService.formatString(1);
       const num2 = durationHelperService.formatString(9);
@@ -43,21 +41,17 @@ describe('DurationHelperService', () => {
         durationHelperService.formatString(-1);
       }).toThrow(new Error('Invalid value provided'));
     });
-
   });
 
   describe('getTodaysDate', () => {
-
     it('should return todays date', () => {
       const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      today.setUTCHours(0, 0, 0, 0);
       expect(today).toEqual(durationHelperService.getTodaysDate());
     });
-
   });
 
   describe('checkDates', () => {
-
     it('should return true for both object properties', () => {
       const dateCheck = durationHelperService.checkDates('2022-07-07', '2202-07-07');
       expect(dateCheck.isStartDateValid).toBe(true);
@@ -81,11 +75,9 @@ describe('DurationHelperService', () => {
       expect(dateCheck.isStartDateValid).toBe(true);
       expect(dateCheck.isEndDateValid).toBe(false);
     });
-
   });
 
   describe('convertDateControlsToString', () => {
-
     it('should return string representation of date for provided form controls', () => {
       const day = new FormControl('7');
       const month = new FormControl('7');
@@ -112,13 +104,11 @@ describe('DurationHelperService', () => {
       const month = new FormControl('7');
       const year = new FormControl('2022');
       const dateStr = durationHelperService.getRawFromControlsValues(day, month, year);
-      expect(dateStr).toEqual({day: 7, month: 7, year: 2022});
+      expect(dateStr).toEqual({ day: 7, month: 7, year: 2022 });
     });
-
   });
 
   describe('getInputClass', () => {
-
     it('should return an input class without error class', () => {
       const classStr = durationHelperService.getInputClass(false);
       expect(classStr).toEqual('govuk-input govuk-date-input__input govuk-input--width-2');
@@ -138,12 +128,9 @@ describe('DurationHelperService', () => {
       const classStr = durationHelperService.getInputClass(true, true);
       expect(classStr).toEqual('govuk-input govuk-date-input__input govuk-input--width-4 date-error');
     });
-
   });
 
-
   describe('getDateInFuture', () => {
-
     it('should return a Date object representing date a week from todays date', () => {
       // get todays date
       const today = new Date();
@@ -152,7 +139,7 @@ describe('DurationHelperService', () => {
       // get date a week from todays date
       const weekFromToday = new Date();
       weekFromToday.setDate(today.getDate() + 7);
-      weekFromToday.setHours(23, 59, 59, 999);
+      weekFromToday.setUTCHours(23, 59, 59, 999);
 
       // get date a week from today using duration helper service method
       const dateInFuture = durationHelperService.getDateInFuture(7);
@@ -162,14 +149,12 @@ describe('DurationHelperService', () => {
 
     it('should throw an error if daysToAdd value is less than zero', () => {
       expect(() => {
-        durationHelperService.getDateInFuture(-1)
+        durationHelperService.getDateInFuture(-1);
       }).toThrow(new Error('Invalid value for daysToAdd param'));
     });
-
   });
 
   describe('startDateNotInPast', () => {
-
     it('should return true if start date is todays date', () => {
       const startDate = new Date();
       const startDateNotInPast = durationHelperService.startDateNotInPast(startDate);
@@ -191,11 +176,9 @@ describe('DurationHelperService', () => {
       const startDateNotInPast = durationHelperService.startDateNotInPast(startDate);
       expect(startDateNotInPast).toBe(false);
     });
-
   });
 
   describe('startDateBeforeEndDate', () => {
-
     it('should return true if the start date is before the end date', () => {
       const startDate = new Date();
       const endDate = new Date();
@@ -218,11 +201,9 @@ describe('DurationHelperService', () => {
       const startDateBeforeEndDate = durationHelperService.startDateBeforeEndDate(startDate, endDate);
       expect(startDateBeforeEndDate).toBe(false);
     });
-
   });
 
   describe('setUTCTimezone', () => {
-
     it('should return null if date is null', () => {
       const date = null;
       const result = durationHelperService.setUTCTimezone(date);
@@ -242,11 +223,9 @@ describe('DurationHelperService', () => {
       const result = durationHelperService.setUTCTimezone(date);
       expect(JSON.stringify(result)).toBe('"2022-11-21T00:00:00.000Z"');
     });
-
   });
 
   describe('setStartTimeOfDay', () => {
-
     it('should return null if date is null', () => {
       const date = null;
       const result = durationHelperService.setStartTimeOfDay(date);
@@ -259,11 +238,9 @@ describe('DurationHelperService', () => {
       date.setUTCHours(0, 0, 0, 0);
       expect(result).toBe(date);
     });
-
   });
 
   describe('setEndTimeOfDay', () => {
-
     it('should return null if date is null', () => {
       const date = null;
       const result = durationHelperService.setEndTimeOfDay(date);
@@ -276,8 +253,6 @@ describe('DurationHelperService', () => {
       date.setUTCHours(23, 59, 59, 999);
       expect(result).toBe(date);
     });
-
   });
-
 });
 

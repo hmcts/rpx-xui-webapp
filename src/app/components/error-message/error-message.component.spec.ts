@@ -2,14 +2,14 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ErrorMessage } from '../../models';
+import { MockRpxTranslatePipe } from '../../shared/test/mock-rpx-translate.pipe';
 import { ErrorMessageComponent } from './error-message.component';
 
-
 @Component({
-  template: `<exui-error-message [title]="title" [error]="error"></exui-error-message>`
+  template: '<exui-error-message [title]="title" [error]="error"></exui-error-message>'
 })
 class WrapperComponent {
-  @ViewChild(ErrorMessageComponent, { static: true}) public appComponentRef: ErrorMessageComponent;
+  @ViewChild(ErrorMessageComponent, { static: true }) public appComponentRef: ErrorMessageComponent;
   @Input() public error: ErrorMessage;
 }
 
@@ -20,8 +20,8 @@ describe('ErrorMessageComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ WrapperComponent, ErrorMessageComponent ],
-      imports: [ RouterTestingModule ]
+      declarations: [WrapperComponent, ErrorMessageComponent, MockRpxTranslatePipe],
+      imports: [RouterTestingModule]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
@@ -50,5 +50,4 @@ describe('ErrorMessageComponent', () => {
     fixture.detectChanges();
     expect(fixture.debugElement.nativeElement.innerText).toBe(description);
   });
-
 });

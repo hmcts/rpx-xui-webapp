@@ -30,9 +30,10 @@ describe('Utils', () => {
       known_as: 'Tom',
       surname: 'Cruz',
       full_name: 'Tom Cruz',
-      email_id: '330085EMP-@ejudiciary.net',
+      email_id: '330085EMP-@ejudiciary.net'
     }
   ];
+
   it('should determine string or number', () => {
     expect(Utils.isStringOrNumber('string')).toEqual(true);
     expect(Utils.isStringOrNumber(1)).toEqual(true);
@@ -52,11 +53,13 @@ describe('Utils', () => {
     expect(Utils.sanitiseMetadataFieldName('metadataFilter', fieldName)).toEqual('somefieldname');
     expect(Utils.sanitiseMetadataFieldName('caseFilter', fieldName)).toEqual('[someFieldName]');
   });
+
   it('should map caseRoles', () => {
     const result = Utils.mapCaseRoles(caseRolesData, data);
     expect(result.length).toBe(1);
     expect(result[0].name).toBe('Tom Cruz');
   });
+
   it('should map mapCaseRolesForExclusions', () => {
     const roleExclusions = [{
       actorId: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',

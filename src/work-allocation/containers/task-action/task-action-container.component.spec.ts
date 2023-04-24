@@ -54,7 +54,9 @@ describe('WorkAllocation', () => {
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
     const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
     const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['getValue']);
-    mockFeatureToggleService.getValue.and.returnValue(of(false));
+    mockFeatureToggleService.getValue.and.returnValue(
+      of({ configurations: [{ serviceName: 'IA', releaseVersion: '4' }] })
+    );
 
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({

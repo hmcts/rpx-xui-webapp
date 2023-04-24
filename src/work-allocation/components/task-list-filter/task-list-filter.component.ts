@@ -298,7 +298,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       title: 'Search for a location by name',
       titleHint: '(optional)',
       locationTitle: 'Leave blank to return all locations available to you.',
-      // hintText: 'Leave blank to return all locations available to you.',
       minSelected: null,
       maxSelected: null,
       lineBreakBefore: true,

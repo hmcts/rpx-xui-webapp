@@ -11,7 +11,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { SharedModule } from '../app/shared/shared.module';
 import { BookingService } from '../booking/services';
 import { RoleAccessModule } from '../role-access/role-access.module';
-import { PriorityFieldComponentModule } from './components/priority-field/priority.module';
+import { PriorityFieldModule } from './components/priority-field/priority-field.module';
 import { WorkAllocationComponentsModule } from './components/work-allocation.components.module';
 import * as fromContainers from './containers';
 import { WorkAllocationAccessGuard } from './guards';
@@ -30,7 +30,7 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     workAllocationRouting,
     CdkTableModule,
     ExuiCommonLibModule,
-    PriorityFieldComponentModule,
+    PriorityFieldModule,
     ReactiveFormsModule,
     RoleAccessModule,
     PaginationModule,

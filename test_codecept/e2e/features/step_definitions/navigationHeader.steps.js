@@ -52,8 +52,15 @@ const { DataTableArgument } = require('codeceptjs');
 
     When('I click on primary navigation header tab {string}, I see selected tab page displayed', async function (headerTabLabel) {
         await browserWaits.retryWithActionCallback(async () => {
-            await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
-            expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+            try{
+                await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
+                expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+            }catch(err){
+                await headerPage.clickAppLogoLink();
+                await headerPage.refreshBrowser();
+                throw new Error(err);
+            }
+            
 
         });
         

@@ -13,7 +13,7 @@ import {
   TaskAssignmentConfirmComponent,
   TaskAssignmentContainerComponent,
   TaskHomeComponent,
-  WorkAllocationHomeComponent,
+  WorkAllocationHomeComponent
 } from './containers';
 import { TaskAssignmentPersonNotAuthorisedComponent } from './containers/messages-container/task-assignment-person-not-authorised/task-assignment-person-not-authorised.component';
 import { MyAccessComponent } from './containers/my-access/my-access.component';
@@ -32,7 +32,7 @@ export const ROUTES: Routes = [
       {
         path: 'my-work',
         component: TaskHomeComponent,
-        canActivate: [ HealthCheckGuard ],
+        canActivate: [HealthCheckGuard],
         resolve: {
           locations: LocationResolver
         },
@@ -75,7 +75,7 @@ export const ROUTES: Routes = [
       {
         path: 'all-work',
         component: AllWorkHomeComponent,
-        canActivate: [ HealthCheckGuard, TaskSupervisorGuard],
+        canActivate: [HealthCheckGuard, TaskSupervisorGuard],
         data: {
           title: 'HMCTS Manage cases | Task manager'
         },
@@ -102,7 +102,7 @@ export const ROUTES: Routes = [
       },
       {
         path: ':taskId',
-        resolve: { taskAndCaseworkers: TaskResolver, roles: TaskRoleResolverService},
+        resolve: { taskAndCaseworkers: TaskResolver, roles: TaskRoleResolverService },
         children: [
           {
             path: 'assign',

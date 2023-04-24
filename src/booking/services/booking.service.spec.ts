@@ -3,14 +3,13 @@ import { inject, TestBed } from '@angular/core/testing';
 import { BookingService } from './booking.service';
 
 describe('BookingService', () => {
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule
       ],
       providers: [
-        BookingService,
+        BookingService
       ]
     });
   });
@@ -20,9 +19,8 @@ describe('BookingService', () => {
   }));
 
   describe('getBookings()', () => {
-
     it('should make a post call', inject([HttpTestingController, BookingService], (httpMock: HttpTestingController, service: BookingService) => {
-      service.getBookings('21334a2b-79ce-44eb-9168-2d49a744be9c', ['CIVIL']).subscribe(response => {
+      service.getBookings('21334a2b-79ce-44eb-9168-2d49a744be9c', ['CIVIL']).subscribe((response) => {
         expect(response).toBeNull();
       });
 
@@ -33,9 +31,8 @@ describe('BookingService', () => {
   });
 
   describe('getBookingLocation()', () => {
-
     it('should make a get call', inject([HttpTestingController, BookingService], (httpMock: HttpTestingController, service: BookingService) => {
-      service.getBookingLocation('123').subscribe(response => {
+      service.getBookingLocation('123').subscribe((response) => {
         expect(response).toBeNull();
       });
 
@@ -46,10 +43,9 @@ describe('BookingService', () => {
   });
 
   describe('createBooking()', () => {
-
     it('should make a post to create a booking', inject([HttpTestingController, BookingService], (httpMock: HttpTestingController, service: BookingService) => {
       service.createBooking({ userId: '21334a2b-79ce-44eb-9168-2d49a744be9c',
-      locationId: '1', regionId: '1', beginDate: null, endDate: null }).subscribe(response => {
+        locationId: '1', regionId: '1', beginDate: null, endDate: null }).subscribe((response) => {
         expect(response).toBeNull();
       });
 
@@ -60,9 +56,8 @@ describe('BookingService', () => {
   });
 
   describe('refreshRoleAssignments()', () => {
-
     it('should make a post to refresh the role assignments', inject([HttpTestingController, BookingService], (httpMock: HttpTestingController, service: BookingService) => {
-      service.refreshRoleAssignments('userId').subscribe(response => {
+      service.refreshRoleAssignments('userId').subscribe((response) => {
         expect(response).toBeNull();
       });
 
@@ -71,5 +66,4 @@ describe('BookingService', () => {
       req.flush(null);
     }));
   });
-
 });

@@ -13,11 +13,11 @@ export async function getPossibleRoles(req: EnhancedRequest, res: Response, next
     const roles = await getSubstantiveRoles(req);
     const rolesByService: RolesByService[] = [];
     if (serviceIds) {
-      serviceIds.forEach(serviceId => {
+      serviceIds.forEach((serviceId) => {
         // note: if service obtained, check role either includes service or does not specify service
-        const serviceRoles = roles.filter(role =>
+        const serviceRoles = roles.filter((role) =>
           role.roleJurisdiction && (role.roleJurisdiction.values && role.roleJurisdiction.values.includes(serviceId)));
-        rolesByService.push({service: serviceId, roles: serviceRoles});
+        rolesByService.push({ service: serviceId, roles: serviceRoles });
       });
     }
     return res.send(rolesByService).status(200);
@@ -32,12 +32,12 @@ export async function getSubstantiveRoles(req: EnhancedRequest) {
   const response = await getAllRoles(req);
   const results = (response.data as Role[]);
   const filteredResults = results.filter(filterRoleAssignments());
-  const substantiveRoles = filteredResults.map(roleApi => ({
+  const substantiveRoles = filteredResults.map((roleApi) => ({
     roleCategory: roleApi.category,
     roleId: roleApi.name,
     roleName: roleApi.label,
     roleJurisdiction: roleApi.patterns && roleApi.patterns[0].attributes
-     ? roleApi.patterns[0].attributes.jurisdiction : null,
+      ? roleApi.patterns[0].attributes.jurisdiction : null
   }));
   req.session.subStantiveRoles = substantiveRoles;
   return substantiveRoles;
@@ -47,7 +47,7 @@ export async function getRoleByAssignmentId(req: EnhancedRequest, res: Response,
   try {
     const assignmentId = req.body.assignmentId;
     const response = await getAllRoles(req);
-    const specifiedRole = response.data.find(role => role.id === assignmentId);
+    const specifiedRole = response.data.find((role) => role.id === assignmentId);
     return res.send(specifiedRole).status(200);
   } catch (error) {
     next(error);
@@ -69,5 +69,5 @@ export async function getRolesByCaseId(req: EnhancedRequest): Promise<AxiosRespo
 }
 
 function filterRoleAssignments(): (value: Role, index: number, array: Role[]) => unknown {
-  return role => role.substantive && role.patterns.filter(pattern => pattern.roleType.values.includes('CASE')).length > 0;
+  return (role) => role.substantive && role.patterns.filter((pattern) => pattern.roleType.values.includes('CASE')).length > 0;
 }

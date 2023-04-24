@@ -1,4 +1,4 @@
-import {HearingRequestStateData} from '../../models/hearingRequestStateData.model';
+import { HearingRequestStateData } from '../../models/hearingRequestStateData.model';
 import * as fromHearingRequestCompareActions from '../actions/hearing-request-to-compare.action';
 import * as fromHearingRequestReducer from './hearing-request.reducer';
 
@@ -7,7 +7,7 @@ export const initialHearingRequestToCompareState: HearingRequestStateData = {
 };
 
 export function hearingRequestToCompareReducer(currentState = initialHearingRequestToCompareState,
-                                               action: fromHearingRequestCompareActions.HearingRequestToCompareAction): HearingRequestStateData {
+  action: fromHearingRequestCompareActions.HearingRequestToCompareAction): HearingRequestStateData {
   switch (action.type) {
     case fromHearingRequestCompareActions.INITIALIZE_HEARING_REQUEST_TO_COMPARE: {
       return {

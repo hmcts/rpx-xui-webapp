@@ -15,7 +15,8 @@ export class ApplicationRoutingComponent implements OnInit {
     private readonly router: Router,
     private readonly store: Store<fromActions.State>,
     private readonly featureToggleService: FeatureToggleService
-  ) { }
+  ) {}
+
   public static defaultWAPage = '/work/my-work/list';
   public static defaultPage = '/cases';
   public static bookingUrl: string = '../booking';
@@ -39,20 +40,18 @@ export class ApplicationRoutingComponent implements OnInit {
       }
       if (userDetails && userDetails.userInfo && userDetails.userInfo.roles
         && !userDetails.userInfo.roles.includes('pui-case-manager')) {
-          const userRoles = userDetails.userInfo.roles;
-          let rolePresent = false;
-          for (let i = 0, len = landingRoles.roles.length; i < len; i++) {
-            if (userRoles.includes(landingRoles.roles[i])) {
-              rolePresent = true;
-              break;
-            }
+        const userRoles = userDetails.userInfo.roles;
+        let rolePresent = false;
+        for (let i = 0, len = landingRoles.roles.length; i < len; i++) {
+          if (userRoles.includes(landingRoles.roles[i])) {
+            rolePresent = true;
+            break;
           }
-          rolePresent ? this.router.navigate([ApplicationRoutingComponent.defaultWAPage]) : this.router.navigate([ApplicationRoutingComponent.defaultPage]);
+        }
+        rolePresent ? this.router.navigate([ApplicationRoutingComponent.defaultWAPage]) : this.router.navigate([ApplicationRoutingComponent.defaultPage]);
       } else {
         this.router.navigate([ApplicationRoutingComponent.defaultPage]);
       }
     })).subscribe();
-
   }
-
 }

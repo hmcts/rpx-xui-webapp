@@ -1,4 +1,3 @@
-import { RouterStateSnapshot } from '@angular/router';
 import { of } from 'rxjs';
 
 import { getMockTasks } from '../../work-allocation/tests/utils.spec';
@@ -20,7 +19,7 @@ describe('Task Role Access Resolver', () => {
     };
     const mockService = jasmine.createSpyObj('WorkAllocationTaskService', ['getTask']);
     const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseAccessRoles']);
-    mockService.getTask.and.returnValue(of({task: getMockTasks()[0]}));
+    mockService.getTask.and.returnValue(of({ task: getMockTasks()[0] }));
     mockAllocateRoleService.getCaseAccessRoles.and.returnValue(of([mockCaseRole]));
     const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     const taskRoleAccessResolver = new TaskRoleAccessResolver(mockService, mockRouter, mockAllocateRoleService);
@@ -32,7 +31,7 @@ describe('Task Role Access Resolver', () => {
     };
 
     const taskAndRole$ = taskRoleAccessResolver.resolve(route);
-    taskAndRole$.subscribe(taskAndRole => {
+    taskAndRole$.subscribe((taskAndRole) => {
       expect(taskAndRole.task.task).toEqual(getMockTasks()[0]);
       expect(taskAndRole.role[0]).toEqual(mockCaseRole);
       expect(mockService.getTask).toHaveBeenCalledWith('somevalue');

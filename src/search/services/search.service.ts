@@ -10,10 +10,10 @@ import { SearchRequestParty } from '../models/search-request-party.model';
 export class SearchService {
   public readonly RECORD_PAGE_SIZE = 25;
 
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient) {}
 
   public getServices(): Observable<GlobalSearchService[]> {
-    return this.http.get<GlobalSearchService[]>(`/api/globalSearch/services`);
+    return this.http.get<GlobalSearchService[]>('/api/globalSearch/services');
   }
 
   public getResults(): Observable<SearchResult> {
@@ -27,7 +27,7 @@ export class SearchService {
       startRecordNumber: startRecord ? parseInt(startRecord, 10) : 1
     };
 
-    return this.http.post<SearchResult>(`api/globalsearch/results`, searchRequest);
+    return this.http.post<SearchResult>('api/globalsearch/results', searchRequest);
   }
 
   public storeState(key: string, value: any): void {
@@ -63,8 +63,8 @@ export class SearchService {
 
   private mapSearchParametersToRequestCriteria(searchParameters: SearchParameters): SearchRequestCriteria {
     let parties: SearchRequestParty[] = [];
-    const { address, dateOfBirth, dateOfDeath, emailAddress, fullName, postcode} = searchParameters;
-    if (address || dateOfBirth || dateOfDeath ||  emailAddress || fullName || postcode) {
+    const { address, dateOfBirth, dateOfDeath, emailAddress, fullName, postcode } = searchParameters;
+    if (address || dateOfBirth || dateOfDeath || emailAddress || fullName || postcode) {
       parties = [{
         addressLine1: address,
         dateOfBirth: dateOfBirth ? dateOfBirth.replace(/\b(\d)\b/g, '0$1') : null,
@@ -82,7 +82,7 @@ export class SearchService {
       caseManagementRegionIds: null,
       // Ensure case references are sanitised, i.e. have been stripped of separators (spaces and '-' characters)
       caseReferences: searchParameters.caseReferences
-        ? searchParameters.caseReferences.map(caseRef => caseRef.replace(/[\s-]/g, ''))
+        ? searchParameters.caseReferences.map((caseRef) => caseRef.replace(/[\s-]/g, ''))
         : null,
       otherReferences: searchParameters.otherReferences,
       parties,

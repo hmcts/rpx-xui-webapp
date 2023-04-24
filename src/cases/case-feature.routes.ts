@@ -1,8 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
-// routes
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
-import { HearingStageResolver } from '../hearings/resolvers/hearing-stage.resolver';
 import {
   CaseCreateSubmitComponent,
   CaseDetailsHomeComponent,
@@ -28,7 +26,7 @@ export const ROUTES: Routes = [
   {
     path: '',
     resolve: {
-      activity: ActivityResolver,
+      activity: ActivityResolver
     },
     component: CaseHomeComponent,
     children: [
@@ -102,7 +100,7 @@ export const ROUTES: Routes = [
       {
         path: 'case-details/:cid',
         component: CaseDetailsHomeComponent,
-        resolve: {case: CaseResolver},
+        resolve: { case: CaseResolver },
         runGuardsAndResolvers: 'always',
         children: [
           {
@@ -111,11 +109,11 @@ export const ROUTES: Routes = [
             children: [
               {
                 path: '',
-                pathMatch: 'full',
+                pathMatch: 'full'
               },
               {
                 path: 'tasks',
-                component: TasksContainerComponent,
+                component: TasksContainerComponent
               },
               {
                 path: 'roles-and-access',
@@ -123,7 +121,7 @@ export const ROUTES: Routes = [
               },
               {
                 path: 'hearings',
-                component: CaseHearingsComponent,
+                component: CaseHearingsComponent
               }
             ]
           },
@@ -133,7 +131,7 @@ export const ROUTES: Routes = [
         }
       }
     ]
-  },
+  }
 
 ];
 

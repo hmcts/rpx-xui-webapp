@@ -21,7 +21,7 @@ describe('CaseRolesTableComponent', () => {
       name: 'Test Address Book Case',
       jurisdiction: {
         id: 'TEST',
-        name: 'Test',
+        name: 'Test'
       },
       printEnabled: true
     },
@@ -103,9 +103,10 @@ describe('CaseRolesTableComponent', () => {
         order: 3,
         fields: [],
         show_condition: ''
-      },
+      }
     ]
   };
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule],

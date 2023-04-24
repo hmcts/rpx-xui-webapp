@@ -9,7 +9,7 @@ export const environment = {
   cookies: {
     token: '__auth__',
     userId: '__userid__',
-    roles: 'roles',
+    roles: 'roles'
   },
   googleAnalyticsKey: 'UA-124734893-1',
   googleTagManagerKey: 'GTM-TQ7PKDF'

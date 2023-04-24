@@ -6,7 +6,7 @@ export function checkIfCaseAllocator(jurisdiction: string, caseLocationId: strin
   const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
   let isCaseAllocator = false;
   if (roleAssignments) {
-    const roleAssignment = roleAssignments.find(role => isCurrentUserCaseAllocator(role, jurisdiction, caseLocationId));
+    const roleAssignment = roleAssignments.find((role) => isCurrentUserCaseAllocator(role, jurisdiction, caseLocationId));
     isCaseAllocator = !!roleAssignment;
   }
   return isCaseAllocator;

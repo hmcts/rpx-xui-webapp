@@ -1,12 +1,11 @@
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import * as fromNocStore from '../../store';
+import { provideMockStore } from '@ngrx/store/testing';
 import { NocAffirmationComponent } from './noc-affirmation.component';
-
 
 describe('NocAffirmationComponent', () => {
   let store;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let spyOnPipeToStore = jasmine.createSpy();
   let spyOnDispatchToStore = jasmine.createSpy();
   let component: NocAffirmationComponent;
@@ -14,12 +13,12 @@ describe('NocAffirmationComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NocAffirmationComponent ],
+      declarations: [NocAffirmationComponent],
       providers: [
         provideMockStore()
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -40,7 +39,7 @@ describe('NocAffirmationComponent', () => {
     const event = {
       currentTarget: {
         checked: true
-      }};
+      } };
     component.onChangeAffirmation(event);
     expect(spyOnDispatchToStore).toHaveBeenCalled();
   });

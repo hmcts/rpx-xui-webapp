@@ -10,6 +10,7 @@ import { HeaderComponent } from './header.component';
 
 describe('Header Component', () => {
   let mockStore: any;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mockService: any;
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;

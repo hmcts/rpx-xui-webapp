@@ -13,7 +13,7 @@ import { HearingWelshComponent } from './hearing-welsh.component';
 
 @Component({
   selector: 'exui-error-message',
-  template: '',
+  template: ''
 })
 class MockTestComponent {
   @Input() public error: ErrorMessage;
@@ -21,7 +21,7 @@ class MockTestComponent {
 
 @Component({
   selector: 'exui-hearing-parties-title',
-  template: '',
+  template: ''
 })
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
@@ -40,12 +40,12 @@ describe('HearingWelshComponent', () => {
       declarations: [
         HearingWelshComponent,
         MockTestComponent,
-        MockHearingPartiesComponent,
+        MockHearingPartiesComponent
       ],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
-      ],
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingWelshComponent);
@@ -73,7 +73,7 @@ describe('HearingWelshComponent', () => {
   });
 
   it('should load default value', (): void => {
-    expect(component.welshForm.value['hearingInWelshFlag']).toBeTruthy();
+    expect(component.welshForm.value.hearingInWelshFlag).toBeTruthy();
   });
 
   it('should execute a continue action', (): void => {

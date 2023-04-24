@@ -10,7 +10,6 @@ import { NoResultsMessageId } from '../../enums';
   styleUrls: ['./no-results.component.scss']
 })
 export class NoResultsComponent implements OnInit {
-
   private readonly extras: NavigationExtras;
   public messageId: number;
   public noResultsMessageId = NoResultsMessageId;

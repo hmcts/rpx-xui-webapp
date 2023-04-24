@@ -9,7 +9,6 @@ import { OptionsModel } from '../../models/options-model';
 })
 
 export class ChooseRadioOptionComponent {
-
   @Input() public title: string;
   @Input() public caption: string;
   @Input() public optionsList: OptionsModel[];

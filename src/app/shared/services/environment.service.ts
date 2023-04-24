@@ -7,14 +7,13 @@ import { EnvironmentConfig } from '../../../models/environmentConfig.model';
   providedIn: 'root'
 })
 export class EnvironmentService {
-
   private data: EnvironmentConfig;
 
   public config$ = this.http.get<EnvironmentConfig>('/external/config/ui')
-    .pipe<EnvironmentConfig>( shareReplay<EnvironmentConfig>(1) );
+    .pipe<EnvironmentConfig>(shareReplay<EnvironmentConfig>(1));
 
   constructor(private readonly http: HttpClient) {
-    this.config$.subscribe( config => {
+    this.config$.subscribe((config) => {
       this.data = config;
     });
   }

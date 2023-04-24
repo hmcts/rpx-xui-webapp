@@ -1,15 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CaseRole, ExclusionStateData, Role, RoleExclusion } from '../models';
+import { ExclusionStateData, Role, RoleExclusion } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class RoleExclusionsService {
   public static exclusionsUrl = '/api/role-access/exclusions';
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient) {}
 
   public getCurrentUserRoleExclusions(caseId: string, jurisdiction: string, caseType: string, exclusionId?: string): Observable<RoleExclusion[]> {
-    return this.http.post<RoleExclusion[]>(`${RoleExclusionsService.exclusionsUrl}/post`, {caseId, jurisdiction, caseType, exclusionId});
+    return this.http.post<RoleExclusion[]>(`${RoleExclusionsService.exclusionsUrl}/post`, { caseId, jurisdiction, caseType, exclusionId });
   }
 
   public getRolesCategory(): Observable<Role[]> {
@@ -21,6 +21,6 @@ export class RoleExclusionsService {
   }
 
   public deleteExclusion(deletedExclusion: RoleExclusion): Observable<RoleExclusion> {
-    return this.http.post<RoleExclusion>(`${RoleExclusionsService.exclusionsUrl}/delete`, {roleExclusion: deletedExclusion});
+    return this.http.post<RoleExclusion>(`${RoleExclusionsService.exclusionsUrl}/delete`, { roleExclusion: deletedExclusion });
   }
 }

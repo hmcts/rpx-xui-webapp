@@ -22,7 +22,7 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
-    enableFortifyScan()
+    //enableFortifyScan() // Disabled to lack of fortify access and support. To be re-enabled once we have adequate control over fortify 
     enableFullFunctionalTest(120)
     //enableSecurityScan()
     enableMutationTest()

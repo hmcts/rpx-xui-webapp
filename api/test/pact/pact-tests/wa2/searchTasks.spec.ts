@@ -182,5 +182,4 @@ function assertResponses(dto: any) {
 
   expect(dto.tasks[0].actions[0].id).to.equal('go');
   expect(dto.tasks[0].actions[0].title).to.equal('Go to task');
-
 }

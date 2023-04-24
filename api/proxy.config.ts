@@ -16,7 +16,8 @@ import {
   SERVICES_PAYMENTS_URL,
   SERVICES_PRD_COMMONDATA_API,
   SERVICES_REFUNDS_API_URL,
-  SERVICES_TRANSLATION_API_URL
+  SERVICES_NOTIFICATIONS_API_URL,
+  SERVICES_TRANSLATION_API_URL,
 } from './configuration/references';
 import { applyProxy } from './lib/middleware/proxy';
 import * as searchCases from './searchCases';

@@ -42,10 +42,8 @@ export class StaffUser {
   public get status(): StaffUserStatus {
     if (this.suspended) {
       return StaffUserStatus.SUSPENDED;
-    } else {
-      return this.up_idam_status === StaffUserIDAMStatus.ACTIVE ? StaffUserStatus.ACTIVE : StaffUserStatus.PENDING;
     }
-    return this.up_idam_status === 'ACTIVE' ? StaffUserStatus.ACTIVE : StaffUserStatus.PENDING;
+    return this.up_idam_status === StaffUserIDAMStatus.ACTIVE ? StaffUserStatus.ACTIVE : StaffUserStatus.PENDING;
   }
 
   public get primaryLocation() {

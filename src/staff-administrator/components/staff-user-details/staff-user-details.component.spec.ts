@@ -3,7 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
@@ -29,6 +29,7 @@ describe('StaffUserDetailsComponent', () => {
   let mockMessageService: jasmine.SpyObj<InfoMessageCommService>;
   let mockStaffAddEditFormService: jasmine.SpyObj<StaffAddEditFormService>;
   let location: Location;
+  let router: jasmine.SpyObj<Router>;
   let testStaffUserData: Partial<StaffUser>;
   const caseWorkerId = '123456';
 
@@ -180,6 +181,7 @@ describe('StaffUserDetailsComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(StaffUserDetailsComponent);
+    router = TestBed.get(Router);
     component = fixture.componentInstance;
     fixture.detectChanges();
     location = TestBed.inject(Location);
@@ -236,7 +238,6 @@ describe('StaffUserDetailsComponent', () => {
     const updateUserButton = fixture.debugElement.query(By.css('#updateUserButton'));
     updateUserButton.triggerEventHandler('click', null);
     expect(component.onUpdateUser).toHaveBeenCalled();
-
   }));
 
   it('should call navigateByUrl when calling onUpdateUser ' +

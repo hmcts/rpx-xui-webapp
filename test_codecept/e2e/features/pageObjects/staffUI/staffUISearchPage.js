@@ -31,7 +31,8 @@ class StaffSearchPage{
     }
 
     async validateSuccessMessageBanner(message){
-       expect(await this.messageBanner.isBannerMessageDisplayed(), 'Success message banner not displayed').to.be.true
+        const isDisplayed = await this.messageBanner.isBannerMessageDisplayed();
+        expect(isDisplayed, 'Success message banner not displayed').to.be.true
 
         const messages = await this.messageBanner.getBannerMessagesDisplayed()
         const expectedMessage = messages.filter(msg => msg.includes(message))

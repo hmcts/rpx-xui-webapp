@@ -138,7 +138,7 @@ describe('AppConfiguration', () => {
     expect(service.getAnnotationApiUrl()).toBeUndefined();
   }));
 
-/*   it('should have getNotificationUrl', inject([AppConfig], (service: AppConfig) => {
+  /* it('should have getNotificationUrl', inject([AppConfig], (service: AppConfig) => {
     expect(service.getNotificationUrl()).toBe('dummy');
   }));
 

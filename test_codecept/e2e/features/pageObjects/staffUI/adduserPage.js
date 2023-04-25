@@ -9,23 +9,28 @@ class AddUserPage{
         this.container = $('exui-staff-add-edit-user-form')
         this.headerTitle = $('exui-staff-add-edit-user-form .govuk-heading-xl')
 
-        this.firstName = $('#first_name input')
-        this.lastName = $('#last_name input')
-        this.email = $('#email_id input')
+        this.firstName = $('input#first_name')
+        this.lastName = $('input#last_name')
+        this.email = $('input#email_id')
 
-        this.region = $('#select_region_id')
+        this.region = $('#region_id')
 
-        this.services = $('#user-services')
+        this.services = $('#services')
 
-        this.primaryLocation = $('#primaryLocation #inputLocationSearch')
-        this.additionalLocations = $('#additionalLocations #inputLocationSearch')
+        this.primaryLocation = $('#base_locations_primary  exui-staff-select-location #location-primary')
+        this.primaryLocationAddBtn = $('#base_locations_primary  exui-staff-select-location a')
 
-        this.userType = $('#select_user_type')
+
+        this.additionalLocations = $('#base_locations_additional  exui-staff-select-location #location-primary')
+        this.additionalLocationAddBtn = $('#base_locations_additional  exui-staff-select-location a')
+
+
+        this.userType = $('#user_type')
 
 
         this.roles = $('#roles')
 
-        this.jobTitles = $('#jobTitle')
+        this.jobTitles = $('#checkbox_job_title')
 
         this.continue = element(by.xpath('//button[contains(text(),"Continue")]'))
         this.saveChanges = element(by.xpath('//button[contains(text(),"Save changes")]'))
@@ -101,10 +106,11 @@ class AddUserPage{
                         }
                     })
                     await e.click();
+                    await this.primaryLocationAddBtn.click();
                     break;
                 case "Additional locations":
                     inputVal.forEach(async(loc) => {
-                        await this.additionalLocations.$('input').sendKeys(loc)
+                        await this.additionalLocations.sendKeys(loc)
                         const additionaLocationResults = $$('.mat-option-text');
                         let ale = null;
                         await BrowserWaits.retryWithActionCallback(async () => {
@@ -115,7 +121,7 @@ class AddUserPage{
                             }
                         })
                         await ale.click();
-                        await this.additionalLocations.$('a').click();
+                        await this.additionalLocationAddBtn.click();
                     })
                    
                     break;

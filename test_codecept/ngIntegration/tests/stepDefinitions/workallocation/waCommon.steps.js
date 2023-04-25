@@ -308,7 +308,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
             await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr)
 
             const userDetails = await idamLogin.getUserDetails();
-            if (!userDetails.roleAssignmentInfo.length === roleAssignmentArr.length) {
+            if (!userDetails.roleAssignmentInfo.length >= roleAssignmentArr.length) {
                 reportLogger.AddMessage(`Mock role assignments not updated in user session. Retrying user session update`);
                 throw new Error('Mock role assignments not updated');
             }

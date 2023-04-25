@@ -293,9 +293,10 @@ class Element {
 
         return new Promise((resolve, reject) => {
             const startTime = Date.now();
+            const thisElement = this;
             const interval = setInterval(async () => {
                 const elapsedTime = (Date.now() - startTime)/1000;
-                const isPresent = await this.isPresent()
+                const isPresent = await thisElement.isPresent()
                 // reportLogger.AddMessage(`WAIT elapsed time : ${elapsedTime}`)
                 if (isPresent) {
                     clearInterval(interval)

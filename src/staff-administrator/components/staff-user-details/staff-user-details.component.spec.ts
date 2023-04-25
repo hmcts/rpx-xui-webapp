@@ -10,7 +10,7 @@ import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { InfoMessageType } from '../../../role-access/models/enums';
-import { StaffUserStatus } from '../../models/staff-user-status.enum';
+import { StaffUserIDAMStatus } from '../../models/staff-user-idam-status.enum';
 import { StaffUser } from '../../models/staff-user.model';
 import { StaffAddEditFormService } from '../../services/staff-add-edit-form/staff-add-edit-form.service';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
@@ -84,7 +84,7 @@ describe('StaffUserDetailsComponent', () => {
       ],
       region: 'West Midlands',
       region_id: 12,
-      up_idam_status: StaffUserStatus.ACTIVE
+      up_idam_status: StaffUserIDAMStatus.ACTIVE
     };
 
     TestBed.configureTestingModule({
@@ -241,6 +241,13 @@ describe('StaffUserDetailsComponent', () => {
     const updateUserButton = fixture.debugElement.query(By.css('#updateUserButton'));
     updateUserButton.triggerEventHandler('click', null);
     expect(component.onUpdateUser).toHaveBeenCalled();
+
+  }));
+
+  it('should call navigateByUrl when calling onUpdateUser ' +
+    'with state set as the userDetails present', () => {
+    spyOn(router, 'navigateByUrl').and.callThrough();
+    component.onUpdateUser();
     expect(router.navigateByUrl).toHaveBeenCalledWith(
       // @ts-expect-error - private property
       `/staff/user-details/${component.route.snapshot.params.id}/update`,
@@ -250,14 +257,19 @@ describe('StaffUserDetailsComponent', () => {
         }
       }
     );
-  }));
+  });
 
   it('should call onCopyUser when clicking copy button', fakeAsync(() => {
     spyOn(component, 'onCopyUser').and.callThrough();
-    spyOn(router, 'navigateByUrl').and.callThrough();
     const copyUserButton = fixture.debugElement.query(By.css('#copyUserButton'));
     copyUserButton.triggerEventHandler('click', null);
     expect(component.onCopyUser).toHaveBeenCalled();
+  }));
+
+  it('should call navigateByUrl when calling onCopyUser ' +
+    'with modified user details as state', () => {
+    spyOn(router, 'navigateByUrl').and.callThrough();
+    component.onCopyUser();
     expect(router.navigateByUrl).toHaveBeenCalledWith(
       // @ts-expect-error - private property
       `/staff/user-details/${component.route.snapshot.params.id}/copy`,
@@ -269,11 +281,12 @@ describe('StaffUserDetailsComponent', () => {
             last_name: '',
             email_id: '',
             suspended: false,
+            up_idam_status: StaffUserIDAMStatus.PENDING
           }
         }
       }
     );
-  }));
+  });
 
   it('should have a disabled button if suspended is true', () => {
     const restoreOrSuspendedButton = fixture.debugElement.query(By.css('#user-suspended-restore-button'));

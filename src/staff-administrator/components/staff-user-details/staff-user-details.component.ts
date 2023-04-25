@@ -8,6 +8,7 @@ import { InfoMessageCommService } from '../../../app/shared/services/info-messag
 import { InfoMessageType } from '../../../role-access/models/enums';
 import { StaffUser } from '../../models/staff-user.model';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
+import { StaffUserIDAMStatus } from '../../models/staff-user-idam-status.enum';
 
 @Component({
   selector: 'exui-staff-user-details',
@@ -81,6 +82,7 @@ export class StaffUserDetailsComponent {
       last_name: '',
       email_id: '',
       suspended: false,
+      up_idam_status: StaffUserIDAMStatus.PENDING
     };
     this.router.navigateByUrl(`/staff/user-details/${this.route.snapshot.params.id}/copy`,
       { state: { formValues } });

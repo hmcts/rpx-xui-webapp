@@ -79,7 +79,8 @@ export class StaffUserDetailsComponent {
       ...this.userDetails,
       first_name: '',
       last_name: '',
-      email_id: ''
+      email_id: '',
+      suspended: false,
     };
     this.router.navigateByUrl(`/staff/user-details/${this.route.snapshot.params.id}/copy`,
       { state: { formValues } });

@@ -30,10 +30,10 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
 
   public get fields(): FieldConfig[] {
     let fields = ConfigConstants.MyWorkTasksForLegalOps;
-    this.checkReleaseVersionService.isRelease4().subscribe(isRelease4 => {
+    this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
       fields = this.isCurrentUserJudicial() ?
-      (isRelease4 ? ConfigConstants.MyWorkTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.MyWorkTasksForJudicial) :
-      (isRelease4 ? ConfigConstants.MyWorkTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.MyWorkTasksForLegalOps);
+        (isRelease4 ? ConfigConstants.MyWorkTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.MyWorkTasksForJudicial) :
+        (isRelease4 ? ConfigConstants.MyWorkTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.MyWorkTasksForLegalOps);
     });
     return fields;
     // return this.isCurrentUserJudicial() ? ConfigConstants.MyWorkTasksForJudicial : ConfigConstants.MyWorkTasksForLegalOps;
@@ -45,9 +45,9 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
-      const searchParameters: SearchTaskParameter [] = [
+      const searchParameters: SearchTaskParameter[] = [
         { key: 'user', operator: 'IN', values: [id] },
-        { key: 'state', operator: 'IN', values: ['assigned'] },
+        { key: 'state', operator: 'IN', values: ['assigned'] }
       ];
       const locationParameter = this.getLocationParameter();
       const typesOfWorkParameter = this.getTypesOfWorkParameter();

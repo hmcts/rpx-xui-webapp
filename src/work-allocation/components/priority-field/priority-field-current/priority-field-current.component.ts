@@ -16,7 +16,7 @@ export class PriorityFieldCurrentComponent {
 
   public get priority(): TaskPriority {
     if (this.majorPriority === PriorityLimits.High) {
-      if(AppUtils.isPriorityDateTimePast(this.date)) {
+      if (AppUtils.isPriorityDateTimePast(this.date)) {
         return TaskPriority.HIGH;
       }
       return AppUtils.isPriorityDateTimeInNext24Hours(this.date) ? TaskPriority.MEDIUM : TaskPriority.LOW;

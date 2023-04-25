@@ -20,8 +20,8 @@ describe('StaffSelectLocationComponent', () => {
       imports: [MatAutocompleteModule],
       declarations: [StaffSelectLocationComponent],
       providers: [
-        {provide: RefDataService, useValue: refDataServiceMock}
-      ],
+        { provide: RefDataService, useValue: refDataServiceMock }
+      ]
     })
       .compileComponents();
   });
@@ -59,7 +59,7 @@ describe('StaffSelectLocationComponent', () => {
           dx_address: 'DX 123456 Aberdeen 1',
           venue_name: 'Aberdeen',
           is_hearing_location: 'Y',
-          is_case_management_location: 'Y',
+          is_case_management_location: 'Y'
         },
         {
           site_name: 'Aberdeen Tribunal Hearing Centre',
@@ -77,7 +77,7 @@ describe('StaffSelectLocationComponent', () => {
           dx_address: 'DX 123456 Aberdeen 1',
           venue_name: 'Aberdeen',
           is_hearing_location: 'Y',
-          is_case_management_location: 'Y',
+          is_case_management_location: 'Y'
         },
         {
           epimms_id: '827534',

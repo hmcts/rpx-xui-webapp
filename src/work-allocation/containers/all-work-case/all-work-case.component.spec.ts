@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
@@ -27,15 +26,6 @@ import {
 import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
 import { AllWorkCaseComponent } from './all-work-case.component';
 import { CheckReleaseVersionService } from '../../../work-allocation/services/check-release-version.service';
-
-@Component({
-  template: `
-    <exui-all-work-cases></exui-all-work-cases>`
-})
-
-class WrapperComponent {
-  @ViewChild(AllWorkCaseComponent) public appComponentRef: AllWorkCaseComponent;
-}
 
 // const USER_DETAILS = {
 //   canShareCases: true,
@@ -70,9 +60,6 @@ describe('AllWorkCaseComponent', () => {
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
   const mockAllocateRoleService = jasmine.createSpyObj('mockAllocateRoleService', ['getCaseRolesUserDetails', 'getValidRoles']);
   const mockjurisdictionsService = jasmine.createSpyObj('mockJurisdictionsService', ['getJurisdictions']);
-  const mockChangeDetectorRef = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
-  const mockJurisdictionsService = jasmine.createSpyObj('JurisdictionsService', ['getJurisdictions']);
-  const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const mockCheckReleaseVersionService = {
     isRelease4: () => {
       return {
@@ -118,22 +105,22 @@ describe('AllWorkCaseComponent', () => {
     checkReleaseVersionService as CheckReleaseVersionService
   );
 
-    const cases: Case[] = getMockCases();
-    const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
-    mockCaseService.getCases.and.returnValue(of({ cases }));
-    mockCaseworkerService.getAll.and.returnValue(of([]));
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
-    mockFeatureToggleService.isEnabled.and.returnValue(of(false));
-    mockLocationService.getLocations.and.returnValue(of(ALL_LOCATIONS as unknown as Location[]));
-    mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
-    mockjurisdictionsService.getJurisdictions.and.returnValue(of(['IA']));
-    mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of(caseRoles));
-    mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
-    mockSessionStorageService.getItem.and.returnValue(undefined);
+  const cases: Case[] = getMockCases();
+  const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
+  mockCaseService.getCases.and.returnValue(of({ cases }));
+  mockCaseworkerService.getAll.and.returnValue(of([]));
+  mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
+  mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+  mockLocationService.getLocations.and.returnValue(of(ALL_LOCATIONS as unknown as Location[]));
+  mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
+  mockjurisdictionsService.getJurisdictions.and.returnValue(of(['IA']));
+  mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of(caseRoles));
+  mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
+  mockSessionStorageService.getItem.and.returnValue(undefined);
 
   describe('ngOnInit', () => {
-    it(`should call 'setupCaseWorkers' and update 'locations' and 'waSupportedJurisdictions'`, () => {
-      component = initializeComponent({ locationDataService: mockLocationService, waSupportedJurisdictionsService: mockWASupportedJurisdictionService, checkReleaseVersionService: mockCheckReleaseVersionService});
+    it('should call setupCaseWorkers and update locations and waSupportedJurisdictions', () => {
+      component = initializeComponent({ locationDataService: mockLocationService, waSupportedJurisdictionsService: mockWASupportedJurisdictionService, checkReleaseVersionService: mockCheckReleaseVersionService });
       spyOn(component, 'setupCaseWorkers');
       spyOn(component, 'loadSupportedJurisdictions');
 
@@ -146,7 +133,7 @@ describe('AllWorkCaseComponent', () => {
   });
 
   describe('getSearchCaseRequestPagination', () => {
-    it(`should return a SearchCaseRequest`, async () => {
+    it('should return a SearchCaseRequest', async () => {
       component = initializeComponent({ sessionStorageService: mockSessionStorageService, checkReleaseVersionService: mockCheckReleaseVersionService });
 
       const userInfo = { roles: [UserRole.Admin] };
@@ -171,7 +158,7 @@ describe('AllWorkCaseComponent', () => {
       }));
     });
 
-    it(`should NOT return a SearchCaseRequest`, () => {
+    it('should NOT return a SearchCaseRequest', () => {
       component = initializeComponent({ sessionStorageService: mockSessionStorageService, checkReleaseVersionService: mockCheckReleaseVersionService });
 
       mockSessionStorageService.getItem.and.returnValue(undefined);
@@ -183,8 +170,8 @@ describe('AllWorkCaseComponent', () => {
   });
 
   describe('onPaginationEvent', () => {
-    it(`should call 'onPaginationHandler'`, () => {
-      component = initializeComponent({checkReleaseVersionService: mockCheckReleaseVersionService});
+    it('should call onPaginationHandler', () => {
+      component = initializeComponent({ checkReleaseVersionService: mockCheckReleaseVersionService });
 
       spyOn(component, 'onPaginationHandler');
 
@@ -219,7 +206,7 @@ describe('AllWorkCaseComponent', () => {
     ];
     getters.forEach(({ method, result }) => {
       it(`should return '${result}'`, () => {
-        component = initializeComponent({checkReleaseVersionService: mockCheckReleaseVersionService});
+        component = initializeComponent({ checkReleaseVersionService: mockCheckReleaseVersionService });
 
         expect(component[method]).toEqual(result);
       });

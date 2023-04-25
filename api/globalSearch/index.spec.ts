@@ -5,7 +5,7 @@ import { NextFunction } from 'express';
 import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import { mockReq, mockRes } from 'sinon-express-mock'
+import { mockReq, mockRes } from 'sinon-express-mock';
 import { GlobalSearchService } from '../interfaces/globalSearchService';
 import { http } from '../lib/http';
 import * as globalSearchServices from './index';
@@ -23,9 +23,9 @@ describe('Jurisdiction', () => {
   ];
   const serviceList: GlobalSearchService[] = [
     { serviceId: 'IA', serviceName: 'Immigration & Asylum' },
-    { serviceId: 'CIVIL', serviceName: 'CIVIL'},
-    { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW'},
-    { serviceId: 'PUBLICLAW', serviceName: 'Public Law'},
+    { serviceId: 'CIVIL', serviceName: 'CIVIL' },
+    { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' },
+    { serviceId: 'PUBLICLAW', serviceName: 'Public Law' }
   ];
 
   beforeEach(() => {
@@ -81,7 +81,7 @@ describe('Jurisdiction', () => {
       {
         caseStartRecord: 1,
         casesReturned: 25,
-        moreResultsToGo: true,
+        moreResultsToGo: true
       },
       [{
         ccdCaseTypeId: '123',
@@ -100,7 +100,7 @@ describe('Jurisdiction', () => {
         processForAccess: '',
         regionId: '',
         regionName: '',
-        stateId: '',
+        stateId: ''
       }]
     );
     const next = sinon.mock().atLeast(1) as NextFunction;

@@ -24,13 +24,13 @@ export async function handleGet(path: string, req: EnhancedRequest, next: NextFu
   }
 }
 
-export async function sendGet<T>(path: string, req: EnhancedRequest, customHeaders: { [x: string]: string } = {})
+export async function sendGet(path: string, req: EnhancedRequest, customHeaders: { [x: string]: string } = {})
   : Promise<AxiosResponse> {
   try {
     logger.info('send get request to:', path);
     const headers = {
       ...setHeaders(req),
-      ...customHeaders,
+      ...customHeaders
     };
     return await http.get(path, { headers });
   } catch (e) {

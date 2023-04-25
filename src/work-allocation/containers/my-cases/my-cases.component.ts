@@ -7,7 +7,6 @@ import { FieldConfig } from '../../models/common';
 import { SearchCaseRequest } from '../../models/dtos';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
 
-
 @Component({
   selector: 'exui-my-cases',
   templateUrl: 'my-cases.component.html'
@@ -27,7 +26,7 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
 
   public get fields(): FieldConfig[] {
     let fields = ConfigConstants.MyCases;
-    this.checkReleaseVersionService.isRelease4().subscribe(isRelease4 => {
+    this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
       if (!isRelease4) {
         fields = CONFIG_CONSTANTS_NOT_RELEASE4.MyCases;
       }

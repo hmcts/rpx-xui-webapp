@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -15,7 +15,6 @@ import { CaseRoleDetails } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
 import { TaskContext } from '../../../work-allocation/enums';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { CheckReleaseVersionService } from '../../services/check-release-version.service';
@@ -34,15 +33,6 @@ class WrapperComponent {
   template: '<div>Nothing</div>'
 })
 class NothingComponent { }
-
-@Component({
-  selector: 'exui-task-field',
-  template: '<div class="xui-task-field">{{task.taskName}}</div>'
-})
-class TaskFieldComponent {
-  @Input() public config: FieldConfig;
-  @Input() public task: Task;
-}
 
 const USER_DETAILS = {
   canShareCases: true,

@@ -4,7 +4,6 @@ import { UserInfo, UserRole } from '../../app/models';
 import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
-import { ServiceRefData } from '../models/common';
 import { Caseworker, CaseworkersByService, LocationsByRegion, LocationsByService } from '../models/dtos';
 import { TaskPermission, TaskRole } from '../models/tasks';
 

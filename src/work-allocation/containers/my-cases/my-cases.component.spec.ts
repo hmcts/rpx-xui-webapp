@@ -68,13 +68,13 @@ describe('MyCasesComponent', () => {
   );
 
   it('should create', () => {
-    component = initializeComponent({checkReleaseVersionService: mockCheckReleaseVersionService});
+    component = initializeComponent({ checkReleaseVersionService: mockCheckReleaseVersionService });
 
     expect(component).toBeTruthy();
   });
 
   describe('getSearchCaseRequestPagination', () => {
-    it(`should return a SearchCaseRequest`, () => {
+    it('should return a SearchCaseRequest', () => {
       component = initializeComponent({ sessionStorageService: mockSessionStorageService, checkReleaseVersionService: mockCheckReleaseVersionService });
       component.sortedBy = {
         fieldName: 'fieldName',
@@ -108,7 +108,7 @@ describe('MyCasesComponent', () => {
       localStorageGetItemSpy.calls.reset();
     });
 
-    it(`should return a SearchCaseRequest with user 'uid'`, () => {
+    it('should return a SearchCaseRequest with user uid', () => {
       component = initializeComponent({ sessionStorageService: mockSessionStorageService, checkReleaseVersionService: mockCheckReleaseVersionService });
       component.sortedBy = {
         fieldName: 'fieldName',
@@ -141,7 +141,7 @@ describe('MyCasesComponent', () => {
       }));
     });
 
-    it(`should NOT return a SearchCaseRequest`, () => {
+    it('should NOT return a SearchCaseRequest', () => {
       component = initializeComponent({ sessionStorageService: mockSessionStorageService, checkReleaseVersionService: mockCheckReleaseVersionService });
 
       mockSessionStorageService.getItem.withArgs('userDetails').and.returnValue(undefined);
@@ -173,7 +173,7 @@ describe('MyCasesComponent', () => {
     ];
     getters.forEach(({ method, result }) => {
       it(`should return '${result}'`, () => {
-        component = initializeComponent({checkReleaseVersionService: mockCheckReleaseVersionService});
+        component = initializeComponent({ checkReleaseVersionService: mockCheckReleaseVersionService });
 
         expect(component[method]).toEqual(result);
       });

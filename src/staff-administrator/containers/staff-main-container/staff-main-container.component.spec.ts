@@ -20,11 +20,11 @@ describe('StaffMainContainerComponent', () => {
   let component: StaffMainContainerComponent;
   let fixture: ComponentFixture<StaffMainContainerComponent>;
 
-  @Component({selector: 'exui-app-header', template: ''})
+  @Component({ selector: 'exui-app-header', template: '' })
   class HeaderStubComponent {
   }
 
-  @Component({selector: 'exui-app-footer', template: ''})
+  @Component({ selector: 'exui-app-footer', template: '' })
   class FooterStubComponent {
   }
 
@@ -46,7 +46,7 @@ describe('StaffMainContainerComponent', () => {
         HttpClientTestingModule,
         ExuiCommonLibModule,
         CdkTableModule,
-        ReactiveFormsModule,
+        ReactiveFormsModule
       ],
       providers: [
         StaffDataFilterService,
@@ -58,12 +58,12 @@ describe('StaffMainContainerComponent', () => {
               data: {
                 staffFilters: staffFilterOptionsTestData
               }
-            },
+            }
           }
-        },
+        }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

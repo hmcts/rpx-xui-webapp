@@ -39,7 +39,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly allocateRoleService: AllocateRoleService,
     private readonly featureToggleService: FeatureToggleService
-  ) {}
+  ) { }
 
   public ngOnInit(): void {
     this.subNavigationItems.push({ text: 'My cases', href: '/work/my-work/my-cases', active: false });
@@ -49,11 +49,11 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.allocateRoleService.getMyAccessNewCount().subscribe( (countOfApproval) => {
-     const myAccessNavItem = this.subNavigationItems.find(nav => nav.text === 'My access' ) ;
-     if ( myAccessNavItem ) {
-      myAccessNavItem.roundel = countOfApproval.count ;
-     }
+    this.allocateRoleService.getMyAccessNewCount().subscribe((countOfApproval) => {
+      const myAccessNavItem = this.subNavigationItems.find((nav) => nav.text === 'My access');
+      if (myAccessNavItem) {
+        myAccessNavItem.roundel = countOfApproval.count;
+      }
     });
 
     this.allocateRoleService.getMyAccessNewCount().subscribe((countOfApproval) => {

@@ -14,7 +14,6 @@ class WrapperComponent {
 }
 
 describe('SharedModule', () => {
-
   describe('InfoMessageComponent', () => {
     let component: InfoMessageComponent;
     let wrapper: WrapperComponent;
@@ -22,9 +21,9 @@ describe('SharedModule', () => {
 
     beforeEach(async () => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent, InfoMessageComponent ],
+        declarations: [WrapperComponent, InfoMessageComponent],
         schemas: [
-          CUSTOM_ELEMENTS_SCHEMA,
+          CUSTOM_ELEMENTS_SCHEMA
         ]
       })
         .compileComponents();

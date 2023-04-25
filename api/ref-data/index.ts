@@ -16,9 +16,9 @@ export async function getServices(req, res, next: NextFunction) {
     .reduce((prevValue, currentValue) => [...prevValue, ...currentValue.serviceCodes], [] as string[]);
 
   try {
-    const {status, data}: { status: number; data: RefDataHMCTSService[] } =
+    const { status, data }: { status: number; data: RefDataHMCTSService[] } =
       await http.get(`${apiPath}`, { headers: setHeaders(req) });
-    const enabledServicesData = data.filter(service => enabledServiceCodes.includes(service.service_code));
+    const enabledServicesData = data.filter((service) => enabledServiceCodes.includes(service.service_code));
 
     res.status(status).send(enabledServicesData);
   } catch (error) {
@@ -32,7 +32,7 @@ export async function getRegions(req, res, next: NextFunction) {
   urlSearchParams.append('regionId', 'ALL');
 
   try {
-    const {status, data}: { status: number; data: RefDataRegion[] } =
+    const { status, data }: { status: number; data: RefDataRegion[] } =
       await http.get(`${apiPath}?${urlSearchParams}`, { headers: setHeaders(req) });
 
     res.status(status).send(data);
@@ -46,7 +46,7 @@ export async function getLocationsByServiceCode(req, res, next: NextFunction) {
   const queryParams = new URLSearchParams(req.query).toString();
 
   try {
-    const {status, data}: { status: number; data: LocationByServiceCodeResponse }
+    const { status, data }: { status: number; data: LocationByServiceCodeResponse }
       = await http.get(`${apiPath}?${queryParams}`, { headers: setHeaders(req) });
 
     res.status(status).send(data);
@@ -59,7 +59,7 @@ export async function getLocations(req, res, next: NextFunction) {
   const apiPath: string = `${baseLocationRefUrl}/refdata/location/court-venues`;
   const queryParams = new URLSearchParams(req.query).toString();
   try {
-    const {status, data}: { status: number; data: LocationByServiceCodeResponse }
+    const { status, data }: { status: number; data: LocationByServiceCodeResponse }
       = await http.get(`${apiPath}?${queryParams}`, { headers: setHeaders(req) });
 
     res.status(status).send(data);

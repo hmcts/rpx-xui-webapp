@@ -147,28 +147,38 @@ export class LocationResolver implements Resolve<LocationModel[]> {
       ) {
         this.bookableServices.push(roleJurisdiction);
       }
-      if (roleJurisdiction && !this.allLocationServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
-        && roleAssignment.substantive.toLocaleLowerCase() === 'y' && this.checkDatesValid(roleAssignment)
-        // temporary fix as fee-paid-jedge-roles currently substantive
-        && roleAssignment.roleName !== 'fee-paid-judge') {
-        this.setRegionsAndBaseLocations(roleAssignment, roleJurisdiction, regionLocations, false);
-      } else if (roleJurisdiction && !this.allFeePaidLocationServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
-      && (roleAssignment.bookable === true || roleAssignment.bookable === 'true') && this.checkDatesValid(roleAssignment)) {
-        this.setRegionsAndBaseLocations(roleAssignment, roleJurisdiction, regionLocations, true);
+      if (roleJurisdiction && !allLocationServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
+        && roleAssignment.substantive.toLocaleLowerCase() === 'y') {
+        if (!roleAssignment.region && !roleAssignment.baseLocation) {
+          // if there are no restrictions, via union logic, all locations selectable
+          allLocationServices.push(roleJurisdiction);
+        } else if (roleAssignment.region && roleAssignment.baseLocation) {
+          if (locationWithinRegion(regionLocations, roleAssignment.region, roleAssignment.baseLocation)) {
+            this.setBaseLocationForAdding(roleAssignment, roleJurisdiction);
+          } else {
+            if (!this.locations.find((location) => location.services.includes(roleJurisdiction))) {
+              const location = { id: null, userId: this.userId, locationId: null, locationName: '', services: [roleAssignment.jurisdiction] };
+              this.locations.push(location);
+              this.locationServices.add(roleAssignment.jurisdiction);
+            }
+          }
+        } else if (roleAssignment.region) {
+          if (!this.locations.find((location) => location.regionId === roleAssignment.region && location.services.includes(roleJurisdiction))) {
+            const location = { id: undefined, userId: this.userId, locationId: undefined, locationName: '', services: [roleAssignment.jurisdiction], regionId: roleAssignment.region };
+            this.locations.push(location);
+            this.locationServices.add(roleAssignment.jurisdiction);
+          }
+        } else {
+          this.setBaseLocationForAdding(roleAssignment, roleJurisdiction);
+        }
       }
     });
     this.locations.forEach((location) => {
       location.services.map((service) => {
-        userLocationsByService = addLocationToLocationsByService(userLocationsByService, location, service, this.allLocationServices);
-      });
-    });
-    this.feePaidLocations.forEach(location => {
-      location.services.map((service) => {
-        feePaidUserLocationsByService = addLocationToLocationsByService(feePaidUserLocationsByService, location, service, this.allFeePaidLocationServices);
+        userLocationsByService = this.bookableServices.includes(service) ? addLocationToLocationsByService(userLocationsByService, location, service, allLocationServices, true) : addLocationToLocationsByService(userLocationsByService, location, service, allLocationServices);
       });
     });
     this.sessionStorageService.setItem('userLocations', JSON.stringify(userLocationsByService));
-    this.sessionStorageService.setItem('bookableUserLocations', JSON.stringify(feePaidUserLocationsByService));
     this.sessionStorageService.setItem('bookableServices', JSON.stringify(this.bookableServices));
     return this.locations;
   }
@@ -269,13 +279,9 @@ export class LocationResolver implements Resolve<LocationModel[]> {
   // EUI-7909 - remove function below
   private setBaseLocationForAdding(roleAssignment: RoleAssignmentInfo, service: string): void {
     if (!this.locations.find((location) => location.id === roleAssignment.baseLocation && location.services.includes(service))) {
-      const location =
-        { id: roleAssignment.baseLocation,
-          userId: this.userId,
-          locationId: roleAssignment.baseLocation,
-          locationName: '',
-          services: [roleAssignment.jurisdiction] };
-      this.setAllLocations(location, roleAssignment, feePaid);
+      const location = { id: roleAssignment.baseLocation, userId: this.userId, locationId: roleAssignment.baseLocation, locationName: '', services: [roleAssignment.jurisdiction] };
+      this.locations.push(location);
+      this.locationServices.add(roleAssignment.jurisdiction);
     }
   }
 
@@ -285,13 +291,6 @@ export class LocationResolver implements Resolve<LocationModel[]> {
       return of(null);
     }
     return this.http.post<LocationModel[]>('api/locations/getLocationsById', { locations });
-  }
-
-  // check that the role assignment is within the begin and end times
-  private checkDatesValid(roleAssignment: RoleAssignmentInfo): boolean {
-    const notBeforeBegin = !roleAssignment.beginTime || moment(new Date()).isSameOrAfter(roleAssignment.beginTime);
-    const notAfterEnd = !roleAssignment.endTime || moment(new Date()).isSameOrBefore(roleAssignment.endTime);
-    return notBeforeBegin && notAfterEnd;
   }
 
   // check that the role assignment is within the begin and end times

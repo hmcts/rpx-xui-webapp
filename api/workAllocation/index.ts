@@ -169,7 +169,6 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   }
 }
 
-
 export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const caseId = req.params.caseId;
   const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
@@ -266,7 +265,7 @@ export async function postTaskCompletionForAccess(req: EnhancedRequest, res: Res
     // line added as requests are different for approval/rejection
     const taskId = req.body.specificAccessStateData ? req.body.specificAccessStateData.taskId : req.body.taskId;
     const getTaskPath: string =
-     preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, 'complete');
+      preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, 'complete');
     return await handleTaskPost(getTaskPath, newRequest, req);
   } catch (error) {
     next(error);
@@ -589,7 +588,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
   }
 }
 
-export async function getTaskNames(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+export async function getTaskNames(req: EnhancedRequest, res: Response): Promise<Response> {
   const service = req.body.service;
   const response = await handleTaskGet(`${baseWorkAllocationTaskUrl}/task/task-types?jurisdiction=${service}`, req);
 

@@ -18,9 +18,10 @@ export class PriorityFieldLegacyComponent {
       const isToday = this.dueDate.toDateString() === today.toDateString();
       if (isToday) {
         return TaskPriority.MEDIUM;
-      } else {
-        return this.dueDate < today ? TaskPriority.HIGH : TaskPriority.LOW;
       }
+      return this.dueDate < today ? TaskPriority.HIGH : TaskPriority.LOW;
     }
+    // in response to linting issue, returning undefined
+    return undefined;
   }
 }

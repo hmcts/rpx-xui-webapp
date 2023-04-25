@@ -58,7 +58,7 @@ export class LocationDataService {
       return of(regions as Region[]);
     }
     return this.http.get<Region[]>(`${LocationDataService.regionUrl}`).pipe(
-      tap(regions => this.sessionStorageService.setItem(LocationDataService.regionsKey, JSON.stringify(regions)))
+      tap((regions) => this.sessionStorageService.setItem(LocationDataService.regionsKey, JSON.stringify(regions)))
     );
   }
 }

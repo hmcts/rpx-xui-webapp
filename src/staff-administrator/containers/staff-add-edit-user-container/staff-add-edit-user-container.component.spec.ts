@@ -13,7 +13,7 @@ describe('StaffAddEditUserContainerComponent', () => {
     mockRouter = jasmine.createSpyObj('Router', ['getCurrentNavigation']);
 
     await TestBed.configureTestingModule({
-      declarations: [ StaffAddEditUserContainerComponent ],
+      declarations: [StaffAddEditUserContainerComponent],
       providers: [
         { provide: Router, useValue: mockRouter },
         {
@@ -25,13 +25,13 @@ describe('StaffAddEditUserContainerComponent', () => {
                 jobTitles: staffFilterOptionsTestData.jobTitles,
                 skills: staffFilterOptionsTestData.skills,
                 services: staffFilterOptionsTestData.services
-              },
-            },
-          },
-        },
+              }
+            }
+          }
+        }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

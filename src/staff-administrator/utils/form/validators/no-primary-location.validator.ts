@@ -6,7 +6,7 @@ export function noPrimaryLocationValidator(): ValidatorFn {
     if (!locations || !locations.length) {
       return { noPrimaryLocation: true };
     }
-    const primaryLocation = locations.find(location => location.is_primary);
+    const primaryLocation = locations.find((location) => location.is_primary);
 
     if (!primaryLocation) {
       return { noPrimaryLocation: true };

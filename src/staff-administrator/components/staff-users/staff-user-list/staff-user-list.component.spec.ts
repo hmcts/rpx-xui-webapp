@@ -22,7 +22,7 @@ describe('StaffUserListComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [ StaffUserListComponent ],
+      declarations: [StaffUserListComponent],
       imports: [
         HttpClientTestingModule,
         CdkTableModule,
@@ -35,7 +35,7 @@ describe('StaffUserListComponent', () => {
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -59,7 +59,7 @@ describe('StaffUserListComponent', () => {
   it('should display data if tableData$ returns { results: StaffUser[] }' +
     ' and length of results is greater than 0', () => {
     // @ts-expect-error - tableData$ is readonly
-    mockStaffDataFilterService.tableData$ = of({ items: [ {} as StaffUsersFilterResult ] });
+    mockStaffDataFilterService.tableData$ = of({ items: [{} as StaffUsersFilterResult] });
     fixture.detectChanges();
     const element = fixture.debugElement.query(By.css('table'));
     expect(element).toBeTruthy();

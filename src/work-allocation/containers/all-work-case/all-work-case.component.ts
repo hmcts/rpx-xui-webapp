@@ -54,10 +54,10 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
 
   public get fields(): FieldConfig[] {
     let fields = ConfigConstants.AllWorkCases;
-    this.checkReleaseVersionService.isRelease4().subscribe(isRelease4 => {
-     if (!isRelease4) {
-      fields = CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkCases;
-     }
+    this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
+      if (!isRelease4) {
+        fields = CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkCases;
+      }
     });
     return fields;
   }

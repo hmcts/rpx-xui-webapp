@@ -49,7 +49,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         },
         {
           name: 'taskName',
-          value: [{task_type_id: '', task_type_name: ''}]
+          value: [{ task_type_id: '', task_type_name: '' }]
         },
         {
           name: 'findTaskNameControl',
@@ -235,7 +235,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       minSelectedError: 'You must select a task name',
       maxSelectedError: null,
       enableAddTaskNameButton: false,
-      type: 'find-task-name',
+      type: 'find-task-name'
     };
   }
 
@@ -312,8 +312,8 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   }
 
   public checkForReleaseVersion(): void {
-    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null).subscribe(features => {
-      this.isRelease4 = features.configurations.findIndex(serviceConfig =>  parseFloat(serviceConfig.releaseVersion) === 4) > -1;
+    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null).subscribe((features) => {
+      this.isRelease4 = features.configurations.findIndex((serviceConfig) => parseFloat(serviceConfig.releaseVersion) === 4) > -1;
     });
   }
 }

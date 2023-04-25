@@ -19,10 +19,10 @@ import { InfoMessageType } from '../../../role-access/models/enums';
 export class AvailableTasksComponent extends TaskListWrapperComponent {
   public get fields(): FieldConfig[] {
     let fields = [];
-    this.checkReleaseVersionService.isRelease4().subscribe(isRelease4 => {
+    this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
       fields = this.isCurrentUserJudicial() ?
-      (isRelease4 ? ConfigConstants.AvailableTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.AvailableTasksForJudicial) :
-      (isRelease4 ? ConfigConstants.AvailableTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AvailableTasksForLegalOps);
+        (isRelease4 ? ConfigConstants.AvailableTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.AvailableTasksForJudicial) :
+        (isRelease4 ? ConfigConstants.AvailableTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AvailableTasksForLegalOps);
     });
     return fields;
   }
@@ -52,7 +52,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
-      const searchParameters: SearchTaskParameter [] = [
+      const searchParameters: SearchTaskParameter[] = [
         { key: 'jurisdiction', operator: 'IN', values: this.selectedServices }
       ];
       const locationParameter = this.getLocationParameter();

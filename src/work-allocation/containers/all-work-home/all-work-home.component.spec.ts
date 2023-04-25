@@ -43,10 +43,10 @@ describe('AllWorkHomeComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule,
+        WorkAllocationComponentsModule
       ],
       declarations: [AllWorkHomeComponent, WrapperComponent],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },

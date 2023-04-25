@@ -105,7 +105,7 @@ export class WorkAllocationTaskService {
     return of(null);
   }
 
-  public getTaskTypeNamesFromService(service: string): Observable<TaskNamesResponse[]> {
+  public getTaskTypeNamesFromService(): Observable<TaskNamesResponse[]> {
     return this.http.get<TaskNamesResponse[]>('/workallocation2/taskNames');
   }
 }

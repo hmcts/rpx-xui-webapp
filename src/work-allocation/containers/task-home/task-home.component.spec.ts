@@ -97,11 +97,11 @@ xdescribe('TaskHomeComponent', () => {
         RouterTestingModule,
         WorkAllocationComponentsModule
       ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [TaskHomeComponent, WrapperComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
-         provideMockStore({ initialState: initialMockState }),
+        provideMockStore({ initialState: initialMockState }),
         // { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         { provide: LocationDataService, useValue: locationDataService },
         {

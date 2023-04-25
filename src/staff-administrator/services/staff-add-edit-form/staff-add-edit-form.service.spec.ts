@@ -24,10 +24,10 @@ describe('StaffAddEditFormService', () => {
                 skills: staffFilterOptionsTestData.skills,
                 services: staffFilterOptionsTestData.services,
                 regions: staffFilterOptionsTestData.regions
-              },
-            },
-          },
-        },
+              }
+            }
+          }
+        }
       ]
     });
     service = TestBed.inject(StaffAddEditFormService);
@@ -55,8 +55,8 @@ describe('StaffAddEditFormService', () => {
       service.selectedServiceCodes$
         .pipe(take(1))
         .subscribe((serviceCodes) => {
-        expect(serviceCodes).toEqual([]);
-      });
+          expect(serviceCodes).toEqual([]);
+        });
 
       const firstServiceCodeOption = service.staffFilterOptions.services[0];
       const selectedServices = service.formGroup.get('services')?.value;
@@ -79,13 +79,13 @@ describe('StaffAddEditFormService', () => {
         user_type: 'User Type',
         task_supervisor: false,
         case_allocator: false,
-        staff_admin: false,
+        staff_admin: false
       };
       const newStaffUser = StaffUser.from(staffUserData);
       service.patchFormValues(newStaffUser);
       expect(service.formGroup.patchValue).toHaveBeenCalledTimes(1);
       Object.keys(staffUserData).forEach((key) => {
-       expect(service.formGroup.value[key]).toBe(staffUserData[key]);
+        expect(service.formGroup.value[key]).toBe(staffUserData[key]);
       });
     });
   }));

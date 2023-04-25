@@ -35,12 +35,12 @@ describe('StaffUsersComponent', () => {
         StaffUsersComponent
       ],
       providers: [
-        { provide : StaffDataFilterService, useValue: staffDataFilterServiceMock },
+        { provide: StaffDataFilterService, useValue: staffDataFilterServiceMock },
         { provide: InfoMessageCommService, useValue: infoMessageCommMock }
       ],
-      schemas: [NO_ERRORS_SCHEMA],
+      schemas: [NO_ERRORS_SCHEMA]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

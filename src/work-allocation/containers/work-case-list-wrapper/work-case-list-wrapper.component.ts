@@ -117,7 +117,6 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   }
 
   public get fields(): CaseFieldConfig[] {
-
     return [];
   }
 

@@ -56,7 +56,7 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     staffAdministratorRouting,
     NgxPaginationModule,
     MatTooltipModule,
-    MatAutocompleteModule,
+    MatAutocompleteModule
   ],
   providers: [
     StaffDataAccessService,
@@ -64,7 +64,7 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     StaffFilterOptionsSkillsResolver,
     StaffFilterOptionsJobTitlesResolver,
     StaffFilterOptionsUserTypesResolver,
-    StaffUserDetailsResolverService,
+    StaffUserDetailsResolverService
   ],
   exports: []
 })

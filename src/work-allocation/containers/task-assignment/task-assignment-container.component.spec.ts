@@ -4,7 +4,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, ViewChild } from '@angular/co
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, PersonRole } from '@hmcts/rpx-xui-common-lib';
@@ -36,7 +36,7 @@ class WrapperComponent {
   template: `
     <div>Nothing</div>`
 })
-class NothingComponent {}
+class NothingComponent { }
 
 describe('TaskAssignmentContainerComponent2', () => {
   let component: TaskAssignmentContainerComponent;
@@ -95,10 +95,10 @@ describe('TaskAssignmentContainerComponent2', () => {
         )
       ],
       providers: [
-        {provide: Location, useValue: locationStub},
-        {provide: WorkAllocationTaskService, useValue: mockWorkAllocationService},
-        {provide: SessionStorageService, useValue: mockSessionStorageService},
-        {provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService},
+        { provide: Location, useValue: locationStub },
+        { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+        { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -117,8 +117,8 @@ describe('TaskAssignmentContainerComponent2', () => {
             paramMap: of({ selectedPerson: SELECTED_PERSON })
           }
         },
-        {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},
-        {provide: Router, useValue: mockRouter},
+        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+        { provide: Router, useValue: mockRouter }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);

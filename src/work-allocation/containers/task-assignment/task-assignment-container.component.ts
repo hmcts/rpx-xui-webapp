@@ -63,7 +63,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     if (this.showAssigneeColumn) {
       fields = (this.isJudicial ? ConfigConstants.TaskActionsWithAssigneeForJudicial : ConfigConstants.TaskActionsWithAssigneeForLegalOps);
     } else {
-      this.checkReleaseVersionService.isRelease4().subscribe(isRelease4 => {
+      this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
         fields = (isRelease4 ? ConfigConstants.AllWorkTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForLegalOps);
       });
     }

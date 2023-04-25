@@ -202,7 +202,7 @@ export const ROUTES: Routes = [
   {
     path: 'staff',
     canActivate: [AuthGuard, AcceptTermsGuard, RoleGuard],
-    loadChildren: () => import('../staff-administrator/staff-administrator.module').then(m => m.StaffAdministratorModule),
+    loadChildren: () => import('../staff-administrator/staff-administrator.module').then((m) => m.StaffAdministratorModule),
     data: {
       needsRole: ['staff-admin'],
       roleMatching: RoleMatching.ALL,

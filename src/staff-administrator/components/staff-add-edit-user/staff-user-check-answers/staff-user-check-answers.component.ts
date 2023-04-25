@@ -25,6 +25,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     skills: GroupOptions[],
     services: StaffFilterOption[]
   };
+
   public isLoading = false;
   public isUpdateMode = false;
 
@@ -80,8 +81,9 @@ export class StaffUserCheckAnswersComponent implements OnInit {
           message: InfoMessage.UPDATED_USER,
           type: InfoMessageType.SUCCESS
         } as InformationMessage);
-        this.router.navigateByUrl(`/staff/user-details/${response.case_worker_id}`,  { state: { retainMessages: true } });
+        this.router.navigateByUrl(`/staff/user-details/${response.case_worker_id}`, { state: { retainMessages: true } });
       }, (error) => {
+        console.log(error);
         window.scrollTo(0, 0);
         this.router.navigateByUrl('/service-down');
       });

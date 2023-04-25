@@ -106,29 +106,29 @@ describe('TaskManagerFilterComponent', () => {
     mockFilterService.get.and.returnValue(null);
     mockFeatureToggleService.getValue.and.returnValue(of({
       configurations: [
-          {
-              caseTypes: [
-                  'Asylum'
-              ],
-              releaseVersion: '3.5',
-              serviceName: 'IA'
-          },
-          {
-              caseTypes: [
-                  'PRIVATELAW',
-                  'PRLAPPS'
-              ],
-              releaseVersion: '2.1',
-              serviceName: 'PRIVATELAW'
-          },
-          {
-              caseTypes: [
-                  'CIVIL',
-                  'GENERALAPPLICATION'
-              ],
-              releaseVersion: '2.1',
-              serviceName: 'CIVIL'
-          }
+        {
+          caseTypes: [
+            'Asylum'
+          ],
+          releaseVersion: '3.5',
+          serviceName: 'IA'
+        },
+        {
+          caseTypes: [
+            'PRIVATELAW',
+            'PRLAPPS'
+          ],
+          releaseVersion: '2.1',
+          serviceName: 'PRIVATELAW'
+        },
+        {
+          caseTypes: [
+            'CIVIL',
+            'GENERALAPPLICATION'
+          ],
+          releaseVersion: '2.1',
+          serviceName: 'CIVIL'
+        }
       ]
     }));
     fixture.detectChanges();

@@ -92,7 +92,7 @@ xdescribe('MyTasksComponent', () => {
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: AllocateRoleService, useValue: mockRoleService },
         { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService },
-        { provide: Store, useValue: storeMock },
+        { provide: Store, useValue: storeMock }
       ]
     }).compileComponents();
 

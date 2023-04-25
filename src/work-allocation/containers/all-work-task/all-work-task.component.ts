@@ -64,8 +64,8 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
 
   public get fields(): FieldConfig[] {
     let fields = [];
-    this.checkReleaseVersionService.isRelease4().subscribe(isRelease4 => {
-        fields = this.isCurrentUserJudicial() ?
+    this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
+      fields = this.isCurrentUserJudicial() ?
         (isRelease4 ? ConfigConstants.AllWorkTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForJudicial) :
         (isRelease4 ? ConfigConstants.AllWorkTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForLegalOps);
     });
@@ -174,9 +174,9 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     }
   }
 
-  private getTaskNameParameter(): {key: string, operator: string, values: string[]} {
+  private getTaskNameParameter(): { key: string, operator: string, values: string[] } {
     if (this.selectedTaskName) {
-      return {key: 'task_type', operator: 'IN', values: [this.selectedTaskName]};
+      return { key: 'task_type', operator: 'IN', values: [this.selectedTaskName] };
     }
   }
 }

@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -10,7 +10,7 @@ import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { InfoMessageType } from '../../../role-access/models/enums';
-import { StaffUserStatus } from '../../../staff-administrator/models/staff-user-status.enum';
+import { StaffUserIDAMStatus } from '../../models/staff-user-idam-status.enum';
 import { StaffUser } from '../../models/staff-user.model';
 import { StaffAddEditFormService } from '../../services/staff-add-edit-form/staff-add-edit-form.service';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
@@ -82,7 +82,7 @@ describe('StaffUserDetailsComponent', () => {
       ],
       region: 'West Midlands',
       region_id: 12,
-      up_idam_status: StaffUserStatus.ACTIVE
+      up_idam_status: StaffUserIDAMStatus.ACTIVE
     };
 
     TestBed.configureTestingModule({
@@ -91,7 +91,8 @@ describe('StaffUserDetailsComponent', () => {
         StaffStatusComponent,
         StubComponent
       ],
-      imports: [HttpClientTestingModule,
+      imports: [
+        HttpClientTestingModule,
         RouterTestingModule.withRoutes([
           { path: 'service-down', component: StubComponent },
           { path: 'staff/user-details/:id/update', component: StubComponent },
@@ -231,10 +232,27 @@ describe('StaffUserDetailsComponent', () => {
 
   it('should call onUpdateUser when clicking update button', fakeAsync(() => {
     spyOn(component, 'onUpdateUser').and.callThrough();
+    spyOn(router, 'navigateByUrl').and.callThrough();
     const updateUserButton = fixture.debugElement.query(By.css('#updateUserButton'));
     updateUserButton.triggerEventHandler('click', null);
     expect(component.onUpdateUser).toHaveBeenCalled();
+
   }));
+
+  it('should call navigateByUrl when calling onUpdateUser ' +
+    'with state set as the userDetails present', () => {
+    spyOn(router, 'navigateByUrl').and.callThrough();
+    component.onUpdateUser();
+    expect(router.navigateByUrl).toHaveBeenCalledWith(
+      // @ts-expect-error - private property
+      `/staff/user-details/${component.route.snapshot.params.id}/update`,
+      {
+        state: {
+          formValues: component.userDetails
+        }
+      }
+    );
+  });
 
   it('should call onCopyUser when clicking copy button', fakeAsync(() => {
     spyOn(component, 'onCopyUser').and.callThrough();
@@ -242,6 +260,28 @@ describe('StaffUserDetailsComponent', () => {
     copyUserButton.triggerEventHandler('click', null);
     expect(component.onCopyUser).toHaveBeenCalled();
   }));
+
+  it('should call navigateByUrl when calling onCopyUser ' +
+    'with modified user details as state', () => {
+    spyOn(router, 'navigateByUrl').and.callThrough();
+    component.onCopyUser();
+    expect(router.navigateByUrl).toHaveBeenCalledWith(
+      // @ts-expect-error - private property
+      `/staff/user-details/${component.route.snapshot.params.id}/copy`,
+      {
+        state: {
+          formValues: {
+            ...component.userDetails,
+            first_name: '',
+            last_name: '',
+            email_id: '',
+            suspended: false,
+            up_idam_status: StaffUserIDAMStatus.PENDING
+          }
+        }
+      }
+    );
+  });
 
   it('should have a disabled button if suspended is true', () => {
     const restoreOrSuspendedButton = fixture.debugElement.query(By.css('#user-suspended-restore-button'));

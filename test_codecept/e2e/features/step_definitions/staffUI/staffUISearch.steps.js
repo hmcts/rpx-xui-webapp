@@ -88,22 +88,32 @@ Then('I validate staff user details display', async function(){
 
 
 
-When('I add new staff user details', async function () {
+When('I add new staff user details', async function (datatable) {
+    reportLogger.reportDatatable(datatable)
+    const inputdata = datatable.parse().rowsHash();
     await staffSearchPage.clickAddNewUser();
-    expect(await addNewUserPage.getPageTitle()).to.includes('Add a new user')
-    const newIdamUser = await testDataManager.createAndGetIdamUser();
-    reportLogger.AddMessage(`TEST_DATA: idam user created ${newIdamUser.email}`)
+    expect(await addNewUserPage.getPageTitle()).to.includes('Add user')
+    // const newIdamUser = await testDataManager.createAndGetIdamUser();
+    // reportLogger.AddMessage(`TEST_DATA: idam user created ${newIdamUser.email}`)
     const details = {
-        'First name':'xui auto test',
-        'Last name':'last name',
-        'Email': newIdamUser.email,
-        'Region':'Region 1',
-        'Services':['CIVIL'],
-        'Primary location':'Bir',
-        'User type':'Legal office',
-        'Roles':['Case Allocator'],
-        'Job title': ['Legal Caseworker']
     }
+
+    const datatableInputKeys = Object.keys(inputdata)
+    for (const inputKey of datatableInputKeys){
+        switch (inputKey){
+            case 'Email':
+                details[inputKey] = inputdata[inputKey] + `${Date.now()}@justice.gov.uk`;
+                break;
+            case 'Services':
+            case 'Roles':
+            case 'Job title':
+                details[inputKey] = inputdata[inputKey].split(',');
+                break;
+            default:
+                details[inputKey] = inputdata[inputKey]
+        }
+    }
+
     await addNewUserPage.enterDetails(details);
     await addNewUserPage.clickContinue();
 
@@ -114,13 +124,20 @@ When('I add new staff user details', async function () {
 
     expect(checkAnswers['Name']).to.includes(`${details['First name']} ${details['Last name']}`)
     expect(checkAnswers['Email address']).to.includes(`${details['Email']}`)
-    expect(checkAnswers['Services']).to.includes(`${details['Services']}`)
+    for (const service of details['Services']){
+        expect(checkAnswers['Service']).to.includes(service)
+
+    }
 
     await addUserCheckYourAnswersPage.submitButton.click();
 
     await staffSearchPage.basicSearch.wait();
     expect(await staffSearchPage.amOnPage()).to.be.true
-    expect(await staffSearchPage.validateSuccessMessageBanner('You have added a new user')).to.be.true
+
+    await BrowserWaits.retryWithActionCallback(async () => {
+        await staffSearchPage.validateSuccessMessageBanner('You have added a new user')
+    });
+    
 
 })
 

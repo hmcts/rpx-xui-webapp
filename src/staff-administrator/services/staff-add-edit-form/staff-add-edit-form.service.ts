@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { GroupOptions, RefDataRegion } from '@hmcts/rpx-xui-common-lib';
 import { map, startWith } from 'rxjs/operators';
 import { StaffFilterOption } from '../../models/staff-filter-option.model';
+import { StaffUserIDAMStatus } from '../../models/staff-user-idam-status.enum';
 import { StaffUser } from '../../models/staff-user.model';
 import { buildCheckboxArray, filterItemsByBoolean } from '../../utils/form/staff-form.utils';
 import { noPrimaryLocationValidator } from '../../utils/form/validators/no-primary-location.validator';
@@ -41,7 +42,7 @@ export class StaffAddEditFormService {
       roles: new FormArray([], Validators.required), // Job title heading
       skills: new FormGroup({}),
       suspended: new FormControl(false),
-      up_idam_status: new FormControl('PENDING')
+      up_idam_status: new FormControl(StaffUserIDAMStatus.PENDING)
     });
 
     // Services

@@ -1,5 +1,6 @@
-import { StaffUserStatus } from './staff-user-status.enum';
+import { StaffUserIDAMStatus } from './staff-user-idam-status.enum';
 import { StaffUserLocation } from './staff-user-location.model';
+import { StaffUserStatus } from './staff-user-status.enum';
 
 export class StaffUser {
   public email_id: string;
@@ -12,7 +13,7 @@ export class StaffUser {
   public case_allocator: boolean;
   public staff_admin: boolean;
   public idam_roles: string[];
-  public up_idam_status: 'ACTIVE' | 'SUSPENDED' | 'PENDING';
+  public up_idam_status: StaffUserIDAMStatus;
   public is_resend_invite?: boolean;
 
   public roles: {
@@ -42,7 +43,7 @@ export class StaffUser {
     if (this.suspended) {
       return StaffUserStatus.SUSPENDED;
     } else {
-      return this.up_idam_status === 'ACTIVE' ? StaffUserStatus.ACTIVE : StaffUserStatus.PENDING;
+      return this.up_idam_status === StaffUserIDAMStatus.ACTIVE ? StaffUserStatus.ACTIVE : StaffUserStatus.PENDING;
     }
   }
 

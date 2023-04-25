@@ -6,6 +6,7 @@ import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { InfoMessageType } from '../../../role-access/models/enums';
+import { StaffUserIDAMStatus } from '../../models/staff-user-idam-status.enum';
 import { StaffUser } from '../../models/staff-user.model';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 
@@ -79,7 +80,9 @@ export class StaffUserDetailsComponent {
       ...this.userDetails,
       first_name: '',
       last_name: '',
-      email_id: ''
+      email_id: '',
+      suspended: false,
+      up_idam_status: StaffUserIDAMStatus.PENDING
     };
     this.router.navigateByUrl(`/staff/user-details/${this.route.snapshot.params.id}/copy`,
       { state: { formValues } });

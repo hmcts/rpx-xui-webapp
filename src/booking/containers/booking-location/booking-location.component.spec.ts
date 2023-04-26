@@ -18,7 +18,7 @@ describe('BookingLocationComponent', () => {
   const userDetails: UserDetails = {
     sessionTimeout: {
       idleModalDisplayTime: 100,
-      totalIdleTime: 0,
+      totalIdleTime: 0
     },
     canShareCases: true,
     userInfo,
@@ -38,7 +38,7 @@ describe('BookingLocationComponent', () => {
           useValue: storeMock
         }
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
   }));
@@ -74,7 +74,6 @@ describe('BookingLocationComponent', () => {
       continueButton.triggerEventHandler('click', null);
       expect(eventTriggerSpy).toHaveBeenCalledWith(BookingNavigationEvent.LOCATIONCONTINUE);
     });
-
   });
 
   describe('on events', () => {
@@ -100,11 +99,9 @@ describe('BookingLocationComponent', () => {
       component.onLocationChanged(component.bookingProcess.location);
       expect(component.formError).toBeFalsy();
     });
-
   });
 
   describe('getJurisdictions()', () => {
-
     beforeEach(() => {
       fixture.detectChanges();
     });
@@ -120,6 +117,5 @@ describe('BookingLocationComponent', () => {
       component.ngOnInit();
       expect(component.jurisdictions).toEqual('IA,SSCS');
     });
-
   });
 });

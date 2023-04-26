@@ -28,6 +28,7 @@ describe('CreateCaseFieldsResolver', () => {
   let createCaseFieldsResolver: CreateCaseEventTriggerResolver;
 
   let casesService: any;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let alertService: any;
   let route: any;
 
@@ -39,10 +40,10 @@ describe('CreateCaseFieldsResolver', () => {
 
     route = {
       paramMap: createSpyObj('paramMap', ['get']),
-      queryParamMap: createSpyObj('queryParamMap', ['get']),
+      queryParamMap: createSpyObj('queryParamMap', ['get'])
     };
 
-    route.paramMap.get.and.callFake(key => {
+    route.paramMap.get.and.callFake((key) => {
       switch (key) {
         case PARAM_JURISDICTION_ID:
           return JURISDICTION;
@@ -55,7 +56,7 @@ describe('CreateCaseFieldsResolver', () => {
       }
     });
 
-    route.queryParamMap.get.and.callFake(key => {
+    route.queryParamMap.get.and.callFake((key) => {
       // tslint:disable-next-line:switch-default
       switch (key) {
         case QUERY_PARAM_IGNORE_WARNINGS:
@@ -70,7 +71,7 @@ describe('CreateCaseFieldsResolver', () => {
 
     createCaseFieldsResolver
       .resolve(route)
-      .subscribe(triggerData => {
+      .subscribe((triggerData) => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
@@ -87,9 +88,9 @@ describe('CreateCaseFieldsResolver', () => {
   it('should resolve event trigger when route is not :jid/:ctid/:eid but cache is empty', () => {
     route = {
       firstChild: {
-          url: ['someChild']
-        },
-      queryParamMap : createSpyObj('queryParamMap', ['get']),
+        url: ['someChild']
+      },
+      queryParamMap: createSpyObj('queryParamMap', ['get']),
       paramMap: createSpyObj('paramMap', ['get'])
     };
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
@@ -97,7 +98,7 @@ describe('CreateCaseFieldsResolver', () => {
 
     createCaseFieldsResolver
       .resolve(route)
-      .subscribe(triggerData => {
+      .subscribe((triggerData) => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
@@ -108,9 +109,9 @@ describe('CreateCaseFieldsResolver', () => {
   it('should return cached event trigger when route is not :jid/:ctid/:eid if cache is not empty', () => {
     route = {
       firstChild: {
-          url: ['someChild']
-        },
-      queryParamMap : createSpyObj('queryParamMap', ['get']),
+        url: ['someChild']
+      },
+      queryParamMap: createSpyObj('queryParamMap', ['get']),
       paramMap: createSpyObj('paramMap', ['get'])
     };
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
@@ -118,7 +119,7 @@ describe('CreateCaseFieldsResolver', () => {
 
     createCaseFieldsResolver
       .resolve(route)
-      .subscribe(triggerData => {
+      .subscribe((triggerData) => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
@@ -127,8 +128,7 @@ describe('CreateCaseFieldsResolver', () => {
   });
 
   it('should use draftId when resuming create event ', () => {
-    route.queryParamMap.get.and.callFake(key => {
-      // tslint:disable-next-line:switch-default
+    route.queryParamMap.get.and.callFake((key) => {
       switch (key) {
         case QUERY_PARAM_IGNORE_WARNINGS:
           return IGNORE_WARNINGS;
@@ -140,7 +140,7 @@ describe('CreateCaseFieldsResolver', () => {
 
     createCaseFieldsResolver
       .resolve(route)
-      .subscribe(triggerData => {
+      .subscribe((triggerData) => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
@@ -157,9 +157,9 @@ describe('CreateCaseFieldsResolver', () => {
 
     createCaseFieldsResolver
       .resolve(route)
-      .subscribe(data => {
+      .subscribe((data) => {
         fail(data);
-      }, err => {
+      }, (err) => {
         expect(err).toBeTruthy();
       });
   });

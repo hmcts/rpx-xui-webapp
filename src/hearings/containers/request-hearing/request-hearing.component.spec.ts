@@ -26,9 +26,9 @@ describe('RequestHearingComponent', () => {
       declarations: [RequestHearingComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
-        {provide: AbstractPageFlow, useValue: mockPageFlow},
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
+        { provide: AbstractPageFlow, useValue: mockPageFlow },
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService }
       ]
     })
       .compileComponents();

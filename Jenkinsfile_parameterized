@@ -177,5 +177,4 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             reportName           : 'PROD Smoke Test'
         ])
     }
-
 }

@@ -76,6 +76,7 @@
       "taskApi": "http://wa-task-management-api-prod.service.core-compute-prod.internal"
     },
     "refunds": "http://ccpay-refunds-api-prod.service.core-compute-prod.internal",
+    "notifications": "http://ccpay-notifications-service-prod.service.core-compute-prod.internal",
     "role_assignment": {
       "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal",
       "roleMappingApi": "http://am-org-role-mapping-service-prod.service.core-compute-prod.internal"

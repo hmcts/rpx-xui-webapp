@@ -4,7 +4,7 @@ import { NextFunction } from 'express';
 import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import { mockReq, mockRes } from 'sinon-express-mock'
+import { mockReq, mockRes } from 'sinon-express-mock';
 import * as globalSearchServices from './index';
 import { http } from '../../api/lib/http';
 import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
@@ -13,9 +13,7 @@ import { GlobalSearchService } from '../../api/interfaces/globalSearchService';
 chai.use(sinonChai);
 
 describe('Jurisdiction', () => {
-
   let sandbox: sinon.SinonSandbox;
-  let spy: any;
   const jurisdictionList: Jurisdiction[] = [
     { id: 'PROBATE', name: 'Manage probate application', description: null, caseTypes: null },
     { id: 'IA', name: 'Immigration & Asylum', description: null, caseTypes: null },
@@ -25,8 +23,8 @@ describe('Jurisdiction', () => {
   ];
   const serviceList: GlobalSearchService[] = [
     { serviceId: 'IA', serviceName: 'Immigration & Asylum' },
-    { serviceId: 'CIVIL', serviceName: 'CIVIL'},
-    { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW'},
+    { serviceId: 'CIVIL', serviceName: 'CIVIL' },
+    { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' }
   ];
 
   beforeEach(() => {
@@ -43,7 +41,7 @@ describe('Jurisdiction', () => {
       serviceList,
     });
     const next = sinon.mock().atLeast(1) as NextFunction;
-    spy = sandbox.stub(http, 'get').resolves(res);
+    sandbox.stub(http, 'get').resolves(res);
     sandbox.stub(globalSearchServices, 'getServices').returns(res);
     const response = await globalSearchServices.getServices(req, res, next);
     expect(response).to.deep.equal(res);
@@ -107,7 +105,7 @@ describe('Jurisdiction', () => {
     const next = sinon.mock().atLeast(1) as NextFunction;
     sandbox.stub(http, 'post').resolves(res);
     sandbox.stub(globalSearchServices, 'getSearchResults').returns(res);
-    const response = await globalSearchServices.getSearchResults(req, res,next);
+    const response = await globalSearchServices.getSearchResults(req, res, next);
     expect(response).to.deep.equal(res);
   });
 });

@@ -86,7 +86,6 @@ const logger: JUILogger = log4jui.getLogger('workallocation');
  * getTask
  */
 export async function getTask(req: EnhancedRequest, res: Response, next: NextFunction) {
-
   try {
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
     const jsonResponse = await handleTaskGet(getTaskPath, req);
@@ -109,7 +108,7 @@ export async function getTypesOfWork(req: EnhancedRequest, res: Response, next: 
     const response = await getTypesOfWorkByUserId(path, req);
     let typesOfWork = [];
     if (response && response.work_types) {
-      typesOfWork = response.work_types.map(work => ({ key: work.id, label: work.label }));
+      typesOfWork = response.work_types.map((work) => ({ key: work.id, label: work.label }));
     }
     res.status(200);
     res.send(typesOfWork);
@@ -147,7 +146,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
         searchRequest.sorting_parameters.splice(index, 1);
       }
     });
-    const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date');
+    const sortParam = searchRequest.sorting_parameters.find((sort) => sort.sort_by === 'created_date');
     if (sortParam) {
       sortParam.sort_by = 'dueDate';
     }
@@ -160,9 +159,8 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     let returnData;
     if (data) {
       returnData = !!req.body.refined ?
-       { tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records }
+        { tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records }
         : { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
-
     }
     res.send(returnData);
   } catch (error) {
@@ -179,24 +177,24 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
         key: 'caseId',
         operator: 'IN',
         values: [
-          caseId,
-        ],
+          caseId
+        ]
       },
       {
         key: 'state',
         operator: 'IN',
         values: [
           'assigned',
-          'unassigned',
-        ],
-      },
+          'unassigned'
+        ]
+      }
     ],
     sorting_parameters: [
       {
         sort_by: 'due_date',
-        sort_order: 'asc',
-      },
-    ],
+        sort_order: 'asc'
+      }
+    ]
   };
   try {
     const { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
@@ -216,14 +214,13 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
   const eventId = req.params.eventId;
   const caseType = req.params.caseType;
   const jurisdiction = req.params.jurisdiction;
+
   try {
     const payload = { case_id: caseId, event_id: eventId, case_jurisdiction: jurisdiction, case_type: caseType };
     const jurisdictions = getWASupportedJurisdictionsList();
-    let status;
-    let data;
-    jurisdictions.includes(jurisdiction) ? {status, data} =
-     await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req)
-     : (status = 200, data = []);
+    const { status, data } = jurisdictions.includes(jurisdiction)
+      ? await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req)
+      : { status: 200, data: [] };
     return res.status(status).send(data);
   } catch (e) {
     next(e);
@@ -234,14 +231,13 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
  * Post to invoke an action on a Task.
  */
 export async function postTaskAction(req: EnhancedRequest, res: Response, next: NextFunction) {
-
   try {
     // Additional setting to mark unassigned tasks as done - need to assign task before completing
     if (req.body.hasNoAssigneeOnComplete === true) {
       req.body = {
         completion_options: {
-           assign_and_complete: true,
-         },
+          assign_and_complete: true
+        }
       };
     } else {
       delete req.body.hasNoAssigneeOnComplete;
@@ -259,22 +255,19 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
 /**
  * Post to invoke an action on a Task.
  */
-// tslint:disable-next-line:max-line-length
 export async function postTaskCompletionForAccess(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
-
   try {
     // Additional setting to mark unassigned tasks as done - need to assign task before completing
     const newRequest = {
       completion_options: {
-        assign_and_complete: true,
-      },
+        assign_and_complete: true
+      }
     };
     // line added as requests are different for approval/rejection
     const taskId = req.body.specificAccessStateData ? req.body.specificAccessStateData.taskId : req.body.taskId;
     const getTaskPath: string =
      preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, 'complete');
-    const completionResponse = await handleTaskPost(getTaskPath, newRequest, req);
-    return completionResponse;
+    return await handleTaskPost(getTaskPath, newRequest, req);
   } catch (error) {
     next(error);
     return error;
@@ -299,7 +292,7 @@ export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, nex
  */
 export async function getCaseWorkersFromServices(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const caseworkersByService: CaseworkersByService[] = await retrieveCaseWorkersForServices(req, res);
+    const caseworkersByService: CaseworkersByService[] = await retrieveCaseWorkersForServices(req);
     res.status(200);
     res.send(caseworkersByService);
   } catch (error) {
@@ -324,7 +317,7 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest): Promise<Case
 }
 
 // similar as above but checks services
-export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: Response): Promise<CaseworkersByService[]> {
+export async function retrieveCaseWorkersForServices(req: EnhancedRequest): Promise<CaseworkersByService[]> {
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
   const jurisdictions = req.body.serviceIds as string [];
   // will need to check specific jurisdiction have caseworkers in session
@@ -353,14 +346,14 @@ export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: 
   const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
   const fullCaseworkerByServiceInfo = [];
   const userResponse = await handlePostCaseWorkersRefData(userUrl, userIdsByJurisdiction, req);
-  userResponse.forEach(userList => {
-    const jurisdictionData = data.find(caseworkerData => caseworkerData.jurisdiction === userList.jurisdiction);
+  userResponse.forEach((userList) => {
+    const jurisdictionData = data.find((caseworkerData) => caseworkerData.jurisdiction === userList.jurisdiction);
     const caseWorkerReferenceData = getCaseworkerDataForServices(userList.data, jurisdictionData);
     // note have to merge any new service caseworker data for full session as well as services specified in params
     fullCaseworkerByServiceInfo.push(caseWorkerReferenceData);
   });
   req.session.caseworkersByService = req.session && req.session.caseworkersByService ?
-      [...req.session.caseworkersByService, ...fullCaseworkerByServiceInfo] : fullCaseworkerByServiceInfo;
+    [...req.session.caseworkersByService, ...fullCaseworkerByServiceInfo] : fullCaseworkerByServiceInfo;
   return fullCaseworkerByServiceInfo;
 }
 
@@ -368,10 +361,8 @@ export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: 
  * Get CaseWorkers for Location
  */
 export async function getAllCaseWorkersForLocation(req: EnhancedRequest, res: Response, next: NextFunction) {
-
   try {
     const getCaseWorkerPath: string = prepareCaseWorkerForLocation(baseCaseWorkerRefUrl, req.params.locationId);
-
     const jsonResponse = await handleCaseWorkerForLocation(getCaseWorkerPath, req);
     res.status(200);
     res.send(jsonResponse);
@@ -384,10 +375,8 @@ export async function getAllCaseWorkersForLocation(req: EnhancedRequest, res: Re
  * Get CaseWorkers for Service
  */
 export async function getCaseWorkersForService(req: EnhancedRequest, res: Response, next: NextFunction) {
-
   try {
     const getCaseWorkerPath: string = prepareCaseWorkerForService(baseCaseWorkerRefUrl, req.params.serviceId);
-
     const jsonResponse = await handleCaseWorkerForService(getCaseWorkerPath, req);
     res.status(200);
     res.send(jsonResponse);
@@ -400,9 +389,7 @@ export async function getCaseWorkersForService(req: EnhancedRequest, res: Respon
  * Get CaseWorkers for Location and Service
  */
 export async function getCaseWorkersForLocationAndService(req: EnhancedRequest, res: Response, next: NextFunction) {
-
   try {
-    // tslint:disable-next-line:max-line-length
     const getCaseWorkerPath: string = prepareCaseWorkerForLocationAndService(baseUrl, req.params.locationId, req.params.serviceId);
     const jsonResponse = await handleCaseWorkerForLocationAndService(getCaseWorkerPath, req);
     res.status(200);
@@ -418,7 +405,6 @@ export async function getCaseWorkersForLocationAndService(req: EnhancedRequest, 
 export async function searchCaseWorker(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     const postTaskPath: string = prepareCaseWorkerSearchUrl(baseUrl);
-
     const { status, data } = await handlePostSearch(postTaskPath, req.body, req);
     res.status(status);
     res.send(data);
@@ -435,12 +421,11 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
       'case_id': req.body.searchRequest.ccdId,
       'case_jurisdiction': req.body.searchRequest.jurisdiction,
       'case_type': req.body.searchRequest.caseTypeId,
-      'event_id': req.body.searchRequest.eventId,
+      'event_id': req.body.searchRequest.eventId
     };
-    let status;
-    let data;
-    jurisdictions.includes(req.body.searchRequest.jurisdiction) ?
-     { status, data } = await handlePostSearch(postTaskPath, reqBody, req) : (status = 200, data = []);
+    const { status, data } = jurisdictions.includes(req.body.searchRequest.jurisdiction)
+      ? await handlePostSearch(postTaskPath, reqBody, req)
+      : { status: 200, data: [] };
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -475,7 +460,7 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): P
       for (const caseType in data[jurisdiction]) {
         if (data[jurisdiction].hasOwnProperty(caseType)) {
           const queries = constructElasticSearchQuery(Array.from(data[jurisdiction][caseType]), 0, 10000);
-          queries.forEach(query => {
+          queries.forEach((query) => {
             casePromises.push(searchCasesById(caseType, query, req));
           });
         }
@@ -485,7 +470,7 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): P
   return casePromises;
 }
 
-export async function getMyAccess(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+export async function getMyAccess(req: EnhancedRequest, res: Response): Promise<Response> {
   await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
 
   const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
@@ -494,7 +479,7 @@ export async function getMyAccess(req: EnhancedRequest, res: Response, next: Nex
   const result = {
     cases: mappedCases,
     total_records: 0,
-    unique_cases: 0,
+    unique_cases: 0
   };
   return res.send(result).status(200);
 }
@@ -505,8 +490,8 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
 
     // get 'service' and 'location' filters from search_parameters on request
     const { search_parameters } = req.body.searchRequest;
-    const services = search_parameters.find(searchParam => searchParam.key === 'services');
-    const locations = search_parameters.find(searchParam => searchParam.key === 'locations');
+    const services = search_parameters.find((searchParam) => searchParam.key === 'services');
+    const locations = search_parameters.find((searchParam) => searchParam.key === 'locations');
 
     let serviceIds = [];
     let locationIds = [];
@@ -518,7 +503,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     }
 
     // filter role assignments by service id(s)
-    const filteredRoleAssignments = roleAssignments.filter(roleAssignment =>
+    const filteredRoleAssignments = roleAssignments.filter((roleAssignment) =>
       serviceIds.includes(roleAssignment.attributes.jurisdiction)
     );
 
@@ -535,7 +520,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     const result = {
       cases,
       total_records: 0,
-      unique_cases: 0,
+      unique_cases: 0
     };
 
     // filter cases by locationIds
@@ -565,7 +550,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
   try {
     // get case allocator locations
     const locations = [];
-    searchParameters.filter(param => param.key === 'location_id').forEach(location => {
+    searchParameters.filter((param) => param.key === 'location_id').forEach((location) => {
       if (location.values !== '') {
         locations.push(location.values);
       }
@@ -581,7 +566,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     const result = {
       cases,
       total_records: 0,
-      unique_cases: 0,
+      unique_cases: 0
     };
 
     const caseData = filterByLocationId(result.cases, locations);

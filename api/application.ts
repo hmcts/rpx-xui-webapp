@@ -43,11 +43,11 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         'ws:',
         'wss:',
       ],
-      defaultSrc: [`'self'`],
+      defaultSrc: ['\'self\''],
       fontSrc: ['\'self\'', 'https://fonts.gstatic.com', 'data:'],
-      formAction: [`'none'`],
-      frameAncestors: [`'self'`],
-      frameSrc: [`'self'`],
+      formAction: ['\'none\''],
+      frameAncestors: ['\'self\''],
+      frameSrc: ['\'self\''],
       imgSrc: [
         '\'self\'',
         'data:',
@@ -57,7 +57,7 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         'http://stats.g.doubleclick.net/',
         'http://ssl.gstatic.com/',
         'http://www.gstatic.com/',
-        'https://fonts.gstatic.com',
+        'https://fonts.gstatic.com'
       ],
       mediaSrc: ['\'self\''],
       scriptSrc: [
@@ -66,16 +66,16 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         '\'unsafe-eval\'',
         'www.google-analytics.com',
         'www.googletagmanager.com',
-        'az416426.vo.msecnd.net',
+        'az416426.vo.msecnd.net'
       ],
       styleSrc: [
         '\'self\'',
         '\'unsafe-inline\'',
         'https://fonts.googleapis.com',
         'https://fonts.gstatic.com',
-        'http://tagmanager.google.com/',
-      ],
-    },
+        'http://tagmanager.google.com/'
+      ]
+    }
   }));
   app.use((req, res, next) => {
     res.setHeader('X-Robots-Tag', 'noindex');
@@ -118,7 +118,7 @@ app.use('/external', openRoutes);
 // TODO: taskRouter should be called workAllocationRouter
 //TODO101
 app.use('/workallocation', workAllocationRouter);
-app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ["GET"] }));
+app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ['GET'] }));
 
 const logger: JUILogger = log4jui.getLogger('Application');
 logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);

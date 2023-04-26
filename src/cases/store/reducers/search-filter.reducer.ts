@@ -93,7 +93,7 @@ export function reducer(
     case fromCases.SEARCH_FILTER_DISPLAY_TOGGLE_SUCCESS: {
       return {
         ...state,
-        showFilter: action.payload,
+        showFilter: action.payload
       };
     }
 

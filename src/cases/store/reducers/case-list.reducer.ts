@@ -42,7 +42,7 @@ export const initialCaselistState: CaselistState = {
   },
   showFilter: true,
   loading: false,
-  loaded: false,
+  loaded: false
 };
 
 export function caselistReducer(
@@ -93,7 +93,7 @@ export function caselistReducer(
     case fromCases.CASE_FILTER_DISPLAY_TOGGLE_SUCCESS: {
       return {
         ...state,
-        showFilter: action.payload,
+        showFilter: action.payload
       };
     }
 

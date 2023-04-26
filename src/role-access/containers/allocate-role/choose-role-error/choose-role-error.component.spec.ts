@@ -24,7 +24,7 @@ describe('ChooseRoleErrorComponent', () => {
                 roleCategory: 'JUDICIAL',
                 jurisdiction: 'IA'
               }
-            },
+            }
           }
         }
       ]

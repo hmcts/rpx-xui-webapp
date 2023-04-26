@@ -17,63 +17,6 @@ describe('CaseList Filter Reducer', () => {
       const { initialCaselistState } = filterCaseList;
       const action = new fromCases.ApplyCaselistFilter({
         selected: {
-        caseState: {
-          id: '1',
-          name: 'One',
-          description: 'One desc'
-        } ,
-        jurisdiction: {
-          id: '2',
-          name: 'Two',
-          description: 'Two desc',
-          caseTypes: [],
-        } ,
-        caseType: {
-          id: '3',
-          name: 'case type',
-          description: 'Case Type Desc',
-          events: [],
-          states: [],
-          case_fields: [],
-          jurisdiction: null,
-          printEnabled: false
-        }
-      }
-      });
-
-      const state = filterCaseList.caselistReducer(initialCaselistState, action);
-
-      expect(state.loading).toEqual(true);
-      expect(state.loaded).toEqual(false);
-      expect(state.filter.caseState).toEqual({
-          id: '1',
-          name: 'One',
-          description: 'One desc'
-        });
-      expect(state.filter.jurisdiction).toEqual({
-          id: '2',
-          name: 'Two',
-          description: 'Two desc',
-          caseTypes: [],
-        });
-      expect(state.filter.caseType).toEqual({
-          id: '3',
-          name: 'case type',
-          description: 'Case Type Desc',
-          events: [],
-          states: [],
-          case_fields: [],
-          jurisdiction: null,
-          printEnabled: false
-        });
-    });
-  });
-
-  describe('[CreateCaselist] Apply Caselist Filter for ES', () => {
-    it('should set correct object', () => {
-      const { initialCaselistState } = filterCaseList;
-      const action = new fromCases.ApplyCaselistFilterForES({
-        selected: {
           caseState: {
             id: '1',
             name: 'One',
@@ -83,7 +26,7 @@ describe('CaseList Filter Reducer', () => {
             id: '2',
             name: 'Two',
             description: 'Two desc',
-            caseTypes: [],
+            caseTypes: []
           },
           caseType: {
             id: '3',
@@ -111,7 +54,64 @@ describe('CaseList Filter Reducer', () => {
         id: '2',
         name: 'Two',
         description: 'Two desc',
-        caseTypes: [],
+        caseTypes: []
+      });
+      expect(state.filter.caseType).toEqual({
+        id: '3',
+        name: 'case type',
+        description: 'Case Type Desc',
+        events: [],
+        states: [],
+        case_fields: [],
+        jurisdiction: null,
+        printEnabled: false
+      });
+    });
+  });
+
+  describe('[CreateCaselist] Apply Caselist Filter for ES', () => {
+    it('should set correct object', () => {
+      const { initialCaselistState } = filterCaseList;
+      const action = new fromCases.ApplyCaselistFilterForES({
+        selected: {
+          caseState: {
+            id: '1',
+            name: 'One',
+            description: 'One desc'
+          },
+          jurisdiction: {
+            id: '2',
+            name: 'Two',
+            description: 'Two desc',
+            caseTypes: []
+          },
+          caseType: {
+            id: '3',
+            name: 'case type',
+            description: 'Case Type Desc',
+            events: [],
+            states: [],
+            case_fields: [],
+            jurisdiction: null,
+            printEnabled: false
+          }
+        }
+      });
+
+      const state = filterCaseList.caselistReducer(initialCaselistState, action);
+
+      expect(state.loading).toEqual(true);
+      expect(state.loaded).toEqual(false);
+      expect(state.filter.caseState).toEqual({
+        id: '1',
+        name: 'One',
+        description: 'One desc'
+      });
+      expect(state.filter.jurisdiction).toEqual({
+        id: '2',
+        name: 'Two',
+        description: 'Two desc',
+        caseTypes: []
       });
       expect(state.filter.caseType).toEqual({
         id: '3',

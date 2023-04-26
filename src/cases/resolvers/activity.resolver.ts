@@ -8,7 +8,6 @@ import { AppConstants } from '../../app/app.constants';
 
 @Injectable()
 export class ActivityResolver implements Resolve<boolean> {
-
   constructor(
     private readonly activityService: ActivityService,
     private readonly featureToggleService: FeatureToggleService

@@ -1,4 +1,4 @@
-import {HearingListModel} from './hearingList.model';
+import { HearingListModel } from './hearingList.model';
 import { GroupLinkType } from './hearings.enum';
 
 export interface ServiceLinkedCasesModel {

@@ -1,17 +1,13 @@
-import {Component} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Store} from '@ngrx/store';
+import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import {
   ActualHearingDayModel,
-  HearingActualsMainModel,
+  HearingActualsMainModel
 } from '../../../models/hearingActualsMainModel';
-import {
-  HearingActualAddEditSummaryEnum,
-  HearingResult
-} from '../../../models/hearings.enum';
-import {HearingsService} from '../../../services/hearings.service';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {ActualHearingsUtils} from '../../../utils/actual-hearings.utils';
+import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { HearingActualSummaryBaseComponent } from '../hearing-actual-summary-base/hearing-actual-summary-base.component';
 
 @Component({
@@ -21,8 +17,9 @@ import { HearingActualSummaryBaseComponent } from '../hearing-actual-summary-bas
 })
 export class HearingActualSummaryComponent extends HearingActualSummaryBaseComponent {
   public serverErrors: { id: string, message: string }[] = [
-    {id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.'}
+    { id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.' }
   ];
+
   public hearingTimingResultErrorMessage = '';
   public hearingPartiesResultErrorMessage = '';
   public hearingDaysRequiredErrorMessage = '';
@@ -52,7 +49,7 @@ export class HearingActualSummaryComponent extends HearingActualSummaryBaseCompo
       && hearingActualsMainModel.hearingActuals.actualHearingDays.length === hearingActualsMainModel.hearingPlanned.plannedHearingDays.length;
 
     return hasAllActualDays && hearingActualsMainModel.hearingActuals.actualHearingDays.every(
-      actualDay => this.isAcutalTimingAvailable(actualDay)
+      (actualDay) => this.isAcutalTimingAvailable(actualDay)
     );
   }
 
@@ -61,19 +58,18 @@ export class HearingActualSummaryComponent extends HearingActualSummaryBaseCompo
     this.hearingTimingResultErrorMessage = '';
     this.successBanner = true;
 
-    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     const updatedActuals = {
       hearingDate: hearingDay.hearingDate,
       hearingStartTime: hearingDay.hearingStartTime,
       hearingEndTime: hearingDay.hearingEndTime,
-      pauseDateTimes: hearingDay.pauseDateTimes,
+      pauseDateTimes: hearingDay.pauseDateTimes
     } as ActualHearingDayModel;
-    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
-    (this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals);
+    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals);
 
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
-      hearingActuals: patchedHearingActuals,
+      hearingActuals: patchedHearingActuals
     }));
   }
 
@@ -82,17 +78,16 @@ export class HearingActualSummaryComponent extends HearingActualSummaryBaseCompo
     this.hearingPartiesResultErrorMessage = '';
     this.successBanner = true;
 
-    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 
     const updatedActuals = {
       actualDayParties: [...hearingDay.actualDayParties]
     } as ActualHearingDayModel;
-    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
-    (this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals);
+    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals);
 
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
-      hearingActuals: patchedHearingActuals,
+      hearingActuals: patchedHearingActuals
     }));
   }
 }

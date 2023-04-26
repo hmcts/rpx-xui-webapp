@@ -83,6 +83,7 @@
       "taskApi": "SERVICES_WORK_ALLOCATION_TASK_API"
     },
     "refunds": "SERVICES_REFUNDS_API_URL",
+    "notifications": "SERVICES_NOTIFICATIONS_API_URL",
     "role_assignment": {
       "roleApi": "SERVICES_ROLE_ASSIGNMENT_API",
       "roleMappingApi": "SERVICES_ROLE_ASSIGNMENT_MAPPING_API"

@@ -12,22 +12,22 @@ export const ROUTES: Routes = [
   { path: 'user-not-assignable', component: UserNotAssignableComponent },
   {
     path: ':taskId/assignment/:assignmentId',
-    resolve: { taskAndRole: TaskRoleAccessResolver},
+    resolve: { taskAndRole: TaskRoleAccessResolver },
     children: [
-    {
-      path: 'specific-access',
-      component: SpecificAccessHomeComponent,
-      children: [
-        {
-          path: '',
-          component: null,
-          // canActivate: [HealthCheckGuard],
-          data: {
-            title: 'HMCTS Manage cases | Role and access | Specific access',
+      {
+        path: 'specific-access',
+        component: SpecificAccessHomeComponent,
+        children: [
+          {
+            path: '',
+            component: null,
+            // canActivate: [HealthCheckGuard],
+            data: {
+              title: 'HMCTS Manage cases | Role and access | Specific access'
+            }
           }
-        }
-      ]
-    }]
+        ]
+      }]
   },
   {
     path: 'add-exclusion',
@@ -37,7 +37,7 @@ export const ROUTES: Routes = [
         path: '',
         component: null,
         data: {
-          title: 'HMCTS Manage cases | Role and access | Add Exclusion',
+          title: 'HMCTS Manage cases | Role and access | Add Exclusion'
         }
       }
     ]
@@ -47,14 +47,14 @@ export const ROUTES: Routes = [
     component: DeleteExclusionComponent,
     canActivate: [CaseAllocatorGuard],
     data: {
-      title: 'HMCTS Manage cases | Role and access | Delete exclusion',
+      title: 'HMCTS Manage cases | Role and access | Delete exclusion'
     }
   },
   {
     path: 'rejected-request',
     component: RejectedRequestViewComponent,
     data: {
-      title: 'HMCTS Manage cases | Role and access | Rejected request',
+      title: 'HMCTS Manage cases | Role and access | Rejected request'
     }
   },
   {
@@ -66,7 +66,7 @@ export const ROUTES: Routes = [
         component: AllocateRoleHomeComponent,
         canActivate: [CaseAllocatorGuard],
         data: {
-          title: 'HMCTS Manage cases | Role and access | Allocate a role',
+          title: 'HMCTS Manage cases | Role and access | Allocate a role'
         }
       },
       {
@@ -74,7 +74,7 @@ export const ROUTES: Routes = [
         component: AllocateRoleHomeComponent,
         canActivate: [CaseAllocatorGuard],
         data: {
-          title: 'HMCTS Manage cases | Role and access | Reallocate a role',
+          title: 'HMCTS Manage cases | Role and access | Reallocate a role'
         }
       },
       {
@@ -82,11 +82,11 @@ export const ROUTES: Routes = [
         component: RemoveRoleComponent,
         canActivate: [CaseAllocatorGuard],
         data: {
-          title: 'HMCTS Manage cases | Role and access | Remove a role',
+          title: 'HMCTS Manage cases | Role and access | Remove a role'
         }
       }
     ]
-  },
+  }
 ];
 
 export const roleAccessRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);

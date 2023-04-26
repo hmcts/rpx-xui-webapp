@@ -6,12 +6,13 @@ import { getHearingRequestToCompare } from './hearing-request-to-compare.selecto
 
 describe('Hearing Request to compare selectors', () => {
   let store: Store<State>;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('hearings', reducers),
-      ],
+        StoreModule.forFeature('hearings', reducers)
+      ]
     });
     store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
@@ -19,10 +20,9 @@ describe('Hearing Request to compare selectors', () => {
 
   describe('getHearingRequestToCompare', () => {
     it('should return hearings request to compare state', () => {
-      store.pipe(select(getHearingRequestToCompare)).subscribe(value => {
+      store.pipe(select(getHearingRequestToCompare)).subscribe((value) => {
         expect(value).toEqual(initialHearingRequestState);
       });
     });
   });
-
 });

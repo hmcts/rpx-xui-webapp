@@ -14,24 +14,20 @@ export class ResetHearingList implements Action {
 export class LoadAllHearings implements Action {
   public readonly type = LOAD_ALL_HEARINGS;
 
-  constructor(public payload: string) {
-  }
+  constructor(public payload: string) {}
 }
 
 export class LoadAllHearingsSuccess implements Action {
   public readonly type = LOAD_ALL_HEARINGS_SUCCESS;
 
-  constructor(public payload: HearingListMainModel) {
-  }
+  constructor(public payload: HearingListMainModel) {}
 }
 
 export class LoadAllHearingsFailure implements Action {
   public readonly type = LOAD_ALL_HEARINGS_FAILURE;
 
-  constructor(public payload: HttpError) {
-  }
+  constructor(public payload: HttpError) {}
 }
-
 
 export type HearingListAction =
   | ResetHearingList

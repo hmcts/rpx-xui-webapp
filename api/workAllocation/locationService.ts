@@ -21,7 +21,7 @@ export async function commonGetFullLocation(req: EnhancedRequest) {
   const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
   const serviceRefDataMapping = getServiceRefDataMappingList();
 
-  serviceRefDataMapping.forEach(serviceRef => {
+  serviceRefDataMapping.forEach((serviceRef) => {
     if (services.includes(serviceRef.service)) {
       serviceCodes = [...serviceCodes, ...serviceRef.serviceCodes];
     }
@@ -32,7 +32,7 @@ export async function commonGetFullLocation(req: EnhancedRequest) {
     courtVenues = [...courtVenues, ...response.data.court_venues];
   }
   courtVenues = courtVenues.filter((value, index, self) =>
-    index === self.findIndex(location => (
+    index === self.findIndex((location) => (
       location.epimms_id === value.epimms_id && location.site_name === value.site_name
     ))
   );
@@ -45,7 +45,7 @@ export async function getFullLocationsForServices(req: EnhancedRequest) {
   const services = req.body.bookableServices;
   let serviceCodes = [];
   // Note: will need to update mapping when more services are onboarded
-  serviceRefDataMapping.forEach(serviceRef => {
+  serviceRefDataMapping.forEach((serviceRef) => {
     if (services.includes(serviceRef.service)) {
       serviceCodes = [...serviceCodes, ...serviceRef.serviceCodes];
     }
@@ -67,7 +67,7 @@ export async function getRegionLocationsForServices(req: EnhancedRequest) {
   const services = req.body.serviceIds;
   let serviceCodes = [];
   // Note: will need to update mapping when more services are onboarded
-  serviceRefDataMapping.forEach(serviceRef => {
+  serviceRefDataMapping.forEach((serviceRef) => {
     if (services.includes(serviceRef.service)) {
       serviceCodes = [...serviceCodes, ...serviceRef.serviceCodes];
     }
@@ -77,13 +77,13 @@ export async function getRegionLocationsForServices(req: EnhancedRequest) {
   for (const serviceCode of serviceCodes) {
     const path: string = prepareGetLocationsUrl(basePath, serviceCode);
     const response = await handleLocationGet(path, req);
-    response.data.court_venues.forEach(courtVenue => {
+    response.data.court_venues.forEach((courtVenue) => {
       if (!regions.includes(courtVenue.region_id)) {
         regions.push(courtVenue.region_id);
-        regionLocations.push({regionId: courtVenue.region_id, locations: [courtVenue.epimms_id]});
+        regionLocations.push({ regionId: courtVenue.region_id, locations: [courtVenue.epimms_id] });
       } else {
-        regionLocations.find(locationList =>
-           locationList.regionId === courtVenue.region_id).locations.push(courtVenue.epimms_id);
+        regionLocations.find((locationList) =>
+          locationList.regionId === courtVenue.region_id).locations.push(courtVenue.epimms_id);
       }
     });
   }

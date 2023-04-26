@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {ScreenNavigationModel} from '../models/screenNavigation.model';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ScreenNavigationModel } from '../models/screenNavigation.model';
 
 @Injectable()
 export abstract class AbstractPageFlow {

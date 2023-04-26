@@ -6,7 +6,7 @@ export interface CreatedCaseModel {
 }
 
 export interface CasesState {
-  createdCase: CreatedCaseModel | {};
+  createdCase: CreatedCaseModel | object;
   createCaseFilters: any;
   loading: boolean;
   loaded: boolean;
@@ -16,7 +16,7 @@ export const initialState: CasesState = {
   createdCase: {},
   createCaseFilters: {},
   loaded: false,
-  loading: false,
+  loading: false
 };
 
 export function reducerCreateCase(
@@ -29,7 +29,7 @@ export function reducerCreateCase(
       return {
         ...state,
         createdCase: action.payload,
-        loaded: true,
+        loaded: true
       };
     }
 
@@ -37,7 +37,7 @@ export function reducerCreateCase(
       return {
         ...state,
         createCaseFilters: action.payload,
-        loaded: true,
+        loaded: true
       };
     }
 
@@ -47,12 +47,10 @@ export function reducerCreateCase(
         ...initialState
       };
     }
-
   }
 
   return state;
 }
 
-
 export const getCreatedCase = (state: CasesState) => state.createdCase;
-export const  getCaseFiltersState = (state: CasesState) => state.createCaseFilters;
+export const getCaseFiltersState = (state: CasesState) => state.createCaseFilters;

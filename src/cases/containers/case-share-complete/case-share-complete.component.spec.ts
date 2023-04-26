@@ -23,15 +23,15 @@ describe('CaseShareCompleteComponent', () => {
   }];
   let mockStore: any;
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
-  beforeEach(waitForAsync(() => {
 
+  beforeEach(waitForAsync(() => {
     mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
     mockStore.pipe.and.returnValue(of(SHARED_CASE));
 
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ CaseShareCompleteComponent ],
-      imports: [ RouterTestingModule ],
+      declarations: [CaseShareCompleteComponent],
+      imports: [RouterTestingModule],
       providers: [
         {
           provide: Store,

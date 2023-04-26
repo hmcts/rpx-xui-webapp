@@ -4,7 +4,4 @@ import { Component } from '@angular/core';
   selector: 'exui-legacy-terms-and-conditions',
   templateUrl: './legacy-terms-and-conditions.component.html'
 })
-export class LegacyTermsAndConditionsComponent {
-  constructor() {
-  }
-}
+export class LegacyTermsAndConditionsComponent {}

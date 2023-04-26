@@ -24,8 +24,8 @@ describe('HearingsEditGuard', () => {
       active: true,
       roles: [
         'caseworker',
-        'caseworker-sscs',
-      ],
+        'caseworker-sscs'
+      ]
     }
   };
   const USER_2: UserDetails = {
@@ -42,8 +42,8 @@ describe('HearingsEditGuard', () => {
       active: true,
       roles: [
         'caseworker',
-        'caseworker-sscs-judge',
-      ],
+        'caseworker-sscs-judge'
+      ]
     }
   };
 
@@ -57,7 +57,7 @@ describe('HearingsEditGuard', () => {
     }
   ];
 
-  const CASE_INFO = {cid: '1546518523959179', caseType: 'Benefit', jurisdiction: 'SSCS'};
+  const CASE_INFO = { cid: '1546518523959179', caseType: 'Benefit', jurisdiction: 'SSCS' };
 
   let hearingsEditGuard: HearingsEditGuard;
   let routerMock: jasmine.SpyObj<Router>;
@@ -82,7 +82,7 @@ describe('HearingsEditGuard', () => {
     hearingsEditGuard = new HearingsEditGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
     const result$ = hearingsEditGuard.canActivate();
     const canActive = true;
-    const expected = cold('(b|)', {b: canActive});
+    const expected = cold('(b|)', { b: canActive });
     expect(result$).toBeObservable(expected);
   });
 
@@ -94,8 +94,7 @@ describe('HearingsEditGuard', () => {
     hearingsEditGuard = new HearingsEditGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
     const result$ = hearingsEditGuard.canActivate();
     const canActive = false;
-    const expected = cold('(b|)', {b: canActive});
+    const expected = cold('(b|)', { b: canActive });
     expect(result$).toBeObservable(expected);
   });
-
 });

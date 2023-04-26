@@ -5,10 +5,9 @@ import { By } from '@angular/platform-browser';
 import { AlertService, DefinitionsService, PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import * as converts from '../../converters/case-converter';
 import { CaseListComponent } from './case-list.component';
 
 describe('CaseListComponent', () => {
@@ -54,7 +53,7 @@ describe('CaseListComponent', () => {
           provide: AlertService,
           useValue: mockAlertService
         },
-        provideMockStore({}),
+        provideMockStore({})
       ]
     }).compileComponents();
 
@@ -88,7 +87,7 @@ describe('CaseListComponent', () => {
           id: 'some id',
           states: [{
             id: 'some id'
-          }]}]}]));
+          }] }] }]));
 
       component.ngOnInit();
 
@@ -114,7 +113,7 @@ describe('CaseListComponent', () => {
      */
     it('should dispatch an action to find the case list pagination metadata.', () => {
       const event = {
-        test: 'test',
+        test: 'test'
       };
       component.findCaseListPaginationMetadata(event);
       expect(spyOnDispatchToStore).toHaveBeenCalled();
@@ -124,7 +123,7 @@ describe('CaseListComponent', () => {
   describe('getElasticSearchResults', () => {
     it('should dispatch an action to get results from elastic search endpoint.', () => {
       const event = {
-        test: 'test',
+        test: 'test'
       };
       component.getElasticSearchResults(event);
       expect(spyOnDispatchToStore).toHaveBeenCalled();
@@ -182,7 +181,7 @@ describe('CaseListComponent', () => {
 
       const event = {
         selected: {
-          page: 1,
+          page: 1
         }
       };
 
@@ -200,7 +199,7 @@ describe('CaseListComponent', () => {
 
       const event = {
         selected: {
-          page: 1,
+          page: 1
         }
       };
 
@@ -218,7 +217,7 @@ describe('CaseListComponent', () => {
 
       const event = {
         selected: {
-          page: 1,
+          page: 1
         }
       };
       component.elasticSearchFlag = true;
@@ -233,7 +232,7 @@ describe('CaseListComponent', () => {
 
       const event = {
         selected: {
-          page: 1,
+          page: 1
         }
       };
 
@@ -318,11 +317,10 @@ describe('CaseListComponent', () => {
     });
   });
 
-  describe('onToogleHandler()', () => {
-    it('should update the components showFilter property, on return of toogle subscription.', async () => {
-
+  describe('onToggleHandler()', () => {
+    it('should update the components showFilter property, on return of toggle subscription.', async () => {
       const showFilter = true;
-      component.onToogleHandler(showFilter);
+      component.onToggleHandler(showFilter);
 
       expect(component.showFilter).toEqual(showFilter);
     });
@@ -352,7 +350,7 @@ describe('CaseListComponent', () => {
         columns: [],
         results: [
           {
-            case_id: 'DRAFT274146',
+            case_id: 'DRAFT274146'
           }
         ],
         result_error: null
@@ -368,7 +366,7 @@ describe('CaseListComponent', () => {
         columns: [],
         results: [
           {
-            case_id: 'DRAFT274146',
+            case_id: 'DRAFT274146'
           }
         ],
         result_error: null
@@ -383,7 +381,7 @@ describe('CaseListComponent', () => {
         columns: [],
         results: [
           {
-            case_id: 'DRAFT274146',
+            case_id: 'DRAFT274146'
           }
         ],
         result_error: null
@@ -443,7 +441,7 @@ describe('CaseListComponent', () => {
 
   describe('getShareableJurisdictions()', () => {
     it('should return shareable jurisdictions.', async () => {
-      component.getShareableJurisdictions().subscribe(jurisdictions => {
+      component.getShareableJurisdictions().subscribe((jurisdictions) => {
         expect(jurisdictions).toEqual(['dummy']);
       });
     });
@@ -549,8 +547,8 @@ describe('CaseListComponent', () => {
 
     it('jurisdiction matches createEvent jurisdiction.', () => {
       const data = { metadataFieldsGroupFromLS: undefined,
-        jurisdictionFromLS: {id: 'PUBLICLAW'},
-        caseStateGroupFromLS: {id: null},
+        jurisdictionFromLS: { id: 'PUBLICLAW' },
+        caseStateGroupFromLS: { id: null },
         caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
         formGroupFromLS: {
           '[CASE_REFERENCE]': null,
@@ -559,7 +557,7 @@ describe('CaseListComponent', () => {
           dateSubmitted: null,
           evidenceHandled: null,
           familyManCaseNumber: null
-        },
+        }
       };
       const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
       expect(event.selected.jurisdiction).toEqual(data.jurisdictionFromLS);
@@ -567,8 +565,8 @@ describe('CaseListComponent', () => {
 
     it('case type matches createEvent case type.', () => {
       const data = { metadataFieldsGroupFromLS: undefined,
-        jurisdictionFromLS: {id: 'PUBLICLAW'},
-        caseStateGroupFromLS: {id: null},
+        jurisdictionFromLS: { id: 'PUBLICLAW' },
+        caseStateGroupFromLS: { id: null },
         caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
         formGroupFromLS: {
           '[CASE_REFERENCE]': null,
@@ -577,7 +575,7 @@ describe('CaseListComponent', () => {
           dateSubmitted: null,
           evidenceHandled: null,
           familyManCaseNumber: null
-        },
+        }
       };
       const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
       expect(event.selected.caseType).toEqual(data.caseTypeGroupFromLS);
@@ -585,8 +583,8 @@ describe('CaseListComponent', () => {
 
     it('form group matches createEvent formgroup.', () => {
       const data = { metadataFieldsGroupFromLS: undefined,
-        jurisdictionFromLS: {id: 'PUBLICLAW'},
-        caseStateGroupFromLS: {id: null},
+        jurisdictionFromLS: { id: 'PUBLICLAW' },
+        caseStateGroupFromLS: { id: null },
         caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
         formGroupFromLS: {
           '[CASE_REFERENCE]': null,
@@ -595,7 +593,7 @@ describe('CaseListComponent', () => {
           dateSubmitted: null,
           evidenceHandled: null,
           familyManCaseNumber: null
-        },
+        }
       };
       const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
       expect(event.selected.formGroup.value).toEqual(data.formGroupFromLS);
@@ -630,7 +628,7 @@ describe('CaseListComponent', () => {
       spyOnPipeToStore.and.returnValue(of({
         sessionTimeout: {
           idleModalDisplayTime: 1,
-          totalIdleTime: 1,
+          totalIdleTime: 1
         },
         canShareCases: true
       }));
@@ -652,9 +650,6 @@ describe('CaseListComponent', () => {
 
     it('Should save share cases to store', () => {
       component.retrieveSelections(selectedCases);
-      const shareCases = {
-        sharedCases: converts.toShareCaseConverter(component.selectedCases)
-      };
       component.shareCaseSubmit();
       expect(spyOnDispatchToStore).toHaveBeenCalled();
       expect(component.checkIfButtonDisabled()).toBeFalsy();
@@ -684,7 +679,7 @@ describe('CaseListComponent', () => {
         columns: [],
         results: [
           {
-            case_id: 'case_123',
+            case_id: 'case_123'
           }
         ],
         result_error: null
@@ -692,7 +687,7 @@ describe('CaseListComponent', () => {
       spyOnPipeToStore.and.returnValue(of({
         sessionTimeout: {
           idleModalDisplayTime: 1,
-          totalIdleTime: 1,
+          totalIdleTime: 1
         },
         canShareCases: true
       }));

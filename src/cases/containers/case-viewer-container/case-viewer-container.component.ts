@@ -1,19 +1,19 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {CaseTab, CaseView} from '@hmcts/ccd-case-ui-toolkit';
-import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
-import {select, Store} from '@ngrx/store';
-import {combineLatest, of} from 'rxjs';
-import {Observable} from 'rxjs/Observable';
-import {catchError, map} from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { select, Store } from '@ngrx/store';
+import { combineLatest, of } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { catchError, map } from 'rxjs/operators';
 import { WAFeatureConfig } from 'src/work-allocation/models/common/service-config.model';
-import {AppUtils} from '../../../app/app-utils';
-import {AppConstants} from '../../../app/app.constants';
+import { AppUtils } from '../../../app/app-utils';
+import { AppConstants } from '../../../app/app.constants';
 import * as fromRoot from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
-import {FeatureVariation} from '../../models/feature-variation.model';
-import {Utils} from '../../utils/utils';
+import { FeatureVariation } from '../../models/feature-variation.model';
+import { Utils } from '../../utils/utils';
 
 @Component({
   selector: 'exui-case-viewer-container',
@@ -59,7 +59,7 @@ export class CaseViewerContainerComponent implements OnInit {
               private readonly allocateRoleService: AllocateRoleService,
               private readonly waService: WASupportedJurisdictionsService) {
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
-      map(userDetails => userDetails.userInfo.roles)
+      map((userDetails) => userDetails.userInfo.roles)
     );
   }
 
@@ -67,9 +67,9 @@ export class CaseViewerContainerComponent implements OnInit {
     const caseJurisdiction = this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction ? this.caseDetails.case_type.jurisdiction.id : null;
     const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
     let requiredFeature = false;
-    features.configurations.forEach(serviceConfig => {
+    features.configurations.forEach((serviceConfig) => {
       if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
-          requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2;
+        requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2;
       }
     });
     return requiredFeature && !!AppUtils.getUserRole(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
@@ -101,14 +101,12 @@ export class CaseViewerContainerComponent implements OnInit {
       this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []),
       this.userRoles$
     ]).pipe(
-      // @ts-ignore
       map(([featureVariations, userRoles]: [FeatureVariation[], string[]]) => {
         const jurisdictionID = this.caseDetails.case_type.jurisdiction.id;
-        const hasMatchedJurisdictionAndRole = featureVariations.some(featureVariation =>
+        const hasMatchedJurisdictionAndRole = featureVariations.some((featureVariation) =>
           Utils.hasMatchedJurisdictionAndRole(featureVariation, jurisdictionID, userRoles));
         return hasMatchedJurisdictionAndRole ? this.appendedTabs : [];
       })
     );
   }
-
 }

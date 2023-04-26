@@ -18,7 +18,7 @@ export const specificAccessInitialState: SpecificAccessStateData = {
   requestId: null,
   jurisdiction: null,
   roleCategory: null,
-  period: {startDate: null, endDate: null},
+  period: { startDate: null, endDate: null },
   person: null
 };
 

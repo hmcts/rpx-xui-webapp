@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {FormGroup} from '@angular/forms';
-import {AbstractAppConfig, HttpService, RequestOptionsBuilder, SearchService} from '@hmcts/ccd-case-ui-toolkit';
-import {Observable} from 'rxjs';
-import {Utils} from '../utils/utils';
+import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { AbstractAppConfig, HttpService, RequestOptionsBuilder, SearchService } from '@hmcts/ccd-case-ui-toolkit';
+import { Observable } from 'rxjs';
+import { Utils } from '../utils/utils';
 
 @Injectable()
 export class SearchFilterService {
@@ -83,7 +83,7 @@ export class SearchFilterService {
   }
 
   public findPaginationMetadata(payload): Observable<any> {
-    const { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view } = this.getParams(payload);
+    const { jurisdictionId, caseTypeId, metadataFilters, caseFilters } = this.getParams(payload);
     const url = `${this.appConfig.getCaseDataUrl()}/caseworkers/:uid/jurisdictions/${jurisdictionId}/case-types/${caseTypeId}/cases/pagination_metadata`;
     delete metadataFilters.page;
     const options = this.requestOptionsBuilder.buildOptions(metadataFilters, caseFilters);

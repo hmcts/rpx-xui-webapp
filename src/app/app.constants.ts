@@ -17,11 +17,11 @@ const featureNames = {
 
 const footerDataNavigation = {
   items: [
-    {text: 'Accessibility', href: '/accessibility', target: '_blank'},
-    {text: 'Terms and conditions', href: '/terms-and-conditions', target: '_blank'},
-    {text: 'Cookies', href: '/cookies', target: '_blank'},
-    {text: 'Privacy policy', href: '/privacy-policy', target: '_blank'},
-    {text: 'Get help', href: '/get-help', target: '_blank'}
+    { text: 'Accessibility', href: '/accessibility', target: '_blank' },
+    { text: 'Terms and conditions', href: '/terms-and-conditions', target: '_blank' },
+    { text: 'Cookies', href: '/cookies', target: '_blank' },
+    { text: 'Privacy policy', href: '/privacy-policy', target: '_blank' },
+    { text: 'Get help', href: '/get-help', target: '_blank' }
   ]
 };
 
@@ -111,7 +111,7 @@ const redirectUrl = {
   localhost: 'https://idam-web-public.aat.platform.hmcts.net'
 };
 
-const appHeaderTitle = {name: 'Manage cases', url: '/'};
+const appHeaderTitle = { name: 'Manage cases', url: '/' };
 
 // Making the base URL for case details a constant.
 const caseDetailsUrl: string = '/cases/case-details/';
@@ -149,5 +149,5 @@ export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer', 'case
 export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge', 'caseworker-privatelaw-judge', 'judge'];
 export const ADMIN_ROLE_LIST: string[] = ['admin'];
 export const CTSC_ROLE_LIST: string[] = ['ctsc'];
-export const SERVICE_OPTIONS_LIST = [{key: 'IA', label: 'Immigration and Asylum'}, {key: 'SSCS', label: 'Social security and child support'}];
+export const SERVICE_OPTIONS_LIST = [{ key: 'IA', label: 'Immigration and Asylum' }, { key: 'SSCS', label: 'Social security and child support' }];
 export const PUI_CASE_MANAGER = 'pui-case-manager';

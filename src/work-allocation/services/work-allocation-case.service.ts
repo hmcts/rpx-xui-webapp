@@ -16,7 +16,7 @@ export enum ACTION {
 
 @Injectable({ providedIn: 'root' })
 export class WorkAllocationCaseService {
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient) {}
 
   public getCase(caseId: string): Observable<Case> {
     const url = `${BASE_URL}/${caseId}`;
@@ -32,14 +32,15 @@ export class WorkAllocationCaseService {
   }
 
   public getMyCases(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
-    return this.http.post<Case[]>(`/workallocation/my-work/cases`, body);
+    return this.http.post<Case[]>('/workallocation/my-work/cases', body);
   }
 
   public getMyAccess(body: { searchRequest: SearchCaseRequest, view: string }): Observable<any> {
     return this.http.post<any>('/workallocation/my-work/myaccess', body);
   }
+
   public getCases(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
-    return this.http.post<Case[]>(`/workallocation/all-work/cases`, body);
+    return this.http.post<Case[]>('/workallocation/all-work/cases', body);
   }
 
   public getActionUrl(caseId: string, action: ACTION): string {
@@ -47,11 +48,11 @@ export class WorkAllocationCaseService {
   }
 
   public getTasksByCaseId(caseId: string): Observable<Task[]> {
-    return this.http.post<Task[]>(`${BASE_URL}/task/${caseId}`, {refined: false});
+    return this.http.post<Task[]>(`${BASE_URL}/task/${caseId}`, { refined: false });
   }
 
   public getTasksByCaseIdUpdated(caseId: string): Observable<Task[]> {
-    return this.http.post<Task[]>(`${BASE_URL}/task/${caseId}`, {refined: true});
+    return this.http.post<Task[]>(`${BASE_URL}/task/${caseId}`, { refined: true });
   }
 
   /**

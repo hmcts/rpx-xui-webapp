@@ -14,6 +14,6 @@ export const healthEndpoints = (): EnvironmentConfigServices => {
     ccdDataApi: `${getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)}${HEALTH}`,
     idamApi: `${getConfigValue(SERVICES_IDAM_LOGIN_URL)}${HEALTH}`,
     s2s: `${getConfigValue(SERVICE_S2S_PATH)}${HEALTH}`,
-    termsAndConditions: `${getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL)}${HEALTH}`,
+    termsAndConditions: `${getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL)}${HEALTH}`
   };
 };

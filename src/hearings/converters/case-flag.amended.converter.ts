@@ -1,15 +1,14 @@
-import {ActivatedRoute} from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import * as _ from 'lodash';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {CaseFlagReferenceModel} from '../models/caseFlagReference.model';
-import {PartyDetailsModel} from '../models/partyDetails.model';
-import {State} from '../store/reducers';
-import {CaseFlagsUtils} from '../utils/case-flags.utils';
-import {IsAmendedConverter} from './is-amended.converter';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { CaseFlagReferenceModel } from '../models/caseFlagReference.model';
+import { PartyDetailsModel } from '../models/partyDetails.model';
+import { State } from '../store/reducers';
+import { CaseFlagsUtils } from '../utils/case-flags.utils';
+import { IsAmendedConverter } from './is-amended.converter';
 
 export class CaseFlagAmendedConverter implements IsAmendedConverter {
-
   public caseFlagsRefData: CaseFlagReferenceModel[];
 
   constructor(protected readonly route: ActivatedRoute) {
@@ -17,7 +16,7 @@ export class CaseFlagAmendedConverter implements IsAmendedConverter {
   }
 
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {
-    return hearingState$.pipe(map(state => {
+    return hearingState$.pipe(map((state) => {
       const partiesFromServiceValue: PartyDetailsModel[] = state.hearingValues.serviceHearingValuesModel.parties;
       const partyDetailsA = state.hearingRequestToCompare.hearingRequestMainModel.partyDetails;
       const partyWithFlagsA = CaseFlagsUtils.convertPartiesToPartyWithFlags(this.caseFlagsRefData,

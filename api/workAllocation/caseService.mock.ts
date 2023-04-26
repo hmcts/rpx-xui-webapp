@@ -8,48 +8,46 @@ export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
 
   const judicialMyCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myCases\?view=judicial/;
-  // tslint:disable-next-line:max-line-length
   const caseworkerMyCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myCases\?view=legalops/;
 
   const judicialAllCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allWorkCases\?view=judicial/;
-  // tslint:disable-next-line:max-line-length
   const caseworkerAllCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allWorkCases\?view=legalops/;
 
   // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
-  mock.onPost(judicialMyCaseUrl).reply(config => {
+  mock.onPost(judicialMyCaseUrl).reply((config) => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
     const caseList = sort(JUDICIAL_MY_CASES.cases,
-       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
         cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: JUDICIAL_MY_CASES.cases.length,
-      },
+        total_records: JUDICIAL_MY_CASES.cases.length
+      }
     ];
   });
 
-  mock.onPost(caseworkerMyCaseUrl).reply(config => {
+  mock.onPost(caseworkerMyCaseUrl).reply((config) => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
     const caseList = sort(CASEWORKER_ALL_CASES.cases,
-       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
         cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: CASEWORKER_MY_CASES.cases.length,
-      },
+        total_records: CASEWORKER_MY_CASES.cases.length
+      }
     ];
   });
 
-  mock.onPost(judicialAllCaseUrl).reply(config => {
+  mock.onPost(judicialAllCaseUrl).reply((config) => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     console.log(JSON.stringify(body, null, 2));
@@ -63,12 +61,12 @@ export const init = () => {
       200,
       {
         cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: filteredList.length,
-      },
+        total_records: filteredList.length
+      }
     ];
   });
 
-  mock.onPost(caseworkerAllCaseUrl).reply(config => {
+  mock.onPost(caseworkerAllCaseUrl).reply((config) => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
@@ -81,8 +79,8 @@ export const init = () => {
       200,
       {
         cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: filteredList.length,
-      },
+        total_records: filteredList.length
+      }
     ];
   });
 };

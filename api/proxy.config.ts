@@ -36,12 +36,12 @@ export const initProxy = (app: Express) => {
 
   applyProxy(app, {
     filter: [
-      '!/data/internal/searchCases',
+      '!/data/internal/searchCases'
     ],
     rewrite: false,
     source: [
       '/print',
-      '/data',
+      '/data'
     ],
     target: getConfigValue(proxiedReferences.SERVICES_CCD_COMPONENT_API_PATH),
   });
@@ -74,7 +74,7 @@ export const initProxy = (app: Express) => {
     rewrite: false,
     source: '/icp',
     target: getConfigValue(proxiedReferences.SERVICES_ICP_API_URL),
-    ws: true,
+    ws: true
   });
 
   applyProxy(app, {
@@ -95,7 +95,7 @@ export const initProxy = (app: Express) => {
     rewrite: false,
     source: [
       '/api/markups',
-      '/api/redaction',
+      '/api/redaction'
     ],
     target: getConfigValue(proxiedReferences.SERVICES_MARKUP_API_URL),
   });
@@ -112,6 +112,13 @@ export const initProxy = (app: Express) => {
     rewriteUrl: '/refund',
     source: '/api/refund',
     target: getConfigValue(proxiedReferences.SERVICES_REFUNDS_API_URL),
+  });
+
+  applyProxy(app, {
+    rewrite: true,
+    rewriteUrl: '/notifications',
+    source: '/api/notification',
+    target: getConfigValue(proxiedReferences.SERVICES_NOTIFICATIONS_API_URL)
   });
 
   applyProxy(app, {

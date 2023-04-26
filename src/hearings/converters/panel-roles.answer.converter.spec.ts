@@ -12,8 +12,8 @@ import { AnswerConverter } from './answer.converter';
 import { PanelRolesAnswerConverter } from './panel-roles.answer.converter';
 
 describe('PanelRolesAnswerConverter', () => {
-
   let converter: AnswerConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
   let router: any;
   const OTHER_PANEL_ROLES: LovRefDataModel[] = [
@@ -28,7 +28,7 @@ describe('PanelRolesAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       category_key: 'PanelMemberType',
@@ -53,7 +53,7 @@ describe('PanelRolesAnswerConverter', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -66,7 +66,7 @@ describe('PanelRolesAnswerConverter', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -79,7 +79,7 @@ describe('PanelRolesAnswerConverter', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -92,9 +92,9 @@ describe('PanelRolesAnswerConverter', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
-          child_nodes: null,
-        },
-      ],
+          child_nodes: null
+        }
+      ]
     },
     {
       category_key: 'PanelMemberType',
@@ -119,7 +119,7 @@ describe('PanelRolesAnswerConverter', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -132,7 +132,7 @@ describe('PanelRolesAnswerConverter', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -145,7 +145,7 @@ describe('PanelRolesAnswerConverter', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -158,9 +158,9 @@ describe('PanelRolesAnswerConverter', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
-          child_nodes: null,
-        },
-      ],
+          child_nodes: null
+        }
+      ]
     },
     {
       category_key: 'PanelMemberType',
@@ -173,7 +173,7 @@ describe('PanelRolesAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       category_key: 'PanelMemberType',
@@ -186,23 +186,23 @@ describe('PanelRolesAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null,
-    },
+      child_nodes: null
+    }
   ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                otherPanelRoles: OTHER_PANEL_ROLES,
-              },
-            },
-          },
+                otherPanelRoles: OTHER_PANEL_ROLES
+              }
+            }
+          }
         }
       ]
     });
@@ -218,7 +218,7 @@ describe('PanelRolesAnswerConverter', () => {
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = 'Disability Qualified Panel Member<br>Medically Qualified Panel Member - Carer';
-    const expected = cold('(b|)', {b: option});
+    const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });
 });

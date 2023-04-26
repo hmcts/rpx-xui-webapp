@@ -19,7 +19,7 @@ export const onProxyError = (err, req, res) => {
   if (!res.headersSent) {
     res.status(500).send({
       error: 'Error when connecting to remote server',
-      status: 504,
+      status: 504
     });
   }
 };
@@ -34,11 +34,11 @@ export const applyProxy = (app, config) => {
         error: msg => logger.error(msg),
         info: msg => logger.info(msg),
         log: msg => logger.info(msg),
-        warn: msg => logger.warn(msg),
+        warn: msg => logger.warn(msg)
       };
     },
     onError: onProxyError,
-    target: config.target,
+    target: config.target
   };
 
   if (config.onReq) {
@@ -66,7 +66,7 @@ export const applyProxy = (app, config) => {
       options.pathRewrite = config.rewriteUrl;
     } else {
       options.pathRewrite = {
-        [`^${config.source}`]: config.rewriteUrl || '',
+        [`^${config.source}`]: config.rewriteUrl || ''
       };
     }
   }

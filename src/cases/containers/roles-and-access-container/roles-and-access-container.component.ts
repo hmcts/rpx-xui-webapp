@@ -36,14 +36,12 @@ export class RolesAndAccessContainerComponent implements OnInit {
               private readonly allocateService: AllocateRoleService,
               private readonly caseworkerDataService: CaseworkerDataService,
               private readonly sessionStorageService: SessionStorageService,
-              private readonly featureToggleService: FeatureToggleService) {
-  }
+              private readonly featureToggleService: FeatureToggleService) {}
 
   public ngOnInit(): void {
-
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.applyJurisdiction(this.caseDetails);
-    const jurisdiction = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
+    const jurisdiction = this.caseDetails.metadataFields.find((field) => field.id === this.jurisdictionFieldId);
     // We need this call. No active subscribers are needed
     // as this will enable the loading caseworkers if not
     // present in session storage
@@ -79,9 +77,9 @@ export class RolesAndAccessContainerComponent implements OnInit {
         }
         return of(caseRoles);
       }),
-      tap(roles => {
+      tap((roles) => {
         if (roles && roles.length > 0) {
-          this.sessionStorageService.setItem('caseRoles', roles.map(role => role.roleId).toString());
+          this.sessionStorageService.setItem('caseRoles', roles.map((role) => role.roleId).toString());
         }
       })
     );
@@ -92,18 +90,18 @@ export class RolesAndAccessContainerComponent implements OnInit {
   }
 
   public applyJurisdiction(caseDetails: CaseView): void {
-    const jurisdictionField = caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
+    const jurisdictionField = caseDetails.metadataFields.find((field) => field.id === this.jurisdictionFieldId);
     /* istanbul ignore else*/
     if (jurisdictionField) {
       this.caseJurisdiction = jurisdictionField.value;
-      this.store.select(fromRoot.getUserDetails).subscribe(user => this.setDisplayAllocateLink(user, this.caseJurisdiction));
+      this.store.select(fromRoot.getUserDetails).subscribe((user) => this.setDisplayAllocateLink(user, this.caseJurisdiction));
     }
   }
 
   public setDisplayAllocateLink(user: UserDetails, caseJurisdiction: any): void {
     /* istanbul ignore else*/
     if (user && user.roleAssignmentInfo) {
-      this.showAllocateRoleLink = user.roleAssignmentInfo.some(roleAssignmentInfo => roleAssignmentInfo.isCaseAllocator && roleAssignmentInfo.jurisdiction === caseJurisdiction);
+      this.showAllocateRoleLink = user.roleAssignmentInfo.some((roleAssignmentInfo) => roleAssignmentInfo.isCaseAllocator && roleAssignmentInfo.jurisdiction === caseJurisdiction);
     }
   }
 }

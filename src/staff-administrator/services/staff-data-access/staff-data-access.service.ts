@@ -11,7 +11,7 @@ import { StaffUser } from '../../models/staff-user.model';
   providedIn: 'root'
 })
 export class StaffDataAccessService {
-  private API_PATH = `/api/staff-ref-data`;
+  private API_PATH = '/api/staff-ref-data';
   constructor(private readonly http: HttpClient) {}
 
   public getFilteredUsers(searchFilters: StaffSearchFilters) {
@@ -23,7 +23,6 @@ export class StaffDataAccessService {
     const headers = new HttpHeaders()
       .append('page-number', searchFilters.pageNumber.toString())
       .append('page-size', searchFilters.pageSize.toString());
-
 
     return this.http.get<StaffUserListData>(`${this.API_PATH}/getFilteredUsers`,
       { params, headers });
@@ -60,7 +59,7 @@ export class StaffDataAccessService {
   public fetchSingleUserById(userId: string) {
     return this.http.get<StaffUser>(`${this.API_PATH}/fetchSingleUserById`, {
       params: new HttpParams().set('id', userId)
-    } );
+    });
   }
 
   public addNewUser(staffUser: StaffUser): Observable<StaffUser> {

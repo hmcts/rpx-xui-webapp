@@ -144,8 +144,8 @@ describe('SearchResultsComponent', () => {
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getJurisdictions']);
     jurisdictionService.getJurisdictions.and.returnValue(of(jurisdictions));
     TestBed.configureTestingModule({
-      declarations: [ SearchResultsComponent, PaginationComponent ],
-      schemas: [ NO_ERRORS_SCHEMA ],
+      declarations: [SearchResultsComponent, PaginationComponent],
+      schemas: [NO_ERRORS_SCHEMA],
       imports: [
         HttpClientTestingModule,
         RouterTestingModule
@@ -156,7 +156,7 @@ describe('SearchResultsComponent', () => {
         { provide: JurisdictionService, useValue: jurisdictionService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -210,7 +210,7 @@ describe('SearchResultsComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS }, relativeTo: route });
   });
 
-  it('should set \"more results to go\" flag correctly', () => {
+  it('should set "more results to go" flag correctly', () => {
     component.onSearchSubscriptionHandler([searchResultWithMoreResultsToGo, jurisdictions]);
     expect(component.moreResultsToGo).toBe(true);
   });

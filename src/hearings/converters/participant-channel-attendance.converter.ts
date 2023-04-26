@@ -7,17 +7,16 @@ import { AnswerConverter } from './answer.converter';
 
 export class ParticipantChannelAttendenceAnswerConverter implements AnswerConverter {
   constructor(
-    protected readonly route: ActivatedRoute) {
-  }
+    protected readonly route: ActivatedRoute) {}
 
   private static getPartyChannelValue(refData: LovRefDataModel[], channelName: string): string {
-    const participantChannelName = refData.find(ref => ref.key === channelName);
+    const participantChannelName = refData.find((ref) => ref.key === channelName);
     return participantChannelName && participantChannelName.value_en ? participantChannelName.value_en : '';
   }
 
   public transformAnswer(hearingState$: Observable<fromHearingStore.State>): Observable<string> {
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         const partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
         const participants = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels;
         let strReturn = '<ul>';

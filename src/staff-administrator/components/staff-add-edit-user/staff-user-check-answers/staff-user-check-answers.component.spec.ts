@@ -1,10 +1,8 @@
-import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
 import { StaffUser } from '../../../models/staff-user.model';
@@ -15,16 +13,13 @@ import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.compo
 describe('StaffUserCheckAnswersComponent', () => {
   let component: StaffUserCheckAnswersComponent;
   let fixture: ComponentFixture<StaffUserCheckAnswersComponent>;
-  let mockFilterService: jasmine.SpyObj<FilterService>;
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
   let mockInfoMessageCommService: jasmine.SpyObj<InfoMessageCommService>;
   let mockStaffAddEditFormService: Partial<StaffAddEditFormService>;
   const mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl']);
   let testStaffUser: StaffUser;
-  let location: Location;
 
   beforeEach(waitForAsync(() => {
-    mockFilterService = jasmine.createSpyObj<FilterService>('mockFilterService', ['getStream', 'get', 'persist', 'clearSessionAndLocalPersistance', 'givenErrors']);
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', ['addNewUser', 'updateUser']);
     mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
     testStaffUser = StaffUser.from({
@@ -41,14 +36,14 @@ describe('StaffUserCheckAnswersComponent', () => {
         {
           role_id: 1,
           role: 'Role',
-          is_primary: true,
+          is_primary: true
         }
       ],
       skills: [
         {
           skill_id: 1,
           description: 'SKILLDESCRIPTION',
-          skill_code: 'SKILLCODE',
+          skill_code: 'SKILLCODE'
         }
       ],
       work_area: [
@@ -65,7 +60,7 @@ describe('StaffUserCheckAnswersComponent', () => {
         }
       ],
       region: 'West Midlands',
-      region_id: 12,
+      region_id: 12
     });
 
     mockStaffAddEditFormService = {
@@ -77,9 +72,9 @@ describe('StaffUserCheckAnswersComponent', () => {
       declarations: [StaffUserCheckAnswersComponent],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
-        {provide: StaffDataAccessService, useValue: mockStaffDataAccessService},
-        {provide: Router, useValue: mockRouter},
-        {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},
+        { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
+        { provide: Router, useValue: mockRouter },
+        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -141,11 +136,11 @@ describe('StaffUserCheckAnswersComponent', () => {
                     options: [
                       {
                         key: '1',
-                        label: 'Underwriter',
+                        label: 'Underwriter'
                       },
                       {
                         key: '2',
-                        label: 'Caseworker',
+                        label: 'Caseworker'
                       }
                     ]
                   },
@@ -154,11 +149,11 @@ describe('StaffUserCheckAnswersComponent', () => {
                     options: [
                       {
                         key: '3',
-                        label: 'Caseworker',
+                        label: 'Caseworker'
                       },
                       {
                         key: '4',
-                        label: 'Case manager',
+                        label: 'Case manager'
                       }
                     ]
                   },
@@ -167,22 +162,21 @@ describe('StaffUserCheckAnswersComponent', () => {
                     options: [
                       {
                         key: '5',
-                        label: 'Underwriter',
+                        label: 'Underwriter'
                       }
                     ]
                   }
-                ],
+                ]
               }
             }
           }
         },
-        {provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService},
-      ],
+        { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService }
+      ]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    location = TestBed.inject(Location);
     fixture = TestBed.createComponent(StaffUserCheckAnswersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -195,12 +189,14 @@ describe('StaffUserCheckAnswersComponent', () => {
   it('should call the right method based on isEditMode on calling the onSubmit method', () => {
     component.isUpdateMode = false;
     spyOn(component, 'onSubmitAddUser').and.callFake(() => {
+      return undefined;
     });
     component.onSubmit();
     expect(component.onSubmitAddUser).toHaveBeenCalled();
 
     component.isUpdateMode = true;
     spyOn(component, 'onSubmitUpdateUser').and.callFake(() => {
+      return undefined;
     });
     component.onSubmit();
     expect(component.onSubmitUpdateUser).toHaveBeenCalled();
@@ -229,7 +225,7 @@ describe('StaffUserCheckAnswersComponent', () => {
   });
 
   it('should call addNewUser and throw error', (done) => {
-    mockStaffDataAccessService.addNewUser.and.returnValue(throwError({status: 500}));
+    mockStaffDataAccessService.addNewUser.and.returnValue(throwError({ status: 500 }));
     component.onSubmitAddUser();
     done();
     expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
@@ -238,17 +234,18 @@ describe('StaffUserCheckAnswersComponent', () => {
 
   it('should call updateUser and then redirect to staff on successful call when calling onSubmitEditMode', fakeAsync(() => {
     const caseworkerId = '123';
-    mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: caseworkerId}));
+    mockStaffDataAccessService.updateUser.and.returnValue(of({ case_worker_id: caseworkerId }));
     component.onSubmitUpdateUser();
     tick();
     expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(`/staff/user-details/${caseworkerId}`, {state: {retainMessages: true}});
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(`/staff/user-details/${caseworkerId}`, { state: { retainMessages: true } });
     flush();
   }));
 
   it('should call updateUser and then redirect to service down on error call when calling onSubmitEditMode', fakeAsync(() => {
     mockStaffDataAccessService.updateUser.and.returnValue(throwError('error'));
     spyOn(window, 'scrollTo').and.callFake(() => {
+      return undefined;
     });
     component.onSubmitUpdateUser();
     tick();

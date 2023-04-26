@@ -2,7 +2,6 @@ import { EXUIDisplayStatusEnum } from '../models/hearings.enum';
 import { HearingsBadgePipe } from './hearings-badge.pipe';
 
 describe('HearingsBadgePipe', () => {
-
   let hearingsBadgePipe: HearingsBadgePipe;
 
   beforeEach(() => {

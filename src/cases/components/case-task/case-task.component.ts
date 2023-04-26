@@ -30,17 +30,18 @@ export class CaseTaskComponent implements OnInit {
     CaseTaskComponent.CASE_ID_VARIABLE,
     CaseTaskComponent.TASK_ID_VARIABLE
   ];
-  public manageOptions: {id: string, title: string }[];
+
+  public manageOptions: { id: string, title: string }[];
   public isUserJudicial: boolean;
   public isTaskUrgent: boolean;
   private pTask: Task;
   public isRelease4: boolean;
 
   constructor(private readonly alertService: AlertService,
-              private readonly router: Router,
-              private readonly sessionStorageService: SessionStorageService,
-              protected taskService: WorkAllocationTaskService,
-              private featureToggleService: FeatureToggleService ) {
+    private readonly router: Router,
+    private readonly sessionStorageService: SessionStorageService,
+    protected taskService: WorkAllocationTaskService,
+    private featureToggleService: FeatureToggleService) {
   }
 
   public get returnUrl(): string {
@@ -65,8 +66,8 @@ export class CaseTaskComponent implements OnInit {
   /**
    * Emit an event to refresh tasks
    */
-   @Output() public taskRefreshRequired: EventEmitter<void>
-   = new EventEmitter();
+  @Output() public taskRefreshRequired: EventEmitter<void>
+    = new EventEmitter();
 
   public static replaceVariablesWithRealValues(task: Task): string {
     if (!task.description) {
@@ -112,7 +113,7 @@ export class CaseTaskComponent implements OnInit {
       this.taskService.claimTask(task.id).subscribe(() => {
         this.alertService.success(InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS);
         this.taskRefreshRequired.emit();
-      }, error => {
+      }, (error) => {
         this.claimTaskErrors(error.status);
       });
       return;
@@ -123,15 +124,15 @@ export class CaseTaskComponent implements OnInit {
       showAssigneeColumn: true
     };
     const actionUrl = `/work/${task.id}/${option.id}`;
-    this.router.navigate([actionUrl], { queryParams: {service: task.jurisdiction}, state });
+    this.router.navigate([actionUrl], { queryParams: { service: task.jurisdiction }, state });
   }
 
   /**
-   * Navigate the User to the correct error page, or throw an on page warning
-   * that the Task is no longer available.
-   */
-   public claimTaskErrors(status: number): void {
-    const REDIRECT_404 = [{status: 404, redirectTo: REDIRECTS.ServiceDown}];
+  * Navigate the User to the correct error page, or throw an on page warning
+  * that the Task is no longer available.
+  */
+  public claimTaskErrors(status: number): void {
+    const REDIRECT_404 = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }];
     const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
     if (handledStatus > 0) {
       this.alertService.warning(InfoMessage.TASK_NO_LONGER_AVAILABLE);
@@ -160,12 +161,12 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public async setReleaseVersion(): Promise<void> {
-     const featureConfigurations = await this.featureToggleService
-       .getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null)
-       .pipe(first())
-       .toPromise();
-     const jurisdictionConfiguration = featureConfigurations.configurations
-       .find(serviceConfig => serviceConfig.serviceName === this.task.jurisdiction);
-     this.isRelease4 = jurisdictionConfiguration?.releaseVersion === '4';
+    const featureConfigurations = await this.featureToggleService
+      .getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null)
+      .pipe(first())
+      .toPromise();
+    const jurisdictionConfiguration = featureConfigurations.configurations
+      .find((serviceConfig) => serviceConfig.serviceName === this.task.jurisdiction);
+    this.isRelease4 = jurisdictionConfiguration?.releaseVersion === '4';
   }
 }

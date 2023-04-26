@@ -25,6 +25,7 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
     services: StaffFilterOption[],
     regions: RefDataRegion[]
   };
+
   public errors: ErrorMessage | false;
   public submitted = false;
   public VALIDATION_ERROR_MESSAGES = StaffAddEditUserFormValidationMessages;
@@ -49,7 +50,7 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,
       skills: this.activatedRoute.snapshot.data.skills,
       services: this.activatedRoute.snapshot.data.services,
-      regions: this.activatedRoute.snapshot.data.regions,
+      regions: this.activatedRoute.snapshot.data.regions
     };
 
     this.skillOptionGroups$ = this.staffAddEditFormService.selectedServiceCodes$.pipe(
@@ -65,8 +66,8 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
           }
         }
       }),
-      map(serviceCodes => this.staffFilterOptions.skills.filter(group => serviceCodes.includes(group.group))
-    ));
+      map((serviceCodes) => this.staffFilterOptions.skills.filter((group) => serviceCodes.includes(group.group)))
+    );
   }
 
   public ngAfterViewInit(): void {
@@ -78,7 +79,7 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
     this.submitted = true;
     form.markAllAsTouched();
     if (form.valid) {
-      this.router.navigate(['check-your-answers'], {relativeTo: this.activatedRoute});
+      this.router.navigate(['check-your-answers'], { relativeTo: this.activatedRoute });
     } else {
       this.errors = {
         title: 'There is a problem',
@@ -91,16 +92,16 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
   }
 
   public getServiceLabelFromKey(key: string): string {
-    return this.staffFilterOptions.services.find(service => service.key === key)?.label;
+    return this.staffFilterOptions.services.find((service) => service.key === key)?.label;
   }
 
   private fragmentFocus(): void {
     this.activatedRoute.fragment
       .pipe(take(1))
-      .subscribe(frag => {
+      .subscribe((frag) => {
         const element = document.getElementById(frag);
         if (element) {
-          element.scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});
+          element.scrollIntoView({ behavior: 'auto', block: 'center', inline: 'center' });
           element.focus();
         }
       });

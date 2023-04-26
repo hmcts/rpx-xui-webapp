@@ -7,13 +7,11 @@ import { FieldConfig } from '../../models/common';
 import { SearchCaseRequest } from '../../models/dtos';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
 
-
 @Component({
   selector: 'exui-my-cases',
   templateUrl: 'my-cases.component.html'
 })
 export class MyCasesComponent extends WorkCaseListWrapperComponent {
-
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.MyCases;
   }
@@ -28,7 +26,7 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
 
   public get fields(): FieldConfig[] {
     let fields = ConfigConstants.MyCases;
-    this.checkReleaseVersionService.isRelease4().subscribe(isRelease4 => {
+    this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
       if (!isRelease4) {
         fields = CONFIG_CONSTANTS_NOT_RELEASE4.MyCases;
       }
@@ -53,13 +51,13 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
       let locationFilters = [];
       /* istanbul ignore else */
       if (locationsFromLS && locationsFromLS.fields) {
-        const services = locationsFromLS.fields.find(field => field.name === 'services');
-        const locations = locationsFromLS.fields.find(field => field.name === 'locations');
+        const services = locationsFromLS.fields.find((field) => field.name === 'services');
+        const locations = locationsFromLS.fields.find((field) => field.name === 'locations');
         if (services && services.hasOwnProperty('value')) {
           serviceFilters = services.value;
         }
         if (locations && locations.hasOwnProperty('value')) {
-          locationFilters = locations.value.map(l => l.epimms_id);
+          locationFilters = locations.value.map((l) => l.epimms_id);
         }
       }
 

@@ -9,7 +9,6 @@ import { State } from '../store';
 import { IsAmendedPipe } from './is-amended.pipe';
 
 describe('IsAmendedPipe', () => {
-
   let isAmendedPipe: IsAmendedPipe;
   let router: any;
 
@@ -23,10 +22,10 @@ describe('IsAmendedPipe', () => {
               data: {
                 hearingPriorities: hearingPriorityRefData,
                 caseFlags: caseFlagsRefData,
-                partyChannels: partyChannelsRefData,
-              },
-            },
-          },
+                partyChannels: partyChannelsRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -168,5 +167,4 @@ describe('IsAmendedPipe', () => {
     const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
-
 });

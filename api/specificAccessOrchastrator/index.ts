@@ -41,7 +41,7 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
       const dueDate = dueDateWork.toISOString();
       const taskName = 'Review Specific Access Request';
       const taskResponse = await postCreateTask(req, next,
-         { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName, roleAssignmentId });
+        { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName, roleAssignmentId });
       if (!taskResponse || taskResponse.status !== 204) {
         const assignmentId = data.roleAssignmentResponse.roleRequest.id;
         const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
@@ -53,7 +53,7 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
         }
         return res.status(taskResponse.status).send(taskResponse);
       }
-      if (req &&  req.session && req.session.passport && req.session.passport.user.userinfo) {
+      if (req && req.session && req.session.passport && req.session.passport.user.userinfo) {
         await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
       }
       return res.status(status).send(data);
@@ -69,17 +69,14 @@ export async function specificAccessRequestCreateAmRole(req, res): Promise<Axios
     const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
     const fullPath = `${basePath}/am/role-assignments`;
     const headers = setHeaders(req);
-    /* tslint:disable:no-string-literal */
-    delete headers['accept'];
-    const response = await http.post(fullPath, req.body, { headers });
-    return response;
+    delete headers.accept;
+    return await http.post(fullPath, req.body, { headers });
   } catch (error) {
     logger.info(error);
     return res.status(error.status).send(error);
   }
 }
 
-// tslint:disable-next-line:max-line-length
 export async function postCreateTask(req: EnhancedRequest, next: NextFunction, createTask: { caseId, jurisdiction, caseType, taskType, dueDate, name, roleAssignmentId }): Promise<any> {
   try {
     const waWorkFlowApi = getConfigValue(SERVICES_WA_WORKFLOW_API_URL);
@@ -90,39 +87,39 @@ export async function postCreateTask(req: EnhancedRequest, next: NextFunction, c
       processVariables: {
         idempotencyKey: {
           value: id,
-          type: 'String',
+          type: 'String'
         },
         dueDate: {
           value: createTask.dueDate,
-          type: 'String',
+          type: 'String'
         },
         jurisdiction: {
           value: createTask.jurisdiction,
-          type: 'String',
+          type: 'String'
         },
         caseId: {
           value: createTask.caseId,
-          type: 'String',
+          type: 'String'
         },
         name: {
           value: createTask.name,
-          type: 'String',
+          type: 'String'
         },
         taskType: {
           value: createTask.taskType,
-          type: 'String',
+          type: 'String'
         },
         caseType: {
           value: createTask.caseType,
-          type: 'String',
+          type: 'String'
         },
         roleAssignmentId: {
           value: createTask.roleAssignmentId,
-          type: 'String',
-        },
+          type: 'String'
+        }
       },
       correlationKeys: null,
-      all: false,
+      all: false
     };
 
     const headers = setHeaders(req);
@@ -152,7 +149,6 @@ export async function orchestrationRequestMoreInformation(req: EnhancedRequest, 
       return restoreDeletedRole(req, res, next, taskResponse, rolesToDelete);
     }
     return res.send(taskResponse.data).status(taskResponse.status);
-
   } catch (e) {
     logger.error(e.status, e.statusText, JSON.stringify(e.data));
     throw e;
@@ -182,8 +178,7 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
   const updatePath = `${basePath}/am/role-assignments`;
 
   const headers = setHeaders(req);
-  /* tslint:disable:no-string-literal */
-  delete headers['accept'];
+  delete headers.accept;
   try {
     const userInfo = req.session.passport.user.userinfo;
     const actorId = userInfo.id ? userInfo.id : userInfo.uid;
@@ -192,16 +187,16 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
     const roleAssignmentQueryResponse = await http.post(queryPath, {
       actorId: [actorId],
       attributes: {
-        caseId: [caseId],
-      },
-    }, {headers});
+        caseId: [caseId]
+      }
+    }, { headers });
 
     const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse
-      .find(role => role.roleName === 'specific-access-granted' ||  role.roleName === 'specific-access-denied');
+      .find((role) => role.roleName === 'specific-access-granted' || role.roleName === 'specific-access-denied');
 
     //Delete secondary role assignment
     if (singleRoleAssignment.roleName === 'specific-access-granted') {
-      await http.delete(`${updatePath}/${singleRoleAssignment.id}`, {headers});
+      await http.delete(`${updatePath}/${singleRoleAssignment.id}`, { headers });
     }
 
     //Create new role assignment
@@ -209,7 +204,7 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
       singleRoleAssignment.notes = [{
         userId: actorId,
         time: new Date(),
-        comment: JSON.stringify(singleRoleAssignment.attributes.specificAccessReason),
+        comment: JSON.stringify(singleRoleAssignment.attributes.specificAccessReason)
       }];
 
       singleRoleAssignment.attributes.isNew = req.body.attributesToUpdate.isNew;
@@ -219,14 +214,14 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
           assignerId: actorId,
           process: 'specific-access',
           reference: `${caseId}/${singleRoleAssignment.attributes.requestedRole}/${actorId}`,
-          replaceExisting: true,
+          replaceExisting: true
         },
-        requestedRoles: [singleRoleAssignment],
+        requestedRoles: [singleRoleAssignment]
       };
 
       delete roleAssignmentUpdate.requestedRoles[0].id;
 
-      await http.post(updatePath, {...roleAssignmentUpdate}, {headers});
+      await http.post(updatePath, { ...roleAssignmentUpdate }, { headers });
     }
 
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);

@@ -1,12 +1,12 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-import {FormBuilder, ReactiveFormsModule} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {provideMockStore} from '@ngrx/store/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {initialState} from '../../../hearing.test.data';
+import { of } from 'rxjs';
+import { initialState } from '../../../hearing.test.data';
 import {
   EXUIDisplayStatusEnum,
   EXUISectionStatusEnum,
@@ -15,11 +15,11 @@ import {
   HMCStatus,
   Mode
 } from '../../../models/hearings.enum';
-import {ServiceLinkedCasesWithHearingsModel} from '../../../models/linkHearings.model';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {HearingsPipesModule} from '../../../pipes/hearings.pipes.module';
-import {HearingsService} from '../../../services/hearings.service';
-import {HowLinkedHearingsBeHeardComponent} from './linked-hearings-how-to-heard.component';
+import { ServiceLinkedCasesWithHearingsModel } from '../../../models/linkHearings.model';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { HearingsPipesModule } from '../../../pipes/hearings.pipes.module';
+import { HearingsService } from '../../../services/hearings.service';
+import { HowLinkedHearingsBeHeardComponent } from './linked-hearings-how-to-heard.component';
 
 const mockLinkedHearingGroup = {
   linkedHearingGroup: {
@@ -27,14 +27,14 @@ const mockLinkedHearingGroup = {
       groupName: 'Group A',
       groupReason: 'Reason 1',
       groupLinkType: GroupLinkType.ORDERED,
-      groupComments: 'Comment 1',
+      groupComments: 'Comment 1'
     },
     hearingsInGroup: [
-      {hearingId: 'h100010', hearingOrder: 1, caseRef: '4652724902696213'},
-      {hearingId: 'h1000002', hearingOrder: 2, caseRef: '8254902572336147'},
-    ],
+      { hearingId: 'h100010', hearingOrder: 1, caseRef: '4652724902696213' },
+      { hearingId: 'h1000002', hearingOrder: 2, caseRef: '8254902572336147' }
+    ]
   },
-  lastError: null,
+  lastError: null
 };
 const mockLinkedCasesWithHearings: ServiceLinkedCasesWithHearingsModel[] = [
   {
@@ -56,14 +56,14 @@ const mockLinkedCasesWithHearings: ServiceLinkedCasesWithHearingsModel[] = [
         hearingIsLinkedFlag: true,
         hearingGroupRequestId: null,
         hearingDaySchedule: [],
-        isSelected: true,
+        isSelected: true
       }
-    ],
+    ]
   },
   {
     caseRef: '5283819672542864',
     caseName: 'Smith vs Peterson',
-    reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case'],
+    reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case']
   },
   {
     caseRef: '8254902572336147',
@@ -84,7 +84,7 @@ const mockLinkedCasesWithHearings: ServiceLinkedCasesWithHearingsModel[] = [
         hearingIsLinkedFlag: true,
         hearingGroupRequestId: null,
         hearingDaySchedule: [],
-        isSelected: true,
+        isSelected: true
       }, {
         hearingID: 'h1000003',
         hearingType: 'Chambers Outcome',
@@ -99,10 +99,10 @@ const mockLinkedCasesWithHearings: ServiceLinkedCasesWithHearingsModel[] = [
         hearingIsLinkedFlag: true,
         hearingGroupRequestId: null,
         hearingDaySchedule: [],
-        isSelected: true,
+        isSelected: true
       }
-    ],
-  },
+    ]
+  }
 ];
 
 const HEARING_STAGE_OPTIONS: LovRefDataModel[] = [
@@ -160,7 +160,6 @@ const mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
 const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
 describe('Linking - HowLinkedHearingsBeHeardComponent', () => {
-
   beforeEach(waitForAsync(() => {
     ConfigureTestBedModule(hearingsService, mockRouter, Mode.LINK_HEARINGS);
   }));
@@ -187,7 +186,7 @@ describe('Linking - HowLinkedHearingsBeHeardComponent', () => {
       nativeElement.querySelector('#particularOrder');
     firstRadioButtonElement.click();
     fixture.detectChanges();
-    component.form.patchValue({hearingGroup: 'particularOrder'});
+    component.form.patchValue({ hearingGroup: 'particularOrder' });
     component.onOrderChange(0);
     component.onOrderChange(1);
     expect(component.validationErrors.length).toBe(0);
@@ -211,7 +210,7 @@ describe('Linking - HowLinkedHearingsBeHeardComponent', () => {
       'hearings',
       'link',
       '8254902572336147',
-      'h1000002',
+      'h1000002'
     ]);
   });
 
@@ -274,9 +273,9 @@ function ConfigureTestBedModule(hearingMockService: HearingsService, mockRouterS
     declarations: [HowLinkedHearingsBeHeardComponent],
     imports: [ReactiveFormsModule, RouterTestingModule, HearingsPipesModule],
     providers: [
-      provideMockStore({initialState: STATE}),
-      {provide: HearingsService, useValue: hearingMockService},
-      {provide: Router, useValue: mockRouterService},
+      provideMockStore({ initialState: STATE }),
+      { provide: HearingsService, useValue: hearingMockService },
+      { provide: Router, useValue: mockRouterService },
       {
         provide: ActivatedRoute,
         useValue: {
@@ -288,14 +287,14 @@ function ConfigureTestBedModule(hearingMockService: HearingsService, mockRouterS
             params: {
               caseId: '8254902572336147',
               hearingId: 'h1000002'
-            },
+            }
           },
-          fragment: of('point-to-me'),
-        },
+          fragment: of('point-to-me')
+        }
       },
-      FormBuilder,
+      FormBuilder
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
   }).compileComponents();
 }
 

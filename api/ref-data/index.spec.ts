@@ -28,21 +28,20 @@ describe('RefDataEndpoint', () => {
     sandbox.restore();
   });
 
-
   describe('getRegions', () => {
     let spy: sinon.SinonStub;
     beforeEach(() => {
       const regions: RefDataRegion[] = [
         {
           region_id: '1',
-          description: 'Region 1',
+          description: 'Region 1'
         },
         {
           region_id: '2',
-          description: 'Region 2',
-        },
+          description: 'Region 2'
+        }
       ];
-      spy = sandbox.stub(http, 'get').resolves({status: 200, data: regions});
+      spy = sandbox.stub(http, 'get').resolves({ status: 200, data: regions });
     });
 
     it('should make a get request and respond appropriately', async () => {
@@ -86,7 +85,7 @@ describe('RefDataEndpoint', () => {
         site_name: 'Site Name 1',
         venue_name: 'Venue Name 1',
         welsh_court_address: 'Welsh Court Address 1',
-        welsh_site_name: 'Welsh Site Name 1',
+        welsh_site_name: 'Welsh Site Name 1'
       },
       {
         closed_date: '2021-01-01',
@@ -112,7 +111,7 @@ describe('RefDataEndpoint', () => {
         site_name: 'Site Name 2',
         venue_name: 'Venue Name 2',
         welsh_court_address: 'Welsh Court Address 2',
-        welsh_site_name: 'Welsh Site Name 2',
+        welsh_site_name: 'Welsh Site Name 2'
       }];
 
       locationByServiceCodeResponse = {
@@ -120,15 +119,15 @@ describe('RefDataEndpoint', () => {
         court_type_id: '1',
         court_venues: dummyLocations,
         service_code: 'Service Code 1',
-        welsh_court_type: 'Welsh Court Type 1',
+        welsh_court_type: 'Welsh Court Type 1'
       };
-      spy = sandbox.stub(http, 'get').resolves({status: 200, data: locationByServiceCodeResponse});
+      spy = sandbox.stub(http, 'get').resolves({ status: 200, data: locationByServiceCodeResponse });
     });
 
     it('should make a get request when calling getLocationsByServiceCode, ' +
       'pass the query params and respond appropriately', async () => {
       const req = mockReq({
-        query: {  service_code: 'AAA7' },
+        query: { service_code: 'AAA7' }
       });
       const response = mockRes();
       await getLocationsByServiceCode(req, response, next);
@@ -168,41 +167,41 @@ describe('RefDataEndpoint', () => {
         site_name: 'Site Name 1',
         venue_name: 'Venue Name 1',
         welsh_court_address: 'Welsh Court Address 1',
-        welsh_site_name: 'Welsh Site Name 1',
+        welsh_site_name: 'Welsh Site Name 1'
       },
-        {
-          closed_date: '2021-01-01',
-          cluster_id: '2',
-          cluster_name: 'Cluster 2',
-          court_address: 'Court Address 2',
-          court_location_code: 'Court Location Code 2',
-          court_name: 'Court Name 2',
-          court_open_date: '2021-01-01',
-          court_status: 'Court Status 2',
-          court_type: 'Court Type 2',
-          court_type_id: '2',
-          court_venue_id: '2',
-          dx_address: 'DX Address 2',
-          epimms_id: '2',
-          is_case_management_location: '2',
-          is_hearing_location: '2',
-          open_for_public: '2',
-          phone_number: 'Phone Number 2',
-          postcode: 'Postcode 2',
-          region: 'Region 2',
-          region_id: '2',
-          site_name: 'Site Name 2',
-          venue_name: 'Venue Name 2',
-          welsh_court_address: 'Welsh Court Address 2',
-          welsh_site_name: 'Welsh Site Name 2',
-        }];
-      spy = sandbox.stub(http, 'get').resolves({status: 200, data: dummyLocations});
+      {
+        closed_date: '2021-01-01',
+        cluster_id: '2',
+        cluster_name: 'Cluster 2',
+        court_address: 'Court Address 2',
+        court_location_code: 'Court Location Code 2',
+        court_name: 'Court Name 2',
+        court_open_date: '2021-01-01',
+        court_status: 'Court Status 2',
+        court_type: 'Court Type 2',
+        court_type_id: '2',
+        court_venue_id: '2',
+        dx_address: 'DX Address 2',
+        epimms_id: '2',
+        is_case_management_location: '2',
+        is_hearing_location: '2',
+        open_for_public: '2',
+        phone_number: 'Phone Number 2',
+        postcode: 'Postcode 2',
+        region: 'Region 2',
+        region_id: '2',
+        site_name: 'Site Name 2',
+        venue_name: 'Venue Name 2',
+        welsh_court_address: 'Welsh Court Address 2',
+        welsh_site_name: 'Welsh Site Name 2'
+      }];
+      spy = sandbox.stub(http, 'get').resolves({ status: 200, data: dummyLocations });
     });
 
     it('should make a get request when calling getLocations, ' +
       'pass the query params and respond appropriately', async () => {
       const req = mockReq({
-        query: {  location_type: 'locationType1' },
+        query: { location_type: 'locationType1' }
       });
       const res = mockRes();
       await getLocations(req, res, next);

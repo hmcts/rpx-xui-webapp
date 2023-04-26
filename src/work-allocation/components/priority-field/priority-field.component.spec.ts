@@ -16,10 +16,10 @@ describe('PriorityFieldComponent', () => {
     );
 
     await TestBed.configureTestingModule({
-      declarations: [ PriorityFieldComponent ],
-      providers: [ { provide: FeatureToggleService, useValue: mockFeatureToggleService } ]
+      declarations: [PriorityFieldComponent],
+      providers: [{ provide: FeatureToggleService, useValue: mockFeatureToggleService }]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {
@@ -39,7 +39,7 @@ describe('PriorityFieldComponent', () => {
     component.jurisdiction = 'IA';
     component.ngOnInit();
 
-    component.isRelease4$.subscribe(isRelease4 => {
+    component.isRelease4$.subscribe((isRelease4) => {
       expect(isRelease4).toBe(true);
     });
   });
@@ -51,7 +51,7 @@ describe('PriorityFieldComponent', () => {
     component.jurisdiction = 'IA';
     component.ngOnInit();
 
-    component.isRelease4$.subscribe(isRelease4 => {
+    component.isRelease4$.subscribe((isRelease4) => {
       expect(isRelease4).toBe(false);
     });
   });

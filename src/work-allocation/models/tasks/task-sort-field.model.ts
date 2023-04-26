@@ -1,4 +1,5 @@
-import { TaskSort } from '../../enums';
+/* eslint-disable semi */
+import { TaskSort } from './../../enums';
 
 export default interface TaskSortField {
   fieldName: string;

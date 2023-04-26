@@ -8,11 +8,10 @@ describe('PriorityFieldLegacyComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PriorityFieldLegacyComponent ]
+      declarations: [PriorityFieldLegacyComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
-
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PriorityFieldLegacyComponent);

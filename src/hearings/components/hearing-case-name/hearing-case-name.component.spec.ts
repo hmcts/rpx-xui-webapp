@@ -12,8 +12,8 @@ describe('HearingPartiesTitleComponent', () => {
     TestBed.configureTestingModule({
       declarations: [HearingCaseNameComponent],
       providers: [
-        provideMockStore({ initialState }),
-      ],
+        provideMockStore({ initialState })
+      ]
     })
       .compileComponents();
     fixture = TestBed.createComponent(HearingCaseNameComponent);

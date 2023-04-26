@@ -23,15 +23,15 @@ export class NewCaseLoadedSuccessfully implements Action {
   public readonly type = NEW_CASE_LOADED;
 }
 export class CreateCaseGo implements Action {
-    public readonly type = CREATE_CASE_GO;
-    constructor(
+  public readonly type = CREATE_CASE_GO;
+  constructor(
       public payload: {
         path: any[];
         query?: object;
         extras?: NavigationExtras;
         caseId: string
       }
-    ) {}
+  ) {}
 }
 
 export class Back implements Action {

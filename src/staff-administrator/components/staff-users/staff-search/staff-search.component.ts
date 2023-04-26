@@ -33,7 +33,7 @@ export class StaffSearchComponent implements OnInit, OnDestroy {
         minSelectedError: 'Enter staff details',
         displayMinSelectedError: true,
         maxSelected: 99,
-        type: 'text-input',
+        type: 'text-input'
       }],
       persistence: 'session',
       applyButtonText: 'Search',
@@ -46,9 +46,9 @@ export class StaffSearchComponent implements OnInit, OnDestroy {
     };
 
     this.filterSub = this.filterService.getStream(this.FILTER_NAME)
-      .subscribe(filterConfig => {
+      .subscribe((filterConfig) => {
         if (filterConfig) {
-          const userPartialName = filterConfig.fields.find(item => item.name === 'user-partial-name')?.value[0];
+          const userPartialName = filterConfig.fields.find((item) => item.name === 'user-partial-name')?.value[0];
           if (userPartialName) {
             this.staffDataFilterService.search({
               partialName: userPartialName,
@@ -57,7 +57,7 @@ export class StaffSearchComponent implements OnInit, OnDestroy {
             });
           }
         }
-    });
+      });
 
     this.filterErrorsSub = this.filterService.givenErrors.subscribe((filterErrors) => {
       const errors = filterErrors ? [...filterErrors] : [];

@@ -12,11 +12,9 @@ import * as fromStore from '../../../app/store';
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
 import { ALL_LOCATIONS } from '../constants/locations';
 
-
-/* tslint:disable:component-selector */
 @Component({
   selector: 'xuilib-generic-filter',
-  template: '<span></span>',
+  template: '<span></span>'
 })
 class MockGenericFilterComponent {
   @Input() public config;
@@ -67,7 +65,7 @@ describe('TaskManagerFilterComponent', () => {
       { name: 'locations', value: ['231596', '698118'] },
       {
         name: 'types-of-work',
-        value: ['types_of_work_all', ...typesOfWork.map(t => t.key)]
+        value: ['types_of_work_all', ...typesOfWork.map((t) => t.key)]
       }]
   };
   const mockFilterService: any = {
@@ -86,7 +84,7 @@ describe('TaskManagerFilterComponent', () => {
       imports: [
         CdkTableModule,
         HttpClientTestingModule,
-        RouterTestingModule,
+        RouterTestingModule
       ],
       declarations: [TaskManagerFilterComponent, MockGenericFilterComponent],
       providers: [
@@ -108,29 +106,29 @@ describe('TaskManagerFilterComponent', () => {
     mockFilterService.get.and.returnValue(null);
     mockFeatureToggleService.getValue.and.returnValue(of({
       configurations: [
-          {
-              caseTypes: [
-                  'Asylum'
-              ],
-              releaseVersion: '3.5',
-              serviceName: 'IA'
-          },
-          {
-              caseTypes: [
-                  'PRIVATELAW',
-                  'PRLAPPS'
-              ],
-              releaseVersion: '2.1',
-              serviceName: 'PRIVATELAW'
-          },
-          {
-              caseTypes: [
-                  'CIVIL',
-                  'GENERALAPPLICATION'
-              ],
-              releaseVersion: '2.1',
-              serviceName: 'CIVIL'
-          }
+        {
+          caseTypes: [
+            'Asylum'
+          ],
+          releaseVersion: '3.5',
+          serviceName: 'IA'
+        },
+        {
+          caseTypes: [
+            'PRIVATELAW',
+            'PRLAPPS'
+          ],
+          releaseVersion: '2.1',
+          serviceName: 'PRIVATELAW'
+        },
+        {
+          caseTypes: [
+            'CIVIL',
+            'GENERALAPPLICATION'
+          ],
+          releaseVersion: '2.1',
+          serviceName: 'CIVIL'
+        }
       ]
     }));
     fixture.detectChanges();
@@ -149,6 +147,5 @@ describe('TaskManagerFilterComponent', () => {
   afterAll(() => {
     component.ngOnDestroy();
   });
-
 });
 

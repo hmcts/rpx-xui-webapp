@@ -84,7 +84,7 @@ describe('SpecificAccessDurationComponent', () => {
       const specificAccessState: SpecificAccessStateData = {
         state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
         accessReason: AccessReason.APPROVE_REQUEST,
-        typeOfRole: {id: 'specific-access-granted', name: 'specific-access-granted'},
+        typeOfRole: { id: 'specific-access-granted', name: 'specific-access-granted' },
         period,
         caseName: 'Example name',
         actorId: 'N/A',
@@ -95,7 +95,7 @@ describe('SpecificAccessDurationComponent', () => {
         jurisdiction: 'IA',
         roleCategory: 'LEGAL_OPERATIONS',
         requestedRole: 'specific-access-legal-ops',
-        person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null},
+        person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null },
         specificAccessFormData: {
           specificAccessDurationForm: {
             selectedOption: DurationType.SEVEN_DAYS,
@@ -125,7 +125,7 @@ describe('SpecificAccessDurationComponent', () => {
       const specificAccessState: SpecificAccessStateData = {
         state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
         accessReason: AccessReason.APPROVE_REQUEST,
-        typeOfRole: {id: 'specific-access-granted', name: 'specific-access-granted'},
+        typeOfRole: { id: 'specific-access-granted', name: 'specific-access-granted' },
         period,
         actorId: 'N/A',
         caseName: 'Example case name',
@@ -136,7 +136,7 @@ describe('SpecificAccessDurationComponent', () => {
         jurisdiction: 'IA',
         roleCategory: 'LEGAL_OPERATIONS',
         requestedRole: 'specific-access-legal-ops',
-        person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null},
+        person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null },
         specificAccessFormData: {
           specificAccessDurationForm: {
             selectedOption: DurationType.ANOTHER_PERIOD,
@@ -290,8 +290,8 @@ describe('SpecificAccessDurationComponent', () => {
       component.endDateYearCtrl = new FormControl(2025);
 
       component.getPeriod(DurationType.ANOTHER_PERIOD);
-      expect(component.startDateErrorMessage).toEqual({ isInvalid : true, messages: ['Invalid Start date'] });
-      expect(component.endDateErrorMessage).toEqual({ isInvalid : true, messages: ['Invalid End date'] });
+      expect(component.startDateErrorMessage).toEqual({ isInvalid: true, messages: ['Invalid Start date'] });
+      expect(component.endDateErrorMessage).toEqual({ isInvalid: true, messages: ['Invalid End date'] });
     });
 
     it('should display start date in past error message', () => {
@@ -304,7 +304,7 @@ describe('SpecificAccessDurationComponent', () => {
       component.endDateYearCtrl = new FormControl(2021);
 
       component.getPeriod(DurationType.ANOTHER_PERIOD);
-      expect(component.startDateErrorMessage).toEqual({ isInvalid : true, messages: ['The access start date must not be in the past'] });
+      expect(component.startDateErrorMessage).toEqual({ isInvalid: true, messages: ['The access start date must not be in the past'] });
     });
 
     it('should display end date must be after start date message', () => {
@@ -317,7 +317,7 @@ describe('SpecificAccessDurationComponent', () => {
       component.endDateYearCtrl = new FormControl(2021);
 
       component.getPeriod(DurationType.ANOTHER_PERIOD);
-      expect(component.endDateErrorMessage).toEqual( { isInvalid: true, messages: ['The access end date must be after the access start date']});
+      expect(component.endDateErrorMessage).toEqual({ isInvalid: true, messages: ['The access end date must be after the access start date'] });
     });
   });
 

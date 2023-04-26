@@ -18,9 +18,9 @@ export class MultiLevelSelectorComponent implements AfterViewInit, OnDestroy {
   private readonly subscription: Subscription;
   constructor(public fb: FormBuilder) {
     this.formGroup = fb.group({ item: [''] });
-    this.subscription = this.formGroup.controls.item.valueChanges.subscribe(value => {
+    this.subscription = this.formGroup.controls.item.valueChanges.subscribe((value) => {
       if (this.multiLevelSelect) {
-        this.multiLevelSelect.controls.forEach(multiLevel => {
+        this.multiLevelSelect.controls.forEach((multiLevel) => {
           multiLevel.value.selected = multiLevel.value.key === value;
         });
       }
@@ -45,7 +45,7 @@ export class MultiLevelSelectorComponent implements AfterViewInit, OnDestroy {
 
   public assignSelectedOptionToItemControl(): void {
     if (this.controlType === ControlTypeEnum.SELECT) {
-      (this.multiLevelSelect as FormArray).controls.forEach(control => {
+      (this.multiLevelSelect as FormArray).controls.forEach((control) => {
         if (control.value && control.value.selected) {
           this.formGroup.controls.item.setValue(control.value.key);
         }
@@ -55,7 +55,7 @@ export class MultiLevelSelectorComponent implements AfterViewInit, OnDestroy {
 
   public deSelectChildNodes(control: AbstractControl): void {
     if (control.value && control.value.child_nodes && control.value.child_nodes.length) {
-      control.value.child_nodes.forEach(node => {
+      control.value.child_nodes.forEach((node) => {
         node.selected = false;
       });
     }

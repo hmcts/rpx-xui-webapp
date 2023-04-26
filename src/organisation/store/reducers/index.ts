@@ -7,7 +7,7 @@ export interface OrganisationState {
 }
 
 export const reducers: ActionReducerMap<OrganisationState> = {
-  organisation: fromOrganisation.reducer,
+  organisation: fromOrganisation.reducer
 };
 
 export const getRootOrgState = createFeatureSelector<OrganisationState>(

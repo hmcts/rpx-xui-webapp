@@ -4,7 +4,6 @@ import { InformationMessage } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class InfoMessageCommService {
-
   public infoMessageSource: BehaviorSubject<InformationMessage[]> = new BehaviorSubject<InformationMessage[]>([]);
 
   public infoMessageChangeEmitted$: Observable<InformationMessage[]> = this.infoMessageSource.asObservable();

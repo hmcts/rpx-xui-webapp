@@ -28,16 +28,16 @@ export const WILDCARD_SERVICE_DOWN: FatalRedirect[] = [
 
 export const treatAsFatal = (status: number, navigator: Navigator, fatals: FatalRedirect[]): number => {
   if (fatals && fatals.length > 0) {
-    const fatal = fatals.find(f => f.status === status);
+    const fatal = fatals.find((f) => f.status === status);
     if (fatal) {
-      navigator.navigate([ fatal.redirectTo ]);
+      navigator.navigate([fatal.redirectTo]);
       return 0;
-    } else {
-      const wildcardFatal = fatals.find(f => f.status === 0);
-      if (wildcardFatal) {
-        navigator.navigate([ wildcardFatal.redirectTo ]);
-        return 0;
-      }
+    }
+
+    const wildcardFatal = fatals.find((f) => f.status === 0);
+    if (wildcardFatal) {
+      navigator.navigate([wildcardFatal.redirectTo]);
+      return 0;
     }
   }
   return status;
@@ -47,14 +47,14 @@ export const handleFatalErrors = (status: number, navigator: Navigator, fatals?:
   switch (status) {
     case 401:
     case 403:
-      navigator.navigate([ REDIRECTS.NotAuthorised ]);
+      navigator.navigate([REDIRECTS.NotAuthorised]);
       return 0; // 0 indicates it has been handled.
     case 500:
     case 503:
-      navigator.navigate([ REDIRECTS.ServiceDown ]);
+      navigator.navigate([REDIRECTS.ServiceDown]);
       return 0; // 0 indicates it has been handled.
     case 400:
-      navigator.navigate([ REDIRECTS.ServiceDown ]);
+      navigator.navigate([REDIRECTS.ServiceDown]);
       return 400;
     default:
       // If it's anything other than a 400, 401, 403, 500, or 503, we should not
@@ -75,14 +75,14 @@ export const handleTasksFatalErrors = (status: number, navigator: Navigator, fat
         // For certain conditions, we have to navigate to a different error page
         // if the selected person is not authorised to perform the task
         const destinationUrl = getDestinationUrl(navigator.url);
-        navigator.navigate([ destinationUrl ], { state: { returnUrl }});
+        navigator.navigate([destinationUrl], { state: { returnUrl } });
       } else {
-        navigator.navigate([ REDIRECTS.NotAuthorised ]);
+        navigator.navigate([REDIRECTS.NotAuthorised]);
       }
       return 0; // 0 indicates it has been handled.
     case 500:
     case 503:
-      navigator.navigate([ REDIRECTS.ServiceDown ]);
+      navigator.navigate([REDIRECTS.ServiceDown]);
       return 0; // 0 indicates it has been handled.
     case 400:
       return 400;
@@ -99,7 +99,7 @@ export const handleTasksFatalErrors = (status: number, navigator: Navigator, fat
 
 export const getAllCaseworkersFromServices = (caseworkersByService: CaseworkersByService[]): Caseworker[] => {
   let allCaseworkers: Caseworker[] = [];
-  caseworkersByService.forEach(caseworkerListByService => {
+  caseworkersByService.forEach((caseworkerListByService) => {
     allCaseworkers = allCaseworkers.concat(caseworkerListByService.caseworkers);
   });
   return allCaseworkers;
@@ -123,14 +123,14 @@ export const setCaseworkers = (serviceId: string, caseworkers: Caseworker[], ses
 };
 
 export const getAssigneeName = (caseworkers: any [], assignee: string): string => {
-  if (assignee && caseworkers && caseworkers.some(cw => cw.idamId === assignee)) {
-    const assignedCW = caseworkers.filter(cw => cw.idamId === assignee)[0];
+  if (assignee && caseworkers && caseworkers.some((cw) => cw.idamId === assignee)) {
+    const assignedCW = caseworkers.filter((cw) => cw.idamId === assignee)[0];
     return `${assignedCW.firstName} ${assignedCW.lastName}`;
   }
   return null;
 };
 
-export const servicesMap: {[key: string]: string} =  {
+export const servicesMap: {[key: string]: string} = {
   IA: 'Immigration and Asylum',
   SSCS: 'Social security and child support'
 };
@@ -138,17 +138,18 @@ export const servicesMap: {[key: string]: string} =  {
 export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): OptionsModel[] {
   const options = new Array<OptionsModel>();
   // Consider role categories only with either OWN or EXECUTE permissions
-  const roleCategories = taskRoles.filter(role => role.role_category
+  const roleCategories = taskRoles.filter((role) => role.role_category
     && (roleIncludes(role.permissions, TaskPermission.OWN) || roleIncludes(role.permissions, TaskPermission.EXECUTE))).
-    map(taskRole => taskRole.role_category as RoleCategory);
+    map((taskRole) => taskRole.role_category as RoleCategory);
 
   // Decide the category to be selected by default
   const roleCategoryToSelectByDefault = getRoleCategoryToBeSelectedByDefault(taskRoles, sessionStorageService);
-  roleCategories.forEach(roleCategory => {
-    if (!options.find(option => option.optionId === roleCategory)) {
+  roleCategories.forEach((roleCategory) => {
+    if (!options.find((option) => option.optionId === roleCategory)) {
       let label;
       try {
         label = getLabel(roleCategory);
+        // eslint-disable-next-line no-empty
       } catch (error) {}
       const option: OptionsModel = {
         optionId: roleCategory,
@@ -168,9 +169,9 @@ export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessio
 
 export function getRoleCategoryToBeSelectedByDefault(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): RoleCategory {
   // Consider only role categories with OWN permission for radio button default selection
-  const uniqueRoleCategoriesWithOwnPermissions = taskRoles.filter(role => role.role_category
+  const uniqueRoleCategoriesWithOwnPermissions = taskRoles.filter((role) => role.role_category
     && (roleIncludes(role.permissions, TaskPermission.OWN))).
-    map(taskRole => taskRole.role_category as RoleCategory).
+    map((taskRole) => taskRole.role_category as RoleCategory).
     filter((role, index, taskRolesToFilter) => {
       return taskRolesToFilter.indexOf(role) === index;
     });
@@ -224,7 +225,7 @@ export function getRoleCategoryFromUserRole(role: string): RoleCategory {
 export function roleIncludes(roles: string[], permission: string): boolean {
   let includesRole = false;
   if (roles && permission) {
-    roles.forEach(role => {
+    roles.forEach((role) => {
       if (role.toLocaleLowerCase() === permission.toLocaleLowerCase()) {
         includesRole = true;
       }
@@ -254,19 +255,27 @@ export function getCurrentUserRoleCategory(sessionStorageService: ISessionStorag
   return null;
 }
 
-export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, allLocationServices: string[]): LocationsByService[] {
+// EUI-7909 - replace function definition with comment
+// export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, allLocationServices: string[]): LocationsByService[] {
+export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, allLocationServices: string[], bookable = false): LocationsByService[] {
   if (allLocationServices.includes(service)) {
     // if we know that all location services includes the current service we need to ensure this is present
     return locationsByServices;
   }
-  let locationsByService = locationsByServices.find(serviceLocations => serviceLocations.service === service);
+  let locationsByService = locationsByServices.find((serviceLocations) => serviceLocations.service === service);
   if (!locationsByService) {
     // check to ensure that if service present with null location (i.e. a base location not within region), we register this
-    !location.id && !location.regionId ? locationsByServices.push({service, locations: []}) : locationsByServices.push({service, locations: [location]});
+    // EUI-7909 - uncomment the code below
+    // !location.id && !location.regionId ? locationsByServices.push({service, locations: []}) : locationsByServices.push({service, locations: [location]});
+    // EUI-7909 remove line below
+    !location.id && !location.regionId ? locationsByServices.push({ service, locations: [], bookable }) : locationsByServices.push({ service, locations: [location], bookable });
   } else {
-    const finalDataWithoutService = locationsByServices.filter(serviceLocations => serviceLocations.service !== service);
+    const finalDataWithoutService = locationsByServices.filter((serviceLocations) => serviceLocations.service !== service);
     // Need this to keep bookable attribute as true even if there is a non-bookable role on the same service
-    locationsByService = {service, locations: locationsByService.locations.concat([location])};
+    // EUI-7909 - uncomment the code
+    // locationsByService = {service, locations: locationsByService.locations.concat([location])}
+    // EUI-7909 - delete the code
+    locationsByService = { service, locations: locationsByService.locations.concat([location]), bookable };
     locationsByServices = finalDataWithoutService.concat([locationsByService]);
   }
   return locationsByServices;
@@ -274,7 +283,7 @@ export function addLocationToLocationsByService(locationsByServices: LocationsBy
 
 export function locationWithinRegion(regionLocations: LocationsByRegion[], region: string, location: string): boolean {
   let withinRegion = false;
-  regionLocations.forEach(regionLocation => {
+  regionLocations.forEach((regionLocation) => {
     if (regionLocation.regionId === region) {
       if (regionLocation.locations.includes(location)) {
         withinRegion = true;

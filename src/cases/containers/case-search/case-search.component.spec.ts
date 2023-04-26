@@ -28,8 +28,8 @@ describe('CaseSearchComponent', () => {
         RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromCaseSearchStore.reducers),
-        }),
+          feature: combineReducers(fromCaseSearchStore.reducers)
+        })
       ],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
@@ -71,7 +71,7 @@ describe('CaseSearchComponent', () => {
     it('should update the components page property on page change.', () => {
       const event = {
         selected: {
-          page: 2,
+          page: 2
         }
       };
 
@@ -88,7 +88,7 @@ describe('CaseSearchComponent', () => {
 
       const event = {
         selected: {
-          page: 1,
+          page: 1
         }
       };
 
@@ -102,23 +102,15 @@ describe('CaseSearchComponent', () => {
     let event;
 
     beforeEach(() => {
-      const jurisdiction = { id: 'PROBATE' };
-      const caseType = { id: 'GrantOfRepresentation' };
-      const caseState = { id: 'CaseCreated' };
-      const metadataFields = ['[CASE_REFERENCE]'];
-      const formGroupValues = {};
-      const page = 1;
-
       event = component.getEvent();
     });
 
     it('should call findCaseListPaginationMetadata() on apply of filter.', () => {
       const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
-      const spyOnGetEvent = spyOn(component, 'getEvent');
 
       event = {
         selected: {
-          page: 2,
+          page: 2
         }
       };
 
@@ -130,7 +122,7 @@ describe('CaseSearchComponent', () => {
     it('should update the components page property on apply of a filter change.', () => {
       event = {
         selected: {
-          page: 2,
+          page: 2
         }
       };
       component.applyFilter(event);
@@ -141,7 +133,7 @@ describe('CaseSearchComponent', () => {
 
   describe('getElasticSearchResults', () => {
     it('should dispatch an action to get results from elastic search endpoint.', () => {
-      const spyOnGetEvent = spyOn(component, 'getEvent').and.returnValue({});
+      spyOn(component, 'getEvent').and.returnValue({});
       component.getElasticSearchResults();
       expect(storeDispatchMock).toHaveBeenCalledWith(new fromCaseSearchStore.ApplySearchFilterForES({}));
     });

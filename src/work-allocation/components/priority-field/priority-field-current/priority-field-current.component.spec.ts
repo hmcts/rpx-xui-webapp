@@ -8,11 +8,10 @@ describe('PriorityFieldCurrentComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PriorityFieldCurrentComponent ]
+      declarations: [PriorityFieldCurrentComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
-
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PriorityFieldCurrentComponent);

@@ -25,7 +25,7 @@ import { TaskAssignmentConfirmComponent } from './task-assignment-confirm.compon
     <exui-task-assignment-confirm></exui-task-assignment-confirm>`
 })
 class WrapperComponent {
-  @ViewChild(TaskAssignmentConfirmComponent, {static: true}) public appComponentRef: TaskAssignmentConfirmComponent;
+  @ViewChild(TaskAssignmentConfirmComponent, { static: true }) public appComponentRef: TaskAssignmentConfirmComponent;
 }
 
 describe('TaskAssignmentConfirmComponent', () => {
@@ -149,7 +149,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     component.verb = TaskActionType.Assign;
     fixture.detectChanges();
     component.onChange();
-    expect(router.navigate).toHaveBeenCalledWith([ 'test', 'task1111111', 'assign' ], {
+    expect(router.navigate).toHaveBeenCalledWith(['test', 'task1111111', 'assign'], {
       state: {
         returnUrl: 'all-work/tasks',
         person: SELECTED_PERSON
@@ -271,14 +271,14 @@ describe('TaskAssignmentConfirmComponent', () => {
       }
     });
   });
-
 });
 
-['caseworker-ia-iacjudge', 'caseworker-ia-caseofficer'].forEach(role => {
+['caseworker-ia-iacjudge', 'caseworker-ia-caseofficer'].forEach((role) => {
   describe(`TaskAssignmentConfirmComponent by userType role ${role}`, () => {
     let component: TaskAssignmentConfirmComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let router: Router;
     const SELECTED_PERSON = {
       id: 'id123',
@@ -356,7 +356,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     it('configured fields for judicial', () => {
       const headers = fixture.debugElement.queryAll(By.css('th'));
       fixture.detectChanges();
-      const fieldLabels = headers.map(header => header.nativeElement.textContent);
+      const fieldLabels = headers.map((header) => header.nativeElement.textContent);
       if (role === 'caseworker-ia-iacjudge') {
         expect(fieldLabels).toContain('Task created');
         expect(fieldLabels).not.toContain('Due date');
@@ -367,7 +367,5 @@ describe('TaskAssignmentConfirmComponent', () => {
         expect(fieldLabels).toContain('Priority');
       }
     });
-
   });
-
 });

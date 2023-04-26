@@ -6,7 +6,6 @@ import { AdditionalSecurityAnswerConverter } from './additional-security.answer.
 import { AnswerConverter } from './answer.converter';
 
 describe('AdditionalSecurityAnswerConverter', () => {
-
   let converter: AnswerConverter;
 
   beforeEach(() => {
@@ -16,8 +15,7 @@ describe('AdditionalSecurityAnswerConverter', () => {
   it('should transform additional security converter', () => {
     const STATE: State = initialStateImmutable.hearings;
     const result$ = converter.transformAnswer(of(STATE));
-    const expected = cold('(b|)', {b: 'No'});
+    const expected = cold('(b|)', { b: 'No' });
     expect(result$).toBeObservable(expected);
   });
-
 });

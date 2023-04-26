@@ -18,19 +18,19 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
   private filterSub: Subscription;
   private filterErrorsSub: Subscription;
 
-  @ViewChild('genericFilterComponent', {static: true}) public genericFilterComponent: GenericFilterComponent;
+  @ViewChild('genericFilterComponent', { static: true }) public genericFilterComponent: GenericFilterComponent;
 
   constructor(
     private route: ActivatedRoute,
     private staffDataFilterService: StaffDataFilterService,
-    private filterService: FilterService) {}
+    private filterService: FilterService) { }
 
   public ngOnInit(): void {
     const staffFilters = {
       userTypes: this.route.snapshot.data.userTypes,
       jobTitles: this.route.snapshot.data.jobTitles,
       skills: this.route.snapshot.data.skills,
-      services: this.route.snapshot.data.services,
+      services: this.route.snapshot.data.services
     };
     const defaultOption = { key: 'All', label: 'All', selectAll: true };
 
@@ -49,66 +49,66 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
         type: 'find-service',
         enableAddButton: true,
         displayMinSelectedError: true,
-        minSelectedError : 'Click the Add button to add the service to your search criteria',
+        minSelectedError: 'Click the Add button to add the service to your search criteria'
       },
-        {
-          name: 'user-location',
-          title: 'Search by location',
-          subTitle: 'Enter a location name',
-          options: [],
-          servicesField: 'user-services',
-          propertyNameFilter: 'venue_name',
-          minSelected: 0,
-          maxSelected: 0,
-          type: 'find-location',
-          enableAddButton: true,
-          displayMinSelectedError: true,
-          minSelectedError: 'Click the Add button to add the location to your search criteria'
-        },
-        {
-          name: 'user-type',
-          title: 'User Type',
-          options: [...staffFilters.userTypes],
-          minSelected: 0,
-          maxSelected: 0,
-          type: 'select',
-          lineBreakBefore: true,
-          defaultOption
-        },
-        {
-          name: 'user-job-title',
-          title: 'Job title',
-          options: [...staffFilters.jobTitles],
-          minSelected: 0,
-          maxSelected: 0,
-          type: 'select',
-          lineBreakBefore: true,
-          defaultOption
-        },
-        {
-          name: 'user-skills',
-          title: 'Skills',
-          options: [],
-          groupOptions: staffFilters.skills,
-          minSelected: 0,
-          maxSelected: 0,
-          type: 'group-select',
-          lineBreakBefore: true,
-          defaultOption
-        },
-        {
-          name: 'user-role',
-          title: 'Role',
-          options: [
-            { label: 'Case allocator', key: 'case allocator' },
-            { label: 'Task supervisor', key: 'task supervisor' },
-            { label: 'Staff administrator', key: 'staff administrator' }
-          ],
-          minSelected: 0,
-          maxSelected: 3,
-          type: 'checkbox',
-          lineBreakBefore: true
-        }
+      {
+        name: 'user-location',
+        title: 'Search by location',
+        subTitle: 'Enter a location name',
+        options: [],
+        servicesField: 'user-services',
+        propertyNameFilter: 'venue_name',
+        minSelected: 0,
+        maxSelected: 0,
+        type: 'find-location',
+        enableAddButton: true,
+        displayMinSelectedError: true,
+        minSelectedError: 'Click the Add button to add the location to your search criteria'
+      },
+      {
+        name: 'user-type',
+        title: 'User Type',
+        options: [...staffFilters.userTypes],
+        minSelected: 0,
+        maxSelected: 0,
+        type: 'select',
+        lineBreakBefore: true,
+        defaultOption
+      },
+      {
+        name: 'user-job-title',
+        title: 'Job title',
+        options: [...staffFilters.jobTitles],
+        minSelected: 0,
+        maxSelected: 0,
+        type: 'select',
+        lineBreakBefore: true,
+        defaultOption
+      },
+      {
+        name: 'user-skills',
+        title: 'Skills',
+        options: [],
+        groupOptions: staffFilters.skills,
+        minSelected: 0,
+        maxSelected: 0,
+        type: 'group-select',
+        lineBreakBefore: true,
+        defaultOption
+      },
+      {
+        name: 'user-role',
+        title: 'Role',
+        options: [
+          { label: 'Case allocator', key: 'case allocator' },
+          { label: 'Task supervisor', key: 'task supervisor' },
+          { label: 'Staff administrator', key: 'staff administrator' }
+        ],
+        minSelected: 0,
+        maxSelected: 3,
+        type: 'checkbox',
+        lineBreakBefore: true
+      }
       ],
       persistence: 'session',
       applyButtonText: 'Search',
@@ -134,16 +134,16 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
       }
     };
     this.filterSub = this.filterService.getStream(this.FILTER_NAME)
-      .subscribe(filterConfig => {
+      .subscribe((filterConfig) => {
         if (filterConfig) {
           const advancedSearchFilters = {} as StaffAdvancedSearchFilters;
 
-          const jobTitle = filterConfig.fields.find(item => item.name === 'user-job-title').value[0];
-          const userType = filterConfig.fields.find(item => item.name === 'user-type').value[0];
-          const services = (filterConfig.fields.find(item => item.name === 'user-services').value).map(s => s.key);
-          const locations = (filterConfig.fields.find(item => item.name === 'user-location').value).map(l => l.epimms_id);
-          const roles = filterConfig.fields.find(item => item.name === 'user-role').value;
-          const skills = filterConfig.fields.find(item => item.name === 'user-skills').value;
+          const jobTitle = filterConfig.fields.find((item) => item.name === 'user-job-title').value[0];
+          const userType = filterConfig.fields.find((item) => item.name === 'user-type').value[0];
+          const services = (filterConfig.fields.find((item) => item.name === 'user-services').value).map((s) => s.key);
+          const locations = (filterConfig.fields.find((item) => item.name === 'user-location').value).map((l) => l.epimms_id);
+          const roles = filterConfig.fields.find((item) => item.name === 'user-role').value;
+          const skills = filterConfig.fields.find((item) => item.name === 'user-skills').value;
 
           if (services && services.length > 0) {
             advancedSearchFilters.serviceCode = services;
@@ -157,7 +157,7 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
             advancedSearchFilters.role = roles;
           }
 
-          if (skills && skills.some(s => s !== 'All')) {
+          if (skills && skills.some((s) => s !== 'All')) {
             advancedSearchFilters.skill = skills;
           }
 
@@ -173,7 +173,7 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
             this.staffDataFilterService.search({
               advancedSearchFilters,
               pageNumber: 1,
-              pageSize: StaffDataFilterService.PAGE_SIZE,
+              pageSize: StaffDataFilterService.PAGE_SIZE
             });
             // This makes sure that the error are set only on pressing the search button
           } else if (this.genericFilterComponent.submitted) {

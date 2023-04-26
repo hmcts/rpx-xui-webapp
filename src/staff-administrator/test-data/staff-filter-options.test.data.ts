@@ -55,11 +55,11 @@ export const staffFilterOptionsTestData = {
       options: [
         {
           key: '1',
-          label: 'Underwriter',
+          label: 'Underwriter'
         },
         {
           key: '2',
-          label: 'Caseworker',
+          label: 'Caseworker'
         }
       ]
     },
@@ -68,11 +68,11 @@ export const staffFilterOptionsTestData = {
       options: [
         {
           key: '3',
-          label: 'Caseworker',
+          label: 'Caseworker'
         },
         {
           key: '4',
-          label: 'Case manager',
+          label: 'Case manager'
         }
       ]
     },
@@ -81,7 +81,7 @@ export const staffFilterOptionsTestData = {
       options: [
         {
           key: '5',
-          label: 'Underwriter',
+          label: 'Underwriter'
         }
       ]
     }
@@ -93,7 +93,7 @@ export const staffFilterOptionsTestData = {
     },
     {
       region_id: '2',
-      description: 'Region 2',
+      description: 'Region 2'
     }
   ]
 };

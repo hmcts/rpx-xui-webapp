@@ -29,7 +29,7 @@ describe('StaffDataAccessService', () => {
         role: ['Role 1']
       },
       pageSize: StaffDataFilterService.PAGE_SIZE,
-      pageNumber: 1,
+      pageNumber: 1
     });
     expect(mockHttpClient.get).toHaveBeenCalledTimes(1);
   });

@@ -5,7 +5,7 @@ import { NextFunction } from 'express';
 import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import { mockReq, mockRes } from 'sinon-express-mock'
+import { mockReq, mockRes } from 'sinon-express-mock';
 import { GlobalSearchService } from '../interfaces/globalSearchService';
 import { http } from '../lib/http';
 import * as globalSearchServices from './index';
@@ -13,9 +13,7 @@ import * as globalSearchServices from './index';
 chai.use(sinonChai);
 
 describe('Jurisdiction', () => {
-
   let sandbox: sinon.SinonSandbox;
-  let spy: any;
   const jurisdictionList: Jurisdiction[] = [
     { id: 'PROBATE', name: 'Manage probate application', description: null, caseTypes: null },
     { id: 'IA', name: 'Immigration & Asylum', description: null, caseTypes: null },
@@ -25,9 +23,9 @@ describe('Jurisdiction', () => {
   ];
   const serviceList: GlobalSearchService[] = [
     { serviceId: 'IA', serviceName: 'Immigration & Asylum' },
-    { serviceId: 'CIVIL', serviceName: 'CIVIL'},
-    { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW'},
-    { serviceId: 'PUBLICLAW', serviceName: 'Public Law'},
+    { serviceId: 'CIVIL', serviceName: 'CIVIL' },
+    { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' },
+    { serviceId: 'PUBLICLAW', serviceName: 'Public Law' }
   ];
 
   beforeEach(() => {
@@ -44,7 +42,7 @@ describe('Jurisdiction', () => {
       serviceList
     });
     const next = sinon.mock().atLeast(1) as NextFunction;
-    spy = sandbox.stub(http, 'get').resolves(res);
+    sandbox.stub(http, 'get').resolves(res);
     sandbox.stub(globalSearchServices, 'getServices').returns(res);
     const response = await globalSearchServices.getServices(req, res, next);
     expect(response).to.deep.equal(res);
@@ -60,7 +58,6 @@ describe('Jurisdiction', () => {
     const response = await globalSearchServices.getServices(req, res, next);
     expect(response).to.deep.equal(res);
   });
-
 
   it('should return global search services', async() => {
     let services = globalSearchServices.generateServices(undefined);
@@ -84,7 +81,7 @@ describe('Jurisdiction', () => {
       {
         caseStartRecord: 1,
         casesReturned: 25,
-        moreResultsToGo: true,
+        moreResultsToGo: true
       },
       [{
         ccdCaseTypeId: '123',
@@ -103,7 +100,7 @@ describe('Jurisdiction', () => {
         processForAccess: '',
         regionId: '',
         regionName: '',
-        stateId: '',
+        stateId: ''
       }]
     );
     const next = sinon.mock().atLeast(1) as NextFunction;

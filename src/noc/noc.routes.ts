@@ -12,15 +12,15 @@ export const ROUTES: Routes = [
       {
         path: '',
         component: null,
-        canActivate: [ FeatureToggleGuard ],
+        canActivate: [FeatureToggleGuard],
         data: {
           title: 'HMCTS Manage cases | Notice of Change',
-          needsFeaturesEnabled: [ AppConstants.FEATURE_NAMES.noticeOfChange ],
+          needsFeaturesEnabled: [AppConstants.FEATURE_NAMES.noticeOfChange],
           featureDisabledRedirect: '/'
         }
       }
     ]
-  },
+  }
 ];
 
 export const nocRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);

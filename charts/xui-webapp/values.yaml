@@ -115,6 +115,8 @@ nodejs:
     SERVICES_PAYMENT_RETURN_URL: https://paymentoutcome-web.{{ .Values.global.environment }}.platform.hmcts.net
     # Judicial Booking Url
     SERVICES_JUDICIAL_BOOKING_API_PATH: http://am-judicial-booking-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Welsh Translation endpoints
+    SERVICES_TRANSLATION_API_URL: http://ts-translation-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
 
     #Feature Flags
     FEATURE_APP_INSIGHTS_ENABLED: true

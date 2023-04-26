@@ -19,7 +19,7 @@ describe('Jurisdiction', () => {
     { id: 'IA', name: 'Immigration & Asylum', description: null, caseTypes: null },
     { id: 'PUBLICLAW', name: 'Public Law', description: null, caseTypes: null },
     { id: 'DIVORCE', name: 'Family Divorce', description: null, caseTypes: null },
-    { id: 'PRIVATELAW', name: 'PRIVATE LAW', description: null, caseTypes: null },
+    { id: 'PRIVATELAW', name: 'PRIVATE LAW', description: null, caseTypes: null }
   ];
   const serviceList: GlobalSearchService[] = [
     { serviceId: 'IA', serviceName: 'Immigration & Asylum' },
@@ -38,7 +38,7 @@ describe('Jurisdiction', () => {
   it('should get global search services', async() => {
     const req = mockReq();
     const res = mockRes({
-      serviceList,
+      serviceList
     });
     const next = sinon.mock().atLeast(1) as NextFunction;
     sandbox.stub(http, 'get').resolves(res);
@@ -50,7 +50,7 @@ describe('Jurisdiction', () => {
   it('should error when getting global search services', async() => {
     const req = mockReq();
     const res = mockRes({
-      status: 500,
+      status: 500
     });
     const next = sinon.mock().atLeast(1) as NextFunction;
     sandbox.stub(globalSearchServices, 'getServices').returns(res);
@@ -80,7 +80,7 @@ describe('Jurisdiction', () => {
       {
         caseStartRecord: 1,
         casesReturned: 25,
-        moreResultsToGo: true,
+        moreResultsToGo: true
       },
       [{
         ccdCaseTypeId: '123',
@@ -99,7 +99,7 @@ describe('Jurisdiction', () => {
         processForAccess: '',
         regionId: '',
         regionName: '',
-        stateId: '',
+        stateId: ''
       }]
     );
     const next = sinon.mock().atLeast(1) as NextFunction;

@@ -28,13 +28,13 @@ export const applyProxy = (app, config) => {
   const options: Options = {
     changeOrigin: true,
     logLevel: getConfigValue(LOGGING),
-    logProvider: ()  => {
+    logProvider: () => {
       return {
-        debug: msg => logger.debug(msg),
-        error: msg => logger.error(msg),
-        info: msg => logger.info(msg),
-        log: msg => logger.info(msg),
-        warn: msg => logger.warn(msg)
+        debug: (msg) => logger.debug(msg),
+        error: (msg) => logger.error(msg),
+        info: (msg) => logger.info(msg),
+        log: (msg) => logger.info(msg),
+        warn: (msg) => logger.warn(msg)
       };
     },
     onError: onProxyError,
@@ -47,7 +47,7 @@ export const applyProxy = (app, config) => {
 
   if (config.onRes) {
     options.onProxyRes = (proxyRes, req, res) => {
-      modifyResponse(res, proxyRes, body => {
+      modifyResponse(res, proxyRes, (body) => {
         if (body) {
           // modify some information
           body = config.onRes(proxyRes, req, res, body);

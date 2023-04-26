@@ -31,7 +31,7 @@ describe('ActivityResolver', () => {
 
     it('should not bother to verify the user and return false', () => {
       let result: boolean;
-      activityResolver.resolve().subscribe(r => result = r);
+      activityResolver.resolve().subscribe((r) => result = r);
       expect(activityService.mode).toEqual(ActivityService.MODES.off);
       expect(activityService.verifyUserIsAuthorizedCalls).toEqual(0);
       expect(result).toBe(false);
@@ -45,7 +45,7 @@ describe('ActivityResolver', () => {
 
     it('should not bother to verify the user and return false', () => {
       let result: boolean;
-      activityResolver.resolve().subscribe(r => result = r);
+      activityResolver.resolve().subscribe((r) => result = r);
       expect(activityService.mode).toEqual(ActivityService.MODES.off);
       expect(activityService.verifyUserIsAuthorizedCalls).toEqual(0);
       expect(result).toBe(false);
@@ -59,14 +59,14 @@ describe('ActivityResolver', () => {
 
     it('should verify if the user is authorised and return true', () => {
       let result: boolean;
-      activityResolver.resolve().subscribe(r => result = r);
+      activityResolver.resolve().subscribe((r) => result = r);
       expect(activityService.verifyUserIsAuthorizedCalls).toEqual(1);
       expect(result).toBe(true);
     });
 
     it('should verify if the user is authorised and return true even when they are NOT authorised', () => {
       let result: boolean;
-      activityResolver.resolve().subscribe(r => result = r);
+      activityResolver.resolve().subscribe((r) => result = r);
       expect(activityService.mode).toEqual(ActivityService.MODES.polling);
       expect(activityService.verifyUserIsAuthorizedCalls).toEqual(1);
       expect(result).toBe(true);
@@ -80,14 +80,14 @@ describe('ActivityResolver', () => {
 
     it('should verify if the user is authorised and return true', () => {
       let result: boolean;
-      activityResolver.resolve().subscribe(r => result = r);
+      activityResolver.resolve().subscribe((r) => result = r);
       expect(activityService.verifyUserIsAuthorizedCalls).toEqual(1);
       expect(result).toBe(true);
     });
 
     it('should verify if the user is authorised and return true even when they are NOT authorised', () => {
       let result: boolean;
-      activityResolver.resolve().subscribe(r => result = r);
+      activityResolver.resolve().subscribe((r) => result = r);
       expect(activityService.mode).toEqual(ActivityService.MODES.socket);
       expect(activityService.verifyUserIsAuthorizedCalls).toEqual(1);
       expect(result).toBe(true);

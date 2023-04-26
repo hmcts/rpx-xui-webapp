@@ -41,7 +41,7 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         'www.google-analytics.com',
         '*.hmcts.net',
         'ws:',
-        'wss:',
+        'wss:'
       ],
       defaultSrc: ['\'self\''],
       fontSrc: ['\'self\'', 'https://fonts.gstatic.com', 'data:'],

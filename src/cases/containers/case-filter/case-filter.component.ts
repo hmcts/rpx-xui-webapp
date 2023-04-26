@@ -32,7 +32,7 @@ export class CaseFilterComponent implements OnInit {
   public startButtonText: string;
   public caseCreatFilterBindings: ActionBindingModel[];
   public fromCasesFeature: any;
-  constructor(private readonly store: Store<fromCaseCreate.State>) {}
+  constructor(public readonly store: Store<fromCaseCreate.State>) {}
 
   public ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;

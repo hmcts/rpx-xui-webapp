@@ -102,12 +102,12 @@ export function launchDarklyClientIdFactory(
     NgIdleKeepaliveModule.forRoot(),
     PaymentLibModule,
     RpxTranslationModule.forRoot({
-      baseUrl: '',
+      baseUrl: '/api/translation',
       debounceTimeMs: 300,
       validity: {
         days: 1
       },
-      testMode: true
+      testMode: false
     })
   ],
   providers: [

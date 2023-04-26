@@ -8,7 +8,7 @@ import { ListedHearingViewerHiddenConverter } from './listed-hearing-viewer.hidd
 const userDetails = {
   sessionTimeout: {
     idleModalDisplayTime: 10,
-    totalIdleTime: 1,
+    totalIdleTime: 1
   },
   canShareCases: true,
   userInfo: {
@@ -22,7 +22,6 @@ const userDetails = {
 };
 
 describe('ListedHearingViewerHiddenConverter', () => {
-
   let listedHiddenConverter: ListedHearingViewerHiddenConverter;
   const storeMock = jasmine.createSpyObj('Store', [
     'dispatch', 'pipe'
@@ -44,7 +43,7 @@ describe('ListedHearingViewerHiddenConverter', () => {
               }
             })
           }
-        },
+        }
       ]
     });
     storeMock.pipe.and.returnValue(of(userDetails));
@@ -57,6 +56,4 @@ describe('ListedHearingViewerHiddenConverter', () => {
     const expected = cold('(b|)', { b: showAnswer });
     expect(result$).toBeObservable(expected);
   });
-
-
 });

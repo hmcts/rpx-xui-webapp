@@ -1,36 +1,34 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppConstants } from '../../../app/app.constants';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { CaseReferenceFieldComponent } from './case-reference-field.component';
 
-
 @Component({
-  template: `<exui-case-reference-field [caseReference]="caseReference"></exui-case-reference-field>`
+  template: '<exui-case-reference-field [caseReference]="caseReference"></exui-case-reference-field>'
 })
 class WrapperComponent {
-  @ViewChild(CaseReferenceFieldComponent, {static: true}) public appComponentRef: CaseReferenceFieldComponent;
+  @ViewChild(CaseReferenceFieldComponent, { static: true }) public appComponentRef: CaseReferenceFieldComponent;
   @Input() public caseReference: string;
 }
 
 describe('WorkAllocation', () => {
-
   describe('CaseReferenceFieldComponent', () => {
     const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
     const CASE_REFERENCE: string = 'Casereference';
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: CaseReferenceFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
     beforeEach(async () => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule, RouterTestingModule ]
+        declarations: [WrapperComponent],
+        imports: [WorkAllocationComponentsModule, RouterTestingModule]
       })
-      .compileComponents();
+        .compileComponents();
 
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
@@ -123,6 +121,5 @@ describe('WorkAllocation', () => {
       expect(element.textContent.trim()).toBe(CASE_REFERENCE);
       expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE}`); // No spaces
     });
-
   });
 });

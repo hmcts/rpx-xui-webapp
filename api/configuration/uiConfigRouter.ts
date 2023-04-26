@@ -17,7 +17,7 @@ import {
 } from './references';
 import { getFormattedSupportedServicesCaseTypes } from './waSupportedServicesCaseTypesHelper';
 
-export const router = express.Router({mergeParams: true});
+export const router = express.Router({ mergeParams: true });
 
 router.get('/', uiConfigurationRouter);
 
@@ -43,7 +43,7 @@ async function uiConfigurationRouter(req, res) {
     paymentReturnUrl: getConfigValue(SERVICES_PAYMENT_RETURN_URL),
     waWorkflowApi: getConfigValue(SERVICES_WA_WORKFLOW_API_URL),
     judicialBookingApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
-    waSupportedServices: getFormattedSupportedServicesCaseTypes(getConfigValue(WA_SUPPORTED_JURISDICTIONS)),
+    waSupportedServices: getFormattedSupportedServicesCaseTypes(getConfigValue(WA_SUPPORTED_JURISDICTIONS))
   });
 }
 

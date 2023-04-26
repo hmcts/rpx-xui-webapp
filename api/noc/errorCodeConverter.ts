@@ -2,90 +2,90 @@ export function generateErrorMessageWithCode(error) {
   let data;
   if (error.data && !error.data.code && error.data.message) {
     const code = generateErrorCodeFromMessage(error.data.message);
-    data = {...error.data, code};
+    data = { ...error.data, code };
   } else {
     data = error.data;
   }
-  return {...error, data};
+  return { ...error, data };
 }
 
 const NoCErrorCodeMessageMap = {
   ANSWERS_EMPTY: {
     code: 'answers-empty',
-    message: 'Challenge question answers can not be empty',
+    message: 'Challenge question answers can not be empty'
   },
   ANSWERS_MISMATCH_QUESTIONS: {
     code: 'answers-mismatch-questions',
-    message: 'The number of provided answers must match the number of questions',
+    message: 'The number of provided answers must match the number of questions'
   },
   ANSWERS_NOT_IDENTIFY_LITIGANT: {
     code: 'answers-not-identify-litigant',
-    message: 'The answers did not uniquely identify a litigant',
+    message: 'The answers did not uniquely identify a litigant'
   },
   ANSWERS_NOT_MATCHED_ANY_LITIGANT: {
     code: 'answers-not-matched-any-litigant',
-    message: 'The answers did not match those for any litigant',
+    message: 'The answers did not match those for any litigant'
   },
   CASE_ID_EMPTY: {
     code: 'case-id-empty',
-    message: 'Case ID can not be empty',
+    message: 'Case ID can not be empty'
   },
   CASE_ID_INVALID: {
     code: 'case-id-invalid',
-    message: 'Case ID has to be a valid 16-digit',
+    message: 'Case ID has to be a valid 16-digit'
   },
   CASE_ID_INVALID_LENGTH: {
     code: 'case-id-invalid-length',
-    message: 'Case ID has to be 16-digits long',
+    message: 'Case ID has to be 16-digits long'
   },
   CASE_NOT_FOUND: {
     code: 'case-not-found',
-    message: 'Case could not be found',
+    message: 'Case could not be found'
   },
   GENERIC_ERROR: {
     code: 'generic-error',
-    message: 'Generic error',
+    message: 'Generic error'
   },
   HAS_REPRESENTED: {
     code: 'has-represented',
-    message: 'they are already representing',
+    message: 'they are already representing'
   },
   INSUFFICIENT_PRIVILEGES: {
     code: 'insufficient-privileges',
-    message: 'Insufficient privileges for notice of change request',
+    message: 'Insufficient privileges for notice of change request'
   },
   MISSING_COR_CASE_ROLE_ID: {
     code: 'missing-cor-case-role-id',
-    message: 'Missing ChangeOrganisationRequest.CaseRoleID',
+    message: 'Missing ChangeOrganisationRequest.CaseRoleID'
   },
   MULTIPLE_NOC_REQUESTS_ON_CASE: {
     code: 'multiple-noc-requests-on-case',
-    message: 'More than one change request found on the case',
+    message: 'More than one change request found on the case'
   },
   MULTIPLE_NOC_REQUESTS_ON_USER: {
     code: 'multiple-noc-requests-on-user',
-    message: 'Multiple NoC Request events found for the user',
+    message: 'Multiple NoC Request events found for the user'
   },
   NOC_EVENT_UNAVAILABLE: {
     code: 'noc-event-unavailable',
-    message: 'No NoC events available',
+    message: 'No NoC events available'
   },
   NOC_IN_PROGRESS: {
     code: 'noc-in-progress',
-    message: 'Ongoing NoC request in progress',
+    message: 'Ongoing NoC request in progress'
   },
   NO_ANSWER_PROVIDED_FOR_QUESTION: {
     code: 'no-answer-provided-for-question',
-    message: 'No answer has been provided for question ID',
+    message: 'No answer has been provided for question ID'
   },
   NO_ORG_POLICY: {
     code: 'no-org-policy',
-    message: 'No Organisation Policy',
+    message: 'No Organisation Policy'
   },
   NO_ORG_POLICY_CASE_ROLE: {
     code: 'no-org-policy',
-    message: 'No OrganisationPolicy exists on the case for the case role',
-  },
+    message: 'No OrganisationPolicy exists on the case for the case role'
+  }
 };
 
 function generateErrorCodeFromMessage(message: string) {

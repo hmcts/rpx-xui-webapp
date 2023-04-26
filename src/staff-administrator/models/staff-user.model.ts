@@ -42,17 +42,16 @@ export class StaffUser {
   public get status(): StaffUserStatus {
     if (this.suspended) {
       return StaffUserStatus.SUSPENDED;
-    } else {
-      return this.up_idam_status === StaffUserIDAMStatus.ACTIVE ? StaffUserStatus.ACTIVE : StaffUserStatus.PENDING;
     }
+    return this.up_idam_status === StaffUserIDAMStatus.ACTIVE ? StaffUserStatus.ACTIVE : StaffUserStatus.PENDING;
   }
 
   public get primaryLocation() {
-    return this.base_locations.find(item => item.is_primary);
+    return this.base_locations.find((item) => item.is_primary);
   }
 
   public get additionalLocations() {
-    return this.base_locations.filter(item => !item.is_primary);
+    return this.base_locations.filter((item) => !item.is_primary);
   }
 
   public static from(json: any) {

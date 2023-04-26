@@ -6,9 +6,11 @@ import { ApplicationRoutingComponent } from './application-routing.component';
 describe('ApplicationRoutingComponent', () => {
   let component: ApplicationRoutingComponent;
   let router;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let waFeatureService;
   let mockStore: any;
   const featureToggleMock = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValueOnce', 'getValue']);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -35,8 +37,8 @@ describe('ApplicationRoutingComponent', () => {
 
   it('should call navigateBasedOnUserRole on ngOnInit and return nothing', () => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
-    featureToggleMock.getValue.and.returnValue(of({roles: ['caseworker-ia']}));
-    mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-civil']}}));
+    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-ia'] }));
+    mockStore.pipe.and.returnValue(of({ userInfo: { roles: ['caseworker-civil'] } }));
     router.url = '/something';
     component.ngOnInit();
     expect(router.navigate).not.toHaveBeenCalled();
@@ -44,53 +46,53 @@ describe('ApplicationRoutingComponent', () => {
 
   it('should call navigateBasedOnUserRole on ngOnInit and call booking url', () => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
-    featureToggleMock.getValue.and.returnValue(of({roles: ['caseworker-ia']}));
-    mockStore.pipe.and.returnValue(of({userInfo: {roleCategory: 'JUDICIAL'}, roleAssignmentInfo: [{bookable: true}]}));
+    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-ia'] }));
+    mockStore.pipe.and.returnValue(of({ userInfo: { roleCategory: 'JUDICIAL' }, roleAssignmentInfo: [{ bookable: true }] }));
     component.ngOnInit();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.bookingUrl]);
   });
 
   it('should navigateBasedOnUserRole caseworker-civil', () => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
-    featureToggleMock.getValue.and.returnValue(of({roles: ['caseworker-ia']}));
-    mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-civil']}}));
+    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-ia'] }));
+    mockStore.pipe.and.returnValue(of({ userInfo: { roles: ['caseworker-civil'] } }));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultPage]);
   });
 
   it('should navigateBasedOnUserRole caseworker-ia-iacjudge', fakeAsync(async () => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
-    featureToggleMock.getValue.and.returnValue(of({roles: ['caseworker-ia-iacjudge']}));
-    mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-ia-iacjudge']}}));
+    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-ia-iacjudge'] }));
+    mockStore.pipe.and.returnValue(of({ userInfo: { roles: ['caseworker-ia-iacjudge'] } }));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
   }));
 
   it('should navigateBasedOnUserRole caseworker-civil when landing roles include caseworker-civil', () => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
-    featureToggleMock.getValue.and.returnValue(of({roles: ['caseworker-ia', 'caseworker-civil']}));
-    mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-civil']}}));
+    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-ia', 'caseworker-civil'] }));
+    mockStore.pipe.and.returnValue(of({ userInfo: { roles: ['caseworker-civil'] } }));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
   });
 
-  it('should navigateBasedOnUserRole caseworker-ia-caseofficer', fakeAsync(async ()  => {
+  it('should navigateBasedOnUserRole caseworker-ia-caseofficer', fakeAsync(async () => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
-    featureToggleMock.getValue.and.returnValue(of({roles: ['caseworker-ia-caseofficer']}));
-    mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-ia-caseofficer']}}));
+    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-ia-caseofficer'] }));
+    mockStore.pipe.and.returnValue(of({ userInfo: { roles: ['caseworker-ia-caseofficer'] } }));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
   }));
 
   it('should navigateBasedOnUserRole non judge role', () => {
-    featureToggleMock.getValue.and.returnValue(of({roles: ['caseworker-is']}));
-    mockStore.pipe.and.returnValue(of({userInfo: {roles: ['somerole']}}));
+    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-is'] }));
+    mockStore.pipe.and.returnValue(of({ userInfo: { roles: ['somerole'] } }));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultPage]);
   });
 
-  it('should navigateBasedOnUserRole pui-case-manager', fakeAsync(async ()  => {
-    mockStore.pipe.and.returnValue(of({userInfo: {roles: ['pui-case-manager']}}));
+  it('should navigateBasedOnUserRole pui-case-manager', fakeAsync(async () => {
+    mockStore.pipe.and.returnValue(of({ userInfo: { roles: ['pui-case-manager'] } }));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultPage]);
   }));

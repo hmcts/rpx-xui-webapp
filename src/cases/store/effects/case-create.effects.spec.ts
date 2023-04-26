@@ -10,13 +10,10 @@ import { ApplyChange, CaseCreateFilterApply, CreateCaseLoaded, CreateCaseReset }
 import { CaseCreateEffects } from './case-create.effects';
 
 describe('CaseCreate Effects', () => {
-
-  let mockAlertService: any;
-  let mockLogger: any;
   let actions$;
   let effects: CaseCreateEffects;
-  mockAlertService = jasmine.createSpyObj('alertService', ['success']);
-  mockLogger = jasmine.createSpyObj('mockLogger', ['info']);
+  const mockAlertService = jasmine.createSpyObj('alertService', ['success']);
+  const mockLogger = jasmine.createSpyObj('mockLogger', ['info']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -25,17 +22,15 @@ describe('CaseCreate Effects', () => {
         CaseCreateEffects,
         { provide: AlertService, useValue: mockAlertService },
         provideMockActions(() => actions$),
-        { provide: LoggerService, useValue: mockLogger },
-      ],
+        { provide: LoggerService, useValue: mockLogger }
+      ]
     });
 
     effects = TestBed.inject(CaseCreateEffects);
-
   });
 
   describe('applyCreateCase$', () => {
     it('should apply case action', () => {
-
       const action = new ApplyChange({});
       const completion = new CreateCaseGo({
         path: ['/cases/case-details/undefined'],
@@ -49,7 +44,6 @@ describe('CaseCreate Effects', () => {
 
   describe('cancel$', () => {
     it('should cancel case action', () => {
-
       const action = new CreateCaseReset();
       const completion = new Go({
         path: ['/cases']
@@ -62,7 +56,6 @@ describe('CaseCreate Effects', () => {
 
   describe('applyCreatedCaseLoaded$', () => {
     it('should apply load action', () => {
-
       const action = new CreateCaseLoaded({});
       const completion = new NewCaseLoadedSuccessfully();
       actions$ = hot('-a', { a: action });
@@ -73,7 +66,6 @@ describe('CaseCreate Effects', () => {
 
   describe('applyChangeCaseCreateFilter$', () => {
     it('should apply load action', () => {
-
       const action = new CaseCreateFilterApply({});
       const completion = new Go({
         path: ['/cases/case-create/undefined/undefined/undefined']

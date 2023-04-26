@@ -9,24 +9,25 @@ import { State } from '../store';
 import { HowManyPeopleAttendAmendedConverter } from './how-many-people-attend.amended.converter';
 
 describe('HowManyPeopleAttendAmendedConverter', () => {
-
   let converter: HowManyPeopleAttendAmendedConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                hearingStageOptions: hearingStageRefData,
-              },
-            },
-          },
+                hearingStageOptions: hearingStageRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -39,7 +40,7 @@ describe('HowManyPeopleAttendAmendedConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = converter.transformIsAmended(of(STATE));
     const isAmended = false;
-    const expected = cold('(b|)', {b: isAmended});
+    const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
 });

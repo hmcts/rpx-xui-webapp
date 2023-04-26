@@ -1,8 +1,8 @@
 import * as log4js from 'log4js';
-import {getConfigValue} from '../configuration';
+import { getConfigValue } from '../configuration';
 import {
   LOG4_J_CONFIG,
-  LOGGING,
+  LOGGING
 } from '../configuration/references';
 import { client } from './appInsights';
 import { JUILogger } from './models';
@@ -20,7 +20,6 @@ export function leftPad(str: string, length = 20): string {
 
 export function getLogger(category: string): JUILogger {
   const logger: log4js.Logger = log4js.getLogger(category);
-  // @ts-ignore
   logger.level = getConfigValue(LOGGING) || 'off';
 
   const catFormatted = leftPad(category, maxCatLength);
@@ -32,7 +31,7 @@ export function getLogger(category: string): JUILogger {
     error,
     info,
     trackRequest,
-    warn,
+    warn
   };
 }
 

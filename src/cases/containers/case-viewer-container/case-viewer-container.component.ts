@@ -59,7 +59,7 @@ export class CaseViewerContainerComponent implements OnInit {
               private readonly allocateRoleService: AllocateRoleService,
               private readonly waService: WASupportedJurisdictionsService) {
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
-      map(userDetails => userDetails.userInfo.roles)
+      map((userDetails) => userDetails.userInfo.roles)
     );
   }
 
@@ -67,9 +67,9 @@ export class CaseViewerContainerComponent implements OnInit {
     const caseJurisdiction = this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction ? this.caseDetails.case_type.jurisdiction.id : null;
     const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
     let requiredFeature = false;
-    features.configurations.forEach(serviceConfig => {
+    features.configurations.forEach((serviceConfig) => {
       if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
-          requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2;
+        requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2;
       }
     });
     return requiredFeature && !!AppUtils.getUserRole(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
@@ -101,14 +101,12 @@ export class CaseViewerContainerComponent implements OnInit {
       this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []),
       this.userRoles$
     ]).pipe(
-      // @ts-ignore
       map(([featureVariations, userRoles]: [FeatureVariation[], string[]]) => {
         const jurisdictionID = this.caseDetails.case_type.jurisdiction.id;
-        const hasMatchedJurisdictionAndRole = featureVariations.some(featureVariation =>
+        const hasMatchedJurisdictionAndRole = featureVariations.some((featureVariation) =>
           Utils.hasMatchedJurisdictionAndRole(featureVariation, jurisdictionID, userRoles));
         return hasMatchedJurisdictionAndRole ? this.appendedTabs : [];
       })
     );
   }
-
 }

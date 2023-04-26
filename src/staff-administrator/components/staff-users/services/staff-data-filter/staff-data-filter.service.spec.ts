@@ -28,8 +28,8 @@ describe('StaffDataFilterService', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
-      ],
+        { provide: StaffDataAccessService, useValue: mockStaffDataAccessService }
+      ]
     });
     service = TestBed.inject(StaffDataFilterService);
   });
@@ -44,7 +44,7 @@ describe('StaffDataFilterService', () => {
     }];
     service.setErrors(errorsToSet);
 
-    service.errors$.pipe(take(1)).subscribe(errors => {
+    service.errors$.pipe(take(1)).subscribe((errors) => {
       expect(errors.errors[0].error === errorsToSet[0].error).toBe(true);
     });
   });
@@ -58,10 +58,10 @@ describe('StaffDataFilterService', () => {
     service.search({
       partialName: 'Kevin',
       pageNumber: 1,
-      pageSize: StaffDataFilterService.PAGE_SIZE,
+      pageSize: StaffDataFilterService.PAGE_SIZE
     });
 
-    service.errors$.pipe(take(1)).subscribe(errors => {
+    service.errors$.pipe(take(1)).subscribe((errors) => {
       expect(errors.errors.length).toBe(0);
     });
   });
@@ -86,7 +86,7 @@ describe('StaffDataFilterService', () => {
           userType: '',
           jobTitle: '',
           skill: [],
-          role: [],
+          role: []
         },
         pageSize: 1,
         pageNumber: 1
@@ -97,7 +97,7 @@ describe('StaffDataFilterService', () => {
     });
 
     it('should call getUsersByPartialName if advanced search filters are not defined', () => {
-      const filters = {partialName: 'John', pageSize: 1, pageNumber: 1};
+      const filters = { partialName: 'John', pageSize: 1, pageNumber: 1 };
       service.search(filters);
 
       expect(mockStaffDataAccessService.getUsersByPartialName).toHaveBeenCalledWith(filters);

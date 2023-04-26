@@ -14,7 +14,6 @@ import { Task } from '../../models/tasks';
   encapsulation: ViewEncapsulation.None
 })
 export class TaskFieldComponent implements OnInit {
-
   /**
    * The configuration for this particular field, which is needed
    * to obtain the correct value from the task and determine how it
@@ -35,9 +34,7 @@ export class TaskFieldComponent implements OnInit {
   // hard-coded strings floating around the place.
   protected fieldType = FieldType;
 
-
-  constructor( private readonly sessionStorageService: SessionStorageService) {
-}
+  constructor(private readonly sessionStorageService: SessionStorageService) { }
 
   /**
    * Convert a string, number, or Date to date object.

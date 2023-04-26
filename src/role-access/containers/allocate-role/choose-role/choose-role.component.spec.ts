@@ -9,38 +9,23 @@ import { UserRole } from '../../../../app/models';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { CHOOSE_A_ROLE } from '../../../constants';
 import {
-    Actions,
-    AllocateRoleNavigationEvent,
-    AllocateRoleState,
-    AllocateRoleStateData,
-    RoleCategory
+  AllocateRoleNavigationEvent,
+  AllocateRoleState,
+  RoleCategory
 } from '../../../models';
 import * as fromFeature from '../../../store';
 import { ChooseRoleComponent } from './choose-role.component';
 
-
-const firstRoleOptions = [{optionId: 'lead-judge', optionValue: 'Lead judge'},
-  {optionId: 'hearing-judge', optionValue: 'Hearing judge'}];
+const firstRoleOptions = [{ optionId: 'lead-judge', optionValue: 'Lead judge' },
+  { optionId: 'hearing-judge', optionValue: 'Hearing judge' }];
 
 const personRoles = [
-  {roleId: 'lead-judge', roleName: 'Lead judge', roleCategory: RoleCategory.JUDICIAL},
-  {roleId: 'hearing-judge', roleName: 'Hearing judge', roleCategory: RoleCategory.JUDICIAL}];
-
-const mockAllocateRoleStateData: AllocateRoleStateData = {
-  action: Actions.Allocate,
-  caseId: '1234',
-  jurisdiction: 'IA',
-  state: null,
-  typeOfRole: null,
-  allocateTo: null,
-  person: null,
-  durationOfRole: null,
-  period: null
-};
+  { roleId: 'lead-judge', roleName: 'Lead judge', roleCategory: RoleCategory.JUDICIAL },
+  { roleId: 'hearing-judge', roleName: 'Hearing judge', roleCategory: RoleCategory.JUDICIAL }];
 
 describe('ChooseRoleComponent', () => {
   const radioOptionControl: FormControl = new FormControl('');
-  const formGroup: FormGroup = new FormGroup({[CHOOSE_A_ROLE]: radioOptionControl});
+  const formGroup: FormGroup = new FormGroup({ [CHOOSE_A_ROLE]: radioOptionControl });
 
   let component: ChooseRoleComponent;
   let fixture: ComponentFixture<ChooseRoleComponent>;
@@ -55,7 +40,7 @@ describe('ChooseRoleComponent', () => {
         ReactiveFormsModule
       ],
       providers: [
-        {provide: Store, useValue: mockStore},
+        { provide: Store, useValue: mockStore },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -63,9 +48,9 @@ describe('ChooseRoleComponent', () => {
               queryParams: {
                 roleCategory: 'JUDICIAL'
               }
-            },
+            }
           }
-        },
+        }
       ]
     })
       .compileComponents();
@@ -119,7 +104,7 @@ describe('ChooseRoleComponent', () => {
     component.dispatchEvent(navEvent, roleCategory, userRole);
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
-      typeOfRole: {id: 'lead-judge', name: 'Lead judge'},
+      typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
       allocateRoleState: AllocateRoleState.SEARCH_PERSON
     }));
   });
@@ -132,7 +117,7 @@ describe('ChooseRoleComponent', () => {
     component.dispatchEvent(navEvent, roleCategory, userRole);
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
-      typeOfRole: {id: 'lead-judge', name: 'Lead judge'},
+      typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
       allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
     }));
   });
@@ -145,7 +130,7 @@ describe('ChooseRoleComponent', () => {
     component.dispatchEvent(navEvent, roleCategory, userRole);
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
-      typeOfRole: {id: 'lead-judge', name: 'Lead judge'},
+      typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
       allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
     }));
   });
@@ -158,10 +143,11 @@ describe('ChooseRoleComponent', () => {
     component.dispatchEvent(navEvent, roleCategory, userRole);
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
-      typeOfRole: {id: 'lead-judge', name: 'Lead judge'},
+      typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
       allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
     }));
   });
+
   it('should dispatchEvent for CTSC user assign judicial role', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
     const roleCategory: RoleCategory = RoleCategory.CTSC;
@@ -170,7 +156,7 @@ describe('ChooseRoleComponent', () => {
     component.dispatchEvent(navEvent, roleCategory, userRole);
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
-      typeOfRole: {id: 'lead-judge', name: 'Lead judge'},
+      typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
       allocateRoleState: AllocateRoleState.SEARCH_PERSON
     }));
   });
@@ -183,7 +169,7 @@ describe('ChooseRoleComponent', () => {
     component.dispatchEvent(navEvent, roleCategory, userRole);
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
-      typeOfRole: {id: 'lead-judge', name: 'Lead judge'},
+      typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
       allocateRoleState: AllocateRoleState.SEARCH_PERSON
     }));
   });

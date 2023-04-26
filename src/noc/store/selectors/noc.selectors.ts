@@ -3,33 +3,33 @@ import { createSelector } from '@ngrx/store';
 import * as fromFeature from '../reducers';
 
 export const getNocState = createSelector(
- fromFeature.getNocFeatureState,
- (state: fromFeature.State) => state.noc
+  fromFeature.getNocFeatureState,
+  (state: fromFeature.State) => state.noc
 );
 
 export const currentNavigation = createSelector(
-    getNocState,
-    fromFeature.getNocActiveState
+  getNocState,
+  fromFeature.getNocActiveState
 );
 
 export const lastError = createSelector(
-    getNocState,
-    fromFeature.getLastError
+  getNocState,
+  fromFeature.getLastError
 );
 
 export const questions = createSelector(
-    getNocState,
-    fromFeature.getQuestions
+  getNocState,
+  fromFeature.getQuestions
 );
 
 export const answers = createSelector(
-    getNocState,
-    fromFeature.getAnswers
+  getNocState,
+  fromFeature.getAnswers
 );
 
 export const affirmationAgreed = createSelector(
-    getNocState,
-    fromFeature.getAffirmationAgreed
+  getNocState,
+  fromFeature.getAffirmationAgreed
 );
 
 export const notifyEveryParty = createSelector(
@@ -38,8 +38,8 @@ export const notifyEveryParty = createSelector(
 );
 
 export const validationErrors = createSelector(
-    getNocState,
-    fromFeature.getValidationErrors
+  getNocState,
+  fromFeature.getValidationErrors
 );
 
 export const caseReference = createSelector(

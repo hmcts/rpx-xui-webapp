@@ -8,7 +8,6 @@ import { FilterConstants } from '../../components/constants';
 import { LocationDataService } from '../../services';
 import { AvailableTasksFilterComponent } from './available-tasks-filter.component';
 
-
 describe('AvailableTasksFilterComponent', () => {
   let component: AvailableTasksFilterComponent;
 
@@ -40,6 +39,7 @@ describe('AvailableTasksFilterComponent', () => {
 
   describe('locationLabelFunction', () => {
     const defaultLocation = { locationName: '', id: '', services: [] };
+
     it('should return location name', () => {
       const locationName = 'Sample Name';
       component = initializeComponent({});
@@ -60,8 +60,9 @@ describe('AvailableTasksFilterComponent', () => {
 
   describe('cancelFilter', () => {
     const filterDetailsMock = { nativeElement: {} };
-    it(`should update the component's 'locationFilter.selection' and 'detailsElement.open'`, () => {
-      component = initializeComponent({sessionStorageService: mockSessionStorageService});
+
+    it('should update the component\'s \'locationFilter.selection\' and \'detailsElement.open\'', () => {
+      component = initializeComponent({ sessionStorageService: mockSessionStorageService });
 
       mockSessionStorageService.getItem.and.callThrough();
       mockSessionStorageService.setItem.and.callThrough();
@@ -77,8 +78,8 @@ describe('AvailableTasksFilterComponent', () => {
       expect(component.detailsElement.open).toEqual(false);
     });
 
-    it(`should NOT update the component's 'detailsElement.open'`, () => {
-      component = initializeComponent({sessionStorageService: mockSessionStorageService});
+    it('should NOT update the component\'s \'detailsElement.open\'', () => {
+      component = initializeComponent({ sessionStorageService: mockSessionStorageService });
 
       mockSessionStorageService.getItem.and.callThrough();
       mockSessionStorageService.setItem.and.callThrough();
@@ -89,14 +90,13 @@ describe('AvailableTasksFilterComponent', () => {
 
       expect(component.detailsElement?.open).toEqual(undefined);
     });
-
   });
 
   describe('onSelectionChange', () => {
     const filterDetailsMock = { nativeElement: {} };
 
-    it(`should setItem in sessionstorage and emit selection`, () => {
-      component = initializeComponent({sessionStorageService: mockSessionStorageService});
+    it('should setItem in sessionstorage and emit selection', () => {
+      component = initializeComponent({ sessionStorageService: mockSessionStorageService });
 
       const selectionChangedSpy = spyOn(component.selectionChanged, 'emit');
       mockSessionStorageService.getItem.and.callThrough();
@@ -116,8 +116,8 @@ describe('AvailableTasksFilterComponent', () => {
       expect(mockSessionStorageService.setItem).toHaveBeenCalledTimes(1);
     });
 
-    it(`should NOT update component's 'selection'`, () => {
-      component = initializeComponent({sessionStorageService: mockSessionStorageService});
+    it('should NOT update component\'s \'selection\'', () => {
+      component = initializeComponent({ sessionStorageService: mockSessionStorageService });
 
       mockSessionStorageService.getItem.and.callThrough();
       mockSessionStorageService.setItem.and.callThrough();
@@ -132,8 +132,8 @@ describe('AvailableTasksFilterComponent', () => {
   });
 
   describe('ngOnInit', () => {
-    it(`should update component's 'preselection' and update 'locations' with session storage data`, () => {
-      component = initializeComponent({locationDataService: mockLocationDataService, sessionStorageService: mockSessionStorageService});
+    it('should update component\'s \'preselection\' and update \'locations\' with session storage data', () => {
+      component = initializeComponent({ locationDataService: mockLocationDataService, sessionStorageService: mockSessionStorageService });
 
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify([location]));
       mockLocationDataService.getLocations.and.returnValues(of([location as unknown as Location]));
@@ -144,8 +144,8 @@ describe('AvailableTasksFilterComponent', () => {
       expect(component.locations).toEqual([location]);
     });
 
-    it(`should NOT update component's 'locations' with session storage data`, () => {
-      component = initializeComponent({locationDataService: mockLocationDataService, sessionStorageService: mockSessionStorageService});
+    it('should NOT update component\'s \'locations\' with session storage data', () => {
+      component = initializeComponent({ locationDataService: mockLocationDataService, sessionStorageService: mockSessionStorageService });
 
       mockSessionStorageService.getItem.and.returnValue(null);
       mockLocationDataService.getLocations.and.returnValues(of([location as unknown as Location]));
@@ -157,9 +157,8 @@ describe('AvailableTasksFilterComponent', () => {
       ));
     });
 
-    it(`should navigate if getLocations errored`, () => {
-      component = initializeComponent({locationDataService: mockLocationDataService, sessionStorageService: mockSessionStorageService, router: mockRouter });
-
+    it('should navigate if getLocations errored', () => {
+      component = initializeComponent({ locationDataService: mockLocationDataService, sessionStorageService: mockSessionStorageService, router: mockRouter });
 
       mockSessionStorageService.getItem.and.returnValue(null);
       mockLocationDataService.getLocations.and.returnValue(throwError(new Error({ status: 500 } as unknown as string)));

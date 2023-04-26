@@ -25,7 +25,6 @@ class StubComponent {}
 describe('StaffUserDetailsComponent', () => {
   let component: StaffUserDetailsComponent;
   let fixture: ComponentFixture<StaffUserDetailsComponent>;
-  let route: ActivatedRoute;
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
   let mockMessageService: jasmine.SpyObj<InfoMessageCommService>;
   let mockStaffAddEditFormService: jasmine.SpyObj<StaffAddEditFormService>;
@@ -60,13 +59,13 @@ describe('StaffUserDetailsComponent', () => {
         {
           role_id: '1',
           role: 'Role',
-          is_primary: true,
+          is_primary: true
         }
       ],
       skills: [
         {
           skill_id: 1,
-          description: 'SKILLCODE',
+          description: 'SKILLCODE'
         }
       ],
       services: [
@@ -91,7 +90,7 @@ describe('StaffUserDetailsComponent', () => {
       declarations: [
         StaffUserDetailsComponent,
         StaffStatusComponent,
-        StubComponent,
+        StubComponent
       ],
       imports: [
         HttpClientTestingModule,
@@ -137,11 +136,11 @@ describe('StaffUserDetailsComponent', () => {
                     options: [
                       {
                         key: '1',
-                        label: 'Underwriter',
+                        label: 'Underwriter'
                       },
                       {
                         key: '2',
-                        label: 'Caseworker',
+                        label: 'Caseworker'
                       }
                     ]
                   },
@@ -150,11 +149,11 @@ describe('StaffUserDetailsComponent', () => {
                     options: [
                       {
                         key: '3',
-                        label: 'Caseworker',
+                        label: 'Caseworker'
                       },
                       {
                         key: '4',
-                        label: 'Case manager',
+                        label: 'Case manager'
                       }
                     ]
                   },
@@ -163,30 +162,28 @@ describe('StaffUserDetailsComponent', () => {
                     options: [
                       {
                         key: '5',
-                        label: 'Underwriter',
+                        label: 'Underwriter'
                       }
                     ]
                   }
-                ],
+                ]
               }
-            },
-          },
+            }
+          }
         },
         { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService },
-        { provide : InfoMessageCommService, useValue: mockMessageService },
+        { provide: InfoMessageCommService, useValue: mockMessageService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-    router = TestBed.get(Router);
-
     fixture = TestBed.createComponent(StaffUserDetailsComponent);
+    router = TestBed.get(Router);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    route = TestBed.inject(ActivatedRoute);
     location = TestBed.inject(Location);
   });
 
@@ -222,7 +219,7 @@ describe('StaffUserDetailsComponent', () => {
 
   it('should set suspendedStatus to "suspended" to show the banner when calling updateUserStatus with isSuspended true', () => {
     expect(component.userDetails.suspended).toBe(false);
-    mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
+    mockStaffDataAccessService.updateUser.and.returnValue(of({ case_worker_id: '123' }));
     component.updateUserStatus();
 
     expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
@@ -241,7 +238,6 @@ describe('StaffUserDetailsComponent', () => {
     const updateUserButton = fixture.debugElement.query(By.css('#updateUserButton'));
     updateUserButton.triggerEventHandler('click', null);
     expect(component.onUpdateUser).toHaveBeenCalled();
-
   }));
 
   it('should call navigateByUrl when calling onUpdateUser ' +
@@ -298,7 +294,7 @@ describe('StaffUserDetailsComponent', () => {
   });
 
   it('should not make a api call if user is suspended when calling updateUserStatus', () => {
-    mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
+    mockStaffDataAccessService.updateUser.and.returnValue(of({ case_worker_id: '123' }));
     component.userDetails.suspended = true;
     component.updateUserStatus();
     expect(mockStaffDataAccessService.updateUser).not.toHaveBeenCalled();
@@ -306,7 +302,7 @@ describe('StaffUserDetailsComponent', () => {
 
   describe('resendInvite', () => {
     it('Should show success message on sending activation email', () => {
-      mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
+      mockStaffDataAccessService.updateUser.and.returnValue(of({ case_worker_id: '123' }));
       component.resendInvite();
       fixture.detectChanges();
       const staffUser = new StaffUser();

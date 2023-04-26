@@ -25,7 +25,7 @@ export class StaffDataFilterService {
         () => !!searchFilters.advancedSearchFilters,
         this.staffDataAccessService.getFilteredUsers(searchFilters),
         this.staffDataAccessService.getUsersByPartialName(searchFilters).pipe(
-          catchError(error => {
+          catchError((error) => {
             if (error.status === 400) {
               this.setErrors([{
                 error: 'Invalid search string. Please input a valid string.',
@@ -42,28 +42,26 @@ export class StaffDataFilterService {
     this.errors = new BehaviorSubject([]);
     this.errors$ = this.errors.asObservable().pipe(
       map((errors) => ({
-          title: 'There is a problem',
-          description: '',
-          multiple: true,
-          errors: [...errors]
-        })
+        title: 'There is a problem',
+        description: '',
+        multiple: true,
+        errors: [...errors]
+      })
       ));
   }
-
-
 
   public search(searchFilters: StaffSearchFilters) {
     this.setErrors([]);
     this.searchFilters.next({
       ...searchFilters,
-      pageNumber: 1,
+      pageNumber: 1
     });
   }
 
   public changePage(pageNumber: number) {
     this.searchFilters.next({
       ...this.searchFilters.value,
-      pageNumber,
+      pageNumber
     });
   }
 

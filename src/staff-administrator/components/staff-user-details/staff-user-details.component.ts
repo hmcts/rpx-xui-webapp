@@ -100,19 +100,19 @@ export class StaffUserDetailsComponent {
           window.scrollTo(0, 0);
         })
       )
-        .subscribe((success) => {
-            this.messageService.nextMessage({
-              message: InfoMessage.ACTIVATION_EMAIL_SENT,
-              type: InfoMessageType.SUCCESS
-            } as InformationMessage);
-          },
-          (err) => {
-            this.messageService.nextMessage({
-              message: InfoMessage.ACTIVATION_EMAIL_ERROR,
-              type: InfoMessageType.WARNING
-            } as InformationMessage);
-          }
-        );
+        .subscribe(() => {
+          this.messageService.nextMessage({
+            message: InfoMessage.ACTIVATION_EMAIL_SENT,
+            type: InfoMessageType.SUCCESS
+          } as InformationMessage);
+        },
+        (err) => {
+          console.log(err);
+          this.messageService.nextMessage({
+            message: InfoMessage.ACTIVATION_EMAIL_ERROR,
+            type: InfoMessageType.WARNING
+          } as InformationMessage);
+        });
     }
   }
 

@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 import { AppUtils } from '../../../app/app-utils';
 import { UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { ConfigConstants, ListConstants, SortConstants } from '../../../work-allocation/components/constants';
@@ -14,7 +15,6 @@ import { SortOrder } from '../../../work-allocation/enums';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService } from '../../services';
 import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { JurisdictionsService } from '../../services/juridictions.service';
-import { InfoMessageCommService } from './../../../app/shared/services/info-message-comms.service';
 import { MyCasesComponent } from './my-cases.component';
 
 describe('MyCasesComponent', () => {
@@ -68,20 +68,20 @@ describe('MyCasesComponent', () => {
   );
 
   it('should create', () => {
-    component = initializeComponent({checkReleaseVersionService: mockCheckReleaseVersionService});
+    component = initializeComponent({ checkReleaseVersionService: mockCheckReleaseVersionService });
 
     expect(component).toBeTruthy();
   });
 
   describe('getSearchCaseRequestPagination', () => {
-    it(`should return a SearchCaseRequest`, () => {
+    it('should return a SearchCaseRequest', () => {
       component = initializeComponent({ sessionStorageService: mockSessionStorageService, checkReleaseVersionService: mockCheckReleaseVersionService });
       component.sortedBy = {
         fieldName: 'fieldName',
         order: SortOrder.ASC
       };
 
-      const userInfo = { roles: [ UserRole.Admin], id: 'One' };
+      const userInfo = { roles: [UserRole.Admin], id: 'One' };
       const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
       const locations = { fields: [{ name: 'services', value: 'serviceValue' }] };
 
@@ -94,7 +94,7 @@ describe('MyCasesComponent', () => {
       expect(actual).toEqual(jasmine.objectContaining({
         search_parameters: [
           { key: 'user', operator: 'IN', values: [`${userInfo.id}`] },
-          { key: 'services', operator: 'IN', values: 'serviceValue'},
+          { key: 'services', operator: 'IN', values: 'serviceValue' },
           { key: 'locations', operator: 'IN', values: [] }
         ],
         sorting_parameters: [{
@@ -108,14 +108,14 @@ describe('MyCasesComponent', () => {
       localStorageGetItemSpy.calls.reset();
     });
 
-    it(`should return a SearchCaseRequest with user 'uid'`, () => {
+    it('should return a SearchCaseRequest with user uid', () => {
       component = initializeComponent({ sessionStorageService: mockSessionStorageService, checkReleaseVersionService: mockCheckReleaseVersionService });
       component.sortedBy = {
         fieldName: 'fieldName',
         order: SortOrder.ASC
       };
 
-      const userInfo = { roles: [ UserRole.Admin], uid: 'UID' };
+      const userInfo = { roles: [UserRole.Admin], uid: 'UID' };
       const locations = { fields: [{ name: 'locations', value: [{ epimms_id: 'locationID' }] }] };
       mockSessionStorageService.getItem.withArgs('userDetails').and.returnValue(JSON.stringify(userInfo));
       spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify(locations));
@@ -130,7 +130,7 @@ describe('MyCasesComponent', () => {
       expect(actual).toEqual(jasmine.objectContaining({
         search_parameters: [
           { key: 'user', operator: 'IN', values: [`${userInfo.uid}`] },
-          { key: 'services', operator: 'IN', values: []},
+          { key: 'services', operator: 'IN', values: [] },
           { key: 'locations', operator: 'IN', values: ['locationID'] }
         ],
         sorting_parameters: [{
@@ -141,7 +141,7 @@ describe('MyCasesComponent', () => {
       }));
     });
 
-    it(`should NOT return a SearchCaseRequest`, () => {
+    it('should NOT return a SearchCaseRequest', () => {
       component = initializeComponent({ sessionStorageService: mockSessionStorageService, checkReleaseVersionService: mockCheckReleaseVersionService });
 
       mockSessionStorageService.getItem.withArgs('userDetails').and.returnValue(undefined);
@@ -149,7 +149,6 @@ describe('MyCasesComponent', () => {
       const actual = component.getSearchCaseRequestPagination();
 
       expect(actual).toEqual(undefined);
-
     });
   });
 
@@ -170,16 +169,14 @@ describe('MyCasesComponent', () => {
       {
         method: 'fields',
         result: ConfigConstants.MyCases
-      },
+      }
     ];
     getters.forEach(({ method, result }) => {
       it(`should return '${result}'`, () => {
-        component = initializeComponent({checkReleaseVersionService: mockCheckReleaseVersionService});
+        component = initializeComponent({ checkReleaseVersionService: mockCheckReleaseVersionService });
 
         expect(component[method]).toEqual(result);
       });
     });
-
   });
-
 });

@@ -43,8 +43,9 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     service: TaskService.IAC,
     defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
-    fields: this.fields,
+    fields: this.fields
   };
+
   protected userDetailsKey: string = 'userDetails';
   private readonly assignTask: Subscription;
 
@@ -62,7 +63,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     if (this.showAssigneeColumn) {
       fields = (this.isJudicial ? ConfigConstants.TaskActionsWithAssigneeForJudicial : ConfigConstants.TaskActionsWithAssigneeForLegalOps);
     } else {
-      this.checkReleaseVersionService.isRelease4().subscribe(isRelease4 => {
+      this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
         fields = (isRelease4 ? ConfigConstants.AllWorkTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForLegalOps);
       });
     }
@@ -129,7 +130,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
       // Pass the returnUrl in the `state` parameter, so it can be used for navigation by the Task Assignment Confirm
       // component
       this.router.navigate([this.rootPath, this.taskId, this.verb.toLowerCase(), 'confirm'],
-        {state: { selectedPerson: this.person, returnUrl: this.returnUrl, roleCategory: this.role}});
+        { state: { selectedPerson: this.person, returnUrl: this.returnUrl, roleCategory: this.role } });
     } else {
       this.formGroup.setErrors({
         invalid: true

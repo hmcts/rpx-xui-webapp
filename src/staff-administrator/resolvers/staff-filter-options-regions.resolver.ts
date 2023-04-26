@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { Resolve } from '@angular/router';
 import { RefDataRegion, RefDataService } from '@hmcts/rpx-xui-common-lib';
 
 @Injectable({
@@ -8,7 +8,7 @@ import { RefDataRegion, RefDataService } from '@hmcts/rpx-xui-common-lib';
 export class StaffFilterOptionsRegionsResolver implements Resolve<RefDataRegion[]> {
   constructor(private refDataService: RefDataService) {}
 
-  public resolve(route?: ActivatedRouteSnapshot) {
+  public resolve() {
     return this.refDataService.regions$;
   }
 }

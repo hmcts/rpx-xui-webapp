@@ -18,7 +18,7 @@ describe('StaffSearchComponent', () => {
     fields: [
       {
         name: 'user-partial-name',
-        value: ['Pat'],
+        value: ['Pat']
       }
     ],
     reset: false
@@ -45,7 +45,7 @@ describe('StaffSearchComponent', () => {
       ['search', 'changePage', 'setErrors']);
     mockStaffDataFilterService.search.and.callThrough();
     TestBed.configureTestingModule({
-      declarations: [ StaffSearchComponent ],
+      declarations: [StaffSearchComponent],
       imports: [
         HttpClientTestingModule,
         ReactiveFormsModule
@@ -53,10 +53,10 @@ describe('StaffSearchComponent', () => {
       providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
         { provide: StaffDataFilterService, useValue: mockStaffDataFilterService },
-        { provide: FilterService, useValue: mockFilterService },
+        { provide: FilterService, useValue: mockFilterService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

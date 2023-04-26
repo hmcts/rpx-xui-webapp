@@ -17,6 +17,7 @@ export class StaffAddEditFormService {
     services: StaffFilterOption[],
     regions: RefDataRegion[]
   };
+
   public formGroup: FormGroup;
 
   constructor(private activatedRoute: ActivatedRoute) {
@@ -24,7 +25,7 @@ export class StaffAddEditFormService {
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,
       skills: this.activatedRoute.snapshot.data.skills,
       services: this.activatedRoute.snapshot.data.services,
-      regions: this.activatedRoute.snapshot.data.regions,
+      regions: this.activatedRoute.snapshot.data.regions
     };
 
     this.formGroup = new FormGroup({
@@ -56,7 +57,7 @@ export class StaffAddEditFormService {
     const skillsFormGroup = new FormGroup({});
     this.staffFilterOptions.skills.forEach((item) => {
       const newFormArray = new FormArray([]);
-      item.options.forEach((option) => {
+      item.options.forEach(() => {
         newFormArray.push(new FormControl(false));
       });
       skillsFormGroup.addControl(item.group, newFormArray);
@@ -69,7 +70,7 @@ export class StaffAddEditFormService {
     return servicesFormControl.valueChanges.pipe(
       startWith([...servicesFormControl.value]),
       map((value) => {
-        return filterItemsByBoolean<StaffFilterOption>(this.staffFilterOptions.services, value).map(item => item.key);
+        return filterItemsByBoolean<StaffFilterOption>(this.staffFilterOptions.services, value).map((item) => item.key);
       })
     );
   }
@@ -79,19 +80,19 @@ export class StaffAddEditFormService {
     const staffUser = new StaffUser();
     Object.assign(staffUser, formValues);
     staffUser.region_id = Number(staffUser.region_id);
-    staffUser.region = this.staffFilterOptions.regions.find(item => Number(item.region_id) === staffUser.region_id)?.description;
+    staffUser.region = this.staffFilterOptions.regions.find((item) => Number(item.region_id) === staffUser.region_id)?.description;
     staffUser.roles = filterItemsByBoolean<StaffFilterOption>(this.staffFilterOptions.jobTitles, formValues.roles)
-      .map(item => ({ role_id: item.key, role: item.label, is_primary: true }));
+      .map((item) => ({ role_id: item.key, role: item.label, is_primary: true }));
     staffUser.services = filterItemsByBoolean<StaffFilterOption>(this.staffFilterOptions.services, formValues.services)
-      .map(item => ({ service: item.label, service_code: item.key }));
+      .map((item) => ({ service: item.label, service_code: item.key }));
 
     const skillGroupIds = Object.keys(formValues.skills);
     const selectedSkills = skillGroupIds.reduce((previousValue, currentValue) => {
-      const skillGroupOptions = this.staffFilterOptions.skills.find(item => item.group === currentValue)?.options;
+      const skillGroupOptions = this.staffFilterOptions.skills.find((item) => item.group === currentValue)?.options;
       const mappedValues = filterItemsByBoolean(skillGroupOptions, formValues.skills[currentValue]);
       return [...previousValue, ...mappedValues];
     }, [] as any[]);
-    staffUser.skills = selectedSkills.map(item => ({ skill_id: item.key, description: item.label }));
+    staffUser.skills = selectedSkills.map((item) => ({ skill_id: item.key, description: item.label }));
 
     return staffUser;
   }
@@ -103,13 +104,13 @@ export class StaffAddEditFormService {
 
     // Services
     const serviceFormArray = buildCheckboxArray(this.staffFilterOptions.services, 1, 225,
-      staffUserDetails.services ? staffUserDetails.services.map(service => service.service_code) : []
+      staffUserDetails.services ? staffUserDetails.services.map((service) => service.service_code) : []
     );
     this.formGroup.setControl('services', serviceFormArray);
 
     // Job titles
     const jobTitlesFormArray = buildCheckboxArray(this.staffFilterOptions.jobTitles, 1, 225,
-      staffUserDetails.roles ? staffUserDetails.roles.map(roles => roles.role_id) : []
+      staffUserDetails.roles ? staffUserDetails.roles.map((roles) => roles.role_id) : []
     );
     this.formGroup.setControl('roles', jobTitlesFormArray); // Roles are corresponding to the job titles form controls
 
@@ -118,7 +119,7 @@ export class StaffAddEditFormService {
     this.staffFilterOptions.skills.forEach((item) => {
       const newFormArray = new FormArray([]);
       item.options.forEach((option) => {
-        const checked = staffUserDetails.skills ? staffUserDetails.skills.some(skill => skill.skill_id === Number(option.key)) : false;
+        const checked = staffUserDetails.skills ? staffUserDetails.skills.some((skill) => skill.skill_id === Number(option.key)) : false;
         newFormArray.push(new FormControl(checked));
       });
       skillsFormGroup.addControl(item.group, newFormArray);

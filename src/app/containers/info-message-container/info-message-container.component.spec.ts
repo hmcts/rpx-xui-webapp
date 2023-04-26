@@ -1,4 +1,3 @@
-import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 
@@ -10,38 +9,32 @@ import { InfoMessage } from '../../shared/enums/info-message';
 import { InfoMessageType } from '../../shared/enums/info-message-type';
 import { InformationMessage } from '../../shared/models';
 
-@Component({
-  template: `<exui-info-message-container></exui-info-message-container>`
-})
-class WrapperComponent {
-  @ViewChild(InfoMessageContainerComponent, {static: true}) public appComponentRef: InfoMessageContainerComponent;
-}
-
 class MockRouteServices {
   // Router
-  public events = of( new NavigationEnd(0, 'http://localhost:4200/login', 'http://localhost:4200/login'));
+  public events = of(new NavigationEnd(0, 'http://localhost:4200/login', 'http://localhost:4200/login'));
 }
 
 describe('WorkAllocation', () => {
-
   describe('InfoMessageContainerComponent', () => {
     let component: InfoMessageContainerComponent;
     let fixture: ComponentFixture<InfoMessageContainerComponent>;
     const mockMessageService = {
-    infoMessageChangeEmitted$: of([{type: InfoMessageType.SUCCESS, message: InfoMessage.ASSIGNED_TASK}] as InformationMessage[]),
-    removeAllMessages: () => {}
+      infoMessageChangeEmitted$: of([{ type: InfoMessageType.SUCCESS, message: InfoMessage.ASSIGNED_TASK }] as InformationMessage[]),
+      removeAllMessages: () => {
+        return undefined;
+      }
     };
     beforeEach(() => {
       TestBed.configureTestingModule({
-        declarations: [ InfoMessageContainerComponent ],
+        declarations: [InfoMessageContainerComponent],
         imports: [
-          RouterTestingModule ],
+          RouterTestingModule],
         providers: [
           { provide: InfoMessageCommService, useValue: mockMessageService },
-          { provide: Router, useClass: MockRouteServices },
+          { provide: Router, useClass: MockRouteServices }
         ]
       })
-      .compileComponents();
+        .compileComponents();
 
       fixture = TestBed.createComponent(InfoMessageContainerComponent);
       component = fixture.componentInstance;

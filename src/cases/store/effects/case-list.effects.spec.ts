@@ -21,7 +21,7 @@ describe('Pending Organisation Effects', () => {
       providers: [
         {
           provide: SearchFilterService,
-          useValue: searchFilterServiceMock,
+          useValue: searchFilterServiceMock
         },
         fromCaseListEffects.CaseListEffects,
         provideMockActions(() => actions$)

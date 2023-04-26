@@ -13,6 +13,6 @@ import { PriorityFieldComponent } from './priority-field.component';
   imports: [
     CommonModule
   ],
-  exports: [ PriorityFieldComponent ]
+  exports: [PriorityFieldComponent]
 })
 export class PriorityFieldModule { }

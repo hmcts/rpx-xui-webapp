@@ -20,80 +20,79 @@ export class AppEffects {
     private readonly userService: UserService,
     private readonly sessionStorageService: SessionStorageService,
     private readonly roleService: RoleService
-  ) { }
+  ) {}
 
   @Effect()
   public config = this.actions$.pipe(
-    ofType(fromActions.APP_LOAD_CONFIG),
-    switchMap(() => {
-      return this.configurationServices.load()
-        .pipe(
-          map(config => new fromActions.LoadConfigSuccess(config)),
-          catchError(error => of(new fromActions.LoadConfigFail(error))
-          ));
-    })
-  );
+      ofType(fromActions.APP_LOAD_CONFIG),
+      switchMap(() => {
+        return this.configurationServices.load()
+          .pipe(
+            map((config) => new fromActions.LoadConfigSuccess(config)),
+            catchError((error) => of(new fromActions.LoadConfigFail(error))
+            ));
+      })
+    );
 
   @Effect()
   public featureToggleConfig = this.actions$.pipe(
-    ofType(fromActions.LOAD_FEATURE_TOGGLE_CONFIG),
-    switchMap(() => {
+      ofType(fromActions.LOAD_FEATURE_TOGGLE_CONFIG),
+      switchMap(() => {
       // TODO: this should be replaced by the feature toggle service once its ready.
-      return this.termsService.isTermsConditionsFeatureEnabled()
-        .pipe(
-          map(isTandCFeatureToggleEnabled => new fromActions.LoadFeatureToggleConfigSuccess(isTandCFeatureToggleEnabled)),
-          catchError(error => of(new fromActions.LoadFeatureToggleConfigFail(error))
-          ));
-    })
-  );
+        return this.termsService.isTermsConditionsFeatureEnabled()
+          .pipe(
+            map((isTandCFeatureToggleEnabled) => new fromActions.LoadFeatureToggleConfigSuccess(isTandCFeatureToggleEnabled)),
+            catchError((error) => of(new fromActions.LoadFeatureToggleConfigFail(error))
+            ));
+      })
+    );
 
   @Effect({ dispatch: false })
   public setConfig = this.actions$.pipe(
-    ofType(fromActions.APP_LOAD_CONFIG_SUCCESS),
-    map(() => {
-      this.configurationServices.setConfiguration();
-    })
-  );
-
+      ofType(fromActions.APP_LOAD_CONFIG_SUCCESS),
+      map(() => {
+        this.configurationServices.setConfiguration();
+      })
+    );
 
   @Effect({ dispatch: false })
   public logout = this.actions$.pipe(
-    ofType(fromActions.LOGOUT),
-    map(() => {
-      console.log('call Signout auth service.');
-      this.authService.signOut();
-    })
-  );
+      ofType(fromActions.LOGOUT),
+      map(() => {
+        console.log('call Signout auth service.');
+        this.authService.signOut();
+      })
+    );
 
   @Effect({ dispatch: false })
   public logoutAndRedirect = this.actions$.pipe(
-    ofType(fromActions.IDLE_USER_LOGOUT),
-    map(() => {
-      this.authService.logOutAndRedirect();
-    })
-  );
+      ofType(fromActions.IDLE_USER_LOGOUT),
+      map(() => {
+        this.authService.logOutAndRedirect();
+      })
+    );
 
   @Effect()
   public loadTermsConditions$ = this.actions$.pipe(
-    ofType(fromActions.LOAD_TERMS_CONDITIONS),
-    switchMap(() => {
-      return this.termsService.getTermsConditions().pipe(
-        map(doc => new fromActions.LoadTermsConditionsSuccess(doc)),
-        catchError(err => of(new fromActions.Go({ path: ['/service-down'] })))
-      );
-    })
-  );
+      ofType(fromActions.LOAD_TERMS_CONDITIONS),
+      switchMap(() => {
+        return this.termsService.getTermsConditions().pipe(
+          map((doc) => new fromActions.LoadTermsConditionsSuccess(doc)),
+          catchError(() => of(new fromActions.Go({ path: ['/service-down'] })))
+        );
+      })
+    );
 
   @Effect()
   public loadUserDetails$ = this.actions$.pipe(
-    ofType(fromActions.LOAD_USER_DETAILS),
-    switchMap(() => {
-      return this.userService.getUserDetails().pipe(
-        tap((userDetails) => this.sessionStorageService.setItem('userDetails', JSON.stringify(userDetails.userInfo))),
-        tap(userDetails => this.roleService.roles = userDetails.userInfo && userDetails.userInfo.roles),
-        map(userDetails => new fromActions.LoadUserDetailsSuccess(userDetails)),
-        catchError(err => of(new fromActions.LoadUserDetailsFail(err)))
-      );
-    })
-  );
+      ofType(fromActions.LOAD_USER_DETAILS),
+      switchMap(() => {
+        return this.userService.getUserDetails().pipe(
+          tap((userDetails) => this.sessionStorageService.setItem('userDetails', JSON.stringify(userDetails.userInfo))),
+          tap((userDetails) => this.roleService.roles = userDetails.userInfo && userDetails.userInfo.roles),
+          map((userDetails) => new fromActions.LoadUserDetailsSuccess(userDetails)),
+          catchError((err) => of(new fromActions.LoadUserDetailsFail(err)))
+        );
+      })
+    );
 }

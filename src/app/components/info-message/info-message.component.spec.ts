@@ -4,18 +4,16 @@ import { InfoMessage } from './../../shared/enums/info-message';
 import { InfoMessageType } from '../../../role-access/models/enums';
 import { InfoMessageComponent } from './info-message.component';
 
-
 @Component({
-  template: `<exui-info-message [type]="type" [message]="message"></exui-info-message>`
+  template: '<exui-info-message [type]="type" [message]="message"></exui-info-message>'
 })
 class WrapperComponent {
-  @ViewChild(InfoMessageComponent, {static: true}) public appComponentRef: InfoMessageComponent;
+  @ViewChild(InfoMessageComponent, { static: true }) public appComponentRef: InfoMessageComponent;
   @Input() public type: InfoMessageType;
   @Input() public message: InfoMessage;
 }
 
 describe('SharedModule', () => {
-
   describe('InfoMessageComponent', () => {
     let component: InfoMessageComponent;
     let wrapper: WrapperComponent;
@@ -23,12 +21,12 @@ describe('SharedModule', () => {
 
     beforeEach(async () => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent, InfoMessageComponent ],
+        declarations: [WrapperComponent, InfoMessageComponent],
         schemas: [
-          CUSTOM_ELEMENTS_SCHEMA,
+          CUSTOM_ELEMENTS_SCHEMA
         ]
       })
-      .compileComponents();
+        .compileComponents();
 
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
@@ -42,7 +40,6 @@ describe('SharedModule', () => {
      * Hence we have to use .contain to check if the info message is part of the innerText.
      */
     it('should take in a message, and show the message to the User.', () => {
-
       component.type = InfoMessageType.SUCCESS;
       component.message = InfoMessage.TASK_NO_LONGER_AVAILABLE;
 
@@ -58,7 +55,6 @@ describe('SharedModule', () => {
      */
     it('should take in an info message type ie.\'success\', and the correct Information Message Visual should be shown' +
       'to the user.', () => {
-
       component.type = InfoMessageType.SUCCESS;
       component.message = InfoMessage.TASK_NO_LONGER_AVAILABLE;
 
@@ -81,5 +77,4 @@ describe('SharedModule', () => {
       expect(fixture.debugElement.nativeElement.innerText).toContain(InfoMessageType.INFO);
     });
   });
-
 });

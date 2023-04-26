@@ -1,5 +1,6 @@
-import { SortOrder, TaskService } from '../../enums';
+/* eslint-disable semi */
 import { FieldConfig } from '../common';
+import { SortOrder, TaskService } from '../../enums';
 
 export default interface TaskServiceConfig {
   service: TaskService;

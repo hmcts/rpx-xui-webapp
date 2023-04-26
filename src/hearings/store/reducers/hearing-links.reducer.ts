@@ -9,7 +9,7 @@ export const initialHearingLinksState: HearingLinksStateData = {
 };
 
 export function hearingLinksReducer(currentState = initialHearingLinksState,
-                                    action: fromActions.HearingLinksAction): HearingLinksStateData {
+  action: fromActions.HearingLinksAction): HearingLinksStateData {
   switch (action.type) {
     case fromActions.RESET_HEARING_LINKS: {
       return {

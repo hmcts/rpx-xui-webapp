@@ -12,10 +12,10 @@ export class MockStaffRefDataAPI implements StaffRefDataAPI {
 
   async getFilteredUsers(req, res: Response, next: NextFunction) {
     const reqBody = req.body;
-    const apiPath: string = `/refdata/case-worker/profile`;
+    const apiPath: string = '/refdata/case-worker/profile';
 
     try {
-      const {status, data}: { status: number, data: StaffUser[] } = await handlePost(apiPath, reqBody, req);
+      const { status, data }: { status: number, data: StaffUser[] } = await handlePost(apiPath, reqBody, req);
       res.status(status).send(data);
     } catch (error) {
       next(error);
@@ -23,10 +23,10 @@ export class MockStaffRefDataAPI implements StaffRefDataAPI {
   }
 
   async getUserTypes(req, res: Response, next: NextFunction) {
-    const apiPath: string = `/refdata/case-worker/user-type`;
+    const apiPath: string = '/refdata/case-worker/user-type';
 
     try {
-      const {status, data}: { status: number, data: StaffFilterOption[] } = await handleGet(apiPath, req);
+      const { status, data }: { status: number, data: StaffFilterOption[] } = await handleGet(apiPath, req);
       res.status(status).send(data);
     } catch (error) {
       next(error);
@@ -34,10 +34,10 @@ export class MockStaffRefDataAPI implements StaffRefDataAPI {
   }
 
   async getJobTitles(req, res: Response, next: NextFunction) {
-    const apiPath: string = `/refdata/case-worker/job-title`;
+    const apiPath: string = '/refdata/case-worker/job-title';
 
     try {
-      const {status, data}: { status: number, data: StaffFilterOption[] } = await handleGet(apiPath, req);
+      const { status, data }: { status: number, data: StaffFilterOption[] } = await handleGet(apiPath, req);
       res.status(status).send(data);
     } catch (error) {
       next(error);
@@ -45,10 +45,10 @@ export class MockStaffRefDataAPI implements StaffRefDataAPI {
   }
 
   async getSkills(req, res: Response, next: NextFunction) {
-    const apiPath: string = `/refdata/case-worker/skill`;
+    const apiPath: string = '/refdata/case-worker/skill';
 
     try {
-      const {status, data}: { status: number, data } = await handleGet(apiPath, req);
+      const { status, data }: { status: number, data } = await handleGet(apiPath, req);
       res.status(status).send(data);
     } catch (error) {
       next(error);
@@ -60,7 +60,7 @@ export class MockStaffRefDataAPI implements StaffRefDataAPI {
     const apiPath: string = `/refdata/case-worker/profile/search?search=${searchParam}`;
 
     try {
-      const {status, data}: { status: number, data: StaffUser[] } = await handleGet(apiPath, req);
+      const { status, data }: { status: number, data: StaffUser[] } = await handleGet(apiPath, req);
       res.status(status).send(data);
     } catch (error) {
       next(error);
@@ -69,10 +69,10 @@ export class MockStaffRefDataAPI implements StaffRefDataAPI {
 
   async addNewUser(req, res: Response, next: NextFunction) {
     const reqBody = req.body;
-    const apiPath: string = `/refdata/case-worker/profile`;
+    const apiPath: string = '/refdata/case-worker/profile';
 
     try {
-      const {status, data}: { status: number, data: StaffUser } = await handlePost(apiPath, reqBody, req);
+      const { status, data }: { status: number, data: StaffUser } = await handlePost(apiPath, reqBody, req);
       res.status(status).send(data);
     } catch (error) {
       next(error);
@@ -80,10 +80,10 @@ export class MockStaffRefDataAPI implements StaffRefDataAPI {
   }
 
   async fetchUsersById(req, res: Response, next: NextFunction) {
-    const apiPath: string = `/refdata/case-worker/users/fetchUsersById`;
+    const apiPath: string = '/refdata/case-worker/users/fetchUsersById';
 
     try {
-      const {status, data}: { status: number, data: StaffUser } = await handleGet(apiPath, req);
+      const { status, data }: { status: number, data: StaffUser } = await handleGet(apiPath, req);
       res.status(status).send(data);
     } catch (error) {
       next(error);

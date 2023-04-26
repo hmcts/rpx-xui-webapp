@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
@@ -21,11 +21,10 @@ import { getMockTasks } from '../../tests/utils.spec';
 import { MyTasksComponent } from './my-tasks.component';
 
 @Component({
-  template: `
-    <exui-my-tasks></exui-my-tasks>`
+  template: '<exui-my-tasks></exui-my-tasks>'
 })
 class WrapperComponent {
-  @ViewChild(MyTasksComponent, {static: true}) public appComponentRef: MyTasksComponent;
+  @ViewChild(MyTasksComponent, { static: true }) public appComponentRef: MyTasksComponent;
 }
 
 const userInfo =
@@ -67,6 +66,7 @@ xdescribe('MyTasksComponent', () => {
     }
   };
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
 
   beforeEach(waitForAsync(() => {
@@ -92,7 +92,7 @@ xdescribe('MyTasksComponent', () => {
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: AllocateRoleService, useValue: mockRoleService },
         { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService },
-        { provide: Store, useValue: storeMock },
+        { provide: Store, useValue: storeMock }
       ]
     }).compileComponents();
 
@@ -102,7 +102,7 @@ xdescribe('MyTasksComponent', () => {
     router = TestBed.inject(Router);
     store = TestBed.inject(Store);
     const tasks: Task[] = getMockTasks();
-    mockTaskService.searchTask.and.returnValue(of({tasks}));
+    mockTaskService.searchTask.and.returnValue(of({ tasks }));
     mockCaseworkerService.getCaseworkersForServices.and.returnValue(of([]));
     const filterFields: FilterSetting = {
       id: 'locations',
@@ -135,8 +135,7 @@ xdescribe('MyTasksComponent', () => {
     component.ngOnInit();
     // tick(500);
     fixture.detectChanges();
-    const searchRequest = component.getSearchTaskRequestPagination();
-    const payload = {searchRequest, view: component.view, refined: true, currentUser: undefined};
+    component.getSearchTaskRequestPagination();
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
   }));
@@ -168,8 +167,7 @@ xdescribe('MyTasksComponent', () => {
 
   it('should not search by work types if all work types are selected', () => {
     mockSessionStorageService.getItem.and.returnValues(userInfo, workTypeInfo, '1');
-    const workTypes: string[] = ['hearing_work', 'upper_tribunal', 'decision_making_work', 'extra_work_type'];
-    component.selectedWorkTypes = workTypes;
+    component.selectedWorkTypes = ['hearing_work', 'upper_tribunal', 'decision_making_work', 'extra_work_type'];
     for (const search_parameter of component.getSearchTaskRequestPagination().search_parameters) {
       expect(search_parameter.key).not.toBe('work_type');
     }

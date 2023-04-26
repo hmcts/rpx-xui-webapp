@@ -8,7 +8,7 @@ import { StaffDataFilterService } from '../../components/staff-users/services/st
   styleUrls: ['./staff-users.component.scss'],
   providers: [StaffDataFilterService]
 })
-export class StaffUsersComponent  {
+export class StaffUsersComponent {
   public advancedSearchEnabled = false;
 
   constructor(

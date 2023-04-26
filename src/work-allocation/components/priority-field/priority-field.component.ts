@@ -6,7 +6,7 @@ import { AppConstants } from '../../../app/app.constants';
 
 @Component({
   selector: 'exui-priority-field',
-  templateUrl: './priority-field.component.html',
+  templateUrl: './priority-field.component.html'
 })
 export class PriorityFieldComponent implements OnInit {
   // Current Input
@@ -26,8 +26,8 @@ export class PriorityFieldComponent implements OnInit {
     this.isRelease4$ = this.featureToggleService
       .getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null)
       .pipe(
-        map(features => {
-          const jurisdictionConfig = features.configurations.find(config => config.serviceName === this.jurisdiction);
+        map((features) => {
+          const jurisdictionConfig = features.configurations.find((config) => config.serviceName === this.jurisdiction);
           return parseInt(jurisdictionConfig?.releaseVersion, 10) >= 4;
         })
       );

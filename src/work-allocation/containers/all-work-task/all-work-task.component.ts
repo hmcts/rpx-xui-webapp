@@ -29,15 +29,18 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     fieldName: '',
     order: SortOrder.NONE
   };
+
   public pagination: PaginationParameter = {
     page_number: 1,
     page_size: 25
   };
+
   private readonly selectedLocation: Location = {
     id: '**ALL LOCATIONS**',
     locationName: '',
-    services: [],
+    services: []
   };
+
   private selectedTaskCategory: string = 'All';
   private selectedPerson: string = '';
   private selectedTaskType: string = 'All';
@@ -61,8 +64,8 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
 
   public get fields(): FieldConfig[] {
     let fields = [];
-    this.checkReleaseVersionService.isRelease4().subscribe(isRelease4 => {
-        fields = this.isCurrentUserJudicial() ?
+    this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
+      fields = this.isCurrentUserJudicial() ?
         (isRelease4 ? ConfigConstants.AllWorkTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForJudicial) :
         (isRelease4 ? ConfigConstants.AllWorkTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForLegalOps);
     });
@@ -70,15 +73,15 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   }
 
   public loadCaseWorkersAndLocations(): void {
-    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).pipe(map(userDetails =>
-      userDetails.roleAssignmentInfo.filter(role => role.roleName && role.roleName === 'task-supervisor').map(role => role.jurisdiction || null)
+    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).pipe(map((userDetails) =>
+      userDetails.roleAssignmentInfo.filter((role) => role.roleName && role.roleName === 'task-supervisor').map((role) => role.jurisdiction || null)
     ));
 
     const waJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
     this.waSupportedJurisdictions$ = combineLatest(
       [userRoles$,
         waJurisdictions$]
-    ).pipe(map(jurisdictions => {
+    ).pipe(map((jurisdictions) => {
       this.supportedJurisdictions = jurisdictions[1];
       return jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
     }));
@@ -148,7 +151,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     if (this.selectedLocation && this.selectedLocation.id !== FilterConstants.Options.Locations.ALL.id) {
       values = this.selectedLocation.id ? [this.selectedLocation.id] : [];
     } else {
-      values = this.locations.map(loc => loc.id);
+      values = this.locations.map((loc) => loc.id);
     }
     return values && values.length > 0 ? { key: 'location', operator: 'IN', values } : null;
   }
@@ -157,23 +160,23 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     if (this.selectedTaskCategory && this.selectedTaskCategory !== AllWorkTaskComponent.ALL_TASKS) {
       if (this.selectedTaskCategory === AllWorkTaskComponent.AVAILABLE_TASKS) {
         return { key: 'state', operator: 'IN', values: ['unassigned'] };
-      } else {
-        return { key: 'state', operator: 'IN', values: ['assigned'] };
       }
-    } else {
-      return { key: 'state', operator: 'IN', values: ['assigned', 'unassigned'] };
+
+      return { key: 'state', operator: 'IN', values: ['assigned'] };
     }
+
+    return { key: 'state', operator: 'IN', values: ['assigned', 'unassigned'] };
   }
 
   private getTaskTypeParameter(): any {
     if (this.selectedTaskType && this.selectedTaskType !== AllWorkTaskComponent.ALL_TASKS) {
-      return {key: 'role_category', operator: 'IN', values: [this.selectedTaskType]};
+      return { key: 'role_category', operator: 'IN', values: [this.selectedTaskType] };
     }
   }
 
-  private getTaskNameParameter(): {key: string, operator: string, values: string[]} {
+  private getTaskNameParameter(): { key: string, operator: string, values: string[] } {
     if (this.selectedTaskName) {
-      return {key: 'task_type', operator: 'IN', values: [this.selectedTaskName]};
+      return { key: 'task_type', operator: 'IN', values: [this.selectedTaskName] };
     }
   }
 }

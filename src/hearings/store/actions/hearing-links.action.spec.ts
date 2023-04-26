@@ -1,7 +1,6 @@
 import * as fromHearingLinksAction from './hearing-links.action';
 
 describe('Hearing Links Actions', () => {
-
   it('should reset hearing links', () => {
     const action = new fromHearingLinksAction.ResetHearingLinks();
     expect(action.type).toBe(fromHearingLinksAction.RESET_HEARING_LINKS);
@@ -20,7 +19,7 @@ describe('Hearing Links Actions', () => {
   it('should load service linked cases success', () => {
     const action = new fromHearingLinksAction.LoadServiceLinkedCasesFailure({
       status: 500,
-      message: 'failed',
+      message: 'failed'
     });
     expect(action.type).toBe(fromHearingLinksAction.LOAD_SERVICE_LINKED_CASES_FAILURE);
   });

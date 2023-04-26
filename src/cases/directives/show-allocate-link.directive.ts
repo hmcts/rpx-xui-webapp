@@ -10,8 +10,7 @@ export class ShowAllocateLinkDirective implements OnInit {
   @Input() public roles: CaseRole[];
   @Input() public roleCategory: RoleCategory;
 
-  constructor(private readonly element: ElementRef<HTMLElement>) {
-  }
+  constructor(private readonly element: ElementRef<HTMLElement>) {}
 
   private static canDisplayLink(roles: CaseRole[], roleCategory: RoleCategory, showAllocateRoleLink: boolean): boolean {
     const show = false;

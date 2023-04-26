@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -15,12 +15,11 @@ import { CaseRoleDetails } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
 import { TaskContext } from '../../../work-allocation/enums';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
-import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 
 @Component({
   template: `
@@ -31,18 +30,9 @@ class WrapperComponent {
 }
 
 @Component({
-  template: `<div>Nothing</div>`
+  template: '<div>Nothing</div>'
 })
 class NothingComponent { }
-
-@Component({
-  selector: 'exui-task-field',
-  template: '<div class="xui-task-field">{{task.taskName}}</div>'
-})
-class TaskFieldComponent {
-  @Input() public config: FieldConfig;
-  @Input() public task: Task;
-}
 
 const USER_DETAILS = {
   canShareCases: true,
@@ -67,6 +57,7 @@ xdescribe('AllWorkTaskComponent', () => {
   let component: AllWorkTaskComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
@@ -86,6 +77,7 @@ xdescribe('AllWorkTaskComponent', () => {
     }
   };
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
 
   beforeEach(waitForAsync(() => {
@@ -98,7 +90,7 @@ xdescribe('AllWorkTaskComponent', () => {
         RouterTestingModule,
         WorkAllocationComponentsModule,
         PaginationModule,
-        StoreModule.forRoot({ ...fromActions.reducers }),
+        StoreModule.forRoot({ ...fromActions.reducers })
       ],
       declarations: [AllWorkTaskComponent, WrapperComponent, TaskListComponent],
       providers: [
@@ -158,11 +150,11 @@ xdescribe('AllWorkTaskComponent', () => {
               releaseVersion: '2.1',
               serviceName: 'CIVIL'
             }
-        ]
+          ]
         });
-      } else {
-        return of(true);
       }
+
+      return of(true);
     });
     component.locations = [{ id: 'loc123', locationName: 'Test', services: [] }];
     mockLocationService.getLocations.and.returnValue(of([{ id: 'loc123', locationName: 'Test', services: [] }]));
@@ -212,7 +204,7 @@ xdescribe('AllWorkTaskComponent', () => {
       roles: ['caseworker-ia-caseofficer'],
       uid: '1233434'
     }));
-    const selection = {findTaskNameControl: 'Process Application', location: 'exampleLocation', service: 'IA', selectPerson: 'All', person: null, taskType: 'JUDICIAL', priority: 'High', taskName: 'Review Hearing bundle' };
+    const selection = { findTaskNameControl: 'Process Application', location: 'exampleLocation', service: 'IA', selectPerson: 'All', person: null, taskType: 'JUDICIAL', priority: 'High', taskName: 'Review Hearing bundle' };
     component.onSelectionChanged(selection);
     const searchRequest = component.getSearchTaskRequestPagination();
     expect(searchRequest.search_parameters).toContain({ key: 'jurisdiction', operator: 'IN', values: ['IA'] });
@@ -242,8 +234,8 @@ xdescribe('AllWorkTaskComponent', () => {
   { statusCode: 403, routeUrl: '/not-authorised' },
   { statusCode: 401, routeUrl: '/not-authorised' },
   { statusCode: 500, routeUrl: '/service-down' },
-  { statusCode: 400, routeUrl: '/service-down' },
-].forEach(scr => {
+  { statusCode: 400, routeUrl: '/service-down' }
+].forEach((scr) => {
   xdescribe('AllWorkTaskComponent negative cases', () => {
     let component: AllWorkTaskComponent;
     let wrapper: WrapperComponent;
@@ -260,6 +252,7 @@ xdescribe('AllWorkTaskComponent', () => {
     const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
     const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
     let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let store: Store<fromActions.State>;
 
     beforeEach(waitForAsync(() => {
@@ -267,7 +260,6 @@ xdescribe('AllWorkTaskComponent', () => {
       storeMock.pipe.and.returnValue(of(USER_DETAILS));
       mockLocationService.getLocations.and.returnValue(of([{ id: 'loc123', locationName: 'Test', services: [] }]));
       mockTaskService.searchTask.and.returnValue(throwError({ status: scr.statusCode }));
-      const tasks: Task[] = getMockTasks();
       // mockTaskService.searchTaskWithPagination.and.returnValue(of(throwError({ status: 500 })));
       mockCaseworkerService.getAll.and.returnValue(of([]));
       mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
@@ -299,11 +291,11 @@ xdescribe('AllWorkTaskComponent', () => {
                 releaseVersion: '2.1',
                 serviceName: 'CIVIL'
               }
-          ]
+            ]
           });
-        } else {
-          return of(true);
         }
+
+        return of(true);
       });
       mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
       TestBed.configureTestingModule({
@@ -333,7 +325,7 @@ xdescribe('AllWorkTaskComponent', () => {
           { provide: FeatureToggleService, useValue: mockFeatureToggleService },
           { provide: LocationDataService, useValue: mockLocationService },
           { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
-          { provide: Store, useValue: storeMock },
+          { provide: Store, useValue: storeMock }
         ]
       }).compileComponents();
       store = TestBed.inject(Store);

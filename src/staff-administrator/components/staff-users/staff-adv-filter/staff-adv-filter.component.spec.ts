@@ -12,7 +12,7 @@ import { StaffDataFilterService } from '../services/staff-data-filter/staff-data
 import { StaffAdvFilterComponent } from './staff-adv-filter.component';
 
 // tslint:disable-next-line:component-selector -- this is a stub component -- it is imported from common lib which has a different prefix
-@Component({selector: 'xuilib-generic-filter', template: ''})
+@Component({ selector: 'xuilib-generic-filter', template: '' })
 class GenericFilterStubComponent {
   public submitted = false;
 }
@@ -72,10 +72,10 @@ describe('StaffAdvFilterComponent', () => {
     mockStaffDataFilterService.search.and.callThrough();
 
     TestBed.configureTestingModule({
-      declarations: [ StaffAdvFilterComponent, GenericFilterStubComponent ],
+      declarations: [StaffAdvFilterComponent, GenericFilterStubComponent],
       imports: [
         RouterTestingModule,
-        HttpClientTestingModule,
+        HttpClientTestingModule
       ],
       providers: [
         { provide: StaffDataFilterService, useValue: mockStaffDataFilterService },
@@ -91,13 +91,12 @@ describe('StaffAdvFilterComponent', () => {
                 skills: staffFilterOptionsTestData.skills,
                 services: staffFilterOptionsTestData.services
               }
-            },
+            }
           }
-        },
-      ],
+        }
+      ]
     })
-    .compileComponents();
-
+      .compileComponents();
   });
 
   beforeEach(() => {
@@ -112,16 +111,16 @@ describe('StaffAdvFilterComponent', () => {
   });
 
   it('should have All by default in job title in filterConfig', () => {
-    const field = component.filterConfig.fields.find(f => f.name === 'user-job-title');
+    const field = component.filterConfig.fields.find((f) => f.name === 'user-job-title');
     expect(field.defaultOption.key).toBe('All');
   });
 
   it('should have All by default in user type', () => {
-    const field = component.filterConfig.fields.find(f => f.name === 'user-type');
+    const field = component.filterConfig.fields.find((f) => f.name === 'user-type');
     expect(field.defaultOption.key).toBe('All');
   });
 
-  describe('filterSub' , () => {
+  describe('filterSub', () => {
     it('should unsubscribe from filterService on destroy', () => {
       // @ts-expect-error -- private property
       spyOn(component.filterSub, 'unsubscribe');
@@ -138,7 +137,7 @@ describe('StaffAdvFilterComponent', () => {
             value: [
               { key: 'AAA7', label: 'Service A' },
               { key: 'BFA1', label: 'Service B' },
-              { key: 'CDA3', label: 'Service C' },
+              { key: 'CDA3', label: 'Service C' }
             ],
             name: 'user-services'
           },
@@ -169,7 +168,7 @@ describe('StaffAdvFilterComponent', () => {
 
       // @ts-expect-error - private property
       expect(component.staffDataFilterService.search).toHaveBeenCalledWith(
-        { advancedSearchFilters: { serviceCode: [ 'AAA7', 'BFA1', 'CDA3' ] }, pageNumber: 1, pageSize: 15 }
+        { advancedSearchFilters: { serviceCode: ['AAA7', 'BFA1', 'CDA3'] }, pageNumber: 1, pageSize: 15 }
       );
     });
 

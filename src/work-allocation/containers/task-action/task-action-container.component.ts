@@ -7,8 +7,11 @@ import { filter } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { UserInfo, UserRole } from '../../../app/models';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { Actions } from '../../../role-access/models';
+import { InfoMessageType } from '../../../role-access/models/enums';
 import { AllocateRoleService } from '../../../role-access/services';
 import { ConfigConstants } from '../../components/constants';
 import { SortOrder, TaskActionType, TaskService } from '../../enums';
@@ -18,9 +21,6 @@ import { Task, TaskServiceConfig } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { getAssigneeName, handleFatalErrors } from '../../utils';
-import { InfoMessage } from './../../../app/shared/enums/info-message';
-import { InformationMessage } from './../../../app/shared/models';
-import { InfoMessageType } from './../../../role-access/models/enums';
 
 @Component({
   selector: 'exui-task-action-container',
@@ -63,8 +63,9 @@ export class TaskActionContainerComponent implements OnInit {
     service: TaskService.IAC,
     defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
-    fields: this.fields,
+    fields: this.fields
   };
+
   public ngOnInit(): void {
     this.isJudicial = this.isCurrentUserJudicial();
     // Set up the default sorting.
@@ -74,7 +75,7 @@ export class TaskActionContainerComponent implements OnInit {
     };
 
     // Get the task from the route, which will have been put there by the resolver.
-    this.tasks = [ this.route.snapshot.data.taskAndCaseworkers.task.task ];
+    this.tasks = [this.route.snapshot.data.taskAndCaseworkers.task.task];
     this.routeData = this.route.snapshot.data as RouteData;
     if (!this.routeData.actionTitle) {
       this.routeData.actionTitle = `${this.routeData.verb} task`;
@@ -82,14 +83,14 @@ export class TaskActionContainerComponent implements OnInit {
     if (this.tasks[0].assignee) {
       this.tasks[0].assigneeName = getAssigneeName(this.route.snapshot.data.taskAndCaseworkers.caseworkers, this.tasks[0].assignee);
       if (!this.tasks[0].assigneeName) {
-        this.roleService.getCaseRolesUserDetails([this.tasks[0].assignee], this.tasks[0].jurisdiction).subscribe(judicialDetails => {
+        this.roleService.getCaseRolesUserDetails([this.tasks[0].assignee], this.tasks[0].jurisdiction).subscribe((judicialDetails) => {
           this.tasks[0].assigneeName = judicialDetails[0].known_as;
         });
       }
     }
 
     this.isUpdatedTaskPermissions$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
-    this.isUpdatedTaskPermissions$.pipe(filter(v => !!v)).subscribe(value => {
+    this.isUpdatedTaskPermissions$.pipe(filter((v) => !!v)).subscribe((value) => {
       this.updatedTaskPermission = value;
     });
   }
@@ -147,7 +148,7 @@ export class TaskActionContainerComponent implements OnInit {
       } else {
         this.taskService.performActionOnTask(this.tasks[0].id, action, hasNoAssigneeOnComplete).subscribe(() => {
           this.reportSuccessAndReturn();
-        }, error => {
+        }, (error) => {
           const handledStatus = handleFatalErrors(error.status, this.router);
           if (handledStatus > 0) {
             this.reportUnavailableErrorAndReturn();

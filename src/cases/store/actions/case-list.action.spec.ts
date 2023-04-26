@@ -93,6 +93,5 @@ describe('Case List Actions', () => {
         });
       });
     });
-
   });
 });

@@ -17,14 +17,14 @@ import { StaffFilterOption } from '../../models/staff-filter-option.model';
 export function minSelectedValidator<T>(min: number): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const values = control.value as T[];
-    return values.length && values.filter(value => value).length >= min ? null : {minlength: true};
+    return values.length && values.filter((value) => value).length >= min ? null : { minlength: true };
   };
 }
 
 export function maxSelectedValidator<T>(max: number): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const values = control.value as T[];
-    return values.length && values.filter(value => value).length <= max ? null : {maxLength: true};
+    return values.length && values.filter((value) => value).length <= max ? null : { maxLength: true };
   };
 }
 

@@ -32,12 +32,12 @@ import { PriorityFieldModule } from './priority-field/priority-field.module';
     PriorityFieldModule
   ],
   declarations: [
-    ...fromComponents.components,
+    ...fromComponents.components
   ],
   providers: [CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   exports: [
-    ...fromComponents.components,
+    ...fromComponents.components
   ]
 })
 export class WorkAllocationComponentsModule {

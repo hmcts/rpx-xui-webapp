@@ -73,7 +73,7 @@ export class BookingWrapperComponent implements OnInit {
             {
               state: {
                 location: {
-                   ids: this.bookingProcess.selectedBookingLocationIds
+                  ids: this.bookingProcess.selectedBookingLocationIds
                 }
               }
             }

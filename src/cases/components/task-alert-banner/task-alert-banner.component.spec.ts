@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TaskAlertBannerComponent } from '..';
 import { Task } from '../../../work-allocation/models/tasks';
 
@@ -8,9 +8,9 @@ describe('TaskAlertBannerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TaskAlertBannerComponent ],
+      declarations: [TaskAlertBannerComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -46,7 +46,7 @@ describe('TaskAlertBannerComponent', () => {
               warningCode: '124',
               warningText: 'this is a warning message 2'
             }
-        ]},
+          ] },
         actions: []
       },
       {
@@ -73,11 +73,11 @@ describe('TaskAlertBannerComponent', () => {
               warningCode: '124',
               warningText: 'this is a warning message 2'
             }
-        ]},
+          ] },
         actions: [
           {
             id: 'actionId2',
-            title: 'Release this task',
+            title: 'Release this task'
           }
         ]
       }
@@ -88,9 +88,9 @@ describe('TaskAlertBannerComponent', () => {
     component.alertTitle = 'This is the title';
     component.tasks = getTasks();
     fixture.detectChanges();
-    const titleElement = document.getElementById(`alertTitle`) as HTMLElement;
+    const titleElement = document.getElementById('alertTitle') as HTMLElement;
     expect(titleElement.innerText).toBe(component.alertTitle);
-    const messageElement = document.getElementById(`alertMessage`) as HTMLElement;
+    const messageElement = document.getElementById('alertMessage') as HTMLElement;
     expect(messageElement.textContent.trim()).toContain('this is a warning message 1');
     expect(messageElement.textContent.trim()).toContain('this is a warning message 2');
     expect(messageElement.textContent.trim()).toContain('this is a warning message 3');

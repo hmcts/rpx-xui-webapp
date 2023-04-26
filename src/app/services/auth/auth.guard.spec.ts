@@ -6,7 +6,6 @@ import { SessionStorageService } from '../session-storage/session-storage.servic
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 
-
 class HttpClientMock {
   public get() {
     return 'response';
@@ -14,12 +13,18 @@ class HttpClientMock {
 }
 
 class SessionStorageMock implements SessionStorageService {
-  public removeItem(key: string): void { }
-  public clear(): void { }
-  public getItem(key: string, removeAfterRead?: boolean) {
-    switch(key) {
+  public removeItem(): void {
+    return undefined;
+  }
+
+  public clear(): void {
+    return undefined;
+  }
+
+  public getItem(key: string) {
+    switch (key) {
       case 'userDetails': {
-        return JSON.stringify({roles: ['someRoles']});
+        return JSON.stringify({ roles: ['someRoles'] });
       }
       case 'redirectUrl': {
         return '/cheesecakes/1';
@@ -29,7 +34,10 @@ class SessionStorageMock implements SessionStorageService {
       }
     }
   }
-  public setItem(key: string, value: string) { }
+
+  public setItem() {
+    return undefined;
+  }
 }
 
 describe('AuthGuard', () => {
@@ -41,7 +49,7 @@ describe('AuthGuard', () => {
       providers: [
         AuthService,
         SessionStorageService,
-        { provide: HttpClient, useClass: HttpClientMock },
+        { provide: HttpClient, useClass: HttpClientMock }
       ]
     });
   });
@@ -73,7 +81,7 @@ describe('AuthGuard', () => {
 
     const canActivate = guard.canActivate();
 
-    canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
+    canActivate.subscribe((isAct) => expect(isAct).toBeTruthy());
     expect(authService.isAuthenticated).toHaveBeenCalled();
     expect(authService.loginRedirect).not.toHaveBeenCalled();
   });
@@ -84,11 +92,10 @@ describe('AuthGuard', () => {
     const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
 
     const canActivate = guard.canActivate();
-    canActivate.subscribe(isAct => expect(isAct).toBeFalsy());
+    canActivate.subscribe((isAct) => expect(isAct).toBeFalsy());
     expect(authService.isAuthenticated).toHaveBeenCalled();
     expect(authService.loginRedirect).toHaveBeenCalled();
   });
-
 
   describe('storeRedirectUrl', () => {
     it('store current path when unauthenticated', () => {
@@ -98,7 +105,7 @@ describe('AuthGuard', () => {
       const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
 
       const canActivate = guard.canActivate();
-      canActivate.subscribe(isAct => expect(isAct).toBeFalsy());
+      canActivate.subscribe((isAct) => expect(isAct).toBeFalsy());
 
       expect(authService.isAuthenticated).toHaveBeenCalled();
       expect(authService.loginRedirect).toHaveBeenCalled();
@@ -115,7 +122,7 @@ describe('AuthGuard', () => {
       const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
 
       const canActivate = guard.canActivate();
-      canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
+      canActivate.subscribe((isAct) => expect(isAct).toBeTruthy());
 
       expect(authService.setWindowLocationHref).not.toHaveBeenCalled();
     });
@@ -130,7 +137,7 @@ describe('AuthGuard', () => {
       const guard = new AuthGuard(authService, sessionStorageServiceStub, windowLocationService);
 
       const canActivate = guard.canActivate();
-      canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
+      canActivate.subscribe((isAct) => expect(isAct).toBeTruthy());
 
       expect(authService.setWindowLocationHref).toHaveBeenCalledWith('/cheesecakes/1');
     });
@@ -144,7 +151,7 @@ describe('AuthGuard', () => {
       const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
 
       const canActivate = guard.canActivate();
-      canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
+      canActivate.subscribe((isAct) => expect(isAct).toBeTruthy());
 
       expect(authService.setWindowLocationHref).not.toHaveBeenCalledWith('/cheesecakes/1');
     });

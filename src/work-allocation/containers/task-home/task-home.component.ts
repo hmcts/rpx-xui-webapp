@@ -30,7 +30,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
    */
   public subNavigationItems: SubNavigation[] = [
     this.MY_TASKS,
-    {text: 'Available tasks', href: '/work/my-work/available', active: false}
+    { text: 'Available tasks', href: '/work/my-work/available', active: false }
   ];
 
   private routeSubscription: Subscription;
@@ -39,24 +39,31 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly allocateRoleService: AllocateRoleService,
     private readonly featureToggleService: FeatureToggleService
-  ) {}
+  ) { }
 
   public ngOnInit(): void {
     this.subNavigationItems.push({ text: 'My cases', href: '/work/my-work/my-cases', active: false });
-    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waAccess, null).subscribe(hasMyAccess => {
+    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waAccess, null).subscribe((hasMyAccess) => {
       if (hasMyAccess) {
-        this.subNavigationItems.push({text: 'My access', href: '/work/my-work/my-access', active: false});
+        this.subNavigationItems.push({ text: 'My access', href: '/work/my-work/my-access', active: false });
       }
     });
 
-    this.allocateRoleService.getMyAccessNewCount().subscribe( (countOfApproval) => {
-     const myAccessNavItem = this.subNavigationItems.find(nav => nav.text === 'My access' ) ;
-     if ( myAccessNavItem ) {
-      myAccessNavItem.roundel = countOfApproval.count ;
-     }
+    this.allocateRoleService.getMyAccessNewCount().subscribe((countOfApproval) => {
+      const myAccessNavItem = this.subNavigationItems.find((nav) => nav.text === 'My access');
+      if (myAccessNavItem) {
+        myAccessNavItem.roundel = countOfApproval.count;
+      }
     });
 
-    this.routeSubscription = this.router.events.subscribe(event => {
+    this.allocateRoleService.getMyAccessNewCount().subscribe((countOfApproval) => {
+      const myAccessNavItem = this.subNavigationItems.find((nav) => nav.text === 'My access');
+      if (myAccessNavItem) {
+        myAccessNavItem.roundel = countOfApproval.count;
+      }
+    });
+
+    this.routeSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         // Set up the active navigation item.
         this.setupActiveSubNavigationItem(this.router.url);
@@ -111,7 +118,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     // Override location error message
     // https://tools.hmcts.net/jira/browse/EUI-4582
     if (error && error.errors) {
-      const locationsErrorIndex = error.errors.findIndex(x => x.name.toLowerCase() === 'locations');
+      const locationsErrorIndex = error.errors.findIndex((x) => x.name.toLowerCase() === 'locations');
       if (locationsErrorIndex > -1) {
         error.errors[locationsErrorIndex].error = 'Enter a location';
       }

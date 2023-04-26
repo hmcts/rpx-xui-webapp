@@ -42,9 +42,9 @@ export const ROUTES: Routes = [
           { path: '',
             component: StaffUserDetailsComponent,
             resolve: {
-              staffUserDetails: StaffUserDetailsResolverService,
+              staffUserDetails: StaffUserDetailsResolverService
             },
-            runGuardsAndResolvers: 'always',
+            runGuardsAndResolvers: 'always'
           },
           {
             path: 'update',
@@ -73,7 +73,7 @@ export const ROUTES: Routes = [
               { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }
             ]
           }
-        ],
+        ]
       },
       {
         path: 'add-user',
@@ -88,6 +88,6 @@ export const ROUTES: Routes = [
         ]
       }
     ]
-  },
+  }
 ];
 export const staffAdministratorRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);

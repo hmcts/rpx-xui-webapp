@@ -6,8 +6,7 @@ export const INITIALIZE_HEARING_REQUEST_TO_COMPARE = '[HEARING REQUEST] Initiali
 export class InitializeHearingRequestToCompare implements Action {
   public readonly type = INITIALIZE_HEARING_REQUEST_TO_COMPARE;
 
-  constructor(public payload: HearingRequestMainModel) {
-  }
+  constructor(public payload: HearingRequestMainModel) {}
 }
 
 export type HearingRequestToCompareAction =

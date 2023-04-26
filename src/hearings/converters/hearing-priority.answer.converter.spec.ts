@@ -10,24 +10,24 @@ import { AnswerConverter } from './answer.converter';
 import { HearingPriorityAnswerConverter } from './hearing-priority.answer.converter';
 
 describe('HearingPriorityAnswerConverter', () => {
-
   let converter: AnswerConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
   let router: any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState: initialStateImmutable}),
+        provideMockStore({ initialState: initialStateImmutable }),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                hearingPriorities: hearingPriorityRefData,
-              },
-            },
-          },
+                hearingPriorities: hearingPriorityRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -40,8 +40,7 @@ describe('HearingPriorityAnswerConverter', () => {
     const STATE: State = initialStateImmutable.hearings;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingPriorityType = 'Standard';
-    const expected = cold('(b|)', {b: hearingPriorityType});
+    const expected = cold('(b|)', { b: hearingPriorityType });
     expect(result$).toBeObservable(expected);
   });
-
 });

@@ -11,15 +11,14 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
-
   constructor(
     public authService: AuthService,
     private readonly sessionStorage: SessionStorageService,
     private readonly windowLocationService: WindowLocationService
-  ) { }
+  ) {}
 
   public canActivate(): Observable<boolean> {
-    return this.authService.isAuthenticated().pipe(map(isAuth => {
+    return this.authService.isAuthenticated().pipe(map((isAuth) => {
       if (!isAuth) {
         this.storeRedirectUrl();
         this.authService.loginRedirect();
@@ -52,12 +51,14 @@ export class AuthGuard implements CanActivate {
     let isFeePaidJudgeUser = false;
 
     if (userInfoStr && this.getJSONObject(userInfoStr)) {
-        const userInfo: UserInfo = JSON.parse(userInfoStr);
-        isFeePaidJudgeUser = userInfo.roles.includes('fee-paid-judge');
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      isFeePaidJudgeUser = userInfo.roles.includes('fee-paid-judge');
     }
     if (currentPathIsRoot && userInfoStr && this.getJSONObject(userInfoStr)) {
       const redirectUrl = isFeePaidJudgeUser ? '/booking' : this.sessionStorage.getItem('redirectUrl', true);
-      if (!redirectUrl) { return; }
+      if (!redirectUrl) {
+        return;
+      }
 
       this.authService.setWindowLocationHref(redirectUrl);
     }

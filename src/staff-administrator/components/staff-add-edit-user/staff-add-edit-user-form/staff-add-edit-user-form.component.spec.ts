@@ -1,4 +1,3 @@
-import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -19,7 +18,6 @@ class StubComponent { }
 describe('StaffAddEditUserFormComponent', () => {
   let component: StaffAddEditUserFormComponent;
   let fixture: ComponentFixture<StaffAddEditUserFormComponent>;
-  let location: Location;
   let router: Router;
   let activatedRoute: ActivatedRoute;
   let mockStaffAddEditFormService: Partial<StaffAddEditFormService>;
@@ -47,7 +45,7 @@ describe('StaffAddEditUserFormComponent', () => {
         }),
         services: new FormArray([...staffFilterOptionsTestData.services.map(() => new FormControl())]),
         base_locations: new FormArray([new FormControl()]),
-        region_id: new FormControl(null),
+        region_id: new FormControl(null)
       })
     };
 
@@ -55,11 +53,11 @@ describe('StaffAddEditUserFormComponent', () => {
       declarations: [StaffAddEditUserFormComponent],
       imports: [
         RouterTestingModule.withRoutes([
-          { path: 'staff', component: StubComponent },
+          { path: 'staff', component: StubComponent }
         ]),
         ReactiveFormsModule,
         HttpClientTestingModule,
-        ExuiCommonLibModule,
+        ExuiCommonLibModule
       ],
       providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
@@ -74,10 +72,10 @@ describe('StaffAddEditUserFormComponent', () => {
                 jobTitles: staffFilterOptionsTestData.jobTitles,
                 skills: staffFilterOptionsTestData.skills,
                 services: staffFilterOptionsTestData.services
-              },
-            },
-          },
-        },
+              }
+            }
+          }
+        }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
@@ -86,7 +84,6 @@ describe('StaffAddEditUserFormComponent', () => {
 
   beforeEach(() => {
     router = TestBed.inject(Router);
-    location = TestBed.inject(Location);
     activatedRoute = TestBed.inject(ActivatedRoute);
     fixture = TestBed.createComponent(StaffAddEditUserFormComponent);
     component = fixture.componentInstance;

@@ -50,19 +50,20 @@ class SearchPage {
     await this._waitForSearchComponent();
 
     await BrowserWaits.waitForElement(this.jurisdiction);
+    await this.jurisdiction.selectWithLabelContains(jurisdiction);
 
-    const options = jurisdiction.split('|'); 
-    // let locatorString = "//option[";
-    let i = 0;
-    for (const option of options) {
-      // if (i === 0) {
-      //   locatorString += `contains(text(), '${option.trim()}')`;
-      // } else {
-      //   locatorString += `or contains(text(), '${option.trim()}')`;
-      // }
-      await this.jurisdiction.select(option.trim());
-      i++;
-    }
+    // const options = jurisdiction.split('|'); 
+    // // let locatorString = "//option[";
+    // let i = 0;
+    // for (const option of options) {
+    //   // if (i === 0) {
+    //   //   locatorString += `contains(text(), '${option.trim()}')`;
+    //   // } else {
+    //   //   locatorString += `or contains(text(), '${option.trim()}')`;
+    //   // }
+    //   await this.jurisdiction.select(option.trim());
+    //   i++;
+    // }
 
     // const elementLocator = by.xpath(locatorString + ']');
 
@@ -88,11 +89,11 @@ class SearchPage {
   async selectCaseType(option){
     await this._waitForSearchComponent();
     await BrowserWaits.waitForElement(this.caseType);
+    // await this.caseType.selectWithLabelContains(option);
 
-    var optionElement = this.caseType.element(by.xpath("//*[text() = '" + option + "']"));
-    await BrowserWaits.waitForElement(optionElement);
 
-    this.caseType.select(option);
+
+    this.caseType.selectWithLabelContains(option);
     // await optionElement.click();
     CucumberReportLogger.LogTestDataInput(`Search  page case type : ${option}`);
 
@@ -101,7 +102,7 @@ class SearchPage {
   }
 
   async clickApplyButton() {
-    await this._waitForSearchComponent();
+    // await this._waitForSearchComponent();
     await BrowserWaits.waitForElement(this.applyButton);
     await BrowserWaits.waitForSpinnerToDissappear();
     await BrowserWaits.waitForElementClickable(this.applyButton);
@@ -114,7 +115,7 @@ class SearchPage {
 
   async clickResetButton() {
     await BrowserWaits.retryWithActionCallback(async () => {
-      await this._waitForSearchComponent();
+      // await this._waitForSearchComponent();
       await BrowserWaits.waitForSpinnerToDissappear();
       await BrowserWaits.waitForElement(this.resetButton);
       // await browser.executeScript('arguments[0].scrollIntoView()',

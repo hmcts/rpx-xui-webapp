@@ -54,7 +54,7 @@ class AddUserPage{
     }
 
     async clickSaveChanges() {
-        await this.saveChanges.click();
+        await this.continue.click();
     }
 
     async clickCancel() {

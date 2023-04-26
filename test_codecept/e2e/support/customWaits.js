@@ -184,6 +184,7 @@ class BrowserWaits{
 
                 error = err
                 console.log(err)
+                
                 const currentRoute = await browser.getCurrentUrl()
                 if (currentRoute.includes('service-down')) {
                     throw new Error('Generic system error displayed: "Sorry, there is a problem with the service"');
@@ -194,7 +195,8 @@ class BrowserWaits{
 
         }
         if (!isSuccess) {
-            throw new Error(`ACTION_FAILURE: Action failed to meet success condition after ${this.retriesCount} retry attempts. ${ functionName }`, error);
+            CucumberReporter.AddMessage(`ACTION_FAILURE: Action failed to meet success condition after ${this.retriesCount} retry attempts. ${functionName }`);
+            throw error;
         }
     }
 

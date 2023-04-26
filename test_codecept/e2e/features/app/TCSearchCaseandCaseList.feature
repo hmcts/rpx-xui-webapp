@@ -1,4 +1,4 @@
-@fullfunctional @codecept_enabled @codecept_enabled
+@fullfunctional @codecept_enabled @codecept_enabled 
 Feature: Test case type case list and find case workflow
 
   Background:
@@ -35,6 +35,7 @@ Feature: Test case type case list and find case workflow
         When I select search criteria jurisdiction "Family Divorce" case type "XUI Test Case type" state "Case created" in case list page and click apply
         Then I wait to see case results displayed
 
+@codecept_test
     Scenario: Validate search-inputs against the API response
         When I click on search button
         Then Search page should be displayed
@@ -42,6 +43,7 @@ Feature: Test case type case list and find case workflow
         When I click apply to perform case search
         # Then Validate search inputs against the API response
 
+@codecept_test
     Scenario: Validating the search inputs case list headers against api response
         When I click on search button
         Then Search page should be displayed
@@ -50,6 +52,7 @@ Feature: Test case type case list and find case workflow
         Then I see results returned
         # Then Validating the search inputs case list headers against api response
 
+@codecept_test
     Scenario: Validate search inputs on case type change
         When I click on search button
         Then Search page should be displayed

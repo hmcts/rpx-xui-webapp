@@ -149,23 +149,28 @@ class Element {
     }
 
     async getText(){
+        await this.wait();
         return await getActor().grabTextFrom(this.selector) 
     }
 
     async sendKeys(keys){
+        await this.wait();
         await this.click();
         await getActor().fillField(this.selector, keys) 
     }
 
     async clear(){
+        await this.wait();
         await getActor().clearField(this.selector)  
     }
 
     async click(){
+        await this.wait();
         await getActor().click(this.selector)  
     }
 
     async getSelectOptions() {
+        await this.wait();
         const options = await this._childElement('option')
         const labels = await getActor().grabTextFromAll(options.selector)
         return labels;
@@ -173,14 +178,17 @@ class Element {
 
 
     async selectOptionWithLabel(label){
+        await this.wait();
         await getActor().selectOption(this.selector, label)
     }
 
     async select(option){
+        await this.wait();
         await getActor().selectOption(this.selector,option)
     }
 
     async selectOptionAtIndex(index){
+        await this.wait();
         let options = await this.getSelectOptions();
         options = options.map(option => option.trim())
         await this.select(options[index])
@@ -205,15 +213,18 @@ class Element {
 
 
     async count(){
+        await this.wait();
         const elements = new ElementCollection(this.selector) 
         return await elements.count()
     }
 
     async get(index){
+        await this.wait();
         return new Element(locate(this.selector).at(index+1)) 
     }
 
     async getAttribute(attr){
+        await this.wait();
         reportLogger.AddMessage(`getAttribute "${attr}" from ${JSON.stringify(this.selector)}`)
         const attributeValue = await getActor().grabAttributeFrom(this.selector, attr)
         if (attributeValue instanceof Object){
@@ -232,6 +243,7 @@ class Element {
     }
 
     async getTagName(){
+        await this.wait();
         const locatorType = Object.keys(this.selector);
         let tagName = null;
 
@@ -256,6 +268,7 @@ class Element {
     }
 
     async uploadFile(file){
+        await this.wait();
         await getActor().attachFile(this.selector, '../e2e/documents/'+file);
     }
 
@@ -293,14 +306,17 @@ class Element {
     }
 
     async scrollIntoView(){
+        await this.wait();
         await getActor().scrollTo(this.selector)
     }
 
     async isSelected(){
+        await this.wait();
         return await getActor().grabAttributeFrom(this.selector, 'checked');
     }
 
     async getSelectOptions(){
+        await this.wait();
         const options = await this._childElement('option')
         const labels = await getActor().grabTextFromAll(options.selector)
         return labels;

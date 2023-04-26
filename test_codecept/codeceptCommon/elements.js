@@ -402,6 +402,12 @@ class Element {
         await this.select(options[index])
     }
 
+    async selectWithLabelContains(label){
+        let options = await this.getSelectOptions();
+        const optionWithLabel = options.find(opt => opt.includes(label))
+        await this.select(optionWithLabel)
+    }
+
     async isPresent(){
         let count = 0;
         const locatorType = Object.keys(this.selector)[0]

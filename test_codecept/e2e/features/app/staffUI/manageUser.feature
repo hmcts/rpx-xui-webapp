@@ -1,4 +1,4 @@
-@fullfunctional @ignore @codecept_enabled  @staffUI
+@fullfunctional @ignore @codecept_enabled  @staffUI 
 Feature: Staff UI Manager user
 
 
@@ -22,8 +22,17 @@ Feature: Staff UI Manager user
         Then I see basic search displayed in staff UI
 
         Then I validate add new staff user work flow controls
+            | First name       | xui auto test                                                                                      |
+            | Last name        | last name                                                                                          |
+            | Email            | xui_auto_test                                                                                      |
+            | Region           | Region 1                                                                                           |
+            | Services         | Specified Money Claims,Damages,Family Public Law,Family Private Law,Immigration and Asylum Appeals |
+            | Primary location | Bir                                                                                                |
+            | User type        | Legal office                                                                                       |
+            | Roles            | Case Allocator                                                                                     |
+            | Job title        | Legal Caseworker                                                                                   |
 
-    @codecept_test
+
     Scenario: Add new user
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with test user identified as "STAFF_ADMIN"
@@ -45,6 +54,7 @@ Feature: Staff UI Manager user
 
         Then I see basic search displayed in staff UI
 
+
     Scenario: Update user
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with test user identified as "STAFF_ADMIN"
@@ -53,7 +63,8 @@ Feature: Staff UI Manager user
         Then I see basic search displayed in staff UI
 
         Then I see basic search displayed in staff UI
-        Then I validate user profile update in staff UI
+        Then I validate user profile "xui auto user for update" update in staff UI
+            | Last name | xui test update |
 
 
     Scenario: Copy user
@@ -64,7 +75,10 @@ Feature: Staff UI Manager user
         Then I see basic search displayed in staff UI
 
         Then I see basic search displayed in staff UI
-        Then I validate user profile copy in staff UI
+        Then I validate user profile "xui auto test last name" copy in staff UI
+            | First name | xui auto test copy |
+            | Last name | test copy |
+            | Email      | xui_auto_test_copy |
 
 
 

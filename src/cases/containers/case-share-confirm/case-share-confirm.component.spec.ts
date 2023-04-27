@@ -5,6 +5,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { CaseShareConfirmComponent } from './case-share-confirm.component';
 
 @Pipe({ name: 'rpxTranslate' })
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

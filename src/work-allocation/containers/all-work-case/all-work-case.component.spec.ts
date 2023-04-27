@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
@@ -32,20 +31,19 @@ import * as fromActions from '../../../app/store';
 describe('AllWorkCaseComponent', () => {
   let component: AllWorkCaseComponent;
 
-  // const routerMock = jasmine.createSpyObj('Router', [ 'navigateByUrl' ]);
   const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase', 'getCases', 'getMyAccess']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
-  // const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
+  const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
   const mockAllocateRoleService = jasmine.createSpyObj('mockAllocateRoleService', ['getCaseRolesUserDetails', 'getValidRoles']);
   const mockjurisdictionsService = jasmine.createSpyObj('mockJurisdictionsService', ['getJurisdictions']);
-  // const mockChangeDetectorRef = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
-  // const mockJurisdictionsService = jasmine.createSpyObj('JurisdictionsService', ['getJurisdictions']);
-  // const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+  const mockChangeDetectorRef = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
+  const mockJurisdictionsService = jasmine.createSpyObj('JurisdictionsService', ['getJurisdictions']);
+  const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
   const initializeComponent = ({
     changeDetectorRef = {},
@@ -151,26 +149,25 @@ describe('AllWorkCaseComponent', () => {
   });
 
   describe('onSelectionChanged', () => {
-    it(`should update 'pagination' and 'selectedServices' when parameter's location is null and actorId is 'All'`, () => {
+    it('should update \'pagination\' and \'selectedServices\' when parameter\'s location is null and actorId is \'All\'', () => {
       component = initializeComponent({ changeDetectorRef: mockChangeDetectorRef, caseworkerDataService: mockCaseService, loadingService: mockLoadingService, sessionStorageService: mockSessionStorageService, jurisdictionsService: mockJurisdictionsService, router: mockRouter });
 
+      spyOn(component, 'performSearchPagination').and.returnValue(of({ cases: [{ role_category: '' }] }));
 
-      spyOn(component, 'performSearchPagination').and.returnValue(of({ cases: [ { role_category: '' } ] }));
-
-      component.onSelectionChanged({ location: null, jurisdiction: 'jurisdiction', actorId: 'All', role: 'role', person: { id: 'personId'} });
+      component.onSelectionChanged({ location: null, jurisdiction: 'jurisdiction', actorId: 'All', role: 'role', person: { id: 'personId' } });
 
       expect(component.selectedServices).toEqual(['jurisdiction']);
       expect(component.pagination.page_number).toEqual(1);
     });
 
     // Test added to satisfy onSelectionChanged's ternary operators
-    it(`should update 'pagination' and 'selectedServices' when parameter's location is NOT null and actorId is NOT 'All'`, () => {
+    it('should update \'pagination\' and \'selectedServices\' when parameter\'s location is NOT null and actorId is NOT \'All\'', () => {
       component = initializeComponent({ changeDetectorRef: mockChangeDetectorRef, caseworkerDataService: mockCaseService, loadingService: mockLoadingService, sessionStorageService: mockSessionStorageService, jurisdictionsService: mockJurisdictionsService, router: mockRouter });
 
-      spyOn(component, 'performSearchPagination').and.returnValue(of({ cases: [ { role_category: '' } ] }));
+      spyOn(component, 'performSearchPagination').and.returnValue(of({ cases: [{ role_category: '' }] }));
 
-      component.onSelectionChanged({ location: 'location', jurisdiction: 'jurisdiction', actorId: 'Item', role: 'role', person: { id: 'personId'} });
-      component.onSelectionChanged({ location: 'location', jurisdiction: 'jurisdiction', actorId: 'Item', role: 'role', person: { id: 'personId'} });
+      component.onSelectionChanged({ location: 'location', jurisdiction: 'jurisdiction', actorId: 'Item', role: 'role', person: { id: 'personId' } });
+      component.onSelectionChanged({ location: 'location', jurisdiction: 'jurisdiction', actorId: 'Item', role: 'role', person: { id: 'personId' } });
 
       expect(component.selectedServices).toEqual(['jurisdiction']);
       expect(component.pagination.page_number).toEqual(1);

@@ -35,7 +35,7 @@ describe('NocHomeComponent', () => {
       imports: [
         ReactiveFormsModule,
         UtilsModule,
-        RouterTestingModule,
+        RouterTestingModule
       ],
       schemas: [
         NO_ERRORS_SCHEMA

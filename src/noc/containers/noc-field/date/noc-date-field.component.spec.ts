@@ -51,7 +51,7 @@ describe('NocDateFieldComponent', () => {
       ],
       imports: [
         ReactiveFormsModule,
-        UtilsModule,
+        UtilsModule
       ],
       providers: [
         provideMockStore()

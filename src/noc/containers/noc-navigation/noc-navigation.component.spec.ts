@@ -31,7 +31,7 @@ describe('NocNavigationComponent', () => {
       declarations: [
         NocNavigationComponent,
         RpxTranslateMockPipe
-      ],
+      ]
     }).compileComponents();
 
     store = TestBed.inject(Store);

@@ -73,7 +73,7 @@ describe('NocCheckAndSubmitComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [NocCheckAndSubmitComponent, RpxTranslateMockPipe],
       providers: [
-        provideMockStore(),
+        provideMockStore()
       ]
     })
       .compileComponents();

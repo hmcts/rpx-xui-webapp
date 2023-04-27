@@ -98,39 +98,39 @@ export class CaseTaskComponent implements OnInit {
      return this.isUserJudicial ? 'Task created' : 'Due date';
    }
 
-  public onActionHandler(task: Task, option: any): void {
-    if (option.id === 'claim') {
-      this.taskService.claimTask(task.id).subscribe(() => {
-        this.alertService.success({ phrase: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS });
-        this.taskRefreshRequired.emit();
-      }, error => {
-        this.claimTaskErrors(error.status);
-      });
-      return;
-    }
-    const state = {
-      returnUrl: this.returnUrl,
-      keepUrl: true,
-      showAssigneeColumn: true
-    };
-    const actionUrl = `/work/${task.id}/${option.id}`;
-    this.router.navigate([actionUrl], { queryParams: {service: task.jurisdiction}, state });
-  }
+   public onActionHandler(task: Task, option: any): void {
+     if (option.id === 'claim') {
+       this.taskService.claimTask(task.id).subscribe(() => {
+         this.alertService.success({ phrase: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS });
+         this.taskRefreshRequired.emit();
+       }, (error) => {
+         this.claimTaskErrors(error.status);
+       });
+       return;
+     }
+     const state = {
+       returnUrl: this.returnUrl,
+       keepUrl: true,
+       showAssigneeColumn: true
+     };
+     const actionUrl = `/work/${task.id}/${option.id}`;
+     this.router.navigate([actionUrl], { queryParams: { service: task.jurisdiction }, state });
+   }
 
    /**
    * Navigate the User to the correct error page, or throw an on page warning
    * that the Task is no longer available.
    */
    public claimTaskErrors(status: number): void {
-    const REDIRECT_404 = [{status: 404, redirectTo: REDIRECTS.ServiceDown}];
-    const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
-    if (handledStatus > 0) {
-      this.alertService.warning({ phrase: InfoMessage.TASK_NO_LONGER_AVAILABLE });
-      if (handledStatus === 400) {
-        this.taskRefreshRequired.emit();
-      }
-    }
-  }
+     const REDIRECT_404 = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }];
+     const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
+     if (handledStatus > 0) {
+       this.alertService.warning({ phrase: InfoMessage.TASK_NO_LONGER_AVAILABLE });
+       if (handledStatus === 400) {
+         this.taskRefreshRequired.emit();
+       }
+     }
+   }
 
    public toDate(value: string | number | Date): Date {
      if (value) {

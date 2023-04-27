@@ -49,12 +49,12 @@ export class CaseCreateEffects {
 
   @Effect()
   public applyCreatedCaseLoaded$ = this.actions$.pipe(
-    ofType(fromActions.CREATED_CASE_LOADED),
-    map((payload: any) => {
-      const replacements = { CASEID: payload.caseId };
-      this.alertService.success({ phrase: 'Case #%CASEID% has been created.', replacements });
-      this.loggerService.info('Case created successfully');
-      return new fromRoot.NewCaseLoadedSuccessfully();
-    }),
-  );
+      ofType(fromActions.CREATED_CASE_LOADED),
+      map((payload: any) => {
+        const replacements = { CASEID: payload.caseId };
+        this.alertService.success({ phrase: 'Case #%CASEID% has been created.', replacements });
+        this.loggerService.info('Case created successfully');
+        return new fromRoot.NewCaseLoadedSuccessfully();
+      }),
+    );
 }

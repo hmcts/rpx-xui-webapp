@@ -15,6 +15,7 @@ import { SpecificAccessDurationComponent } from './specific-access-duration.comp
 describe('SpecificAccessDurationComponent', () => {
   let component: SpecificAccessDurationComponent;
   let fixture: ComponentFixture<SpecificAccessDurationComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {} });
 
   beforeEach(waitForAsync(() => {

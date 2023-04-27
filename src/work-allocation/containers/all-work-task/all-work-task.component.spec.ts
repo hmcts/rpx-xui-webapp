@@ -19,8 +19,6 @@ import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
-import { UserRole } from 'src/app/models';
-import { AppUtils } from 'src/app/app-utils';
 
 @Component({
   template: `

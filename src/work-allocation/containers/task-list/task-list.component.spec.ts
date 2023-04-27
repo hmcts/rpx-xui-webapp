@@ -99,7 +99,7 @@ describe('TaskListComponent', () => {
           },
           testMode: true
         })
-    ],
+      ],
       declarations: [TaskListComponent, WrapperComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },

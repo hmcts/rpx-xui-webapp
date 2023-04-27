@@ -21,10 +21,10 @@ describe('NocSubmitSuccessComponent', () => {
     TestBed.configureTestingModule({
       declarations: [NocSubmitSuccessComponent, RpxTranslateMockPipe],
       imports: [
-        UtilsModule,
+        UtilsModule
       ],
       providers: [
-        provideMockStore(),
+        provideMockStore()
       ]
     })
       .compileComponents();

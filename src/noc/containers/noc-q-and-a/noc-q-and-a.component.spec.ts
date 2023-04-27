@@ -27,7 +27,7 @@ describe('NocQAndAComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [NocQAndAComponent, RpxTranslateMockPipe],
       imports: [
-        ReactiveFormsModule,
+        ReactiveFormsModule
       ],
       providers: [
         provideMockStore(),

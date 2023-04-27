@@ -14,6 +14,7 @@ describe('BookingDateComponent', () => {
   let component: BookingDateComponent;
   let fixture: ComponentFixture<BookingDateComponent>;
   window.onbeforeunload = jasmine.createSpy();
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {} });
 
   const dateInterval = [
@@ -38,20 +39,20 @@ describe('BookingDateComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule, FormsModule ],
+      imports: [ReactiveFormsModule, FormsModule],
       declarations: [
         BookingDateComponent,
         GovUkFieldsetComponent,
         GovUkErrorMessageComponent,
-        GovUkLabelComponent,
+        GovUkLabelComponent
       ],
       providers: [
         FormBuilder,
         {
           provide: RpxTranslationService,
           useFactory: rpxTranslationServiceStub
-        },
-      ],
+        }
+      ]
 
     })
       .compileComponents();

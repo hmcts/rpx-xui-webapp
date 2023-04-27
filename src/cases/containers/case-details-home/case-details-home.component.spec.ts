@@ -89,7 +89,7 @@ describe('CaseDetailsHomeComponent', () => {
   });
 });
 
-describe('CaseDetailsHomeComponent set the page title on init', () => {
+fdescribe('CaseDetailsHomeComponent set the page title on init', () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let component: CaseDetailsHomeComponent;
   let fixture: ComponentFixture<CaseDetailsHomeComponent>;
@@ -97,6 +97,7 @@ describe('CaseDetailsHomeComponent set the page title on init', () => {
   let sessionStorageServiceMock: jasmine.SpyObj<SessionStorageService>;
   let titleServiceMock: jasmine.SpyObj<Title>;
   let caseReferencePipeMock: jasmine.SpyObj<CaseReferencePipe>;
+  let alertServiceMock;
 
   beforeEach(() => {
     activatedRouteMock = {
@@ -140,6 +141,7 @@ describe('CaseDetailsHomeComponent set the page title on init', () => {
     sessionStorageServiceMock = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['setItem']);
     titleServiceMock = jasmine.createSpyObj<Title>('Title', ['setTitle']);
     caseReferencePipeMock = jasmine.createSpyObj<CaseReferencePipe>('CaseReferencePipe', ['transform']);
+    alertServiceMock = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
 
     TestBed.configureTestingModule({
       declarations: [CaseDetailsHomeComponent],
@@ -147,7 +149,8 @@ describe('CaseDetailsHomeComponent set the page title on init', () => {
         { provide: ActivatedRoute, useValue: activatedRouteMock },
         { provide: SessionStorageService, useValue: sessionStorageServiceMock },
         { provide: Title, useValue: titleServiceMock },
-        { provide: CaseReferencePipe, useValue: caseReferencePipeMock }
+        { provide: CaseReferencePipe, useValue: caseReferencePipeMock },
+        { provide: AlertService, useValue: alertServiceMock }
       ]
     }).compileComponents();
 

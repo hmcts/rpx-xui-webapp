@@ -37,13 +37,13 @@ export class CaseDetailsHomeComponent implements OnInit {
         let fullName: string = '';
         let caseDetails: string = '';
 
-        const caseDetailsTab = data.case.tabs.find((tab) => tab.id === 'caseDetails');
+        const caseDetailsTab = data.case.tabs?.find((tab) => tab.id === 'caseDetails');
         const firstName: string = caseDetailsTab?.fields.find((field) => field.id === 'appellantGivenNames')?.formatted_value;
         const lastName: string = caseDetailsTab?.fields.find((field) => field.id === 'appellantFamilyName')?.formatted_value;
         fullName += firstName ? firstName : '';
         fullName += lastName ? ` ${lastName}` : '';
 
-        const overviewTab = data.case.tabs.find((tab) => tab.id === 'overview');
+        const overviewTab = data.case.tabs?.find((tab) => tab.id === 'overview');
         const appealReferenceNumber: string = overviewTab?.fields.find((field) => field.id === 'appealReferenceNumber')?.formatted_value;
 
         caseDetails += fullName ? fullName : '';

@@ -183,6 +183,7 @@ class CaseManager {
 
     async AmOnCaseDetailsPage(){
         await BrowserWaits.retryWithActionCallback(async () => {
+            await this.ccdCaseDetails.wait();
             expect(await this.ccdCaseDetails.isPresent()).to.be.true;
         });
     }

@@ -7,7 +7,6 @@ import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
 import { ErrorMessage } from 'src/app/models';
-
 import { ErrorMessageComponent } from '../../../app/components';
 import { SessionStorageService } from '../../../app/services';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
@@ -16,19 +15,19 @@ import { LocationDataService, WorkAllocationTaskService } from '../../services';
 import { InfoMessageContainerComponent } from '../info-message-container/info-message-container.component';
 import { TaskHomeComponent } from './task-home.component';
 
-
 @Component({
   template: `
     <exui-task-home></exui-task-home>`
 })
 class WrapperComponent {
-  @ViewChild(TaskHomeComponent, {static: true}) public appComponentRef: TaskHomeComponent;
+  @ViewChild(TaskHomeComponent, { static: true }) public appComponentRef: TaskHomeComponent;
 }
 
 xdescribe('TaskHomeComponent', () => {
   let component: TaskHomeComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'getUsersAssignedTasks']);
   mockTaskService.getUsersAssignedTasks.and.returnValue(of([]));
@@ -72,14 +71,14 @@ xdescribe('TaskHomeComponent', () => {
       { name: 'locations', value: ['231596', '698118'] },
       {
         name: 'types-of-work',
-        value: ['types_of_work_all', ...typesOfWork.map(t => t.key)]
+        value: ['types_of_work_all', ...typesOfWork.map((t) => t.key)]
       }
     ]
   };
   const mockFilterService: any = {
     getStream: () => of(SELECTED_LOCATIONS),
     get: () => SELECTED_LOCATIONS,
-    persist: (setting, persistence) => null,
+    persist: () => null,
     givenErrors: {
       subscribe: () => null,
       next: () => null,
@@ -91,13 +90,14 @@ xdescribe('TaskHomeComponent', () => {
   const featureToggleService = jasmine.createSpyObj('featureToggleService', ['getValue']);
   locationDataService.getSpecificLocations.and.returnValue(of([]));
   featureToggleService.getValue.and.returnValue(of(true));
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule,
+        WorkAllocationComponentsModule
       ],
       declarations: [TaskHomeComponent, WrapperComponent, InfoMessageContainerComponent, ErrorMessageComponent],
       providers: [
@@ -135,9 +135,9 @@ xdescribe('TaskHomeComponent', () => {
       multiple: true,
       title: 'There is a problem',
       errors: [
-        {name: 'services', error: 'Select a service'},
-        {name: 'locations', error: 'Search for a location by name'},
-        {name: 'types-of-work', error: 'Select a type of work'}
+        { name: 'services', error: 'Select a service' },
+        { name: 'locations', error: 'Search for a location by name' },
+        { name: 'types-of-work', error: 'Select a type of work' }
       ]
     };
 

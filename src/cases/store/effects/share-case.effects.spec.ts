@@ -4,11 +4,9 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Store, StoreModule } from '@ngrx/store';
-import { MockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { CaseShareService } from '../../../app/services/case/share-case.service';
-import { State } from '../../../app/store/reducers';
 import {
   AddShareCaseGo,
   AddShareCases,
@@ -19,17 +17,16 @@ import {
   LoadUserFromOrgForCase,
   LoadUserFromOrgForCaseSuccess
 } from '../actions';
-// tslint:disable-next-line:no-duplicate-imports
 import * as fromShareCaseEffects from './share-case.effects';
-import { ShareCaseEffects } from './share-case.effects';
 
 describe('Share Case Effects', () => {
   let actions$;
-  let effects: ShareCaseEffects;
+  let effects: fromShareCaseEffects.ShareCaseEffects;
   let store;
   const routerMock = jasmine.createSpyObj('Router', [
     'navigate'
   ]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let spyOnDispatchToStore = jasmine.createSpy();
   const caseShareServiceMock = jasmine.createSpyObj('CaseShareService', ['getShareCases', 'getUsersFromOrg', 'assignUsersWithCases']);
 
@@ -42,7 +39,7 @@ describe('Share Case Effects', () => {
       providers: [
         {
           provide: CaseShareService,
-          useValue: caseShareServiceMock,
+          useValue: caseShareServiceMock
         },
         {
           provide: Router,
@@ -54,7 +51,7 @@ describe('Share Case Effects', () => {
     });
     store = TestBed.inject(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
-    effects = TestBed.inject(ShareCaseEffects);
+    effects = TestBed.inject(fromShareCaseEffects.ShareCaseEffects);
   });
 
   describe('addShareCases$', () => {

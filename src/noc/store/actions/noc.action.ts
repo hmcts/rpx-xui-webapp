@@ -20,55 +20,55 @@ export const SET_SUBMISSION_SUCCESS_PENDING = '[NOC] Submission NoC Success Pend
 export const SET_SUBMISSION_FAILURE = '[NOC] Submission NoC Failure';
 
 export class Reset implements Action {
-    public readonly type = RESET;
+  public readonly type = RESET;
 }
 
 export class ChangeNavigation implements Action {
-    public readonly type = CHANGE_NAVIGATION;
-    constructor(public payload: NocState) {}
+  public readonly type = CHANGE_NAVIGATION;
+  constructor(public payload: NocState) {}
 }
 
 export class SetCaseReference implements Action {
-    public readonly type = SET_CASE_REFERENCE;
-    constructor(public payload: string) {}
+  public readonly type = SET_CASE_REFERENCE;
+  constructor(public payload: string) {}
 }
 
 export class SetCaseRefValidationFailure implements Action {
-    public readonly type = SET_CASE_REF_VALIDATION_FAILURE;
+  public readonly type = SET_CASE_REF_VALIDATION_FAILURE;
 }
 
 export class SetQuestions implements Action {
-    public readonly type = SET_QUESTIONS;
-    constructor(public payload: {questions: NocQuestion[], caseReference: string}) {}
+  public readonly type = SET_QUESTIONS;
+  constructor(public payload: {questions: NocQuestion[], caseReference: string}) {}
 }
 
 export class SetCaseRefSubmissionFailure implements Action {
-    public readonly type = SET_CASE_REF_SUBMISSION_FAILURE;
-    constructor(public payload: NocHttpError) {}
+  public readonly type = SET_CASE_REF_SUBMISSION_FAILURE;
+  constructor(public payload: NocHttpError) {}
 }
 
 export class SetAnswers implements Action {
-    public readonly type = SET_ANSWERS;
-    constructor(public payload: NocEvent) {}
+  public readonly type = SET_ANSWERS;
+  constructor(public payload: NocEvent) {}
 }
 
 export class SetAnswersIncomplete implements Action {
-    public readonly type = SET_ANSWER_INCOMPLETE;
+  public readonly type = SET_ANSWER_INCOMPLETE;
 }
 
 export class CheckAnswers implements Action {
-    public readonly type = CHECK_ANSWERS;
-    constructor(public payload: NocAnswer[]) {}
+  public readonly type = CHECK_ANSWERS;
+  constructor(public payload: NocAnswer[]) {}
 }
 
 export class SetAnswerSubmissionFailure implements Action {
-    public readonly type = SET_ANSWER_SUBMISSION_FAILURE;
-    constructor(public payload: NocHttpError) {}
+  public readonly type = SET_ANSWER_SUBMISSION_FAILURE;
+  constructor(public payload: NocHttpError) {}
 }
 
 export class SetAffirmationAgreed implements Action {
-    public readonly type = SET_AFFIRMATION_AGREED;
-    constructor(public payload: boolean) {}
+  public readonly type = SET_AFFIRMATION_AGREED;
+  constructor(public payload: boolean) {}
 }
 
 export class SetNotifyEveryParty implements Action {
@@ -78,25 +78,25 @@ export class SetNotifyEveryParty implements Action {
 
 export class SetAffirmationError implements Action {
   public readonly type = SET_AFFIRMATION_ERROR;
-  constructor(public payload: {}) {}
+  constructor(public payload: object) {}
 }
 
 export class SubmitNoc implements Action {
-    public readonly type = SUBMIT_NOC;
-    constructor(public payload: NocEvent) {}
+  public readonly type = SUBMIT_NOC;
+  constructor(public payload: NocEvent) {}
 }
 
 export class SetSubmissionSuccessApproved implements Action {
-    public readonly type = SET_SUBMISSION_SUCCESS_APPROVED;
+  public readonly type = SET_SUBMISSION_SUCCESS_APPROVED;
 }
 
 export class SetSubmissionSuccessPending implements Action {
-    public readonly type = SET_SUBMISSION_SUCCESS_PENDING;
+  public readonly type = SET_SUBMISSION_SUCCESS_PENDING;
 }
 
 export class SetSubmissionFailure implements Action {
-    public readonly type = SET_SUBMISSION_FAILURE;
-    constructor(public payload: NocHttpError) {}
+  public readonly type = SET_SUBMISSION_FAILURE;
+  constructor(public payload: NocHttpError) {}
 }
 
 export type NocAction =

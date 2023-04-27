@@ -16,14 +16,14 @@ export class JudicialUserSearchResolver implements Resolve<JudicialUserModel[]> 
   constructor(
     protected readonly judicialRefDataService: JudicialRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>
-  ) { }
+  ) {}
 
   public resolve(route?: ActivatedRouteSnapshot): Observable<JudicialUserModel[]> {
     return this.getUsersByPanelRequirements$()
       .pipe(
-        switchMap(panelRequirements => {
+        switchMap((panelRequirements) => {
           return of(
-            panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter(preferences => this.checkMemberType(preferences, route)).map(preferences => preferences.memberID)
+            panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter((preferences) => this.checkMemberType(preferences, route)).map((preferences) => preferences.memberID)
           );
         }), take(1),
         switchMap((personalCodes) => {
@@ -33,15 +33,15 @@ export class JudicialUserSearchResolver implements Resolve<JudicialUserModel[]> 
   }
 
   private checkMemberType(preferences: PanelPreferenceModel, route: ActivatedRouteSnapshot): boolean {
-    if (route.data['memberType']) {
-      return preferences.memberType === route.data['memberType'];
+    if (route.data.memberType) {
+      return preferences.memberType === route.data.memberType;
     }
     return true;
   }
 
   public getUsersByPanelRequirements$(): Observable<PanelRequirementsModel> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).pipe(
-      map(hearingState => hearingState.hearingRequest && hearingState.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements)
+      map((hearingState) => hearingState.hearingRequest && hearingState.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements)
     );
   }
 

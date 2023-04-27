@@ -1,7 +1,6 @@
 import * as fromHearingListAction from './hearing-list.action';
 
 describe('Hearing List Actions', () => {
-
   describe('Reset', () => {
     it('should create an action', () => {
       const action = new fromHearingListAction.ResetHearingList();

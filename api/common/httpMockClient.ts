@@ -6,7 +6,7 @@ export abstract class HttpMockClient {
 
   protected constructor(baseURL: string) {
     this.instance = axios.create({
-      baseURL,
+      baseURL
     });
     axios.defaults.headers.common['Content-Type'] = 'application/json';
     this.initializeRequestInterceptor();
@@ -23,5 +23,4 @@ export abstract class HttpMockClient {
       errorInterceptor
     );
   }
-
 }

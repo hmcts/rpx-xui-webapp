@@ -25,9 +25,9 @@ describe('RequestHearingPageFlow', () => {
         hmctsServiceID: 'BBA3',
         autoListFlag: false,
         hearingType: 'Final',
-        lastError: null,
+        lastError: null
       },
-      lastError: null,
+      lastError: null
     },
     hearingRequest: {
       hearingRequestMainModel: {
@@ -46,9 +46,9 @@ describe('RequestHearingPageFlow', () => {
           listingAutoChangeReasonCode: null
         },
         partyDetails: []
-      },
+      }
     },
-    hearingConditions: null,
+    hearingConditions: null
   };
   let requestHearingPageFlow;
   const mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);

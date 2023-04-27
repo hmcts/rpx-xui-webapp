@@ -1,6 +1,6 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {Store} from '@ngrx/store';
-import {ActionBindingModel} from '../../models/create-case-actions.model';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { ActionBindingModel } from '../../models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseCreate from '../../store/reducers';
 /**
@@ -41,9 +41,8 @@ export class CaseFilterComponent implements OnInit {
      * Mapping CCD components eventsBindings to ExUI Actions
      */
     this.caseCreatFilterBindings = [
-      {type: 'selectionSubmitted', action: 'CaseCreateFilterApply'},
-      {type: 'selectionChanged', action: 'CaseCreateFilterChanged'}
+      { type: 'selectionSubmitted', action: 'CaseCreateFilterApply' },
+      { type: 'selectionChanged', action: 'CaseCreateFilterChanged' }
     ];
   }
-
 }

@@ -6,7 +6,6 @@ import { NavigationItem } from './models/theming.model';
 import { UserDetails, UserRole } from './models/user-details.model';
 
 export class AppUtils {
-
   public static getEnvironment(url: string): string {
     const regex = 'pr-|localhost|aat|demo|ithc|perftest';
     const matched = url.match(regex);
@@ -73,7 +72,7 @@ export class AppUtils {
     let fullUrl = false;
     let matchingUrl = '';
     [fullUrl, matchingUrl] = AppUtils.checkTabs(items, currentUrl);
-    return items.map(item => {
+    return items.map((item) => {
       return {
         ...item,
         active: fullUrl ? item.href === currentUrl : item.href === matchingUrl
@@ -104,7 +103,7 @@ export class AppUtils {
         continue;
       }
       // if the href partly matches, find the largest href for which the url partly matches
-      if (checkHrefs.some(url => currentUrl.indexOf(url) === 0)) {
+      if (checkHrefs.some((url) => currentUrl.indexOf(url) === 0)) {
         if (maxLength < checkItem.href.length) {
           maxLength = checkItem.href.length;
           matchingUrl = checkItem.href;
@@ -154,14 +153,14 @@ export class AppUtils {
 
   public static showWATabs(waSupportedJurisdictions: string[], caseJurisdiction: string, userRoles: string[], excludedRoles: string[]): boolean {
     // isWA enabled for this jurisdiction
-    return waSupportedJurisdictions.includes(caseJurisdiction) && !userRoles.includes(PUI_CASE_MANAGER) && userRoles.every(userRole => !excludedRoles.includes(userRole));
+    return waSupportedJurisdictions.includes(caseJurisdiction) && !userRoles.includes(PUI_CASE_MANAGER) && userRoles.every((userRole) => !excludedRoles.includes(userRole));
     // check that userRoles do not have pui-case-manager
   }
 
   public static isLegalOpsOrJudicial(userRoles: string[]): UserRole {
-    if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
+    if (userRoles.some((userRole) => JUDICIAL_ROLE_LIST.some((role) => role === userRole))) {
       return UserRole.Judicial;
-    } else if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
+    } else if (userRoles.some((userRole) => LEGAL_OPS_ROLE_LIST.some((role) => role === userRole))) {
       return UserRole.LegalOps;
     }
     // TODO: When we know roles for Admin we can put this in this method
@@ -169,14 +168,14 @@ export class AppUtils {
   }
 
   public static getUserRole(userRoles: string[]): UserRole {
-    if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => userRole.includes(role)))) {
+    if (userRoles.some((userRole) => JUDICIAL_ROLE_LIST.some((role) => userRole.includes(role)))) {
       return UserRole.Judicial;
-    } else if (userRoles.some(userRole => ADMIN_ROLE_LIST.some(role => userRole.includes(role)))) {
+    } else if (userRoles.some((userRole) => ADMIN_ROLE_LIST.some((role) => userRole.includes(role)))) {
       return UserRole.Admin;
-    } else if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => userRole.includes(role)))) {
+    } else if (userRoles.some((userRole) => LEGAL_OPS_ROLE_LIST.some((role) => userRole.includes(role)))) {
       return UserRole.LegalOps;
     // TODO: Use actual admin and cts roles within respective role lists
-    } else if (userRoles.some(userRole => CTSC_ROLE_LIST.some(role => userRole.includes(role)))) {
+    } else if (userRoles.some((userRole) => CTSC_ROLE_LIST.some((role) => userRole.includes(role)))) {
       return UserRole.Ctsc;
     }
     return null;
@@ -201,7 +200,6 @@ export class AppUtils {
     }
     return userRole;
   }
-
 
   public static getFilterPersistenceByRoleType(userDetails: UserDetails): FilterPersistence {
     const userRole = AppUtils.getUserRole(userDetails.userInfo.roles);
@@ -240,19 +238,19 @@ export class AppUtils {
   }
 
   public static getUserType(userRoles: string[], userTypeRoles: UserTypeRole): string {
-    if (userRoles.some(userRole => userTypeRoles.solicitor && userTypeRoles.solicitor.includes(userRole))) {
+    if (userRoles.some((userRole) => userTypeRoles.solicitor && userTypeRoles.solicitor.includes(userRole))) {
       return 'Solicitor';
-    } else if (userRoles.some(userRole => userTypeRoles.judicial && userTypeRoles.judicial.includes(userRole))) {
+    } else if (userRoles.some((userRole) => userTypeRoles.judicial && userTypeRoles.judicial.includes(userRole))) {
       return 'Judicial';
-    } else {
-      return 'LegalOps';
     }
+
+    return 'LegalOps';
   }
 
   public static isBookableAndJudicialRole(userDetails: UserDetails): boolean {
     const { roleAssignmentInfo, userInfo } = userDetails;
     return userInfo.roleCategory === RoleCategory.JUDICIAL
-      && roleAssignmentInfo.some(roleAssignment => 'bookable' in roleAssignment
+      && roleAssignmentInfo.some((roleAssignment) => 'bookable' in roleAssignment
         && (roleAssignment.bookable === true || roleAssignment.bookable === 'true'));
   }
 }

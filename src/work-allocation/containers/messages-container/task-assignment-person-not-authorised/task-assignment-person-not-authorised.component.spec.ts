@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Navigation, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TaskAssignmentPersonNotAuthorisedComponent } from './task-assignment-person-not-authorised.component';
@@ -8,7 +8,7 @@ import { TaskAssignmentPersonNotAuthorisedComponent } from './task-assignment-pe
 describe('TaskAssignmentPersonNotAuthorised', () => {
   let component: TaskAssignmentPersonNotAuthorisedComponent;
   let fixture: ComponentFixture<TaskAssignmentPersonNotAuthorisedComponent>;
-  let mockRouter;
+  let mockRouter: any;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -16,12 +16,12 @@ describe('TaskAssignmentPersonNotAuthorised', () => {
       schemas: [NO_ERRORS_SCHEMA],
       imports: [RouterTestingModule, HttpClientTestingModule]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
     mockRouter = TestBed.inject(Router);
-    spyOn(mockRouter, 'getCurrentNavigation').and.returnValue({extras: {state: {returnUrl: '/work'}}} as unknown as Navigation);
+    spyOn(mockRouter, 'getCurrentNavigation').and.returnValue({ extras: { state: { returnUrl: '/work' } } } as unknown as Navigation);
     fixture = TestBed.createComponent(TaskAssignmentPersonNotAuthorisedComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

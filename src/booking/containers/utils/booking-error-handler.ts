@@ -1,5 +1,5 @@
-import { NavigationExtras } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NavigationExtras } from '@angular/router';
 interface Navigator {
   navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>;
 }
@@ -11,7 +11,7 @@ export enum REDIRECTS {
   DefaulthRefreshBookingUrl = '/refresh-booking-service-down',
 }
 
-export const CreateBookingHandleError = ( error: any, navigator: Navigator ): void => {
+export const CreateBookingHandleError = (error: any, navigator: Navigator): void => {
   if (error && error.status) {
     switch (error.status) {
       case 401:
@@ -30,18 +30,17 @@ export const CreateBookingHandleError = ( error: any, navigator: Navigator ): vo
   }
 };
 
-export const RefreshBookingHandleError = ( error: any, navigator: Navigator ): void => {
+export const RefreshBookingHandleError = (error: any, navigator: Navigator): void => {
   if (error && error.status) {
     navigator.navigate([REDIRECTS.DefaulthRefreshBookingUrl]);
   }
 };
 
-
 export declare class HttpError {
   private static readonly DEFAULT_ERROR;
   private static readonly DEFAULT_MESSAGE;
   private static readonly DEFAULT_STATUS;
-  status: number;
-  static from(response: HttpErrorResponse): HttpError;
+  public status: number;
+  public static from(response: HttpErrorResponse): HttpError;
   constructor();
 }

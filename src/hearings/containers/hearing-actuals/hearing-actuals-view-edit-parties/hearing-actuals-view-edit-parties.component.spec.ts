@@ -20,7 +20,7 @@ const hearingRole = [
     hintText_EN: 'Appellant',
     hintTextCY: '',
     order: 1,
-    parentKey: null,
+    parentKey: null
   },
   {
     key: 'claimant',
@@ -29,7 +29,7 @@ const hearingRole = [
     hintText_EN: 'Claimant',
     hintTextCY: '',
     order: 2,
-    parentKey: null,
+    parentKey: null
   },
   {
     key: 'interpreter',
@@ -38,7 +38,7 @@ const hearingRole = [
     hintText_EN: 'Interpreter',
     hintTextCY: '',
     order: 3,
-    parentKey: null,
+    parentKey: null
   },
   {
     key: 'solicitor',
@@ -47,7 +47,7 @@ const hearingRole = [
     hintText_EN: 'Solicitor',
     hintTextCY: '',
     order: 4,
-    parentKey: null,
+    parentKey: null
   },
   {
     key: 'barrister',
@@ -56,8 +56,8 @@ const hearingRole = [
     hintText_EN: 'Barrister',
     hintTextCY: '',
     order: 5,
-    parentKey: null,
-  },
+    parentKey: null
+  }
 ];
 const partyChannels = [
   {
@@ -67,7 +67,7 @@ const partyChannels = [
     hintText_EN: 'in person',
     hintTextCY: 'Wyneb yn wyneb',
     order: 1,
-    parentKey: null,
+    parentKey: null
   },
   {
     key: 'byPhone',
@@ -85,7 +85,7 @@ const partyChannels = [
         hintText_EN: 'By Phone bTMeetme',
         hintTextCY: '',
         order: 1,
-        parentKey: null,
+        parentKey: null
       },
       {
         key: 'telephone-CVP',
@@ -94,7 +94,7 @@ const partyChannels = [
         hintText_EN: 'By Phone CVP',
         hintTextCY: '',
         order: 2,
-        parentKey: null,
+        parentKey: null
       },
       {
         key: 'telephone-other',
@@ -103,7 +103,7 @@ const partyChannels = [
         hintText_EN: 'By Phone Other',
         hintTextCY: '',
         order: 3,
-        parentKey: null,
+        parentKey: null
       },
       {
         key: 'telephone-skype',
@@ -112,9 +112,9 @@ const partyChannels = [
         hintText_EN: 'By Phone Skype',
         hintTextCY: '',
         order: 4,
-        parentKey: null,
-      },
-    ],
+        parentKey: null
+      }
+    ]
   },
   {
     key: 'byVideo',
@@ -132,7 +132,7 @@ const partyChannels = [
         hintText_EN: 'By video conference',
         hintTextCY: '',
         order: 4,
-        parentKey: null,
+        parentKey: null
       },
       {
         key: 'video-other',
@@ -141,7 +141,7 @@ const partyChannels = [
         hintText_EN: 'By video other',
         hintTextCY: '',
         order: 4,
-        parentKey: null,
+        parentKey: null
       },
       {
         key: 'video-skype',
@@ -150,7 +150,7 @@ const partyChannels = [
         hintText_EN: 'By video skype',
         hintTextCY: '',
         order: 4,
-        parentKey: null,
+        parentKey: null
       },
       {
         key: 'video-teams',
@@ -159,9 +159,9 @@ const partyChannels = [
         hintText_EN: 'By video teams',
         hintTextCY: '',
         order: 4,
-        parentKey: null,
-      },
-    ],
+        parentKey: null
+      }
+    ]
   },
   {
     key: 'notAttending',
@@ -170,8 +170,8 @@ const partyChannels = [
     hintText_EN: 'not attending',
     hintTextCY: '',
     order: 5,
-    parentKey: null,
-  },
+    parentKey: null
+  }
 ];
 
 describe('HearingActualsViewEditPartiesComponent', () => {
@@ -201,11 +201,11 @@ describe('HearingActualsViewEditPartiesComponent', () => {
             snapshot: {
               data: {
                 partyChannels,
-                hearingRole,
-              },
-            },
-          },
-        },
+                hearingRole
+              }
+            }
+          }
+        }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -246,8 +246,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
           attendanceType:
             null,
           organisation: null
-        }))
-    ;
+        }));
   });
 
   it('should add a FormGroup from the FormArray', () => {
@@ -276,10 +275,10 @@ describe('HearingActualsViewEditPartiesComponent', () => {
     addBtn.nativeElement.click();
     fixture.detectChanges();
     component.parties.get([0]).patchValue({
-      attendeeRepresenting: 'Mary',
+      attendeeRepresenting: 'Mary'
     });
     component.parties.get([1]).patchValue({
-      attendeeRepresenting: 'Mary',
+      attendeeRepresenting: 'Mary'
     });
     component.parties.get([component.parties.length - 1]).patchValue({
       firstName: 'Peter',
@@ -303,7 +302,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
     component.parties.get([component.parties.length - 1]).patchValue({
       firstName: '',
       lastName: '',
-      isPlannedParty: false,
+      isPlannedParty: false
     });
     component.submitForm(component.form.value, component.form.valid);
     expect(component.parties.get([component.parties.length - 1]).valid).toBeFalsy();
@@ -349,6 +348,7 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
   let component: HearingActualsViewEditPartiesComponent;
   let fixture: ComponentFixture<HearingActualsViewEditPartiesComponent>;
   const newState: any = JSON.parse(JSON.stringify(initialState));
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualsViewEditPartiesComponent],
@@ -369,11 +369,11 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
             snapshot: {
               data: {
                 partyChannels,
-                hearingRole,
-              },
-            },
-          },
-        },
+                hearingRole
+              }
+            }
+          }
+        }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();

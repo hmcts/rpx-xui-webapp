@@ -9,26 +9,26 @@ import { EnhancedRequest } from '../lib/models';
 import { getTaskType, orchestrationSpecificAccessRequest, postCreateTask } from '.';
 
 chai.use(sinonChai);
-describe('postCreateTask', () => {
 
+describe('postCreateTask', () => {
   let sandbox: sinon.SinonSandbox;
   let req: EnhancedRequest;
-  let next ;
-  let spy: sinon.SinonSpy;
+  let next;
   const data = {
     status: 204,
     statusText: 'No Content',
-    data:'',
+    data: '',
     duration: 2496
   };
+
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = mockReq({
-      body: {},
+      body: {}
     });
     next = sandbox.stub();
-    spy = sandbox.stub(http, 'post').resolves({
-      data,
+    sandbox.stub(http, 'post').resolves({
+      data
     });
   });
 
@@ -37,7 +37,7 @@ describe('postCreateTask', () => {
   });
 
   it('should create task successfully', async () => {
-    const createTask= { caseId: '101', jurisdiction: 'IA', caseType: 'caseType', taskType: 'access_requests', dueDate: '2022-06-30T16:53:10+0100', name: 'name', roleAssignmentId: 'example' }
+    const createTask= { caseId: '101', jurisdiction: 'IA', caseType: 'caseType', taskType: 'access_requests', dueDate: '2022-06-30T16:53:10+0100', name: 'name', roleAssignmentId: 'example' };
     const response = await postCreateTask(req, next, createTask);
     expect(response.data).to.deep.equal(data);
   });
@@ -66,26 +66,27 @@ describe('orchestrationSpecificAccessRequest', () => {
       },
       requestedRoles: [{
         attributes: {
-          caseId:101,
+          caseId: 101,
           jurisdiction: 'jurisdiction',
           caseType: 'caseType'
         }
       }]
     }
   };
+
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    res = mockRes()
+    res = mockRes();
     req = mockReq({
-       params: {}
+      params: {}
     });
     next = sandbox.stub();
     const postSpy =sandbox.stub(http, 'post');
     postSpy.onCall(0).resolves({
-      data,status:201
+      data, status: 201
     });
     postSpy.onCall(1).resolves({
-      data,status:204
+      data, status: 204
     });
   });
 

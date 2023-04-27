@@ -3,13 +3,12 @@
  */
 const DEFAULT_TIMEOUT = 5000;
 class TextField{
-
   /**
    * This css should be an <input> tag
    * @param css
    */
   constructor(css){
-      this.css = css;
+    this.css = css;
   }
 
   /**
@@ -19,6 +18,7 @@ class TextField{
   async enterText(text){
     await $(this.css).sendKeys(text);
   }
+
   /**
    * Check the input tag is present
    * @returns {Promise<boolean|*>}
@@ -81,7 +81,6 @@ class TextField{
   async getText(){
     return await $(this.css).getAttribute('value');
   }
-
 }
 
 module.exports = TextField;

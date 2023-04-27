@@ -1,11 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocPhoneUkFieldComponent } from './noc-phone-uk-field.component';
-
 
 describe('NocPhoneUkFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
@@ -30,7 +29,7 @@ describe('NocPhoneUkFieldComponent', () => {
     display_context_parameter: '3',
     challenge_question_id: 'NoC',
     answer_field: '',
-    question_id: 'question3',
+    question_id: 'question3'
   };
   const ANSWER_VALUE = of('07777777777');
   let component: NocPhoneUkFieldComponent;
@@ -40,7 +39,7 @@ describe('NocPhoneUkFieldComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
-        NocPhoneUkFieldComponent,
+        NocPhoneUkFieldComponent
       ],
       imports: [
         ReactiveFormsModule,

@@ -67,9 +67,9 @@ describe('HearingAttendanceComponent', () => {
       imports: [ReactiveFormsModule],
       declarations: [HearingAttendanceComponent, MockHearingPartiesComponent],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
-        {provide: LovRefDataService, useValue: lovRefDataService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
+        { provide: LovRefDataService, useValue: lovRefDataService },
         {
           provide: ActivatedRoute,
           useValue: {

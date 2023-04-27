@@ -179,10 +179,6 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.refunds_url;
   }
 
-  public getNotificationUrl(): string {
-    return this.config.notification_url;
-  }
-
   public getCaseFlagsRefdataApiUrl(): string {
     return this.config.case_flags_refdata_api_url;
   }

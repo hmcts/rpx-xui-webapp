@@ -18,13 +18,13 @@ describe('AlertComponent', () => {
 
   const alertServiceMock = {
     alerts: of({ message: 'message', level: 'success' })
-  }
+  };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule.withRoutes([
-        ]),
+        ])
       ],
       declarations: [AlertComponent, CCDAlertComponent, AlertIconClassPipe, RpxTranslateMockPipe],
       providers: [{

@@ -7,10 +7,10 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { TaskListComponent } from '..';
@@ -65,6 +65,7 @@ describe('TaskAssignmentContainerComponent2', () => {
   const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
 
   beforeEach(waitForAsync(() => {

@@ -40,6 +40,7 @@ describe('WorkAllocation', () => {
     let component: WorkFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
 
     function getConfig(name: string, type: FieldType): FieldConfig {

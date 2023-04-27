@@ -22,7 +22,8 @@ describe('Header Component', () => {
   let mockService: any;
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
-  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {  }, getTranslation: (phrase: string) => phrase });
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -34,7 +35,7 @@ describe('Header Component', () => {
         {
           provide: RpxTranslationService,
           useFactory: rpxTranslationServiceStub
-        },
+        }
       ]
     }).compileComponents();
   }));

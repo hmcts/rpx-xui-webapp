@@ -69,8 +69,8 @@ describe('CaseListComponent', () => {
   let routerSpy: jasmine.SpyObj<any>;
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getCase']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
-  const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {  }, getTranslation: (phrase: string) => phrase });
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
 
   beforeEach(() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);

@@ -23,7 +23,7 @@ describe('NocAffirmationComponent', () => {
     TestBed.configureTestingModule({
       declarations: [NocAffirmationComponent, RpxTranslateMockPipe],
       providers: [
-        provideMockStore(),
+        provideMockStore()
       ]
     })
       .compileComponents();

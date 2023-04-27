@@ -143,7 +143,7 @@ describe('CaseDetailsHomeComponent set the page title on init', () => {
     titleServiceMock = jasmine.createSpyObj<Title>('Title', ['setTitle']);
     caseReferencePipeMock = jasmine.createSpyObj<CaseReferencePipe>('CaseReferencePipe', ['transform']);
     alertServiceMock = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
-    routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
+    routerMock = jasmine.createSpyObj<Router>('router', ['getCurrentNavigation']);
 
     TestBed.configureTestingModule({
       declarations: [CaseDetailsHomeComponent],

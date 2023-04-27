@@ -23,7 +23,7 @@ export function getWASupportedJurisdictionsList(): any {
   }
 }
 
-export const router = Router({mergeParams: true});
+export const router = Router({ mergeParams: true });
 
 router.get('/get', getWASupportedJurisdictions);
 

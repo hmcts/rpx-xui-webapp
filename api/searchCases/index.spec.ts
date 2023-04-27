@@ -1,37 +1,36 @@
-import * as chai from 'chai'
-import { expect } from 'chai'
-import 'mocha'
-import * as sinon from 'sinon'
-import * as sinonChai from 'sinon-chai'
-import { UserInfo } from '../auth/interfaces/UserInfo'
-import * as searchCases from './index'
-import { ElasticSearchQuery } from './interfaces/ElasticSearchQuery'
+import * as chai from 'chai';
+import { expect } from 'chai';
+import 'mocha';
+import * as sinon from 'sinon';
+import * as sinonChai from 'sinon-chai';
+import { UserInfo } from '../auth/interfaces/UserInfo';
+import * as searchCases from './index';
+import { ElasticSearchQuery } from './interfaces/ElasticSearchQuery';
 
-chai.use(sinonChai)
+chai.use(sinonChai);
 
 describe('Search Cases Elastic Search', () => {
-
-  let sandbox
-  let result2
+  let sandbox;
+  // let result2;
 
   beforeEach(() => {
-    sandbox = sinon.createSandbox()
+    sandbox = sinon.createSandbox();
 
-    result2 = {
-      data: {
-        cases: [{
-          fields: [],
-          fields_formatted: []
-        }],
-        headers: [{ fields: [] }],
-        total: 0
-      }
-    }
-  })
+    // result2 = {
+    //   data: {
+    //     cases: [{
+    //       fields: [],
+    //       fields_formatted: []
+    //     }],
+    //     headers: [{ fields: [] }],
+    //     total: 0
+    //   }
+    // };
+  });
 
   afterEach(() => {
-    sandbox.restore()
-  })
+    sandbox.restore();
+  });
 
   describe('prepareElasticQuery', () => {
     it('should return elastic search query', async () => {
@@ -39,7 +38,7 @@ describe('Search Cases Elastic Search', () => {
         'case.param2': 'dummy2',
         page: 2,
         param: 'dummy'
-      }
+      };
       const body = {
         size: 25,
         sort: {
@@ -47,7 +46,7 @@ describe('Search Cases Elastic Search', () => {
           order: 0,
           type: 'Text'
         }
-      }
+      };
 
       const expected = {
         native_es_query: {
@@ -82,23 +81,23 @@ describe('Search Cases Elastic Search', () => {
           ]
         },
         supplementary_data: ['*']
-      }
+      };
 
       const userInfo: UserInfo = {
         forename: 'Thomas',
         roles: ['case'],
         surname: 'Jones'
-      }
+      };
 
-      expect(searchCases.prepareElasticQuery(queryParams, body, userInfo)).to.deep.equal(expected)
-    })
+      expect(searchCases.prepareElasticQuery(queryParams, body, userInfo)).to.deep.equal(expected);
+    });
 
     it('should return elastic search query - with metadata', async () => {
       const queryParams = {
         'case.param2': 'dummy2',
         page: 2,
         param: 'dummy'
-      }
+      };
       const body = {
         size: 25,
         sort: {
@@ -106,7 +105,7 @@ describe('Search Cases Elastic Search', () => {
           order: 1,
           type: 'Text'
         }
-      }
+      };
 
       const expected = {
         native_es_query: {
@@ -141,19 +140,18 @@ describe('Search Cases Elastic Search', () => {
           ]
         },
         supplementary_data: ['*']
-      }
+      };
 
       const userInfo: UserInfo = {
         forename: 'Thomas',
         roles: ['case'],
         surname: 'Jones'
-      }
+      };
 
-      expect(searchCases.prepareElasticQuery(queryParams, body, userInfo)).to.deep.equal(expected)
-    })
+      expect(searchCases.prepareElasticQuery(queryParams, body, userInfo)).to.deep.equal(expected);
+    });
 
     it('should perform a wildcard search on "generatedSurname" field ', async () => {
-
       const queryParams = {
         'case.generatedSurname': 'Beckham',
         'ctid': 'Benefit',
@@ -162,7 +160,7 @@ describe('Search Cases Elastic Search', () => {
         param: 'dummy',
         'use_case': 'WORKBASKET',
         view: 'WORKBASKET'
-      }
+      };
       const body = {
         size: 25,
         sort: {
@@ -170,20 +168,20 @@ describe('Search Cases Elastic Search', () => {
           order: 1,
           type: 'Text'
         }
-      }
+      };
 
       const userInfo: UserInfo = {
         forename: 'Thomas',
         roles: ['caseworker'],
         surname: 'Jones'
-      }
+      };
 
-      const result: ElasticSearchQuery = searchCases.prepareElasticQuery(queryParams, body, userInfo)
+      const result: ElasticSearchQuery = searchCases.prepareElasticQuery(queryParams, body, userInfo);
 
-      const wildCardSearchQuery = result.native_es_query.query.bool.must[2].wildcard['data.generatedSurname']
+      const wildCardSearchQuery = result.native_es_query.query.bool.must[2].wildcard['data.generatedSurname'];
 
-      expect(wildCardSearchQuery).to.equal('*beckham*')
-    })
+      expect(wildCardSearchQuery).to.equal('*beckham*');
+    });
 
     it('should not perform a wildcard search on "generatedSurname" field', async () => {
       const queryParams = {
@@ -193,7 +191,7 @@ describe('Search Cases Elastic Search', () => {
         param: 'dummy',
         'use_case': 'WORKBASKET',
         view: 'WORKBASKET'
-      }
+      };
       const body = {
         size: 25,
         sort: {
@@ -201,17 +199,16 @@ describe('Search Cases Elastic Search', () => {
           order: 1,
           type: 'Text'
         }
-      }
+      };
 
       const userInfo: UserInfo = {
         forename: 'Thomas',
         roles: ['case'],
         surname: 'Jones'
-      }
-      const result: ElasticSearchQuery = searchCases.prepareElasticQuery(queryParams, body, userInfo)
-      const wildCardSearchQuery = result.native_es_query.query.bool.must[2].match['data.generatedSurname']
-      expect(wildCardSearchQuery.query).to.equal('Beckham')
-    })
-  })
-
-})
+      };
+      const result: ElasticSearchQuery = searchCases.prepareElasticQuery(queryParams, body, userInfo);
+      const wildCardSearchQuery = result.native_es_query.query.bool.must[2].match['data.generatedSurname'];
+      expect(wildCardSearchQuery.query).to.equal('Beckham');
+    });
+  });
+});

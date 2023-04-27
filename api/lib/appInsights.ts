@@ -1,35 +1,41 @@
 import * as applicationinsights from 'applicationinsights';
 import * as express from 'express';
-import {getConfigValue, showFeature} from '../configuration/';
+import { getConfigValue, showFeature } from '../configuration/';
 import {
-    APP_INSIGHTS_KEY, FEATURE_APP_INSIGHTS_ENABLED,
+  APP_INSIGHTS_KEY, FEATURE_APP_INSIGHTS_ENABLED
 } from '../configuration/references';
 
-export let client;
+export let client: applicationinsights.TelemetryClient;
 
 if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
-    applicationinsights
-        .setup(getConfigValue(APP_INSIGHTS_KEY))
-        .setAutoDependencyCorrelation(true)
-        .setAutoCollectRequests(true)
-        .setAutoCollectPerformance(true)
-        .setAutoCollectExceptions(true)
-        .setAutoCollectDependencies(true)
-        .setAutoCollectConsole(true)
-        .setUseDiskRetryCaching(true)
-        .setSendLiveMetrics(true)
-        .start();
+  applicationinsights
+    .setup(getConfigValue(APP_INSIGHTS_KEY))
+    .setAutoDependencyCorrelation(true)
+    .setAutoCollectRequests(true)
+    .setAutoCollectPerformance(true)
+    .setAutoCollectExceptions(true)
+    .setAutoCollectDependencies(true)
+    .setAutoCollectConsole(true)
+    .setUseDiskRetryCaching(true)
+    .setSendLiveMetrics(true)
+    .start();
 
-    client = applicationinsights.defaultClient;
-    client.trackTrace({ message: 'App Insight Activated' });
+  client = applicationinsights.defaultClient;
+  client.trackTrace({ message: 'App Insight Activated' });
 } else {
-    client = null;
+  client = null;
 }
 
 export function appInsights(req: express.Request, res: express.Response, next) {
-    if (client) {
-        client.trackNodeHttpRequest({ request: req, response: res });
-    }
+  if (client) {
+    client.trackNodeHttpRequest({ request: req, response: res });
+  }
 
-    next();
+  next();
+}
+
+export function trackTrace(trace: string, properties?: {[key: string]: any}) {
+  if (client) {
+    client.trackTrace({ message: trace, properties });
+  }
 }

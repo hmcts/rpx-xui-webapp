@@ -1,10 +1,9 @@
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
-
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { HmctsGlobalHeaderComponent } from '..';
 import { PhaseBannerComponent } from '../../components/phase-banner/phase-banner.component';
@@ -19,12 +18,13 @@ class RpxTranslateMockPipe implements PipeTransform {
 
 describe('Header Component', () => {
   let mockStore: any;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mockService: any;
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
   const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {  }, getTranslation: (phrase: string) => phrase });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [HeaderComponent, HmctsGlobalHeaderComponent, PhaseBannerComponent, RpxTranslateMockPipe],
       imports: [HttpClientModule, RouterTestingModule],
@@ -40,10 +40,10 @@ describe('Header Component', () => {
   }));
 
   beforeEach(() => {
-      fixture = TestBed.createComponent(HeaderComponent);
-      mockStore = jasmine.createSpyObj('store', ['pipe']);
-      mockService = jasmine.createSpyObj('service', ['get']);
-      component = new HeaderComponent(mockStore);
+    fixture = TestBed.createComponent(HeaderComponent);
+    mockStore = jasmine.createSpyObj('store', ['pipe']);
+    mockService = jasmine.createSpyObj('service', ['get']);
+    component = new HeaderComponent(mockStore);
   });
 
   it('should render the skip to content link', () => {
@@ -52,7 +52,6 @@ describe('Header Component', () => {
   });
 
   it('should call emitNavigate with event and this.navigate', () => {
-
     const event = {};
     spyOn(component, 'emitNavigate');
 
@@ -61,10 +60,9 @@ describe('Header Component', () => {
   });
 
   it('should emitNavigate', () => {
-
-      const event = {};
-      const emitter = jasmine.createSpyObj('emitter', ['emit']);
-      component.emitNavigate(event, emitter);
-      expect(emitter.emit).toHaveBeenCalled();
+    const event = {};
+    const emitter = jasmine.createSpyObj('emitter', ['emit']);
+    component.emitNavigate(event, emitter);
+    expect(emitter.emit).toHaveBeenCalled();
   });
 });

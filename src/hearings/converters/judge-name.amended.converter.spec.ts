@@ -7,7 +7,6 @@ import { State } from '../store/reducers';
 import { JudgeNameAmendedConverter } from './judge-name.amended.converter';
 
 describe('JudgeNameAmendedConverter', () => {
-
   let judgeNameAmendedConverter: JudgeNameAmendedConverter;
 
   beforeEach(() => {
@@ -24,8 +23,7 @@ describe('JudgeNameAmendedConverter', () => {
     }];
     const result$ = judgeNameAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = true;
-    const expected = cold('(b|)', {b: isAmended});
+    const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
-
 });

@@ -70,9 +70,9 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
   private getLocationParameter(): SearchTaskParameter {
     if (this.selectedLocations && this.selectedLocations.length > 0) {
       return { key: 'location', operator: 'IN', values: this.selectedLocations };
-    } else {
-      return null;
     }
+
+    return null;
   }
 
   private getTypesOfWorkParameter(): SearchTaskParameter {
@@ -80,8 +80,8 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
     const totalWorkTypes = typeOfWorkInfo ? JSON.parse(typeOfWorkInfo) : undefined;
     if (this.selectedWorkTypes && this.selectedWorkTypes.length > 0 && (!totalWorkTypes || this.selectedWorkTypes.length < totalWorkTypes.length)) {
       return { key: 'work_type', operator: 'IN', values: this.selectedWorkTypes };
-    } else {
-      return null;
     }
+
+    return null;
   }
 }

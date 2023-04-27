@@ -1,4 +1,4 @@
-import {HearingLinksStateData} from '../../models/hearingLinksStateData.model';
+import { HearingLinksStateData } from '../../models/hearingLinksStateData.model';
 import {
   ServiceLinkedCasesModel
 } from '../../models/linkHearings.model';
@@ -6,9 +6,7 @@ import * as fromHearingLinksActions from '../actions/hearing-links.action';
 import * as fromHearingLinksReducer from './hearing-links.reducer';
 
 describe('Hearing Links Reducer', () => {
-
   describe('Actions', () => {
-
     describe('Reset action', () => {
       it('should reset init state', () => {
         const initialState = fromHearingLinksReducer.initialHearingLinksState;
@@ -59,7 +57,7 @@ describe('Hearing Links Reducer', () => {
         const initialState = fromHearingLinksReducer.initialHearingLinksState;
         const ERROR = {
           status: 500,
-          message: 'failed',
+          message: 'failed'
         };
         const action = new fromHearingLinksActions.LoadServiceLinkedCasesFailure(ERROR);
         const hearingsState = fromHearingLinksReducer.hearingLinksReducer(initialState, action);
@@ -77,7 +75,7 @@ describe('Hearing Links Reducer', () => {
             status: 403,
             errors: null,
             message: 'Http failure response: 403 Forbidden'
-          },
+          }
         };
         const action = new fromHearingLinksActions.SubmitLinkedHearingGroupFailure(initialState.lastError);
         const hearingsState = fromHearingLinksReducer.hearingLinksReducer(initialState, action);

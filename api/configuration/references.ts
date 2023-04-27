@@ -63,7 +63,7 @@ export const SERVICES_PAYMENTS_URL = 'services.payments';
 
 export const SERVICES_PAYMENT_RETURN_URL = 'services.payment_return_url';
 
-export const GLOBAL_SEARCH_SERVICES = 'globalSearchServices'
+export const GLOBAL_SEARCH_SERVICES = 'globalSearchServices';
 export const WA_SUPPORTED_SERVICE_CASETYPES = 'waSupportedServiceandCaseTypes';
 
 export const SERVICES_PRD_API_URL = 'services.prd.api';
@@ -72,6 +72,7 @@ export const SERVICES_PRD_JUDICIAL_API = 'services.prd.judicialApi';
 export const SERVICES_PRD_COMMONDATA_API = 'services.prd.commondataApi';
 
 export const SERVICES_REFUNDS_API_URL = 'services.refunds';
+export const SERVICES_NOTIFICATIONS_API_URL = 'services.notifications';
 export const SERVICES_LOCATION_REF_API_URL = 'services.locationref.api';
 
 export const PROTOCOL = 'protocol';

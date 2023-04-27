@@ -1,5 +1,4 @@
-/* tslint:disable:object-literal-sort-keys */
-import {LovRefDataByCategoryModel, LovRefDataByServiceModel, LovRefDataModel} from '../models/lovRefData.model';
+import { LovRefDataByCategoryModel, LovRefDataByServiceModel, LovRefDataModel } from '../models/lovRefData.model';
 
 export const DEFAULT_JUDGE_TYPES_REF: LovRefDataModel[] = [
   {
@@ -14,7 +13,7 @@ export const DEFAULT_JUDGE_TYPES_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'dtj',
@@ -28,7 +27,7 @@ export const DEFAULT_JUDGE_TYPES_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'rtj',
@@ -42,8 +41,8 @@ export const DEFAULT_JUDGE_TYPES_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
-  },
+    from: 'exui-default'
+  }
 ];
 
 export const DEFAULT_STAGES_REF: LovRefDataModel[] = [
@@ -59,7 +58,7 @@ export const DEFAULT_STAGES_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'BBA3-DIR',
@@ -73,7 +72,7 @@ export const DEFAULT_STAGES_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'BBA3-CHA',
@@ -87,8 +86,8 @@ export const DEFAULT_STAGES_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
-  },
+    from: 'exui-default'
+  }
 ];
 
 export const DEFAULT_PRIORITIES_REF: LovRefDataModel[] = [
@@ -104,7 +103,7 @@ export const DEFAULT_PRIORITIES_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'HIGH',
@@ -118,7 +117,7 @@ export const DEFAULT_PRIORITIES_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'CRITICAL',
@@ -132,7 +131,7 @@ export const DEFAULT_PRIORITIES_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'PENDING',
@@ -146,8 +145,8 @@ export const DEFAULT_PRIORITIES_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
-  },
+    from: 'exui-default'
+  }
 ];
 
 export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
@@ -163,7 +162,7 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'byPhone',
@@ -189,7 +188,7 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
         parent_category: 'byPhone',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
+        from: 'exui-default'
       },
       {
         key: 'telephone-CVP',
@@ -203,7 +202,7 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
         parent_category: 'byPhone',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
+        from: 'exui-default'
       },
       {
         key: 'telephone-other',
@@ -217,7 +216,7 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
         parent_category: 'byPhone',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
+        from: 'exui-default'
       },
       {
         key: 'telephone-skype',
@@ -231,10 +230,10 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
         parent_category: 'byPhone',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
-      },
+        from: 'exui-default'
+      }
     ],
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'byVideo',
@@ -260,7 +259,7 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
         parent_category: 'byVideo',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
+        from: 'exui-default'
       },
       {
         key: 'video-other',
@@ -274,7 +273,7 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
         parent_category: 'byVideo',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
+        from: 'exui-default'
       },
       {
         key: 'video-skype',
@@ -288,7 +287,7 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
         parent_category: 'byVideo',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
+        from: 'exui-default'
       },
       {
         key: 'video-teams',
@@ -302,10 +301,10 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
         parent_category: 'byVideo',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
-      },
+        from: 'exui-default'
+      }
     ],
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'notAttending',
@@ -319,7 +318,7 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'onPaper',
@@ -333,8 +332,8 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
-  },
+    from: 'exui-default'
+  }
 ];
 
 export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [
@@ -350,7 +349,7 @@ export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'struck',
@@ -364,7 +363,7 @@ export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'unable',
@@ -378,7 +377,7 @@ export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'exclusio',
@@ -392,7 +391,7 @@ export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'incompl',
@@ -406,7 +405,7 @@ export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'listerr',
@@ -420,7 +419,7 @@ export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'other',
@@ -434,7 +433,7 @@ export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'notready',
@@ -448,7 +447,7 @@ export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'settled',
@@ -462,7 +461,7 @@ export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'jodir',
@@ -476,7 +475,7 @@ export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'notpaid',
@@ -490,7 +489,7 @@ export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'lapsed',
@@ -504,8 +503,8 @@ export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
-  },
+    from: 'exui-default'
+  }
 ];
 
 export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
@@ -521,7 +520,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'postponedDueToOtherReasons',
@@ -535,7 +534,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'postponedIncompleteTribunal',
@@ -549,7 +548,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'postponedNoReasonGiven',
@@ -563,7 +562,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'postponedOtherPartyUnableToAttend',
@@ -577,7 +576,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adjournedAppellantToAttendOralRequestedDidNotAttendReasonGiven',
@@ -591,7 +590,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adjournedAppellantToAttendOralRequestedDidNotAttendNoReason',
@@ -605,7 +604,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adjournedAppellantToAttendPaperRequestedOrNoEnquiryFormReturned',
@@ -619,7 +618,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adjournedFurtherMedicalEvidenceEssential',
@@ -633,7 +632,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adjournedEvidenceOrFurtherResponseFromRespondentRequired',
@@ -647,7 +646,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adjournedEvidenceOrSubmissionFromAppellantRequired',
@@ -661,7 +660,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adjournedNoInterpreter',
@@ -675,7 +674,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adjournedInsufficientTimeToDealWithCase',
@@ -689,7 +688,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adjournedDocumentsSuppliedButNotBeforeTheTribunalAtTheHearing',
@@ -703,7 +702,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adjournedPresentingOfficerToAttend',
@@ -717,7 +716,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adjournedRespondentFailedToComplyWithDirection',
@@ -731,7 +730,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adjournedOtherAdministrativeErrors',
@@ -745,7 +744,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adjournedOtherReasonsForAdjourning',
@@ -759,7 +758,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adjournedElementsOutstanding',
@@ -773,7 +772,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adjournedAllElementsAdjourned',
@@ -787,7 +786,7 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adjournedListedPaperCaseNotHeardDueToLackOfTime',
@@ -801,8 +800,8 @@ export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
-  },
+    from: 'exui-default'
+  }
 ];
 
 export const DEFAULT_HEARING_ACTUAL_CANCEL_REF: LovRefDataModel[] = [
@@ -818,7 +817,7 @@ export const DEFAULT_HEARING_ACTUAL_CANCEL_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'ActualCancellationReasonCodes',
@@ -832,7 +831,7 @@ export const DEFAULT_HEARING_ACTUAL_CANCEL_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'ActualCancellationReasonCodes',
@@ -846,7 +845,7 @@ export const DEFAULT_HEARING_ACTUAL_CANCEL_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'ActualCancellationReasonCodes',
@@ -860,7 +859,7 @@ export const DEFAULT_HEARING_ACTUAL_CANCEL_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'ActualCancellationReasonCodes',
@@ -874,7 +873,7 @@ export const DEFAULT_HEARING_ACTUAL_CANCEL_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'ActualCancellationReasonCodes',
@@ -888,7 +887,7 @@ export const DEFAULT_HEARING_ACTUAL_CANCEL_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'ActualCancellationReasonCodes',
@@ -902,7 +901,7 @@ export const DEFAULT_HEARING_ACTUAL_CANCEL_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'ActualCancellationReasonCodes',
@@ -916,7 +915,7 @@ export const DEFAULT_HEARING_ACTUAL_CANCEL_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'ActualCancellationReasonCodes',
@@ -930,7 +929,7 @@ export const DEFAULT_HEARING_ACTUAL_CANCEL_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'ActualCancellationReasonCodes',
@@ -944,8 +943,8 @@ export const DEFAULT_HEARING_ACTUAL_CANCEL_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
-  },
+    from: 'exui-default'
+  }
 ];
 
 export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
@@ -961,7 +960,7 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'Facilities',
@@ -975,7 +974,7 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'Facilities',
@@ -989,7 +988,7 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'Facilities',
@@ -1003,7 +1002,7 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'Facilities',
@@ -1017,7 +1016,7 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'Facilities',
@@ -1031,7 +1030,7 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'Facilities',
@@ -1045,7 +1044,7 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'Facilities',
@@ -1059,7 +1058,7 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'Facilities',
@@ -1073,8 +1072,8 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
-  },
+    from: 'exui-default'
+  }
 ];
 
 export const DEFAULT_PANEL_MEMBER_TYPE_REF: LovRefDataModel[] = [
@@ -1090,7 +1089,7 @@ export const DEFAULT_PANEL_MEMBER_TYPE_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'PanelMemberType',
@@ -1116,7 +1115,7 @@ export const DEFAULT_PANEL_MEMBER_TYPE_REF: LovRefDataModel[] = [
         parent_key: 'BBA3-MQPM2',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
+        from: 'exui-default'
       },
       {
         category_key: 'PanelMemberSpecialism',
@@ -1130,7 +1129,7 @@ export const DEFAULT_PANEL_MEMBER_TYPE_REF: LovRefDataModel[] = [
         parent_key: 'BBA3-MQPM2',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
+        from: 'exui-default'
       },
       {
         category_key: 'PanelMemberSpecialism',
@@ -1144,7 +1143,7 @@ export const DEFAULT_PANEL_MEMBER_TYPE_REF: LovRefDataModel[] = [
         parent_key: 'BBA3-MQPM2',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
+        from: 'exui-default'
       },
       {
         category_key: 'PanelMemberSpecialism',
@@ -1158,10 +1157,10 @@ export const DEFAULT_PANEL_MEMBER_TYPE_REF: LovRefDataModel[] = [
         parent_key: 'BBA3-MQPM2',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
-      },
+        from: 'exui-default'
+      }
     ],
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'PanelMemberType',
@@ -1187,7 +1186,7 @@ export const DEFAULT_PANEL_MEMBER_TYPE_REF: LovRefDataModel[] = [
         parent_key: 'BBA3-MQPM1',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
+        from: 'exui-default'
       },
       {
         category_key: 'PanelMemberSpecialism',
@@ -1201,7 +1200,7 @@ export const DEFAULT_PANEL_MEMBER_TYPE_REF: LovRefDataModel[] = [
         parent_key: 'BBA3-MQPM1',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
+        from: 'exui-default'
       },
       {
         category_key: 'PanelMemberSpecialism',
@@ -1215,7 +1214,7 @@ export const DEFAULT_PANEL_MEMBER_TYPE_REF: LovRefDataModel[] = [
         parent_key: 'BBA3-MQPM1',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
+        from: 'exui-default'
       },
       {
         category_key: 'PanelMemberSpecialism',
@@ -1229,10 +1228,10 @@ export const DEFAULT_PANEL_MEMBER_TYPE_REF: LovRefDataModel[] = [
         parent_key: 'BBA3-MQPM1',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
-      },
+        from: 'exui-default'
+      }
     ],
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'PanelMemberType',
@@ -1246,7 +1245,7 @@ export const DEFAULT_PANEL_MEMBER_TYPE_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     category_key: 'PanelMemberType',
@@ -1260,8 +1259,8 @@ export const DEFAULT_PANEL_MEMBER_TYPE_REF: LovRefDataModel[] = [
     parent_key: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default',
-  },
+    from: 'exui-default'
+  }
 ];
 
 export const HEARING_ROLES_REF: LovRefDataModel[] = [
@@ -1276,7 +1275,7 @@ export const HEARING_ROLES_REF: LovRefDataModel[] = [
     parent_category: '',
     parent_key: '',
     active_flag: '',
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'claimant',
@@ -1289,7 +1288,7 @@ export const HEARING_ROLES_REF: LovRefDataModel[] = [
     parent_category: '',
     parent_key: '',
     active_flag: '',
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'interpreter',
@@ -1302,7 +1301,7 @@ export const HEARING_ROLES_REF: LovRefDataModel[] = [
     parent_category: '',
     parent_key: '',
     active_flag: '',
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'solicitor',
@@ -1315,7 +1314,7 @@ export const HEARING_ROLES_REF: LovRefDataModel[] = [
     parent_category: '',
     parent_key: '',
     active_flag: '',
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'barrister',
@@ -1328,8 +1327,8 @@ export const HEARING_ROLES_REF: LovRefDataModel[] = [
     parent_category: '',
     parent_key: '',
     active_flag: '',
-    from: 'exui-default',
-  },
+    from: 'exui-default'
+  }
 ];
 
 export const CHANGE_HEARING_REASON: LovRefDataModel[] = [
@@ -1344,7 +1343,7 @@ export const CHANGE_HEARING_REASON: LovRefDataModel[] = [
     parent_category: '',
     parent_key: '',
     active_flag: '',
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'judgereq',
@@ -1357,7 +1356,7 @@ export const CHANGE_HEARING_REASON: LovRefDataModel[] = [
     parent_category: '',
     parent_key: '',
     active_flag: '',
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adminreq',
@@ -1370,7 +1369,7 @@ export const CHANGE_HEARING_REASON: LovRefDataModel[] = [
     parent_category: '',
     parent_key: '',
     active_flag: '',
-    from: 'exui-default',
+    from: 'exui-default'
   },
   {
     key: 'adminerr',
@@ -1383,97 +1382,97 @@ export const CHANGE_HEARING_REASON: LovRefDataModel[] = [
     parent_category: '',
     parent_key: '',
     active_flag: '',
-    from: 'exui-default',
-  },
+    from: 'exui-default'
+  }
 ];
 
 export const DEFAULT_HEARING_ROLES: LovRefDataByServiceModel = {
-  list_of_values: HEARING_ROLES_REF,
+  list_of_values: HEARING_ROLES_REF
 };
 
 export const DEFAULT_STAGES: LovRefDataByServiceModel = {
-  list_of_values: DEFAULT_STAGES_REF,
+  list_of_values: DEFAULT_STAGES_REF
 };
 
 export const DEFAULT_PRIORITIES: LovRefDataByServiceModel = {
-  list_of_values: DEFAULT_PRIORITIES_REF,
+  list_of_values: DEFAULT_PRIORITIES_REF
 };
 
 export const DEFAULT_PARTY_CHANNEL: LovRefDataByServiceModel = {
-  list_of_values: DEFAULT_PARTYCHANNEL_REF,
+  list_of_values: DEFAULT_PARTYCHANNEL_REF
 };
 
 export const DEFAULT_JUDGE_TYPES: LovRefDataByServiceModel = {
-  list_of_values: DEFAULT_JUDGE_TYPES_REF,
+  list_of_values: DEFAULT_JUDGE_TYPES_REF
 };
 
 export const DEFAULT_CANCEL_HEARING: LovRefDataByServiceModel = {
-  list_of_values: DEFAULT_HEARING_CANCEL_REF,
+  list_of_values: DEFAULT_HEARING_CANCEL_REF
 };
 
 export const DEFAULT_ADDITIONAL_FACILITIES: LovRefDataByServiceModel = {
-  list_of_values: DEFAULT_ADDITIONAL_FACILITIES_REF,
+  list_of_values: DEFAULT_ADDITIONAL_FACILITIES_REF
 };
 
 export const DEFAULT_PANEL_MEMBER_TYPE: LovRefDataByServiceModel = {
-  list_of_values: DEFAULT_PANEL_MEMBER_TYPE_REF,
+  list_of_values: DEFAULT_PANEL_MEMBER_TYPE_REF
 };
 
 export const DEFAULT_ADJOURN_HEARING_ACTUAL: LovRefDataByServiceModel = {
-  list_of_values: DEFAULT_HEARING_ACTUAL_ADJOURN_REF,
+  list_of_values: DEFAULT_HEARING_ACTUAL_ADJOURN_REF
 };
 
 export const DEFAULT_CANCEL_HEARING_ACTUAL: LovRefDataByServiceModel = {
-  list_of_values: DEFAULT_HEARING_ACTUAL_CANCEL_REF,
+  list_of_values: DEFAULT_HEARING_ACTUAL_CANCEL_REF
 };
 
 export const DEFAULT_CHANGE_HEARING_REASON: LovRefDataByServiceModel = {
-  list_of_values: CHANGE_HEARING_REASON,
+  list_of_values: CHANGE_HEARING_REASON
 };
 
 export const ALL_REF_DATA: LovRefDataByCategoryModel[] = [
   {
     categoryKey: 'HearingType',
-    lovDataModel: DEFAULT_STAGES,
+    lovDataModel: DEFAULT_STAGES
   },
   {
     categoryKey: 'HearingPriority',
-    lovDataModel: DEFAULT_PRIORITIES,
+    lovDataModel: DEFAULT_PRIORITIES
   },
   {
     categoryKey: 'HearingChannel',
-    lovDataModel: DEFAULT_PARTY_CHANNEL,
+    lovDataModel: DEFAULT_PARTY_CHANNEL
   },
   {
     categoryKey: 'JudgeType',
-    lovDataModel: DEFAULT_JUDGE_TYPES,
+    lovDataModel: DEFAULT_JUDGE_TYPES
   },
   {
     categoryKey: 'ActualPartHeardReasonCodes',
-    lovDataModel: DEFAULT_ADJOURN_HEARING_ACTUAL,
+    lovDataModel: DEFAULT_ADJOURN_HEARING_ACTUAL
   },
   {
     categoryKey: 'ActualCancellationReasonCodes',
-    lovDataModel: DEFAULT_CANCEL_HEARING_ACTUAL,
+    lovDataModel: DEFAULT_CANCEL_HEARING_ACTUAL
   },
   {
     categoryKey: 'Facilities',
-    lovDataModel: DEFAULT_ADDITIONAL_FACILITIES,
+    lovDataModel: DEFAULT_ADDITIONAL_FACILITIES
   },
   {
     categoryKey: 'PanelMemberType',
-    lovDataModel: DEFAULT_PANEL_MEMBER_TYPE,
+    lovDataModel: DEFAULT_PANEL_MEMBER_TYPE
   },
   {
     categoryKey: 'HearingRoles',
-    lovDataModel: DEFAULT_HEARING_ROLES,
+    lovDataModel: DEFAULT_HEARING_ROLES
   },
   {
     categoryKey: 'CaseManagementCancellationReasons',
-    lovDataModel: DEFAULT_CANCEL_HEARING,
+    lovDataModel: DEFAULT_CANCEL_HEARING
   },
   {
     categoryKey: 'ChangeReasons',
-    lovDataModel: DEFAULT_CHANGE_HEARING_REASON,
-  },
+    lovDataModel: DEFAULT_CHANGE_HEARING_REASON
+  }
 ];

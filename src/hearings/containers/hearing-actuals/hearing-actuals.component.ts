@@ -13,11 +13,10 @@ import * as hearingRequestActions from '../../store/actions/hearing-request.acti
 export class HearingActualsComponent implements OnInit, OnDestroy {
   private sub: Subscription;
 
-  public constructor(private readonly store: Store<any>, private readonly route: ActivatedRoute) {
-  }
+  public constructor(private readonly store: Store<any>, private readonly route: ActivatedRoute) {}
 
   public ngOnInit(): void {
-    this.sub = this.route.params.subscribe(params => {
+    this.sub = this.route.params.subscribe((params) => {
       this.store.dispatch(new hearingRequestActions.LoadHearingRequest({ hearingID: params.id, targetURL: '' }));
       this.store.dispatch(new hearingActualsActions.GetHearingActuals(params.id));
     });

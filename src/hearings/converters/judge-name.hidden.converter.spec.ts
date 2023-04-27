@@ -7,7 +7,6 @@ import { State } from '../store/reducers';
 import { JudgeNameHiddenConverter } from './judge-name.hidden.converter';
 
 describe('JudgeNameHiddenConverter', () => {
-
   let judgeNameHiddenConverter: JudgeNameHiddenConverter;
   const JUDICAIL_USER_DETAILS = [{
     memberID: 'P0000001',
@@ -24,7 +23,7 @@ describe('JudgeNameHiddenConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;
     const result$ = judgeNameHiddenConverter.transformHidden(of(STATE));
     const showWelshPage = true;
-    const expected = cold('(b|)', {b: showWelshPage});
+    const expected = cold('(b|)', { b: showWelshPage });
     expect(result$).toBeObservable(expected);
   });
 
@@ -35,8 +34,7 @@ describe('JudgeNameHiddenConverter', () => {
     };
     const result$ = judgeNameHiddenConverter.transformHidden(of(STATE));
     const showWelshPage = false;
-    const expected = cold('(b|)', {b: showWelshPage});
+    const expected = cold('(b|)', { b: showWelshPage });
     expect(result$).toBeObservable(expected);
   });
-
 });

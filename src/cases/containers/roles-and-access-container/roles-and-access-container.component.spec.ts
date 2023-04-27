@@ -1,3 +1,6 @@
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -24,7 +27,7 @@ const CASE_VIEW: CaseView = {
     name: 'Test Address Book Case',
     jurisdiction: {
       id: 'TEST',
-      name: 'Test',
+      name: 'Test'
     },
     printEnabled: true
   },
@@ -106,13 +109,11 @@ const CASE_VIEW: CaseView = {
       order: 3,
       fields: [],
       show_condition: ''
-    },
+    }
   ]
 };
 
 describe('RolesContainerComponent', () => {
-  let featureToggleService: FeatureToggleService;
-  featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   let component: RolesAndAccessContainerComponent;
 
   const route = {
@@ -139,7 +140,7 @@ describe('RolesContainerComponent', () => {
       known_as: 'Tom',
       surname: 'Cruz',
       full_name: 'Tom Cruz',
-      email_id: '330085EMP-@ejudiciary.net',
+      email_id: '330085EMP-@ejudiciary.net'
     }
   ];
   const caseRolesData: any[] = [
@@ -164,49 +165,49 @@ describe('RolesContainerComponent', () => {
     }
   ];
 
-  // beforeEach(async(() => {
-  //   TestBed.configureTestingModule({
-  //     imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule, HttpClientModule],
-  //     providers: [
-  //       CasesService, HttpErrorService, HttpErrorService, AuthService, AbstractAppConfig, AlertService,
-  //       { provide: CaseNotifier, useValue: mockNotifierService },
-  //       {
-  //         provide: RoleExclusionsService,
-  //         useClass: RoleExclusionsMockService
-  //       },
-  //       {
-  //         provide: FeatureToggleService,
-  //         useValue: {
-  //           isEnabled: (flag) => of(flags[flag]),
-  //           getValue: (flag) => of(flags[flag])
-  //         }
-  //       },
-  //       provideMockStore({ initialState: initialMockState }),
-  //       {
-  //         provide: ActivatedRoute,
-  //         useValue: {
-  //           snapshot: {
-  //             data: {
-  //               roles: CASEROLES,
-  //               showAllocateRoleLink: true,
-  //               case: CASE_VIEW
-  //             }
-  //           }
-  //         }
-  //       },
-  //     ],
-  //     declarations: [
-  //       RolesAndAccessContainerComponent,
-  //       RolesAndAccessComponent,
-  //       CaseRolesTableComponent,
-  //       ShowAllocateLinkDirective,
-  //       ExclusionsTableComponent,
-  //       RoleAccessSectionComponent,
-  //       AllocateARoleLinkComponent
-  //     ]
-  //   })
-  //     .compileComponents();
-  // }));
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule, HttpClientModule],
+      providers: [
+        CasesService, HttpErrorService, HttpErrorService, AuthService, AbstractAppConfig, AlertService,
+        { provide: CaseNotifier, useValue: mockNotifierService },
+        {
+          provide: RoleExclusionsService,
+          useClass: RoleExclusionsMockService
+        },
+        {
+          provide: FeatureToggleService,
+          useValue: {
+            isEnabled: (flag) => of(flags[flag]),
+            getValue: (flag) => of(flags[flag])
+          }
+        },
+        provideMockStore({ initialState: initialMockState }),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                roles: CASEROLES,
+                showAllocateRoleLink: true,
+                case: CASE_VIEW
+              }
+            }
+          }
+        }
+      ],
+      declarations: [
+        RolesAndAccessContainerComponent,
+        RolesAndAccessComponent,
+        CaseRolesTableComponent,
+        ShowAllocateLinkDirective,
+        ExclusionsTableComponent,
+        RoleAccessSectionComponent,
+        AllocateARoleLinkComponent
+      ]
+    })
+      .compileComponents();
+  }));
 
   // beforeEach(() => {
   //   fixture = TestBed.createComponent(RolesAndAccessContainerComponent);
@@ -215,27 +216,39 @@ describe('RolesContainerComponent', () => {
   // });
 
   it('setDisplayAllocateLink to set true for JUDICIAL', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
     component.setDisplayAllocateLink(initialMockState.appConfig.userDetails, 'JUDICIAL');
 
     expect(component.showAllocateRoleLink).toBeTruthy();
   });
 
-  it('ngOnit', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
-
-    spyOn(component, 'applyJurisdiction');
-    spyOn(component, 'loadExclusions');
-    spyOn(component, 'loadRoles');
-    caseworkerDataService.getCaseworkersForServices.and.returnValue(of({}));
-
-    component.ngOnInit();
-
-    expect(caseworkerDataService.getCaseworkersForServices).toHaveBeenCalled();
-    expect(component.applyJurisdiction).toHaveBeenCalled();
-    expect(component.loadExclusions).toHaveBeenCalled();
-    expect(component.loadRoles).toHaveBeenCalled();
+  it('should get exclusions from the api', () => {
+    component.exclusions$.subscribe((exclusions: RoleExclusion[]) => {
+      expect(exclusions.length).toBe(1);
+      expect(exclusions[0].name).toBe('Judge Birch');
+    });
   });
+
+  it('should case roles from api', () => {
+    mockAllocateRoleService.getCaseRoles.and.returnValue(of(caseRolesData));
+    mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of(data));
+    component.roles$.subscribe((caseRoles: CaseRole[]) => {
+      expect(caseRoles.length).toBe(1);
+      expect(caseRoles[0].name).toBe('Tom Cruz');
+    });
+  });
+});
+
+describe('RolesContainerComponent', () => {
+  let component: RolesAndAccessContainerComponent;
+  const route = jasmine.createSpyObj('route', ['navigate']);
+  const store = jasmine.createSpyObj('route', ['pipe', 'select']);
+  const featureToggleService: FeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
+  const roleExclusionsService = jasmine.createSpyObj('route', ['getCurrentUserRoleExclusions']);
+  const allocateService = jasmine.createSpyObj('route', ['getCaseRoles', 'getCaseRolesUserDetails']);
+  const caseworkerDataService = jasmine.createSpyObj('route', ['loadAll']);
+  const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem', 'setItem']);
+  const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
+  mockNotifierService.cachedCaseView = {};
 
   it('loadRoles', () => {
     component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
@@ -248,7 +261,7 @@ describe('RolesContainerComponent', () => {
       jurisdiction: {
         id: '',
         name: '',
-        description: '',
+        description: ''
       },
       printEnabled: false
     };
@@ -259,7 +272,7 @@ describe('RolesContainerComponent', () => {
     allocateService.getCaseRolesUserDetails.and.returnValue(of(caseUserDetails));
     const casefield = {};
     component.loadRoles(casefield);
-    component.roles$.subscribe(roles => {
+    component.roles$.subscribe((roles) => {
       expect(roles).not.toBeNull();
       expect(roles.length).toEqual(1);
       expect(roles[0].actorId).toEqual('234');
@@ -324,8 +337,7 @@ describe('RolesContainerComponent', () => {
 
     const jurisdiction = { value: 'ia' };
     const exclusions = [];
-    const caseDetails = { case_id: '12344', case_type: { id: '345' } } as CaseView;
-    component.caseDetails = caseDetails;
+    component.caseDetails = { case_id: '12344', case_type: { id: '345' } } as CaseView;
     roleExclusionsService.getCurrentUserRoleExclusions.and.returnValue(of(exclusions));
     component.loadExclusions(jurisdiction);
     component.exclusions$.subscribe((actual) => {
@@ -342,6 +354,5 @@ describe('RolesContainerComponent', () => {
 
     expect(component.setDisplayAllocateLink).toHaveBeenCalled();
     expect(component.caseJurisdiction).toEqual('JUDICIAL');
-
   });
 });

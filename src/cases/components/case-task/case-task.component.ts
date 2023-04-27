@@ -1,12 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { InfoMessage } from '../../../work-allocation/enums';
-
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
-import { Utils} from '../../../cases/utils/utils';
+import { Utils } from '../../../cases/utils/utils';
+import { InfoMessage } from '../../../work-allocation/enums';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { Task } from '../../../work-allocation/models/tasks';
 import { WorkAllocationTaskService } from '../../../work-allocation/services';
@@ -27,6 +26,7 @@ export class CaseTaskComponent implements OnInit {
     CaseTaskComponent.CASE_ID_VARIABLE,
     CaseTaskComponent.TASK_ID_VARIABLE
   ];
+
   public manageOptions: {id: string, title: string }[];
   public isUserJudicial: boolean;
   private pTask: Task;
@@ -34,15 +34,14 @@ export class CaseTaskComponent implements OnInit {
   constructor(private readonly alertService: AlertService,
               private readonly router: Router,
               private readonly sessionStorageService: SessionStorageService,
-              protected taskService: WorkAllocationTaskService) {
+              protected taskService: WorkAllocationTaskService) {}
+
+  public get returnUrl(): string {
+    return this.router ? this.router.url : `case-details/${this.task.case_id}/tasks`;
   }
 
   public get task(): Task {
     return this.pTask;
-  }
-
-  public get returnUrl(): string {
-    return this.router ? this.router.url : `case-details/${this.task.case_id}/tasks`;
   }
 
   @Input()
@@ -51,52 +50,53 @@ export class CaseTaskComponent implements OnInit {
     this.pTask = value;
   }
 
-  @Input() public caseworkers: Caseworker[] = [];
+  @Input()
+  public caseworkers: Caseworker[] = [];
 
   /**
    * Emit an event to refresh tasks
    */
    @Output() public taskRefreshRequired: EventEmitter<void>
-   = new EventEmitter();
+     = new EventEmitter();
 
-  public static replaceVariablesWithRealValues(task: Task): string {
-    if (!task.description) {
-      return '';
-    }
+   public static replaceVariablesWithRealValues(task: Task): string {
+     if (!task.description) {
+       return '';
+     }
 
-    // Append task id as querystring to task description markdown
-    task.description = appendTaskIdAsQueryStringToTaskDescription(task);
+     // Append task id as querystring to task description markdown
+     task.description = appendTaskIdAsQueryStringToTaskDescription(task);
 
-    return CaseTaskComponent.VARIABLES.reduce((description: string, variable: string) => {
-      if (variable === CaseTaskComponent.TASK_ID_VARIABLE) {
-        return Utils.replaceAll(description, variable, task.id);
-      }
-      return Utils.replaceAll(description, variable, task.case_id);
-    }, task.description);
-  }
+     return CaseTaskComponent.VARIABLES.reduce((description: string, variable: string) => {
+       if (variable === CaseTaskComponent.TASK_ID_VARIABLE) {
+         return Utils.replaceAll(description, variable, task.id);
+       }
+       return Utils.replaceAll(description, variable, task.case_id);
+     }, task.description);
+   }
 
-  public ngOnInit(): void {
-    this.manageOptions = this.task.actions;
-  }
+   public ngOnInit(): void {
+     this.manageOptions = this.task.actions;
+   }
 
-  public getAssigneeName(task: Task): string {
-    return task.assignee ? task.assigneeName : 'Unassigned';
-  }
+   public getAssigneeName(task: Task): string {
+     return task.assignee ? task.assigneeName : 'Unassigned';
+   }
 
-  public isTaskAssignedToCurrentUser(task: Task): boolean {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const userId = userInfo.id ? userInfo.id : userInfo.uid;
-      this.isUserJudicial = AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
-      return task.assignee && task.assignee === userId;
-    }
-    return false;
-  }
+   public isTaskAssignedToCurrentUser(task: Task): boolean {
+     const userInfoStr = this.sessionStorageService.getItem('userDetails');
+     if (userInfoStr) {
+       const userInfo: UserInfo = JSON.parse(userInfoStr);
+       const userId = userInfo.id ? userInfo.id : userInfo.uid;
+       this.isUserJudicial = AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
+       return task.assignee && task.assignee === userId;
+     }
+     return false;
+   }
 
-  public getDueDateTitle(): string {
-    return this.isUserJudicial ? 'Task created' : 'Due date';
-  }
+   public getDueDateTitle(): string {
+     return this.isUserJudicial ? 'Task created' : 'Due date';
+   }
 
   public onActionHandler(task: Task, option: any): void {
     if (option.id === 'claim') {
@@ -117,7 +117,7 @@ export class CaseTaskComponent implements OnInit {
     this.router.navigate([actionUrl], { queryParams: {service: task.jurisdiction}, state });
   }
 
-  /**
+   /**
    * Navigate the User to the correct error page, or throw an on page warning
    * that the Task is no longer available.
    */
@@ -132,21 +132,21 @@ export class CaseTaskComponent implements OnInit {
     }
   }
 
-  public toDate(value: string | number | Date): Date {
-    if (value) {
-      const d = new Date(value);
-      return isNaN(d.getTime()) ? null : d;
-    }
-    return null;
-  }
+   public toDate(value: string | number | Date): Date {
+     if (value) {
+       const d = new Date(value);
+       return isNaN(d.getTime()) ? null : d;
+     }
+     return null;
+   }
 
-  public onClick(event: string) {
-    const url = event.substring(event.indexOf('(') + 1, event.indexOf(')'));
-    const urls = url.split('?');
-    this.router.navigate([urls[0]], {
-      queryParams: {
-        tid: urls[1].split('=')[1]
-      }
-    });
-  }
+   public onClick(event: string) {
+     const url = event.substring(event.indexOf('(') + 1, event.indexOf(')'));
+     const urls = url.split('?');
+     this.router.navigate([urls[0]], {
+       queryParams: {
+         tid: urls[1].split('=')[1]
+       }
+     });
+   }
 }

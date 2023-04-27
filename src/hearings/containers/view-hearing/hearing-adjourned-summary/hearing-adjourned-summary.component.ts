@@ -3,13 +3,13 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
 import * as fromHearingStore from '../../../store';
 
 @Component({
   selector: 'exui-hearing-adjourned-summary',
-  templateUrl: './hearing-adjourned-summary.component.html',
+  templateUrl: './hearing-adjourned-summary.component.html'
 })
 export class HearingAdjournedSummaryComponent implements OnInit, OnDestroy {
   public hearingState$: Observable<fromHearingStore.State>;
@@ -25,8 +25,8 @@ export class HearingAdjournedSummaryComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.hearingState$ = this.hearingStore.select(fromHearingStore.getHearingsFeatureState)
       .pipe(
-        filter(state => !!state.hearingActuals.hearingActualsMainModel),
-    );
+        filter((state) => !!state.hearingActuals.hearingActualsMainModel),
+      );
 
     this.subscription = this.hearingState$.subscribe({
       next: (state: fromHearingStore.State) => {

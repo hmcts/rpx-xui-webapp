@@ -16,7 +16,6 @@ describe('CaseReferenceSearchBoxComponent', () => {
   const mockSearchService = jasmine.createSpyObj('SearchService', ['retrieveState', 'storeState']);
   const mockStore = jasmine.createSpyObj('Store', ['dispatch']);
 
-
   const initializeComponent = ({
     formBuilder = {},
     searchService = {},
@@ -44,9 +43,8 @@ describe('CaseReferenceSearchBoxComponent', () => {
     expect(component).toBeTruthy();
   });
 
-
   describe('ngOnDestroy', () => {
-    it(`should call 'unsubscribe'`, () => {
+    it('should call \'unsubscribe\'', () => {
       component = initializeComponent({});
       component.searchSubscription$ = {
         unsubscribe: jasmine.createSpy()
@@ -129,7 +127,7 @@ describe('CaseReferenceSearchBoxComponent', () => {
       url: {
         includes: jasmine.createSpy()
       },
-      navigateByUrl: () => Promise.resolve(),
+      navigateByUrl: () => Promise.resolve()
     };
 
     it('should return to case details page if case found', () => {
@@ -140,7 +138,7 @@ describe('CaseReferenceSearchBoxComponent', () => {
         get: () => ({
           value: 'VALID VALUE',
           invalid: false
-        }),
+        })
       } as unknown as FormGroup;
 
       const searchParameters: SearchParameters = {
@@ -159,7 +157,7 @@ describe('CaseReferenceSearchBoxComponent', () => {
       expect(mockSearchService.storeState).toHaveBeenCalledTimes(1);
       expect(mockSearchService.storeState).toHaveBeenCalledWith(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
       expect(mockStore.dispatch).toHaveBeenCalledTimes(1);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/cases/case-details/VALIDVALUE'], { state: { origin: '16digitCaseReferenceSearchFromHeader' }, relativeTo: ({  }) });
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/cases/case-details/VALIDVALUE'], { state: { origin: '16digitCaseReferenceSearchFromHeader' }, relativeTo: ({}) });
     });
 
     it('should return to case details page if case found and url includes case-details', fakeAsync(() => {
@@ -170,7 +168,7 @@ describe('CaseReferenceSearchBoxComponent', () => {
         get: () => ({
           value: 'VALID VALUE',
           invalid: false
-        }),
+        })
       } as unknown as FormGroup;
 
       mockRouter.url.includes.and.returnValue('case-details');
@@ -181,7 +179,7 @@ describe('CaseReferenceSearchBoxComponent', () => {
       expect(mockSearchService.storeState).toHaveBeenCalledTimes(1);
       expect(mockStore.dispatch).toHaveBeenCalledTimes(1);
       expect(mockRouter.navigate).toHaveBeenCalled();
-        expect(mockRouter.navigate).toHaveBeenCalledWith(['/cases/case-details/VALIDVALUE'], { state: { origin: '16digitCaseReferenceSearchFromHeader' }, relativeTo: ({  }) });
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/cases/case-details/VALIDVALUE'], { state: { origin: '16digitCaseReferenceSearchFromHeader' }, relativeTo: ({}) });
     }));
 
     it('should return to no results page if case reference entered is invalid', () => {
@@ -192,7 +190,7 @@ describe('CaseReferenceSearchBoxComponent', () => {
         get: () => ({
           value: 'INVALID VALUE',
           invalid: true
-        }),
+        })
       } as unknown as FormGroup;
 
       component.onSubmit();

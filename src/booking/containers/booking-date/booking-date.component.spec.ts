@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import {
@@ -19,7 +19,7 @@ describe('BookingDateComponent', () => {
   const dateInterval = [
     { date: BookingDateOption.TODAY, checked: false },
     { date: BookingDateOption.WEEK, checked: false },
-    { date: BookingDateOption.DATERANGE, checked: false },
+    { date: BookingDateOption.DATERANGE, checked: false }
   ];
   const configStart = {
     id: 'startDate',
@@ -35,7 +35,8 @@ describe('BookingDateComponent', () => {
     label: 'Booking Ends',
     isPageHeading: false
   };
-  beforeEach(async(() => {
+
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule, FormsModule ],
       declarations: [
@@ -53,10 +54,10 @@ describe('BookingDateComponent', () => {
       ],
 
     })
-    .compileComponents();
+      .compileComponents();
     fixture = TestBed.createComponent(BookingDateComponent);
     component = fixture.componentInstance;
-    component.bookingProcess = {selectedDateOption: 0} as BookingProcess;
+    component.bookingProcess = { selectedDateOption: 0 } as BookingProcess;
     component.dateInterval = dateInterval;
     component.configStart = configStart;
     component.configEnd = configEnd;
@@ -67,13 +68,13 @@ describe('BookingDateComponent', () => {
       endDate_year: '',
       endDate_month: '',
       endDate_day: '',
-      dateOption: '',
+      dateOption: ''
     });
     component.setValidators();
     fixture.detectChanges();
   }));
 
-  it('should create component and show the \"booking date\" info message banner', () => {
+  it('should create component and show the "booking date" info message banner', () => {
     expect(component).toBeDefined();
     const infoBannerElement = fixture.debugElement.nativeElement.querySelector('.govuk-caption-l');
     expect(infoBannerElement.textContent).toContain(BookingDatePageText.CAPTION);
@@ -95,7 +96,7 @@ describe('BookingDateComponent', () => {
     expect(errorMessageElement.textContent).toContain('There is a problem');
   });
 
-  it('should not show a validation error if form submitted with \"Today only (ends at midnight)\" selected', () => {
+  it('should not show a validation error if form submitted with "Today only (ends at midnight)" selected', () => {
     const radioButton = fixture.debugElement.nativeElement.querySelector('#date-0');
     radioButton.click();
     const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
@@ -107,7 +108,7 @@ describe('BookingDateComponent', () => {
     expect(errorMessageElement).toBe(null);
   });
 
-  it('should not show a validation error if form submitted with \"This week (end on Sunday at midnight )\" selected', () => {
+  it('should not show a validation error if form submitted with "This week (end on Sunday at midnight )" selected', () => {
     const radioButton = fixture.debugElement.nativeElement.querySelector('#date-1');
     radioButton.click();
     const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
@@ -119,7 +120,7 @@ describe('BookingDateComponent', () => {
     expect(errorMessageElement).toBe(null);
   });
 
-  it('should show a validation error if form submitted with \"Select a date range\" selected without date values', () => {
+  it('should show a validation error if form submitted with "Select a date range" selected without date values', () => {
     const radioButton = fixture.debugElement.nativeElement.querySelector('#date-2');
     radioButton.click();
     fixture.detectChanges();
@@ -133,7 +134,7 @@ describe('BookingDateComponent', () => {
     expect(errorMessageElement.textContent).toContain('There is a problem');
   });
 
-  it('should not show a validation error if form submitted with \"Select a date range\" selected with date values', () => {
+  it('should not show a validation error if form submitted with "Select a date range" selected with date values', () => {
     const radioButton = fixture.debugElement.nativeElement.querySelector('#date-2');
     radioButton.click();
     component.formGroup.get('startDate_day').patchValue('11');

@@ -35,9 +35,9 @@ describe('CaseShareCompleteComponent', () => {
     mockStore.pipe.and.returnValue(of(SHARED_CASE));
 
     TestBed.configureTestingModule({
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ CaseShareCompleteComponent, RpxTranslateMockPipe ],
-      imports: [ RouterTestingModule ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [CaseShareCompleteComponent],
+      imports: [RouterTestingModule],
       providers: [
         { provide: Store, useValue: mockStore },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService }

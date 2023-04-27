@@ -14,15 +14,15 @@ class RpxTranslateMockPipe implements PipeTransform {
 describe('CaseShareConfirmComponent', () => {
   let component: CaseShareConfirmComponent;
   let fixture: ComponentFixture<CaseShareConfirmComponent>;
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ CaseShareConfirmComponent, RpxTranslateMockPipe ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [CaseShareConfirmComponent],
       providers: [
-        provideMockStore(),
+        provideMockStore()
       ]
     }).compileComponents();
     store = TestBed.inject(Store);

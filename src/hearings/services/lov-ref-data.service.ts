@@ -1,12 +1,11 @@
-import {HttpClient, HttpParams} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {LovRefDataModel} from '../models/lovRefData.model';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { LovRefDataModel } from '../models/lovRefData.model';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class LovRefDataService {
-  public constructor(private readonly http: HttpClient) {
-  }
+  public constructor(private readonly http: HttpClient) {}
 
   public getListOfValues(category: string, service: string, isChildRequired: boolean = false): Observable<LovRefDataModel[]> {
     const options = {

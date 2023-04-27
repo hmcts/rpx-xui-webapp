@@ -25,7 +25,6 @@ export class Info implements Action {
 export class Warning implements Action {
   readonly type = LoggerStateActionTypes.Warning;
   constructor(public payload: string) {}
-
 }
 export class Error implements Action {
   readonly type = LoggerStateActionTypes.Error;
@@ -39,6 +38,5 @@ export class Clear implements Action {
   readonly type = LoggerStateActionTypes.Clear;
   constructor(public payload: string) {}
 }
-
 
 export type LoggerStateAction = Debug | Trace | Info | Warning | Error | Fatal | Clear;

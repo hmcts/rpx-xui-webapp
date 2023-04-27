@@ -5,7 +5,6 @@ import { Component, Input } from '@angular/core';
   templateUrl: './hearing-confirmation.component.html'
 })
 export class HearingConfirmationComponent {
-
   @Input() public caseId: string;
   @Input() public heading: string;
   @Input() public headingDescription: string;

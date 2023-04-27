@@ -1,8 +1,7 @@
 import { BookingResponse, BookingResponseError, Bookings } from '../models';
 /* disabling linting on this file as we don't want to sort the keys or add a comma at the end of the last key */
-/* tslint:disable */
 export const bookings: Bookings = {
-  'bookings' :
+  'bookings':
     [
       {
         appointmentId: '1011',
@@ -80,8 +79,8 @@ export const bookings: Bookings = {
         region_id: '104',
         roleId: 'caseworker',
         userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'
-      },
-    ],
+      }
+    ]
 };
 
 export const bookingResponse: BookingResponse = {

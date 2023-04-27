@@ -7,7 +7,6 @@ import { State } from '../store/reducers';
 import { CaseFlagAnswerConverter } from './case-flag.answer.converter';
 
 describe('CaseFlagAnswerConverter', () => {
-
   let caseFlagConverter: CaseFlagAnswerConverter;
   let router: any;
 
@@ -19,10 +18,10 @@ describe('CaseFlagAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                caseFlags: caseFlagsRefData,
-              },
-            },
-          },
+                caseFlags: caseFlagsRefData
+              }
+            }
+          }
         }
       ]
     });
@@ -34,7 +33,7 @@ describe('CaseFlagAnswerConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = caseFlagConverter.transformAnswer(of(STATE));
     const caseFlags = '<strong class=\'bold\'>Jane and Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li><li>Language Interpreter</li></ul><br><strong class=\'bold\'>DWP</strong>\n<ul><li>Physical access and facilities</li></ul><br>';
-    const expected = cold('(b|)', {b: caseFlags});
+    const expected = cold('(b|)', { b: caseFlags });
     expect(result$).toBeObservable(expected);
   });
 });

@@ -1,22 +1,17 @@
 
-var CaseManager = require("./common/CaseManager");
+var CaseManager = require('./common/CaseManager');
 
 class ProbateCase {
+  constructor() {
+    this.caseManager = new CaseManager();
+  }
 
-    constructor() {
-        this.caseManager = new CaseManager();
-    }
+  async createCase(isAccessibilityTest) {
+    var caseData = {
+    };
 
-    async createCase(isAccessibilityTest) {
-        var caseData = {
-        };
-
-
-        await this.caseManager.createCase(caseData, isAccessibilityTest);
-    }
-
-
-
+    await this.caseManager.createCase(caseData, isAccessibilityTest);
+  }
 }
 
 module.exports = ProbateCase;

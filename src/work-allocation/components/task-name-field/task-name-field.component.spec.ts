@@ -1,38 +1,36 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppConstants } from '../../../app/app.constants';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { TaskNameFieldComponent } from './task-name-field.component';
 
-
 @Component({
-  template: `<exui-task-name-field [taskName]="taskName" [caseId]='caseId'></exui-task-name-field>`
+  template: '<exui-task-name-field [taskName]="taskName" [caseId]=\'caseId\'></exui-task-name-field>'
 })
 class WrapperComponent {
-  @ViewChild(TaskNameFieldComponent, {static: true}) public appComponentRef: TaskNameFieldComponent;
+  @ViewChild(TaskNameFieldComponent, { static: true }) public appComponentRef: TaskNameFieldComponent;
   @Input() public taskName: string;
   @Input() public caseId: string;
 }
 
 describe('WorkAllocation', () => {
-
   describe('TaskNameFieldComponent', () => {
     const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
     const TASK_NAME: string = 'Taskname';
     const CASE_ID: string = 'CaseId';
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: TaskNameFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule, RouterTestingModule ]
+        declarations: [WrapperComponent],
+        imports: [WorkAllocationComponentsModule, RouterTestingModule]
       })
-      .compileComponents();
+        .compileComponents();
     }));
 
     beforeEach(() => {
@@ -98,6 +96,5 @@ describe('WorkAllocation', () => {
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
     });
-
   });
 });

@@ -42,7 +42,8 @@ describe('AlertComponent', () => {
   });
 
   afterEach(() => {
-    spyOn(component, 'ngOnDestroy').and.callFake(() => { });
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    spyOn(component, 'ngOnDestroy').and.callFake(() => {});
     fixture.destroy();
   });
 
@@ -83,5 +84,4 @@ describe('AlertComponent', () => {
     component.message = '1234567890123456';
     expect(component.hyphenate('1234567890123456')).toBe('1234-5678-9012-3456');
   });
-
 });

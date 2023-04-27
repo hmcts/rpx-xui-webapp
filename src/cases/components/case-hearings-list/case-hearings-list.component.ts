@@ -91,13 +91,13 @@ export class CaseHearingsListComponent implements OnInit {
       caseReference: this.caseId,
       hearingId: hearing.hearingID
     }));
-    this.hearingStore.dispatch(new fromHearingStore.LoadLinkedHearingGroup({groupId: hearing.hearingGroupRequestId}));
+    this.hearingStore.dispatch(new fromHearingStore.LoadLinkedHearingGroup({ groupId: hearing.hearingGroupRequestId }));
     this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, hearing.hearingGroupRequestId, hearing.hearingID]);
   }
 
   public viewAndEdit(hearingID: string): void {
     const hearingCondition: HearingConditions = {
-      mode: Mode.VIEW,
+      mode: Mode.VIEW
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
     this.LoadHearingRequestAndRedirect(hearingID, '/hearings/request/hearing-view-edit-summary');
@@ -135,6 +135,6 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public LoadHearingRequestAndRedirect(hearingID: string, targetURL: string) {
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({hearingID, targetURL}));
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID, targetURL }));
   }
 }

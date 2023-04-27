@@ -36,7 +36,7 @@ describe('NocEmailFieldComponent', () => {
     display_context_parameter: '1',
     challenge_question_id: 'NoC',
     answer_field: '',
-    question_id: 'question1',
+    question_id: 'question1'
   };
   const ANSWER_VALUE = of('test@test.com');
 

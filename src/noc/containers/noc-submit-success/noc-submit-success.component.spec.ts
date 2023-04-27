@@ -19,7 +19,7 @@ describe('NocSubmitSuccessComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NocSubmitSuccessComponent, RpxTranslateMockPipe ],
+      declarations: [NocSubmitSuccessComponent, RpxTranslateMockPipe],
       imports: [
         UtilsModule,
       ],
@@ -27,7 +27,7 @@ describe('NocSubmitSuccessComponent', () => {
         provideMockStore(),
       ]
     })
-    .compileComponents();
+      .compileComponents();
     store = TestBed.inject(Store);
     spyOn(store, 'pipe').and.callThrough();
   }));

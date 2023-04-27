@@ -13,41 +13,38 @@ const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getMockJurisdictionSearchInputConfig } = require('../../mockData/ccdCaseMock');
 const getEventConfig = require('../../mockData/ccdMockEventConfigs');
 
-const workAllocationDateUtil = require("../../../e2e/features/pageObjects/workAllocation/common/workAllocationDateUtil");
+const workAllocationDateUtil = require('../../../e2e/features/pageObjects/workAllocation/common/workAllocationDateUtil');
 const { LOG_LEVELS } = require('../../../e2e/support/constants');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
+  Given('I set mock for existing bookings', async function (bookingDatatAble) {
+    const bookingsTestData = bookingDatatAble.hashes();
+    const bookings = [];
+    for (const booking of bookingsTestData){
+      if(booking.locationId === ''){
+        continue;
+      }
 
-    Given('I set mock for existing bookings', async function (bookingDatatAble) {
-        const bookingsTestData = bookingDatatAble.hashes();
-        const bookings = [];
-        for (const booking of bookingsTestData){
-            if(booking.locationId === ""){
-                continue;
-            }
-            
-            const bookingLocations = booking.locationId.split(",");
-            for (const location of bookingLocations){
-                const bookingForLocation = {...booking}
-                bookingForLocation.locationId = location;
-                bookings.push(bookingForLocation)
-                if ("beginTime" in bookingForLocation) {
-                    bookingForLocation["beginTime"] = workAllocationDateUtil.getDateInDays(bookingForLocation["beginTime"])
-                }
-                if ("endTime" in bookingForLocation) {
-                    bookingForLocation["endTime"] = workAllocationDateUtil.getDateInDays(bookingForLocation["endTime"])
-                }
-            }
-           
+      const bookingLocations = booking.locationId.split(',');
+      for (const location of bookingLocations){
+        const bookingForLocation = { ...booking };
+        bookingForLocation.locationId = location;
+        bookings.push(bookingForLocation);
+        if ('beginTime' in bookingForLocation) {
+          bookingForLocation['beginTime'] = workAllocationDateUtil.getDateInDays(bookingForLocation['beginTime']);
         }
-        CucumberReporter.AddJson(bookings, LOG_LEVELS.Debug); 
-        bookingsMockData.setUpBookings(bookings);
-    });
+        if ('endTime' in bookingForLocation) {
+          bookingForLocation['endTime'] = workAllocationDateUtil.getDateInDays(bookingForLocation['endTime']);
+        }
+      }
+    }
+    CucumberReporter.AddJson(bookings, LOG_LEVELS.Debug);
+    bookingsMockData.setUpBookings(bookings);
+  });
 
-    Given('I set mock locations for bookings', async function (bookinglocations) {
-        const locationsHashes = bookinglocations.hashes();
-      
-        bookingsMockData.setupLocations(locationsHashes);
-    });
+  Given('I set mock locations for bookings', async function (bookinglocations) {
+    const locationsHashes = bookinglocations.hashes();
 
+    bookingsMockData.setupLocations(locationsHashes);
+  });
 });

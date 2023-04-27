@@ -7,7 +7,7 @@ import { CaseReferencePipe } from '../../../hearings/pipes/case-reference.pipe';
 @Component({
   selector: 'exui-case-details-home',
   templateUrl: './case-details-home.component.html',
-  providers: [ CaseReferencePipe ]
+  providers: [CaseReferencePipe]
 })
 export class CaseDetailsHomeComponent implements OnInit {
   private readonly extras: NavigationExtras;

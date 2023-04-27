@@ -13,6 +13,7 @@ const { LOG_LEVELS } = require('../../support/constants');
 const appTestData = require('../../config/appTestConfig')
 
 const { DataTableArgument } = require('codeceptjs');
+const browser = require('../../../codeceptCommon/browser');
 
 
 
@@ -241,8 +242,19 @@ const { DataTableArgument } = require('codeceptjs');
 
     When('If env is {string}, I enter {string} in  case ref in header 16 digit ref search', async function (env,input) {
         if (appTestData.getTestEnvFromEnviornment() === env){
-            await browserWaits.waitForSpinnerToDissappear();
-            await headerPage.headerCaseRefSearch.searchInput(input);
+            await browserWaits.retryWithActionCallback(async () => {
+                try{
+                    await headerPage.headerCaseRefSearch.container.wait();
+                    await browserWaits.waitForSpinnerToDissappear();
+
+                    await headerPage.headerCaseRefSearch.searchInput(input);
+                }catch(err){
+                    await browser.refresh();
+                    throw err;
+                }
+                
+            });
+            
         }
        
     });

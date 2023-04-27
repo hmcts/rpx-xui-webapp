@@ -71,7 +71,8 @@ class Browser{
     }
    
     refresh(){
-
+        const url = await this.getCurrentUrl();
+        await this.get(url);
     }
 
 

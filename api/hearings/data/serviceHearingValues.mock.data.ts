@@ -1,11 +1,10 @@
-/* tslint:disable:object-literal-sort-keys */
 import {
   CategoryType,
   HearingChannelEnum,
   HMCLocationType,
   MemberType,
   PartyType,
-  RequirementType,
+  RequirementType
 } from '../models/hearings.enum';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 
@@ -20,12 +19,12 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   caseCategories: [
     {
       categoryType: CategoryType.CaseType,
-      categoryValue: 'BBA3-002',
+      categoryValue: 'BBA3-002'
     }, {
       categoryType: CategoryType.CaseSubType,
       categoryValue: 'BBA3-002CP',
-      categoryParent: 'BBA3-002',
-    },
+      categoryParent: 'BBA3-002'
+    }
   ],
   caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
   caserestrictedFlag: false,
@@ -35,7 +34,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hearingWindow: {
     dateRangeStart: '2022-11-23T09:00:00.000Z',
     dateRangeEnd: '2022-11-30T09:00:00.000Z',
-    firstDateTimeMustBe: '',
+    firstDateTimeMustBe: ''
   },
   duration: 45,
   hearingPriorityType: 'Standard',
@@ -43,7 +42,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hearingInWelshFlag: false,
   hearingLocations: [{
     locationId: '372653',
-    locationType: HMCLocationType.COURT,
+    locationType: HMCLocationType.COURT
   }],
   caseAdditionalSecurityFlag: false,
   facilitiesRequired: ['AF-VF'],
@@ -58,16 +57,16 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     authorisationSubType: [''],
     panelComposition: [{
       memberType: '',
-      count: 1,
+      count: 1
     }],
     judiciaryPreferences: [
       {
         memberID: 'p1000000',
         memberType: MemberType.JUDGE,
-        requirementType: RequirementType.EXCLUDE,
-      },
+        requirementType: RequirementType.EXCLUDE
+      }
     ],
-    judiciarySpecialisms: [''],
+    judiciarySpecialisms: ['']
   },
   hearingIsLinkedFlag: false,
   panelRequirements: {
@@ -79,8 +78,8 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       'BBA3-MQPM2-003',
       'BBA3-MQPM2-004',
       'BBA3-FQPM',
-      'BBA3-RMM',
-    ],
+      'BBA3-RMM'
+    ]
   },
   parties: [
     {
@@ -92,10 +91,10 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         title: 'Miss',
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'INTER',
+        preferredHearingChannel: 'INTER'
       },
       unavailabilityRanges: [
-      ],
+      ]
     },
     {
       partyID: 'P2',
@@ -106,48 +105,48 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         title: '',
         firstName: 'DWP',
         lastName: 'Representative',
-        preferredHearingChannel: 'INTER',
+        preferredHearingChannel: 'INTER'
       },
       unavailabilityRanges: [
-      ],
+      ]
     }],
   caseFlags: {
     flags: [
     ],
-    flagAmendURL: '/flag/amend',
+    flagAmendURL: '/flag/amend'
   },
   screenFlow: [
     {
       screenName: 'hearing-requirements',
       navigation: [
         {
-          resultValue: 'hearing-facilities',
-        },
-      ],
+          resultValue: 'hearing-facilities'
+        }
+      ]
     },
     {
       screenName: 'hearing-facilities',
       navigation: [
         {
-          resultValue: 'hearing-stage',
-        },
-      ],
+          resultValue: 'hearing-stage'
+        }
+      ]
     },
     {
       screenName: 'hearing-stage',
       navigation: [
         {
-          resultValue: 'hearing-attendance',
-        },
-      ],
+          resultValue: 'hearing-attendance'
+        }
+      ]
     },
     {
       screenName: 'hearing-attendance',
       navigation: [
         {
-          resultValue: 'hearing-venue',
-        },
-      ],
+          resultValue: 'hearing-venue'
+        }
+      ]
     },
     {
       screenName: 'hearing-venue',
@@ -156,67 +155,67 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         {
           conditionOperator: 'INCLUDE',
           conditionValue: '7',
-          resultValue: 'hearing-welsh',
+          resultValue: 'hearing-welsh'
         },
         {
           conditionOperator: 'NOT INCLUDE',
           conditionValue: '7',
-          resultValue: 'hearing-judge',
-        },
-      ],
+          resultValue: 'hearing-judge'
+        }
+      ]
     },
     {
       screenName: 'hearing-welsh',
       navigation: [
         {
-          resultValue: 'hearing-judge',
-        },
-      ],
+          resultValue: 'hearing-judge'
+        }
+      ]
     },
     {
       screenName: 'hearing-judge',
       navigation: [
         {
-          resultValue: 'hearing-panel',
-        },
-      ],
+          resultValue: 'hearing-panel'
+        }
+      ]
     },
     {
       screenName: 'hearing-panel',
       navigation: [
         {
-          resultValue: 'hearing-timing',
-        },
-      ],
+          resultValue: 'hearing-timing'
+        }
+      ]
     },
     {
       screenName: 'hearing-timing',
       navigation: [
         {
-          resultValue: 'hearing-link',
-        },
-      ],
+          resultValue: 'hearing-link'
+        }
+      ]
     },
     {
       screenName: 'hearing-link',
       navigation: [
         {
-          resultValue: 'hearing-additional-instructions',
-        },
-      ],
+          resultValue: 'hearing-additional-instructions'
+        }
+      ]
     },
     {
       screenName: 'hearing-additional-instructions',
       navigation: [
         {
-          resultValue: 'hearing-create-edit-summary',
-        },
-      ],
-    },
+          resultValue: 'hearing-create-edit-summary'
+        }
+      ]
+    }
   ],
   vocabulary: [
     {
-      word1: '',
-    },
-  ],
+      word1: ''
+    }
+  ]
 };

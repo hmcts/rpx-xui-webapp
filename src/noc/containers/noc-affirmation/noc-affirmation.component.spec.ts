@@ -13,6 +13,7 @@ class RpxTranslateMockPipe implements PipeTransform {
 
 describe('NocAffirmationComponent', () => {
   let store;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let spyOnPipeToStore = jasmine.createSpy();
   let spyOnDispatchToStore = jasmine.createSpy();
   let component: NocAffirmationComponent;
@@ -20,12 +21,12 @@ describe('NocAffirmationComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NocAffirmationComponent, RpxTranslateMockPipe ],
+      declarations: [NocAffirmationComponent, RpxTranslateMockPipe],
       providers: [
         provideMockStore(),
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -46,7 +47,7 @@ describe('NocAffirmationComponent', () => {
     const event = {
       currentTarget: {
         checked: true
-      }};
+      } };
     component.onChangeAffirmation(event);
     expect(spyOnDispatchToStore).toHaveBeenCalled();
   });

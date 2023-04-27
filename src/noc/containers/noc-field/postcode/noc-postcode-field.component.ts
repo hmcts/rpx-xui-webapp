@@ -7,7 +7,6 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
   templateUrl: './noc-postcode-field.component.html'
 })
 export class NocPostcodeFieldComponent extends AbstractFieldWriteComponent implements OnInit {
-
   public postcodeControl: FormControl;
 
   public ngOnInit() {

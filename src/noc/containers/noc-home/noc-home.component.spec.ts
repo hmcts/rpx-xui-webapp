@@ -67,6 +67,7 @@ describe('NocHomeComponent', () => {
       storePipeMock.and.returnValue(of(0));
       fixture.detectChanges();
     });
+
     it('should set navEvent', () => {
       // Need to set a valid NoC navigation state on the component
       component.nocNavigationCurrentState = NocState.QUESTION;
@@ -120,7 +121,9 @@ describe('NocHomeComponent', () => {
 
     it('should throw error Invalid NoC state', () => {
       component.nocNavigationCurrentState = NocState.AFFIRMATION_NOT_AGREED;
-      expect(() => { component.navigationHandler(NocNavigationEvent.BACK); }).toThrow(new Error('Invalid NoC state'));
+      expect(() => {
+        component.navigationHandler(NocNavigationEvent.BACK);
+      }).toThrow(new Error('Invalid NoC state'));
     });
 
     it('should navigate to question page when click continue button if on case ref page', () => {
@@ -139,7 +142,9 @@ describe('NocHomeComponent', () => {
 
     it('should throw error Invalid NoC state', () => {
       component.nocNavigationCurrentState = NocState.CHECK_ANSWERS;
-      expect(() => { component.navigationHandler(NocNavigationEvent.CONTINUE); }).toThrow(new Error('Invalid NoC state'));
+      expect(() => {
+        component.navigationHandler(NocNavigationEvent.CONTINUE);
+      }).toThrow(new Error('Invalid NoC state'));
     });
 
     afterEach(() => {
@@ -153,6 +158,7 @@ describe('NocHomeComponent', () => {
       storePipeMock.and.returnValue(of(6));
       fixture.detectChanges();
     });
+
     it('should navigate to answer page when click continue button if on QUESTION page', () => {
       spyOn(component.nocCheckAndSubmitComponent, 'navigationHandler');
       component.navigationHandler(NocNavigationEvent.CHECK_ANSWERS);
@@ -161,7 +167,9 @@ describe('NocHomeComponent', () => {
 
     it('should throw error Invalid NoC state', () => {
       component.nocNavigationCurrentState = null;
-      expect(() => { component.navigationHandler(NocNavigationEvent.CHECK_ANSWERS); }).toThrow(new Error('Invalid NoC state'));
+      expect(() => {
+        component.navigationHandler(NocNavigationEvent.CHECK_ANSWERS);
+      }).toThrow(new Error('Invalid NoC state'));
     });
 
     afterEach(() => {

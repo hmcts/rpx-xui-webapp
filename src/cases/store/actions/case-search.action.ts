@@ -28,32 +28,27 @@ export class Reset implements Action {
 
 export class ApplySearchFilter implements Action {
   public readonly type = APPLY_SEARCH_FILTER;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export class ApplySearchFilterForES implements Action {
   public readonly type = APPLY_SEARCH_FILTER_FOR_ES;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export class FindSearchPaginationMetadata implements Action {
   public readonly type = FIND_SEARCH_PAGINATION_METADATA;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export class SearchResultPageChange implements Action {
   public readonly type = SEARCH_RESULT_PAGE_CHANGE;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export class FindSearchPaginationMetadataSuccess implements Action {
   public readonly type = FIND_SEARCH_PAGINATION_METADATA_SUCCESS;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export class ApplySearchFilterSuccess implements Action {
@@ -63,19 +58,16 @@ export class ApplySearchFilterSuccess implements Action {
 
 export class ApplySearchFilterFail implements Action {
   public readonly type = APPLY_SEARCH_FILTER_FAIL;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export class SearchFilterToggle implements Action {
   public readonly type = SEARCH_FILTER_DISPLAY_TOGGLE;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 export class SearchFilterToggleSuccess implements Action {
   public readonly type = SEARCH_FILTER_DISPLAY_TOGGLE_SUCCESS;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 export type CaseSearchAction =

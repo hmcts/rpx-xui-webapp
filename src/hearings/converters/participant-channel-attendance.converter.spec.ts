@@ -9,8 +9,8 @@ import { State } from '../store';
 import { ParticipantChannelAttendenceAnswerConverter } from './participant-channel-attendance.converter';
 
 describe('ParticipantChannelAttendance', () => {
-
   let converter: ParticipantChannelAttendenceAnswerConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
   let router: any;
 
@@ -25,9 +25,9 @@ describe('ParticipantChannelAttendance', () => {
               data: {
                 partyChannels: partyChannelsRefData,
                 partySubChannels: partySubChannelsRefData
-              },
-            },
-          },
+              }
+            }
+          }
         }
       ]
     });
@@ -43,5 +43,4 @@ describe('ParticipantChannelAttendance', () => {
     const expected = cold('(b|)', { b: room });
     expect(result$).toBeObservable(expected);
   });
-
 });

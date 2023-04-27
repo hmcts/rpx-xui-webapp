@@ -18,7 +18,6 @@ import * as fromCaseList from '../../store/reducers';
   styleUrls: ['./case-share.component.scss']
 })
 export class CaseShareComponent implements OnInit {
-
   public routerState$: Observable<RouterReducerState<RouterStateUrl>>;
   public init: boolean;
   public shareCases$: Observable<SharedCase[]>;
@@ -27,14 +26,13 @@ export class CaseShareComponent implements OnInit {
   public removeUserFromCaseToggleOn$: Observable<boolean>;
 
   constructor(private readonly store: Store<fromCaseList.State>,
-              private readonly featureToggleService: FeatureToggleService) {
-  }
+              private readonly featureToggleService: FeatureToggleService) {}
 
   public ngOnInit() {
     this.routerState$ = this.store.pipe(select(getRouterState));
-    this.routerState$.subscribe(router => this.init = router.state.queryParams.init);
+    this.routerState$.subscribe((router) => this.init = router.state.queryParams.init);
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
-    this.shareCases$.subscribe(shareCases => {
+    this.shareCases$.subscribe((shareCases) => {
       this.shareCases = shareCases;
     });
     this.orgUsers$ = this.store.pipe(select(fromCasesFeature.getOrganisationUsersState));
@@ -57,5 +55,4 @@ export class CaseShareComponent implements OnInit {
   public synchronizeStore($event) {
     this.store.dispatch(new fromCasesFeature.SynchronizeStateToStore($event));
   }
-
 }

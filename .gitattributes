@@ -1,0 +1,11 @@
+*.cjs text eol=lf
+*.config text eol=lf
+*.html text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.properties text eol=lf
+*.scss text eol=lf
+*.ts text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf

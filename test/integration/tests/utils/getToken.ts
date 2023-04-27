@@ -1,7 +1,7 @@
-import {getConfigValue} from '../../../../api/configuration';
-import { IDAM_SECRET, SERVICES_IDAM_API_URL, SERVICES_IDAM_CLIENT_ID} from '../../../../api/configuration/references';
+import { getConfigValue } from '../../../../api/configuration';
+import { IDAM_SECRET, SERVICES_IDAM_API_URL, SERVICES_IDAM_CLIENT_ID } from '../../../../api/configuration/references';
 
-import axios, {AxiosInstance} from 'axios';
+import axios, { AxiosInstance } from 'axios';
 
 const axiosInstance: AxiosInstance = axios.create();
 const idamApi = getConfigValue(SERVICES_IDAM_API_URL);
@@ -21,7 +21,7 @@ export async function getAuthCode() {
       'Content-Type': 'application/x-www-form-urlencoded',
       Authorization: `Basic ${encode}`
     },
-    body: '',
+    body: ''
   };
 
   console.log('authcode req ', urlPost);
@@ -39,8 +39,8 @@ export async function getAuthToken() {
   const options = {
     headers: {
       Authorization: `Basic ${Buffer.from(`${idamClient}:${idamSecret}`).toString('base64')}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
   };
 
   const response = await axiosInstance.post(tokenUrlPost, {}, options);

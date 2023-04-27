@@ -12,7 +12,6 @@ import { BookingNavigationEvent, BookingProcess } from '../../models';
   styleUrls: ['./booking-location.component.scss']
 })
 export class BookingLocationComponent implements AfterViewInit, OnInit {
-
   @Input() public bookingProcess: BookingProcess;
 
   @Output() public bookingProcessChange = new EventEmitter<BookingProcess>();
@@ -74,8 +73,8 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
 
   // get a comma separated list of unique jurisdictions from the user role assignment info
   private getJurisdictions(): void {
-    this.store.pipe(select(fromRoot.getUserDetails)).subscribe(user => {
-      this.jurisdictions = Array.from(new Set(user.roleAssignmentInfo.filter(role => role.bookable).map(a => a.jurisdiction))).toString();
+    this.store.pipe(select(fromRoot.getUserDetails)).subscribe((user) => {
+      this.jurisdictions = Array.from(new Set(user.roleAssignmentInfo.filter((role) => role.bookable).map((a) => a.jurisdiction))).toString();
     });
   }
 }

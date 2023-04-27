@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import * as fromRoot from '../../../../app/store/reducers';
-import { SpecificAccessNavigationEvent } from '../../../models';
 import * as fromStore from '../../../store';
 import { SpecificAccessNavigationComponent } from './specific-access-navigation.component';
 
@@ -17,15 +16,15 @@ describe('ExclusionNavigationComponent', () => {
       imports: [
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromStore.reducers),
-        }),
+          feature: combineReducers(fromStore.reducers)
+        })
       ],
       declarations: [
         SpecificAccessNavigationComponent
       ]
     }).compileComponents();
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     storePipeMock = spyOn(store, 'pipe');
 

@@ -7,17 +7,17 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 
 export class JudgeExclusionAnswerConverter implements AnswerConverter {
-  constructor(protected readonly route: ActivatedRoute) { }
+  constructor(protected readonly route: ActivatedRoute) {}
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     const judicialUsersList: JudicialUserModel[] = this.route.snapshot.data.judicialUsers;
 
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-        const excludedJudges: string[] = panelRequirements && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.EXCLUDE).map(preferences => preferences.memberID);
+        const excludedJudges: string[] = panelRequirements && panelRequirements.panelPreferences.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.EXCLUDE).map((preferences) => preferences.memberID);
         const excludedJudgeNames: string[] = [];
-        judicialUsersList.forEach(judgeInfo => {
+        judicialUsersList.forEach((judgeInfo) => {
           if (excludedJudges.includes(judgeInfo.personalCode)) {
             excludedJudgeNames.push(judgeInfo.fullName);
           }

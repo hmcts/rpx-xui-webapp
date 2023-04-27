@@ -25,7 +25,7 @@ describe('NocCheckYourAnswersComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ NocCheckYourAnswersComponent, RpxTranslateMockPipe ],
+      declarations: [NocCheckYourAnswersComponent, RpxTranslateMockPipe],
       imports: [
         UtilsModule
       ],
@@ -33,7 +33,7 @@ describe('NocCheckYourAnswersComponent', () => {
         provideMockStore()
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -72,7 +72,7 @@ describe('NocCheckYourAnswersComponent', () => {
     const answer: NocAnswer = {
       question_id: 'q1',
       question_text: of('name'),
-      value: 'James',
+      value: 'James'
     };
     component.navToQAndA(answer);
     expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.ChangeNavigation(NocState.QUESTION));

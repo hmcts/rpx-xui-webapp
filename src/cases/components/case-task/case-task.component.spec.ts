@@ -15,7 +15,7 @@ describe('CaseTaskComponent', () => {
 
   it('ngOnInit', () => {
     component.task = {} as Task;
-    component.task.actions = [{id: 'id', title: 'actionName'}];
+    component.task.actions = [{ id: 'id', title: 'actionName' }];
     component.ngOnInit();
     expect(component.manageOptions[0].id).toEqual('id');
     expect(component.manageOptions[0].title).toEqual('actionName');
@@ -60,11 +60,11 @@ describe('CaseTaskComponent', () => {
       derivedIcon: null
     };
     let userIdType = 'uid';
-    mockSessionStorage.getItem.and.returnValue(`{\"sub\":\"juser8@mailinator.com\",\"${userIdType}\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}`);
+    mockSessionStorage.getItem.and.returnValue(`{"sub":"juser8@mailinator.com","${userIdType}":"44d5d2c2-7112-4bef-8d05-baaa610bf463","roles":["caseworker","caseworker-ia","caseworker-ia-iacjudge"],"name":"XUI test Judge","given_name":"XUI test","family_name":"Judge","token":""}`);
     let result = component.isTaskAssignedToCurrentUser(task);
     expect(result).toBeTruthy();
     userIdType = 'id';
-    mockSessionStorage.getItem.and.returnValue(`{\"sub\":\"juser8@mailinator.com\",\"${userIdType}\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}`);
+    mockSessionStorage.getItem.and.returnValue(`{"sub":"juser8@mailinator.com","${userIdType}":"44d5d2c2-7112-4bef-8d05-baaa610bf463","roles":["caseworker","caseworker-ia","caseworker-ia-iacjudge"],"name":"XUI test Judge","given_name":"XUI test","family_name":"Judge","token":""}`);
     result = component.isTaskAssignedToCurrentUser(task);
     expect(result).toBeTruthy();
   });
@@ -133,19 +133,22 @@ describe('CaseTaskComponent', () => {
     const result = CaseTaskComponent.replaceVariablesWithRealValues(task);
     expect(result).toBe(`[Link the appeal](/cases/case-details/1620409659381330/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId?tid=${task.id})`);
   });
+
   it('getDueDateTitle should be Task created', () => {
-      component.isUserJudicial = true;
-      expect(component.getDueDateTitle()).toEqual('Task created');
+    component.isUserJudicial = true;
+    expect(component.getDueDateTitle()).toEqual('Task created');
   });
+
   it('getDueDateTitle should be Due date', () => {
-      component.isUserJudicial = false;
-      expect(component.getDueDateTitle()).toEqual('Due date');
+    component.isUserJudicial = false;
+    expect(component.getDueDateTitle()).toEqual('Due date');
   });
 
   describe('onActionHandler()', () => {
     const exampleTask = getMockTasks()[0];
-    const firstOption = {id: 'claim'};
-    const secondOption = {id: 'unclaim'};
+    const firstOption = { id: 'claim' };
+    const secondOption = { id: 'unclaim' };
+
     it('should handle a claim action', () => {
       mockTaskService.claimTask.and.returnValue(of(null));
       const refreshTasksSpy = spyOn(component.taskRefreshRequired, 'emit');
@@ -157,7 +160,7 @@ describe('CaseTaskComponent', () => {
     });
 
     it('should handle an action that redirects', () => {
-      const state = {returnUrl: '/case-details/123243430403904/tasks', keepUrl: true, showAssigneeColumn: true};
+      const state = { returnUrl: '/case-details/123243430403904/tasks', keepUrl: true, showAssigneeColumn: true };
       const queryParams = { service: 'IA' };
 
       // need to check that navigate has been called
@@ -165,29 +168,25 @@ describe('CaseTaskComponent', () => {
       expect(mockRouter.navigate).toHaveBeenCalled();
 
       // need to verify correct properties were called
-      expect(mockRouter.navigate).toHaveBeenCalledWith([`/work/${exampleTask.id}/${secondOption.id}`], {queryParams, state});
+      expect(mockRouter.navigate).toHaveBeenCalledWith([`/work/${exampleTask.id}/${secondOption.id}`], { queryParams, state });
       expect(component.returnUrl).toBe('/case-details/123243430403904/tasks');
     });
   });
 
   describe('claimTaskErrors()', () => {
-
     it('should make a call to navigate the user to the /service-down page, if the error status code is 500.', () => {
-
       component.claimTaskErrors(500);
 
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/service-down']);
     });
 
     it('should make a call to navigate the user to the /not-authorised page, if the error status code is 401.', () => {
-
       component.claimTaskErrors(401);
 
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-authorised']);
     });
 
     it('should make a call to navigate the user to the /not-authorised page, if the error status code is 403.', () => {
-
       component.claimTaskErrors(403);
 
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-authorised']);
@@ -202,7 +201,6 @@ describe('CaseTaskComponent', () => {
   });
 
   describe('toDate()', () => {
-
     it('should return null if there is no value', () => {
       expect(component.toDate(undefined)).toBe(null);
       expect(component.toDate(null)).toBe(null);
@@ -218,16 +216,12 @@ describe('CaseTaskComponent', () => {
       expect(component.toDate('01-01-2000').toDateString()).toBe(firstDate.toDateString());
       expect(component.toDate(new Date('03-12-2020')).toDateString()).toEqual(secondDate.toDateString());
     });
-
   });
 
   describe('onClick()', () => {
-
     it('should navigate correctly on click', () => {
       component.onClick('exampleUrl(firstUrlPart?secondUrlPart=equalPart)end');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['firstUrlPart'], {queryParams: {tid: 'equalPart'}});
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['firstUrlPart'], { queryParams: { tid: 'equalPart' } });
     });
-
   });
-
 });

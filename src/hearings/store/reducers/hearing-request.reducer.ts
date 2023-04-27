@@ -1,14 +1,14 @@
-import {HearingConditions} from '../../models/hearingConditions';
-import {HearingRequestMainModel} from '../../models/hearingRequestMain.model';
-import {HearingRequestStateData} from '../../models/hearingRequestStateData.model';
-import {Mode} from '../../models/hearings.enum';
+import { HearingConditions } from '../../models/hearingConditions';
+import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
+import { HearingRequestStateData } from '../../models/hearingRequestStateData.model';
+import { Mode } from '../../models/hearings.enum';
 import * as fromActions from '../actions';
 
 export const initialHearingRequestState: HearingRequestStateData = {
   hearingRequestMainModel: {
     requestDetails: {
       timeStamp: null,
-      versionNumber: 0,
+      versionNumber: 0
     },
     hearingDetails: {
       duration: null,
@@ -45,15 +45,15 @@ export const initialHearingRequestState: HearingRequestStateData = {
       caseCategories: [],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: null,
+      caseSLAStartDate: null
     },
-    partyDetails: [],
+    partyDetails: []
   },
-  lastError: null,
+  lastError: null
 };
 
 export function hearingRequestReducer(currentState = initialHearingRequestState,
-                                      action: fromActions.HearingRequestAction): HearingRequestStateData {
+  action: fromActions.HearingRequestAction): HearingRequestStateData {
   switch (action.type) {
     case fromActions.RESET_HEARING_REQUEST: {
       return {
@@ -71,10 +71,10 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
       let hasWalesLocation;
       const hearingConditions: HearingConditions = action.hearingCondition;
       if (hearingConditions.hasOwnProperty('mode')) {
-        mode = hearingConditions['mode'];
+        mode = hearingConditions.mode;
       }
       if (hearingConditions.hasOwnProperty('regionId')) {
-        const regionId = hearingConditions['regionId'];
+        const regionId = hearingConditions.regionId;
         hasWalesLocation = regionId.includes('7');
       }
       let updatedHearingRequestMainModel: HearingRequestMainModel = action.hearingRequestMainModel;

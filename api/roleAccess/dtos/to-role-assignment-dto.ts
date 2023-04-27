@@ -1,4 +1,3 @@
-/* tslint:disable:object-literal-sort-keys */
 import { UserInfo } from '../../auth/interfaces/UserInfo';
 import { AllocateRoleData } from '../models/allocate-role-state-data.interface';
 import { AllocateTo, Period, RoleCategory } from '../models/allocate-role.enum';
@@ -7,7 +6,7 @@ export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: Al
   return {
     roleRequest: {
       assignerId: currentUserId,
-      replaceExisting: false,
+      replaceExisting: false
     },
     requestedRoles: [{
       roleType: 'CASE',
@@ -15,15 +14,15 @@ export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: Al
       classification: 'PUBLIC',
       attributes: {
         caseId: allocateRoleData.caseId,
-        jurisdiction: allocateRoleData.jurisdiction,
+        jurisdiction: allocateRoleData.jurisdiction
       },
       roleName: allocateRoleData.typeOfRole.id,
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
       actorId: getActorId(currentUserId, allocateRoleData),
       beginTime: allocateRoleData.period.startDate,
-      endTime: allocateRoleData.period.endDate,
-    }],
+      endTime: allocateRoleData.period.endDate
+    }]
   };
 }
 
@@ -36,13 +35,13 @@ export function toSARoleAssignmentBody(
   const allocateRoleData = specificAccessData.specificAccessStateData;
   const period = specificAccessData.period;
   const requestedRole = allocateRoleData.requestedRole !== 'specific-access-judicial'
-   ? allocateRoleData.requestedRole : 'specific-access-judiciary';
+    ? allocateRoleData.requestedRole : 'specific-access-judiciary';
   return {
     roleRequest: {
       assignerId: currentUserId,
       replaceExisting: true,
       process: 'specific-access',
-      reference: `${allocateRoleData.caseId}/${requestedRole}/${allocateRoleData.actorId}`,
+      reference: `${allocateRoleData.caseId}/${requestedRole}/${allocateRoleData.actorId}`
     },
     requestedRoles: [{
       roleType: 'CASE',
@@ -52,7 +51,7 @@ export function toSARoleAssignmentBody(
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole,
-        ...extraAttributesForBasicRole,
+        ...extraAttributesForBasicRole
       },
       roleName: 'specific-access-granted',
       roleCategory: allocateRoleData.roleCategory,
@@ -60,13 +59,13 @@ export function toSARoleAssignmentBody(
       actorId: allocateRoleData.actorId,
       beginTime: period.startDate,
       endTime: period.endDate
-      ? period.endDate : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
+        ? period.endDate : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
       // TODO: Include notes once we have that information
       notes: [
-      {comment: `{\"specificReason\":${allocateRoleData.accessReason}}`,
-      time: new Date().toISOString(),
-      userId: allocateRoleData.actorId},
-    ],
+        { comment: `{"specificReason":${allocateRoleData.accessReason}}`,
+          time: new Date().toISOString(),
+          userId: allocateRoleData.actorId }
+      ]
     },
     {
       roleType: 'CASE',
@@ -76,7 +75,7 @@ export function toSARoleAssignmentBody(
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole,
-        ...extraAttributesForSpecificRole,
+        ...extraAttributesForSpecificRole
       },
       roleName: requestedRole,
       roleCategory: allocateRoleData.roleCategory,
@@ -86,11 +85,11 @@ export function toSARoleAssignmentBody(
       endTime: period.endDate,
       // TODO: Include notes once we have that information
       notes: [
-      {comment: "{\"specificReason\":\"Request approved\"}",
-      time: new Date().toISOString,
-      userId: allocateRoleData.actorId},
-      ],
-    }],
+        { comment: '{"specificReason":"Request approved"}',
+          time: new Date().toISOString,
+          userId: allocateRoleData.actorId }
+      ]
+    }]
   };
 }
 
@@ -99,7 +98,7 @@ export function toDenySARoleAssignmentBody(
 ) {
   const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
   let requestedrole;
-  switch ( allocateRoleData.roleCategory) {
+  switch (allocateRoleData.roleCategory) {
     case RoleCategory.JUDICIAL:
       requestedrole = 'specific-access-judiciary';
       break;
@@ -113,14 +112,14 @@ export function toDenySARoleAssignmentBody(
       requestedrole = 'specific-access-ctsc';
       break;
     default:
-        break;
+      break;
   }
   return {
     roleRequest: {
       assignerId: currentUserId,
       replaceExisting: true,
       process: 'specific-access',
-      reference: `${allocateRoleData.caseId}/${requestedrole}/${allocateRoleData.assigneeId}`,
+      reference: `${allocateRoleData.caseId}/${requestedrole}/${allocateRoleData.assigneeId}`
     },
     requestedRoles: [{
       roleType: 'CASE',
@@ -139,36 +138,36 @@ export function toDenySARoleAssignmentBody(
         // note: line below added in conflict with lines above
         // since the lines above are crucial, some are required within the state data
         // and the development for the above has already been approved by QA this will be kept for now
-        ...extraAttributesForBasicRole,
+        ...extraAttributesForBasicRole
       },
       roleName: 'specific-access-denied',
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
       actorId: allocateRoleData.assigneeId,
       endTime: new Date(new Date().setDate(new Date().getDate() + 14)),
-      notes: [{comment: allocateRoleData.comment,
-      time: new Date(),
-      userId: currentUserId}],
-    },
-  ],
+      notes: [{ comment: allocateRoleData.comment,
+        time: new Date(),
+        userId: currentUserId }]
+    }
+    ]
   };
 }
 export function toDenySADletionRequestedRoleBody(requestId: string) {
   return {
-      pathVariables: {
-        process: 'staff-organisational-role-mapping',
-        reference: requestId,
-      },
-      queryParams: null,
-      body: {
-        userIds: [ requestId ],
-      },
-      multipart: false,
-    };
+    pathVariables: {
+      process: 'staff-organisational-role-mapping',
+      reference: requestId
+    },
+    queryParams: null,
+    body: {
+      userIds: [requestId]
+    },
+    multipart: false
+  };
 }
 
 export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData,
-                                              extraAttributesForBasicRole: {[x: string]: string | boolean} = {}
+  extraAttributesForBasicRole: {[x: string]: string | boolean} = {}
 ) {
   const todayDate = new Date();
   return {
@@ -176,7 +175,7 @@ export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData
       assignerId: allocateRoleData.person.id,
       replaceExisting: true,
       process: 'specific-access',
-      reference: `${allocateRoleData.caseId}/${allocateRoleData.requestedRole}/${allocateRoleData.person.id}`,
+      reference: `${allocateRoleData.caseId}/${allocateRoleData.requestedRole}/${allocateRoleData.person.id}`
     },
     requestedRoles: [{
       roleType: 'CASE',
@@ -186,7 +185,7 @@ export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole: allocateRoleData.requestedRole,
-        ...extraAttributesForBasicRole,
+        ...extraAttributesForBasicRole
       },
       roleName: 'specific-access-requested',
       roleCategory: allocateRoleData.roleCategory,
@@ -194,19 +193,19 @@ export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData
       actorId: allocateRoleData.person.id,
       beginTime: new Date(),
       endTime: allocateRoleData.period && allocateRoleData.period.endDate ? allocateRoleData.period.endDate
-       : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
+        : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
       // TODO: Include notes once we have that information
-      notes: [{comment: `{\"specificReason\":${allocateRoleData.specificReason}}`,
-      time: new Date().toISOString(),
-      userId: allocateRoleData.person.id}],
-    }],
+      notes: [{ comment: `{"specificReason":${allocateRoleData.specificReason}}`,
+        time: new Date().toISOString(),
+        userId: allocateRoleData.person.id }]
+    }]
   };
 }
 
 export function getActorId(currentUserId: string, allocateRoleData: AllocateRoleData): string {
   if (allocateRoleData.allocateTo === AllocateTo.RESERVE_TO_ME) {
     return currentUserId;
-  } else {
-    return allocateRoleData.person.id;
   }
+
+  return allocateRoleData.person.id;
 }

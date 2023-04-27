@@ -19,7 +19,6 @@ describe('HearingPanelComponent', () => {
   let component: HearingPanelComponent;
   let fixture: ComponentFixture<HearingPanelComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
-  const childComponent = jasmine.createSpyObj('HearingJudgeNamesListComponent', ['isExcludeJudgeInputValid']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
@@ -35,7 +34,7 @@ describe('HearingPanelComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       category_key: 'PanelMemberType',
@@ -60,7 +59,7 @@ describe('HearingPanelComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -73,7 +72,7 @@ describe('HearingPanelComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -86,7 +85,7 @@ describe('HearingPanelComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -99,9 +98,9 @@ describe('HearingPanelComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
-          child_nodes: null,
-        },
-      ],
+          child_nodes: null
+        }
+      ]
     },
     {
       category_key: 'PanelMemberType',
@@ -126,7 +125,7 @@ describe('HearingPanelComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -139,7 +138,7 @@ describe('HearingPanelComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -152,7 +151,7 @@ describe('HearingPanelComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
-          child_nodes: null,
+          child_nodes: null
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -165,9 +164,9 @@ describe('HearingPanelComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
-          child_nodes: null,
-        },
-      ],
+          child_nodes: null
+        }
+      ]
     },
     {
       category_key: 'PanelMemberType',
@@ -180,7 +179,7 @@ describe('HearingPanelComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       category_key: 'PanelMemberType',
@@ -193,8 +192,8 @@ describe('HearingPanelComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null,
-    },
+      child_nodes: null
+    }
   ];
   const JUDICAIL_USER_DETAILS = [{
     memberID: 'P0000001',
@@ -203,7 +202,6 @@ describe('HearingPanelComponent', () => {
   }];
 
   beforeEach(() => {
-
     const STATE = _.cloneDeep(initialState);
     STATE.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
       panelPreferences: JUDICAIL_USER_DETAILS,
@@ -223,19 +221,19 @@ describe('HearingPanelComponent', () => {
             snapshot: {
               data: {
                 otherPanelRoles: OTHER_PANEL_ROLES,
-                judicialUsers: JUDICAIL_USER_DETAILS,
-              },
-            },
-          },
+                judicialUsers: JUDICAIL_USER_DETAILS
+              }
+            }
+          }
         }
       ],
-      schemas: [NO_ERRORS_SCHEMA],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingPanelComponent);
     component = fixture.componentInstance;
-    spyOn(component, 'fragmentFocus').and.callFake(() => {
-    });
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    spyOn(component, 'fragmentFocus').and.callFake(() => {});
     spyOn(component, 'prepareData').and.callThrough();
     fixture.detectChanges();
   });
@@ -250,7 +248,7 @@ describe('HearingPanelComponent', () => {
   });
 
   it('should fail the form validation when no panel member/roles are selected', () => {
-    component.panelJudgeForm.controls.multiLevelSelect.value.forEach(node => {
+    component.panelJudgeForm.controls.multiLevelSelect.value.forEach((node) => {
       node.selected = false;
     });
     component.includedJudge.judgeList = [];

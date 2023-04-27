@@ -22,15 +22,13 @@ export async function getServices(req: EnhancedRequest, res: Response, next: Nex
 
     // Retrieve jurisdictions from session if available
     // Else perform api call to get jurisdictions
-    let services: any;
-    services = generateServices(req.session.jurisdictions as Jurisdiction[]);
+    const services: any = generateServices(req.session.jurisdictions as Jurisdiction[]);
 
     // Store generated global search services to session
     req.session.globalSearchServices = services;
 
     // Return json response of generated global search services
     return res.json(services);
-
   } catch (error) {
     next(error);
   }
@@ -56,15 +54,14 @@ export async function getSearchResults(req: EnhancedRequest, res: Response, next
  * @returns
  */
 export function generateServices(jurisdictions: Jurisdiction[]): GlobalSearchService[] {
-
   // Retrieve global search services id from config
   const globalSearchServiceIds = getConfigValue(GLOBAL_SEARCH_SERVICES);
   const globalSearchServiceIdsArray = globalSearchServiceIds.split(',');
 
   // Generate global search services
   const globalSearchServices: GlobalSearchService[] = [];
-  globalSearchServiceIdsArray.forEach(serviceId => {
-    const jurisdiction = jurisdictions ? jurisdictions.find(x => x.id === serviceId) : null;
+  globalSearchServiceIdsArray.forEach((serviceId) => {
+    const jurisdiction = jurisdictions ? jurisdictions.find((x) => x.id === serviceId) : null;
     if (jurisdiction) {
       globalSearchServices.push({ serviceId: jurisdiction.id, serviceName: jurisdiction.name });
     } else {

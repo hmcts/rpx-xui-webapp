@@ -16,12 +16,15 @@ const mockNameWithEmail = `${mockName} - ${mockCaseworker.email}`;
 
 describe('CaseworkerDisplayName', () => {
   const pipe = new CaseworkerDisplayName();
+
   it('returns undefined if no caseworker present', () => {
     expect(pipe.transform(null)).toBe(undefined);
   });
+
   it('returns a display name if the caseworker is present', () => {
     expect(pipe.transform(mockCaseworker)).toBe(mockNameWithEmail);
   });
+
   it('returns a display name without email if specified', () => {
     expect(pipe.transform(mockCaseworker, false)).toBe(mockName);
   });

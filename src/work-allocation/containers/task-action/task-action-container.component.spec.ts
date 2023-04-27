@@ -22,13 +22,12 @@ import { ACTION } from '../../services/work-allocation-task.service';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskActionContainerComponent } from './task-action-container.component';
 
-
 @Component({
   template: `
     <exui-task-action-container></exui-task-action-container>`
 })
 class WrapperComponent {
-  @ViewChild(TaskActionContainerComponent, {static: true}) public appComponentRef: TaskActionContainerComponent;
+  @ViewChild(TaskActionContainerComponent, { static: true }) public appComponentRef: TaskActionContainerComponent;
   @Input() public tasks: Task[];
 }
 
@@ -36,11 +35,9 @@ class WrapperComponent {
   template: `
     <div>Nothing</div>`
 })
-class NothingComponent {
-}
+class NothingComponent {}
 
 describe('WorkAllocation', () => {
-
   describe('TaskActionContainerComponent', () => {
     let component: TaskActionContainerComponent;
     let wrapper: WrapperComponent;
@@ -60,7 +57,7 @@ describe('WorkAllocation', () => {
     const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['getValue']);
     mockFeatureToggleService.getValue.and.returnValue(of(false));
 
-    beforeEach(waitForAsync (() => {
+    beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [
           TaskActionContainerComponent, WrapperComponent, TaskListComponent,
@@ -70,26 +67,26 @@ describe('WorkAllocation', () => {
           WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientTestingModule, PaginationModule,
           RouterTestingModule.withRoutes(
             [
-              {path: 'mywork/list', component: NothingComponent}
+              { path: 'mywork/list', component: NothingComponent }
             ]
           )
         ],
         providers: [
-          {provide: WorkAllocationTaskService, useValue: mockWorkAllocationService},
-          {provide: SessionStorageService, useValue: mockSessionStorageService},
-          {provide: FeatureToggleService, useValue: mockFeatureToggleService},
+          { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
+          { provide: FeatureToggleService, useValue: mockFeatureToggleService },
           {
             provide: ActivatedRoute,
             useValue: {
               snapshot: {
                 data: {
                   taskAndCaseworkers: {
-                    task: {task: mockTasks[0]}, caseworkers: []
+                    task: { task: mockTasks[0] }, caseworkers: []
                   },
                   ...TaskActionConstants.Unassign
                 }
               },
-              params: of({task: mockTasks[0]})
+              params: of({ task: mockTasks[0] })
             }
           },
           {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},
@@ -105,7 +102,7 @@ describe('WorkAllocation', () => {
       router = TestBed.inject(Router);
 
       wrapper.tasks = null;
-      window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');
+      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
       fixture.detectChanges();
     }));
 
@@ -132,7 +129,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should return the correct message/state', () => {
-      window.history.pushState({returnUrl: 'case/case-details', keepUrl: true}, '', 'case/case-details');
+      window.history.pushState({ returnUrl: 'case/case-details', keepUrl: true }, '', 'case/case-details');
       const message = {
         type: InfoMessageType.SUCCESS,
         message: InfoMessage.ASSIGNED_TASK
@@ -141,14 +138,13 @@ describe('WorkAllocation', () => {
       component.returnWithMessage(message, null);
       expect(mockInfoMessageCommService.nextMessage).not.toHaveBeenCalledWith(message);
       expect(navigateSpy).toHaveBeenCalledWith('case/case-details', {
-      state: {
-        showMessage: true,
-        messageText: InfoMessage.ASSIGNED_TASK,
-        retainMessages: true
-      }
+        state: {
+          showMessage: true,
+          messageText: InfoMessage.ASSIGNED_TASK,
+          retainMessages: true
+        }
       });
     });
-
 
     it('should have appropriate title', () => {
       const title: HTMLElement = fixture.debugElement.nativeElement.querySelector('#action-title');
@@ -173,7 +169,7 @@ describe('WorkAllocation', () => {
     it('configured fields for judicial', () => {
       component.isJudicial = true;
       const fieldConfigs = component.fields;
-      const fieldLabels = fieldConfigs.map(fieldConfig => fieldConfig.columnLabel);
+      const fieldLabels = fieldConfigs.map((fieldConfig) => fieldConfig.columnLabel);
       expect(fieldLabels).toContain('Task created');
       expect(fieldLabels).not.toContain('Due date');
       expect(fieldLabels).not.toContain('Priority');
@@ -183,11 +179,10 @@ describe('WorkAllocation', () => {
       component.isJudicial = false;
 
       const fieldConfigs = component.fields;
-      const fieldLabels = fieldConfigs.map(fieldConfig => fieldConfig.columnLabel);
+      const fieldLabels = fieldConfigs.map((fieldConfig) => fieldConfig.columnLabel);
       expect(fieldLabels).not.toContain('Task created');
       expect(fieldLabels).toContain('Due date');
       expect(fieldLabels).toContain('Priority');
-
     });
 
     it('isTaskUnAssignedOrReAssigned should return false', () => {
@@ -226,7 +221,6 @@ describe('WorkAllocation', () => {
       const result = component.isTaskUnAssignedOrReAssigned(task);
       expect(result).toBeFalsy();
     });
-
   });
 
   const mockTask = [
@@ -246,16 +240,18 @@ describe('WorkAllocation', () => {
       actions: [
         {
           id: 'actionId2',
-          title: 'Release this task',
+          title: 'Release this task'
         }
       ]
     }
   ];
 
   describe('TaskActionContainerComponent performActionOnTask', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: TaskActionContainerComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let router: Router;
 
     const mockWorkAllocationService = {
@@ -275,6 +271,7 @@ describe('WorkAllocation', () => {
       roles: ['caseworker-ia-iacjudge']
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
+
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [
@@ -285,29 +282,29 @@ describe('WorkAllocation', () => {
           WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientTestingModule, PaginationModule,
           RouterTestingModule.withRoutes(
             [
-              {path: 'mywork/list', component: NothingComponent}
+              { path: 'mywork/list', component: NothingComponent }
             ]
           )
         ],
         providers: [
-          {provide: WorkAllocationTaskService, useValue: mockWorkAllocationService},
-          {provide: SessionStorageService, useValue: mockSessionStorageService},
-          {provide: FeatureToggleService, useValue: mockFeatureToggleService},
+          { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
+          { provide: FeatureToggleService, useValue: mockFeatureToggleService },
           {
             provide: ActivatedRoute,
             useValue: {
               snapshot: {
                 data: {
                   taskAndCaseworkers: {
-                    task: {task: mockTask[0]}, caseworkers: []
+                    task: { task: mockTask[0] }, caseworkers: []
                   },
                   ...TaskActionConstants.Unassign
                 }
               },
-              params: of({task: mockTask[0]})
+              params: of({ task: mockTask[0] })
             }
           },
-          {provide: InfoMessageCommService, useValue: mockInfoMessageCommService}
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
@@ -316,7 +313,7 @@ describe('WorkAllocation', () => {
       router = TestBed.inject(Router);
 
       wrapper.tasks = null;
-      window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');
+      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
       fixture.detectChanges();
     });
 
@@ -324,19 +321,19 @@ describe('WorkAllocation', () => {
       fixture.destroy();
     });
 
-
     it('should perform the unclaim action successfully', () => {
       const submit: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#submit-button');
       submit.click();
       expect(mockWorkAllocationService.performActionOnTask).toHaveBeenCalledWith(mockTask[0].id, ACTION.UNCLAIM, false);
     });
-
   });
 
   describe('TaskActionContainerComponent performActionOnTask', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: TaskActionContainerComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let router: Router;
 
     const mockWorkAllocationService = {
@@ -358,6 +355,7 @@ describe('WorkAllocation', () => {
       roles: ['caseworker-ia-iacjudge']
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
+
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [
@@ -368,29 +366,29 @@ describe('WorkAllocation', () => {
           WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientTestingModule, PaginationModule,
           RouterTestingModule.withRoutes(
             [
-              {path: 'mywork/list', component: NothingComponent}
+              { path: 'mywork/list', component: NothingComponent }
             ]
           )
         ],
         providers: [
-          {provide: WorkAllocationTaskService, useValue: mockWorkAllocationService},
-          {provide: SessionStorageService, useValue: mockSessionStorageService},
-          {provide: FeatureToggleService, useValue: mockFeatureToggleService},
+          { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
+          { provide: FeatureToggleService, useValue: mockFeatureToggleService },
           {
             provide: ActivatedRoute,
             useValue: {
               snapshot: {
                 data: {
                   taskAndCaseworkers: {
-                    task: {task: mockTask[0]}, caseworkers: []
+                    task: { task: mockTask[0] }, caseworkers: []
                   },
                   ...TaskActionConstants.Unassign
                 }
               },
-              params: of({task: mockTask[0]})
+              params: of({ task: mockTask[0] })
             }
           },
-          {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
           { provide: CaseNotifier, useValue: mockNotifierService }
         ]
       }).compileComponents();
@@ -400,7 +398,7 @@ describe('WorkAllocation', () => {
       router = TestBed.inject(Router);
 
       wrapper.tasks = null;
-      window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');
+      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
       fixture.detectChanges();
     });
 

@@ -27,7 +27,7 @@ if (process.env.TEST_URL.includes('pr-29751') ||
 }
 
 let features = ''
-if (testType === 'e2e'){
+if (testType === 'e2e' || testType === 'smoke'){
   features = `../e2e/features/app/**/*.feature`
 } else if (testType === 'ngIntegration'){
   features = `../ngIntegration/tests/features/**/*.feature`

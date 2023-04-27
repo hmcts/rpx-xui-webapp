@@ -90,6 +90,7 @@ describe('CaseDetailsHomeComponent', () => {
 });
 
 describe('CaseDetailsHomeComponent set the page title on init', () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let component: CaseDetailsHomeComponent;
   let fixture: ComponentFixture<CaseDetailsHomeComponent>;
   let activatedRouteMock: Partial<ActivatedRoute>;
@@ -105,8 +106,8 @@ describe('CaseDetailsHomeComponent set the page title on init', () => {
           case_type: {
             id: '456',
             jurisdiction: {
-              id: '789',
-            },
+              id: '789'
+            }
           },
           tabs: [
             {
@@ -114,26 +115,26 @@ describe('CaseDetailsHomeComponent set the page title on init', () => {
               fields: [
                 {
                   id: 'appellantGivenNames',
-                  formatted_value: 'John',
+                  formatted_value: 'John'
                 },
                 {
                   id: 'appellantFamilyName',
-                  formatted_value: 'Doe',
-                },
-              ],
+                  formatted_value: 'Doe'
+                }
+              ]
             },
             {
               id: 'overview',
               fields: [
                 {
                   id: 'appealReferenceNumber',
-                  formatted_value: 'AA/12345/2019',
-                },
-              ],
-            },
-          ],
-        },
-      }),
+                  formatted_value: 'AA/12345/2019'
+                }
+              ]
+            }
+          ]
+        }
+      })
     };
 
     sessionStorageServiceMock = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['setItem']);
@@ -146,8 +147,8 @@ describe('CaseDetailsHomeComponent set the page title on init', () => {
         { provide: ActivatedRoute, useValue: activatedRouteMock },
         { provide: SessionStorageService, useValue: sessionStorageServiceMock },
         { provide: Title, useValue: titleServiceMock },
-        { provide: CaseReferencePipe, useValue: caseReferencePipeMock },
-      ],
+        { provide: CaseReferencePipe, useValue: caseReferencePipeMock }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CaseDetailsHomeComponent);

@@ -6,16 +6,17 @@ export class YesNoService {
     'Y',
     'YES'
   ];
+
   private static readonly NO_INPUTS: string[] = [
     'N',
     'NO'
   ];
+
   private static readonly YES = 'Yes';
   private static readonly NO = 'No';
   private static readonly EMPTY = null;
 
   public format(value: any): string {
-
     if (this.isYes(value)) {
       return YesNoService.YES;
     } else if (this.isNo(value)) {

@@ -8,13 +8,12 @@ import { IsAmendedConverter } from './is-amended.converter';
 
 export class PanelExclusionAmendedConverter implements IsAmendedConverter {
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {
-    return hearingState$.pipe(map(state => {
-
+    return hearingState$.pipe(map((state) => {
       const hearingComparePanelRequirements = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements;
-      const comparedPanelMembers: PanelPreferenceModel[] = hearingComparePanelRequirements && hearingComparePanelRequirements.panelPreferences && hearingComparePanelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.EXCLUDE);
+      const comparedPanelMembers: PanelPreferenceModel[] = hearingComparePanelRequirements && hearingComparePanelRequirements.panelPreferences && hearingComparePanelRequirements.panelPreferences.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.EXCLUDE);
 
       const hearingRequestPanelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-      const requestedPanelMembers: PanelPreferenceModel[] = hearingRequestPanelRequirements && hearingRequestPanelRequirements.panelPreferences && hearingRequestPanelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.EXCLUDE);
+      const requestedPanelMembers: PanelPreferenceModel[] = hearingRequestPanelRequirements && hearingRequestPanelRequirements.panelPreferences && hearingRequestPanelRequirements.panelPreferences.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.EXCLUDE);
 
       return !_.isEqual(comparedPanelMembers, requestedPanelMembers);
     }));

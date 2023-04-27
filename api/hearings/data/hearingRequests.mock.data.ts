@@ -12,7 +12,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   {
     requestDetails: {
       timeStamp: '2022-02-23T09:00:00.000Z',
-      versionNumber: 1,
+      versionNumber: 1
     },
     hearingDetails: {
       duration: 45,
@@ -22,21 +22,21 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
-          locationId: '196538',
-        },
+          locationId: '196538'
+        }
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
         dateRangeStart: '2022-11-23T09:00:00.000Z',
         dateRangeEnd: '2022-11-30T09:00:00.000Z',
-        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
       },
       privateHearingRequiredFlag: false,
       panelRequirements: {
         roleType: [
           'tj',
           'dtj',
-          'rtj',
+          'rtj'
         ],
         panelPreferences: [],
         panelSpecialisms: [
@@ -44,8 +44,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           'EyeSurgeon',
           'GeneralPractitioner',
           'FinanciallyQualifiedPanelMember',
-          'RegionalMedicalMember',
-        ],
+          'RegionalMedicalMember'
+        ]
       },
       autolistFlag: false,
       hearingPriorityType: 'standard',
@@ -54,13 +54,13 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       facilitiesRequired: [
         'immigrationDetentionCentre',
         'inCameraCourt',
-        'sameSexCourtroom',
+        'sameSexCourtroom'
       ],
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
-      listingAutoChangeReasonCode: null,
+      listingAutoChangeReasonCode: null
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -76,23 +76,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-002',
+          categoryValue: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z'
     },
     partyDetails: [
       {
@@ -110,9 +110,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             'RA0053',
             'RA0013',
             'RA0016',
-            'RA0042',
+            'RA0042'
           ],
-          interpreterLanguage: 'PF0015',
+          interpreterLanguage: 'PF0015'
         },
         organisationDetails: {},
         unavailabilityDOW: null,
@@ -120,9 +120,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           {
             unavailableFromDate: '2021-12-10T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
       },
       {
         partyID: 'P2',
@@ -135,24 +135,24 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           preferredHearingChannel: 'inPerson',
           lastName: 'Representative',
           reasonableAdjustments: [
-            'RA0005',
+            'RA0005'
           ],
-          interpreterLanguage: null,
+          interpreterLanguage: null
         },
         organisationDetails: {
           name: 'DWP',
           organisationType: 'GOV',
-          cftOrganisationID: 'O100000',
+          cftOrganisationID: 'O100000'
         },
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
             unavailableFromDate: '2021-12-20T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
-      },
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      }
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
@@ -185,9 +185,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
                 'RA0053',
                 'RA0013',
                 'RA0016',
-                'RA0042',
+                'RA0042'
               ],
-              interpreterLanguage: 'PF0015',
+              interpreterLanguage: 'PF0015'
             },
             organisationDetails: {},
             unavailabilityDOW: null,
@@ -195,9 +195,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               {
                 unavailableFromDate: '2021-12-10T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           },
           {
             partyID: 'P2',
@@ -210,32 +210,32 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               preferredHearingChannel: 'byVideo',
               lastName: 'Representative',
               reasonableAdjustments: [
-                'RA0005',
+                'RA0005'
               ],
-              interpreterLanguage: null,
+              interpreterLanguage: null
             },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
-              cftOrganisationID: 'O100000',
+              cftOrganisationID: 'O100000'
             },
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
                 unavailableFromDate: '2021-12-20T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
-          },
-        ],
-      }],
-    },
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
+          }
+        ]
+      }]
+    }
   },
   {
     requestDetails: {
       timeStamp: '2022-02-23T09:00:00.000Z',
-      versionNumber: 1,
+      versionNumber: 1
     },
     hearingDetails: {
       duration: 50,
@@ -245,27 +245,27 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
-          locationId: '196538',
-        },
+          locationId: '196538'
+        }
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
         dateRangeStart: '2022-11-23T09:00:00.000Z',
         dateRangeEnd: '2022-11-30T09:00:00.000Z',
-        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
       },
       privateHearingRequiredFlag: false,
       panelRequirements: {
         roleType: [
           'tj',
-          'rtj',
+          'rtj'
         ],
         panelPreferences: [],
         panelSpecialisms: [
           'GeneralPractitioner',
           'FinanciallyQualifiedPanelMember',
-          'RegionalMedicalMember',
-        ],
+          'RegionalMedicalMember'
+        ]
       },
       autolistFlag: false,
       hearingPriorityType: 'standard',
@@ -274,13 +274,13 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       facilitiesRequired: [
         'immigrationDetentionCentre',
         'inCameraCourt',
-        'sameSexCourtroom',
+        'sameSexCourtroom'
       ],
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
-      listingAutoChangeReasonCode: null,
+      listingAutoChangeReasonCode: null
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -296,23 +296,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-002',
+          categoryValue: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z'
     },
     partyDetails: [
       {
@@ -330,9 +330,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             'RA0053',
             'RA0013',
             'RA0016',
-            'RA0042',
+            'RA0042'
           ],
-          interpreterLanguage: 'PF0015',
+          interpreterLanguage: 'PF0015'
         },
         organisationDetails: {},
         unavailabilityDOW: null,
@@ -340,9 +340,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           {
             unavailableFromDate: '2021-12-10T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
       },
       {
         partyID: 'P2',
@@ -355,24 +355,24 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           lastName: 'Representative',
           preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
-            'RA0005',
+            'RA0005'
           ],
-          interpreterLanguage: null,
+          interpreterLanguage: null
         },
         organisationDetails: {
           name: 'DWP',
           organisationType: 'GOV',
-          cftOrganisationID: 'O100000',
+          cftOrganisationID: 'O100000'
         },
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
             unavailableFromDate: '2021-12-20T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
-      },
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      }
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
@@ -405,9 +405,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
                 'RA0053',
                 'RA0013',
                 'RA0016',
-                'RA0042',
+                'RA0042'
               ],
-              interpreterLanguage: 'PF0015',
+              interpreterLanguage: 'PF0015'
             },
             organisationDetails: {},
             unavailabilityDOW: null,
@@ -415,9 +415,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               {
                 unavailableFromDate: '2021-12-10T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           },
           {
             partyID: 'P2',
@@ -430,32 +430,32 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               preferredHearingChannel: 'byVideo',
               lastName: 'Representative',
               reasonableAdjustments: [
-                'RA0005',
+                'RA0005'
               ],
-              interpreterLanguage: null,
+              interpreterLanguage: null
             },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
-              cftOrganisationID: 'O100000',
+              cftOrganisationID: 'O100000'
             },
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
                 unavailableFromDate: '2021-12-20T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
-          },
-        ],
-      }],
-    },
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
+          }
+        ]
+      }]
+    }
   },
   {
     requestDetails: {
       timeStamp: '2022-02-23T09:00:00.000Z',
-      versionNumber: 1,
+      versionNumber: 1
     },
     hearingDetails: {
       duration: 55,
@@ -465,14 +465,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
-          locationId: '196538',
-        },
+          locationId: '196538'
+        }
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
         dateRangeStart: '2022-11-23T09:00:00.000Z',
         dateRangeEnd: '2022-11-30T09:00:00.000Z',
-        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -483,13 +483,13 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       facilitiesRequired: [
         'immigrationDetentionCentre',
         'inCameraCourt',
-        'sameSexCourtroom',
+        'sameSexCourtroom'
       ],
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
-      listingAutoChangeReasonCode: null,
+      listingAutoChangeReasonCode: null
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -505,23 +505,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-002',
+          categoryValue: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z'
     },
     partyDetails: [
       {
@@ -539,9 +539,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             'RA0053',
             'RA0013',
             'RA0016',
-            'RA0042',
+            'RA0042'
           ],
-          interpreterLanguage: 'PF0015',
+          interpreterLanguage: 'PF0015'
         },
         organisationDetails: {},
         unavailabilityDOW: null,
@@ -549,9 +549,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           {
             unavailableFromDate: '2021-12-10T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
       },
       {
         partyID: 'P2',
@@ -564,24 +564,24 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           lastName: 'Representative',
           preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
-            'RA0005',
+            'RA0005'
           ],
-          interpreterLanguage: null,
+          interpreterLanguage: null
         },
         organisationDetails: {
           name: 'DWP',
           organisationType: 'GOV',
-          cftOrganisationID: 'O100000',
+          cftOrganisationID: 'O100000'
         },
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
             unavailableFromDate: '2021-12-20T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
-      },
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      }
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
@@ -614,9 +614,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
                 'RA0053',
                 'RA0013',
                 'RA0016',
-                'RA0042',
+                'RA0042'
               ],
-              interpreterLanguage: 'PF0015',
+              interpreterLanguage: 'PF0015'
             },
             organisationDetails: {},
             unavailabilityDOW: null,
@@ -624,9 +624,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               {
                 unavailableFromDate: '2021-12-10T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           },
           {
             partyID: 'P2',
@@ -639,32 +639,32 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               preferredHearingChannel: 'byVideo',
               lastName: 'Representative',
               reasonableAdjustments: [
-                'RA0005',
+                'RA0005'
               ],
-              interpreterLanguage: null,
+              interpreterLanguage: null
             },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
-              cftOrganisationID: 'O100000',
+              cftOrganisationID: 'O100000'
             },
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
                 unavailableFromDate: '2021-12-20T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
-          },
-        ],
-      }],
-    },
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
+          }
+        ]
+      }]
+    }
   },
   {
     requestDetails: {
       timeStamp: '2022-02-23T09:00:00.000Z',
-      versionNumber: 1,
+      versionNumber: 1
     },
     hearingDetails: {
       duration: 60,
@@ -674,14 +674,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
-          locationId: '196538',
-        },
+          locationId: '196538'
+        }
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
         dateRangeStart: '2022-11-23T09:00:00.000Z',
         dateRangeEnd: '2022-11-30T09:00:00.000Z',
-        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -692,13 +692,13 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       facilitiesRequired: [
         'immigrationDetentionCentre',
         'inCameraCourt',
-        'sameSexCourtroom',
+        'sameSexCourtroom'
       ],
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
-      listingAutoChangeReasonCode: null,
+      listingAutoChangeReasonCode: null
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -714,23 +714,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-002',
+          categoryValue: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z'
     },
     partyDetails: [
       {
@@ -748,9 +748,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             'RA0053',
             'RA0013',
             'RA0016',
-            'RA0042',
+            'RA0042'
           ],
-          interpreterLanguage: 'PF0015',
+          interpreterLanguage: 'PF0015'
         },
         organisationDetails: {},
         unavailabilityDOW: null,
@@ -758,9 +758,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           {
             unavailableFromDate: '2021-12-10T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
       },
       {
         partyID: 'P2',
@@ -773,24 +773,24 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           preferredHearingChannel: 'byVideo',
           lastName: 'Representative',
           reasonableAdjustments: [
-            'RA0005',
+            'RA0005'
           ],
-          interpreterLanguage: null,
+          interpreterLanguage: null
         },
         organisationDetails: {
           name: 'DWP',
           organisationType: 'GOV',
-          cftOrganisationID: 'O100000',
+          cftOrganisationID: 'O100000'
         },
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
             unavailableFromDate: '2021-12-20T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
-      },
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      }
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
@@ -823,9 +823,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
                 'RA0053',
                 'RA0013',
                 'RA0016',
-                'RA0042',
+                'RA0042'
               ],
-              interpreterLanguage: 'PF0015',
+              interpreterLanguage: 'PF0015'
             },
             organisationDetails: {},
             unavailabilityDOW: null,
@@ -833,9 +833,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               {
                 unavailableFromDate: '2021-12-10T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           },
           {
             partyID: 'P2',
@@ -848,32 +848,32 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               lastName: 'Representative',
               preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
-                'RA0005',
+                'RA0005'
               ],
-              interpreterLanguage: null,
+              interpreterLanguage: null
             },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
-              cftOrganisationID: 'O100000',
+              cftOrganisationID: 'O100000'
             },
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
                 unavailableFromDate: '2021-12-20T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
-          },
-        ],
-      }],
-    },
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
+          }
+        ]
+      }]
+    }
   },
   {
     requestDetails: {
       timeStamp: '2022-02-23T09:00:00.000Z',
-      versionNumber: 1,
+      versionNumber: 1
     },
     hearingDetails: {
       duration: 65,
@@ -883,14 +883,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
-          locationId: '196538',
-        },
+          locationId: '196538'
+        }
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
         dateRangeStart: '2022-11-23T09:00:00.000Z',
         dateRangeEnd: '2022-11-30T09:00:00.000Z',
-        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -901,13 +901,13 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       facilitiesRequired: [
         'immigrationDetentionCentre',
         'inCameraCourt',
-        'sameSexCourtroom',
+        'sameSexCourtroom'
       ],
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
-      listingAutoChangeReasonCode: null,
+      listingAutoChangeReasonCode: null
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -923,23 +923,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-002',
+          categoryValue: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z'
     },
     partyDetails: [
       {
@@ -957,9 +957,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             'RA0053',
             'RA0013',
             'RA0016',
-            'RA0042',
+            'RA0042'
           ],
-          interpreterLanguage: 'PF0015',
+          interpreterLanguage: 'PF0015'
         },
         organisationDetails: {},
         unavailabilityDOW: null,
@@ -967,9 +967,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           {
             unavailableFromDate: '2021-12-10T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
       },
       {
         partyID: 'P2',
@@ -982,24 +982,24 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           lastName: 'Representative',
           preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
-            'RA0005',
+            'RA0005'
           ],
-          interpreterLanguage: null,
+          interpreterLanguage: null
         },
         organisationDetails: {
           name: 'DWP',
           organisationType: 'GOV',
-          cftOrganisationID: 'O100000',
+          cftOrganisationID: 'O100000'
         },
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
             unavailableFromDate: '2021-12-20T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
-      },
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      }
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
@@ -1032,9 +1032,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
                 'RA0053',
                 'RA0013',
                 'RA0016',
-                'RA0042',
+                'RA0042'
               ],
-              interpreterLanguage: 'PF0015',
+              interpreterLanguage: 'PF0015'
             },
             organisationDetails: {},
             unavailabilityDOW: null,
@@ -1042,9 +1042,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               {
                 unavailableFromDate: '2021-12-10T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           },
           {
             partyID: 'P2',
@@ -1057,32 +1057,32 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               lastName: 'Representative',
               preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
-                'RA0005',
+                'RA0005'
               ],
-              interpreterLanguage: null,
+              interpreterLanguage: null
             },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
-              cftOrganisationID: 'O100000',
+              cftOrganisationID: 'O100000'
             },
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
                 unavailableFromDate: '2021-12-20T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
-          },
-        ],
-      }],
-    },
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
+          }
+        ]
+      }]
+    }
   },
   {
     requestDetails: {
       timeStamp: '2022-02-23T09:00:00.000Z',
-      versionNumber: 1,
+      versionNumber: 1
     },
     hearingDetails: {
       duration: 70,
@@ -1092,14 +1092,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
-          locationId: '196538',
-        },
+          locationId: '196538'
+        }
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
         dateRangeStart: '2022-11-23T09:00:00.000Z',
         dateRangeEnd: '2022-11-30T09:00:00.000Z',
-        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -1110,13 +1110,13 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       facilitiesRequired: [
         'immigrationDetentionCentre',
         'inCameraCourt',
-        'sameSexCourtroom',
+        'sameSexCourtroom'
       ],
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
-      listingAutoChangeReasonCode: null,
+      listingAutoChangeReasonCode: null
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1132,23 +1132,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-002',
+          categoryValue: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z'
     },
     partyDetails: [
       {
@@ -1166,9 +1166,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             'RA0053',
             'RA0013',
             'RA0016',
-            'RA0042',
+            'RA0042'
           ],
-          interpreterLanguage: 'PF0015',
+          interpreterLanguage: 'PF0015'
         },
         organisationDetails: {},
         unavailabilityDOW: null,
@@ -1176,9 +1176,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           {
             unavailableFromDate: '2021-12-10T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
       },
       {
         partyID: 'P2',
@@ -1191,24 +1191,24 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           lastName: 'Representative',
           preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
-            'RA0005',
+            'RA0005'
           ],
-          interpreterLanguage: null,
+          interpreterLanguage: null
         },
         organisationDetails: {
           name: 'DWP',
           organisationType: 'GOV',
-          cftOrganisationID: 'O100000',
+          cftOrganisationID: 'O100000'
         },
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
             unavailableFromDate: '2021-12-20T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
-      },
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      }
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
@@ -1242,9 +1242,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
                 'RA0053',
                 'RA0013',
                 'RA0016',
-                'RA0042',
+                'RA0042'
               ],
-              interpreterLanguage: 'PF0015',
+              interpreterLanguage: 'PF0015'
             },
             organisationDetails: {},
             unavailabilityDOW: null,
@@ -1252,9 +1252,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               {
                 unavailableFromDate: '2021-12-10T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           },
           {
             partyID: 'P2',
@@ -1267,32 +1267,32 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               lastName: 'Representative',
               preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
-                'RA0005',
+                'RA0005'
               ],
-              interpreterLanguage: null,
+              interpreterLanguage: null
             },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
-              cftOrganisationID: 'O100000',
+              cftOrganisationID: 'O100000'
             },
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
                 unavailableFromDate: '2021-12-20T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
-          },
-        ],
-      }],
-    },
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
+          }
+        ]
+      }]
+    }
   },
   {
     requestDetails: {
       timeStamp: '2022-02-23T09:00:00.000Z',
-      versionNumber: 1,
+      versionNumber: 1
     },
     hearingDetails: {
       duration: 70,
@@ -1302,14 +1302,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
-          locationId: '196538',
-        },
+          locationId: '196538'
+        }
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
         dateRangeStart: '2022-11-23T09:00:00.000Z',
         dateRangeEnd: '2022-11-30T09:00:00.000Z',
-        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -1320,13 +1320,13 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       facilitiesRequired: [
         'immigrationDetentionCentre',
         'inCameraCourt',
-        'sameSexCourtroom',
+        'sameSexCourtroom'
       ],
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
-      listingAutoChangeReasonCode: null,
+      listingAutoChangeReasonCode: null
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1342,23 +1342,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-002',
+          categoryValue: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z'
     },
     partyDetails: [
       {
@@ -1376,9 +1376,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             'RA0053',
             'RA0013',
             'RA0016',
-            'RA0042',
+            'RA0042'
           ],
-          interpreterLanguage: 'PF0015',
+          interpreterLanguage: 'PF0015'
         },
         organisationDetails: {},
         unavailabilityDOW: null,
@@ -1386,9 +1386,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           {
             unavailableFromDate: '2021-12-10T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
       },
       {
         partyID: 'P2',
@@ -1401,24 +1401,24 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           lastName: 'Representative',
           preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
-            'RA0005',
+            'RA0005'
           ],
-          interpreterLanguage: null,
+          interpreterLanguage: null
         },
         organisationDetails: {
           name: 'DWP',
           organisationType: 'GOV',
-          cftOrganisationID: 'O100000',
+          cftOrganisationID: 'O100000'
         },
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
             unavailableFromDate: '2021-12-20T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
-      },
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      }
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
@@ -1451,9 +1451,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
                 'RA0053',
                 'RA0013',
                 'RA0016',
-                'RA0042',
+                'RA0042'
               ],
-              interpreterLanguage: 'PF0015',
+              interpreterLanguage: 'PF0015'
             },
             organisationDetails: {},
             unavailabilityDOW: null,
@@ -1461,9 +1461,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               {
                 unavailableFromDate: '2021-12-10T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           },
           {
             partyID: 'P2',
@@ -1476,32 +1476,32 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               lastName: 'Representative',
               preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
-                'RA0005',
+                'RA0005'
               ],
-              interpreterLanguage: null,
+              interpreterLanguage: null
             },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
-              cftOrganisationID: 'O100000',
+              cftOrganisationID: 'O100000'
             },
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
                 unavailableFromDate: '2021-12-20T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
-          },
-        ],
-      }],
-    },
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
+          }
+        ]
+      }]
+    }
   },
   {
     requestDetails: {
       timeStamp: '2022-02-23T09:00:00.000Z',
-      versionNumber: 1,
+      versionNumber: 1
     },
     hearingDetails: {
       duration: 70,
@@ -1511,14 +1511,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
-          locationId: '196538',
-        },
+          locationId: '196538'
+        }
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
         dateRangeStart: '2022-11-23T09:00:00.000Z',
         dateRangeEnd: '2022-11-30T09:00:00.000Z',
-        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -1529,13 +1529,13 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       facilitiesRequired: [
         'immigrationDetentionCentre',
         'inCameraCourt',
-        'sameSexCourtroom',
+        'sameSexCourtroom'
       ],
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
-      listingAutoChangeReasonCode: null,
+      listingAutoChangeReasonCode: null
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1551,23 +1551,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-002',
+          categoryValue: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z'
     },
     partyDetails: [
       {
@@ -1585,9 +1585,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             'RA0053',
             'RA0013',
             'RA0016',
-            'RA0042',
+            'RA0042'
           ],
-          interpreterLanguage: 'PF0015',
+          interpreterLanguage: 'PF0015'
         },
         organisationDetails: {},
         unavailabilityDOW: null,
@@ -1595,9 +1595,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           {
             unavailableFromDate: '2021-12-10T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
       },
       {
         partyID: 'P2',
@@ -1610,24 +1610,24 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           lastName: 'Representative',
           preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
-            'RA0005',
+            'RA0005'
           ],
-          interpreterLanguage: null,
+          interpreterLanguage: null
         },
         organisationDetails: {
           name: 'DWP',
           organisationType: 'GOV',
-          cftOrganisationID: 'O100000',
+          cftOrganisationID: 'O100000'
         },
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
             unavailableFromDate: '2021-12-20T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
-      },
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      }
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
@@ -1660,9 +1660,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
                 'RA0053',
                 'RA0013',
                 'RA0016',
-                'RA0042',
+                'RA0042'
               ],
-              interpreterLanguage: 'PF0015',
+              interpreterLanguage: 'PF0015'
             },
             organisationDetails: {},
             unavailabilityDOW: null,
@@ -1670,9 +1670,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               {
                 unavailableFromDate: '2021-12-10T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           },
           {
             partyID: 'P2',
@@ -1685,32 +1685,32 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               lastName: 'Representative',
               preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
-                'RA0005',
+                'RA0005'
               ],
-              interpreterLanguage: null,
+              interpreterLanguage: null
             },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
-              cftOrganisationID: 'O100000',
+              cftOrganisationID: 'O100000'
             },
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
                 unavailableFromDate: '2021-12-20T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
-          },
-        ],
-      }],
-    },
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
+          }
+        ]
+      }]
+    }
   },
   {
     requestDetails: {
       timeStamp: '2022-02-23T09:00:00.000Z',
-      versionNumber: 1,
+      versionNumber: 1
     },
     hearingDetails: {
       duration: 70,
@@ -1720,14 +1720,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
-          locationId: '196538',
-        },
+          locationId: '196538'
+        }
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
         dateRangeStart: '2022-11-23T09:00:00.000Z',
         dateRangeEnd: '2022-11-30T09:00:00.000Z',
-        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -1738,13 +1738,13 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       facilitiesRequired: [
         'immigrationDetentionCentre',
         'inCameraCourt',
-        'sameSexCourtroom',
+        'sameSexCourtroom'
       ],
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
-      listingAutoChangeReasonCode: null,
+      listingAutoChangeReasonCode: null
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1760,23 +1760,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-002',
+          categoryValue: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z'
     },
     partyDetails: [
       {
@@ -1794,9 +1794,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             'RA0053',
             'RA0013',
             'RA0016',
-            'RA0042',
+            'RA0042'
           ],
-          interpreterLanguage: 'PF0015',
+          interpreterLanguage: 'PF0015'
         },
         organisationDetails: {},
         unavailabilityDOW: null,
@@ -1804,9 +1804,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           {
             unavailableFromDate: '2021-12-10T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
       },
       {
         partyID: 'P2',
@@ -1819,24 +1819,24 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           lastName: 'Representative',
           preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
-            'RA0005',
+            'RA0005'
           ],
-          interpreterLanguage: null,
+          interpreterLanguage: null
         },
         organisationDetails: {
           name: 'DWP',
           organisationType: 'GOV',
-          cftOrganisationID: 'O100000',
+          cftOrganisationID: 'O100000'
         },
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
             unavailableFromDate: '2021-12-20T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
-      },
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      }
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
@@ -1869,9 +1869,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
                 'RA0053',
                 'RA0013',
                 'RA0016',
-                'RA0042',
+                'RA0042'
               ],
-              interpreterLanguage: 'PF0015',
+              interpreterLanguage: 'PF0015'
             },
             organisationDetails: null,
             unavailabilityDOW: null,
@@ -1879,9 +1879,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               {
                 unavailableFromDate: '2021-12-10T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           },
           {
             partyID: 'P2',
@@ -1894,32 +1894,32 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               lastName: 'Representative',
               preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
-                'RA0005',
+                'RA0005'
               ],
-              interpreterLanguage: null,
+              interpreterLanguage: null
             },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
-              cftOrganisationID: 'O100000',
+              cftOrganisationID: 'O100000'
             },
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
                 unavailableFromDate: '2021-12-20T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
-          },
-        ],
-      }],
-    },
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
+          }
+        ]
+      }]
+    }
   },
   {
     requestDetails: {
       timeStamp: '2022-02-23T09:00:00.000Z',
-      versionNumber: 1,
+      versionNumber: 1
     },
     hearingDetails: {
       duration: 70,
@@ -1929,14 +1929,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
-          locationId: '196538',
-        },
+          locationId: '196538'
+        }
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
         dateRangeStart: '2022-11-23T09:00:00.000Z',
         dateRangeEnd: '2022-11-30T09:00:00.000Z',
-        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -1947,13 +1947,13 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       facilitiesRequired: [
         'immigrationDetentionCentre',
         'inCameraCourt',
-        'sameSexCourtroom',
+        'sameSexCourtroom'
       ],
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
-      listingAutoChangeReasonCode: null,
+      listingAutoChangeReasonCode: null
     },
     caseDetails: {
       hmctsServiceCode: 'SSCS',
@@ -1969,23 +1969,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-002',
+          categoryValue: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z'
     },
     partyDetails: [
       {
@@ -1995,9 +1995,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         individualDetails: {
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson',
+          preferredHearingChannel: 'inPerson'
         },
-        partyRole: 'Judge',
+        partyRole: 'Judge'
       },
       {
         partyID: 'P2',
@@ -2006,10 +2006,10 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         individualDetails: {
           firstName: 'DWP',
           lastName: null,
-          preferredHearingChannel: 'byVideo',
+          preferredHearingChannel: 'byVideo'
         },
-        partyRole: 'Judge',
-      },
+        partyRole: 'Judge'
+      }
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
@@ -2035,8 +2035,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             individualDetails: {
               firstName: 'Jane',
               lastName: 'Smith',
-              preferredHearingChannel: 'inPerson',
-            },
+              preferredHearingChannel: 'inPerson'
+            }
           },
           {
             partyID: 'P2',
@@ -2046,17 +2046,17 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             individualDetails: {
               firstName: 'DWP',
               lastName: null,
-              preferredHearingChannel: 'byVideo',
-            },
-          },
-        ],
-      }],
-    },
+              preferredHearingChannel: 'byVideo'
+            }
+          }
+        ]
+      }]
+    }
   },
   {
     requestDetails: {
       timeStamp: '2022-02-23T09:00:00.000Z',
-      versionNumber: 1,
+      versionNumber: 1
     },
     hearingDetails: {
       duration: 70,
@@ -2066,14 +2066,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
-          locationId: '196538',
-        },
+          locationId: '196538'
+        }
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
         dateRangeStart: '2022-11-23T09:00:00.000Z',
         dateRangeEnd: '2022-11-30T09:00:00.000Z',
-        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -2084,13 +2084,13 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       facilitiesRequired: [
         'immigrationDetentionCentre',
         'inCameraCourt',
-        'sameSexCourtroom',
+        'sameSexCourtroom'
       ],
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
-      listingAutoChangeReasonCode: null,
+      listingAutoChangeReasonCode: null
     },
     caseDetails: {
       hmctsServiceCode: 'SSCS',
@@ -2106,23 +2106,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-002',
+          categoryValue: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z'
     },
     partyDetails: [
       {
@@ -2133,8 +2133,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         individualDetails: {
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson',
-        },
+          preferredHearingChannel: 'inPerson'
+        }
       },
       {
         partyID: 'P2',
@@ -2144,9 +2144,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         individualDetails: {
           firstName: 'DWP',
           lastName: null,
-          preferredHearingChannel: 'byVideo',
-        },
-      },
+          preferredHearingChannel: 'byVideo'
+        }
+      }
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
@@ -2172,8 +2172,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             individualDetails: {
               firstName: 'Jane',
               lastName: 'Smith',
-              preferredHearingChannel: 'inPerson',
-            },
+              preferredHearingChannel: 'inPerson'
+            }
           },
           {
             partyID: 'P2',
@@ -2183,17 +2183,17 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             individualDetails: {
               firstName: 'DWP',
               lastName: null,
-              preferredHearingChannel: 'byVideo',
-            },
-          },
-        ],
-      }],
-    },
+              preferredHearingChannel: 'byVideo'
+            }
+          }
+        ]
+      }]
+    }
   },
   {
     requestDetails: {
       timeStamp: '2022-02-23T09:00:00.000Z',
-      versionNumber: 1,
+      versionNumber: 1
     },
     hearingDetails: {
       duration: 60,
@@ -2203,14 +2203,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
-          locationId: '196538',
-        },
+          locationId: '196538'
+        }
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
         dateRangeStart: '2022-11-23T09:00:00.000Z',
         dateRangeEnd: '2022-11-30T09:00:00.000Z',
-        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -2221,13 +2221,13 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       facilitiesRequired: [
         'immigrationDetentionCentre',
         'inCameraCourt',
-        'sameSexCourtroom',
+        'sameSexCourtroom'
       ],
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
-      listingAutoChangeReasonCode: null,
+      listingAutoChangeReasonCode: null
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -2243,23 +2243,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-002',
+          categoryValue: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z'
     },
     partyDetails: [
       {
@@ -2276,9 +2276,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             'RA0053',
             'RA0013',
             'RA0016',
-            'RA0042',
+            'RA0042'
           ],
-          interpreterLanguage: 'PF0015',
+          interpreterLanguage: 'PF0015'
         },
         organisationDetails: {},
         unavailabilityDOW: null,
@@ -2286,9 +2286,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           {
             unavailableFromDate: '2021-12-10T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
       },
       {
         partyID: 'P2',
@@ -2300,24 +2300,24 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           firstName: 'DWP',
           lastName: 'Representative',
           reasonableAdjustments: [
-            'RA0005',
+            'RA0005'
           ],
-          interpreterLanguage: null,
+          interpreterLanguage: null
         },
         organisationDetails: {
           name: 'DWP',
           organisationType: 'GOV',
-          cftOrganisationID: 'O100000',
+          cftOrganisationID: 'O100000'
         },
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
             unavailableFromDate: '2021-12-20T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY,
-          },
-        ],
-      },
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      }
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
@@ -2349,9 +2349,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
                 'RA0053',
                 'RA0013',
                 'RA0016',
-                'RA0042',
+                'RA0042'
               ],
-              interpreterLanguage: 'PF0015',
+              interpreterLanguage: 'PF0015'
             },
             organisationDetails: {},
             unavailabilityDOW: null,
@@ -2359,9 +2359,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               {
                 unavailableFromDate: '2021-12-10T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           },
           {
             partyID: 'P2',
@@ -2373,31 +2373,31 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               firstName: 'DWP',
               lastName: 'Representative',
               reasonableAdjustments: [
-                'RA0005',
+                'RA0005'
               ],
-              interpreterLanguage: null,
+              interpreterLanguage: null
             },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
-              cftOrganisationID: 'O100000',
+              cftOrganisationID: 'O100000'
             },
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
                 unavailableFromDate: '2021-12-20T09:00:00.000Z',
                 unavailableToDate: '2021-12-31T09:00:00.000Z',
-                unavailabilityType: UnavailabilityType.ALL_DAY,
-              },
-            ],
-          },
-        ],
-      }],
-    },
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
+          }
+        ]
+      }]
+    }
   }, {
     requestDetails: {
       timeStamp: '2022-02-23T09:00:00.000+0000',
-      versionNumber: 1,
+      versionNumber: 1
     },
     hearingDetails: {
       duration: 70,
@@ -2407,14 +2407,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
-          locationId: '196538',
-        },
+          locationId: '196538'
+        }
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
         dateRangeStart: '2022-11-23T09:00:00.000Z',
         dateRangeEnd: '2022-11-30T09:00:00.000Z',
-        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -2425,13 +2425,13 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       facilitiesRequired: [
         'immigrationDetentionCentre',
         'inCameraCourt',
-        'sameSexCourtroom',
+        'sameSexCourtroom'
       ],
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
-      listingAutoChangeReasonCode: null,
+      listingAutoChangeReasonCode: null
     },
     caseDetails: {
       hmctsServiceCode: 'SSCS',
@@ -2447,23 +2447,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-002',
+          categoryValue: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }, {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-002',
+          categoryParent: 'BBA3-002'
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2021-11-23T09:00:00.000+0000'
     },
     partyDetails: [
       {
@@ -2473,9 +2473,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         individualDetails: {
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson',
+          preferredHearingChannel: 'inPerson'
         },
-        partyRole: 'Judge',
+        partyRole: 'Judge'
       },
       {
         partyID: 'P2',
@@ -2484,10 +2484,10 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         individualDetails: {
           firstName: 'DWP',
           lastName: null,
-          preferredHearingChannel: 'byVideo',
+          preferredHearingChannel: 'byVideo'
         },
-        partyRole: 'Judge',
-      },
+        partyRole: 'Judge'
+      }
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
@@ -2513,8 +2513,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             individualDetails: {
               firstName: 'Jane',
               lastName: 'Smith',
-              preferredHearingChannel: 'inPerson',
-            },
+              preferredHearingChannel: 'inPerson'
+            }
           },
           {
             partyID: 'P2',
@@ -2524,11 +2524,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             individualDetails: {
               firstName: 'DWP',
               lastName: null,
-              preferredHearingChannel: 'byVideo',
-            },
-          },
-        ],
-      }],
-    },
-  },
+              preferredHearingChannel: 'byVideo'
+            }
+          }
+        ]
+      }]
+    }
+  }
 ];

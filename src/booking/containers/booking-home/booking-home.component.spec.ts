@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
@@ -10,7 +10,6 @@ import { BookingProcess, BookingResponseSuccess } from '../../models';
 import { Booking } from '../../models/booking.interface';
 import { BookingService } from '../../services';
 import { BookingHomeComponent } from './booking-home.component';
-
 
 const DUMMY_BOOKINGS: Booking[] = [{
   id: 'd9d4f711-1ffe-4a22-a949-7286907422f1',
@@ -59,12 +58,13 @@ describe('BookingHomeComponent', () => {
     status: 400,
     message: 'Service down'
   };
-  beforeEach(async(() => {
+
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
         RouterTestingModule.withRoutes(
-          [{path: 'work/my-work/list', component: BookingHomeComponent}]
+          [{ path: 'work/my-work/list', component: BookingHomeComponent }]
         )
       ],
       declarations: [BookingHomeComponent],
@@ -129,7 +129,6 @@ describe('BookingHomeComponent', () => {
   });
 
   it('should display bookings list when there are existing bookings and first radio button is clicked', () => {
-
     // Click on the first radio button.
     const element = fixture.debugElement.nativeElement;
     const firstRadioButton = element.querySelector('#type-0');
@@ -177,9 +176,7 @@ describe('BookingHomeComponent', () => {
   });
 
   describe('onSelectOption()', () => {
-
     it('should change selectedBookingOption', () => {
-
       // Click on the second radio button.
       const element = fixture.debugElement.nativeElement;
       const secondRadioButton = element.querySelector('#type-1');
@@ -189,9 +186,7 @@ describe('BookingHomeComponent', () => {
   });
 
   describe('onEventTrigger()', () => {
-
     it('should emit a navigation enum', () => {
-
       const eventTriggerSpy = spyOn(component.eventTrigger, 'emit');
       // Click on the second radio button.
       const element = fixture.debugElement.nativeElement;
@@ -205,17 +200,13 @@ describe('BookingHomeComponent', () => {
   });
 
   describe('assignBookingLocation()', () => {
-
     it('should assign locationName', () => {
-
       expect(component.existingBookings[0].locationName).toEqual('Glasgow Tribunals Centre');
     });
   });
 
-  describe('onExistingBookingSelected()',  () => {
-
-    it('should make a call to refreshRoleAssignments', fakeAsync( () => {
-
+  describe('onExistingBookingSelected()', () => {
+    it('should make a call to refreshRoleAssignments', fakeAsync(() => {
       mockRouter = {
         navigate: jasmine.createSpy('navigate')
       };

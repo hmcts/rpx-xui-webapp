@@ -4,10 +4,9 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 
 export class HearingLengthAnswerConverter implements AnswerConverter {
-
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
-      map(state => {
+      map((state) => {
         let duration = state.hearingRequest.hearingRequestMainModel.hearingDetails.duration;
         if (duration) {
           let days = 0;

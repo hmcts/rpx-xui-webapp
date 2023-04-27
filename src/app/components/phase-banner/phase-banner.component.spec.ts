@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { PhaseBannerComponent } from './phase-banner.component';
 
@@ -31,5 +31,4 @@ describe('PhaseBannerComponent', () => {
     expect(feedbackLinkElement.innerHTML).toContain('feedback');
     expect(feedbackLinkSpanElement.innerHTML).toEqual('(Opens in a new window)');
   });
-
 });

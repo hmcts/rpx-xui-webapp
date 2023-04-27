@@ -9,20 +9,19 @@ import { http } from '../lib/http';
 import { handleDelete, handleGet, handlePost, handlePut } from './crudService';
 
 chai.use(sinonChai);
-describe('crudService', () => {
 
+describe('crudService', () => {
   const dummyData = {
     crudId: 'dummy',
     documentId: 'dummy',
     page: 1,
-    rectangles: [],
+    rectangles: []
   };
 
   let sandbox;
-  let spy: any;
   const req = mockReq();
   const res = mockRes({
-    data: 'ok',
+    data: 'ok'
   });
 
   beforeEach(() => {
@@ -34,9 +33,8 @@ describe('crudService', () => {
   });
 
   describe('handleGet', () => {
-
     it('should make a get request', async () => {
-      spy = sandbox.stub(http, 'get').resolves(res);
+      sandbox.stub(http, 'get').resolves(res);
       const crudPath = '/crud/12345';
       const next = sinon.mock() as NextFunction;
       const response = await handleGet(crudPath, req, next);
@@ -46,7 +44,7 @@ describe('crudService', () => {
 
   describe('handlePost', () => {
     it('should make a post request', async () => {
-      spy = sandbox.stub(http, 'post').resolves(res);
+      sandbox.stub(http, 'post').resolves(res);
       const crudPath = '/crud/12345';
       const next = sinon.mock() as NextFunction;
       const response = await handlePost(crudPath, dummyData, req, next);
@@ -56,7 +54,7 @@ describe('crudService', () => {
 
   describe('handlePut', () => {
     it('should make a put request', async () => {
-      spy = sandbox.stub(http, 'put').resolves(res);
+      sandbox.stub(http, 'put').resolves(res);
       const crudPath = '/crud/12345';
       const next = sinon.mock() as NextFunction;
       const response = await handlePut(crudPath, dummyData, req, next);
@@ -66,12 +64,11 @@ describe('crudService', () => {
 
   describe('handleDelete', () => {
     it('should make a delete request', async () => {
-      spy = sandbox.stub(http, 'delete').resolves(res);
+      sandbox.stub(http, 'delete').resolves(res);
       const crudPath = '/crud/12345';
       const next = sinon.mock() as NextFunction;
       const response = await handleDelete(crudPath, {}, req, next);
       expect(response.data).to.equal('ok');
     });
   });
-
 });

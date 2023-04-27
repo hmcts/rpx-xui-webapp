@@ -1,4 +1,4 @@
-import {HearingListModel} from './hearingList.model';
+import { HearingListModel } from './hearingList.model';
 
 export interface HearingListMainModel {
   hmctsServiceID: string;

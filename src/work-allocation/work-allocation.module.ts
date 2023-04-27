@@ -52,5 +52,4 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class WorkAllocationModule {
-}
+export class WorkAllocationModule {}

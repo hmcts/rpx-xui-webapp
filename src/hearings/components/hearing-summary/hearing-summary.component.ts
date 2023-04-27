@@ -10,10 +10,9 @@ import * as fromHearingStore from '../../store';
 @Component({
   selector: 'exui-hearing-summary',
   templateUrl: './hearing-summary.component.html',
-  styleUrls: ['./hearing-summary.component.scss'],
+  styleUrls: ['./hearing-summary.component.scss']
 })
 export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy {
-
   @Input() public template: Section[];
   @Input() public mode: Mode;
   public listingTemplate: string = HearingTemplate.LISTING_INFORMATION;
@@ -25,11 +24,11 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly router: Router,
               protected readonly route: ActivatedRoute) {
-      this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
+    this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
   }
 
   public ngOnInit(): void {
-    this.sub = this.hearingState$.subscribe(state => {
+    this.sub = this.hearingState$.subscribe((state) => {
       if (state.hearingRequest.lastError) {
         this.validationErrors = [];
         this.validationErrors.push({
@@ -51,7 +50,7 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   public fragmentFocus(): void {
-    this.route.fragment.subscribe(frag => {
+    this.route.fragment.subscribe((frag) => {
       const element = document.getElementById(frag);
       if (element) {
         element.scrollIntoView();
@@ -65,7 +64,7 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
 
     const hearingCondition: HearingConditions = {
       fragmentId: id,
-      mode: this.mode,
+      mode: this.mode
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
     this.router.navigateByUrl(changeLink);

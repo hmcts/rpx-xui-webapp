@@ -5,12 +5,11 @@ import { State } from '../store';
 import { HiddenConverter } from './hidden.converter';
 
 export class PanelExclusionHiddenConverter implements HiddenConverter {
-
   public transformHidden(hearingState$: Observable<State>): Observable<boolean> {
-    return hearingState$.pipe(map(state => {
+    return hearingState$.pipe(map((state) => {
       const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
       if (panelRequirements && panelRequirements.panelPreferences) {
-        return !panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.EXCLUDE).length;
+        return !panelRequirements.panelPreferences.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.EXCLUDE).length;
       }
       return true;
     }

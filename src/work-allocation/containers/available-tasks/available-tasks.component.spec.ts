@@ -22,7 +22,6 @@ import { getMockLocations, getMockTasks, MockRouter } from '../../tests/utils.sp
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
 
-
 @Component({
   template: `
     <exui-available-tasks></exui-available-tasks>`
@@ -60,6 +59,7 @@ describe('AvailableTasksComponent', () => {
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
 
   beforeEach(() => {
@@ -86,7 +86,7 @@ describe('AvailableTasksComponent', () => {
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: AllocateRoleService, useValue: mockRoleService },
-        { provide: Store, useValue: storeMock },
+        { provide: Store, useValue: storeMock }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -201,9 +201,7 @@ describe('AvailableTasksComponent', () => {
   });
 
   describe('claimTask()', () => {
-
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
-
       mockTaskService.claimTask.and.returnValue(of({}));
 
       const taskId = '123456';
@@ -213,12 +211,11 @@ describe('AvailableTasksComponent', () => {
     });
 
     it('should emit a Success information message, so that the User can see that they have claimed a task successfully.', () => {
-
       mockTaskService.claimTask.and.returnValue(of({}));
 
       const message: InformationMessage = {
         type: InfoMessageType.SUCCESS,
-        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
+        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
       };
 
       const taskId = '123456';
@@ -227,9 +224,7 @@ describe('AvailableTasksComponent', () => {
       expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalledWith(message);
     });
 
-    it('should call claimTaskErrors() with the error\'s status code, so that the User can see that the claim of ' +
-      'a task has been unsuccessful.', () => {
-
+    it('should call claimTaskErrors() with the error\'s status code, so that the User can see that the claim of a task has been unsuccessful.', () => {
       const errorStatusCode = 400;
 
       const claimTaskErrorsSpy = spyOn(component, 'claimTaskErrors');
@@ -244,9 +239,7 @@ describe('AvailableTasksComponent', () => {
   });
 
   describe('claimTaskAndGo()', () => {
-
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
-
       mockTaskService.claimTask.and.returnValue(of({}));
 
       const firstTask = getMockTasks()[1];
@@ -266,9 +259,7 @@ describe('AvailableTasksComponent', () => {
       });
     });
 
-    it('should call claimTaskErrors() with the error\'s status code, so that the User can see that the claim of ' +
-      'a task has been unsuccessful.', () => {
-
+    it('should call claimTaskErrors() with the error\'s status code, so that the User can see that the claim of a task has been unsuccessful.', () => {
       const errorStatusCode = 400;
 
       const claimTaskErrorsSpy = spyOn(component, 'claimTaskErrors');
@@ -283,23 +274,19 @@ describe('AvailableTasksComponent', () => {
   });
 
   describe('claimTaskErrors()', () => {
-
     it('should make a call to navigate the user to the /service-down page, if the error status code is 500.', () => {
-
       component.claimTaskErrors(500);
 
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/service-down']);
     });
 
     it('should make a call to navigate the user to the /not-authorised page, if the error status code is 401.', () => {
-
       component.claimTaskErrors(401);
 
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-authorised']);
     });
 
     it('should make a call to navigate the user to the /not-authorised page, if the error status code is 403.', () => {
-
       component.claimTaskErrors(403);
 
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-authorised']);
@@ -331,7 +318,7 @@ describe('AvailableTasksComponent', () => {
     const taskAction: InvokedTaskAction = {
       action: {
         id: TaskActionIds.CLAIM,
-        title: 'Assign to me',
+        title: 'Assign to me'
       },
       task: {
         assignee: null,
@@ -346,12 +333,12 @@ describe('AvailableTasksComponent', () => {
         dueDate: new Date(1604506789000),
         actions: [{
           id: TaskActionIds.CLAIM,
-          title: 'Assign to me',
+          title: 'Assign to me'
         }]
       }
     };
-    it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
 
+    it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
       const claimTaskSpy = spyOn(component, 'claimTask');
       component.onActionHandler(taskAction);
 
@@ -362,8 +349,8 @@ describe('AvailableTasksComponent', () => {
       { statusCode: 403, routeUrl: '/not-authorised' },
       { statusCode: 401, routeUrl: '/not-authorised' },
       { statusCode: 500, routeUrl: '/service-down' },
-      { statusCode: 400, routeUrl: '/service-down' },
-    ].forEach(scr => {
+      { statusCode: 400, routeUrl: '/service-down' }
+    ].forEach((scr) => {
       it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
         mockTaskService.searchTask.and.returnValue(throwError({ status: scr.statusCode }));
 
@@ -380,8 +367,8 @@ describe('AvailableTasksComponent', () => {
       { statusCode: 403, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM_AND_GO },
       { statusCode: 401, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM_AND_GO },
       { statusCode: 500, routeUrl: '/service-down', action: TaskActionIds.CLAIM_AND_GO },
-      { statusCode: 400, routeUrl: '/work/my-work/available', action: TaskActionIds.CLAIM_AND_GO },
-    ].forEach(scr => {
+      { statusCode: 400, routeUrl: '/work/my-work/available', action: TaskActionIds.CLAIM_AND_GO }
+    ].forEach((scr) => {
       it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
         mockTaskService.claimTask.and.returnValue(throwError({ status: scr.statusCode }));
 
@@ -392,13 +379,12 @@ describe('AvailableTasksComponent', () => {
         if (scr.statusCode === 400) {
           expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalledWith({
             type: InfoMessageType.WARNING,
-            message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
+            message: InfoMessage.TASK_NO_LONGER_AVAILABLE
           });
         } else {
           expect(mockRouter.navigate).toHaveBeenCalledWith([scr.routeUrl]);
         }
       });
     });
-
   });
 });

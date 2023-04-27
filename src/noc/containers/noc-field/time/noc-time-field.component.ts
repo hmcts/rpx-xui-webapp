@@ -8,7 +8,6 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
   templateUrl: './noc-time-field.component.html'
 })
 export class NocTimeFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
-
   public timeControl: FormControl;
   public timeGroup: FormGroup;
 
@@ -26,14 +25,14 @@ export class NocTimeFieldComponent extends AbstractFieldWriteComponent implement
     });
     if (this.timeControl.value) {
       const timeParts = this.timeControl.value.split(':');
-      this.timeGroup.controls['hour'].setValue(timeParts[0] || '');
-      this.timeGroup.controls['minute'].setValue(timeParts[1] || '');
-      this.timeGroup.controls['second'].setValue(timeParts[2] || '');
+      this.timeGroup.controls.hour.setValue(timeParts[0] || '');
+      this.timeGroup.controls.minute.setValue(timeParts[1] || '');
+      this.timeGroup.controls.second.setValue(timeParts[2] || '');
     }
   }
 
   public ngAfterViewInit(): void {
-    this.timeGroup.valueChanges.subscribe(data => {
+    this.timeGroup.valueChanges.subscribe(() => {
       const val = [
         this.timeGroup.value.hour !== null ? AppUtils.pad(this.timeGroup.value.hour) : '',
         this.timeGroup.value.minute !== null ? AppUtils.pad(this.timeGroup.value.minute) : '',

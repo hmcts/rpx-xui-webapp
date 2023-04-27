@@ -1,13 +1,13 @@
-import {TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {LovRefDataModel} from '../models/lovRefData.model';
-import {State} from '../store';
-import {ReasonForRequestCancellationAnswerConverter} from './reason-for-request-cancellation.answer.converter';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { LovRefDataModel } from '../models/lovRefData.model';
+import { State } from '../store';
+import { ReasonForRequestCancellationAnswerConverter } from './reason-for-request-cancellation.answer.converter';
 
 describe('ReasonForRequestCancellationAnswerConverter', () => {
   const CANCEL_HEARING_REQUEST_REASONS: LovRefDataModel[] = [
@@ -169,22 +169,23 @@ describe('ReasonForRequestCancellationAnswerConverter', () => {
     }
   ];
   let converter: ReasonForRequestCancellationAnswerConverter;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
   let router: any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                cancelHearingReasons: CANCEL_HEARING_REQUEST_REASONS,
-              },
-            },
-          },
+                cancelHearingReasons: CANCEL_HEARING_REQUEST_REASONS
+              }
+            }
+          }
         }
       ]
     });
@@ -197,8 +198,7 @@ describe('ReasonForRequestCancellationAnswerConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = converter.transformAnswer(of(STATE));
     const cancelReason = 'Withdrawn<br>Struck Out';
-    const expected = cold('(b|)', {b: cancelReason});
+    const expected = cold('(b|)', { b: cancelReason });
     expect(result$).toBeObservable(expected);
   });
-
 });

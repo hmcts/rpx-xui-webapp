@@ -11,7 +11,6 @@ import * as shareCases from '../reducers/share-case.reducer';
 
 @Injectable()
 export class ShareCaseEffects {
-
   public payload: any;
 
   constructor(
@@ -19,47 +18,46 @@ export class ShareCaseEffects {
     private readonly caseShareService: CaseShareService,
     private readonly router: Router,
     private readonly store: Store<shareCases.ShareCasesState>
-  ) {
-  }
+  ) {}
 
   @Effect()
   public addShareCases$ = this.actions$.pipe(
-    ofType(shareCaseActions.ADD_SHARE_CASES),
-    map((action: shareCaseActions.AddShareCases) => action.payload),
-    map(newCases => {
-      return new shareCaseActions.AddShareCaseGo({
-        path: [`/cases/case-share`],
-        sharedCases: newCases.sharedCases
-      });
-    })
-  );
+      ofType(shareCaseActions.ADD_SHARE_CASES),
+      map((action: shareCaseActions.AddShareCases) => action.payload),
+      map((newCases) => {
+        return new shareCaseActions.AddShareCaseGo({
+          path: ['/cases/case-share'],
+          sharedCases: newCases.sharedCases
+        });
+      })
+    );
 
   @Effect({ dispatch: false })
   public navigateToAddShareCase$ = this.actions$.pipe(
-    ofType(shareCaseActions.ADD_SHARE_CASE_GO),
-    map((action: shareCaseActions.AddShareCaseGo) => action.payload),
-    tap(({ path, query: queryParams, extras, sharedCases }) => {
-      const thatSharedCases = sharedCases;
-      queryParams = { init: true };
-      return this.router.navigate(path, { queryParams, ...extras }).then(() => {
-        this.store.dispatch(new shareCaseActions.NavigateToShareCase(thatSharedCases));
-      });
-    })
-  );
+      ofType(shareCaseActions.ADD_SHARE_CASE_GO),
+      map((action: shareCaseActions.AddShareCaseGo) => action.payload),
+      tap(({ path, query: queryParams, extras, sharedCases }) => {
+        const thatSharedCases = sharedCases;
+        queryParams = { init: true };
+        return this.router.navigate(path, { queryParams, ...extras }).then(() => {
+          this.store.dispatch(new shareCaseActions.NavigateToShareCase(thatSharedCases));
+        });
+      })
+    );
 
   @Effect()
   public loadShareCases$ = this.actions$.pipe(
-    ofType(shareCaseActions.LOAD_SHARE_CASES),
-    map((action: shareCaseActions.LoadShareCase) => action.payload),
-    switchMap(payload => {
-      this.payload = payload;
-      return this.caseShareService.getShareCases(payload).pipe(
-        map(
-          (response) => new shareCaseActions.LoadShareCaseSuccess(response)),
-        catchError(() => of(new fromRoot.Go({ path: ['/service-down']})))
-      );
-    })
-  );
+      ofType(shareCaseActions.LOAD_SHARE_CASES),
+      map((action: shareCaseActions.LoadShareCase) => action.payload),
+      switchMap((payload) => {
+        this.payload = payload;
+        return this.caseShareService.getShareCases(payload).pipe(
+          map(
+            (response) => new shareCaseActions.LoadShareCaseSuccess(response)),
+          catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))
+        );
+      })
+    );
 
   @Effect() public loadOrgUsers$ = this.actions$.pipe(
     ofType(shareCaseActions.LOAD_USERS_FROM_ORG_FOR_CASE),
@@ -67,23 +65,22 @@ export class ShareCaseEffects {
       return this.caseShareService.getUsersFromOrg().pipe(
         map(
           (response) => new shareCaseActions.LoadUserFromOrgForCaseSuccess(response)),
-        catchError(() => of(new fromRoot.Go({ path: ['/service-down']})))
+        catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))
       );
     })
   );
 
   @Effect()
   public assignUsersWithCases$ = this.actions$.pipe(
-    ofType(shareCaseActions.ASSIGN_USERS_TO_CASE),
-    map((action: shareCaseActions.AssignUsersToCase) => action.payload),
-    switchMap(payload => {
-      this.payload = payload;
-      return this.caseShareService.assignUsersWithCases(payload).pipe(
-        map(
-          (response) => new shareCaseActions.AssignUsersToCaseSuccess(response)),
-        catchError(() => of(new fromRoot.Go({ path: ['/service-down']})))
-      );
-    })
-  );
-
+      ofType(shareCaseActions.ASSIGN_USERS_TO_CASE),
+      map((action: shareCaseActions.AssignUsersToCase) => action.payload),
+      switchMap((payload) => {
+        this.payload = payload;
+        return this.caseShareService.assignUsersWithCases(payload).pipe(
+          map(
+            (response) => new shareCaseActions.AssignUsersToCaseSuccess(response)),
+          catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))
+        );
+      })
+    );
 }

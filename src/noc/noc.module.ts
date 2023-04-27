@@ -28,16 +28,16 @@ import { effects, reducers } from './store';
 
 @NgModule({
   imports: [
-      CommonModule,
-      HttpClientModule,
-      StoreModule.forFeature('noc', reducers),
-      EffectsModule.forFeature(effects),
-      nocRouting,
-      SharedModule,
-      FormsModule,
-      ReactiveFormsModule,
-      UtilsModule,
-      ExuiCommonLibModule
+    CommonModule,
+    HttpClientModule,
+    StoreModule.forFeature('noc', reducers),
+    EffectsModule.forFeature(effects),
+    nocRouting,
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule,
+    UtilsModule,
+    ExuiCommonLibModule
   ],
   declarations: [...fromContainers.containers],
   entryComponents: [
@@ -52,19 +52,20 @@ import { effects, reducers } from './store';
     NocTimeFieldComponent
   ],
   providers: [{
-      provide: AbstractAppConfig,
-      useExisting: AppConfig,
-    },
-    NocService,
-    PaletteService,
-    FormValidatorsService,
-    YesNoService
+    provide: AbstractAppConfig,
+    useExisting: AppConfig
+  },
+  NocService,
+  PaletteService,
+  FormValidatorsService,
+  YesNoService
   ]
 })
 /**
  * Entry point for NOC Module that is also lazy loaded.
  */
 export class NocModule {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   constructor(@Optional() @SkipSelf() parentModule: NocModule) {
     NocModule.forRoot();
   }

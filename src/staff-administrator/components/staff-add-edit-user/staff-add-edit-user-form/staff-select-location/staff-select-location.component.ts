@@ -33,7 +33,6 @@ export class StaffSelectLocationComponent implements OnInit {
       this.serviceCodes$
     ]).pipe(
       tap(([term]: [string, string[]]) => {
-        console.log(term);
         if (this.autocompleteSelectedLocation && term !== this.autocompleteSelectedLocation?.venue_name) {
           this.autocompleteSelectedLocation = false;
         }

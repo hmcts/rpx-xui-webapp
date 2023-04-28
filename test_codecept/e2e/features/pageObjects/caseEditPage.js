@@ -84,7 +84,7 @@ class caseEditPage {
                     let fixedListValue = await selectionRadioFields.get(i).getText();
                     webResList.push(fixedListValue);
                 }
-                expect(APIResList).to.eql(webResList);
+                expect(APIResList.sort()).to.eql(webResList.sort());
                 break;
             default:
                 console.log("Unknown field type : " + WBField);

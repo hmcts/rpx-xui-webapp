@@ -37,7 +37,7 @@
     "test:a11y:debug": "node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=a11y  npx codeceptjs --config=./test_codecept/codeceptCommon/codeceptA11y.conf.ts run",
     "test:a11y": "node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=a11y PARALLEL=yes   npx codeceptjs --config=./test_codecept/codeceptCommon/codeceptA11y.conf.ts run-workers --suites 8",
     "test:a11y:needsfix": "yarn test:ngIntegrationMockEnv &&  webdriver-manager update --gecko=false --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/accessibility/config/pa11yProtractor.conf.js",
-    "test:smoke": "TEST_TYPE=smoke  npx codeceptjs run --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @smoke --reporter mochawesomes",
+    "test:smoke": "TEST_TYPE=smoke  npx codeceptjs run --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @smoke --reporter mochawesome",
     "test:smoke:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
     "test:functional": "yarn run test:xuiIntegration & yarn run test:functionalApiE2e",
     "test:functionalApiE2e": "yarn run test:api & yarn run test:codeceptE2E",

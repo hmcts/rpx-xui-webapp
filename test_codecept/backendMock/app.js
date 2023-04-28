@@ -25,6 +25,8 @@ const ccdApi = require('./services/ccd/index')
 const caseAssignmentsRoutes = require('./services/caseAssignments/routes')
 const prdOrganisationRoutes = require('./services/prdOrganisations/routes')
 
+const globalSearchRoutes = require('./services/globalSearch/routes')
+
 const idamOpenId = require('./services/idam/routes')
 const sessionRoutes = require('./services/session/routes')
 
@@ -89,6 +91,8 @@ class MockApp {
         app.use('/refdata/judicial', judicialRoutes )
         app.use('/am/role-assignments', roleAssignmentRoutes)
         app.use('/am/bookings', bookingRoutes)
+
+        app.use('/globalSearch', globalSearchRoutes)
 
         app.use('/case-assignments', caseAssignmentsRoutes)
         app.use('/refdata/external/v1/organisations',prdOrganisationRoutes )

@@ -37,7 +37,7 @@ describe('CaseShareCompleteComponent', () => {
 
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [CaseShareCompleteComponent],
+      declarations: [CaseShareCompleteComponent, RpxTranslateMockPipe],
       imports: [RouterTestingModule],
       providers: [
         { provide: Store, useValue: mockStore },

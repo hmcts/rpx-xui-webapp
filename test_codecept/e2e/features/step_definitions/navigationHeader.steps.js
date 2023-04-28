@@ -12,10 +12,13 @@ const { LOG_LEVELS } = require('../../support/constants');
 
 const appTestData = require('../../config/appTestConfig')
 
+const CaseManager = require('../pageObjects/common/CaseManager')
+
 const { DataTableArgument } = require('codeceptjs');
 const browser = require('../../../codeceptCommon/browser');
 
 
+const caseManager = new CaseManager()
 
     Then('I see header tab Task list', async function () {
         expect(await headerPage.isTabPresent("Task list"), "Task list tab is not present").to.be.true;
@@ -259,9 +262,13 @@ const browser = require('../../../codeceptCommon/browser');
        
     });
 
-    When('I click find in case ref in header 16 digit ref search', async function () {
+When('I click find in case ref in header 16 digit ref search to see case details page', async function () {
         await browserWaits.retryWithActionCallback(async () => {
+            await browserWaits.waitForSeconds(2);
+            await browserWaits.waitForSpinnerToDissappear()
             await headerPage.headerCaseRefSearch.clickFind();
+            await caseManager.AmOnCaseDetailsPage()
+
         });
     });
 

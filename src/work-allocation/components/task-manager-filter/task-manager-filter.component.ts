@@ -61,8 +61,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
 
   constructor(private readonly filterService: FilterService,
               private featureToggleService: FeatureToggleService,
-              private readonly appStore: Store<fromAppStore.State>) {
-  }
+              private readonly appStore: Store<fromAppStore.State>) {}
 
   private static initServiceFilter(jurisdictions: string[]): FilterFieldConfig {
     return {

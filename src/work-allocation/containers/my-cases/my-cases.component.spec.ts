@@ -108,8 +108,8 @@ describe('MyCasesComponent', () => {
       localStorageGetItemSpy.calls.reset();
     });
 
-    it('should return a SearchCaseRequest with user uid', () => {
-      component = initializeComponent({ sessionStorageService: mockSessionStorageService, checkReleaseVersionService: mockCheckReleaseVersionService });
+    it('should return a SearchCaseRequest with user \'uid\'', () => {
+      component = initializeComponent({ sessionStorageService: mockSessionStorageService });
       component.sortedBy = {
         fieldName: 'fieldName',
         order: SortOrder.ASC

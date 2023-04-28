@@ -24,8 +24,8 @@ export async function handleGet(path: string, req: EnhancedRequest, next: NextFu
   }
 }
 
-export async function sendGet(path: string, req: EnhancedRequest, customHeaders: { [x: string]: string } = {})
-  : Promise<AxiosResponse> {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function sendGet<T>(path: string, req: EnhancedRequest): Promise<AxiosResponse> {
   try {
     logger.info('send get request to:', path);
     const headers = {

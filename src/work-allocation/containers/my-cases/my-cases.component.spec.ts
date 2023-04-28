@@ -109,7 +109,11 @@ describe('MyCasesComponent', () => {
     });
 
     it('should return a SearchCaseRequest with user \'uid\'', () => {
-      component = initializeComponent({ sessionStorageService: mockSessionStorageService });
+      component = initializeComponent({
+        sessionStorageService: mockSessionStorageService,
+        checkReleaseVersionService: mockCheckReleaseVersionService
+      });
+
       component.sortedBy = {
         fieldName: 'fieldName',
         order: SortOrder.ASC
@@ -122,10 +126,6 @@ describe('MyCasesComponent', () => {
       spyOn(AppUtils, 'isLegalOpsOrJudicial').and.returnValue(UserRole.Admin);
 
       const actual = component.getSearchCaseRequestPagination();
-
-      actual.search_parameters.forEach((se) => {
-        console.log(se.key, se.values);
-      });
 
       expect(actual).toEqual(jasmine.objectContaining({
         search_parameters: [
@@ -142,7 +142,10 @@ describe('MyCasesComponent', () => {
     });
 
     it('should NOT return a SearchCaseRequest', () => {
-      component = initializeComponent({ sessionStorageService: mockSessionStorageService, checkReleaseVersionService: mockCheckReleaseVersionService });
+      component = initializeComponent({
+        sessionStorageService: mockSessionStorageService,
+        checkReleaseVersionService: mockCheckReleaseVersionService
+      });
 
       mockSessionStorageService.getItem.withArgs('userDetails').and.returnValue(undefined);
 

@@ -21,7 +21,7 @@ describe('CaseShareConfirmComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [CaseShareConfirmComponent],
+      declarations: [CaseShareConfirmComponent, RpxTranslateMockPipe],
       providers: [
         provideMockStore()
       ]

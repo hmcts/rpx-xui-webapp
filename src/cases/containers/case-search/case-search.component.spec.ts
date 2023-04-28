@@ -161,13 +161,13 @@ describe('CaseSearchComponent', () => {
   describe('onPaginationSubscribeHandler()', () => {
     it('should update the components paginationMetadata property, on return of subscription.', () => {
       const paginationMetadata = new PaginationMetadata();
-      paginationMetadata.total_pages_count = 33;
-      paginationMetadata.total_results_count = 811;
+      paginationMetadata.totalPagesCount = 33;
+      paginationMetadata.totalResultsCount = 811;
 
       component.onPaginationSubscribeHandler(paginationMetadata);
 
-      expect(component.paginationMetadata.total_pages_count).toEqual(paginationMetadata.total_pages_count);
-      expect(component.paginationMetadata.total_results_count).toEqual(paginationMetadata.total_results_count);
+      expect(component.paginationMetadata.totalPagesCount).toEqual(paginationMetadata.totalPagesCount);
+      expect(component.paginationMetadata.totalResultsCount).toEqual(paginationMetadata.totalResultsCount);
     });
   });
 

@@ -30,7 +30,7 @@ import {
   WorkAllocationTaskService
 } from '../../services';
 import { CheckReleaseVersionService } from '../../services/check-release-version.service';
-import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
+import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'

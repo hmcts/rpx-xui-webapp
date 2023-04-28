@@ -13,7 +13,8 @@ import {
   SERVICES_JUDICIAL_BOOKING_API_PATH,
   SERVICES_PAYMENT_RETURN_URL,
   SERVICES_WA_WORKFLOW_API_URL,
-  WA_SUPPORTED_JURISDICTIONS
+  WA_SUPPORTED_JURISDICTIONS,
+  WA_SUPPORTED_SERVICE_CASETYPES
 } from './references';
 import { getFormattedSupportedServicesCaseTypes } from './waSupportedServicesCaseTypesHelper';
 

@@ -32,7 +32,7 @@ export class StaffSelectLocationComponent implements OnInit {
       this.searchTermFormControl.valueChanges,
       this.serviceCodes$
     ]).pipe(
-      tap(([term, serviceCodes]: [string, string[]]) => {
+      tap(([term]: [string, string[]]) => {
         if (this.autocompleteSelectedLocation && term !== this.autocompleteSelectedLocation?.venue_name) {
           this.autocompleteSelectedLocation = false;
         }

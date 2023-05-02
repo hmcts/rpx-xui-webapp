@@ -1897,12 +1897,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.10.8-case-flags-v2-reasonable-adjustments-text-amendments-v6":
-  version: 6.10.8-case-flags-v2-reasonable-adjustments-text-amendments-v6
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.10.8-case-flags-v2-reasonable-adjustments-text-amendments-v6"
+"@hmcts/ccd-case-ui-toolkit@npm:6.10.8-case-flags-v2-reasonable-adjustments-text-amendments-v7":
+  version: 6.10.8-case-flags-v2-reasonable-adjustments-text-amendments-v7
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.10.8-case-flags-v2-reasonable-adjustments-text-amendments-v7"
   dependencies:
     tslib: ^2.0.0
-  checksum: dbcffdba445043bccc4d99b23c77d22b830b21a378a9416eb2d265639dc79de4cd1731cb69951ce1d79164b15453de79331ce55e80e86865b3387a310e025b5c
+  checksum: 0766775bde373b0be99c69e2db91d4d93db7db418c99bd93ac026601d629e52024dc9f51f7ae633eee6d904db5c85d6585eaaa2b88551b168c107d06ef465e81
   languageName: node
   linkType: hard
 
@@ -18065,7 +18065,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.10.8-case-flags-v2-reasonable-adjustments-text-amendments-v6
+    "@hmcts/ccd-case-ui-toolkit": 6.10.8-case-flags-v2-reasonable-adjustments-text-amendments-v7
     "@hmcts/ccpay-web-component": 5.2.2
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

@@ -13,7 +13,6 @@ import { CaseDetailsHomeComponent } from '..';
 import { reducers } from '../../../app/store';
 import * as fromFeature from '../../store';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
-
 describe('CaseDetailsHomeComponent', () => {
   let component: CaseDetailsHomeComponent;
   let fixture: ComponentFixture<CaseDetailsHomeComponent>;

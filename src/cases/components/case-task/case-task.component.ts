@@ -38,10 +38,10 @@ export class CaseTaskComponent implements OnInit {
   public isRelease4: boolean;
 
   constructor(private readonly alertService: AlertService,
-    private readonly router: Router,
-    private readonly sessionStorageService: SessionStorageService,
-    protected taskService: WorkAllocationTaskService,
-    private featureToggleService: FeatureToggleService) {
+              private readonly router: Router,
+              private readonly sessionStorageService: SessionStorageService,
+              protected taskService: WorkAllocationTaskService,
+              private featureToggleService: FeatureToggleService) {
   }
 
   public get returnUrl(): string {
@@ -128,9 +128,9 @@ export class CaseTaskComponent implements OnInit {
   }
 
   /**
-  * Navigate the User to the correct error page, or throw an on page warning
-  * that the Task is no longer available.
-  */
+   * Navigate the User to the correct error page, or throw an on page warning
+   * that the Task is no longer available.
+   */
   public claimTaskErrors(status: number): void {
     const REDIRECT_404 = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }];
     const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);

@@ -55,8 +55,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     private readonly angularLocation: AngularLocation,
     private readonly sessionStorageService: SessionStorageService,
     private checkReleaseVersionService: CheckReleaseVersionService
-  ) {
-  }
+  ) {}
 
   public get fields(): FieldConfig[] {
     let fields = [];

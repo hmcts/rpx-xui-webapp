@@ -119,7 +119,7 @@ describe('AllWorkCaseComponent', () => {
   mockSessionStorageService.getItem.and.returnValue(undefined);
 
   describe('ngOnInit', () => {
-    it('should call setupCaseWorkers and update locations and waSupportedJurisdictions', () => {
+    it('should call \'setupCaseWorkers\' and update \'locations\' and \'waSupportedJurisdictions\'', () => {
       component = initializeComponent({ locationDataService: mockLocationService, waSupportedJurisdictionsService: mockWASupportedJurisdictionService, checkReleaseVersionService: mockCheckReleaseVersionService });
       spyOn(component, 'setupCaseWorkers');
       spyOn(component, 'loadSupportedJurisdictions');
@@ -170,7 +170,7 @@ describe('AllWorkCaseComponent', () => {
   });
 
   describe('onPaginationEvent', () => {
-    it('should call onPaginationHandler', () => {
+    it('should call \'onPaginationHandler\'', () => {
       component = initializeComponent({ checkReleaseVersionService: mockCheckReleaseVersionService });
 
       spyOn(component, 'onPaginationHandler');

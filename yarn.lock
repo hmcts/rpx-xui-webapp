@@ -1897,12 +1897,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page":
-  version: 6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page"
+"@hmcts/ccd-case-ui-toolkit@npm:6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page-v2":
+  version: 6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page-v2"
   dependencies:
     tslib: ^2.0.0
-  checksum: 897aa9ca19fe3f7ed23c60fe5dbc4b0f00faa5ab08b12b43e498e87a79f3e110aee658bc6cd9d4e60e9f2b88b0f29a256c134afeae97c9b07e210493edc5eeb9
+  checksum: e6140e102cde2aeaf83ca338cd9d004a3c21d05bd14858f3a964cec2dc945ca6b068d5b839a7123f216322954f53d6ec9a93d30d435b65f517bb6b44272c37be
   languageName: node
   linkType: hard
 
@@ -18065,7 +18065,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page
+    "@hmcts/ccd-case-ui-toolkit": 6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page-v2
     "@hmcts/ccpay-web-component": 5.2.2
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

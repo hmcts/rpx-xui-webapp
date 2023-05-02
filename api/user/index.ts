@@ -28,11 +28,8 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
     const roleAssignmentInfo = await getUserRoleAssignments(req.session.passport.user.userinfo, req);
     const userInfo = { ...req.session.passport.user.userinfo, token: `Bearer ${req.session.passport.user.tokenset.accessToken}` };
     const syntheticRoles = getSyntheticRoles(roleAssignmentInfo);
-    console.log('syntheticRoles', syntheticRoles)
-    console.log('roles' , userInfo.roles)
-    const allRoles = [...new Set([...userInfo.roles, ...syntheticRoles])]
-    console.log('allRoles' , allRoles)
-    userInfo.roles = allRoles
+    const allRoles = [...new Set([...userInfo.roles, ...syntheticRoles])];
+    userInfo.roles = allRoles;
     res.send({
       canShareCases,
       roleAssignmentInfo,
@@ -45,17 +42,17 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
 }
 export function getSyntheticRoles(roleAssignments: RoleAssignment[]): string [] {
   let syntheticRoles = [];
-  roleAssignments.forEach(roleAssignment => {
+  roleAssignments.forEach((roleAssignment) => {
     if (roleAssignment.substantive === 'Y' && roleAssignment.jurisdiction && roleAssignment.roleName) {
-      syntheticRoles = [...syntheticRoles, getSyntheticRole(roleAssignment.jurisdiction, roleAssignment.roleName)]
+      syntheticRoles = [...syntheticRoles, getSyntheticRole(roleAssignment.jurisdiction, roleAssignment.roleName)];
     }
-  })
-  syntheticRoles = [...new Set(syntheticRoles)]
+  });
+  syntheticRoles = [...new Set(syntheticRoles)];
   return syntheticRoles;
 }
 
 export function getSyntheticRole(jurisdiction: string, roleName: string): string {
-  return jurisdiction && roleName ? `${jurisdiction.toLocaleLowerCase()}-${roleName.toLocaleLowerCase()}` : ''
+  return jurisdiction && roleName ? `${jurisdiction.toLocaleLowerCase()}-${roleName.toLocaleLowerCase()}` : '';
 }
 
 export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any): Promise<any[]> {

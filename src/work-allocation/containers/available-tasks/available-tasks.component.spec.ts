@@ -24,7 +24,6 @@ import { AvailableTasksComponent } from './available-tasks.component';
 import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageType } from '../../../role-access/models/enums';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
-
 @Component({
   template: `
     <exui-available-tasks></exui-available-tasks>`

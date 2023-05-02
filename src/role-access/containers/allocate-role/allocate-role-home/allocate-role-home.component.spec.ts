@@ -63,15 +63,18 @@ describe('AllocateRoleHomeComponent', () => {
   ];
   let component: AllocateRoleHomeComponent;
   let fixture: ComponentFixture<AllocateRoleHomeComponent>;
-  const routerMock = jasmine.createSpyObj('Router', [
-    'navigateByUrl', 'getCurrentNavigation'
-  ]);
+  let routerMock: jasmine.SpyObj<Router>
   const allocateRoleServiceMock = jasmine.createSpyObj('AllocateRoleService', ['getValidRoles']);
   let store: Store<fromStore.State>;
   let storePipeMock: any;
   let storeDispatchMock: any;
 
   beforeEach(() => {
+    routerMock = jasmine.createSpyObj('Router', [
+      'navigateByUrl', 'getCurrentNavigation'
+    ]);
+    routerMock.navigateByUrl.and.returnValue(new Promise(() => true));
+
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
@@ -120,7 +123,14 @@ describe('AllocateRoleHomeComponent', () => {
     storePipeMock = spyOn(store, 'pipe');
     storeDispatchMock = spyOn(store, 'dispatch');
     storePipeMock.and.returnValue(of(USER));
-    routerMock.getCurrentNavigation.and.returnValue({ extras: { state: { backUrl: null } } });
+    routerMock.getCurrentNavigation.and.returnValue({
+      extractedUrl: undefined,
+      id: 0,
+      initialUrl: undefined,
+      previousNavigation: undefined,
+      trigger: undefined,
+      extras: { state: { backUrl: null } }
+    });
     fixture = TestBed.createComponent(AllocateRoleHomeComponent);
     component = fixture.componentInstance;
   });
@@ -436,7 +446,7 @@ describe('AllocateRoleHomeComponent', () => {
       allocateRoleServiceMock.getValidRoles.and.returnValue(of(ROLE_LIST));
     });
 
-    it('on cancel event', fakeAsync(() => {
+    it('on cancel event', () => {
       const CURRENT_STATE = {
         ...STATE_DATA,
         state: AllocateRoleState.CHECK_ANSWERS
@@ -445,9 +455,8 @@ describe('AllocateRoleHomeComponent', () => {
       component.navigationCurrentState = AllocateRoleState.CHECK_ANSWERS;
       fixture.detectChanges();
       component.navigationHandler(AllocateRoleNavigationEvent.CANCEL);
-      tick();
       expect(routerMock.navigateByUrl).toHaveBeenCalledWith('cases/case-details/111111/roles-and-access');
-    }));
+    });
 
     afterEach(() => {
       fixture.destroy();

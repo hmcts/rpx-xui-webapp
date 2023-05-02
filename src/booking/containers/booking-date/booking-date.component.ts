@@ -23,6 +23,8 @@ import {
 export class BookingDateComponent implements OnInit {
   @Input() public bookingProcess: BookingProcess;
   @Output() public eventTrigger = new EventEmitter();
+  @Output() public bookingProcessChange = new EventEmitter<BookingProcess>();
+
   public title: string;
   public caption: string;
   public dateInterval: DisplayedDateInterval[];

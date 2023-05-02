@@ -29,6 +29,7 @@ describe('BookingDateComponent', () => {
     label: 'Booking Ends',
     isPageHeading: false
   };
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, ExuiCommonLibModule, FormsModule],

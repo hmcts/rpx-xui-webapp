@@ -13,6 +13,8 @@ export interface RoleAssignment {
   created?: Date;
   attributes: LocationInfo;
   authorisations?: string[];
+  substantive?: string;
+  jurisdiction?: string;
 }
 
 export interface LocationInfo {

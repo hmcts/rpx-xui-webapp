@@ -1,5 +1,5 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -436,7 +436,7 @@ describe('AllocateRoleHomeComponent', () => {
       allocateRoleServiceMock.getValidRoles.and.returnValue(of(ROLE_LIST));
     });
 
-    it('on cancel event', () => {
+    it('on cancel event', fakeAsync(() => {
       const CURRENT_STATE = {
         ...STATE_DATA,
         state: AllocateRoleState.CHECK_ANSWERS
@@ -445,8 +445,9 @@ describe('AllocateRoleHomeComponent', () => {
       component.navigationCurrentState = AllocateRoleState.CHECK_ANSWERS;
       fixture.detectChanges();
       component.navigationHandler(AllocateRoleNavigationEvent.CANCEL);
+      tick();
       expect(routerMock.navigateByUrl).toHaveBeenCalledWith('cases/case-details/111111/roles-and-access');
-    });
+    }));
 
     afterEach(() => {
       fixture.destroy();

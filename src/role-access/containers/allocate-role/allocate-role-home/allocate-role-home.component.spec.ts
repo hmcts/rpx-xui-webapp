@@ -1,5 +1,5 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -63,7 +63,7 @@ describe('AllocateRoleHomeComponent', () => {
   ];
   let component: AllocateRoleHomeComponent;
   let fixture: ComponentFixture<AllocateRoleHomeComponent>;
-  let routerMock: jasmine.SpyObj<Router>
+  let routerMock: jasmine.SpyObj<Router>;
   const allocateRoleServiceMock = jasmine.createSpyObj('AllocateRoleService', ['getValidRoles']);
   let store: Store<fromStore.State>;
   let storePipeMock: any;

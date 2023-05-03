@@ -181,6 +181,7 @@ const RuntimeTestData = require("../../support/runtimeTestData");
     await BrowserWaits.retryWithActionCallback(async () => {
   
       try{
+        await BrowserWaits.waitForSpinnerToDissappear();
         await searchPage.waitForAtleastOneSearchResult();
         await expect(await searchPage.hasSearchReturnedResults()).to.be.true;
       }catch(err){

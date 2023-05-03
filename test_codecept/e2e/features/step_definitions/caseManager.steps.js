@@ -63,6 +63,12 @@ const creatCaseStepTimeout = 600*1000;
         });
     });
 
+    When('I update case details', async function () {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await caseManager.UpdateCase();
+        });
+    });
+
     When('I click cancel link', async function () {
         await caseManager.cancelCaseCreation();
     });

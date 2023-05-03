@@ -355,6 +355,10 @@ function HeaderPage() {
         retValue =  await BrowserWaits.retryWithActionCallback(async () => {
           const juridictiosnLoaded = await createCaseStartPage.getLoadedJurisdictionsCount();
           const val =  juridictiosnLoaded > 1;
+          if (!val){
+            await BrowserWaits.waitForSeconds(10);
+            throw Error("Waiting for jusdictions to load")
+          }
           return val
         });
        

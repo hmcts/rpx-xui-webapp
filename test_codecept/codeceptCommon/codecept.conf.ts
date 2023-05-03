@@ -16,7 +16,7 @@ const testType = process.env.TEST_TYPE
 const parallel = process.env.PARALLEL
 const head = process.env.HEAD
 
-if (process.env.TEST_URL.includes('pr-2975') ||
+if (process.env.TEST_URL.includes('pr-29751') ||
     process.env.TEST_URL.includes('localhost'))
   {
     process.env.TEST_ENV='demo';

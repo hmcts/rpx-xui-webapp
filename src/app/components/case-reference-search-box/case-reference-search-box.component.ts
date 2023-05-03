@@ -3,12 +3,13 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { NavItemsModel } from '../../../app/models/nav-item.model';
+import { NavItemsModel } from '../../models';
 import * as fromActions from '../../../app/store';
 import { NoResultsMessageId, SearchStatePersistenceKey } from '../../../search/enums';
 import { SearchParameters } from '../../../search/models';
 import { SearchService } from '../../../search/services/search.service';
 import { SearchValidators } from '../../../search/utils';
+import { LoggerService } from '../../services/logger/logger.service';
 
 const REQUEST_ORIGINATED_FROM = '16digitCaseReferenceSearchFromHeader';
 
@@ -32,7 +33,8 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
     private readonly fb: FormBuilder,
     private readonly searchService: SearchService,
     private readonly router: Router,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly loggerService: LoggerService
   ) {}
 
   public ngOnInit(): void {
@@ -92,9 +94,14 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
     if (isCaseDetailsPage) {
       this.router.navigateByUrl('/cases/case-loader', { skipLocationChange: true }).then(() => {
         this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
+      }).catch((error) => {
+        this.loggerService.error('Error navigating to case details:', error);
       });
     } else {
-      this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
+      this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route })
+        .catch((error) => {
+          this.loggerService.error('Error navigating to case details:', error);
+        });
     }
   }
 

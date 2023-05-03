@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, select, Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import * as fromAppReducers from '../../../app/store/reducers';
 import { HttpError } from '../../../models/httpError.model';
@@ -65,33 +65,39 @@ export class HearingRequestEffects {
   @Effect({ dispatch: false })
   public continueNavigation$ = this.actions$.pipe(
       ofType(hearingRequestActions.UPDATE_HEARING_REQUEST),
-      tap(() => {
+      mergeMap(() => {
         const nextPage = this.pageFlow.getNextPage(this.screenNavigations$);
+        let navigationPromise: Promise<boolean>;
         switch (this.mode) {
           case Mode.CREATE:
             if (nextPage) {
-              return this.router.navigate(['hearings', 'request', nextPage]);
+              navigationPromise = this.router.navigate(['hearings', 'request', nextPage]);
+            } else {
+              throw new Error('Next page not found');
             }
-
-            throw new Error('Next page not found');
+            break;
 
           case Mode.CREATE_EDIT:
             if (nextPage === HearingRequestEffects.WELSH_PAGE) {
-              return this.router.navigate(['hearings', 'request', nextPage]);
+              navigationPromise = this.router.navigate(['hearings', 'request', nextPage]);
+            } else {
+              navigationPromise = this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId });
             }
-
-            return this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId });
+            break;
 
           case Mode.VIEW_EDIT:
             if (nextPage === HearingRequestEffects.WELSH_PAGE) {
-              return this.router.navigate(['hearings', 'request', nextPage]);
+              navigationPromise = this.router.navigate(['hearings', 'request', nextPage]);
+            } else {
+              navigationPromise = this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: this.fragmentId });
             }
-
-            return this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: this.fragmentId });
+            break;
 
           default:
-            return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
+            navigationPromise = this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
+            break;
         }
+        return from(navigationPromise);
       })
     );
 

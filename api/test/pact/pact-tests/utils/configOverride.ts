@@ -59,9 +59,9 @@ export function getJudicialRefDataAPIOverrides(judicialRefApiUrl) {
 }
 
 export function getNocAPIOverrides(nocAPiUrl) {
-    return {
-        "services.ccd.caseAssignmentApi": nocAPiUrl,
-        "waSupportedJurisdictions": 'IA',
-        ...defaultConfig,
-    }
+  return {
+    'services.ccd.caseAssignmentApi': nocAPiUrl,
+    'waSupportedJurisdictions': 'IA',
+    ...defaultConfig
+  };
 }

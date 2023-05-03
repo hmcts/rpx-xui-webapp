@@ -56,7 +56,8 @@ const { DataTableArgument } = require('codeceptjs');
                 await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
                 expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
             }catch(err){
-                await headerPage.clickAppLogoLink();
+                // await headerPage.clickAppLogoLink();
+                cucumberReporter.AddMessage(`Failed primary navigation header tab ${headerTabLabel}`)
                 await headerPage.refreshBrowser();
                 throw new Error(err);
             }

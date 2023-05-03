@@ -88,8 +88,6 @@ describe('verifyAnswers API', () => {
         assertResponse(returnedResponse);
       } catch (err) {
         console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
         throw new Error(err);
       }
     });
@@ -133,8 +131,6 @@ describe('verifyAnswers API', () => {
         assertError(error);
       } catch (err) {
         console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
         throw new Error(err);
       }
     });

@@ -17,8 +17,6 @@ describe('verifyAnswers API', () => {
   afterEach(() => {
     sinon.reset();
     sandbox.restore();
-    pactSetUp.provider.finalize();
-    pactSetUp.provider.verify();
   });
 
   const answers: NocAnswer[] = [{
@@ -86,8 +84,12 @@ describe('verifyAnswers API', () => {
       try {
         await validateNoCQuestions(req, response, next);
         assertResponse(returnedResponse);
+        pactSetUp.provider.finalize();
+        pactSetUp.provider.verify();
       } catch (err) {
         console.log(err.stack);
+        pactSetUp.provider.finalize();
+        pactSetUp.provider.verify();
         throw new Error(err);
       }
     });
@@ -129,8 +131,12 @@ describe('verifyAnswers API', () => {
         await validateNoCQuestions(req, response, nextSpy);
         const error = nextSpy.args[0][0];
         assertError(error);
+        pactSetUp.provider.finalize();
+        pactSetUp.provider.verify();
       } catch (err) {
         console.log(err.stack);
+        pactSetUp.provider.finalize();
+        pactSetUp.provider.verify();
         throw new Error(err);
       }
     });

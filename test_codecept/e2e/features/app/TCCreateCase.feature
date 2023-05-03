@@ -90,7 +90,6 @@ Feature: Test case type case creation and case details validations
         When I start case next step "Update case"
         Then Validate Case event update populating form page
 
-@update_case
     Scenario: Validate "Update case" event
         When I click on search button
         Then Search page should be displayed

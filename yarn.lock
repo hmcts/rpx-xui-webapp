@@ -2098,12 +2098,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.14.1-v1":
-  version: 6.14.1-v1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.14.1-v1"
+"@hmcts/ccd-case-ui-toolkit@npm:6.13.11-EXUI-256-radio-list-allows-multiple-select":
+  version: 6.13.11-EXUI-256-radio-list-allows-multiple-select
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.13.11-EXUI-256-radio-list-allows-multiple-select"
   dependencies:
     tslib: ^2.0.0
-  checksum: 91b81bfcbde9d73c30b855c446f993a861ca0691a5ef16022c5c2ac105836280c7d23fda3ae9d126eedfab74971fe1fa12ae55d75c500bef781f2530e4d90bf9
+  checksum: 26de068b72e8ef1e3e117d7fe600ef5c2f81c796acc125d8b68c7ad5a4c1426f4f1d3d8cf5a32c5228f45144339bff40b84e4999b11a3f8004a0f0a772feea8b
   languageName: node
   linkType: hard
 
@@ -18131,7 +18131,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.14.1-v1
+    "@hmcts/ccd-case-ui-toolkit": 6.13.11-EXUI-256-radio-list-allows-multiple-select
     "@hmcts/ccpay-web-component": 5.2.2
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

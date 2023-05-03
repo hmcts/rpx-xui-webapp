@@ -57,7 +57,6 @@ export class CaseTaskComponent implements OnInit {
     value.description = CaseTaskComponent.replaceVariablesWithRealValues(value);
     this.pTask = value;
     this.isTaskUrgent = this.pTask.major_priority <= PriorityLimits.Urgent ? true : false;
-    this.setReleaseVersion();
   }
 
   @Input()
@@ -85,8 +84,9 @@ export class CaseTaskComponent implements OnInit {
     }, task.description);
   }
 
-  public ngOnInit(): void {
+  public async ngOnInit(): Promise<void> {
     this.manageOptions = this.task.actions;
+    await this.setReleaseVersion();
   }
 
   public getAssigneeName(task: Task): string {
@@ -108,7 +108,7 @@ export class CaseTaskComponent implements OnInit {
     return this.isUserJudicial ? 'Task created' : 'Due date';
   }
 
-  public onActionHandler(task: Task, option: any): void {
+  public async onActionHandler(task: Task, option: any): Promise<void> {
     if (option.id === 'claim') {
       this.taskService.claimTask(task.id).subscribe(() => {
         this.alertService.success(InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS);
@@ -124,7 +124,7 @@ export class CaseTaskComponent implements OnInit {
       showAssigneeColumn: true
     };
     const actionUrl = `/work/${task.id}/${option.id}`;
-    this.router.navigate([actionUrl], { queryParams: { service: task.jurisdiction }, state });
+    await this.router.navigate([actionUrl], { queryParams: { service: task.jurisdiction }, state });
   }
 
   /**
@@ -150,10 +150,10 @@ export class CaseTaskComponent implements OnInit {
     return null;
   }
 
-  public onClick(event: string) {
+  public async onClick(event: string) {
     const url = event.substring(event.indexOf('(') + 1, event.indexOf(')'));
     const urls = url.split('?');
-    this.router.navigate([urls[0]], {
+    await this.router.navigate([urls[0]], {
       queryParams: {
         tid: urls[1].split('=')[1]
       }

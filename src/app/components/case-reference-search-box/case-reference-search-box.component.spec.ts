@@ -8,6 +8,7 @@ import { SearchStatePersistenceKey } from '../../../search/enums';
 import { SearchParameters } from '../../../search/models';
 import { SearchService } from '../../../search/services/search.service';
 import { CaseReferenceSearchBoxComponent } from './case-reference-search-box.component';
+import { LoggerService } from '../../services/logger/logger.service';
 
 describe('CaseReferenceSearchBoxComponent', () => {
   let component: CaseReferenceSearchBoxComponent;
@@ -21,13 +22,15 @@ describe('CaseReferenceSearchBoxComponent', () => {
     searchService = {},
     router = {},
     route = {},
-    store = {}
+    store = {},
+    loggerService = {}
   }) => new CaseReferenceSearchBoxComponent(
     store as Store<fromActions.State>,
     formBuilder as FormBuilder,
     searchService as SearchService,
     router as Router,
-    route as ActivatedRoute
+    route as ActivatedRoute,
+    loggerService as LoggerService
   );
 
   afterEach(() => {

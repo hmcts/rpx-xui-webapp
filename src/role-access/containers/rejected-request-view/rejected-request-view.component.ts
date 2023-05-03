@@ -81,9 +81,9 @@ export class RejectedRequestViewComponent implements OnInit {
     window.history.back();
   }
 
-  public goToRequest(): void {
+  public async goToRequest(): Promise<void> {
     const requestUrl = `/cases/case-details/${this.caseReference}/specific-access-request`;
-    this.router.navigate([requestUrl]);
+    await this.router.navigate([requestUrl]);
   }
 
   public getRejectReason(infoRequired: boolean, infoRequiredComment: string): string {

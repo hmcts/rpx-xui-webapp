@@ -135,6 +135,8 @@ class CaseManager {
             isCheckYourAnswersPage = await checkYouranswers.isPresent();
             pageCounter++;
         }
+        //reset api response to null for next event
+        this.caseEditPage.caseEventApiResponse = null;
     }
 
     async submitCase(isAccessibilityTest){

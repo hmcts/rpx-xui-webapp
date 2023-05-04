@@ -16,6 +16,7 @@ const CaseManager = require('../pageObjects/common/CaseManager')
 
 const { DataTableArgument } = require('codeceptjs');
 const browser = require('../../../codeceptCommon/browser');
+const { error } = require('console');
 
 
 const caseManager = new CaseManager()
@@ -56,8 +57,15 @@ const caseManager = new CaseManager()
 
     When('I click on primary navigation header tab {string}, I see selected tab page displayed', async function (headerTabLabel) {
         await browserWaits.retryWithActionCallback(async () => {
-            await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
-            expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+            try{
+                await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
+                expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+            }catch(err){
+                reportLogger.AddMessage(`failed to load primary nav page ${headerTabLabel}, retrying refresh`);
+                await browser.refreshBrowser();
+                throw err;
+            }
+            
 
         });
         

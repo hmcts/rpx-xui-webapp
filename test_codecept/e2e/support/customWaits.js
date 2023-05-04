@@ -102,16 +102,18 @@ class BrowserWaits{
     async waitForPageNavigation(currentPageUrl) {
         var nextPage = "";
         let pageErrors = "";
-        await this.retryWithActionCallback(async () => {
+        for (let i = 0; i < 20; i++) {
+            await this.waitForSeconds(1);
             nextPage = await browser.getCurrentUrl();
-
-            for (let errorMsgCounter = 0; errorMsgCounter < this.pageErrors.length; errorMsgCounter++) {
-                pageErrors = pageErrors + " | " + this.pageErrors[errorMsgCounter].getText();
+            if (currentPageUrl !== nextPage) {
+                break;
             }
+        }
 
-            return currentPageUrl !== nextPage;
-        }, this.waitTime, "Navigation to next page taking too long " + this.waitTime + ". Current page " + currentPageUrl + ". Errors => " + pageErrors);
-        return await browser.getCurrentUrl();
+        if (currentPageUrl === nextPage) {
+            throw Error(`Failed Waiting for page navigation from ${currentPageUrl}`)
+        }
+        return nextPage;
     }
 
 

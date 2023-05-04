@@ -22,7 +22,7 @@ import {
   SpecificAccessInformationComponent
 } from '../specific-access-information/specific-access-information.component';
 import { SpecificAccessReviewComponent } from '../specific-access-review/specific-access-review.component';
-import {LoggerService} from "../../../../app/services/logger/logger.service";
+import { LoggerService } from '../../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-specific-access-home',

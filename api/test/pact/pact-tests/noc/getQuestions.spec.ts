@@ -89,12 +89,12 @@ describe('getNoCQuestions API', () => {
       try {
         await getNoCQuestions(req, response, next);
         assertResponse(returnedResponse);
-        pactSetUp.provider.finalize();
         pactSetUp.provider.verify();
+        pactSetUp.provider.finalize();
       } catch (err) {
         console.log(err.stack);
+        pactSetUp.provider.verify()
         pactSetUp.provider.finalize();
-        pactSetUp.provider.verify();
         throw new Error(err);
       }
     });

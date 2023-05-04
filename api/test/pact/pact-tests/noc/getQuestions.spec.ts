@@ -17,6 +17,8 @@ describe('getNoCQuestions API', () => {
   afterEach(() => {
     sinon.reset();
     sandbox.restore();
+    pactSetUp.provider.verify();
+    pactSetUp.provider.finalize();
   });
 
   function setUpMockConfigForFunction() {
@@ -89,57 +91,8 @@ describe('getNoCQuestions API', () => {
       try {
         await getNoCQuestions(req, response, next);
         assertResponse(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
       } catch (err) {
         console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
-    });
-  });
-  describe('when an error occurs', () => {
-    before(async () => {
-      await pactSetUp.provider.setup();
-      await pactSetUp.provider.addInteraction({
-        state: 'a case with an error exists',
-        uponReceiving: 'a request to verify NoC answers',
-        withRequest: {
-          method: 'GET',
-          path: '/noc/noc-questions',
-          query: 'case_id=' + caseId
-        },
-        willRespondWith: {
-          status: 400,
-          body: {
-            status: 'BAD_REQUEST',
-            message: 'Case ID has to be a valid 16-digit Luhn number',
-            code: 'case-id-invalid'
-          }
-        }
-      });
-    });
-
-    it('should return an error response', async () => {
-      const getNoCQuestions = setUpMockConfigForFunction();
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-      const nextSpy = sinon.spy();
-      try {
-        await getNoCQuestions(req, response, nextSpy);
-        const error = nextSpy.args[0][0];
-        assertError(error);
-        pactSetUp.provider.finalize();
-        pactSetUp.provider.verify();
-      } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.finalize();
-        pactSetUp.provider.verify();
         throw new Error(err);
       }
     });
@@ -161,11 +114,3 @@ function assertResponse(returnedResponse: any) {
   expect(returnedResponse.questions[0].answer_field).to.be.equal('');
   expect(returnedResponse.questions[0].question_id).to.be.equal('QuestionId67745');
 }
-
-function assertError(error: any) {
-  expect(error.status).to.be.equal(400);
-  expect(error.statusText).to.be.equal('Bad Request ');
-  expect(error.data.message).to.be.equal('Case ID has to be a valid 16-digit Luhn number');
-  expect(error.data.code).to.be.equal('case-id-invalid');
-}
-

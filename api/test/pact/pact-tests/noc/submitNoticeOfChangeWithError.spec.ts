@@ -3,7 +3,6 @@ import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-import { NextFunction } from 'express';
 import { getNocAPIOverrides } from '../utils/configOverride';
 import * as config from 'config';
 import { requireReloaded } from '../utils/moduleUtil';
@@ -12,13 +11,11 @@ import { NocAnswer } from '../../../../../src/noc/models';
 
 const pactSetUp = new PactTestSetup({ provider: 'acc_manageCaseAssignment_Noc', port: 8000 });
 
-describe('verifyAnswers API', () => {
+describe('submitNoCEvents API', () => {
   const sandbox: sinon.SinonSandbox = sinon.createSandbox();
   afterEach(() => {
     sinon.reset();
     sandbox.restore();
-    pactSetUp.provider.verify();
-    pactSetUp.provider.finalize();
   });
 
   const answers: NocAnswer[] = [{
@@ -44,58 +41,60 @@ describe('verifyAnswers API', () => {
     sandbox.stub(config, 'get').callsFake((prop) => {
       return configValues[prop];
     });
-    const { validateNoCQuestions } = requireReloaded('../../../../noc/index');
-    return validateNoCQuestions;
+    const { submitNoCEvents } = requireReloaded('../../../../noc/index');
+    return submitNoCEvents;
   }
-
-  describe('when a request is made to verify NoC answers', () => {
-    const expectedResponse = {
-      organisation: {
-        OrganisationID: somethingLike('QUK822NA'),
-        OrganisationName: somethingLike('Some Org')
-      },
-      status_message: somethingLike('Notice of Change answers verified successfully')
-    };
-
+  describe('when an error occurs', () => {
     before(async () => {
       await pactSetUp.provider.setup();
-      return pactSetUp.provider.addInteraction({
-        state: 'A valid NoC answers verification request',
+      await pactSetUp.provider.addInteraction({
+        state: 'A NoC answer request with invalid case ID',
         uponReceiving: 'a request to verify NoC answers',
         withRequest: {
           method: 'POST',
-          path: '/noc/verify-noc-answers',
+          path: '/noc/noc-requests',
           body: mockRequest
         },
         willRespondWith: {
-          status: 200,
-          body: expectedResponse
+          status: 400,
+          body: {
+            status: somethingLike('BAD_REQUEST'),
+            message: somethingLike('Missing ChangeOrganisationRequest.CaseRoleID [APPLICANT]'),
+            code: somethingLike('missing-cor-case-role-id'),
+            errors: []
+          }
         }
       });
     });
 
-    it('should return a valid response', async () => {
-      const validateNoCQuestions = setUpMockConfigForFunction();
-
+    it('should return an error response', async () => {
+      const submitNoCEvents = setUpMockConfigForFunction();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       let returnedResponse = null;
       const response = mockRes();
       response.send = (ret) => {
         returnedResponse = ret;
       };
-      const next = sinon.mock().atLeast(1) as NextFunction;
+      const nextSpy = sinon.spy();
       try {
-        await validateNoCQuestions(req, response, next);
-        assertResponse(returnedResponse);
+        await submitNoCEvents(req, response, nextSpy);
+        const error = nextSpy.args[0][0];
+        assertError(error);
+        pactSetUp.provider.verify();
+        pactSetUp.provider.finalize();
       } catch (err) {
         console.log(err.stack);
+        pactSetUp.provider.verify();
+        pactSetUp.provider.finalize();
         throw new Error(err);
       }
     });
   });
 });
-
-function assertResponse(returnedResponse: any) {
-  expect(returnedResponse.organisation.OrganisationID).to.be.equal('QUK822NA');
-  expect(returnedResponse.organisation.OrganisationName).to.be.equal('Some Org');
-  expect(returnedResponse.status_message).to.be.equal('Notice of Change answers verified successfully');
+function assertError(error: any) {
+  expect(error.status).to.be.equal(400);
+  expect(error.statusText).to.be.equal('Bad Request ');
+  expect(error.data.message).to.be.equal('Missing ChangeOrganisationRequest.CaseRoleID [APPLICANT]');
+  expect(error.data.code).to.be.equal('missing-cor-case-role-id');
 }
+

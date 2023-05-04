@@ -17,6 +17,7 @@ import * as fromHearingSelectors from '../../store/selectors';
 import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 import * as hearingRequestToCompareActions from '../actions/hearing-request-to-compare.action';
 import * as hearingRequestActions from '../actions/hearing-request.action';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Injectable()
 export class HearingRequestEffects {
@@ -33,7 +34,8 @@ export class HearingRequestEffects {
     private readonly pageFlow: AbstractPageFlow,
     private readonly router: Router,
     private readonly location: Location,
-    private readonly appStore: Store<fromAppReducers.State>
+    private readonly appStore: Store<fromAppReducers.State>,
+    private readonly loggerService: LoggerService
   ) {
     this.screenNavigations$ = this.hearingStore.pipe(select(fromHearingSelectors.getHearingValuesModel)).pipe(
       map((hearingValuesModel) => hearingValuesModel ? hearingValuesModel.screenFlow : []));
@@ -70,7 +72,8 @@ export class HearingRequestEffects {
         switch (this.mode) {
           case Mode.CREATE:
             if (nextPage) {
-              this.router.navigate(['hearings', 'request', nextPage]);
+              this.router.navigate(['hearings', 'request', nextPage])
+                .catch((err) => console.log(`Error navigating to hearings/request/${nextPage} `, err));
               break;
             }
 
@@ -78,24 +81,29 @@ export class HearingRequestEffects {
 
           case Mode.CREATE_EDIT:
             if (nextPage === HearingRequestEffects.WELSH_PAGE) {
-              this.router.navigate(['hearings', 'request', nextPage]);
+              this.router.navigate(['hearings', 'request', nextPage])
+                .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${nextPage} `, err));
               break;
             }
 
-            this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId });
+            this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId })
+              .catch((err) => this.loggerService.error(`Error navigating to hearings/request/hearing-create-edit-summary#${this.fragmentId} `, err));
             break;
 
           case Mode.VIEW_EDIT:
             if (nextPage === HearingRequestEffects.WELSH_PAGE) {
-              this.router.navigate(['hearings', 'request', nextPage]);
+              this.router.navigate(['hearings', 'request', nextPage])
+                .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${nextPage} `, err));
               break;
             }
 
-            this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: this.fragmentId });
+            this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: this.fragmentId })
+              .catch((err) => this.loggerService.error(`Error navigating to hearings/request/hearing-create-edit-summary#${this.fragmentId} `, err));
             break;
 
           default:
-            this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
+            this.router.navigate(['cases', 'case-details', this.caseId, 'hearings'])
+              .catch((err) => this.loggerService.error(`Error navigating to cases/case-details/caseId}/hearings `, err));
             break;
         }
       })

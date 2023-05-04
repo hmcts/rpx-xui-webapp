@@ -55,11 +55,7 @@ export const HEARING_VIEW_ONLY_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.CASE_FLAGS
       }
     ],
-<<<<<<< HEAD
     isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER
-=======
-    isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER,
->>>>>>> a0a6b7f82 (story/EUI-7516 fix (#2749))
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional facilities</h2>',
@@ -75,11 +71,7 @@ export const HEARING_VIEW_ONLY_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.ADDITIONAL_FACILITIES_REQUIRED
       }
     ],
-<<<<<<< HEAD
     isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER
-=======
-    isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER,
->>>>>>> a0a6b7f82 (story/EUI-7516 fix (#2749))
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing stage</h2>',
@@ -90,11 +82,7 @@ export const HEARING_VIEW_ONLY_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.STAGE
       }
     ],
-<<<<<<< HEAD
     isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER
-=======
-    isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER,
->>>>>>> a0a6b7f82 (story/EUI-7516 fix (#2749))
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Participant attendance</h2>',
@@ -110,11 +98,7 @@ export const HEARING_VIEW_ONLY_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.ATTENDANT_PERSON_AMOUNT
       }
     ],
-<<<<<<< HEAD
     isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER
-=======
-    isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER,
->>>>>>> a0a6b7f82 (story/EUI-7516 fix (#2749))
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing venue</h2>',
@@ -125,11 +109,7 @@ export const HEARING_VIEW_ONLY_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.VENUE
       }
     ],
-<<<<<<< HEAD
     isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER
-=======
-    isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER,
->>>>>>> a0a6b7f82 (story/EUI-7516 fix (#2749))
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Language requirements</h2>',
@@ -169,11 +149,7 @@ export const HEARING_VIEW_ONLY_SUMMARY_TEMPLATE: Section[] = [
         isHiddenSource: IsHiddenSource.JUDGE_EXCLUSION
       }
     ],
-<<<<<<< HEAD
     isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER
-=======
-    isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER,
->>>>>>> a0a6b7f82 (story/EUI-7516 fix (#2749))
 
   },
   {
@@ -203,11 +179,7 @@ export const HEARING_VIEW_ONLY_SUMMARY_TEMPLATE: Section[] = [
         isHiddenSource: IsHiddenSource.PANEL_ROLES
       }
     ],
-<<<<<<< HEAD
     isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER
-=======
-    isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER,
->>>>>>> a0a6b7f82 (story/EUI-7516 fix (#2749))
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Length, date and priority level of hearing</h2>',
@@ -228,11 +200,7 @@ export const HEARING_VIEW_ONLY_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.HEARING_PRIORITY
       }
     ],
-<<<<<<< HEAD
     isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER
-=======
-    isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER,
->>>>>>> a0a6b7f82 (story/EUI-7516 fix (#2749))
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Linked hearings</h2>',
@@ -243,11 +211,7 @@ export const HEARING_VIEW_ONLY_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.LINKED_HEARINGS
       }
     ],
-<<<<<<< HEAD
     isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER
-=======
-    isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER,
->>>>>>> a0a6b7f82 (story/EUI-7516 fix (#2749))
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional instructions</h2>',
@@ -258,11 +222,6 @@ export const HEARING_VIEW_ONLY_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.ADDITIONAL_INSTRUCTION
       }
     ],
-<<<<<<< HEAD
     isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER
   }
-=======
-    isHiddenSource: IsHiddenSource.LISTED_HEARING_VIEWER,
-  },
->>>>>>> a0a6b7f82 (story/EUI-7516 fix (#2749))
 ];

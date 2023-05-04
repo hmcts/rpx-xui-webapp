@@ -8,7 +8,6 @@ import { hearingStageRefData, initialState } from '../hearing.test.data';
 import { ParticipantChannelAttendenceAmendedConverter } from './participant-channel-attendence.amended.converter';
 
 describe('ParticipantChannelAttendenceAmendedConverter', () => {
-
   let converter: ParticipantChannelAttendenceAmendedConverter;
   let store: Store<any>;
   let router: any;

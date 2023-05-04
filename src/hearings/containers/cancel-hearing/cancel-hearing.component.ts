@@ -1,13 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-<<<<<<< HEAD
-import { select, Store } from '@ngrx/store';
-=======
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
->>>>>>> 5d20462e7 (CR comments fix)
 import { HearingListModel } from '../../models/hearingList.model';
 import { CancelHearingMessages } from '../../models/hearings.enum';
 import { LovRefDataModel } from '../../models/lovRefData.model';
@@ -34,14 +30,9 @@ export class CancelHearingComponent implements OnInit {
     private readonly router: Router,
     private readonly formBuilder: FormBuilder,
     protected readonly hearingStore: Store<fromHearingStore.State>,
-<<<<<<< HEAD
-    protected readonly hearingsService: HearingsService) {
-    this.route.params.subscribe((params) => {
-=======
     protected readonly hearingsService: HearingsService,
     private readonly loadingService: LoadingService) {
-    this.route.params.subscribe(params => {
->>>>>>> 5d20462e7 (CR comments fix)
+    this.route.params.subscribe((params) => {
       this.hearingId = params.hearingId;
     });
   }
@@ -108,11 +99,7 @@ export class CancelHearingComponent implements OnInit {
           this.validationErrors = null;
           return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
         },
-<<<<<<< HEAD
         () => {
-=======
-        err => {
->>>>>>> 5d20462e7 (CR comments fix)
           this.validationErrors = [{ id: 'cancel-request-error', message: cancellationErrorMessage }];
         }
       );

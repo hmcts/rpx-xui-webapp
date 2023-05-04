@@ -135,7 +135,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   public onSubmit(): void {
     const linkedHearingGroupMainModel: LinkedHearingGroupMainModel = {
       groupDetails: {
-        groupLinkType: this.selectedOption,
+        groupLinkType: this.selectedOption
       }, hearingsInGroup: []
     };
     if (this.isFormValid()) {

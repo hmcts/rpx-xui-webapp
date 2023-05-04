@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { Store, StoreModule, combineReducers } from '@ngrx/store';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user/user.service';
@@ -379,11 +379,11 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
     leftItems.pipe(
-      switchMap(items => {
+      switchMap((items) => {
         expect(items).toEqual([]);
         return rightItems;
       })
-    ).subscribe(items => {
+    ).subscribe((items) => {
       expect(items).toEqual([component.items[0]]);
       done();
     });

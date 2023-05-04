@@ -28,9 +28,6 @@ export class HeaderComponent {
     public store: Store<fromRoot.State>,
   ) {}
 
-  public ngOnInit() {
-  }
-
   public onNavigate(event) {
     this.emitNavigate(event, this.navigate);
   }

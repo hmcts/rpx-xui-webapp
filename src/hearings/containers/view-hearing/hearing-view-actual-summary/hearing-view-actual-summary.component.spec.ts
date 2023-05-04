@@ -2,8 +2,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Store } from '@ngrx/store';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { initialState } from '../../../hearing.test.data';
 import { HearingViewActualSummaryComponent } from './hearing-view-actual-summary.component';
@@ -21,11 +21,7 @@ describe('HearingViewActualSummaryComponent', () => {
       imports: [RouterTestingModule],
       declarations: [HearingViewActualSummaryComponent],
       providers: [
-<<<<<<< HEAD
-        provideMockStore({ initialState })
-=======
         provideMockStore({ initialState }), LoadingService
->>>>>>> 5d20462e7 (CR comments fix)
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })

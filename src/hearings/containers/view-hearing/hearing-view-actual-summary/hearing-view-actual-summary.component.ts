@@ -16,13 +16,9 @@ export class HearingViewActualSummaryComponent implements OnInit, OnDestroy {
   public subscription: Subscription;
   public showSpinner$: Observable<boolean>;
 
-<<<<<<< HEAD
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>) {}
-=======
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly loadingService: LoadingService) {
   }
->>>>>>> 5d20462e7 (CR comments fix)
 
   public ngOnInit(): void {
     this.showSpinner$ = this.loadingService.isLoading as any;

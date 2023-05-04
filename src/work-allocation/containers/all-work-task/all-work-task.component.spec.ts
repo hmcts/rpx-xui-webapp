@@ -29,7 +29,7 @@ class WrapperComponent {
   @ViewChild(AllWorkTaskComponent) public appComponentRef: AllWorkTaskComponent;
 }
 @Component({
-  template: `<div>Nothing</div>`
+  template: '<div>Nothing</div>'
 })
 class NothingComponent { }
 @Component({
@@ -122,33 +122,33 @@ xdescribe('AllWorkTaskComponent', () => {
         return of({
           configurations: [
             {
-                caseTypes: [
-                    'Asylum'
-                ],
-                releaseVersion: '3.5',
-                serviceName: 'IA'
+              caseTypes: [
+                'Asylum'
+              ],
+              releaseVersion: '3.5',
+              serviceName: 'IA'
             },
             {
-                caseTypes: [
-                    'PRIVATELAW',
-                    'PRLAPPS'
-                ],
-                releaseVersion: '2.1',
-                serviceName: 'PRIVATELAW'
+              caseTypes: [
+                'PRIVATELAW',
+                'PRLAPPS'
+              ],
+              releaseVersion: '2.1',
+              serviceName: 'PRIVATELAW'
             },
             {
-                caseTypes: [
-                    'CIVIL',
-                    'GENERALAPPLICATION'
-                ],
-                releaseVersion: '2.1',
-                serviceName: 'CIVIL'
+              caseTypes: [
+                'CIVIL',
+                'GENERALAPPLICATION'
+              ],
+              releaseVersion: '2.1',
+              serviceName: 'CIVIL'
             }
-        ]
+          ]
         });
-      } else {
-        return of(true);
       }
+
+      return of(true);
     });
     component.locations = [{ id: 'loc123', locationName: 'Test', services: [] }];
     mockLocationService.getLocations.and.returnValue(of([{ id: 'loc123', locationName: 'Test', services: [] }]));
@@ -330,7 +330,6 @@ xdescribe('AllWorkTaskComponent', () => {
       const payload = { searchRequest, view: component.view, refined: false, currentUser: undefined };
 
       expect(navigateSpy).toHaveBeenCalledWith([scr.routeUrl]);
-
     });
     afterEach(() => {
       fixture.destroy();

@@ -15,11 +15,11 @@ import { HearingsService } from '../../../services/hearings.service';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { HearingActualsAddEditSummaryComponent } from './hearing-actuals-add-edit-summary.component';
 
-@Pipe({name: 'transformAnswer'})
+@Pipe({ name: 'transformAnswer' })
 export class MockHearingAnswersPipe implements PipeTransform {
-    public transform(answerSource, hearingState$, index?: number): string {
-        return '';
-    }
+  public transform(answerSource, hearingState$, index?: number): string {
+    return '';
+  }
 }
 
 @Component({

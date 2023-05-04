@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
@@ -16,13 +16,9 @@ export class CaseShareConfirmComponent implements OnInit {
   public shareCases: SharedCase[];
   public showSpinner$ : Observable<boolean>;
 
-<<<<<<< HEAD
-  constructor(public store: Store<fromCaseList.State>) {}
-=======
   constructor(public store: Store<fromCaseList.State>,
     private readonly loadingService: LoadingService) {
   }
->>>>>>> 5d20462e7 (CR comments fix)
 
   public ngOnInit() {
     this.showSpinner$ = this.loadingService.isLoading as any;

@@ -11,6 +11,7 @@ import { NocNavigationEvent, NocState } from '../../models';
 import * as fromNocStore from '../../store';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocHomeComponent } from './noc-home.component';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 describe('NocHomeComponent', () => {
   let fixture: ComponentFixture<NocHomeComponent>;
@@ -22,6 +23,8 @@ describe('NocHomeComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', [
     'navigateByUrl'
   ]);
+
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -38,10 +41,8 @@ describe('NocHomeComponent', () => {
       ],
       providers: [
         provideMockStore(),
-        {
-          provide: Router,
-          useValue: routerMock
-        }
+        { provide: Router, useValue: routerMock },
+        { provide: LoggerService, useValue: loggerServiceMock }
       ]
     }).compileComponents();
 

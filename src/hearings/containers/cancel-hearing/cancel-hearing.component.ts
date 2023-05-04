@@ -87,7 +87,7 @@ export class CancelHearingComponent implements OnInit {
       this.hearingsService.cancelHearingRequest(this.hearingId, this.getChosenReasons()).subscribe(
         () => {
           this.validationErrors = null;
-          return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
+          this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
         },
         () => {
           this.validationErrors = [{ id: 'cancel-request-error', message: cancellationErrorMessage }];

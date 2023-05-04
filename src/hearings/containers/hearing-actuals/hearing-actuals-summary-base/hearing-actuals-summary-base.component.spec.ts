@@ -25,7 +25,7 @@ export class MockHearingAnswersPipe implements PipeTransform {
   template: `
     <div>Nothing</div>`
 })
-class NothingComponent {}
+class NothingComponent { }
 
 describe('HearingActualsSummaryBaseComponent', () => {
   let component: HearingActualsSummaryBaseComponent;
@@ -489,7 +489,7 @@ describe('HearingActualsSummaryBaseComponent', () => {
       declarations: [HearingActualsSummaryBaseComponent, ConvertToValuePipe, MockHearingAnswersPipe],
       imports: [RouterTestingModule.withRoutes(
         [
-          {path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent}
+          { path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent }
         ]
       )],
       providers: [

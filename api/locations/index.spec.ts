@@ -139,24 +139,23 @@ describe('Fee Pay Judge', () => {
           searchTerm: 'Gla',
           serviceIds: ['IA', 'CIVIL'],
           locationType: 'hearing',
-          userLocations: [{service: 'IA', locations: []}],
+          userLocations: [{ service: 'IA', locations: [] }],
           bookingLocations: []
         }
       });
 
       const response = mockRes({
-        data: mockLocations,
+        data: mockLocations
       });
 
       try {
         await getLocations(req, response, next);
         // expect all civil locations, no IA locations to be given
         expect(response.data.results.length).to.equal(3);
-
-    } catch (err) {
+      } catch (err) {
         console.log(err.stack);
         throw new Error(err);
-    }
+      }
     });
 
     it('should return locations for regions if there is region information', async () => {
@@ -166,26 +165,24 @@ describe('Fee Pay Judge', () => {
           searchTerm: 'Gla',
           serviceIds: ['IA', 'CIVIL'],
           locationType: 'hearing',
-          userLocations: [{service: 'IA', locations: [{regionId: '11'}]}],
+          userLocations: [{ service: 'IA', locations: [{ regionId: '11' }] }],
           bookingLocations: []
         }
       });
 
       const response = mockRes({
-        data: mockLocations,
+        data: mockLocations
       });
 
       try {
         await getLocations(req, response, next);
         // expect all civil locations, no IA locations to be given
         expect(response.data.results.length).to.equal(4);
-
-    } catch (err) {
+      } catch (err) {
         console.log(err.stack);
         throw new Error(err);
-    }
+      }
     });
-
 
     it('should return the possible locations for bookable filter', async () => {
       spy = sandbox.stub(http, GET).resolves(res);

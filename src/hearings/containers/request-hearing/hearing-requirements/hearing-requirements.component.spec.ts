@@ -139,7 +139,7 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'Jane',
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
-          interpreterLanguage: 'POR',
+          interpreterLanguage: 'POR'
         },
         unavailabilityRanges: [
           {
@@ -159,7 +159,7 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'DWP',
           lastName: null,
           preferredHearingChannel: 'inPerson',
-          interpreterLanguage: null,
+          interpreterLanguage: null
         },
         organisationDetails: {
           name: 'DWP',
@@ -621,7 +621,7 @@ describe('HearingRequirementsComponent', () => {
                   'RA0013',
                   'RA0016',
                   'RA0042',
-                  'RA0009',
+                  'RA0009'
                 ],
                 interpreterLanguage: 'POR',
                 preferredHearingChannel: 'byVideo'
@@ -701,7 +701,7 @@ describe('HearingRequirementsComponent', () => {
                     firstName: 'Jane',
                     lastName: 'Smith',
                     preferredHearingChannel: 'inPerson',
-                    interpreterLanguage: 'POR',
+                    interpreterLanguage: 'POR'
                   }
                 },
                 {
@@ -714,7 +714,7 @@ describe('HearingRequirementsComponent', () => {
                     firstName: 'DWP',
                     lastName: null,
                     preferredHearingChannel: 'byVideo',
-                    interpreterLanguage: null,
+                    interpreterLanguage: null
                   }
                 }
               ]
@@ -805,9 +805,9 @@ describe('HearingRequirementsComponent', () => {
                   'RA0053',
                   'RA0013',
                   'RA0016',
-                  'RA0042',
+                  'RA0042'
                 ],
-                interpreterLanguage: 'POR',
+                interpreterLanguage: 'POR'
               },
               organisationDetails: {},
               unavailabilityDOW: null,
@@ -2358,7 +2358,7 @@ describe('HearingRequirementsComponent', () => {
             'RA0016',
             'RA0042'],
           interpreterLanguage: 'POR'
-        },
+        }
       }, {
         partyID: 'P2',
         partyType: PartyType.ORG,

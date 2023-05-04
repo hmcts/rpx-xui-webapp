@@ -117,7 +117,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     // Get unique values to display in the dropdown
     // If a parent does not contain any child nodes then consider the parent
     const uniquePartyChannels: LovRefDataModel[] = [];
-    partyChannels.forEach(channel => {
+    partyChannels.forEach((channel) => {
       if (channel.child_nodes) {
         channel.child_nodes.forEach((childNode) => {
           if (!uniquePartyChannels.map((node) => node.key).includes(childNode.key)) {

@@ -200,9 +200,9 @@ describe('exclusions.exclusionService', () => {
             caseType: ['Asylum'],
             jurisdiction: ['IA']
           },
-          roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN'],
-        },
-      ],
+          roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN']
+        }
+      ]
     } as unknown as EnhancedRequest;
     it('should get the correct payload', async () => {
       expect(getRoleCategoryRequestPayload('123', 'IA', 'Asylum')).to.deep.equal(caseRoleRequestPayload);

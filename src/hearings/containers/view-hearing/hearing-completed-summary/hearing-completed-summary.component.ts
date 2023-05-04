@@ -16,36 +16,23 @@ export class HearingCompletedSummaryComponent implements OnInit, OnDestroy {
   public sub: Subscription;
   public showSpinner$: Observable<boolean>;
 
-<<<<<<< HEAD
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>) {}
-=======
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly loadingService: LoadingService) {
   }
->>>>>>> 5d20462e7 (CR comments fix)
 
   public ngOnInit(): void {
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
     this.hearingState$ = this.hearingStore.select(fromHearingStore.getHearingsFeatureState)
       .pipe(
-<<<<<<< HEAD
-        filter((state) => !!state.hearingActuals.hearingActualsMainModel),
+        filter((state) => !!state.hearingActuals.hearingActualsMainModel)
       );
 
     this.sub = this.hearingState$.subscribe((state) => {
       this.hearingActualsMainModel = state.hearingActuals.hearingActualsMainModel;
-      this.showSpinner = false;
-=======
-        filter(state => !!state.hearingActuals.hearingActualsMainModel),
-      );
-
-    this.sub = this.hearingState$.subscribe(state => {
-      this.hearingActualsMainModel = state.hearingActuals.hearingActualsMainModel;
       this.loadingService.unregister(loadingToken);
     }, () => {
       this.loadingService.unregister(loadingToken);
->>>>>>> 5d20462e7 (CR comments fix)
     });
   }
 

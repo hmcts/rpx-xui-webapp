@@ -114,7 +114,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.HOW_PARTICIPANTS_ATTEND,
         changeLink: '/hearings/request/hearing-attendance#hearingLevelChannelList',
         isHiddenSource: IsHiddenSource.PAPER_HEARING,
-        isAmendedSource: AnswerSource.HOW_PARTICIPANTS_ATTEND,
+        isAmendedSource: AnswerSource.HOW_PARTICIPANTS_ATTEND
       },
       {
         id: 'howAttendant',

@@ -34,7 +34,7 @@ class WrapperComponent {
   template: `
     <div>Nothing</div>`
 })
-class NothingComponent {}
+class NothingComponent { }
 
 describe('WorkAllocation', () => {
   describe('TaskActionContainerComponent', () => {
@@ -440,29 +440,29 @@ describe('WorkAllocation', () => {
           WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientTestingModule, PaginationModule,
           RouterTestingModule.withRoutes(
             [
-              {path: 'mywork/list', component: NothingComponent}
+              { path: 'mywork/list', component: NothingComponent }
             ]
           )
         ],
         providers: [
-          {provide: WorkAllocationTaskService, useValue: mockWorkAllocationService},
-          {provide: SessionStorageService, useValue: mockSessionStorageService},
-          {provide: FeatureToggleService, useValue: mockFeatureToggleService},
+          { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
+          { provide: FeatureToggleService, useValue: mockFeatureToggleService },
           {
             provide: ActivatedRoute,
             useValue: {
               snapshot: {
                 data: {
                   taskAndCaseworkers: {
-                    task: {task: mockTask[0]}, caseworkers: []
+                    task: { task: mockTask[0] }, caseworkers: []
                   },
                   ...TaskActionConstants.Unassign
                 }
               },
-              params: of({task: mockTask[0]})
+              params: of({ task: mockTask[0] })
             }
           },
-          {provide: InfoMessageCommService, useValue: mockInfoMessageCommService}
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
@@ -471,7 +471,7 @@ describe('WorkAllocation', () => {
       router = TestBed.inject(Router);
 
       wrapper.tasks = null;
-      window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');
+      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
       fixture.detectChanges();
     });
 
@@ -479,13 +479,11 @@ describe('WorkAllocation', () => {
       fixture.destroy();
     });
 
-
     it('should perform the unclaim action successfully', () => {
       const submit: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#submit-button');
       submit.click();
       expect(mockWorkAllocationService.performActionOnTask).toHaveBeenCalledWith(mockTask[0].id, ACTION.UNCLAIM, false);
     });
-
   });
 
   describe('TaskActionContainerComponent performActionOnTask', () => {
@@ -523,29 +521,29 @@ describe('WorkAllocation', () => {
           WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientTestingModule, PaginationModule,
           RouterTestingModule.withRoutes(
             [
-              {path: 'mywork/list', component: NothingComponent}
+              { path: 'mywork/list', component: NothingComponent }
             ]
           )
         ],
         providers: [
-          {provide: WorkAllocationTaskService, useValue: mockWorkAllocationService},
-          {provide: SessionStorageService, useValue: mockSessionStorageService},
-          {provide: FeatureToggleService, useValue: mockFeatureToggleService},
+          { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
+          { provide: FeatureToggleService, useValue: mockFeatureToggleService },
           {
             provide: ActivatedRoute,
             useValue: {
               snapshot: {
                 data: {
                   taskAndCaseworkers: {
-                    task: {task: mockTask[0]}, caseworkers: []
+                    task: { task: mockTask[0] }, caseworkers: []
                   },
                   ...TaskActionConstants.Unassign
                 }
               },
-              params: of({task: mockTask[0]})
+              params: of({ task: mockTask[0] })
             }
           },
-          {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
           { provide: CaseNotifier, useValue: mockNotifierService }
         ]
       }).compileComponents();
@@ -555,7 +553,7 @@ describe('WorkAllocation', () => {
       router = TestBed.inject(Router);
 
       wrapper.tasks = null;
-      window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');
+      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
       fixture.detectChanges();
     });
 

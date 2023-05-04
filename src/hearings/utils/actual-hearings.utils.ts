@@ -28,15 +28,15 @@ export class ActualHearingsUtils {
           );
         }
 
-      return {
-        hearingDate: existingActualData?.hearingDate || this.getDate(plannedDay.plannedStartTime),
-        hearingStartTime: existingActualData?.hearingStartTime,
-        hearingEndTime: existingActualData?.hearingEndTime,
-        pauseDateTimes: existingActualData?.pauseDateTimes || [],
-        notRequired: existingActualData?.notRequired || false,
-        actualDayParties: ActualHearingsUtils.getActualDayParties(existingActualData, plannedDay, isCheckYourAnswersPage)
-      };
-    });
+        return {
+          hearingDate: existingActualData?.hearingDate || this.getDate(plannedDay.plannedStartTime),
+          hearingStartTime: existingActualData?.hearingStartTime,
+          hearingEndTime: existingActualData?.hearingEndTime,
+          pauseDateTimes: existingActualData?.pauseDateTimes || [],
+          notRequired: existingActualData?.notRequired || false,
+          actualDayParties: ActualHearingsUtils.getActualDayParties(existingActualData, plannedDay, isCheckYourAnswersPage)
+        };
+      });
 
     if (hearingDays && hearingDays.length > 0) {
       hearingDays = hearingDays.sort((a, b) => {
@@ -74,11 +74,11 @@ export class ActualHearingsUtils {
     updatedActuals: ActualHearingDayModel): HearingActualsModel {
     const hearingActuals = {
       actualHearingDays: hearingActualsMainModel.hearingActuals?.actualHearingDays
-        ? [...hearingActualsMainModel.hearingActuals.actualHearingDays] : [],
+        ? [...hearingActualsMainModel.hearingActuals.actualHearingDays] : []
     } as HearingActualsModel;
 
     if (hearingActualsMainModel.hearingActuals?.hearingOutcome?.hearingResult) {
-      hearingActuals.hearingOutcome = {...hearingActualsMainModel.hearingActuals.hearingOutcome};
+      hearingActuals.hearingOutcome = { ...hearingActualsMainModel.hearingActuals.hearingOutcome };
     }
 
     let indexOfActual: number;

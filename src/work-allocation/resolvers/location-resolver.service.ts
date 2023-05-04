@@ -120,7 +120,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
         userLocationsByService = this.bookableServices.includes(service) ? addLocationToLocationsByService(userLocationsByService, location, service, allLocationServices, true) : addLocationToLocationsByService(userLocationsByService, location, service, allLocationServices);
       });
     });
-    this.bookableServices.forEach(bookableService => {
+    this.bookableServices.forEach((bookableService) => {
       if (!this.locationServices.has(bookableService)) {
         const newBookableService: LocationsByService = { service: bookableService, locations: [], bookable: true };
         userLocationsByService.push(newBookableService);

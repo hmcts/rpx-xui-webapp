@@ -23,7 +23,7 @@ export class HearingActualsFinalConfirmationComponent implements OnInit, OnDestr
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(
-      hearingList => {
+      (hearingList) => {
         this.loadingService.unregister(loadingToken);
         this.caseId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
         this.heading = 'You have successfully submitted the hearing details.';

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { HearingConditions } from '../../models/hearingConditions';
 import { HearingSummaryEnum, HearingTemplate, Mode } from '../../models/hearings.enum';
@@ -21,28 +21,19 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
   public hearingState$: Observable<fromHearingStore.State>;
   public validationErrors: { id: string, message: string }[] = [];
   public sub: Subscription;
-  public showSpinner$ : Observable<boolean>;
+  public showSpinner$: Observable<boolean>;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly router: Router,
-<<<<<<< HEAD
-              protected readonly route: ActivatedRoute) {
+    protected readonly router: Router,
+    protected readonly route: ActivatedRoute,
+    private readonly loadingService: LoadingService) {
     this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
-  }
-
-  public ngOnInit(): void {
-    this.sub = this.hearingState$.subscribe((state) => {
-=======
-              protected readonly route: ActivatedRoute,
-              private readonly loadingService: LoadingService) {
-      this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
   }
 
   public ngOnInit(): void {
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
-    this.sub = this.hearingState$.subscribe(state => {
->>>>>>> 5d20462e7 (CR comments fix)
+    this.sub = this.hearingState$.subscribe((state) => {
       if (state.hearingRequest.lastError) {
         this.validationErrors = [];
         this.validationErrors.push({

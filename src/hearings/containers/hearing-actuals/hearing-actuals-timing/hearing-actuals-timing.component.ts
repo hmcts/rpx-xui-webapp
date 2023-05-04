@@ -32,6 +32,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     this.validatorsUtils.mandatory('Enter hearing start time'),
     this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
   ];
+
   private readonly defaultHearingEndTimeValidators = [
     this.validatorsUtils.mandatory('Enter hearing finish time'),
     this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)

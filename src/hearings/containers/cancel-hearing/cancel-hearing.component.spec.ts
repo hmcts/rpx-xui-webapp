@@ -4,13 +4,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { provideMockStore } from '@ngrx/store/testing';
-<<<<<<< HEAD
-import { of, throwError } from 'rxjs';
-=======
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { Observable, of, throwError } from 'rxjs';
->>>>>>> 5d20462e7 (CR comments fix)
+import { provideMockStore } from '@ngrx/store/testing';
+import { of, throwError } from 'rxjs';
 import { initialState } from '../../hearing.test.data';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import { HearingsService } from '../../services/hearings.service';

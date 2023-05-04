@@ -11,8 +11,6 @@ import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-
 import { getMockTasks } from '../../../work-allocation/tests/utils.spec';
 import { TasksContainerComponent } from './tasks-container.component';
 
-
-
 const metadataField = {} as CaseField;
 metadataField.id = '[JURISDICTION]';
 metadataField.value = 'JUDICIAL';

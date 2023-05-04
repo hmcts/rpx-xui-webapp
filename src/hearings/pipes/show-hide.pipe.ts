@@ -24,15 +24,8 @@ import { State } from '../store';
   name: 'isHidden'
 })
 export class ShowHidePipe implements PipeTransform {
-<<<<<<< HEAD
   constructor(protected readonly locationsDataService: LocationsDataService,
     private readonly store: Store<fromRoot.State>) {}
-=======
-
-  constructor(protected readonly locationsDataService: LocationsDataService,
-    private readonly store: Store<fromRoot.State>) {
-  }
->>>>>>> a0a6b7f82 (story/EUI-7516 fix (#2749))
 
   public transform(isHiddenSource: IsHiddenSource, hearingState$: Observable<State>): Observable<boolean> {
     let converter: HiddenConverter = new DefaultHiddenConverter();

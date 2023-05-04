@@ -49,12 +49,8 @@ import { PageFlow } from './utils/page-flow';
     },
     HearingsService,
     HearingsEditGuard,
-<<<<<<< HEAD
-    HearingsViewGuard
-=======
     HearingsViewGuard,
     LoadingService
->>>>>>> 5d20462e7 (CR comments fix)
   ]
 })
 /**

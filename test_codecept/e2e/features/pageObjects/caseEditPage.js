@@ -203,13 +203,13 @@ class caseEditPage {
         if (!this.caseEventApiResponse){
             this.caseEventApiResponse = await CcdApi.getCaseCreationpagesApiRes();
         }
-        
-        let wizardPage1 = this.caseEventApiResponse.wizard_pages[pageNo].wizard_page_fields;
+        let wizardPage = this.caseEventApiResponse;
+        let wizardPage1 = wizardPage.wizard_pages[pageNo].wizard_page_fields;
         let fieldIdPresent;
         if (wizardPage1) {
             for (var i = 1; i < wizardPage1.length; i++) {
                 let caseField = await wizardPage.case_fields.find(caseObj => caseObj.id == wizardPage1[i].case_field_id);
-                if (wizardPage1[i].case_field_id != "Organisation1") {
+                if (wizardPage1[i].case_field_id !== "Organisation1") {
                     fieldIdPresent = await this._getFieldId(caseField, wizardPage1[i]);
                     await BrowserWaits.waitForElement(fieldIdPresent);
                     expect(await fieldIdPresent.isPresent(), `Case creation ${fieldIdPresent} field should be present`).to.be.true;

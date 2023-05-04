@@ -134,7 +134,7 @@ describe('DurationHelperService', () => {
     it('should return a Date object representing date a week from todays date', () => {
       // get todays date
       const today = new Date();
-      today.setUTCHours(0, 0, 0, 0);
+      today.setHours(0, 0, 0, 0);
 
       // get date a week from todays date
       const weekFromToday = new Date();

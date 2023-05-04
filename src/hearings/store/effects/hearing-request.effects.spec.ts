@@ -16,7 +16,7 @@ import * as hearingRequestToCompareActions from '../actions/hearing-request-to-c
 import * as hearingRequestActions from '../actions/hearing-request.action';
 import { HearingRequestEffects } from './hearing-request.effects';
 import { LoggerService } from '../../../app/services/logger/logger.service';
-import {beforeEach} from "mocha";
+import { beforeEach } from 'mocha';
 
 describe('Hearing Request Effects', () => {
   let actions$;

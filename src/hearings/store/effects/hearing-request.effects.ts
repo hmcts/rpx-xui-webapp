@@ -103,7 +103,7 @@ export class HearingRequestEffects {
 
           default:
             this.router.navigate(['cases', 'case-details', this.caseId, 'hearings'])
-              .catch((err) => this.loggerService.error(`Error navigating to cases/case-details/caseId}/hearings `, err));
+              .catch((err) => this.loggerService.error('Error navigating to cases/case-details/caseId/hearings ', err));
             break;
         }
       })

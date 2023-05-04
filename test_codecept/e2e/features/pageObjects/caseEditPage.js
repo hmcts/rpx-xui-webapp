@@ -17,6 +17,8 @@ class caseEditPage {
         this.validationErrorContainer = $('ccd-case-edit-page .govuk-error-summary');
 
         this.caseListPage = new CaseListPage();
+
+        this.caseEventApiResponse = null;
     }
 
     async isValidationErrorDisplayed(){
@@ -198,8 +200,11 @@ class caseEditPage {
     }
 
     async wizardPageFormFieldValidations(pageNo) {
-        let wizardPage = await CcdApi.getCaseCreationpagesApiRes();
-        let wizardPage1 = wizardPage.wizard_pages[pageNo].wizard_page_fields;
+        if (!this.caseEventApiResponse){
+            this.caseEventApiResponse = await CcdApi.getCaseCreationpagesApiRes();
+        }
+        
+        let wizardPage1 = this.caseEventApiResponse.wizard_pages[pageNo].wizard_page_fields;
         let fieldIdPresent;
         if (wizardPage1) {
             for (var i = 1; i < wizardPage1.length; i++) {

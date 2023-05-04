@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
-import { Go } from '../../../app/store/actions';
+import { Go } from '../../../app/store';
 import { hearingRequestMainModel, initialState } from '../../hearing.test.data';
 import { Mode } from '../../models/hearings.enum';
 import { HearingsService } from '../../services/hearings.service';
@@ -15,6 +15,8 @@ import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 import * as hearingRequestToCompareActions from '../actions/hearing-request-to-compare.action';
 import * as hearingRequestActions from '../actions/hearing-request.action';
 import { HearingRequestEffects } from './hearing-request.effects';
+import { LoggerService } from '../../../app/services/logger/logger.service';
+import {beforeEach} from "mocha";
 
 describe('Hearing Request Effects', () => {
   let actions$;
@@ -28,6 +30,7 @@ describe('Hearing Request Effects', () => {
   ]);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
   const mockLocation = jasmine.createSpyObj('Location', ['back']);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const hearingConditions = {
     isInit: false,
     region: 'Wales'
@@ -53,6 +56,10 @@ describe('Hearing Request Effects', () => {
           provide: Location,
           useValue: mockLocation
         },
+        {
+          provide: LoggerService,
+          useValue: loggerServiceMock
+        },
         HearingRequestEffects,
         provideMockActions(() => actions$)
       ]
@@ -62,6 +69,10 @@ describe('Hearing Request Effects', () => {
   });
 
   describe('continueNavigation$', () => {
+    beforeEach(() => {
+      mockRouter.navigate.and.returnValue(Promise.resolve(true));
+    });
+
     it('should navigate to next page if continue on CREATE mode', () => {
       effects.mode = Mode.CREATE;
       pageflowMock.getNextPage.and.returnValue('next');

@@ -12,6 +12,7 @@ import { Answer, CaseRole, RemoveAllocationNavigationEvent } from '../../models'
 import { CaseRoleDetails } from '../../models';
 import { RemoveRoleText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-remove-role',
@@ -37,7 +38,8 @@ export class RemoveRoleComponent implements OnInit {
               private readonly location: Location,
               private readonly allocateRoleService: AllocateRoleService,
               private readonly sessionStorageService: SessionStorageService,
-              private readonly caseworkerDataService: CaseworkerDataService) {
+              private readonly caseworkerDataService: CaseworkerDataService,
+              private readonly loggerService: LoggerService) {
 
   }
 
@@ -84,16 +86,16 @@ export class RemoveRoleComponent implements OnInit {
     switch (navEvent) {
       case RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION: {
         this.showSpinner = true;
-        this.allocateRoleService.removeAllocation(this.assignmentId).subscribe(async () => {
+        this.allocateRoleService.removeAllocation(this.assignmentId).subscribe(() => {
           const message: any = { type: 'success', message: RemoveRoleText.infoMessage };
-          await this.router.navigate([this.backUrl], {
+          this.router.navigate([this.backUrl], {
             state: {
               showMessage: true,
               retainMessages: true,
               message,
               messageText: RemoveRoleText.infoMessage
             }
-          });
+          }).catch((err) => this.loggerService.error(`Error navigating to ${this.backUrl} `, err));
         },
         (error) => {
           handleFatalErrors(error.status, this.router);

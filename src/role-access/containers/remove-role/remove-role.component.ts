@@ -9,7 +9,7 @@ import { Caseworker } from '../../../work-allocation/models/dtos';
 import { CaseworkerDataService } from '../../../work-allocation/services';
 import { handleFatalErrors } from '../../../work-allocation/utils';
 import { Answer, CaseRole, RemoveAllocationNavigationEvent } from '../../models';
-import { CaseRoleDetails } from '../../models/case-role-details.interface';
+import { CaseRoleDetails } from '../../models';
 import { RemoveRoleText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
 
@@ -84,9 +84,9 @@ export class RemoveRoleComponent implements OnInit {
     switch (navEvent) {
       case RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION: {
         this.showSpinner = true;
-        this.allocateRoleService.removeAllocation(this.assignmentId).subscribe(() => {
+        this.allocateRoleService.removeAllocation(this.assignmentId).subscribe(async () => {
           const message: any = { type: 'success', message: RemoveRoleText.infoMessage };
-          this.router.navigate([this.backUrl], {
+          await this.router.navigate([this.backUrl], {
             state: {
               showMessage: true,
               retainMessages: true,

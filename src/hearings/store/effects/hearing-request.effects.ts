@@ -70,27 +70,33 @@ export class HearingRequestEffects {
         switch (this.mode) {
           case Mode.CREATE:
             if (nextPage) {
-              return this.router.navigate(['hearings', 'request', nextPage]);
+              this.router.navigate(['hearings', 'request', nextPage]);
+              break;
             }
 
             throw new Error('Next page not found');
 
           case Mode.CREATE_EDIT:
             if (nextPage === HearingRequestEffects.WELSH_PAGE) {
-              return this.router.navigate(['hearings', 'request', nextPage]);
+              this.router.navigate(['hearings', 'request', nextPage]);
+              break;
             }
 
-            return this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId });
+            this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId });
+            break;
 
           case Mode.VIEW_EDIT:
             if (nextPage === HearingRequestEffects.WELSH_PAGE) {
-              return this.router.navigate(['hearings', 'request', nextPage]);
+              this.router.navigate(['hearings', 'request', nextPage]);
+              break;
             }
 
-            return this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: this.fragmentId });
+            this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: this.fragmentId });
+            break;
 
           default:
-            return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
+            this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
+            break;
         }
       })
     );

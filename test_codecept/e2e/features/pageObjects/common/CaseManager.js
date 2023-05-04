@@ -41,6 +41,8 @@ class CaseManager {
         this.createCaseContainer= $("ccd-create-case-filters form");
 
         this.eventTimestamp = element(by.xpath('//tbody/tr[1]/td[2]/div[1]'));
+
+        this.errorsContainer = $('.govuk-error-summary');
     }
 
     async cancelCaseCreation(){
@@ -130,8 +132,14 @@ class CaseManager {
         isCheckYourAnswersPage = await checkYouranswers.isPresent();
         while (!isCheckYourAnswersPage) {
             let page = tcTypeStatus ? pageCounter : "null";
-            await this._formFillPage(page);
-            await browser.sleep(2);
+            await BrowserWaits.retryWithActionCallback(async () => {
+                let isNextPageDisplayed = await this._formFillPage(page);
+                if (!isNextPageDisplayed){
+                    throw Error(`Contnue to next page not success, retrying`)
+                }
+            });
+            
+            await BrowserWaits.waitForSeconds(2)
             isCheckYourAnswersPage = await checkYouranswers.isPresent();
             pageCounter++;
         }
@@ -248,15 +256,21 @@ class CaseManager {
         cucumberReporter.AddMessage("Submitting page: " + thisPageUrl, LOG_LEVELS.Debug);
 
         let retryCounter = 0;
+        let isErrorDisplayed = false;
         await BrowserWaits.retryWithActionCallback(async () => {
             // await browser.handlePopups();
             await continieElement.click();
+            await BrowserWaits.waitForSeconds(2);
+            isErrorDisplayed = await this.errorsContainer.isDisplayed();
             // browser.waitForAngular();
-            await BrowserWaits.waitForPageNavigation(thisPageUrl);
+            if (!isErrorDisplayed){
+                await BrowserWaits.waitForPageNavigation(thisPageUrl);
+            }
         });
 
         var nextPageUrl = await browser.getCurrentUrl();
-
+        cucumberReporter.AddMessage("Next page: " + nextPageUrl, LOG_LEVELS.Debug);
+        return nextPageUrl !== thisPageUrl;
 
     }
     async excludeFieldValues(fieldName){

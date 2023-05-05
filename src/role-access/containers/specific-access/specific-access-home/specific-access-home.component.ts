@@ -168,24 +168,19 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
         break;
       }
 
-      case SpecificAccessNavigationEvent.RETURNTOMYTASKS: {
+      case SpecificAccessNavigationEvent.RETURNTOMYTASKS:
         this.router.navigateByUrl('/work/my-work/list')
           .catch((err) => this.loggerService.error('Error navigating to /work/my-work/list ', err));
         break;
-      }
-      case SpecificAccessNavigationEvent.RETURNTOTASKSTAB: {
+
+      case SpecificAccessNavigationEvent.RETURNTOTASKSTAB:
+      case SpecificAccessNavigationEvent.CANCEL:
         this.router.navigateByUrl(`/cases/case-details/${this.caseId}/tasks`)
           .catch((err) => this.loggerService.error('Error navigating to /cases/case-details/caseId/tasks ', err));
         break;
-      }
-      case SpecificAccessNavigationEvent.CANCEL: {
-        this.router.navigateByUrl(`/cases/case-details/${this.caseId}/tasks`)
-          .catch((err) => this.loggerService.error('Error navigating to /cases/case-details/caseId/tasks ', err));
-        break;
-      }
-      default: {
+
+      default:
         throw new Error('Invalid specific access navigation event');
-      }
     }
   }
 

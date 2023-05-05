@@ -73,7 +73,7 @@ export class HearingRequestEffects {
           case Mode.CREATE:
             if (nextPage) {
               this.router.navigate(['hearings', 'request', nextPage])
-                .catch((err) => console.log(`Error navigating to hearings/request/${nextPage} `, err));
+                .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${nextPage} `, err));
               break;
             }
 
@@ -83,11 +83,10 @@ export class HearingRequestEffects {
             if (nextPage === HearingRequestEffects.WELSH_PAGE) {
               this.router.navigate(['hearings', 'request', nextPage])
                 .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${nextPage} `, err));
-              break;
+            } else {
+              this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId })
+                .catch((err) => this.loggerService.error(`Error navigating to hearings/request/hearing-create-edit-summary#${this.fragmentId} `, err));
             }
-
-            this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId })
-              .catch((err) => this.loggerService.error(`Error navigating to hearings/request/hearing-create-edit-summary#${this.fragmentId} `, err));
             break;
 
           case Mode.VIEW_EDIT:
@@ -95,10 +94,10 @@ export class HearingRequestEffects {
               this.router.navigate(['hearings', 'request', nextPage])
                 .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${nextPage} `, err));
               break;
+            } else {
+              this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: this.fragmentId })
+                .catch((err) => this.loggerService.error(`Error navigating to hearings/request/hearing-view-edit-summary#${this.fragmentId} `, err));
             }
-
-            this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: this.fragmentId })
-              .catch((err) => this.loggerService.error(`Error navigating to hearings/request/hearing-create-edit-summary#${this.fragmentId} `, err));
             break;
 
           default:

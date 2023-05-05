@@ -12,8 +12,7 @@ import {
   specificAccessInformationVisibilityStates,
   specificAccessReviewVisibilityStates
 } from '../../../constants';
-import { CaseRole, SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
-import { SpecificAccessNavigation } from '../../../models';
+import { CaseRole, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessNavigation } from '../../../models';
 import * as fromFeature from '../../../store';
 import { SpecificAccessApprovedComponent } from '../specific-access-approved/specific-access-approved.component';
 import { SpecificAccessDeniedComponent } from '../specific-access-denied/specific-access-denied.component';
@@ -180,8 +179,8 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
         break;
       }
       case SpecificAccessNavigationEvent.CANCEL: {
-        this.router.navigateByUrl(`cases/case-details/${this.caseId}/tasks`)
-          .catch((err) => this.loggerService.error('Error navigating to cases/case-details/caseId/tasks', err));
+        this.router.navigateByUrl(`/cases/case-details/${this.caseId}/tasks`)
+          .catch((err) => this.loggerService.error('Error navigating to /cases/case-details/caseId/tasks ', err));
         break;
       }
       default: {

@@ -70,6 +70,7 @@ describe('Hearing Request Effects', () => {
 
   describe('continueNavigation$', () => {
     beforeEach(() => {
+      mockRouter.navigate.calls.reset();
       mockRouter.navigate.and.returnValue(Promise.resolve(true));
     });
 
@@ -102,6 +103,87 @@ describe('Hearing Request Effects', () => {
       const expected = cold('-b', { b: navigateAction });
       expect(effects.continueNavigation$).toBeObservable(expected);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: 'venue' });
+    });
+  });
+
+  describe('continueNavigation$ - Catch scenarios', () => {
+    beforeEach(() => {
+      mockRouter.navigate.calls.reset();
+      loggerServiceMock.error.calls.reset();
+      mockRouter.navigate.and.returnValue(Promise.reject(new Error('Navigation error')));
+    });
+
+    it('should catch navigation error in case of Mode.CREATE', async () => {
+      pageflowMock.getNextPage.and.returnValue('next-page');
+      effects.mode = Mode.CREATE;
+
+      actions$ = of({ type: hearingRequestActions.UPDATE_HEARING_REQUEST });
+
+      await effects.continueNavigation$.toPromise();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'next-page']);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error navigating to hearings/request/next-page ', jasmine.any(Error));
+    });
+
+    it('should catch navigation error in case of Mode.CREATE_EDIT and nextPage is a welsh page', async () => {
+      pageflowMock.getNextPage.and.returnValue('hearing-welsh');
+      effects.mode = Mode.CREATE_EDIT;
+
+      actions$ = of({ type: hearingRequestActions.UPDATE_HEARING_REQUEST });
+
+      await effects.continueNavigation$.toPromise();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-welsh']);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error navigating to hearings/request/hearing-welsh ', jasmine.any(Error));
+    });
+
+    it('should catch navigation error in case of Mode.CREATE_EDIT and nextPage is not a welsh page', async () => {
+      pageflowMock.getNextPage.and.returnValue('not-welsh-page');
+      effects.mode = Mode.CREATE_EDIT;
+      effects.fragmentId = 'test-fragment-id';
+
+      actions$ = of({ type: hearingRequestActions.UPDATE_HEARING_REQUEST });
+
+      await effects.continueNavigation$.toPromise();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: 'test-fragment-id' });
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error navigating to hearings/request/hearing-create-edit-summary#test-fragment-id ', jasmine.any(Error));
+    });
+
+    it('should catch navigation error in case of Mode.VIEW_EDIT and nextPage is a welsh page', async () => {
+      pageflowMock.getNextPage.and.returnValue('hearing-welsh');
+      effects.mode = Mode.VIEW_EDIT;
+
+      actions$ = of({ type: hearingRequestActions.UPDATE_HEARING_REQUEST });
+
+      await effects.continueNavigation$.toPromise();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-welsh']);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error navigating to hearings/request/hearing-welsh ', jasmine.any(Error));
+    });
+
+    it('should catch navigation error in case of Mode.VIEW_EDIT and nextPage is not a welsh page', async () => {
+      pageflowMock.getNextPage.and.returnValue('not-welsh-page');
+      effects.mode = Mode.VIEW_EDIT;
+      effects.fragmentId = 'test-fragment-id';
+
+      actions$ = of({ type: hearingRequestActions.UPDATE_HEARING_REQUEST });
+
+      await effects.continueNavigation$.toPromise();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: 'test-fragment-id' });
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error navigating to hearings/request/hearing-view-edit-summary#test-fragment-id ', jasmine.any(Error));
+    });
+
+    it('should catch navigation error in case of a blank mode', async () => {
+      effects.mode = null;
+
+      actions$ = of({ type: hearingRequestActions.UPDATE_HEARING_REQUEST });
+
+      await effects.continueNavigation$.toPromise();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['cases', 'case-details', '1111222233334444', 'hearings']);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error navigating to cases/case-details/caseId/hearings ', jasmine.any(Error));
     });
   });
 

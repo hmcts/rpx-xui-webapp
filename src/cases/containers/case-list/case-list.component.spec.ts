@@ -308,7 +308,7 @@ describe('CaseListComponent', () => {
     it('should update the components paginationMetadata property, on return of subscription.', async () => {
       const paginationMetadata = new PaginationMetadata();
       paginationMetadata.totalPagesCount = 33;
-      paginationMetadata.totalResultsCount1 = 811;
+      paginationMetadata.totalResultsCount = 811;
 
       component.onPaginationSubscribeHandler(paginationMetadata);
 

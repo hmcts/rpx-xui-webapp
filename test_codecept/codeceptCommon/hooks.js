@@ -34,7 +34,7 @@ module.exports = async function () {
     
     event.dispatcher.on(event.bddStep.before, function (bddStep) {
         // output.print(`STEP: ${bddStep.keyword} ${bddStep.text} `)
-        codeceptMochawesomeLog.AddMessage(`=== BDD) ${bddStep.keyword} ${bddStep.text}`)
+        codeceptMochawesomeLog.AddMessage(`*************** BDD) ${bddStep.keyword} ${bddStep.text}`)
 
     });
 

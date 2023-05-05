@@ -12,10 +12,13 @@ const { LOG_LEVELS } = require('../../support/constants');
 
 const appTestData = require('../../config/appTestConfig')
 
+const caseDetailsPage = require('../pageObjects/caseDetailsPage')
 const CaseManager = require('../pageObjects/common/CaseManager')
 
 const { DataTableArgument } = require('codeceptjs');
 const browser = require('../../../codeceptCommon/browser');
+const { error } = require('console');
+const { $ } = require('protractor');
 
 
 const caseManager = new CaseManager()
@@ -56,8 +59,15 @@ const caseManager = new CaseManager()
 
     When('I click on primary navigation header tab {string}, I see selected tab page displayed', async function (headerTabLabel) {
         await browserWaits.retryWithActionCallback(async () => {
-            await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
-            expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+            try{
+                await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
+                expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+            }catch(err){
+                reportLogger.AddMessage(`failed to load primary nav page ${headerTabLabel}, retrying refresh`);
+                await browser.refresh();
+                throw err;
+            }
+            
 
         });
         
@@ -260,6 +270,42 @@ const caseManager = new CaseManager()
             
         }
        
+    });
+
+    When('If env is {string}, I find {string} from case ref in header 16 digit ref search', async function (env, input) {
+        if (appTestData.getTestEnvFromEnviornment() === env) {
+            await browserWaits.retryWithActionCallback(async () => {
+                try {
+                    await headerPage.headerCaseRefSearch.container.wait();
+                    await browserWaits.waitForSeconds(2);
+                    await browserWaits.waitForSpinnerToDissappear()
+                    await headerPage.headerCaseRefSearch.searchInput(input);
+                    
+                    await headerPage.headerCaseRefSearch.clickFind();
+                    
+                    let caseDetailsDisplayed = false;
+                    let isNoResultsPageDisplayed = false;
+                    for(let i = 0; i< 20; i++){
+                        await browserWaits.waitForSeconds(1);
+                        caseDetailsDisplayed = await caseDetailsPage.isDisplayed();
+                        const currenturl = await browser.getCurrentUrl();
+                        isNoResultsPageDisplayed = currenturl.includes('search/noresults');
+                        if (caseDetailsDisplayed || isNoResultsPageDisplayed){
+                            break;
+                        }
+                    }
+
+                    expect(caseDetailsDisplayed || isNoResultsPageDisplayed).to.be.true
+
+                } catch (err) {
+                    await browser.refresh();
+                    throw err;
+                }
+
+            });
+
+        }
+
     });
 
 When('I click find in case ref in header 16 digit ref search to see case details page', async function () {

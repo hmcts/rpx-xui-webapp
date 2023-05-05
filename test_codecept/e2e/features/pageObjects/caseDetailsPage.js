@@ -13,6 +13,10 @@ class CaseDetailsPage{
         this.messageBanner = new MessageBanner();
     }
 
+    async isDisplayed(){
+        return this.caseDetailsContainer.isPresent();
+    }
+
     async amOnPage(){
         try{
             await BrowserWaits.waitForElement(this.caseDetailsContainer);

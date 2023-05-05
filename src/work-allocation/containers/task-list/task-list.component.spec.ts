@@ -113,6 +113,7 @@ describe('TaskListComponent', () => {
     };
     mockWorkAllocationService.getTask.and.returnValue(of({}));
     mockFeatureToggleService.isEnabled.and.returnValue(of(true));
+    mockFeatureToggleService.getValue.and.returnValue(of({ configurations: [{ serviceName: 'IA', releaseVersion: '4' }] }));
 
     fixture.detectChanges();
   }));

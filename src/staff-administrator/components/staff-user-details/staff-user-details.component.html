@@ -140,8 +140,9 @@
           </button>
         </div>
         <ng-template #elseBlock>
-          <button id="updateUserButton" class="govuk-button" data-module="govuk-button" (click)="onUpdateUser()">
-            Update
+          <button id="primaryActionButton" class="govuk-button" data-module="govuk-button"
+            (click)="userDetails.status==='SUSPENDED'? onCopyUser() : onUpdateUser()">
+            {{ userDetails.status==='SUSPENDED' ? 'Copy' : 'Update' }}
           </button>
           <div [matTooltip]="userDetails.suspended ? 'If you want to unsuspend a user raise a support request' : ''">
             <button class="govuk-button govuk-button--secondary" data-module="govuk-button"
@@ -153,7 +154,7 @@
           </div>
         </ng-template>
 
-        <button id="copyUserButton" class="govuk-button govuk-button--secondary" data-module="govuk-button"
+        <button *ngIf="userDetails.status!=='SUSPENDED'" id="copyUserButton" class="govuk-button govuk-button--secondary" data-module="govuk-button"
           (click)="onCopyUser()">
           Copy
         </button>

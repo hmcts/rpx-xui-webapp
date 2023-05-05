@@ -16,6 +16,9 @@ import { HearingActualsSummaryBaseComponent } from '../hearing-actuals-summary-b
   styleUrls: ['./hearing-actuals-edit-summary.component.scss']
 })
 export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBaseComponent {
+  public hearingTimingResultErrorMessage = '';
+  public hearingPartiesResultErrorMessage = '';
+  public hearingDaysRequiredErrorMessage = '';
   constructor(
     public readonly hearingStore: Store<fromHearingStore.State>,
     public readonly hearingsService: HearingsService,
@@ -39,7 +42,7 @@ export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBas
       && hearingActualsMainModel.hearingActuals.actualHearingDays.length === hearingActualsMainModel.hearingPlanned.plannedHearingDays.length;
 
     return hasAllActualDays && hearingActualsMainModel.hearingActuals.actualHearingDays.every(
-      (actualDay) => this.isAcutalTimingAvailable(actualDay)
+      (actualDay) => actualDay.notRequired || actualDay.actualDayParties.length > 0
     );
   }
 

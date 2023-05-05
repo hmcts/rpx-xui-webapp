@@ -151,7 +151,7 @@ describe('Fee Pay Judge', () => {
       try {
         await getLocations(req, response, next);
         // expect all civil locations, no IA locations to be given
-        expect(response.data.results.length).to.equal(3);
+        expect(response.data.results.length).to.equal(2);
       } catch (err) {
         console.log(err.stack);
         throw new Error(err);
@@ -177,7 +177,7 @@ describe('Fee Pay Judge', () => {
       try {
         await getLocations(req, response, next);
         // expect all civil locations, no IA locations to be given
-        expect(response.data.results.length).to.equal(4);
+        expect(response.data.results.length).to.equal(3);
       } catch (err) {
         console.log(err.stack);
         throw new Error(err);

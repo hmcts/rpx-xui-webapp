@@ -264,9 +264,9 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * @param paginationMetadata - {total_pages_count: 33, total_results_count: 811}
    */
   public onPaginationSubscribeHandler = (paginationMetadata) => {
-    if (typeof paginationMetadata !== 'undefined' && typeof paginationMetadata.total_pages_count !== 'undefined') {
-      this.paginationMetadata.totalPagesCount = paginationMetadata.total_pages_count;
-      this.paginationMetadata.totalResultsCount = paginationMetadata.total_results_count;
+    if (typeof paginationMetadata !== 'undefined' && typeof paginationMetadata.totalPagesCount !== 'undefined') {
+      this.paginationMetadata.totalPagesCount = paginationMetadata.totalPagesCount;
+      this.paginationMetadata.totalResultsCount = paginationMetadata.totalResultsCount;
 
       const event = this.getEvent();
       if (event !== null && !this.elasticSearchFlag) {

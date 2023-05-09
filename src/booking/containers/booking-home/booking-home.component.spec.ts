@@ -58,6 +58,7 @@ describe('BookingHomeComponent', () => {
     status: 400,
     message: 'Service down'
   };
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [

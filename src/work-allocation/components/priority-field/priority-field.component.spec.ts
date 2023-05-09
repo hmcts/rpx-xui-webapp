@@ -21,7 +21,6 @@ describe('PriorityFieldComponent', () => {
     })
       .compileComponents();
   });
-
   beforeEach(() => {
     fixture = TestBed.createComponent(PriorityFieldComponent);
     component = fixture.componentInstance;

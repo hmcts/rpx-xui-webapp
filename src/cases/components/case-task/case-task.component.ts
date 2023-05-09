@@ -38,10 +38,10 @@ export class CaseTaskComponent implements OnInit {
   public isRelease4: boolean;
 
   constructor(private readonly alertService: AlertService,
-    private readonly router: Router,
-    private readonly sessionStorageService: SessionStorageService,
-    protected taskService: WorkAllocationTaskService,
-    private featureToggleService: FeatureToggleService) {
+              private readonly router: Router,
+              private readonly sessionStorageService: SessionStorageService,
+              protected taskService: WorkAllocationTaskService,
+              private featureToggleService: FeatureToggleService) {
   }
 
   public get returnUrl(): string {
@@ -57,7 +57,6 @@ export class CaseTaskComponent implements OnInit {
     value.description = CaseTaskComponent.replaceVariablesWithRealValues(value);
     this.pTask = value;
     this.isTaskUrgent = this.pTask.major_priority <= PriorityLimits.Urgent ? true : false;
-    this.setReleaseVersion();
   }
 
   @Input()
@@ -85,8 +84,9 @@ export class CaseTaskComponent implements OnInit {
     }, task.description);
   }
 
-  public ngOnInit(): void {
+  public async ngOnInit(): Promise<void> {
     this.manageOptions = this.task.actions;
+    await this.setReleaseVersion();
   }
 
   public getAssigneeName(task: Task): string {
@@ -108,7 +108,7 @@ export class CaseTaskComponent implements OnInit {
     return this.isUserJudicial ? 'Task created' : 'Due date';
   }
 
-  public onActionHandler(task: Task, option: any): void {
+  public async onActionHandler(task: Task, option: any): Promise<void> {
     if (option.id === 'claim') {
       this.taskService.claimTask(task.id).subscribe(() => {
         this.alertService.success(InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS);
@@ -124,13 +124,13 @@ export class CaseTaskComponent implements OnInit {
       showAssigneeColumn: true
     };
     const actionUrl = `/work/${task.id}/${option.id}`;
-    this.router.navigate([actionUrl], { queryParams: { service: task.jurisdiction }, state });
+    await this.router.navigate([actionUrl], { queryParams: { service: task.jurisdiction }, state });
   }
 
   /**
-  * Navigate the User to the correct error page, or throw an on page warning
-  * that the Task is no longer available.
-  */
+   * Navigate the User to the correct error page, or throw an on page warning
+   * that the Task is no longer available.
+   */
   public claimTaskErrors(status: number): void {
     const REDIRECT_404 = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }];
     const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
@@ -150,10 +150,10 @@ export class CaseTaskComponent implements OnInit {
     return null;
   }
 
-  public onClick(event: string) {
+  public async onClick(event: string) {
     const url = event.substring(event.indexOf('(') + 1, event.indexOf(')'));
     const urls = url.split('?');
-    this.router.navigate([urls[0]], {
+    await this.router.navigate([urls[0]], {
       queryParams: {
         tid: urls[1].split('=')[1]
       }

@@ -268,7 +268,11 @@ export function addLocationToLocationsByService(locationsByServices: LocationsBy
     // EUI-7909 - uncomment the code below
     // !location.id && !location.regionId ? locationsByServices.push({service, locations: []}) : locationsByServices.push({service, locations: [location]});
     // EUI-7909 remove line below
-    !location.id && !location.regionId ? locationsByServices.push({ service, locations: [], bookable }) : locationsByServices.push({ service, locations: [location], bookable });
+    !location.id && !location.regionId ? locationsByServices.push({
+      service,
+      locations: [],
+      bookable
+    }) : locationsByServices.push({ service, locations: [location], bookable });
   } else {
     const finalDataWithoutService = locationsByServices.filter((serviceLocations) => serviceLocations.service !== service);
     // Need this to keep bookable attribute as true even if there is a non-bookable role on the same service

@@ -7,10 +7,11 @@ import { UserDetails, UserRole } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
 import { RoleCategoryMappingService } from '../../app/services/role-category-mapping/role-category-mapping.service';
 import * as fromAppStore from '../../app/store';
+import { FeatureVariation } from '../../cases/models/feature-variation.model';
 import { HearingsEditGuard } from './hearings-edit-guard';
 
 describe('HearingsEditGuard', () => {
-  const USER_1: UserDetails = {
+  const USER: UserDetails = {
     canShareCases: true,
     sessionTimeout: {
       idleModalDisplayTime: 10,
@@ -28,31 +29,12 @@ describe('HearingsEditGuard', () => {
       ]
     }
   };
-  const USER_2: UserDetails = {
-    canShareCases: true,
-    sessionTimeout: {
-      idleModalDisplayTime: 10,
-      totalIdleTime: 50
-    },
-    userInfo: {
-      id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
-      forename: 'Luke',
-      surname: 'Wilson',
-      email: 'lukesuperuserxui@mailnesia.com',
-      active: true,
-      roles: [
-        'caseworker',
-        'caseworker-sscs-judge'
-      ]
-    }
-  };
 
-  const FEATURE_FLAG = [
+  const FEATURE_FLAG: FeatureVariation[] = [
     {
       jurisdiction: 'SSCS',
-      roles: [
-        'caseworker-sscs',
-        'caseworker-sscs-judge'
+      includeCaseTypes: [
+        'Benefit'
       ]
     }
   ];
@@ -74,9 +56,9 @@ describe('HearingsEditGuard', () => {
     roleCategoryMappingServiceMock = jasmine.createSpyObj<RoleCategoryMappingService>('roleCategoryMappingService', ['getUserRoleCategory']);
   });
 
-  it('case worker should be able to access the hearings edit link', () => {
-    storeMock.pipe.and.returnValue(of(USER_1));
-    roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.LegalOps));
+  it('should edit hearings be enabled for user with hearing manager role', () => {
+    storeMock.pipe.and.returnValue(of(USER));
+    roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.HearingManager));
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
     hearingsEditGuard = new HearingsEditGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
@@ -86,9 +68,9 @@ describe('HearingsEditGuard', () => {
     expect(result$).toBeObservable(expected);
   });
 
-  it('judicial user should not be able to access the hearings edit link', () => {
-    storeMock.pipe.and.returnValue(of(USER_2));
-    roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.Judicial));
+  it('should edit hearings be disabled for user without hearing manager role', () => {
+    storeMock.pipe.and.returnValue(of(USER));
+    roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.HearingViewer));
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
     hearingsEditGuard = new HearingsEditGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);

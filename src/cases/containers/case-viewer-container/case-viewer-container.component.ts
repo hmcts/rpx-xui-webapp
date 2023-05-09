@@ -21,9 +21,6 @@ import { Utils } from '../../utils/utils';
   styleUrls: ['./case-viewer-container.component.scss']
 })
 export class CaseViewerContainerComponent implements OnInit {
-  private static readonly FEATURE_WORK_ALLOCATION_RELEASE_1 = 'WorkAllocationRelease1';
-  private static readonly FEATURE_WORK_ALLOCATION_RELEASE_2 = 'WorkAllocationRelease2';
-
   public caseDetails: CaseView;
   public prependedTabs$: Observable<CaseTab[]>;
   public appendedTabs$: Observable<CaseTab[]>;
@@ -97,15 +94,14 @@ export class CaseViewerContainerComponent implements OnInit {
   }
 
   private appendedCaseViewTabs(): Observable<CaseTab[]> {
-    return combineLatest([
-      this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []),
-      this.userRoles$
-    ]).pipe(
-      map(([featureVariations, userRoles]: [FeatureVariation[], string[]]) => {
-        const jurisdictionID = this.caseDetails.case_type.jurisdiction.id;
-        const hasMatchedJurisdictionAndRole = featureVariations.some((featureVariation) =>
-          Utils.hasMatchedJurisdictionAndRole(featureVariation, jurisdictionID, userRoles));
-        return hasMatchedJurisdictionAndRole ? this.appendedTabs : [];
+    return this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []).pipe(
+      map((featureVariations: FeatureVariation[]) => {
+        const jurisdictionId = this.caseDetails.case_type.jurisdiction.id;
+        const caseTypeId = this.caseDetails.case_type.id;
+        const hasMatchedPermissions = featureVariations.some(featureVariation =>
+          Utils.hasMatchedPermissions(featureVariation, jurisdictionId, caseTypeId)
+        );
+        return hasMatchedPermissions ? this.appendedTabs : [];
       })
     );
   }

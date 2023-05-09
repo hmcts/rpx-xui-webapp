@@ -13,9 +13,7 @@ import {
   ACTION,
   AnswerSource,
   HearingChannelEnum,
-  HearingDateEnum,
-  HearingResult,
-  PartyType
+  HearingDateEnum, HearingResult, PartyType
 } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';

@@ -5,6 +5,7 @@ import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import * as fromHearingStore from '../../../../hearings/store';
+import { HearingWindowModel } from '../../../models/hearingWindow.model';
 import {
   ACTION,
   HearingDateEnum,
@@ -12,7 +13,6 @@ import {
   HearingDatePriorityEnum,
   RadioOptions
 } from '../../../models/hearings.enum';
-import { HearingWindowModel } from '../../../models/hearingWindow.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.model';
 import { HearingsService } from '../../../services/hearings.service';
@@ -36,16 +36,17 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public hearingLengthErrorValue: string;
   public hearingPriorityError: string;
   public hearingPriorityDateError: string;
+  public dateRangeWeekendError: string;
   public firstDateOfHearingError: ErrorMessagesModel;
   public earliestDateOfHearingError: ErrorMessagesModel;
   public latestDateOfHearingError: ErrorMessagesModel;
   public priorityFormInfo: { days: string, hours: string, minutes: string, startDate: Date, firstDate: Date, secondDate: Date, priority: string };
 
   constructor(private readonly formBuilder: FormBuilder,
-              protected readonly route: ActivatedRoute,
-              private readonly validatorsUtils: ValidatorsUtils,
-              protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService) {
+    protected readonly route: ActivatedRoute,
+    private readonly validatorsUtils: ValidatorsUtils,
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly hearingsService: HearingsService) {
     super(hearingStore, hearingsService, route);
   }
 
@@ -182,7 +183,9 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
 
   public checkUnavailableDatesList(dateList: UnavailabilityRangeModel[]): void {
     dateList.forEach((dateRange) => {
-      this.setUnavailableDates(dateRange);
+      if (dateRange) {
+        this.setUnavailableDates(dateRange);
+      }
     });
     this.partiesNotAvailableDates.sort((currentDate, previousDate) => new Date(currentDate).getTime() - new Date(previousDate).getTime());
   }
@@ -281,12 +284,9 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
         message: HearingDatePriorityEnum.EarliestHearingDateError
       });
       this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.EarliestHearingDateError] };
-    } else if (isEarliestDateWeekendDate) {
+    } else if ((isEarliestDateWeekendDate || isLatestDateWeekendDate) && numberOfBusinessDays === 0) {
       this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.WeekDayError });
-      this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.WeekDayError] };
-    } else if (isLatestDateWeekendDate) {
-      this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.WeekDayError });
-      this.latestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.WeekDayError] };
+      this.dateRangeWeekendError = HearingDatePriorityEnum.WeekDayError;
     } else if (isEarliestDateValid && isLatestHearingDate && (numberOfBusinessDays * 6 * 60) < this.calculateDuration()) {
       this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.NotEnoughDaysInDateRangeError });
       this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.NotEnoughDaysInDateRangeError] };
@@ -320,6 +320,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     this.firstDateOfHearingError = null;
     this.hearingPriorityError = null;
     this.hearingPriorityDateError = null;
+    this.dateRangeWeekendError = null;
     if (!this.priorityForm.valid) {
       this.showHearingLengthError();
       this.showHearingDateError();
@@ -359,14 +360,14 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
       firstDateMustBe = `${moment.utc(Object.values(this.priorityForm.value.firstHearing).join('-'), HearingDateEnum.DefaultFormat).local().toISOString()}`;
     } else if (this.priorityForm.value.specificDate === RadioOptions.CHOOSE_DATE_RANGE) {
       startDate = this.priorityForm.value.dateRangeHearing.earliestHearing
-      && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_day
-      && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_month
-      && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_year ?
+        && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_day
+        && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_month
+        && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_year ?
         `${moment.utc(Object.values(this.priorityForm.value.dateRangeHearing.earliestHearing).join('-'), HearingDateEnum.DefaultFormat).local().toISOString()}` : null;
       endDate = this.priorityForm.value.dateRangeHearing.latestHearing
-      && this.priorityForm.value.dateRangeHearing.latestHearing.latestHearingDate_day
-      && this.priorityForm.value.dateRangeHearing.latestHearing.latestHearingDate_month
-      && this.priorityForm.value.dateRangeHearing.latestHearing.latestHearingDate_year ?
+        && this.priorityForm.value.dateRangeHearing.latestHearing.latestHearingDate_day
+        && this.priorityForm.value.dateRangeHearing.latestHearing.latestHearingDate_month
+        && this.priorityForm.value.dateRangeHearing.latestHearing.latestHearingDate_year ?
         `${moment.utc(Object.values(this.priorityForm.value.dateRangeHearing.latestHearing).join('-'), HearingDateEnum.DefaultFormat).local().toISOString()}` : null;
     }
     if (startDate || endDate) {

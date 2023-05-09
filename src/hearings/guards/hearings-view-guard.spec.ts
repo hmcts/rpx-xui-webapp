@@ -64,7 +64,7 @@ describe('HearingsViewGuard', () => {
     hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
     const result$ = hearingsViewGuard.canActivate();
     const canActive = true;
-    const expected = cold('(b|)', {b: canActive});
+    const expected = cold('(b|)', { b: canActive });
     expect(result$).toBeObservable(expected);
   });
 
@@ -76,7 +76,7 @@ describe('HearingsViewGuard', () => {
     hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
     const result$ = hearingsViewGuard.canActivate();
     const canActive = true;
-    const expected = cold('(b|)', {b: canActive});
+    const expected = cold('(b|)', { b: canActive });
     expect(result$).toBeObservable(expected);
   });
 
@@ -88,7 +88,7 @@ describe('HearingsViewGuard', () => {
     hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
     const result$ = hearingsViewGuard.canActivate();
     const canActive = true;
-    const expected = cold('(b|)', {b: canActive});
+    const expected = cold('(b|)', { b: canActive });
     expect(result$).toBeObservable(expected);
   });
 
@@ -100,7 +100,7 @@ describe('HearingsViewGuard', () => {
     hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
     const result$ = hearingsViewGuard.canActivate();
     const canActive = false;
-    const expected = cold('(b|)', {b: canActive});
+    const expected = cold('(b|)', { b: canActive });
     expect(result$).toBeObservable(expected);
   });
 });

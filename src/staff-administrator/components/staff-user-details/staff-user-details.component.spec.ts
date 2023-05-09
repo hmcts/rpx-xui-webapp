@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -232,12 +232,22 @@ describe('StaffUserDetailsComponent', () => {
     expect(component.userDetails).toEqual(testStaffUserObject);
   });
 
-  it('should call onUpdateUser when clicking update button', fakeAsync(() => {
+  it('should call onUpdateUser when clicking update primary button for active user', fakeAsync(() => {
     spyOn(component, 'onUpdateUser').and.callThrough();
     spyOn(router, 'navigateByUrl').and.callThrough();
-    const updateUserButton = fixture.debugElement.query(By.css('#updateUserButton'));
-    updateUserButton.triggerEventHandler('click', null);
+    const primaryActionButton = fixture.debugElement.query(By.css('#primaryActionButton'));
+    primaryActionButton.triggerEventHandler('click', null);
     expect(component.onUpdateUser).toHaveBeenCalled();
+  }));
+
+  it('should call onCopyUser when clicking copy primary button for suspended user', fakeAsync(() => {
+    spyOn(component, 'onCopyUser').and.callThrough();
+    spyOn(router, 'navigateByUrl').and.callThrough();
+    component.userDetails.suspended = true;
+    fixture.detectChanges();
+    const primaryActionButton = fixture.debugElement.query(By.css('#primaryActionButton'));
+    primaryActionButton.triggerEventHandler('click', null);
+    expect(component.onCopyUser).toHaveBeenCalled();
   }));
 
   it('should call navigateByUrl when calling onUpdateUser ' +

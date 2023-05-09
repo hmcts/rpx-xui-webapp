@@ -17,6 +17,7 @@ const { DataTableArgument } = require('codeceptjs');
     const casesListTable = new WACasesListTable();
 
     Then('I validate work allocation cases table columns displayed', async function (datatable) {
+        reportLogger.reportDatatable(datatable)
         const columnHeadersHash = datatable.parse().hashes();
         const expectdColHeaders = await ArrayUtil.map(columnHeadersHash, (headerhash) => headerhash.ColumnHeader);
         const actualHeadeColumns = await casesListTable.getColumnHeaderNames();

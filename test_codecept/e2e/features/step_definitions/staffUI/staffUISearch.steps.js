@@ -80,10 +80,13 @@ Then('I validate staff UI search results displayed', async function (tabLabel, b
 
 
 Then('I validate staff user details display', async function(){
-    const username = await staffSearchPage.staffUsersList.clickUserNameAtRow(0);
-    reportLogger.AddMessage(`Selected user ${username}`)
-
-   expect (await staffUserDetailsPage.isDisplayed()).to.be.true;
+    let username = null;
+    await BrowserWaits.retryWithActionCallback(async () => {
+        username = await staffSearchPage.staffUsersList.clickUserNameAtRow(0);
+        reportLogger.AddMessage(`Selected user ${username}`)
+        expect(await staffUserDetailsPage.isDisplayed()).to.be.true;
+    })
+   
     const userDetails = await staffUserDetailsPage.getUserDetails();
     expect(userDetails['Name']).to.equal(username);
 

@@ -54,12 +54,19 @@ class BrowserWaits{
         const startTime = Date.now();
         const waitTimeInMilliSec = waitInSec ? waitInSec * 1000 : this.waitTime;
         CucumberReporter.AddMessage("starting wait for element clickable max in sec " + waitTimeInMilliSec + " : " + JSON.stringify(element.selector));
-        try {
-            // await I.waitForElement(EC.elementToBeClickable(element), waitTimeInMilliSec, "Error waitForElementClickable : " + JSON.stringify(element.selector));
-        } catch (err) {
-            CucumberReporter.AddMessage(`Wait for element clikable failed ${JSON.stringify(element.selector) }, not throwing exception to let test fail in next step if required state not met`);
+        let isEnabled = false;
+        for(let i = 0; i< 20;i++){
+            await this.waitForSeconds(1);
+            isEnabled = await element.isEnabled();
+            if(isEnabled){
+                break;
+            }
         }
+
         CucumberReporter.AddMessage("wait done in sec " + (Date.now() - startTime) / 1000);
+        if (!isEnabled){
+            throw Error(`element is not enabled : ${JSON.stringify(element.selector) }`)
+        }
     }
 
     async waitForCondition(condition, message) {
@@ -102,16 +109,18 @@ class BrowserWaits{
     async waitForPageNavigation(currentPageUrl) {
         var nextPage = "";
         let pageErrors = "";
-        await this.retryWithActionCallback(async () => {
+        for (let i = 0; i < 20; i++) {
+            await this.waitForSeconds(1);
             nextPage = await browser.getCurrentUrl();
-
-            for (let errorMsgCounter = 0; errorMsgCounter < this.pageErrors.length; errorMsgCounter++) {
-                pageErrors = pageErrors + " | " + this.pageErrors[errorMsgCounter].getText();
+            if (currentPageUrl !== nextPage) {
+                break;
             }
+        }
 
-            return currentPageUrl !== nextPage;
-        }, this.waitTime, "Navigation to next page taking too long " + this.waitTime + ". Current page " + currentPageUrl + ". Errors => " + pageErrors);
-        return await browser.getCurrentUrl();
+        if (currentPageUrl === nextPage) {
+            throw Error(`Failed Waiting for page navigation from ${currentPageUrl}`)
+        }
+        return nextPage;
     }
 
 

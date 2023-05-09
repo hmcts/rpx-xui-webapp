@@ -21,11 +21,11 @@ export class HearingsEditGuard extends HearingsGuard implements CanActivate {
   }
 
   public canActivate(): Observable<boolean> {
-    return super.hasMatchedJurisdictionAndRole().pipe(
-      switchMap((hasMatchedJurisdictionAndRole) => {
-        if (hasMatchedJurisdictionAndRole) {
+    return super.hasMatchedPermissions().pipe(
+      switchMap(hasMatchedPermissions => {
+        if (hasMatchedPermissions) {
           return this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).pipe(
-            map((userRole) => userRole === UserRole.LegalOps)
+            map(userRole => userRole === UserRole.HearingManager)
           );
         }
 

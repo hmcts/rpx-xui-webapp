@@ -57,15 +57,14 @@ export class Utils {
     });
   }
 
-  public static hasMatchedJurisdictionAndRole(featureVariation: FeatureVariation, jurisdictionID: string, userRoles: string[]): boolean {
-    if (featureVariation.jurisdiction === jurisdictionID) {
-      if (userRoles) {
-        return featureVariation.roles ? userRoles.some((userRole) =>
-          featureVariation.roles.some((role) => role === userRole)) : false;
+  public static hasMatchedPermissions(featureVariation: FeatureVariation, jurisdictionId: string, caseType: string): boolean {
+    if (featureVariation.jurisdiction === jurisdictionId) {
+      if (featureVariation.includeCaseTypes?.length > 0 && !featureVariation.includeCaseTypes.includes(caseType)) {
+        return false;
       }
-    } else {
-      return false;
+      return true;
     }
+    return false;
   }
 }
 

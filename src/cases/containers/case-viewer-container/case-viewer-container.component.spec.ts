@@ -10,7 +10,7 @@ import { FeatureToggleService, FeatureUser } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
-import { reducers, State } from '../../../app/store';
+import { State, reducers } from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
@@ -40,7 +40,7 @@ describe('CaseViewerContainerComponent', () => {
     triggers: [],
     case_id: '1234567890123456',
     case_type: {
-      id: 'TestAddressBookCase',
+      id: 'Benefit',
       name: 'Test Address Book Case',
       jurisdiction: {
         id: 'SSCS',
@@ -137,7 +137,7 @@ describe('CaseViewerContainerComponent', () => {
     public getValue<R>(_key: string, _defaultValue: R): Observable<R> {
       if (_key === 'wa-service-config') {
         // @ts-ignore
-        return of({ configurations: [{ serviceName: 'SSCS', caseTypes: ['TestAddressBookCase'], releaseVersion: '3.0' }] });
+        return of({ configurations: [{ serviceName: 'SSCS', caseTypes: ['Benefit'], releaseVersion: '3.0' }] });
       }
       // @ts-ignore
       return of([]);
@@ -147,12 +147,13 @@ describe('CaseViewerContainerComponent', () => {
     public getValueOnce<R>(_key: string, _defaultValue: R): Observable<R> {
       return of([{
         jurisdiction: 'SSCS',
+        caseType: 'Benefit',
         roles: ['caseworker-sscs-judge', 'caseworker-sscs']
       }] as unknown as R);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
-    public initialize(_user: FeatureUser, _clientId: string): void {}
+    public initialize(_user: FeatureUser, _clientId: string): void { }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public isEnabled(_feature: string): Observable<boolean> {

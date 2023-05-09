@@ -75,4 +75,28 @@ describe('Utils', () => {
     expect(result.length).toBe(1);
     expect(result[0].name).toBe('Tom');
   });
+
+  it('should check for matched permissions return true', () => {
+    const featureVariation = {
+      jurisdiction: 'SSCS',
+      includeCaseTypes: [
+        'Benefit'
+      ]
+    };
+    const jurisdictionId = 'SSCS';
+    const caseTypeId = 'Benefit';
+    expect(Utils.hasMatchedPermissions(featureVariation, jurisdictionId, caseTypeId)).toEqual(true);
+  });
+
+  it('should check for matched permissions return false', () => {
+    const featureVariation = {
+      jurisdiction: 'SSCS',
+      includeCaseTypes: [
+        'Benefit'
+      ]
+    };
+    const jurisdictionId = 'PRL';
+    const caseTypeId = 'PRLAPPS';
+    expect(Utils.hasMatchedPermissions(featureVariation, jurisdictionId, caseTypeId)).toEqual(false);
+  });
 });

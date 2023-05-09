@@ -33,7 +33,7 @@
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
     "hearings": {
-      "hearingsJurisdictions": "SSCS,PRIVATELAW",
+      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL",
       "sscs": {
         "serviceApi": "http://sscs-hearings-api-prod.service.core-compute-prod.internal",
         "caseTypes": "Benefit"
@@ -41,6 +41,10 @@
       "privatelaw": {
         "serviceApi": "http://fis-hmc-api-prod.service.core-compute-prod.internal",
         "caseTypes": "PRLAPPS"
+      },
+      "civil": {
+        "serviceApi": "http://civil-service-prod.service.core-compute-prod.internal",
+        "caseTypes": "CIVIL"
       },
       "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
     },

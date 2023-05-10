@@ -214,7 +214,6 @@ class Element {
 
     async isChecked(){
         const selectorType = Object.keys(this.selector)[0]
-        const isChecked = await getActor().executeScript(function(selectorType, selector){
             if (selectorType === 'css'){
                 return document.querySelector(selector).checked;
             }else{
@@ -232,8 +231,6 @@ class Element {
     }
 
     async isDisplayed(){
-        return await getActor().isVisible(this.selector)
-
     }
 
 

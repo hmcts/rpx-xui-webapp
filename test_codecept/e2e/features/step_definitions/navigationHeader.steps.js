@@ -65,12 +65,6 @@ const caseManager = new CaseManager()
                 await browser.refresh();
                 throw err;
             }
-            
-
-        });
-        
-
-        // await browserWaits.retryWithActionCallback(async () => {
         //     try{
         //         await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
         //         await browserWaits.retryWithActionCallback(async () => {
@@ -273,7 +267,6 @@ const caseManager = new CaseManager()
         if (appTestData.getTestEnvFromEnviornment() === env) {
             await browserWaits.retryWithActionCallback(async () => {
                 try {
-                    await headerPage.headerCaseRefSearch.container.wait();
                     await browserWaits.waitForSeconds(2);
                     await browserWaits.waitForSpinnerToDissappear()
                     await headerPage.headerCaseRefSearch.searchInput(input);
@@ -311,8 +304,4 @@ When('I click find in case ref in header 16 digit ref search to see case details
             await browserWaits.waitForSpinnerToDissappear()
             await headerPage.headerCaseRefSearch.clickFind();
             await caseManager.AmOnCaseDetailsPage()
-
-        });
-    });
-
 

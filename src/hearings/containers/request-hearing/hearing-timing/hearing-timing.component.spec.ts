@@ -279,7 +279,7 @@ describe('HearingTimingComponent', () => {
   });
 
   it('should check showChosenDateRangeError earliest Saturday and latest Sunday', () => {
-    component.dateRangeWeekendError = null;
+    component.dateRangeWeekendError = HearingDatePriorityEnum.WeekDayError;
     component.earliestHearingFormGroup.get('earliestHearingDate_day').setValue('08');
     component.earliestHearingFormGroup.get('earliestHearingDate_month').setValue('04');
     component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue('2023');

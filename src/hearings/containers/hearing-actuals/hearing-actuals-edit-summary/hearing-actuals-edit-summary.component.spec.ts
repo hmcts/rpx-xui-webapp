@@ -199,6 +199,19 @@ describe('HearingActualSummaryComponent', () => {
     expect(patchedHearingActuals.actualHearingDays[0].notRequired).toBe(true);
   });
 
+  it('should check confirm Actual Hearing Time For Day', () => {
+    const hearingDay: ActualHearingDayModel = hearingActualsMainModel.hearingActuals.actualHearingDays[0];
+    component.confirmActualHearingTimeForDay(hearingDay);
+    expect(component.validationErrors.length).toBe(0);
+  });
+
+  it('should check confirm Actual Parties For Day', () => {
+    const hearingDay: ActualHearingDayModel = hearingActualsMainModel.hearingActuals.actualHearingDays[0];
+    component.confirmActualPartiesForDay(hearingDay);
+    expect(component.hearingPartiesResultErrorMessage).toBe('');
+    expect(component.successBanner).toBeTruthy();
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

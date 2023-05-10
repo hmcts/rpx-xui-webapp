@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
+import { CONFIG_CONSTANTS_NOT_RELEASE4 } from '../../components/constants/config.constants';
 import { FieldConfig } from '../../models/common';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
@@ -28,7 +29,14 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
   }
 
   public get fields(): FieldConfig[] {
-    return this.isCurrentUserJudicial() ? ConfigConstants.MyWorkTasksForJudicial : ConfigConstants.MyWorkTasksForLegalOps;
+    let fields = ConfigConstants.MyWorkTasksForLegalOps;
+    this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
+      fields = this.isCurrentUserJudicial() ?
+        (isRelease4 ? ConfigConstants.MyWorkTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.MyWorkTasksForJudicial) :
+        (isRelease4 ? ConfigConstants.MyWorkTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.MyWorkTasksForLegalOps);
+    });
+    return fields;
+    // return this.isCurrentUserJudicial() ? ConfigConstants.MyWorkTasksForJudicial : ConfigConstants.MyWorkTasksForLegalOps;
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {
@@ -37,13 +45,15 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
-      const searchParameters: SearchTaskParameter [] = [
+      const searchParameters: SearchTaskParameter[] = [
         { key: 'user', operator: 'IN', values: [id] },
-        { key: 'state', operator: 'IN', values: ['assigned'] },
-        { key: 'jurisdiction', operator: 'IN', values: this.selectedServices }
+        { key: 'state', operator: 'IN', values: ['assigned'] }
       ];
       const locationParameter = this.getLocationParameter();
       const typesOfWorkParameter = this.getTypesOfWorkParameter();
+      if (this.selectedServices?.length) {
+        searchParameters.push({ key: 'jurisdiction', operator: 'IN', values: this.selectedServices });
+      }
       if (locationParameter) {
         searchParameters.push(locationParameter);
       }

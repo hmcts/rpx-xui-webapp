@@ -8,16 +8,19 @@ import { combineLatest, forkJoin, Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';
 import { Actions, Role, RoleCategory } from '../../../role-access/models';
+import { InfoMessageType } from '../../../role-access/models/enums';
 import { AllocateRoleService } from '../../../role-access/services';
 import { ListConstants } from '../../components/constants';
-import { CaseService, InfoMessage, InfoMessageType, SortOrder } from '../../enums';
+import { CaseService, SortOrder } from '../../enums';
 import { Caseworker } from '../../interfaces/common';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { SortField } from '../../models/common';
 import { Location, PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import {
   CaseworkerDataService,
   LocationDataService,
@@ -84,7 +87,8 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     protected readonly jurisdictionsService: JurisdictionsService,
     protected readonly rolesService: AllocateRoleService,
     protected readonly httpClient: HttpClient,
-    protected store: Store<fromActions.State>
+    protected store: Store<fromActions.State>,
+    protected checkReleaseVersionService: CheckReleaseVersionService
   ) {}
 
   public get cases(): Case[] {

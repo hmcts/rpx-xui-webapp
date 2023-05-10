@@ -18,6 +18,7 @@ import { WorkAllocationComponentsModule } from '../../components/work-allocation
 import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
 
@@ -73,6 +74,13 @@ xdescribe('AllWorkTaskComponent', () => {
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
+  const mockCheckReleaseVersionService = {
+    isRelease4: () => {
+      return {
+        subscribe: () => true
+      };
+    }
+  };
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   let store: Store<fromActions.State>;
   beforeEach(waitForAsync(() => {
@@ -99,7 +107,8 @@ xdescribe('AllWorkTaskComponent', () => {
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
         { provide: AllocateRoleService, useValue: mockRoleService },
-        { provide: Store, useValue: storeMock }
+        { provide: Store, useValue: storeMock },
+        { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService }
       ]
     }).compileComponents();
   }));

@@ -10,8 +10,36 @@ describe('CaseTaskComponent', () => {
   const mockSessionStorage = jasmine.createSpyObj('mockSessionStorage', ['getItem']);
   const mockRouter = jasmine.createSpyObj('router', ['navigate', 'url']);
   const mockTaskService = jasmine.createSpyObj('taskService', ['claimTask']);
+  const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
   mockRouter.url = '/case-details/123243430403904/tasks';
-  const component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService);
+  const component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService, mockFeatureToggleService);
+  mockFeatureToggleService.getValue.and.returnValue(of({
+    configurations: [
+      {
+        caseTypes: [
+          'Asylum'
+        ],
+        releaseVersion: '3.5',
+        serviceName: 'IA'
+      },
+      {
+        caseTypes: [
+          'PRIVATELAW',
+          'PRLAPPS'
+        ],
+        releaseVersion: '2.1',
+        serviceName: 'PRIVATELAW'
+      },
+      {
+        caseTypes: [
+          'CIVIL',
+          'GENERALAPPLICATION'
+        ],
+        releaseVersion: '2.1',
+        serviceName: 'CIVIL'
+      }
+    ]
+  }));
 
   it('ngOnInit', () => {
     component.task = {} as Task;

@@ -4,12 +4,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
-import { Go } from '../../../app/store';
 import { HttpError } from '../../../models/httpError.model';
 import { hearingActualsMainModel } from '../../hearing.test.data';
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingActualsActions from '../actions/hearing-actuals.action';
 import { HearingActualsEffects } from './hearing-actuals.effects';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 describe('Hearing Actuals Effects', () => {
   let actions$;
@@ -18,6 +18,7 @@ describe('Hearing Actuals Effects', () => {
     'getHearingActuals', 'updateHearingActuals', 'updateHearingActualsStage', 'submitHearingActuals'
   ]);
   const routerMock = jasmine.createSpyObj('Router', ['navigate']);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -30,6 +31,10 @@ describe('Hearing Actuals Effects', () => {
         {
           provide: Router,
           useValue: routerMock
+        },
+        {
+          provide: LoggerService,
+          useValue: loggerServiceMock
         },
         HearingActualsEffects,
         provideMockActions(() => actions$)
@@ -100,24 +105,7 @@ describe('Hearing Actuals Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.submitHearingActuals$).toBeObservable(expected);
-    });
-  });
-
-  describe('handleError', () => {
-    it('should handle 500', () => {
-      const action$ = HearingActualsEffects.handleError({
-        status: 500,
-        message: 'error'
-      });
-      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
-    });
-
-    it('should handle 4xx related errors', () => {
-      const action$ = HearingActualsEffects.handleError({
-        status: 403,
-        message: 'error'
-      });
-      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingActualsEffects:submitHearingActuals$', jasmine.anything());
     });
   });
 });

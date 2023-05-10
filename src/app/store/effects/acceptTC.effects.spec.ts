@@ -4,9 +4,11 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { StoreModule } from '@ngrx/store';
 import { hot } from 'jasmine-marbles';
 import { of } from 'rxjs';
-import { AcceptTermsService } from '../../../../src/app/services/acceptTerms/acceptTerms.service';
+import { AcceptTermsService } from '../../services/acceptTerms/acceptTerms.service';
 import * as acceptTandCActions from '../actions';
 import * as fromTcEffects from './acceptTC.effects';
+import { LoggerService } from '../../services/logger/logger.service';
+import { beforeEach } from 'mocha';
 
 describe('acceptTC Effects', () => {
   let actions$;
@@ -14,6 +16,7 @@ describe('acceptTC Effects', () => {
   const AcceptTermsServiceMock = jasmine.createSpyObj('AcceptTermsService', [
     'getIsUserAccepted', 'postUserAccepted'
   ]);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -26,6 +29,10 @@ describe('acceptTC Effects', () => {
           provide: AcceptTermsService,
           useValue: AcceptTermsServiceMock
         },
+        {
+          provide: LoggerService,
+          useValue: loggerServiceMock
+        },
         fromTcEffects.AcceptTcEffects,
         provideMockActions(() => actions$)
       ]
@@ -34,7 +41,7 @@ describe('acceptTC Effects', () => {
     effects = TestBed.inject(fromTcEffects.AcceptTcEffects);
   });
 
-  it('should accept TC', () => {
+  it('should load accepted TC', () => {
     const payload = [{ payload: 'userId' }];
     AcceptTermsServiceMock.getIsUserAccepted.and.returnValue(of(payload));
     const action = new acceptTandCActions.LoadHasAcceptedTCSuccess(true);

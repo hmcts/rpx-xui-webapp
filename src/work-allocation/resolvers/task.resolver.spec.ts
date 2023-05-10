@@ -11,7 +11,8 @@ describe('Task Resolver', () => {
     mockService.getTask.and.returnValue(of({ task: getMockTasks()[0] }));
     mockCaseWorkerService.getCaseworkersForServices.and.returnValue(of([] as Caseworker[]));
     const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-    const taskResolver = new TaskResolver(mockService, mockRouter, mockCaseWorkerService);
+    const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+    const taskResolver = new TaskResolver(mockService, mockRouter, mockCaseWorkerService, loggerServiceMock);
     const route = jasmine.createSpyObj('Route', ['']);
     route.paramMap = {
       get: () => {

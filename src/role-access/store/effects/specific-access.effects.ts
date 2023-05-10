@@ -6,9 +6,16 @@ import { AllocateRoleService } from '../../services';
 import * as fromFeature from '../../store/actions';
 import { ApproveSpecificAccessRequest, RequestMoreInfoSpecificAccessRequest, SpecificAccessActionTypes } from '../actions';
 import { AllocateRoleEffects } from './allocate-role.effects';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Injectable()
 export class SpecificAccessEffects {
+  constructor(
+    private readonly actions$: Actions,
+    private readonly allocateRoleService: AllocateRoleService,
+    private readonly loggerService: LoggerService
+  ) {}
+
   @Effect() public approveSpecificAccessRequest$ = this.actions$
     .pipe(
       ofType<ApproveSpecificAccessRequest>(SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST),
@@ -19,6 +26,7 @@ export class SpecificAccessEffects {
               return new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED);
             }),
             catchError((error) => {
+              this.loggerService.error('Error in SpecificAccessEffects:approveSpecificAccessRequest$', error);
               return AllocateRoleEffects.handleError(error);
             }
             )
@@ -36,14 +44,10 @@ export class SpecificAccessEffects {
               return new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DENIED);
             }),
             catchError((error) => {
+              this.loggerService.error('Error in SpecificAccessEffects:requestMoreInfoSpecificAccessRequest$', error);
               return AllocateRoleEffects.handleError(error);
             })
           )
       )
     );
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly allocateRoleService: AllocateRoleService
-  ) {}
 }

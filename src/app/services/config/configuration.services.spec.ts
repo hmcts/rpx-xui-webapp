@@ -2,10 +2,13 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { AppConfigService } from './configuration.services';
+import { LoggerService } from '../logger/logger.service';
 
 describe('Configuration Service', () => {
   let httpClientSpy: { get: jasmine.Spy };
   let service: AppConfigService;
+
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -13,7 +16,10 @@ describe('Configuration Service', () => {
         StoreModule.forRoot({}),
         HttpClientTestingModule
       ],
-      providers: [AppConfigService]
+      providers: [
+        { provide: LoggerService, useValue: loggerServiceMock },
+        AppConfigService
+      ]
     });
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
   });

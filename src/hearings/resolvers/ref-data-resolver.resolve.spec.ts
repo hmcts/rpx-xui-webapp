@@ -10,6 +10,7 @@ import { HearingCategory } from '../models/hearings.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
 import { RefDataResolver } from './ref-data-resolver.resolve';
+import { LoggerService } from '../../app/services/logger/logger.service';
 
 describe('Ref Data Resolver', () => {
   let lovRefDataService: LovRefDataService;
@@ -28,6 +29,8 @@ describe('Ref Data Resolver', () => {
     }
   };
 
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -35,6 +38,7 @@ describe('Ref Data Resolver', () => {
         HttpClientTestingModule
       ],
       providers: [
+        { provide: LoggerService, useValue: loggerServiceMock },
         provideMockStore({ initialState }),
         RefDataResolver,
         LovRefDataService,

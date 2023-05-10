@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Action, Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../../app/services';
-import * as fromAppStoreActions from '../../../app/store/actions';
 import * as fromHearingReducers from '../../../app/store/reducers';
 import * as hearingLinksActions from '../../../hearings/store/actions/hearing-links.action';
 import { HttpError } from '../../../models/httpError.model';
 import { HearingsService } from '../../services/hearings.service';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Injectable()
 export class HearingLinksEffects {
@@ -19,6 +19,7 @@ export class HearingLinksEffects {
     private readonly hearingsService: HearingsService,
     private readonly router: Router,
     private readonly sessionStorage: SessionStorageService,
+    private readonly loggerService: LoggerService
   ) {}
 
   @Effect()
@@ -30,7 +31,10 @@ export class HearingLinksEffects {
         const jurisdictionId = caseInfo && caseInfo.jurisdiction;
         return this.hearingsService.loadServiceLinkedCases(jurisdictionId, payload.caseReference, payload.hearingId).pipe(
           map((response) => new hearingLinksActions.LoadServiceLinkedCasesSuccess(response)),
-          catchError((error: HttpError) => of(new hearingLinksActions.LoadServiceLinkedCasesFailure(error)))
+          catchError((error: HttpError) => {
+            this.loggerService.error('Error in HearingLinksEffects:loadServiceLinkedCases$', error);
+            return of(new hearingLinksActions.LoadServiceLinkedCasesFailure(error));
+          })
         );
       })
     );
@@ -44,7 +48,10 @@ export class HearingLinksEffects {
         const jurisdictionId = caseInfo && caseInfo.jurisdiction;
         return this.hearingsService.loadLinkedCasesWithHearings(jurisdictionId, payload.caseReference, payload.caseName, payload.hearingId).pipe(
           map((response) => new hearingLinksActions.LoadServiceLinkedCasesWithHearingsSuccess(response)),
-          catchError((error: HttpError) => of(new hearingLinksActions.LoadServiceLinkedCasesWithHearingsFailure(error)))
+          catchError((error: HttpError) => {
+            this.loggerService.error('Error in HearingLinksEffects:loadServiceLinkedCasesWithHearing$', error);
+            return of(new hearingLinksActions.LoadServiceLinkedCasesWithHearingsFailure(error));
+          })
         );
       })
     );
@@ -56,7 +63,10 @@ export class HearingLinksEffects {
       switchMap((payload) => {
         return this.hearingsService.getLinkedHearingGroup(payload.groupId).pipe(
           map((response) => new hearingLinksActions.LoadLinkedHearingGroupSuccess(response)),
-          catchError((error: HttpError) => of(new hearingLinksActions.LoadLinkedHearingGroupFailure(error)))
+          catchError((error: HttpError) => {
+            this.loggerService.error('Error in HearingLinksEffects:loadLinkedHearingGroup$', error);
+            return of(new hearingLinksActions.LoadLinkedHearingGroupFailure(error));
+          })
         );
       })
     );
@@ -75,6 +85,7 @@ export class HearingLinksEffects {
               return this.router.navigate(['/', 'hearings', 'link', payload.caseId, payload.hearingId, 'final-confirmation']);
             }),
           catchError((error) => {
+            this.loggerService.error('Error in HearingLinksEffects:submitLinkedHearingGroup$', error);
             this.hearingStore.dispatch(new hearingLinksActions.SubmitLinkedHearingGroupFailure(error));
             return of(error);
           })
@@ -99,16 +110,11 @@ export class HearingLinksEffects {
               return this.router.navigate(['/', 'hearings', 'manage-links', payload.caseId, payload.hearingGroupRequestId, payload.hearingId, 'final-confirmation']);
             }),
           catchError((error) => {
+            this.loggerService.error('Error in HearingLinksEffects:manageLinkedHearingGroup$', error);
             this.hearingStore.dispatch(new hearingLinksActions.SubmitLinkedHearingGroupFailure(error));
             return of(error);
           })
         );
       })
     );
-
-  public static handleError(error: HttpError): Observable<Action> {
-    if (error && error.status) {
-      return of(new fromAppStoreActions.Go({ path: ['/hearings/error'] }));
-    }
-  }
 }

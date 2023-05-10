@@ -9,6 +9,7 @@ import { RoleAllocationMessageText } from '../../models/enums/allocation-text';
 import { AllocateRoleService } from '../../services';
 import * as allocateRoleAction from '../actions/allocate-role.action';
 import { AllocateRoleEffects } from './allocate-role.effects';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 describe('Allocate Role Effects', () => {
   let actions$;
@@ -17,12 +18,18 @@ describe('Allocate Role Effects', () => {
     'confirmAllocation', 'backUrl'
   ]);
 
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         {
           provide: AllocateRoleService,
           useValue: allocateRoleServiceMock
+        },
+        {
+          provide: LoggerService,
+          useValue: loggerServiceMock
         },
         AllocateRoleEffects,
         provideMockActions(() => actions$)

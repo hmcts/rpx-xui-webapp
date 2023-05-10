@@ -5,12 +5,14 @@ import { Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import * as fromRoot from '../../store';
 import { HealthCheckService } from '../services/health-check.service';
+import { LoggerService } from '../../services/logger/logger.service';
 
 @Injectable()
 export class HealthCheckGuard implements CanActivate {
   constructor(
         private readonly healthCheck: HealthCheckService,
         private readonly store: Store<fromRoot.State>,
+        private readonly loggerService: LoggerService
   ) {}
 
   public canActivate() {
@@ -22,7 +24,8 @@ export class HealthCheckGuard implements CanActivate {
         }
         return of(res.healthState);
       }),
-      catchError(() => {
+      catchError((err) => {
+        this.loggerService.error('Error in HealthCheckGuard:canActivate', err);
         this.redirectToServiceDownPage();
         return of(false);
       })

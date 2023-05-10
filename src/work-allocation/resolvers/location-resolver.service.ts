@@ -17,7 +17,8 @@ import { Booking } from '../../booking/models';
 import { BookingService } from '../../booking/services';
 import { Location, LocationsByRegion, LocationsByService } from '../models/dtos';
 import { LocationDataService } from '../services';
-import { WILDCARD_SERVICE_DOWN, addLocationToLocationsByService, handleFatalErrors, locationWithinRegion } from '../utils';
+import { addLocationToLocationsByService, handleFatalErrors, locationWithinRegion, WILDCARD_SERVICE_DOWN } from '../utils';
+import { LoggerService } from '../../app/services/logger/logger.service';
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +51,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     private readonly locationService: LocationDataService,
     // EUI-7909 - comment out this line
     // private readonly userService: UserService
+    private readonly loggerService: LoggerService
   ) {}
 
   public resolve(): Observable<LocationModel[]> {
@@ -69,6 +71,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
         ),
         mergeMap((locations: Location[]) => this.getLocations(locations)),
         catchError((error) => {
+          this.loggerService.error('Error in LocationResolver:resolve', error);
           handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
           return EMPTY;
         })

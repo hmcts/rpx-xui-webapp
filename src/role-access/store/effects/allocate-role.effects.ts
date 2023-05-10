@@ -7,11 +7,20 @@ import * as routeAction from '../../../app/store/index';
 import { Actions as RoleActions, Role, RoleAccessHttpError } from '../../models';
 import { RoleAllocationMessageText } from '../../models/enums/allocation-text';
 import { REDIRECTS } from '../../models/enums/redirect-urls';
-import { AllocateRoleService } from '../../services/allocate-role.service';
+import { AllocateRoleService } from '../../services';
 import { AllocateRoleActionTypes, ConfirmAllocation, LoadRolesComplete, NoRolesFound } from '../actions';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Injectable()
 export class AllocateRoleEffects {
+  private readonly payload: any;
+
+  constructor(
+    private readonly actions$: Actions,
+    private readonly allocateRoleService: AllocateRoleService,
+    private readonly loggerService: LoggerService
+  ) {}
+
   @Effect() public getRoles$ = this.actions$
     .pipe(
       ofType<ConfirmAllocation>(AllocateRoleActionTypes.LOAD_ROLES),
@@ -51,18 +60,12 @@ export class AllocateRoleEffects {
               });
             }),
             catchError((error) => {
+              this.loggerService.error('Error in AllocateRoleEffects:confirmAllocation$', error);
               return AllocateRoleEffects.handleError(error);
             })
           )
       )
     );
-
-  private readonly payload: any;
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly allocateRoleService: AllocateRoleService
-  ) {}
 
   public static handleError(error: RoleAccessHttpError): Observable<Action> {
     if (error && error.status) {

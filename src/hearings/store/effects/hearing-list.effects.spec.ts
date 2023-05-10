@@ -13,6 +13,7 @@ import { EXUISectionStatusEnum, HearingListingStatusEnum } from '../../models/he
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingListActions from '../actions/hearing-list.action';
 import { HearingListEffects } from './hearing-list.effects';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 describe('Hearing List Effects', () => {
   let actions$;
@@ -23,6 +24,7 @@ describe('Hearing List Effects', () => {
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
     'getAllHearings'
   ]);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   const initialState = {
     hearings: {
@@ -40,6 +42,7 @@ describe('Hearing List Effects', () => {
           provide: HearingsService,
           useValue: hearingsServiceMock
         },
+        { provide: LoggerService, useValue: loggerServiceMock },
         HearingListEffects,
         provideMockActions(() => actions$)
       ]

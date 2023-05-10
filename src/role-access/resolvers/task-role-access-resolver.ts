@@ -7,19 +7,22 @@ import { Task } from '../../work-allocation/models/tasks';
 import { WorkAllocationTaskService } from '../../work-allocation/services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation/utils';
 import { AllocateRoleService } from '../services';
+import { LoggerService } from '../../app/services/logger/logger.service';
 
 @Injectable({ providedIn: 'root' })
 export class TaskRoleAccessResolver implements Resolve<{ task: Task; role: any } > {
   constructor(
     private readonly taskService: WorkAllocationTaskService,
     private readonly router: Router,
-    private readonly allocateRoleService: AllocateRoleService
+    private readonly allocateRoleService: AllocateRoleService,
+    private readonly loggerService: LoggerService
   ) {}
 
   public resolve(route: ActivatedRouteSnapshot): Observable< { task: Task; role: any[]; } > {
     const assignmentId = route.paramMap.get('assignmentId');
     const task$ = this.taskService.getTask(route.paramMap.get('taskId')).pipe(
       catchError((error) => {
+        this.loggerService.error('Error in TaskRoleAccessResolver:resolve', error);
         handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
         return EMPTY;
       })

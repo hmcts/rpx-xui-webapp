@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { TaskList } from '../../work-allocation/models/dtos';
 import { CaseTasksResolverService } from './case-tasks-resolver.service';
+import { LoggerService } from '../services/logger/logger.service';
 
 describe('CaseTasksResolverService', () => {
   let httpClient: HttpClient;
@@ -37,6 +38,8 @@ describe('CaseTasksResolverService', () => {
     ]
   };
 
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -44,6 +47,10 @@ describe('CaseTasksResolverService', () => {
         HttpClientTestingModule
       ],
       providers: [
+        {
+          provide: LoggerService,
+          useValue: loggerServiceMock
+        },
         CaseTasksResolverService,
         { provide: APP_BASE_HREF, useValue: '/' }
       ]

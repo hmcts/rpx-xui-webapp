@@ -11,6 +11,7 @@ import { Answer, ExclusionNavigationEvent, RoleExclusion } from '../../models';
 import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
 import { AllocateRoleService, RoleExclusionsService } from '../../services';
 import { handleError } from '../../utils';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-delete-exclusion',
@@ -34,7 +35,8 @@ export class DeleteExclusionComponent implements OnInit {
               private readonly router: Router,
               private readonly roleExclusionsService: RoleExclusionsService,
               private readonly allocateService: AllocateRoleService,
-              private readonly caseworkerDataService: CaseworkerDataService) {}
+              private readonly caseworkerDataService: CaseworkerDataService,
+              private readonly loggerService: LoggerService) {}
 
   public ngOnInit(): void {
     const paramMap$ = this.route.queryParamMap;
@@ -99,6 +101,7 @@ export class DeleteExclusionComponent implements OnInit {
               messageText: ExclusionMessageText.Delete }
           });
         }, (error) => {
+          this.loggerService.error('Error in DeleteExclusionComponent:onNavEvent', error);
           return handleError(error, this.router, goToCaseUrl);
         });
         break;

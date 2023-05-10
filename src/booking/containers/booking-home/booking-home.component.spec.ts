@@ -6,10 +6,10 @@ import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 
-import { BookingProcess, BookingResponseSuccess } from '../../models';
-import { Booking } from '../../models/booking.interface';
+import { Booking, BookingProcess, BookingResponseSuccess } from '../../models';
 import { BookingService } from '../../services';
 import { BookingHomeComponent } from './booking-home.component';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 const DUMMY_BOOKINGS: Booking[] = [{
   id: 'd9d4f711-1ffe-4a22-a949-7286907422f1',
@@ -49,6 +49,7 @@ describe('BookingHomeComponent', () => {
   let fixture: ComponentFixture<BookingHomeComponent>;
   const bookingService = jasmine.createSpyObj<BookingService>('BookingService', ['getBookings', 'getBookingLocation', 'refreshRoleAssignments']);
   const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const flags = {
     enabledFlag: true,
     disabledFlag: false
@@ -77,6 +78,10 @@ describe('BookingHomeComponent', () => {
         {
           provide: WindowService,
           useValue: mockWindowService
+        },
+        {
+          provide: LoggerService,
+          useValue: loggerServiceMock
         },
         {
           provide: FeatureToggleService,

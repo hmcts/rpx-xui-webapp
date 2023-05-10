@@ -2,10 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
-import { mockedSearchFilters } from '../../../cases/mock/search-filter.mock';
-import { SearchFilterService } from '../../../cases/services';
+import { mockedSearchFilters } from '../../mock/search-filter.mock';
+import { SearchFilterService } from '../../services';
 import { ApplyCaselistFilter, ApplyCaselistFilterFail, ApplyCaselistFilterForES, ApplyCaselistFilterSuccess } from '../actions';
 import * as fromCaseListEffects from './case-list.effects';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 describe('Pending Organisation Effects', () => {
   let actions$;
@@ -13,6 +14,7 @@ describe('Pending Organisation Effects', () => {
   const searchFilterServiceMock = jasmine.createSpyObj('SearchFilterService', [
     'search'
   ]);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   const payload = mockedSearchFilters;
 
@@ -22,6 +24,10 @@ describe('Pending Organisation Effects', () => {
         {
           provide: SearchFilterService,
           useValue: searchFilterServiceMock
+        },
+        {
+          provide: LoggerService,
+          useValue: loggerServiceMock
         },
         fromCaseListEffects.CaseListEffects,
         provideMockActions(() => actions$)

@@ -18,6 +18,7 @@ import {
   LoadUserFromOrgForCaseSuccess
 } from '../actions';
 import * as fromShareCaseEffects from './share-case.effects';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 describe('Share Case Effects', () => {
   let actions$;
@@ -29,6 +30,7 @@ describe('Share Case Effects', () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let spyOnDispatchToStore = jasmine.createSpy();
   const caseShareServiceMock = jasmine.createSpyObj('CaseShareService', ['getShareCases', 'getUsersFromOrg', 'assignUsersWithCases']);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -37,6 +39,7 @@ describe('Share Case Effects', () => {
         HttpClientTestingModule,
         RouterTestingModule],
       providers: [
+        { provide: LoggerService, useValue: loggerServiceMock },
         {
           provide: CaseShareService,
           useValue: caseShareServiceMock

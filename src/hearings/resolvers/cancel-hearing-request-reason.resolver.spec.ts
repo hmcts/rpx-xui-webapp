@@ -9,10 +9,13 @@ import { initialState } from '../hearing.test.data';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
 import { CancelHearingRequestReasonResolver } from './cancel-hearing-request-reason.resolver';
+import { LoggerService } from '../../app/services/logger/logger.service';
 
 describe('CancelHearingRequestReasonResolver', () => {
   let lovRefDataService: LovRefDataService;
   const dataRef: LovRefDataModel[] = [];
+
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -21,6 +24,10 @@ describe('CancelHearingRequestReasonResolver', () => {
         HttpClientTestingModule
       ],
       providers: [
+        {
+          provide: LoggerService,
+          useValue: loggerServiceMock
+        },
         provideMockStore({ initialState }),
         CancelHearingRequestReasonResolver,
         LovRefDataService,

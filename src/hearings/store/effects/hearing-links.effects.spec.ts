@@ -5,7 +5,6 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
-import { Go } from '../../../app/store/actions';
 import * as fromHearingStore from '../../../hearings/store';
 import { HttpError } from '../../../models/httpError.model';
 import { GroupLinkType } from '../../models/hearings.enum';
@@ -13,6 +12,7 @@ import { ServiceLinkedCasesModel, ServiceLinkedCasesWithHearingsModel } from '..
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingLinksActions from '../actions/hearing-links.action';
 import { HearingLinksEffects } from './hearing-links.effects';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 describe('Hearing Links Effects', () => {
   let actions$;
@@ -23,6 +23,7 @@ describe('Hearing Links Effects', () => {
     'loadServiceLinkedCases', 'loadLinkedCasesWithHearings', 'postLinkedHearingGroup', 'deleteLinkedHearingGroup', 'putLinkedHearingGroup'
   ]);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const initialState = {
     hearings: {
       hearingLinks: {
@@ -45,6 +46,7 @@ describe('Hearing Links Effects', () => {
           provide: HearingsService,
           useValue: hearingsServiceMock
         },
+        { provide: LoggerService, useValue: loggerServiceMock },
         HearingLinksEffects,
         provideMockActions(() => actions$)
       ]
@@ -189,16 +191,6 @@ describe('Hearing Links Effects', () => {
       expect(effects.manageLinkedHearingGroup$).toBeObservable(expected);
       expect(hearingsServiceMock.deleteLinkedHearingGroup).toHaveBeenCalled();
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingLinksActions.SubmitLinkedHearingGroupFailure(error));
-    });
-  });
-
-  describe('handleError', () => {
-    it('should handle errors', () => {
-      const action$ = HearingLinksEffects.handleError({
-        status: 403,
-        message: 'error'
-      });
-      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });
   });
 });

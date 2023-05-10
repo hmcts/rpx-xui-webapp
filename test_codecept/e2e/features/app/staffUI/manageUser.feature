@@ -1,4 +1,4 @@
-@fullfunctional @ignore  @staffUI 
+@fullfunctional @ignore  @staffUI @codecept_test
 Feature: Staff UI Manager user
 
 
@@ -25,7 +25,6 @@ Feature: Staff UI Manager user
             | First name       | xui auto test                                                                                      |
             | Last name        | last name                                                                                          |
             | Email            | xui_auto_test                                                                                      |
-            | Region           | Region 1                                                                                           |
             | Services         | Specified Money Claims,Damages,Family Public Law,Family Private Law,Immigration and Asylum Appeals |
             | Primary location | Bir                                                                                                |
             | User type        | Legal office                                                                                       |
@@ -33,8 +32,6 @@ Feature: Staff UI Manager user
             | Job title        | Legal Caseworker                                                                                   |
 
 
-    Scenario: Add new user
-        When I navigate to Expert UI Url
         Given I am logged into Expert UI with test user identified as "STAFF_ADMIN"
 
         Then I click on primary navigation header tab "Staff", I see selected tab page displayed
@@ -44,7 +41,6 @@ Feature: Staff UI Manager user
         When I add new staff user details
             | First name       | xui auto test    |
             | Last name        | last name        |
-            | Email            | xui_auto_test    |
             | Region           | Region 1         |
             | Services | Specified Money Claims,Damages,Family Public Law,Family Private Law,Immigration and Asylum Appeals |
             | Primary location | Bir              |
@@ -55,12 +51,6 @@ Feature: Staff UI Manager user
         Then I see basic search displayed in staff UI
 
 
-    Scenario: Update user
-        When I navigate to Expert UI Url
-        Given I am logged into Expert UI with test user identified as "STAFF_ADMIN"
-
-        Then I click on primary navigation header tab "Staff", I see selected tab page displayed
-        Then I see basic search displayed in staff UI
 
         Then I see basic search displayed in staff UI
         Then I validate user profile "xui auto user for update" update in staff UI

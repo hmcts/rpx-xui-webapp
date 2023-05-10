@@ -97,15 +97,10 @@ class SearchPage {
     // await optionElement.click();
     CucumberReportLogger.LogTestDataInput(`Search  page case type : ${option}`);
 
-    RuntimeTestData.searchCasesInputs.casetype = option; 
 
   }
 
   async clickApplyButton() {
-    // await this._waitForSearchComponent();
-    await BrowserWaits.waitForElement(this.applyButton);
-    await BrowserWaits.waitForSpinnerToDissappear();
-    await BrowserWaits.waitForElementClickable(this.applyButton);
 
     // await browser.executeScript('arguments[0].scrollIntoView()',
       // this.applyButton); 

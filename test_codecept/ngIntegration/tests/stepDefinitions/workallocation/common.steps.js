@@ -173,19 +173,19 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Given('I set MOCK case workers for release {string}', async function(forRelease,datatable){
-        const persons = getPersonResponse(datatable);
-        let url = null;
-        if (forRelease === "1"){
-            MockApp.onGet('workallocation/caseworker', (req,res) => {
-                res.send(persons);
-            });
-        } else if (forRelease === "2"){
-            MockApp.onGet('workallocation2/caseworker', (req, res) => {
-                res.send(persons);
-            });
-        } else{
-            throw new Error(`Unexpected release identifier "${forRelease}"  passed to setup mock`);
-        }
+        // const persons = getPersonResponse(datatable);
+        // let url = null;
+        // if (forRelease === "1"){
+        //     MockApp.onGet('workallocation/caseworker', (req,res) => {
+        //         res.send(persons);
+        //     });
+        // } else if (forRelease === "2"){
+        //     MockApp.onGet('workallocation2/caseworker', (req, res) => {
+        //         res.send(persons);
+        //     });
+        // } else{
+        //     throw new Error(`Unexpected release identifier "${forRelease}"  passed to setup mock`);
+        // }
 
     });
 

@@ -71,21 +71,18 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I see work allocation table {string} default column sorted by {string} for user type {string}', async function (waTableFor, sortState,userType ,datatable){
+        reportLogger.reportDatatable(datatable)
         const table = getWATableObject(waTableFor);
 
-        const dataTableRowHashes = datatable.parse().hashes();
+        const dataTableRowHashes = datatable.parse().rowsHash();
 
-        for (const row of dataTableRowHashes){
-            const defaultSortColumnForUserType = row[userType];
-          
-            const expectedSortState = sortState.toLowerCase();
-            await BrowserWaits.retryWithActionCallback(async () => {
-                expect(await table.getColumnSortState(defaultSortColumnForUserType)).to.include(expectedSortState);
-            });
+        const defaultSortColumnForUserType = dataTableRowHashes[userType];
 
-        }
+        const expectedSortState = sortState.toLowerCase();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await table.getColumnSortState(defaultSortColumnForUserType)).to.include(expectedSortState);
+        });
       
-
     });
 
     

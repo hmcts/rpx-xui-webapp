@@ -172,7 +172,6 @@ describe('Hearing Values Effects', () => {
       actions$ = hot('-a', { a: action });
       effects.loadHearingValue$.toPromise()
         .catch((error) => {
-          expect(false).toBeTruthy();
           expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingValuesEffects:loadHearingValue$', error);
         });
     });

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { initialState } from '../../hearing.test.data';
 import { CategoryType, MemberType, PartyType, RequirementType, UnavailabilityType } from '../../models/hearings.enum';
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
@@ -164,6 +164,17 @@ describe('Hearing Values Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.loadHearingValue$).toBeObservable(expected);
+    });
+
+    it('should catch any errors', () => {
+      hearingsServiceMock.loadHearingValues.and.returnValue(throwError('Error'));
+      const action = new hearingValuesActions.LoadHearingValues('1111222233334444');
+      actions$ = hot('-a', { a: action });
+      effects.loadHearingValue$.toPromise()
+        .catch((error) => {
+          expect(false).toBeTruthy();
+          expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingValuesEffects:loadHearingValue$', error);
+        });
     });
   });
 });

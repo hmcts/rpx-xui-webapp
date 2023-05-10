@@ -96,7 +96,8 @@ export class CaseViewerContainerComponent implements OnInit {
         this.enablePrependedTabs(feature, userRoles, supportedServices, excludedRoles) ? this.prependedTabs : []),
       catchError((error) => {
         this.loggerService.error('Error in CaseViewerContainerComponent:prependedCaseViewTabs', error);
-        return this.prependedTabs$ = of([]);
+        this.prependedTabs$ = of([]);
+        return this.prependedTabs$;
       })
     );
   }

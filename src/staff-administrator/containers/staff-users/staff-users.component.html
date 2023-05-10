@@ -1,0 +1,55 @@
+<div class="govuk-!-margin-top-3">
+  <exui-info-message-container></exui-info-message-container>
+</div>
+
+<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+  <div class="hmcts-page-heading">
+    <div class="hmcts-page-heading__title">
+      <h1 class="govuk-heading-xl">User list</h1>
+    </div>
+  </div>
+
+  <div>
+    <ng-container *ngIf="(staffDataFilterService.errors$ | async).errors.length">
+      <exui-error-message [error]="staffDataFilterService.errors$ | async"></exui-error-message>
+    </ng-container>
+    <div class="hmcts-filter-layout">
+      <div class="hmcts-filter-layout__filter staff-filters">
+        <div class="container-fluid govuk-!-margin-top-4">
+          <h2 class="govuk-heading-l">User search</h2>
+
+          <div class="govuk-!-margin-bottom-4">
+            <ng-container *ngIf="!advancedSearchEnabled; else advFilter">
+              <exui-staff-search></exui-staff-search>
+            </ng-container>
+
+            <ng-template #advFilter>
+              <exui-staff-adv-filter></exui-staff-adv-filter>
+            </ng-template>
+          </div>
+
+          <div>
+            <a href="javascript:void(0)" (click)="advancedSearchClicked()">
+              {{ !advancedSearchEnabled ? 'Advanced search' : 'Hide advanced search' }}
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="hmcts-filter-layout__content">
+        <div class="govuk-!-margin-bottom-6">
+          <div class="govuk-!-text-align-right">
+            <button
+              [routerLink]="['/staff/add-user']"
+              class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">
+              Add new user
+            </button>
+          </div>
+        </div>
+
+        <exui-staff-user-list></exui-staff-user-list>
+      </div>
+    </div>
+
+  </div>
+</main>

@@ -4929,6 +4929,16 @@ array-differ@^3.0.0:
   languageName: node
   linkType: hard
 
+"array-buffer-byte-length@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "array-buffer-byte-length@npm:1.0.0"
+  dependencies:
+    call-bind: ^1.0.2
+    is-array-buffer: ^3.0.1
+  checksum: 044e101ce150f4804ad19c51d6c4d4cfa505c5b2577bd179256e4aa3f3f6a0a5e9874c78cd428ee566ac574c8a04d7ce21af9fe52e844abfdccb82b33035a7c3
+  languageName: node
+  linkType: hard
+
 "array-differ@npm:^3.0.0":
   version: 3.0.0
   resolution: "array-differ@npm:3.0.0"
@@ -10129,6 +10139,17 @@ flat@^5.0.2:
   languageName: node
   linkType: hard
 
+"flat@npm:^4.1.0":
+  version: 4.1.1
+  resolution: "flat@npm:4.1.1"
+  dependencies:
+    is-buffer: ~2.0.3
+  bin:
+    flat: cli.js
+  checksum: 398be12185eb0f3c59797c3670a8c35d07020b673363175676afbaf53d6b213660e060488554cf82c25504986e1a6059bdbcc5d562e87ca3e972e8a33148e3ae
+  languageName: node
+  linkType: hard
+
 "flat@npm:^5.0.2":
   version: 5.0.2
   resolution: "flat@npm:5.0.2"
@@ -14471,6 +14492,20 @@ lodash@^3.7.0:
   languageName: node
   linkType: hard
 
+"lodash.merge@npm:^4.6.2":
+  version: 4.6.2
+  resolution: "lodash.merge@npm:4.6.2"
+  checksum: ad580b4bdbb7ca1f7abf7e1bce63a9a0b98e370cf40194b03380a46b4ed799c9573029599caebc1b14e3f24b111aef72b96674a56cfa105e0f5ac70546cdc005
+  languageName: node
+  linkType: hard
+
+"lodash.mergewith@npm:^4.6.2":
+  version: 4.6.2
+  resolution: "lodash.mergewith@npm:4.6.2"
+  checksum: a6db2a9339752411f21b956908c404ec1e088e783a65c8b29e30ae5b3b6384f82517662d6f425cc97c2070b546cc2c7daaa8d33f78db7b6e9be06cd834abdeb8
+  languageName: node
+  linkType: hard
+
 "lodash.omit@npm:^4.5.0":
   version: 4.5.0
   resolution: "lodash.omit@npm:4.5.0"
@@ -15381,6 +15416,57 @@ mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.1, mkdirp@^0.5.3, mkdirp@^0.5.5, mkd
   version: 4.14.1
   resolution: "mobx@npm:4.14.1"
   checksum: 0acf79c55fc77310e52b67a8ac9c8a00276c616cff0919bcc7ce7c9494ce97e2bbbc20abd5f75944f2a66a398e1e96b46d06b195f712069eb15305298c1717c1
+  languageName: node
+  linkType: hard
+
+"mocha-junit-reporter@npm:1.23.1":
+  version: 1.23.1
+  resolution: "mocha-junit-reporter@npm:1.23.1"
+  dependencies:
+    debug: ^2.2.0
+    md5: ^2.1.0
+    mkdirp: ~0.5.1
+    strip-ansi: ^4.0.0
+    xml: ^1.0.0
+  peerDependencies:
+    mocha: ">=2.2.5"
+  checksum: 4e4e8a4d10e6d61744586bd4c2641d1e09e627fe2b56cd3ac35b3c18691cd669deb5d9f5e7fd4d9dbcff1727e9ee6a5cff550da3bacb298cac1d7954c7eb9a86
+  languageName: node
+  linkType: hard
+
+"mocha@npm:8.1.3":
+  version: 8.1.3
+  resolution: "mocha@npm:8.1.3"
+  dependencies:
+    ansi-colors: 4.1.1
+    browser-stdout: 1.3.1
+    chokidar: 3.4.2
+    debug: 4.1.1
+    diff: 4.0.2
+    escape-string-regexp: 4.0.0
+    find-up: 5.0.0
+    glob: 7.1.6
+    growl: 1.10.5
+    he: 1.2.0
+    js-yaml: 3.14.0
+    log-symbols: 4.0.0
+    minimatch: 3.0.4
+    ms: 2.1.2
+    object.assign: 4.1.0
+    promise.allsettled: 1.0.2
+    serialize-javascript: 4.0.0
+    strip-json-comments: 3.0.1
+    supports-color: 7.1.0
+    which: 2.0.2
+    wide-align: 1.1.3
+    workerpool: 6.0.0
+    yargs: 13.3.2
+    yargs-parser: 13.1.2
+    yargs-unparser: 1.6.1
+  bin:
+    _mocha: bin/_mocha
+    mocha: bin/mocha
+  checksum: cf9f159f181aa640d94be9f00a7c0c646606d8a1aea5451fff2b8100cc68e8cfcd412f9056ac27fafc6dffa6a5970862bad2422f710a8ca35b6e2c83ada30481
   languageName: node
   linkType: hard
 

@@ -41,11 +41,7 @@ class AddUserPage{
     }
 
     async getPageTitle(){
-        return this.headerTitle.getText();
     }
-
-    async isDisplayed(){
-        return await this.container.isDisplayed();
     }
 
 

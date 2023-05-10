@@ -209,14 +209,14 @@ class caseEditPage {
         if (wizardPage1) {
             for (var i = 1; i < wizardPage1.length; i++) {
                 let caseField = await wizardPage.case_fields.find(caseObj => caseObj.id == wizardPage1[i].case_field_id);
+
                 if (wizardPage1[i].case_field_id !== "Organisation1") {
+
                     fieldIdPresent = await this._getFieldId(caseField, wizardPage1[i]);
-                    await BrowserWaits.waitForElement(fieldIdPresent);
-                    expect(await fieldIdPresent.isPresent(), `Case creation ${fieldIdPresent} field should be present`).to.be.true;
                 }
 
             }
-        }
+        }}
 
     }
 

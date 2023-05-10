@@ -7,6 +7,7 @@ import { NocAnswer, NocHttpError } from '../../models/';
 import { NocService } from '../../services';
 import * as nocActions from '../actions/noc.action';
 import { NocEffects } from './noc.effects';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 describe('Noc Effects', () => {
   let actions$;
@@ -17,9 +18,12 @@ describe('Noc Effects', () => {
     'submitNoCEvent'
   ]);
 
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        { provide: LoggerService, useValue: loggerServiceMock },
         {
           provide: NocService,
           useValue: nocServiceMock
@@ -202,14 +206,14 @@ describe('Noc Effects', () => {
 
   describe('handleError', () => {
     it('should handle 400', () => {
-      const action$ = NocEffects.handleError({ status: 400, message: 'error' }, nocActions.SET_CASE_REFERENCE);
+      const action$ = effects.handleError({ status: 400, message: 'error' }, nocActions.SET_CASE_REFERENCE);
       action$.subscribe((action) => expect(action).toEqual(new nocActions.SetCaseRefSubmissionFailure({ status: 400, message: 'error' })));
     });
   });
 
   describe('handleError', () => {
     it('should handle 500', () => {
-      const action$ = NocEffects.handleError({ status: 500, message: 'error' }, nocActions.SET_CASE_REFERENCE);
+      const action$ = effects.handleError({ status: 500, message: 'error' }, nocActions.SET_CASE_REFERENCE);
       action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/service-down'] })));
     });
   });

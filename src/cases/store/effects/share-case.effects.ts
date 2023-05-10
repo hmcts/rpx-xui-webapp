@@ -8,6 +8,7 @@ import { CaseShareService } from '../../../app/services/case/share-case.service'
 import * as fromRoot from '../../../app/store/index';
 import * as shareCaseActions from '../actions/share-case.action';
 import * as shareCases from '../reducers/share-case.reducer';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Injectable()
 export class ShareCaseEffects {
@@ -17,7 +18,8 @@ export class ShareCaseEffects {
     private readonly actions$: Actions,
     private readonly caseShareService: CaseShareService,
     private readonly router: Router,
-    private readonly store: Store<shareCases.ShareCasesState>
+    private readonly store: Store<shareCases.ShareCasesState>,
+    private readonly loggerService: LoggerService,
   ) {}
 
   @Effect()
@@ -54,7 +56,10 @@ export class ShareCaseEffects {
         return this.caseShareService.getShareCases(payload).pipe(
           map(
             (response) => new shareCaseActions.LoadShareCaseSuccess(response)),
-          catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))
+          catchError((error) => {
+            this.loggerService.error('Error in ShareCaseEffects:loadShareCases$', error);
+            return of(new fromRoot.Go({ path: ['/service-down'] }));
+          })
         );
       })
     );
@@ -65,7 +70,10 @@ export class ShareCaseEffects {
       return this.caseShareService.getUsersFromOrg().pipe(
         map(
           (response) => new shareCaseActions.LoadUserFromOrgForCaseSuccess(response)),
-        catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))
+        catchError((error) => {
+          this.loggerService.error('Error in ShareCaseEffects:loadOrgUsers$', error);
+          return of(new fromRoot.Go({ path: ['/service-down'] }));
+        })
       );
     })
   );
@@ -79,7 +87,10 @@ export class ShareCaseEffects {
         return this.caseShareService.assignUsersWithCases(payload).pipe(
           map(
             (response) => new shareCaseActions.AssignUsersToCaseSuccess(response)),
-          catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))
+          catchError((error) => {
+            this.loggerService.error('Error in ShareCaseEffects:assignUsersWithCases$', error);
+            return of(new fromRoot.Go({ path: ['/service-down'] }));
+          })
         );
       })
     );

@@ -5,6 +5,7 @@ import { EMPTY, Observable } from 'rxjs';
 import { catchError, first } from 'rxjs/operators';
 import { TaskList } from '../../work-allocation/models/dtos';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation/utils';
+import { LoggerService } from '../services/logger/logger.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,10 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation/
 export class CaseTasksResolverService implements Resolve<TaskList> {
   public static CASE_TASKS_URL: string = '/workallocation/case/task';
 
-  constructor(private readonly http: HttpClient, private readonly router: Router) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly router: Router,
+    private readonly loggerService: LoggerService) {}
 
   public resolve(route: ActivatedRouteSnapshot): Observable<TaskList> {
     const caseId = route.paramMap.get('cid');
@@ -20,6 +24,7 @@ export class CaseTasksResolverService implements Resolve<TaskList> {
       .pipe(
         first(),
         catchError((error) => {
+          this.loggerService.error('Error in CaseTasksResolverService:resolve', error);
           handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
           return EMPTY;
         })

@@ -14,6 +14,7 @@ import { AllocateRoleService } from '../../role-access/services';
 import { LocationsByRegion } from '../models/dtos';
 import { CaseworkerDataService, LocationDataService } from '../services';
 import { LocationResolver } from './location-resolver.service';
+import { LoggerService } from '../../app/services/logger/logger.service';
 
 describe('LocationResolver', () => {
   let caseworkerDataService: CaseworkerDataService;
@@ -292,6 +293,8 @@ describe('LocationResolver', () => {
     }
   ];
 
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -300,6 +303,7 @@ describe('LocationResolver', () => {
         HttpClientTestingModule
       ],
       providers: [
+        { provide: LoggerService, useValue: loggerServiceMock },
         LocationResolver,
         CaseworkerDataService,
         AllocateRoleService,

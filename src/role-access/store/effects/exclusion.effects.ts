@@ -10,6 +10,7 @@ import { ExclusionMessageText } from '../../models/enums';
 import { REDIRECTS } from '../../models/enums/redirect-urls';
 import { RoleExclusionsService } from '../../services';
 import { ConfirmExclusionAction, ExclusionActionTypes } from '../actions';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Injectable()
 export class ExclusionEffects {
@@ -17,7 +18,8 @@ export class ExclusionEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly roleExclusionsService: RoleExclusionsService
+    private readonly roleExclusionsService: RoleExclusionsService,
+    private readonly loggerService: LoggerService
   ) {}
 
   @Effect() public confirmExclusion$ = this.actions$
@@ -51,6 +53,7 @@ export class ExclusionEffects {
               });
             }),
             catchError((error) => {
+              this.loggerService.error('Error in ExclusionEffects:confirmExclusion$', error);
               return ExclusionEffects.handleError(error);
             })
           )

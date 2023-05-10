@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { SearchFilterService } from '../../../cases/services';
+import { SearchFilterService } from '../../services';
 import * as caselistActions from '../actions/case-list.action';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Injectable()
 export class CaseListEffects {
@@ -11,6 +12,7 @@ export class CaseListEffects {
   constructor(
         private readonly actions$: Actions,
         private readonly searchService: SearchFilterService,
+        private readonly loggerService: LoggerService,
   ) {}
 
     @Effect()
@@ -22,7 +24,10 @@ export class CaseListEffects {
           return this.searchService.findPaginationMetadata(payload).pipe(
             map(
               (response) => new caselistActions.FindCaselistPaginationMetadataSuccess(response.json())),
-            catchError((error) => of(new caselistActions.ApplyCaselistFilterFail(error)))
+            catchError((error) => {
+              this.loggerService.error('Error in CaseListEffects:applyPageMetadata$', error);
+              return of(new caselistActions.ApplyCaselistFilterFail(error));
+            })
           );
         })
       );
@@ -34,7 +39,10 @@ export class CaseListEffects {
         switchMap((payload) => {
           return this.searchService.search(payload).pipe(
             map((result: Observable<any>) => new caselistActions.ApplyCaselistFilterSuccess(result)),
-            catchError((error) => of(new caselistActions.ApplyCaselistFilterFail(error)))
+            catchError((error) => {
+              this.loggerService.error('Error in CaseListEffects:applyCaselistFilters$', error);
+              return of(new caselistActions.ApplyCaselistFilterFail(error));
+            })
           );
         }));
 
@@ -45,7 +53,10 @@ export class CaseListEffects {
         switchMap((payload) => {
           return this.searchService.search(payload, true).pipe(
             map((result: Observable<any>) => new caselistActions.ApplyCaselistFilterSuccess(result)),
-            catchError((error) => of(new caselistActions.ApplyCaselistFilterFail(error)))
+            catchError((error) => {
+              this.loggerService.error('Error in CaseListEffects:applyCaselistFiltersForES$', error);
+              return of(new caselistActions.ApplyCaselistFilterFail(error));
+            })
           );
         }));
 
@@ -53,5 +64,8 @@ export class CaseListEffects {
     public applySearchFilterToggle$ = this.actions$.pipe(
         ofType(caselistActions.CASE_FILTER_DISPLAY_TOGGLE),
         map((action: caselistActions.CaseFilterToggle) => new caselistActions.CaseFilterToggleSuccess(action.payload)),
-        catchError((error) => of(new caselistActions.ApplyCaselistFilterFail(error))));
+        catchError((error) => {
+          this.loggerService.error('Error in CaseListEffects:applySearchFilterToggle$', error);
+          return of(new caselistActions.ApplyCaselistFilterFail(error));
+        }));
 }

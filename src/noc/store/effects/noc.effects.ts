@@ -7,11 +7,13 @@ import * as fromActions from '../../../app/store/actions';
 import { NocHttpError } from '../../models';
 import { NocService } from '../../services';
 import * as nocActions from '../actions/noc.action';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Injectable()
 export class NocEffects {
   constructor(private readonly actions$: Actions,
-              private readonly nocService: NocService) {}
+              private readonly nocService: NocService,
+              private readonly loggerService: LoggerService) {}
 
   @Effect()
   public setCaseReference$ = this.actions$.pipe(
@@ -25,7 +27,7 @@ export class NocEffects {
             map(
               (response) => new nocActions.SetQuestions({ questions: response.questions, caseReference })),
             catchError((error) => {
-              return NocEffects.handleError(error, nocActions.SET_CASE_REFERENCE);
+              return this.handleError(error, nocActions.SET_CASE_REFERENCE);
             })
           );
         }
@@ -45,7 +47,7 @@ export class NocEffects {
           return this.nocService.validateNoCAnswers(payload).pipe(
             map(() => new nocActions.CheckAnswers(answers)),
             catchError((error) => {
-              return NocEffects.handleError(error, nocActions.SET_ANSWERS);
+              return this.handleError(error, nocActions.SET_ANSWERS);
             })
           );
         }
@@ -68,14 +70,15 @@ export class NocEffects {
               return new nocActions.SetSubmissionSuccessApproved();
             }),
           catchError((error) => {
-            return NocEffects.handleError(error, nocActions.SUBMIT_NOC);
+            return this.handleError(error, nocActions.SUBMIT_NOC);
           })
         );
       })
     );
 
-  public static handleError(error: NocHttpError, action: string): Observable<Action> {
+  public handleError(error: NocHttpError, action: string): Observable<Action> {
     if (error && error.status) {
+      this.loggerService.error('Error in NocEffects', error.message);
       if (error.status >= 400 && error.status <= 404) {
         switch (action) {
           case nocActions.SET_CASE_REFERENCE:

@@ -6,6 +6,7 @@ import { catchError, map, switchMap, take } from 'rxjs/operators';
 import { JudicialUserModel } from '../models/judicialUser.model';
 import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import * as fromHearingStore from '../store';
+import { LoggerService } from '../../app/services/logger/logger.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ import * as fromHearingStore from '../store';
 export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserModel[]> {
   constructor(
     protected readonly judicialRefDataService: JudicialRefDataService,
-    protected readonly hearingStore: Store<fromHearingStore.State>
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly loggerService: LoggerService
   ) {}
 
   public resolve(): Observable<JudicialUserModel[]> {
@@ -45,7 +47,8 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
 
   public getUsersData$(judgePersonalCodesList: string[]): Observable<JudicialUserModel[]> {
     return this.judicialRefDataService.searchJudicialUserByPersonalCodes(judgePersonalCodesList).pipe(
-      catchError(() => {
+      catchError((error) => {
+        this.loggerService.error('Error in JudicialUserSearchResponseResolver:getUsersData$', error);
         return [];
       })
     );

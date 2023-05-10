@@ -4,6 +4,7 @@ import { Store, StoreModule } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
 import { HealthCheckService } from '../services/health-check.service';
 import { HealthCheckGuard } from './health-check.guard';
+import { LoggerService } from '../../services/logger/logger.service';
 
 class HttpClientMock {
   public get() {
@@ -23,6 +24,8 @@ describe('HealthCheckGuard', () => {
   let healthCheckServiceInstance: HealthCheckService;
   let storeInstance: Store<any>;
 
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+
   beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
@@ -32,7 +35,8 @@ describe('HealthCheckGuard', () => {
         HealthCheckGuard,
         { provide: HttpClient, useClass: HttpClientMock },
         { provide: HealthCheckService, useValue: healthCheckServiceMock },
-        { provide: Store, useValue: storeMock }
+        { provide: Store, useValue: storeMock },
+        { provide: LoggerService, useValue: loggerServiceMock }
       ]
     });
   });

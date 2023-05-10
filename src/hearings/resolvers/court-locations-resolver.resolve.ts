@@ -6,6 +6,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
 import { LocationsDataService } from '../services/locations-data.service';
 import * as fromHearingStore from '../store';
+import { LoggerService } from '../../app/services/logger/logger.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ import * as fromHearingStore from '../store';
 export class CourtLocationsDataResolver implements Resolve<LocationModel> {
   constructor(
     protected readonly locationsDataService: LocationsDataService,
-    protected readonly hearingStore: Store<fromHearingStore.State>
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly loggerService: LoggerService
   ) {}
 
   public resolve(): Observable<LocationModel> {
@@ -41,7 +43,8 @@ export class CourtLocationsDataResolver implements Resolve<LocationModel> {
   public getCourtLocationData$(locationId: string): Observable<LocationModel> {
     if (locationId) {
       return this.locationsDataService.getLocationById(locationId).pipe(
-        catchError(() => {
+        catchError((error) => {
+          this.loggerService.error('Error in CourtLocationsDataResolver:getCourtLocationData$', error);
           return [];
         })
       );

@@ -14,6 +14,7 @@ import { reducers, State } from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -225,6 +226,8 @@ describe('CaseViewerContainerComponent', () => {
     }
   ];
 
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
@@ -242,7 +245,8 @@ describe('CaseViewerContainerComponent', () => {
         },
         { provide: FeatureToggleService, useClass: MockFeatureToggleService },
         { provide: AllocateRoleService, useClass: MockAllocateRoleService },
-        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService }
+        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
+        { provide: LoggerService, useValue: loggerServiceMock }
       ],
       declarations: [CaseViewerContainerComponent, CaseViewerComponent]
     })

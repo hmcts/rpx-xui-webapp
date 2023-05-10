@@ -7,10 +7,11 @@ import * as moment from 'moment';
 import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConstants } from '../../../app/app.constants';
-import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
+import { SessionStorageService } from '../../../app/services';
 import { TaskListFilterComponent } from '../../../work-allocation/components';
 import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
 import { BookingService } from '../../services';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-booking-home',
@@ -36,6 +37,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     private readonly sessionStorageService: SessionStorageService,
     private readonly windowService: WindowService,
     private readonly featureToggleService: FeatureToggleService,
+    private readonly loggerSerice: LoggerService
   ) {}
 
   public ngOnInit() {
@@ -131,6 +133,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
 
   public NavigationErrorHandler = (error: any, navigator: { navigate(commands: any[], extras?: NavigationExtras): Promise<boolean> }): void => {
     if (error && error.status) {
+      this.loggerSerice.error('Error in BookingHomeComponent during navigation', error);
       if (error.status >= 500 && error.status < 600) {
         navigator.navigate(['/service-down']);
         return;

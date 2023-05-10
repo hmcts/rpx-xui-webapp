@@ -7,6 +7,7 @@ import { AccessReason, DurationType } from '../../models/enums';
 import { AllocateRoleService } from '../../services';
 import * as specificAccessAction from '../actions/specific-access.action';
 import { SpecificAccessEffects } from './specific-access.effects';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 describe('Specific Access Effects', () => {
   let effects: SpecificAccessEffects;
@@ -15,10 +16,12 @@ describe('Specific Access Effects', () => {
   const allocateRoleServiceMock = jasmine.createSpyObj('AllocateRoleService', [
     'specificAccessApproval', 'requestMoreInfoSpecificAccessRequest'
   ]);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        { provide: LoggerService, useValue: loggerServiceMock },
         {
           provide: AllocateRoleService,
           useValue: allocateRoleServiceMock

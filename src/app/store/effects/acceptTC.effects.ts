@@ -5,12 +5,14 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { AcceptTermsService } from '../../../app/services/acceptTerms/acceptTerms.service';
 import * as fromRoot from '../../store';
 import * as acceptTandCActions from '../actions';
+import { LoggerService } from '../../services/logger/logger.service';
 
 @Injectable()
 export class AcceptTcEffects {
   constructor(
     private readonly actions$: Actions,
-    private readonly acceptTcService: AcceptTermsService
+    private readonly acceptTcService: AcceptTermsService,
+    private readonly loggerService: LoggerService
   ) {}
 
   @Effect()
@@ -21,7 +23,10 @@ export class AcceptTcEffects {
           map((userId) => {
             return new acceptTandCActions.LoadHasAcceptedTCSuccess(userId);
           }),
-          catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))
+          catchError((error) => {
+            this.loggerService.error('Error in AcceptTcEffects:loadHasAccepted$', error);
+            return of(new fromRoot.Go({ path: ['/service-down'] }));
+          })
         );
       })
     );
@@ -34,7 +39,10 @@ export class AcceptTcEffects {
           map((accepted) => {
             return new acceptTandCActions.AcceptTandCSuccess(accepted);
           }),
-          catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))
+          catchError((error) => {
+            this.loggerService.error('Error in AcceptTcEffects:userHasAccepted$', error);
+            return of(new fromRoot.Go({ path: ['/service-down'] }));
+          })
         );
       })
     );

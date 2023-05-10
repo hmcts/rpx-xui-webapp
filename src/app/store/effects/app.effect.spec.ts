@@ -9,6 +9,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { AppConfigService } from '../../services/config/configuration.services';
 import { Logout } from '../actions';
 import * as fromAppEffects from './app.effects';
+import { LoggerService } from '../../services/logger/logger.service';
 
 describe('App Effects', () => {
   let actions$;
@@ -16,6 +17,8 @@ describe('App Effects', () => {
   const AuthServiceMock = jasmine.createSpyObj('AuthService', [
     'signOut'
   ]);
+
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -28,6 +31,10 @@ describe('App Effects', () => {
         {
           provide: AuthService,
           useValue: AuthServiceMock
+        },
+        {
+          provide: LoggerService,
+          useValue: loggerServiceMock
         },
         RoleService,
         fromAppEffects.AppEffects,

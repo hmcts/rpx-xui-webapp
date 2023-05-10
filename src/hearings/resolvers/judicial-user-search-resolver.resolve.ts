@@ -8,6 +8,7 @@ import { PanelPreferenceModel } from '../models/panelPreference.model';
 import { PanelRequirementsModel } from '../models/panelRequirements.model';
 import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import * as fromHearingStore from '../store';
+import { LoggerService } from '../../app/services/logger/logger.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,8 @@ import * as fromHearingStore from '../store';
 export class JudicialUserSearchResolver implements Resolve<JudicialUserModel[]> {
   constructor(
     protected readonly judicialRefDataService: JudicialRefDataService,
-    protected readonly hearingStore: Store<fromHearingStore.State>
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly loggerService: LoggerService
   ) {}
 
   public resolve(route?: ActivatedRouteSnapshot): Observable<JudicialUserModel[]> {
@@ -47,7 +49,8 @@ export class JudicialUserSearchResolver implements Resolve<JudicialUserModel[]> 
 
   public getUsersData$(judgePersonalCodesList: string[]): Observable<JudicialUserModel[]> {
     return this.judicialRefDataService.searchJudicialUserByPersonalCodes(judgePersonalCodesList).pipe(
-      catchError(() => {
+      catchError((error) => {
+        this.loggerService.error('Error in JudicialUserSearchResolver:getUsersData$', error);
         return [];
       })
     );

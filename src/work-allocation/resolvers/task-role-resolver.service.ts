@@ -5,17 +5,20 @@ import { catchError } from 'rxjs/operators';
 import { TaskRole } from '../models/tasks';
 import { WorkAllocationTaskService } from '../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
+import { LoggerService } from '../../app/services/logger/logger.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskRoleResolverService implements Resolve<TaskRole[]> {
   constructor(private readonly service: WorkAllocationTaskService,
-              private readonly router: Router) {}
+              private readonly router: Router,
+              private readonly loggerService: LoggerService) {}
 
   public resolve(route: ActivatedRouteSnapshot): Observable<TaskRole[]> {
     return this.service.getTaskRoles(route.paramMap.get('taskId')).pipe(
       catchError((error) => {
+        this.loggerService.error('Error in TaskRoleResolverService:resolve', error);
         handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
         return EMPTY;
       })

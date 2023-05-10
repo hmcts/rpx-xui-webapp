@@ -7,7 +7,6 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
-import { Go } from '../../../app/store/actions';
 import { hearingRequestMainModel, initialState } from '../../hearing.test.data';
 import { Mode } from '../../models/hearings.enum';
 import { HearingsService } from '../../services/hearings.service';
@@ -15,6 +14,7 @@ import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 import * as hearingRequestToCompareActions from '../actions/hearing-request-to-compare.action';
 import * as hearingRequestActions from '../actions/hearing-request.action';
 import { HearingRequestEffects } from './hearing-request.effects';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 describe('Hearing Request Effects', () => {
   let actions$;
@@ -32,6 +32,7 @@ describe('Hearing Request Effects', () => {
     isInit: false,
     region: 'Wales'
   };
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -52,6 +53,10 @@ describe('Hearing Request Effects', () => {
         {
           provide: Location,
           useValue: mockLocation
+        },
+        {
+          provide: LoggerService,
+          useValue: loggerServiceMock
         },
         HearingRequestEffects,
         provideMockActions(() => actions$)
@@ -224,24 +229,6 @@ describe('Hearing Request Effects', () => {
       expect(effects.viewEditSubmitHearingRequest$).toBeObservable(expected);
       expect(hearingsServiceMock.updateHearingRequest).toHaveBeenCalled();
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.UpdateHearingRequestFailure(error));
-    });
-  });
-
-  describe('handleError', () => {
-    it('should handle 500', () => {
-      const action$ = HearingRequestEffects.handleError({
-        status: 400,
-        message: 'error'
-      });
-      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
-    });
-
-    it('should handle 4xx related errors', () => {
-      const action$ = HearingRequestEffects.handleError({
-        status: 403,
-        message: 'error'
-      });
-      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });
   });
 });

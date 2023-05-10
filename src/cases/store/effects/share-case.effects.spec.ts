@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { cold, hot } from 'jasmine-marbles';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { CaseShareService } from '../../../app/services/case/share-case.service';
 import {
   AddShareCaseGo,
@@ -19,6 +19,7 @@ import {
 } from '../actions';
 import * as fromShareCaseEffects from './share-case.effects';
 import { LoggerService } from '../../../app/services/logger/logger.service';
+import * as shareCaseActions from '../actions/share-case.action';
 
 describe('Share Case Effects', () => {
   let actions$;
@@ -108,6 +109,15 @@ describe('Share Case Effects', () => {
       const expected = cold('-b', { b: completion });
       expect(effects.loadShareCases$).toBeObservable(expected);
     });
+
+    it('should catch any errors', async () => {
+      caseShareServiceMock.getShareCases.and.returnValue(throwError('Error'));
+      actions$ = of({ type: shareCaseActions.LOAD_SHARE_CASES });
+      await effects.loadShareCases$.toPromise()
+        .catch((error) => {
+          expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in ShareCaseEffects:loadShareCases$', error);
+        });
+    });
   });
 
   describe('loadOrgUsers$', () => {
@@ -131,6 +141,15 @@ describe('Share Case Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.loadOrgUsers$).toBeObservable(expected);
+    });
+
+    it('should catch any errors', async () => {
+      caseShareServiceMock.getUsersFromOrg.and.returnValue(throwError('Error'));
+      actions$ = of({ type: shareCaseActions.LOAD_USERS_FROM_ORG_FOR_CASE });
+      await effects.loadOrgUsers$.toPromise()
+        .catch((error) => {
+          expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in ShareCaseEffects:loadOrgUsers$', error);
+        });
     });
   });
 
@@ -164,6 +183,15 @@ describe('Share Case Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.assignUsersWithCases$).toBeObservable(expected);
+    });
+
+    it('should catch any errors', async () => {
+      caseShareServiceMock.getUsersFromOrg.and.returnValue(throwError('Error'));
+      actions$ = of({ type: shareCaseActions.ASSIGN_USERS_TO_CASE });
+      await effects.assignUsersWithCases$.toPromise()
+        .catch((error) => {
+          expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in ShareCaseEffects:assignUsersWithCases$', error);
+        });
     });
   });
 });

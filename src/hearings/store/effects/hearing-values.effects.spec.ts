@@ -8,6 +8,7 @@ import { CategoryType, MemberType, PartyType, RequirementType, UnavailabilityTyp
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingValuesActions from '../actions/hearing-values.action';
+import * as fromAppStoreActions from '../../../app/store/actions';
 import { HearingValuesEffects } from './hearing-values.effects';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 
@@ -167,13 +168,13 @@ describe('Hearing Values Effects', () => {
     });
 
     it('should catch any errors', () => {
-      hearingsServiceMock.loadHearingValues.and.returnValue(throwError('Error'));
+      hearingsServiceMock.loadHearingValues.and.returnValue(throwError(new Error('Error')));
       const action = new hearingValuesActions.LoadHearingValues('1111222233334444');
+      const completion = new fromAppStoreActions.Go({ path: ['/cases/case-details/1111222233334444/hearings'] });
       actions$ = hot('-a', { a: action });
-      effects.loadHearingValue$.toPromise()
-        .catch((error) => {
-          expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingValuesEffects:loadHearingValue$', error);
-        });
+      const expected = cold('-b', { b: completion });
+      expect(effects.loadHearingValue$).toBeObservable(expected);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingValuesEffects:loadHearingValue$', jasmine.any(Error));
     });
   });
 });

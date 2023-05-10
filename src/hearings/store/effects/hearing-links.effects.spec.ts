@@ -75,13 +75,19 @@ describe('Hearing Links Effects', () => {
     });
 
     it('should catch any errors', () => {
-      hearingsServiceMock.loadLinkedCasesWithHearings.and.returnValue(throwError('Error'));
+      const error: HttpError = {
+        status: 400,
+        statusText: 'Bad Request',
+        message: 'Bad Request',
+        errors: []
+      };
+      hearingsServiceMock.loadServiceLinkedCases.and.returnValue(throwError(error));
       const action = new hearingLinksActions.LoadServiceLinkedCases({ caseReference: '1111222233334446', hearingId: 'h100000' });
+      const completion = new hearingLinksActions.LoadServiceLinkedCasesFailure(error);
       actions$ = hot('-a', { a: action });
-      effects.loadServiceLinkedCases$.toPromise()
-        .catch((error) => {
-          expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingLinksEffects:loadServiceLinkedCases$', error);
-        });
+      const expected = cold('-b', { b: completion });
+      expect(effects.loadServiceLinkedCases$).toBeObservable(expected);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingLinksEffects:loadServiceLinkedCases$', error);
     });
   });
 
@@ -105,25 +111,37 @@ describe('Hearing Links Effects', () => {
     });
 
     it('should catch any errors', () => {
-      hearingsServiceMock.loadLinkedCasesWithHearings.and.returnValue(throwError('Error'));
+      const error: HttpError = {
+        status: 400,
+        statusText: 'Bad Request',
+        message: 'Bad Request',
+        errors: []
+      };
+      hearingsServiceMock.loadLinkedCasesWithHearings.and.returnValue(throwError(error));
       const action = new hearingLinksActions.LoadServiceLinkedCasesWithHearings({ caseReference: '1111222233334446', caseName: 'Pete Smith' });
+      const completion = new hearingLinksActions.LoadServiceLinkedCasesWithHearingsFailure(error);
       actions$ = hot('-a', { a: action });
-      effects.loadServiceLinkedCasesWithHearing$.toPromise()
-        .catch((error) => {
-          expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingLinksEffects:loadServiceLinkedCasesWithHearing$', error);
-        });
+      const expected = cold('-b', { b: completion });
+      expect(effects.loadServiceLinkedCasesWithHearing$).toBeObservable(expected);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingLinksEffects:loadServiceLinkedCasesWithHearing$', error);
     });
   });
 
   describe('loadLinkedHearingGroup$', () => {
     it('should catch any errors', () => {
-      hearingsServiceMock.getLinkedHearingGroup.and.returnValue(throwError('Error'));
+      const error: HttpError = {
+        status: 400,
+        statusText: 'Bad Request',
+        message: 'Bad Request',
+        errors: []
+      };
+      hearingsServiceMock.getLinkedHearingGroup.and.returnValue(throwError(error));
       const action = new hearingLinksActions.LoadLinkedHearingGroup({ groupId: '1111222233334446' });
+      const completion = new hearingLinksActions.LoadLinkedHearingGroupFailure(error);
       actions$ = hot('-a', { a: action });
-      effects.loadLinkedHearingGroup$.toPromise()
-        .catch((error) => {
-          expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingLinksEffects:loadLinkedHearingGroup$', error);
-        });
+      const expected = cold('-b', { b: completion });
+      expect(effects.loadLinkedHearingGroup$).toBeObservable(expected);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingLinksEffects:loadLinkedHearingGroup$', error);
     });
   });
 

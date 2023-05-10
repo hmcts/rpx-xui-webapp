@@ -19,7 +19,7 @@ import {
 } from '../actions';
 import * as fromShareCaseEffects from './share-case.effects';
 import { LoggerService } from '../../../app/services/logger/logger.service';
-import * as shareCaseActions from '../actions/share-case.action';
+import * as fromRoot from '../../../app/store';
 
 describe('Share Case Effects', () => {
   let actions$;
@@ -95,10 +95,11 @@ describe('Share Case Effects', () => {
   });
 
   describe('loadShareCases$', () => {
+    const requestPayload = [
+      { caseId: '1', caseTitle: 'James123' },
+      { caseId: '2', caseTitle: 'Steve321' }];
+
     it('should load share case', () => {
-      const requestPayload = [
-        { caseId: '1', caseTitle: 'James123' },
-        { caseId: '2', caseTitle: 'Steve321' }];
       const returnPayload = [
         { caseId: '1', caseTitle: 'James123', caseTypeId: 'type1' },
         { caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2' }];
@@ -111,12 +112,12 @@ describe('Share Case Effects', () => {
     });
 
     it('should catch any errors', async () => {
-      caseShareServiceMock.getShareCases.and.returnValue(throwError('Error'));
-      actions$ = of({ type: shareCaseActions.LOAD_SHARE_CASES });
-      await effects.loadShareCases$.toPromise()
-        .catch((error) => {
-          expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in ShareCaseEffects:loadShareCases$', error);
-        });
+      caseShareServiceMock.getShareCases.and.returnValue(throwError(new Error('Error')));
+      const action = new LoadShareCase(requestPayload);
+      const completion = new fromRoot.Go({ path: ['/service-down'] });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.loadShareCases$).toBeObservable(expected);
     });
   });
 
@@ -144,36 +145,38 @@ describe('Share Case Effects', () => {
     });
 
     it('should catch any errors', async () => {
-      caseShareServiceMock.getUsersFromOrg.and.returnValue(throwError('Error'));
-      actions$ = of({ type: shareCaseActions.LOAD_USERS_FROM_ORG_FOR_CASE });
-      await effects.loadOrgUsers$.toPromise()
-        .catch((error) => {
-          expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in ShareCaseEffects:loadOrgUsers$', error);
-        });
+      caseShareServiceMock.getUsersFromOrg.and.returnValue(throwError(new Error('Error')));
+      const action = new LoadUserFromOrgForCase();
+      const completion = new fromRoot.Go({ path: ['/service-down'] });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.loadOrgUsers$).toBeObservable(expected);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in ShareCaseEffects:loadOrgUsers$', jasmine.any(Error));
     });
   });
 
   describe('assignUsersWithCases$', () => {
+    const requestPayload = [
+      {
+        caseId: '1', caseTitle: 'James123', caseTypeId: 'type1', sharedWith: [
+          {
+            idamId: 'U111111',
+            firstName: 'James',
+            lastName: 'Priest',
+            email: 'james.priest@test.com'
+          }]
+      },
+      {
+        caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2', sharedWith: [
+          {
+            idamId: 'U222222',
+            firstName: 'Shaun',
+            lastName: 'Godard',
+            email: 'shaun.godard@test.com'
+          }]
+      }];
+
     it('should assign users with cases', () => {
-      const requestPayload = [
-        {
-          caseId: '1', caseTitle: 'James123', caseTypeId: 'type1', sharedWith: [
-            {
-              idamId: 'U111111',
-              firstName: 'James',
-              lastName: 'Priest',
-              email: 'james.priest@test.com'
-            }]
-        },
-        {
-          caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2', sharedWith: [
-            {
-              idamId: 'U222222',
-              firstName: 'Shaun',
-              lastName: 'Godard',
-              email: 'shaun.godard@test.com'
-            }]
-        }];
       const returnPayload = [
         { caseId: '1', caseTitle: 'James123', caseTypeId: 'type1' },
         { caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2' }];
@@ -186,12 +189,13 @@ describe('Share Case Effects', () => {
     });
 
     it('should catch any errors', async () => {
-      caseShareServiceMock.getUsersFromOrg.and.returnValue(throwError('Error'));
-      actions$ = of({ type: shareCaseActions.ASSIGN_USERS_TO_CASE });
-      await effects.assignUsersWithCases$.toPromise()
-        .catch((error) => {
-          expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in ShareCaseEffects:assignUsersWithCases$', error);
-        });
+      caseShareServiceMock.assignUsersWithCases.and.returnValue(throwError(new Error('Error')));
+      const action = new AssignUsersToCase(requestPayload);
+      const completion = new fromRoot.Go({ path: ['/service-down'] });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.assignUsersWithCases$).toBeObservable(expected);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in ShareCaseEffects:assignUsersWithCases$', jasmine.any(Error));
     });
   });
 });

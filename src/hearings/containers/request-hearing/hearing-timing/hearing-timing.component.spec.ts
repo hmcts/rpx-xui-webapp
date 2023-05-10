@@ -117,6 +117,17 @@ describe('HearingTimingComponent', () => {
   it('should set showHearingDateError', () => {
     component.showHearingDateError();
     expect(component.hearingPriorityDateError).toBe(null);
+    component.priorityForm.controls.specificDate.setErrors({'incorrect': true});
+    component.showHearingDateError();
+    expect(component.hearingPriorityDateError).toBe(HearingDatePriorityEnum.PriorityDateError);
+  });
+
+  it('should set showHearingPriorityError', () => {
+    component.showHearingPriorityError();
+    expect(component.hearingPriorityError).toBe(null);
+    component.priorityForm.controls.priority.setErrors({'incorrect': true});
+    component.showHearingPriorityError();
+    expect(component.hearingPriorityError).toBe(HearingDatePriorityEnum.PriorityError);
   });
 
   it('should check unavailable dates list', () => {
@@ -221,6 +232,9 @@ describe('HearingTimingComponent', () => {
     durationLengthControls.get('minutes').setValue('3000');
     component.showHearingLengthError();
     expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.LengthError);
+    durationLengthControls.setErrors({'incorrect': true});
+    component.showHearingLengthError();
+    expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.TotalLengthError);
   });
 
   it('should check date selection invalid', () => {
@@ -354,6 +368,23 @@ describe('HearingTimingComponent', () => {
     component.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'Urgent';
     component.checkFormData();
     expect(component.priorityForm.valid).toBe(true);
+    component.priorityForm.setErrors({'incorrect': true});
+    spyOn(component, 'showHearingLengthError').and.callThrough();
+    spyOn(component, 'showHearingDateError').and.callThrough();
+    spyOn(component, 'showHearingPriorityError').and.callThrough();
+    component.checkFormData();
+    expect(component.showHearingLengthError).toHaveBeenCalled();
+    expect(component.showHearingDateError).toHaveBeenCalled();
+    expect(component.showHearingPriorityError).toHaveBeenCalled();
+  });
+
+  it('should set executeAction', () => {
+    spyOn(component, 'checkFormData').and.callThrough();
+    spyOn(component, 'prepareHearingRequestData').and.callThrough();
+    component.executeAction(ACTION.CONTINUE);
+    expect(component.checkFormData).toHaveBeenCalled();
+    component.validationErrors = [];
+    expect(component.isFormValid()).toBeTruthy();
   });
 
   it('should check if form is valid', () => {

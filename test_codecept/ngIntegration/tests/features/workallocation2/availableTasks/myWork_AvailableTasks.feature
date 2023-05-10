@@ -4,14 +4,14 @@ Feature: WA Release 2: My work -  Available tasks
 
     Background: Mock and browser setup
       
-
+@codecept_test
     Scenario Outline:  Available Tasks, columns and column links for "<UserType>"
         
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 20001        |
-            | SSCS         | Y           | ORGANISATION | 20001        |
+            | jurisdiction | substantive | roleType     | baseLocation |roleCategory|
+            | IA | Y | ORGANISATION | 20001 | <roleCategory> |
+            | SSCS | Y | ORGANISATION | 20001 | <roleCategory> |
 
         
     
@@ -70,9 +70,9 @@ Feature: WA Release 2: My work -  Available tasks
 
 
         Examples:
-            | UserIdentifier     | UserType   | Roles                                                            |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            | UserIdentifier     | UserType   | Roles                                                            |roleCategory|
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |LEGAL_OPERATIONS|
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |JUDICIAL|
 
 
     Scenario: Available Tasks sort column persist in session with Caseworker user

@@ -1,4 +1,4 @@
-@ng @codecept_enabled 
+@ng 
 Feature: WA Release 2: All work - Task action work flows
 
     Background: Mock and browser setup

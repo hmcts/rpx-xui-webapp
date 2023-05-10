@@ -1,0 +1,27 @@
+.govuk-input,
+.govuk-select,
+.govuk-form-group {
+  width: 100%;
+
+
+  &--limited-width {
+    max-width: 480px;
+  }
+}
+
+.govuk-checkboxes {
+  &--multi-column {
+    display: flex;
+    flex-wrap: wrap;
+
+    > div {
+      flex-grow: 1;
+      flex-shrink: 0;
+    }
+  }
+}
+
+.govuk-label-optional {
+  display: inline;
+  padding: 8px 15px 5px;
+}

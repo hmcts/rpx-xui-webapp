@@ -2,7 +2,7 @@ var { defineSupportCode } = require('cucumber');
 
 const MockApp = require('../../../../nodeMock/app');
 const nodeAppMock = require('../../../../nodeMock/nodeApp/mockData');
-const waMockData = require('../../../../nodeMock/workAllocation/mockData');
+const waMockData = require('../../../mockData/workAllocation/mockData');
 ;
 const headerPage = require('../../../../e2e/features/pageObjects/headerPage');
 const SoftAssert = require('../../../util/softAssert');
@@ -12,7 +12,7 @@ const TaskListTable = require('../../../../e2e/features/pageObjects/workAllocati
 const BrowserUtil = require('../../../util/browserUtil');
 const BrowserWaits = require('../../../../e2e/support/customWaits');
 
-const workallocationMockData = require('../../../../nodeMock/workAllocation/mockData');
+const workallocationMockData = require('../../../mockData/workAllocation/mockData');
 
 const userRolesConfig = require('../../../../e2e/config/userRolesConfig');
 

@@ -1,15 +1,13 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs/internal/observable/of';
-import { ErrorMessageComponent } from '../../../app/components';
 import { ALL_LOCATIONS } from '../../components/constants/locations';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
-import { InfoMessageContainerComponent } from '../info-message-container/info-message-container.component';
 import { AllWorkHomeComponent } from './all-work-home.component';
 
 @Component({
@@ -45,10 +43,10 @@ describe('AllWorkHomeComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule,
-        ExuiCommonLibModule
+        WorkAllocationComponentsModule
       ],
-      declarations: [AllWorkHomeComponent, WrapperComponent, InfoMessageContainerComponent, ErrorMessageComponent],
+      declarations: [AllWorkHomeComponent, WrapperComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },

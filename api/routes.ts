@@ -13,8 +13,9 @@ import { router as nocRouter } from './noc/routes';
 import { router as organisationRouter } from './organisations';
 import { router as prdRouter } from './prd/routes';
 import roleAccessRouter from './roleAccess/routes';
-import { router as serviceRefDataRouter } from './serviceRefData';
+import { router as refDataRouter } from './ref-data/routes';
 import { router as specificAccessRouter } from './specificAccessOrchastrator/routes';
+import staffRefDataRouter from './staff-ref-data/routes';
 import userRouter from './user/routes';
 import { router as waSupportedJurisdictionRouter } from './waSupportedJurisdictions';
 
@@ -50,10 +51,11 @@ router.use('/organisation', organisationRouter);
 router.use('/wa-supported-jurisdiction', waSupportedJurisdictionRouter);
 router.use('/globalSearch', globalSearchRoutes);
 router.use('/locations', locationsRouter);
-router.use('/service-ref-data', serviceRefDataRouter);
+router.use('/ref-data', refDataRouter);
 router.use('/prd', prdRouter);
 router.use('/hearings', hearingsRouter);
 router.use('/specific-access-request', specificAccessRouter);
 router.use('/challenged-access-request', challengedAccessRouter);
+router.use('/staff-ref-data', staffRefDataRouter);
 
 export default router;

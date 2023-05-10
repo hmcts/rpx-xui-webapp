@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
+import { CONFIG_CONSTANTS_NOT_RELEASE4 } from '../../components/constants/config.constants';
 import { SortOrder } from '../../enums';
 import { Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
@@ -52,7 +53,13 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
   }
 
   public get fields(): FieldConfig[] {
-    return ConfigConstants.AllWorkCases;
+    let fields = ConfigConstants.AllWorkCases;
+    this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
+      if (!isRelease4) {
+        fields = CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkCases;
+      }
+    });
+    return fields;
   }
 
   public backUrl: string = 'work/all-work/cases';

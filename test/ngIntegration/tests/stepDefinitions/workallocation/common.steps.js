@@ -1,8 +1,8 @@
 var { defineSupportCode } = require('cucumber');
 
 const MockApp = require('../../../../nodeMock/app');
-const workAllocationMockData = require('../../../../nodeMock/workAllocation/mockData');
-const rolesAccessMockData = require('../../../../nodeMock/workAllocation/rolesAccess');
+const workAllocationMockData = require('../../../mockData/workAllocation/mockData');
+const rolesAccessMockData = require('../../../mockData/workAllocation/rolesAccess');
 const BrowserWaits = require('../../../../e2e/support/customWaits');
 const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
 const taskManagerPage = require('../../../../e2e/features/pageObjects/workAllocation/taskManagerPage');

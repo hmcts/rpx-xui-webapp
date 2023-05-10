@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { UserService } from 'src/app/services/user/user.service';
+import { UserService } from '../../app/services/user/user.service';
 import { RefundsComponent } from './refunds.component';
 
 const userMock = {

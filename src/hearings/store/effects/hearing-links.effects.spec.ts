@@ -20,7 +20,7 @@ describe('Hearing Links Effects', () => {
   let effects: HearingLinksEffects;
   const hearingGroupRequestId = 'g1000000';
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
-    'loadServiceLinkedCases', 'loadLinkedCasesWithHearings', 'postLinkedHearingGroup', 'deleteLinkedHearingGroup', 'putLinkedHearingGroup'
+    'loadServiceLinkedCases', 'loadLinkedCasesWithHearings', 'postLinkedHearingGroup', 'deleteLinkedHearingGroup', 'putLinkedHearingGroup', 'getLinkedHearingGroup'
   ]);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
@@ -73,6 +73,17 @@ describe('Hearing Links Effects', () => {
       const expected = cold('-b', { b: completion });
       expect(effects.loadServiceLinkedCases$).toBeObservable(expected);
     });
+
+    it('should catch any errors', () => {
+      hearingsServiceMock.loadLinkedCasesWithHearings.and.returnValue(throwError('Error'));
+      const action = new hearingLinksActions.LoadServiceLinkedCases({ caseReference: '1111222233334446', hearingId: 'h100000' });
+      // actions$ = of({ type: hearingLinksActions.LOAD_SERVICE_LINKED_CASES });
+      actions$ = hot('-a', { a: action });
+      effects.loadServiceLinkedCases$.toPromise()
+        .catch((error) => {
+          expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingLinksEffects:loadServiceLinkedCases$', error);
+        });
+    });
   });
 
   describe('loadServiceLinkedCasesWithHearing$', () => {
@@ -92,6 +103,30 @@ describe('Hearing Links Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.loadServiceLinkedCasesWithHearing$).toBeObservable(expected);
+    });
+
+    it('should catch any errors', () => {
+      hearingsServiceMock.loadLinkedCasesWithHearings.and.returnValue(throwError('Error'));
+      const action = new hearingLinksActions.LoadServiceLinkedCasesWithHearings({ caseReference: '1111222233334446', caseName: 'Pete Smith' });
+      actions$ = hot('-a', { a: action });
+      // actions$ = of({ type: hearingLinksActions.LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS });
+      effects.loadServiceLinkedCasesWithHearing$.toPromise()
+        .catch((error) => {
+          expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingLinksEffects:loadServiceLinkedCasesWithHearing$', error);
+        });
+    });
+  });
+
+  describe('loadLinkedHearingGroup$', () => {
+    it('should catch any errors', () => {
+      hearingsServiceMock.getLinkedHearingGroup.and.returnValue(throwError('Error'));
+      const action = new hearingLinksActions.LoadLinkedHearingGroup({ groupId: '1111222233334446' });
+      actions$ = hot('-a', { a: action });
+      // actions$ = of({ type: hearingLinksActions.LOAD_LINKED_HEARING_GROUP });
+      effects.loadLinkedHearingGroup$.toPromise()
+        .catch((error) => {
+          expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingLinksEffects:loadLinkedHearingGroup$', error);
+        });
     });
   });
 

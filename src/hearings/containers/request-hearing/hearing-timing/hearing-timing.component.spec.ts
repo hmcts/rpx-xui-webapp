@@ -117,7 +117,7 @@ describe('HearingTimingComponent', () => {
   it('should set showHearingDateError', () => {
     component.showHearingDateError();
     expect(component.hearingPriorityDateError).toBe(null);
-    component.priorityForm.controls.specificDate.setErrors({'incorrect': true});
+    component.priorityForm.controls.specificDate.setErrors({ 'incorrect': true });
     component.showHearingDateError();
     expect(component.hearingPriorityDateError).toBe(HearingDatePriorityEnum.PriorityDateError);
   });
@@ -125,7 +125,7 @@ describe('HearingTimingComponent', () => {
   it('should set showHearingPriorityError', () => {
     component.showHearingPriorityError();
     expect(component.hearingPriorityError).toBe(null);
-    component.priorityForm.controls.priority.setErrors({'incorrect': true});
+    component.priorityForm.controls.priority.setErrors({ 'incorrect': true });
     component.showHearingPriorityError();
     expect(component.hearingPriorityError).toBe(HearingDatePriorityEnum.PriorityError);
   });
@@ -232,7 +232,7 @@ describe('HearingTimingComponent', () => {
     durationLengthControls.get('minutes').setValue('3000');
     component.showHearingLengthError();
     expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.LengthError);
-    durationLengthControls.setErrors({'incorrect': true});
+    durationLengthControls.setErrors({ 'incorrect': true });
     component.showHearingLengthError();
     expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.TotalLengthError);
   });
@@ -368,7 +368,7 @@ describe('HearingTimingComponent', () => {
     component.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'Urgent';
     component.checkFormData();
     expect(component.priorityForm.valid).toBe(true);
-    component.priorityForm.setErrors({'incorrect': true});
+    component.priorityForm.setErrors({ 'incorrect': true });
     spyOn(component, 'showHearingLengthError').and.callThrough();
     spyOn(component, 'showHearingDateError').and.callThrough();
     spyOn(component, 'showHearingPriorityError').and.callThrough();

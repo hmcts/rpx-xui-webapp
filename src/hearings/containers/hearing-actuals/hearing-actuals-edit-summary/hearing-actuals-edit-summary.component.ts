@@ -2,8 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
-  ActualHearingDayModel,
-  HearingActualsMainModel
+  ActualHearingDayModel
 } from '../../../models/hearingActualsMainModel';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -35,15 +34,6 @@ export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBas
 
   public onSubmitHearingDetails(): void {
     this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(this.id));
-  }
-
-  private isAllHearingActualsTimingAvailable(hearingActualsMainModel: HearingActualsMainModel) {
-    const hasAllActualDays = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
-      && hearingActualsMainModel.hearingActuals.actualHearingDays.length === hearingActualsMainModel.hearingPlanned.plannedHearingDays.length;
-
-    return hasAllActualDays && hearingActualsMainModel.hearingActuals.actualHearingDays.every(
-      (actualDay) => actualDay.notRequired || actualDay.actualDayParties.length > 0
-    );
   }
 
   public confirmActualHearingTimeForDay(hearingDay: ActualHearingDayModel) {

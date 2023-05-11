@@ -126,7 +126,11 @@ const RuntimeTestData = require("../../support/runtimeTestData");
     await BrowserWaits.retryWithActionCallback(async () => {
       try{
         if (isSearchCasesPage){
+          await BrowserWaits.waitForSeconds(2);
+          await BrowserWaits.waitForSpinnerToDissappear();
           await searchPage.clickApplyButton();
+          await BrowserWaits.waitForSeconds(2);
+          await BrowserWaits.waitForSpinnerToDissappear();
  
         } else if (isCaseListPage){
           await caseListPage.clickApplyButton();

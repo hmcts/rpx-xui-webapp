@@ -889,7 +889,7 @@ describe('CaseHearingsListComponent', () => {
   it('should check cya', () => {
     component.caseId = '1111222233334444';
     component.cya('h100001');
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'actuals', 'h100001', 'hearing-actual-edit-summary']);
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/hearings/actuals/h100001/hearing-actual-edit-summary');
   });
 
   it('should check viewDetails', () => {

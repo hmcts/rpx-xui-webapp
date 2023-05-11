@@ -31,7 +31,7 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
    */
   public onSubmitHearingDetails(): void {
     if (this.hearingResult === HearingResult.CANCELLED || this.isValid()) {
-      this.router.navigate(['/', 'hearings', 'actuals', this.hearingRequestID, 'hearing-actual-edit-summary']);
+      this.router.navigateByUrl(`/hearings/actuals${this.hearingRequestID}hearing-actual-edit-summary`);
     }
   }
 

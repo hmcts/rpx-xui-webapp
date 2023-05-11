@@ -50,7 +50,6 @@ export const init = () => {
   mock.onPost(judicialAllCaseUrl).reply((config) => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
-    console.log(JSON.stringify(body, null, 2));
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
     const searchParameters: SearchTaskParameter[] = body.search_parameters as SearchTaskParameter[];

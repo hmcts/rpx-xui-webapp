@@ -1,18 +1,26 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { TaskPriority } from '../../enums';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { of } from 'rxjs';
 import { PriorityFieldComponent } from './priority-field.component';
 
 describe('PriorityFieldComponent', () => {
   let component: PriorityFieldComponent;
   let fixture: ComponentFixture<PriorityFieldComponent>;
+  let mockFeatureToggleService: jasmine.SpyObj<FeatureToggleService>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [PriorityFieldComponent]
+  beforeEach(async () => {
+    mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
+    mockFeatureToggleService.getValue.and.returnValue(
+      of({ configurations: [{ serviceName: 'IA', releaseVersion: '4' }] })
+    );
+
+    await TestBed.configureTestingModule({
+      declarations: [PriorityFieldComponent],
+      providers: [{ provide: FeatureToggleService, useValue: mockFeatureToggleService }]
     })
       .compileComponents();
-  }));
-
+  });
   beforeEach(() => {
     fixture = TestBed.createComponent(PriorityFieldComponent);
     component = fixture.componentInstance;
@@ -23,25 +31,27 @@ describe('PriorityFieldComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should only show if there is a dueDate set', () => {
-    expect(component.priority).toBeUndefined();
-    component.dueDate = new Date();
-    fixture.detectChanges();
-    expect(component.priority).toBeDefined();
+  it('should set isRelease4$ to true if release version is >= 4', () => {
+    mockFeatureToggleService.getValue.and.returnValue(
+      of({ configurations: [{ serviceName: 'IA', releaseVersion: '4' }] })
+    );
+    component.jurisdiction = 'IA';
+    component.ngOnInit();
+
+    component.isRelease4$.subscribe((isRelease4) => {
+      expect(isRelease4).toBe(true);
+    });
   });
 
-  it('should correctly set the priority', () => {
-    expect(component.priority).toBeUndefined();
-    component.dueDate = new Date('2020/01/01');
-    fixture.detectChanges();
-    expect(component.priority).toBe(TaskPriority.HIGH);
-    component.dueDate = new Date();
-    fixture.detectChanges();
-    expect(component.priority).toBe(TaskPriority.MEDIUM);
-    const tomorrowDate = new Date();
-    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-    component.dueDate = tomorrowDate;
-    fixture.detectChanges();
-    expect(component.priority).toBe(TaskPriority.LOW);
+  it('should set isRelease4$ to false if release version is < 4', () => {
+    mockFeatureToggleService.getValue.and.returnValue(
+      of({ configurations: [{ serviceName: 'IA', releaseVersion: '3' }] })
+    );
+    component.jurisdiction = 'IA';
+    component.ngOnInit();
+
+    component.isRelease4$.subscribe((isRelease4) => {
+      expect(isRelease4).toBe(false);
+    });
   });
 });

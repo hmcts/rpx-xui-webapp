@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, ViewChild } from '@angular/core';
+import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,12 +8,13 @@ import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 import { PersonRole } from '../../../../api/workAllocation/interfaces/person';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
+import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { TaskActionConstants } from '../../components/constants';
-import { PriorityFieldComponentModule } from '../../components/priority-field/priority.module';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { InfoMessage, InfoMessageType, TaskActionType } from '../../enums';
-import { InformationMessage } from '../../models/comms';
+import { TaskActionType } from '../../enums';
 import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { REDIRECTS } from '../../utils';
@@ -77,7 +78,6 @@ describe('TaskAssignmentConfirmComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
-        PriorityFieldComponentModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
         ExuiCommonLibModule
@@ -108,7 +108,8 @@ describe('TaskAssignmentConfirmComponent', () => {
         },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: SessionStorageService, useValue: mockSessionStorageService }
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
@@ -312,7 +313,6 @@ describe('TaskAssignmentConfirmComponent', () => {
       TestBed.configureTestingModule({
         imports: [
           CdkTableModule,
-          PriorityFieldComponentModule,
           RouterTestingModule,
           WorkAllocationComponentsModule,
           ExuiCommonLibModule
@@ -341,7 +341,8 @@ describe('TaskAssignmentConfirmComponent', () => {
           },
           { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
           { provide: SessionStorageService, useValue: mockSessionStorageService }
-        ]
+        ],
+        schemas: [NO_ERRORS_SCHEMA]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;

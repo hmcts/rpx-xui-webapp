@@ -43,7 +43,9 @@ class AddUserPage{
     async getPageTitle(){
     }
     
-
+    async isDisplayed(){
+        return await this.container.isDisplayed();
+    }
 
     async clickContinue(){
         await this.continue.click();

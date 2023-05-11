@@ -28,6 +28,13 @@ export class MockHearingAnswersPipe implements PipeTransform {
 })
 class NothingComponent {}
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
+
 describe('HearingActualSummaryComponent', () => {
   let component: HearingActualSummaryComponent;
   let fixture: ComponentFixture<HearingActualSummaryComponent>;
@@ -487,7 +494,7 @@ describe('HearingActualSummaryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe],
+      declarations: [HearingActualSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe, RpxTranslateMockPipe],
       imports: [RouterTestingModule.withRoutes(
         [
           { path: 'hearings/actuals/1000000/hearing-actual-summary', component: NothingComponent }

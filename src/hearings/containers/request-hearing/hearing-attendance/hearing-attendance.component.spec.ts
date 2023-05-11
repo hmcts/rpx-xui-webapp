@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -54,6 +54,13 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
+
 describe('HearingAttendanceComponent', () => {
   let component: HearingAttendanceComponent;
   let fixture: ComponentFixture<HearingAttendanceComponent>;
@@ -65,7 +72,7 @@ describe('HearingAttendanceComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      declarations: [HearingAttendanceComponent, MockHearingPartiesComponent],
+      declarations: [HearingAttendanceComponent, MockHearingPartiesComponent, RpxTranslateMockPipe],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
@@ -223,7 +230,7 @@ describe('HearingAttendanceComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      declarations: [HearingAttendanceComponent, MockHearingPartiesComponent],
+      declarations: [HearingAttendanceComponent, MockHearingPartiesComponent, RpxTranslateMockPipe],
       providers: [
         provideMockStore({ initialState: updatedInitialState }),
         { provide: HearingsService, useValue: hearingsService },

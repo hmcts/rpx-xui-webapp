@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -72,6 +72,13 @@ const reasons: LovRefDataByServiceModel = {
   ]
 };
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
+
 describe('HearingLinkComponent', () => {
   let component: HearingLinkComponent;
   let fixture: ComponentFixture<HearingLinkComponent>;
@@ -90,7 +97,8 @@ describe('HearingLinkComponent', () => {
       declarations: [
         CaseReferencePipe,
         ConvertArrayToStringPipe,
-        HearingLinkComponent
+        HearingLinkComponent,
+        RpxTranslateMockPipe
       ],
       providers: [
         provideMockStore({ initialState }),

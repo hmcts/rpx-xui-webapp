@@ -1,31 +1,28 @@
+import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { hot } from 'jasmine-marbles';
-import { of } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
-import * as fromRouterEffects from './router.effect';
-import { RouterEffects } from './router.effect';
-import { Go, CreateCaseGo, Back, Forward } from '../actions/router.action';
-import { Location } from '@angular/common';
 import { Store, StoreModule } from '@ngrx/store';
+import { hot } from 'jasmine-marbles';
 import { AppConfigService } from '../../services/config/configuration.services';
-import { MockStore } from '@ngrx/store/testing';
-import { State } from '../reducers';
+import { Back, CreateCaseGo, Forward, Go } from '../actions/router.action';
+import * as fromRouterEffects from './router.effect';
 
 describe('Router Effects', () => {
   let actions$;
-  let effects: RouterEffects;
-  let store: MockStore<State>;
+  let effects: fromRouterEffects.RouterEffects;
+  let store;
 
   const LocationMock = jasmine.createSpyObj('Location', [
-    'back', 'forward',
+    'back', 'forward'
   ]);
 
   const RouterMock = jasmine.createSpyObj('Router', [
     'navigate'
   ]);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let spyOnDispatchToStore = jasmine.createSpy();
 
   beforeEach(() => {
@@ -48,18 +45,18 @@ describe('Router Effects', () => {
         provideMockActions(() => actions$)
       ]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
 
-    effects = TestBed.get(RouterEffects);
+    effects = TestBed.inject(fromRouterEffects.RouterEffects);
   });
 
   describe('navigate$', () => {
-
     it('should call Angular\'s router on dispatch of RouterActions.Go and trigger "callback"', () => {
       const payload = {
         path: [],
-        callback: () => { }
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        callback: () => {}
       };
 
       RouterMock.navigate.and.returnValue(Promise.resolve(true));
@@ -90,7 +87,8 @@ describe('Router Effects', () => {
     it('should call Angular\'s router on dispatch of RouterActions.Go and trigger "errorHandler"', () => {
       const payload = {
         path: [],
-        errorHandler: () => { }
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        errorHandler: () => {}
       };
 
       RouterMock.navigate.and.returnValue(Promise.reject(false));
@@ -120,7 +118,6 @@ describe('Router Effects', () => {
   });
 
   describe('navigateNewCase$', () => {
-
     it('should call Angular\'s router on dispatch of RouterActions.CREATE_CASE_GO', () => {
       const payload = {
         path: [],
@@ -141,24 +138,21 @@ describe('Router Effects', () => {
   describe('navigateBack$', () => {
     it('should call Angular\'s Location.back() on dispatch' +
       ' of RouterActions.BACK', () => {
-
-        const action = new Back();
-        actions$ = hot('-a', { a: action });
-        effects.navigateBack$.subscribe(() => {
-          expect(LocationMock.back).toHaveBeenCalled();
-        });
+      const action = new Back();
+      actions$ = hot('-a', { a: action });
+      effects.navigateBack$.subscribe(() => {
+        expect(LocationMock.back).toHaveBeenCalled();
       });
+    });
   });
 
   describe('navigateForward$', () => {
-    it('should call Angular\'s Location.forward() on dispatch' +
-      ' of RouterActions.FORWARD', () => {
-
-        const action = new Forward();
-        actions$ = hot('-a', { a: action });
-        effects.navigateForward$.subscribe(() => {
-          expect(LocationMock.forward).toHaveBeenCalled();
-        });
+    it('should call Angular\'s Location.forward() on dispatch of RouterActions.FORWARD', () => {
+      const action = new Forward();
+      actions$ = hot('-a', { a: action });
+      effects.navigateForward$.subscribe(() => {
+        expect(LocationMock.forward).toHaveBeenCalled();
       });
+    });
   });
 });

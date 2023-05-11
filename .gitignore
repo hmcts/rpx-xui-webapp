@@ -62,6 +62,7 @@ package-lock.json
 local-only-tools
 /test/reports/
 reports/
+functional-output/
 
 /local-only-tools
 
@@ -80,3 +81,12 @@ stryker.log
 yalc.lock
 
 ignore/
+
+/functional_output/
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

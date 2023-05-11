@@ -1,13 +1,13 @@
 
-import {SearchResultView, Jurisdiction, CaseType, CaseState, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromCases from '../actions/case-list.action';
 
 export class CaselistStateFilter {
-  jurisdiction: Jurisdiction;
-  caseType: CaseType;
-  caseState: CaseState;
-  metadataFields: any;
-  page: number;
+  public jurisdiction: Jurisdiction;
+  public caseType: CaseType;
+  public caseState: CaseState;
+  public metadataFields: any;
+  public page: number;
   constructor() {
     this.jurisdiction = new Jurisdiction();
     this.caseType = new CaseType();
@@ -18,7 +18,7 @@ export class CaselistStateFilter {
 }
 
 export class CaselistStateResults {
-  resultView: SearchResultView;
+  public resultView: SearchResultView;
 
   constructor() {
     this.resultView = new SearchResultView();
@@ -43,7 +43,7 @@ export const initialCaselistState: CaselistState = {
   },
   showFilter: true,
   loading: false,
-  loaded: false,
+  loaded: false
 };
 
 export function caselistReducer(
@@ -93,7 +93,7 @@ export function caselistReducer(
     case fromCases.CASE_FILTER_DISPLAY_TOGGLE_SUCCESS: {
       return {
         ...state,
-        showFilter: action.payload,
+        showFilter: action.payload
       };
     }
 

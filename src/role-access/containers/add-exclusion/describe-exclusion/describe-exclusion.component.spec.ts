@@ -1,15 +1,16 @@
-import { async } from '@angular/core/testing';
-import { DescribeExclusionComponent } from './describe-exclusion.component';
+import { waitForAsync } from '@angular/core/testing';
 import { Validators } from '@angular/forms';
 import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import { UpdateDescribeExclusionText } from '../../../store';
+import { DescribeExclusionComponent } from './describe-exclusion.component';
 
 describe('DescribeExclusionComponent', () => {
   let component: DescribeExclusionComponent;
   let mockStore: any;
   let mockFormBuilder: any;
   let formGroup: any;
-  beforeEach(async(() => {
+
+  beforeEach(waitForAsync(() => {
     mockStore = jasmine.createSpyObj('mockFormBuilder', ['pipe', 'dispatch']);
     mockFormBuilder = jasmine.createSpyObj('mockFormBuilder', ['group']);
     formGroup = jasmine.createSpyObj('formGroup', ['get']);
@@ -19,7 +20,7 @@ describe('DescribeExclusionComponent', () => {
 
   it('should create and initialise FormGroup', () => {
     expect(component).toBeTruthy();
-    expect(mockFormBuilder.group).toHaveBeenCalledWith({['text']: ['', [Validators.required]]});
+    expect(mockFormBuilder.group).toHaveBeenCalledWith({ ['text']: ['', [Validators.required]] });
     expect(component.formGroup).not.toBeNull();
   });
 
@@ -38,7 +39,7 @@ describe('DescribeExclusionComponent', () => {
   it('navigationHandler should dispatch action UpdateDescribeExclusionText', () => {
     formGroup.get.and.returnValue(jasmine.createSpyObj('control', ['markAsTouched']));
     formGroup.valid = true;
-    formGroup.value = {text: 'some text'};
+    formGroup.value = { text: 'some text' };
     const navEvent = ExclusionNavigationEvent.CONTINUE;
     component.navigationHandler(navEvent);
     expect(mockStore.dispatch).toHaveBeenCalledWith(new UpdateDescribeExclusionText(ExclusionState.CHECK_ANSWERS, 'some text'));

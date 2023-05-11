@@ -44,7 +44,6 @@ const SSCS: Jurisdiction = {
   caseTypes: [CASE_TYPE_3]
 };
 
-
 export const mocked = {
   juristdiction1: JURISDICTION_1,
   juristdiction2: SSCS

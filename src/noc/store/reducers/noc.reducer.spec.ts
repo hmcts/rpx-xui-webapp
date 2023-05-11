@@ -3,9 +3,7 @@ import * as fromActions from '../actions/noc.action';
 import * as fromReducer from './noc.reducer';
 
 describe('Noc Reducer', () => {
-
   describe('Actions', () => {
-
     it('should set correct object', () => {
       const initialState = fromReducer.initialState;
       const action = new fromActions.ChangeNavigation(NocState.START);
@@ -239,13 +237,12 @@ describe('Noc Reducer', () => {
           regular_expression: null,
           fixed_list_items: [],
           complex_fields: [],
-          collection_field_type: null,
+          collection_field_type: null
         },
         display_context_parameter: '1',
         challenge_question_id: 'NoC',
-        // tslint:disable-next-line:max-line-length
         answer_field: null,
-        question_id: 'QuestionId-1',
+        question_id: 'QuestionId-1'
       }, {
         case_type_id: 'AAT',
         order: '10',
@@ -258,12 +255,12 @@ describe('Noc Reducer', () => {
           regular_expression: null,
           fixed_list_items: [],
           complex_fields: [],
-          collection_field_type: null,
+          collection_field_type: null
         },
         display_context_parameter: '1',
         challenge_question_id: 'NoC',
         answer_field: null,
-        question_id: 'QuestionId-10',
+        question_id: 'QuestionId-10'
       }, {
         case_type_id: 'AAT',
         order: '5',
@@ -276,12 +273,12 @@ describe('Noc Reducer', () => {
           regular_expression: null,
           fixed_list_items: [],
           complex_fields: [],
-          collection_field_type: null,
+          collection_field_type: null
         },
         display_context_parameter: '1',
         challenge_question_id: 'NoC',
         answer_field: null,
-        question_id: 'QuestionId-5',
+        question_id: 'QuestionId-5'
       }];
       const nocQuestionsAfterSort = fromReducer.orderQuestions(nocQuestionsBeforeSort);
       expect(nocQuestionsAfterSort[0].question_id).toBe('QuestionId-1');

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { AnswersComponent } from '../../../components';
 import { ExcludeOption, ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import * as fromFeature from '../../../store';
@@ -47,7 +47,9 @@ describe('AddExclusionCheckAnswersComponent', () => {
     });
 
     it('should throw an error if there is an invalid navigation action', () => {
-      expect(() => { component.navigationHandler(ExclusionNavigationEvent.CONTINUE); }).toThrow(new Error('Invalid option'));
+      expect(() => {
+        component.navigationHandler(ExclusionNavigationEvent.CONTINUE);
+      }).toThrow(new Error('Invalid option'));
     });
   });
 
@@ -73,7 +75,6 @@ describe('AddExclusionCheckAnswersComponent', () => {
   });
 
   describe('setAnswersFromExclusionStore()', () => {
-
     it('should set all answers if excluding another person', () => {
       setup(ExcludeOption.EXCLUDE_ANOTHER_PERSON);
       expect(component.answers.length).toEqual(4);
@@ -87,11 +88,10 @@ describe('AddExclusionCheckAnswersComponent', () => {
 
   describe('onDestroy()', () => {
     it('should unsubscribe', () => {
-      component.storeSubscription = new Observable().subscribe();
+      component.storeSubscription = of().subscribe();
       spyOn(component.storeSubscription, 'unsubscribe').and.callThrough();
       component.ngOnDestroy();
       expect(component.storeSubscription.unsubscribe).toHaveBeenCalled();
     });
   });
-
 });

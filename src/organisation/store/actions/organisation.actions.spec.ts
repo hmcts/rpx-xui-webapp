@@ -1,10 +1,11 @@
 import { Organisation } from '../../models';
-import { LOAD_ORGANISATION,
-  LOAD_ORGANISATION_FAIL,
-  LOAD_ORGANISATION_SUCCESS,
+import {
   LoadOrganisation,
   LoadOrganisationFail,
-  LoadOrganisationSuccess } from './organisation.actions';
+  LoadOrganisationSuccess, LOAD_ORGANISATION,
+  LOAD_ORGANISATION_FAIL,
+  LOAD_ORGANISATION_SUCCESS
+} from './organisation.actions';
 
 describe('Load Organisation', () => {
   it('should create an action', () => {
@@ -28,7 +29,7 @@ describe('LoadOrganisationSuccess', () => {
     const action = new LoadOrganisationSuccess(payload);
     expect({ ...action }).toEqual({
       type: LOAD_ORGANISATION_SUCCESS,
-      payload,
+      payload
     });
   });
 });
@@ -39,7 +40,7 @@ describe('LoadOrganisationFail', () => {
     const action = new LoadOrganisationFail(payload);
     expect({ ...action }).toEqual({
       type: LOAD_ORGANISATION_FAIL,
-      payload,
+      payload
     });
   });
 });

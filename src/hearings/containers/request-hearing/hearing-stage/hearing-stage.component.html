@@ -1,0 +1,25 @@
+<xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'"></xuilib-hmcts-error-summary>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <form class="form" [formGroup]="stageForm">
+      <exui-hearing-parties-title></exui-hearing-parties-title>
+      <h1 class="govuk-heading-l">What stage is this hearing at?</h1>
+      <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': hearingStageSelectionError}">
+        <fieldset class="govuk-fieldset" id="hearing-stage">
+          <span class="govuk-error-message" *ngIf="hearingStageSelectionError">
+            <span class="govuk-visually-hidden">Error:</span> {{hearingStageSelectionError}}
+          </span>
+          <div class="govuk-radios">
+            <div class="govuk-radios">
+              <div *ngFor="let option of hearingStageOptions" class="govuk-radios__item">
+                <input class="govuk-radios__input" id="{{option.key}}" formControlName="stage-option" name="stage-option" type="radio" [value]="option.key">
+                <label class="govuk-label govuk-radios__label" [for]="option.key">{{option.value_en}}</label>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </form>
+  </div>
+</div>

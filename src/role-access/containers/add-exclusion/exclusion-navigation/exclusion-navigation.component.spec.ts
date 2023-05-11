@@ -17,15 +17,15 @@ describe('ExclusionNavigationComponent', () => {
       imports: [
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromStore.reducers),
-        }),
+          feature: combineReducers(fromStore.reducers)
+        })
       ],
       declarations: [
         ExclusionNavigationComponent
       ]
     }).compileComponents();
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     storePipeMock = spyOn(store, 'pipe');
 

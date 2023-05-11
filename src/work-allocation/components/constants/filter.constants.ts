@@ -1,4 +1,4 @@
-const ALL_LOCATIONS =  {
+const ALL_LOCATIONS = {
   id: '**ALL_LOCATIONS**',
   locationName: 'All locations',
   services: []
@@ -26,18 +26,6 @@ const OPTIONS = {
   }
 };
 
-// TODO: Remove these after integrating with API.
-const TAYLOR_HOUSE = {
-  id: 'a', locationName: 'Taylor House', services: [ 'a' ]
-};
-const JOHN_SMITH = {
-  firstName: 'John',
-  lastName: 'Smith',
-  idamId: '1',
-  email: 'john.smith@caseworkers.gov.uk',
-  location: TAYLOR_HOUSE
-};
-
 const SESSION = {
   AvailableTasks: 'availableTasksFilter',
   TaskManager: 'taskManagerFilter'
@@ -47,7 +35,6 @@ export const FILTER_CONSTANTS = {
   Options: OPTIONS,
   Session: SESSION,
   Defaults: {
-    LOCATION: TAYLOR_HOUSE,
-    CASEWORKER: JOHN_SMITH
+    LOCATION: ALL_LOCATIONS
   }
 };

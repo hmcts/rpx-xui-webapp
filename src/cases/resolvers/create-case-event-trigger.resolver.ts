@@ -1,28 +1,27 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { CaseEventTrigger, CasesService, Draft, DRAFT_QUERY_PARAM } from '@hmcts/ccd-case-ui-toolkit';
-import { Observable } from 'rxjs';
-import 'rxjs/add/operator/do';
+import { Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class CreateCaseEventTriggerResolver implements Resolve<CaseEventTrigger> {
-
   public static readonly PARAM_JURISDICTION_ID = 'jid';
   public static readonly PARAM_CASE_TYPE_ID = 'ctid';
   public static readonly PARAM_EVENT_ID = 'eid';
   public static readonly QUERY_PARAM_IGNORE_WARNING = 'ignoreWarning';
-  private static readonly IGNORE_WARNING_VALUES = [ 'true', 'false' ];
+  private static readonly IGNORE_WARNING_VALUES = ['true', 'false'];
 
   public cachedEventTrigger: CaseEventTrigger;
 
   constructor(
-    private casesService: CasesService,
+    private readonly casesService: CasesService,
   ) {}
 
   public resolve(route: ActivatedRouteSnapshot): Observable<CaseEventTrigger> {
     return this.isRootCreateRoute(route) ? this.getAndCacheEventTrigger(route)
-    : this.cachedEventTrigger ? Observable.of(this.cachedEventTrigger)
-    : this.getAndCacheEventTrigger(route);
+      : this.cachedEventTrigger ? of(this.cachedEventTrigger)
+        : this.getAndCacheEventTrigger(route);
   }
 
   public getAndCacheEventTrigger(route: ActivatedRouteSnapshot): Observable<CaseEventTrigger> {
@@ -38,14 +37,14 @@ export class CreateCaseEventTriggerResolver implements Resolve<CaseEventTrigger>
     if (draftId && Draft.isDraft(draftId)) {
       caseId = draftId;
     }
-    return this.casesService
-      .getEventTrigger(caseTypeId, eventTriggerId, caseId, ignoreWarning)
-      .do(eventTrigger => this.cachedEventTrigger = eventTrigger);
+
+    return ((this.casesService.getEventTrigger(caseTypeId, eventTriggerId, caseId, ignoreWarning) as any) as Observable<CaseEventTrigger>).pipe(
+      tap((eventTrigger) => this.cachedEventTrigger = eventTrigger)
+    );
   }
 
   private isRootCreateRoute(route: ActivatedRouteSnapshot) {
     // if route is ':jid/:ctid/:eid'
     return !route.firstChild || !route.firstChild.url.length;
   }
-
 }

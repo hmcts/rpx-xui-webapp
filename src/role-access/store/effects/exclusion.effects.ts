@@ -3,8 +3,8 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
+import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
 import * as routeAction from '../../../app/store/index';
-import { InfoMessageType } from '../../../work-allocation-2/enums';
 import { ExcludeOption, RoleAccessHttpError } from '../../models';
 import { ExclusionMessageText } from '../../models/enums';
 import { REDIRECTS } from '../../models/enums/redirect-urls';
@@ -13,13 +13,12 @@ import { ConfirmExclusionAction, ExclusionActionTypes } from '../actions';
 
 @Injectable()
 export class ExclusionEffects {
-  private payload: any;
+  private readonly payload: any;
 
   constructor(
-    private actions$: Actions,
-    private roleExclusionsService: RoleExclusionsService
-  ) {
-  }
+    private readonly actions$: Actions,
+    private readonly roleExclusionsService: RoleExclusionsService
+  ) {}
 
   @Effect() public confirmExclusion$ = this.actions$
     .pipe(
@@ -30,7 +29,7 @@ export class ExclusionEffects {
             map(() => {
               if (data.payload.exclusionOption === ExcludeOption.EXCLUDE_ME) {
                 return new routeAction.Go({
-                  path: [`/work/my-work/list`],
+                  path: ['/work/my-work/list'],
                   extras: {
                     state: {
                       showMessage: true,
@@ -51,15 +50,14 @@ export class ExclusionEffects {
                 }
               });
             }),
-            catchError(error => {
-              return ExclusionEffects.handleError(error, ExclusionActionTypes.CONFIRM_EXCLUSION);
-            }
-            )
+            catchError((error) => {
+              return ExclusionEffects.handleError(error);
+            })
           )
       )
     );
 
-  public static handleError(error: RoleAccessHttpError, action?: string): Observable<Action> {
+  public static handleError(error: RoleAccessHttpError): Observable<Action> {
     if (error && error.status) {
       switch (error.status) {
         case 401:

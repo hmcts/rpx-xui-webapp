@@ -3,6 +3,7 @@ import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
+import { RoleCategory } from '../../../../booking/models';
 import {
   Actions,
   AllocateRoleNavigation,
@@ -23,7 +24,6 @@ import * as fromFeature from '../../../store';
   templateUrl: './allocate-role-check-answers.component.html'
 })
 export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
-
   @Input() public navEvent: AllocateRoleNavigation;
 
   public answers: Answer[] = [];
@@ -35,12 +35,11 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
   public typeOfRole: string;
   public allocateTo: AllocateTo;
 
-  constructor(private readonly store: Store<fromFeature.State>) {
-  }
+  constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
     this.storeSubscription = this.store.pipe(select(fromFeature.getAllocateRoleState))
-      .subscribe(allocateRole => this.setAnswersFromAllocateRoleStateStore(allocateRole));
+      .subscribe((allocateRole) => this.setAnswersFromAllocateRoleStateStore(allocateRole));
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent) {
@@ -55,7 +54,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
 
   public setAnswersFromAllocateRoleStateStore(allocateRoleStateData: AllocateRoleStateData): void {
     this.allocateRoleStateData = allocateRoleStateData;
-    this.typeOfRole = allocateRoleStateData.typeOfRole.name;
+    this.typeOfRole = allocateRoleStateData.typeOfRole ? allocateRoleStateData.typeOfRole.name : '';
     this.allocateTo = allocateRoleStateData.allocateTo;
     const roleCategory = allocateRoleStateData.roleCategory;
     const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
@@ -63,7 +62,9 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
       this.caption = `${action} ${RoleCaptionText.ALegalOpsCaseManager}`;
     } else {
       if (this.typeOfRole) {
-        this.caption = `${action} a ${this.typeOfRole.toLowerCase()}`;
+        this.caption = `${action} a ${this.typeOfRole}`;
+      } else if (roleCategory === RoleCategory.ADMIN) {
+        this.caption = `${action} an admin role`;
       } else {
         this.caption = roleCategory !== undefined ? `${action} a ${roleCategory.replace('_', ' ').toLowerCase()} role` : `${action} a role`;
       }
@@ -93,10 +94,10 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     if (allocateRoleStateData.allocateTo === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON ||
       (allocateRoleStateData.allocateTo === null && allocateRoleStateData.typeOfRole.name === TypeOfRole.CaseManager) ||
       allocateRoleStateData.action === Actions.Reallocate) {
-      this.answers.push({label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON});
+      this.answers.push({ label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON });
     } else if (allocateRoleStateData.allocateTo === AllocateTo.RESERVE_TO_ME) {
       if (personDetails) {
-        this.answers.push({label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON});
+        this.answers.push({ label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON });
       }
     }
   }
@@ -113,7 +114,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
       endDate = moment.parseZone(allocateRoleStateData.period.endDate).format('D MMMM YYYY');
       durationOfRole = `${startDate} to ${endDate}`;
     }
-    this.answers.push({label: AnswerLabelText.DurationOfRole, value: durationOfRole, action: AllocateRoleState.CHOOSE_DURATION});
+    this.answers.push({ label: AnswerLabelText.DurationOfRole, value: durationOfRole, action: AllocateRoleState.CHOOSE_DURATION });
   }
 
   public onNavigate(action) {

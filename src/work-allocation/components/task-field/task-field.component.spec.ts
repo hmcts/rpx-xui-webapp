@@ -1,28 +1,29 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { TaskFieldType, TaskView } from './../../enums';
-import { Task, TaskFieldConfig } from './../../models/tasks';
-import { WorkAllocationComponentsModule } from './../work-allocation.components.module';
+import { RouterTestingModule } from '@angular/router/testing';
+import { FieldType, TaskView } from '../../enums';
+import { FieldConfig } from '../../models/common';
+import { Task } from '../../models/tasks';
+import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { TaskFieldComponent } from './task-field.component';
 
 @Component({
-  template: `<exui-task-field [config]="config" [task]="task"></exui-task-field>`
+  template: '<exui-task-field [config]="config" [task]="task"></exui-task-field>'
 })
 class WrapperComponent {
   @ViewChild(TaskFieldComponent) public appComponentRef: TaskFieldComponent;
-  @Input() public config: TaskFieldConfig;
+  @Input() public config: FieldConfig;
   @Input() public task: Task;
 }
 
 describe('WorkAllocation', () => {
-
   describe('TaskFieldComponent', () => {
     let component: TaskFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
-    function getConfig(name: string, type: TaskFieldType): TaskFieldConfig {
+    function getConfig(name: string, type: FieldType): FieldConfig {
       return {
         name,
         type,
@@ -31,34 +32,37 @@ describe('WorkAllocation', () => {
       };
     }
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule ]
+        declarations: [WrapperComponent],
+        imports: [WorkAllocationComponentsModule, RouterTestingModule]
       })
-      .compileComponents();
-    }));
+        .compileComponents();
 
-    beforeEach(() => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
       fixture.detectChanges();
-    });
+    }));
 
     it('should show only if there is both a config and a task set', () => {
+      component =wrapper.appComponentRef;
       // Expect the nativeElement to be empty.
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('caseName', TaskFieldType.STRING);
+      const config: FieldConfig = getConfig('caseName', FieldType.STRING);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
+        description: null,
         case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
         location: 'The location',
         taskName: 'The task name',
+        major_priority: 300,
         dueDate: new Date(),
         actions: []
       };
@@ -80,15 +84,20 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a STRING type', () => {
+      component =wrapper.appComponentRef;
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('case_id', TaskFieldType.STRING);
+      const config: FieldConfig = getConfig('case_id', FieldType.STRING);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
+        description: null,
         case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
         location: 'The location',
         taskName: 'The task name',
+        major_priority: 2100,
         dueDate: new Date(),
         actions: []
       };
@@ -111,13 +120,17 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a DATE_DUE type', () => {
+      component =wrapper.appComponentRef;
       // No DueDateComponent shown yet.
       expect(fixture.debugElement.nativeElement.querySelector('.due-date')).toBeNull();
 
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('dueDate', TaskFieldType.DATE_DUE);
+      const config: FieldConfig = getConfig('dueDate', FieldType.DATE_DUE);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
+        description: null,
         case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
@@ -164,10 +177,14 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a DATE_AGE_DAYS type', () => {
+      component =wrapper.appComponentRef;
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('dueDate', TaskFieldType.DATE_AGE_DAYS);
+      const config: FieldConfig = getConfig('dueDate', FieldType.DATE_AGE_DAYS);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
+        description: null,
         case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
@@ -210,10 +227,14 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a DATE type', () => {
+      component =wrapper.appComponentRef;
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('dueDate', TaskFieldType.DATE);
+      const config: FieldConfig = getConfig('dueDate', FieldType.DATE);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
+        description: null,
         case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
@@ -240,11 +261,50 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
     });
 
-    it('should handle a DATETIME type', () => {
+    it('should handle a FORMATTED_DATE type', () => {
+      component =wrapper.appComponentRef;
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('dueDate', TaskFieldType.DATETIME);
+      const config: FieldConfig = getConfig('dueDate', FieldType.FORMATTED_DATE);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
+        description: '',
         id: 'The task ID',
+        case_id: 'The case reference',
+        caseName: 'The case name',
+        caseCategory: 'The case category',
+        location: 'The location',
+        taskName: 'The task name',
+        dueDate: new Date(2020, 10, 6, 1, 2, 3), // Month of 10 = November as it's 0-based.
+        actions: []
+      };
+
+      // Add the task and it should work (showing the due date).
+      component.config = config;
+      component.task = task;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.innerText).toBe('6 November 2020');
+
+      // Change the value of task.dueDate.
+      task.dueDate = new Date(2020, 11, 15, 14, 15, 16); // Month of 11 = December.
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.innerText).toBe('15 December 2020');
+
+      // Clear out the value of task.dueDate.
+      task.dueDate = undefined;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.innerText).toBe('');
+    });
+
+    it('should handle a DATETIME type', () => {
+      component =wrapper.appComponentRef;
+      // Set up the config and the task.
+      const config: FieldConfig = getConfig('dueDate', FieldType.DATETIME);
+      const task: Task = {
+        assignee: null,
+        assigneeName: null,
+        id: 'The task ID',
+        description: null,
         case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
@@ -272,10 +332,14 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a BOOLEAN type', () => {
+      component =wrapper.appComponentRef;
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('happy', TaskFieldType.BOOLEAN);
+      const config: FieldConfig = getConfig('happy', FieldType.BOOLEAN);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
+        description: null,
         case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
@@ -293,63 +357,67 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.innerText).toBe('Yes');
 
       // Change the value of task.happy.
-      task['happy'] = false;
+      task.happy = false;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('No');
 
       // Clear out the value of task.happy.
-      task['happy'] = undefined;
+      task.happy = undefined;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
       // Add it back in for a moment...
-      task['happy'] = false;
+      task.happy = false;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('No');
 
       // Null the value of task.happy.
-      task['happy'] = null;
+      task.happy = null;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
       // Add it back again...
-      task['happy'] = false;
+      task.happy = false;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('No');
 
       // Give the value of task.happy a "truthy" value.
-      task['happy'] = 1;
+      task.happy = 1;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
       // Give the value of task.happy a "falsey" value.
-      task['happy'] = 0;
+      task.happy = 0;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
       // Give the value of task.happy a string value.
-      task['happy'] = 'True';
+      task.happy = 'True';
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
       // Set it back to something meaningful again...
-      task['happy'] = false;
+      task.happy = false;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('No');
 
       // Now remove the property entirely and make sure it can cope with it not existing.
       expect(task.hasOwnProperty('happy')).toBeTruthy();
-      delete task['happy'];
+      delete task.happy;
       fixture.detectChanges();
       expect(task.hasOwnProperty('happy')).toBeFalsy();
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
     });
 
     it('should handle an INTEGER type', () => {
+      component =wrapper.appComponentRef;
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('pi', TaskFieldType.INTEGER);
+      const config: FieldConfig = getConfig('pi', FieldType.INTEGER);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
+        description: null,
         case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
@@ -367,52 +435,56 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.innerText).toBe('3'); // 3.14159... => 3
 
       // Change the value of task.pi.
-      task['pi'] = 1500;
+      task.pi = 1500;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('1,500');
 
       // Change the value of task.pi again.
-      task['pi'] = 0.51;
+      task.pi = 0.51;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('1'); // Rounded up.
 
       // Clear out the value of task.pi.
-      task['pi'] = undefined;
+      task.pi = undefined;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
       // Add it back for a moment...
-      task['pi'] = 0.51;
+      task.pi = 0.51;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('1'); // Rounded up.
 
       // Null the value of task.pi.
-      task['pi'] = null;
+      task.pi = null;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
       // Add it back again...
-      task['pi'] = 0.51;
+      task.pi = 0.51;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('1'); // Rounded up.
 
       // Set task.pi to be a string.
-      task['pi'] = '3.14159';
+      task.pi = '3.14159';
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('3'); // Numeric string.
 
       // Now remove the property entirely and make sure it can cope with it not existing.
       expect(task.hasOwnProperty('pi')).toBeTruthy();
-      delete task['pi'];
+      delete task.pi;
       fixture.detectChanges();
       expect(task.hasOwnProperty('pi')).toBeFalsy();
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
     });
 
     it('should handle an DECIMAL_2 type', () => {
+      component =wrapper.appComponentRef;
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('pi', TaskFieldType.DECIMAL_2);
+      const config: FieldConfig = getConfig('pi', FieldType.DECIMAL_2);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
+        description: null,
         id: 'The task ID',
         case_id: 'The case reference',
         caseName: 'The case name',
@@ -431,49 +503,50 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.innerText).toBe('3.14'); // 3.14159... => 3.14
 
       // Change the value of task.pi.
-      task['pi'] = 1500;
+      task.pi = 1500;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('1,500.00'); // Still 2 dp.
 
       // Change the value of task.pi again.
-      task['pi'] = 0.5151;
+      task.pi = 0.5151;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('0.52'); // Rounded up.
 
       // Clear out the value of task.pi.
-      task['pi'] = undefined;
+      task.pi = undefined;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
       // Add it back for a moment...
-      task['pi'] = 0.5151;
+      task.pi = 0.5151;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('0.52'); // Rounded up.
 
       // Null the value of task.pi.
-      task['pi'] = null;
+      task.pi = null;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
       // Add it back again...
-      task['pi'] = 0.5151;
+      task.pi = 0.5151;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('0.52'); // Rounded up.
 
       // Set task.pi to be a string.
-      task['pi'] = '3.14159';
+      task.pi = '3.14159';
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('3.14'); // Numeric string.
 
       // Now remove the property entirely and make sure it can cope with it not existing.
       expect(task.hasOwnProperty('pi')).toBeTruthy();
-      delete task['pi'];
+      delete task.pi;
       fixture.detectChanges();
       expect(task.hasOwnProperty('pi')).toBeFalsy();
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
     });
 
     it('should handle a URL type', () => {
+      component =wrapper.appComponentRef;
       const HMCTS_URL: string = 'http://hmcts.gov.uk';
       const GOOGLE_URL: string = 'http://google.com';
 
@@ -481,9 +554,12 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
 
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('link', TaskFieldType.URL);
+      const config: FieldConfig = getConfig('link', FieldType.URL);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
+        description: null,
         case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
@@ -501,51 +577,52 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(HMCTS_URL);
-      expect(element.getAttribute('href')).toBe(HMCTS_URL);
+      expect(element.getAttribute('ng-reflect-router-link')).toBe(HMCTS_URL);
 
       // Change the value of task.link.
-      task['link'] = GOOGLE_URL;
+      task.link = GOOGLE_URL;
       fixture.detectChanges();
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(GOOGLE_URL);
-      expect(element.getAttribute('href')).toBe(GOOGLE_URL);
+      expect(element.getAttribute('ng-reflect-router-link')).toBe(GOOGLE_URL);
 
       // Clear out the value of task.link and we should no longer have the anchor.
-      task['link'] = undefined;
+      task.link = undefined;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
 
       // Add it back for a moment...
-      task['link'] = GOOGLE_URL;
+      task.link = GOOGLE_URL;
       fixture.detectChanges();
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(GOOGLE_URL);
-      expect(element.getAttribute('href')).toBe(GOOGLE_URL);
+      expect(element.getAttribute('ng-reflect-router-link')).toBe(GOOGLE_URL);
 
       // Make task.link null.
-      task['link'] = null;
+      task.link = null;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
 
       // Add it back for a moment...
-      task['link'] = GOOGLE_URL;
+      task.link = GOOGLE_URL;
       fixture.detectChanges();
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(GOOGLE_URL);
-      expect(element.getAttribute('href')).toBe(GOOGLE_URL);
+      expect(element.getAttribute('ng-reflect-router-link')).toBe(GOOGLE_URL);
 
       // Entirely remove the property for task.link.
       expect(task.hasOwnProperty('link')).toBeTruthy();
-      delete task['link'];
+      delete task.link;
       fixture.detectChanges();
       expect(task.hasOwnProperty('link')).toBeFalsy();
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
     });
 
     it('should handle an image type', () => {
+      component =wrapper.appComponentRef;
       const EXAMPLE1_IMAGE: string = '/assets/images/test.jpg';
       const EXAMPLE2_IMAGE: string = '/assets/images/govuk-crest.png';
 
@@ -553,9 +630,12 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
 
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('image', TaskFieldType.IMAGE);
+      const config: FieldConfig = getConfig('image', FieldType.IMAGE);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
+        description: null,
         case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
@@ -575,8 +655,8 @@ describe('WorkAllocation', () => {
       expect(element.getAttribute('src')).toBe(EXAMPLE1_IMAGE);
       expect(element.getAttribute('alt')).toBe('Image');
 
-       // Change the value of task.image
-      task['image'] = EXAMPLE2_IMAGE;
+      // Change the value of task.image
+      task.image = EXAMPLE2_IMAGE;
       fixture.detectChanges();
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('img');
@@ -584,12 +664,12 @@ describe('WorkAllocation', () => {
       expect(element.getAttribute('alt')).toBe('Image');
 
       // Clear out the value of task.image and we should no longer have the anchor.
-      task['image'] = undefined;
+      task.image = undefined;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
 
       // Add it back for a moment...
-      task['image'] = EXAMPLE1_IMAGE;
+      task.image = EXAMPLE1_IMAGE;
       fixture.detectChanges();
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('img');
@@ -597,12 +677,12 @@ describe('WorkAllocation', () => {
       expect(element.getAttribute('alt')).toBe('Image');
 
       // Make task.image null.
-      task['image'] = null;
+      task.image = null;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
 
       // Add it back for a moment...
-      task['image'] = EXAMPLE1_IMAGE;
+      task.image = EXAMPLE1_IMAGE;
       fixture.detectChanges();
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('img');
@@ -611,19 +691,23 @@ describe('WorkAllocation', () => {
 
       // Entirely remove the property for task.image.
       expect(task.hasOwnProperty('image')).toBeTruthy();
-      delete task['image'];
+      delete task.image;
       fixture.detectChanges();
       expect(task.hasOwnProperty('image')).toBeFalsy();
       expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
     });
 
     it('should handle a CASE_REFERENCE type', () => {
+      component =wrapper.appComponentRef;
       // No anchor shown yet.
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
 
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('case_id', TaskFieldType.CASE_REFERENCE);
+      const config: FieldConfig = getConfig('case_id', FieldType.CASE_REFERENCE);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
+        description: null,
         id: 'The task ID',
         case_id: 'The case reference',
         caseName: 'The case name',
@@ -641,7 +725,7 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(task.case_id);
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/The case reference`); // Spaces allowed
+      expect(element.getAttribute('href')).toContain(encodeURI('/cases/case-details/The case reference')); // Spaces allowed
 
       // Change the value of task.case_id.
       task.case_id = 'NEW CASE REFERENCE';
@@ -649,7 +733,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe('NEW CASE REFERENCE');
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/NEW CASE REFERENCE`); // Spaces allowed
+      expect(element.getAttribute('href')).toContain(encodeURI('/cases/case-details/NEW CASE REFERENCE')); // Spaces allowed
 
       // Clear out the value of task.link and we should no longer have the anchor.
       task.case_id = undefined;
@@ -662,7 +746,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe('The case reference');
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/The case reference`);
+      expect(element.getAttribute('href')).toContain(encodeURI('/cases/case-details/The case reference'));
 
       // Make task.link null.
       task.case_id = null;
@@ -671,11 +755,14 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a CASE_REFERENCE_AS_STRING type', () => {
-
+      component =wrapper.appComponentRef;
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('case_id', TaskFieldType.CASE_REFERENCE_STRING);
+      const config: FieldConfig = getConfig('case_id', FieldType.CASE_REFERENCE_STRING);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
+        description: null,
         case_id: '1234567890987654',
         caseName: 'The case name',
         caseCategory: 'The case category',
@@ -702,7 +789,27 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
     });
 
-    it('should appropriately parse an ISO date string with toDate', () => {
+    it('should appropriately parse an ISO date string with toDate', fakeAsync(() => {
+      component =wrapper.appComponentRef;
+      const config: FieldConfig = getConfig('case_id', FieldType.CASE_REFERENCE_STRING);
+      const task: Task = {
+        assignee: null,
+        assigneeName: null,
+        id: 'The task ID',
+        description: null,
+        case_id: '1234567890987654',
+        caseName: 'The case name',
+        caseCategory: 'The case category',
+        location: 'The location',
+        taskName: 'The task name',
+        dueDate: new Date(),
+        actions: []
+      };
+
+      // Add the task and it should work (showing the case reference).
+      component.config = config;
+      component.task = task;
+      fixture.detectChanges();
       const DATE = '2020-12-03T15:00:00';
       const output = component.toDate(DATE);
       expect(output).toBeDefined();
@@ -711,9 +818,10 @@ describe('WorkAllocation', () => {
       expect(output.getDate()).toEqual(3);
       expect(output.getHours()).toEqual(15);
       expect(output.getMinutes()).toEqual(0);
-    });
+    }));
 
     it('should appropriately parse a number with toDate', () => {
+      component =wrapper.appComponentRef;
       const DATE = '2020-12-03T15:00:00';
       const EPOCH = Date.parse(DATE);
       const output = component.toDate(EPOCH);
@@ -726,6 +834,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should appropriately parse a date with toDate', () => {
+      component =wrapper.appComponentRef;
       const DATE = new Date(2020, 11, 3, 15, 0, 0);
       const output = component.toDate(DATE);
       expect(output).toBeDefined();
@@ -737,24 +846,27 @@ describe('WorkAllocation', () => {
     });
 
     it('should appropriately handle an invalid input in toDate', () => {
+      component =wrapper.appComponentRef;
       const output = component.toDate('bob');
       expect(output).toBeNull();
     });
 
     it('should appropriately handle an null input in toDate', () => {
+      component =wrapper.appComponentRef;
       const output = component.toDate(null);
       expect(output).toBeNull();
     });
 
     it('should appropriately handle an undefined input in toDate', () => {
+      component =wrapper.appComponentRef;
       const output = component.toDate(undefined);
       expect(output).toBeNull();
     });
 
     it('should appropriately handle an empty string input in toDate', () => {
+      component =wrapper.appComponentRef;
       const output = component.toDate('');
       expect(output).toBeNull();
     });
   });
-
 });

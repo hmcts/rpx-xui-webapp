@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 /*
 * Sign Out Component
@@ -6,11 +6,10 @@ import {Component, OnInit} from '@angular/core';
 */
 @Component({
   selector: 'exui-sign-out',
-  templateUrl: './signed-out.component.html',
+  templateUrl: './signed-out.component.html'
 })
 export class SignedOutComponent implements OnInit {
   public redirectUrl: string;
-  constructor() { }
 
   public ngOnInit(): void {
     this.redirectUrl = './';

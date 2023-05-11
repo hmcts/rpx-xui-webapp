@@ -3,19 +3,19 @@ import { FormGroup } from '@angular/forms';
 import {
   CaseState,
   CaseType,
+  DefinitionsService,
   Jurisdiction,
   PaginationMetadata,
   SearchResultComponent,
   SearchResultView,
   SearchResultViewItem,
-  WindowService,
+  WindowService
 } from '@hmcts/ccd-case-ui-toolkit';
-import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { select, Store } from '@ngrx/store';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-
+import { BehaviorSubject, combineLatest, Observable, of, Subject, Subscription } from 'rxjs';
+import { mergeMap, takeUntil } from 'rxjs/operators';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import * as fromRoot from '../../../app/store';
 import { OrganisationDetails } from '../../../organisation/models';
@@ -37,7 +37,7 @@ import * as fromCaseList from '../../store/reducers';
   styleUrls: ['case-list.component.scss']
 })
 export class CaseListComponent implements OnInit, OnDestroy {
-  @ViewChild('ccdSearchResult') public ccdSearchResult: SearchResultComponent; // EUI-2906
+  @ViewChild('ccdSearchResult', { static: false }) public ccdSearchResult: SearchResultComponent; // EUI-2906
   public defaults: any;
   public caseListFilterEventsBindings: ActionBindingModel[];
   public fromCasesFeature: any;
@@ -96,6 +96,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   public resultViewIsReady: boolean = false;
 
+  private readonly unsubscribe$ = new Subject();
+
   constructor(
     public store: Store<fromCaseList.State>,
     private readonly orgStore: Store<fromStore.OrganisationState>,
@@ -104,17 +106,15 @@ export class CaseListComponent implements OnInit, OnDestroy {
     private readonly windowService: WindowService,
     private readonly featureToggleService: FeatureToggleService,
     private readonly cd: ChangeDetectorRef
-  ) { }
+  ) {}
 
-  public ngOnInit() {
-
+  public async ngOnInit() {
     this.isVisible = false;
     this.page = 1;
     this.resultView = null;
-
     this.definitionsService.getJurisdictions('read').subscribe(this.jurisdictionsBehaviourSubject$);
 
-    this.jurisdictionsBehaviourSubject$.subscribe( jurisdictions => {
+    this.jurisdictionsBehaviourSubject$.pipe(takeUntil(this.unsubscribe$)).subscribe((jurisdictions) => {
       this.isVisible = jurisdictions.length > 0;
       this.jurisdictions = jurisdictions;
     });
@@ -140,46 +140,46 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.caseType$,
       this.caseState$,
       this.metadataFields$
-    ]).subscribe(result => this.onFilterSubscriptionHandler(result));
+    ]).subscribe((result) => this.onFilterSubscriptionHandler(result));
 
     this.caseFilterToggle$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterToggle));
-    this.caseFilterToggleSubscription = this.caseFilterToggle$.subscribe( (result: boolean) => this.onToogleHandler(result));
+    this.caseFilterToggleSubscription = this.caseFilterToggle$.pipe(takeUntil(this.unsubscribe$)).subscribe((result: boolean) => this.onToggleHandler(result));
 
     this.listenToPaginationMetadata();
 
     this.resultView$ = this.store.pipe(select(fromCasesFeature.caselistFilterResultView));
-    this.resultSubscription = this.resultView$.subscribe(resultView =>
+    this.resultSubscription = this.resultView$.subscribe((resultView) =>
       this.onResultsViewHandler(resultView));
 
     this.triggerQuery();
 
-    this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe(value => this.elasticSearchFlag = value);
+    this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe((value) => this.elasticSearchFlag = value);
     this.userDetails = this.store.pipe(select(fromRoot.getUserDetails));
     this.pIsCaseShareVisible$ = combineLatest([
       this.userDetails, this.shareableJurisdictions$, this.jurisdiction$
-    ]).mergeMap(project => {
+    ]).pipe(mergeMap((project) => {
       this.cd.detectChanges();
-      return Observable.of(this.caseShareIsVisible(project));
-    });
+      return of(this.caseShareIsVisible(project));
+    }));
 
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
-    this.shareCases$.subscribe(shareCases => this.selectedCases = converters.toSearchResultViewItemConverter(shareCases));
+    this.shareCases$.pipe(takeUntil(this.unsubscribe$)).subscribe((shareCases) => this.selectedCases = converters.toSearchResultViewItemConverter(shareCases));
     this.getOrganisationDetailsFromStore();
   }
 
   public listenToPaginationMetadata = () => {
     this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterPaginationMetadata));
-    this.paginationSubscription = this.paginationMetadata$.subscribe(paginationMetadata =>
+    this.paginationSubscription = this.paginationMetadata$.subscribe((paginationMetadata) =>
       this.onPaginationSubscribeHandler(paginationMetadata));
-  }
+  };
 
   public doesIdExist(arr = [], id): boolean {
-    return arr.some(element => element.id === id);
+    return arr.some((element) => element.id === id);
   }
 
   public setCaseListFilterDefaults = () => {
-    this.jurisdictionsBehaviourSubject$
-      .subscribe(jurisdictions => {
+    this.jurisdictionsBehaviourSubject$.asObservable()
+      .subscribe((jurisdictions) => {
         if (jurisdictions.length > 0) {
           this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
           if (this.savedQueryParams && this.savedQueryParams.jurisdiction && !this.doesIdExist(this.jurisdictions, this.savedQueryParams.jurisdiction)) {
@@ -200,7 +200,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
           }
         }
       });
-  }
+  };
 
   /**
    * result
@@ -211,8 +211,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * ['[CASE_REFERENCE]']
    * ]
    */
-  public onFilterSubscriptionHandler = result => {
-
+  public onFilterSubscriptionHandler = (result) => {
     this.jurisdiction = {
       ...result[0]
     };
@@ -225,15 +224,14 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.metadataFields = {
       ...result[3]
     };
-  }
+  };
 
-  public onToogleHandler = showFilter => {
-
+  public onToggleHandler = (showFilter) => {
     this.showFilter = showFilter;
     this.toggleButtonName = this.getToggleButtonName(this.showFilter);
-  }
+  };
 
-  public onResultsViewHandler = resultView => {
+  public onResultsViewHandler = (resultView) => {
     if (this.elasticSearchFlag) {
       const paginationDataFromResult: PaginationMetadata = {
         total_results_count: resultView.total,
@@ -242,13 +240,15 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.onPaginationSubscribeHandler(paginationDataFromResult);
     }
 
-    if (typeof resultView.results !== 'undefined') this.resultViewIsReady = true;
+    if (typeof resultView.results !== 'undefined') {
+      this.resultViewIsReady = true;
+    }
 
     this.resultsArr = resultView.results;
     this.resultView = {
       ...resultView,
       columns: resultView.columns ? resultView.columns : [],
-      results: resultView.results ? resultView.results.map(item => {
+      results: resultView.results ? resultView.results.map((item) => {
         return {
           ...item,
           hydrated_case_fields: null
@@ -256,16 +256,15 @@ export class CaseListComponent implements OnInit, OnDestroy {
       }) : [],
       hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
     };
-  }
+  };
 
   /**
    * Handles the return of Pagination Metadata.
    *
    * @param paginationMetadata - {total_pages_count: 33, total_results_count: 811}
    */
-  public onPaginationSubscribeHandler = paginationMetadata => {
-
-    if (typeof paginationMetadata !== 'undefined'  && typeof paginationMetadata.total_pages_count !== 'undefined') {
+  public onPaginationSubscribeHandler = (paginationMetadata) => {
+    if (typeof paginationMetadata !== 'undefined' && typeof paginationMetadata.total_pages_count !== 'undefined') {
       this.paginationMetadata.total_pages_count = paginationMetadata.total_pages_count;
       this.paginationMetadata.total_results_count = paginationMetadata.total_results_count;
 
@@ -274,7 +273,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
         this.store.dispatch(new fromCasesFeature.ApplyCaselistFilter(event));
       }
     }
-  }
+  };
 
   public getEvent() {
     let formGroupFromLS = null;
@@ -284,13 +283,13 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.setCaseListFilterDefaults();
     if (this.selected) {
       formGroupFromLS = this.selected.formGroup ? (this.selected.formGroup.value ? this.selected.formGroup.value : this.selected.formGroup) : null;
-      jurisdictionFromLS = { id: this.selected.jurisdiction.id};
+      jurisdictionFromLS = { id: this.selected.jurisdiction.id };
       caseTypeGroupFromLS = { id: this.selected.caseType.id };
       caseStateGroupFromLS = { id: this.selected.caseState ? this.selected.caseState.id : null };
     } else if (this.savedQueryParams) {
       this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
       formGroupFromLS = JSON.parse(localStorage.getItem('workbasket-filter-form-group-value'));
-      jurisdictionFromLS = { id: this.savedQueryParams.jurisdiction};
+      jurisdictionFromLS = { id: this.savedQueryParams.jurisdiction };
       caseTypeGroupFromLS = { id: this.savedQueryParams['case-type'] };
       caseStateGroupFromLS = { id: this.savedQueryParams['case-state'] };
     }
@@ -299,10 +298,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     if (jurisdictionFromLS && caseTypeGroupFromLS && caseStateGroupFromLS && metadataFieldsGroupFromLS) {
       return this.createEvent(jurisdictionFromLS, caseTypeGroupFromLS, caseStateGroupFromLS, metadataFieldsGroupFromLS,
-                                formGroupFromLS, this.page, this.sortParameters);
-    } else {
-      return null;
+        formGroupFromLS, this.page, this.sortParameters);
     }
+
+    return null;
   }
 
   /**
@@ -326,7 +325,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       },
       sortParameters
     };
-  }
+  };
 
   /**
    * Display the name seen on the toggle button.
@@ -379,7 +378,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public caseShareIsVisible(project: any[]): boolean {
-    const [ userDetails, shareableJurisdictions, jurisdiction ] = project;
+    const [userDetails, shareableJurisdictions, jurisdiction] = project;
     if (userDetails && shareableJurisdictions && jurisdiction) {
       return userDetails.canShareCases && shareableJurisdictions.includes(jurisdiction.id);
     }
@@ -452,11 +451,14 @@ export class CaseListComponent implements OnInit, OnDestroy {
     if (this.elasticSearchFlagSubsription) {
       this.elasticSearchFlagSubsription.unsubscribe();
     }
+
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   public getOrganisationDetailsFromStore(): void {
     this.store.dispatch(new fromStore.LoadOrganisation());
-    this.orgStore.pipe(select(fromStore.getOrganisationSel)).subscribe(response => {
+    this.orgStore.pipe(select(fromStore.getOrganisationSel)).subscribe((response) => {
       this.organisationDetails = response;
       if (this.organisationDetails && this.organisationDetails.organisationIdentifier) {
         sessionStorage.setItem('organisationDetails', JSON.stringify(this.organisationDetails));

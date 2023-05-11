@@ -6,42 +6,38 @@ import { TermsConditionsService } from '../../../app/services/terms-and-conditio
 import * as fromRoot from '../../store';
 
 @Component({
-    selector: 'exui-terms-and-conditions',
-    templateUrl: './terms-and-conditions.component.html'
+  selector: 'exui-terms-and-conditions',
+  templateUrl: './terms-and-conditions.component.html'
 })
 export class TermsAndConditionsComponent implements OnInit, OnDestroy {
+  public document: TCDocument = null;
+  private readonly subscriptions = new Subscription();
 
-    public document: TCDocument = null;
-    private readonly subscriptions: Subscription[] = [];
+  public isTandCEnabled: boolean = false;
 
-    public isTandCEnabled: boolean = false;
+  constructor(private readonly store: Store<fromRoot.State>,
+                private readonly termsAndConditionsService: TermsConditionsService) {}
 
-    constructor(private readonly store: Store<fromRoot.State>,
-                private readonly termsAndConditionsService: TermsConditionsService) {
-    }
+  public ngOnInit() {
+    this.termsAndConditionsService.isTermsConditionsFeatureEnabled().subscribe((enabled) => {
+      if (enabled) {
+        this.isTandCEnabled = true;
+        const s = this.store.pipe(
+          select(fromRoot.getTermsAndConditions)
+        ).subscribe((doc) => {
+          if (doc) {
+            this.document = doc;
+          } else {
+            this.store.dispatch(new fromRoot.LoadTermsConditions());
+          }
+        });
 
-    public ngOnInit() {
-      const tnc = this.termsAndConditionsService.isTermsConditionsFeatureEnabled().subscribe(enabled => {
-        if (enabled) {
-          this.isTandCEnabled = true;
-          const s = this.store.pipe(
-            select(fromRoot.getTermsAndConditions)
-        ).subscribe(doc => {
-            if (doc) {
-                this.document = doc;
-            } else {
-                this.store.dispatch(new fromRoot.LoadTermsConditions());
-            }
-          });
-          this.subscriptions.push(s);
-        }
-        this.subscriptions.push(tnc);
-      });
-    }
+        this.subscriptions.add(s);
+      }
+    });
+  }
 
-    public ngOnDestroy() {
-      this.subscriptions.forEach(s => {
-        if (s) { s.unsubscribe(); }
-      });
-    }
+  public ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
 }

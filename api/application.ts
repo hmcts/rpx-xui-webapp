@@ -3,13 +3,14 @@ import * as cookieParser from 'cookie-parser';
 import * as csrf from 'csurf';
 import * as express from 'express';
 import * as helmet from 'helmet';
+import amRoutes from './accessManagement/routes';
 import { getXuiNodeMiddleware } from './auth';
 import { getConfigValue, showFeature } from './configuration';
 import {
   FEATURE_HELMET_ENABLED,
   HELMET,
   PROTOCOL,
-  SESSION_SECRET,
+  SESSION_SECRET
 } from './configuration/references';
 import * as health from './health';
 import * as log4jui from './lib/log4jui';
@@ -18,8 +19,7 @@ import * as tunnel from './lib/tunnel';
 import openRoutes from './openRoutes';
 import { initProxy } from './proxy.config';
 import routes from './routes';
-import taskRouter from './workAllocation/routes';
-import workAllocation2Router from './workAllocation2/routes';
+import workAllocationRouter from './workAllocation/routes';
 
 export const app = express();
 
@@ -39,13 +39,13 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         'dc.services.visualstudio.com',
         '*.launchdarkly.com',
         'www.google-analytics.com',
-        '*.hmcts.net',
+        '*.hmcts.net'
       ],
-      defaultSrc: [`'self'`],
+      defaultSrc: ['\'self\''],
       fontSrc: ['\'self\'', 'https://fonts.gstatic.com', 'data:'],
-      formAction: [`'none'`],
-      frameAncestors: [`'self'`],
-      frameSrc: [`'self'`],
+      formAction: ['\'none\''],
+      frameAncestors: ['\'self\''],
+      frameSrc: ['\'self\''],
       imgSrc: [
         '\'self\'',
         'data:',
@@ -55,7 +55,7 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         'http://stats.g.doubleclick.net/',
         'http://ssl.gstatic.com/',
         'http://www.gstatic.com/',
-        'https://fonts.gstatic.com',
+        'https://fonts.gstatic.com'
       ],
       mediaSrc: ['\'self\''],
       scriptSrc: [
@@ -64,16 +64,16 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         '\'unsafe-eval\'',
         'www.google-analytics.com',
         'www.googletagmanager.com',
-        'az416426.vo.msecnd.net',
+        'az416426.vo.msecnd.net'
       ],
       styleSrc: [
         '\'self\'',
         '\'unsafe-inline\'',
         'https://fonts.googleapis.com',
         'https://fonts.gstatic.com',
-        'http://tagmanager.google.com/',
-      ],
-    },
+        'http://tagmanager.google.com/'
+      ]
+    }
   }));
   app.use((req, res, next) => {
     res.setHeader('X-Robots-Tag', 'noindex');
@@ -109,13 +109,11 @@ initProxy(app);
 app.use(bodyParser.json({ limit: '5mb' }));
 app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 
-// TODO: No dash?
-// TODO: taskRouter should be called workAllocationRouter
-app.use('/workallocation', taskRouter);
-app.use('/workallocation2', workAllocation2Router);
-app.use('/external', openRoutes);
+app.use('/am', amRoutes);
 app.use('/api', routes);
-app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ["GET"] }));
-// @ts-ignore
+app.use('/external', openRoutes);
+app.use('/workallocation', workAllocationRouter);
+app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ['GET'] }));
+
 const logger: JUILogger = log4jui.getLogger('Application');
 logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);

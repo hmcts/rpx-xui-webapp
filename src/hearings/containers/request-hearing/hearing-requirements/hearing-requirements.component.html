@@ -1,0 +1,26 @@
+<div *ngIf="serviceHearingValuesModel" class="govuk-grid-row">
+  <div class="govuk-grid-column-three-quarters">
+    <exui-hearing-parties-title></exui-hearing-parties-title>
+    <h1 class="govuk-heading-l">
+      Hearing requirements
+    </h1>
+    <exui-hearing-amend-warning-msg
+      [warningMsg]="'Review the information on this page, it has been updated.'">
+    </exui-hearing-amend-warning-msg>
+    <div *ngFor="let caseType of caseTypes">
+      <p class="govuk-body govuk-!-margin-bottom-2" >{{caseType.categoryDisplayValue}}</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li *ngFor="let subType of caseType.childNodes">{{subType.categoryDisplayValue}}</li>
+      </ul>
+    </div>
+    <exui-case-flags
+      [info]="'Any reasonable adjustments on this page will be included in the hearing request.'"
+      [caseFlagsGroup]="reasonableAdjustmentFlags">
+    </exui-case-flags>
+    <p class="govuk-body" *ngIf="serviceHearingValuesModel.caseFlags?.flagAmendURL">Review <a id="linkAmendFlags"
+                                    target="_blank"
+                                    href="{{serviceHearingValuesModel.caseFlags?.flagAmendURL}}">
+      case flags and reasonable adjustments (opens in new tab)</a> if you need to make any changes.
+    </p>
+  </div>
+</div>

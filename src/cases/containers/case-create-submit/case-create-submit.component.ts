@@ -1,36 +1,35 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { CaseEventTrigger, CaseEventData, CasesService, DraftService, Draft } from '@hmcts/ccd-case-ui-toolkit';
-import * as fromCaseCreate from '../../store';
-import {Store} from '@ngrx/store';
+import { ActivatedRoute, Params } from '@angular/router';
+import { CaseEventData, CaseEventTrigger, CasesService, Draft, DraftService } from '@hmcts/ccd-case-ui-toolkit';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { ActionBindingModel } from '../../../cases/models/create-case-actions.model';
 import * as fromCases from '../../../cases/store';
-import { Observable } from 'rxjs';
+import * as fromCaseCreate from '../../store';
 
 @Component({
   selector: 'exui-case-create-submit',
   templateUrl: 'case-create-submit.component.html'
 })
 export class CaseCreateSubmitComponent implements OnInit {
+  public eventTrigger: CaseEventTrigger = new CaseEventTrigger();
 
-  eventTrigger: CaseEventTrigger;
+  public jurisdictionId: string;
+  public caseTypeId: string;
 
-  jurisdictionId: string;
-  caseTypeId: string;
-
-  caseCreateSubmitEventsBindings: ActionBindingModel[];
-  fromCasesFeature: any;
+  public caseCreateSubmitEventsBindings: ActionBindingModel[];
+  public fromCasesFeature: any;
 
   constructor(
-    private casesService: CasesService,
-    private draftService: DraftService,
-    private route: ActivatedRoute,
-    private store: Store<fromCaseCreate.State>
+    private readonly casesService: CasesService,
+    private readonly draftService: DraftService,
+    private readonly route: ActivatedRoute,
+    private readonly store: Store<fromCaseCreate.State>
   ) {
     this.eventTrigger = route.snapshot.data.eventTrigger;
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.fromCasesFeature = fromCases;
     this.route.params.subscribe((params: Params) => {
       this.jurisdictionId = params.jid;
@@ -41,29 +40,28 @@ export class CaseCreateSubmitComponent implements OnInit {
      * Mapping CCD components eventsBindings to ExUI Actions
      */
     this.caseCreateSubmitEventsBindings = [
-      {type: 'cancelled', action: 'CreateCaseReset'},
-      {type: 'submitted', action: 'ApplyChange'}
+      { type: 'cancelled', action: 'CreateCaseReset' },
+      { type: 'submitted', action: 'ApplyChange' }
     ];
   }
 
-  submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
+  public submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
     return (sanitizedEditForm: CaseEventData) => {
       sanitizedEditForm.draft_id = this.eventTrigger.case_id;
       return this.casesService.createCase(this.caseTypeId, sanitizedEditForm) as any;
     };
   }
 
-  validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {
+  public validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {
     return (sanitizedEditForm: CaseEventData, pageId: string) => this.casesService.validateCase(this.caseTypeId,
       sanitizedEditForm, pageId) as any;
   }
 
-  saveDraft(): (caseEventData: CaseEventData) => Observable<Draft> {
+  public saveDraft(): (caseEventData: CaseEventData) => Observable<Draft> {
     if (this.eventTrigger.can_save_draft) {
       return (caseEventData: CaseEventData) => this.draftService.createOrUpdateDraft(this.caseTypeId,
-            this.eventTrigger.case_id,
-            caseEventData) as any;
+        this.eventTrigger.case_id,
+        caseEventData) as any;
     }
   }
-
 }

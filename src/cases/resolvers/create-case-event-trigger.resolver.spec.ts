@@ -1,10 +1,9 @@
-import { Observable } from 'rxjs';
+import { CaseEventTrigger, createCaseEventTrigger, DRAFT_PREFIX, DRAFT_QUERY_PARAM, HttpError } from '@hmcts/ccd-case-ui-toolkit';
+import { Observable, of, throwError } from 'rxjs';
 import { CreateCaseEventTriggerResolver } from './create-case-event-trigger.resolver';
 import createSpyObj = jasmine.createSpyObj;
-import { DRAFT_PREFIX, DRAFT_QUERY_PARAM, createCaseEventTrigger, HttpError, CaseEventTrigger } from '@hmcts/ccd-case-ui-toolkit';
 
 describe('CreateCaseFieldsResolver', () => {
-
   const PARAM_JURISDICTION_ID = CreateCaseEventTriggerResolver.PARAM_JURISDICTION_ID;
   const PARAM_CASE_TYPE_ID = CreateCaseEventTriggerResolver.PARAM_CASE_TYPE_ID;
   const PARAM_EVENT_ID = CreateCaseEventTriggerResolver.PARAM_EVENT_ID;
@@ -15,8 +14,8 @@ describe('CreateCaseFieldsResolver', () => {
   const EVENT_TRIGGER_ID = 'enterCaseIntoLegacy';
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(EVENT_TRIGGER_ID, 'Into legacy', 'caseId', true, []);
 
-  const DRAFT_ID = DRAFT_PREFIX + '12345';
-  const EVENT_TRIGGER_OBS: Observable<CaseEventTrigger> = Observable.of(EVENT_TRIGGER);
+  const DRAFT_ID = `${DRAFT_PREFIX}12345`;
+  const EVENT_TRIGGER_OBS: Observable<CaseEventTrigger> = of(EVENT_TRIGGER);
   const ERROR: HttpError = {
     timestamp: '',
     status: 422,
@@ -29,10 +28,11 @@ describe('CreateCaseFieldsResolver', () => {
   let createCaseFieldsResolver: CreateCaseEventTriggerResolver;
 
   let casesService: any;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let alertService: any;
   let route: any;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     casesService = createSpyObj('casesService', ['getEventTrigger']);
     alertService = createSpyObj('alertService', ['error']);
 
@@ -40,10 +40,10 @@ describe('CreateCaseFieldsResolver', () => {
 
     route = {
       paramMap: createSpyObj('paramMap', ['get']),
-      queryParamMap: createSpyObj('queryParamMap', ['get']),
+      queryParamMap: createSpyObj('queryParamMap', ['get'])
     };
 
-    route.paramMap.get.and.callFake(key => {
+    route.paramMap.get.and.callFake((key) => {
       switch (key) {
         case PARAM_JURISDICTION_ID:
           return JURISDICTION;
@@ -51,10 +51,12 @@ describe('CreateCaseFieldsResolver', () => {
           return CASE_TYPE;
         case PARAM_EVENT_ID:
           return EVENT_TRIGGER_ID;
+        default:
+          break;
       }
     });
 
-    route.queryParamMap.get.and.callFake(key => {
+    route.queryParamMap.get.and.callFake((key) => {
       switch (key) {
         case QUERY_PARAM_IGNORE_WARNINGS:
           return IGNORE_WARNINGS;
@@ -68,7 +70,7 @@ describe('CreateCaseFieldsResolver', () => {
 
     createCaseFieldsResolver
       .resolve(route)
-      .subscribe(triggerData => {
+      .subscribe((triggerData) => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
@@ -85,9 +87,9 @@ describe('CreateCaseFieldsResolver', () => {
   it('should resolve event trigger when route is not :jid/:ctid/:eid but cache is empty', () => {
     route = {
       firstChild: {
-          url: ['someChild']
-        },
-      queryParamMap : createSpyObj('queryParamMap', ['get']),
+        url: ['someChild']
+      },
+      queryParamMap: createSpyObj('queryParamMap', ['get']),
       paramMap: createSpyObj('paramMap', ['get'])
     };
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
@@ -95,7 +97,7 @@ describe('CreateCaseFieldsResolver', () => {
 
     createCaseFieldsResolver
       .resolve(route)
-      .subscribe(triggerData => {
+      .subscribe((triggerData) => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
@@ -106,9 +108,9 @@ describe('CreateCaseFieldsResolver', () => {
   it('should return cached event trigger when route is not :jid/:ctid/:eid if cache is not empty', () => {
     route = {
       firstChild: {
-          url: ['someChild']
-        },
-      queryParamMap : createSpyObj('queryParamMap', ['get']),
+        url: ['someChild']
+      },
+      queryParamMap: createSpyObj('queryParamMap', ['get']),
       paramMap: createSpyObj('paramMap', ['get'])
     };
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
@@ -116,7 +118,7 @@ describe('CreateCaseFieldsResolver', () => {
 
     createCaseFieldsResolver
       .resolve(route)
-      .subscribe(triggerData => {
+      .subscribe((triggerData) => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
@@ -125,7 +127,7 @@ describe('CreateCaseFieldsResolver', () => {
   });
 
   it('should use draftId when resuming create event ', () => {
-    route.queryParamMap.get.and.callFake(key => {
+    route.queryParamMap.get.and.callFake((key) => {
       switch (key) {
         case QUERY_PARAM_IGNORE_WARNINGS:
           return IGNORE_WARNINGS;
@@ -137,7 +139,7 @@ describe('CreateCaseFieldsResolver', () => {
 
     createCaseFieldsResolver
       .resolve(route)
-      .subscribe(triggerData => {
+      .subscribe((triggerData) => {
         expect(triggerData).toBe(EVENT_TRIGGER);
       });
 
@@ -149,16 +151,15 @@ describe('CreateCaseFieldsResolver', () => {
     expect(route.queryParamMap.get).toHaveBeenCalledTimes(2);
   });
 
-  it('should create error alert when event trigger cannot be retrieved', done => {
-    casesService.getEventTrigger.and.returnValue(Observable.throwError(ERROR));
+  it('should create error alert when event trigger cannot be retrieved', async () => {
+    casesService.getEventTrigger.and.returnValue(throwError(ERROR));
 
     createCaseFieldsResolver
       .resolve(route)
-      .subscribe(data => {
+      .subscribe((data) => {
         fail(data);
-      }, err => {
+      }, (err) => {
         expect(err).toBeTruthy();
-        done();
       });
   });
 });

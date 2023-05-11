@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   AbstractAppConfig,
@@ -8,7 +8,6 @@ import {
   AuthService as CCDAuthService,
   CaseEditWizardGuard,
   CasesService,
-  CaseUIToolkitModule,
   DocumentManagementService,
   DraftService,
   HttpErrorService,
@@ -18,21 +17,24 @@ import {
   RequestOptionsBuilder,
   RouterHelperService,
   SearchFiltersModule,
-  SearchService,
+  SearchService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { EffectsModule } from '@ngrx/effects';
-import {combineReducers, StoreModule} from '@ngrx/store';
+import { combineReducers, StoreModule } from '@ngrx/store';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { reducers } from '../../../app/store';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
 import { SharedModule } from '../../../app/shared/shared.module';
+import { reducers } from '../../../app/store';
 import * as fromCases from '../../store/reducers';
 import { CasesCreateComponent } from './case-create.component';
+
 class MockSortService {
   public features = {};
-  public getFeatureToggle() { }
-  public getEditorConfiguration() { }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public getFeatureToggle() {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public getEditorConfiguration() {}
 }
 
 describe('CaseCreateComponent', () => {
@@ -43,16 +45,15 @@ describe('CaseCreateComponent', () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
-        CaseUIToolkitModule,
         HttpClientTestingModule,
-        StoreModule.forRoot({...reducers, cases: combineReducers(fromCases.reducers)}),
+        StoreModule.forRoot({ ...reducers, cases: combineReducers(fromCases.reducers) }),
         EffectsModule.forRoot([]),
         SharedModule,
-        SearchFiltersModule,
+        SearchFiltersModule
       ],
       declarations: [CasesCreateComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -95,14 +96,14 @@ describe('CaseCreateComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CasesCreateComponent);
     component = fixture.componentInstance;
-    component.caseCreateInputs = {jurisdictionId: '', caseTypeId: '', eventId: ''};
+    component.caseCreateInputs = { jurisdictionId: '', caseTypeId: '', eventId: '' };
 
     fixture.detectChanges();
-
   });
 
   afterEach(() => {
-    spyOn(component, 'ngOnDestroy').and.callFake(() => { });
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    spyOn(component, 'ngOnDestroy').and.callFake(() => {});
     fixture.destroy();
   });
 
@@ -127,5 +128,4 @@ describe('CaseCreateComponent', () => {
     component.unSubscribe(null);
     expect(subscription.unsubscribe).not.toHaveBeenCalled();
   });
-
 });

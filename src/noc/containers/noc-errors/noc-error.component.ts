@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { NoCErrorMap } from '../../constants/nocErrorMap.enum';
@@ -6,9 +6,9 @@ import { NocHttpError, NocNavigation } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({
-    selector: 'exui-noc-error',
-    templateUrl: 'noc-error.component.html'
-  })
+  selector: 'exui-noc-error',
+  templateUrl: 'noc-error.component.html'
+})
 export class NocErrorComponent implements OnChanges {
   @Input() public navEvent: NocNavigation;
   public nocErrorMap = NoCErrorMap;
@@ -20,8 +20,7 @@ export class NocErrorComponent implements OnChanges {
     };
   }
 
-  public ngOnChanges(changes: SimpleChanges) {
+  public ngOnChanges() {
     this.lastError$ = this.store.pipe(select(fromFeature.lastError));
   }
-
 }

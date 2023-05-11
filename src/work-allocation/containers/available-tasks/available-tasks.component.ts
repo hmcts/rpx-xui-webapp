@@ -1,86 +1,93 @@
 import { Component } from '@angular/core';
-
-import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
-import { Location, SearchTaskRequest } from '../../models/dtos';
-import { InvokedTaskAction, Task, TaskFieldConfig } from '../../models/tasks';
-import { handleFatalErrors, REDIRECTS } from '../../utils';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { AppUtils } from '../../../app/app-utils';
+import { UserInfo, UserRole } from '../../../app/models';
+import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
+import { CONFIG_CONSTANTS_NOT_RELEASE4 } from '../../components/constants/config.constants';
+import { TaskActionIds, TaskContext } from '../../enums';
+import { FieldConfig } from '../../models/common';
+import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
+import { InvokedTaskAction, Task } from '../../models/tasks';
+import { handleTasksFatalErrors, REDIRECTS } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
+import { InfoMessageType } from '../../../role-access/models/enums';
 
 @Component({
   selector: 'exui-available-tasks',
   templateUrl: 'available-tasks.component.html'
 })
 export class AvailableTasksComponent extends TaskListWrapperComponent {
-  private selectedLocations: Location[];
-
-  public get fields(): TaskFieldConfig[] {
-    return ConfigConstants.AvailableTasks;
+  public get fields(): FieldConfig[] {
+    let fields = [];
+    this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
+      fields = this.isCurrentUserJudicial() ?
+        (isRelease4 ? ConfigConstants.AvailableTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.AvailableTasksForJudicial) :
+        (isRelease4 ? ConfigConstants.AvailableTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AvailableTasksForLegalOps);
+    });
+    return fields;
   }
 
   public get sortSessionKey(): string {
     return SortConstants.Session.AvailableTasks;
   }
 
+  public get pageSessionKey(): string {
+    return PageConstants.Session.AvailableTasks;
+  }
+
   public get view(): string {
     return ListConstants.View.AvailableTasks;
   }
 
+  public get emptyMessage(): string {
+    return ListConstants.EmptyMessage.AvailableTasks;
+  }
+
   /**
+   * TODO: When implementing filtering this may need to be changed to get location(s) from filter
    * Override the default.
    */
   public getSearchTaskRequestPagination(): SearchTaskRequest {
-    return {
-      search_parameters: [
-        this.getLocationParameter(),
-        { key: 'state', operator: 'IN', values: ['unassigned'] }
-      ],
-      sorting_parameters: [this.getSortParameter()],
-      pagination_parameters: this.getPaginationParameter()
-    };
-  }
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
+      const searchParameters: SearchTaskParameter[] = [
+        { key: 'jurisdiction', operator: 'IN', values: this.selectedServices }
+      ];
+      const locationParameter = this.getLocationParameter();
+      const typesOfWorkParameter = this.getTypesOfWorkParameter();
 
-  /**
-   * When the filter changes, we need to reload the list of tasks.
-   * @param locations The currently selected locations.
-   */
-  public onLocationsChanged(locations: Location[]): void {
-    this.infoMessageCommService.removeAllMessages();
-    this.selectedLocations = [ ...locations ];
-    this.loadTasks();
-  }
-
-  /**
-   * Override the super's loadTasks() method to first check
-   * for locations.
-   */
-  public loadTasks(): void {
-    if (this.selectedLocations) {
-      super.loadTasks();
+      if (locationParameter) {
+        searchParameters.push(locationParameter);
+      }
+      if (typesOfWorkParameter) {
+        searchParameters.push(typesOfWorkParameter);
+      }
+      const searchTaskParameter: SearchTaskRequest = {
+        search_parameters: searchParameters,
+        sorting_parameters: [...this.getSortParameter()],
+        search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
+        pagination_parameters: this.getPaginationParameter()
+      };
+      if (this.updatedTaskPermission) {
+        searchTaskParameter.request_context = TaskContext.AVAILABLE_TASKS;
+      }
+      return searchTaskParameter;
     }
-  }
-
-  private getLocationParameter() {
-    let values = [];
-    if (this.selectedLocations) {
-      values = this.selectedLocations.map(loc => loc.id).sort();
-    }
-    return { key: 'location', operator: 'IN', values };
   }
 
   /**
    * A User 'Claims' themselves a task aka. 'Assign to me'.
    */
   public claimTask(taskId: string): void {
-
     this.taskService.claimTask(taskId).subscribe(() => {
       this.infoMessageCommService.nextMessage({
         type: InfoMessageType.SUCCESS,
-        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
+        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
       });
       this.refreshTasks();
-    }, error => {
-
+    }, (error) => {
       this.claimTaskErrors(error.status);
     });
   }
@@ -90,15 +97,15 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    */
   public claimTaskAndGo(task: Task): void {
     this.taskService.claimTask(task.id).subscribe(() => {
-      const goToCaseUrl = `/cases/case-details/${task.case_id}`;
+      const goToCaseUrl = `/cases/case-details/${task.case_id}/tasks`;
       // navigates to case details page for specific case id
       this.router.navigate([goToCaseUrl], {
         state: {
           showMessage: true,
-          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}
-        });
-    }, error => {
-
+          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
+        }
+      });
+    }, (error) => {
       this.claimTaskErrors(error.status);
     });
   }
@@ -108,13 +115,12 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    * that the Task is no longer available.
    */
   public claimTaskErrors(status: number): void {
-
     const REDIRECT_404 = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }];
-    const handledStatus = handleFatalErrors(status, this.router, REDIRECT_404);
+    const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
     if (handledStatus > 0) {
       this.infoMessageCommService.nextMessage({
         type: InfoMessageType.WARNING,
-        message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
+        message: InfoMessage.TASK_NO_LONGER_AVAILABLE
       });
       if (handledStatus === 400) {
         this.refreshTasks();
@@ -134,5 +140,28 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       default:
         return super.onActionHandler(taskAction);
     }
+  }
+
+  /**
+   * Handle the paging event
+   */
+  public onPaginationEvent(pageNumber: number): void {
+    this.onPaginationHandler(pageNumber);
+  }
+
+  private getLocationParameter(): SearchTaskParameter {
+    if (this.selectedLocations && this.selectedLocations.length > 0) {
+      return { key: 'location', operator: 'IN', values: this.selectedLocations };
+    }
+
+    return null;
+  }
+
+  private getTypesOfWorkParameter(): SearchTaskParameter {
+    if (this.selectedWorkTypes && this.selectedWorkTypes.length > 0) {
+      return { key: 'work_type', operator: 'IN', values: this.selectedWorkTypes };
+    }
+
+    return null;
   }
 }

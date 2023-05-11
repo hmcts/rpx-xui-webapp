@@ -1,28 +1,27 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs/internal/observable/of';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { State } from '../../../../app/store';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs/internal/observable/of';
+import { UserDetails } from '../../../../app/models';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { EXCLUSION_OPTION } from '../../../constants';
 import { ExcludeOption, ExclusionNavigationEvent } from '../../../models';
 import { ChooseExclusionComponent } from './choose-exclusion.component';
-import { UserDetails } from '../../../../app/models';
 
 describe('ChooseExclusionComponent', () => {
   const radioOptionControl: FormControl = new FormControl('');
-  const formGroup: FormGroup = new FormGroup({[EXCLUSION_OPTION]: radioOptionControl});
+  const formGroup: FormGroup = new FormGroup({ [EXCLUSION_OPTION]: radioOptionControl });
 
   let component: ChooseExclusionComponent;
   let fixture: ComponentFixture<ChooseExclusionComponent>;
-  let store: MockStore<State>;
+  let store;
 
   let spyOnPipeToStore = jasmine.createSpy();
   let spyOnStoreDispatch = jasmine.createSpy();
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ChooseRadioOptionComponent, ChooseExclusionComponent],
@@ -37,13 +36,13 @@ describe('ChooseExclusionComponent', () => {
   }));
 
   beforeEach(() => {
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
     spyOnStoreDispatch = spyOn(store, 'dispatch');
     fixture = TestBed.createComponent(ChooseExclusionComponent);
     component = fixture.componentInstance;
     component.formGroup = formGroup;
-    spyOnPipeToStore.and.returnValue(of([{isCaseAllocator: true}, {}]));
+    spyOnPipeToStore.and.returnValue(of([{ isCaseAllocator: true }, {}]));
     fixture.detectChanges();
   });
 
@@ -53,11 +52,11 @@ describe('ChooseExclusionComponent', () => {
 
   it('should check whether user is a case allocator', () => {
     const userDetails = {} as UserDetails;
-    userDetails.roleAssignmentInfo = [{isCaseAllocator: true, primaryLocation: '', jurisdiction: 'IA'}];
+    userDetails.roleAssignmentInfo = [{ isCaseAllocator: true, primaryLocation: '', jurisdiction: 'IA' }];
     component.setOptionsList(userDetails, 'IA');
     expect(component.optionsList.length).toEqual(2);
 
-    userDetails.roleAssignmentInfo = [{isCaseAllocator: false, primaryLocation: '', jurisdiction: ''}];
+    userDetails.roleAssignmentInfo = [{ isCaseAllocator: false, primaryLocation: '', jurisdiction: '' }];
     component.setOptionsList(userDetails, 'DIVORCE');
     expect(component.optionsList.length).toEqual(1);
   });

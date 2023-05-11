@@ -1,15 +1,14 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CaseSearchComponent } from './case-search.component';
-import { Store, StoreModule, combineReducers } from '@ngrx/store';
-import * as fromCaseSearchStore from '../../store';
-import { RouterTestingModule } from '@angular/router/testing';
-import * as fromRoot from '../../../app/store/reducers';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import { of } from 'rxjs';
-import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { ApplySearchFilterForES, SearchFilterToggle } from '../../store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { of } from 'rxjs';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import * as fromRoot from '../../../app/store/reducers';
+import * as fromCaseSearchStore from '../../store';
+import { CaseSearchComponent } from './case-search.component';
 
 describe('CaseSearchComponent', () => {
   let fixture: ComponentFixture<CaseSearchComponent>;
@@ -23,14 +22,14 @@ describe('CaseSearchComponent', () => {
     getPaginationPageSize: () => 10
   };
 
-  beforeEach(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromCaseSearchStore.reducers),
-        }),
+          feature: combineReducers(fromCaseSearchStore.reducers)
+        })
       ],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
@@ -47,7 +46,7 @@ describe('CaseSearchComponent', () => {
       ]
     }).compileComponents();
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     storePipeMock = spyOn(store, 'pipe');
     storeDispatchMock = spyOn(store, 'dispatch');
@@ -62,19 +61,17 @@ describe('CaseSearchComponent', () => {
     component.paginationMetadata$ = storePipeMock.and.returnValue(of(new PaginationMetadata()));
     component.metadataFields$ = storePipeMock.and.returnValue(of([]));
     fixture.detectChanges();
-  });
+  }));
 
   describe('applyChangePage()', () => {
-
     /**
      * We initially check that page is undefined, so that we know that calling the
      * findCaseListPaginationMetadata() function is definitely changing the components page property.
      */
     it('should update the components page property on page change.', () => {
-
       const event = {
         selected: {
-          page: 2,
+          page: 2
         }
       };
 
@@ -87,12 +84,11 @@ describe('CaseSearchComponent', () => {
      * pagination metadata.
      */
     it('should call findCaseListPaginationMetadata() on page change.', () => {
-
       const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
 
       const event = {
         selected: {
-          page: 1,
+          page: 1
         }
       };
 
@@ -103,29 +99,18 @@ describe('CaseSearchComponent', () => {
   });
 
   describe('applyFilter()', () => {
-
     let event;
 
     beforeEach(() => {
-
-      const jurisdiction = { id: 'PROBATE' };
-      const caseType = { id: 'GrantOfRepresentation' };
-      const caseState = { id: 'CaseCreated' };
-      const metadataFields = ['[CASE_REFERENCE]'];
-      const formGroupValues = {};
-      const page = 1;
-
       event = component.getEvent();
     });
 
     it('should call findCaseListPaginationMetadata() on apply of filter.', () => {
-
       const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
-      const spyOnGetEvent = spyOn(component, 'getEvent');
 
       event = {
         selected: {
-          page: 2,
+          page: 2
         }
       };
 
@@ -135,10 +120,9 @@ describe('CaseSearchComponent', () => {
     });
 
     it('should update the components page property on apply of a filter change.', () => {
-
       event = {
         selected: {
-          page: 2,
+          page: 2
         }
       };
       component.applyFilter(event);
@@ -148,30 +132,26 @@ describe('CaseSearchComponent', () => {
   });
 
   describe('getElasticSearchResults', () => {
-
     it('should dispatch an action to get results from elastic search endpoint.', () => {
-      const spyOnGetEvent = spyOn(component, 'getEvent').and.returnValue({});
+      spyOn(component, 'getEvent').and.returnValue({});
       component.getElasticSearchResults();
-      expect(storeDispatchMock).toHaveBeenCalledWith(new ApplySearchFilterForES({}));
+      expect(storeDispatchMock).toHaveBeenCalledWith(new fromCaseSearchStore.ApplySearchFilterForES({}));
     });
   });
 
   describe('toggleFilter()', () => {
-
     /**
      * TODO: We should always give the payload a proper name, not just payload.
      */
     it('should dispatch an action on toggle of the filter to show and hide the filter.', () => {
       component.showFilter = false;
       component.toggleFilter();
-      expect(storeDispatchMock).toHaveBeenCalledWith(new SearchFilterToggle(true));
+      expect(storeDispatchMock).toHaveBeenCalledWith(new fromCaseSearchStore.SearchFilterToggle(true));
     });
   });
 
   describe('onPaginationSubscribeHandler()', () => {
-
     it('should update the components paginationMetadata property, on return of subscription.', () => {
-
       const paginationMetadata = new PaginationMetadata();
       paginationMetadata.total_pages_count = 33;
       paginationMetadata.total_results_count = 811;
@@ -184,7 +164,6 @@ describe('CaseSearchComponent', () => {
   });
 
   describe('sort()', () => {
-
     it('should update sortParameters', () => {
       const sortParameters = {
         column: 'dummy',
@@ -197,5 +176,4 @@ describe('CaseSearchComponent', () => {
       expect(component.sortParameters).toEqual(sortParameters);
     });
   });
-
 });

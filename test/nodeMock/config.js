@@ -1,11 +1,11 @@
 
-
 module.exports = {
-    logRequests : [
-        '/workallocation2/retrieveCaseWorkersForServices',
-        '/api/role-access/roles/getJudicialUsers'
-    ],
-    logResponses:[
-        // '/api/role-access/roles/getJudicialUsers'
-    ]
+  logRequests: [
+    '/workallocation/retrieveCaseWorkersForServices',
+    '/api/role-access/roles/getJudicialUsers'
+  ],
+  logResponses: [
+    // '/api/locations/getLocationsById'
+    // '/api/role-access/roles/getJudicialUsers'
+  ]
 };

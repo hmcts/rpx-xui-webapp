@@ -1,55 +1,51 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   AlertService,
-  CaseUIToolkitModule,
-  ErrorNotifierService
+  ErrorNotifierService,
+  SessionStorageService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
-
 import { CaseDetailsHomeComponent } from '..';
 import { reducers } from '../../../app/store';
-import { InfoMessage } from '../../../work-allocation/enums';
 import * as fromFeature from '../../store';
-
+import { InfoMessage } from '../../../app/shared/enums/info-message';
 describe('CaseDetailsHomeComponent', () => {
   let component: CaseDetailsHomeComponent;
   let fixture: ComponentFixture<CaseDetailsHomeComponent>;
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
   const mockErrorNotifierService = jasmine.createSpyObj('ErrorNotifierService', ['announceError']);
-  const mockActivatedRoute = { data: of({case: {case_id: '1234', case_type: {id: 'caseTypeId', jurisdiction: {id: 'IA'}}}})};
+  const mockActivatedRoute = { data: of({ case: { case_id: '1234', case_type: { id: 'caseTypeId', jurisdiction: { id: 'IA' } } } }) };
   const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['setItem']);
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockRouter: any;
   let store: Store<fromFeature.State>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let storeDispatchMock: any;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         RouterTestingModule,
-        CaseUIToolkitModule,
-        StoreModule.forRoot({...reducers, cases: combineReducers(fromFeature.reducers)}),
+        StoreModule.forRoot({ ...reducers, cases: combineReducers(fromFeature.reducers) })
       ],
       declarations: [CaseDetailsHomeComponent],
       providers: [
         { provide: AlertService, useValue: mockAlertService },
         { provide: ErrorNotifierService, useValue: mockErrorNotifierService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        { provide: SessionStorageService, useValue: mockSessionStorageService  }
+        { provide: SessionStorageService, useValue: mockSessionStorageService }
       ]
     })
       .compileComponents();
   }));
 
   describe('entering page normally', () => {
-
     beforeEach(() => {
-      store = TestBed.get(Store);
+      store = TestBed.inject(Store);
       storeDispatchMock = spyOn(store, 'dispatch');
       fixture = TestBed.createComponent(CaseDetailsHomeComponent);
       component = fixture.componentInstance;
@@ -68,15 +64,13 @@ describe('CaseDetailsHomeComponent', () => {
     it('should not have a success message that is shown', () => {
       expect(mockAlertService.success).not.toHaveBeenCalled();
     });
-
   });
 
   describe('redirected from available-tasks assignment', () => {
-
     beforeEach(() => {
-      mockRouter = TestBed.get(Router);
-      spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({extras: { state: { showMessage: true, messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}}});
-      store = TestBed.get(Store);
+      mockRouter = TestBed.inject(Router);
+      spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({ extras: { state: { showMessage: true, messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS } } } as unknown as Navigation);
+      store = TestBed.inject(Store);
       storeDispatchMock = spyOn(store, 'dispatch');
       fixture = TestBed.createComponent(CaseDetailsHomeComponent);
       component = fixture.componentInstance;
@@ -89,7 +83,5 @@ describe('CaseDetailsHomeComponent', () => {
       expect(mockAlertService.setPreserveAlerts).toHaveBeenCalled();
       expect(mockAlertService.success).toHaveBeenCalled();
     });
-
   });
-
 });

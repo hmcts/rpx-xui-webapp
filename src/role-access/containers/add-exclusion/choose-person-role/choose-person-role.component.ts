@@ -2,8 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { select, Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subscription } from 'rxjs';
 import { ERROR_MESSAGE, PERSON_ROLE } from '../../../constants';
 import { ExclusionNavigationEvent, ExclusionState, Role } from '../../../models';
 import { RoleAllocationCaptionText, RoleAllocationTitleText } from '../../../models/enums';
@@ -36,22 +35,21 @@ export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
   public personRole: PersonRole;
 
   constructor(private readonly store: Store<fromFeature.State>,
-              private readonly roleExclusionsService: RoleExclusionsService) {
-  }
+              private readonly roleExclusionsService: RoleExclusionsService) {}
 
   public ngOnInit(): void {
     this.exclusionStateDataSub = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(
-      exclusionStateData => {
+      (exclusionStateData) => {
         this.personRole = exclusionStateData.personRole;
       }
     );
 
     this.radioOptionControl = new FormControl(this.personRole ? this.personRole : '', [Validators.required]);
-    this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
+    this.formGroup = new FormGroup({ [this.radioControlName]: this.radioOptionControl });
 
     this.roles$ = this.roleExclusionsService.getRolesCategory();
     this.roles$.subscribe((roles) => {
-      this.optionsList = roles.map(role => {
+      this.optionsList = roles.map((role) => {
         return {
           optionId: role.roleId, optionValue: role.roleName
         } as OptionsModel;

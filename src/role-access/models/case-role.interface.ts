@@ -12,8 +12,11 @@ export interface CaseRole {
   end: string;
   id: string;
   actorId: string;
-  actions: Action[];
+  actions?: Action[];
   email: string;
+  created?: string;
+  notes?: string;
+  requestedRole?: string;
 }
 
 export interface Action {

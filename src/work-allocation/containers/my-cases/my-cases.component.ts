@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models/user-details.model';
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
+import { CONFIG_CONSTANTS_NOT_RELEASE4 } from '../../components/constants/config.constants';
 import { FieldConfig } from '../../models/common';
 import { SearchCaseRequest } from '../../models/dtos';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
@@ -24,7 +25,13 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
   }
 
   public get fields(): FieldConfig[] {
-    return ConfigConstants.MyCases;
+    let fields = ConfigConstants.MyCases;
+    this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
+      if (!isRelease4) {
+        fields = CONFIG_CONSTANTS_NOT_RELEASE4.MyCases;
+      }
+    });
+    return fields;
   }
 
   public backUrl: string = 'work/my-work/my-cases';

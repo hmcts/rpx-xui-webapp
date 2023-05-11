@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { hearingActualsMainModel, hearingStageRefData, initialState, partyChannelsRefData, partySubChannelsRefData } from '../../../hearing.test.data';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
-import { ACTION } from '../../../models/hearings.enum';
+import { ACTION, HearingResult } from '../../../models/hearings.enum';
 import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
@@ -542,44 +542,46 @@ describe('HearingActualsSummaryBaseComponent', () => {
     expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.BACK);
   });
 
-  // it('should return empty string for hearing result reason type completed', () => {
-  //   const clonedActualModel = _.cloneDeep(hearingActualsMainModel);
-  //   const hearingOutcome = clonedActualModel.hearingActuals.hearingOutcome;
-  //   hearingOutcome.hearingResult = HearingResult.COMPLETED;
-  //   hearingOutcome.hearingResultReasonType = '';
-  //   const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
-  //   expect(description).toEqual('');
-  // });
+  it('should return empty string for hearing result reason type completed', () => {
+    const clonedActualModel = _.cloneDeep(hearingActualsMainModel);
+    const hearingOutcome = clonedActualModel.hearingActuals.hearingOutcome;
+    hearingOutcome.hearingResult = HearingResult.COMPLETED;
+    hearingOutcome.hearingResultReasonType = '';
+    const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
+    expect(description).toEqual('');
+  });
 
   // it('should check is errror bar handling', () => {
   //   expect(component.isHearingActualsDaysAvailable('2021-03-12')).toBeTruthy();
   //   expect(component.isHearingActualsPartiesAvailable('2021-03-12')).toBeTruthy();
   // });
 
-  // it('should return hearing result reason type description for adjourned', () => {
-  //   const clonedActualModel = _.cloneDeep(hearingActualsMainModel);
-  //   component.actualPartHeardReasonCodes = actualPartHeardReasonCodes;
-  //   const hearingOutcome = clonedActualModel.hearingActuals.hearingOutcome;
-  //   hearingOutcome.hearingResult = HearingResult.ADJOURNED;
-  //   hearingOutcome.hearingResultReasonType = 'postponedDueToOtherReasons';
-  //   const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
-  //   expect(description).toEqual('Postponed, due to Other Reasons');
-  // });
+  it('should return hearing result reason type description for adjourned', () => {
+    const clonedActualModel = _.cloneDeep(hearingActualsMainModel);
+    component.actualPartHeardReasonCodes = actualPartHeardReasonCodes;
+    const hearingOutcome = clonedActualModel.hearingActuals.hearingOutcome;
+    hearingOutcome.hearingResult = HearingResult.ADJOURNED;
+    hearingOutcome.hearingResultReasonType = 'postponedDueToOtherReasons';
+    const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
+    expect(description).toEqual('Postponed, due to Other Reasons');
+  });
 
-  // it('should return hearing result reason type description for cancelled', () => {
-  //   const clonedActualModel = _.cloneDeep(hearingActualsMainModel);
-  //   component.actualCancellationReasonCodes = actualCancellationReasonCodes;
-  //   const hearingOutcome = clonedActualModel.hearingActuals.hearingOutcome;
-  //   hearingOutcome.hearingResult = HearingResult.CANCELLED;
-  //   hearingOutcome.hearingResultReasonType = 'unable';
-  //   const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
-  //   expect(description).toEqual('Party unable to attend');
-  // });
+  it('should return hearing result reason type description for cancelled', () => {
+    const clonedActualModel = _.cloneDeep(hearingActualsMainModel);
+    component.actualCancellationReasonCodes = actualCancellationReasonCodes;
+    const hearingOutcome = clonedActualModel.hearingActuals.hearingOutcome;
+    hearingOutcome.hearingResult = HearingResult.CANCELLED;
+    hearingOutcome.hearingResultReasonType = 'unable';
+    const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
+    expect(description).toEqual('Party unable to attend');
+  });
 
   it('should return correct hearing type from the hearing types', () => {
     component.hearingTypes = hearingStageRefData;
     const description = component.getHearingTypeDescription('initial');
     expect(description).toEqual('Initial');
+    expect(component.isHearingAllRequiredDaysCovered()).toBeTruthy();
+    expect(component.isAllHearingActualsPartiesAvailable(hearingActualsMainModel)).toBeTruthy();
   });
 
   // it('should check is errror bar handling', () => {

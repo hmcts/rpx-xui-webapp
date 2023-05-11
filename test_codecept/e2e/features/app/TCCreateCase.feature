@@ -77,7 +77,6 @@ Feature: Test case type case creation and case details validations
         Then Validate Case event next step trigger actions
 
 
-@codecept_test
     Scenario: Validate update form page click on next step trigger actions
         When I click on search button
         Then Search page should be displayed

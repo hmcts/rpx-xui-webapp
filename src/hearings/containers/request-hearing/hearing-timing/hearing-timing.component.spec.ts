@@ -201,6 +201,10 @@ describe('HearingTimingComponent', () => {
     component.hearingRequestMainModel.hearingDetails.hearingWindow = { dateRangeEnd: '01-01-2021' };
     component.getFormData();
     expect(component.checkedHearingAvailability).toBe(RadioOptions.CHOOSE_DATE_RANGE);
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = {};
+    component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '01-01-2021';
+    component.getFormData();
+    expect(component.checkedHearingAvailability).toBe(RadioOptions.YES);
   });
 
   it('should check Hearing Length', () => {

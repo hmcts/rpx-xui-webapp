@@ -13,7 +13,9 @@
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="specificPanelSelection" name="specificPanel" (change)="showSpecificPanel('Yes');"
                 formControlName="specificPanel" type="radio" value="Yes" data-aria-controls="conditional-judge">
-              <label class="govuk-label govuk-radios__label" for="specificPanelSelection">Yes</label>
+              <label class="govuk-label govuk-radios__label" for="specificPanelSelection">
+                {{ 'Do you require a panel for this hearing?' | rpxTranslate: null : 'Yes'}}
+              </label>
             </div>
             <div class="govuk-radios__conditional" [ngClass]="{'govuk-radios__conditional--hidden': panelSelection !=='Yes'}">
               <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': !!panelSelectionError || !!childNodesValidationError}">
@@ -51,7 +53,9 @@
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="noSpecificPanel" name="specificPanel" (change)="showSpecificPanel('No');"
                 formControlName="specificPanel" type="radio" value="No" data-aria-controls="conditional-judge-type">
-              <label class="govuk-label govuk-radios__label" for="noSpecificPanel">No</label>
+              <label class="govuk-label govuk-radios__label" for="noSpecificPanel">
+                {{ 'Do you require a panel for this hearing?' | rpxTranslate: null : 'No'}}
+              </label>
             </div>
             <div class="govuk-radios__conditional" [ngClass]="{'govuk-radios__conditional--hidden': panelSelection !=='No'}">
             </div>

@@ -23,13 +23,13 @@
                 <div class="govuk-radios__item">
                     <input formControlName="paperHearing" class="govuk-radios__input" id="paperHearingYes" type="radio" value="Yes">
                     <label class="govuk-label govuk-radios__label" for="paperHearingYes">
-                        Yes
+                        {{ 'Will this be a paper hearing?' | rpxTranslate: null : 'Yes'}}
                     </label>
                 </div>
                 <div class="govuk-radios__item">
                     <input formControlName="paperHearing" class="govuk-radios__input" id="paperHearingNo" type="radio" value="No">
                     <label class="govuk-label govuk-radios__label" for="paperHearingNo">
-                        No
+                      {{ 'Will this be a paper hearing?' | rpxTranslate: null : 'No'}}
                     </label>
                 </div>
             </div>

@@ -16,14 +16,14 @@
               <input class="govuk-radios__input" id="yes" formControlName="hearingLink" name="hearingLink"
                 type="radio" value="yes" (change)="onHearingLink('yes')">
               <label class="govuk-label govuk-radios__label" for="yes">
-                Yes
+                {{ 'If you choose \'No\', you will be unable to link this hearing to any others without editing it.' | rpxTranslate: null : 'Yes'}}
               </label>
             </div>
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="no" formControlName="hearingLink" name="hearingLink"
                 type="radio" value="no" (change)="onHearingLink('no')">
               <label class="govuk-label govuk-radios__label" for="no">
-                No
+                {{ 'If you choose \'No\', you will be unable to link this hearing to any others without editing it.' | rpxTranslate: null : 'No'}}
               </label>
             </div>
           </div>

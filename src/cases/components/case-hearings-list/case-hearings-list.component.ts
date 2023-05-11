@@ -33,8 +33,8 @@ export class CaseHearingsListComponent implements OnInit {
   public hasReadOnlyAction: boolean = false;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly activatedRoute: ActivatedRoute,
-              private readonly router: Router) {
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly router: Router) {
     this.caseId = this.activatedRoute.snapshot.params.cid;
   }
 
@@ -78,8 +78,8 @@ export class CaseHearingsListComponent implements OnInit {
     this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary']);
   }
 
-  public cya(hearingID: string): void {
-    this.router.navigateByUrl(`/hearings/actuals/${hearingID}/hearing-actual-edit-summary`);
+  public async cya(hearingID: string): Promise<void> {
+    await this.router.navigateByUrl(`/hearings/actuals/${hearingID}/hearing-actual-edit-summary`);
   }
 
   public cancelHearing(hearingID: string): void {

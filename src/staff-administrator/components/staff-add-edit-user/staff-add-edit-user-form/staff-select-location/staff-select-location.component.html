@@ -1,0 +1,59 @@
+<div>
+  <div>
+    <div>
+      <ul class="hmcts-filter-tags selection-container">
+        <ng-container *ngFor="let location of selectedLocations">
+          <ng-template #locationSelectionTags>
+            <li class="location-selection">
+              <a class="hmcts-filter__tag" (click)="removeLocation(location)" href="javascript:void(0)">
+                {{ location.location }}
+              </a>
+            </li>
+          </ng-template>
+
+          <ng-container *ngIf="isPrimaryMode && location.is_primary">
+            <ng-container *ngTemplateOutlet="locationSelectionTags"></ng-container>
+          </ng-container>
+
+          <ng-container *ngIf="!isPrimaryMode && !location.is_primary">
+            <ng-container *ngTemplateOutlet="locationSelectionTags"></ng-container>
+          </ng-container>
+        </ng-container>
+      </ul>
+    </div>
+
+    <div class="search-location">
+      <div class="search-location__input">
+        <label class="govuk-body" for="location-primary">
+          Enter a location name
+        </label>
+        <input id="location-primary"
+          class="govuk-input"
+          [formControl]="searchTermFormControl"
+          [matAutocomplete]="autoSearchLocation"
+        >
+      </div>
+
+      <div class="auto-complete-container">
+        <mat-autocomplete class="mat-autocomplete-panel-extend" autoActiveFirstOption #autoSearchLocation="matAutocomplete">
+          <ng-container *ngIf="filteredList$ | async as filteredList">
+            <ng-container *ngIf="filteredList && filteredList.length >= 0">
+              <mat-option *ngFor="let location of filteredList" [value]="location.venue_name"
+                          (onSelectionChange)="autocompleteSelectedLocation = location">
+                {{ location.venue_name }}
+              </mat-option>
+              <mat-option *ngIf="filteredList.length === 0">No results found</mat-option>
+            </ng-container>
+          </ng-container>
+        </mat-autocomplete>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <a class="govuk-button govuk-button--secondary"
+       href="javascript:void(0)" (click)="addLocation()" data-module="govuk-button">
+      <ng-container>{{ addButtonTitle }}</ng-container>
+    </a>
+  </div>
+</div>

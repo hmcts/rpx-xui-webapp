@@ -8,13 +8,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CaseNotifier, PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
+import { InfoMessage } from 'src/app/shared/enums/info-message';
+import { InformationMessage } from 'src/app/shared/models';
+import { InfoMessageType } from 'src/role-access/models/enums';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { InfoMessage, InfoMessageType } from '../../enums';
-import { InformationMessage } from '../../models/comms';
 import { Task } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
@@ -53,7 +54,9 @@ describe('WorkAllocation', () => {
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
     const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
     const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['getValue']);
-    mockFeatureToggleService.getValue.and.returnValue(of(false));
+    mockFeatureToggleService.getValue.and.returnValue(
+      of({ configurations: [{ serviceName: 'IA', releaseVersion: '4' }] })
+    );
 
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({

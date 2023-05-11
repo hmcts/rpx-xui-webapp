@@ -35,6 +35,23 @@ describe('ApplicationRoutingComponent', () => {
     expect(component.navigateBasedOnUserRole).toHaveBeenCalled();
   });
 
+  it('should call navigateBasedOnUserRole on ngOnInit and return nothing', () => {
+    featureToggleMock.getValueOnce.and.returnValue(of(true));
+    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-ia'] }));
+    mockStore.pipe.and.returnValue(of({ userInfo: { roles: ['caseworker-civil'] } }));
+    router.url = '/something';
+    component.ngOnInit();
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should call navigateBasedOnUserRole on ngOnInit and call booking url', () => {
+    featureToggleMock.getValueOnce.and.returnValue(of(true));
+    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-ia'] }));
+    mockStore.pipe.and.returnValue(of({ userInfo: { roleCategory: 'JUDICIAL' }, roleAssignmentInfo: [{ bookable: true }] }));
+    component.ngOnInit();
+    expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.bookingUrl]);
+  });
+
   it('should navigateBasedOnUserRole caseworker-civil', () => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
     featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-ia'] }));

@@ -56,7 +56,7 @@ export class MyAccessComponent extends WorkCaseListWrapperComponent {
         })
           .pipe(take(1))
           .subscribe(() => item.isNew = false);
-      } else if (item.role.startsWith('specific-access')) {
+      } else if (item.role.startsWith('specific-access') && item.startDate !== 'Pending') {
         CasesService.updateSpecificAccessRequestAttributes(this.httpClient, item.case_id, {
           isNew: false
         })

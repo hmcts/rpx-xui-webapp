@@ -97,36 +97,33 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "globalSearchServices": "IA,CIVIL,PRIVATELAW",
-  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW",
+  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
+  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
-  "serviceRefDataMapping": [{"service": "IA", "serviceCodes": ["BFA1"]}, {"service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"]}, {"service": "PRIVATELAW", "serviceCodes": ["ABA5"]}],
+  "serviceRefDataMapping": [
+    { "service": "IA", "serviceCodes": ["BFA1"] },
+    { "service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"] },
+    { "service": "PRIVATELAW", "serviceCodes": ["ABA5"] },
+    { "service": "PUBLICLAW", "serviceCodes": ["ABA3"] }
+  ],
   "waSupportedServiceandCaseTypes": {
-    "configurations": [
-      {
-        "caseTypes": [
-          "Asylum"
-        ],
-        "releaseVersion": "3.5",
-        "serviceName": "IA"
+    "IA": {
+        "caseTypes": "Asylum",
+        "releaseVersion": "3.5"
       },
-      {
-        "caseTypes": [
-          "PRIVATELAW",
-          "PRLAPPS"
-        ],
-        "releaseVersion": "3.5",
-        "serviceName": "PRIVATELAW"
+    "CIVIL": {
+        "caseTypes": "CIVIL,GENERALAPPLICATION",
+        "releaseVersion": "3.5"
       },
-      {
-        "caseTypes": [
-          "CIVIL",
-          "GENERALAPPLICATION"
-        ],
-        "releaseVersion": "3.5",
-        "serviceName": "CIVIL"
+    "PRIVATELAW": {
+        "caseTypes": "PRIVATELAW,PRLAPPS",
+        "releaseVersion": "3.5"
+      },
+    "PUBLICLAW": {
+       "caseTypes": "PUBLICLAW",
+       "releaseVersion": "3.5"
       }
-    ]
+      
   }, 
   "wildcardSearchFields": {
     "Benefit": [

@@ -1,18 +1,18 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
-import {ExuiCcdConnectorComponent} from './exui-ccd-connector.component';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ExuiCcdConnectorComponent } from './exui-ccd-connector.component';
 
 describe('CCD Connector Component', () => {
   let component: ExuiCcdConnectorComponent;
   let fixture: ComponentFixture<ExuiCcdConnectorComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
+        RouterTestingModule
       ],
       declarations: [
-        ExuiCcdConnectorComponent,
+        ExuiCcdConnectorComponent
       ],
       providers: []
     }).compileComponents();
@@ -25,8 +25,8 @@ describe('CCD Connector Component', () => {
     component = fixture.componentInstance;
     component.store = null;
     component.eventsBindings = [
-      {type: 'cancelled', action: 'CreateCaseReset'},
-      {type: 'submitted', action: 'ApplyChange'}
+      { type: 'cancelled', action: 'CreateCaseReset' },
+      { type: 'submitted', action: 'ApplyChange' }
     ];
     component.fromFeatureStore = null;
     fixture.detectChanges();
@@ -37,21 +37,20 @@ describe('CCD Connector Component', () => {
   });
 
   describe('simplifyFormGroup()', () => {
-
     it('should return an object', () => {
       const object = {
-        a: 'value',
+        a: 'value'
       };
 
-      expect(component.simplifyFormGroup(object)).toEqual({a: 'value'});
+      expect(component.simplifyFormGroup(object)).toEqual({ a: 'value' });
     });
 
     it('should set the formGroupValue as the key.', () => {
       const object = {
-        formGroup: 'formGroupValue',
+        formGroup: 'formGroupValue'
       };
 
-      expect(component.simplifyFormGroup(object)).toEqual({formGroup: {value: undefined}});
+      expect(component.simplifyFormGroup(object)).toEqual({ formGroup: { value: undefined } });
     });
   });
 
@@ -62,5 +61,4 @@ describe('CCD Connector Component', () => {
   it('should have ngOnDestroy() method', () => {
     expect(component.ngOnDestroy).toBeTruthy();
   });
-
 });

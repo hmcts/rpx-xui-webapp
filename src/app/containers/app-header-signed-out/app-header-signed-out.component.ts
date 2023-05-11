@@ -8,10 +8,9 @@ import { UserNavModel } from '../../models/user-nav.model';
 
 @Component({
   selector: 'exui-app-header-signed-out',
-  templateUrl: './app-header-signed-out.component.html',
+  templateUrl: './app-header-signed-out.component.html'
 })
 export class AppHeaderSignedOutComponent implements OnInit {
-
   public navItems: NavItemsModel[];
   public appHeaderTitle: AppTitleModel;
   public userNav: UserNavModel;
@@ -19,11 +18,7 @@ export class AppHeaderSignedOutComponent implements OnInit {
   public logo: string;
   public logoIsUsed: boolean;
 
-  constructor() {
-  }
-
   public ngOnInit(): void {
-
     this.setAppHeaderProperties(AppConstants.DEFAULT_USER_THEME);
   }
 
@@ -33,7 +28,6 @@ export class AppHeaderSignedOutComponent implements OnInit {
    * Set the app header properties, in one function that takes in the application theme.
    */
   public setAppHeaderProperties(applicationTheme: ApplicationTheme): void {
-
     const {
       appTitle,
       backgroundColor,

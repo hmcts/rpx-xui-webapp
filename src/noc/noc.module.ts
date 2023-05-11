@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AbstractAppConfig, CaseUIToolkitModule } from '@hmcts/ccd-case-ui-toolkit';
+import { RouterModule } from '@angular/router';
+import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -27,17 +28,16 @@ import { effects, reducers } from './store';
 
 @NgModule({
   imports: [
-      CommonModule,
-      CaseUIToolkitModule,
-      HttpClientModule,
-      StoreModule.forFeature('noc', reducers),
-      EffectsModule.forFeature(effects),
-      nocRouting,
-      SharedModule,
-      FormsModule,
-      ReactiveFormsModule,
-      UtilsModule,
-      ExuiCommonLibModule
+    CommonModule,
+    HttpClientModule,
+    StoreModule.forFeature('noc', reducers),
+    EffectsModule.forFeature(effects),
+    nocRouting,
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule,
+    UtilsModule,
+    ExuiCommonLibModule
   ],
   declarations: [...fromContainers.containers],
   entryComponents: [
@@ -52,24 +52,25 @@ import { effects, reducers } from './store';
     NocTimeFieldComponent
   ],
   providers: [{
-      provide: AbstractAppConfig,
-      useExisting: AppConfig,
-    },
-    NocService,
-    PaletteService,
-    FormValidatorsService,
-    YesNoService
+    provide: AbstractAppConfig,
+    useExisting: AppConfig
+  },
+  NocService,
+  PaletteService,
+  FormValidatorsService,
+  YesNoService
   ]
 })
 /**
  * Entry point for NOC Module that is also lazy loaded.
  */
 export class NocModule {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   constructor(@Optional() @SkipSelf() parentModule: NocModule) {
     NocModule.forRoot();
   }
 
-  public static forRoot(): ModuleWithProviders {
+  public static forRoot(): ModuleWithProviders<RouterModule> {
     return {
       ngModule: NocModule,
       providers: [

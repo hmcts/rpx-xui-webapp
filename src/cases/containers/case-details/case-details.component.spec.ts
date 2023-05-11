@@ -1,8 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs/internal/observable/of';
-
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
+import { of } from 'rxjs/internal/observable/of';
 import { CaseDetailsComponent } from './case-details.component';
 
 describe('CaseDetailsComponent', () => {
@@ -10,7 +9,7 @@ describe('CaseDetailsComponent', () => {
   let fixture: ComponentFixture<CaseDetailsComponent>;
   const storeMock = jasmine.createSpyObj('mockStore', ['pipe']);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
       ],

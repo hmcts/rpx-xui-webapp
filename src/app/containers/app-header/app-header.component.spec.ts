@@ -1,9 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Action, Store, StoreModule } from '@ngrx/store';
-import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
+import { Store, StoreModule } from '@ngrx/store';
+import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { AppConstants } from '../../app.constants';
 import { ApplicationThemeLogo } from '../../enums';
 import { LoggerService } from '../../services/logger/logger.service';
@@ -12,16 +12,8 @@ import { AppHeaderComponent } from './app-header.component';
 
 const storeMock = {
   pipe: () => of([]),
-  dispatch: (action: Action) => {
-  }
-};
-
-const featureToggleServiceMock = {
-  getValue: () => {
-    return {
-      subscribe: () => AppConstants.DEFAULT_USER_THEME
-    };
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  dispatch: () => {}
 };
 
 const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
@@ -30,15 +22,18 @@ let dispatchSpy: jasmine.Spy;
 let subscribeSpy: jasmine.Spy;
 
 describe('AppHeaderComponent', () => {
+  let featureToggleServiceSpy: jasmine.SpyObj<FeatureToggleService>;
 
   let component: AppHeaderComponent;
   let fixture: ComponentFixture<AppHeaderComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
   const subscriptionMock: Subscription = new Subscription();
   const stateStoreMock: Store<fromActions.State> = new Store<fromActions.State>(null, null, null);
   const eventsSub = new BehaviorSubject<any>(null);
+  const featureToggleServiceMock = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
 
-  beforeEach(async(() => {
+  beforeEach(async () => {
     dispatchSpy = spyOn(storeMock, 'dispatch');
     subscribeSpy = spyOn(subscriptionMock, 'unsubscribe');
 
@@ -53,11 +48,11 @@ describe('AppHeaderComponent', () => {
       providers: [
         {
           provide: Store,
-          useValue: storeMock,
+          useValue: storeMock
         },
         {
           provide: FeatureToggleService,
-          useValue: featureToggleServiceMock,
+          useValue: featureToggleServiceMock
         },
         {
           provide: Router,
@@ -71,20 +66,20 @@ describe('AppHeaderComponent', () => {
           useValue: loggerServiceMock
         },
         AppHeaderComponent
-      ],
+      ]
     }).compileComponents();
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
+    featureToggleServiceSpy = TestBed.inject(FeatureToggleService) as jasmine.SpyObj<FeatureToggleService>;
 
+    featureToggleServiceSpy.getValue.and.returnValue(of(AppConstants.DEFAULT_MENU_ITEMS));
     fixture = TestBed.createComponent(AppHeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  }));
+  });
 
   describe('deserialiseUserRoles()', () => {
-
     it('should take in serialised roles, and deserialise them into an array.', () => {
-
       const serialisedRoles = 'j:["pui-organisation-manager","caseworker-publiclaw","caseworker-divorce-financialremedy-solicitor","caseworker"]';
       expect(component.deserialiseUserRoles(serialisedRoles)).toEqual([
         'pui-organisation-manager',
@@ -96,11 +91,9 @@ describe('AppHeaderComponent', () => {
   });
 
   describe('setAppHeaderProperties()', () => {
-
     it('should take a theme and update the app header properties.', () => {
-
       const defaultTheme = AppConstants.DEFAULT_USER_THEME;
-      const menuItems = AppConstants.DEFAULT_MENU_ITEMS
+      const menuItems = AppConstants.DEFAULT_MENU_ITEMS;
 
       component.setAppHeaderProperties(defaultTheme, menuItems);
 
@@ -110,14 +103,54 @@ describe('AppHeaderComponent', () => {
       expect(component.logo).toBe(AppConstants.DEFAULT_USER_THEME.logo);
       expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);
     });
+
+    it('should set app header content', async () => {
+      const themeSpy = spyOn(component, 'getApplicationThemeForUser').and.returnValue(of(AppConstants.DEFAULT_USER_THEME));
+
+      const userDetails = {
+        userInfo: ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker-divorce-financialremedy-solicitor', 'caseworker']
+      };
+      component.setHeaderContent(userDetails);
+      expect(themeSpy).toHaveBeenCalled();
+    });
+
+    it('should call userThems on getApplicationThemeForUser', () => {
+      const userThemeSpy = spyOn(component, 'getUsersTheme').and.callThrough();
+
+      component.getApplicationThemeForUser();
+      expect(userThemeSpy).toHaveBeenCalled();
+    });
+
+    it('should call usersTheme on getApplicationThemeForUser with no roles', () => {
+      const userThemeSpy = spyOn(component, 'getUsersTheme').and.callThrough();
+
+      component.getApplicationThemeForUser();
+      expect(userThemeSpy).toHaveBeenCalled();
+      expect(component.userNav.items).toEqual([]);
+    });
+
+    it('should update theme app header properties.', () => {
+      const menuItems = AppConstants.DEFAULT_MENU_ITEMS;
+      component.setAppHeaderNavItems(menuItems);
+      expect(component.navItems).toEqual(AppConstants.DEFAULT_MENU_ITEMS);
+    });
+
+    it('should update navItems app header properties.', () => {
+      const defaultTheme = AppConstants.DEFAULT_USER_THEME;
+      component.setAppHeaderTheme(defaultTheme);
+
+      expect(component.appHeaderTitle).toBe(AppConstants.DEFAULT_USER_THEME.appTitle);
+      expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
+      expect(component.logo).toBe(AppConstants.DEFAULT_USER_THEME.logo);
+      expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);
+    });
   });
 
   describe('setNavigationEnd()', () => {
-
     it('should set the navigation items once the navigation has ended', () => {
       // set the navigation end and original navigation items (note that active set to false)
       const endNav = new NavigationEnd(1, '/something-or-other', '/something-or-other');
-      component.navItems = [{text: 'example', href: '/something-or-other', active: false}];
+      component.navItems = [{ text: 'example', href: '/something-or-other', active: false }];
 
       // start evaluating the url and navigation items and run setNavigationEnd
       expect(component.router.url).toBe(component.navItems[0].href);
@@ -132,7 +165,6 @@ describe('AppHeaderComponent', () => {
   });
 
   describe('onNavigate()', () => {
-
     it('should logout when onNavigate sign-out is called ', () => {
       component.onNavigate('anything');
       expect(dispatchSpy).toHaveBeenCalledTimes(0);
@@ -145,7 +177,7 @@ describe('AppHeaderComponent', () => {
     it('should allow subscribing to an observable', () => {
       // ensure that the component's subscribe method runs with mock data
       const url = '/tasks/list';
-      const exObservable$ = Observable.of(url);
+      const exObservable$ = of(url);
       expect(component.subscribe(exObservable$)).toBeTruthy();
     });
   });

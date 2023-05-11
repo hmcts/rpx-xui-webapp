@@ -1,16 +1,15 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NocFillFormOfflineComponent } from './noc-fill-form-offline.component';
 
 describe('NocFillFormOfflineComponent', () => {
   let component: NocFillFormOfflineComponent;
   let fixture: ComponentFixture<NocFillFormOfflineComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NocFillFormOfflineComponent ]
+      declarations: [NocFillFormOfflineComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

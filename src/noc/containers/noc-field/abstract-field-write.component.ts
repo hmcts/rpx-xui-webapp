@@ -1,8 +1,10 @@
-import { Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { AbstractFormFieldComponent } from './abstract-form-field.component';
 
+@Component({
+  template: ''
+})
 export abstract class AbstractFieldWriteComponent extends AbstractFormFieldComponent {
-
   @Input()
   public idPrefix = '';
 

@@ -11,7 +11,6 @@ import * as fromFeature from '../../store';
   styleUrls: ['noc-navigation.component.scss']
 })
 export class NocNavigationComponent implements OnInit {
-
   @Output() public eventTrigger = new EventEmitter();
 
   public nocNavigationCurrentState$: Observable<fromFeature.State>;
@@ -26,7 +25,7 @@ export class NocNavigationComponent implements OnInit {
 
   constructor(
     private readonly store: Store<fromFeature.State>,
-  ) { }
+  ) {}
 
   public ngOnInit() {
     this.nocNavigationCurrentState$ = this.store.pipe(select(fromFeature.currentNavigation));
@@ -39,5 +38,4 @@ export class NocNavigationComponent implements OnInit {
   public onEventTrigger(event: NocNavigationEvent) {
     this.eventTrigger.emit(event);
   }
-
 }

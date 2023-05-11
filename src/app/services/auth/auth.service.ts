@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SessionStorageService } from '../session-storage/session-storage.service';
 
@@ -8,8 +8,7 @@ export class AuthService {
   constructor(
     private readonly httpService: HttpClient,
     private readonly sessionStorageService: SessionStorageService
-  ) {
-  }
+  ) {}
 
   public loginRedirect() {
     const href = '/auth/login';
@@ -34,7 +33,7 @@ export class AuthService {
   }
 
   public logOutAndRedirect() {
-    this.logOut().subscribe( () => {
+    this.logOut().subscribe(() => {
       this.setWindowLocationHref('/idle-sign-out');
     });
   }

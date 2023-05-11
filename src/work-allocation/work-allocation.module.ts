@@ -2,40 +2,53 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { MatDialogModule } from '@angular/material';
-import { AlertService, CaseUIToolkitModule } from '@hmcts/ccd-case-ui-toolkit';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
+import { AlertService, LoadingService, PaginationModule, PipesModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 import { SharedModule } from '../app/shared/shared.module';
+import { BookingService } from '../booking/services';
+import { RoleAccessModule } from '../role-access/role-access.module';
+import { PriorityFieldModule } from './components/priority-field/priority-field.module';
 import { WorkAllocationComponentsModule } from './components/work-allocation.components.module';
 import * as fromContainers from './containers';
-import { WorkAllocationFeatureToggleGuard } from './guards';
-import { SeniorTribunalCaseworkerGuard } from './guards/senior-tribunal-caseworker-guard';
-import { TribunalCaseworkerGuard } from './guards/tribunal-caseworker-guard';
-import { CaseworkerDataService, WorkAllocationTaskService } from './services';
+import { WorkAllocationAccessGuard } from './guards';
+import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from './services';
 import { workAllocationRouting } from './work-allocation-feature.routes';
 
 // from containers
 @NgModule({
   imports: [
-    CaseUIToolkitModule,
     CommonModule,
     HttpClientModule,
     SharedModule,
     MatDialogModule,
     WorkAllocationComponentsModule,
+    PipesModule,
     workAllocationRouting,
     CdkTableModule,
-    ExuiCommonLibModule
+    ExuiCommonLibModule,
+    PriorityFieldModule,
+    ReactiveFormsModule,
+    RoleAccessModule,
+    PaginationModule,
+    NgxPaginationModule
   ],
-  declarations: [
-    ...fromContainers.containers
+  declarations: [...fromContainers.containers],
+  providers: [
+    WorkAllocationTaskService,
+    WorkAllocationAccessGuard,
+    AlertService,
+    BookingService,
+    CaseworkerDataService,
+    LocationDataService,
+    WorkAllocationFeatureService,
+    WASupportedJurisdictionsService,
+    LoadingService,
+    SessionStorageService
   ],
-  providers: [WorkAllocationTaskService, WorkAllocationFeatureToggleGuard,
-              AlertService, CaseworkerDataService,
-              SeniorTribunalCaseworkerGuard, TribunalCaseworkerGuard],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class WorkAllocationModule {
-
-}
+export class WorkAllocationModule {}

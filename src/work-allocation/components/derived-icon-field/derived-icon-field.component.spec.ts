@@ -1,16 +1,15 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Task } from '../../models/tasks';
 import { getMockTasks } from '../../tests/utils.spec';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { DerivedIconFieldComponent } from './derived-icon-field.component';
 
 @Component({
-  template: `<exui-derived-icon-field [task]="task" [sourceColumn]="sourceColumn" [matchValue]="matchValue"></exui-derived-icon-field>`
+  template: '<exui-derived-icon-field [task]="task" [sourceColumn]="sourceColumn" [matchValue]="matchValue"></exui-derived-icon-field>'
 })
 class WrapperComponent {
-  @ViewChild(DerivedIconFieldComponent) public appComponentRef: DerivedIconFieldComponent;
+  @ViewChild(DerivedIconFieldComponent, { static: true }) public appComponentRef: DerivedIconFieldComponent;
   @Input() public task: Task = null;
   @Input() public sourceColumn: string;
   @Input() public matchValue: any;
@@ -24,21 +23,18 @@ function getTasks(): Task[] {
 }
 
 describe('WorkAllocation', () => {
-
   describe('DerivedIconFieldComponent', () => {
     let component: DerivedIconFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(async () => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule ]
+        declarations: [WrapperComponent],
+        imports: [WorkAllocationComponentsModule]
       })
-      .compileComponents();
-    }));
+        .compileComponents();
 
-    beforeEach(() => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
@@ -76,11 +72,17 @@ describe('WorkAllocation', () => {
 
       // Replace the task and it should also display as the location is the same on both tasks
       component.sourceColumn = firstExampleColumn;
-      component.task = getTasks()[1];
+      component.task = getTasks()[0];
       fixture.detectChanges();
       element = fixture.debugElement.nativeElement.querySelector('svg');
       expect(element).not.toBeNull();
 
+      // if no warning_list on task there should be not warning
+      component.sourceColumn = firstExampleColumn;
+      component.task = getTasks()[1];
+      fixture.detectChanges();
+      element = fixture.debugElement.nativeElement.querySelector('svg');
+      expect(element).toBeNull();
     });
 
     it('should allow swapping the match for different constraints', () => {
@@ -115,25 +117,23 @@ describe('WorkAllocation', () => {
     });
 
     it('should show the correct text content', () => {
-        // Expect the nativeElement to be empty (no icon yet)
-        let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('svg');
+      // Expect the nativeElement to be empty (no icon yet)
+      let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('svg');
 
-        // Set up the column names
-        const firstExampleColumn: string = 'location';
-        const hoverWarning: string = 'This case has more than one task. Review needed.';
+      // Set up the column names
+      const firstExampleColumn: string = 'location';
+      const hoverWarning: string = 'this is a warning message 3';
 
-        // Set the task, column and value to match with
-        component.task = getTasks()[0];
-        component.sourceColumn = firstExampleColumn;
-        component.matchValue = 'Taylor House';
-        fixture.detectChanges();
-        element = fixture.debugElement.nativeElement.querySelector('svg');
-        expect(element).not.toBe(null);
+      // Set the task, column and value to match with
+      component.task = getTasks()[0];
+      component.sourceColumn = firstExampleColumn;
+      component.matchValue = 'Taylor House';
+      fixture.detectChanges();
+      element = fixture.debugElement.nativeElement.querySelector('svg');
+      expect(element).not.toBe(null);
 
-        // ensure the text content is correct
-        expect(element.textContent).toBe(hoverWarning);
+      // ensure the text content is correct
+      expect(element.textContent).toBe(hoverWarning);
     });
-
   });
-
 });

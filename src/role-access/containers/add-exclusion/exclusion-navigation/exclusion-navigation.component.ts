@@ -16,7 +16,6 @@ import * as fromFeature from '../../../store';
   templateUrl: 'exclusion-navigation.component.html'
 })
 export class ExclusionNavigationComponent implements OnInit {
-
   @Output() public eventTrigger = new EventEmitter();
 
   public navigationCurrentState$: Observable<ExclusionState>;
@@ -29,10 +28,9 @@ export class ExclusionNavigationComponent implements OnInit {
   public exclusionNavigationEvent = ExclusionNavigationEvent;
 
   constructor(
-    private store: Store<fromFeature.State>,
-    private appStore: Store<fromRoot.State>
-  ) {
-  }
+    private readonly store: Store<fromFeature.State>,
+    private readonly appStore: Store<fromRoot.State>
+  ) {}
 
   public ngOnInit() {
     this.navigationCurrentState$ = this.store.pipe(select(fromFeature.currentNavigation));

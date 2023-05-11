@@ -1,10 +1,9 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { of } from 'rxjs';
-
-import { Caseworker } from '../../../work-allocation-2/models/dtos';
+import { Caseworker } from '../../../work-allocation/models/dtos';
 import { AnswersComponent } from '../../components/answers/answers.component';
 import { ExclusionNavigationEvent, RoleCategory } from '../../models';
 import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
@@ -16,7 +15,7 @@ import { DeleteExclusionComponent } from './delete-exclusion.component';
     <exui-delete-exclusion></exui-delete-exclusion>`
 })
 class WrapperComponent {
-  @ViewChild(DeleteExclusionComponent) public appComponentRef: DeleteExclusionComponent;
+  @ViewChild(DeleteExclusionComponent, { static: true }) public appComponentRef: DeleteExclusionComponent;
 }
 
 const mockCaseworker: Caseworker = {
@@ -44,7 +43,7 @@ describe('DeleteExclusionComponent', () => {
   const caseType = 'caseType';
   const exclusion = { caseId: exampleCaseId, exclusionId, jurisdiction, caseType, name: 'Sample Name', type: 'test', userType: 'LEGAL_OPERATIONS' };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [
         NO_ERRORS_SCHEMA
@@ -63,7 +62,7 @@ describe('DeleteExclusionComponent', () => {
                     id: exclusionId,
                     name: 'Judge Rinder',
                     notes: 'Test exclusion',
-                    actorId: '999999999',
+                    actorId: '999999999'
                   }
                 ]
               }
@@ -114,6 +113,26 @@ describe('DeleteExclusionComponent', () => {
     const additionalState = { state: { showMessage: true, messageText: ExclusionMessageText.Delete } };
     expect(routerMock.navigate).toHaveBeenCalledWith([goToCaseUrl], additionalState);
   });
+
+  describe('showSpinner', () => {
+    it('should default to false', () => {
+      expect(component.showSpinner).toBeFalsy();
+    });
+
+    it('should be true when exclusion is confirmed', () => {
+      mockRoleExclusionService.deleteExclusion.and.returnValue(of(200));
+      component.onNavEvent(ExclusionNavigationEvent.DELETE_EXCLUSION);
+      fixture.detectChanges();
+      expect(component.showSpinner).toBeTruthy();
+    });
+
+    it('should be false when exclusion navigation is not handled', () => {
+      expect(() => component.onNavEvent(ExclusionNavigationEvent.BACK)).toThrow();
+      fixture.detectChanges();
+      expect(component.showSpinner).toBeFalsy();
+    });
+  });
+
   it('populateAnswers', () => {
     const someExclusion = {
       actorId: null,
@@ -152,7 +171,7 @@ describe('DeleteExclusionComponent with no name', () => {
   const caseType = 'caseType';
   const exclusion = { id: exclusionId, notes: null, added: new Date('21-01-2022'), caseId: exampleCaseId, jurisdiction, caseType, name: 'Sample Name', type: 'test', userType: 'LEGAL_OPERATIONS' };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [
         NO_ERRORS_SCHEMA
@@ -171,7 +190,7 @@ describe('DeleteExclusionComponent with no name', () => {
                     id: exclusionId,
                     name: null,
                     notes: 'Test exclusion',
-                    actorId: '999999999',
+                    actorId: '999999999'
                   }
                 ]
               }
@@ -241,6 +260,7 @@ describe('DeleteExclusionComponent with no name', () => {
     const additionalState = { state: { showMessage: true, messageText: ExclusionMessageText.Delete } };
     expect(routerMock.navigate).toHaveBeenCalledWith([goToCaseUrl], additionalState);
   });
+
   it('populateAnswers', () => {
     const someExclusion = {
       actorId: null,

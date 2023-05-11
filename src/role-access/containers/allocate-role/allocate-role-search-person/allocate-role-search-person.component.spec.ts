@@ -1,6 +1,5 @@
 import { FormControl } from '@angular/forms';
 import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
-
 import { of } from 'rxjs';
 import {
   Actions,
@@ -16,6 +15,7 @@ import { AllocateRoleSearchPersonComponent } from './allocate-role-search-person
 describe('AllocateRolePersonComponent', () => {
   let component: AllocateRoleSearchPersonComponent;
   let mockStore: any;
+
   beforeEach((() => {
     mockStore = jasmine.createSpyObj('mockStore', ['pipe', 'dispatch']);
     component = new AllocateRoleSearchPersonComponent(mockStore);
@@ -30,7 +30,7 @@ describe('AllocateRolePersonComponent', () => {
 
   it('navigationHandler validates when person selected', () => {
     const control = new FormControl();
-    const examplePerson = { id: 'id123', name: 'full Name', email: 'test@email.com', domain: 'Caseworker'};
+    const examplePerson = { id: 'id123', name: 'full Name', email: 'test@email.com', domain: 'Caseworker' };
     component.person = examplePerson;
     control.setValue(examplePerson);
     component.formGroup.addControl('findPersonControl', control);
@@ -63,37 +63,142 @@ describe('AllocateRolePersonComponent', () => {
     expect(component.person).toBe(secondPerson);
   });
 
+  it('should set data in ngOnInit for CTSC data', () => {
+    const ALLOCATE_ROLE_STATE_DATA: AllocateRoleStateData = {
+      caseId: '1111111111111111',
+      jurisdiction: 'New jurisdiction',
+      assignmentId: 'a123456',
+      state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
+      typeOfRole: { id: 'ctsc', name: 'CTSC' },
+      allocateTo: AllocateTo.RESERVE_TO_ME,
+      personToBeRemoved: {
+        id: 'p111111',
+        name: 'test1',
+        domain: ''
+      },
+      person: {
+        id: 'p222222',
+        name: 'test2',
+        domain: ''
+      },
+      durationOfRole: DurationOfRole.SEVEN_DAYS,
+      action: Actions.Allocate,
+      period: {
+        startDate: new Date(),
+        endDate: new Date()
+      },
+      roleCategory: RoleCategory.CTSC
+    };
+    mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
+    component.ngOnInit();
+    expect(component.title).toBe('Allocate a CTSC');
+    expect(component.personName).toBe('test2');
+    expect(component.roleType).toEqual({ id: 'ctsc', name: 'CTSC' });
+    expect(component.assignedUser).toEqual('p111111');
+    expect(component.userIncluded).toEqual(false);
+  });
+
+  it('should set data in ngOnInit for empty data', () => {
+    const ALLOCATE_ROLE_STATE_DATA: AllocateRoleStateData = {
+      caseId: '1111111111111111',
+      jurisdiction: 'New jurisdiction',
+      assignmentId: 'a123456',
+      state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
+      typeOfRole: { id: '', name: '' },
+      allocateTo: AllocateTo.RESERVE_TO_ME,
+      personToBeRemoved: {
+        id: 'p111111',
+        name: 'test1',
+        domain: ''
+      },
+      person: {
+        id: 'p222222',
+        name: 'test2',
+        domain: ''
+      },
+      durationOfRole: DurationOfRole.SEVEN_DAYS,
+      action: Actions.Allocate,
+      period: {
+        startDate: new Date(),
+        endDate: new Date()
+      },
+      roleCategory: null
+    };
+    mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
+    component.ngOnInit();
+    expect(component.title).toBe('Allocate a role');
+    expect(component.personName).toBe('test2');
+    expect(component.roleType).toEqual({ id: '', name: '' });
+    expect(component.assignedUser).toEqual('p111111');
+    expect(component.userIncluded).toEqual(false);
+  });
+
+  it('should set data in ngOnInit for Admin data', () => {
+    const ALLOCATE_ROLE_STATE_DATA: AllocateRoleStateData = {
+      caseId: '1111111111111111',
+      jurisdiction: 'New jurisdiction',
+      assignmentId: 'a123456',
+      state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
+      typeOfRole: { id: 'admin', name: 'Admin' },
+      allocateTo: AllocateTo.RESERVE_TO_ME,
+      personToBeRemoved: {
+        id: 'p111111',
+        name: 'test1',
+        domain: ''
+      },
+      person: {
+        id: 'p222222',
+        name: 'test2',
+        domain: ''
+      },
+      durationOfRole: DurationOfRole.SEVEN_DAYS,
+      action: Actions.Allocate,
+      period: {
+        startDate: new Date(),
+        endDate: new Date()
+      },
+      roleCategory: RoleCategory.ADMIN
+    };
+    mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
+    component.ngOnInit();
+    expect(component.title).toBe('Allocate an Admin');
+    expect(component.personName).toBe('test2');
+    expect(component.roleType).toEqual({ id: 'admin', name: 'Admin' });
+    expect(component.assignedUser).toEqual('p111111');
+    expect(component.userIncluded).toEqual(false);
+  });
+
   it('should set data in ngOnInit', () => {
     const ALLOCATE_ROLE_STATE_DATA: AllocateRoleStateData = {
       caseId: '1111111111111111',
       jurisdiction: 'New jurisdiction',
       assignmentId: 'a123456',
       state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
-      typeOfRole: {id: 'lead-judge', name: 'Lead judge'},
+      typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
       allocateTo: AllocateTo.RESERVE_TO_ME,
       personToBeRemoved: {
         id: 'p111111',
         name: 'test1',
-        domain: '',
+        domain: ''
       },
       person: {
         id: 'p222222',
         name: 'test2',
-        domain: '',
+        domain: ''
       },
       durationOfRole: DurationOfRole.SEVEN_DAYS,
       action: Actions.Allocate,
       period: {
         startDate: new Date(),
-        endDate: new Date(),
+        endDate: new Date()
       },
-      roleCategory: RoleCategory.LEGAL_OPERATIONS,
+      roleCategory: RoleCategory.LEGAL_OPERATIONS
     };
     mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
     component.ngOnInit();
-    expect(component.title).toBe('Allocate a lead judge');
+    expect(component.title).toBe('Allocate a Lead judge');
     expect(component.personName).toBe('test2');
-    expect(component.roleType).toEqual({id: 'lead-judge', name: 'Lead judge'});
+    expect(component.roleType).toEqual({ id: 'lead-judge', name: 'Lead judge' });
     expect(component.assignedUser).toEqual('p111111');
     expect(component.userIncluded).toEqual(false);
   });

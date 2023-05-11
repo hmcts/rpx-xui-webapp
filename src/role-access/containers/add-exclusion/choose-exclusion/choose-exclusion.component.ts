@@ -1,10 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, Subscription } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
-import { UserDetails } from '../../../../app/models';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
+import { UserDetails } from '../../../../app/models';
 import * as fromRoot from '../../../../app/store';
 import { ERROR_MESSAGE, EXCLUSION_OPTION } from '../../../constants';
 import { ExcludeOption, ExclusionNavigationEvent, ExclusionState } from '../../../models';
@@ -19,7 +18,6 @@ import * as fromFeature from '../../../store';
 })
 
 export class ChooseExclusionComponent implements OnInit, OnDestroy {
-
   public ERROR_MESSAGE = ERROR_MESSAGE;
   @Input() public navEvent: ExclusionNavigation;
   public title = RoleAllocationTitleText.ExclusionAllocate;
@@ -39,24 +37,25 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
     optionId: EnumUtil(ExcludeOption).getKeyOrDefault(ExcludeOption.EXCLUDE_ME),
     optionValue: ExcludeOption.EXCLUDE_ME
   };
+
   public excludeOther: OptionsModel = {
     optionId: EnumUtil(ExcludeOption).getKeyOrDefault(ExcludeOption.EXCLUDE_ANOTHER_PERSON),
     optionValue: ExcludeOption.EXCLUDE_ANOTHER_PERSON
   };
+
   public optionsList: OptionsModel[] = [this.excludeMe, this.excludeOther];
 
-  constructor(private readonly store: Store<fromFeature.State>) {
-  }
+  constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
-    const roleAccessState$ = this.store.pipe(select(fromFeature.getRoleAccessState))
+    const roleAccessState$ = this.store.pipe(select(fromFeature.getRoleAccessState));
     this.userDetails$ = this.store.pipe(select(fromRoot.getUserDetails));
     combineLatest([roleAccessState$, this.userDetails$]).subscribe(([exclusionStateData, userDetails]: any) => {
       this.exclusionOption = exclusionStateData.exclusionOption;
       this.setOptionsList(userDetails, exclusionStateData.jurisdiction);
     });
     this.radioOptionControl = new FormControl(this.exclusionOption ? this.exclusionOption : '', [Validators.required]);
-    this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
+    this.formGroup = new FormGroup({ [this.radioControlName]: this.radioOptionControl });
   }
 
   public setOptionsList(userDetails: UserDetails, jurisdiction: string) {
@@ -65,7 +64,7 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
     // with User's Jurisdiction and LocationId
     const caseJurisdictionAndLocation = userDetails.roleAssignmentInfo
     &&
-    userDetails.roleAssignmentInfo.some(roleAssignment => roleAssignment.isCaseAllocator && roleAssignment.jurisdiction === jurisdiction);
+    userDetails.roleAssignmentInfo.some((roleAssignment) => roleAssignment.isCaseAllocator && roleAssignment.jurisdiction === jurisdiction);
     this.optionsList = caseJurisdictionAndLocation ? [this.excludeMe, this.excludeOther] : [this.excludeMe];
   }
 

@@ -1,8 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { NocNavigationEvent } from '../../../noc/models';
 import * as fromNocStore from '../../store';
@@ -11,14 +11,14 @@ import { NocQAndAComponent } from './noc-q-and-a.component';
 
 describe('NocQAndAComponent', () => {
   const FORM_GROUP = new FormGroup({});
-  let store: MockStore<fromNocStore.State>;
+  let store;
   let component: NocQAndAComponent;
   let fixture: ComponentFixture<NocQAndAComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ NocQAndAComponent ],
+      declarations: [NocQAndAComponent],
       imports: [
         ReactiveFormsModule
       ],
@@ -27,8 +27,8 @@ describe('NocQAndAComponent', () => {
         NocErrorPipe
       ]
     })
-    .compileComponents();
-    store = TestBed.get(Store);
+      .compileComponents();
+    store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
   }));
 
@@ -82,21 +82,21 @@ describe('NocQAndAComponent', () => {
         }
       });
       component.setPossibleIncorrectAnswerError();
-      Object.keys(component.formGroup.controls).forEach(key => {
-          expect(component.formGroup.controls[key].getError('possibleIncorrectAnswer')).toBeTruthy();
+      Object.keys(component.formGroup.controls).forEach((key) => {
+        expect(component.formGroup.controls[key].getError('possibleIncorrectAnswer')).toBeTruthy();
       });
     });
 
     it('should setAllAnswerEmptyError', () => {
       component.setAllAnswerEmptyError();
-      Object.keys(component.formGroup.controls).forEach(key => {
+      Object.keys(component.formGroup.controls).forEach((key) => {
         expect(component.formGroup.controls[key].getError('allAnswerEmpty')).toBeTruthy();
       });
     });
 
     it('should purgeAllAnswerEmptyError', () => {
       component.purgeAllAnswerEmptyError();
-      Object.keys(component.formGroup.controls).forEach(key => {
+      Object.keys(component.formGroup.controls).forEach((key) => {
         expect(component.formGroup.controls[key].getError('allAnswerEmpty')).toBeFalsy();
       });
     });
@@ -107,15 +107,14 @@ describe('NocQAndAComponent', () => {
         value: 'A111111'
       }]);
       const answer1$ = component.answerInStore('Q111111');
-      answer1$.toPromise().then(result => {
+      answer1$.toPromise().then((result) => {
         expect(result).toBe('A111111');
       });
       const answer2$ = component.answerInStore('Q222222');
-      answer2$.toPromise().then(result => {
+      answer2$.toPromise().then((result) => {
         expect(result).toBeFalsy();
       });
     });
-
   });
 
   afterEach(() => {

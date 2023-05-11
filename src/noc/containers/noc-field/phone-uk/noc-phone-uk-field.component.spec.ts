@@ -1,6 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
@@ -30,17 +29,17 @@ describe('NocPhoneUkFieldComponent', () => {
     display_context_parameter: '3',
     challenge_question_id: 'NoC',
     answer_field: '',
-    question_id: 'question3',
+    question_id: 'question3'
   };
   const ANSWER_VALUE = of('07777777777');
   let component: NocPhoneUkFieldComponent;
   let fixture: ComponentFixture<NocPhoneUkFieldComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
-        NocPhoneUkFieldComponent,
+        NocPhoneUkFieldComponent
       ],
       imports: [
         ReactiveFormsModule,

@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { AppConstants } from '../../../app/app.constants';
 import { ApplicationThemeLogo } from '../../enums';
@@ -7,22 +7,23 @@ import * as fromActions from '../../store';
 import { AppHeaderSignedOutComponent } from './app-header-signed-out.component';
 
 const cookieService = {
-  get: key => {
+  get: (key) => {
     return cookieService[key];
   },
   set: (key, value) => {
     cookieService[key] = value;
   },
-  removeAll: () => { }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  removeAll: () => {}
 };
-
 
 describe('AppHeaderSignedOutComponent', () => {
   let component: AppHeaderSignedOutComponent;
   let fixture: ComponentFixture<AppHeaderSignedOutComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({})
@@ -30,14 +31,14 @@ describe('AppHeaderSignedOutComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
         AppHeaderSignedOutComponent
-      ],
+      ]
     }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AppHeaderSignedOutComponent);
     component = fixture.componentInstance;
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     fixture.detectChanges();
   });
 
@@ -46,9 +47,7 @@ describe('AppHeaderSignedOutComponent', () => {
   });
 
   describe('setAppHeaderProperties()', () => {
-
     it('should take a theme and update the app header properties.', () => {
-
       const defaultTheme = AppConstants.DEFAULT_USER_THEME;
 
       component.setAppHeaderProperties(defaultTheme);

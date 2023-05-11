@@ -1,13 +1,13 @@
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of } from 'rxjs';
-import { CaseworkerDataService } from 'src/work-allocation-2/services';
 
-import { Caseworker } from '../../../work-allocation-2/models/dtos';
+import { Caseworker } from '../../../work-allocation/models/dtos';
+import { CaseworkerDataService } from '../../../work-allocation/services';
 import { AnswersComponent } from '../../components';
 import { AllocateRoleStateData, CaseRole, RemoveAllocationNavigationEvent, Role, RoleCategory, TypeOfRole } from '../../models';
 import { CaseRoleDetails } from '../../models/case-role-details.interface';
@@ -20,7 +20,7 @@ import { RemoveRoleComponent } from './remove-role.component';
     <exui-remove-role></exui-remove-role>`
 })
 class WrapperComponent {
-  @ViewChild(RemoveRoleComponent) public appComponentRef: RemoveRoleComponent;
+  @ViewChild(RemoveRoleComponent, { static: true }) public appComponentRef: RemoveRoleComponent;
 }
 
 const mockCaseworker: Caseworker = {
@@ -43,14 +43,16 @@ describe('RemoveRoleComponent', () => {
     'back'
   ]);
   const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll']);
-  const allworkUrl = `work/all-work/cases`;
+  const allworkUrl = 'work/all-work/cases';
   window.history.pushState({ backUrl: allworkUrl }, '', allworkUrl);
 
   class AllocateRoleMockService extends AllocateRoleService {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public confirmAllocation(allocateRoleStateData: AllocateRoleStateData): Observable<any> {
       return of(null);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getCaseRoles(caseId: string, jurisdiction: string, caseType: string, assignmentId?: string): Observable<CaseRole[]> {
       return of([
         {
@@ -70,10 +72,12 @@ describe('RemoveRoleComponent', () => {
       return of(null);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public removeAllocation(assigmentId: string): Observable<any> {
       return of(null);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getCaseRolesUserDetails(caseRoles: string[]): Observable<CaseRoleDetails[]> {
       const caseRoleDetail: CaseRoleDetails = {
         idam_id: '999999999',
@@ -87,7 +91,7 @@ describe('RemoveRoleComponent', () => {
     }
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [
         NO_ERRORS_SCHEMA
@@ -117,14 +121,14 @@ describe('RemoveRoleComponent', () => {
               },
               queryParams: {
                 caseId: '123456789',
-                assignmentId: '999999999',
-              },
+                assignmentId: '999999999'
+              }
             },
             queryParamMap: of(convertToParamMap({
               caseId: '123456789',
               assignmentId: '999999999',
               jurisdiction: 'IA',
-              caseType: 'Alsyum',
+              caseType: 'Alsyum'
             }))
           }
         },
@@ -187,6 +191,22 @@ describe('RemoveRoleComponent', () => {
     const message: any = { type: 'success', message: RemoveRoleText.infoMessage };
     const additionalState = { state: { showMessage: true, retainMessages: true, message, messageText: RemoveRoleText.infoMessage } };
     expect(routerMock.navigate).toHaveBeenCalledWith([allworkUrl], additionalState);
+  });
+
+  describe('showSpinner', () => {
+    it('should default to false', () => {
+      expect(component.showSpinner).toBeFalsy();
+    });
+
+    it('should be true when removal is confirmed', () => {
+      component.onNavEvent(RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION);
+      expect(component.showSpinner).toBeTruthy();
+    });
+
+    it('should be false when exclusion navigation is not handled', () => {
+      expect(() => component.onNavEvent(RemoveAllocationNavigationEvent.BACK)).toThrow();
+      expect(component.showSpinner).toBeFalsy();
+    });
   });
 
   describe('navigationHandler cancel', () => {

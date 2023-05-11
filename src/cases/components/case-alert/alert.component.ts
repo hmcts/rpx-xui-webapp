@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { Alert, AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -14,7 +13,6 @@ export class AlertComponent implements OnInit, OnDestroy {
   public message = '';
   public level = '';
   public alertMessageSubscription: Subscription;
-  public routeSubscription: Subscription;
 
   private alertMessageObservable: Observable<Alert>;
 
@@ -23,9 +21,8 @@ export class AlertComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit() {
-    this.alertMessageObservable = this.alertService.alerts.pipe(select( alert => alert));
-    // EUI-4488 - Remove router subscription as alertService already sorts this
-    this.alertMessageSubscription = this.alertMessageObservable.subscribe(alert => {
+    this.alertMessageObservable = this.alertService.alerts.pipe(select((alert) => alert));
+    this.alertMessageSubscription = this.alertMessageObservable.subscribe((alert) => {
       if (alert) {
         const msg = alert.message;
         this.level = alert.level;
@@ -41,14 +38,13 @@ export class AlertComponent implements OnInit, OnDestroy {
     if (caseId) {
       const caseIdHyphen = msg.match(/(\d\d\d\d)/g).join('-');
       return msg.replace(caseId.toString(), caseIdHyphen);
-    } else {
-      return msg;
     }
+
+    return msg;
   }
 
   public ngOnDestroy(): void {
     this.unSubscribe(this.alertMessageSubscription);
-    this.unSubscribe(this.routeSubscription);
   }
 
   public unSubscribe(subscription: Subscription): void {

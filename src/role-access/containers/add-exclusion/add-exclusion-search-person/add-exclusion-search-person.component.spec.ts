@@ -7,6 +7,7 @@ import { AddExclusionSearchPersonComponent } from './add-exclusion-search-person
 describe('AddExclusionSearchPersonComponent', () => {
   let component: AddExclusionSearchPersonComponent;
   let mockStore: any;
+
   beforeEach((() => {
     mockStore = jasmine.createSpyObj('mockStore', ['pipe', 'dispatch']);
     component = new AddExclusionSearchPersonComponent(mockStore);
@@ -21,7 +22,7 @@ describe('AddExclusionSearchPersonComponent', () => {
 
   it('navigationHandler validates when person selected', () => {
     const control = new FormControl();
-    const person = { id: 'id123', name: 'full Name', email: 'test@email.com', domain: 'Caseworker'};
+    const person = { id: 'id123', name: 'full Name', email: 'test@email.com', domain: 'Caseworker' };
     component.person = person;
     control.setValue(person);
     component.formGroup.addControl('findPersonControl', control);
@@ -49,6 +50,7 @@ describe('AddExclusionSearchPersonComponent', () => {
     component.selectedPerson(secondPerson);
     expect(component.person).toBe(secondPerson);
   });
+
   it('selectedPerson with no domain', () => {
     component.personRole = PersonRole.JUDICIAL;
     component.selectedPerson({ id: '1234', name: 'name', email: null, domain: null, knownAs: null });
@@ -56,6 +58,7 @@ describe('AddExclusionSearchPersonComponent', () => {
     expect(component.person.name).toEqual('name');
     expect(component.person.domain).toEqual(PersonRole.JUDICIAL);
   });
+
   it('selectedPerson with domain', () => {
     component.personRole = PersonRole.JUDICIAL;
     component.selectedPerson({ id: '1234', name: 'name', email: null, domain: PersonRole.CASEWORKER, knownAs: null });

@@ -3,7 +3,7 @@ import { ConfigurationModel, TermsAndCondition, UserDetails } from '../../models
 import * as fromActions from '../actions/';
 
 export interface AppConfigState {
-  config: ConfigurationModel | {};
+  config: ConfigurationModel | object;
   termsAndCondition: TermsAndCondition;
   loaded: boolean;
   loading: boolean;
@@ -11,6 +11,7 @@ export interface AppConfigState {
   isTermsAndConditionsFeatureEnabled: boolean;
   useIdleSessionTimeout: boolean;
   userDetails: UserDetails;
+  decorate16digitCaseReferenceSearchBoxInHeader: boolean;
 }
 
 export const initialState: AppConfigState = {
@@ -24,11 +25,12 @@ export const initialState: AppConfigState = {
   userDetails: {
     sessionTimeout: {
       idleModalDisplayTime: 0,
-      totalIdleTime: 0,
+      totalIdleTime: 0
     },
     canShareCases: false,
     userInfo: null
-  }
+  },
+  decorate16digitCaseReferenceSearchBoxInHeader: false
 };
 
 export function reducer(
@@ -85,9 +87,9 @@ export function reducer(
       };
     case fromActions.LOAD_FEATURE_TOGGLE_CONFIG_SUCCESS:
       return {
-          ...state,
-          isTermsAndConditionsFeatureEnabled: action.payload
-        };
+        ...state,
+        isTermsAndConditionsFeatureEnabled: action.payload
+      };
     case fromActions.LOAD_USER_DETAILS_SUCCESS:
       return {
         ...state,
@@ -103,6 +105,11 @@ export function reducer(
         ...state,
         useIdleSessionTimeout: false
       };
+    case fromActions.DECORATE_16_DIGIT_CASE_REFERENCE_SEARCH_BOX_IN_HEADER:
+      return {
+        ...state,
+        decorate16digitCaseReferenceSearchBoxInHeader: action.payload
+      };
     default:
       return {
         ...state
@@ -110,9 +117,9 @@ export function reducer(
   }
 }
 
-
 export const getFeatureConfig = (state: AppConfigState) => state.config;
 export const getTandCLoadedConfig = (state: AppConfigState) => state.termsAndCondition;
 export const getTermsConditions = (state: AppConfigState) => state.termsAndConditions;
 export const getUseIdleSessionTimeout = (state: AppConfigState) => state.useIdleSessionTimeout;
 export const getUserDetails = (state: AppConfigState) => state.userDetails;
+export const getDecorate16digitCaseReferenceSearchBoxInHeader = (state: AppConfigState) => state.decorate16digitCaseReferenceSearchBoxInHeader;

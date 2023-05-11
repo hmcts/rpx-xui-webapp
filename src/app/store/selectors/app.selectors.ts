@@ -19,12 +19,12 @@ export const getAppFeatures = createSelector(
 
 export const getTermsAndConditions = createSelector(
   getConfigState,
-  state => state.termsAndConditions
+  (state) => state.termsAndConditions
 );
 
 export const getIsTermsAndConditionsFeatureEnabled = createSelector(
   getConfigState,
-  state => state.isTermsAndConditionsFeatureEnabled
+  (state) => state.isTermsAndConditionsFeatureEnabled
 );
 
 export const getUserDetails = createSelector(
@@ -35,4 +35,9 @@ export const getUserDetails = createSelector(
 export const getUseIdleSessionTimeout = createSelector(
   getConfigState,
   fromApp.getUseIdleSessionTimeout
+);
+
+export const getDecorate16digitCaseReferenceSearchBoxInHeader = createSelector(
+  getConfigState,
+  fromApp.getDecorate16digitCaseReferenceSearchBoxInHeader
 );

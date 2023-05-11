@@ -5,8 +5,8 @@ import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { first, mergeMap } from 'rxjs/operators';
 
-import { Caseworker } from '../../../work-allocation-2/interfaces/common';
-import { CaseworkerDataService } from '../../../work-allocation-2/services';
+import { Caseworker } from '../../../work-allocation/interfaces/common';
+import { CaseworkerDataService } from '../../../work-allocation/services';
 import { Answer, ExclusionNavigationEvent, RoleExclusion } from '../../models';
 import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
 import { AllocateRoleService, RoleExclusionsService } from '../../services';
@@ -17,7 +17,6 @@ import { handleError } from '../../utils';
   templateUrl: './delete-exclusion.component.html'
 })
 export class DeleteExclusionComponent implements OnInit {
-
   public caseworkers$: Observable<Caseworker[]>;
   public exclusionNavigationEvent = ExclusionNavigationEvent;
   public answers: Answer[] = [];
@@ -29,6 +28,8 @@ export class DeleteExclusionComponent implements OnInit {
   public jurisdiction: string;
   public roleExclusion: RoleExclusion;
 
+  public showSpinner: boolean;
+
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
               private readonly roleExclusionsService: RoleExclusionsService,
@@ -36,24 +37,23 @@ export class DeleteExclusionComponent implements OnInit {
               private readonly caseworkerDataService: CaseworkerDataService) {}
 
   public ngOnInit(): void {
-
     const paramMap$ = this.route.queryParamMap;
-    paramMap$.pipe(mergeMap(queryMap => {
-        return this.getExclusionFromQuery(queryMap);
-      })).subscribe(exclusions => {
-        this.findAndSetExclusion(exclusions);
-      });
+    paramMap$.pipe(mergeMap((queryMap) => {
+      return this.getExclusionFromQuery(queryMap);
+    })).subscribe((exclusions) => {
+      this.findAndSetExclusion(exclusions);
+    });
   }
 
   public findAndSetExclusion(exclusions: RoleExclusion[]): void {
-    this.roleExclusion = exclusions.find(excl => excl.id === this.exclusionId);
+    this.roleExclusion = exclusions.find((excl) => excl.id === this.exclusionId);
     if (this.roleExclusion.userType.toUpperCase() === RoleCategory.JUDICIAL) {
-      this.allocateService.getCaseRolesUserDetails([this.roleExclusion.actorId], [this.jurisdiction]).subscribe(userDetails => {
+      this.allocateService.getCaseRolesUserDetails([this.roleExclusion.actorId], [this.jurisdiction]).subscribe((userDetails) => {
         if (userDetails[0]) {
           this.roleExclusion.name = userDetails[0].known_as;
           this.populateAnswers(this.roleExclusion);
         }
-      })
+      });
     } else {
       this.populateAnswers(this.roleExclusion);
       this.getNamesIfNeeded();
@@ -70,15 +70,15 @@ export class DeleteExclusionComponent implements OnInit {
 
   public populateAnswers(exclusion: RoleExclusion): void {
     const person = exclusion.name ? exclusion.name : 'Awaiting person details';
-    this.answers.push({label: AnswerLabelText.Person, value: person});
-    this.answers.push({label: AnswerLabelText.DescribeExclusion, value: exclusion.notes ? exclusion.notes : ''});
-    this.answers.push({label: AnswerLabelText.DateAdded, value: moment.parseZone(new Date(exclusion.added)).format('D MMMM YYYY')});
+    this.answers.push({ label: AnswerLabelText.Person, value: person });
+    this.answers.push({ label: AnswerLabelText.DescribeExclusion, value: exclusion.notes ? exclusion.notes : '' });
+    this.answers.push({ label: AnswerLabelText.DateAdded, value: moment.parseZone(new Date(exclusion.added)).format('D MMMM YYYY') });
   }
 
   private getNamesIfNeeded(): void {
     if (!this.roleExclusion.name) {
-      this.caseworkerDataService.getCaseworkersForServices([this.jurisdiction]).pipe(first()).subscribe(caseworkers => {
-        const caseworker = caseworkers.find(givenCaseworker => givenCaseworker.idamId === this.roleExclusion.actorId);
+      this.caseworkerDataService.getCaseworkersForServices([this.jurisdiction]).pipe(first()).subscribe((caseworkers) => {
+        const caseworker = caseworkers.find((givenCaseworker) => givenCaseworker.idamId === this.roleExclusion.actorId);
         this.roleExclusion.name = `${caseworker.firstName}-${caseworker.lastName}`;
         this.answers = [];
         this.populateAnswers(this.roleExclusion);
@@ -90,14 +90,15 @@ export class DeleteExclusionComponent implements OnInit {
     const goToCaseUrl = `cases/case-details/${this.caseId}/roles-and-access`;
     switch (navEvent) {
       case ExclusionNavigationEvent.DELETE_EXCLUSION: {
+        this.showSpinner = true;
         this.roleExclusionsService.deleteExclusion(this.roleExclusion).subscribe(() => {
           // navigates to case details page for specific case id
           this.router.navigate([goToCaseUrl], {
             state: {
               showMessage: true,
-              messageText: ExclusionMessageText.Delete}
-            });
-        }, error => {
+              messageText: ExclusionMessageText.Delete }
+          });
+        }, (error) => {
           return handleError(error, this.router, goToCaseUrl);
         });
         break;
@@ -107,6 +108,7 @@ export class DeleteExclusionComponent implements OnInit {
         return;
       }
       default: {
+        this.showSpinner = false;
         throw new Error('Invalid option');
       }
     }

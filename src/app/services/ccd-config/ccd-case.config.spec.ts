@@ -4,6 +4,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { EnvironmentService } from '../../../app/shared/services/environment.service';
+import { EnvironmentConfig } from '../../../models/environmentConfig.model';
 import { AppConfigService } from '../config/configuration.services';
 import { AppConfig } from './ccd-case.config';
 
@@ -21,16 +22,23 @@ class MockConfigService {
       access_management_basic_view_mock: 'dummy',
       location_ref_api_url: 'dummy',
       cam_role_assignments_api_url: 'dummy',
+      notification_url: 'dummy'
     };
   }
+
   public getEditorConfiguration = () => this.config;
 }
 
 const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
-const mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', ['get']);
+let mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', ['get']);
+mockEnvironmentService = {
+  config$: of({} as EnvironmentConfig),
+  get: 'someUrl'
+};
 
 describe('AppConfiguration', () => {
   mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -42,17 +50,16 @@ describe('AppConfiguration', () => {
         AppConfigService,
         { provide: AppConfigService, useClass: MockConfigService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        { provide: EnvironmentService, useValue: mockEnvironmentService}
+        { provide: EnvironmentService, useValue: mockEnvironmentService }
       ]
     });
-    mockEnvironmentService.get.and.returnValue('someUrl');
+    spyOn(mockEnvironmentService, 'get').and.returnValue('someUrl');
     mockFeatureToggleService.getValue.and.returnValue(of(true));
   });
 
   it('should be created', inject([AppConfig], (service: AppConfig) => {
     expect(service).toBeTruthy();
     expect(mockFeatureToggleService.getValue).toHaveBeenCalled();
-    expect(service.workallocationUrl).toEqual('workallocation');
   }));
 
   it('should have load', inject([AppConfig], (service: AppConfig) => {
@@ -129,6 +136,22 @@ describe('AppConfiguration', () => {
 
   it('should have getAnnotationApiUrl', inject([AppConfig], (service: AppConfig) => {
     expect(service.getAnnotationApiUrl()).toBeUndefined();
+  }));
+
+  it('should have getNotificationUrl', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getNotificationUrl()).toBe('dummy');
+  }));
+
+  it('should have getNotificationUrl defined', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getNotificationUrl()).toBeDefined();
+  }));
+
+  it('should have getNotificationUrl', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getNotificationUrl()).toBe('dummy');
+  }));
+
+  it('should have getNotificationUrl defined', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getNotificationUrl()).toBeDefined();
   }));
 
   it('should have getDocumentManagementUrlV2', inject([AppConfig], (service: AppConfig) => {

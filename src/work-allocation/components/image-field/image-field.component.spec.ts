@@ -1,34 +1,30 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkAllocationComponentsModule } from './../work-allocation.components.module';
 import { ImageFieldComponent } from './image-field.component';
 
 @Component({
-  template: `<exui-image-field [src]="src" [alt]="alt"></exui-image-field>`
+  template: '<exui-image-field [src]="src" [alt]="alt"></exui-image-field>'
 })
 class WrapperComponent {
-  @ViewChild(ImageFieldComponent) public appComponentRef: ImageFieldComponent;
+  @ViewChild(ImageFieldComponent, { static: true }) public appComponentRef: ImageFieldComponent;
   @Input() public src: string;
   @Input() public alt: string;
 }
 
 describe('WorkAllocation', () => {
-
   describe('ImageFieldComponent', () => {
     let component: ImageFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(async () => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule ]
+        declarations: [WrapperComponent],
+        imports: [WorkAllocationComponentsModule]
       })
-      .compileComponents();
-    }));
+        .compileComponents();
 
-    beforeEach(() => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
@@ -38,7 +34,6 @@ describe('WorkAllocation', () => {
     it('should show only if there is an image to show', () => {
       // Expect the nativeElement to be empty (no image yet)
       expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
-
 
       // Set up the image
       const EXAMPLE_IMAGE: string = '/assets/images/test.jpg';
@@ -78,7 +73,6 @@ describe('WorkAllocation', () => {
       // Expect the nativeElement to be empty (no image yet)
       expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
 
-
       // Set up the image
       const EXAMPLE1_IMAGE: string = '/assets/images/test.jpg';
       const EXAMPLE2_IMAGE: string = '/assets/images/govuk-crest.png';
@@ -106,13 +100,11 @@ describe('WorkAllocation', () => {
       fixture.detectChanges();
       element = fixture.debugElement.nativeElement.querySelector('img');
       expect(element).toBeNull();
-
     });
 
     it('should show the correct alt text', () => {
       // Expect the nativeElement to be empty (no image yet)
       expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
-
 
       // Set up the image
       const EXAMPLE_IMAGE: string = '/assets/images/test.jpg';
@@ -148,9 +140,6 @@ describe('WorkAllocation', () => {
       fixture.detectChanges();
       element = fixture.debugElement.nativeElement.querySelector('img');
       expect(element.getAttribute('alt')).toBe('Image');
-
     });
-
   });
-
 });

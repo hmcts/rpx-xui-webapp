@@ -4,10 +4,10 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { SessionStorageService } from '../../../app/services';
-import { getJudicialUserIds, mapCaseRoles } from '../../../cases/utils/utils';
-import { Caseworker } from '../../../work-allocation-2/models/dtos';
-import { CaseworkerDataService } from '../../../work-allocation-2/services';
-import { handleFatalErrors } from '../../../work-allocation-2/utils';
+import { Utils } from '../../../cases/utils/utils';
+import { Caseworker } from '../../../work-allocation/models/dtos';
+import { CaseworkerDataService } from '../../../work-allocation/services';
+import { handleFatalErrors } from '../../../work-allocation/utils';
 import { Answer, CaseRole, RemoveAllocationNavigationEvent } from '../../models';
 import { CaseRoleDetails } from '../../models/case-role-details.interface';
 import { RemoveRoleText } from '../../models/enums/answer-text';
@@ -18,7 +18,6 @@ import { AllocateRoleService } from '../../services';
   templateUrl: './remove-role.component.html'
 })
 export class RemoveRoleComponent implements OnInit {
-
   public removeAllocationNavigationEvent = RemoveAllocationNavigationEvent;
   public answers: Answer[] = [];
   public caption = null;
@@ -30,6 +29,8 @@ export class RemoveRoleComponent implements OnInit {
   public role: CaseRole;
 
   private backUrl: string;
+
+  public showSpinner: boolean;
 
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
@@ -43,14 +44,14 @@ export class RemoveRoleComponent implements OnInit {
   public ngOnInit(): void {
     this.backUrl = window.history.state && window.history.state.backUrl ? window.history.state.backUrl : '';
     const paramMap$ = this.route.queryParamMap;
-    paramMap$.pipe(mergeMap(queryMap => {
+    paramMap$.pipe(mergeMap((queryMap) => {
       return this.getRoleAssignmentFromQuery(queryMap);
     })).subscribe((caseRoles: CaseRole[]) => {
-      this.role = caseRoles.find(role => role.id === this.assignmentId);
+      this.role = caseRoles.find((role) => role.id === this.assignmentId);
       if (!this.role.email && this.role.actorId) {
         const caseworkers = JSON.parse(this.sessionStorageService.getItem('caseworkers'));
         if (caseworkers) {
-          const caseWorker = (caseworkers as Caseworker[]).find(caseworker => caseworker.idamId === this.role.actorId);
+          const caseWorker = (caseworkers as Caseworker[]).find((caseworker) => caseworker.idamId === this.role.actorId);
           if (caseWorker) {
             this.role.email = caseWorker.email;
           }
@@ -73,8 +74,8 @@ export class RemoveRoleComponent implements OnInit {
     this.jurisdiction = queryMap.get('jurisdiction');
     const caseType = queryMap.get('caseType');
     return this.allocateRoleService.getCaseRoles(this.caseId, this.jurisdiction, caseType, this.assignmentId).pipe(
-      mergeMap((caseRoles: CaseRole[]) => this.allocateRoleService.getCaseRolesUserDetails(getJudicialUserIds(caseRoles), [this.jurisdiction]).pipe(
-        map((caseRolesWithUserDetails: CaseRoleDetails[]) => mapCaseRoles(caseRoles, caseRolesWithUserDetails))
+      mergeMap((caseRoles: CaseRole[]) => this.allocateRoleService.getCaseRolesUserDetails(Utils.getJudicialUserIds(caseRoles), [this.jurisdiction]).pipe(
+        map((caseRolesWithUserDetails: CaseRoleDetails[]) => Utils.mapCaseRoles(caseRoles, caseRolesWithUserDetails))
       )),
     );
   }
@@ -82,20 +83,21 @@ export class RemoveRoleComponent implements OnInit {
   public onNavEvent(navEvent: RemoveAllocationNavigationEvent): void {
     switch (navEvent) {
       case RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION: {
+        this.showSpinner = true;
         this.allocateRoleService.removeAllocation(this.assignmentId).subscribe(() => {
-            const message: any = { type: 'success', message: RemoveRoleText.infoMessage };
-            this.router.navigate([this.backUrl], {
-              state: {
-                showMessage: true,
-                retainMessages: true,
-                message,
-                messageText: RemoveRoleText.infoMessage,
-              }
-            });
-          },
-          error => {
-            handleFatalErrors(error.status, this.router);
-          }
+          const message: any = { type: 'success', message: RemoveRoleText.infoMessage };
+          this.router.navigate([this.backUrl], {
+            state: {
+              showMessage: true,
+              retainMessages: true,
+              message,
+              messageText: RemoveRoleText.infoMessage
+            }
+          });
+        },
+        (error) => {
+          handleFatalErrors(error.status, this.router);
+        }
         );
         break;
       }
@@ -104,6 +106,7 @@ export class RemoveRoleComponent implements OnInit {
         return;
       }
       default: {
+        this.showSpinner = false;
         throw new Error('Invalid option');
       }
     }
@@ -111,8 +114,8 @@ export class RemoveRoleComponent implements OnInit {
 
   private getNamesIfNeeded(): void {
     if (!this.role.name) {
-      this.caseworkerDataService.getCaseworkersForServices([this.jurisdiction]).pipe(first()).subscribe(caseworkers => {
-        const caseworker = caseworkers.find(givenCaseworker => givenCaseworker.idamId === this.role.actorId);
+      this.caseworkerDataService.getCaseworkersForServices([this.jurisdiction]).pipe(first()).subscribe((caseworkers) => {
+        const caseworker = caseworkers.find((givenCaseworker) => givenCaseworker.idamId === this.role.actorId);
         this.role.name = `${caseworker.firstName}-${caseworker.lastName}`;
         this.role.email = caseworker.email;
         this.answers = [];
@@ -120,5 +123,4 @@ export class RemoveRoleComponent implements OnInit {
       });
     }
   }
-
 }

@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-
-import { InformationMessage } from '../../../work-allocation-2/models/comms';
+import { InformationMessage } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class InfoMessageCommService {
-
   public infoMessageSource: BehaviorSubject<InformationMessage[]> = new BehaviorSubject<InformationMessage[]>([]);
 
   public infoMessageChangeEmitted$: Observable<InformationMessage[]> = this.infoMessageSource.asObservable();

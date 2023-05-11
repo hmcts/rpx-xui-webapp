@@ -4,7 +4,7 @@ import { SERVICES_CASE_JUDICIAL_REF_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
-import { getServiceRefDataMappingList } from '../serviceRefData';
+import { getServiceRefDataMappingList } from '../ref-data/ref-data-utils';
 import { PERSON } from './constants/mock.data';
 import { PersonRole } from './interfaces/person';
 import { applySearchFilter } from './util';

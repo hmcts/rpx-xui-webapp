@@ -9,7 +9,11 @@
     <xuilib-due-date [dueDate]="toDate(task[config.name])"></xuilib-due-date>
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.PRIORITY">
-    <exui-priority-field [dueDate]="toDate(task['dueDate'])"></exui-priority-field>
+    <ng-container *ngIf="(isUserJudicial && isTaskUrgent) || (!isUserJudicial)" >
+      <exui-priority-field [priorityDate]="toDate(task.priority_date)" [majorPriority]="task.major_priority"
+                           [dueDate]="toDate(task.dueDate)" [jurisdiction]="task.jurisdiction">
+      </exui-priority-field>
+    </ng-container>
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.DATE_AGE_DAYS">
     {{ task[config.name] | daysFromToday }}

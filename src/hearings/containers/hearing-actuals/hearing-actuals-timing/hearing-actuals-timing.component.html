@@ -102,7 +102,7 @@
                         type="radio"
                         value="yes" (change)="updateControl($event, formGroup.get('recordTimes'))">
                 <label class="govuk-label govuk-radios__label" for="pauseResumeYes">
-                  Yes
+                  {{ 'Do you need to record times the hearing was paused?' | rpxTranslate: null : 'Yes'}}
                 </label>
               </div>
               <div class="govuk-radios__item">
@@ -112,7 +112,7 @@
                         value="no"
                         (change)="updateControl($event, formGroup.get('recordTimes'))">
                 <label class="govuk-label govuk-radios__label" for="pauseResumeNo">
-                  No
+                  {{ 'Do you need to record times the hearing was paused?' | rpxTranslate: null : 'No'}}
                 </label>
               </div>
             </div>

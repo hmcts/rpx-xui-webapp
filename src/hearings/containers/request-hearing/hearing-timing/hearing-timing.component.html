@@ -57,12 +57,16 @@
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="noSpecificDate" name="specificDate" type="radio" value="No"
                 formControlName="specificDate" (change)="showDateAvailability();">
-              <label class="govuk-label govuk-radios__label" for="noSpecificDate">No</label>
+              <label class="govuk-label govuk-radios__label" for="noSpecificDate">
+                {{ 'Availability of all the parties will be taken into account when scheduling this hearing.' | rpxTranslate: null : 'No'}}
+              </label>
             </div>
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="hearingSingleDate" name="specificDate" type="radio" value="Yes"
                 formControlName="specificDate" (change)="showDateAvailability();">
-              <label class="govuk-label govuk-radios__label" for="hearingSingleDate">Yes</label>
+              <label class="govuk-label govuk-radios__label" for="hearingSingleDate">
+                {{ 'Availability of all the parties will be taken into account when scheduling this hearing.' | rpxTranslate: null : 'Yes'}}
+              </label>
             </div>
             <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Yes'}">
               <div class="govuk-form-group">

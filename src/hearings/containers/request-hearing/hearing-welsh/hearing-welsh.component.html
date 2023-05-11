@@ -19,11 +19,15 @@
             <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="welsh_hearing_yes" name="hearingInWelshFlag" formControlName="hearingInWelshFlag" type="radio" [value]="true">
-                    <label class="govuk-label govuk-radios__label" for="welsh_hearing_yes">Yes</label>
+                    <label class="govuk-label govuk-radios__label" for="welsh_hearing_yes">
+                      {{ 'Select hearing need to be in Welsh or not' | rpxTranslate: null : 'Yes'}}
+                    </label>
                 </div>
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="welsh_hearing_no" name="hearingInWelshFlag" formControlName="hearingInWelshFlag" type="radio" [value]="false">
-                    <label class="govuk-label govuk-radios__label" for="welsh_hearing_no">No</label>
+                    <label class="govuk-label govuk-radios__label" for="welsh_hearing_no">
+                      {{ 'Select hearing need to be in Welsh or not' | rpxTranslate: null : 'No'}}
+                    </label>
                 </div>
             </div>
 

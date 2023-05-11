@@ -84,6 +84,15 @@ var { defineSupportCode } = require('cucumber');
         await caseManager.createCase(caseData, false);
     });
 
+    When('I create case with invalid date', async function () {
+        var caseData = {
+            "Reference": "1610530255167708",
+            "Appicant Postcode": "SW19 8JW",
+            "Date": "01-01-0000"
+        };
+        await caseManager.createCaseWithInvalidDate(caseData, false);
+    });    
+
     Then('Should be able to see check your answers summary page links', async function () {
         await caseEditPage.validateSummeryPageLinks();
     });

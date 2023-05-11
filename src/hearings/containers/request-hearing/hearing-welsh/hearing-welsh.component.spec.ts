@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -17,6 +17,13 @@ import { HearingWelshComponent } from './hearing-welsh.component';
 })
 class MockTestComponent {
   @Input() public error: ErrorMessage;
+}
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
 }
 
 @Component({
@@ -40,7 +47,8 @@ describe('HearingWelshComponent', () => {
       declarations: [
         HearingWelshComponent,
         MockTestComponent,
-        MockHearingPartiesComponent
+        MockHearingPartiesComponent,
+        RpxTranslateMockPipe
       ],
       providers: [
         provideMockStore({ initialState }),

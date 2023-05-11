@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
@@ -28,6 +28,13 @@ const mockActivatedRoute = {
   navigate: (): boolean => true
 };
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
+
 describe('HearingActualsTimingComponent', () => {
   const hearingsService = jasmine.createSpyObj('HearingsService', ['updateHearingActuals']);
   let store: Store<any>;
@@ -47,7 +54,7 @@ describe('HearingActualsTimingComponent', () => {
         ValidatorsUtils
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [HearingActualsTimingComponent, BlankComponent]
+      declarations: [HearingActualsTimingComponent, BlankComponent, RpxTranslateMockPipe]
     })
       .compileComponents();
   }));
@@ -191,7 +198,7 @@ describe('HearingActualsTimingComponent', () => {
         ValidatorsUtils
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [HearingActualsTimingComponent, BlankComponent]
+      declarations: [HearingActualsTimingComponent, BlankComponent, RpxTranslateMockPipe]
     })
       .compileComponents();
   }));

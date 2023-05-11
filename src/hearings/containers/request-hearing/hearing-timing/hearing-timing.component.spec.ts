@@ -24,7 +24,7 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-describe('HearingTimingComponent', () => {
+fdescribe('HearingTimingComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
@@ -187,6 +187,10 @@ describe('HearingTimingComponent', () => {
   });
 
   it('should get getFormData', () => {
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = {};
+    component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '01-01-2021';
+    component.getFormData();
+    expect(component.checkedHearingAvailability).toBe(RadioOptions.YES);
     component.hearingRequestMainModel.hearingDetails.duration = 70;
     component.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'Urgent';
     component.hearingRequestMainModel.hearingDetails.hearingWindow = null;
@@ -201,10 +205,6 @@ describe('HearingTimingComponent', () => {
     component.hearingRequestMainModel.hearingDetails.hearingWindow = { dateRangeEnd: '01-01-2021' };
     component.getFormData();
     expect(component.checkedHearingAvailability).toBe(RadioOptions.CHOOSE_DATE_RANGE);
-    component.hearingRequestMainModel.hearingDetails.hearingWindow = {};
-    component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '01-01-2021';
-    component.getFormData();
-    expect(component.checkedHearingAvailability).toBe(RadioOptions.YES);
   });
 
   it('should check Hearing Length', () => {

@@ -55,7 +55,6 @@ Feature: Test case type case creation and case details validations
         Then I see case details page
         Then I should be able to see tabs in case details page
 
-
     Scenario: Validate tab details in case details page against API response
         When I click on search button
         Then Search page should be displayed
@@ -78,6 +77,7 @@ Feature: Test case type case creation and case details validations
         Then Validate Case event next step trigger actions
 
 
+@codecept_test
     Scenario: Validate update form page click on next step trigger actions
         When I click on search button
         Then Search page should be displayed

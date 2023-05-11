@@ -1,4 +1,4 @@
-@fullfunctional @ignore  @staffUI @codecept_test
+@fullfunctional @ignore  @staffUI @codecept_enabled
 Feature: Staff UI Manager user
 
 

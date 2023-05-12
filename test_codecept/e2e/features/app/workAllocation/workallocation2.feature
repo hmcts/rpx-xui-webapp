@@ -7,7 +7,7 @@ Feature: WA Release 2: : Work allocations My work, All work
         Then I validate I am on My work page
 
         Then I see primary navigation tabs "<mainHeaders>" in main header
-        
+
         Then I validate My work sub navigations displayed
             | Tab             |
             | My tasks        |
@@ -15,7 +15,7 @@ Feature: WA Release 2: : Work allocations My work, All work
         Then I see Task list table
         When I navigate to My work sub navigation tab "Available tasks"
         Then I see Task list table
-        
+
         Examples:
             | useridentifier     | roles                                              | mainHeaders                               | rightColumnHeaders  |
             | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer | My work, All work ,Case list, Create case | Find case           |
@@ -55,17 +55,17 @@ Feature: WA Release 2: : Work allocations My work, All work
 
         When I navigate to My work sub navigation tab "My cases"
         Then I validate work allocation cases table columns displayed
-            | ColumnHeader  |
-            | Case name     |
-            | Service  |
-            | Case category |
-            | Case role     |
-            | Start         |
-            | End           |
-            # | Hearing date |
+          | ColumnHeader  |
+          | Case name     |
+          | Service       |
+          | Case category |
+          | Case role     |
+          | Start         |
+          | End           |
+          | Hearing date  |
 
 
-    Scenario: All work tabs
+  Scenario: All work tabs
 
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with test user identified as "IAC_CaseOfficer_R2"

@@ -420,6 +420,25 @@ class Element {
         return !isDisabled
     }
 
+    async isChecked(){
+        const selectorType = Object.keys(this.selector)[0]
+        const isChecked = await getActor().executeScript(function(selectorType, selector){
+            if (selectorType === 'css'){
+                return document.querySelector(selector).checked;
+            }else{
+                return document.evaluate(
+                    selector,
+                    document,
+                    null,
+                    XPathResult.FIRST_ORDERED_NODE_TYPE,
+                    null
+                ).singleNodeValue.checked;
+            }
+            
+        }, selectorType, this.selector[selectorType]);
+        return isChecked
+    }
+
     async isDisplayed(){
         return await getActor().isVisible(this.selector)
 

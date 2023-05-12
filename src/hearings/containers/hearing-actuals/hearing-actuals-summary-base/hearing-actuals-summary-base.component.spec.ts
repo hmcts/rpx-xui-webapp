@@ -2,7 +2,6 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
@@ -16,6 +15,7 @@ import { HearingActualsSummaryBaseComponent } from './hearing-actuals-summary-ba
 
 @Pipe({ name: 'transformAnswer' })
 export class MockHearingAnswersPipe implements PipeTransform {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public transform(answerSource, hearingState$, index?: number): string {
     return '';
   }
@@ -31,7 +31,6 @@ class NothingComponent {
 describe('HearingActualsSummaryBaseComponent', () => {
   let component: HearingActualsSummaryBaseComponent;
   let fixture: ComponentFixture<HearingActualsSummaryBaseComponent>;
-  let store: any;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
@@ -114,7 +113,6 @@ describe('HearingActualsSummaryBaseComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HearingActualsSummaryBaseComponent);
-    store = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

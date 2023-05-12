@@ -1,18 +1,16 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
-import { ErrorMessage } from 'src/app/models';
-import { ErrorMessageComponent } from '../../../app/components';
+import { ErrorMessage } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
-import { InfoMessageContainerComponent } from '../info-message-container/info-message-container.component';
 import { TaskHomeComponent } from './task-home.component';
 
 @Component({
@@ -99,7 +97,8 @@ xdescribe('TaskHomeComponent', () => {
         RouterTestingModule,
         WorkAllocationComponentsModule
       ],
-      declarations: [TaskHomeComponent, WrapperComponent, InfoMessageContainerComponent, ErrorMessageComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [TaskHomeComponent, WrapperComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         provideMockStore({ initialState: initialMockState }),

@@ -8,7 +8,7 @@ const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const globalSearchMockData = require('../../mockData/globalSearch/mockData');
-const globalSearchDataModel = require('../../../dataModels/globalSearch'); 
+const globalSearchDataModel = require('../../../dataModels/globalSearch');
 const { DataTableArgument } = require('codeceptjs');
 
 
@@ -30,7 +30,7 @@ const { DataTableArgument } = require('codeceptjs');
 
     Given('I set set global search mock results response and resultInfo', async function (datatable){
         const datatableHashes = datatable.parse().hashes();
-       
+
         globalSearchMockData.searchResponse.resultInfo.caseStartRecord = parseInt(datatableHashes[0].caseStartRecord);
         globalSearchMockData.searchResponse.resultInfo.casesReturned = parseInt(datatableHashes[0].casesReturned);
         globalSearchMockData.searchResponse.resultInfo.moreResultsToGo = datatableHashes[0].moreResultsToGo.includes('true');
@@ -39,21 +39,21 @@ const { DataTableArgument } = require('codeceptjs');
         for (let i = 0; i < datatableHashes[0].casesReturned; i++) {
             globalSearchMockData.searchResponse.results.push(globalSearchDataModel.getCaseResult());
         }
-        MockApp.onPost('/api/globalsearch/results', (req, res) => {
-            res.send(globalSearchMockData.getResults());
-        });
-       
+        // MockApp.onPost('/api/globalsearch/results', (req, res) => {
+        //     res.send(globalSearchMockData.getResults());
+        // });
+
     });
 
     Given('I set global search mock results with values', async function (datatable) {
-        
+
         const datatableHashes = datatable.parse().hashes();
 
         for (const datatableHash of datatableHashes){
             const caseInResult = globalSearchMockData.searchResponse.results[parseInt(datatableHash.index)];
 
             const keys = Object.keys(datatableHash)
-            
+
             for(const key of keys){
                 if(key === 'index'){
                     //do nothing

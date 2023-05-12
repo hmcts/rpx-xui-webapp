@@ -24,6 +24,8 @@ const ccdApi = require('./services/ccd/index')
 
 const idamOpenId = require('./services/idam/routes')
 const sessionRoutes = require('./services/session/routes')
+const globalSearchRoutes = require('./services/globalSearch/routes')
+
 
 const users = require('./services/users');
 
@@ -38,7 +40,7 @@ class MockApp {
 
 
     init(clientPortStart) {
-      
+
     }
 
 
@@ -63,7 +65,7 @@ class MockApp {
 
         app.use(bodyParser.json());
         app.use(cookieParser());
-        app.use(express.json({ type: '*/*' })); 
+        app.use(express.json({ type: '*/*' }));
 
         app.use((req,res,next) => {
             // console.log(`${req.method} : ${req.url}`);
@@ -80,9 +82,11 @@ class MockApp {
         app.use('/refdata/judicial', judicialRoutes )
         app.use('/am/role-assignments', roleAssignmentRoutes)
         app.use('/am/bookings', bookingRoutes)
-        
-        
-        app.post('/searchCases', (req,res) => {
+        app.use('/globalSearch', globalSearchRoutes)
+
+
+
+      app.post('/searchCases', (req,res) => {
             const cases = ccdApi.getSearchCases(req,res)
             res.send(cases)
         })

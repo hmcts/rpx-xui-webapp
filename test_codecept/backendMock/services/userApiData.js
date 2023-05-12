@@ -8,9 +8,13 @@ class UserApiData{
 
     sendResponse(req,res, apiMethod, defaultResponseCallback){
         const response = this.getUserData(req.headers.authorization, apiMethod)
+
+        console.log( ' the apiMethod is  is ' +    apiMethod);
+        console.log( ' the response is ' +    response);
+
         if (response) {
             res.send(response)
-           
+
         } else {
             res.send(defaultResponseCallback())
         }
@@ -36,7 +40,7 @@ class UserApiData{
         }else{
             apiResponse.response = response
         }
-       
+
     }
 
     getUserData(token, apiMethod){

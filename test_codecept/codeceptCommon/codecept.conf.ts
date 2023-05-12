@@ -44,7 +44,7 @@ exports.config = {
     "steps": "../**/*.steps.js"
   },
   output: functional_output_dir,
- 
+
   helpers: {
     CustomHelper:{
       require:"./customHelper.js"
@@ -81,7 +81,7 @@ exports.config = {
            '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'
         ]
       }
-      
+
     },
     // Playwright: {
     //   url: "https://manage-case.aat.platform.hmcts.net",
@@ -99,7 +99,7 @@ exports.config = {
   },
   "mocha": {
     reporter: 'mochawesome',
-   
+
     "reporterOptions": {
       "reportDir": functional_output_dir,
       reportName:'XUI_MC',
@@ -134,14 +134,14 @@ exports.config = {
     //     }
     //   }
     // }
-   
+
   },
   plugins:{
     screenshotOnFail: {
       enabled: true,
       fullPageScreenshots: 'true'
     },
-   
+
     "myPlugin": {
       "require": "./hooks",
       "enabled": true
@@ -160,7 +160,7 @@ exports.config = {
     //   includeExampleValues: false, // if true incorporate actual values from Examples table along with variable placeholder when writing steps to the report
     //   timeMultiplier: 1000000,     // Used when calculating duration of individual BDD steps.  Defaults to nanoseconds
     // }
-   
+
   },
   include: {
   },
@@ -179,7 +179,7 @@ exports.config = {
         await teardown()
       }
     process.exit(status === 'PASS' ? 0 : 1)
-    
+
   },
   bootstrapAll: async () => {
     if (testType === "ngIntegration" && parallel) {
@@ -187,14 +187,14 @@ exports.config = {
 
     }
   },
-  teardownAll: async () => {  
+  teardownAll: async () => {
     const status = await  mochawesomeGenerateReport()
     if (testType === "ngIntegration" && parallel) {
      await teardown()
     }
 
     process.exit(status === 'PASS' ? 0 : 1)
-    // return status === 'PASS' ? 0 : 1  
+    // return status === 'PASS' ? 0 : 1
   }
 }
 

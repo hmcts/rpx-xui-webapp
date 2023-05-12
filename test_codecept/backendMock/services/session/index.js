@@ -19,6 +19,7 @@ class MockSessionService{
     setDefaultSession(session){
         this.defaultSession = session.split(".")[0]
             .replace('s:', '');
+        console.log ( ` ±±±±±±±±±±±±±±   default sesson is ${this.defaultSession}`)
     }
 
     async getCopyOfDefaultSession(){
@@ -28,13 +29,13 @@ class MockSessionService{
     }
 
     getSessionFiles(){
-        
+
         console.log(this.sessionsPath)
         return fs.readdirSync(this.sessionsPath)
     }
 
     async updateSessionFile(filename){
-       
+
     }
 
     async getSessionCookies(){
@@ -94,7 +95,7 @@ class MockSessionService{
                 clearInterval(interval)
                 reject('Session not updated with actual role assignments')
             },40000)
-            
+
         })
 
     }
@@ -121,7 +122,7 @@ class MockSessionService{
         }else{
             sessionJson.roleAssignmentResponse = roleAssignments;
         }
-        
+
         await fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
 
         sessionJson = await fs.readFileSync(sessionFile);

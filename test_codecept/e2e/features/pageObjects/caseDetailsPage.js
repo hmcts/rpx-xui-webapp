@@ -53,6 +53,11 @@ class CaseDetailsPage{
         return element(by.xpath(`//mat-tab-header//div[contains(@class,'mat-tab-list')]//div[contains(text(),'${tabLabel}')]//ancestor::div[contains(@class,'mat-tab-label') and @role='tab']`));
     }
 
+    async openLinkedDocument() {
+        let documentLink = $('tr.complex-panel-simple-field ccd-read-document-field a');
+        await BrowserWaits.waitForElement(documentLink);
+        await documentLink.click()
+    }
 
 }
 

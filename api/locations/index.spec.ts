@@ -139,6 +139,8 @@ describe('Fee Pay Judge', () => {
           searchTerm: 'Gla',
           serviceIds: ['IA', 'CIVIL', 'SCSS'],
           locationType: 'hearing',
+          // EUI-7909
+          // userLocations: [{service: 'IA', locations: [{id: '1234'}]}],
           userLocations: [{ service: 'IA', bookable: 'true', locations: [{ id: '1234' }] }],
           bookingLocations: null
         }
@@ -158,6 +160,7 @@ describe('Fee Pay Judge', () => {
       }
     });
 
+    // EUI-7909 - remove
     it('should return the possible when there are bookable and non-bookable locations', async () => {
       spy = sandbox.stub(http, GET).resolves(res);
       const req = mockReq({
@@ -183,5 +186,6 @@ describe('Fee Pay Judge', () => {
         throw new Error(err);
       }
     });
+  // 7909 - remove
   });
 });

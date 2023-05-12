@@ -17,6 +17,7 @@ import { HearingActualsEditSummaryComponent } from './hearing-actuals-edit-summa
 
 @Pipe({ name: 'transformAnswer' })
 export class MockHearingAnswersPipe implements PipeTransform {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public transform(answerSource, hearingState$, index?: number): string {
     return '';
   }

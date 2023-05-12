@@ -20,6 +20,8 @@ export interface RoleAssignmentInfo {
   region?: string;
   roleType?: string;
   roleName?: string;
+  beginTime?: string;
+  endTime?: string;
 }
 
 export interface UserDetails {

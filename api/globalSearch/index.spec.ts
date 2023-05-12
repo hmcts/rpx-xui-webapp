@@ -1,3 +1,4 @@
+import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import * as chai from 'chai';
 import { expect } from 'chai';
 import { NextFunction } from 'express';
@@ -5,10 +6,9 @@ import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
+import { GlobalSearchService } from '../interfaces/globalSearchService';
+import { http } from '../lib/http';
 import * as globalSearchServices from './index';
-import { http } from '../../api/lib/http';
-import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
-import { GlobalSearchService } from '../../api/interfaces/globalSearchService';
 
 chai.use(sinonChai);
 
@@ -24,7 +24,8 @@ describe('Jurisdiction', () => {
   const serviceList: GlobalSearchService[] = [
     { serviceId: 'IA', serviceName: 'Immigration & Asylum' },
     { serviceId: 'CIVIL', serviceName: 'CIVIL' },
-    { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' }
+    { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' },
+    { serviceId: 'PUBLICLAW', serviceName: 'Public Law' }
   ];
 
   beforeEach(() => {
@@ -60,13 +61,13 @@ describe('Jurisdiction', () => {
 
   it('should return global search services', async() => {
     let services = globalSearchServices.generateServices(undefined);
-    expect(services.length).to.equal(3);
+    expect(services.length).to.equal(4);
 
     services = globalSearchServices.generateServices(null);
-    expect(services.length).to.equal(3);
+    expect(services.length).to.equal(4);
 
     services = globalSearchServices.generateServices([]);
-    expect(services.length).to.equal(3);
+    expect(services.length).to.equal(4);
   });
 
   it('should return global search services', async() => {

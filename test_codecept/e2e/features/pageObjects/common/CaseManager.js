@@ -451,7 +451,12 @@ class CaseManager {
                 var selectionFields = await ccdField.$$(".multiple-choice input");
                 var selectionFieldsCount = await selectionFields.count();
                 for (var count = 0; count < selectionFieldsCount; count++) {
-                    await (await selectionFields.get(count)).click();
+                    const checkBoxElement = await selectionFields.get(count);
+                    const isAlreadyChecked = await checkBoxElement.isChecked();
+                    if (!isAlreadyChecked){
+                        await checkBoxElement.click();
+                    }
+                    
                 }
                 cucumberReporter.AddMessage(fieldName + " : all options selected", LOG_LEVELS.Debug);
                 break;
@@ -459,7 +464,11 @@ class CaseManager {
             case "ccd-write-fixed-radio-list-field":
                 var selectionRadioFields = await ccdField.$$(".multiple-choice input");
                 var selectionFieldsCount = await selectionRadioFields.count();
-                await(await selectionRadioFields.get(0)).click();
+                let radioElement = await selectionRadioFields.get(0)
+                let isChecked = await radioElement.isChecked();
+                if (!isChecked){
+                    await radioElement.click();
+                }
                 const multipleChoiceLabels = await ccdField.$$(".multiple-choice label");
                 const mcFirstLabel = await multipleChoiceLabels.get(0)
                 cucumberReporter.AddMessage(fieldName + " : first option selected : " + await mcFirstLabel.getText(), LOG_LEVELS.Debug);

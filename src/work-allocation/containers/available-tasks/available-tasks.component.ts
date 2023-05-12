@@ -19,8 +19,9 @@ import { InfoMessageType } from '../../../role-access/models/enums';
 export class AvailableTasksComponent extends TaskListWrapperComponent {
   public get fields(): FieldConfig[] {
     let fields = [];
+    this.userRoleCategory = this.getCurrentUserRoleCategory() ? this.getCurrentUserRoleCategory() : this.userRoleCategory;
     this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
-      fields = this.isCurrentUserJudicial() ?
+      fields = this.userRoleCategory ?
         (isRelease4 ? ConfigConstants.AvailableTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.AvailableTasksForJudicial) :
         (isRelease4 ? ConfigConstants.AvailableTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AvailableTasksForLegalOps);
     });

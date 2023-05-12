@@ -30,8 +30,9 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
 
   public get fields(): FieldConfig[] {
     let fields = ConfigConstants.MyWorkTasksForLegalOps;
+    this.userRoleCategory = this.getCurrentUserRoleCategory() ? this.getCurrentUserRoleCategory() : this.userRoleCategory;
     this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
-      fields = this.isCurrentUserJudicial() ?
+      fields = this.userRoleCategory ?
         (isRelease4 ? ConfigConstants.MyWorkTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.MyWorkTasksForJudicial) :
         (isRelease4 ? ConfigConstants.MyWorkTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.MyWorkTasksForLegalOps);
     });

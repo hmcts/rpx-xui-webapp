@@ -55,6 +55,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public routeEventsSubscription: Subscription;
   public isUpdatedTaskPermissions$: Observable<boolean>;
   public updatedTaskPermission: boolean;
+  public userRoleCategory: string;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -450,6 +451,14 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     if (this.selectedLocations !== newLocations && selectedLocations.length !== 0) {
       this.pagination.page_number = 1;
       this.sessionStorageService.setItem(this.pageSessionKey, '1');
+    }
+  }
+
+  public getCurrentUserRoleCategory(): string {
+    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      return userInfo.roleCategory;
     }
   }
 }

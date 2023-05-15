@@ -6,6 +6,7 @@ const BrowserWaits = require("../../support/customWaits");
 const caseDetailsPage = require("../pageObjects/caseDetailsPage");
 const mediaViewerPage = require("../pageObjects/mediaViewerPage");
 const caseDetailsBasicViewPage = require('../pageObjects/caseAccessManagement/caseDetailsBasicView');
+const { I } = inject();
 
 
    
@@ -109,5 +110,11 @@ const caseDetailsBasicViewPage = require('../pageObjects/caseAccessManagement/ca
     Then('I verify that bookmark feature is working', async function() {
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(await mediaViewerPage.verifyBookmarkWorking()).to.be.true;
+        });
+    });
+
+    Then('I verify that comment feature is working', async function() {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await mediaViewerPage.verifyCommentWorking(I)).to.be.true;
         });
     });

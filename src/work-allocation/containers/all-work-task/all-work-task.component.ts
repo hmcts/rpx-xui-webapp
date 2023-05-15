@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Person, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { Person } from '@hmcts/rpx-xui-common-lib';
 import { select } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -64,9 +64,8 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
 
   public get fields(): FieldConfig[] {
     let fields = [];
-    this.userRoleCategory = this.getCurrentUserRoleCategory() ? this.getCurrentUserRoleCategory() : this.userRoleCategory;
     this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
-      fields = this.userRoleCategory === RoleCategory.JUDICIAL ?
+      fields = this.isCurrentUserJudicial() ?
         (isRelease4 ? ConfigConstants.AllWorkTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForJudicial) :
         (isRelease4 ? ConfigConstants.AllWorkTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForLegalOps);
     });

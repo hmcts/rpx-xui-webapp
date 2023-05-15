@@ -10,7 +10,7 @@ import { UserDetails } from '../../../app/models/user-details.model';
 export class UserService {
   constructor(private readonly http: HttpClient) {}
 
-  public getUserDetails(): Observable<UserDetails> {
-    return this.http.get<UserDetails>('api/user/details');
+  public getUserDetails(refreshRoleAssignments?: boolean): Observable<UserDetails> {
+    return this.http.get<UserDetails>(`api/user/details?refreshRoleAssignments=${refreshRoleAssignments}`);
   }
 }

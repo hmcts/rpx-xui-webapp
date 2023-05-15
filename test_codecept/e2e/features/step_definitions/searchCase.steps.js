@@ -174,6 +174,11 @@ const RuntimeTestData = require("../../support/runtimeTestData");
 
   });
 
+  When('I open second case in search results', async function () {
+    await searchPage.openSecondCaseInResults();
+
+  });
+
   Then('I see results returned', async function () {
     const caseListContainer = $("exui-case-list");
     const searchCasesContainer = $("exui-search-case");

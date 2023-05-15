@@ -92,3 +92,10 @@ const caseDetailsBasicViewPage = require('../pageObjects/caseAccessManagement/ca
         await caseDetailsBasicViewPage.requestAccessButton.click() 
     })
 
+    When('I open linked document', async () => {
+        await caseDetailsPage.openLinkedDocument()
+    })
+
+    When('I open dummy document', async () => {
+        await caseDetailsPage.openDummyFile()
+    })

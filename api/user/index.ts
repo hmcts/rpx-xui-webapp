@@ -42,8 +42,17 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
 }
 export function getSyntheticRoles(roleAssignments: RoleAssignment[]): string [] {
   let syntheticRoles = [];
-  roleAssignments.forEach((roleAssignment) => {
-    if (roleAssignment.substantive === 'Y' && roleAssignment.jurisdiction && roleAssignment.roleName) {
+  const activeRoleAssignments = getActiveRoleAssignments(roleAssignments, new Date());
+  activeRoleAssignments.forEach((roleAssignment) => {
+    if (roleAssignment.substantive === 'Y'
+        &&
+        roleAssignment.jurisdiction
+        &&
+        roleAssignment.roleName
+        &&
+        roleAssignment.roleType
+        &&
+        roleAssignment.roleType.toUpperCase() === 'ORGANISATION') {
       syntheticRoles = [...syntheticRoles, getSyntheticRole(roleAssignment.jurisdiction, roleAssignment.roleName)];
     }
   });

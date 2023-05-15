@@ -1897,12 +1897,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page-v2":
-  version: 6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page-v2"
+"@hmcts/ccd-case-ui-toolkit@npm:6.10.7-case-flags-v2-reasonable-adjustments-fixes":
+  version: 6.10.7-case-flags-v2-reasonable-adjustments-fixes
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.10.7-case-flags-v2-reasonable-adjustments-fixes"
   dependencies:
     tslib: ^2.0.0
-  checksum: e6140e102cde2aeaf83ca338cd9d004a3c21d05bd14858f3a964cec2dc945ca6b068d5b839a7123f216322954f53d6ec9a93d30d435b65f517bb6b44272c37be
+  checksum: 90d375b4bf6029a5e5f13ab2766448cc26a1db2bf7be554f03e0fcc0bb6250073478b222d2553167f581ab9953e93c6de7a299d19bb70d9a4f0879245f1a0835
   languageName: node
   linkType: hard
 
@@ -18065,7 +18065,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page-v2
+    "@hmcts/ccd-case-ui-toolkit": 6.10.7-case-flags-v2-reasonable-adjustments-fixes
     "@hmcts/ccpay-web-component": 5.2.2
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3
@@ -18185,7 +18185,7 @@ __metadata:
     protractor-cucumber-framework: 6.1.1
     protractor-multiple-cucumber-html-reporter-plugin: 1.8.0
     protractor-screenshot-utils: ^1.0.5
-    rpx-xui-translation: ^0.1.6
+    rpx-xui-translation: ^0.2.1
     rx-polling: 1.1.0
     rxjs: ^6.5.3
     rxjs-compat: ^6.6.7
@@ -18215,9 +18215,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:^0.1.6":
-  version: 0.1.8
-  resolution: "rpx-xui-translation@npm:0.1.8"
+"rpx-xui-translation@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "rpx-xui-translation@npm:0.2.1"
   dependencies:
     dexie: ^3.2.2
     luxon: ^2.4.0
@@ -18225,7 +18225,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^9.1.13
     "@angular/core": ^9.1.13
-  checksum: 24893242255be711e7a67dcf18b79f28d2f34598eaa9116bcb0495134a7a87c15cb604a4665c1b995927ca3203884ed89c8e74b86ee89e61939d8ef8467436b6
+  checksum: 79f0e08bfee4e20710f8175d0e32091630b75150d37e047ad7048f638889740c567f5f81df75e5c360df7eedb3d2784c595e1368fd3191775f8fbbd1e9d4f2b4
   languageName: node
   linkType: hard
 

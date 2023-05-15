@@ -87,8 +87,7 @@ Feature: Test case type case creation and case details validations
         When I start case next step "Update case"
         Then Validate Case event update populating form page
 
-@open_case
-    Scenario: Validate media viewer functionality
+    Scenario: Validate media viewer text redaction working
         When I click on search button
         Then Search page should be displayed
         When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
@@ -99,5 +98,20 @@ Feature: Test case type case creation and case details validations
         When I click tab with label "Tab 1" in case details page
         When I open dummy document
         Then I see the file displayed in Media Viewer
+        Then I verify that text redaction is working
+
+    Scenario: Validate media viewer bookmark feature working
+        When I click on search button
+        Then Search page should be displayed
+        When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
+        When I click apply to perform case search
+        Then I see results returned
+        When I open second case in search results
+        Then I see case details page
+        When I click tab with label "Tab 1" in case details page
+        When I open dummy document
+        Then I see the file displayed in Media Viewer
+        Then I verify that bookmark feature is working
+
         
 

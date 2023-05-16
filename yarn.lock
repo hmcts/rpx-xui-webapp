@@ -2098,12 +2098,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-sorting":
-  version: 6.16.0-query-management-sorting
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-sorting"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-sorting-v1":
+  version: 6.16.0-query-management-sorting-v1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-sorting-v1"
   dependencies:
     tslib: ^2.0.0
-  checksum: 5e46559e18ee1890816e110725ce85065268f532bdbfbf7a6c16e0a08063a6596b79972d01f06865d2d47cfec58a928a08451775c67dd328c4d11c2cb5d86d3f
+  checksum: f1b39ba44b6c9b2bd8fc1fac3bd9f6a635d5667d5ebe3ea3137f412a99d206e02abc6e3fbc976205e2d0a91211336165889cad93f339cfd2710fbbb309aac957
   languageName: node
   linkType: hard
 
@@ -18145,7 +18145,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-sorting
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-sorting-v1
     "@hmcts/ccpay-web-component": 5.2.2
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

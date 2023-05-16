@@ -63,6 +63,7 @@ import { effects } from './store/effects';
 // ngrx modules - END
 // APP store
 import { CustomSerializer, reducers } from './store/reducers';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 // enforces immutability
 export const metaReducers: MetaReducer<any>[] = !environment.production
   ? [storeFreeze]
@@ -99,7 +100,15 @@ export function launchDarklyClientIdFactory(
     SharedModule,
     ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),
-    PaymentLibModule
+    PaymentLibModule,
+    RpxTranslationModule.forRoot({
+      baseUrl: '',
+      debounceTimeMs: 300,
+      validity: {
+        days: 1
+      },
+      testMode: true
+    })
   ],
   providers: [
     NGXLogger,

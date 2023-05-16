@@ -2098,12 +2098,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-orchestrator-v3":
-  version: 6.16.0-query-management-orchestrator-v3
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-orchestrator-v3"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-query-list-v4":
+  version: 6.16.0-query-management-query-list-v4
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-query-list-v4"
   dependencies:
     tslib: ^2.0.0
-  checksum: de16f40bc47abb67a673ac0b524f5de49080466b1f435e87cf79fa92a2efa7b854d942483f5b09055b99d1aa94282b05927d31ac2a4afe963aec7b5b28aaf48b
+  checksum: af062ab04d49357cbd68b5db1d9466026a8a812ec4d7789998dfce751823b3ccea9354df74d8c42140c94ba8fe6baf22ec713a00166cbe85192e97ca79faf550
   languageName: node
   linkType: hard
 
@@ -7977,6 +7977,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dexie@npm:^3.2.2":
+  version: 3.2.3
+  resolution: "dexie@npm:3.2.3"
+  checksum: 54fd7bc94364ed601dc2d53f8b488e49ac61d4ec532f001a68fde9ffccb4bf3c6a8af310b41d8f52c94c1a99c0e165437d7b223b655df582ceda90b9bfcd60e7
+  languageName: node
+  linkType: hard
+
 "di@npm:^0.0.1":
   version: 0.0.1
   resolution: "di@npm:0.0.1"
@@ -13808,6 +13815,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"luxon@npm:^2.4.0":
+  version: 2.5.2
+  resolution: "luxon@npm:2.5.2"
+  checksum: d8b671ffd2ff0b438af862ac11082a81b3aedd9f8b6a4ca636f944224f8dd381125cd4d274ca0a8aedcaf2cfca0fc2ca96fe4cc1b16a28b7af701afb95c0bff8
+  languageName: node
+  linkType: hard
+
 "magic-string@npm:0.25.7":
   version: 0.25.7
   resolution: "magic-string@npm:0.25.7"
@@ -18131,7 +18145,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-orchestrator-v3
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-query-list-v4
     "@hmcts/ccpay-web-component": 5.2.2
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3
@@ -18251,6 +18265,7 @@ __metadata:
     protractor-cucumber-framework: 6.1.1
     protractor-multiple-cucumber-html-reporter-plugin: 1.8.0
     protractor-screenshot-utils: ^1.0.5
+    rpx-xui-translation: 0.2.1
     rx-polling: 1.1.0
     rxjs: ^6.5.3
     rxjs-compat: ^6.6.7
@@ -18279,6 +18294,20 @@ __metadata:
     zone.js: ~0.10.2
   languageName: unknown
   linkType: soft
+
+"rpx-xui-translation@npm:0.2.1":
+  version: 0.2.1
+  resolution: "rpx-xui-translation@npm:0.2.1"
+  dependencies:
+    dexie: ^3.2.2
+    luxon: ^2.4.0
+    tslib: ^1.10.0
+  peerDependencies:
+    "@angular/common": ^9.1.13
+    "@angular/core": ^9.1.13
+  checksum: 79f0e08bfee4e20710f8175d0e32091630b75150d37e047ad7048f638889740c567f5f81df75e5c360df7eedb3d2784c595e1368fd3191775f8fbbd1e9d4f2b4
+  languageName: node
+  linkType: hard
 
 "run-async@npm:^2.4.0":
   version: 2.4.1

@@ -84,6 +84,12 @@ export interface LocationsByRegion {
   locations: string[];
 }
 
+// need to store from API, rather than local
+export interface Region {
+  region_id: string;
+  description: string;
+}
+
 export interface CaseSearchParameter {
   ccdId?: string;
   eventId?: string;
@@ -162,4 +168,9 @@ export interface TaskSearchParameter {
 
 export interface TaskSearchParameters {
   parameters: TaskSearchParameter[];
+}
+
+export interface TaskNamesResponse {
+  taskName: string;
+  taskId: number;
 }

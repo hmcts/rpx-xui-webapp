@@ -62,7 +62,7 @@ Feature: WA Release 2: : Work allocations My work, All work
             | Case role     |
             | Start         |
             | End           |
-            # | Hearing date |
+            | Hearing date  |
 
 
     Scenario: All work tabs

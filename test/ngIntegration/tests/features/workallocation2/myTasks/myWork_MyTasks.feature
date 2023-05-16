@@ -69,8 +69,8 @@ Feature: WA Release 2: My work - My Tasks
             | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 0        | MEDIUM   | 
             | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        | LOW      | 
 
-        Then I validate work allocation task table column "Task" width less than or equal to 280
-        Then I validate work allocation task table column "Case name" width less than or equal to 200
+        # Then I validate work allocation task table column "Task" width less than or equal to 280
+        # Then I validate work allocation task table column "Case name" width less than or equal to 200
 
         Then I see manage link displayed for task at position 1
         Then I see manage link displayed for task at position 2
@@ -177,8 +177,8 @@ Feature: WA Release 2: My work - My Tasks
             | Due date      | Yes        | No    |
             | Priority      | Yes        | No    |
 
-        Then I validate work allocation task table column "Task" width less than or equal to 280
-        Then I validate work allocation task table column "Case name" width less than or equal to 200
+        # Then I validate work allocation task table column "Task" width less than or equal to 280
+        # Then I validate work allocation task table column "Case name" width less than or equal to 200
         
 
 

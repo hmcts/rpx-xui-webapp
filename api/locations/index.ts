@@ -28,6 +28,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   let serviceIds = req.body.serviceIds;
   const locationType = req.body.locationType;
   const userLocations = req.body.userLocations ? req.body.userLocations : [];
+  // EUI-7909 - remove line below
   const bookingLocations = req.body.bookingLocations;
   // stops locations from being gathered if they are base locations passed in without relevant services
   if ((!serviceIds || serviceIds.length === 0) && userLocations) {
@@ -54,11 +55,14 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
       const locationIds = getLocationIdsFromLocationList(userLocation.locations);
       const regionIds = getRegionIdsFromLocationList(userLocation.locations);
       // when we are trying to filter out locations when booking location is present - my work
+      // EUI-7909 - remove 5 lines below
       if (userLocation.bookable && bookingLocations) {
         results = filterOutResults(results, bookingLocations, [], courtTypes);
       } else {
         results = filterOutResults(results, locationIds, regionIds, courtTypes);
       }
+      // EUI-7909 - uncomment out line below
+      // results = filterOutResults(results, locationIds, regionIds, courtTypes);
     });
     // added line below to ensure any locations from non-used services are removes
     // (API occasionally sending irrelevant location previously)
@@ -68,6 +72,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
         location.epimms_id === locationInfo.epimms_id
       ))
     );
+
     res.status(response.status).send(response.data.results);
   } catch (error) {
     next(error);
@@ -144,7 +149,9 @@ function getCourtTypeIdsByService(serviceIdArray: string[]): string[] {
 }
 
 function concatCourtTypeWithoutDuplicates(array1: number[], array2: number[]) {
-  return array2 ? array1.concat(array2.filter((item) => array1.indexOf(item) < 0)) : array1;
+  array1 = array1 ? array1 : [];
+  array2 = array2 ? array2 : [];
+  return array1.concat(array2.filter((item) => array1.indexOf(item) < 0));
 }
 
 function mapCourtVenuesToLocationModels(courtVenues: CourtVenue[]): CourtVenue {

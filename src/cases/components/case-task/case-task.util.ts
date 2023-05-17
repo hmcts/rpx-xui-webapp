@@ -21,7 +21,7 @@ export const appendTaskIdAsQueryStringToTaskDescription = (task: Task): string =
       markdownList.forEach((markdown) => {
         if (markdown) {
           const taskIdQueryString = markdown.includes('?') ? `&tid=${task.id}` : `?tid=${task.id}`;
-          newTaskDescription += `${markdown}${taskIdQueryString})`;
+          newTaskDescription += markdown.includes('/') ? `${markdown}${taskIdQueryString})` : `${markdown})`;
         }
       });
       return newTaskDescription;

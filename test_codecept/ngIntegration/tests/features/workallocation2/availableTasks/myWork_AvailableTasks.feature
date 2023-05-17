@@ -38,7 +38,7 @@ Feature: WA Release 2: My work -  Available tasks
             | Task          | Yes        | Yes   |
             | Task created  | No         | Yes   |
             | Due date      | Yes        | No    |
-            | Priority      | Yes        | No    |
+            | Priority      | Yes        | Yes    |
 
         Then If current user "<UserType>" is "Judge", I validate task table values displayed
             | row | Case name | Case category        | Location        | Task             | Task created | 
@@ -98,7 +98,7 @@ Feature: WA Release 2: My work -  Available tasks
             | Task          | Yes        | Yes   |
             | Task created  | No         | Yes   |
             | Due date      | Yes        | No    |
-            | Priority      | Yes        | No    |
+            | Priority      | Yes        | Yes    |
         Then I validate task table pagination controls, is displayed state is "true"
         Then I validate task list page results text displayed as "Showing 1 to 25 of 140 results"
 
@@ -142,7 +142,7 @@ Feature: WA Release 2: My work -  Available tasks
             | Task          | Yes        | Yes   |
             | Task created  | No         | Yes   |
             | Due date      | Yes        | No    |
-            | Priority      | Yes        | No    |
+            | Priority      | Yes        |  Yes   |
 
 
         # Then I validate work allocation task table column "Task" width less than or equal to 280

@@ -55,6 +55,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public routeEventsSubscription: Subscription;
   public isUpdatedTaskPermissions$: Observable<boolean>;
   public updatedTaskPermission: boolean;
+  private goneBackOne = false;
+  private initialFilterApplied = false;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -187,10 +189,12 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         const typesOfWork = f.fields.find((field) => field.name === 'types-of-work');
         const services = f.fields.find((field) => field.name === 'services').value;
         const newWorkTypes = typesOfWork ? typesOfWork.value : [];
-        this.resetPagination(this.selectedLocations, newLocations);
-        if (newLocations) {
-          this.selectedLocations = (newLocations).map((l) => l.epimms_id);
+        if (this.initialFilterApplied) {
+          // do not reset the pagination when the initial filter value has not been consumed
+          this.resetPagination(newLocations);
         }
+        this.initialFilterApplied = true;
+        this.selectedLocations = (newLocations).map((l) => l.epimms_id);
         this.selectedWorkTypes = newWorkTypes.filter((workType) => workType !== 'types_of_work_all');
         this.selectedServices = services.filter((service) => service !== 'services_all');
         this.doLoad();
@@ -226,6 +230,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.pagination = {
       page_number: pageSorted ? pageSorted : 1,
       page_size: 25
+      /* SREEKANTH: uncomment this to test
+      page_size: 1 */
     };
   }
 
@@ -439,6 +445,12 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       this.tasks = result.tasks;
       this.tasksTotal = result.total_records;
       this.ref.detectChanges();
+      if (result.tasks && result.tasks.length === 0 && this.pagination.page_number > 1 && !this.goneBackOne) {
+        // if possibly back at a page that has been removed by actions to task, go back one to attempt to get tasks
+        this.goneBackOne = true;
+        this.onPaginationHandler(this.pagination.page_number - 1);
+        return;
+      }
     }, (error) => {
       this.loadingService.unregister(loadingToken);
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
@@ -446,10 +458,23 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   // reset pagination when filter is applied
-  private resetPagination(selectedLocations: string[], newLocations: string[]): void {
-    if (this.selectedLocations !== newLocations && selectedLocations.length !== 0) {
+  private resetPagination(newLocations: string[]): void {
+    if (!this.locationListsEqual(newLocations)) {
+      // check to ensure locations are not the same
       this.pagination.page_number = 1;
       this.sessionStorageService.setItem(this.pageSessionKey, '1');
     }
+  }
+
+  private locationListsEqual(newLocations: string[]): boolean {
+    if (newLocations.length !== this.selectedLocations.length) {
+      return false;
+    }
+    for (let i = 0; i < newLocations.length; i++) {
+      if (!this.selectedLocations.includes(newLocations[i])) {
+        return false;
+      }
+    }
+    return true;
   }
 }

@@ -159,5 +159,37 @@ class SearchPage {
   async waitForSearchWithNoResults(){
     await BrowserWaits.waitForElement(this.noResultsNotification); 
   }
+
+  async enterCaseReference(caseRefNumber){
+    await BrowserWaits.retryWithActionCallback(async () => {
+        try {
+            const inputBox = await element(by.css("#caseRef"));
+            const continueButton = await element(by.css('#content > div > exui-noc-navigation > button'));
+            await inputBox.sendKeys(caseRefNumber);
+            await continueButton.click();
+        } catch (err) {
+            await CucumberReporter.AddMessage(`Failed to enter case reference number and click continue. "${caseRefNumber}"`, LOG_LEVELS.Error);
+            await this.refreshBrowser();
+            throw new Error(err);
+        }
+    });
+  }
+
+  async verifyNameFields() {
+    await BrowserWaits.retryWithActionCallback(async () => {
+        try {
+            const firstNameField = await element(by.css("#fieldset-q-and-a-form > div:nth-child(1) > exui-noc-field > div > exui-noc-text-field > div"));
+            const lastNameField = await element(by.css("#fieldset-q-and-a-form > div:nth-child(2) > exui-noc-field > div > exui-noc-text-field > div"));
+            await firstNameField.isDisplayed();
+            await lastNameField.isDisplayed();
+        } catch (err) {
+            await CucumberReporter.AddMessage(`Failed to find or view first name and last name fields`, LOG_LEVELS.Error);
+            await this.refreshBrowser();
+            throw new Error(err);
+        }
+    });
+  }
+
+
 }
 module.exports = SearchPage;

@@ -174,6 +174,14 @@ const RuntimeTestData = require("../../support/runtimeTestData");
 
   });
 
+  When('I enter case reference number {string}', async function (caseRefNumber) {
+    await searchPage.enterCaseReference(caseRefNumber);
+  });
+
+  Then('I see name fields returned', async function () {
+    await searchPage.verifyNameFields();
+  });
+
   Then('I see results returned', async function () {
     const caseListContainer = $("exui-case-list");
     const searchCasesContainer = $("exui-search-case");

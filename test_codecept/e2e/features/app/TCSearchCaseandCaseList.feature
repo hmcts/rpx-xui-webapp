@@ -61,3 +61,8 @@ Feature: Test case type case list and find case workflow
         When I open first case in search results
         Then I see case details page
 
+    Scenario: Validate NoC fields show up
+        When I click on primary navigation header tab "Notice of change"
+        When I enter case reference number "1662627624250004"
+        Then I see name fields returned
+

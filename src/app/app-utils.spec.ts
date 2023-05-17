@@ -185,17 +185,17 @@ describe('getUserRole', () => {
   });
 
   it('should return Judicial', () => {
-    const roleCategory = AppUtils.getUserRole(["caseworker",
-    "caseworker-civil",
-    "caseworker-civil-judge",
-    "caseworker-cmc",
-    "caseworker-cmc-judge",
-    "caseworker-divorce",
-    "caseworker-divorce-financialremedy",
-    "caseworker-divorce-financialremedy-judiciary",
-    "caseworker-publiclaw",
-    "caseworker-publiclaw-judiciary",
-    "judiciary"]);
+    const roleCategory = AppUtils.getUserRole(['caseworker',
+      'caseworker-civil',
+      'caseworker-civil-judge',
+      'caseworker-cmc',
+      'caseworker-cmc-judge',
+      'caseworker-divorce',
+      'caseworker-divorce-financialremedy',
+      'caseworker-divorce-financialremedy-judiciary',
+      'caseworker-publiclaw',
+      'caseworker-publiclaw-judiciary',
+      'judiciary']);
     expect(roleCategory).toBe(UserRole.Judicial);
   });
 

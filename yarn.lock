@@ -2124,24 +2124,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.14.4-yarn-3-wa-4-v2":
-  version: 6.14.4-yarn-3-wa-4-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.14.4-yarn-3-wa-4-v2"
+"@hmcts/ccd-case-ui-toolkit@npm:6.14.5-ccpay-upgrade":
+  version: 6.14.5-ccpay-upgrade
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.14.5-ccpay-upgrade"
   dependencies:
     tslib: ^2.0.0
-  checksum: e226a305b5a6192b8bb41c227b2a9acbff820c24a0783cf3b5dc252dcb950be71f6f4bba93e853af3d20d5ead0ca16bd687d6bef405eb29ca226f9f01003c644
+  checksum: e4d5c548156bfa356776a91d6ab1e41036cbe7d2fb9552f4c1831593a06c9e96187950d0cb9f4772083fe04b1b883d23719e3cd65b4a7085e086432b788fe13d
   languageName: node
   linkType: hard
 
-"@hmcts/ccpay-web-component@npm:5.2.2":
-  version: 5.2.2
-  resolution: "@hmcts/ccpay-web-component@npm:5.2.2"
+"@hmcts/ccpay-web-component@npm:5.2.3":
+  version: 5.2.3
+  resolution: "@hmcts/ccpay-web-component@npm:5.2.3"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     "@angular/common": ^9.0.0-rc.0 || ^9.0.0
     "@angular/core": ^9.0.0-rc.0 || ^9.0.0
-  checksum: f4d4341f38369cb5faef50b6b0acb98e089a810d75dedbda74a35eea88cc279e640274f3787a20778071c40464cea81a282500ebc3ef0ea4c7f1349a522172b5
+  checksum: 0da60f09b4518978bce1deabe4aa07f6ded056ed77962a0663c8366a560a3afe59751de8c56fc5b491c995ba7c08ec5fe4fca2499a01dfe4e757780b5dda51d2
   languageName: node
   linkType: hard
 
@@ -2604,28 +2604,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ng-idle/core@npm:^8.0.0-beta.4":
-  version: 8.0.0-beta.4
-  resolution: "@ng-idle/core@npm:8.0.0-beta.4"
+"@ng-idle/core@npm:^11.1.0":
+  version: 11.1.0
+  resolution: "@ng-idle/core@npm:11.1.0"
   dependencies:
-    tslib: ^1.9.0
+    tslib: ^2.0.0
   peerDependencies:
-    "@angular/common": ^8.0.0
-    "@angular/core": ^8.0.0
-  checksum: 23e5602fac0f289fe6ed618887fd1e164da57859bf985befeebd51601e2b07967b26fd6227ab5a774f20ca732a0e3c5b05d64690be8da7649d824b180c3277da
+    "@angular/common": ">=9.0.0"
+    "@angular/core": ">=9.0.0"
+  checksum: 51f3fd617580ed3f7ea0b82f03825c7758b9589346717249282804bd720c53577f79441fc1fc33590f5879e7aad74a8cb813b301a8f85faf1106a90855fdce64
   languageName: node
   linkType: hard
 
-"@ng-idle/keepalive@npm:^8.0.0-beta.4":
-  version: 8.0.0-beta.4
-  resolution: "@ng-idle/keepalive@npm:8.0.0-beta.4"
+"@ng-idle/keepalive@npm:^11.0.3":
+  version: 11.0.3
+  resolution: "@ng-idle/keepalive@npm:11.0.3"
   dependencies:
-    tslib: ^1.9.0
+    tslib: ^2.0.0
   peerDependencies:
-    "@angular/common": ^8.0.0
-    "@angular/core": ^8.0.0
-    "@ng-idle/core": ^8.0.0-beta.4
-  checksum: 2c9d121c5b90e7449361a47b3430a82b7b3d72478b9f667b05ed6e9eed2d26df1d6b123538f109463b2e8f5c2661f831499e4a92f8a644ac71d12d5ea75d7709
+    "@angular/common": ">=9.0.0"
+    "@angular/core": ">=9.0.0"
+    "@ng-idle/core": ^11.0.3
+  checksum: 085c4d93c8871a833c4171d27fcd39f29cbf379f442bc677145845ea52bcc27d54e05359ea6df4f81eb3022bc39802f28f2351b7c4d863407a9c81ca63674189
   languageName: node
   linkType: hard
 
@@ -19096,16 +19096,16 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.14.4-yarn-3-wa-4-v2
-    "@hmcts/ccpay-web-component": 5.2.2
+    "@hmcts/ccd-case-ui-toolkit": 6.14.5-ccpay-upgrade
+    "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
     "@hmcts/rpx-xui-common-lib": 1.8.7-7909-removal
     "@hmcts/rpx-xui-node-lib": 2.25.12
-    "@ng-idle/core": ^8.0.0-beta.4
-    "@ng-idle/keepalive": ^8.0.0-beta.4
+    "@ng-idle/core": ^11.1.0
+    "@ng-idle/keepalive": ^11.0.3
     "@ngrx/effects": ^7.4.0
     "@ngrx/router-store": ^7.4.0
     "@ngrx/schematics": ^7.4.0

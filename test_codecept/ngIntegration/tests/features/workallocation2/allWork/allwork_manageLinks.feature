@@ -34,11 +34,8 @@ Feature: WA Release 2: All work - Manage links
             | index | actions                                |
             | 1     | Assign task,Go to task                 |
             | 2     | Assign task,Go to task                 |
-            | 3     |                                        |
             | 4     | Reassign task,Unassign task,Go to task |
-            # | 5     | Reassign task,Unassign task,Go to task |
-            # | 6     |                                        |
-
+          
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |

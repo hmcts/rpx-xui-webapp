@@ -16,7 +16,7 @@ Feature: WA Release 2: All work - Manage links
             | 0     | Manage,Read,Execute,Cancel,assign |                     | case 1    |
             | 1     | Manage,assign                     |                     | case 2    |
             # | 2     | Read,assign                       |                     | case 3    |
-            | 3     | unassign,assign                   | 1234-1234-1234-1234 | case 4    |
+            | 3     |                    | 1234-1234-1234-1234 | case 4    |
             | 4     | Manage,unassign,assign            | 1234-1234-1234-1234 | case 5    |
             # | 5     |                                   | 1234-1234-1234-1234 | case 6    |
         Given I set MOCK task details for WA release2

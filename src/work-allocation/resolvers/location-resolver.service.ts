@@ -64,7 +64,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
           )
         ),
         // EUI-7909 - remove 5 lines below
-        mergeMap((locations: Location[]) => (this.userRole.toLocaleLowerCase() === UserRole.Judicial && this.bookableServices.length > 0 ? this.bookingService.getBookings(this.userId, this.bookableServices) : of([]))
+        mergeMap((locations: Location[]) => (this.userRole?.toLocaleLowerCase() === UserRole.Judicial && this.bookableServices.length > 0 ? this.bookingService.getBookings(this.userId, this.bookableServices) : of([]))
           .pipe(
             map((bookings: Booking[]) => this.addBookingLocations(locations, bookings)),
           )

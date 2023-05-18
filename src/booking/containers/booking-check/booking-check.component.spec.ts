@@ -1,5 +1,5 @@
 import { supportsScrollBehavior as cdkSupportsScrollBehavior } from '@angular/cdk/platform';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -8,6 +8,8 @@ import { of } from 'rxjs';
 import { BookingProcess } from '../../models';
 import { BookingService } from '../../services';
 import { BookingCheckComponent } from './booking-check.component';
+import SpyObj = jasmine.SpyObj;
+import { delay } from 'rxjs/operators';
 
 export class CdkWrapper {
   public static RefreshBookingHandleError(...args) {
@@ -18,10 +20,23 @@ export class CdkWrapper {
 describe('BookingCheckComponent', () => {
   let component: BookingCheckComponent;
   let fixture: ComponentFixture<BookingCheckComponent>;
-  const mockBookingServiceSpy = jasmine.createSpyObj('BookingService', ['createBooking', 'refreshRoleAssignments']);
-  const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
+  let mockBookingServiceSpy: SpyObj<BookingService>;
+  let mockWindowService: SpyObj<WindowService>;
 
   beforeEach(waitForAsync(() => {
+    mockBookingServiceSpy = jasmine.createSpyObj('BookingService', ['createBooking', 'refreshRoleAssignments']);
+    mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
+    mockBookingServiceSpy.createBooking.and.returnValue(of({
+      bookingResponse: {
+        userId: '',
+        locationId: '',
+        regionId: '',
+        beginTime: new Date(),
+        endTime: new Date(),
+        created: new Date(),
+        log: 'log'
+      }
+    }));
     TestBed.configureTestingModule({
       declarations: [BookingCheckComponent],
       imports: [
@@ -94,7 +109,12 @@ describe('BookingCheckComponent', () => {
         beginDate: component.bookingProcess.startDate,
         endDate: component.bookingProcess.endDate
       };
-      mockBookingServiceSpy.createBooking.and.returnValue(of({ status: 403 }));
+      mockBookingServiceSpy.createBooking.and.returnValue(of({
+        errorCode: '403',
+        status: '403',
+        errorMessage: 'Error is 403',
+        timeStamp: new Date()
+      }));
       const confirmButton = fixture.debugElement.query(By.css('button'));
       confirmButton.triggerEventHandler('click', null);
       fixture.detectChanges();
@@ -145,7 +165,12 @@ describe('BookingCheckComponent', () => {
         mockRouter = {
           navigate: jasmine.createSpy('navigate')
         };
-        mockBookingServiceSpy.createBooking.and.returnValue(of({ status: 403 }));
+        mockBookingServiceSpy.createBooking.and.returnValue(of({
+          errorCode: '403',
+          status: '403',
+          errorMessage: 'Error is 403',
+          timeStamp: new Date()
+        }));
         const confirmButton = fixture.debugElement.query(By.css('button'));
         confirmButton.triggerEventHandler('click', null);
         const mockComponentHandleError = spyOn(CdkWrapper, 'RefreshBookingHandleError').and.returnValue(true);
@@ -176,10 +201,73 @@ describe('BookingCheckComponent', () => {
 
       it('should trigger the confirm booking event and call the submitBooking method when the confirm button is clicked', () => {
         const confirmButton = fixture.debugElement.query(By.css('button'));
+        // @ts-expect-error - private property
+        const submitBookingSpy = spyOn(component, 'submitBooking').and.callThrough();
+
         confirmButton.triggerEventHandler('click', null);
 
+        expect(submitBookingSpy).toHaveBeenCalled();
         expect(eventTriggerSpy).toHaveBeenCalledWith(component.bookingNavigationEvent.CONFIRM);
-        expect(mockBookingServiceSpy.refreshRoleAssignments).toHaveBeenCalledTimes(3);
+        expect(mockBookingServiceSpy.refreshRoleAssignments).toHaveBeenCalledTimes(1);
+      });
+
+      describe('submitBooking', () => {
+        beforeEach(() => {
+          // mockBookingServiceSpy.createBooking.and.returnValue(of({ status: 403 }));
+
+        });
+        it('should not do an http call if isBookingInProgress is true', () => {
+          // @ts-expect-error - private property
+          component.isBookingInProgress = true;
+
+          // @ts-expect-error - private property
+          component.submitBooking();
+
+          expect(mockBookingServiceSpy.createBooking).not.toHaveBeenCalled();
+          expect(mockBookingServiceSpy.refreshRoleAssignments).not.toHaveBeenCalled();
+        });
+
+        it('should do a http call if isBookingInProgress is false', () => {
+          // @ts-expect-error - private property
+          component.isBookingInProgress = false;
+
+          // @ts-expect-error - private property
+          component.submitBooking();
+
+          expect(mockBookingServiceSpy.createBooking).toHaveBeenCalled();
+          expect(mockBookingServiceSpy.refreshRoleAssignments).toHaveBeenCalled();
+        });
+
+        it('should set isBookingInProgress is true when calling submitBooking' +
+          'and also make it back to false once it ends', fakeAsync(() => {
+          mockBookingServiceSpy.createBooking.and.returnValue(
+            of({
+              bookingResponse: {
+                userId: '',
+                locationId: '',
+                regionId: '',
+                beginTime: new Date(),
+                endTime: new Date(),
+                created: new Date(),
+                log: 'log'
+              }
+              // Adding delay to make it async
+            }).pipe(delay(0))
+          );
+
+          // @ts-expect-error - private property
+          expect(component.isBookingInProgress).toBe(false);
+
+          // @ts-expect-error - private property
+          component.submitBooking();
+          // @ts-expect-error - private property
+          expect(component.isBookingInProgress).toBe(true);
+
+          tick();
+
+          // @ts-expect-error - private property
+          expect(component.isBookingInProgress).toBe(false);
+        }));
       });
     });
   });

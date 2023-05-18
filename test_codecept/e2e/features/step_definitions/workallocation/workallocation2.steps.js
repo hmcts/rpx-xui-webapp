@@ -58,7 +58,16 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I validate I am on My work page', async function(){
-        expect(await myWorkPage.amOnPage()).to.be.true
+        await BrowserWaits.retryWithActionCallback(async () => {
+            try{
+                expect(await myWorkPage.amOnPage()).to.be.true
+            }catch(err){
+                await browser.get(process.env.TEST_URL);
+                throw err;
+            }
+            
+        })
+        
     });
 
     When('I click My work sub navigation tab {string}', async function(subNavTabLabel){

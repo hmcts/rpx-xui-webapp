@@ -116,6 +116,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     this.sessionStorageService.setItem('bookableServices', JSON.stringify(this.bookableServices));
     return this.locations;
   }
+  // EUI-7909 - remove stops
 
   public addBookingLocations(locations: Location[], bookings: Booking[]): Location[] {
     // TODO: Check if user still has valid bookable role assignment for service

@@ -31,7 +31,6 @@ Feature: Global search
     Scenario: Search from menu 16-digit find control
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with test user identified as "IAC_CaseOfficer_R2"
-        When If env is "demo", I enter "1662020492250902" in  case ref in header 16 digit ref search
-        When If env is "aat", I enter "1546883526751282" in  case ref in header 16 digit ref search
-        When I click find in case ref in header 16 digit ref search to see case details page
+        When If env is "demo", I find "1662020492250902" from case ref in header 16 digit ref search
+        When If env is "aat", I find "1546883526751282" from case ref in header 16 digit ref search
         Then I see case details page

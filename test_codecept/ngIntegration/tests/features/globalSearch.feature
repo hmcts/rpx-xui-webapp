@@ -157,7 +157,6 @@ Feature: Global search
         Then I see error message "The date of death cannot be earlier than the date of birth" for field "Date of death" in global search Page
 
 
-@codecept_test
     Scenario: Case search results view column values
         Given I set set global search mock results response and resultInfo
             | caseStartRecord | casesReturned | moreResultsToGo |

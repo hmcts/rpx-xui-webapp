@@ -51,6 +51,13 @@ const headerPage = require("../pageObjects/headerPage");
         });
     });
 
-
+    Then('I see error message {string}', async function (errorMessage){
+        await BrowserWaits.retryWithActionCallback(async () => {
+        const errorField = $(`.error-message`);
+        await BrowserWaits.waitForElement(errorField);
+        const errorFieldMessage = await errorField.getText();
+        expect(errorFieldMessage).to.include(errorMessage);
+    });
+    });
 
 

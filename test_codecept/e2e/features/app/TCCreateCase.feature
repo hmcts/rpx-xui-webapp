@@ -88,6 +88,14 @@ Feature: Test case type case creation and case details validations
         Then I see case details page
         When I start case next step "Update case"
         Then Validate Case event update populating form page
+@callback_error
+    Scenario: Validate civil claim callback error
+        When I click on primary navigation header tab "Create case", I see selected tab page displayed
+        Then Create case page should be displayed
+        When I start case with jurisdiction "Civil" case type "Civil" and event "Create claim - Specified"
+        Then I am on case form page
+        When I fill in reference number
+        Then I see error message "exceed maximum length 24"
 
 
 

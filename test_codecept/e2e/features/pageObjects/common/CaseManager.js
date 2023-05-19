@@ -12,6 +12,7 @@ const config = require('../../../config/functional.conf');
 
 const headerPage = require('../headerPage');
 const { LOG_LEVELS } = require('../../../support/constants');
+const { sleep } = require('../../../../codeceptCommon/browser');
 class CaseManager {
 
     constructor() {
@@ -215,6 +216,17 @@ class CaseManager {
     async AmOnChekYourAnswersPage() {
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(await this.checkYourAnswers.isPresent()).to.be.true;
+        });
+    }
+
+    async fillReference(){
+        await BrowserWaits.retryWithActionCallback(async () => {
+            let referenceField = $('#solicitorReferences_applicantSolicitor1Reference');
+            await this.continueBtn.click();
+            await BrowserWaits.waitForSpinnerToDissappear();
+            await this.continueBtn.click();
+            await referenceField.sendKeys('123456789012345678901234567890');
+            await this.continueBtn.click();
         });
     }
 

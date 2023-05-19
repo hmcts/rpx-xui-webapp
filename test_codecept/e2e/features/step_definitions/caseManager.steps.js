@@ -75,6 +75,10 @@ const creatCaseStepTimeout = 600*1000;
         await caseManager.submitCase(false);
     });
 
+    When('I fill in reference number', async function(){
+        await caseManager.fillReference();
+    });
+
     Then('I see case details page', async function () {
         await caseManager.AmOnCaseDetailsPage();
     });

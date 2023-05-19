@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConstants } from '../../app/app.constants';
 import { SessionStorageService } from '../../app/services';
@@ -26,21 +26,16 @@ export class HearingsGuard {
   }
 
   public hasMatchedPermissions(): Observable<boolean> {
-    let jurisdiction: string;
-    let caseType: string;
-    return this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []).pipe(
-      map((featureVariations: FeatureVariation[]) => {
+    return combineLatest([
+      this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []),
+      this.userRoles$
+    ]).pipe(
+      map(([featureVariations, userRoles]: [FeatureVariation[], string[]]) => {
         const caseInfo = JSON.parse(this.sessionStorageService.getItem(HearingsGuard.CASE_INFO));
-        if (caseInfo?.hasOwnProperty(HearingsGuard.JURISDICTION)) {
-          jurisdiction = caseInfo[HearingsGuard.JURISDICTION];
-        }
-        if (caseInfo?.hasOwnProperty(HearingsGuard.CASE_TYPE)) {
-          caseType = caseInfo[HearingsGuard.CASE_TYPE];
-        }
-        if (!jurisdiction || !caseType) {
-          return false;
-        }
-        return featureVariations.some((featureVariation) => Utils.hasMatchedPermissions(featureVariation, jurisdiction, caseType));
+        const jurisdiction = caseInfo && caseInfo.hasOwnProperty(HearingsGuard.JURISDICTION) ? caseInfo[HearingsGuard.JURISDICTION] : '';
+        const caseType = caseInfo && caseInfo.hasOwnProperty(HearingsGuard.CASE_TYPE) ? caseInfo[HearingsGuard.CASE_TYPE] : '';
+        return featureVariations.some((featureVariation) =>
+          Utils.hasMatchedPermissions(featureVariation, jurisdiction, caseType, userRoles));
       })
     );
   }

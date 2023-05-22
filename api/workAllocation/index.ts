@@ -29,7 +29,8 @@ import {
   handlePostSearch
 } from './caseWorkerService';
 import { ViewType } from './constants/actions';
-import { AVAILABLE_TASKS } from './constants/mock.data';
+// SREEKANTH: Uncomment
+// import { AVAILABLE_TASKS } from './constants/mock.data';
 import { CaseList } from './interfaces/case';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';

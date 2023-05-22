@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, select, Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import * as fromAppReducers from '../../../app/store/reducers';
@@ -51,15 +51,16 @@ export class HearingRequestEffects {
   @Effect({ dispatch: false })
   public backNavigation$ = this.actions$.pipe(
       ofType(hearingRequestActions.NAVIGATE_BACK_HEARING_REQUEST),
-      tap(() => {
+      switchMap(() => {
         switch (this.mode) {
           case Mode.CREATE:
           case Mode.CREATE_EDIT:
           case Mode.VIEW:
           case Mode.VIEW_EDIT:
-            return this.location.back();
+            this.location.back();
+            return of(null); // Return an observable that emits null and then completes
           default:
-            return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
+            return from(this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']));
         }
       })
     );
@@ -118,7 +119,8 @@ export class HearingRequestEffects {
             this.hearingStore.dispatch(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
             this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
             if (payload.targetURL) {
-              this.router.navigateByUrl(payload.targetURL);
+              this.router.navigateByUrl(payload.targetURL)
+                .catch((err) => this.loggerService.error(`Error navigating to ${payload.targetURL}`, err));
             }
           }),
           catchError((error) => {
@@ -137,7 +139,8 @@ export class HearingRequestEffects {
         return this.hearingsService.submitHearingRequest(payload).pipe(
           tap(
             () => {
-              return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
+              this.router.navigate(['hearings', 'request', 'hearing-confirmation'])
+                .catch((err) => this.loggerService.error('Error navigating to /hearings/request/hearing-confirmation', err));
             }),
           catchError((error) => {
             this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
@@ -151,7 +154,8 @@ export class HearingRequestEffects {
   public submitHearingReason$ = this.actions$.pipe(
       ofType(hearingRequestActions.VIEW_EDIT_SUBMIT_HEARING_REASON),
       tap(() => {
-        return this.router.navigate(['hearings', 'request', 'hearing-change-reason']);
+        this.router.navigate(['hearings', 'request', 'hearing-change-reason'])
+          .catch((err) => this.loggerService.error('Error navigating to /hearings/request/hearing-change-reason', err));
       })
     );
 
@@ -163,7 +167,8 @@ export class HearingRequestEffects {
         return this.hearingsService.updateHearingRequest(payload).pipe(
           tap(
             () => {
-              return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
+              this.router.navigate(['hearings', 'request', 'hearing-confirmation'])
+                .catch((err) => this.loggerService.error('Error navigating to /hearings/request/hearing-confirmation', err));
             }),
           catchError((error) => {
             this.hearingStore.dispatch(new hearingRequestActions.UpdateHearingRequestFailure(error));

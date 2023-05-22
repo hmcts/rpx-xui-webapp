@@ -8,6 +8,7 @@ import { SearchStatePersistenceKey } from '../../../search/enums';
 import { SearchParameters } from '../../../search/models';
 import { SearchService } from '../../../search/services/search.service';
 import { CaseReferenceSearchBoxComponent } from './case-reference-search-box.component';
+import { LoggerService } from '../../services/logger/logger.service';
 
 describe('CaseReferenceSearchBoxComponent', () => {
   let component: CaseReferenceSearchBoxComponent;
@@ -21,13 +22,15 @@ describe('CaseReferenceSearchBoxComponent', () => {
     searchService = {},
     router = {},
     route = {},
-    store = {}
+    store = {},
+    logger = {}
   }) => new CaseReferenceSearchBoxComponent(
     store as Store<fromActions.State>,
     formBuilder as FormBuilder,
     searchService as SearchService,
     router as Router,
-    route as ActivatedRoute
+    route as ActivatedRoute,
+    logger as LoggerService
   );
 
   afterEach(() => {
@@ -123,7 +126,7 @@ describe('CaseReferenceSearchBoxComponent', () => {
 
   describe('onSubmit', () => {
     const mockRouter = {
-      navigate: jasmine.createSpy(),
+      navigate: jasmine.createSpy().and.returnValue(Promise.resolve(true)),
       url: {
         includes: jasmine.createSpy()
       },

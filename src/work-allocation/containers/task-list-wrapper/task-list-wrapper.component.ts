@@ -441,20 +441,23 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       })));
     })));
     mappedSearchResult$.subscribe((result) => {
-      this.loadingService.unregister(loadingToken);
-      this.tasks = result.tasks;
-      this.tasksTotal = result.total_records;
-      this.ref.detectChanges();
-      if (result.tasks && result.tasks.length === 0 && this.pagination.page_number > 1 && !this.goneBackOne) {
-        // if possibly back at a page that has been removed by actions to task, go back one to attempt to get tasks
-        this.goneBackOne = true;
-        this.onPaginationHandler(this.pagination.page_number - 1);
-        return;
-      }
+      this.setTaskListDetails(result, loadingToken);
     }, (error) => {
       this.loadingService.unregister(loadingToken);
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
+  }
+
+  private setTaskListDetails(result: TaskResponse, loadingToken: string): void {
+    this.loadingService.unregister(loadingToken);
+    this.tasks = result.tasks;
+    this.tasksTotal = result.total_records;
+    this.ref.detectChanges();
+    if (result.tasks && result.tasks.length === 0 && this.pagination.page_number > 1 && !this.goneBackOne) {
+      // if possibly back at a page that has been removed by actions to task, go back one to attempt to get tasks
+      this.goneBackOne = true;
+      this.onPaginationHandler(this.pagination.page_number - 1);
+    }
   }
 
   // reset pagination when filter is applied

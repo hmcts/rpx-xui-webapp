@@ -95,7 +95,7 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
     if (isCaseDetailsPage) {
       this.router.navigateByUrl('/cases/case-loader', { skipLocationChange: true }).then(async () => {
         await this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
-      });
+      }).catch((err) => this.loggerService.error('Error navigating to /cases/case-details/case-ref', err));
     } else {
       this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route })
         .catch((err) => this.loggerService.error('Error navigating to /cases/case-details/case-ref', err));

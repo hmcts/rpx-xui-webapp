@@ -198,7 +198,10 @@ export class LocationResolver implements Resolve<LocationModel[]> {
   }
 
   private setBaseLocationForAdding(roleAssignment: RoleAssignmentInfo, service: string, feePaid: boolean): void {
-    if (!this.locations.find((location) => location.id === roleAssignment.baseLocation && location.services.includes(service))) {
+    // check to see if the location is a new location
+    const newLocation = feePaid ? !this.feePaidLocations.find((location) => location.id === roleAssignment.baseLocation && location.services.includes(service))
+      : !this.locations.find((location) => location.id === roleAssignment.baseLocation && location.services.includes(service));
+    if (newLocation) {
       const location =
         { id: roleAssignment.baseLocation,
           userId: this.userId,

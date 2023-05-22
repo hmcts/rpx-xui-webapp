@@ -193,8 +193,7 @@ describe('Hearing Request Effects', () => {
       pageflowMock.getLastPage.and.returnValue('last');
       const action = new hearingRequestActions.NavigateBackHearingRequest();
       actions$ = cold('-a', { a: action });
-      const navigateAction = new hearingRequestActions.NavigateBackHearingRequest();
-      const expected = cold('-b', { b: navigateAction });
+      const expected = cold('-b', { b: null });
       expect(effects.backNavigation$).toBeObservable(expected);
       expect(mockLocation.back).toHaveBeenCalled();
     });
@@ -203,8 +202,7 @@ describe('Hearing Request Effects', () => {
       effects.mode = Mode.CREATE_EDIT;
       const action = new hearingRequestActions.NavigateBackHearingRequest();
       actions$ = cold('-a', { a: action });
-      const navigateAction = new hearingRequestActions.NavigateBackHearingRequest();
-      const expected = cold('-b', { b: navigateAction });
+      const expected = cold('-b', { b: null });
       expect(effects.backNavigation$).toBeObservable(expected);
       expect(mockLocation.back).toHaveBeenCalled();
     });
@@ -213,8 +211,7 @@ describe('Hearing Request Effects', () => {
       effects.mode = Mode.VIEW;
       const action = new hearingRequestActions.NavigateBackHearingRequest();
       actions$ = cold('-a', { a: action });
-      const navigateAction = new hearingRequestActions.NavigateBackHearingRequest();
-      const expected = cold('-b', { b: navigateAction });
+      const expected = cold('-b', { b: null });
       expect(effects.backNavigation$).toBeObservable(expected);
       expect(mockLocation.back).toHaveBeenCalled();
     });
@@ -223,14 +220,18 @@ describe('Hearing Request Effects', () => {
       effects.mode = Mode.VIEW_EDIT;
       const action = new hearingRequestActions.NavigateBackHearingRequest();
       actions$ = cold('-a', { a: action });
-      const navigateAction = new hearingRequestActions.NavigateBackHearingRequest();
-      const expected = cold('-b', { b: navigateAction });
+      const expected = cold('-b', { b: null });
       expect(effects.backNavigation$).toBeObservable(expected);
       expect(mockLocation.back).toHaveBeenCalled();
     });
   });
 
   describe('loadHearingRequest$', () => {
+    beforeEach(() => {
+      mockRouter.navigateByUrl.calls.reset();
+      mockRouter.navigateByUrl.and.returnValue(Promise.resolve(true));
+    });
+
     it('should load hearing requests', () => {
       const dispatchSpy = spyOn(store, 'dispatch');
       hearingsServiceMock.loadHearingRequest.and.returnValue(of(hearingRequestMainModel));
@@ -246,6 +247,11 @@ describe('Hearing Request Effects', () => {
   });
 
   describe('submitHearingReason$', () => {
+    beforeEach(() => {
+      mockRouter.navigate.calls.reset();
+      mockRouter.navigate.and.returnValue(Promise.resolve(true));
+    });
+
     it('should submit hearing reason', () => {
       const action = new hearingRequestActions.ViewEditSubmitHearingReason(hearingRequestMainModel);
       actions$ = cold('-a', { a: action });
@@ -257,6 +263,11 @@ describe('Hearing Request Effects', () => {
   });
 
   describe('submitHearingRequest$', () => {
+    beforeEach(() => {
+      mockRouter.navigate.calls.reset();
+      mockRouter.navigate.and.returnValue(Promise.resolve(true));
+    });
+
     it('should submit hearing request', () => {
       const dispatchSpy = spyOn(store, 'dispatch');
       hearingsServiceMock.submitHearingRequest.and.returnValue(of(hearingRequestMainModel));
@@ -290,6 +301,11 @@ describe('Hearing Request Effects', () => {
   });
 
   describe('ViewEditSubmitHearingRequest$', () => {
+    beforeEach(() => {
+      mockRouter.navigate.calls.reset();
+      mockRouter.navigate.and.returnValue(Promise.resolve(true));
+    });
+
     it('should update hearing request', () => {
       hearingsServiceMock.updateHearingRequest.and.returnValue(of(hearingRequestMainModel));
       const action = new hearingRequestActions.ViewEditSubmitHearingRequest(hearingRequestMainModel);

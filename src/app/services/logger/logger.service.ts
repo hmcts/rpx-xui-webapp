@@ -30,42 +30,36 @@ export class LoggerService implements ILoggerService {
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public trace(message: any, ... additional: any[]): void {
     const formattedMessage = this.getMessage(message);
     this.ngxLogger.trace(formattedMessage, ...additional);
     this.monitoringService.logEvent(message);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public debug(message: any, ...additional: any[]): void {
     const formattedMessage = this.getMessage(message);
     this.ngxLogger.debug(formattedMessage, ...additional);
     this.monitoringService.logEvent(message);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public info(message: any, ...additional: any[]): void {
     const formattedMessage = this.getMessage(message);
     this.ngxLogger.info(formattedMessage, ...additional);
     this.monitoringService.logEvent(message);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public log(message: any, ...additional: any[]): void {
     const formattedMessage = this.getMessage(message);
     this.ngxLogger.log(formattedMessage, ...additional);
     this.monitoringService.logEvent(message);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public warn(message: any, ...additional: any[]): void {
     const formattedMessage = this.getMessage(message);
     this.ngxLogger.warn(formattedMessage, ...additional);
     this.monitoringService.logEvent(message);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public error(message: any, ...additional: any[]): void {
     this.ngxLogger.error(message, ...additional);
     const formattedMessage = this.getMessage(message);
@@ -73,7 +67,6 @@ export class LoggerService implements ILoggerService {
     this.monitoringService.logException(error);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public fatal(message: any, ...additional: any[]): void {
     this.ngxLogger.fatal(message, ...additional);
     const formattedMessage = this.getMessage(message);
@@ -81,7 +74,10 @@ export class LoggerService implements ILoggerService {
     this.monitoringService.logException(error);
   }
 
-  public getMessage(message: any): string {
+  public getMessage(message: any, ...additional: any[]): string {
+    if (additional) {
+      message += `, \n${additional}\n`;
+    }
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);

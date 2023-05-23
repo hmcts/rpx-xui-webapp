@@ -166,7 +166,7 @@ describe('CaseHomeComponent', () => {
       component.handleError(error, triggerId);
 
       expect(mockErrorNotifierService.announceError).toHaveBeenCalledWith(error);
-      expect(mockAlertService.error).toHaveBeenCalledWith(error.message);
+      expect(mockAlertService.error).toHaveBeenCalledWith({ phrase: error.message });
     });
   });
 });

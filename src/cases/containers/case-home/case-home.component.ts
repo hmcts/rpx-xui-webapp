@@ -135,7 +135,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       console.log('error during triggering event:', triggerId);
       console.log(error);
       this.errorNotifierService.announceError(error);
-      this.alertService.success({ phrase: CaseHomeComponent.CASE_CREATED_MSG });
+      this.alertService.error({ phrase: error.message });
     }
   }
 }

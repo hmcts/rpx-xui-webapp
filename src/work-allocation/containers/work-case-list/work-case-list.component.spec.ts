@@ -1,7 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, NO_ERRORS_SCHEMA, Pipe, PipeTransform, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
 
 import { RouterTestingModule } from '@angular/router/testing';
@@ -60,7 +59,14 @@ function getCaseService(): CaseServiceConfig {
   };
 }
 
-describe('CaseListComponent', () => {
+@Pipe({ name: 'paginate' })
+class MockPaginatePipe implements PipeTransform {
+  transform(value: string): string {
+    return value;
+  }
+}
+
+describe('WorkCaseListComponent', () => {
   let component: WorkCaseListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -73,14 +79,18 @@ describe('CaseListComponent', () => {
   beforeEach(() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
-      declarations: [WorkCaseListComponent, WrapperComponent],
+      declarations: [
+        WorkCaseListComponent,
+        WrapperComponent,
+        MockPaginatePipe
+      ],
       imports: [
         WorkAllocationComponentsModule,
         CdkTableModule,
-        PaginationModule,
         RouterTestingModule
       ],
-      providers: []
+      providers: [],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;

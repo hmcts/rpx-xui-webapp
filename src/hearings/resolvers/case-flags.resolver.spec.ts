@@ -8,6 +8,7 @@ import { initialState } from '../hearing.test.data';
 import { CaseFlagReferenceModel } from '../models/caseFlagReference.model';
 import { CaseFlagsRefDataService } from '../services/case-flags-ref-data.service';
 import { CaseFlagsResolver } from './case-flags.resolver';
+import { LoggerService } from '../../app/services/logger/logger.service';
 
 describe('Case Flags Resolver', () => {
   let caseFlagsRefDataService: CaseFlagsRefDataService;
@@ -876,6 +877,8 @@ describe('Case Flags Resolver', () => {
     ]
   };
 
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -883,6 +886,10 @@ describe('Case Flags Resolver', () => {
         HttpClientTestingModule
       ],
       providers: [
+        {
+          provide: LoggerService,
+          useValue: loggerServiceMock
+        },
         provideMockStore({ initialState }),
         CaseFlagsRefDataService
       ]

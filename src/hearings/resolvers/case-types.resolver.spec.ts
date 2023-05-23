@@ -10,10 +10,13 @@ import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
 import { CaseTypesResolver } from './case-types.resolver';
 import { JudgeTypesResolverService } from './judge-types-resolver.service';
+import { LoggerService } from '../../app/services/logger/logger.service';
 
 describe('CaseTypesResolver', () => {
   let lovRefDataService: LovRefDataService;
   const dataRef: LovRefDataModel[] = [];
+
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -22,6 +25,10 @@ describe('CaseTypesResolver', () => {
         HttpClientTestingModule
       ],
       providers: [
+        {
+          provide: LoggerService,
+          useValue: loggerServiceMock
+        },
         provideMockStore({ initialState }),
         CaseTypesResolver,
         LovRefDataService,

@@ -5,7 +5,6 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
-import { Go } from '../../../app/store/actions';
 import * as fromHearingStore from '../../../hearings/store';
 import { HttpError } from '../../../models/httpError.model';
 import { GroupLinkType } from '../../models/hearings.enum';
@@ -13,6 +12,7 @@ import { ServiceLinkedCasesModel, ServiceLinkedCasesWithHearingsModel } from '..
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingLinksActions from '../actions/hearing-links.action';
 import { HearingLinksEffects } from './hearing-links.effects';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 describe('Hearing Links Effects', () => {
   let actions$;
@@ -20,9 +20,10 @@ describe('Hearing Links Effects', () => {
   let effects: HearingLinksEffects;
   const hearingGroupRequestId = 'g1000000';
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
-    'loadServiceLinkedCases', 'loadLinkedCasesWithHearings', 'postLinkedHearingGroup', 'deleteLinkedHearingGroup', 'putLinkedHearingGroup'
+    'loadServiceLinkedCases', 'loadLinkedCasesWithHearings', 'postLinkedHearingGroup', 'deleteLinkedHearingGroup', 'putLinkedHearingGroup', 'getLinkedHearingGroup'
   ]);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const initialState = {
     hearings: {
       hearingLinks: {
@@ -45,6 +46,7 @@ describe('Hearing Links Effects', () => {
           provide: HearingsService,
           useValue: hearingsServiceMock
         },
+        { provide: LoggerService, useValue: loggerServiceMock },
         HearingLinksEffects,
         provideMockActions(() => actions$)
       ]
@@ -71,6 +73,22 @@ describe('Hearing Links Effects', () => {
       const expected = cold('-b', { b: completion });
       expect(effects.loadServiceLinkedCases$).toBeObservable(expected);
     });
+
+    it('should catch any errors', () => {
+      const error: HttpError = {
+        status: 400,
+        statusText: 'Bad Request',
+        message: 'Bad Request',
+        errors: []
+      };
+      hearingsServiceMock.loadServiceLinkedCases.and.returnValue(throwError(error));
+      const action = new hearingLinksActions.LoadServiceLinkedCases({ caseReference: '1111222233334446', hearingId: 'h100000' });
+      const completion = new hearingLinksActions.LoadServiceLinkedCasesFailure(error);
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.loadServiceLinkedCases$).toBeObservable(expected);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingLinksEffects:loadServiceLinkedCases$', error);
+    });
   });
 
   describe('loadServiceLinkedCasesWithHearing$', () => {
@@ -90,6 +108,40 @@ describe('Hearing Links Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.loadServiceLinkedCasesWithHearing$).toBeObservable(expected);
+    });
+
+    it('should catch any errors', () => {
+      const error: HttpError = {
+        status: 400,
+        statusText: 'Bad Request',
+        message: 'Bad Request',
+        errors: []
+      };
+      hearingsServiceMock.loadLinkedCasesWithHearings.and.returnValue(throwError(error));
+      const action = new hearingLinksActions.LoadServiceLinkedCasesWithHearings({ caseReference: '1111222233334446', caseName: 'Pete Smith' });
+      const completion = new hearingLinksActions.LoadServiceLinkedCasesWithHearingsFailure(error);
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.loadServiceLinkedCasesWithHearing$).toBeObservable(expected);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingLinksEffects:loadServiceLinkedCasesWithHearing$', error);
+    });
+  });
+
+  describe('loadLinkedHearingGroup$', () => {
+    it('should catch any errors', () => {
+      const error: HttpError = {
+        status: 400,
+        statusText: 'Bad Request',
+        message: 'Bad Request',
+        errors: []
+      };
+      hearingsServiceMock.getLinkedHearingGroup.and.returnValue(throwError(error));
+      const action = new hearingLinksActions.LoadLinkedHearingGroup({ groupId: '1111222233334446' });
+      const completion = new hearingLinksActions.LoadLinkedHearingGroupFailure(error);
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.loadLinkedHearingGroup$).toBeObservable(expected);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingLinksEffects:loadLinkedHearingGroup$', error);
     });
   });
 
@@ -189,16 +241,6 @@ describe('Hearing Links Effects', () => {
       expect(effects.manageLinkedHearingGroup$).toBeObservable(expected);
       expect(hearingsServiceMock.deleteLinkedHearingGroup).toHaveBeenCalled();
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingLinksActions.SubmitLinkedHearingGroupFailure(error));
-    });
-  });
-
-  describe('handleError', () => {
-    it('should handle errors', () => {
-      const action$ = HearingLinksEffects.handleError({
-        status: 403,
-        message: 'error'
-      });
-      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });
   });
 });

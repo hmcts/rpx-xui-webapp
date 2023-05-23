@@ -22,7 +22,8 @@ describe('Task Role Access Resolver', () => {
     mockService.getTask.and.returnValue(of({ task: getMockTasks()[0] }));
     mockAllocateRoleService.getCaseAccessRoles.and.returnValue(of([mockCaseRole]));
     const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-    const taskRoleAccessResolver = new TaskRoleAccessResolver(mockService, mockRouter, mockAllocateRoleService);
+    const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+    const taskRoleAccessResolver = new TaskRoleAccessResolver(mockService, mockRouter, mockAllocateRoleService, loggerServiceMock);
     const route = jasmine.createSpyObj('Route', ['']);
     route.paramMap = {
       get: () => {

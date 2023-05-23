@@ -4,12 +4,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
-import { Go } from '../../../app/store';
 import { HttpError } from '../../../models/httpError.model';
 import { hearingActualsMainModel } from '../../hearing.test.data';
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingActualsActions from '../actions/hearing-actuals.action';
+import * as fromAppStoreActions from '../../../app/store/actions';
 import { HearingActualsEffects } from './hearing-actuals.effects';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 describe('Hearing Actuals Effects', () => {
   let actions$;
@@ -18,6 +19,7 @@ describe('Hearing Actuals Effects', () => {
     'getHearingActuals', 'updateHearingActuals', 'updateHearingActualsStage', 'submitHearingActuals'
   ]);
   const routerMock = jasmine.createSpyObj('Router', ['navigate']);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -31,6 +33,10 @@ describe('Hearing Actuals Effects', () => {
           provide: Router,
           useValue: routerMock
         },
+        {
+          provide: LoggerService,
+          useValue: loggerServiceMock
+        },
         HearingActualsEffects,
         provideMockActions(() => actions$)
       ]
@@ -38,7 +44,7 @@ describe('Hearing Actuals Effects', () => {
     effects = TestBed.inject(HearingActualsEffects);
   });
 
-  describe('loadHearingActual$', () => {
+  describe('getHearingActuals$', () => {
     it('should return a response with service hearing actuals', () => {
       hearingsServiceMock.getHearingActuals.and.returnValue(of(hearingActualsMainModel));
       const action = new hearingActualsActions.GetHearingActuals('1111222233334444');
@@ -46,6 +52,16 @@ describe('Hearing Actuals Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.getHearingActuals$).toBeObservable(expected);
+    });
+
+    it('should catch any errors', () => {
+      hearingsServiceMock.getHearingActuals.and.returnValue(throwError(new Error('Error')));
+      const action = new hearingActualsActions.GetHearingActuals('1111222233334444');
+      const completion = new fromAppStoreActions.Go({ path: ['/hearings/error'] });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.getHearingActuals$).toBeObservable(expected);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingActualsEffects:getHearingActuals$', jasmine.any(Error));
     });
   });
 
@@ -61,6 +77,19 @@ describe('Hearing Actuals Effects', () => {
       const expected = cold('-b', { b: completion });
       expect(effects.updateHearingActuals$).toBeObservable(expected);
     });
+
+    it('should catch any errors', () => {
+      hearingsServiceMock.updateHearingActuals.and.returnValue(throwError(new Error('Error')));
+      const action = new hearingActualsActions.UpdateHearingActuals({
+        hearingId: '1111222233334444',
+        hearingActuals: hearingActualsMainModel.hearingActuals
+      });
+      const completion = new fromAppStoreActions.Go({ path: ['/hearings/error'] });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.updateHearingActuals$).toBeObservable(expected);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingActualsEffects:updateHearingActuals$', jasmine.any(Error));
+    });
   });
 
   describe('updateHearingActualStage$', () => {
@@ -74,6 +103,19 @@ describe('Hearing Actuals Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.updateHearingActualsStage$).toBeObservable(expected);
+    });
+
+    it('should catch any errors', () => {
+      hearingsServiceMock.updateHearingActuals.and.returnValue(throwError(new Error('Error')));
+      const action = new hearingActualsActions.UpdateHearingActualsStage({
+        hearingId: '1111222233334444',
+        hearingActuals: hearingActualsMainModel.hearingActuals
+      });
+      const completion = new fromAppStoreActions.Go({ path: ['/hearings/error'] });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.updateHearingActualsStage$).toBeObservable(expected);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingActualsEffects:updateHearingActualsStage$', jasmine.any(Error));
     });
   });
 
@@ -100,24 +142,7 @@ describe('Hearing Actuals Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.submitHearingActuals$).toBeObservable(expected);
-    });
-  });
-
-  describe('handleError', () => {
-    it('should handle 500', () => {
-      const action$ = HearingActualsEffects.handleError({
-        status: 500,
-        message: 'error'
-      });
-      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
-    });
-
-    it('should handle 4xx related errors', () => {
-      const action$ = HearingActualsEffects.handleError({
-        status: 403,
-        message: 'error'
-      });
-      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingActualsEffects:submitHearingActuals$', jasmine.anything());
     });
   });
 });

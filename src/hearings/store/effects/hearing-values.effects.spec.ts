@@ -2,14 +2,15 @@ import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { of } from 'rxjs';
-import { Go } from '../../../app/store';
+import { of, throwError } from 'rxjs';
 import { initialState } from '../../hearing.test.data';
 import { CategoryType, MemberType, PartyType, RequirementType, UnavailabilityType } from '../../models/hearings.enum';
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingValuesActions from '../actions/hearing-values.action';
+import * as fromAppStoreActions from '../../../app/store/actions';
 import { HearingValuesEffects } from './hearing-values.effects';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 describe('Hearing Values Effects', () => {
   let actions$;
@@ -18,9 +19,12 @@ describe('Hearing Values Effects', () => {
     'loadHearingValues'
   ]);
 
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        { provide: LoggerService, useValue: loggerServiceMock },
         provideMockStore({ initialState }),
         {
           provide: HearingsService,
@@ -162,23 +166,15 @@ describe('Hearing Values Effects', () => {
       const expected = cold('-b', { b: completion });
       expect(effects.loadHearingValue$).toBeObservable(expected);
     });
-  });
 
-  describe('handleError', () => {
-    it('should handle 500', () => {
-      const action$ = HearingValuesEffects.handleError({
-        status: 500,
-        message: 'error'
-      }, '1111222233334444');
-      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/cases/case-details/1111222233334444/hearings'] })));
-    });
-
-    it('should handle 4xx related errors', () => {
-      const action$ = HearingValuesEffects.handleError({
-        status: 403,
-        message: 'error'
-      }, '1111222233334444');
-      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/cases/case-details/1111222233334444/hearings'] })));
+    it('should catch any errors', () => {
+      hearingsServiceMock.loadHearingValues.and.returnValue(throwError(new Error('Error')));
+      const action = new hearingValuesActions.LoadHearingValues('1111222233334444');
+      const completion = new fromAppStoreActions.Go({ path: ['/cases/case-details/1111222233334444/hearings'] });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.loadHearingValue$).toBeObservable(expected);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error in HearingValuesEffects:loadHearingValue$', jasmine.any(Error));
     });
   });
 });

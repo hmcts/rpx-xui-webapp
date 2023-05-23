@@ -2,7 +2,7 @@ import { NavigationExtras } from '@angular/router';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { UserInfo, UserRole } from '../../app/models';
 import { RoleCategory } from '../../role-access/models';
-import { OptionsModel } from '../../role-access/models/options-model';
+import { OptionsModel } from '../../role-access/models';
 import { ISessionStorageService } from '../interfaces/common';
 import { Caseworker, CaseworkersByService, LocationsByRegion, LocationsByService } from '../models/dtos';
 import { TaskPermission, TaskRole } from '../models/tasks';

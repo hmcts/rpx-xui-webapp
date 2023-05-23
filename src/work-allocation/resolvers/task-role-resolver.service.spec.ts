@@ -8,7 +8,8 @@ describe('TaskRoleResolverService', () => {
     const mockService = jasmine.createSpyObj('WorkAllocationTaskService', ['getTaskRoles']);
     mockService.getTaskRoles.and.returnValue(of(TASK_ROLES));
     const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-    const taskResolver = new TaskRoleResolverService(mockService, mockRouter);
+    const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+    const taskResolver = new TaskRoleResolverService(mockService, mockRouter, loggerServiceMock);
     const route = jasmine.createSpyObj('Route', ['']);
     route.paramMap = {
       get: () => {

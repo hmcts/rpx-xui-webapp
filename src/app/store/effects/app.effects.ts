@@ -3,12 +3,13 @@ import { RoleService } from '@hmcts/rpx-xui-common-lib';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs/internal/observable/of';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import { AuthService } from '../../../app/services/auth/auth.service';
-import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
-import { TermsConditionsService } from '../../../app/services/terms-and-conditions/terms-and-conditions.service';
+import { AuthService } from '../../services/auth/auth.service';
+import { SessionStorageService } from '../../services';
+import { TermsConditionsService } from '../../services/terms-and-conditions/terms-and-conditions.service';
 import { AppConfigService } from '../../services/config/configuration.services';
 import { UserService } from '../../services/user/user.service';
 import * as fromActions from '../actions';
+import { LoggerService } from '../../services/logger/logger.service';
 
 @Injectable()
 export class AppEffects {
@@ -19,7 +20,8 @@ export class AppEffects {
     private readonly termsService: TermsConditionsService,
     private readonly userService: UserService,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly roleService: RoleService
+    private readonly roleService: RoleService,
+    private readonly loggerService: LoggerService
   ) {}
 
   @Effect()
@@ -29,8 +31,11 @@ export class AppEffects {
         return this.configurationServices.load()
           .pipe(
             map((config) => new fromActions.LoadConfigSuccess(config)),
-            catchError((error) => of(new fromActions.LoadConfigFail(error))
-            ));
+            catchError((error) => {
+              this.loggerService.error('Error in AppEffects:config', error);
+              return of(new fromActions.LoadConfigFail(error));
+            })
+          );
       })
     );
 
@@ -42,8 +47,11 @@ export class AppEffects {
         return this.termsService.isTermsConditionsFeatureEnabled()
           .pipe(
             map((isTandCFeatureToggleEnabled) => new fromActions.LoadFeatureToggleConfigSuccess(isTandCFeatureToggleEnabled)),
-            catchError((error) => of(new fromActions.LoadFeatureToggleConfigFail(error))
-            ));
+            catchError((error) => {
+              this.loggerService.error('Error in AppEffects:featureToggleConfig', error);
+              return of(new fromActions.LoadFeatureToggleConfigFail(error));
+            })
+          );
       })
     );
 
@@ -78,7 +86,10 @@ export class AppEffects {
       switchMap(() => {
         return this.termsService.getTermsConditions().pipe(
           map((doc) => new fromActions.LoadTermsConditionsSuccess(doc)),
-          catchError(() => of(new fromActions.Go({ path: ['/service-down'] })))
+          catchError((error) => {
+            this.loggerService.error('Error in AppEffects:loadTermsConditions$', error);
+            return of(new fromActions.Go({ path: ['/service-down'] }));
+          })
         );
       })
     );
@@ -91,7 +102,10 @@ export class AppEffects {
           tap((userDetails) => this.sessionStorageService.setItem('userDetails', JSON.stringify(userDetails.userInfo))),
           tap((userDetails) => this.roleService.roles = userDetails.userInfo && userDetails.userInfo.roles),
           map((userDetails) => new fromActions.LoadUserDetailsSuccess(userDetails)),
-          catchError((err) => of(new fromActions.LoadUserDetailsFail(err)))
+          catchError((err) => {
+            this.loggerService.error('Error in AppEffects:loadUserDetails$', err);
+            return of(new fromActions.LoadUserDetailsFail(err));
+          })
         );
       })
     );

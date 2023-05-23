@@ -8,10 +8,13 @@ import { initialState } from '../hearing.test.data';
 import { JudicialUserModel } from '../models/judicialUser.model';
 import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import { PanelMemberSearchResponseResolver } from './panel-member-search-response-resolver';
+import { LoggerService } from '../../app/services/logger/logger.service';
 
 describe('Panel Member Search Response Resolver', () => {
   let judicialRefDataService: JudicialRefDataService;
   const dataRef: JudicialUserModel[] = [];
+
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -20,6 +23,7 @@ describe('Panel Member Search Response Resolver', () => {
         HttpClientTestingModule
       ],
       providers: [
+        { provide: LoggerService, useValue: loggerServiceMock },
         provideMockStore({ initialState }),
         PanelMemberSearchResponseResolver,
         JudicialRefDataService,

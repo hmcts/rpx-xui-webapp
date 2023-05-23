@@ -8,6 +8,7 @@ import { of } from 'rxjs';
 import { initialState } from '../hearing.test.data';
 import { LocationsDataService } from '../services/locations-data.service';
 import { CourtLocationsDataResolver } from './court-locations-resolver.resolve';
+import { LoggerService } from '../../app/services/logger/logger.service';
 
 describe('CourtLocationsData Resolver', () => {
   let locationsDataService: LocationsDataService;
@@ -30,6 +31,8 @@ describe('CourtLocationsData Resolver', () => {
     postcode: 'B16 8PE'
   };
 
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -37,6 +40,7 @@ describe('CourtLocationsData Resolver', () => {
         HttpClientTestingModule
       ],
       providers: [
+        { provide: LoggerService, useValue: loggerServiceMock },
         provideMockStore({ initialState }),
         CourtLocationsDataResolver,
         LocationsDataService,

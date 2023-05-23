@@ -9,10 +9,13 @@ import { initialState } from '../hearing.test.data';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
 import { PartySubChannelsResolverService } from './party-subchannels-resolver.service';
+import { LoggerService } from '../../app/services/logger/logger.service';
 
 describe('PartySubChannelsResolverService', () => {
   let lovRefDataService: LovRefDataService;
   const dataRef: LovRefDataModel[] = [];
+
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -21,6 +24,7 @@ describe('PartySubChannelsResolverService', () => {
         HttpClientTestingModule
       ],
       providers: [
+        { provide: LoggerService, useValue: loggerServiceMock },
         provideMockStore({ initialState }),
         PartySubChannelsResolverService,
         LovRefDataService,

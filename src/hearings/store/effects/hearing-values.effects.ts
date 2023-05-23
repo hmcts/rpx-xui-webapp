@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Action, Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { SessionStorageService } from '../../../app/services';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import * as hearingValuesActions from '../../../hearings/store/actions/hearing-values.action';
-import { HttpError } from '../../../models/httpError.model';
 import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingReducers from '../../store/reducers';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Injectable()
 export class HearingValuesEffects {
@@ -17,6 +17,7 @@ export class HearingValuesEffects {
     private readonly hearingStore: Store<fromHearingReducers.State>,
     private readonly hearingsService: HearingsService,
     private readonly sessionStorage: SessionStorageService,
+    private readonly loggerService: LoggerService
   ) {}
 
   @Effect()
@@ -30,16 +31,11 @@ export class HearingValuesEffects {
           map(
             (response) => new hearingValuesActions.LoadHearingValuesSuccess(response)),
           catchError((error) => {
+            this.loggerService.error('Error in HearingValuesEffects:loadHearingValue$', error);
             this.hearingStore.dispatch(new hearingValuesActions.LoadHearingValuesFailure(error));
-            return HearingValuesEffects.handleError(error, payload);
+            return of(new fromAppStoreActions.Go({ path: [`/cases/case-details/${payload}/hearings`] }));
           })
         );
       })
     );
-
-  public static handleError(error: HttpError, caseId: string): Observable<Action> {
-    if (error && error.status) {
-      return of(new fromAppStoreActions.Go({ path: [`/cases/case-details/${caseId}/hearings`] }));
-    }
-  }
 }

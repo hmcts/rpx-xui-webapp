@@ -14,6 +14,7 @@ import { WAFeatureConfig } from '../../../work-allocation/models/common/service-
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { FeatureVariation } from '../../models/feature-variation.model';
 import { Utils } from '../../utils/utils';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-case-viewer-container',
@@ -57,7 +58,8 @@ export class CaseViewerContainerComponent implements OnInit {
               private readonly store: Store<fromRoot.State>,
               private readonly featureToggleService: FeatureToggleService,
               private readonly allocateRoleService: AllocateRoleService,
-              private readonly waService: WASupportedJurisdictionsService) {
+              private readonly waService: WASupportedJurisdictionsService,
+              private readonly loggerService: LoggerService) {
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
       map((userDetails) => userDetails.userInfo.roles)
     );
@@ -92,7 +94,11 @@ export class CaseViewerContainerComponent implements OnInit {
       // @ts-ignore
       map(([feature, userRoles, supportedServices, excludedRoles]: [WAFeatureConfig, string[]]) =>
         this.enablePrependedTabs(feature, userRoles, supportedServices, excludedRoles) ? this.prependedTabs : []),
-      catchError(() => this.prependedTabs$ = of([]))
+      catchError((error) => {
+        this.loggerService.error('Error in CaseViewerContainerComponent:prependedCaseViewTabs', error);
+        this.prependedTabs$ = of([]);
+        return this.prependedTabs$;
+      })
     );
   }
 

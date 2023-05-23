@@ -7,18 +7,21 @@ import { Caseworker } from '../models/dtos';
 import { Task } from '../models/tasks';
 import { CaseworkerDataService, WorkAllocationTaskService } from '../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
+import { LoggerService } from '../../app/services/logger/logger.service';
 
 @Injectable({ providedIn: 'root' })
 export class TaskResolver implements Resolve<{ task: Task; caseworkers: Caseworker[]; } > {
   constructor(
     private readonly service: WorkAllocationTaskService,
     private readonly router: Router,
-    private readonly caseworkerService: CaseworkerDataService
+    private readonly caseworkerService: CaseworkerDataService,
+    private readonly loggerService: LoggerService
   ) {}
 
   public resolve(route: ActivatedRouteSnapshot): Observable< { task: Task; caseworkers: Caseworker[]; } > {
     const task$ = this.service.getTask(route.paramMap.get('taskId')).pipe(
       catchError((error) => {
+        this.loggerService.error('Error in TaskResolver:resolve', error);
         handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
         return EMPTY;
       })

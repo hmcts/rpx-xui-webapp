@@ -4,11 +4,12 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { Caseworker } from '../../../work-allocation/models/dtos';
-import { AnswersComponent } from '../../components/answers/answers.component';
+import { AnswersComponent } from '../../components';
 import { ExclusionNavigationEvent, RoleCategory } from '../../models';
 import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
 import { RoleExclusionsService } from '../../services';
 import { DeleteExclusionComponent } from './delete-exclusion.component';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
   template: `
@@ -36,6 +37,7 @@ describe('DeleteExclusionComponent', () => {
   ]);
   const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll']);
   const mockRoleExclusionService = jasmine.createSpyObj('roleExclusionService', ['getCurrentUserRoleExclusions', 'deleteExclusion']);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const exampleCaseId = '1234';
   const exclusionId = '2';
   const goToCaseUrl = `cases/case-details/${exampleCaseId}/roles-and-access`;
@@ -77,7 +79,8 @@ describe('DeleteExclusionComponent', () => {
         {
           provide: RoleExclusionsService,
           useValue: mockRoleExclusionService
-        }
+        },
+        { provide: LoggerService, useValue: loggerServiceMock }
       ]
     })
       .compileComponents();
@@ -164,6 +167,7 @@ describe('DeleteExclusionComponent with no name', () => {
   const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll']);
   const mockRoleExclusionService = jasmine.createSpyObj('roleExclusionService', ['getCurrentUserRoleExclusions', 'deleteExclusion']);
   const mockAllocateRoleService = jasmine.createSpyObj('allocateService', ['getCaseRolesUserDetails']);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const exampleCaseId = '1234';
   const exclusionId = '2';
   const goToCaseUrl = `cases/case-details/${exampleCaseId}/roles-and-access`;
@@ -179,6 +183,7 @@ describe('DeleteExclusionComponent with no name', () => {
       imports: [HttpClientTestingModule],
       declarations: [AnswersComponent, DeleteExclusionComponent, WrapperComponent],
       providers: [
+        { provide: LoggerService, useValue: loggerServiceMock },
         {
           provide: ActivatedRoute,
           useValue: {

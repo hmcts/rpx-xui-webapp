@@ -9,6 +9,7 @@ import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
 import * as fromHearingStore from '../store';
 import { ServiceIdResolverResolve } from './service-id-resolver.resolve';
+import { LoggerService } from '../../app/services/logger/logger.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,8 @@ export class RefDataResolver extends ServiceIdResolverResolve implements Resolve
     protected readonly lovRefDataService: LovRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly router: Router,
-    protected readonly sessionStorageService: SessionStorageService
+    protected readonly sessionStorageService: SessionStorageService,
+    protected readonly loggerService: LoggerService
   ) {
     super(hearingStore);
   }
@@ -60,7 +62,8 @@ export class RefDataResolver extends ServiceIdResolverResolve implements Resolve
           this.sessionStorageService.setItem(sessionKey, JSON.stringify(lovData));
         }
       }),
-      catchError(() => {
+      catchError((error) => {
+        this.loggerService.error('Error in RefDataResolver:getReferenceData$', error);
         this.router.navigate(['/hearings/error']);
         return of(null);
       })

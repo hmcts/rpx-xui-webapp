@@ -1,7 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, Input, NO_ERRORS_SCHEMA, Pipe, PipeTransform, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
 
 import { RouterTestingModule } from '@angular/router/testing';

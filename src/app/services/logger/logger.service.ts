@@ -75,7 +75,7 @@ export class LoggerService implements ILoggerService {
   }
 
   public getMessage(message: any, ...additional: any[]): string {
-    if (additional) {
+    if (additional.length > 0) {
       message += `, \n${additional}\n`;
     }
     const userInfoStr = this.sessionStorageService.getItem('userDetails');

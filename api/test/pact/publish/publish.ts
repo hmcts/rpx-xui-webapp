@@ -33,18 +33,12 @@ const publish = async (): Promise<void> => {
       publishVerificationResult: true,
       tags: [pactTag]
     };
-
-    if (pactTag === 'master') {
-      await pact.publishPacts(opts);
-
-      console.log('Pact contract publishing complete!');
-      console.log('');
-      console.log(`Head over to ${pactBroker}`);
-      console.log('to see your published contracts.');
-    } else {
-      console.log('Pact branchName is', pactTag);
-      console.log('publish is disabled for non "master" branchName');
-    }
+    await pact.publishPacts(opts);
+    console.log('Pact contract publishing complete!');
+    console.log('');
+    console.log(`Head over to ${pactBroker}`);
+    console.log('to see your published contracts.');
+    console.log('Pact branchName is', pactTag);
   } catch (e) {
     console.log('Pact contract publishing failed: ', e);
   }

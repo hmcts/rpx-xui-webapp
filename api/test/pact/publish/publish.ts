@@ -13,10 +13,7 @@ import {
 const publish = async (): Promise<void> => {
   try {
     const pactBroker = getConfigValue(PACT_BROKER_URL) ?
-      getConfigValue(PACT_BROKER_URL) : 'http://localhost:80';
-
-    // const pactBroker = "https://pact-broker.platform.hmcts.net"
-
+      'https://' + getConfigValue(PACT_BROKER_URL) : 'http://localhost:80';
     const pactTag = getConfigValue(PACT_BRANCH_NAME) ?
       getConfigValue(PACT_BRANCH_NAME) : 'Dev';
 

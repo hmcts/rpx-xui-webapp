@@ -55,12 +55,12 @@ export class AuthGuard implements CanActivate {
       isFeePaidJudgeUser = userInfo.roles.includes('fee-paid-judge');
     }
     if (currentPathIsRoot && userInfoStr && this.getJSONObject(userInfoStr)) {
-      const redirectUrl = isFeePaidJudgeUser ? '/booking' : this.sessionStorage.getItem('redirectUrl', true);
+      const redirectUrl = this.sessionStorage.getItem('redirectUrl', true);
       if (!redirectUrl) {
         return;
       }
 
-      this.authService.setWindowLocationHref(redirectUrl);
+      window.location.pathname !== redirectUrl ? this.authService.setWindowLocationHref(redirectUrl) : null;
     }
   }
 }

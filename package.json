@@ -76,7 +76,7 @@
     "@angular/platform-browser-dynamic": "^11.2.14",
     "@angular/router": "^11.2.14",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "6.16.0-query-management-write-view-v11",
+    "@hmcts/ccd-case-ui-toolkit": "6.16.0-query-management-query-response-validation",
     "@hmcts/ccpay-web-component": "5.2.2",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.9.3",

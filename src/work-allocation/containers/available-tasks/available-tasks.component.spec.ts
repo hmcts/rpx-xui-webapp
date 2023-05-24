@@ -3,7 +3,7 @@ import { Component, NO_ERRORS_SCHEMA, Pipe, PipeTransform, ViewChild } from '@an
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { Store } from '@ngrx/store';

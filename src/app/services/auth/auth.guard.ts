@@ -60,7 +60,11 @@ export class AuthGuard implements CanActivate {
         return;
       }
 
-      window.location.pathname !== redirectUrl ? this.authService.setWindowLocationHref(redirectUrl) : null;
+      if (window.location.pathname !== redirectUrl) {
+        this.authService.setWindowLocationHref(redirectUrl);
+      } else {
+        return;
+      }
     }
   }
 }

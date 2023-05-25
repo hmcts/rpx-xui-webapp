@@ -4,7 +4,6 @@ Feature: WA Release 2: My work -  Available tasks
 
     Background: Mock and browser setup
       
-@codecept_test
     Scenario Outline:  Available Tasks, columns and column links for "<UserType>"
         
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
@@ -39,7 +38,7 @@ Feature: WA Release 2: My work -  Available tasks
             | Task          | Yes        | Yes   |
             | Task created  | No         | Yes   |
             | Due date      | Yes        | No    |
-            | Priority      | Yes        | No    |
+            | Priority      | Yes        | Yes    |
 
         Then If current user "<UserType>" is "Judge", I validate task table values displayed
             | row | Case name | Case category        | Location        | Task             | Task created | 
@@ -47,10 +46,10 @@ Feature: WA Release 2: My work -  Available tasks
             | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | -10          | 
 
         Then If current user "<UserType>" is "Caseworker", I validate task table values displayed
-            | row | Case name | Case category        | Location        | Task             | Due date | Priority | 
-            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -1       | HIGH     | 
-            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 0        | MEDIUM   | 
-            | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        | LOW      |
+            | row | Case name | Case category        | Location        | Task             | Due date | 
+            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -1       | 
+            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 0        | 
+            | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        | 
 
 
         # Then I validate work allocation task table column "Task" width less than or equal to 280
@@ -99,7 +98,7 @@ Feature: WA Release 2: My work -  Available tasks
             | Task          | Yes        | Yes   |
             | Task created  | No         | Yes   |
             | Due date      | Yes        | No    |
-            | Priority      | Yes        | No    |
+            | Priority      | Yes        | Yes    |
         Then I validate task table pagination controls, is displayed state is "true"
         Then I validate task list page results text displayed as "Showing 1 to 25 of 140 results"
 
@@ -143,7 +142,7 @@ Feature: WA Release 2: My work -  Available tasks
             | Task          | Yes        | Yes   |
             | Task created  | No         | Yes   |
             | Due date      | Yes        | No    |
-            | Priority      | Yes        | No    |
+            | Priority      | Yes        |  Yes   |
 
 
         # Then I validate work allocation task table column "Task" width less than or equal to 280
@@ -155,10 +154,10 @@ Feature: WA Release 2: My work -  Available tasks
             | 2   | case 2                                                                                     | auto test category 2 | test location 2 | test auto task 2                                                                                                                                                 | -10          |
             | 3   | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | auto test category 3 | test location 3 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -40          |
         Then If current user "<UserType>" is "Caseworker", I validate task table values displayed
-            | row | Case name                                                                                  | Case category        | Location        | Task                                                                                                                                                             | Due date | Priority |
-            | 1   | case 1                                                                                     | auto test category 1 | test location 1 | test auto task 1                                                                                                                                                 | -1       | HIGH     |
-            | 2   | case 2                                                                                     | auto test category 2 | test location 2 | test auto task 2                                                                                                                                                 | 0        | MEDIUM   |
-            | 3   | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | auto test category 3 | test location 3 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -30      | HIGH     |
+            | row | Case name                                                                                  | Case category        | Location        | Task                                                                                                                                                             | Due date | 
+            | 1   | case 1                                                                                     | auto test category 1 | test location 1 | test auto task 1                                                                                                                                                 | -1       | 
+            | 2   | case 2                                                                                     | auto test category 2 | test location 2 | test auto task 2                                                                                                                                                 | 0        | 
+            | 3   | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | auto test category 3 | test location 3 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -30      | 
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                                            |

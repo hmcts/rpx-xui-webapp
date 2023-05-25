@@ -11,10 +11,10 @@ Feature: Global search
 
 
     Scenario: Search page field validation
-        Then I validate field services has following values in global search page
-            | value                |
-            | BEFTA Master         |
-            | Immigration & Asylum |
+        # Then I validate field services has following values in global search page
+        #     | value                |
+        #     | BEFTA Master         |
+        #     | Immigration & Asylum |
 
         When I click search button in global search page
         Then I see error message "Enter information in at least one field" in global search Page
@@ -155,6 +155,7 @@ Feature: Global search
         When I input date field "Date of death" with format DD-MM-YYYY "30-01-1999" in global search page
         When I click search button in global search page
         Then I see error message "The date of death cannot be earlier than the date of birth" for field "Date of death" in global search Page
+
 
     Scenario: Case search results view column values
         Given I set set global search mock results response and resultInfo

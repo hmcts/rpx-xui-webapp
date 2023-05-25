@@ -4,7 +4,7 @@ Feature: WA Release 2: My work - My tasks - Task assignment
     Background: Mock and browser setup
         Given I init MockApp
        
-
+@codecept_test
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
@@ -25,8 +25,8 @@ Feature: WA Release 2: My work - My tasks - Task assignment
             | 0 | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | Allwork test scr | London QA lab | test auto task 1 | -1 | 20 | -10 | auto test category |
             | 1     | Manage                     | 1234-1234-1234-1231 | case 2    | test location 2 | test auto task 2 | 0        | 21           | -10          | auto test category 2 |
             | 2     | Read                       | 1234-1234-1234-1231 | case 3    | test location 3 | test auto task 3 | 1        | 22           | -10          | auto test category 3 |
-            | 0 | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | Allwork test scr | London QA lab   | test auto task 1 | -1  | 20 | -10 | auto test category   |
-            | 0 | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | Allwork test scr | London QA lab   | test auto task 1 | -1  | 20 | -10 | auto test category   |
+            | 3 | Manage,Read,Execute,reassign,unassign,assign,Cancel | 1234-1234-1234-1231 | Allwork test scr | London QA lab   | test auto task 1 | -1  | 20 | -10 | auto test category   |
+            | 4 | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | Allwork test scr | London QA lab   | test auto task 1 | -1  | 20 | -10 | auto test category   |
             | 5 | Read                       | 1234-1234-1234-1231 | case 6           | test location 6 | test auto task 6 | -30 | 30 | -40 | auto test category 6 |
 
         # Given I set MOCK task details for WA release2

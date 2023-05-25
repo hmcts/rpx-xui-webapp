@@ -88,5 +88,17 @@ Feature: Test case type case creation and case details validations
         When I start case next step "Update case"
         Then Validate Case event update populating form page
 
+    Scenario: Validate "Update case" event
+        When I click on search button
+        Then Search page should be displayed
+        When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type dev"
+        When I click apply to perform case search
+        Then I see results returned
+        When I open first case in search results
+        Then I see case details page
+        When I start case next step "Update case"
+        When I update case details
+        Then I should be validate tab details in case details page
+
 
 

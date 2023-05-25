@@ -190,6 +190,31 @@ class CaseManager {
 
     }
 
+    async updateDateField(ccdField) {
+        const currentDate = new Date();
+        const day = currentDate.getDate().toString().padStart(2, '0');
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+        const year = currentDate.getFullYear().toString();
+
+        await ccdField.$('.form-group-day input').sendKeys(day);
+        await ccdField.$('.form-group-month input').sendKeys(month);
+        await ccdField.$('.form-group-year input').sendKeys(year);
+    }    
+
+    async UpdateCase() {
+        await this.continueBtn.click();
+        await browser.sleep(2);
+        await this.continueBtn.click();
+
+        const ccdField = await $('#DateField');
+
+        await this.updateDateField(ccdField);
+
+        await this.continueBtn.click();
+        await this.continueBtn.click();
+
+        await this.submitBtn.click();
+    }
 
     async AmOnCaseDetailsPage(){
         await BrowserWaits.retryWithActionCallback(async () => {

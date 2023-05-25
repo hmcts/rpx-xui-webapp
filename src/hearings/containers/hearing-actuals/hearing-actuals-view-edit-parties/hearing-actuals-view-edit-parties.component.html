@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-<xuilib-loading-spinner *ngIf="showSpinner"></xuilib-loading-spinner>
-<a class="govuk-back-link" [routerLink]="['../hearing-actual-add-edit-summary']">Back</a>
-=======
   <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
   <a class="govuk-back-link" [routerLink]="['../../hearing-actual-add-edit-summary']">Back</a>
->>>>>>> 5d20462e7 (CR comments fix)
   <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
     <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
          *ngIf="errors && errors.length"

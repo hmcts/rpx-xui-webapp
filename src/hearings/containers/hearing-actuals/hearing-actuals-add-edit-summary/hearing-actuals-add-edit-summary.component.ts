@@ -29,9 +29,9 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
    * TODO: Navigate to check your answers page if not cancelled and valid
    * Determines whether submit hearing details on
    */
-  public onSubmitHearingDetails(): void {
+  public async onSubmitHearingDetails(): Promise<void> {
     if (this.hearingResult === HearingResult.CANCELLED || this.isValid()) {
-      this.router.navigate(['/', 'hearings', 'actuals', this.hearingRequestID, 'hearing-actual-edit-summary']);
+      await this.router.navigate(['/', 'hearings', 'actuals', this.hearingRequestID, 'hearing-actual-edit-summary']);
     }
   }
 

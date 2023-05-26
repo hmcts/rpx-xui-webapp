@@ -51,7 +51,7 @@ export class TaskFieldComponent implements OnInit {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      this.isUserJudicial = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
+      this.isUserJudicial = AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
     }
     if (this.task && this.task.major_priority) {
       this.isTaskUrgent = this.task.major_priority <= PriorityLimits.Urgent ? true : false;

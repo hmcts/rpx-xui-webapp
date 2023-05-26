@@ -1,14 +1,13 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, FilterService, FilterSetting, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
-import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
-import { UserInfo, UserRole } from '../../../app/models';
+import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
@@ -55,6 +54,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public routeEventsSubscription: Subscription;
   public isUpdatedTaskPermissions$: Observable<boolean>;
   public updatedTaskPermission: boolean;
+  public userRoleCategory: string;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -164,7 +164,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.isUpdatedTaskPermissions$.pipe(filter((v) => !!v)).subscribe((value) => {
       this.updatedTaskPermission = value;
     });
-
+    this.userRoleCategory = this.getCurrentUserRoleCategory();
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
     this.setupTaskList();
@@ -397,12 +397,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public isCurrentUserJudicial(): boolean {
-    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
-    if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
-    }
-    return false;
+    return this.userRoleCategory === RoleCategory.JUDICIAL;
   }
 
   // Do the actual load. This is separate as it's called from two methods.
@@ -450,6 +445,14 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     if (this.selectedLocations !== newLocations && selectedLocations.length !== 0) {
       this.pagination.page_number = 1;
       this.sessionStorageService.setItem(this.pageSessionKey, '1');
+    }
+  }
+
+  public getCurrentUserRoleCategory(): string {
+    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      return userInfo.roleCategory;
     }
   }
 }

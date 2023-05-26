@@ -157,16 +157,6 @@ export class AppUtils {
     // check that userRoles do not have pui-case-manager
   }
 
-  public static isLegalOpsOrJudicial(userRoles: string[]): UserRole {
-    if (userRoles.some((userRole) => JUDICIAL_ROLE_LIST.some((role) => role === userRole))) {
-      return UserRole.Judicial;
-    } else if (userRoles.some((userRole) => LEGAL_OPS_ROLE_LIST.some((role) => role === userRole))) {
-      return UserRole.LegalOps;
-    }
-    // TODO: When we know roles for Admin we can put this in this method
-    return null;
-  }
-
   public static getUserRole(userRoles: string[]): UserRole {
     if (userRoles.some((userRole) => JUDICIAL_ROLE_LIST.some((role) => userRole.includes(role)))) {
       return UserRole.Judicial;

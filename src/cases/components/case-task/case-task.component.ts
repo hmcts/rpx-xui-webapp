@@ -36,6 +36,7 @@ export class CaseTaskComponent implements OnInit {
   public isTaskUrgent: boolean;
   private pTask: Task;
   public isRelease4: boolean;
+  public userRoleCategory: string;
 
   constructor(private readonly alertService: AlertService,
               private readonly router: Router,
@@ -98,6 +99,7 @@ export class CaseTaskComponent implements OnInit {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userId = userInfo.id ? userInfo.id : userInfo.uid;
+      this.userRoleCategory = userInfo.roleCategory;
       this.isUserJudicial = AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
       return task.assignee && task.assignee === userId;
     }

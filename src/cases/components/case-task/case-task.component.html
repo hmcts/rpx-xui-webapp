@@ -21,8 +21,8 @@
             <span class="row-padding">{{getDueDateTitle()}}</span>
         </dt>
         <dd class="govuk-summary-list__value">
-            <span *ngIf="isUserJudicial">{{task.created_date | date:'d MMMM yyyy'}}</span>
-            <span *ngIf="!isUserJudicial">{{task.due_date | date:'d MMMM yyyy'}}</span>
+            <span *ngIf="userRoleCategory && userRoleCategory === 'JUDICIAL'">{{task.created_date | date:'d MMMM yyyy'}}</span>
+            <span *ngIf="userRoleCategory && userRoleCategory !== 'JUDICIAL'">{{task.due_date | date:'d MMMM yyyy'}}</span>
         </dd>
     </div>
     <div class="govuk-summary-list__row">

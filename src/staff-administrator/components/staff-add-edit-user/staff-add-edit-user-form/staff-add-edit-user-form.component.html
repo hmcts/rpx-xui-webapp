@@ -234,7 +234,6 @@
               <input type="checkbox" class="govuk-checkboxes__input" [formControlName]="'staff_admin'"
                      [id]="'checkbox_userRoles_staff_admin'"
                      [name]="'checkbox_userRoles_staff_admin'"
-                     [attr.disabled]="updateMode && form.get('staff_admin').value && !form.get('staff_admin').dirty ? '' : null"
               />
               <label [for]="'checkbox_userRoles_staff_admin'" class="govuk-label govuk-checkboxes__label">
                 Staff administrator
@@ -244,9 +243,7 @@
         </div>
       </div>
 
-      <div *ngIf="updateMode && form.get('staff_admin').value && !form.get('staff_admin').dirty">
-        Note: the Staff administrator role can only be removed using the IDAM Dashboard.
-      </div>
+      
     </div>
 
     <hr/>

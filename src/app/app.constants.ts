@@ -91,6 +91,13 @@ const helpContactDetails: ContactDetailsDataModel[] = [
     email: 'contactfpl@justice.gov.uk',
     phone: '0330 808 4424',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
+  },
+  {
+    title: 'Employment Tribunal',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'etreform@justice.gov.uk',
+    phone: 'England and Wales: 0330 123 1024, Scotland: 0300 790 6234',
+    openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
   }
 ];
 

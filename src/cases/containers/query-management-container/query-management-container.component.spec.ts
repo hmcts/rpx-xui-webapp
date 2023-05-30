@@ -13,7 +13,6 @@ class WriteQueryManagementFieldComponent { }
 describe('QueryManagementContainerComponent', () => {
   let component: QueryManagementContainerComponent;
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
-  let debug: DebugElement;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -25,7 +24,6 @@ describe('QueryManagementContainerComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(QueryManagementContainerComponent);
     component = fixture.componentInstance;
-    debug = fixture.debugElement;
     fixture.detectChanges();
   });
 

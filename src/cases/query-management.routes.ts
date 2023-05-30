@@ -20,6 +20,6 @@ export const ROUTES: Routes = [
       }
     ]
   }
-]
+];
 
 export const queryManagementRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);

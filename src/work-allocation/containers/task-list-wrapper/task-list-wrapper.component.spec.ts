@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -17,6 +17,14 @@ import { Task } from '../../models/tasks';
 import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
+import { RpxTranslationService } from 'rpx-xui-translation';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslationMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('TaskListWrapperComponent', () => {
   let component: TaskListWrapperComponent;
@@ -46,8 +54,10 @@ describe('TaskListWrapperComponent', () => {
       unsubscribe: () => null
     }
   };
+  let mockRpxTranslationService: jasmine.SpyObj<RpxTranslationService>;
 
   beforeEach((() => {
+    mockRpxTranslationService = jasmine.createSpyObj('mockRpxTranslationService', ['translate', 'getTranslation']);
     storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
       imports: [
@@ -57,7 +67,7 @@ describe('TaskListWrapperComponent', () => {
         CdkTableModule,
         PaginationModule
       ],
-      declarations: [TaskListComponent, TaskListWrapperComponent],
+      declarations: [TaskListComponent, TaskListWrapperComponent, RpxTranslationMockPipe],
       providers: [
         { provide: ChangeDetectorRef, useValue: mockRef },
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
@@ -71,7 +81,8 @@ describe('TaskListWrapperComponent', () => {
         { provide: FilterService, useValue: mockFilterService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
-        { provide: Store, useValue: storeMock }
+        { provide: Store, useValue: storeMock },
+        { provide: RpxTranslationService, useValue: mockRpxTranslationService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);

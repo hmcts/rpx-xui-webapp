@@ -1,8 +1,8 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, NO_ERRORS_SCHEMA, Pipe, PipeTransform, ViewChild } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
@@ -15,6 +15,7 @@ import { Task, TaskAction, TaskServiceConfig } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListComponent } from './task-list.component';
+import { RpxTranslationService } from 'rpx-xui-translation';
 
 @Component({
   template: `
@@ -71,6 +72,20 @@ function getTaskService(): TaskServiceConfig {
   };
 }
 
+@Pipe({ name: 'rpxTranslate' })
+class MockRpxTranslatePipe implements PipeTransform {
+  transform(value: string): string {
+    return value;
+  }
+}
+
+@Pipe({ name: 'paginate' })
+class MockPaginatePipe implements PipeTransform {
+  transform(value: string): string {
+    return value;
+  }
+}
+
 describe('TaskListComponent', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;
@@ -82,23 +97,32 @@ describe('TaskListComponent', () => {
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['setItem']);
+  let mockRpxTranslationService: jasmine.SpyObj<RpxTranslationService>;
 
   beforeEach((() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    mockRpxTranslationService = jasmine.createSpyObj('RpxTranslationService'
+      , ['translate']);
     TestBed.configureTestingModule({
       imports: [
         WorkAllocationComponentsModule,
-        CdkTableModule,
-        PaginationModule
+        CdkTableModule
       ],
-      declarations: [TaskListComponent, WrapperComponent],
+      declarations: [
+        TaskListComponent,
+        WrapperComponent,
+        MockRpxTranslatePipe,
+        MockPaginatePipe
+      ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
         { provide: Router, useValue: mockRouter },
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        { provide: SessionStorageService, useValue: mockSessionStorageService }
-      ]
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+        { provide: RpxTranslationService, useValue: mockRpxTranslationService }
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;

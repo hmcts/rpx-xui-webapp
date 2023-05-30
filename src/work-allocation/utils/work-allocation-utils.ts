@@ -122,7 +122,7 @@ export const setCaseworkers = (serviceId: string, caseworkers: Caseworker[], ses
   sessionStorageService.setItem(sessionKey, JSON.stringify(caseworkers));
 };
 
-export const getAssigneeName = (caseworkers: any [], assignee: string): string => {
+export const getAssigneeName = (caseworkers: any[], assignee: string): string => {
   if (assignee && caseworkers && caseworkers.some((cw) => cw.idamId === assignee)) {
     const assignedCW = caseworkers.filter((cw) => cw.idamId === assignee)[0];
     return `${assignedCW.firstName} ${assignedCW.lastName}`;
@@ -130,7 +130,7 @@ export const getAssigneeName = (caseworkers: any [], assignee: string): string =
   return null;
 };
 
-export const servicesMap: {[key: string]: string} = {
+export const servicesMap: { [key: string]: string } = {
   IA: 'Immigration and Asylum',
   SSCS: 'Social security and child support'
 };
@@ -150,7 +150,7 @@ export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessio
       try {
         label = getLabel(roleCategory);
         // eslint-disable-next-line no-empty
-      } catch (error) {}
+      } catch (error) { }
       const option: OptionsModel = {
         optionId: roleCategory,
         optionValue: roleCategory,
@@ -255,9 +255,7 @@ export function getCurrentUserRoleCategory(sessionStorageService: ISessionStorag
   return null;
 }
 
-// EUI-7909 - replace function definition with comment
-// export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, allLocationServices: string[]): LocationsByService[] {
-export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, allLocationServices: string[], bookable = false): LocationsByService[] {
+export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, allLocationServices: string[]): LocationsByService[] {
   if (allLocationServices.includes(service)) {
     // if we know that all location services includes the current service we need to ensure this is present
     return locationsByServices;
@@ -265,21 +263,11 @@ export function addLocationToLocationsByService(locationsByServices: LocationsBy
   let locationsByService = locationsByServices.find((serviceLocations) => serviceLocations.service === service);
   if (!locationsByService) {
     // check to ensure that if service present with null location (i.e. a base location not within region), we register this
-    // EUI-7909 - uncomment the code below
-    // !location.id && !location.regionId ? locationsByServices.push({service, locations: []}) : locationsByServices.push({service, locations: [location]});
-    // EUI-7909 remove line below
-    !location.id && !location.regionId ? locationsByServices.push({
-      service,
-      locations: [],
-      bookable
-    }) : locationsByServices.push({ service, locations: [location], bookable });
+    !location.id && !location.regionId ? locationsByServices.push({ service, locations: [] }) : locationsByServices.push({ service, locations: [location] });
   } else {
     const finalDataWithoutService = locationsByServices.filter((serviceLocations) => serviceLocations.service !== service);
     // Need this to keep bookable attribute as true even if there is a non-bookable role on the same service
-    // EUI-7909 - uncomment the code
-    // locationsByService = {service, locations: locationsByService.locations.concat([location])}
-    // EUI-7909 - delete the code
-    locationsByService = { service, locations: locationsByService.locations.concat([location]), bookable };
+    locationsByService = { service, locations: locationsByService.locations.concat([location]) };
     locationsByServices = finalDataWithoutService.concat([locationsByService]);
   }
   return locationsByServices;

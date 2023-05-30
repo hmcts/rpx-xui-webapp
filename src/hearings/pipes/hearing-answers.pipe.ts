@@ -36,6 +36,7 @@ import {PanelInclusionAnswerConverter} from '../converters/panel-inclusion.answe
 import { PanelMembersAnswerConverter } from '../converters/panel-members.answer.converter';
 import {PanelRolesAnswerConverter} from '../converters/panel-roles.answer.converter';
 import {ParticipantAttendenceAnswerConverter} from '../converters/participant-attendence.answer.converter';
+import { ParticipantChannelAttendenceAnswerConverter } from '../converters/participant-channel-attendance.converter';
 import {PartyChannelsAnswerConverter} from '../converters/party-channels-answer.converter';
 import {ReasonForActualCancellationAnswerConverter} from '../converters/reason-for-actual-cancellation.answer.converter';
 import {ReasonForRequestCancellationAnswerConverter} from '../converters/reason-for-request-cancellation.answer.converter';
@@ -111,6 +112,9 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.HOW_ATTENDANT:
         converter = new PartyChannelsAnswerConverter(this.route);
+        break;
+      case AnswerSource.HOW_PARTICIPANTS_ATTEND:
+        converter = new ParticipantChannelAttendenceAnswerConverter(this.route);
         break;
       case AnswerSource.IS_PAPER_HEARING:
         converter = new IsPaperHearingAnswerConverter();

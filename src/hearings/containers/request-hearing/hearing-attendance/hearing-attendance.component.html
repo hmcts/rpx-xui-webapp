@@ -36,7 +36,7 @@
         </fieldset>
       </div>
       <ng-container *ngIf="attendanceFormGroup.controls.paperHearing.value === 'No'">
-        <div class="govuk-form-group"  [ngClass]="{'govuk-form-group--error' : !isAttendanceSelected}">
+        <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error' : !isAttendanceSelected}">
           <span *ngIf="!isAttendanceSelected" id="attendance-selection-error" class="govuk-error-message">
             <span class="govuk-visually-hidden">Error:</span>Select a way of participant attendance
           </span>
@@ -60,7 +60,7 @@
             </div>
           </fieldset>
         </div>
-        <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error' : !selectionValid}" formGroupName="parties">
+        <div  class="govuk-form-group" [ngClass]="{'govuk-form-group--error' : !selectionValid}" formGroupName="parties">
            <span *ngIf=" !selectionValid"
               id="party-selection-error"
               class="govuk-error-message">

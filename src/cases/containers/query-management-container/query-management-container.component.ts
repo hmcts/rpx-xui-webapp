@@ -13,7 +13,7 @@ export class QueryManagementContainerComponent implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute) {}
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     const queryItemId = this.activatedRoute.snapshot.data.qid;
     if (queryItemId) {
       this.queryItem = new QueryListItem();

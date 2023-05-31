@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { QueryManagementContainerComponent } from './query-management-container.component';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { Component, Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
+import { QueryWriteRaiseQueryComponent, QueryWriteRespondToQueryComponent } from '@hmcts/ccd-case-ui-toolkit';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -9,18 +10,6 @@ class MockRpxTranslatePipe implements PipeTransform {
     return value;
   }
 }
-
-@Component({
-  selector: 'ccd-query-write-raise-query',
-  template: ''
-})
-class MockQueryWriteRespondToQueryComponent {}
-
-@Component({
-  selector: 'ccd-query-write-raise-query',
-  template: ''
-})
-class MockQueryWriteRaiseQueryComponent {}
 
 describe('QueryManagementContainerComponent', () => {
   let component: QueryManagementContainerComponent;
@@ -31,8 +20,8 @@ describe('QueryManagementContainerComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         QueryManagementContainerComponent,
-        MockQueryWriteRespondToQueryComponent,
-        MockQueryWriteRaiseQueryComponent,
+        QueryWriteRaiseQueryComponent,
+        QueryWriteRespondToQueryComponent,
         MockRpxTranslatePipe
       ],
       providers: [

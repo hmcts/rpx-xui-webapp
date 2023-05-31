@@ -1,5 +1,10 @@
 {
   "environment": "production",
+   "secrets": {
+    "rpx": {
+      "AppInsightsInstrumentationKey": "AAA"
+    }
+  },
   "cookies": {
     "token": "__auth__",
     "userId": "__userid__",

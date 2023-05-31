@@ -18,10 +18,29 @@ def product   = "rpx"
 def component = "webapp"
 def channel   = '#xui-pipeline'
 
+def secrets = [
+  'rpx-${env}': [
+    secret('test-email', 'TEST_EMAIL'),
+    secret('test-password', 'TEST_PASSWORD'),
+    secret('test-api-email', 'TEST_API_EMAIL'),
+    secret('test-api-password', 'TEST_API_PASSWORD'),
+  ],
+]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+  [ $class: 'AzureKeyVaultSecret',
+    secretType: 'Secret',
+    name: secretName,
+    version: '',
+    envVariable: envVar
+  ]
+}
+
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
+    loadVaultSecrets(secrets)
     //enableFortifyScan()
     enableFullFunctionalTest(120)
     //enableSecurityScan()

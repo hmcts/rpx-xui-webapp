@@ -1,9 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { QueryManagementContainerComponent } from './query-management-container.component';
-import {
-  QueryWriteRaiseQueryComponent,
-  QueryWriteRespondToQueryComponent
-} from '../../../../../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { Component, Pipe, PipeTransform } from '@angular/core';
 

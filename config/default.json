@@ -2,7 +2,7 @@
   "environment": "production",
    "secrets": {
     "rpx": {
-      "AppInsightsInstrumentationKey": "AAA"
+      "appinsights-instrumentationkey-mc": "AAA"
     }
   },
   "cookies": {

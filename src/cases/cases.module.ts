@@ -9,8 +9,8 @@ import {
   AlertModule,
   AlertService,
   AuthService as CCDAuthService,
-  CaseEditorModule,
   CaseEditWizardGuard,
+  CaseEditorModule,
   CaseFileViewService,
   CaseHeaderModule,
   CaseListFiltersModule,
@@ -18,8 +18,8 @@ import {
   CaseNotifier,
   CaseReferencePipe,
   CaseResolver,
-  CasesService,
   CaseViewerModule,
+  CasesService,
   CcdCYAPageLabelFilterPipe,
   CreateCaseFiltersModule,
   DocumentManagementService,
@@ -38,6 +38,7 @@ import {
   PaletteModule,
   PipesModule,
   PlaceholderService,
+  QueryManagementModule,
   RequestOptionsBuilder,
   RouterHelperService,
   SearchFiltersModule,
@@ -63,6 +64,7 @@ import * as fromComponents from './components';
 import * as fromContainers from './containers';
 // from directives
 import * as fromDirectives from './directives';
+import { queryManagementRouting } from './query-management.routes';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 // from services
@@ -96,7 +98,9 @@ import { effects, reducers } from './store';
     CaseListModule,
     PaletteModule,
     CaseViewerModule,
-    PipesModule
+    PipesModule,
+    queryManagementRouting,
+    QueryManagementModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
   providers: [

@@ -1,2 +1,18 @@
-<ccd-write-query-management-field>
-</ccd-write-query-management-field>
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+    <div class="govuk-!-margin-top-2 govuk-!-margin-bottom-2">
+      <ng-container *ngIf="queryItem; else raiseQuery">
+        <ccd-query-write-respond-to-query
+          [queryItem]="queryItem" [formGroup]="formGroup"
+        ></ccd-query-write-respond-to-query>
+      </ng-container>
+      <ng-template #raiseQuery>
+        <ccd-query-write-raise-query
+          [formGroup]="formGroup">
+        </ccd-query-write-raise-query>
+      </ng-template>
+    </div>
+  </main>
+</div>
+<exui-app-footer></exui-app-footer>

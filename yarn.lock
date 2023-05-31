@@ -2133,15 +2133,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccpay-web-component@npm:5.2.3":
-  version: 5.2.3
-  resolution: "@hmcts/ccpay-web-component@npm:5.2.3"
+"@hmcts/ccpay-web-component@npm:5.2.6-beta01":
+  version: 5.2.6-beta01
+  resolution: "@hmcts/ccpay-web-component@npm:5.2.6-beta01"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     "@angular/common": ^9.0.0-rc.0 || ^9.0.0
     "@angular/core": ^9.0.0-rc.0 || ^9.0.0
-  checksum: 0da60f09b4518978bce1deabe4aa07f6ded056ed77962a0663c8366a560a3afe59751de8c56fc5b491c995ba7c08ec5fe4fca2499a01dfe4e757780b5dda51d2
+  checksum: ba5dd40fe5f4f68030fde671959e9efb457098c1f14183c3d8ed5f9053139710fa8a54d3fe32c086e4cd4f239a300294bbce096e8ff6d362e25998e5138ab0f2
   languageName: node
   linkType: hard
 
@@ -19097,7 +19097,7 @@ __metadata:
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
     "@hmcts/ccd-case-ui-toolkit": 6.14.6-infinite-tab-loop-fix
-    "@hmcts/ccpay-web-component": 5.2.3
+    "@hmcts/ccpay-web-component": 5.2.6-beta01
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3
     "@hmcts/nodejs-healthcheck": 1.7.0

@@ -126,5 +126,13 @@ Feature: Test case type case creation and case details validations
         Then I see the file displayed in Media Viewer
         Then I verify that comment feature is working
 
+    Scenario: Validate invalid date error message
+        When I click on primary navigation header tab "Create case", I see selected tab page displayed
+        Then Create case page should be displayed
+        When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case"
+        Then I am on case form page
+        When I create case with invalid date
+        Then I see error message of type "validation" displayed with message "Date is not valid"
+
         
 

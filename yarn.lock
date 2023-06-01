@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.15.0-6.16-rc-11":
-  version: 6.15.0-6.16-rc-11
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.15.0-6.16-rc-11"
+"@hmcts/ccd-case-ui-toolkit@npm:6.15.0-6.16-rc-13":
+  version: 6.15.0-6.16-rc-13
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.15.0-6.16-rc-13"
   dependencies:
     tslib: ^2.0.0
-  checksum: 022266e336217cc59938822bc64953961bd1619636c41b54c589b69d1b2ab0b115cb11b94e79d4e8d9f1af9f80550831d29fe035d5b44c8a3e3d7a1cfb110fda
+  checksum: ce05194f8535bf15553951283b383bbcc9b7eb65a0778b6de405caad9e8b4afdad54093fcc0bbaa4fec8bfe582a520caa82cce6864ff738962c11ac0d0b940a1
   languageName: node
   linkType: hard
 
@@ -2230,15 +2230,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:1.8.7-7909-re-add-with-url":
-  version: 1.8.7-7909-re-add-with-url
-  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.7-7909-re-add-with-url"
+"@hmcts/rpx-xui-common-lib@npm:1.8.7-include-current-user":
+  version: 1.8.7-include-current-user
+  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.7-include-current-user"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
-  checksum: 8765164847ac5388e804f607653bffdf31e4a5e993b8d2321bcb4e4274df65dbbe1206f30922940d45dca05f95526140b7195026abee22fbdad6eca50c8ac465
+  checksum: ace14d81897bd13b157572640a90e5bc2dc8a99423d2ab4651b3267ef9a6c9509104c220ec185afe4ec4e1ff6b5b99b2f4a56157feb680a7ace3175b3340a07e
   languageName: node
   linkType: hard
 
@@ -19103,13 +19103,13 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.15.0-6.16-rc-11
+    "@hmcts/ccd-case-ui-toolkit": 6.15.0-6.16-rc-13
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 1.8.7-7909-re-add-with-url
+    "@hmcts/rpx-xui-common-lib": 1.8.7-include-current-user
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3

@@ -147,6 +147,11 @@
               <span
                 class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['base_locations.noPrimaryLocation'] }}
         </p>
+        <p *ngIf="submitted && form.get('base_locations')?.invalid && wrongLocationError" id="location-incorrect-error"
+           class="govuk-error-message">
+              <span
+                class="govuk-visually-hidden">Error: </span>{{ wrongLocationError }}
+        </p>
       </legend>
 
       <div id="base_locations_primary" class="govuk-form-group govuk-form-group--limited-width">

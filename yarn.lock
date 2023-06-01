@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.15.0-6.16-rc-11":
-  version: 6.15.0-6.16-rc-11
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.15.0-6.16-rc-11"
+"@hmcts/ccd-case-ui-toolkit@npm:6.15.0-6.16-case-event-spinner-fix-v2":
+  version: 6.15.0-6.16-case-event-spinner-fix-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.15.0-6.16-case-event-spinner-fix-v2"
   dependencies:
     tslib: ^2.0.0
-  checksum: 022266e336217cc59938822bc64953961bd1619636c41b54c589b69d1b2ab0b115cb11b94e79d4e8d9f1af9f80550831d29fe035d5b44c8a3e3d7a1cfb110fda
+  checksum: c001de28ca1bca2c903fd85a863c95028ec7e008920333c69ab0772a17b2360dbaeaa4596ab93a09937c0ad1c2594f7ddea1fbd3eca860fc3318081484fcb906
   languageName: node
   linkType: hard
 
@@ -19103,7 +19103,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.15.0-6.16-rc-11
+    "@hmcts/ccd-case-ui-toolkit": 6.15.0-6.16-case-event-spinner-fix-v2
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

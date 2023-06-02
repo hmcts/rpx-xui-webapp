@@ -2124,12 +2124,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.14.6-infinite-tab-loop-fix":
-  version: 6.14.6-infinite-tab-loop-fix
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.14.6-infinite-tab-loop-fix"
+"@hmcts/ccd-case-ui-toolkit@npm:6.14.6-exui-229":
+  version: 6.14.6-exui-229
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.14.6-exui-229"
   dependencies:
     tslib: ^2.0.0
-  checksum: fcdb8507d671e318975369a5fb50af1caa4d99bf601abb64cc629a061547e9f3f05ab77bde9ebd03702d49fe07fcf9c8567c2175bf5c46c8a6c9229d5304f528
+  checksum: 2f8ab5c28dc41a64566c22bebddeeea17077fb96c0ace9b18ce3fc5c3ad5ae5996f44f1825ab4046e3766bca6cbc53400771c7b0d2180464506ba4835bda2336
   languageName: node
   linkType: hard
 
@@ -19096,7 +19096,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.14.6-infinite-tab-loop-fix
+    "@hmcts/ccd-case-ui-toolkit": 6.14.6-exui-229
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

@@ -184,6 +184,21 @@ describe('getUserRole', () => {
     expect(roleCategory).toBe(UserRole.LegalOps);
   });
 
+  it('should return Judicial', () => {
+    const roleCategory = AppUtils.getUserRole(['caseworker',
+      'caseworker-civil',
+      'caseworker-civil-judge',
+      'caseworker-cmc',
+      'caseworker-cmc-judge',
+      'caseworker-divorce',
+      'caseworker-divorce-financialremedy',
+      'caseworker-divorce-financialremedy-judiciary',
+      'caseworker-publiclaw',
+      'caseworker-publiclaw-judiciary',
+      'judiciary']);
+    expect(roleCategory).toBe(UserRole.Judicial);
+  });
+
   it('should return judicial role if user has any judicial role', () => {
     const roleCategory = AppUtils.getUserRole(['caseworker-ia-iacjudge']);
     expect(roleCategory).toBe(UserRole.Judicial);

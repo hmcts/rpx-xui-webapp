@@ -16,7 +16,7 @@ Feature: WA Release 2: All work - Manage links
             | 0     | Manage,Read,Execute,Cancel,assign |                     | case 1    |
             | 1     | Manage,assign                     |                     | case 2    |
             # | 2     | Read,assign                       |                     | case 3    |
-            | 3     | unassign,assign                   | 1234-1234-1234-1234 | case 4    |
+            | 3     |                    | 1234-1234-1234-1234 | case 4    |
             | 4     | Manage,unassign,assign            | 1234-1234-1234-1234 | case 5    |
             # | 5     |                                   | 1234-1234-1234-1234 | case 6    |
         Given I set MOCK task details for WA release2
@@ -34,11 +34,8 @@ Feature: WA Release 2: All work - Manage links
             | index | actions                                |
             | 1     | Assign task,Go to task                 |
             | 2     | Assign task,Go to task                 |
-            | 3     |                                        |
             | 4     | Reassign task,Unassign task,Go to task |
-            # | 5     | Reassign task,Unassign task,Go to task |
-            # | 6     |                                        |
-
+          
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |

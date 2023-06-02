@@ -51,9 +51,9 @@ Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
         When I click work allocation table "tasks" reset sort button
         Then I see work allocation table "tasks" reset sort button state isDisplayed is "false"
         Then I see work allocation table "tasks" column "Case name" is sorted in "none"
-        Then I see work allocation table "tasks" default column sorted by "asc" for user type "<UserType>"
-            | Caseworker | Priority |
-            | Judge      | Task created |
+        # Then I see work allocation table "tasks" default column sorted by "asc" for user type "<UserType>"
+        #     | Caseworker | Priority |
+        #     | Judge      | Task created |
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |

@@ -147,6 +147,27 @@ class CaseManager {
         this.caseEditPage.caseEventApiResponse = null;
     }
 
+    async createCaseWithInvalidDate(caseData, isAccessibilityTest, tcTypeStatus) {
+        this.caseData = caseData;
+    
+        let page = tcTypeStatus ? 0 : "null";
+    
+        for(let i=0; i<2; i++) {
+            page = tcTypeStatus ? i : "null";
+    
+            await BrowserWaits.retryWithActionCallback(async () => {
+                let isNextPageDisplayed = await this._formFillPage(page);
+                if (!isNextPageDisplayed) {
+                    return;
+                }
+            });
+    
+            await BrowserWaits.waitForSeconds(2);
+        }
+    
+        this.caseEditPage.caseEventApiResponse = null;
+    }     
+
     async submitCase(isAccessibilityTest){
         var checkYouranswers = $(".check-your-answers");
         var isCheckYourAnswersPage = await checkYouranswers.isPresent();

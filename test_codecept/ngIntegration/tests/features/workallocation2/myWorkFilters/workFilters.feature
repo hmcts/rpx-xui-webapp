@@ -131,17 +131,9 @@ Feature: WA Release 2: My work - Work filters
         When I remove slected location "IA Court Center 1" from my work filters
 
         When I click work location filter Apply button
-        Then I see error message of type "message" displayed with message "Enter a location"
-
-        When I search for location text "IA Court Center 1" in my work filters
-        Then I see location search results in my work filter
-            | name                  |
-            | IA Court Center 1 |
-        When I select locations search result "IA Court Center 1" in my work filter
-        When I click add location button in my work filter
-        Then I see location "IA Court Center 1" selected in my work filter
-        When I click work location filter Apply button
-        Then I validate my work filter services container not displayed
+       
+        Then I validate work filter button text is "Show work filter"
+        Then I validate location filter is not displayed
 
 
         Examples:

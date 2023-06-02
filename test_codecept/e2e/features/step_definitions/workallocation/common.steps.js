@@ -234,14 +234,20 @@ const { DataTableArgument } = require('codeceptjs');
             const taskActions = taskHashes[i]["actions"].split(",");
             let taskIndex = parseInt(taskHashes[i].index);
             if (taskHashes[i]["actions"] === ""){
-                softAssert.setScenario(`Manage link not present for task  ${JSON.stringify(taskHashes[i])} `);
-                await softAssert.assert(async () => expect(await taskListTable.isManageLinkPresent(taskIndex)).to.be.false);
-                continue;
+                softAssert.setScenario(`Manage link no actionDescription for task  ${JSON.stringify(taskHashes[i])} `);
+                await softAssert.assert(async () => expect(await taskListTable.isManageLinkPresent(taskIndex)).to.be.true);
+               
             }
 
             const isManagelinkOpen = await taskListTable.isManageLinkOpenForTaskAtPos(taskIndex);
             if (!isManagelinkOpen){
                 await taskListTable.clickManageLinkForTaskAt(taskIndex);
+            }
+
+            if (taskActions.length === 0){
+                await softAssert.assert(async () => expect(await taskListTable.isTaskActionPresent("Go to task")).to.be.true);
+                await softAssert.assert(async () => expect((await taskListTable.getTaskActions()).length === 1).to.be.true);
+
             }
 
             for (let j = 0; j < taskActions.length;j++){

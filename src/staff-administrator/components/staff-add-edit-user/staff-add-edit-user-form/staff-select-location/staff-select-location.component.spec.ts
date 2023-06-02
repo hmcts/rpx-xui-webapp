@@ -3,8 +3,8 @@ import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { RefDataService } from '@hmcts/rpx-xui-common-lib';
-import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { of } from 'rxjs';
+import { LocationByEpimmsModelWithServiceCodes } from '../../../../models/location-by-service-code-model';
 import { StaffSelectLocationComponent } from './staff-select-location.component';
 
 describe('StaffSelectLocationComponent', () => {
@@ -38,7 +38,7 @@ describe('StaffSelectLocationComponent', () => {
   });
 
   describe('lookup by serviceCodes (i.e. servicesField does not exist)', () => {
-    let dummyLocations: LocationByEPIMMSModel[];
+    let dummyLocations: LocationByEpimmsModelWithServiceCodes[];
     beforeEach(() => {
       dummyLocations = [
         {

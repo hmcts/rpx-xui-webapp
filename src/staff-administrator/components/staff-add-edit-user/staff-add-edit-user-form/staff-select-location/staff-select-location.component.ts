@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { RefDataService } from '@hmcts/rpx-xui-common-lib';
-import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { combineLatest, iif, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+import { LocationByEpimmsModelWithServiceCodes } from '../../../../models/location-by-service-code-model';
 import { StaffUserLocation } from '../../../../models/staff-user-location.model';
 
 @Component({
@@ -17,10 +17,10 @@ export class StaffSelectLocationComponent implements OnInit {
   @Input() public addButtonTitle: string = 'Add location';
   @Input() public serviceCodes$: Observable<string[]> = of([]);
 
-  public filteredList$: Observable<LocationByEPIMMSModel[] | boolean>;
+  public filteredList$: Observable<LocationByEpimmsModelWithServiceCodes[] | boolean>;
   public searchTermFormControl: FormControl = new FormControl('');
-  public autocompleteSelectedLocation: LocationByEPIMMSModel | false;
-  private fullLocations: LocationByEPIMMSModel[];
+  public autocompleteSelectedLocation: LocationByEpimmsModelWithServiceCodes | false;
+  private fullLocations: LocationByEpimmsModelWithServiceCodes[];
 
   public get selectedLocations(): StaffUserLocation[] {
     return this.locationsControl?.value;
@@ -62,7 +62,7 @@ export class StaffSelectLocationComponent implements OnInit {
     );
   }
 
-  private setLocationServiceCodes(locations: LocationByEPIMMSModel[]): LocationByEPIMMSModel[] {
+  private setLocationServiceCodes(locations: LocationByEpimmsModelWithServiceCodes[]): LocationByEpimmsModelWithServiceCodes[] {
     locations.map((location) => {
       const currentId = location.epimms_id;
       const serviceCodes = location.serviceCodes;
@@ -90,7 +90,7 @@ export class StaffSelectLocationComponent implements OnInit {
     return serviceCodes;
   }
 
-  public onSelectionChange(location: LocationByEPIMMSModel) {
+  public onSelectionChange(location: LocationByEpimmsModelWithServiceCodes) {
     this.searchTermFormControl.setValue(location.venue_name);
   }
 
@@ -125,9 +125,9 @@ export class StaffSelectLocationComponent implements OnInit {
   }
 
   private filterUnselectedLocations(
-    locations: LocationByEPIMMSModel[],
+    locations: LocationByEpimmsModelWithServiceCodes[],
     selectedLocations: StaffUserLocation[],
-  ): LocationByEPIMMSModel[] {
+  ): LocationByEpimmsModelWithServiceCodes[] {
     this.fullLocations = locations;
     return locations.filter(
       (location) => !selectedLocations.map((selectedLocation) => selectedLocation.location_id).includes(location.epimms_id) && location.venue_name

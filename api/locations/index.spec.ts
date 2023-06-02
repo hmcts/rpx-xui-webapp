@@ -139,9 +139,7 @@ describe('Fee Pay Judge', () => {
           searchTerm: 'Gla',
           serviceIds: ['IA', 'CIVIL', 'SCSS'],
           locationType: 'hearing',
-          // EUI-7909
-          // userLocations: [{service: 'IA', locations: [{id: '1234'}]}],
-          userLocations: [{ service: 'IA', bookable: 'true', locations: [{ id: '1234' }] }],
+          userLocations: [{ service: 'IA', locations: [{ id: '1234' }] }],
           bookingLocations: null
         }
       });
@@ -159,33 +157,5 @@ describe('Fee Pay Judge', () => {
         throw new Error(err);
       }
     });
-
-    // EUI-7909 - remove
-    it('should return the possible when there are bookable and non-bookable locations', async () => {
-      spy = sandbox.stub(http, GET).resolves(res);
-      const req = mockReq({
-        body: {
-          searchTerm: 'Gla',
-          serviceIds: ['IA', 'CIVIL', 'SCSS'],
-          locationType: 'hearing',
-          userLocations: [{ service: 'IA', bookable: 'true', locations: null }, { service: 'CIVIL', locations: [{ id: '2345' }] }],
-          bookingLocations: ['1234']
-        }
-      });
-
-      const response = mockRes({
-        data: mockLocations
-      });
-
-      try {
-        await getLocations(req, response, next);
-        // should equal 4, only getting base location for IA
-        expect(response.data.results.length).to.equal(2);
-      } catch (err) {
-        console.log(err.stack);
-        throw new Error(err);
-      }
-    });
-  // 7909 - remove
   });
 });

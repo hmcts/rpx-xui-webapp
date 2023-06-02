@@ -174,6 +174,11 @@ const RuntimeTestData = require("../../support/runtimeTestData");
 
   });
 
+  When('I open second case in search results', async function () {
+    await searchPage.openSecondCaseInResults();
+
+  });
+
   Then('I see results returned', async function () {
     const caseListContainer = $("exui-case-list");
     const searchCasesContainer = $("exui-search-case");
@@ -222,6 +227,24 @@ const RuntimeTestData = require("../../support/runtimeTestData");
         throw new Error(err);
       }
    
+  });
+});
+
+Then('I verify search filters have jurisdiction {string} and case type {string}', async function (expectedJurisdiction, expectedCaseType) {
+  await BrowserWaits.retryWithActionCallback(async () => {
+    try {
+      const jurisdictionIndex = await searchPage.jurisdiction.getAttribute('value');
+      const actualJurisdiction = await searchPage.jurisdiction.$(`option[value="${jurisdictionIndex}"]`).getText();
+      const caseTypeIndex = await searchPage.caseType.getAttribute('value');
+      const actualCaseType = await searchPage.caseType.$(`option[value="${caseTypeIndex}"]`).getText();
+
+      expect(actualJurisdiction).to.equal(expectedJurisdiction, `Jurisdiction is not as expected. Expected: ${expectedJurisdiction}, Actual: ${actualJurisdiction}`);
+      expect(actualCaseType).to.equal(expectedCaseType, `Case Type is not as expected. Expected: ${expectedCaseType}, Actual: ${actualCaseType}`);
+    } catch (err) {
+      await CucumberReporter.AddMessage("Retrying with page refresh", LOG_LEVELS.Info);
+      await headerPage.refreshBrowser();
+      throw new Error(err);
+    }
   });
 });
 

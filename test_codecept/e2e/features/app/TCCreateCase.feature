@@ -87,6 +87,45 @@ Feature: Test case type case creation and case details validations
         When I start case next step "Update case"
         Then Validate Case event update populating form page
 
+    Scenario: Validate media viewer text redaction working
+        When I click on search button
+        Then Search page should be displayed
+        When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
+        When I click apply to perform case search
+        Then I see results returned
+        When I open second case in search results
+        Then I see case details page
+        When I click tab with label "Tab 1" in case details page
+        When I open dummy document
+        Then I see the file displayed in Media Viewer
+        Then I verify that text redaction is working
+
+    Scenario: Validate media viewer bookmark feature working
+        When I click on search button
+        Then Search page should be displayed
+        When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
+        When I click apply to perform case search
+        Then I see results returned
+        When I open second case in search results
+        Then I see case details page
+        When I click tab with label "Tab 1" in case details page
+        When I open dummy document
+        Then I see the file displayed in Media Viewer
+        Then I verify that bookmark feature is working
+
+    Scenario: Validate media viewer comment feature working
+        When I click on search button
+        Then Search page should be displayed
+        When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
+        When I click apply to perform case search
+        Then I see results returned
+        When I open second case in search results
+        Then I see case details page
+        When I click tab with label "Tab 1" in case details page
+        When I open dummy document
+        Then I see the file displayed in Media Viewer
+        Then I verify that comment feature is working
+
     Scenario: Validate invalid date error message
         When I click on primary navigation header tab "Create case", I see selected tab page displayed
         Then Create case page should be displayed
@@ -95,7 +134,7 @@ Feature: Test case type case creation and case details validations
         When I create case with invalid date
         Then I see error message of type "validation" displayed with message "Date is not valid"
 
-  Scenario: Validate "Update case" event
+    Scenario: Validate "Update case" event
         When I click on search button
         Then Search page should be displayed
         When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type dev"
@@ -106,6 +145,4 @@ Feature: Test case type case creation and case details validations
         When I start case next step "Update case"
         When I update case details
         Then I should be validate tab details in case details page
-
-
 

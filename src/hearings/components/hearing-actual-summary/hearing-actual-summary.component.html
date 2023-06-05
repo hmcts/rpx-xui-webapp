@@ -7,7 +7,7 @@
           {{ hearingDays[0]?.actualHearingDay?.hearingStartTime | date:"dd MMMM yyyy" }} - {{ hearingDays[hearingDays.length - 1]?.actualHearingDay?.hearingStartTime | date:"dd MMMM yyyy" }}
         </ng-container>
         <ng-template #singleDayHearingDate>
-          {{hearingActualsMainModel?.hearingActuals.hearingOutcome.hearingResultDate | date:"dd MMMM yyyy"}}
+          {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResultDate | date:"dd MMMM yyyy"}}
         </ng-template>
       </dd>
       <dd class="govuk-summary-list__actions"></dd>
@@ -26,13 +26,13 @@
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
       <dt class="govuk-summary-list__key">Hearing result</dt>
       <dd class="govuk-summary-list__value">
-        {{hearingActualsMainModel?.hearingActuals.hearingOutcome.hearingResult}}</dd>
+        {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResult}}</dd>
     </div>
 
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="isCompleted">
       <dt class="govuk-summary-list__key">Decision type</dt>
       <dd class="govuk-summary-list__value">
-        {{hearingActualsMainModel?.hearingActuals.hearingOutcome.hearingResultReasonType}}</dd>
+        {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResultReasonType}}</dd>
     </div>
 
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="isAdjourned">
@@ -44,7 +44,7 @@
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="isAdjourned">
       <dt class="govuk-summary-list__key">Adjournment date</dt>
       <dd class="govuk-summary-list__value">
-        {{hearingActualsMainModel?.hearingActuals.hearingOutcome.hearingResultDate | date:"dd MMMM yyyy"}}</dd>
+        {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResultDate | date:"dd MMMM yyyy"}}</dd>
     </div>
 
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
@@ -63,9 +63,9 @@
   <br />
 
 
-  <h1 class="govuk-heading-m" style="display: inline-block;">Hearing date(s)</h1>
+  <h1 class="govuk-heading-m" style="display: inline-block;" *ngIf="hearingActualsMainModel?.hearingActuals?.actualHearingDays?.length > 0">Hearing date(s)</h1>
 
-  <ng-container *ngFor="let actualHearingDay of hearingActualsMainModel.hearingActuals.actualHearingDays">
+  <ng-container *ngFor="let actualHearingDay of hearingActualsMainModel?.hearingActuals?.actualHearingDays">
     <div>
       <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details govuk-grid-row" [open]="!isMultiDayHearing">
         <summary class="govuk-grid-column-one-quarter govuk-!-margin-bottom-4">

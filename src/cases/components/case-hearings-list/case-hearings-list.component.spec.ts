@@ -16,7 +16,7 @@ import { CaseHearingsListComponent } from './case-hearings-list.component';
 
 class MockRoleCategoryMappingService {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public initialize = (): void => {};
+  public initialize = (): void => { };
   public isEnabled = (): Observable<boolean> => of(true);
   public getValue = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
   public getValueOnce = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
@@ -884,6 +884,12 @@ describe('CaseHearingsListComponent', () => {
     component.caseId = '1111222233334444';
     component.manageLinks(UPCOMING_HEARING_LIST[0]);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '1111222233334444', 'g1000000', 'h100001']);
+  });
+
+  it('should check cya', () => {
+    component.caseId = '1111222233334444';
+    component.cya('h100001');
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/hearings/actuals/h100001/hearing-actual-edit-summary');
   });
 
   it('should check viewDetails', () => {

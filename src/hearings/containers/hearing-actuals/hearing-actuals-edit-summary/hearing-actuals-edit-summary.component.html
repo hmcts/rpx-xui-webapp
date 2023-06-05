@@ -1,19 +1,4 @@
 <a class="govuk-back-link" href="javascript:history.back()">Back</a>
-<xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'">
-</xuilib-hmcts-error-summary>
-<div class="govuk-notification-banner govuk-notification-banner--success" role="alert"
-  aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner"
-  *ngIf="validationErrors.length == 0 && successBanner">
-  <div class="govuk-notification-banner__header">
-    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-      Success
-    </h2>
-  </div>
-  <div class="govuk-notification-banner__content">
-    <p class="govuk-body">Details submitted</p>
-  </div>
-</div>
-
 <xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem'" *ngIf="errors$ | async">
 </xuilib-hmcts-error-summary>
 
@@ -78,9 +63,9 @@
     <div>
 
       <div class="govuk-grid-column-two-thirds">
-        <div *ngIf="actualHearingDays">
+        <div *ngIf="actualHearingDaysCYA">
           <div id="actual-hearing-dates">
-            <details *ngFor="let actualHearingDay of actualHearingDays; let i = index" class="govuk-details"
+            <details *ngFor="let actualHearingDay of actualHearingDaysCYA; let i = index" class="govuk-details"
               data-module="govuk-details" [open]="hearingDatesAccordion[actualHearingDay.hearingDate]">
               <summary class="govuk-details__summary"
                 (click)="$event.preventDefault(); hearingDatesAccordion[actualHearingDay.hearingDate] = !hearingDatesAccordion[actualHearingDay.hearingDate]">
@@ -152,7 +137,7 @@
                       <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">Names</dt>
                         <dd class="govuk-summary-list__value">
-                          <div *ngFor="let party of actualHearingUtils.getParties(hearingActualsMainModel, actualHearingDay.hearingDate)">
+                          <div *ngFor="let party of actualHearingUtils.getPartiesCYA(hearingActualsMainModel, actualHearingDay.hearingDate)">
                             <span *ngIf="party.individualDetails">
                               {{party.individualDetails.firstName}} {{party.individualDetails.lastName}}
                             </span>
@@ -165,7 +150,7 @@
                           <dt class="govuk-summary-list__key">Participant attendance</dt>
                           <dd class="govuk-summary-list__value">
                             <div
-                              *ngFor="let party of actualHearingUtils.getParties(hearingActualsMainModel, actualHearingDay.hearingDate)">
+                              *ngFor="let party of actualHearingUtils.getPartiesCYA(hearingActualsMainModel, actualHearingDay.hearingDate)">
                               <span *ngIf="party.individualDetails">
                                 {{party.individualDetails.firstName}} {{party.individualDetails.lastName}}:
                                 {{party.partyChannelSubType | convertToValue: partyChannels}}
@@ -216,3 +201,4 @@
       </div>
     </div>
   </div>
+	

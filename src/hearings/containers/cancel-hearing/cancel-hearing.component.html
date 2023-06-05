@@ -1,4 +1,5 @@
 <exui-app-header></exui-app-header>
+<xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
 <div class="govuk-width-container">
   <div class="page">
     <main id="content" role="main">
@@ -13,7 +14,7 @@
                 Are you sure you want to cancel this hearing?
             </h1>
             <p class="govuk-body">Jane Smith vs DWP</p>
-            <div class="govuk-form-group" 
+            <div class="govuk-form-group"
             [ngClass]="{'govuk-form-group--error' : !selectionValid}">
               <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
@@ -21,8 +22,8 @@
                       Why is this hearing being cancelled?
                     </h1>
                 </legend>
-                <span *ngIf=" !selectionValid" 
-                  id="estimation-name-error" 
+                <span *ngIf=" !selectionValid"
+                  id="estimation-name-error"
                   class="govuk-error-message">
                  <span>{{ cancelHearingMessageEnum.SELECT_AT_LEAST_ONE_REASON }}</span>
               </span>

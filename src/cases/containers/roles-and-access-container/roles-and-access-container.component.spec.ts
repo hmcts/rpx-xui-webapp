@@ -1,6 +1,5 @@
 import { ActivatedRoute } from '@angular/router';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs/internal/observable/of';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 import { RolesAndAccessContainerComponent } from './roles-and-access-container.component';
@@ -105,8 +104,7 @@ const CASE_VIEW: CaseView = {
 };
 
 describe('RolesContainerComponent', () => {
-  let featureToggleService: FeatureToggleService;
-  featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
+  const featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   let component: RolesAndAccessContainerComponent;
 
   const route = {
@@ -119,7 +117,6 @@ describe('RolesContainerComponent', () => {
   const caseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['loadAll', 'getCaseworkersForServices']);
   const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem', 'setItem']);
 
-  featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
   mockNotifierService.cachedCaseView = {};
 

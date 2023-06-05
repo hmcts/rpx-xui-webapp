@@ -2098,14 +2098,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-raise-query-display-v5":
-  version: 6.16.0-query-management-raise-query-display-v5
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-raise-query-display-v5"
+"@hmcts/ccd-case-ui-toolkit@portal:/Users/mateibaciu/WebstormProjects/HMCTS/ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@hmcts/ccd-case-ui-toolkit@portal:/Users/mateibaciu/WebstormProjects/HMCTS/ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A."
   dependencies:
     tslib: ^2.0.0
-  checksum: 05bdee07723416ade94d17958c051e27e4b04ecfe096c2c4e2c07466764b1b26fb61a2b24ba5ce797275e8fe26163794b15582fafe07644eb1eed8ef882c78fb
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@hmcts/ccpay-web-component@npm:5.2.2":
   version: 5.2.2

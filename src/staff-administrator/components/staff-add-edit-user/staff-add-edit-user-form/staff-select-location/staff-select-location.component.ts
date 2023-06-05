@@ -80,7 +80,7 @@ export class StaffSelectLocationComponent implements OnInit {
     return locations;
   }
 
-  public getAllServiceCodes(serviceCodes: string[], currentId: string): string[] {
+  private getAllServiceCodes(serviceCodes: string[], currentId: string): string[] {
     const duplicateServiceLocations = this.fullLocations.filter((duplicateLocation) => duplicateLocation.epimms_id === currentId && duplicateLocation.serviceCodes[0] !== serviceCodes[0]);
     duplicateServiceLocations.forEach((duplicateLocation) => {
       if (!serviceCodes.includes(duplicateLocation.serviceCodes[0])) {

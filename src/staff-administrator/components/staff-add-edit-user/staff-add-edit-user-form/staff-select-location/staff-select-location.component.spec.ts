@@ -79,7 +79,7 @@ describe('StaffSelectLocationComponent', () => {
           venue_name: 'Aberdeen',
           is_hearing_location: 'Y',
           is_case_management_location: 'Y',
-          serviceCodes: ['BFA1']
+          serviceCodes: ['AAA7']
         },
         {
           epimms_id: '827534',
@@ -278,6 +278,17 @@ describe('StaffSelectLocationComponent', () => {
           expect(result).toEqual([dummyLocations[0]]);
         });
 
+        component.searchTermFormControl.setValue(dummyLocations[0].venue_name);
+        tick();
+        flush();
+      }));
+
+      it('should fill locations with correct service codes', fakeAsync(() => {
+        refDataServiceMock.getLocationsByServiceCodes.and.returnValue(of([dummyLocations[0], dummyLocations[1]]));
+        component.filteredList$.subscribe((result) => {
+          expect(result).toEqual([dummyLocations[0]]);
+          expect(result[0].serviceCodes).toEqual(['BFA1', 'AAA7']);
+        });
         component.searchTermFormControl.setValue(dummyLocations[0].venue_name);
         tick();
         flush();

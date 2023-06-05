@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsul
 import { BookingCheckType, FeatureToggleService, FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
@@ -20,6 +20,7 @@ import { getRoleCategory } from '../../utils';
 export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME: string = 'all-work-tasks-filter';
   @Input() public jurisdictions: string[] = [];
+  @Input() public waSupportedJurisdictions: string[];
   @Output() public selectionChanged: EventEmitter<any> = new EventEmitter<any>();
 
   public appStoreSub: Subscription;
@@ -172,7 +173,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     };
   }
 
-  private static findPersonFilter(): FilterFieldConfig {
+  private static findPersonFilter(waSupportedJurisdictions: string[]): FilterFieldConfig {
     return {
       name: 'person',
       options: [],
@@ -184,7 +185,8 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       enableCondition: 'selectPerson=Specific person',
       type: 'find-person',
       radioSelectionChange: 'selectPerson=Specific person',
-      servicesField: 'service'
+      servicesField: 'service',
+      services: waSupportedJurisdictions
     };
   }
 
@@ -266,7 +268,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       // TaskManagerFilterComponent.initRoleTypeFilter(),
       TaskManagerFilterComponent.initPersonFilter(),
       TaskManagerFilterComponent.initRoleTypeFilter(),
-      TaskManagerFilterComponent.findPersonFilter(),
+      TaskManagerFilterComponent.findPersonFilter(this.waSupportedJurisdictions),
       TaskManagerFilterComponent.initTaskTypeFilter()
     ];
 

@@ -2124,12 +2124,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.14.6-infinite-tab-loop-fix":
-  version: 6.14.6-infinite-tab-loop-fix
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.14.6-infinite-tab-loop-fix"
+"@hmcts/ccd-case-ui-toolkit@npm:6.10.7-case-flags-v2-welsh-language-support-additional-rework-2":
+  version: 6.10.7-case-flags-v2-welsh-language-support-additional-rework-2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.10.7-case-flags-v2-welsh-language-support-additional-rework-2"
   dependencies:
     tslib: ^2.0.0
-  checksum: fcdb8507d671e318975369a5fb50af1caa4d99bf601abb64cc629a061547e9f3f05ab77bde9ebd03702d49fe07fcf9c8567c2175bf5c46c8a6c9229d5304f528
+  checksum: 1d614a2b1a03e122c13668f813deb45e54dfb8c13d628e61e7ce4df7cbeff60e6a9a4c704265380b5c3324ead5776893ae68f02b13c8c17447c9502447d11597
   languageName: node
   linkType: hard
 
@@ -8291,6 +8291,13 @@ __metadata:
   version: 0.0.981744
   resolution: "devtools-protocol@npm:0.0.981744"
   checksum: 609901bff551f5fbe98e272bdda7269de527e28fab138de371ffd7e9a06fa68ca2eec2e961bd1cd6fd98223ccee562c55b7ce3235d4e37cc8d85d6681bc45593
+  languageName: node
+  linkType: hard
+
+"dexie@npm:^3.2.2":
+  version: 3.2.4
+  resolution: "dexie@npm:3.2.4"
+  checksum: 4e5294a954118b6862c864b8c3970904a1733daebcd919488624520696411e2e81ed1bceeac3634c5c15a21e37ce4b8502ed41c4edfbc5ba3f5925c34d56497b
   languageName: node
   linkType: hard
 
@@ -14539,6 +14546,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"luxon@npm:^2.4.0":
+  version: 2.5.2
+  resolution: "luxon@npm:2.5.2"
+  checksum: d8b671ffd2ff0b438af862ac11082a81b3aedd9f8b6a4ca636f944224f8dd381125cd4d274ca0a8aedcaf2cfca0fc2ca96fe4cc1b16a28b7af701afb95c0bff8
+  languageName: node
+  linkType: hard
+
 "magic-string@npm:0.25.7":
   version: 0.25.7
   resolution: "magic-string@npm:0.25.7"
@@ -19096,7 +19110,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.14.6-infinite-tab-loop-fix
+    "@hmcts/ccd-case-ui-toolkit": 6.10.7-case-flags-v2-welsh-language-support-additional-rework-2
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3
@@ -19219,6 +19233,7 @@ __metadata:
     protractor-cucumber-framework: 6.1.1
     protractor-multiple-cucumber-html-reporter-plugin: 1.8.0
     protractor-screenshot-utils: ^1.0.5
+    rpx-xui-translation: ^0.2.1
     rx-polling: 1.1.0
     rxjs: ^6.5.3
     rxjs-compat: ^6.6.7
@@ -19247,6 +19262,20 @@ __metadata:
     zone.js: ~0.10.2
   languageName: unknown
   linkType: soft
+
+"rpx-xui-translation@npm:^0.2.1":
+  version: 0.2.3
+  resolution: "rpx-xui-translation@npm:0.2.3"
+  dependencies:
+    dexie: ^3.2.2
+    luxon: ^2.4.0
+    tslib: ^1.10.0
+  peerDependencies:
+    "@angular/common": ^9.1.13
+    "@angular/core": ^9.1.13
+  checksum: 91ca03bc01fd214a5bf1081f9f25b4374db091179785e9251da2a88fc8dc2b0881dc5fea6a3e3ef8c3995730e2e7503b162ef0d699508420f41c49a07dff8a99
+  languageName: node
+  linkType: hard
 
 "run-async@npm:^2.2.0, run-async@npm:^2.4.0":
   version: 2.4.1

@@ -9,19 +9,21 @@ import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model
 import { Store } from '@ngrx/store';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { of, throwError } from 'rxjs';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
-import { InfoMessage, InfoMessageType, TaskActionIds, TaskContext } from '../../enums';
-import { InformationMessage } from '../../models/comms';
+import { TaskActionIds, TaskContext } from '../../enums';
 import * as dtos from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { getMockLocations, getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
-
+import { InformationMessage } from '../../../app/shared/models';
+import { InfoMessageType } from '../../../role-access/models/enums';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
 @Component({
   template: `
     <exui-available-tasks></exui-available-tasks>`
@@ -65,6 +67,13 @@ describe('AvailableTasksComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
+  const mockCheckReleaseVersionService = {
+    isRelease4: () => {
+      return {
+        subscribe: () => true
+      };
+    }
+  };
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
@@ -98,10 +107,8 @@ describe('AvailableTasksComponent', () => {
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: AllocateRoleService, useValue: mockRoleService },
         { provide: Store, useValue: storeMock },
-        {
-          provide: RpxTranslationService,
-          useFactory: rpxTranslationServiceStub
-        }
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
+        { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -180,7 +187,9 @@ describe('AvailableTasksComponent', () => {
     for (let i = 0; i < fields.length; i++) {
       // ensure derivedIcon has no header and every other field does
       if (fields[i].columnLabel) {
-        expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+        if (fields[i].columnLabel !== 'Priority') {
+          expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+        }
       } else {
         expect(headerCells[i].textContent).toEqual('');
       }

@@ -54,7 +54,7 @@ import { HearingsModule } from '../hearings/hearings.module';
 import { HearingsPipesModule } from '../hearings/pipes/hearings.pipes.module';
 import { HearingsService } from '../hearings/services/hearings.service';
 import { OrganisationModule } from '../organisation/organisation.module';
-import { PriorityFieldComponentModule } from '../work-allocation/components/priority-field/priority.module';
+import { PriorityFieldModule } from '../work-allocation/components/priority-field/priority-field.module';
 import { WASupportedJurisdictionsService } from '../work-allocation/services';
 import { casesRouting } from './case-feature.routes';
 // from components
@@ -88,7 +88,7 @@ import { effects, reducers } from './store';
     ExuiCommonLibModule,
     LoadingModule,
     ReactiveFormsModule,
-    PriorityFieldComponentModule,
+    PriorityFieldModule,
     HearingsModule,
     HearingsPipesModule,
     CaseHeaderModule,

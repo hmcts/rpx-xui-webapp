@@ -11,9 +11,8 @@ import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { CaseDetailsHomeComponent } from '..';
 import { reducers } from '../../../app/store';
-import { InfoMessage } from '../../../work-allocation/enums';
 import * as fromFeature from '../../store';
-
+import { InfoMessage } from '../../../app/shared/enums/info-message';
 describe('CaseDetailsHomeComponent', () => {
   let component: CaseDetailsHomeComponent;
   let fixture: ComponentFixture<CaseDetailsHomeComponent>;

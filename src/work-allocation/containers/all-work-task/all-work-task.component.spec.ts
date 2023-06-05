@@ -17,6 +17,7 @@ import { TaskContext } from '../../../work-allocation/enums';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
 
@@ -31,16 +32,7 @@ class WrapperComponent {
 @Component({
   template: '<div>Nothing</div>'
 })
-class NothingComponent {}
-
-// @Component({
-//   selector: 'exui-task-field',
-//   template: '<div class="xui-task-field">{{task.taskName}}</div>'
-// })
-// class TaskFieldComponent {
-//   @Input() public config: FieldConfig;
-//   @Input() public task: Task;
-// }
+class NothingComponent { }
 
 const USER_DETAILS = {
   canShareCases: true,
@@ -77,6 +69,13 @@ xdescribe('AllWorkTaskComponent', () => {
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
+  const mockCheckReleaseVersionService = {
+    isRelease4: () => {
+      return {
+        subscribe: () => true
+      };
+    }
+  };
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
@@ -105,7 +104,8 @@ xdescribe('AllWorkTaskComponent', () => {
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
         { provide: AllocateRoleService, useValue: mockRoleService },
-        { provide: Store, useValue: storeMock }
+        { provide: Store, useValue: storeMock },
+        { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService }
       ]
     }).compileComponents();
   }));

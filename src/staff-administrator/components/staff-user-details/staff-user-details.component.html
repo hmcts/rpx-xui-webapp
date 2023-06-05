@@ -1,0 +1,164 @@
+<div>
+  <a class="govuk-back-link" [routerLink]="'/staff'">Back</a>
+</div>
+<ng-container *ngIf="userDetails">
+  <xuilib-loading-spinner *ngIf="loading"></xuilib-loading-spinner>
+  <exui-info-message-container></exui-info-message-container>
+  <div *ngIf="status">
+    <xuilib-hmcts-banner [type]="status" [title]="title" [message]="message" [messageBoldText]="true">
+    </xuilib-hmcts-banner>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+      <h2 class="govuk-heading-m">User details</h2>
+
+      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Name</dt>
+          <dd class="govuk-summary-list__value">{{userDetails.first_name}} {{userDetails.last_name}}</dd>
+          <dd class="govuk-summary-list__actions">
+            <a *ngIf="showAction" class="govuk-link" href="#">Change</a>
+          </dd>
+        </div>
+        <br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Email address</dt>
+          <dd class="govuk-summary-list__value">{{ userDetails.email_id }}</dd>
+          <dd class="govuk-summary-list__actions">
+            <a *ngIf="showAction" class="govuk-link" href="#">Change</a>
+          </dd>
+        </div>
+        <br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Service</dt>
+          <div class="govuk-summary-list__value">
+            <span *ngFor="let service of userDetails.services; let isLast=last">
+              {{service.service}}
+              <span *ngIf="!isLast"><br /></span>
+            </span>
+          </div>
+          <dd class="govuk-summary-list__actions">
+            <a *ngIf="showAction" class="govuk-link" href="#">Change</a>
+          </dd>
+        </div>
+        <br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Region</dt>
+          <dd class="govuk-summary-list__value">{{ userDetails.region }}</dd>
+          <dd class="govuk-summary-list__actions">
+            <a *ngIf="showAction" class="govuk-link" href="#">Change</a>
+          </dd>
+        </div>
+        <br>
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Primary location</dt>
+          <dd class="govuk-summary-list__value">
+            <span>
+              {{userDetails.primaryLocation.location}}
+            </span>
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a *ngIf="showAction" class="govuk-link" href="#">Change</a>
+          </dd>
+        </div>
+
+        <ng-container *ngIf="userDetails.additionalLocations.length">
+          <br>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Additional locations</dt>
+            <dd class="govuk-summary-list__value">
+              <div *ngFor="let location of userDetails.additionalLocations">
+                {{ location.location }}
+              </div>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <a *ngIf="showAction" class="govuk-link" href="#">Change</a>
+            </dd>
+          </div>
+        </ng-container>
+
+        <br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">User type</dt>
+          <dd class="govuk-summary-list__value">{{ userDetails.user_type }}</dd>
+          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+        </div>
+        <br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Role</dt>
+          <dd class="govuk-summary-list__value">
+            <div *ngIf="userDetails.case_allocator">Case allocator</div>
+            <div *ngIf="userDetails.task_supervisor">Task supervisor</div>
+            <div *ngIf="userDetails.staff_admin">Staff administrator</div>
+          </dd>
+          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+        </div>
+        <br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Job title</dt>
+          <div class="govuk-summary-list__value">
+            <span *ngFor="let jobTitle of userDetails.roles; let isLast=last">
+              {{jobTitle.role}}
+              <span *ngIf="!isLast"><br /></span>
+            </span>
+          </div>
+          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+        </div>
+        <br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Skills</dt>
+          <dd class="govuk-summary-list__value">
+            <span *ngFor="let skill of userDetails.skills; let isLast=last">
+              <span class="govuk-!-font-weight-bold">{{ getServiceNameFromSkillId(skill.skill_id) }}:</span>
+              {{skill.description}}
+              <span *ngIf="!isLast"><br /></span>
+            </span>
+          </dd>
+          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+        </div>
+        <br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Status</dt>
+          <dd class="govuk-summary-list__value">
+            <exui-staff-status [status]="userDetails.status"></exui-staff-status>
+          </dd>
+          <dd class="govuk-summary-list__actions">
+          </dd>
+        </div>
+      </dl>
+
+      <div *ngIf="userDetails.status==='PENDING'">
+        <p class="govuk-body-s">Users with the Pending status cannot be Updated or Suspended</p><br>
+      </div>
+
+      <div class="govuk-button-group">
+        <div *ngIf="userDetails.status==='PENDING'; else elseBlock">
+          <button class="govuk-button" data-module="govuk-button" (click)="resendInvite()">
+            Resend activation email
+          </button>
+        </div>
+        <ng-template #elseBlock>
+          <button id="primaryActionButton" class="govuk-button" data-module="govuk-button"
+            (click)="userDetails.status==='SUSPENDED'? onCopyUser() : onUpdateUser()">
+            {{ userDetails.status==='SUSPENDED' ? 'Copy' : 'Update' }}
+          </button>
+          <!-- <div [matTooltip]="userDetails.suspended ? 'If you want to unsuspend a user raise a support request' : ''">
+            <button class="govuk-button govuk-button--secondary" data-module="govuk-button"
+              id="user-suspended-restore-button" [disabled]="userDetails.suspended"
+              [attr.aria-disabled]="userDetails.suspended" [class.govuk-button--disabled]="userDetails.suspended"
+              (click)="updateUserStatus()">
+              {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
+            </button>
+          </div> -->
+        </ng-template>
+
+        <button *ngIf="userDetails.status!=='SUSPENDED'" id="copyUserButton" class="govuk-button govuk-button--secondary" data-module="govuk-button"
+          (click)="onCopyUser()">
+          Copy
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-container>

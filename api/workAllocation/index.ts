@@ -39,7 +39,6 @@ import * as roleServiceMock from './roleService.mock';
 import { handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } from './taskService';
 import {
   assignActionsToCases,
-  assignActionsToTasks,
   assignActionsToUpdatedTasks,
   constructElasticSearchQuery,
   constructRoleAssignmentQuery,
@@ -152,15 +151,17 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     }
     delete searchRequest.pagination_parameters;
     delete searchRequest.search_by;
+
     const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
-      returnData = !!req.body.refined ?
-        { tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records }
-        : { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
+      returnData = {
+        tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser),
+        total_records: data.total_records
+      };
     }
     res.send(returnData);
   } catch (error) {
@@ -200,9 +201,7 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
     const { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-    const actionedTasks = !!req.body.refined
-      ? assignActionsToUpdatedTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId)
-      : assignActionsToTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
+    const actionedTasks = assignActionsToUpdatedTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
     return res.send(actionedTasks).status(status);
   } catch (e) {
     next(e);
@@ -266,7 +265,7 @@ export async function postTaskCompletionForAccess(req: EnhancedRequest, res: Res
     // line added as requests are different for approval/rejection
     const taskId = req.body.specificAccessStateData ? req.body.specificAccessStateData.taskId : req.body.taskId;
     const getTaskPath: string =
-     preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, 'complete');
+      preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, 'complete');
     return await handleTaskPost(getTaskPath, newRequest, req);
   } catch (error) {
     next(error);
@@ -319,7 +318,7 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest): Promise<Case
 // similar as above but checks services
 export async function retrieveCaseWorkersForServices(req: EnhancedRequest): Promise<CaseworkersByService[]> {
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-  const jurisdictions = req.body.serviceIds as string [];
+  const jurisdictions = req.body.serviceIds as string[];
   // will need to check specific jurisdiction have caseworkers in session
   let newJurisdictions: string[];
   let sessionCaseworkersByService: CaseworkersByService[] = [];
@@ -587,4 +586,11 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     console.error(error);
     next(error);
   }
+}
+
+export async function getTaskNames(req: EnhancedRequest, res: Response): Promise<Response> {
+  const service = req.body.service;
+  const response = await handleTaskGet(`${baseWorkAllocationTaskUrl}/task/task-types?jurisdiction=${service}`, req);
+
+  return res.send(response.task_types).status(200);
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '..';
 import { WindowLocationService } from '../window-location/window-location.service';
 import { AuthService } from './auth.service';
@@ -25,7 +26,6 @@ export class AuthGuard implements CanActivate {
       }
 
       this.redirectToStoredUrl();
-
       return true;
     }));
   }
@@ -34,19 +34,33 @@ export class AuthGuard implements CanActivate {
     this.sessionStorage.setItem('redirectUrl', this.windowLocationService.getPathName());
   }
 
+  public getJSONObject(value: string): UserInfo {
+    try {
+      return JSON.parse(value);
+    } catch (error) {
+      return null;
+    }
+  }
+
   private redirectToStoredUrl(): void {
     const currentLocationPathName = this.windowLocationService.getPathName();
     const currentPathIsNotEmpty = /^\/([a-z]+)/g;
     const currentPathIsRoot = !currentLocationPathName.match(currentPathIsNotEmpty);
 
-    if (currentPathIsRoot) {
-      const storedRedirectUrl = this.sessionStorage.getItem('redirectUrl', true);
+    const userInfoStr = this.sessionStorage.getItem('userDetails');
+    let isFeePaidJudgeUser = false;
 
-      if (!storedRedirectUrl) {
+    if (userInfoStr && this.getJSONObject(userInfoStr)) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      isFeePaidJudgeUser = userInfo.roles.includes('fee-paid-judge');
+    }
+    if (currentPathIsRoot && userInfoStr && this.getJSONObject(userInfoStr)) {
+      const redirectUrl = isFeePaidJudgeUser ? '/booking' : this.sessionStorage.getItem('redirectUrl', true);
+      if (!redirectUrl) {
         return;
       }
 
-      this.authService.setWindowLocationHref(storedRedirectUrl);
+      this.authService.setWindowLocationHref(redirectUrl);
     }
   }
 }

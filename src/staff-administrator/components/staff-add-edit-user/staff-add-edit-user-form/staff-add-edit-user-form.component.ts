@@ -78,8 +78,12 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
   }
 
   private locationsIncorrectForServices(): string[] {
-    this.baseLocationsFormControl.setErrors(null);
     const selectedLocationList = this.baseLocationsFormControl.value[0] === null ? [] : this.baseLocationsFormControl.value;
+    const primaryLocation = selectedLocationList.find((location) => location.is_primary);
+    if (primaryLocation) {
+      // if there is a primary location we know there should not be an error
+      this.baseLocationsFormControl.setErrors(null);
+    }
     const serviceList = this.selectedServiceCodes;
     const incorrectLocationList = [];
     selectedLocationList.forEach((location) => {

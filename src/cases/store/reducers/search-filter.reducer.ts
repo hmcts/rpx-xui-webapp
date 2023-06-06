@@ -71,8 +71,8 @@ export function reducer(
       return {
         ...state,
         paginationMetadata: {
-          totalPagesCount: action.payload.totalPagesCount,
-          totalResultsCount: action.payload.totalResultsCount
+          totalPagesCount: action.payload.total_pages_count,
+          totalResultsCount: action.payload.total_results_count
         },
         loading: true,
         loaded: false

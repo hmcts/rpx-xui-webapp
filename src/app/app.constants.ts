@@ -6,13 +6,15 @@ const featureNames = {
   waServiceConfig: 'wa-service-config',
   waLandingPageRoles: 'wa-landing-page-roles',
   waAccess: 'wa-access',
+  currentWAFeature: 'mc-work-allocation-active-feature',
+  updatedTaskPermissionsFeature: 'updated-task-permission',
+  workAllocation: 'MC_Work_Allocation',
   noticeOfChange: 'MC_Notice_of_Change',
   waMvpPaginationFeature: 'mc-mvp-wa-pagination',
   userTypeRoles: 'mc-user-type-roles',
   booking: 'mc-booking-active',
   mcHearingsFeature: 'mc-hearings-jurisdictions',
-  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
-  updatedTaskPermissionsFeature: 'updated-task-permission'
+  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs'
 };
 
 const footerDataNavigation = {
@@ -88,6 +90,13 @@ const helpContactDetails: ContactDetailsDataModel[] = [
     badgeColour: BadgeColour.BADGE_RED,
     email: 'contactfpl@justice.gov.uk',
     phone: '0330 808 4424',
+    openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
+  },
+  {
+    title: 'Employment Tribunal',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'etreform@justice.gov.uk',
+    phone: 'England and Wales: 0330 123 1024, Scotland: 0300 790 6234',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
   }
 ];

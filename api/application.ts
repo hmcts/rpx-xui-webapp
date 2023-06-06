@@ -114,9 +114,6 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 app.use('/am', amRoutes);
 app.use('/api', routes);
 app.use('/external', openRoutes);
-// TODO: No dash?
-// TODO: taskRouter should be called workAllocationRouter
-//TODO101
 app.use('/workallocation', workAllocationRouter);
 app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ['GET'] }));
 

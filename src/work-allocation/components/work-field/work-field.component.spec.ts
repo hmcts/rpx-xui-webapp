@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { FieldType, TaskView } from '../../enums';
 import { FieldConfig } from '../../models/common';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
-import { Task } from './../../models/tasks';
+import { Task } from '../../models/tasks';
 import { WorkFieldComponent } from './work-field.component';
 
 @Component({

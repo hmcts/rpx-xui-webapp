@@ -180,15 +180,6 @@ function assertResponses(dto: any) {
   expect(dto.tasks[0].assignee).to.be.equal('10bac6bf-80a7-4c81-b2db-516aba826be6');
   expect(dto.tasks[0].permissions).to.include.members(taskPermissions);
 
-  expect(dto.tasks[0].actions[0].id).to.equal('complete');
-  expect(dto.tasks[0].actions[0].title).to.equal('Mark as done');
-
-  expect(dto.tasks[0].actions[1].id).to.equal('go');
-  expect(dto.tasks[0].actions[1].title).to.equal('Go to task');
-
-  expect(dto.tasks[0].actions[2].id).to.equal('reassign');
-  expect(dto.tasks[0].actions[2].title).to.equal('Reassign task');
-
-  expect(dto.tasks[0].actions[3].id).to.equal('unclaim');
-  expect(dto.tasks[0].actions[3].title).to.equal('Unassign task');
+  expect(dto.tasks[0].actions[0].id).to.equal('go');
+  expect(dto.tasks[0].actions[0].title).to.equal('Go to task');
 }

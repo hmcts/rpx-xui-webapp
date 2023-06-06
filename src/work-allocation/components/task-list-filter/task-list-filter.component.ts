@@ -11,8 +11,8 @@ import {
   FilterService,
   FilterSetting
 } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
-import { combineLatest, Subscription } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { Subscription, combineLatest } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import * as _ from 'underscore';
 import { ErrorMessage } from '../../../app/models';
@@ -295,13 +295,14 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     const field: FilterFieldConfig = {
       name: 'locations',
       options: [],
-      locationTitle: 'Search for a location by name',
-      minSelected: 1,
+      title: 'Search for a location by name',
+      titleHint: '(optional)',
+      locationTitle: 'Leave blank to return all locations available to you.',
+      minSelected: null,
       maxSelected: null,
       lineBreakBefore: true,
       findLocationField: 'services',
       displayMinSelectedError: true,
-      minSelectedError: 'Search for a location by name',
       type: 'find-location',
       enableAddButton: true,
       bookingCheckType: BookingCheckType.BOOKINGS_AND_BASE
@@ -311,6 +312,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     if ((locations.length === 0) && this.route.snapshot.data && this.route.snapshot.data.locations) {
       baseLocation = this.route.snapshot.data.locations;
     }
+
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
       name: 'locations',
       value: baseLocation ? baseLocation : locations
@@ -430,8 +432,10 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     this.toggleFilter = !this.toggleFilter;
     if (this.toggleFilter) {
       setTimeout(() => {
-        const typesOfWorkParentElem = document.getElementById('types-of-work').closest('.contain-classes');
-        (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
+        const typesOfWorkParentElem = document.getElementById('types-of-work')?.closest('.contain-classes');
+        if (typesOfWorkParentElem) {
+          (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
+        }
       }, 0);
     }
   }

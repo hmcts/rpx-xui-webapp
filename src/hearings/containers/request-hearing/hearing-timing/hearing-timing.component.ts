@@ -5,6 +5,7 @@ import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import * as fromHearingStore from '../../../../hearings/store';
+import { HearingWindowModel } from '../../../models/hearingWindow.model';
 import {
   ACTION,
   HearingDateEnum,
@@ -12,7 +13,6 @@ import {
   HearingDatePriorityEnum,
   RadioOptions
 } from '../../../models/hearings.enum';
-import { HearingWindowModel } from '../../../models/hearingWindow.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.model';
 import { HearingsService } from '../../../services/hearings.service';
@@ -43,10 +43,10 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public priorityFormInfo: { days: string, hours: string, minutes: string, startDate: Date, firstDate: Date, secondDate: Date, priority: string };
 
   constructor(private readonly formBuilder: FormBuilder,
-              protected readonly route: ActivatedRoute,
-              private readonly validatorsUtils: ValidatorsUtils,
-              protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService) {
+    protected readonly route: ActivatedRoute,
+    private readonly validatorsUtils: ValidatorsUtils,
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly hearingsService: HearingsService) {
     super(hearingStore, hearingsService, route);
   }
 
@@ -360,14 +360,14 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
       firstDateMustBe = `${moment.utc(Object.values(this.priorityForm.value.firstHearing).join('-'), HearingDateEnum.DefaultFormat).local().toISOString()}`;
     } else if (this.priorityForm.value.specificDate === RadioOptions.CHOOSE_DATE_RANGE) {
       startDate = this.priorityForm.value.dateRangeHearing.earliestHearing
-      && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_day
-      && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_month
-      && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_year ?
+        && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_day
+        && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_month
+        && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_year ?
         `${moment.utc(Object.values(this.priorityForm.value.dateRangeHearing.earliestHearing).join('-'), HearingDateEnum.DefaultFormat).local().toISOString()}` : null;
       endDate = this.priorityForm.value.dateRangeHearing.latestHearing
-      && this.priorityForm.value.dateRangeHearing.latestHearing.latestHearingDate_day
-      && this.priorityForm.value.dateRangeHearing.latestHearing.latestHearingDate_month
-      && this.priorityForm.value.dateRangeHearing.latestHearing.latestHearingDate_year ?
+        && this.priorityForm.value.dateRangeHearing.latestHearing.latestHearingDate_day
+        && this.priorityForm.value.dateRangeHearing.latestHearing.latestHearingDate_month
+        && this.priorityForm.value.dateRangeHearing.latestHearing.latestHearingDate_year ?
         `${moment.utc(Object.values(this.priorityForm.value.dateRangeHearing.latestHearing).join('-'), HearingDateEnum.DefaultFormat).local().toISOString()}` : null;
     }
     if (startDate || endDate) {

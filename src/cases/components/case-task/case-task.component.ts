@@ -124,7 +124,9 @@ export class CaseTaskComponent implements OnInit {
       showAssigneeColumn: true
     };
     const actionUrl = `/work/${task.id}/${option.id}`;
-    this.router.navigate([actionUrl], { queryParams: { service: task.jurisdiction }, state });
+    // Had to add then() due to the below Sonarcloud failure
+    // "Promises must be awaited, end with a call to .catch, or end with a call to .then with a rejection handler."
+    this.router.navigate([actionUrl], { queryParams: { service: task.jurisdiction }, state }).then(undefined, undefined);
   }
 
   /**

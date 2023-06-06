@@ -11,7 +11,7 @@ const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_search', port: 8000 });
 
-const taskPermissions = ['Read', 'Execute', 'Manage', 'Refer', 'Own', ' Cancel'];
+const taskPermissions = ['Read', 'Execute', 'Manage', 'Own', 'Cancel'];
 
 describe('Task management api, Search task', () => {
   const RESPONSE_BODY = {

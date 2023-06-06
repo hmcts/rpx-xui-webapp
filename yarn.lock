@@ -2098,13 +2098,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@portal:/Users/mateibaciu/WebstormProjects/HMCTS/ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@hmcts/ccd-case-ui-toolkit@portal:/Users/mateibaciu/WebstormProjects/HMCTS/ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A."
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-document-uploader-v2":
+  version: 6.16.0-query-management-document-uploader-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-document-uploader-v2"
   dependencies:
     tslib: ^2.0.0
+  checksum: f45ec88b156f314de5ed321adcc67775b73986bd7761865590f5fa0dc39a6b32704104c772132126f9c61624c1deb9289b803866ca4ddca895bb6aa87adc6f9c
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "@hmcts/ccpay-web-component@npm:5.2.2":
   version: 5.2.2
@@ -18144,7 +18145,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-raise-query-display-v5
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-document-uploader-v2
     "@hmcts/ccpay-web-component": 5.2.2
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

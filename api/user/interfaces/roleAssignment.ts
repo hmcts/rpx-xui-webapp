@@ -36,6 +36,8 @@ export interface LocationInfo {
   roleCategory?: string;
   reviewerRoleCategory?: string;
   baseLocation?: string;
+  beginTime?: Date;
+  endTime?: Date;
 }
 
 export interface Note {

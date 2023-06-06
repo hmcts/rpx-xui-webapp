@@ -3,18 +3,21 @@ import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
+
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { TaskListFilterComponent } from '../../components';
 import { ListConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, SortOrder, TaskActionIds, TaskService } from '../../enums';
+import { SortOrder, TaskActionIds, TaskService } from '../../enums';
 import { Caseworker, Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
@@ -26,7 +29,8 @@ import {
   WASupportedJurisdictionsService,
   WorkAllocationTaskService
 } from '../../services';
-import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
+import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -69,9 +73,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService,
     protected rolesService: AllocateRoleService,
-    protected store: Store<fromActions.State>
+    protected store: Store<fromActions.State>,
+    protected checkReleaseVersionService: CheckReleaseVersionService
   ) {
-    this.isUpdatedTaskPermissions$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
+    this.isUpdatedTaskPermissions$ = this.featureToggleService?.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
   }
 
   public get tasks(): Task[] {
@@ -188,9 +193,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         }
         this.selectedWorkTypes = newWorkTypes.filter((workType) => workType !== 'types_of_work_all');
         this.selectedServices = services.filter((service) => service !== 'services_all');
-        if (this.selectedLocations.length) {
-          this.doLoad();
-        }
+        this.doLoad();
       });
   }
 
@@ -271,7 +274,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public getSortParameter(): SortParameter[] {
-    if (this.sortedBy.fieldName !== 'priority') {
+    if (this.sortedBy && this.sortedBy.fieldName !== 'priority') {
       return [{
         sort_by: this.sortedBy.fieldName,
         sort_order: this.sortedBy.order
@@ -314,7 +317,13 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
     try {
-      if (taskAction.action.id === TaskActionIds.GO) {
+      if (taskAction.action.id === TaskActionIds.CLAIM) {
+        this.claimTask(taskAction.task.id);
+        return;
+      } else if (taskAction.action.id === TaskActionIds.CLAIM_AND_GO) {
+        this.claimTaskAndGo(taskAction.task);
+        return;
+      } else if (taskAction.action.id === TaskActionIds.GO) {
         const goToTaskUrl = `/cases/case-details/${taskAction.task.case_id}/tasks`;
         this.router.navigate([goToTaskUrl]);
         return;
@@ -330,6 +339,54 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       this.router.navigate([actionUrl], { queryParams: { service: taskAction.task.jurisdiction }, state });
     } catch (error) {
       console.error('onActionHandler', error, taskAction);
+    }
+  }
+
+  /**
+   * A User 'Claims' themselves a task aka. 'Assign to me'.
+   */
+  public claimTask(taskId: string): void {
+    this.taskService.claimTask(taskId).subscribe(() => {
+      this.infoMessageCommService.nextMessage({
+        type: InfoMessageType.SUCCESS,
+        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
+      });
+      this.refreshTasks();
+    }, (error) => {
+      this.claimTaskErrors(error.status);
+    });
+  }
+
+  /**
+   * A User 'Claims' themselves a task and goes to the case details page for that case aka. 'Assign to me'.
+   */
+  public claimTaskAndGo(task: Task): void {
+    this.taskService.claimTask(task.id).subscribe(() => {
+      const goToCaseUrl = `/cases/case-details/${task.case_id}/tasks`;
+      // navigates to case details page for specific case id
+      this.router.navigate([goToCaseUrl], {
+        state: {
+          showMessage: true,
+          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
+        }
+      });
+    }, (error) => {
+      this.claimTaskErrors(error.status);
+    });
+  }
+
+  /**
+   * Navigate the User to the correct error page, or throw an on page warning
+   * that the Task is no longer available.
+   */
+  public claimTaskErrors(status: number): void {
+    const REDIRECT_404 = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }];
+    const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
+    if (handledStatus > 0) {
+      this.infoMessageCommService.nextMessage({
+        type: InfoMessageType.WARNING,
+        message: InfoMessage.TASK_NO_LONGER_AVAILABLE
+      });
     }
   }
 

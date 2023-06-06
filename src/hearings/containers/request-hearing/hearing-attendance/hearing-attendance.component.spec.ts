@@ -250,7 +250,6 @@ describe('HearingAttendanceComponent', () => {
     lovRefDataService.getListOfValues.and.returnValue(of([]));
     fixture.detectChanges();
   });
-
   it('should create', () => {
     expect(component).toBeTruthy();
   });

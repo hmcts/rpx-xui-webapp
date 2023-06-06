@@ -33,7 +33,7 @@
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
     "hearings": {
-      "hearingsJurisdictions": "SSCS,PRIVATELAW",
+      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL",
       "sscs": {
         "serviceApi": "http://sscs-hearings-api-prod.service.core-compute-prod.internal",
         "caseTypes": "Benefit"
@@ -41,6 +41,10 @@
       "privatelaw": {
         "serviceApi": "http://fis-hmc-api-prod.service.core-compute-prod.internal",
         "caseTypes": "PRLAPPS"
+      },
+      "civil": {
+        "serviceApi": "http://civil-service-prod.service.core-compute-prod.internal",
+        "caseTypes": "CIVIL"
       },
       "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
     },
@@ -97,36 +101,33 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "globalSearchServices": "IA,CIVIL,PRIVATELAW",
-  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW",
+  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
+  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
-  "serviceRefDataMapping": [{"service": "IA", "serviceCodes": ["BFA1"]}, {"service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"]}, {"service": "PRIVATELAW", "serviceCodes": ["ABA5"]}],
+  "serviceRefDataMapping": [
+    { "service": "IA", "serviceCodes": ["BFA1"] },
+    { "service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"] },
+    { "service": "PRIVATELAW", "serviceCodes": ["ABA5"] },
+    { "service": "PUBLICLAW", "serviceCodes": ["ABA3"] }
+  ],
   "waSupportedServiceandCaseTypes": {
-    "configurations": [
-      {
-        "caseTypes": [
-          "Asylum"
-        ],
-        "releaseVersion": "3.5",
-        "serviceName": "IA"
+    "IA": {
+        "caseTypes": "Asylum",
+        "releaseVersion": "3.5"
       },
-      {
-        "caseTypes": [
-          "PRIVATELAW",
-          "PRLAPPS"
-        ],
-        "releaseVersion": "3.5",
-        "serviceName": "PRIVATELAW"
+    "CIVIL": {
+        "caseTypes": "CIVIL,GENERALAPPLICATION",
+        "releaseVersion": "3.5"
       },
-      {
-        "caseTypes": [
-          "CIVIL",
-          "GENERALAPPLICATION"
-        ],
-        "releaseVersion": "3.5",
-        "serviceName": "CIVIL"
+    "PRIVATELAW": {
+        "caseTypes": "PRIVATELAW,PRLAPPS",
+        "releaseVersion": "3.5"
+      },
+    "PUBLICLAW": {
+       "caseTypes": "PUBLICLAW",
+       "releaseVersion": "3.5"
       }
-    ]
+      
   }, 
   "wildcardSearchFields": {
     "Benefit": [
@@ -189,8 +190,8 @@
           "'self'",
           "'unsafe-inline'",
           "'unsafe-eval'",
-          "www.google-analytics.com",
-          "www.googletagmanager.com",
+          "*.google-analytics.com",
+          "*.googletagmanager.com",
           "az416426.vo.msecnd.net"
         ],
         "connectSrc": [
@@ -198,7 +199,7 @@
           "*.gov.uk",
           "dc.services.visualstudio.com",
           "*.launchdarkly.com",
-          "www.google-analytics.com"
+          "*.google-analytics.com"
         ],
         "mediaSrc": ["'self'"],
         "objectSrc": ["'self'"],
@@ -206,8 +207,8 @@
         "imgSrc": [
           "'self'",
           "data:",
-          "https://www.google-analytics.com",
-          "https://www.googletagmanager.com",
+          "https://*.google-analytics.com",
+          "https://*.googletagmanager.com",
           "https://raw.githubusercontent.com/hmcts/",
           "http://stats.g.doubleclick.net/",
           "http://ssl.gstatic.com/",

@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { partyMessagesMockData, QueryListItem } from '@hmcts/ccd-case-ui-toolkit';
+import { Document, FormDocument, partyMessagesMockData, QueryListItem } from '@hmcts/ccd-case-ui-toolkit';
 import { ActivatedRoute } from '@angular/router';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'exui-query-management-container',
-  templateUrl: './query-management-container.component.html'
+  templateUrl: './query-management-container.component.html',
+  styleUrls: ['./query-management-container.component.scss']
 })
 export class QueryManagementContainerComponent implements OnInit {
   public queryItem: QueryListItem | undefined;
@@ -14,10 +15,41 @@ export class QueryManagementContainerComponent implements OnInit {
   constructor(private activatedRoute: ActivatedRoute) {}
 
   public ngOnInit(): void {
-    const queryItemId = this.activatedRoute.snapshot.data.qid;
+    const queryItemId = this.activatedRoute.snapshot.params.qid;
     if (queryItemId) {
       this.queryItem = new QueryListItem();
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
+
+      this.formGroup = new FormGroup({
+        body: new FormControl('', Validators.required),
+        attachments: new FormControl([])
+      });
+    } else {
+      this.formGroup = new FormGroup({
+        fullName: new FormControl('', Validators.required),
+        subject: new FormControl('', Validators.required),
+        body: new FormControl('', Validators.required),
+        isHearingRelated: new FormControl(null, Validators.required),
+        attachments: new FormControl([])
+      });
     }
+  }
+
+  public onDocumentCollectionUpdate(uploadedDocuments: FormDocument[]): void {
+    const attachments: Document[] = uploadedDocuments.map(
+      (document) => ({
+        _links: {
+          self: {
+            href: document.document_url
+          },
+          binary: {
+            href: document.document_binary_url
+          }
+        },
+        originalDocumentName: document.document_filename
+      })
+    );
+
+    this.formGroup.get('attachments').setValue(attachments);
   }
 }

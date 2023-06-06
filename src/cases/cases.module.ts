@@ -69,6 +69,7 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
 // from services
 import * as fromServices from './services';
 import { effects, reducers } from './store';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 @NgModule({
   imports: [
@@ -99,6 +100,7 @@ import { effects, reducers } from './store';
     CaseViewerModule,
     PipesModule,
     queryManagementRouting,
+    RpxTranslationModule.forChild()
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
   providers: [

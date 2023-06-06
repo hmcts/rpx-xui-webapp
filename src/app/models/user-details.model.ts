@@ -41,4 +41,7 @@ export enum UserRole {
   Ctsc = 'ctsc',
   Ogd = 'ogd',
   CTSC = 'ctsc',
+  HearingManager = 'hearing-manager',
+  HearingViewer = 'hearing-viewer',
+  ListedHearingViewer = 'listed-hearing-viewer'
 }

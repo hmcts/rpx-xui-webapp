@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
 import { AppConstants } from '../../../app/app.constants';
@@ -29,7 +29,7 @@ import {
   WorkAllocationTaskService
 } from '../../services';
 import { CheckReleaseVersionService } from '../../services/check-release-version.service';
-import { REDIRECTS, getAssigneeName, handleFatalErrors, handleTasksFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'

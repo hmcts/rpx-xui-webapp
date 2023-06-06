@@ -15,23 +15,18 @@ export class QueryManagementContainerComponent implements OnInit {
   constructor(private activatedRoute: ActivatedRoute) {}
 
   public ngOnInit(): void {
+    this.formGroup = new FormGroup({
+      fullName: new FormControl(null, Validators.required),
+      subject: new FormControl(null, Validators.required),
+      body: new FormControl(null, Validators.required),
+      isHearingRelated: new FormControl(null, Validators.required),
+      attachments: new FormControl([])
+    });
+
     const queryItemId = this.activatedRoute.snapshot.params.qid;
     if (queryItemId) {
       this.queryItem = new QueryListItem();
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
-
-      this.formGroup = new FormGroup({
-        body: new FormControl('', Validators.required),
-        attachments: new FormControl([])
-      });
-    } else {
-      this.formGroup = new FormGroup({
-        fullName: new FormControl('', Validators.required),
-        subject: new FormControl('', Validators.required),
-        body: new FormControl('', Validators.required),
-        isHearingRelated: new FormControl(null, Validators.required),
-        attachments: new FormControl([])
-      });
     }
   }
 

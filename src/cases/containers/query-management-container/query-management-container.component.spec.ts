@@ -96,7 +96,30 @@ describe('QueryManagementContainerComponent', () => {
       ];
 
       component.onDocumentCollectionUpdate(documents);
-      expect(component.formGroup.get('attachments').value).toEqual(documents);
+      expect(component.formGroup.get('attachments').value).toEqual([
+        {
+          _links: {
+            self: {
+              href: documents[0].document_url
+            },
+            binary: {
+              href: documents[0].document_binary_url
+            }
+          },
+          originalDocumentName: documents[0].document_filename
+        },
+        {
+          _links: {
+            self: {
+              href: documents[1].document_url
+            },
+            binary: {
+              href: documents[1].document_binary_url
+            }
+          },
+          originalDocumentName: documents[1].document_filename
+        }
+      ]);
     });
   });
 });

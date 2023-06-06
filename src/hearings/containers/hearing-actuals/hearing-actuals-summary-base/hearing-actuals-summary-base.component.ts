@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
-import { combineLatest, Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, combineLatest } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import {
   ActualHearingDayModel,
@@ -55,6 +55,8 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
   public answerSource = AnswerSource;
   public hearingRequestID: string;
   public individualParties: PartyDetailsModel[];
+  public showSpinner: boolean;
+  public successBanner: boolean;
 
   constructor(
     public readonly hearingStore: Store<fromHearingStore.State>,
@@ -101,6 +103,7 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
               this.hearingDatesAccordion[key] = false;
             }
           });
+        this.showSpinner = false;
       });
   }
 

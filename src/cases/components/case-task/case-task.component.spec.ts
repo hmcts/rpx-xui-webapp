@@ -187,7 +187,7 @@ describe('CaseTaskComponent', () => {
       expect(mockAlertService.success).toHaveBeenCalled();
     });
 
-    xit('should handle an action that redirects', () => {
+    it('should handle an action that redirects', () => {
       const state = { returnUrl: '/case-details/123243430403904/tasks', keepUrl: true, showAssigneeColumn: true };
       const queryParams = { service: 'IA' };
 

@@ -2611,28 +2611,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ng-idle/core@npm:^11.1.0":
-  version: 11.1.0
-  resolution: "@ng-idle/core@npm:11.1.0"
+"@ng-idle/core@npm:^8.0.0-beta.4":
+  version: 8.0.0-beta.4
+  resolution: "@ng-idle/core@npm:8.0.0-beta.4"
   dependencies:
-    tslib: ^2.0.0
+    tslib: ^1.9.0
   peerDependencies:
-    "@angular/common": ">=9.0.0"
-    "@angular/core": ">=9.0.0"
-  checksum: 51f3fd617580ed3f7ea0b82f03825c7758b9589346717249282804bd720c53577f79441fc1fc33590f5879e7aad74a8cb813b301a8f85faf1106a90855fdce64
+    "@angular/common": ^8.0.0
+    "@angular/core": ^8.0.0
+  checksum: 23e5602fac0f289fe6ed618887fd1e164da57859bf985befeebd51601e2b07967b26fd6227ab5a774f20ca732a0e3c5b05d64690be8da7649d824b180c3277da
   languageName: node
   linkType: hard
 
-"@ng-idle/keepalive@npm:^11.0.3":
-  version: 11.0.3
-  resolution: "@ng-idle/keepalive@npm:11.0.3"
+"@ng-idle/keepalive@npm:^8.0.0-beta.4":
+  version: 8.0.0-beta.4
+  resolution: "@ng-idle/keepalive@npm:8.0.0-beta.4"
   dependencies:
-    tslib: ^2.0.0
+    tslib: ^1.9.0
   peerDependencies:
-    "@angular/common": ">=9.0.0"
-    "@angular/core": ">=9.0.0"
-    "@ng-idle/core": ^11.0.3
-  checksum: 085c4d93c8871a833c4171d27fcd39f29cbf379f442bc677145845ea52bcc27d54e05359ea6df4f81eb3022bc39802f28f2351b7c4d863407a9c81ca63674189
+    "@angular/common": ^8.0.0
+    "@angular/core": ^8.0.0
+    "@ng-idle/core": ^8.0.0-beta.4
+  checksum: 2c9d121c5b90e7449361a47b3430a82b7b3d72478b9f667b05ed6e9eed2d26df1d6b123538f109463b2e8f5c2661f831499e4a92f8a644ac71d12d5ea75d7709
   languageName: node
   linkType: hard
 
@@ -19111,8 +19111,8 @@ __metadata:
     "@hmcts/properties-volume": ^0.0.13
     "@hmcts/rpx-xui-common-lib": 1.8.7-include-current-user
     "@hmcts/rpx-xui-node-lib": 2.25.12
-    "@ng-idle/core": ^11.1.0
-    "@ng-idle/keepalive": ^11.0.3
+    "@ng-idle/core": ^8.0.0-beta.4
+    "@ng-idle/keepalive": ^8.0.0-beta.4
     "@ngrx/effects": ^7.4.0
     "@ngrx/router-store": ^7.4.0
     "@ngrx/schematics": ^7.4.0

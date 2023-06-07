@@ -67,6 +67,7 @@ import { queryManagementRouting } from './query-management.routes';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 // from services
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import * as fromServices from './services';
 import { effects, reducers } from './store';
 
@@ -98,7 +99,8 @@ import { effects, reducers } from './store';
     PaletteModule,
     CaseViewerModule,
     PipesModule,
-    queryManagementRouting
+    queryManagementRouting,
+    RpxTranslationModule.forChild()
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
   providers: [

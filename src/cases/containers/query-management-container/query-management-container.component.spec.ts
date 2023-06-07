@@ -1,7 +1,11 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { QueryWriteRaiseQueryComponent, QueryWriteRespondToQueryComponent } from '@hmcts/ccd-case-ui-toolkit';
+import {
+  FormDocument,
+  QueryWriteRaiseQueryComponent,
+  QueryWriteRespondToQueryComponent
+} from '@hmcts/ccd-case-ui-toolkit';
 import { QueryManagementContainerComponent } from './query-management-container.component';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -25,7 +29,14 @@ describe('QueryManagementContainerComponent', () => {
         MockRpxTranslatePipe
       ],
       providers: [
-        { provide: ActivatedRoute, useValue: { snapshot: { data: { }, params: { } } } }
+        {
+          provide: ActivatedRoute, useValue: {
+            snapshot: {
+              data: {},
+              params: {}
+            }
+          }
+        }
       ]
     }).compileComponents();
   }));
@@ -46,11 +57,6 @@ describe('QueryManagementContainerComponent', () => {
     expect(component.showSummary).toBeFalsy();
   });
 
-  it('confirmDetails - should show summary', () => {
-    component.confirmDetails(component.formGroup);
-    expect(component.showSummary).toBeTruthy();
-  });
-
   describe('when it does not have a query id', () => {
     it('should not set the query item', () => {
       expect(component.queryItem).toBeUndefined();
@@ -64,7 +70,7 @@ describe('QueryManagementContainerComponent', () => {
 
   describe('when it has a query id', () => {
     beforeEach(() => {
-      activatedRoute.snapshot = { params: { qid: '123' } } as unknown as ActivatedRouteSnapshot;
+      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '123' } } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       fixture.detectChanges();
     });
@@ -76,6 +82,49 @@ describe('QueryManagementContainerComponent', () => {
     it('should have the ccd-query-write-respond-to-query component', () => {
       const compiled = fixture.debugElement.nativeElement;
       expect(compiled.querySelector('ccd-query-write-respond-to-query')).toBeTruthy();
+    });
+  });
+
+  describe('onDocumentCollectionUpdate', () => {
+    it('should set documents value', () => {
+      const documents: FormDocument[] = [
+        {
+          document_filename: 'file1',
+          document_url: 'url1',
+          document_binary_url: 'binary_url1'
+        },
+        {
+          document_filename: 'file2',
+          document_url: 'url2',
+          document_binary_url: 'binary_url2'
+        }
+      ];
+
+      component.onDocumentCollectionUpdate(documents);
+      expect(component.formGroup.get('attachments').value).toEqual([
+        {
+          _links: {
+            self: {
+              href: documents[0].document_url
+            },
+            binary: {
+              href: documents[0].document_binary_url
+            }
+          },
+          originalDocumentName: documents[0].document_filename
+        },
+        {
+          _links: {
+            self: {
+              href: documents[1].document_url
+            },
+            binary: {
+              href: documents[1].document_binary_url
+            }
+          },
+          originalDocumentName: documents[1].document_filename
+        }
+      ]);
     });
   });
 });

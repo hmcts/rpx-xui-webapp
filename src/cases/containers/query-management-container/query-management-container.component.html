@@ -1,20 +1,58 @@
 <exui-app-header></exui-app-header>
+
 <div class="govuk-width-container">
-  <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
-    <div class="govuk-!-margin-top-2 govuk-!-margin-bottom-2">
-      <ng-container *ngIf="!showSummary">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <ng-container *ngIf="!showSummary" [formGroup]="formGroup">
+      <div>
         <ng-container *ngIf="queryItem; else raiseQuery">
-          <ccd-query-write-respond-to-query [queryItem]="queryItem" [formGroup]="formGroup" (confirmDetails)="confirmDetails($event)">
-          </ccd-query-write-respond-to-query>
+          <ccd-query-write-respond-to-query
+            [queryItem]="queryItem" [formGroup]="formGroup"
+          ></ccd-query-write-respond-to-query>
         </ng-container>
         <ng-template #raiseQuery>
-          <ccd-query-write-raise-query [formGroup]="formGroup">
-          </ccd-query-write-raise-query>
+          <div class="query-form-container">
+            <ccd-query-write-raise-query
+              [formGroup]="formGroup">
+            </ccd-query-write-raise-query>
+          </div>
         </ng-template>
+      </div>
+
+      <div class="query-form-container">
+        <div class="govuk-form-group" [class.govuk-form-group--error]="formGroup.get('attachments')?.errors?.length">
+          <ccd-query-write-add-documents (documentCollectionUpdate)="onDocumentCollectionUpdate($event)">
+          </ccd-query-write-add-documents>
+        </div>
+      </div>
+
+      <div>
+        <div class="govuk-button-group">
+          <button class="govuk-button govuk-button--secondary" data-module="govuk-button" [disabled]="true">
+            {{ 'Previous' | rpxTranslate }}
+          </button>
+          <button class="govuk-button" data-module="govuk-button" (click)="submitForm()">
+            {{ 'Continue' | rpxTranslate }}
+          </button>
+        </div>
+      </div>
+    </ng-container>
+
+    <ccd-query-check-your-answers *ngIf="showSummary" [queryItem]="queryItem" [formGroup]="formGroup" (backClicked)="showResponseForm()">
+    </ccd-query-check-your-answers>
+
+    <div>
+      <ng-container *ngIf="queryItem; else raiseQueryBackLink">
+        <a href="javascript:void(0)" class="govuk-back-link govuk-!-margin-bottom-0">
+          {{ 'Cancel and return to query list' | rpxTranslate }}
+        </a>
       </ng-container>
-      <ccd-query-check-your-answers *ngIf="showSummary" [queryItem]="queryItem" [formGroup]="formGroup" (backClicked)="showResponseForm()">
-      </ccd-query-check-your-answers>
+      <ng-template #raiseQueryBackLink>
+        <a href="javascript:void(0)" class="govuk-back-link govuk-!-margin-bottom-0">
+          {{ 'Cancel and return to case' | rpxTranslate }}
+        </a>
+      </ng-template>
     </div>
   </main>
 </div>
+
 <exui-app-footer></exui-app-footer>

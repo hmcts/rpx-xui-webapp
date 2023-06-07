@@ -29,8 +29,6 @@ import {
   handlePostSearch
 } from './caseWorkerService';
 import { ViewType } from './constants/actions';
-// SREEKANTH: Uncomment
-// import { AVAILABLE_TASKS } from './constants/mock.data';
 import { CaseList } from './interfaces/case';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
@@ -82,10 +80,6 @@ export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API
 export const baseUrl: string = 'http://localhost:8080';
 
 const logger: JUILogger = log4jui.getLogger('workallocation');
-
-/* SREEKANTH: For purposes of testing pagination issue
-let removePage = false;
-let count = 0; */
 
 /**
  * getTask
@@ -142,28 +136,6 @@ export async function getTaskRoles(req: EnhancedRequest, res: Response, next: Ne
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    /* SREEKANTH: For purposes of testing pagination issue
-    console.log(req.body.searchRequest, 'hello')
-    if (req.body && req.body.searchRequest && req.body.searchRequest.pagination_parameters) {
-      console.log('pagination')
-    let tasks = AVAILABLE_TASKS.tasks;
-    if (removePage) {
-      res.send({tasks: [], total_records: 0});
-      removePage = false;
-      return;
-    }
-    for (let i=0; i<count; i++) {
-      console.log('popping', tasks.length)
-      tasks.pop();
-    }
-    const paginationConfig = req.body.searchRequest.pagination_parameters;
-    const pageSize = paginationConfig.page_size;
-    const pageNumber = paginationConfig.page_number * pageSize;
-    console.log('page details', pageNumber, pageSize);
-  const newTasks = paginate(tasks, pageNumber, pageSize);
-    res.send({tasks: newTasks, total_records: Math.floor(tasks.length/2)});
-    }
-    return; */
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
@@ -259,11 +231,6 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
  */
 export async function postTaskAction(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    /* SREEKANTH: For purposes of testing pagination issue
-    removePage = true;
-    count = 1;
-    res.send();
-    return; */
     // Additional setting to mark unassigned tasks as done - need to assign task before completing
     if (req.body.hasNoAssigneeOnComplete === true) {
       req.body = {

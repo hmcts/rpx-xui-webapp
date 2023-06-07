@@ -10,10 +10,15 @@ Feature: Global search
         Then I see global search Page
 
     Scenario: Search page field validation
-        # Then I validate field services has following values in global search page
-        #     | value                |
-        #     | BEFTA Master         |
-        #     | Immigration & Asylum |
+        Given I set set global search mock results response and resultInfo
+            | caseStartRecord | casesReturned | moreResultsToGo |
+            | 1               | 10            | false           |
+
+        Given I set global search mock results with values
+            | caseReference    | otherReferences | Name           | First line of address  |
+            | 1234567890123456 | some test ref   | Sherlock Holmes| 221B Baker street      |
+
+        Given I start MockApp
 
         When I click search button in global search page
         Then I see error message "Enter information in at least one field" in global search Page

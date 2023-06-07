@@ -9,7 +9,6 @@ Feature: Global search
         Then I click on primary navigation header tab "Search", I see selected tab page displayed
         Then I see global search Page
 
-
     Scenario: Search page field validation
         # Then I validate field services has following values in global search page
         #     | value                |
@@ -126,31 +125,19 @@ Feature: Global search
         Then I validate input field "Date of birth" has value "" in global search page
         Then I validate input field "Date of death" has value "" in global search page
 
-
-    Scenario: Date fields validation error
+    Scenario: DoB Date fields validation error
         When I input date field "Date of birth" with format DD-MM-YYYY "302-21-2021" in global search page
         When I click search button in global search page
         When I input field "16-digit case reference" with value "1234567890123456" in global search Page
-
         Then I see error message "Enter a valid date of birth" for field "Date of birth" in global search Page
-        When I input date field "Date of birth" with format DD-MM-YYYY "" in global search page
-        When I click search button in global search page
-        Then I see global search results page
 
 
-        When I click Change search link in global search results page
-        Then I see global search Page
-
+    Scenario: DoD Date fields validation error
         When I input date field "Date of death" with format DD-MM-YYYY "302-21-2021" in global search page
         When I click search button in global search page
         Then I see error message "Enter a valid date of death" for field "Date of death" in global search Page
-        When I input date field "Date of death" with format DD-MM-YYYY "" in global search page
-        When I click search button in global search page
-        Then I see global search results page
 
-        When I click Change search link in global search results page
-        Then I see global search Page
-
+    Scenario: DoD earlier than DoB validation error
         When I input date field "Date of birth" with format DD-MM-YYYY "30-01-2000" in global search page
         When I input date field "Date of death" with format DD-MM-YYYY "30-01-1999" in global search page
         When I click search button in global search page

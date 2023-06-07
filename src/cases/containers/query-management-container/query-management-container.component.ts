@@ -20,6 +20,7 @@ export class QueryManagementContainerComponent implements OnInit {
       subject: new FormControl(null, Validators.required),
       body: new FormControl(null, Validators.required),
       isHearingRelated: new FormControl(null, Validators.required),
+      hearingDate: new FormControl(null),
       attachments: new FormControl([])
     });
 

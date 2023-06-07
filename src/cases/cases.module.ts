@@ -38,7 +38,6 @@ import {
   PaletteModule,
   PipesModule,
   PlaceholderService,
-  QueryManagementModule,
   RequestOptionsBuilder,
   RouterHelperService,
   SearchFiltersModule,
@@ -99,8 +98,7 @@ import { effects, reducers } from './store';
     PaletteModule,
     CaseViewerModule,
     PipesModule,
-    queryManagementRouting,
-    QueryManagementModule
+    queryManagementRouting
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
   providers: [

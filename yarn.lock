@@ -2098,12 +2098,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-document-uploader-v3":
-  version: 6.16.0-query-management-document-uploader-v3
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-document-uploader-v3"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-respond-to-query-fullname":
+  version: 6.16.0-query-management-respond-to-query-fullname
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-respond-to-query-fullname"
   dependencies:
     tslib: ^2.0.0
-  checksum: 41dea5087b2548c4103ccde1a7e0ffe4e2833bb2debdb526984dac98ed84abf3214122cafecf1f525c2640e8db331439bedf73b69464bf24f7ab9c2043422bb1
+  checksum: 03296180651286c71d181c40e3f3e1d72ba74035600370d3fa98f052ee179111ebc8dd178d493653a86b582804ffe7dad01de9dafa5ddd0a35bfb303720a7003
   languageName: node
   linkType: hard
 
@@ -18145,7 +18145,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-document-uploader-v3
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-respond-to-query-fullname
     "@hmcts/ccpay-web-component": 5.2.2
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

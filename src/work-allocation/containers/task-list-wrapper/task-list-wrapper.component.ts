@@ -230,8 +230,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.pagination = {
       page_number: pageSorted ? pageSorted : 1,
       page_size: 25
-      /* SREEKANTH: uncomment this to test
-      page_size: 1 */
     };
   }
 

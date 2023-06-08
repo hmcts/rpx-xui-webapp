@@ -31,25 +31,25 @@ Feature Description
       | 14 Permissions none assigned to someother | someone     | Test 6 user  | -10          | 10       |                    | true     | warn 1, warn2 |                                                                                         |
       | 15 Permissions none unassigned            |             |              | -10          | 10       | Execute,UnAssignClaim  | true     | warn 1, warn2 |                                                                                         |
 
-#    Scenario: Task manage link actions Assign to me
-#
-#        Given I start MockApp
-#        Given I navigate to home page
-#        When I click on primary navigation header tab "Case list", I see selected tab page displayed
-#        When I open first case in case list page
-#        Then I see case details page
-#        Then I see case details tab label "Tasks" is displayed is "true"
-#        When I click tab with label "Tasks" in case details page
-#
-#        Then I validate case details task tab page is displayed
-#        Then I validate task tab alert banner header is "Task alert"
-#        Then I validate task tab alert banner message is "warn 1"
-#        Then I validate task tab active tasks container displayed
-#        Then I validate task tab active tasks displayed count 15
-#
-#        When I click manage link "Assign to me" for task at position 15 in case details tasks tab
-#        Then I see case details tab label "Tasks" is displayed is "true"
-#        Then I see case details page with message banner "You've assigned yourself a task"
+    Scenario: Task manage link actions Assign to me
+
+        Given I start MockApp
+        Given I navigate to home page
+        When I click on primary navigation header tab "Case list", I see selected tab page displayed
+        When I open first case in case list page
+        Then I see case details page
+        Then I see case details tab label "Tasks" is displayed is "true"
+        When I click tab with label "Tasks" in case details page
+
+        Then I validate case details task tab page is displayed
+        Then I validate task tab alert banner header is "Task alert"
+        Then I validate task tab alert banner message is "warn 1"
+        Then I validate task tab active tasks container displayed
+        Then I validate task tab active tasks displayed count 15
+
+        When I click manage link "Assign to me" for task at position 15 in case details tasks tab
+        Then I see case details tab label "Tasks" is displayed is "true"
+        Then I see case details page with message banner "You've assigned yourself a task"
 
 
   Scenario: Task manage link actions Reassign
@@ -98,50 +98,50 @@ Feature Description
     Then I see case details page with message banner "You've reassigned a task to somebody else"
 
 
-#
-#     Scenario: Task manage link actions Unassign
-#
-#         Given I start MockApp
-#         Given I navigate to home page
-#         When I click on primary navigation header tab "Case list", I see selected tab page displayed
-#         When I open first case in case list page
-#         Then I see case details page
-#         Then I see case details tab label "Tasks" is displayed is "true"
-#         When I click tab with label "Tasks" in case details page
-#
-#         Then I validate case details task tab page is displayed
-#         Then I validate task tab alert banner header is "Task alert"
-#         Then I validate task tab alert banner message is "warn 1"
-#         Then I validate task tab active tasks container displayed
-#         Then I validate task tab active tasks displayed count 15
-#
-#         When I click manage link "Unassign" for task at position 7 in case details tasks tab
-#         Then I see "Unassign task" task action page
-#         Then I validate task action page has description "Unassign this task. This will send it back to the available task list for someone to pick up."
-#
-#         Then I validate task list table columns displayed for user "Judge"
-#             | ColumnHeader  | Caseworker | Judge |
-#             | Case name     | Yes        | Yes   |
-#             | Case category | Yes        | Yes   |
-#             | Location      | Yes        | Yes   |
-#             | Task          | Yes        | Yes   |
-#             | Task created  | No         | Yes   |
-#             | Due date      | Yes        | No    |
-#             | Priority      | Yes        | No    |
-#
-#
-#         Then I validate task details displayed in task action page
-#             | Case name        | Case category      | Location      |
-#             | Allwork test scr | auto test category | London QA lab |
-#
-#         When I click "Unassign" submit button in task action page
-#         Then I see case details tab label "Tasks" is displayed is "true"
-#
-#         Then I see case details page with message banner "You've unassigned a task."
-#
-# # Then I validate notification banner messages displayed in "My work" page
-# #     | message                                   |
-# #     | <bannermessage> |
-#
+@unassign
+     Scenario: Task manage link actions Unassign
+
+         Given I start MockApp
+         Given I navigate to home page
+         When I click on primary navigation header tab "Case list", I see selected tab page displayed
+         When I open first case in case list page
+         Then I see case details page
+         Then I see case details tab label "Tasks" is displayed is "true"
+         When I click tab with label "Tasks" in case details page
+
+         Then I validate case details task tab page is displayed
+         Then I validate task tab alert banner header is "Task alert"
+         Then I validate task tab alert banner message is "warn 1"
+         Then I validate task tab active tasks container displayed
+         Then I validate task tab active tasks displayed count 15
+
+         When I click manage link "Unassign" for task at position 7 in case details tasks tab
+         Then I see "Unassign task" task action page
+         Then I validate task action page has description "Unassign this task. This will send it back to the available task list for someone to pick up."
+
+         Then I validate task list table columns displayed for user "Judge"
+             | ColumnHeader  | Caseworker | Judge |
+             | Case name     | Yes        | Yes   |
+             | Case category | Yes        | Yes   |
+             | Location      | Yes        | Yes   |
+             | Task          | Yes        | Yes   |
+             | Task created  | No         | Yes   |
+             | Due date      | Yes        | No    |
+             | Priority      | Yes        | No    |
+
+
+         Then I validate task details displayed in task action page
+             | Case name        | Case category      | Location      |
+             | Allwork test scr | auto test category | London QA lab |
+
+         When I click "Unassign" submit button in task action page
+         Then I see case details tab label "Tasks" is displayed is "true"
+
+         Then I see case details page with message banner "You've unassigned a task."
+
+ # Then I validate notification banner messages displayed in "My work" page
+ #     | message                                   |
+ #     | <bannermessage> |
+
 
 

@@ -77,10 +77,10 @@ Feature Description
     When In workflow "Reassign task", I click continue
 
     Then In workflow "Reassign task", I see find person page displayed with caption "Reassign task"
-    When In workflow "Reassign task", I enter search term "jane" in find person input text
+    When In workflow "Reassign task", I enter search term "legal" in find person input text
 
-    When In workflow "Reassign task", I select find person result "testemail0@testdomain.com"
-    Then In workflow "Reassign task", I see find person is selected with "testemail0@testdomain.com"
+    When In workflow "Reassign task", I select find person result "ia_civil_legal_operations_1@justice.gov.uk"
+    Then In workflow "Reassign task", I see find person is selected with "ia_civil_legal_operations_1@justice.gov.uk"
 
     When In workflow "Reassign task", I click continue
 
@@ -88,9 +88,9 @@ Feature Description
 
     Then I validate task details displayed in check your changes page
       | Case name        | Case category      | Location      |
-      | Allwork test scr | auto test category | London QA lab |
+      | José González | Protection | Taylor House |
 
-    Then I validate column "Person" value is set to "Jane 0 Doe" in task check your changes page
+    Then I validate column "Person" value is set to "LEGAL_OPERATIONS 1 IA_CIVIL" in task check your changes page
     When I click submit button "Reassign" in task check your changes page
          # Then I see navigation header tab page "My work"
     Then I see case details tab label "Tasks" is displayed is "true"

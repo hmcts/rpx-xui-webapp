@@ -71,7 +71,7 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
 
     Given('I set MOCK case details with reference {string}', async function(caseDetailsReference){
       const caseDetails = ccdMockData.caseDetailsResponse;
-         global.scenarioData['caseDetailsReference'] = caseDetails;
+         global.scenarioData[caseDetailsReference] = caseDetails;
          const authCookie = await browser.driver.manage().getCookie('__auth__');
          await mockClient.setUserApiData(authCookie.value, getTask, {
            status: 200,

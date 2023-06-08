@@ -71,7 +71,7 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
 
     Given('I set MOCK case details with reference {string}', async function(caseDetailsReference){
       const caseDetails = ccdMockData.caseDetailsResponse;
-         global.scenarioData['caseDetailsReference'] = caseDetails;
+         global.scenarioData[caseDetailsReference] = caseDetails;
          const authCookie = await browser.driver.manage().getCookie('__auth__');
          await mockClient.setUserApiData(authCookie.value, getTask, {
            status: 200,
@@ -98,7 +98,7 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
             throw Error(` metada field ${property} is not recognised or not implemented in test`);
         }
 
-        mockClient.setUserApiData('','', {status: 200, data: global.scenarioData['caseDetailsReference']});
+        await mockClient.setUserApiData('','', {status: 200, data: global.scenarioData['caseDetailsReference']});
     });
 
     Given('I set MOCK case details {string} service name as {string}', async function (caseDetailsRef, serviceName) {
@@ -106,7 +106,7 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
 
         caseDetails.case_type.jurisdiction.name = serviceName;
         global.scenarioData[caseDetailsRef] = caseDetails;
-        mockClient.setUserApiData('','', {status: 200, data: global.scenarioData['caseDetailsReference']});
+        await mockClient.setUserApiData('','', {status: 200, data: global.scenarioData['caseDetailsReference']});
     });
 
     Given('I set MOCK case details {string} state as {string}', async function (caseDetailsRef, name) {

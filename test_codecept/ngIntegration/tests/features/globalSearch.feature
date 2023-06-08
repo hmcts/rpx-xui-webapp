@@ -124,7 +124,7 @@ Feature: Global search
             | 1       | 1234567812345678 | Test Jurisdiction | Case created | Test location 1 | Challenged access  |
             | 2       | Test case 2      | Test Jurisdiction | Case created | Test location 2 | Specific access    |
             | 2       | 8765432187654321 | Test Jurisdiction | Case created | Test location 2 | Specific access    |
-@pagination_test
+
     Scenario: Case search results view Pagination controls
         Given I set set global search mock results response and resultInfo
             | caseStartRecord | casesReturned | moreResultsToGo |
@@ -140,7 +140,7 @@ Feature: Global search
 
         Given I set set global search mock results response and resultInfo
             | caseStartRecord | casesReturned | moreResultsToGo |
-            | 26              | 20            | false           |
+            | 1               | 20            | false           |
         Given I start MockApp
         When I click global search results pagination link "Next page"
         Then I validate global search results displayed count 20
@@ -210,7 +210,7 @@ Feature: Global search
 
         When I click request access button in case basic view page
         Then I see case details challenged access request page
-
+@specific_access
     Scenario: Case search results view validations Specific access
         Given I set MOCK case details with reference "caseDetailsSpecific"
         Given I set MOCK case details "caseDetailsSpecific" property "Jurisdiction" as "Civil"

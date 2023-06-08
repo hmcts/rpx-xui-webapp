@@ -2098,12 +2098,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-raise-query-function":
-  version: 6.16.0-query-management-raise-query-function
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-raise-query-function"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-raise-query-function-v4":
+  version: 6.16.0-query-management-raise-query-function-v4
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-raise-query-function-v4"
   dependencies:
     tslib: ^2.0.0
-  checksum: 371f91d129f1e27cf95cb787748dee448c43de5ad674b7f4a6fa5f95d3ccf9e4985488ed848b68975dca58cd1133b41966b17f9c506014954e5848ffa1f7e496
+  checksum: 74f736b1fa88df96c5e710c9f6bbe96230c941cedb3795ff4c8b493b3675e75808e0ad718901f9c141f8f9a67778f47754becd866ee67bb82295c0f8a6412abe
   languageName: node
   linkType: hard
 
@@ -18145,7 +18145,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-raise-query-function
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-raise-query-function-v4
     "@hmcts/ccpay-web-component": 5.2.2
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

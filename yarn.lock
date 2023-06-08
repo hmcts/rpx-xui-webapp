@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.13.11-linked-reasons-sorting-fix-v2":
-  version: 6.13.11-linked-reasons-sorting-fix-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.13.11-linked-reasons-sorting-fix-v2"
+"@hmcts/ccd-case-ui-toolkit@npm:6.15.0-6.16-hotfix-INC5516582":
+  version: 6.15.0-6.16-hotfix-INC5516582
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.15.0-6.16-hotfix-INC5516582"
   dependencies:
     tslib: ^2.0.0
-  checksum: ab26d7e93f7c357ef66b401e53ee268ca0c019c3ea71c8271c8bd83c99dc883983ecf700715f16275609209bf4cb335f5eea282251cced787214e8efd6869d08
+  checksum: 698c5d660b314d598c40dad6b8eed1d98f5dcfd0e8b501aa9e0ee703750519d725547fd016b3dc1e83f11529c4537198063a42ee5ebb1c7d1ee56f320a28373d
   languageName: node
   linkType: hard
 
@@ -2611,28 +2611,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ng-idle/core@npm:^8.0.0-beta.4":
-  version: 8.0.0-beta.4
-  resolution: "@ng-idle/core@npm:8.0.0-beta.4"
+"@ng-idle/core@npm:^11.1.0":
+  version: 11.1.0
+  resolution: "@ng-idle/core@npm:11.1.0"
   dependencies:
-    tslib: ^1.9.0
+    tslib: ^2.0.0
   peerDependencies:
-    "@angular/common": ^8.0.0
-    "@angular/core": ^8.0.0
-  checksum: 23e5602fac0f289fe6ed618887fd1e164da57859bf985befeebd51601e2b07967b26fd6227ab5a774f20ca732a0e3c5b05d64690be8da7649d824b180c3277da
+    "@angular/common": ">=9.0.0"
+    "@angular/core": ">=9.0.0"
+  checksum: 51f3fd617580ed3f7ea0b82f03825c7758b9589346717249282804bd720c53577f79441fc1fc33590f5879e7aad74a8cb813b301a8f85faf1106a90855fdce64
   languageName: node
   linkType: hard
 
-"@ng-idle/keepalive@npm:^8.0.0-beta.4":
-  version: 8.0.0-beta.4
-  resolution: "@ng-idle/keepalive@npm:8.0.0-beta.4"
+"@ng-idle/keepalive@npm:^11.0.3":
+  version: 11.0.3
+  resolution: "@ng-idle/keepalive@npm:11.0.3"
   dependencies:
-    tslib: ^1.9.0
+    tslib: ^2.0.0
   peerDependencies:
-    "@angular/common": ^8.0.0
-    "@angular/core": ^8.0.0
-    "@ng-idle/core": ^8.0.0-beta.4
-  checksum: 2c9d121c5b90e7449361a47b3430a82b7b3d72478b9f667b05ed6e9eed2d26df1d6b123538f109463b2e8f5c2661f831499e4a92f8a644ac71d12d5ea75d7709
+    "@angular/common": ">=9.0.0"
+    "@angular/core": ">=9.0.0"
+    "@ng-idle/core": ^11.0.3
+  checksum: 085c4d93c8871a833c4171d27fcd39f29cbf379f442bc677145845ea52bcc27d54e05359ea6df4f81eb3022bc39802f28f2351b7c4d863407a9c81ca63674189
   languageName: node
   linkType: hard
 
@@ -19103,7 +19103,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.13.11-linked-reasons-sorting-fix-v2
+    "@hmcts/ccd-case-ui-toolkit": 6.15.0-6.16-hotfix-INC5516582
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3
@@ -19111,8 +19111,8 @@ __metadata:
     "@hmcts/properties-volume": ^0.0.13
     "@hmcts/rpx-xui-common-lib": 1.8.7-include-current-user
     "@hmcts/rpx-xui-node-lib": 2.25.12
-    "@ng-idle/core": ^8.0.0-beta.4
-    "@ng-idle/keepalive": ^8.0.0-beta.4
+    "@ng-idle/core": ^11.1.0
+    "@ng-idle/keepalive": ^11.0.3
     "@ngrx/effects": ^7.4.0
     "@ngrx/router-store": ^7.4.0
     "@ngrx/schematics": ^7.4.0

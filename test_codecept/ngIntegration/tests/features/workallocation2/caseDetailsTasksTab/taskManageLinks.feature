@@ -21,7 +21,7 @@ Feature Description
       | Task 4                                    |             |              | -10          | 10       |                    | true     | warn 1, warn2 |                                                                                         |
       | Task 5                                    |             |              | -10          | 10       |                    | true     | warn 1, warn2 |                                                                                         |
       | 6 Permissions OME assined to me           | thissession | Test user    | -10          | 10       | Own,Manage,Execute | true     | warn 1, warn2 |                                                                                         |
-      | 7 Permissions ME assigned to me           | someone     | Test 3 user  | -10          | 10       | UnAssign,Assign,Own    | true     | warn 1, warn2 |                                                                                       |
+      | 7 Permissions ME assigned to me           | someone     | Test 3 user  | -10          | 10       | UnAssign,Assign,Own | true     | warn 1, warn2 |                                                                                       |
       | 8 Permissions OME unassigned              |             |              | -10          | 10       | Own,Manage,Execute | true     | warn 1, warn2 |                                                                                         |
       | 9 Permissions ME assined to me            | thissession | Test user    | -10          | 10       | Manage,Execute     | true     | warn 1, warn2 |                                                                                         |
       | 10 Permissions ME assigned to someother   | someone     | Test 4 user  | -10          | 10       | Manage,Execute     | true     | warn 1, warn2 |                                                                                         |
@@ -29,7 +29,7 @@ Feature Description
       | 12 Permissions M assigned to someother    | someone     | Test 5 user  | -10          | 10       | Manage             | true     | warn 1, warn2 |                                                                                         |
       | 13 Permissions M unassigned               |             |              | -10          | 10       | Manage             | true     | warn 1, warn2 |                                                                                         |
       | 14 Permissions none assigned to someother | someone     | Test 6 user  | -10          | 10       |                    | true     | warn 1, warn2 |                                                                                         |
-      | 15 Permissions none unassigned            |             |              | -10          | 10       |   Execute,UnAssignClaim                 | true     | warn 1, warn2 |                                                                                         |
+      | 15 Permissions none unassigned            |             |              | -10          | 10       | Execute,UnAssignClaim  | true     | warn 1, warn2 |                                                                                         |
 
 #    Scenario: Task manage link actions Assign to me
 #

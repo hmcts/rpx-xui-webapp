@@ -48,7 +48,7 @@ Feature: Global search
         Then I see global search results page
         When I click Change search link in global search results page
         Then I see global search Page
-        Then I validate input field "Email address" has value "abc@xyz.co" in global search page
+        Then I validate input field "Email address" has value "abc@xyz.com" in global search page
 
         Then I validate input field "16-digit case reference" has value "1234567890123456" in global search page
         Then I validate input field "Other reference" has value "some test ref" in global search page
@@ -138,9 +138,10 @@ Feature: Global search
         Then I validate global search results pagination link "Next page" is enabled
         Then I validate global search results pagination link "Previous page" is disabled
 
+
         Given I set set global search mock results response and resultInfo
             | caseStartRecord | casesReturned | moreResultsToGo |
-            | 1               | 20            | false           |
+            | 26              | 20            | false           |
         Given I start MockApp
         When I click global search results pagination link "Next page"
         Then I validate global search results displayed count 20
@@ -172,7 +173,7 @@ Feature: Global search
         When I click action link "View" at row 1 in global search results page
         Then I see case details page
 
-@challenged_access
+
     Scenario: Case search results view validations challenged access
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
@@ -210,7 +211,7 @@ Feature: Global search
 
         When I click request access button in case basic view page
         Then I see case details challenged access request page
-@specific_access
+
     Scenario: Case search results view validations Specific access
         Given I set MOCK case details with reference "caseDetailsSpecific"
         Given I set MOCK case details "caseDetailsSpecific" property "Jurisdiction" as "Civil"

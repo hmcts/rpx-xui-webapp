@@ -9,7 +9,7 @@ import { requireReloaded } from '../utils/moduleUtil';
 import { eachLike } from '@pact-foundation/pact/src/dsl/matchers';
 
 const { Matchers } = require('@pact-foundation/pact');
-const { somethingLike,term } = Matchers;
+const { somethingLike, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_search', port: 8000 });
 
 describe('Task management api, Search task', () => {

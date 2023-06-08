@@ -124,7 +124,7 @@ Feature: Global search
             | 1       | 1234567812345678 | Test Jurisdiction | Case created | Test location 1 | Challenged access  |
             | 2       | Test case 2      | Test Jurisdiction | Case created | Test location 2 | Specific access    |
             | 2       | 8765432187654321 | Test Jurisdiction | Case created | Test location 2 | Specific access    |
-
+@pagination_test
     Scenario: Case search results view Pagination controls
         Given I set set global search mock results response and resultInfo
             | caseStartRecord | casesReturned | moreResultsToGo |
@@ -137,7 +137,6 @@ Feature: Global search
         Then I validate global search results displayed count 25
         Then I validate global search results pagination link "Next page" is enabled
         Then I validate global search results pagination link "Previous page" is disabled
-
 
         Given I set set global search mock results response and resultInfo
             | caseStartRecord | casesReturned | moreResultsToGo |

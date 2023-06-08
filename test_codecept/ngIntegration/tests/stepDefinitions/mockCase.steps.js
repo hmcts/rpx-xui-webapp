@@ -105,6 +105,8 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
         const caseDetails = global.scenarioData[caseDetailsRef];
 
         caseDetails.case_type.jurisdiction.name = serviceName;
+        global.scenarioData[caseDetailsRef] = caseDetails;
+        mockClient.setUserApiData('','', {status: 200, data: global.scenarioData['caseDetailsReference']});
     });
 
     Given('I set MOCK case details {string} state as {string}', async function (caseDetailsRef, name) {

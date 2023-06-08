@@ -83,7 +83,7 @@
     "@angular/router": "^11.2.14",
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccd-case-ui-toolkit": "6.14.5-activity-tracker-4",
-    "@hmcts/ccpay-web-component": "5.2.2",
+    "@hmcts/ccpay-web-component": "5.2.3",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.9.3",
     "@hmcts/nodejs-healthcheck": "1.7.0",

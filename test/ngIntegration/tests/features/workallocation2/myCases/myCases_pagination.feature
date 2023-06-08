@@ -1,5 +1,5 @@
 # https://tools.hmcts.net/jira/browse/EUI-3886
-@ng   
+@ng
 Feature: WA Release 2: My work to  My cases to pagination sorting
 
     Background: Mock and browser setup
@@ -27,7 +27,7 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
         Then I validate work allocation cases count in page 140
 
         Then I validate work allocation cases table pagination controls, is displayed state is "false"
-        
+
         Then I validate work allocation table "cases" columns sortability
             | Columnheader | isSortable |
             | Person       | No         |
@@ -40,7 +40,7 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
         # Then I see work allocation table "cases" reset sort button state isDisplayed is "false"
         # Then I see work allocation table "cases" reset sort button state isDisplayed is "true"
 
-        
+
         Examples:
             | UserIdentifier  | UserType | Roles                                           |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
@@ -119,7 +119,10 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
 
         Then I validate work allocation cases table pagination controls, is displayed state is "false"
 
-    
+        Then I validate "My work" tasks columns sorting with taskRequest url "workallocation/my-work/cases" on page 3 for user type "<UserType>"
+            | ColumnHeader  | Caseworker | Judge | FieldId      |
+            | Hearing date | Yes | Yes | hearing_date |
+
         Examples:
             | UserIdentifier  | UserType | Roles                                           |
             # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |

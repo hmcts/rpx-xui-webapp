@@ -1,4 +1,3 @@
-import {eachLike} from '@pact-foundation/pact/src/dsl/matchers';
 import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
@@ -7,9 +6,10 @@ import { PactTestSetup } from '../settings/provider.mock';
 import { getSearchTaskOverrides } from '../utils/configOverride';
 import { DateTimeMatcher } from '../utils/matchers';
 import { requireReloaded } from '../utils/moduleUtil';
+import { eachLike } from '@pact-foundation/pact/src/dsl/matchers';
 
 const { Matchers } = require('@pact-foundation/pact');
-const { somethingLike, term ,  } = Matchers;
+const { somethingLike,term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_search', port: 8000 });
 
 describe('Task management api, Search task', () => {
@@ -38,7 +38,7 @@ describe('Task management api, Search task', () => {
         'case_name': somethingLike('Bob Smith'),
         'warnings': somethingLike(false),
         'permissions': {
-            'values': eachLike('Read')
+          'values': eachLike('Read')
         }
       },
       {

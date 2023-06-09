@@ -5,7 +5,8 @@ import {
   DisplayDayPartyModel,
   HearingActualsMainModel,
   HearingActualsModel,
-  PlannedDayPartyModel
+  PlannedDayPartyModel,
+  PlannedHearingDayModel
 } from '../models/hearingActualsMainModel';
 import { HearingDateEnum } from '../models/hearings.enum';
 
@@ -14,10 +15,9 @@ export class ActualHearingsUtils {
     return dateTime ? moment(dateTime).format('YYYY-MM-DD') : null;
   }
 
-  public static getActualHearingDays(hearingActualsMainModel: HearingActualsMainModel): ActualHearingDayModel[] {
+  public static getActualHearingDays(hearingActualsMainModel: HearingActualsMainModel, isCheckYourAnswersPage: boolean): ActualHearingDayModel[] {
     let hearingDays: ActualHearingDayModel[];
-    const hasAnyActuals = hearingActualsMainModel.hearingActuals &&
-      (hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0);
+    const hasAnyActuals = hearingActualsMainModel.hearingActuals?.actualHearingDays?.length > 0;
 
     hearingDays = hearingActualsMainModel.hearingPlanned.plannedHearingDays.map(
       (plannedDay) => {
@@ -29,28 +29,12 @@ export class ActualHearingsUtils {
         }
 
         return {
-          hearingDate: (existingActualData && existingActualData.hearingDate) || this.getDate(plannedDay.plannedStartTime),
-          hearingStartTime: (existingActualData && existingActualData.hearingStartTime),
-          hearingEndTime: (existingActualData && existingActualData.hearingEndTime),
-          pauseDateTimes: (existingActualData && existingActualData.pauseDateTimes) || [],
-          notRequired: (existingActualData && existingActualData.notRequired) || false,
-          actualDayParties: ((existingActualData && existingActualData.actualDayParties && existingActualData.actualDayParties.length > 0)
-            && existingActualData.actualDayParties)
-            || plannedDay.parties.map(
-              (party) => {
-                return {
-                  actualPartyId: party.partyID,
-                  partyRole: party.partyRole,
-                  partyChannelSubType: party.partyChannelSubType,
-                  representedParty: null,
-                  didNotAttendFlag: false,
-                  individualDetails: party.individualDetails ? {
-                    firstName: party.individualDetails.firstName,
-                    lastName: party.individualDetails.lastName
-                  } : null,
-                  actualOrganisationName: party.organisationDetails ? party.organisationDetails.name : null
-                };
-              })
+          hearingDate: existingActualData?.hearingDate || this.getDate(plannedDay.plannedStartTime),
+          hearingStartTime: existingActualData?.hearingStartTime,
+          hearingEndTime: existingActualData?.hearingEndTime,
+          pauseDateTimes: existingActualData?.pauseDateTimes || [],
+          notRequired: existingActualData?.notRequired || false,
+          actualDayParties: ActualHearingsUtils.getActualDayParties(existingActualData, plannedDay, isCheckYourAnswersPage)
         };
       });
 
@@ -63,20 +47,42 @@ export class ActualHearingsUtils {
     return hearingDays;
   }
 
+  public static getActualDayParties(existingActualData: ActualHearingDayModel, plannedDay: PlannedHearingDayModel, isCheckYourAnswersPage: boolean): ActualDayPartyModel[] {
+    if (isCheckYourAnswersPage) {
+      return existingActualData?.actualDayParties;
+    }
+
+    return existingActualData?.actualDayParties?.length > 0
+      ? existingActualData.actualDayParties
+      : plannedDay.parties.map((party) => {
+        return {
+          actualPartyId: party.partyID,
+          partyRole: party.partyRole,
+          partyChannelSubType: party.partyChannelSubType,
+          representedParty: null,
+          didNotAttendFlag: false,
+          individualDetails: party.individualDetails ? {
+            firstName: party.individualDetails.firstName,
+            lastName: party.individualDetails.lastName
+          } : null,
+          actualOrganisationName: party.organisationDetails ? party.organisationDetails.name : null
+        };
+      });
+  }
+
   public static mergeSingleHearingPartActuals(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string,
     updatedActuals: ActualHearingDayModel): HearingActualsModel {
     const hearingActuals = {
-      actualHearingDays: hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
+      actualHearingDays: hearingActualsMainModel.hearingActuals?.actualHearingDays
         ? [...hearingActualsMainModel.hearingActuals.actualHearingDays] : []
     } as HearingActualsModel;
 
-    if (hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.hearingOutcome
-      && hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult) {
+    if (hearingActualsMainModel.hearingActuals?.hearingOutcome?.hearingResult) {
       hearingActuals.hearingOutcome = { ...hearingActualsMainModel.hearingActuals.hearingOutcome };
     }
 
     let indexOfActual: number;
-    if (hearingActuals.actualHearingDays && hearingActuals.actualHearingDays.length > 0) {
+    if (hearingActuals.actualHearingDays?.length > 0) {
       indexOfActual = hearingActuals.actualHearingDays.findIndex(
         (item) => item.hearingDate === hearingDate
       );
@@ -88,7 +94,9 @@ export class ActualHearingsUtils {
         ...updatedActuals
       };
     } else {
-      const plannedHearingDate = hearingActualsMainModel.hearingPlanned.plannedHearingDays.find((day) => ActualHearingsUtils.getDate(day.plannedStartTime) === hearingDate);
+      const plannedHearingDate = hearingActualsMainModel.hearingPlanned.plannedHearingDays.find(
+        (day) => ActualHearingsUtils.getDate(day.plannedStartTime) === hearingDate
+      );
 
       const newHearingActual = {
         hearingDate,
@@ -109,7 +117,7 @@ export class ActualHearingsUtils {
   }
 
   public static getActualDayIndexFromHearingDate(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string): number | undefined {
-    const hasActualsHearingDays = hearingActualsMainModel && hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0;
+    const hasActualsHearingDays = hearingActualsMainModel?.hearingActuals?.actualHearingDays?.length > 0;
     let index: number;
     if (hasActualsHearingDays) {
       index = hearingActualsMainModel.hearingActuals.actualHearingDays
@@ -120,7 +128,7 @@ export class ActualHearingsUtils {
   }
 
   public static getPlannedDayIndexFromHearingDate(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string): number | undefined {
-    const hasPlannedHearingDays = hearingActualsMainModel.hearingPlanned && hearingActualsMainModel.hearingPlanned.plannedHearingDays;
+    const hasPlannedHearingDays = hearingActualsMainModel?.hearingPlanned?.plannedHearingDays;
     let index: number;
     if (hasPlannedHearingDays) {
       index = hearingActualsMainModel.hearingPlanned.plannedHearingDays
@@ -147,6 +155,10 @@ export class ActualHearingsUtils {
     return actualDisplayModels?.length
       ? actualDisplayModels
       : plannedDisplayModels;
+  }
+
+  public static getPartiesCYA(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string): ActualDayPartyModel[] {
+    return hearingActualsMainModel.hearingActuals?.actualHearingDays?.find((actualDay) => actualDay.hearingDate === hearingDate)?.actualDayParties;
   }
 
   public static getAttendees(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string): ActualDayPartyModel[] {

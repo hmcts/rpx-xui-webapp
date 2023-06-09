@@ -111,7 +111,7 @@ export class CaseTaskComponent implements OnInit {
   public async onActionHandler(task: Task, option: any): Promise<void> {
     if (option.id === 'claim') {
       this.taskService.claimTask(task.id).subscribe(() => {
-        this.alertService.success(InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS);
+        this.alertService.success({ phrase: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS });
         this.taskRefreshRequired.emit();
       }, (error) => {
         this.claimTaskErrors(error.status);
@@ -135,7 +135,7 @@ export class CaseTaskComponent implements OnInit {
     const REDIRECT_404 = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }];
     const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
     if (handledStatus > 0) {
-      this.alertService.warning(InfoMessage.TASK_NO_LONGER_AVAILABLE);
+      this.alertService.warning({ phrase: InfoMessage.TASK_NO_LONGER_AVAILABLE });
       if (handledStatus === 400) {
         this.taskRefreshRequired.emit();
       }

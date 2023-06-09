@@ -122,4 +122,32 @@ describe('QueryManagementContainerComponent', () => {
       ]);
     });
   });
+
+  describe('onContinue', () => {
+    it('should set submitted to true and initiate form validation', () => {
+      spyOn(component, 'validateForm');
+      component.onContinue();
+      expect(component.submitted).toEqual(true);
+      expect(component.validateForm).toHaveBeenCalled();
+    });
+  });
+
+  describe('validateForm', () => {
+    it('should validate the form', () => {
+      const nativeElement = fixture.debugElement.nativeElement;
+      component.formGroup.get('fullName').setValue('');
+      component.formGroup.get('subject').setValue('');
+      component.formGroup.get('body').setValue('');
+      component.onContinue();
+      fixture.detectChanges();
+      expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
+
+      component.formGroup.get('fullName').setValue('John Smith');
+      component.formGroup.get('subject').setValue('Bring relatives');
+      component.formGroup.get('body').setValue('Can I bring my grandma with me so she get out from the residence?');
+      component.onContinue();
+      fixture.detectChanges();
+      expect(nativeElement.querySelector('.govuk-error-summary')).toBeNull();
+    });
+  });
 });

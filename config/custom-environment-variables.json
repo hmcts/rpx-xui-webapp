@@ -38,7 +38,7 @@
       "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },
     "hearings": {
-      "hearingsJurisdictions": "SSCS,PRIVATELAW",
+      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL",
       "sscs": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_SSCS",
         "caseTypes": "Benefit"
@@ -46,6 +46,10 @@
       "privatelaw": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_PRIVATELAW",
         "caseTypes": "PRLAPPS"
+      },
+      "civil": {
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_CIVIL",
+        "caseTypes": "CIVIL"
       },
       "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API"
     },
@@ -118,7 +122,6 @@
   },
   "jurisdictions": "JURISDICTIONS",
   "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",
-  "waSupportedServiceandCaseTypes": "WA_SUPPORTED_SERVICE_CASETYPES",
   "globalSearchServices": "GLOBAL_SEARCH_SERVICES",
   "serviceRefDataMapping": "SERVICE_REF_DATA_MAPPING",
   "log4JConfig": {

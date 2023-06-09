@@ -157,16 +157,6 @@ export class AppUtils {
     // check that userRoles do not have pui-case-manager
   }
 
-  public static isLegalOpsOrJudicial(userRoles: string[]): UserRole {
-    if (userRoles.some((userRole) => JUDICIAL_ROLE_LIST.some((role) => role === userRole))) {
-      return UserRole.Judicial;
-    } else if (userRoles.some((userRole) => LEGAL_OPS_ROLE_LIST.some((role) => role === userRole))) {
-      return UserRole.LegalOps;
-    }
-    // TODO: When we know roles for Admin we can put this in this method
-    return null;
-  }
-
   public static getUserRole(userRoles: string[]): UserRole {
     if (userRoles.some((userRole) => JUDICIAL_ROLE_LIST.some((role) => userRole.includes(role)))) {
       return UserRole.Judicial;
@@ -252,5 +242,18 @@ export class AppUtils {
     return userInfo.roleCategory === RoleCategory.JUDICIAL
       && roleAssignmentInfo.some((roleAssignment) => 'bookable' in roleAssignment
         && (roleAssignment.bookable === true || roleAssignment.bookable === 'true'));
+  }
+
+  public static isPriorityDateTimePast(newDate: Date, currentDate: Date = new Date()): boolean {
+    return currentDate.getTime() - newDate.getTime() > 0;
+  }
+
+  public static isPriorityDateTimeInNext24Hours(dateTime: Date, currentDate: Date = new Date()): boolean {
+    if (AppUtils.isPriorityDateTimePast(dateTime, currentDate)) {
+      return false;
+    }
+    const msBetweenDates = Math.abs(dateTime.getTime() - currentDate.getTime());
+    const hoursBetweenDates = msBetweenDates / (60 * 60 * 1000);
+    return hoursBetweenDates <= 24;
   }
 }

@@ -139,7 +139,6 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'Jane',
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: ['RA0005'],
           interpreterLanguage: 'POR'
         },
         unavailabilityRanges: [
@@ -160,7 +159,6 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'DWP',
           lastName: null,
           preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: ['RA0005'],
           interpreterLanguage: null
         },
         organisationDetails: {
@@ -617,9 +615,16 @@ describe('HearingRequirementsComponent', () => {
                 title: 'Miss',
                 firstName: 'Jane',
                 lastName: 'Smith',
+                reasonableAdjustments: [
+                  'RA0042',
+                  'RA0053',
+                  'RA0013',
+                  'RA0016',
+                  'RA0042',
+                  'RA0009'
+                ],
                 interpreterLanguage: 'POR',
-                preferredHearingChannel: 'byVideo',
-                reasonableAdjustments: ['RA0005']
+                preferredHearingChannel: 'byVideo'
               },
               organisationDetails: {},
               unavailabilityDOW: null,
@@ -696,7 +701,6 @@ describe('HearingRequirementsComponent', () => {
                     firstName: 'Jane',
                     lastName: 'Smith',
                     preferredHearingChannel: 'inPerson',
-                    reasonableAdjustments: ['RA0005'],
                     interpreterLanguage: 'POR'
                   }
                 },
@@ -710,7 +714,6 @@ describe('HearingRequirementsComponent', () => {
                     firstName: 'DWP',
                     lastName: null,
                     preferredHearingChannel: 'byVideo',
-                    reasonableAdjustments: ['RA0005'],
                     interpreterLanguage: null
                   }
                 }
@@ -797,7 +800,13 @@ describe('HearingRequirementsComponent', () => {
                 firstName: 'Jane',
                 lastName: 'Smith',
                 preferredHearingChannel: 'inPerson',
-                reasonableAdjustments: ['RA0005'],
+                reasonableAdjustments: [
+                  'RA0042',
+                  'RA0053',
+                  'RA0013',
+                  'RA0016',
+                  'RA0042'
+                ],
                 interpreterLanguage: 'POR'
               },
               organisationDetails: {},
@@ -2342,7 +2351,12 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'Jane',
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: ['RA0005'],
+          reasonableAdjustments: [
+            'RA0042',
+            'RA0053',
+            'RA0013',
+            'RA0016',
+            'RA0042'],
           interpreterLanguage: 'POR'
         }
       }, {

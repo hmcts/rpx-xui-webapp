@@ -1,3 +1,4 @@
+<xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
 <ng-container [ngSwitch]="true">
   <div *ngSwitchCase="!isCaseStatusListed()">
     <details *ngIf="isListedCaseStatus || caseStatusName === exuiDisplayStatus.CANCELLED" class="govuk-details"

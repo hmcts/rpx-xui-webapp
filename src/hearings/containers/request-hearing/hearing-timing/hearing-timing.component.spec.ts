@@ -117,6 +117,17 @@ describe('HearingTimingComponent', () => {
   it('should set showHearingDateError', () => {
     component.showHearingDateError();
     expect(component.hearingPriorityDateError).toBe(null);
+    component.priorityForm.controls.specificDate.setErrors({ 'incorrect': true });
+    component.showHearingDateError();
+    expect(component.hearingPriorityDateError).toBe(HearingDatePriorityEnum.PriorityDateError);
+  });
+
+  it('should set showHearingPriorityError', () => {
+    component.showHearingPriorityError();
+    expect(component.hearingPriorityError).toBe(null);
+    component.priorityForm.controls.priority.setErrors({ 'incorrect': true });
+    component.showHearingPriorityError();
+    expect(component.hearingPriorityError).toBe(HearingDatePriorityEnum.PriorityError);
   });
 
   it('should check unavailable dates list', () => {
@@ -176,6 +187,10 @@ describe('HearingTimingComponent', () => {
   });
 
   it('should get getFormData', () => {
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = {};
+    component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '01-01-2021';
+    component.getFormData();
+    expect(component.checkedHearingAvailability).toBe(RadioOptions.YES);
     component.hearingRequestMainModel.hearingDetails.duration = 70;
     component.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'Urgent';
     component.hearingRequestMainModel.hearingDetails.hearingWindow = null;
@@ -221,6 +236,9 @@ describe('HearingTimingComponent', () => {
     durationLengthControls.get('minutes').setValue('3000');
     component.showHearingLengthError();
     expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.LengthError);
+    durationLengthControls.setErrors({ 'incorrect': true });
+    component.showHearingLengthError();
+    expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.TotalLengthError);
   });
 
   it('should check date selection invalid', () => {
@@ -236,7 +254,7 @@ describe('HearingTimingComponent', () => {
     component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
     component.firstHearingFormGroup.get('firstHearingDate_year').setValue(Number(moment().format('YYYY')) + 1);
     component.showChosenDateError();
-    expect(component.firstDateOfHearingError).toBe(null);
+    expect(component.firstDateOfHearingError).toEqual(null);
   });
 
   it('should check date selection weekend', () => {
@@ -278,14 +296,38 @@ describe('HearingTimingComponent', () => {
     expect(component.earliestDateOfHearingError.isInvalid).toBeTruthy();
   });
 
+  it('should check showChosenDateRangeError earliest Saturday and latest Sunday', () => {
+    component.dateRangeWeekendError = HearingDatePriorityEnum.WeekDayError;
+    component.earliestHearingFormGroup.get('earliestHearingDate_day').setValue('08');
+    component.earliestHearingFormGroup.get('earliestHearingDate_month').setValue('04');
+    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue('2023');
+    component.latestHearingFormGroup.get('latestHearingDate_day').setValue('09');
+    component.latestHearingFormGroup.get('latestHearingDate_month').setValue('04');
+    component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2023');
+    component.showChosenDateRangeError();
+    expect(component.dateRangeWeekendError).toEqual(HearingDatePriorityEnum.WeekDayError);
+  });
+
+  it('should check showChosenDateRangeError earliest Saturday and latest not a weekend', () => {
+    component.dateRangeWeekendError = null;
+    component.earliestHearingFormGroup.get('earliestHearingDate_day').setValue('08');
+    component.earliestHearingFormGroup.get('earliestHearingDate_month').setValue('04');
+    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue('2023');
+    component.latestHearingFormGroup.get('latestHearingDate_day').setValue('10');
+    component.latestHearingFormGroup.get('latestHearingDate_month').setValue('04');
+    component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2023');
+    component.showChosenDateRangeError();
+    expect(component.dateRangeWeekendError).toBeNull();
+  });
+
   it('should check showChosenDateRangeError before date check', () => {
     component.earliestDateOfHearingError = null;
     component.earliestHearingFormGroup.get('earliestHearingDate_day').setValue('13');
     component.earliestHearingFormGroup.get('earliestHearingDate_month').setValue('12');
-    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue(Number(moment().format('YYYY')) + 1);
+    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue('2024');
     component.latestHearingFormGroup.get('latestHearingDate_day').setValue('11');
     component.latestHearingFormGroup.get('latestHearingDate_month').setValue('12');
-    component.latestHearingFormGroup.get('latestHearingDate_year').setValue(Number(moment().format('YYYY')) + 1);
+    component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2024');
     component.showChosenDateRangeError();
     expect(component.earliestDateOfHearingError.isInvalid).toBeTruthy();
   });
@@ -330,6 +372,23 @@ describe('HearingTimingComponent', () => {
     component.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'Urgent';
     component.checkFormData();
     expect(component.priorityForm.valid).toBe(true);
+    component.priorityForm.setErrors({ 'incorrect': true });
+    spyOn(component, 'showHearingLengthError').and.callThrough();
+    spyOn(component, 'showHearingDateError').and.callThrough();
+    spyOn(component, 'showHearingPriorityError').and.callThrough();
+    component.checkFormData();
+    expect(component.showHearingLengthError).toHaveBeenCalled();
+    expect(component.showHearingDateError).toHaveBeenCalled();
+    expect(component.showHearingPriorityError).toHaveBeenCalled();
+  });
+
+  it('should set executeAction', () => {
+    spyOn(component, 'checkFormData').and.callThrough();
+    spyOn(component, 'prepareHearingRequestData').and.callThrough();
+    component.executeAction(ACTION.CONTINUE);
+    expect(component.checkFormData).toHaveBeenCalled();
+    component.validationErrors = [];
+    expect(component.isFormValid()).toBeTruthy();
   });
 
   it('should check if form is valid', () => {

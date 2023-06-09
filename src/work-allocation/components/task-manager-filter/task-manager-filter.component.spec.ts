@@ -3,7 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { FilterService } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
@@ -78,7 +78,7 @@ describe('TaskManagerFilterComponent', () => {
       unsubscribe: () => null
     }
   };
-
+  const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -93,7 +93,8 @@ describe('TaskManagerFilterComponent', () => {
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         {
           provide: FilterService, useValue: mockFilterService
-        }
+        },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
     }).compileComponents();
     store = TestBed.inject(Store);
@@ -103,6 +104,33 @@ describe('TaskManagerFilterComponent', () => {
     component = fixture.componentInstance;
     storePipeMock.and.returnValue(of(0));
     mockFilterService.get.and.returnValue(null);
+    mockFeatureToggleService.getValue.and.returnValue(of({
+      configurations: [
+        {
+          caseTypes: [
+            'Asylum'
+          ],
+          releaseVersion: '3.5',
+          serviceName: 'IA'
+        },
+        {
+          caseTypes: [
+            'PRIVATELAW',
+            'PRLAPPS'
+          ],
+          releaseVersion: '2.1',
+          serviceName: 'PRIVATELAW'
+        },
+        {
+          caseTypes: [
+            'CIVIL',
+            'GENERALAPPLICATION'
+          ],
+          releaseVersion: '2.1',
+          serviceName: 'CIVIL'
+        }
+      ]
+    }));
     fixture.detectChanges();
   });
 
@@ -120,3 +148,4 @@ describe('TaskManagerFilterComponent', () => {
     component.ngOnDestroy();
   });
 });
+

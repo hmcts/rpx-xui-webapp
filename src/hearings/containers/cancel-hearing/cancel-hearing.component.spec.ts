@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of, throwError } from 'rxjs';
 import { initialState } from '../../hearing.test.data';
@@ -70,6 +71,7 @@ describe('CancelHearingComponent', () => {
       ]), HttpClientTestingModule],
       declarations: [CancelHearingComponent],
       providers: [
+        LoadingService,
         { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,

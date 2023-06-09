@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
-import { UserService } from 'src/app/services/user/user.service';
+import { UserService } from '../../app/services/user/user.service';
 import { ListedHearingViewerHiddenConverter } from './listed-hearing-viewer.hidden.converter';
 
 const userDetails = {

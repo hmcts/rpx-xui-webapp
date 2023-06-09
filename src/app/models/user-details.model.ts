@@ -20,6 +20,8 @@ export interface RoleAssignmentInfo {
   region?: string;
   roleType?: string;
   roleName?: string;
+  beginTime?: string;
+  endTime?: string;
 }
 
 export interface UserDetails {
@@ -39,4 +41,7 @@ export enum UserRole {
   Ctsc = 'ctsc',
   Ogd = 'ogd',
   CTSC = 'ctsc',
+  HearingManager = 'hearing-manager',
+  HearingViewer = 'hearing-viewer',
+  ListedHearingViewer = 'listed-hearing-viewer'
 }

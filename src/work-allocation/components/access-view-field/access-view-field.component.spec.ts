@@ -85,7 +85,8 @@ describe('WorkAllocation', () => {
         requestDate: '01-01-2021',
         specificAccessReason: 'I want to test',
         reviewerRoleCategory: 'Judicial',
-        infoRequiredComment: 'Need more Infomation'
+        infoRequiredComment: 'Need more Infomation',
+        endDate: '15-01-2022'
       };
       fixture.detectChanges();
       wrapper.appComponentRef.viewRejection();
@@ -101,7 +102,8 @@ describe('WorkAllocation', () => {
         dateSubmitted: '01-01-2021',
         specificAccessReason: 'I want to test',
         reviewerRoleCategory: 'Judicial',
-        infoRequiredComment: 'Need more Infomation'
+        infoRequiredComment: 'Need more Infomation',
+        endDate: '15-01-2022'
       } });
     });
   });

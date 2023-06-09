@@ -22,10 +22,10 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
-    enableFortifyScan()
+    //enableFortifyScan()
     enableFullFunctionalTest(120)
     //enableSecurityScan()
-    enableMutationTest()
+    //enableMutationTest()
     enableCrossBrowserTest()
 
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net/'

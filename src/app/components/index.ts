@@ -1,3 +1,4 @@
+import { InfoMessageContainerComponent } from '../containers/info-message-container/info-message-container.component';
 import { AccessibilityComponent } from './accessibility/accessibility.component';
 import { CaseReferenceSearchBoxComponent } from './case-reference-search-box/case-reference-search-box.component';
 import { CookiePolicyComponent } from './cookie-policy/cookie-policy.component';
@@ -6,6 +7,7 @@ import { GetHelpComponent } from './get-help/get-help.component';
 import { HeaderComponent } from './header/header.component';
 import { HmctsGlobalFooterComponent } from './hmcts-global-footer/hmcts-global-footer.component';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header/hmcts-global-header.component';
+import { InfoMessageComponent } from './info-message/info-message.component';
 import { MediaViewerWrapperComponent } from './media-viewer-wrapper/media-viewer-wrapper.component';
 import { NotAuthorisedComponent } from './not-authorised/not-authorised.component';
 import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
@@ -29,7 +31,9 @@ export const components: any[] = [
   GetHelpComponent,
   SignedOutComponent,
   ApplicationRoutingComponent,
-  CaseReferenceSearchBoxComponent
+  CaseReferenceSearchBoxComponent,
+  InfoMessageContainerComponent,
+  InfoMessageComponent
 ];
 
 export * from './hmcts-global-footer/hmcts-global-footer.component';
@@ -47,3 +51,5 @@ export * from './signed-out/signed-out.component';
 export * from './not-authorised/not-authorised.component';
 export * from './routing/application-routing.component';
 export * from './case-reference-search-box/case-reference-search-box.component';
+export * from '../containers/info-message-container/info-message-container.component';
+export * from './info-message/info-message.component';

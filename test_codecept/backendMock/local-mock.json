@@ -1,0 +1,89 @@
+{
+    "now": false,
+    "protocol": "http",
+    "stub": false,
+    "health": {
+        "ccdComponentApi": "http://localhost:8080/health",
+        "ccdDataApi": "http://localhost:8080/health",
+        "documentsApi": "http://localhost:8080/health",
+        "em_anno_api": "http://localhost:8080",
+        "termsAndConditions": "http://localhost:8080/health",
+        "ccdActivityApi": "http://localhost:8080/health",
+        "locationApi": "http://localhost:8080/health"
+    },
+    "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,CIVIL",
+    "locationsServiceCode": {
+        "IA": "BFA1"
+    },
+    "services": {
+        "ccd": {
+            "componentApi": "http://localhost:8080",
+            "dataApi": "http://localhost:8080",
+            "caseAssignmentApi": "http://localhost:8080",
+            "activityApi": "http://localhost:8080"
+        },
+        "documents": {
+            "api": "http://localhost:8080"
+        },
+        "waWorkflowApi": "http://localhost:8080",
+        "documentsv2": {
+            "api": "http://localhost:8080/cases/documents"
+        },
+        "prd": {
+            "api": "http://localhost:8080"
+        },
+        "em_anno_api": "http://localhost:8080",
+        "idam": {
+            "idamApiUrl": "https://idam-api.aat.platform.hmcts.net",
+            "idamClientID": "xuiwebapp",
+            "idamLoginUrl": "https://idam-web-public.aat.platform.hmcts.net",
+            "indexUrl": "/",
+            "oauthCallbackUrl": "/oauth2/callback",
+            "iss": "https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts"
+        },
+        "location_api": "http://localhost:8080",
+        "work_allocation": {
+            "taskApi": "http://localhost:8080"
+        },
+        "role_assignment": {
+            "roleApi": "http://localhost:8080",
+            "roleMappingApi": "http://localhost:8080"
+        },
+        "case": {
+            "caseworkerApi": "http://localhost:8080",
+            "judicialworkerApi": "http://localhost:8080",
+            "judicialApi": "http://localhost:8080"
+        },
+        "s2s": "http://localhost:8080",
+        "termsAndConditions": "http://localhost:8080",
+        "payments": "http://localhost:8080",
+        "judicialBookingApi": "http://localhost:8080"
+    },
+    "secrets": {
+        "rpx": {
+            "launch-darkly-client-id": "5de6610b23ce5408280f2268",
+            "appinsights-instrumentationkey-mc": "5f607ccb-4ab5-4c9d-a4b9-801868bdf698",
+            "mc-s2s-client-secret": "FHYQN3ZQ3BF66XWR",
+            "mc-idam-client-secret": "DBssSOq0KKLNBf2z",
+            "webapp-redis-connection-string": "redis://localhost:6379",
+            "system-user-name": "cwd_system@mailinator.com",
+            "system-user-password": "Welcome01"
+        }
+    },
+    "feature": {
+        "appInsightsEnabled": false,
+        "proxyEnabled": false,
+        "secureCookieEnabled": false,
+        "helmetEnabled": true,
+        "redisEnabled": false,
+        "oidcEnabled": true,
+        "workAllocationEnabled": true,
+        "substantiveRoleEnabled": true,
+        "accessManagementEnabled": true
+    },
+    "redis": {
+        "prefix": "MC-activity:",
+        "ttl": 86400
+    },
+    "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW"
+}

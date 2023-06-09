@@ -130,8 +130,8 @@ describe('CaseList Filter Reducer', () => {
     it('should set correct object', () => {
       const { initialCaselistState } = filterCaseList;
       const action = new fromCases.FindCaselistPaginationMetadataSuccess({
-        totalPagesCount: 10,
-        totalResultsCount: 25
+        total_pages_count: 10,
+        total_results_count: 25
       });
 
       const state = filterCaseList.caselistReducer(initialCaselistState, action);

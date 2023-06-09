@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { CaseShareConfirmComponent } from './case-share-confirm.component';
@@ -15,7 +16,7 @@ describe('CaseShareConfirmComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [CaseShareConfirmComponent],
       providers: [
-        provideMockStore()
+        provideMockStore(), LoadingService
       ]
     }).compileComponents();
     store = TestBed.inject(Store);

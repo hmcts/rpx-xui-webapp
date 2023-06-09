@@ -1,0 +1,69 @@
+<ng-container *ngIf="!(staffDataFilterService.tableData$ | async); else showTable">
+  <p>Please select filters and click Search</p>
+</ng-container>
+
+<ng-template #showTable>
+  <ng-container *ngIf="(staffDataFilterService.tableData$ | async) as tableData">
+    <ng-container *ngIf="tableData.items.length; else noResultsFound">
+      <div class="govuk-!-margin-bottom-4">
+        <p class="hmcts-pagination__results">
+          Showing <b>{{(tableData.pageNumber * tableData.pageSize) - tableData.pageSize + 1}}</b> to
+          <b>{{ (tableData.pageNumber * tableData.pageSize) > tableData?.totalItems ? tableData?.totalItems : tableData.pageNumber * tableData.pageSize }}</b>
+          of <b>{{ tableData.totalItems }}</b> results
+        </p>
+      </div>
+
+      <div>
+        <table class="govuk-table" cdk-table
+               [dataSource]="tableData.items |
+           paginate: { itemsPerPage: tableData.pageSize, currentPage: tableData.pageNumber, totalItems: tableData.totalItems }">
+          <ng-container cdkColumnDef="name">
+            <th cdk-header-cell *cdkHeaderCellDef>Name</th>
+            <td cdk-cell *cdkCellDef="let element">
+              <a [routerLink]="'/staff/user-details/' + element.case_worker_id">
+                {{element.first_name}} {{element.last_name}}
+              </a>
+            </td>
+          </ng-container>
+
+          <ng-container cdkColumnDef="services">
+            <th cdk-header-cell *cdkHeaderCellDef>Service</th>
+            <td cdk-cell *cdkCellDef="let element">
+              <div *ngFor="let obj of element.services">
+                {{ obj.service }}
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container cdkColumnDef="locations">
+            <th cdk-header-cell *cdkHeaderCellDef>Location</th>
+            <td cdk-cell *cdkCellDef="let element">
+              <div *ngFor="let obj of element.base_locations">
+                {{ obj.location }}
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container cdkColumnDef="jobTitle">
+            <th cdk-header-cell *cdkHeaderCellDef>Job title</th>
+            <td cdk-cell *cdkCellDef="let element">
+              <div *ngFor="let role of element.roles">
+                {{ role.role }}
+              </div>
+            </td>
+          </ng-container>
+
+          <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+          <tr cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <xuilib-hmcts-pagination (pageChange)="emitPageClickEvent($event)" [pageSize]="tableData.pageSize" [showResultCount]="false"></xuilib-hmcts-pagination>
+      </div>
+    </ng-container>
+
+    <ng-template #noResultsFound>
+      <div id="user-list-no-results">
+        <h3 class="govuk-heading-s">{{ noResultsFoundText }}</h3>
+      </div>
+    </ng-template>
+  </ng-container>
+</ng-template>

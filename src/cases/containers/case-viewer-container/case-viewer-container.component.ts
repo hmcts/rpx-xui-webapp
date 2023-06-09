@@ -2,15 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { combineLatest, of } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { catchError, map } from 'rxjs/operators';
-import { WAFeatureConfig } from 'src/work-allocation/models/common/service-config.model';
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import * as fromRoot from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
+import { WAFeatureConfig } from '../../../work-allocation/models/common/service-config.model';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { FeatureVariation } from '../../models/feature-variation.model';
 import { Utils } from '../../utils/utils';
@@ -21,9 +21,6 @@ import { Utils } from '../../utils/utils';
   styleUrls: ['./case-viewer-container.component.scss']
 })
 export class CaseViewerContainerComponent implements OnInit {
-  private static readonly FEATURE_WORK_ALLOCATION_RELEASE_1 = 'WorkAllocationRelease1';
-  private static readonly FEATURE_WORK_ALLOCATION_RELEASE_2 = 'WorkAllocationRelease2';
-
   public caseDetails: CaseView;
   public prependedTabs$: Observable<CaseTab[]>;
   public appendedTabs$: Observable<CaseTab[]>;
@@ -101,11 +98,13 @@ export class CaseViewerContainerComponent implements OnInit {
       this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []),
       this.userRoles$
     ]).pipe(
+      // @ts-ignore
       map(([featureVariations, userRoles]: [FeatureVariation[], string[]]) => {
-        const jurisdictionID = this.caseDetails.case_type.jurisdiction.id;
-        const hasMatchedJurisdictionAndRole = featureVariations.some((featureVariation) =>
-          Utils.hasMatchedJurisdictionAndRole(featureVariation, jurisdictionID, userRoles));
-        return hasMatchedJurisdictionAndRole ? this.appendedTabs : [];
+        const jurisdictionId = this.caseDetails.case_type.jurisdiction.id;
+        const caseTypeId = this.caseDetails.case_type.id;
+        const hasMatchedPermissions = featureVariations.some((featureVariation) =>
+          Utils.hasMatchedPermissions(featureVariation, jurisdictionId, caseTypeId, userRoles));
+        return hasMatchedPermissions ? this.appendedTabs : [];
       })
     );
   }

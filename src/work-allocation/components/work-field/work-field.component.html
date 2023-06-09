@@ -1,6 +1,8 @@
 <ng-container *ngIf="config && workField" [ngSwitch]="config.type" class="xui-work-field">
   <ng-container *ngSwitchCase="fieldType.STRING">
+    <div *ngIf="!(workField.case_role === 'specific-access-denied' && config.name === 'endDate')">
     {{ workField[config.name] }}
+    </div>    
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.CASE_REFERENCE_STRING">
     {{ workField[config.name] | ccdCaseReference }}
@@ -18,7 +20,7 @@
     {{ workField[config.name] | date:'dd/MM/yyyy HH:mm'}}
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.FORMATTED_DATE">
-    {{ workField[config.name] | date:'d MMMM yyyy'}}
+      {{ workField[config.name] | date:'d MMMM yyyy'}}
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.BOOLEAN">
     {{ workField[config.name] | yesNo }}
@@ -40,7 +42,7 @@
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.CASE_NAME">
     <exui-case-name-field [caseName]="workField[config.name]" [caseId]="workField.case_id" [hasAccess]="workField.hasAccess"
-      (click)="clickSubject.next(workField)">
+      (click)="onClick()">
     </exui-case-name-field>
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.TASK_NAME">
@@ -50,6 +52,6 @@
     <exui-derived-icon-field [workField]="workField" [sourceColumn]="config.sourceColumn" [matchValue]="config.matchValue"></exui-derived-icon-field>
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.ACCESS_VIEW">
-    <exui-access-view-field [workField]="workField" [id]="workField.id"></exui-access-view-field>
+    <exui-access-view-field [workField]="workField" [id]="workField.id" (click)="clickSubject.next(workField)"></exui-access-view-field>
   </ng-container>
 </ng-container>

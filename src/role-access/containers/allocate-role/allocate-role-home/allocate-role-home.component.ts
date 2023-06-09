@@ -1,13 +1,13 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { convertToName } from 'src/role-access/utils';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import { AppUtils } from '../../../../app/app-utils';
 import { UserRole } from '../../../../app/models';
 import * as fromAppStore from '../../../../app/store';
+import { convertToName } from '../../../../role-access/utils';
 import {
   checkAnswersVisibilityStates,
   chooseAllocateToVisibilityStates,
@@ -343,7 +343,8 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
         break;
       }
       case AllocateRoleNavigationEvent.CANCEL: {
-        this.router.navigateByUrl(this.allocateRoleService.backUrl);
+        this.router.navigateByUrl(this.allocateRoleService.backUrl)
+          .then(undefined, undefined);
         break;
       }
       default:

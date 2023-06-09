@@ -22,6 +22,8 @@ export class HeaderComponent {
   @Input() public decorate16DigitCaseReferenceSearchBoxInHeader: boolean;
   @Output() public navigate = new EventEmitter<string>();
 
+  public contentHash: string = '#content';
+
   constructor(
     public store: Store<fromRoot.State>,
   ) {}

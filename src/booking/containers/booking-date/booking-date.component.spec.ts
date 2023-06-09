@@ -122,7 +122,7 @@ describe('BookingDateComponent', () => {
     component.formGroup.get('startDate_day').patchValue('11');
     component.formGroup.get('startDate_month').patchValue('11');
     component.formGroup.get('startDate_year').patchValue('2032');
-    component.formGroup.get('endDate_day').patchValue('11');
+    component.formGroup.get('endDate_day').patchValue('12');
     component.formGroup.get('endDate_month').patchValue('11');
     component.formGroup.get('endDate_year').patchValue('2032');
     fixture.detectChanges();

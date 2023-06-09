@@ -1,8 +1,8 @@
 import { ExtraOptions, Routes } from '@angular/router';
-import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
-import { BookingServiceDownComponent, RefreshBookingServiceDownComponent } from 'src/booking/containers';
-import { BookingSystemErrorComponent } from 'src/booking/containers/utils/booking-system-error/booking-system-error.component';
-import { MyTasksComponent } from 'src/work-allocation/containers';
+import { FeatureToggleGuard, RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
+import { BookingServiceDownComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
+import { BookingSystemErrorComponent } from '../booking/containers/utils/booking-system-error/booking-system-error.component';
+import { MyTasksComponent } from '../work-allocation/containers';
 import {
   AccessibilityComponent,
   ApplicationRoutingComponent,
@@ -20,7 +20,8 @@ import { AuthGuard } from './services/auth/auth.guard';
 
 export const routingConfiguration: ExtraOptions = {
   paramsInheritanceStrategy: 'always',
-  scrollPositionRestoration: 'enabled'
+  scrollPositionRestoration: 'enabled',
+  anchorScrolling: 'enabled'
 };
 
 export const ROUTES: Routes = [
@@ -197,6 +198,16 @@ export const ROUTES: Routes = [
       title: 'Refunds',
       needsFeaturesEnabled: ['feature-refunds'],
       featureDisabledRedirect: '/'
+    }
+  },
+  {
+    path: 'staff',
+    canActivate: [AuthGuard, AcceptTermsGuard, RoleGuard],
+    loadChildren: () => import('../staff-administrator/staff-administrator.module').then((m) => m.StaffAdministratorModule),
+    data: {
+      needsRole: ['staff-admin'],
+      roleMatching: RoleMatching.ALL,
+      noRoleMatchRedirect: '/'
     }
   },
   {

@@ -18,7 +18,6 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
   if (!exists(req, 'session.passport.user')) {
     return res.send({}).status(200);
   }
-
   try {
     const { roles } = req.session.passport.user.userinfo;
 
@@ -87,14 +86,18 @@ export function getRoleAssignmentInfo(roleAssignmentResponse: RoleAssignment[]):
     attributes.roleType = roleAssignment.roleType;
     attributes.roleName = roleAssignment.roleName;
     attributes.roleCategory = roleAssignment.roleCategory;
+    attributes.beginTime = roleAssignment.beginTime;
+    attributes.endTime = roleAssignment.endTime;
     roleAssignmentInfo.push(attributes);
   });
   return roleAssignmentInfo;
 }
 
 export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<any[]> {
-  const roleAssignmentInfo = req.session.roleAssignmentResponse ?
-    getRoleAssignmentInfo(req.session.roleAssignmentResponse) :
-    await refreshRoleAssignmentForUser(userInfo, req);
+  const refreshRoleAssignments = req.query && req.query.refreshRoleAssignments
+    ? req.query.refreshRoleAssignments === 'true' : false;
+  const roleAssignmentInfo =
+    req.session.roleAssignmentResponse && !refreshRoleAssignments ? getRoleAssignmentInfo(req.session.roleAssignmentResponse)
+      : await refreshRoleAssignmentForUser(userInfo, req);
   return roleAssignmentInfo;
 }

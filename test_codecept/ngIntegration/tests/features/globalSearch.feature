@@ -8,8 +8,11 @@ Feature: Global search
         Given I navigate to home page
         Then I click on primary navigation header tab "Search", I see selected tab page displayed
         Then I see global search Page
-
+@search_page
     Scenario: Search page field validation
+        Given I set set global search mock results response and resultInfo
+            | caseStartRecord | casesReturned | moreResultsToGo |
+            | 1               | 10            | false           |
         Given I set global search mock results with values
             | index | caseReference    | otherReferences | fullName        | addressLine1      |
             | 0     | 1234567890123456 | some test ref   | Sherlock Holmes | 221B Baker street |
@@ -124,7 +127,7 @@ Feature: Global search
             | 1       | 1234567812345678 | Test Jurisdiction | Case created | Test location 1 | Challenged access  |
             | 2       | Test case 2      | Test Jurisdiction | Case created | Test location 2 | Specific access    |
             | 2       | 8765432187654321 | Test Jurisdiction | Case created | Test location 2 | Specific access    |
-
+@pagination
     Scenario: Case search results view Pagination controls
         Given I set set global search mock results response and resultInfo
             | caseStartRecord | casesReturned | moreResultsToGo |
@@ -173,7 +176,7 @@ Feature: Global search
         When I click action link "View" at row 1 in global search results page
         Then I see case details page
 
-
+@challenged_access
     Scenario: Case search results view validations challenged access
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"

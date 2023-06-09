@@ -2,8 +2,8 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ErrorPageComponent } from './components';
 import { CancelHearingComponent } from './containers/cancel-hearing/cancel-hearing.component';
-import { HearingActualAddEditSummaryComponent } from './containers/hearing-actuals/hearing-actual-add-edit-summary/hearing-actual-add-edit-summary.component';
-import { HearingActualSummaryComponent } from './containers/hearing-actuals/hearing-actual-edit-summary/hearing-actual-summary.component';
+import { HearingActualsAddEditSummaryComponent } from './containers/hearing-actuals/hearing-actuals-add-edit-summary/hearing-actuals-add-edit-summary.component';
+import { HearingActualsEditSummaryComponent } from './containers/hearing-actuals/hearing-actuals-edit-summary/hearing-actuals-edit-summary.component';
 import { HearingActualsFinalConfirmationComponent } from './containers/hearing-actuals/hearing-actuals-final-confirmation/hearing-actuals-final-confirmation.component';
 import { HearingActualsTimingComponent } from './containers/hearing-actuals/hearing-actuals-timing/hearing-actuals-timing.component';
 import { HearingActualsViewEditPartiesComponent } from './containers/hearing-actuals/hearing-actuals-view-edit-parties/hearing-actuals-view-edit-parties.component';
@@ -189,21 +189,21 @@ export const ROUTES: Routes = [
           actualPartHeardReasonCodes: AdjournHearingActualReasonResolver,
           cancelHearingActualReasons: CancelHearingActualReasonResolver
         },
-        component: HearingActualAddEditSummaryComponent,
+        component: HearingActualsAddEditSummaryComponent,
         data: {
           category: HearingCategory.HearingType,
           title: 'HMCTS Hearings | Hearing Actuals | Check details'
         }
       },
       {
-        path: 'hearing-actual-summary',
+        path: 'hearing-actual-edit-summary',
         resolve: {
-          hearingTypes: RefDataResolver,
           caseType: CaseTypesResolver,
+          hearingTypes: RefDataResolver,
           actualPartHeardReasonCodes: AdjournHearingActualReasonResolver,
           cancelHearingActualReasons: CancelHearingActualReasonResolver
         },
-        component: HearingActualSummaryComponent,
+        component: HearingActualsEditSummaryComponent,
         data: {
           category: HearingCategory.HearingType,
           title: 'HMCTS Hearings | Hearing Actuals | Check your answers'

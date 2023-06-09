@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { select, Store } from '@ngrx/store';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
 import { AnswerSource, EXUIDisplayStatusEnum, HearingChannelEnum, LaCaseStatus } from '../../models/hearings.enum';
@@ -22,14 +23,20 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
   public caseStatusName: string;
   public serviceValueSub: Subscription;
   public exuiDisplayStatus = EXUIDisplayStatusEnum;
+  public showSpinner$: Observable<boolean>;
   public isPaperHearing: boolean;
   public displayPanelMembersSection: boolean;
+  public showSpinner: boolean = true;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>, public readonly route: ActivatedRoute) {
+  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
+    public readonly route: ActivatedRoute,
+    private readonly loadingService: LoadingService) {
     this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
   }
 
   public ngOnInit(): void {
+    this.showSpinner$ = this.loadingService.isLoading as any;
+    const loadingToken = this.loadingService.register();
     this.serviceValueSub = this.hearingState$.subscribe((state) => {
       this.isListedCaseStatus = state.hearingRequest.hearingRequestMainModel.hearingResponse.laCaseStatus === LaCaseStatus.LISTED;
       state.hearingList.hearingListMainModel.caseHearings.forEach((caseHearing) => {
@@ -43,6 +50,9 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
       this.isPaperHearing = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR);
       const screenFlow = state.hearingValues && state.hearingValues.serviceHearingValuesModel && state.hearingValues.serviceHearingValuesModel.screenFlow;
       this.displayPanelMembersSection = screenFlow && screenFlow.findIndex((screen) => screen.screenName === ListingInformationSummaryComponent.HEARING_PANEL_SCREEN_NAME) !== -1;
+      this.loadingService.unregister(loadingToken);
+    }, () => {
+      this.loadingService.unregister(loadingToken);
     });
   }
 

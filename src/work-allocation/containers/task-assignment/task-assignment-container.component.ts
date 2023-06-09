@@ -5,11 +5,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
+import { CheckReleaseVersionService } from 'src/work-allocation/services/check-release-version.service';
 
 import { AppUtils } from '../../../app/app-utils';
 import { ErrorMessage, UserInfo, UserRole } from '../../../app/models';
 import { RoleCategory } from '../../../role-access/models';
 import { ConfigConstants } from '../../components/constants';
+import { CONFIG_CONSTANTS_NOT_RELEASE4 } from '../../components/constants/config.constants';
 import { SortOrder, TaskActionType, TaskService } from '../../enums';
 import { FieldConfig } from '../../models/common';
 import { Caseworker, Location } from '../../models/dtos';
@@ -51,13 +53,20 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly angularLocation: AngularLocation,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private checkReleaseVersionService: CheckReleaseVersionService
   ) {}
 
   public get fields(): FieldConfig[] {
-    return this.showAssigneeColumn ?
-      (this.isJudicial ? ConfigConstants.TaskActionsWithAssigneeForJudicial : ConfigConstants.TaskActionsWithAssigneeForLegalOps) :
-      ConfigConstants.TaskActions;
+    let fields = [];
+    if (this.showAssigneeColumn) {
+      fields = (this.isJudicial ? ConfigConstants.TaskActionsWithAssigneeForJudicial : ConfigConstants.TaskActionsWithAssigneeForLegalOps);
+    } else {
+      this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
+        fields = (isRelease4 ? ConfigConstants.AllWorkTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForLegalOps);
+      });
+    }
+    return fields;
   }
 
   private get returnUrl(): string {

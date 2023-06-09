@@ -46,7 +46,7 @@
     "test:smoke": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js",
     "test:smoke:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
     "test:crossbrowser": "protractor ./test/e2e/config/crossbrowser.conf.js",
-    "test:fullfunctional": "yarn run test:api && yarn run test:api && yarn run test:codeceptE2E",
+    "test:fullfunctional": "node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock && yarn run test:api && yarn run test:codeceptE2E",
     "test:fullfunctional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js --local",
     "test:functional": "yarn run test:api && yarn run test:codeceptE2E",
     "test:functional:backup": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",

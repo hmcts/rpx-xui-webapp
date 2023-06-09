@@ -137,7 +137,9 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       const party: PartyDetailsModel = {
         ...partyDetail,
         individualDetails: {
-          ...partyDetail.individualDetails
+          ...partyDetail.individualDetails,
+          reasonableAdjustments: this.getAllPartyFlagsByPartyId(partyDetail.partyID)
+            .filter((flagId) => flagId !== CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID)
         },
         ...organisationDetails && ({ organisationDetails })
       };

@@ -87,7 +87,7 @@ describe('MyCasesComponent', () => {
 
       mockSessionStorageService.getItem.withArgs('userDetails').and.returnValue(JSON.stringify(userInfo));
       localStorageGetItemSpy.and.returnValue(JSON.stringify(locations));
-      spyOn(AppUtils, 'isLegalOpsOrJudicial').and.returnValue(UserRole.Admin);
+      spyOn(AppUtils, 'getUserRole').and.returnValue(UserRole.Admin);
 
       const actual = component.getSearchCaseRequestPagination();
 
@@ -123,7 +123,7 @@ describe('MyCasesComponent', () => {
       const locations = { fields: [{ name: 'locations', value: [{ epimms_id: 'locationID' }] }] };
       mockSessionStorageService.getItem.withArgs('userDetails').and.returnValue(JSON.stringify(userInfo));
       spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify(locations));
-      spyOn(AppUtils, 'isLegalOpsOrJudicial').and.returnValue(UserRole.Admin);
+      spyOn(AppUtils, 'getUserRole').and.returnValue(UserRole.Admin);
 
       const actual = component.getSearchCaseRequestPagination();
 

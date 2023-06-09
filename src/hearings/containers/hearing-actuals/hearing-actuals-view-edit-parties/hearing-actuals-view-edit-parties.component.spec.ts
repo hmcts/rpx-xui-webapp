@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
@@ -189,6 +190,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
         ReactiveFormsModule
       ],
       providers: [
+        LoadingService,
         provideMockStore({ initialState }),
         { provide: LovRefDataService, useValue: lovRefDataService },
         {
@@ -244,7 +246,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
           isPlannedParty: false,
           role: null,
           attendanceType:
-            null,
+          null,
           organisation: null
         }));
   });
@@ -358,6 +360,7 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
         HttpClientTestingModule
       ],
       providers: [
+        LoadingService,
         provideMockStore({ initialState: newState }),
         {
           provide: ActivatedRoute,

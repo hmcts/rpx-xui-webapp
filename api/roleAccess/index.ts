@@ -6,7 +6,7 @@ import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
-import { getServiceRefDataMappingList } from '../serviceRefData';
+import { getServiceRefDataMappingList } from '../ref-data/ref-data-utils';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRole } from '../workAllocation/interfaces/caseRole';

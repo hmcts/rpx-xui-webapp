@@ -1,5 +1,5 @@
 
-@ng 
+@ng @tabs_testing
 Feature: WA Release 2: Case details Tasks tab
 
     Requirements from

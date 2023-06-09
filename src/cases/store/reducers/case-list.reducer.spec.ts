@@ -138,8 +138,8 @@ describe('CaseList Filter Reducer', () => {
 
       expect(state.loading).toEqual(true);
       expect(state.loaded).toEqual(false);
-      expect(state.paginationMetadata.total_pages_count).toEqual(10);
-      expect(state.paginationMetadata.total_results_count).toEqual(25);
+      expect(state.paginationMetadata.totalPagesCount).toEqual(10);
+      expect(state.paginationMetadata.totalResultsCount).toEqual(25);
     });
   });
 

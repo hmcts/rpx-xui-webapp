@@ -11,13 +11,13 @@ describe('ActualHearingsUtils', () => {
     const obj2 = Object.assign({}, day, { plannedStartTime: '2021-03-15' });
     mainModel.hearingPlanned.plannedHearingDays.push(obj2);
     mainModel.hearingPlanned.plannedHearingDays.push(obj1);
-    const hearingDays = ActualHearingsUtils.getActualHearingDays(mainModel);
+    const hearingDays = ActualHearingsUtils.getActualHearingDays(mainModel, false);
     expect(hearingDays).toBeDefined();
   });
 
   it('should return hearing days when hearingActuals are available', () => {
     const mainModel = _.cloneDeep(hearingActualsMainModel);
-    const hearingDays = ActualHearingsUtils.getActualHearingDays(mainModel);
+    const hearingDays = ActualHearingsUtils.getActualHearingDays(mainModel, false);
     expect(hearingDays).toBeDefined();
   });
 

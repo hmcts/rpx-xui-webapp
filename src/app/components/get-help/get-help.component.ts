@@ -20,7 +20,6 @@ export class GetHelpComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
-    this.store.dispatch(new fromRoot.LoadUserDetails());
     this.userDetails$ = this.store.pipe(select(fromRoot.getUserDetails));
     this.userDetails$.subscribe((userDetail: UserDetails) => {
       if (userDetail && userDetail.userInfo) {

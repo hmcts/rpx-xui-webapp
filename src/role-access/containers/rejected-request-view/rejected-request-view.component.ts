@@ -23,6 +23,7 @@ export class RejectedRequestViewComponent implements OnInit {
   public reviewReason: string;
   public reviewerName: string;
   public reviewerRole: string;
+  public endDate: string;
 
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
@@ -49,6 +50,8 @@ export class RejectedRequestViewComponent implements OnInit {
     this.reviewReason = this.route.snapshot.queryParams && this.route.snapshot.queryParams.infoRequired ?
       this.getRejectReason(JSON.parse(this.route.snapshot.queryParams.infoRequired), this.route.snapshot.queryParams.infoRequiredComment)
       : 'No reason for rejection found';
+    this.endDate = this.route.snapshot.queryParams && this.route.snapshot.queryParams.endDate ?
+      this.route.snapshot.queryParams.endDate : '';
   }
 
   public ngOnInit(): void {
@@ -78,9 +81,9 @@ export class RejectedRequestViewComponent implements OnInit {
     window.history.back();
   }
 
-  public goToRequest(): void {
+  public async goToRequest(): Promise<void> {
     const requestUrl = `/cases/case-details/${this.caseReference}/specific-access-request`;
-    this.router.navigate([requestUrl]);
+    await this.router.navigate([requestUrl]);
   }
 
   public getRejectReason(infoRequired: boolean, infoRequiredComment: string): string {

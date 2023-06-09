@@ -48,4 +48,10 @@ export class WorkFieldComponent {
     }
     return null;
   }
+
+  public onClick() {
+    if (this.workField.role !== 'specific-access-denied') {
+      this.clickSubject.next(this.workField);
+    }
+  }
 }

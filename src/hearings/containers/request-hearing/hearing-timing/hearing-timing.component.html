@@ -56,12 +56,12 @@
           <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="noSpecificDate" name="specificDate" type="radio" value="No"
-                formControlName="specificDate" (change)="showDateAvailability();">
+                formControlName="specificDate" (change)="showDateAvailability()">
               <label class="govuk-label govuk-radios__label" for="noSpecificDate">No</label>
             </div>
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="hearingSingleDate" name="specificDate" type="radio" value="Yes"
-                formControlName="specificDate" (change)="showDateAvailability();">
+                formControlName="specificDate" (change)="showDateAvailability()">
               <label class="govuk-label govuk-radios__label" for="hearingSingleDate">Yes</label>
             </div>
             <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Yes'}">
@@ -71,16 +71,21 @@
             </div>
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="hearingDateRange" name="specificDate" type="radio" value="Choose a date range"
-                formControlName="specificDate" (change)="showDateAvailability();">
+                formControlName="specificDate" (change)="showDateAvailability()">
               <label class="govuk-label govuk-radios__label" for="hearingDateRange">Choose a date range</label>
             </div>
             <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Choose a date range'}">
               <div class="govuk-hint">You can enter either or both dates.</div>
-              <div class="govuk-form-group">
-                <xuilib-gov-uk-date [config]="earliestHearingDate" [formGroup]="earliestHearingFormGroup" [errorMessage]="earliestDateOfHearingError"></xuilib-gov-uk-date>
-              </div>
-              <div class="govuk-form-group">
-                <xuilib-gov-uk-date [config]="latestHearingDate" [formGroup]="latestHearingFormGroup" [errorMessage]="latestDateOfHearingError"></xuilib-gov-uk-date>
+              <div [ngClass]="{'govuk-form-group--error': dateRangeWeekendError}">
+                <span class="govuk-error-message" *ngIf="dateRangeWeekendError">
+                  <span class="govuk-visually-hidden">Error:</span> {{dateRangeWeekendError}}
+                </span>
+                <div class="govuk-form-group">
+                  <xuilib-gov-uk-date [config]="earliestHearingDate" [formGroup]="earliestHearingFormGroup" [errorMessage]="earliestDateOfHearingError"></xuilib-gov-uk-date>
+                </div>
+                <div class="govuk-form-group">
+                  <xuilib-gov-uk-date [config]="latestHearingDate" [formGroup]="latestHearingFormGroup" [errorMessage]="latestDateOfHearingError"></xuilib-gov-uk-date>
+                </div>
               </div>
             </div>
           </div>

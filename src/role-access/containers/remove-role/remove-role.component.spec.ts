@@ -5,9 +5,9 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of } from 'rxjs';
-import { CaseworkerDataService } from 'src/work-allocation/services';
 
 import { Caseworker } from '../../../work-allocation/models/dtos';
+import { CaseworkerDataService } from '../../../work-allocation/services';
 import { AnswersComponent } from '../../components';
 import { AllocateRoleStateData, CaseRole, RemoveAllocationNavigationEvent, Role, RoleCategory, TypeOfRole } from '../../models';
 import { CaseRoleDetails } from '../../models/case-role-details.interface';

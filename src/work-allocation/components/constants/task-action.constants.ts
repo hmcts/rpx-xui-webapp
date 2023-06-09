@@ -1,4 +1,5 @@
-import { InfoMessage, TaskActionType } from '../../enums';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { TaskActionType } from '../../enums';
 
 export const TASK_ACTION_CONSTANTS = {
   Assign: { verb: TaskActionType.Assign, successMessage: InfoMessage.ASSIGNED_TASK },

@@ -1,3 +1,4 @@
+<xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
 <exui-task-alert-banner [tasks]="tasks" *ngIf="warningIncluded" alertTitle="Task alert">
 </exui-task-alert-banner>
 <div class="govuk-tabs__panel active-tasks-container" id="event">

@@ -6,7 +6,6 @@ import { Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { UserRole } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
-import { RoleCategoryMappingService } from '../../app/services/role-category-mapping/role-category-mapping.service';
 import * as fromAppStore from '../../app/store';
 import { HearingsGuard } from './hearings-guard';
 
@@ -15,17 +14,20 @@ export class HearingsViewGuard extends HearingsGuard implements CanActivate {
   constructor(protected readonly appStore: Store<fromAppStore.State>,
               protected readonly sessionStorageService: SessionStorageService,
               protected readonly featureToggleService: FeatureToggleService,
-              protected readonly roleCategoryMappingService: RoleCategoryMappingService,
               protected readonly router: Router) {
     super(appStore, sessionStorageService, featureToggleService);
   }
 
   public canActivate(): Observable<boolean> {
-    return super.hasMatchedJurisdictionAndRole().pipe(
-      switchMap((hasMatchedJurisdictionAndRole) => {
-        if (hasMatchedJurisdictionAndRole) {
-          return this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).pipe(
-            map((userRole) => userRole === UserRole.Ogd || userRole === UserRole.LegalOps || userRole === UserRole.Judicial)
+    return super.hasMatchedPermissions().pipe(
+      switchMap((hasMatchedPermissions) => {
+        if (hasMatchedPermissions) {
+          return this.userRoles$.pipe(
+            map((userRoles) =>
+              userRoles.includes(UserRole.HearingViewer) ||
+              userRoles.includes(UserRole.ListedHearingViewer) ||
+              userRoles.includes(UserRole.HearingManager)
+            )
           );
         }
 

@@ -150,4 +150,19 @@ describe('QueryManagementContainerComponent', () => {
       expect(nativeElement.querySelector('.govuk-error-summary')).toBeNull();
     });
   });
+
+  fdescribe('navigateToErrorElement', () => {
+    it('should navigate to the correct element', () => {
+      const nativeElement = fixture.debugElement.nativeElement;
+      component.formGroup.get('fullName').setValue('');
+      component.formGroup.get('subject').setValue('');
+      component.formGroup.get('body').setValue('');
+      component.onContinue();
+      fixture.detectChanges();
+      expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
+      nativeElement.querySelector('#error-fullName').click();
+      fixture.detectChanges();
+      expect(nativeElement.querySelector('#fullName').focus).toHaveBeenCalled();
+    });
+  });
 });

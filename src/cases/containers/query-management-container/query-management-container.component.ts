@@ -81,6 +81,22 @@ export class QueryManagementContainerComponent implements OnInit {
         fieldId: 'body'
       });
     }
+    if (!this.formGroup.get('isHearingRelated').valid) {
+      this.errorMessages.push({
+        title: '',
+        description: RaiseQueryErrorMessage.QUERY_HEARING_RELATED,
+        fieldId: 'isHearingRelated-yes'
+      });
+    } else {
+      if (this.formGroup.get('isHearingRelated').value === true &&
+          this.formGroup.get('hearingDate').value === null) {
+        this.errorMessages.push({
+          title: '',
+          description: RaiseQueryErrorMessage.QUERY_HEARING_DATE,
+          fieldId: 'isHearingRelated-yes'
+        });
+      }
+    }
     window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
   }
 

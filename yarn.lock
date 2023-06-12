@@ -2098,12 +2098,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.13.11-welsh-form-validation-errors-v4":
-  version: 6.13.11-welsh-form-validation-errors-v4
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.13.11-welsh-form-validation-errors-v4"
+"@hmcts/ccd-case-ui-toolkit@npm:6.13.11-welsh-release-v9":
+  version: 6.13.11-welsh-release-v9
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.13.11-welsh-release-v9"
   dependencies:
     tslib: ^2.0.0
-  checksum: 0cadec0e200df33d70f67cd0948377c6cd02c2ca7ee68e6e3fa684041b9eefe36c1acd71588aa7b632bf80af4f178b0b100bcd839538aba3bb31421c5bdd5353
+  checksum: ceb0865c8e9c93a3ad447923bed78ad6c6146490dec544f84d21f229e5f517ed56b5881967c4bb5669170cd3cc544557300491258daab948a1ce96439f9810e0
   languageName: node
   linkType: hard
 
@@ -18146,7 +18146,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.13.11-welsh-form-validation-errors-v4
+    "@hmcts/ccd-case-ui-toolkit": 6.13.11-welsh-release-v9
     "@hmcts/ccpay-web-component": 5.2.2
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

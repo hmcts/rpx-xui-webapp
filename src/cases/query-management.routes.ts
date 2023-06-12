@@ -6,13 +6,13 @@ import { QueryManagementContainerComponent } from './containers';
 export const ROUTES: Routes = [
   {
     path: 'query/:cid',
-    component: QueryManagementContainerComponent,
     resolve: { case: CaseResolver },
     runGuardsAndResolvers: 'always',
     children: [
       {
         path: '',
-        pathMatch: 'full'
+        pathMatch: 'full',
+        component: QueryManagementContainerComponent
       },
       {
         path: ':qid',

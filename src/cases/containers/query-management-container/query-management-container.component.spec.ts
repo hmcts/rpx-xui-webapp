@@ -1,29 +1,50 @@
-import { Component, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { QueryManagementContainerComponent } from './query-management-container.component';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { Pipe, PipeTransform } from '@angular/core';
+import {
+  FormDocument,
+  QueryWriteRaiseQueryComponent,
+  QueryWriteRespondToQueryComponent
+} from '@hmcts/ccd-case-ui-toolkit';
 
-@Component({
-  selector: 'ccd-write-query-management-field',
-  template: `
-    <p>Query Management write component</p>
-  `
-})
-class WriteQueryManagementFieldComponent { }
+@Pipe({ name: 'rpxTranslate' })
+class MockRpxTranslatePipe implements PipeTransform {
+  transform(value: string): string {
+    return value;
+  }
+}
 
 describe('QueryManagementContainerComponent', () => {
   let component: QueryManagementContainerComponent;
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
+  let activatedRoute: ActivatedRoute;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [QueryManagementContainerComponent, WriteQueryManagementFieldComponent]
-    })
-      .compileComponents();
+      declarations: [
+        QueryManagementContainerComponent,
+        QueryWriteRaiseQueryComponent,
+        QueryWriteRespondToQueryComponent,
+        MockRpxTranslatePipe
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute, useValue: {
+            snapshot: {
+              data: {},
+              params: {}
+            }
+          }
+        }
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(QueryManagementContainerComponent);
     component = fixture.componentInstance;
+    activatedRoute = TestBed.inject(ActivatedRoute);
     fixture.detectChanges();
   });
 
@@ -31,9 +52,74 @@ describe('QueryManagementContainerComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render Query Management write component in container', () => {
-    const nativeElement = fixture.debugElement.nativeElement;
-    const writeQueryManagementFieldComponentElement = nativeElement.querySelector('p');
-    expect(writeQueryManagementFieldComponentElement.textContent).toContain('Query Management write component');
+  describe('when it does not have a query id', () => {
+    it('should not set the query item', () => {
+      expect(component.queryItem).toBeUndefined();
+    });
+
+    it('should have the ccd-query-write-raise-query component', () => {
+      const compiled = fixture.debugElement.nativeElement;
+      expect(compiled.querySelector('ccd-query-write-raise-query')).toBeTruthy();
+    });
+  });
+
+  describe('when it has a query id', () => {
+    beforeEach(() => {
+      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '123' } } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+      fixture.detectChanges();
+    });
+
+    it('should set the query item', () => {
+      expect(component.queryItem).toBeDefined();
+    });
+
+    it('should have the ccd-query-write-respond-to-query component', () => {
+      const compiled = fixture.debugElement.nativeElement;
+      expect(compiled.querySelector('ccd-query-write-respond-to-query')).toBeTruthy();
+    });
+  });
+
+  describe('onDocumentCollectionUpdate', () => {
+    it('should set documents value', () => {
+      const documents: FormDocument[] = [
+        {
+          document_filename: 'file1',
+          document_url: 'url1',
+          document_binary_url: 'binary_url1'
+        },
+        {
+          document_filename: 'file2',
+          document_url: 'url2',
+          document_binary_url: 'binary_url2'
+        }
+      ];
+
+      component.onDocumentCollectionUpdate(documents);
+      expect(component.formGroup.get('attachments').value).toEqual([
+        {
+          _links: {
+            self: {
+              href: documents[0].document_url
+            },
+            binary: {
+              href: documents[0].document_binary_url
+            }
+          },
+          originalDocumentName: documents[0].document_filename
+        },
+        {
+          _links: {
+            self: {
+              href: documents[1].document_url
+            },
+            binary: {
+              href: documents[1].document_binary_url
+            }
+          },
+          originalDocumentName: documents[1].document_filename
+        }
+      ]);
+    });
   });
 });

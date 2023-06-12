@@ -30,8 +30,8 @@ export class ActualHearingsUtils {
 
         return {
           hearingDate: existingActualData?.hearingDate || this.getDate(plannedDay.plannedStartTime),
-          hearingStartTime: existingActualData?.hearingStartTime,
-          hearingEndTime: existingActualData?.hearingEndTime,
+          hearingStartTime: existingActualData?.hearingStartTime ? existingActualData.hearingStartTime : plannedDay.plannedStartTime,
+          hearingEndTime: existingActualData?.hearingEndTime ? existingActualData.hearingEndTime : plannedDay.plannedEndTime,
           pauseDateTimes: existingActualData?.pauseDateTimes || [],
           notRequired: existingActualData?.notRequired || false,
           actualDayParties: ActualHearingsUtils.getActualDayParties(existingActualData, plannedDay, isCheckYourAnswersPage)

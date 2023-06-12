@@ -9,7 +9,9 @@
       <div *ngFor="let errorMessage of errorMessages" class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
           <li>
-            <a (click)="navigateToErrorElement(errorMessage.fieldId)" class="validation-error">{{errorMessage.description | rpxTranslate}}</a>
+            <a [id]="'error-' + errorMessage.fieldId"
+              (click)="navigateToErrorElement(errorMessage.fieldId)"
+              class="validation-error">{{errorMessage.description | rpxTranslate}}</a>
           </li>
         </ul>
       </div>

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Resolve, Router } from '@angular/router';
 import { LocationModel } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import * as moment from 'moment';
 import { EMPTY } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
@@ -116,7 +116,6 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     this.sessionStorageService.setItem('bookableServices', JSON.stringify(this.bookableServices));
     return this.locations;
   }
-  // EUI-7909 - remove stops
 
   public addBookingLocations(locations: Location[], bookings: Booking[]): Location[] {
     // TODO: Check if user still has valid bookable role assignment for service

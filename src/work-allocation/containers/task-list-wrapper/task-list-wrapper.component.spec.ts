@@ -65,7 +65,7 @@ describe('TaskListWrapperComponent', () => {
   let mockRpxTranslationService: jasmine.SpyObj<RpxTranslationService>;
 
   beforeEach((() => {
-    mockRpxTranslationService = jasmine.createSpyObj('mockRpxTranslationService', ['translate', 'getTranslation']);
+    mockRpxTranslationService = jasmine.createSpyObj('mockRpxTranslationService', ['translate', 'getTranslation$']);
     storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
       imports: [

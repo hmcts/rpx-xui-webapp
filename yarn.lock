@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-write-view-v11":
-  version: 6.16.0-query-management-write-view-v11
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-write-view-v11"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-document-uploader-v4":
+  version: 6.16.0-query-management-document-uploader-v4
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-document-uploader-v4"
   dependencies:
     tslib: ^2.0.0
-  checksum: 92679a7f277426719c459b3f10e57c853dc7f0c3de12cf94a60bef4094a88868787cf2d9759291b336ced280a51fe9be49249d76247abc3e7ab92823844ae825
+  checksum: 076a199750a814b20094a73277b87c62328bd0187a2d2cdc69a05f8ad68544a3453e9f17ac72f2503269a816b9234082902b83a3161651777257a5779ab0ad99
   languageName: node
   linkType: hard
 
@@ -19117,7 +19117,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-write-view-v11
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-document-uploader-v4
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3
@@ -19240,7 +19240,7 @@ __metadata:
     protractor-cucumber-framework: 6.1.1
     protractor-multiple-cucumber-html-reporter-plugin: 1.8.0
     protractor-screenshot-utils: ^1.0.5
-    rpx-xui-translation: 0.2.1
+    rpx-xui-translation: 0.2.3-yesno-translations-fix-v2
     rx-polling: 1.1.0
     rxjs: ^6.5.3
     rxjs-compat: ^6.6.7
@@ -19270,9 +19270,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:0.2.1":
-  version: 0.2.1
-  resolution: "rpx-xui-translation@npm:0.2.1"
+"rpx-xui-translation@npm:0.2.3-yesno-translations-fix-v2":
+  version: 0.2.3-yesno-translations-fix-v2
+  resolution: "rpx-xui-translation@npm:0.2.3-yesno-translations-fix-v2"
   dependencies:
     dexie: ^3.2.2
     luxon: ^2.4.0
@@ -19280,7 +19280,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^9.1.13
     "@angular/core": ^9.1.13
-  checksum: 79f0e08bfee4e20710f8175d0e32091630b75150d37e047ad7048f638889740c567f5f81df75e5c360df7eedb3d2784c595e1368fd3191775f8fbbd1e9d4f2b4
+  checksum: 5669fed9f095abfb90e69fb2d2c3eb927542d774e33da5f262948516814b6b4f1a55064e55135c0ffa8302a843789bcf79bb624aef747f6f858b081547fbd392
   languageName: node
   linkType: hard
 

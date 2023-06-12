@@ -1,8 +1,9 @@
 import { Component, NgZone, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
-import { combineLatest, Subscription } from 'rxjs';
+import { Observable, Subscription, combineLatest } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import {
   ActualDayPartyModel,
@@ -49,15 +50,18 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   private sub: Subscription;
   private formSub: Subscription;
   public window: any = window;
+  public showSpinner$: Observable<boolean>;
   private plannedDayIndex: number;
+  public showSpinner: boolean = true;
 
   public constructor(private readonly fb: FormBuilder,
-                     private readonly validators: ValidatorsUtils,
-                     private readonly hearingStore: Store<fromHearingStore.State>,
-                     private readonly route: ActivatedRoute,
-                     private readonly renderer: Renderer2,
-                     private readonly router: Router,
-                     private readonly ngZone: NgZone
+    private readonly validators: ValidatorsUtils,
+    private readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly route: ActivatedRoute,
+    private readonly renderer: Renderer2,
+    private readonly router: Router,
+    private readonly ngZone: NgZone,
+    private readonly loadingService: LoadingService
   ) {
     this.form = this.fb.group({
       parties: this.fb.array([], [Validators.maxLength(50)])
@@ -126,6 +130,8 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     });
     this.partyChannels = uniquePartyChannels;
     this.hearingRoles = this.route.snapshot.data.hearingRole;
+    this.showSpinner$ = this.loadingService.isLoading as any;
+    const loadingToken = this.loadingService.register();
     this.sub = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
       .pipe(
         filter(([state]: [HearingActualsStateData, ParamMap]) => !!state.hearingActualsMainModel),
@@ -142,6 +148,9 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
         this.setUpRoleLists();
         this.createForm(this.hearingActualsMainModel);
         this.subscribeToFormChanges();
+        this.loadingService.unregister(loadingToken);
+      }, () => {
+        this.loadingService.unregister(loadingToken);
       });
   }
 

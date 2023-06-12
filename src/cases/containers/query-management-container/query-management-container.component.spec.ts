@@ -1,6 +1,8 @@
+import { Location } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import {
   FormDocument,
   QueryWriteRaiseQueryComponent,
@@ -19,6 +21,7 @@ describe('QueryManagementContainerComponent', () => {
   let component: QueryManagementContainerComponent;
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
   let activatedRoute: ActivatedRoute;
+  const locationMock = jasmine.createSpyObj('Location', ['back']);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -28,15 +31,17 @@ describe('QueryManagementContainerComponent', () => {
         QueryWriteRespondToQueryComponent,
         MockRpxTranslatePipe
       ],
+      imports: [RouterTestingModule],
       providers: [
         {
           provide: ActivatedRoute, useValue: {
             snapshot: {
               data: {},
-              params: {}
+              params: { cid: '123' }
             }
           }
-        }
+        },
+        { provide: Location, useValue: locationMock }
       ]
     }).compileComponents();
   }));
@@ -55,6 +60,11 @@ describe('QueryManagementContainerComponent', () => {
   it('showResponseForm - should not show summary', () => {
     component.showResponseForm();
     expect(component.showSummary).toBeFalsy();
+  });
+
+  it('should navigate to previous page', () => {
+    component.previous();
+    expect(locationMock.back).toHaveBeenCalled();
   });
 
   describe('when it does not have a query id', () => {

@@ -1,6 +1,7 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Document, FormDocument, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
@@ -12,8 +13,11 @@ export class QueryManagementContainerComponent implements OnInit {
   public queryItem: QueryListItem | undefined;
   public showSummary: boolean = false;
   public formGroup: FormGroup = new FormGroup({});
+  private caseId: string;
 
-  constructor(private activatedRoute: ActivatedRoute) {}
+  constructor(private activatedRoute: ActivatedRoute,
+    private readonly router: Router,
+    private location: Location) { }
 
   public ngOnInit(): void {
     this.formGroup = new FormGroup({
@@ -25,6 +29,7 @@ export class QueryManagementContainerComponent implements OnInit {
     });
 
     const queryItemId = this.activatedRoute.snapshot.params.qid;
+    this.caseId = this.activatedRoute.snapshot.params.cid;
     if (queryItemId) {
       this.queryItem = new QueryListItem();
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
@@ -55,5 +60,15 @@ export class QueryManagementContainerComponent implements OnInit {
     );
 
     this.formGroup.get('attachments').setValue(attachments);
+  }
+
+  public goToQueryList(): void {
+    this.router.navigate(['cases', 'case-details', this.caseId]).then(() => {
+      window.location.hash = 'Queries (read-only view)';
+    });
+  }
+
+  public previous(): void {
+    this.location.back();
   }
 }

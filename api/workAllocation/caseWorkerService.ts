@@ -43,13 +43,6 @@ export async function handleCaseWorkerDetails(path: string, req: EnhancedRequest
   return response.data;
 }
 
-export async function handlePostSearch(path: string, payload: string | any, req: EnhancedRequest): Promise<any> {
-  logger.info('post search', payload);
-  const headers = setHeaders(req);
-  const response: AxiosResponse = await http.post(path, payload, { headers });
-  return response;
-}
-
 export async function handlePostRoleAssignments(path: string, payload: any, req: EnhancedRequest): Promise<any> {
   const headers = setHeaders(req);
   headers.pageNumber = 0;
@@ -94,6 +87,24 @@ export async function handlePostCaseWorkersRefData(path: string, userIdsByJurisd
     data.push(userListByService);
   }
   return data;
+}
+
+export async function handlePostCaseWorkersRefDataAll(path: string, userId: any, req: EnhancedRequest): Promise<any> {
+    const payload = {
+      userIds: userId
+    };
+    const headers = setHeaders(req);
+    const response: AxiosResponse = await http.post(path, payload, { headers });
+  return response;
+}
+
+export async function handlePostCaseWorkerSearch(path: string, userId: any, req: EnhancedRequest): Promise<any> {
+    const payload = {
+      userId
+    };
+    const headers = setHeaders(req);
+    const response: AxiosResponse = await http.post(path, payload, { headers });
+  return response;
 }
 
 export async function handlePostJudicialWorkersRefData(path: string, userIds: any, req: EnhancedRequest): Promise<any> {

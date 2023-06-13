@@ -70,6 +70,7 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import * as fromServices from './services';
 import { effects, reducers } from './store';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 @NgModule({
   imports: [

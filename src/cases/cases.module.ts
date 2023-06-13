@@ -67,9 +67,9 @@ import { queryManagementRouting } from './query-management.routes';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 // from services
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import * as fromServices from './services';
 import { effects, reducers } from './store';
-import { RpxTranslationModule } from 'rpx-xui-translation';
 
 @NgModule({
   imports: [

@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-raise-a-query-error-scenarios":
-  version: 6.16.0-query-management-raise-a-query-error-scenarios
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-raise-a-query-error-scenarios"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-raise-a-query-error-scenarios-v2":
+  version: 6.16.0-query-management-raise-a-query-error-scenarios-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-raise-a-query-error-scenarios-v2"
   dependencies:
     tslib: ^2.0.0
-  checksum: 4c40d4563935f1ac4e12cf731678a60daa04d9a5c2a25e422e16524078ea24d421925c1628e2abfe8bbbd3ed69dec4a2121439ada6f2dfdd42f0291c4df8818d
+  checksum: 55213d000f8803138deaed3351673a3cb5cb8a982da717d9f41c28b645df950d07e6ddf1c4cfc29e12cc6f604459f2b4efb3e199c3e143f11ca9763b40e20f68
   languageName: node
   linkType: hard
 
@@ -19117,7 +19117,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-raise-a-query-error-scenarios
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-raise-a-query-error-scenarios-v2
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

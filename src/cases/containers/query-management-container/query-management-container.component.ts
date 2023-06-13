@@ -41,9 +41,9 @@ export class QueryManagementContainerComponent implements OnInit {
   }
 
   public submitForm(): void {
-    this.showSummary = true;
     this.submitted = true;
     this.validateForm();
+    this.showSummary = this.errorMessages?.length === 0;
   }
 
   public onDocumentCollectionUpdate(uploadedDocuments: FormDocument[]): void {

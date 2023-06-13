@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-respond-to-query-fullname-v2":
+"@hmcts/ccd-case-ui-toolkit@file:/Users/mateibaciu/WebstormProjects/HMCTS/ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A.":
   version: 6.16.0-query-management-respond-to-query-fullname-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-respond-to-query-fullname-v2"
+  resolution: "@hmcts/ccd-case-ui-toolkit@file:/Users/mateibaciu/WebstormProjects/HMCTS/ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit#/Users/mateibaciu/WebstormProjects/HMCTS/ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::hash=d36655&locator=rpx-exui%40workspace%3A."
   dependencies:
     tslib: ^2.0.0
-  checksum: d5bd5d9136a4e8503589c58d6c623cbe7711d88bfa7ffe959cc7031e1fffefa768730b01f3dd0b680f4c34cbdb2ede479e114ef93ac0210a9a3bea6320ce34a0
+  checksum: 0a3f4a934a7c170ce15e7d725e025bc18692a38c3c27592f6efd5c98a7dcfcaadae655a5e6bfcf374cb3157e4b6350ae9576131cceea9e2b23c1af3d23edded9
   languageName: node
   linkType: hard
 

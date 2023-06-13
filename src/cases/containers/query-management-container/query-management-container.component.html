@@ -7,6 +7,7 @@
         <ng-container *ngIf="queryItem; else raiseQuery">
           <ccd-query-write-respond-to-query
             [queryItem]="queryItem" [formGroup]="formGroup"
+            [submitted]="submitted"
           ></ccd-query-write-respond-to-query>
         </ng-container>
         <ng-template #raiseQuery>
@@ -30,7 +31,7 @@
           <button class="govuk-button govuk-button--secondary" data-module="govuk-button" [disabled]="true">
             {{ 'Previous' | rpxTranslate }}
           </button>
-          <button class="govuk-button" data-module="govuk-button">
+          <button class="govuk-button" data-module="govuk-button" (click)="onContinue()">
             {{ 'Continue' | rpxTranslate }}
           </button>
         </div>

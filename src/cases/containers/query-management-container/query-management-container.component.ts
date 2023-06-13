@@ -11,6 +11,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 export class QueryManagementContainerComponent implements OnInit {
   public queryItem: QueryListItem | undefined;
   public formGroup: FormGroup = new FormGroup({});
+  public submitted = false;
 
   constructor(private activatedRoute: ActivatedRoute) {}
 
@@ -46,5 +47,9 @@ export class QueryManagementContainerComponent implements OnInit {
     );
 
     this.formGroup.get('attachments').setValue(attachments);
+  }
+
+  public onContinue(): void {
+    this.submitted = true;
   }
 }

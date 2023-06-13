@@ -1,4 +1,3 @@
-import { like } from '@pact-foundation/pact/src/dsl/matchers';
 import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
@@ -15,7 +14,7 @@ const MockApp = require('../../../../../test/nodeMock/app');
 
 describe('Caseworker ref data api, search caseworker', () => {
   const REQUEST_BODY = {
-    userId: {'userId': '004b7164-0943-41b5-95fc-39794af4a9fe'}
+    userId: { 'userId': '004b7164-0943-41b5-95fc-39794af4a9fe' }
   };
 
   const baseLocations = [
@@ -101,7 +100,7 @@ describe('Caseworker ref data api, search caseworker', () => {
           'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
           'content-type': 'application/json'
         },
-        body: {'userId': '004b7164-0943-41b5-95fc-39794af4a9fe'}
+        body: { 'userId': '004b7164-0943-41b5-95fc-39794af4a9fe' }
       });
       let returnedResponse = null;
       const response = mockRes();

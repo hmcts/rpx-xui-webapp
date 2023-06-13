@@ -90,20 +90,20 @@ export async function handlePostCaseWorkersRefData(path: string, userIdsByJurisd
 }
 
 export async function handlePostCaseWorkersRefDataAll(path: string, userId: any, req: EnhancedRequest): Promise<any> {
-    const payload = {
-      userIds: userId
-    };
-    const headers = setHeaders(req);
-    const response: AxiosResponse = await http.post(path, payload, { headers });
+  const payload = {
+    userIds: userId
+  };
+  const headers = setHeaders(req);
+  const response: AxiosResponse = await http.post(path, payload, { headers });
   return response;
 }
 
 export async function handlePostCaseWorkerSearch(path: string, userId: any, req: EnhancedRequest): Promise<any> {
-    const payload = {
-      userId
-    };
-    const headers = setHeaders(req);
-    const response: AxiosResponse = await http.post(path, payload, { headers });
+  const payload = {
+    userId
+  };
+  const headers = setHeaders(req);
+  const response: AxiosResponse = await http.post(path, payload, { headers });
   return response;
 }
 

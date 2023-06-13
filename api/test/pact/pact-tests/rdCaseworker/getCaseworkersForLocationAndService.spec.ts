@@ -13,7 +13,6 @@ const pactSetUp = new PactTestSetup({ provider: 'referenceData_caseworkerRefUser
 const MockApp = require('../../../../../test/nodeMock/app');
 
 describe('Caseworker ref data api, get all caseworkers for a specific location and service', () => {
-
   const baseLocations = [
     { location_id: somethingLike(1), location: somethingLike('National'), is_primary: somethingLike(true) }
   ];
@@ -98,7 +97,7 @@ describe('Caseworker ref data api, get all caseworkers for a specific location a
           'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
           'content-type': 'application/json'
         },
-        params: {locationId: '1', serviceId: 'IA'}
+        params: { locationId: '1', serviceId: 'IA' }
 
       });
       let returnedResponse = null;

@@ -16,7 +16,6 @@ import { getAllRoles } from '../roleAccess/roleAssignmentService';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
-import * as caseServiceMock from './caseService.mock';
 import {
   getUserIdsFromJurisdictionRoleResponse,
   getUserIdsFromRoleApiResponse,

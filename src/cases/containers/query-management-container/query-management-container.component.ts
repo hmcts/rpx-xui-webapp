@@ -93,7 +93,7 @@ export class QueryManagementContainerComponent implements OnInit {
         this.errorMessages.push({
           title: '',
           description: RaiseQueryErrorMessage.QUERY_HEARING_DATE,
-          fieldId: 'isHearingRelated-yes'
+          fieldId: 'hearingDate-day'
         });
       }
     }

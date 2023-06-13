@@ -15,7 +15,7 @@ class MockRpxTranslatePipe implements PipeTransform {
   }
 }
 
-xdescribe('QueryManagementContainerComponent', () => {
+describe('QueryManagementContainerComponent', () => {
   let component: QueryManagementContainerComponent;
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
   let activatedRoute: ActivatedRoute;

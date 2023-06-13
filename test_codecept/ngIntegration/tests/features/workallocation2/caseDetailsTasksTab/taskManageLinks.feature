@@ -98,7 +98,7 @@ Feature Description
     Then I see case details page with message banner "You've reassigned a task to somebody else"
 
 
-@unassign
+
      Scenario: Task manage link actions Unassign
 
          Given I start MockApp

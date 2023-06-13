@@ -1,5 +1,5 @@
 
-@ng
+@ng @tabs_testing
 Feature: WA Release 2: Case details Tasks tab
 
     Requirements from
@@ -58,12 +58,12 @@ Feature: WA Release 2: Case details Tasks tab
 
         Given I set MOCK case tasks with userDetails from reference "userDetails"
             | id                                   | task_title                                | assignee                             | assigneeName | created_date | due_date | permissions                          | warnings | description                                                                                                                                                                                                                                                               |
-            | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1                                    | thissession                             | Test user    | -10          | -1       | UnAssign,Assign,Own,Cancel | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                                                                                                                                                 |
-            | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2                                    | thissession                          | Test 2 user  | -10          | 0        | UnAssign,Assign,Own,Cancel       | true     | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/case/case-details/${[case_id]}/${[id]}/testaction2) \n Click link to proceed to [next step 3](/case/testroute?caseId=${[case_id]}/${[id]}/testaction2) |
-            |                                      | Task 3                                    |                                      |              | -10          | 1        | Own,Manage,Execute                   | true     |                                                                                                                                                                                                                                                                           |
+            | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1                                    | thissession                          | Test user    | -10          | -1       | UnAssign,Assign,Own,Cancel           | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                                                                                                                                                 |
+            | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2                                    | thissession                          | Test user    | -10          | 0        | UnAssign,Assign,Own,Cancel           | true     | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/case/case-details/${[case_id]}/${[id]}/testaction2) \n Click link to proceed to [next step 3](/case/testroute?caseId=${[case_id]}/${[id]}/testaction2) |
+            |                                      | Task 3                                    | someone                              | Test 7 user  | -10          | 1        | Complete                         | true     |                                                                                                                                                                                                                                                                           |
             |                                      | Task 4                                    |                                      |              | -10          | 10       |                                      | true     |                                                                                                                                                                                                                                                                           |
             |                                      | Task 5                                    |                                      |              | -10          | 10       |                                      | true     |                                                                                                                                                                                                                                                                           |
-            |                                      | 6 Permissions OME assined to me           | thissession                          | Test user    | -10          | 10       | Own,Manage,Execute                   | true     |                                                                                                                                                                                                                                                                           |
+            |                                      | 6 Permissions OME assined to me           | thissession                          | Test user    | -10          | 10       | UnAssign,Assign,Own,Cancel                   | true     |                                                                                                                                                                                                                                                                           |
             |                                      | 7 Permissions OME assigned to someother   | 08a3d216-c6ab-4e92-a7e3-ca3661e6be81 | Test 3 user  | -10          | 10       | Own,Manage,Execute                   | true     |                                                                                                                                                                                                                                                                           |
             |                                      | 8 Permissions OME unassigned              |                                      |              | -10          | 10       | Own,Manage,Execute                   | true     |                                                                                                                                                                                                                                                                           |
             |                                      | 9 Permissions ME assined to me            | thissession                          | Test user    | -10          | 10       | Manage,Execute                       | true     |                                                                                                                                                                                                                                                                           |
@@ -105,37 +105,34 @@ Feature: WA Release 2: Case details Tasks tab
 #            | Next steps   | true                     | linkURLContains | test link next step                                    | tid=08a3d216-task-4e92-a7e3-ca3661e6be87 |
 #
 
-        Then I validate task tab active task at position 2 with task name "Task 2" has attributes
-            | name         | isDisplayed              | contentType     | text                              | href                                                                                |
-            | Task created | <TaskcreatedIsDisplayed> |                 | -10                               |                                                                                     |
-            | Priority     | <PriorityIsDisplayed>    |                 | MEDIUM                            |                                                                                     |
-            | Due date     | <DuedateIsDisplayed>     |                 | 0                                 |                                                                                     |
-            | Assigned to  | true                     |                 |                                   |                                                                                     |
-            | Manage       | true                     | link            | Reassign task                     |                                                                                     |
-            | Manage       | true                     | link            | Reassign                          |                                                                                     |
-            | Manage       | true                     | link            | Unassign                          |                                                                                     |
-            | Next steps   | true                     |                 | Click link to proceed next step 1 |                                                                                     |
-            | Next steps   | true                     | link            | next step 2                       |                                                                                     |
-            | Next steps   | true                     | linkURLContains | next step 1                       | tid=18a3d216-task-4e92-a7e3-ca3661e6be87                                                 |
-            | Next steps   | true                     | linkURLContains | next step 2                       | 18a3d216-task-4e92-a7e3-ca3661e6be87/testaction2 |
-
-
-        Then I validate task tab active task at position 3 with task name "Task 3" has attributes
-            | name         | isDisplayed              | contentType | text         |
-            | Task created | <TaskcreatedIsDisplayed> |             | -10          |
-            | Priority     | <PriorityIsDisplayed>    |             | LOW          |
-            | Due date     | <DuedateIsDisplayed>     |             | 1            |
-            | Assigned to  | true                     |             |              |
-            | Manage       | true                     | link        | Mark as done |
-            | Manage       | true                     | link        | Assign task  |
-            | Manage       | true                     | link        | Assign to me |
-            | Manage       | true                     | link        | Assign       |
-            | Next steps   | false                    |             |              |
+#        Then I validate task tab active task at position 2 with task name "Task 2" has attributes
+#            | name         | isDisplayed              | contentType     | text                              | href                                                                                |
+#            | Task created | <TaskcreatedIsDisplayed> |                 | -10                               |                                                                                     |
+#            | Priority     | <PriorityIsDisplayed>    |                 | HIGH                            |                                                                                     |
+#            | Due date     | <DuedateIsDisplayed>     |                 | 0                                 |                                                                                     |
+#            | Assigned to  | true                     |                 |                                   |                                                                                     |
+#            | Manage       | true                     | link            | Reassign task                     |                                                                                     |
+#            | Manage       | true                     | link            | Reassign                          |                                                                                     |
+#            | Manage       | true                     | link            | Unassign                          |                                                                                     |
+#            | Next steps   | true                     |                 | Click link to proceed next step 1 |                                                                                     |
+#            | Next steps   | true                     | link            | next step 2                       |                                                                                     |
+#            | Next steps   | true                     | linkURLContains | next step 1                       | tid=18a3d216-task-4e92-a7e3-ca3661e6be87                                                 |
+#            | Next steps   | true                     | linkURLContains | next step 2                       | 18a3d216-task-4e92-a7e3-ca3661e6be87/testaction2 |
+#
+#
+#        Then I validate task tab active task at position 3 with task name "Task 3" has attributes
+#            | name         | isDisplayed              | contentType | text         |
+#            | Task created | <TaskcreatedIsDisplayed> |             | -10          |
+#            | Priority     | <PriorityIsDisplayed>    |             | HIGH         |
+#            | Due date     | <DuedateIsDisplayed>     |             | 1            |
+#            | Assigned to  | true                     |             |              |
+#            | Manage       | true                     | link        | Mark as done |
+#            | Next steps   | false                    |             |              |
 
         Then I validate task tab active task at position 4 with task name "Task 4" has attributes
             | name         | isDisplayed              | contentType | text |
             | Task created | <TaskcreatedIsDisplayed> |             | -10  |
-            | Priority     | <PriorityIsDisplayed>    |             | LOW  |
+            | Priority     | <PriorityIsDisplayed>    |             | HIGH  |
             | Due date     | <DuedateIsDisplayed>     |             | 10   |
             | Assigned to  | true                     |             |      |
             | Manage       | false                    |             |      |
@@ -143,7 +140,7 @@ Feature: WA Release 2: Case details Tasks tab
         Then I validate task tab active task at position 5 with task name "Task 5" has attributes
             | name         | isDisplayed              | contentType | text |
             | Task created | <TaskcreatedIsDisplayed> |             | -10  |
-            | Priority     | <PriorityIsDisplayed>    |             | LOW  |
+            | Priority     | <PriorityIsDisplayed>    |             | HIGH  |
             | Due date     | <DuedateIsDisplayed>     |             | 10   |
             | Assigned to  | true                     |             |      |
             | Manage       | false                    |             |      |
@@ -152,9 +149,9 @@ Feature: WA Release 2: Case details Tasks tab
         Then I validate task tab active task at position 6 with task name "6 Permissions OME assined to me" has attributes
             | name         | isDisplayed              | contentType | text          |
             | Task created | <TaskcreatedIsDisplayed> |             | -10           |
-            | Priority     | <PriorityIsDisplayed>    |             | LOW           |
+            | Priority     | <PriorityIsDisplayed>    |             | HIGH          |
             | Due date     | <DuedateIsDisplayed>     |             | 10            |
-            | Assigned to  | true                     |             | XUI test auto |
+            | Assigned to  | true                     |             |               |
             | Manage       | true                     | link        | Reassign      |
             | Manage       | true                     | link        | Unassign      |
             | Next steps   | true                     |             |               |

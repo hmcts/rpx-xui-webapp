@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
-import { UserService } from 'src/app/services/user/user.service';
+import { UserService } from '../../app/services/user/user.service';
 import { initialState } from '../hearing.test.data';
 import { IsHiddenSource } from '../models/hearings.enum';
 import { LocationByEPIMMSModel } from '../models/location.model';

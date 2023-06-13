@@ -44,6 +44,14 @@ describe('Header Component', () => {
     expect(component.emitNavigate).toHaveBeenCalled();
   });
 
+  it('should call emitNavigate with event and this.navigate', () => {
+    const event = {};
+    spyOn(component, 'emitNavigate');
+
+    component.onNavigate(event);
+    expect(component.emitNavigate).toHaveBeenCalled();
+  });
+
   it('should emitNavigate', () => {
     const event = {};
     const emitter = jasmine.createSpyObj('emitter', ['emit']);

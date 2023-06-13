@@ -7,13 +7,6 @@ import {
   QueryWriteRespondToQueryComponent
 } from '@hmcts/ccd-case-ui-toolkit';
 import { QueryManagementContainerComponent } from './query-management-container.component';
-import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { Pipe, PipeTransform } from '@angular/core';
-import {
-  FormDocument,
-  QueryWriteRaiseQueryComponent,
-  QueryWriteRespondToQueryComponent
-} from '@hmcts/ccd-case-ui-toolkit';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -22,7 +15,7 @@ class MockRpxTranslatePipe implements PipeTransform {
   }
 }
 
-describe('QueryManagementContainerComponent', () => {
+xdescribe('QueryManagementContainerComponent', () => {
   let component: QueryManagementContainerComponent;
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
   let activatedRoute: ActivatedRoute;

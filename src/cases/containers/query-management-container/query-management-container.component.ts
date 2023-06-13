@@ -12,6 +12,7 @@ import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.e
 })
 export class QueryManagementContainerComponent implements OnInit {
   public queryItem: QueryListItem | undefined;
+  public showSummary: boolean = false;
   public formGroup: FormGroup = new FormGroup({});
   public submitted: boolean;
   public errorMessages: ErrorMessage[] = [];
@@ -35,6 +36,16 @@ export class QueryManagementContainerComponent implements OnInit {
     }
   }
 
+  public showResponseForm(): void {
+    this.showSummary = false;
+  }
+
+  public submitForm(): void {
+    this.showSummary = true;
+    this.submitted = true;
+    this.validateForm();
+  }
+
   public onDocumentCollectionUpdate(uploadedDocuments: FormDocument[]): void {
     const attachments: Document[] = uploadedDocuments.map(
       (document) => ({
@@ -51,11 +62,6 @@ export class QueryManagementContainerComponent implements OnInit {
     );
 
     this.formGroup.get('attachments').setValue(attachments);
-  }
-
-  public onContinue(): void {
-    this.submitted = true;
-    this.validateForm();
   }
 
   public validateForm(): void {

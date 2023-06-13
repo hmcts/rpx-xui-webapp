@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@file:/Users/mateibaciu/WebstormProjects/HMCTS/ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A.":
-  version: 6.16.0-query-management-respond-to-query-fullname-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@file:/Users/mateibaciu/WebstormProjects/HMCTS/ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit#/Users/mateibaciu/WebstormProjects/HMCTS/ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::hash=d36655&locator=rpx-exui%40workspace%3A."
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-respond-to-query-fullname-v3":
+  version: 6.16.0-query-management-respond-to-query-fullname-v3
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-respond-to-query-fullname-v3"
   dependencies:
     tslib: ^2.0.0
-  checksum: 0a3f4a934a7c170ce15e7d725e025bc18692a38c3c27592f6efd5c98a7dcfcaadae655a5e6bfcf374cb3157e4b6350ae9576131cceea9e2b23c1af3d23edded9
+  checksum: 907a5c88229a92e9c0206c190b3b2b5f02515a67ca2e0ecee80b7fe560d1ae52d55a2e3d2fc8967a953f242c2cb93472d95ce8d8f35ca43bc12c2b3ed9ffb180
   languageName: node
   linkType: hard
 
@@ -19117,7 +19117,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-respond-to-query-fullname-v2
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-respond-to-query-fullname-v3
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

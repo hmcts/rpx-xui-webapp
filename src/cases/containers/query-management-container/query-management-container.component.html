@@ -2,7 +2,7 @@
 
 <div class="govuk-width-container">
   <main class="govuk-main-wrapper" id="main-content" role="main">
-    <ng-container [formGroup]="formGroup">
+    <ng-container *ngIf="!showSummary" [formGroup]="formGroup">
       <div>
         <ng-container *ngIf="queryItem; else raiseQuery">
           <ccd-query-write-respond-to-query
@@ -30,12 +30,15 @@
           <button class="govuk-button govuk-button--secondary" data-module="govuk-button" [disabled]="true">
             {{ 'Previous' | rpxTranslate }}
           </button>
-          <button class="govuk-button" data-module="govuk-button">
+          <button class="govuk-button" data-module="govuk-button" (click)="submitForm()">
             {{ 'Continue' | rpxTranslate }}
           </button>
         </div>
       </div>
     </ng-container>
+
+    <ccd-query-check-your-answers *ngIf="showSummary" [queryItem]="queryItem" [formGroup]="formGroup" (backClicked)="showResponseForm()">
+    </ccd-query-check-your-answers>
 
     <div>
       <ng-container *ngIf="queryItem; else raiseQueryBackLink">

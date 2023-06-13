@@ -1,12 +1,12 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { QueryManagementContainerComponent } from './query-management-container.component';
-import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { Pipe, PipeTransform } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import {
   FormDocument,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent
 } from '@hmcts/ccd-case-ui-toolkit';
+import { QueryManagementContainerComponent } from './query-management-container.component';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -50,6 +50,11 @@ describe('QueryManagementContainerComponent', () => {
 
   it('should create component', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('showResponseForm - should not show summary', () => {
+    component.showResponseForm();
+    expect(component.showSummary).toBeFalsy();
   });
 
   describe('when it does not have a query id', () => {

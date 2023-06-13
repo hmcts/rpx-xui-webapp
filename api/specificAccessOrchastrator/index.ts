@@ -191,34 +191,42 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
       }
     }, { headers });
 
-    const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse[0];
+    const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse
+      .find((role) => role.roleName === 'specific-access-granted' || role.roleName === 'specific-access-denied');
 
-    delete singleRoleAssignment.id;
-    singleRoleAssignment.attributes = {
-      ...singleRoleAssignment.attributes,
-      ...req.body.attributesToUpdate
-    };
+    //Delete secondary role assignment
+    if (singleRoleAssignment.roleName === 'specific-access-granted') {
+      await http.delete(`${updatePath}/${singleRoleAssignment.id}`, { headers });
+    }
 
-    singleRoleAssignment.notes = [{
-      userId: actorId,
-      time: new Date(),
-      comment: singleRoleAssignment.attributes.accessReason
-    }];
+    //Create new role assignment
+    if (singleRoleAssignment.roleName === 'specific-access-denied') {
+      singleRoleAssignment.notes = [{
+        userId: actorId,
+        time: new Date(),
+        comment: JSON.stringify(singleRoleAssignment.attributes.specificAccessReason)
+      }];
 
-    const roleAssignmentUpdate = {
-      roleRequest: {
-        assignerId: actorId,
-        process: 'specific-access',
-        reference: `${caseId}/${singleRoleAssignment.roleName}/${actorId}`,
-        replaceExisting: true
-      },
-      requestedRoles: [singleRoleAssignment]
-    };
+      singleRoleAssignment.attributes.isNew = req.body.attributesToUpdate.isNew;
 
-    const response = await http.post(updatePath, { ...roleAssignmentUpdate }, { headers });
+      const roleAssignmentUpdate = {
+        roleRequest: {
+          assignerId: actorId,
+          process: 'specific-access',
+          reference: `${caseId}/${singleRoleAssignment.attributes.requestedRole}/${actorId}`,
+          replaceExisting: true
+        },
+        requestedRoles: [singleRoleAssignment]
+      };
+
+      delete roleAssignmentUpdate.requestedRoles[0].id;
+
+      await http.post(updatePath, { ...roleAssignmentUpdate }, { headers });
+    }
+
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
 
-    return resp.status(response.status).send(response.data);
+    return resp.status(200).send([]);
   } catch (error) {
     next(error);
   }

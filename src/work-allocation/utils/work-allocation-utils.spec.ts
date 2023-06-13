@@ -3,6 +3,8 @@ import { RoleCategory } from '../../role-access/models';
 import { LocationsByRegion } from '../models/dtos';
 import { TaskPermission } from '../models/tasks';
 import {
+  REDIRECTS,
+  WILDCARD_SERVICE_DOWN,
   getCurrentUserRoleCategory,
   getDestinationUrl,
   getLabel,
@@ -11,9 +13,7 @@ import {
   handleFatalErrors,
   handleTasksFatalErrors,
   locationWithinRegion,
-  REDIRECTS,
-  treatAsFatal,
-  WILDCARD_SERVICE_DOWN
+  treatAsFatal
 } from './work-allocation-utils';
 
 describe('WorkAllocationUtils', () => {

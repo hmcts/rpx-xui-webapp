@@ -44,4 +44,5 @@ export interface RoleCaseData {
   specificAccessReason?: string;
   reviewerRoleCategory?: string;
   infoRequiredComment?: string;
+  next_hearing_date?: Date;
 }

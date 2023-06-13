@@ -2098,12 +2098,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-respond-backlink-text":
-  version: 6.16.0-query-management-respond-backlink-text
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-respond-backlink-text"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-respond-backlink-text-v2":
+  version: 6.16.0-query-management-respond-backlink-text-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-respond-backlink-text-v2"
   dependencies:
     tslib: ^2.0.0
-  checksum: 207d260d569bec52ea72bc326ad48d67a6d99ff7ee5748ad6ae065dc189866543944a30c92f163b70ab49a6065166fdb9a5066d0321eb0866c7af9295205dcd3
+  checksum: 2d3e370840f93fd01845757fe32fbe955da7d0134f23cfd7d4c053c383a5c994ff87fb2b268e8dde5db8fe8abb33d2cf05a08246986e9a6fea159e50bf4ffb89
   languageName: node
   linkType: hard
 
@@ -18145,7 +18145,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-respond-backlink-text
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-respond-backlink-text-v2
     "@hmcts/ccpay-web-component": 5.2.2
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

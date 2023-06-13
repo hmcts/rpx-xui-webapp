@@ -180,7 +180,7 @@ describe('TaskListWrapperComponent', () => {
     });
   });
 
-  // breaks other test 
+  // breaks other test
   xdescribe('onPaginationHandler()', () => {
     it('should handle pagination', () => {
       component.pagination = { page_number: 1, page_size: 25 };

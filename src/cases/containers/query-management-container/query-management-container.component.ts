@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Document, FormDocument, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
+import { Document, FormDocument, QueryListItem, partyMessagesMockData, QueryCreateContext } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -9,6 +9,7 @@ import { Document, FormDocument, QueryListItem, partyMessagesMockData } from '@h
   styleUrls: ['./query-management-container.component.scss']
 })
 export class QueryManagementContainerComponent implements OnInit {
+  public queryCreateContext: QueryCreateContext = QueryCreateContext.NEW;
   public queryItem: QueryListItem | undefined;
   public showSummary: boolean = false;
   public formGroup: FormGroup = new FormGroup({});
@@ -21,6 +22,7 @@ export class QueryManagementContainerComponent implements OnInit {
       subject: new FormControl(null, Validators.required),
       body: new FormControl(null, Validators.required),
       isHearingRelated: new FormControl(null, Validators.required),
+      hearingDate: new FormControl(null),
       attachments: new FormControl([])
     });
 
@@ -28,6 +30,7 @@ export class QueryManagementContainerComponent implements OnInit {
     if (queryItemId) {
       this.queryItem = new QueryListItem();
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
+      this.queryCreateContext = QueryCreateContext.RESPOND;
     }
   }
 

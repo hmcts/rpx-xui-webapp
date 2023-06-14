@@ -79,6 +79,10 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.queryItem).toBeDefined();
     });
 
+    it('should set the query create context to respond', () => {
+      expect(component.queryCreateContext).toEqual('RESPOND');
+    });
+
     it('should have the ccd-query-write-respond-to-query component', () => {
       const compiled = fixture.debugElement.nativeElement;
       expect(compiled.querySelector('ccd-query-write-respond-to-query')).toBeTruthy();

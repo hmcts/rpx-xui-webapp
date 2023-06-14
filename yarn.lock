@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-details-navigation":
-  version: 6.16.0-query-details-navigation
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-details-navigation"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-details-navigation-v1":
+  version: 6.16.0-query-details-navigation-v1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-details-navigation-v1"
   dependencies:
     tslib: ^2.0.0
-  checksum: 59df45d6c0e72ec829f04192696dbcfc7cf4b93e936435b5c6a2e96bbd267cbe33e1338137ede6913967c6e3b8a42d81e49a5851a8f0739c1765405be3b9988d
+  checksum: 1ecbd0705cf3acae727adad27d784c77ce57cb05ba547de7b6399035abcc3df93dca54b22fde68a33320e7640f49a94a4bb5d3395f82d8eaa60ee11ba3543df7
   languageName: node
   linkType: hard
 
@@ -19117,7 +19117,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-details-navigation
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-details-navigation-v1
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

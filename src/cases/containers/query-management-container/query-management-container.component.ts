@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Document, FormDocument, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
+import { Document, FormDocument, QueryItemType, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -13,6 +13,7 @@ export class QueryManagementContainerComponent implements OnInit {
   public showSummary: boolean = false;
   public formGroup: FormGroup = new FormGroup({});
   public submitted = false;
+  public queryCreateContext: QueryItemType;
 
   constructor(private activatedRoute: ActivatedRoute) {}
 
@@ -29,6 +30,7 @@ export class QueryManagementContainerComponent implements OnInit {
     if (queryItemId) {
       this.queryItem = new QueryListItem();
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
+      this.queryCreateContext = queryItemId === '1' ? QueryItemType.RESPOND : QueryItemType.FOLLOWUP;
     }
   }
 
@@ -38,6 +40,7 @@ export class QueryManagementContainerComponent implements OnInit {
 
   public submitForm(): void {
     this.showSummary = true;
+    this.submitted = true;
   }
 
   public onDocumentCollectionUpdate(uploadedDocuments: FormDocument[]): void {
@@ -56,9 +59,5 @@ export class QueryManagementContainerComponent implements OnInit {
     );
 
     this.formGroup.get('attachments').setValue(attachments);
-  }
-
-  public onContinue(): void {
-    this.submitted = true;
   }
 }

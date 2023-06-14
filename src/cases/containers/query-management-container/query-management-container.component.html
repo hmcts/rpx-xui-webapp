@@ -20,8 +20,7 @@
 
       <div class="query-form-container">
         <div class="govuk-form-group" [class.govuk-form-group--error]="formGroup.get('attachments')?.errors?.length">
-          <ccd-query-write-add-documents [formGroup]="formGroup"
-            (documentCollectionUpdate)="onDocumentCollectionUpdate($event)">
+          <ccd-query-write-add-documents [formGroup]="formGroup" (documentCollectionUpdate)="onDocumentCollectionUpdate($event)">
           </ccd-query-write-add-documents>
         </div>
       </div>

@@ -7,6 +7,7 @@ import {
   QueryWriteRespondToQueryComponent
 } from '@hmcts/ccd-case-ui-toolkit';
 import { QueryManagementContainerComponent } from './query-management-container.component';
+import { By } from '@angular/platform-browser';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -150,13 +151,14 @@ describe('QueryManagementContainerComponent', () => {
       component.formGroup.get('fullName').setValue('John Smith');
       component.formGroup.get('subject').setValue('Bring relatives');
       component.formGroup.get('body').setValue('Can I bring my grandma with me so she get out from the residence?');
+      component.formGroup.get('isHearingRelated').setValue(false);
       component.submitForm();
       fixture.detectChanges();
       expect(nativeElement.querySelector('.govuk-error-summary')).toBeNull();
     });
   });
 
-  fdescribe('navigateToErrorElement', () => {
+  describe('navigateToErrorElement', () => {
     it('should navigate to the correct element', () => {
       const nativeElement = fixture.debugElement.nativeElement;
       component.formGroup.get('fullName').setValue('');
@@ -167,7 +169,9 @@ describe('QueryManagementContainerComponent', () => {
       expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
       nativeElement.querySelector('#error-fullName').click();
       fixture.detectChanges();
-      expect(nativeElement.querySelector('#fullName').focus).toHaveBeenCalled();
+      const fullNameElement = nativeElement.querySelector('#fullName');
+      const focusedElement = fixture.debugElement.query(By.css(':focus')).nativeElement;
+      expect(focusedElement).toBe(fullNameElement);
     });
   });
 });

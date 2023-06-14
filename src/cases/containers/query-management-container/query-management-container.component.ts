@@ -26,7 +26,7 @@ export class QueryManagementContainerComponent implements OnInit {
       body: new FormControl(null, Validators.required),
       isHearingRelated: new FormControl(null, Validators.required),
       hearingDate: new FormControl(null),
-      attachments: new FormControl([])
+      attachments: new FormControl([] as Document[])
     });
 
     const queryItemId = this.activatedRoute.snapshot.params.qid;

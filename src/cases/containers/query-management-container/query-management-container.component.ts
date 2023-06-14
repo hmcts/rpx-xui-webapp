@@ -2,7 +2,8 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Document, FormDocument, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
+import { ActivatedRoute } from '@angular/router';
+import { Document, FormDocument, QueryItemType, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -14,6 +15,8 @@ export class QueryManagementContainerComponent implements OnInit {
   public showSummary: boolean = false;
   public formGroup: FormGroup = new FormGroup({});
   private caseId: string;
+  public submitted = false;
+  public queryCreateContext: QueryItemType;
 
   constructor(private activatedRoute: ActivatedRoute,
     private readonly router: Router,
@@ -25,7 +28,7 @@ export class QueryManagementContainerComponent implements OnInit {
       subject: new FormControl(null, Validators.required),
       body: new FormControl(null, Validators.required),
       isHearingRelated: new FormControl(null, Validators.required),
-      attachments: new FormControl([])
+      attachments: new FormControl([] as Document[])
     });
 
     const queryItemId = this.activatedRoute.snapshot.params.qid;
@@ -33,6 +36,7 @@ export class QueryManagementContainerComponent implements OnInit {
     if (queryItemId) {
       this.queryItem = new QueryListItem();
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
+      this.queryCreateContext = queryItemId === '1' ? QueryItemType.RESPOND : QueryItemType.FOLLOWUP;
     }
   }
 
@@ -42,6 +46,7 @@ export class QueryManagementContainerComponent implements OnInit {
 
   public submitForm(): void {
     this.showSummary = true;
+    this.submitted = true;
   }
 
   public onDocumentCollectionUpdate(uploadedDocuments: FormDocument[]): void {

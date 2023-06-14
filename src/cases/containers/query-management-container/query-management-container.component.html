@@ -7,7 +7,7 @@
         <ng-container *ngIf="queryItem; else raiseQuery">
           <ccd-query-write-respond-to-query
             [queryItem]="queryItem" [formGroup]="formGroup"
-            [submitted]="submitted" [QueryCreateContext]="queryCreateContext"
+            [submitted]="submitted" [queryCreateContext]="queryCreateContext"
           ></ccd-query-write-respond-to-query>
         </ng-container>
         <ng-template #raiseQuery>

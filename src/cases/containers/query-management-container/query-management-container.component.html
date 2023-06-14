@@ -20,9 +20,7 @@
 
       <div class="query-form-container">
         <div class="govuk-form-group" [class.govuk-form-group--error]="formGroup.get('attachments')?.errors?.length">
-          <ccd-query-write-add-documents
-            [formGroup]="formGroup"
-            (documentCollectionUpdate)="onDocumentCollectionUpdate($event)">
+          <ccd-query-write-add-documents [formGroup]="formGroup" (documentCollectionUpdate)="onDocumentCollectionUpdate($event)">
           </ccd-query-write-add-documents>
         </div>
       </div>
@@ -39,9 +37,8 @@
       </div>
     </ng-container>
 
-    <ccd-query-check-your-answers
-      *ngIf="showSummary" [queryItem]="queryItem" [formGroup]="formGroup" (backClicked)="showResponseForm()"
-      [queryCreateContext]="queryCreateContext">
+    <ccd-query-check-your-answers *ngIf="showSummary" [queryCreateContext]="queryCreateContext"
+                                  [queryItem]="queryItem" [formGroup]="formGroup" (backClicked)="showResponseForm()">
     </ccd-query-check-your-answers>
 
     <div>

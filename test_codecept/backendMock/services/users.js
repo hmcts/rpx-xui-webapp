@@ -12,10 +12,26 @@ const caseworkersConf = [
 
 ]
 
+const testUsersConf = [
+  { services: ['IA','CIVIL'], role: 'LEGAL_OPERATIONS', roleCategory: 'ORGANISATION', roleType: 'case-allocator', substantive:'Y',
+    id: "test_id", first_name: "test_first", last_name: "test_last", email_id: "test_user@testing.net"}
+]
 
  const users = {
     caseworkers:[],
     judicial:[]
+}
+
+for (const conf of testUsersConf){
+    const cwTemplate = rdcaseworkers.getCaseworkerTemplate();
+    cwTemplate.id = conf.id;
+    cwTemplate.first_name = conf.first_name
+    cwTemplate.last_name = conf.last_name
+    cwTemplate.email_id = conf.email_id
+    cwTemplate.roleCategory = conf.roleCategory
+    cwTemplate.base_location[0].location_id = '20001'
+    rdcaseworkers.caseworkers.push(cwTemplate)
+
 }
 
 for (const conf of caseworkersConf){
@@ -23,10 +39,9 @@ for (const conf of caseworkersConf){
     const role = conf.role;
     const roleType = conf.roleType;
     const roleName = conf.roleName;
-    
 
     for(let i = 0; i < conf.count ;i++){
-       
+
 
         conf.services.forEach(jurisdiction => {
             const cwTemplate = rdcaseworkers.getCaseworkerTemplate();
@@ -52,7 +67,7 @@ for (const conf of caseworkersConf){
 
             roleAssignment.serviceUsersRoleAssignments.push(roleAssignmentTemplate)
         })
-        
+
     }
 }
 

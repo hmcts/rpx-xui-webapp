@@ -4,14 +4,14 @@
     <!-- Error message summary -->
     <div *ngIf="errorMessages.length > 0" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
       <h2 class="govuk-error-summary__title" id="error-summary-title">
-        {{'There is a problem' | rpxTranslate}}
+        {{ 'There is a problem' | rpxTranslate }}
       </h2>
       <div *ngFor="let errorMessage of errorMessages" class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
           <li>
             <a [id]="'error-' + errorMessage.fieldId"
               (click)="navigateToErrorElement(errorMessage.fieldId)"
-              class="validation-error">{{errorMessage.description | rpxTranslate}}</a>
+              class="validation-error">{{ errorMessage.description | rpxTranslate }}</a>
           </li>
         </ul>
       </div>

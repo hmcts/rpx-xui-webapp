@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-respond-to-query-fullname-v5":
-  version: 6.16.0-query-management-respond-to-query-fullname-v5
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-respond-to-query-fullname-v5"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-respond-validation":
+  version: 6.16.0-query-management-respond-validation
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-respond-validation"
   dependencies:
     tslib: ^2.0.0
-  checksum: f7057002efbc8f829a3c60d41d9754b1557226dc03958b0497f7b55be83cc8ac20a68d40f5014a0d2ad0ea677d0dd41af7463acacce83316711d020fb46265b5
+  checksum: 1e1e64601d72acc234c50e3c31726356cff6fd9960887931d5e5af2b4e2d8a7995fbcf35d6864880502fa7a0a14b76578ee891d26838e77c801b498aa9b1240c
   languageName: node
   linkType: hard
 
@@ -19117,7 +19117,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-respond-to-query-fullname-v5
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-respond-validation
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

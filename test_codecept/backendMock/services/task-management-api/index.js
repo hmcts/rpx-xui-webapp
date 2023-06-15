@@ -22,7 +22,9 @@ class TaskManagementApi{
     getSearchTasks(count, totalRecordsCount){
         const tasks = []
         for(let i = 0; i< count; i++){
-            tasks.push(this.getTaskTemplate());
+            const task = this.getTaskTemplate();
+            task.assignee = 'test_id'
+            tasks.push(task);
         }
         return { tasks: tasks, 'total_records': totalRecordsCount };
     }

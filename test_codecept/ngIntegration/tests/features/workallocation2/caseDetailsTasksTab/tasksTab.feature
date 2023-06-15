@@ -135,14 +135,14 @@ Feature: WA Release 2: Case details Tasks tab
                     | Next steps   | true                     |             |               |
 
 
-        Then I validate task tab active task at position 7 with task name "7 Permissions OME assigned to someother" has attributes
-            | name         | isDisplayed              | contentType | text          |
-            | Task created | <TaskcreatedIsDisplayed> |             | -10           |
-            | Priority     | <PriorityIsDisplayed>    |             | URGENT           |
-            | Due date     | <DuedateIsDisplayed>     |             | 10            |
-            | Assigned to  | true                     |             | test_first test_last   |
-            | Manage       | true                     | link        | Mark as done  |
-            | Next steps   | false                    |             |               |
+                Then I validate task tab active task at position 7 with task name "7 Permissions OME assigned to someother" has attributes
+                    | name         | isDisplayed              | contentType | text          |
+                    | Task created | <TaskcreatedIsDisplayed> |             | -10           |
+                    | Priority     | <PriorityIsDisplayed>    |             | URGENT           |
+                    | Due date     | <DuedateIsDisplayed>     |             | 10            |
+                    | Assigned to  | true                     |             | test_first test_last   |
+                    | Manage       | true                     | link        | Mark as done  |
+                    | Next steps   | false                    |             |               |
 
                 Then I validate task tab active task at position 8 with task name "8 Permissions OME unassigned" has attributes
                     | name         | isDisplayed              | contentType | text         |

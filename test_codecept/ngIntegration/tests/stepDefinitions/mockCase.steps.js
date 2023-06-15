@@ -98,13 +98,15 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
             throw Error(` metada field ${property} is not recognised or not implemented in test`);
         }
 
-        mockClient.setUserApiData('','', {status: 200, data: global.scenarioData['caseDetailsReference']});
+        await mockClient.setUserApiData('','', {status: 200, data: global.scenarioData['caseDetailsReference']});
     });
 
     Given('I set MOCK case details {string} service name as {string}', async function (caseDetailsRef, serviceName) {
         const caseDetails = global.scenarioData[caseDetailsRef];
 
         caseDetails.case_type.jurisdiction.name = serviceName;
+        global.scenarioData[caseDetailsRef] = caseDetails;
+        await mockClient.setUserApiData('','', {status: 200, data: global.scenarioData['caseDetailsReference']});
     });
 
     Given('I set MOCK case details {string} state as {string}', async function (caseDetailsRef, name) {

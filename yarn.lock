@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-details-name-pre-filled-v7":
-  version: 6.16.0-query-details-name-pre-filled-v7
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-details-name-pre-filled-v7"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-minor-defects":
+  version: 6.16.0-query-management-minor-defects
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-minor-defects"
   dependencies:
     tslib: ^2.0.0
-  checksum: 04390e5876457195e3d32efeed5fecb846655a8903921b627fc4f612329bcfb05a63f8f82b98966f6dce460c343d9d07384686ee6982411402778efdcf7cf950
+  checksum: b3d51e465d0cfce7b515e2469b30bf5392ac045e01878dcb9f8aaba3b5de03c3356dd65a6b4e7701f61f941d146f66a3aaf511138c341d7b0a29351e43417bf6
   languageName: node
   linkType: hard
 
@@ -19117,7 +19117,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-details-name-pre-filled-v7
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-minor-defects
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

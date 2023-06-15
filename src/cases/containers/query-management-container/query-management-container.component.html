@@ -2,6 +2,23 @@
 
 <div class="govuk-width-container">
   <main class="govuk-main-wrapper" id="main-content" role="main">
+    <!-- Error message summary -->
+    <div *ngIf="errorMessages.length > 0" class="govuk-error-summary"
+         aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+         data-module="govuk-error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">
+        {{ 'There is a problem' | rpxTranslate }}
+      </h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+          <li *ngFor="let errorMessage of errorMessages">
+            <a [id]="'error-' + errorMessage.fieldId" href="javascript:void(0)"
+              (click)="navigateToErrorElement(errorMessage.fieldId)"
+              class="validation-error">{{ errorMessage.description | rpxTranslate }}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
     <ng-container *ngIf="!showSummary" [formGroup]="formGroup">
       <div>
         <ng-container *ngIf="queryItem; else raiseQuery">
@@ -13,7 +30,8 @@
         <ng-template #raiseQuery>
           <div class="query-form-container">
             <ccd-query-write-raise-query
-              [formGroup]="formGroup">
+              [formGroup]="formGroup"
+              [submitted]="submitted">
             </ccd-query-write-raise-query>
           </div>
         </ng-template>

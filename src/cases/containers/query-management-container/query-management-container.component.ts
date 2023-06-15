@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Document, FormDocument, QueryItemType, QueryListItem, partyMessagesMockData, QueryCreateContext } from '@hmcts/ccd-case-ui-toolkit';
+import { Document, FormDocument, QueryCreateContext, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -12,7 +12,7 @@ export class QueryManagementContainerComponent implements OnInit {
   public queryCreateContext: QueryCreateContext = QueryCreateContext.NEW;
   public queryItem: QueryListItem | undefined;
   public showSummary: boolean = false;
-  public formGroup: FormGroup = new FormGroup({});
+  public formGroup: FormGroup;
   public submitted = false;
 
   constructor(private activatedRoute: ActivatedRoute) {}
@@ -31,7 +31,7 @@ export class QueryManagementContainerComponent implements OnInit {
     if (queryItemId) {
       this.queryItem = new QueryListItem();
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
-      this.queryCreateContext = queryItemId === '1' ? QueryItemType.RESPOND : QueryItemType.FOLLOWUP;
+      this.queryCreateContext = queryItemId === '2' ? QueryCreateContext.FOLLOWUP: QueryCreateContext.RESPOND;
     }
   }
 
@@ -42,6 +42,10 @@ export class QueryManagementContainerComponent implements OnInit {
   public submitForm(): void {
     this.showSummary = true;
     this.submitted = true;
+    // Reset hearing date if isHearingRelated
+    if (!this.formGroup.get('isHearingRelated').value) {
+      this.formGroup.get('hearingDate').setValue(null);
+    }
   }
 
   public onDocumentCollectionUpdate(uploadedDocuments: FormDocument[]): void {

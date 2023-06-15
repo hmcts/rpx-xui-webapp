@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import {
   FormDocument,
+  QueryCreateContext,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent
 } from '@hmcts/ccd-case-ui-toolkit';
@@ -57,6 +58,27 @@ describe('QueryManagementContainerComponent', () => {
     expect(component.showSummary).toBeFalsy();
   });
 
+  describe('submitForm', () => {
+    it('should set showSummary to true', () => {
+      expect(component.showSummary).toBe(false);
+      component.submitForm();
+      expect(component.showSummary).toBe(true);
+    });
+
+    it('should set submitted to true', () => {
+      expect(component.submitted).toBe(false);
+      component.submitForm();
+      expect(component.submitted).toBe(true);
+    });
+
+    it('should reset hearing date if isHearingRelated is false', () => {
+      component.formGroup.get('isHearingRelated').setValue(false);
+      component.formGroup.get('hearingDate').setValue('12/12/2023');
+      component.submitForm();
+      expect(component.formGroup.get('hearingDate').value).toBe(null);
+    });
+  });
+
   describe('when it does not have a query id', () => {
     it('should not set the query item', () => {
       expect(component.queryItem).toBeUndefined();
@@ -80,7 +102,7 @@ describe('QueryManagementContainerComponent', () => {
     });
 
     it('should set the query create context to respond', () => {
-      expect(component.queryCreateContext).toEqual('RESPOND');
+      expect(component.queryCreateContext).toEqual(QueryCreateContext.RESPOND);
     });
 
     it('should have the ccd-query-write-respond-to-query component', () => {

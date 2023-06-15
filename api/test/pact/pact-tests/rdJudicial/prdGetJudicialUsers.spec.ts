@@ -28,7 +28,6 @@ user1.email_id = somethingLike('tom.cruz@hmcts.net');
 describe('Judicial ref data api, get all judge users', () => {
   const RESPONSE_BODY = [];
   RESPONSE_BODY.push(user1);
-  // RESPONSE_BODY.push(user2);
 
   describe('post /refdata/judicial/users', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();

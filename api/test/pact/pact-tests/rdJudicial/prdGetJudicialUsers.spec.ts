@@ -9,28 +9,21 @@ import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'referenceData_judicialUsers', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'referenceData_judicial', port: 8000 });
 
 const MockApp = require('../../../../../test/nodeMock/app');
 
 const REQUEST_BODY = {
-  sidam_ids: ['004b7164-0943-41b5-95fc-39794af4a9fe', '004b7164-0943-41b5-95fc-39794af4a9ff'],
-  serviceCode: 'BFA1'
+  userIds: ['004b7164-0943-41b5-95fc-39794af4a9fe', '004b7164-0943-41b5-95fc-39794af4a9ff'],
+  services: ['IA']
 };
 
 const user1 = getDummyJudgeUserDetails();
-user1.sidam_id = somethingLike(REQUEST_BODY.sidam_ids[0]);
+user1.sidam_id = somethingLike(REQUEST_BODY.userIds[0]);
 user1.known_as = somethingLike('Lead judge');
 user1.surname = somethingLike('cruz');
 user1.full_name = somethingLike('Tom cruz');
 user1.email_id = somethingLike('tom.cruz@hmcts.net');
-
-const user2 = getDummyJudgeUserDetails();
-user2.sidam_id = somethingLike(REQUEST_BODY.sidam_ids[1]);
-user2.known_as = somethingLike('Hearing judge');
-user2.surname = somethingLike('hanks');
-user2.full_name = somethingLike('Tom hanks');
-user2.email_id = somethingLike('tom.hanks@hmcts.net');
 
 describe('Judicial ref data api, get all judge users', () => {
   const RESPONSE_BODY = [];
@@ -49,7 +42,7 @@ describe('Judicial ref data api, get all judge users', () => {
       await pactSetUp.provider.setup();
       const interaction = {
         state: 'return judicial user profiles along with their active appointments and authorisations',
-        uponReceiving: 'get list of judicial users',
+        uponReceiving: 'get list of judicial users from search',
         withRequest: {
           method: 'POST',
           path: '/refdata/judicial/users',
@@ -91,7 +84,7 @@ describe('Judicial ref data api, get all judge users', () => {
         return configValues[prop];
       });
 
-      const { getJudicialUsers } = requireReloaded('../../../../roleAccess/index');
+      const { searchJudicialUserByPersonalCodes } = requireReloaded('../../../../prd/judicial/index');
 
       const req = mockReq({
         headers: {
@@ -112,7 +105,7 @@ describe('Judicial ref data api, get all judge users', () => {
       };
 
       try {
-        await getJudicialUsers(req, response, next);
+        await searchJudicialUserByPersonalCodes(req, response, next);
 
         assertResponses(returnedResponse);
         pactSetUp.provider.verify();
@@ -129,11 +122,11 @@ describe('Judicial ref data api, get all judge users', () => {
 
 function assertResponses(dto: any) {
   console.log(JSON.stringify(dto));
-  expect(dto[0].sidam_id).to.be.equal(REQUEST_BODY.sidam_ids[0]);
-  expect(dto[0].known_as).to.be.equal('Lead judge');
+  expect(dto[0].idamId).to.be.equal(REQUEST_BODY.userIds[0]);
+  expect(dto[0].knownAs).to.be.equal('Lead judge');
   expect(dto[0].surname).to.be.equal('cruz');
-  expect(dto[0].full_name).to.be.equal('Tom cruz');
-  expect(dto[0].email_id).to.be.equal('tom.cruz@hmcts.net');
+  expect(dto[0].fullName).to.be.equal('Tom cruz');
+  expect(dto[0].emailId).to.be.equal('tom.cruz@hmcts.net');
 }
 
 function getDummyJudgeUserDetails() {

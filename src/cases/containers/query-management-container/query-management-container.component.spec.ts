@@ -32,7 +32,7 @@ describe('QueryManagementContainerComponent', () => {
       name: 'Test Address Book Case',
       jurisdiction: {
         id: 'TEST',
-        name: 'Test',
+        name: 'Test'
       }
     },
     channels: [],

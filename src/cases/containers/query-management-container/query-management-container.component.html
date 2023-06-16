@@ -2,6 +2,9 @@
 
 <div class="govuk-width-container">
   <main class="govuk-main-wrapper" id="main-content" role="main">
+    <ccd-qualifying-questions
+      [caseTypeQualifyingQuestions$]="caseTypeQualifyingQuestions$"
+    ></ccd-qualifying-questions>
     <ng-container *ngIf="!showSummary" [formGroup]="formGroup">
       <div>
         <ng-container *ngIf="queryItem; else raiseQuery">

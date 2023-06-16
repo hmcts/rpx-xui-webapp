@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Document, FormDocument, QueryItemType, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Observable } from 'rxjs';
 import { CaseTypeQualifyingQuestions } from 'src/cases/models/qualifying-questions/casetype-qualifying-questions.model';
 
 @Component({
@@ -16,7 +17,7 @@ export class QueryManagementContainerComponent implements OnInit {
   public formGroup: FormGroup = new FormGroup({});
   public submitted = false;
   public queryCreateContext: QueryItemType;
-  public caseTypeQualifyingQuestions: CaseTypeQualifyingQuestions;
+  public caseTypeQualifyingQuestions$: Observable<CaseTypeQualifyingQuestions[]>;
 
   constructor(private activatedRoute: ActivatedRoute,
               private readonly featureToggleService: FeatureToggleService) {}
@@ -28,6 +29,12 @@ export class QueryManagementContainerComponent implements OnInit {
       body: new FormControl(null, Validators.required),
       isHearingRelated: new FormControl(null, Validators.required),
       attachments: new FormControl([] as Document[])
+    });
+
+    this.caseTypeQualifyingQuestions$ = this.featureToggleService.getValue('qm-qualifying-questions', []);
+
+    this.caseTypeQualifyingQuestions$.subscribe((x) => {
+      console.log('QQ', x);
     });
 
     const queryItemId = this.activatedRoute.snapshot.params.qid;

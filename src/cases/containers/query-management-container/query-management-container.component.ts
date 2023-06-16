@@ -77,12 +77,12 @@ export class QueryManagementContainerComponent implements OnInit {
   }
 
   public validateForm(): void {
-    const contextIsNew = this.queryCreateContext === QueryItemType.NEW;
     this.errorMessages = [];
+
     if (!this.formGroup.get('fullName').valid) {
       this.errorMessages.push({
         title: '',
-        description: contextIsNew ? RaiseQueryErrorMessage.FULL_NAME : RespondToQueryErrorMessages.FULL_NAME,
+        description: RaiseQueryErrorMessage.FULL_NAME,
         fieldId: 'fullName'
       });
     }
@@ -98,7 +98,7 @@ export class QueryManagementContainerComponent implements OnInit {
     if (!this.formGroup.get('body').valid) {
       this.errorMessages.push({
         title: '',
-        description: contextIsNew ? RaiseQueryErrorMessage.QUERY_BODY : RespondToQueryErrorMessages.QUERY_BODY,
+        description: this.queryCreateContext === QueryItemType.RESPOND ? RaiseQueryErrorMessage.RESPOND_QUERY_BODY : RaiseQueryErrorMessage.QUERY_BODY,
         fieldId: 'body'
       });
     }

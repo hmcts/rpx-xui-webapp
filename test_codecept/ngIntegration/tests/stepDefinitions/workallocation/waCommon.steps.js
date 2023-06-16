@@ -205,6 +205,8 @@ async function loginattemptCheckAndRelogin(username, password, world) {
     Given('I set MOCK with user {string} and roles {string} with reference {string}', async function (useridentifier, roles,mockUserRef) {
       const userDetails = await mockLoginWithRoles(roles.split(','))
       global.scenarioData[mockUserRef] = userDetails;
+      const auth = await browser.driver.manage().getCookie('__auth__')
+      await mockClient.setUserApiData(auth,'', {status: 200, data: global.scenarioData[mockUserRef]});
     });
 
     Given('I add roleAssignmentInfo to MOCK user with reference {string}', async function(userDetailsRef, roleAssignments){
@@ -244,7 +246,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
             const attributeProperties = ['jurisdiction', 'substantive', 'caseType', 'caseId', 'baseLocation', 'primaryLocation']
 
             for (const attr of roleKeys) {
-                const value = boolAttributes.includes(attr) ? roleAssignment[attr].includes('Y') : roleAttributes[attr];
+                const value = boolAttributes.includes(attr) ? roleAssignmentTemplate[attr].includes('Y') : roleAttributes[attr]; //correction may be needed
                 if (attributeProperties.includes(attr)) {
                     roleAssignmentTemplate.attributes[attr] = value;
                 } else {

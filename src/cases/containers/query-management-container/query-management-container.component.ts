@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Document, FormDocument, QueryItemType, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { CaseTypeQualifyingQuestions } from 'src/cases/models/qualifying-questions/casetype-qualifying-questions.model';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -14,8 +16,10 @@ export class QueryManagementContainerComponent implements OnInit {
   public formGroup: FormGroup = new FormGroup({});
   public submitted = false;
   public queryCreateContext: QueryItemType;
+  public caseTypeQualifyingQuestions: CaseTypeQualifyingQuestions;
 
-  constructor(private activatedRoute: ActivatedRoute) {}
+  constructor(private activatedRoute: ActivatedRoute,
+              private readonly featureToggleService: FeatureToggleService) {}
 
   public ngOnInit(): void {
     this.formGroup = new FormGroup({

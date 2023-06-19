@@ -9,6 +9,7 @@ import {
   QueryWriteRespondToQueryComponent
 } from '@hmcts/ccd-case-ui-toolkit';
 import { QueryManagementContainerComponent } from './query-management-container.component';
+import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -166,6 +167,52 @@ describe('QueryManagementContainerComponent', () => {
           originalDocumentName: documents[1].document_filename
         }
       ]);
+    });
+  });
+
+  describe('onContinue', () => {
+    it('should set submitted to true and initiate form validation', () => {
+      spyOn(component, 'validateForm');
+      component.submitForm();
+      expect(component.submitted).toEqual(true);
+      expect(component.validateForm).toHaveBeenCalled();
+    });
+  });
+
+  describe('validateForm', () => {
+    it('should validate the form', () => {
+      const nativeElement = fixture.debugElement.nativeElement;
+      component.formGroup.get('fullName').setValue('');
+      component.formGroup.get('subject').setValue('');
+      component.formGroup.get('body').setValue('');
+      component.submitForm();
+      fixture.detectChanges();
+      expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
+
+      component.formGroup.get('fullName').setValue('John Smith');
+      component.formGroup.get('subject').setValue('Bring relatives');
+      component.formGroup.get('body').setValue('Can I bring my grandma with me so she get out from the residence?');
+      component.formGroup.get('isHearingRelated').setValue(false);
+      component.submitForm();
+      fixture.detectChanges();
+      expect(nativeElement.querySelector('.govuk-error-summary')).toBeNull();
+    });
+  });
+
+  describe('navigateToErrorElement', () => {
+    it('should navigate to the correct element', () => {
+      const nativeElement = fixture.debugElement.nativeElement;
+      component.formGroup.get('fullName').setValue('');
+      component.formGroup.get('subject').setValue('');
+      component.formGroup.get('body').setValue('');
+      component.submitForm();
+      fixture.detectChanges();
+      expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
+      nativeElement.querySelector('#error-fullName').click();
+      fixture.detectChanges();
+      const fullNameElement = nativeElement.querySelector('#fullName');
+      const focusedElement = fixture.debugElement.query(By.css(':focus')).nativeElement;
+      expect(focusedElement).toBe(fullNameElement);
     });
   });
 

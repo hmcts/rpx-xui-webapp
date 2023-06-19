@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ErrorMessage } from '../../../app/models/error-message.model';
+import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Document,
@@ -21,6 +23,7 @@ export class QueryManagementContainerComponent implements OnInit {
   public showSummary: boolean = false;
   public formGroup: FormGroup;
   public submitted = false;
+  public errorMessages: ErrorMessage[] = [];
   public caseView: CaseView;
 
   constructor(
@@ -53,8 +56,10 @@ export class QueryManagementContainerComponent implements OnInit {
   }
 
   public submitForm(): void {
-    this.showSummary = true;
     this.submitted = true;
+    this.validateForm();
+    this.showSummary = this.errorMessages?.length === 0;
+
     // Reset hearing date if isHearingRelated
     if (!this.formGroup.get('isHearingRelated').value) {
       this.formGroup.get('hearingDate').setValue(null);
@@ -77,6 +82,58 @@ export class QueryManagementContainerComponent implements OnInit {
     );
 
     this.formGroup.get('attachments').setValue(attachments);
+  }
+
+  public validateForm(): void {
+    this.errorMessages = [];
+    if (!this.formGroup.get('fullName').valid) {
+      this.errorMessages.push({
+        title: '',
+        description: RaiseQueryErrorMessage.FULL_NAME,
+        fieldId: 'fullName'
+      });
+    }
+    if (!this.formGroup.get('subject').valid) {
+      this.errorMessages.push({
+        title: '',
+        description: RaiseQueryErrorMessage.QUERY_SUBJECT,
+        fieldId: 'subject'
+      });
+    }
+    if (!this.formGroup.get('body').valid) {
+      this.errorMessages.push({
+        title: '',
+        description: RaiseQueryErrorMessage.QUERY_BODY,
+        fieldId: 'body'
+      });
+    }
+    if (!this.formGroup.get('isHearingRelated').valid) {
+      this.errorMessages.push({
+        title: '',
+        description: RaiseQueryErrorMessage.QUERY_HEARING_RELATED,
+        fieldId: 'isHearingRelated-yes'
+      });
+    } else {
+      if (this.formGroup.get('isHearingRelated').value === true &&
+          this.formGroup.get('hearingDate').value === null) {
+        this.errorMessages.push({
+          title: '',
+          description: RaiseQueryErrorMessage.QUERY_HEARING_DATE,
+          fieldId: 'hearingDate-day'
+        });
+      }
+    }
+    window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+  }
+
+  public navigateToErrorElement(elementId: string): void {
+    if (elementId) {
+      const htmlElement = document.getElementById(elementId);
+      if (htmlElement) {
+        htmlElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        htmlElement.focus();
+      }
+    }
   }
 
   public async navigateToCaseOverviewTab(): Promise<void> {

@@ -71,12 +71,6 @@ describe('QueryManagementContainerComponent', () => {
   });
 
   describe('submitForm', () => {
-    it('should set showSummary to true', () => {
-      expect(component.showSummary).toBe(false);
-      component.submitForm();
-      expect(component.showSummary).toBe(true);
-    });
-
     it('should set submitted to true', () => {
       expect(component.submitted).toBe(false);
       component.submitForm();
@@ -89,138 +83,170 @@ describe('QueryManagementContainerComponent', () => {
       component.submitForm();
       expect(component.formGroup.get('hearingDate').value).toBe(null);
     });
-  });
 
-  describe('when it does not have a query id', () => {
-    it('should not set the query item', () => {
-      expect(component.queryItem).toBeUndefined();
+    describe('when form is valid', () => {
+      beforeEach(() => {
+        // Set values so the form is valid
+        component.formGroup.patchValue({
+          fullName: 'Full name',
+          subject: 'subject',
+          body: 'body',
+          isHearingRelated: true,
+          hearingDate: '12/04/2024',
+          attachments: []
+        });
+      });
+
+      it('should set showSummary to true when there are no errorMessages', () => {
+        expect(component.showSummary).toBe(false);
+        component.submitForm();
+        component.errorMessages = [];
+        expect(component.showSummary).toBe(true);
+      });
     });
 
-    it('should have the ccd-query-write-raise-query component', () => {
-      const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector('ccd-query-write-raise-query')).toBeTruthy();
-    });
-  });
-
-  describe('when it has a query id', () => {
-    beforeEach(() => {
-      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '123' } } as unknown as ActivatedRouteSnapshot;
-      component.ngOnInit();
-      fixture.detectChanges();
+    describe('when form is invalid', () => {
+      it('should not set showSummary to true', () => {
+        expect(component.showSummary).toBe(false);
+        component.submitForm();
+        expect(component.showSummary).toBe(false);
+      });
     });
 
-    it('should set the query item', () => {
-      expect(component.queryItem).toBeDefined();
+    describe('when it does not have a query id', () => {
+      it('should not set the query item', () => {
+        expect(component.queryItem).toBeUndefined();
+      });
+
+      it('should have the ccd-query-write-raise-query component', () => {
+        const compiled = fixture.debugElement.nativeElement;
+        expect(compiled.querySelector('ccd-query-write-raise-query')).toBeTruthy();
+      });
     });
 
-    it('should set caseView', () => {
-      expect(component.caseView).toEqual(caseViewMock);
+    describe('when it has a query id', () => {
+      beforeEach(() => {
+        activatedRoute.snapshot = {
+          ...activatedRoute.snapshot,
+          params: { qid: '123' }
+        } as unknown as ActivatedRouteSnapshot;
+        component.ngOnInit();
+        fixture.detectChanges();
+      });
+
+      it('should set the query item', () => {
+        expect(component.queryItem).toBeDefined();
+      });
+
+      it('should set caseView', () => {
+        expect(component.caseView).toEqual(caseViewMock);
+      });
+
+      it('should set the query create context to respond', () => {
+        expect(component.queryCreateContext).toEqual(QueryCreateContext.RESPOND);
+      });
+
+      it('should have the ccd-query-write-respond-to-query component', () => {
+        const compiled = fixture.debugElement.nativeElement;
+        expect(compiled.querySelector('ccd-query-write-respond-to-query')).toBeTruthy();
+      });
     });
 
-    it('should set the query create context to respond', () => {
-      expect(component.queryCreateContext).toEqual(QueryCreateContext.RESPOND);
-    });
-
-    it('should have the ccd-query-write-respond-to-query component', () => {
-      const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector('ccd-query-write-respond-to-query')).toBeTruthy();
-    });
-  });
-
-  describe('onDocumentCollectionUpdate', () => {
-    it('should set documents value', () => {
-      const documents: FormDocument[] = [
-        {
-          document_filename: 'file1',
-          document_url: 'url1',
-          document_binary_url: 'binary_url1'
-        },
-        {
-          document_filename: 'file2',
-          document_url: 'url2',
-          document_binary_url: 'binary_url2'
-        }
-      ];
-
-      component.onDocumentCollectionUpdate(documents);
-      expect(component.formGroup.get('attachments').value).toEqual([
-        {
-          _links: {
-            self: {
-              href: documents[0].document_url
-            },
-            binary: {
-              href: documents[0].document_binary_url
-            }
+    describe('onDocumentCollectionUpdate', () => {
+      it('should set documents value', () => {
+        const documents: FormDocument[] = [
+          {
+            document_filename: 'file1',
+            document_url: 'url1',
+            document_binary_url: 'binary_url1'
           },
-          originalDocumentName: documents[0].document_filename
-        },
-        {
-          _links: {
-            self: {
-              href: documents[1].document_url
+          {
+            document_filename: 'file2',
+            document_url: 'url2',
+            document_binary_url: 'binary_url2'
+          }
+        ];
+
+        component.onDocumentCollectionUpdate(documents);
+        expect(component.formGroup.get('attachments').value).toEqual([
+          {
+            _links: {
+              self: {
+                href: documents[0].document_url
+              },
+              binary: {
+                href: documents[0].document_binary_url
+              }
             },
-            binary: {
-              href: documents[1].document_binary_url
-            }
+            originalDocumentName: documents[0].document_filename
           },
-          originalDocumentName: documents[1].document_filename
-        }
-      ]);
+          {
+            _links: {
+              self: {
+                href: documents[1].document_url
+              },
+              binary: {
+                href: documents[1].document_binary_url
+              }
+            },
+            originalDocumentName: documents[1].document_filename
+          }
+        ]);
+      });
     });
-  });
 
-  describe('onContinue', () => {
-    it('should set submitted to true and initiate form validation', () => {
-      spyOn(component, 'validateForm');
-      component.submitForm();
-      expect(component.submitted).toEqual(true);
-      expect(component.validateForm).toHaveBeenCalled();
+    describe('onContinue', () => {
+      it('should set submitted to true and initiate form validation', () => {
+        spyOn(component, 'validateForm');
+        component.submitForm();
+        expect(component.submitted).toEqual(true);
+        expect(component.validateForm).toHaveBeenCalled();
+      });
     });
-  });
 
-  describe('validateForm', () => {
-    it('should validate the form', () => {
-      const nativeElement = fixture.debugElement.nativeElement;
-      component.formGroup.get('fullName').setValue('');
-      component.formGroup.get('subject').setValue('');
-      component.formGroup.get('body').setValue('');
-      component.submitForm();
-      fixture.detectChanges();
-      expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
+    describe('validateForm', () => {
+      it('should validate the form', () => {
+        const nativeElement = fixture.debugElement.nativeElement;
+        component.formGroup.get('fullName').setValue('');
+        component.formGroup.get('subject').setValue('');
+        component.formGroup.get('body').setValue('');
+        component.submitForm();
+        fixture.detectChanges();
+        expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
 
-      component.formGroup.get('fullName').setValue('John Smith');
-      component.formGroup.get('subject').setValue('Bring relatives');
-      component.formGroup.get('body').setValue('Can I bring my grandma with me so she get out from the residence?');
-      component.formGroup.get('isHearingRelated').setValue(false);
-      component.submitForm();
-      fixture.detectChanges();
-      expect(nativeElement.querySelector('.govuk-error-summary')).toBeNull();
+        component.formGroup.get('fullName').setValue('John Smith');
+        component.formGroup.get('subject').setValue('Bring relatives');
+        component.formGroup.get('body').setValue('Can I bring my grandma with me so she get out from the residence?');
+        component.formGroup.get('isHearingRelated').setValue(false);
+        component.submitForm();
+        fixture.detectChanges();
+        expect(nativeElement.querySelector('.govuk-error-summary')).toBeNull();
+      });
     });
-  });
 
-  describe('navigateToErrorElement', () => {
-    it('should navigate to the correct element', () => {
-      const nativeElement = fixture.debugElement.nativeElement;
-      component.formGroup.get('fullName').setValue('');
-      component.formGroup.get('subject').setValue('');
-      component.formGroup.get('body').setValue('');
-      component.submitForm();
-      fixture.detectChanges();
-      expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
-      nativeElement.querySelector('#error-fullName').click();
-      fixture.detectChanges();
-      const fullNameElement = nativeElement.querySelector('#fullName');
-      const focusedElement = fixture.debugElement.query(By.css(':focus')).nativeElement;
-      expect(focusedElement).toBe(fullNameElement);
+    describe('navigateToErrorElement', () => {
+      it('should navigate to the correct element', () => {
+        const nativeElement = fixture.debugElement.nativeElement;
+        component.formGroup.get('fullName').setValue('');
+        component.formGroup.get('subject').setValue('');
+        component.formGroup.get('body').setValue('');
+        component.submitForm();
+        fixture.detectChanges();
+        expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
+        nativeElement.querySelector('#error-fullName').click();
+        fixture.detectChanges();
+        const fullNameElement = nativeElement.querySelector('#fullName');
+        const focusedElement = fixture.debugElement.query(By.css(':focus')).nativeElement;
+        expect(focusedElement).toBe(fullNameElement);
+      });
     });
-  });
 
-  describe('navigateToCaseOverviewTab', () => {
-    it('should navigate to case overview tab', () => {
-      spyOn(router, 'navigate');
-      component.navigateToCaseOverviewTab();
-      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', caseViewMock.case_id], { fragment: 'Overview' });
+    describe('navigateToCaseOverviewTab', () => {
+      it('should navigate to case overview tab', () => {
+        spyOn(router, 'navigate');
+        component.navigateToCaseOverviewTab();
+        expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', caseViewMock.case_id], {fragment: 'Overview'});
+      });
     });
   });
 });

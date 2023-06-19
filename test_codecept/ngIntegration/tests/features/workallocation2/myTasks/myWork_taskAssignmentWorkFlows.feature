@@ -4,7 +4,6 @@ Feature: WA Release 2: My work - My tasks - Task assignment
     Background: Mock and browser setup
         Given I init MockApp
        
-@codecept_test
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo

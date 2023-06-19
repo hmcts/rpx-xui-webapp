@@ -24,6 +24,12 @@ router.post('/session/user/roles',async (req,res) => {
     res.send({status: 'success'})
 })
 
+router.post('/session/user/info',  async (req,res) => {
+    await sessionService.updateAuthSessionWithUserInfo(req.body.auth, req.body.userInfo)
+    res.send({status: 'success'})
+});
+
+
 
 
 router.post('/session/user/roleAssignments', async (req, res) => {

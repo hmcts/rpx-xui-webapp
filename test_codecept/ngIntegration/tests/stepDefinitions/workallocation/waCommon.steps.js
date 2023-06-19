@@ -124,7 +124,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         const authCookie = authCookies.find(cookie => cookie.name === '__auth__')
         await browser.sleep(10)
         await mockClient.updateAuthSessionWithRoles(authCookie.value, roles)
-        return userDetails
+        return await idamLogin.getUserDetails()
 
         // await browser.get('http://localhost:3000/');
     }
@@ -209,6 +209,19 @@ async function loginattemptCheckAndRelogin(username, password, world) {
       await mockClient.setUserApiData(auth,'', {status: 200, data: global.scenarioData[mockUserRef]});
     });
 
+
+    Given('I set MOCK with user {string} and userInfo with roles {string} with reference {string}', async function (useridentifier,roles ,mockUserRef, datatable) {
+        const userDetails = await mockLoginWithRoles(roles.split(','))
+        const rows = datatable.parse().hashes();
+        const properties = rows[0];
+        for (const key of Object.keys(properties)) {
+            userDetails.userInfo[key] = properties[key]
+        }
+        global.scenarioData[mockUserRef] = userDetails;
+        const auth = await browser.driver.manage().getCookie('__auth__')
+        await mockClient.updateAuthSessionWithUserInfo(auth.value, userDetails.userInfo);
+    });
+
     Given('I add roleAssignmentInfo to MOCK user with reference {string}', async function(userDetailsRef, roleAssignments){
         const boolAttributes = ['isCaseAllocator','bookable'];
         const userDetails = global.scenarioData[userDetailsRef];
@@ -281,16 +294,16 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
     Given('I set MOCK user with reference {string} roleAssignmentInfo', async function (userDetailsRef, roleAssignments) {
         reportLogger.reportDatatable(roleAssignments)
-        const boolAttributes = ['isCaseAllocator'];
+        const boolAttributes = ['isCaseAllocator','contractType', 'bookable'];
         const roleAssignmentArr = [];
-        for (let roleAssignment of roleAssignments.parse().hashes()) {
+        for (const roleAssignment of roleAssignments.parse().hashes()) {
             const roleAssignmentTemplate = roleAssignmentMock.getRoleAssignmentTemplate();
             const roleKeys = Object.keys(roleAssignment);
 
-            const attributeProperties = ['jurisdiction', 'substantive', 'caseType', 'caseId','baseLocation', 'primaryLocation']
+            const attributeProperties = ['jurisdiction', 'substantive', 'caseType', 'caseId', 'baseLocation', 'primaryLocation','bookable']
 
             for(const attr of roleKeys){
-                const value = boolAttributes.includes(attr) ? roleAssignment[attr].includes('Y') : roleAssignment[attr];
+                const value =  boolAttributes.includes(attr) ? roleAssignment[attr].includes('true') : roleAssignment[attr];
                 if (attributeProperties.includes(attr) && value !== ''){
                     roleAssignmentTemplate.attributes[attr] = value;
                 }else{

@@ -49,7 +49,7 @@
         </a>
       </ng-container>
       <ng-template #raiseQueryBackLink>
-        <a href="javascript:void(0)" class="govuk-back-link govuk-!-margin-bottom-0">
+        <a href="javascript:void(0)" class="govuk-back-link govuk-!-margin-bottom-0" (click)="navigateToCaseOverviewTab()">
           {{ 'Cancel and return to case' | rpxTranslate }}
         </a>
       </ng-template>

@@ -1,13 +1,15 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import {
+  CaseView,
   FormDocument,
   QueryCreateContext,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent
 } from '@hmcts/ccd-case-ui-toolkit';
 import { QueryManagementContainerComponent } from './query-management-container.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -20,8 +22,13 @@ describe('QueryManagementContainerComponent', () => {
   let component: QueryManagementContainerComponent;
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
   let activatedRoute: ActivatedRoute;
+  let router: Router;
+  let caseViewMock: CaseView;
 
   beforeEach(waitForAsync(() => {
+    caseViewMock = {
+      case_id: '1234567890'
+    } as CaseView;
     TestBed.configureTestingModule({
       declarations: [
         QueryManagementContainerComponent,
@@ -29,11 +36,14 @@ describe('QueryManagementContainerComponent', () => {
         QueryWriteRespondToQueryComponent,
         MockRpxTranslatePipe
       ],
+      imports: [RouterTestingModule],
       providers: [
         {
           provide: ActivatedRoute, useValue: {
             snapshot: {
-              data: {},
+              data: {
+                case: caseViewMock
+              },
               params: {}
             }
           }
@@ -46,6 +56,7 @@ describe('QueryManagementContainerComponent', () => {
     fixture = TestBed.createComponent(QueryManagementContainerComponent);
     component = fixture.componentInstance;
     activatedRoute = TestBed.inject(ActivatedRoute);
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 
@@ -101,6 +112,10 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.queryItem).toBeDefined();
     });
 
+    it('should set caseView', () => {
+      expect(component.caseView).toEqual(caseViewMock);
+    });
+
     it('should set the query create context to respond', () => {
       expect(component.queryCreateContext).toEqual(QueryCreateContext.RESPOND);
     });
@@ -151,6 +166,14 @@ describe('QueryManagementContainerComponent', () => {
           originalDocumentName: documents[1].document_filename
         }
       ]);
+    });
+  });
+
+  describe('navigateToCaseOverviewTab', () => {
+    it('should navigate to case overview tab', () => {
+      spyOn(router, 'navigate');
+      component.navigateToCaseOverviewTab();
+      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', caseViewMock.case_id], { fragment: 'Overview' });
     });
   });
 });

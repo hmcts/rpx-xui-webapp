@@ -1,7 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Document, FormDocument, QueryCreateContext, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
+import { ActivatedRoute, Router } from '@angular/router';
+import {
+  Document,
+  FormDocument,
+  QueryCreateContext,
+  QueryListItem,
+  partyMessagesMockData,
+  CaseView
+} from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -14,10 +21,16 @@ export class QueryManagementContainerComponent implements OnInit {
   public showSummary: boolean = false;
   public formGroup: FormGroup;
   public submitted = false;
+  public caseView: CaseView;
 
-  constructor(private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+  ) {}
 
   public ngOnInit(): void {
+    this.caseView = this.activatedRoute.snapshot.data.case as CaseView
+
     this.formGroup = new FormGroup({
       fullName: new FormControl(null, Validators.required),
       subject: new FormControl(null, Validators.required),
@@ -64,5 +77,11 @@ export class QueryManagementContainerComponent implements OnInit {
     );
 
     this.formGroup.get('attachments').setValue(attachments);
+  }
+
+  public async navigateToCaseOverviewTab(): Promise<void> {
+    await this.router.navigate(['cases', 'case-details', this.caseView.case_id],
+      { fragment: 'Overview' }
+    );
   }
 }

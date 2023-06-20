@@ -15,7 +15,8 @@ const caseworkersConf = [
 const testUsersConf = [
     {
         services: ['IA', 'CIVIL'], roleCategory: 'LEGAL_OPERATIONS', roleType: 'ORGANISATION', roleName: 'case-allocator', substantive:'Y',
-    id: "test_id", first_name: "test_first", last_name: "test_last", email_id: "test_user@testing.net"}
+    id: "test_id", first_name: "test_first", last_name: "test_last", email_id: "test_user@testing.net",
+     bookings: [{"id":"test_booking_id", "userId":"test_id"}]}
 ]
 
  const users = {
@@ -25,6 +26,8 @@ const testUsersConf = [
 
 for (const conf of testUsersConf){
     const cwTemplate = rdcaseworkers.getCaseworkerTemplate();
+    const bookingsTemplate = roleAssignment.getBookings();
+    bookingsTemplate.bookings = conf.bookings
     cwTemplate.id = conf.id;
     cwTemplate.first_name = conf.first_name
     cwTemplate.last_name = conf.last_name
@@ -47,7 +50,7 @@ for (const conf of testUsersConf){
         roleAssignment.serviceUsersRoleAssignments.push(roleAssignmentTemplate)
     }
 
-    
+
 
 }
 

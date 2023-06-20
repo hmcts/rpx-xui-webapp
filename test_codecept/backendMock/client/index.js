@@ -18,6 +18,14 @@ class BackendMockClient{
         })
     }
 
+
+    async updateAuthSessionWithUserInfo(auth, userInfo) {
+        return await axiosInstance.post(`${this.baseUrl}session/user/info`, {
+            auth: auth,
+            userInfo: userInfo
+        })
+    }
+
     async updateAuthSessionWithRoleAssignments(auth, roleAssignments) {
         await this.setUserApiData(auth, "OnUserRoleAssignments", roleAssignments )
         return await axiosInstance.post(`${this.baseUrl}session/user/roleAssignments`, {

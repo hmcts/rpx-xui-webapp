@@ -13,6 +13,9 @@ const backendMockApp = require('../backendMock/app');
 
 let appWithMockBackend = null;
 const testType = process.env.TEST_TYPE
+
+const debugMode = process.env.DEBUG && process.env.DEBUG.includes('true')
+
 const parallel = process.env.PARALLEL ? process.env.PARALLEL === "true" : false
 const head = process.env.HEAD
 console.log(`testType : ${testType}`)
@@ -210,15 +213,25 @@ exports.config = {
 
 
 async function setup(){
-  await backendMockApp.startServer();
-  await applicationServer.start()
+
+
+  
+  if (!debugMode){
+    await backendMockApp.startServer(debugMode);
+    await applicationServer.start()
+  }
+  
 }
 
 async function teardown(){
-  await backendMockApp.stopServer();
-  await applicationServer.stop()
+  if (!debugMode) {
+    await backendMockApp.stopServer();
+    await applicationServer.stop()
+  }
+ 
   // process.exit(1);
 }
+
 
 async function mochawesomeGenerateReport(){
   const report = await merge({

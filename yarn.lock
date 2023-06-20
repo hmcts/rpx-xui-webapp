@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.15.0-6.16-hotfix-INC5516582":
-  version: 6.15.0-6.16-hotfix-INC5516582
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.15.0-6.16-hotfix-INC5516582"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.1-st-cdam-docstore":
+  version: 6.16.1-st-cdam-docstore
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.1-st-cdam-docstore"
   dependencies:
     tslib: ^2.0.0
-  checksum: 698c5d660b314d598c40dad6b8eed1d98f5dcfd0e8b501aa9e0ee703750519d725547fd016b3dc1e83f11529c4537198063a42ee5ebb1c7d1ee56f320a28373d
+  checksum: 4be2d9328722cda215af940628461530a7132d793d0eb0d834db81ed894cbd11427a01feff5405fe77887386b01eb6d822df1fd1aac502ef3554a54e5ac50412
   languageName: node
   linkType: hard
 
@@ -2152,10 +2152,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/frontend@npm:0.0.39-alpha":
-  version: 0.0.39-alpha
-  resolution: "@hmcts/frontend@npm:0.0.39-alpha"
-  checksum: abadc569f8079e74a32777c69f5d16d5b732c07bd104f501c27951d41b34c0d9c28e1e6b1a6b5ab8952b7a13bc47a6d5bde069748520d2688001748bf55f9032
+"@hmcts/frontend@npm:0.0.50-alpha":
+  version: 0.0.50-alpha
+  resolution: "@hmcts/frontend@npm:0.0.50-alpha"
+  checksum: 40121f8b72d9e4045f8f544458a5a48fd09dab61c75da7d719f5225a0a6019deb84cee08b03b3596fb409dc3518efaed264269257cc6b8e9f6abbdc48d25e4bf
   languageName: node
   linkType: hard
 
@@ -2714,16 +2714,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nicky-lenaers/ngx-scroll-to@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@nicky-lenaers/ngx-scroll-to@npm:1.1.1"
-  dependencies:
-    tslib: ^1.9.0
+"@nicky-lenaers/ngx-scroll-to@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@nicky-lenaers/ngx-scroll-to@npm:9.0.0"
   peerDependencies:
-    "@angular/core": ^6.0.0
-    rxjs: ^6.1.0
-    zone.js: ^0.8.26
-  checksum: 6fa4d9cc9ad536eff22f78fe62157ade3edaef69baae22d8ad22ef4ad36c92c0d4e2b16a861f57fbeeba492f023f641b1ea8f721bb719d66ba838c5e74df41e7
+    "@angular/common": ^8.0.0 || ^9.0.0
+    "@angular/core": ^8.0.0 || ^9.0.0
+    tslib: ^1.10.0
+  checksum: ece47f545bd85d2439cc98dddfaf6a400f8914bfb266881419c6e09e95452abb069cd21f9cb2b76ea3fee43fa26c218a480d9953b91b87ec3533f3733f4d64ac
   languageName: node
   linkType: hard
 
@@ -3038,12 +3036,39 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinonjs/commons@npm:^1, @sinonjs/commons@npm:^1.3.0, @sinonjs/commons@npm:^1.4.0, @sinonjs/commons@npm:^1.7.0":
+"@sinonjs/commons@npm:^1.7.0":
   version: 1.8.3
   resolution: "@sinonjs/commons@npm:1.8.3"
   dependencies:
     type-detect: 4.0.8
   checksum: 6159726db5ce6bf9f2297f8427f7ca5b3dff45b31e5cee23496f1fa6ef0bb4eab878b23fb2c5e6446381f6a66aba4968ef2fc255c1180d753d4b8c271636a2e5
+  languageName: node
+  linkType: hard
+
+"@sinonjs/commons@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@sinonjs/commons@npm:2.0.0"
+  dependencies:
+    type-detect: 4.0.8
+  checksum: 5023ba17edf2b85ed58262313b8e9b59e23c6860681a9af0200f239fe939e2b79736d04a260e8270ddd57196851dde3ba754d7230be5c5234e777ae2ca8af137
+  languageName: node
+  linkType: hard
+
+"@sinonjs/commons@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@sinonjs/commons@npm:3.0.0"
+  dependencies:
+    type-detect: 4.0.8
+  checksum: b4b5b73d4df4560fb8c0c7b38c7ad4aeabedd362f3373859d804c988c725889cde33550e4bcc7cd316a30f5152a2d1d43db71b6d0c38f5feef71fd8d016763f8
+  languageName: node
+  linkType: hard
+
+"@sinonjs/fake-timers@npm:^10.0.2, @sinonjs/fake-timers@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "@sinonjs/fake-timers@npm:10.1.0"
+  dependencies:
+    "@sinonjs/commons": ^3.0.0
+  checksum: f8f7e23a136e32ba0128493207e4223f453e033471257a971acb43840927e738a0838004b1e4fa046279609762a2dd8d700606616e9264dc3891c4f8d45889a2
   languageName: node
   linkType: hard
 
@@ -3056,24 +3081,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinonjs/formatio@npm:^3.2.1":
-  version: 3.2.2
-  resolution: "@sinonjs/formatio@npm:3.2.2"
+"@sinonjs/samsam@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@sinonjs/samsam@npm:8.0.0"
   dependencies:
-    "@sinonjs/commons": ^1
-    "@sinonjs/samsam": ^3.1.0
-  checksum: ddc30698df9b0aa59204da93ca94fd04bc5672ac03c798c0a487c35d514d7d8e0ce0e4c72386fc80e29f59cb1cc54eeea3b7f804281b3c4e3dd2394de56c6e4a
-  languageName: node
-  linkType: hard
-
-"@sinonjs/samsam@npm:^3.1.0, @sinonjs/samsam@npm:^3.3.3":
-  version: 3.3.3
-  resolution: "@sinonjs/samsam@npm:3.3.3"
-  dependencies:
-    "@sinonjs/commons": ^1.3.0
-    array-from: ^2.1.1
-    lodash: ^4.17.15
-  checksum: 340f2f62dec3fa1e5e9300a75996bd12ab9d2da4f6b453fa5d1ee101cc5e58eb218af2e2584b496d41ba31c3c0854d47a691fd9a0d8b9092f3cb6a5c7a080856
+    "@sinonjs/commons": ^2.0.0
+    lodash.get: ^4.4.2
+    type-detect: ^4.0.8
+  checksum: 95e40d0bb9f7288e27c379bee1b03c3dc51e7e78b9d5ea6aef66a690da7e81efc4715145b561b449cefc5361a171791e3ce30fb1a46ab247d4c0766024c60a60
   languageName: node
   linkType: hard
 
@@ -4923,13 +4938,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"array-from@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "array-from@npm:2.1.1"
-  checksum: 4cd5fa27aa6133b99a57c2881d2a8a66ec59b8e17a0c900f7e8ac9a0a2fae450ed682b67435467bfa71ac9328d025a760c5c46a95586a352180c5a79fc13015d
-  languageName: node
-  linkType: hard
-
 "array-union@npm:^1.0.1":
   version: 1.0.2
   resolution: "array-union@npm:1.0.2"
@@ -6192,22 +6200,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chai@npm:^4.2.0":
-  version: 4.3.6
-  resolution: "chai@npm:4.3.6"
-  dependencies:
-    assertion-error: ^1.1.0
-    check-error: ^1.0.2
-    deep-eql: ^3.0.1
-    get-func-name: ^2.0.0
-    loupe: ^2.3.1
-    pathval: ^1.1.1
-    type-detect: ^4.0.5
-  checksum: acff93fd537f96d4a4d62dd83810285dffcfccb5089e1bf2a1205b28ec82d93dff551368722893cf85004282df10ee68802737c33c90c5493957ed449ed7ce71
-  languageName: node
-  linkType: hard
-
-"chai@npm:^4.3.6":
+"chai@npm:^4.3.6, chai@npm:^4.3.7":
   version: 4.3.7
   resolution: "chai@npm:4.3.7"
   dependencies:
@@ -8025,15 +8018,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deep-eql@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "deep-eql@npm:3.0.1"
-  dependencies:
-    type-detect: ^4.0.0
-  checksum: 4f4c9fb79eb994fb6e81d4aa8b063adc40c00f831588aa65e20857d5d52f15fb23034a6576ecf886f7ff6222d5ae42e71e9b7d57113e0715b1df7ea1e812b125
-  languageName: node
-  linkType: hard
-
 "deep-eql@npm:^4.1.2":
   version: 4.1.3
   resolution: "deep-eql@npm:4.1.3"
@@ -8347,14 +8331,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"diff@npm:^3.0.0, diff@npm:^3.5.0":
+"diff@npm:^3.0.0":
   version: 3.5.0
   resolution: "diff@npm:3.5.0"
   checksum: 00842950a6551e26ce495bdbce11047e31667deea546527902661f25cc2e73358967ebc78cf86b1a9736ec3e14286433225f9970678155753a6291c3bca5227b
   languageName: node
   linkType: hard
 
-"diff@npm:^5.0.0":
+"diff@npm:^5.0.0, diff@npm:^5.1.0":
   version: 5.1.0
   resolution: "diff@npm:5.1.0"
   checksum: c7bf0df7c9bfbe1cf8a678fd1b2137c4fb11be117a67bc18a0e03ae75105e8533dbfb1cda6b46beb3586ef5aed22143ef9d70713977d5fb1f9114e21455fba90
@@ -10876,10 +10860,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-frontend@npm:^3.12.0":
-  version: 3.14.0
-  resolution: "govuk-frontend@npm:3.14.0"
-  checksum: 14db4c8fad243c09a89178a2ea932e04a79a6e36ea1a10d3499f783a4d024cab1ecb6879ad6cb5ebdadda8cd3e2b16b1508a7873414be7cdcddc311cf6814bdf
+"govuk-frontend@npm:^4.6.0":
+  version: 4.6.0
+  resolution: "govuk-frontend@npm:4.6.0"
+  checksum: 025a5b99f59aa84586a221b227c66c9ccf48d1b71e6df69ebd39e055b181328dd59ba392cef9f6a38b108c0b1276ba888619cc51343b2e2f35c668772f2ec472
   languageName: node
   linkType: hard
 
@@ -14216,6 +14200,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.get@npm:^4.4.2":
+  version: 4.4.2
+  resolution: "lodash.get@npm:4.4.2"
+  checksum: e403047ddb03181c9d0e92df9556570e2b67e0f0a930fcbbbd779370972368f5568e914f913e93f3b08f6d492abc71e14d4e9b7a18916c31fa04bd2306efe545
+  languageName: node
+  linkType: hard
+
 "lodash.groupby@npm:^4.6.0":
   version: 4.6.0
   resolution: "lodash.groupby@npm:4.6.0"
@@ -14432,22 +14423,6 @@ __metadata:
   version: 1.8.0
   resolution: "loglevel@npm:1.8.0"
   checksum: 41aeea17de24aba8dba68084a31fe9189648bce4f39c1277e021bb276c3c53a75b0d337395919cf271068ad40ecefabad0e4fdeb4a8f11908beee532b898f4a7
-  languageName: node
-  linkType: hard
-
-"lolex@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "lolex@npm:4.2.0"
-  checksum: 0a83bfe1748fc745515dff9b3f722422918f5f6975104d7e576fc32c06b5398ee0c58525684068d4de49cdd49874e00b5e2b2d72ce8c5d829dab86c8c08ca31f
-  languageName: node
-  linkType: hard
-
-"lolex@npm:^5.0.1":
-  version: 5.1.2
-  resolution: "lolex@npm:5.1.2"
-  dependencies:
-    "@sinonjs/commons": ^1.7.0
-  checksum: 7eb468d4ef4746c024d23cb2b75f679f79449a9d5cbe11abadf2f3b147c1d7ffe28816438bedfb8a75c58357a625c2f9ba197b050c226d2b3f0c4a956cf556fb
   languageName: node
   linkType: hard
 
@@ -14702,7 +14677,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^0.5.0":
+"marked@npm:^0.7.0":
   version: 0.7.0
   resolution: "marked@npm:0.7.0"
   bin:
@@ -15377,16 +15352,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment-timezone@npm:^0.5.28":
-  version: 0.5.34
-  resolution: "moment-timezone@npm:0.5.34"
+"moment-timezone@npm:^0.5.43":
+  version: 0.5.43
+  resolution: "moment-timezone@npm:0.5.43"
   dependencies:
-    moment: ">= 2.9.0"
-  checksum: 12a1d3d52e4ba509cf1fa36bbda59d898a08fa80ab35f6c358747e93aec1f07e617cec647eaf2e8acf5f9132e581d4704d34a9edffa9a80c5cd04bf23b277595
+    moment: ^2.29.4
+  checksum: 8075c897ed8a044f992ef26fe8cdbcad80caf974251db424cae157473cca03be2830de8c74d99341b76edae59f148c9d9d19c1c1d9363259085688ec1cf508d0
   languageName: node
   linkType: hard
 
-"moment@npm:>= 2.9.0, moment@npm:^2.19.0, moment@npm:^2.19.3, moment@npm:^2.24.0":
+"moment@npm:^2.19.0, moment@npm:^2.19.3, moment@npm:^2.24.0, moment@npm:^2.29.4":
   version: 2.29.4
   resolution: "moment@npm:2.29.4"
   checksum: 0ec3f9c2bcba38dc2451b1daed5daded747f17610b92427bebe1d08d48d8b7bdd8d9197500b072d14e326dd0ccf3e326b9e3d07c5895d3d49e39b6803b76e80e
@@ -15721,27 +15696,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-md@npm:^7.0.0":
-  version: 7.1.3
-  resolution: "ngx-md@npm:7.1.3"
+"ngx-md@npm:^8.1.6 ":
+  version: 8.1.6
+  resolution: "ngx-md@npm:8.1.6"
   dependencies:
-    marked: ^0.5.0
+    marked: ^0.7.0
     prismjs: ^1.15.0
     tslib: ^1.9.0
   peerDependencies:
-    "@angular/common": ^7.0.0
-    "@angular/core": ^7.0.0
-  checksum: 951ee7690bb2dcd6efddce0189a22e622b026dd9a6837716f52a98d9bdb3566fbaa872b7812f72990663bcb67b042cb34916d48137a05fdf42e7a9b5f8197a63
+    "@angular/common": ^8.0.0
+    "@angular/core": ^8.0.0
+  checksum: a4cf962ddec1943b8b57c23272ff7e45440689a1602eef1ff9dd0a63557e42f3767fad053a11d20840398c686b1bc726a49a714ea1ca5147ffbf94d4eafca1a2
   languageName: node
   linkType: hard
 
-"ngx-pagination@npm:^3.2.1":
-  version: 3.3.1
-  resolution: "ngx-pagination@npm:3.3.1"
+"ngx-pagination@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "ngx-pagination@npm:5.1.1"
   peerDependencies:
-    "@angular/common": ">=2.3.1"
-    "@angular/core": ">=2.3.1"
-  checksum: d7f7f2aaa3fb997ea27e13eecb4616bae06586214c9ba70973dcdb6378c4b25a96bf638673903853535c63f68cca03434ac79f07160f1849d6a0154c96a6cdb0
+    "@angular/common": ">=5.0.0"
+    "@angular/core": ">=5.0.0"
+  checksum: 80326768fafaf7fc1e0c2bd8485c43685f31f00480f8bf54eafa6173fc072aff97f2114b2f2be3c9fb72499286c7fcb7b8956c54aeedee3f9003fa7981906672
   languageName: node
   linkType: hard
 
@@ -15752,16 +15727,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nise@npm:^1.5.2":
-  version: 1.5.3
-  resolution: "nise@npm:1.5.3"
+"nise@npm:^5.1.4":
+  version: 5.1.4
+  resolution: "nise@npm:5.1.4"
   dependencies:
-    "@sinonjs/formatio": ^3.2.1
+    "@sinonjs/commons": ^2.0.0
+    "@sinonjs/fake-timers": ^10.0.2
     "@sinonjs/text-encoding": ^0.7.1
     just-extend: ^4.0.2
-    lolex: ^5.0.1
     path-to-regexp: ^1.7.0
-  checksum: ec3af21345dcaf34650a6f5420a11e0fd21a836ac5960f5e8523c301ee98465abf88b958f7b3084ecc6e0a7133e5cf7963f4df176b90b423c4da4984f1ebd75e
+  checksum: bc57c10eaec28a6a7ddfb2e1e9b21d5e1fe22710e514f8858ae477cf9c7e9c891475674d5241519193403db43d16c3675f4207bc094a7a27b7e4f56584a78c1b
   languageName: node
   linkType: hard
 
@@ -19103,9 +19078,9 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.15.0-6.16-hotfix-INC5516582
+    "@hmcts/ccd-case-ui-toolkit": 6.16.1-st-cdam-docstore
     "@hmcts/ccpay-web-component": 5.2.3
-    "@hmcts/frontend": 0.0.39-alpha
+    "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.9.3
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
@@ -19119,7 +19094,7 @@ __metadata:
     "@ngrx/store": ^7.4.0
     "@ngrx/store-devtools": ^7.4.0
     "@nguniversal/express-engine": ^7.1.1
-    "@nicky-lenaers/ngx-scroll-to": ^1.1.1
+    "@nicky-lenaers/ngx-scroll-to": ^9.0.0
     "@pact-foundation/pact": ^9.11.1
     "@pact-foundation/pact-node": ^10.9.7
     "@stryker-mutator/api": ^3.0.1
@@ -19152,7 +19127,7 @@ __metadata:
     axios: ^0.21.1
     axios-mock-adapter: ^1.18.2
     base-64: ^0.1.0
-    chai: ^4.2.0
+    chai: ^4.3.7
     chai-as-promised: 7.1.1
     class-transformer: ^0.3.2
     codeceptjs: 3.3.7
@@ -19180,7 +19155,7 @@ __metadata:
     git-rev-sync: ^2.0.0
     global-agent: ^2.1.7
     govuk-elements-sass: ^3.1.3
-    govuk-frontend: ^3.12.0
+    govuk-frontend: ^4.6.0
     govuk_frontend_toolkit: ^9.0.0
     helmet: ^3.21.3
     http-proxy-middleware: 1.1.x
@@ -19206,12 +19181,12 @@ __metadata:
     mochawesome: ^6.2.1
     mochawesome-merge: ^4.3.0
     mochawesome-report-generator: ^5.1.0
-    moment-timezone: ^0.5.28
+    moment-timezone: ^0.5.43
     ngrx-store-freeze: ^0.2.4
     ngx-chips: 2.1.0
     ngx-logger: ^4.3.3
-    ngx-md: ^7.0.0
-    ngx-pagination: ^3.2.1
+    ngx-md: "^8.1.6 "
+    ngx-pagination: ^5.1.1
     node-fetch: ^2.6.1
     node-html-parser: ^6.1.5
     node-http-proxy-json: ^0.1.9
@@ -19230,9 +19205,9 @@ __metadata:
     rxjs: ^6.5.3
     rxjs-compat: ^6.6.7
     shortid: ^2.2.14
-    sinon: ^7.3.2
-    sinon-chai: ^3.3.0
-    sinon-express-mock: ^2.2.0
+    sinon: ^15.1.2
+    sinon-chai: ^3.7.0
+    sinon-express-mock: ^2.2.1
     smoothscroll-polyfill: ^0.4.3
     sonar-scanner: ^3.1.0
     striptags: ^3.1.1
@@ -19251,7 +19226,7 @@ __metadata:
     webpack-source-map-support: ^2.0.1
     xlsx: ^0.15.4
     yarn: ^1.22.18
-    zone.js: ~0.10.2
+    zone.js: ~0.11.0
   languageName: unknown
   linkType: soft
 
@@ -19886,7 +19861,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sinon-chai@npm:^3.3.0":
+"sinon-chai@npm:^3.7.0":
   version: 3.7.0
   resolution: "sinon-chai@npm:3.7.0"
   peerDependencies:
@@ -19896,7 +19871,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sinon-express-mock@npm:^2.2.0":
+"sinon-express-mock@npm:^2.2.1":
   version: 2.2.1
   resolution: "sinon-express-mock@npm:2.2.1"
   peerDependencies:
@@ -19905,18 +19880,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sinon@npm:^7.3.2":
-  version: 7.5.0
-  resolution: "sinon@npm:7.5.0"
+"sinon@npm:^15.1.2":
+  version: 15.1.2
+  resolution: "sinon@npm:15.1.2"
   dependencies:
-    "@sinonjs/commons": ^1.4.0
-    "@sinonjs/formatio": ^3.2.1
-    "@sinonjs/samsam": ^3.3.3
-    diff: ^3.5.0
-    lolex: ^4.2.0
-    nise: ^1.5.2
-    supports-color: ^5.5.0
-  checksum: e8cf6b3dd16e9c1ed1a2b9560c396a2d6205a4f32293b1762cb6ebb8f88cfa47db6aba45b0c1709ec396efb41d171d88c9b1ab8f32f35512eb9e5d0d0d15d307
+    "@sinonjs/commons": ^3.0.0
+    "@sinonjs/fake-timers": ^10.1.0
+    "@sinonjs/samsam": ^8.0.0
+    diff: ^5.1.0
+    nise: ^5.1.4
+    supports-color: ^7.2.0
+  checksum: 4484235fe4e84cc142cb8810a3a80f5b016178d739c1e2cc0b5eb1f0e05e05dd2dffaf53878826ac40743791acabb7265297affced727b0480c8bfe9abead8e8
   languageName: node
   linkType: hard
 
@@ -21012,7 +20986,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supports-color@npm:^7.0.0, supports-color@npm:^7.1.0":
+"supports-color@npm:^7.0.0, supports-color@npm:^7.1.0, supports-color@npm:^7.2.0":
   version: 7.2.0
   resolution: "supports-color@npm:7.2.0"
   dependencies:
@@ -21732,6 +21706,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tslib@npm:^2.3.0":
+  version: 2.5.3
+  resolution: "tslib@npm:2.5.3"
+  checksum: 88902b309afaf83259131c1e13da1dceb0ad1682a213143a1346a649143924d78cf3760c448b84d796938fd76127183894f8d85cbb3bf9c4fddbfcc140c0003c
+  languageName: node
+  linkType: hard
+
 "tslib@npm:~2.0.0":
   version: 2.0.3
   resolution: "tslib@npm:2.0.3"
@@ -21820,7 +21801,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-detect@npm:4.0.8, type-detect@npm:^4.0.0, type-detect@npm:^4.0.5":
+"type-detect@npm:4.0.8, type-detect@npm:^4.0.0, type-detect@npm:^4.0.5, type-detect@npm:^4.0.8":
   version: 4.0.8
   resolution: "type-detect@npm:4.0.8"
   checksum: 62b5628bff67c0eb0b66afa371bd73e230399a8d2ad30d852716efcc4656a7516904570cd8631a49a3ce57c10225adf5d0cbdcb47f6b0255fe6557c453925a15
@@ -23573,9 +23554,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zone.js@npm:~0.10.2":
-  version: 0.10.3
-  resolution: "zone.js@npm:0.10.3"
-  checksum: 69e0194b377dff8eb5ce7fa202334a0e0bd0a530f3bbd61b5b2a53af29fd67f058d47aa1cdd8a340cdf9e59f3b7c0d01dbd87d5f1563bcfb5dd6b2c761b21590
+"zone.js@npm:~0.11.0":
+  version: 0.11.8
+  resolution: "zone.js@npm:0.11.8"
+  dependencies:
+    tslib: ^2.3.0
+  checksum: ad4a2f4aafce10f5bc3f60213384bb6ee4727de09d87fb77cb8089eecdb44dd5838fd9fa43ac4c351afec142b0e5477a22093928260a486804f70b8cace6c7d3
   languageName: node
   linkType: hard

@@ -5,8 +5,10 @@ import { CaseNotifier, CaseView, Document, FormDocument, QueryItemType, QueryLis
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ErrorMessage } from '../../../app/models/error-message.model';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
 import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
+import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -20,6 +22,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public showSummary: boolean = false;
   public formGroup: FormGroup = new FormGroup({});
   public submitted = false;
+  public errorMessages: ErrorMessage[] = [];
   public queryCreateContext: QueryItemType;
   public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
   public qualifyingQuestionsSubscription: Subscription;
@@ -64,6 +67,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
     this.showSummary = true;
     this.submitted = true;
+    this.validateForm();
+    this.showSummary = this.errorMessages?.length === 0;
   }
 
   public onDocumentCollectionUpdate(uploadedDocuments: FormDocument[]): void {
@@ -112,5 +117,57 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         return caseTypeQualifyingQuestions[caseView.case_type.id];
       })
     );
+  }
+
+  public validateForm(): void {
+    this.errorMessages = [];
+    if (!this.formGroup.get('fullName').valid) {
+      this.errorMessages.push({
+        title: '',
+        description: RaiseQueryErrorMessage.FULL_NAME,
+        fieldId: 'fullName'
+      });
+    }
+    if (!this.formGroup.get('subject').valid) {
+      this.errorMessages.push({
+        title: '',
+        description: RaiseQueryErrorMessage.QUERY_SUBJECT,
+        fieldId: 'subject'
+      });
+    }
+    if (!this.formGroup.get('body').valid) {
+      this.errorMessages.push({
+        title: '',
+        description: RaiseQueryErrorMessage.QUERY_BODY,
+        fieldId: 'body'
+      });
+    }
+    if (!this.formGroup.get('isHearingRelated').valid) {
+      this.errorMessages.push({
+        title: '',
+        description: RaiseQueryErrorMessage.QUERY_HEARING_RELATED,
+        fieldId: 'isHearingRelated-yes'
+      });
+    } else {
+      if (this.formGroup.get('isHearingRelated').value === true &&
+          this.formGroup.get('hearingDate').value === null) {
+        this.errorMessages.push({
+          title: '',
+          description: RaiseQueryErrorMessage.QUERY_HEARING_DATE,
+          fieldId: 'hearingDate-day'
+        });
+      }
+    }
+    window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+  }
+
+  public navigateToErrorElement(elementId: string): void {
+    if (elementId) {
+      const htmlElement = document.getElementById(elementId);
+      if (htmlElement) {
+        htmlElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        htmlElement.focus();
+      }
+    }
   }
 }

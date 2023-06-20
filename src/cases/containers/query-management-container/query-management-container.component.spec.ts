@@ -245,7 +245,9 @@ describe('QueryManagementContainerComponent', () => {
       it('should navigate to case overview tab', () => {
         spyOn(router, 'navigate');
         component.navigateToCaseOverviewTab();
-        expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', caseViewMock.case_id], {fragment: 'Overview'});
+        expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', caseViewMock.case_id],
+          { fragment: 'Overview' }
+        );
       });
     });
   });

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { HearingListModel } from '../../models/hearingList.model';
 import { CancelHearingMessages } from '../../models/hearings.enum';
 import { LovRefDataModel } from '../../models/lovRefData.model';
@@ -22,12 +24,15 @@ export class CancelHearingComponent implements OnInit {
   public hearingId: string;
   public caseId: string;
   public caseHearing: HearingListModel;
+  public showSpinner$: Observable<boolean>;
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly formBuilder: FormBuilder,
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
+    private readonly loadingService: LoadingService,
     private readonly loggerService: LoggerService) {
     this.route.params.subscribe((params) => {
       this.hearingId = params.hearingId;
@@ -39,6 +44,8 @@ export class CancelHearingComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.showSpinner$ = this.loadingService.isLoading as any;
+    const loadingToken = this.loadingService.register();
     this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(
       (hearingList) => {
         this.caseId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
@@ -46,6 +53,9 @@ export class CancelHearingComponent implements OnInit {
           const caseHearings = hearingList.hearingListMainModel.caseHearings.filter((caseHearing) => caseHearing.hearingID === this.hearingId);
           this.caseHearing = caseHearings.length ? caseHearings[0] : undefined;
         }
+        this.loadingService.unregister(loadingToken);
+      }, () => {
+        this.loadingService.unregister(loadingToken);
       });
     this.hearingCancelOptions = this.route.snapshot.data.hearingCancelOptions;
     this.initForm();

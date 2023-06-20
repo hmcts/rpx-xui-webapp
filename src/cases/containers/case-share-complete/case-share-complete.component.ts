@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { select, Store } from '@ngrx/store';
@@ -21,11 +22,15 @@ export class CaseShareCompleteComponent implements OnInit, OnDestroy {
   public isLoading: boolean;
   public completeScreenMode: string;
   public removeUserFromCaseToggleOn$: Observable<boolean>;
+  public showSpinner$ : Observable<boolean>;
 
   constructor(private readonly store: Store<fromCaseList.State>,
-              private readonly featureToggleService: FeatureToggleService) {}
+              private readonly featureToggleService: FeatureToggleService,
+              private readonly loadingService: LoadingService) {}
 
   public ngOnInit() {
+    this.showSpinner$ = this.loadingService.isLoading as any;
+    const loadingToken = this.loadingService.register();
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
     this.shareCases$.subscribe((shareCases) => {
       this.shareCases = shareCases;
@@ -38,6 +43,9 @@ export class CaseShareCompleteComponent implements OnInit, OnDestroy {
     this.newShareCases$.subscribe((shareCases) => {
       this.completeScreenMode = this.checkIfIncomplete(shareCases);
       this.newShareCases = shareCases;
+      this.loadingService.unregister(loadingToken);
+    }, () => {
+      this.loadingService.unregister(loadingToken);
     });
     this.removeUserFromCaseToggleOn$ = this.featureToggleService.getValue(LD_FLAG_REMOVE_USER_FROM_CASE_MC, false);
   }

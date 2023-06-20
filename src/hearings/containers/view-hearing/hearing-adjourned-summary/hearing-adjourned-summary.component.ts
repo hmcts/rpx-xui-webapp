@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -16,13 +17,17 @@ export class HearingAdjournedSummaryComponent implements OnInit, OnDestroy {
   public hearingActualsMainModel: HearingActualsMainModel;
   public adjournReasons: LovRefDataModel[];
   public subscription: Subscription;
+  public showSpinner$ : Observable<boolean>;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly route: ActivatedRoute) {
+              private readonly route: ActivatedRoute,
+              private readonly loadingService: LoadingService) {
     this.adjournReasons = this.route.snapshot.data.adjournReasons;
   }
 
   public ngOnInit(): void {
+    this.showSpinner$ = this.loadingService.isLoading as any;
+    const loadingToken = this.loadingService.register();
     this.hearingState$ = this.hearingStore.select(fromHearingStore.getHearingsFeatureState)
       .pipe(
         filter((state) => !!state.hearingActuals.hearingActualsMainModel),
@@ -31,6 +36,7 @@ export class HearingAdjournedSummaryComponent implements OnInit, OnDestroy {
     this.subscription = this.hearingState$.subscribe({
       next: (state: fromHearingStore.State) => {
         this.hearingActualsMainModel = state.hearingActuals.hearingActualsMainModel;
+        this.loadingService.unregister(loadingToken);
       }
     });
   }

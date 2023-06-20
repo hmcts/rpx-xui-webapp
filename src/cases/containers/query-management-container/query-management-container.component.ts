@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Document, FormDocument, QueryItemType, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
+import { ErrorMessage } from '../../../app/models/error-message.model';
+import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -15,6 +17,7 @@ export class QueryManagementContainerComponent implements OnInit {
   public formGroup: FormGroup = new FormGroup({});
   private caseId: string;
   public submitted = false;
+  public errorMessages: ErrorMessage[] = [];
   public queryCreateContext: QueryItemType;
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -27,6 +30,7 @@ export class QueryManagementContainerComponent implements OnInit {
       subject: new FormControl(null, Validators.required),
       body: new FormControl(null, Validators.required),
       isHearingRelated: new FormControl(null, Validators.required),
+      hearingDate: new FormControl(null),
       attachments: new FormControl([] as Document[])
     });
 
@@ -44,8 +48,9 @@ export class QueryManagementContainerComponent implements OnInit {
   }
 
   public submitForm(): void {
-    this.showSummary = true;
     this.submitted = true;
+    this.validateForm();
+    this.showSummary = this.errorMessages?.length === 0;
   }
 
   public onDocumentCollectionUpdate(uploadedDocuments: FormDocument[]): void {
@@ -74,5 +79,57 @@ export class QueryManagementContainerComponent implements OnInit {
 
   public previous(): void {
     this.location.back();
+  }
+
+  public validateForm(): void {
+    this.errorMessages = [];
+    if (!this.formGroup.get('fullName').valid) {
+      this.errorMessages.push({
+        title: '',
+        description: RaiseQueryErrorMessage.FULL_NAME,
+        fieldId: 'fullName'
+      });
+    }
+    if (!this.formGroup.get('subject').valid) {
+      this.errorMessages.push({
+        title: '',
+        description: RaiseQueryErrorMessage.QUERY_SUBJECT,
+        fieldId: 'subject'
+      });
+    }
+    if (!this.formGroup.get('body').valid) {
+      this.errorMessages.push({
+        title: '',
+        description: RaiseQueryErrorMessage.QUERY_BODY,
+        fieldId: 'body'
+      });
+    }
+    if (!this.formGroup.get('isHearingRelated').valid) {
+      this.errorMessages.push({
+        title: '',
+        description: RaiseQueryErrorMessage.QUERY_HEARING_RELATED,
+        fieldId: 'isHearingRelated-yes'
+      });
+    } else {
+      if (this.formGroup.get('isHearingRelated').value === true &&
+          this.formGroup.get('hearingDate').value === null) {
+        this.errorMessages.push({
+          title: '',
+          description: RaiseQueryErrorMessage.QUERY_HEARING_DATE,
+          fieldId: 'hearingDate-day'
+        });
+      }
+    }
+    window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+  }
+
+  public navigateToErrorElement(elementId: string): void {
+    if (elementId) {
+      const htmlElement = document.getElementById(elementId);
+      if (htmlElement) {
+        htmlElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        htmlElement.focus();
+      }
+    }
   }
 }

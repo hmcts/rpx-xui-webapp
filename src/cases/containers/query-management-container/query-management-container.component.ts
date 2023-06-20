@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CaseNotifier, CaseView, Document, FormDocument, QueryItemType, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription, combineLatest } from 'rxjs';
@@ -18,7 +18,9 @@ import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.e
 export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private readonly LD_QUALIFYING_QUESTIONS = 'qm-qualifying-questions';
 
+  public caseId: string;
   public queryItem: QueryListItem | undefined;
+  public queryItemType = QueryItemType;
   public showSummary: boolean = false;
   public formGroup: FormGroup = new FormGroup({});
   public submitted = false;
@@ -27,16 +29,18 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
   public qualifyingQuestionsSubscription: Subscription;
 
-  constructor(private activatedRoute: ActivatedRoute,
+  constructor(private readonly activatedRoute: ActivatedRoute,
+              private readonly router: Router,
               private readonly caseNotifier: CaseNotifier,
               private readonly featureToggleService: FeatureToggleService) {}
 
   public ngOnInit(): void {
     const queryItemId = this.activatedRoute.snapshot.params.qid;
+    this.queryCreateContext = this.getQueryCreateContext(queryItemId);
+
     if (queryItemId) {
       this.queryItem = new QueryListItem();
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
-      this.queryCreateContext = this.getQueryCreateContext(queryItemId);
     }
 
     if (this.queryCreateContext === QueryItemType.NONE) {
@@ -63,12 +67,13 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   public submitForm(): void {
     if (this.queryCreateContext === QueryItemType.NONE) {
+      this.router.navigate(['query-management', 'query', `${this.caseId}`, '1']);
+    } else {
+      this.showSummary = true;
+      this.submitted = true;
+      this.validateForm();
+      this.showSummary = this.errorMessages?.length === 0;
     }
-
-    this.showSummary = true;
-    this.submitted = true;
-    this.validateForm();
-    this.showSummary = this.errorMessages?.length === 0;
   }
 
   public onDocumentCollectionUpdate(uploadedDocuments: FormDocument[]): void {
@@ -91,32 +96,6 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.qualifyingQuestionsSubscription?.unsubscribe();
-  }
-
-  private getQueryCreateContext(queryItemId: string): QueryItemType {
-    switch (queryItemId) {
-      case '1':
-        return QueryItemType.NEW;
-      case '2':
-        return QueryItemType.RESPOND;
-      case '3':
-        return QueryItemType.FOLLOWUP;
-      default:
-        return QueryItemType.NONE;
-    }
-  }
-
-  private getQualifyingQuestions(): Observable<QualifyingQuestion[]> {
-    return combineLatest([
-      this.caseNotifier.caseView,
-      this.featureToggleService.getValue(this.LD_QUALIFYING_QUESTIONS, [])
-    ]).pipe(
-      map(([caseView, caseTypeQualifyingQuestions]: [CaseView, CaseTypeQualifyingQuestions[]]) => {
-        console.log('CASE VIEW', caseView);
-        console.log('QQ', caseTypeQualifyingQuestions);
-        return caseTypeQualifyingQuestions[caseView.case_type.id];
-      })
-    );
   }
 
   public validateForm(): void {
@@ -169,5 +148,33 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         htmlElement.focus();
       }
     }
+  }
+
+  private getQueryCreateContext(queryItemId: string): QueryItemType {
+    if (!queryItemId) {
+      return QueryItemType.NONE;
+    }
+    switch (queryItemId) {
+      case '1':
+        return QueryItemType.NEW;
+      case '2':
+        return QueryItemType.RESPOND;
+      case '3':
+        return QueryItemType.FOLLOWUP;
+      default:
+        return QueryItemType.NONE;
+    }
+  }
+
+  private getQualifyingQuestions(): Observable<QualifyingQuestion[]> {
+    return combineLatest([
+      this.caseNotifier.caseView,
+      this.featureToggleService.getValue(this.LD_QUALIFYING_QUESTIONS, [])
+    ]).pipe(
+      map(([caseView, caseTypeQualifyingQuestions]: [CaseView, CaseTypeQualifyingQuestions[]]) => {
+        this.caseId = caseView.case_id;
+        return caseTypeQualifyingQuestions[caseView.case_type.id];
+      })
+    );
   }
 }

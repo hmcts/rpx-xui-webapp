@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.15.0-6.16-hotfix-INC5516582":
-  version: 6.15.0-6.16-hotfix-INC5516582
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.15.0-6.16-hotfix-INC5516582"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-hotfix-EUI-8515-case-flags-submission":
+  version: 6.16.0-hotfix-EUI-8515-case-flags-submission
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-hotfix-EUI-8515-case-flags-submission"
   dependencies:
     tslib: ^2.0.0
-  checksum: 698c5d660b314d598c40dad6b8eed1d98f5dcfd0e8b501aa9e0ee703750519d725547fd016b3dc1e83f11529c4537198063a42ee5ebb1c7d1ee56f320a28373d
+  checksum: c93b9f67811d67168269f208df8349ec3725c671f1f440be63aafefcdbc39e7dcc7571ff13b2f6f3669539b815989c6a0dc3ffd16a2e5a222bf461abdfea0192
   languageName: node
   linkType: hard
 
@@ -19103,7 +19103,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.15.0-6.16-hotfix-INC5516582
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-hotfix-EUI-8515-case-flags-submission
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

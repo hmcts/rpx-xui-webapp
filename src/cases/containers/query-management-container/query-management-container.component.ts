@@ -58,7 +58,6 @@ export class QueryManagementContainerComponent implements OnInit {
   public submitForm(): void {
     this.submitted = true;
     this.validateForm();
-    console.log('submitForm', this.errorMessages);
     this.showSummary = this.errorMessages?.length === 0;
 
     // Reset hearing date if isHearingRelated

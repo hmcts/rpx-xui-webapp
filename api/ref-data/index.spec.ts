@@ -51,7 +51,7 @@ describe('RefDataEndpoint', () => {
 
       const args = spy.getCall(0).args;
       expect(args[0]).to.equal(`${baseLocationRefUrl}/refdata/location/regions?regionId=ALL`);
-      expect(response.send).to.have.been.calledWith(sinon.match(spy));
+      expect(response.send.calledWith(sinon.match(spy))).to.be.ok;
     });
   });
 
@@ -134,7 +134,7 @@ describe('RefDataEndpoint', () => {
 
       const args = spy.getCall(0).args;
       expect(args[0]).to.equal(`${baseLocationRefUrl}/refdata/location/court-venues/services?service_code=AAA7`);
-      expect(response.send).to.have.been.calledWith(sinon.match(spy));
+      expect(response.send.calledWith(sinon.match(spy))).to.be.ok;
     });
   });
 
@@ -208,7 +208,7 @@ describe('RefDataEndpoint', () => {
 
       const args = spy.getCall(0).args;
       expect(args[0]).to.equal(`${baseLocationRefUrl}/refdata/location/court-venues?location_type=locationType1`);
-      expect(res.send).to.have.been.calledWith(sinon.match(spy));
+      expect(res.send.calledWith(sinon.match(spy))).to.be.ok;
     });
   });
 });

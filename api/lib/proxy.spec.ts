@@ -72,42 +72,42 @@ describe('proxy', () => {
   it('should proxy a get request', async () => {
     const url = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${req.baseUrl}${req.url}`;
     await proxy.get(req, res, next);
-    expect(spy).to.have.been.calledWith(url);
-    expect(res.send).to.have.been.calledWith(result.data);
+    expect(spy.calledWith(url)).to.be.ok;
+    expect(res.send.calledWith(result.data)).to.be.ok;
   });
 
   it('should catch any errors upon proxy get request', async () => {
     spy.restore();
     spy = sandbox.stub(http, 'get').throws({ data: 'error occurred' });
     await proxy.get(req, res, next);
-    expect(next).to.have.been.calledWith({ data: 'error occurred' });
+    expect(next.calledWith({ data: 'error occurred' })).to.be.ok;
   });
 
   it('should proxy a put request', async () => {
     const url = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${req.baseUrl}${req.url}`;
     await proxy.put(req, res, next);
-    expect(spyPut).to.have.been.calledWith(url);
-    expect(res.send).to.have.been.calledWith(result.data);
+    expect(spyPut.calledWith(url)).to.be.ok;
+    expect(res.send.calledWith(result.data)).to.be.ok;
   });
 
   it('should catch any errors upon proxy put request', async () => {
     spyPut.restore();
     spyPut = sandbox.stub(http, 'put').throws({ data: 'error occurred' });
     await proxy.put(req, res, next);
-    expect(next).to.have.been.calledWith({ data: 'error occurred' });
+    expect(next.calledWith({ data: 'error occurred' })).to.be.ok;
   });
 
   it('should proxy a post request', async () => {
     const url = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${req.baseUrl}${req.url}`;
     await proxy.post(req, res, next);
-    expect(spyPost).to.have.been.calledWith(url);
-    expect(res.send).to.have.been.calledWith(result.data);
+    expect(spyPost.calledWith(url)).to.be.ok;
+    expect(res.send.calledWith(result.data)).to.be.ok;
   });
 
   it('should catch any errors upon proxy post request', async () => {
     spyPost.restore();
     spyPost = sandbox.stub(http, 'post').throws({ data: 'error occurred' });
     await proxy.post(req, res, next);
-    expect(next).to.have.been.calledWith({ data: 'error occurred' });
+    expect(next.calledWith({ data: 'error occurred' })).to.be.ok;
   });
 });

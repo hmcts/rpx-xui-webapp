@@ -44,7 +44,7 @@ describe('workAllocation', () => {
 
       await getLocationById(req, response, next);
 
-      expect(next).to.have.been.calledWith();
+      expect(next.calledWith()).to.be.ok;
     });
   });
 
@@ -67,7 +67,7 @@ describe('workAllocation', () => {
 
       await getLocationById(req, response, next);
 
-      expect(next).to.have.been.calledWith();
+      expect(next.calledWith()).to.be.ok;
     });
   });
 });

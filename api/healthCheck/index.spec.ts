@@ -30,7 +30,7 @@ describe('health check', () => {
       const getPromisesStub = sinon.stub(healthCheck, 'getPromises');
       getPromisesStub.resolves([]);
       await healthCheck.healthCheckRoute(req, res);
-      expect(getPromisesStub).to.be.calledWith(requestQueryPath);
+      expect(getPromisesStub.calledWith(requestQueryPath)).to.be.ok;
       getPromisesStub.restore();
     });
   });

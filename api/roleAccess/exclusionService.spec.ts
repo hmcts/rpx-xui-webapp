@@ -123,7 +123,7 @@ describe('exclusions.exclusionService', () => {
       await confirmUserExclusion(req, response, next);
 
       // Should have received the HTTP response. The confirm simply sends the data
-      expect(response.send).to.have.been.calledWith(sinon.match('ok'));
+      expect(response.send.calledWith(sinon.match('ok'))).to.be.ok;
     });
   });
 
@@ -137,7 +137,7 @@ describe('exclusions.exclusionService', () => {
       await deleteUserExclusion(req, response, next);
 
       // Should have received the HTTP response. The delete simply sends the data
-      expect(response.send).to.have.been.calledWith(sinon.match(exampleRoleExclusion));
+      expect(response.send.calledWith(sinon.match(exampleRoleExclusion))).to.be.ok;
     });
   });
 

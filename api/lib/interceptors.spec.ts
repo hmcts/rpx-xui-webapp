@@ -51,7 +51,7 @@ describe('interceptors', () => {
       // @ts-ignore
       getLoggerStub.returns({ info: spy, addContext: sinon.spy(), level: 'debug' });
       requestInterceptor(request);
-      expect(spy).to.be.calledWith('GET to http://test.com');
+      expect(spy.calledWith('GET to http://test.com')).to.be.ok;
       getLoggerStub.restore();
     });
 
@@ -73,7 +73,7 @@ describe('interceptors', () => {
       getLoggerStub.returns({ info: spy, addContext: sinon.spy(), level: 'debug' });
       successInterceptor(response);
       // eslint-disable-next-line no-unused-expressions
-      expect(spy).to.be.called;
+      expect(spy.called).to.be.ok;
       getLoggerStub.restore();
     });
 
@@ -95,7 +95,7 @@ describe('interceptors', () => {
       getLoggerStub.returns({ error: spy, addContext: sinon.spy(), level: 'debug' });
       errorInterceptor(error).catch(() => {
         // eslint-disable-next-line no-unused-expressions
-        expect(spy).to.be.called;
+        expect(spy.called).to.be.ok;
         getLoggerStub.restore();
       });
     });

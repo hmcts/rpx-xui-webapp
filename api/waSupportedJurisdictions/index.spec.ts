@@ -26,7 +26,7 @@ describe('WA Supported Jurisdictions', () => {
   it('should get supported jurisdictions', async() => {
     await waSupportedJurisdictions.getWASupportedJurisdictions(req, res, null);
     const response = ['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW'];
-    expect(res.send).to.have.been.calledWith(sinon.match(response));
+    expect(res.send.calledWith(sinon.match(response))).to.be.ok;
   });
 
   it('should get only the list of supported jurisdictions', async() => {

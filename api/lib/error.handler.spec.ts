@@ -1,13 +1,13 @@
-import * as chai from 'chai';
-import { expect } from 'chai';
-import 'mocha';
 import * as sinon from 'sinon';
+import * as chai from 'chai';
 import * as sinonChai from 'sinon-chai';
+import 'mocha';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import * as errorHandler from './error.handler';
 import { propsExist } from './objectUtilities';
 
 chai.use(sinonChai);
+const expect = chai.expect
 
 describe('errorHandler', () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -49,8 +49,8 @@ describe('errorHandler', () => {
   it('should return default response', () => {
     const err = {};
     errorHandler.default(err, req, res);
-    expect(res.status).to.have.been.calledWith(500);
-    expect(res.send).to.have.been.calledWith({ message: 'Internal Server Error' });
+    expect(res.status.calledWith(500)).to.be.ok;
+    expect(res.send.calledWith({ message: 'Internal Server Error' })).to.be.ok;
   });
 
   it('should return status and content if it exists', () => {
@@ -61,8 +61,8 @@ describe('errorHandler', () => {
       }
     };
     errorHandler.default(err, req, res);
-    expect(res.status).to.have.been.calledWith(404);
-    expect(res.send).to.have.been.calledWith({ test: 'dummy' });
+    expect(res.status.calledWith(404)).to.be.ok;
+    expect(res.send.calledWith({ test: 'dummy' })).to.be.ok;
   });
 
   it('should empty _header if it exists', () => {

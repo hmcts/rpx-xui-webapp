@@ -60,18 +60,19 @@ describe('Auth', () => {
 
     it('should set the cookies and redirect the user if not a refresh', () => {
       auth.successCallback(req, res, next);
-      expect(res.cookie).to.be.calledWith(getConfigValue(COOKIES_TOKEN), accessToken);
-      expect(res.cookie).to.be.calledWith(getConfigValue(COOKIES_USER_ID), details.uid);
-      expect(res.redirect).to.be.calledWith('/');
+      chai.use(sinonChai);
+      expect(res.cookie.calledWith(getConfigValue(COOKIES_TOKEN), accessToken)).to.be.ok;
+      expect(res.cookie.calledWith(getConfigValue(COOKIES_USER_ID), details.uid)).to.be.ok;
+      expect(res.redirect.calledWith('/')).to.be.ok;
     });
 
     it('should set the cookies and call next if a refresh', () => {
       req.isRefresh = true;
       auth.successCallback(req, res, next);
-      expect(res.cookie).to.be.calledWith(getConfigValue(COOKIES_TOKEN), accessToken);
-      expect(res.cookie).to.be.calledWith(getConfigValue(COOKIES_USER_ID), details.uid);
+      expect(res.cookie.calledWith(getConfigValue(COOKIES_TOKEN), accessToken)).to.be.ok;
+      expect(res.cookie.calledWith(getConfigValue(COOKIES_USER_ID), details.uid)).to.be.ok;
       // eslint-disable-next-line no-unused-expressions
-      expect(next).to.have.been.called;
+      expect(next.called).to.be.ok;
     });
   });
 });

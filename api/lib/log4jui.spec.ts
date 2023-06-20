@@ -47,7 +47,7 @@ describe('log4jui', () => {
     it('should log a warn with log4js', () => {
       const logger = log4jui.getLogger('test');
       logger.warn('warning');
-      expect(spyObj.warn).to.be.calledWith('warning');
+      expect(spyObj.warn.calledWith('warning')).to.be.ok;
     });
   });
 
@@ -55,7 +55,7 @@ describe('log4jui', () => {
     it('should log an info with log4js', () => {
       const logger = log4jui.getLogger('test');
       logger.info('warning');
-      expect(spyObj.info).to.be.calledWith('warning');
+      expect(spyObj.info.calledWith('warning')).to.be.ok;
     });
   });
 
@@ -63,7 +63,7 @@ describe('log4jui', () => {
     it('should log an error with log4js', () => {
       const logger = log4jui.getLogger('test');
       logger.error('warning');
-      expect(spyObj.error).to.be.calledWith('warning');
+      expect(spyObj.error.calledWith('warning')).to.be.ok;
     });
   });
 

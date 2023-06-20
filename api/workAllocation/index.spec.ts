@@ -60,7 +60,7 @@ describe('workAllocation', () => {
 
       await getTask(req, response, next);
 
-      expect(next).to.have.been.calledWith();
+      expect(next.calledWith()).to.be.ok;
     });
   });
 
@@ -112,7 +112,7 @@ describe('workAllocation', () => {
       await getTypesOfWork(req, res, next);
 
       // expect(res.status).to.have.been.calledWith(sinon.match(200));
-      expect(res.send).to.have.been.calledWith(sinon.match(typesOfWorkResponse));
+      expect(res.send.calledWith(sinon.match(typesOfWorkResponse))).to.be.ok;
     });
 
     it('should handle an exception being thrown', async () => {
@@ -129,7 +129,7 @@ describe('workAllocation', () => {
 
       await getTask(req, response, next);
 
-      expect(next).to.have.been.calledWith();
+      expect(next.calledWith()).to.be.ok;
     });
   });
 
@@ -211,7 +211,7 @@ describe('workAllocation', () => {
 
       await searchTask(req, response, next);
 
-      expect(next).to.have.been.calledWith();
+      expect(next.calledWith()).to.be.ok;
     });
   });
 
@@ -235,7 +235,7 @@ describe('workAllocation', () => {
       expect(args[1]).to.deep.equal(body);
 
       // Should have received the HTTP response. The search simply returns the data.
-      expect(response.send).to.have.been.calledWith(sinon.match(SUCCESS_RESPONSE.data));
+      expect(response.send.calledWith(sinon.match(SUCCESS_RESPONSE.data))).to.be.ok;
     });
 
     it('should handle an exception being thrown', async () => {
@@ -255,7 +255,7 @@ describe('workAllocation', () => {
 
       await postTaskAction(req, response, next);
 
-      expect(next).to.have.been.calledWith();
+      expect(next.calledWith()).to.be.ok;
     });
   });
 });

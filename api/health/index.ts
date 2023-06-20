@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import * as HealthCheck from '@hmcts/nodejs-healthcheck';
 import { SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib';
 import { getConfigValue, showFeature } from '../configuration';

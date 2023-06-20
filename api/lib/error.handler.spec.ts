@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import * as sinon from 'sinon';
 import * as chai from 'chai';
 import * as sinonChai from 'sinon-chai';
@@ -7,7 +8,6 @@ import * as errorHandler from './error.handler';
 import { propsExist } from './objectUtilities';
 
 chai.use(sinonChai);
-const expect = chai.expect
 
 describe('errorHandler', () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

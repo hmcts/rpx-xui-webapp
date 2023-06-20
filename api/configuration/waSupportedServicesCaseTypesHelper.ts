@@ -30,10 +30,8 @@ export function getFormattedSupportedServicesCaseTypes(waSupportedServices: stri
         serviceConfig.serviceName = service;
         formattedWAFeatureConfig.configurations.push(serviceConfig);
       });
-      return formattedWAFeatureConfig;
-    } else {
-      return null;
     }
+    return formattedWAFeatureConfig;
   } catch (error) {
     logger.error('Error in formatting the supported service and case types - ', error);
     return null;

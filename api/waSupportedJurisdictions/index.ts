@@ -16,12 +16,11 @@ export async function getWASupportedJurisdictions(req: EnhancedRequest, res: Res
 export function getWASupportedJurisdictionsList(): any {
   try {
     const jurisdictions = getConfigValue(WA_SUPPORTED_JURISDICTIONS);
+    let jurisdictionsArray = [];
     if (jurisdictions) {
-      const jurisdictionsArray = jurisdictions.split(',');
-      return jurisdictionsArray;
-    } else {
-      return []
+      jurisdictionsArray = jurisdictions.split(',');
     }
+    return jurisdictionsArray;
   } catch (error) {
     console.log(error);
   }

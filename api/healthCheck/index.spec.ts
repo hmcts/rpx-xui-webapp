@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';

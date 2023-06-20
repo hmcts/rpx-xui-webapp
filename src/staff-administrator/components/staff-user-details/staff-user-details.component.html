@@ -144,14 +144,12 @@
             (click)="userDetails.status==='SUSPENDED'? onCopyUser() : onUpdateUser()">
             {{ userDetails.status==='SUSPENDED' ? 'Copy' : 'Update' }}
           </button>
-          <!-- <div [matTooltip]="userDetails.suspended ? 'If you want to unsuspend a user raise a support request' : ''">
+          <div>
             <button class="govuk-button govuk-button--secondary" data-module="govuk-button"
-              id="user-suspended-restore-button" [disabled]="userDetails.suspended"
-              [attr.aria-disabled]="userDetails.suspended" [class.govuk-button--disabled]="userDetails.suspended"
-              (click)="updateUserStatus()">
+              id="user-suspended-restore-button" (click)="updateUserStatus()">
               {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
             </button>
-          </div> -->
+          </div>
         </ng-template>
 
         <button *ngIf="userDetails.status!=='SUSPENDED'" id="copyUserButton" class="govuk-button govuk-button--secondary" data-module="govuk-button"

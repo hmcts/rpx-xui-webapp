@@ -294,20 +294,11 @@ describe('StaffUserDetailsComponent', () => {
     );
   });
 
-  // it('should have a disabled button if suspended is true', () => {
-  //   const restoreOrSuspendedButton = fixture.debugElement.query(By.css('#user-suspended-restore-button'));
-  //   expect(component.userDetails.suspended).toBe(false);
-  //   expect(restoreOrSuspendedButton.nativeElement.getAttribute('disabled')).toBeNull();
-  //   component.userDetails.suspended = true;
-  //   fixture.detectChanges();
-  //   expect(restoreOrSuspendedButton.nativeElement.getAttribute('disabled')).toEqual('');
-  // });
-
-  it('should not make a api call if user is suspended when calling updateUserStatus', () => {
+  it('should make an api call if user is suspended when calling updateUserStatus', () => {
     mockStaffDataAccessService.updateUser.and.returnValue(of({ case_worker_id: '123' }));
     component.userDetails.suspended = true;
     component.updateUserStatus();
-    expect(mockStaffDataAccessService.updateUser).not.toHaveBeenCalled();
+    expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
   });
 
   describe('resendInvite', () => {

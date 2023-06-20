@@ -39,11 +39,11 @@ export class StaffUserDetailsComponent {
   }
 
   public updateUserStatus(): void {
-    if (!this.loading && !this.userDetails.suspended) {
+    if (!this.loading) {
       this.loading = true;
       const staffUser = new StaffUser();
       Object.assign(staffUser, this.userDetails);
-      staffUser.suspended = true;
+      staffUser.suspended = !staffUser.suspended;
       this.staffDataAccessService.updateUser(staffUser).pipe(
         finalize(() => {
           this.loading = false;
@@ -53,8 +53,8 @@ export class StaffUserDetailsComponent {
         .subscribe(
           () => {
             this.status = InfoMessageType.SUCCESS;
-            this.title = 'User suspended';
-            this.message = InfoMessage.SUSPEND_USER_SUCCESS;
+            this.title = staffUser.suspended ? 'User suspended' : 'User restored';
+            this.message = staffUser.suspended ? InfoMessage.SUSPEND_USER_SUCCESS : InfoMessage.USER_RESTORED;
             this.userDetails.suspended = staffUser.suspended;
           },
           (err) => {

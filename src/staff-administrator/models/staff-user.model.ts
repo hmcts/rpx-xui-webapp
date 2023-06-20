@@ -43,7 +43,8 @@ export class StaffUser {
     if (this.suspended) {
       return StaffUserStatus.SUSPENDED;
     }
-    return this.up_idam_status === StaffUserIDAMStatus.ACTIVE ? StaffUserStatus.ACTIVE : StaffUserStatus.PENDING;
+    // No longer need to worry about pending status as this is updated automatically
+    return StaffUserStatus.ACTIVE;
   }
 
   public get primaryLocation() {

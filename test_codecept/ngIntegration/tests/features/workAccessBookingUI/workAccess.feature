@@ -1,4 +1,4 @@
-@ng @ignore @work_access
+@ng @ignore 
 Feature: Work access page
 
     Background: Setup bookings data
@@ -92,7 +92,7 @@ Feature: Work access page
         When I select work access radio button "View task and cases"
         Then I see work access continue button displayed
 
-@existing_bookings
+
     Scenario: Work access View existing bookings with details
         Given I set MOCK with user "BOOKING_UI-FT-ON" and userInfo with roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,fee-paid-judge" with reference "userDetails"
          |roleCategory|

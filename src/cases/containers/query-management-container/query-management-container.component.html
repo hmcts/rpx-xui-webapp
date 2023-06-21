@@ -20,6 +20,7 @@
       <ng-container [ngSwitch]="queryCreateContext">
         <div class="query-form-container">
           <ccd-qualifying-questions *ngSwitchCase="queryItemType.NONE"
+            [formGroup]="formGroup"
             [qualifyingQuestions$]="qualifyingQuestions$">
           </ccd-qualifying-questions>
           <ccd-query-write-raise-query *ngSwitchCase="queryItemType.NEW"

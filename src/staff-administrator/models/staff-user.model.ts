@@ -43,7 +43,7 @@ export class StaffUser {
     if (this.suspended) {
       return StaffUserStatus.SUSPENDED;
     }
-    // No longer need to worry about pending status as this is updated automatically
+    // No longer need to apply pending status as this is updated automatically
     return StaffUserStatus.ACTIVE;
   }
 

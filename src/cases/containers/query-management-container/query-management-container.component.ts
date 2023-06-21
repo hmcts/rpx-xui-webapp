@@ -1,9 +1,10 @@
+import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CaseNotifier, CaseView, Document, FormDocument, QualifyingQuestionsErrorMessage, QueryItemType, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable, Subscription, combineLatest } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models/error-message.model';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
@@ -18,25 +19,28 @@ import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.e
 export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private readonly LD_QUALIFYING_QUESTIONS = 'qm-qualifying-questions';
 
-  public caseId: string;
   public queryItem: QueryListItem | undefined;
-  public queryItemType = QueryItemType;
   public showSummary: boolean = false;
   public formGroup: FormGroup = new FormGroup({});
+  private caseId: string;
   public submitted = false;
   public errorMessages: ErrorMessage[] = [];
   public queryCreateContext: QueryItemType;
 
   public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
   public qualifyingQuestionsControl: FormControl;
-  public qualifyingQuestionsSubscription: Subscription;
 
-  constructor(private readonly activatedRoute: ActivatedRoute,
-              private readonly router: Router,
-              private readonly caseNotifier: CaseNotifier,
-              private readonly featureToggleService: FeatureToggleService) {}
+  constructor(
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly router: Router,
+    private readonly caseNotifier: CaseNotifier,
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly location: Location
+  ) {}
 
   public ngOnInit(): void {
+    this.caseId = this.activatedRoute.snapshot.params.cid;
+
     const queryItemId = this.activatedRoute.snapshot.params.qid;
     this.queryCreateContext = this.getQueryCreateContext(queryItemId);
 
@@ -53,8 +57,10 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       subject: new FormControl(null, Validators.required),
       body: new FormControl(null, Validators.required),
       isHearingRelated: new FormControl(null, Validators.required),
+      hearingDate: new FormControl(null),
       attachments: new FormControl([] as Document[])
     });
+
   }
 
   public showResponseForm(): void {
@@ -108,8 +114,14 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     this.formGroup.get('attachments').setValue(attachments);
   }
 
-  public ngOnDestroy(): void {
-    this.qualifyingQuestionsSubscription?.unsubscribe();
+  public goToQueryList(): void {
+    this.router.navigate(['cases', 'case-details', this.caseId]).then(() => {
+      window.location.hash = 'Queries (read-only view)';
+    });
+  }
+
+  public previous(): void {
+    this.location.back();
   }
 
   public navigateToErrorElement(elementId: string): void {

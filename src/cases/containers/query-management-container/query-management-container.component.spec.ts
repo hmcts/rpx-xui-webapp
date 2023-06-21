@@ -1,11 +1,16 @@
+import { Location } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import {
+  CaseNotifier,
+  CaseView,
   FormDocument,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent
 } from '@hmcts/ccd-case-ui-toolkit';
+import { BehaviorSubject } from 'rxjs';
 import { QueryManagementContainerComponent } from './query-management-container.component';
 import { By } from '@angular/platform-browser';
 
@@ -20,6 +25,29 @@ describe('QueryManagementContainerComponent', () => {
   let component: QueryManagementContainerComponent;
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
   let activatedRoute: ActivatedRoute;
+  const locationMock = jasmine.createSpyObj('Location', ['back']);
+  const CASE_VIEW: CaseView = {
+    case_id: '1234',
+    case_type: {
+      id: 'TestAddressBookCase',
+      name: 'Test Address Book Case',
+      jurisdiction: {
+        id: 'TEST',
+        name: 'Test'
+      }
+    },
+    channels: [],
+    state: {
+      id: 'CaseCreated',
+      name: 'Case created'
+    },
+    tabs: [],
+    triggers: [],
+    events: []
+  };
+  const casesService = jasmine.createSpyObj('casesService', ['caseView']);
+  const mockCaseNotifier = new CaseNotifier(casesService);
+  mockCaseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -29,15 +57,18 @@ describe('QueryManagementContainerComponent', () => {
         QueryWriteRespondToQueryComponent,
         MockRpxTranslatePipe
       ],
+      imports: [RouterTestingModule],
       providers: [
         {
           provide: ActivatedRoute, useValue: {
             snapshot: {
               data: {},
-              params: {}
+              params: { cid: '123' }
             }
           }
-        }
+        },
+        { provide: Location, useValue: locationMock },
+        { provide: CaseNotifier, useValue: mockCaseNotifier }
       ]
     }).compileComponents();
   }));
@@ -56,6 +87,11 @@ describe('QueryManagementContainerComponent', () => {
   it('showResponseForm - should not show summary', () => {
     component.showResponseForm();
     expect(component.showSummary).toBeFalsy();
+  });
+
+  it('should navigate to previous page', () => {
+    component.previous();
+    expect(locationMock.back).toHaveBeenCalled();
   });
 
   describe('when it does not have a query id', () => {

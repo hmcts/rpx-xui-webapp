@@ -20,6 +20,7 @@
       <ng-container [ngSwitch]="queryCreateContext">
         <div class="query-form-container">
           <ccd-qualifying-questions *ngSwitchCase="queryItemType.NONE"
+            [qualifyingQuestionsControl]="qualifyingQuestionsControl"
             [qualifyingQuestions$]="qualifyingQuestions$">
           </ccd-qualifying-questions>
           <ccd-query-write-raise-query *ngSwitchCase="queryItemType.NEW"
@@ -51,7 +52,11 @@
       </div>
     </ng-container>
 
-    <ccd-query-check-your-answers *ngIf="showSummary" [queryItem]="queryItem" [formGroup]="formGroup" (backClicked)="showResponseForm()">
+    <ccd-query-check-your-answers
+      *ngIf="showSummary"
+      [queryItem]="queryItem"
+      [formGroup]="formGroup"
+      (backClicked)="showResponseForm()">
     </ccd-query-check-your-answers>
 
     <div>

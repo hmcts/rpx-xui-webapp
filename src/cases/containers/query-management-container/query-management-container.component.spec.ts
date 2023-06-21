@@ -1,13 +1,17 @@
+import { Location } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import {
   CaseNotifier,
-  FormDocument, QualifyingQuestionsErrorMessage,
+  CaseView,
+  FormDocument,
+  QualifyingQuestionsErrorMessage,
   QueryItemType,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent
 } from '@hmcts/ccd-case-ui-toolkit';
+import { BehaviorSubject } from 'rxjs';
 import { QueryManagementContainerComponent } from './query-management-container.component';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -24,10 +28,29 @@ describe('QueryManagementContainerComponent', () => {
   let component: QueryManagementContainerComponent;
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
   let activatedRoute: ActivatedRoute;
-  const mockRouter = {
-    navigate: jasmine.createSpy('navigate')
+  const locationMock = jasmine.createSpyObj('Location', ['back']);
+  const CASE_VIEW: CaseView = {
+    case_id: '1234',
+    case_type: {
+      id: 'TestAddressBookCase',
+      name: 'Test Address Book Case',
+      jurisdiction: {
+        id: 'TEST',
+        name: 'Test'
+      }
+    },
+    channels: [],
+    state: {
+      id: 'CaseCreated',
+      name: 'Case created'
+    },
+    tabs: [],
+    triggers: [],
+    events: []
   };
-  const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
+  const casesService = jasmine.createSpyObj('casesService', ['caseView, cachedCaseView']);
+  const mockCaseNotifier = new CaseNotifier(casesService);
+  mockCaseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['getValue']);
 
   beforeEach(waitForAsync(() => {
@@ -44,12 +67,12 @@ describe('QueryManagementContainerComponent', () => {
           provide: ActivatedRoute, useValue: {
             snapshot: {
               data: {},
-              params: {}
+              params: { cid: '123' }
             }
           }
         },
-        { provide: Router, useValue: mockRouter },
-        { provide: CaseNotifier, useValue: mockNotifierService },
+        { provide: Location, useValue: locationMock },
+        { provide: CaseNotifier, useValue: mockCaseNotifier },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
     }).compileComponents();
@@ -69,6 +92,11 @@ describe('QueryManagementContainerComponent', () => {
   it('showResponseForm - should not show summary', () => {
     component.showResponseForm();
     expect(component.showSummary).toBeFalsy();
+  });
+
+  it('should navigate to previous page', () => {
+    component.previous();
+    expect(locationMock.back).toHaveBeenCalled();
   });
 
   describe('when it does not have a query id', () => {

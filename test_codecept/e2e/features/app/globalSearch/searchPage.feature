@@ -1,4 +1,4 @@
-@fullfunctional @ignore @codecept_enabled
+@fullfunctional @ignore @functional_enabled
 Feature: Global search
 
 

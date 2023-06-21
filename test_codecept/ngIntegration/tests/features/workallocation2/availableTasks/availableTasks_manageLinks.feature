@@ -1,4 +1,4 @@
-@ng @integration_enabled
+@ng @functional_enabled
 Feature: WA Release 2: My work - Available tasks - Manage links
 
     Background: Mock and browser setup

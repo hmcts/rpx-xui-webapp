@@ -1,4 +1,4 @@
-@ng @integration_enabled
+@ng @functional_enabled
 Feature: WA Release 2: All work - Manage links
 
     Background: Mock and browser setup

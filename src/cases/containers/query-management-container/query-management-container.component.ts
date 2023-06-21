@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CaseNotifier, CaseView, Document, FormDocument, QualifyingQuestionsErrorMessage, QueryItemType, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
@@ -16,7 +16,7 @@ import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.e
   templateUrl: './query-management-container.component.html',
   styleUrls: ['./query-management-container.component.scss']
 })
-export class QueryManagementContainerComponent implements OnInit, OnDestroy {
+export class QueryManagementContainerComponent implements OnInit {
   private readonly LD_QUALIFYING_QUESTIONS = 'qm-qualifying-questions';
 
   public queryItem: QueryListItem | undefined;
@@ -25,6 +25,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private caseId: string;
   public submitted = false;
   public errorMessages: ErrorMessage[] = [];
+  public queryItemType = QueryItemType;
   public queryCreateContext: QueryItemType;
 
   public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
@@ -60,7 +61,6 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       hearingDate: new FormControl(null),
       attachments: new FormControl([] as Document[])
     });
-
   }
 
   public showResponseForm(): void {

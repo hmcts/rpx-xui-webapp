@@ -19,23 +19,23 @@
     <ng-container *ngIf="!showSummary" [formGroup]="formGroup">
       <ng-container [ngSwitch]="queryCreateContext">
         <div class="query-form-container">
-          <ccd-qualifying-questions *ngSwitchCase="queryCreateContext.NONE"
+          <ccd-qualifying-questions *ngSwitchCase="queryItemType.NONE"
             [qualifyingQuestionsControl]="qualifyingQuestionsControl"
             [qualifyingQuestions$]="qualifyingQuestions$">
           </ccd-qualifying-questions>
-          <ccd-query-write-raise-query *ngSwitchCase="queryCreateContext.NEW"
+          <ccd-query-write-raise-query *ngSwitchCase="queryItemType.NEW"
             [formGroup]="formGroup"
             [queryCreateContext]="queryCreateContext" [submitted]="submitted">
           </ccd-query-write-raise-query>
           <ccd-query-write-respond-to-query
-            *ngSwitchCase="[queryCreateContext.RESPOND, queryCreateContext.FOLLOWUP].includes(queryCreateContext) ? queryCreateContext : !queryCreateContext"
+            *ngSwitchCase="[queryItemType.RESPOND, queryItemType.FOLLOWUP].includes(queryCreateContext) ? queryCreateContext : !queryCreateContext"
             [queryItem]="queryItem" [formGroup]="formGroup"
             [submitted]="submitted" [QueryCreateContext]="queryCreateContext">
           </ccd-query-write-respond-to-query>
         </div>
       </ng-container>
 
-      <div class="query-form-container" *ngIf="queryCreateContext !== queryCreateContext.NONE">
+      <div class="query-form-container" *ngIf="queryCreateContext !== queryItemType.NONE">
         <div class="govuk-form-group" [class.govuk-form-group--error]="formGroup.get('attachments')?.errors?.length">
           <ccd-query-write-add-documents [formGroup]="formGroup" (documentCollectionUpdate)="onDocumentCollectionUpdate($event)">
           </ccd-query-write-add-documents>

@@ -28,6 +28,7 @@ export class QueryManagementContainerComponent implements OnInit {
   public errorMessages: ErrorMessage[] = [];
   public queryCreateContext: QueryItemType;
   public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
+  public qualifyingQuestionControl: FormControl;
 
   constructor(private readonly activatedRoute: ActivatedRoute,
               private readonly router: Router,
@@ -39,26 +40,22 @@ export class QueryManagementContainerComponent implements OnInit {
     this.caseId = this.activatedRoute.snapshot.params.cid;
     const queryItemId = this.activatedRoute.snapshot.params.qid;
     this.queryCreateContext = this.getQueryCreateContext(queryItemId);
+    this.qualifyingQuestions$ = this.getQualifyingQuestions();
 
     if (queryItemId) {
       this.queryItem = new QueryListItem();
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
     }
 
-    if (this.queryCreateContext === QueryItemType.NONE) {
-      this.formGroup = new FormGroup({
-        qualifyingQuestionOption: new FormControl(null, Validators.required)
-      });
-      this.qualifyingQuestions$ = this.getQualifyingQuestions();
-    } else {
-      this.formGroup = new FormGroup({
-        fullName: new FormControl(null, Validators.required),
-        subject: new FormControl(null, Validators.required),
-        body: new FormControl(null, Validators.required),
-        isHearingRelated: new FormControl(null, Validators.required),
-        attachments: new FormControl([] as Document[])
-      });
-    }
+    this.qualifyingQuestionControl = new FormControl(null, Validators.required);
+
+    this.formGroup = new FormGroup({
+      fullName: new FormControl(null, Validators.required),
+      subject: new FormControl(null, Validators.required),
+      body: new FormControl(null, Validators.required),
+      isHearingRelated: new FormControl(null, Validators.required),
+      attachments: new FormControl([] as Document[])
+    });
   }
 
   public showResponseForm(): void {

@@ -50,9 +50,7 @@ export class QueryManagementContainerComponent implements OnInit {
         qualifyingQuestionOption: new FormControl(null, Validators.required)
       });
       this.qualifyingQuestions$ = this.getQualifyingQuestions();
-    }
-
-    if (this.queryCreateContext === QueryItemType.NEW) {
+    } else {
       this.formGroup = new FormGroup({
         fullName: new FormControl(null, Validators.required),
         subject: new FormControl(null, Validators.required),

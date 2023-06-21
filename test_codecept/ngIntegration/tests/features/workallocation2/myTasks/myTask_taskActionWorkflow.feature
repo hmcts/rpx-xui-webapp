@@ -1,4 +1,4 @@
-@ng @wa2 @wa  @integration_enabled
+@ng @wa2 @wa  @functional_enabled
 Feature: WA Release 2: My work - My tasks - Task actions
 
     Background: Mock and browser setup

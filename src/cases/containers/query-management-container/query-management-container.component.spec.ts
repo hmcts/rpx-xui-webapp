@@ -1,13 +1,17 @@
+import { Location } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import {
+  CaseNotifier,
   CaseView,
   FormDocument,
   QueryCreateContext,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent
 } from '@hmcts/ccd-case-ui-toolkit';
+import { BehaviorSubject } from 'rxjs';
 import { QueryManagementContainerComponent } from './query-management-container.component';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -23,13 +27,31 @@ describe('QueryManagementContainerComponent', () => {
   let component: QueryManagementContainerComponent;
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
   let activatedRoute: ActivatedRoute;
-  let router: Router;
-  let caseViewMock: CaseView;
+  const locationMock = jasmine.createSpyObj('Location', ['back']);
+  const CASE_VIEW: CaseView = {
+    case_id: '1234',
+    case_type: {
+      id: 'TestAddressBookCase',
+      name: 'Test Address Book Case',
+      jurisdiction: {
+        id: 'TEST',
+        name: 'Test'
+      }
+    },
+    channels: [],
+    state: {
+      id: 'CaseCreated',
+      name: 'Case created'
+    },
+    tabs: [],
+    triggers: [],
+    events: []
+  };
+  const casesService = jasmine.createSpyObj('casesService', ['caseView']);
+  const mockCaseNotifier = new CaseNotifier(casesService);
+  mockCaseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
 
   beforeEach(waitForAsync(() => {
-    caseViewMock = {
-      case_id: '1234567890'
-    } as CaseView;
     TestBed.configureTestingModule({
       declarations: [
         QueryManagementContainerComponent,
@@ -43,12 +65,14 @@ describe('QueryManagementContainerComponent', () => {
           provide: ActivatedRoute, useValue: {
             snapshot: {
               data: {
-                case: caseViewMock
+                case: CASE_VIEW
               },
-              params: {}
+              params: { cid: '123' }
             }
           }
-        }
+        },
+        { provide: Location, useValue: locationMock },
+        { provide: CaseNotifier, useValue: mockCaseNotifier }
       ]
     }).compileComponents();
   }));
@@ -69,6 +93,16 @@ describe('QueryManagementContainerComponent', () => {
     component.showResponseForm();
     expect(component.showSummary).toBeFalsy();
   });
+
+  it('should navigate to previous page', () => {
+    component.previous();
+    expect(locationMock.back).toHaveBeenCalled();
+  });
+
+  describe('when it does not have a query id', () => {
+    it('should not set the query item', () => {
+      expect(component.queryItem).toBeUndefined();
+    });
 
   describe('submitForm', () => {
     it('should set submitted to true', () => {

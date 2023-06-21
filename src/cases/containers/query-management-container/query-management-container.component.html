@@ -21,9 +21,12 @@
       <div>
         <ng-container *ngIf="queryItem; else raiseQuery">
           <ccd-query-write-respond-to-query
-            [queryItem]="queryItem" [formGroup]="formGroup"
-            [submitted]="submitted" [queryCreateContext]="queryCreateContext"
-          ></ccd-query-write-respond-to-query>
+            [queryItem]="queryItem"
+            [formGroup]="formGroup"
+            [queryCreateContext]="queryCreateContext"
+            [submitted]="submitted"
+          >
+          </ccd-query-write-respond-to-query>
         </ng-container>
         <ng-template #raiseQuery>
           <div class="query-form-container">
@@ -44,7 +47,7 @@
 
       <div>
         <div class="govuk-button-group">
-          <button class="govuk-button govuk-button--secondary" data-module="govuk-button" [disabled]="true">
+          <button class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="previous()">
             {{ 'Previous' | rpxTranslate }}
           </button>
           <button class="govuk-button" data-module="govuk-button" (click)="submitForm()">
@@ -60,8 +63,8 @@
 
     <div>
       <ng-container *ngIf="queryItem; else raiseQueryBackLink">
-        <a href="javascript:void(0)" class="govuk-back-link govuk-!-margin-bottom-0">
-          {{ 'Cancel and return to tasks' | rpxTranslate }}
+        <a href="javascript:void(0)" (click)="goToQueryList()" class="govuk-back-link govuk-!-margin-bottom-0">
+          {{ 'Cancel and return to query list' | rpxTranslate }}
         </a>
       </ng-container>
       <ng-template #raiseQueryBackLink>

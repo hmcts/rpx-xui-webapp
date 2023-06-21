@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ErrorMessage } from '../../../app/models/error-message.model';
@@ -22,14 +23,16 @@ export class QueryManagementContainerComponent implements OnInit {
   public queryItem: QueryListItem | undefined;
   public showSummary: boolean = false;
   public formGroup: FormGroup;
+  private caseId: string;
   public submitted = false;
   public errorMessages: ErrorMessage[] = [];
   public caseView: CaseView;
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private router: Router,
-  ) {}
+    private readonly router: Router,
+    private location: Location
+  ) { }
 
   public ngOnInit(): void {
     this.caseView = this.activatedRoute.snapshot.data.case as CaseView
@@ -44,6 +47,7 @@ export class QueryManagementContainerComponent implements OnInit {
     });
 
     const queryItemId = this.activatedRoute.snapshot.params.qid;
+    this.caseId = this.activatedRoute.snapshot.params.cid;
     if (queryItemId) {
       this.queryItem = new QueryListItem();
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
@@ -82,6 +86,16 @@ export class QueryManagementContainerComponent implements OnInit {
     );
 
     this.formGroup.get('attachments').setValue(attachments);
+  }
+
+  public goToQueryList(): void {
+    this.router.navigate(['cases', 'case-details', this.caseId]).then(() => {
+      window.location.hash = 'Queries (read-only view)';
+    });
+  }
+
+  public previous(): void {
+    this.location.back();
   }
 
   public validateForm(): void {

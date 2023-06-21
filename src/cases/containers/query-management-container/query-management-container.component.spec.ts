@@ -14,7 +14,6 @@ import {
 import { BehaviorSubject } from 'rxjs';
 import { QueryManagementContainerComponent } from './query-management-container.component';
 import { By } from '@angular/platform-browser';
-import { RouterTestingModule } from '@angular/router/testing';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -27,6 +26,8 @@ describe('QueryManagementContainerComponent', () => {
   let component: QueryManagementContainerComponent;
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
   let activatedRoute: ActivatedRoute;
+  let router: Router;
+
   const locationMock = jasmine.createSpyObj('Location', ['back']);
   const CASE_VIEW: CaseView = {
     case_id: '1234',
@@ -104,6 +105,40 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.queryItem).toBeUndefined();
     });
 
+    it('should have the ccd-query-write-raise-query component', () => {
+      const compiled = fixture.debugElement.nativeElement;
+      expect(compiled.querySelector('ccd-query-write-raise-query')).toBeTruthy();
+    });
+  });
+
+  describe('when it has a query id', () => {
+    beforeEach(() => {
+      activatedRoute.snapshot = {
+        ...activatedRoute.snapshot,
+        params: { qid: '123' }
+      } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+      fixture.detectChanges();
+    });
+
+    it('should set the query item', () => {
+      expect(component.queryItem).toBeDefined();
+    });
+
+    it('should set caseView', () => {
+      expect(component.caseView).toEqual(CASE_VIEW);
+    });
+
+    it('should set the query create context to respond', () => {
+      expect(component.queryCreateContext).toEqual(QueryCreateContext.RESPOND);
+    });
+
+    it('should have the ccd-query-write-respond-to-query component', () => {
+      const compiled = fixture.debugElement.nativeElement;
+      expect(compiled.querySelector('ccd-query-write-respond-to-query')).toBeTruthy();
+    });
+  });
+
   describe('submitForm', () => {
     it('should set submitted to true', () => {
       expect(component.submitted).toBe(false);
@@ -144,45 +179,6 @@ describe('QueryManagementContainerComponent', () => {
         expect(component.showSummary).toBe(false);
         component.submitForm();
         expect(component.showSummary).toBe(false);
-      });
-    });
-
-    describe('when it does not have a query id', () => {
-      it('should not set the query item', () => {
-        expect(component.queryItem).toBeUndefined();
-      });
-
-      it('should have the ccd-query-write-raise-query component', () => {
-        const compiled = fixture.debugElement.nativeElement;
-        expect(compiled.querySelector('ccd-query-write-raise-query')).toBeTruthy();
-      });
-    });
-
-    describe('when it has a query id', () => {
-      beforeEach(() => {
-        activatedRoute.snapshot = {
-          ...activatedRoute.snapshot,
-          params: { qid: '123' }
-        } as unknown as ActivatedRouteSnapshot;
-        component.ngOnInit();
-        fixture.detectChanges();
-      });
-
-      it('should set the query item', () => {
-        expect(component.queryItem).toBeDefined();
-      });
-
-      it('should set caseView', () => {
-        expect(component.caseView).toEqual(caseViewMock);
-      });
-
-      it('should set the query create context to respond', () => {
-        expect(component.queryCreateContext).toEqual(QueryCreateContext.RESPOND);
-      });
-
-      it('should have the ccd-query-write-respond-to-query component', () => {
-        const compiled = fixture.debugElement.nativeElement;
-        expect(compiled.querySelector('ccd-query-write-respond-to-query')).toBeTruthy();
       });
     });
 
@@ -279,7 +275,7 @@ describe('QueryManagementContainerComponent', () => {
       it('should navigate to case overview tab', () => {
         spyOn(router, 'navigate');
         component.navigateToCaseOverviewTab();
-        expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', caseViewMock.case_id],
+        expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', CASE_VIEW.case_id],
           { fragment: 'Overview' }
         );
       });

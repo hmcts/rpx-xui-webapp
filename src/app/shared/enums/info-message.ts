@@ -15,5 +15,5 @@ export enum InfoMessage {
   UPDATED_USER = 'User has been updated.',
   SUSPEND_USER_SUCCESS = 'To make this user active again, select \'Restore\'.',
   SUSPEND_USER_ERROR = 'There is a problem. There was a system error and your request could not be processed.',
-  USER_RESTORED = 'THe user has succesfully been restored.'
+  USER_RESTORED = 'The user has succesfully been restored.'
 }

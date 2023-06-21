@@ -53,6 +53,7 @@ export class StaffUserDetailsComponent {
         .subscribe(
           () => {
             this.status = InfoMessageType.SUCCESS;
+            // User either restored or suspended if successful
             this.title = staffUser.suspended ? 'User suspended' : 'User restored';
             this.message = staffUser.suspended ? InfoMessage.SUSPEND_USER_SUCCESS : InfoMessage.USER_RESTORED;
             this.userDetails.suspended = staffUser.suspended;

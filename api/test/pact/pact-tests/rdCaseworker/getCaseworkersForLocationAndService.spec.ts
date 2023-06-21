@@ -8,7 +8,7 @@ import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'referenceData_caseworkerRefUsers', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'WorkAllocation_api_caseworker', port: 8000 });
 
 const MockApp = require('../../../../../test/nodeMock/app');
 

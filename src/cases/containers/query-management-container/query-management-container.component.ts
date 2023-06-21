@@ -26,13 +26,18 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public submitted = false;
   public errorMessages: ErrorMessage[] = [];
   public queryCreateContext: QueryItemType;
+  public qualifyingQuestion: QualifyingQuestion;
   public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
   public qualifyingQuestionsSubscription: Subscription;
 
   constructor(private readonly activatedRoute: ActivatedRoute,
               private readonly router: Router,
               private readonly caseNotifier: CaseNotifier,
-              private readonly featureToggleService: FeatureToggleService) {}
+              private readonly featureToggleService: FeatureToggleService) {
+    // Get current navigation
+    const currentNavigation = this.router.getCurrentNavigation();
+    this.qualifyingQuestion = currentNavigation?.extras?.state?.qualifyingQuestion;
+  }
 
   public ngOnInit(): void {
     const queryItemId = this.activatedRoute.snapshot.params.qid;
@@ -43,14 +48,14 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
     }
 
-    if (this.queryCreateContext === QueryItemType.NONE) {
+    if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS) {
       this.formGroup = new FormGroup({
         qualifyingQuestionOption: new FormControl(null, Validators.required)
       });
       this.qualifyingQuestions$ = this.getQualifyingQuestions();
     }
 
-    if (this.queryCreateContext === QueryItemType.NEW) {
+    if (this.queryCreateContext === QueryItemType.NEW_QUERY) {
       this.formGroup = new FormGroup({
         fullName: new FormControl(null, Validators.required),
         subject: new FormControl(null, Validators.required),
@@ -66,8 +71,17 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   public submitForm(): void {
-    if (this.queryCreateContext === QueryItemType.NONE) {
-      this.router.navigate(['query-management', 'query', `${this.caseId}`, '1']);
+    if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS) {
+      console.log('FORM GROUP VALUE', this.formGroup.value);
+      console.log('QQ SELECTED VALUE', this.formGroup.get('qualifyingQuestionOption').value);
+      const qualifyingQuestionOption = this.formGroup.get('qualifyingQuestionOption').value;
+      if (qualifyingQuestionOption.markdown?.length) {
+        this.router.navigate(['query-management', 'query', `${this.caseId}`, '1'], { state: { qualifyingQuestion: this.formGroup.get('qualifyingQuestionOption').value } });
+      } else {
+        this.router.navigateByUrl(qualifyingQuestionOption.url);
+      }
+    } else if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL) {
+      this.router.navigateByUrl(this.qualifyingQuestion.url);
     } else {
       this.showSummary = true;
       this.submitted = true;
@@ -152,17 +166,19 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   private getQueryCreateContext(queryItemId: string): QueryItemType {
     if (!queryItemId) {
-      return QueryItemType.NONE;
+      return QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
     }
     switch (queryItemId) {
       case '1':
-        return QueryItemType.NEW;
+        return QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL;
       case '2':
-        return QueryItemType.RESPOND;
+        return QueryItemType.NEW_QUERY;
       case '3':
+        return QueryItemType.RESPOND;
+      case '4':
         return QueryItemType.FOLLOWUP;
       default:
-        return QueryItemType.NONE;
+        return QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
     }
   }
 
@@ -173,7 +189,13 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     ]).pipe(
       map(([caseView, caseTypeQualifyingQuestions]: [CaseView, CaseTypeQualifyingQuestions[]]) => {
         this.caseId = caseView.case_id;
-        return caseTypeQualifyingQuestions[caseView.case_type.id];
+        const qualifyingQuestions = caseTypeQualifyingQuestions[caseView.case_type.id];
+        qualifyingQuestions.push({
+          name: 'Raise another query relating to this case',
+          markdown: '',
+          url: `/query-management/query/${this.caseId}/2`
+        });
+        return qualifyingQuestions;
       })
     );
   }

@@ -1,4 +1,4 @@
-@ng @functional_enabled
+@ng @codecept_enabled 
 Feature: WA Release 2: All work
 
     Background: Mock and browser setup
@@ -34,15 +34,15 @@ Feature: WA Release 2: All work
             | Priority      | Yes        | Yes    |
 
         Then If current user "<UserType>" is "Judge", I validate task table values displayed
-            | row | Case name | Case category | Location | Task | Task created |
+            | row | Case name | Case category | Location | Task | Task created | 
             | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -10          |
             | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | -10          |
 
         Then If current user "<UserType>" is "Caseworker", I validate task table values displayed
-            | row | Case name | Case category | Location | Task | Due date |
-            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -1       |
-            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 0        |
-            | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        |
+            | row | Case name | Case category | Location | Task | Due date | 
+            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -1       | 
+            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 0        | 
+            | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        | 
 
 
         # Then I validate work allocation task table column "Task" width less than or equal to 280
@@ -93,12 +93,12 @@ Feature: WA Release 2: All work
 
     Scenario:  Tasks sort column persist in session with Caseworker user
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator" with reference "userDetails"
-
+       
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation |
             | IA           | Y           | ORGANISATION | 20001        |
             | SSCS         | Y           | ORGANISATION | 20001        |
-
+       
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
@@ -155,7 +155,7 @@ Feature: WA Release 2: All work
             | Due date      | Yes        | No    |
             | Priority      | Yes        | Yes    |
 
-
+       
 
         # Then I validate work allocation task table column "Task" width less than or equal to 280
         # Then I validate work allocation task table column "Case name" width less than or equal to 200
@@ -166,10 +166,10 @@ Feature: WA Release 2: All work
             | 2   | case 2                                                                                     | auto test category 2 | test location 2 | test auto task 2                                                                                                                                                 | -10          |
             | 3   | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | auto test category 3 | test location 3 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -40          |
         Then If current user "<UserType>" is "Caseworker", I validate task table values displayed
-            | row | Case name                                                                                  | Case category        | Location        | Task                                                                                                                                                             | Due date |
+            | row | Case name                                                                                  | Case category        | Location        | Task                                                                                                                                                             | Due date | 
             | 1   | case 1                                                                                     | auto test category 1 | test location 1 | test auto task 1                                                                                                                                                 | -1       |
-            | 2   | case 2                                                                                     | auto test category 2 | test location 2 | test auto task 2                                                                                                                                                 | 0        |
-            | 3   | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | auto test category 3 | test location 3 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -30      |
+            | 2   | case 2                                                                                     | auto test category 2 | test location 2 | test auto task 2                                                                                                                                                 | 0        | 
+            | 3   | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | auto test category 3 | test location 3 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -30      | 
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                                            |

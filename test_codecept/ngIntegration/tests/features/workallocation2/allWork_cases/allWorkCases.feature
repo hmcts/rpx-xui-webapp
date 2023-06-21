@@ -1,9 +1,9 @@
-@ng  @wa2 @wa @functional_enabled
+@ng  @wa2 @wa @codecept_enabled 
 Feature: WA Release 2: All work > Cases
 
     Background: Mock and browser setup
         Given I init MockApp
-
+       
     Scenario Outline:  All cases, colums and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA" allow empty service

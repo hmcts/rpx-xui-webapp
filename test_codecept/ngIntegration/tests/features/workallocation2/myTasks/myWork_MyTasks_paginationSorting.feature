@@ -1,4 +1,4 @@
-@ng @known_bug @EUI-4804 @functional_enabled
+@ng @known_bug @EUI-4804 @codecept_enabled
 Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
 
 
@@ -11,7 +11,7 @@ Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
-
+        
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |

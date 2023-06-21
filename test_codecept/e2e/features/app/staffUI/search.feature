@@ -1,4 +1,4 @@
-@fullfunctional @ignore @staffUI @functional_enabled
+@fullfunctional @ignore @staffUI @codecept_enabled
 Feature: Staff UI Search
 
 

@@ -1,9 +1,9 @@
-@ng @functional_enabled
+@ng @codecept_enabled 
 Feature: WA Release 2: My work to  Available tasks to pagination sorting
 
     Background: Mock and browser setup
         Given I init MockApp
-
+       
 
 
     Scenario Outline: Available Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"

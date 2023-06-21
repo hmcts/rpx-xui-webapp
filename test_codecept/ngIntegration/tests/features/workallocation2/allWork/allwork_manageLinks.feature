@@ -1,4 +1,4 @@
-@ng @functional_enabled
+@ng @codecept_enabled
 Feature: WA Release 2: All work - Manage links
 
     Background: Mock and browser setup
@@ -35,7 +35,7 @@ Feature: WA Release 2: All work - Manage links
             | 1     | Assign task,Go to task                 |
             | 2     | Assign task,Go to task                 |
             | 4     | Reassign task,Unassign task,Go to task |
-
+          
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |

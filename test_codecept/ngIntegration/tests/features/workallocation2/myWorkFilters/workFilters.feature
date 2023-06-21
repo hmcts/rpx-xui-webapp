@@ -1,10 +1,10 @@
-@ng @functional_enabled
+@ng @codecept_enabled
 Feature: WA Release 2: My work - Work filters
 
     Background: Mock and browser setup
         # Given I navigate to home page
     Scenario Outline:  Work filters show hide button and Apply for "<UserType>"
-
+       
 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<Roles>" with reference "userDetails"
         # Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
@@ -131,7 +131,7 @@ Feature: WA Release 2: My work - Work filters
         When I remove slected location "IA Court Center 1" from my work filters
 
         When I click work location filter Apply button
-
+       
         Then I validate work filter button text is "Show work filter"
         Then I validate location filter is not displayed
 
@@ -143,7 +143,7 @@ Feature: WA Release 2: My work - Work filters
 
     Scenario Outline: Work filters locations based on organisation role and base location
 
-
+       
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo

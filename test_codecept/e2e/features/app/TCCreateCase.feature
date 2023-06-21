@@ -1,4 +1,4 @@
-@fullfunctional @test @functional_enabled
+@fullfunctional @test @codecept_enabled
 Feature: Test case type case creation and case details validations
 
   Background:
@@ -134,5 +134,5 @@ Feature: Test case type case creation and case details validations
         When I create case with invalid date
         Then I see error message of type "validation" displayed with message "Date is not valid"
 
-
+        
 

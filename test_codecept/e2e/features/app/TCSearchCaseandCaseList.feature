@@ -1,4 +1,4 @@
-@fullfunctional @test @functional_enabled
+@fullfunctional @test @codecept_enabled 
 Feature: Test case type case list and find case workflow
 
   Background:

@@ -1,4 +1,4 @@
-@ng @wa2 @wa  @functional_enabled
+@ng @wa2 @wa  @codecept_enabled 
 Feature: WA Release 2: My work - My tasks - Task actions
 
     Background: Mock and browser setup
@@ -103,7 +103,7 @@ Feature: WA Release 2: My work - My tasks - Task actions
         Given I set MOCK task details for WA release2
             | case_name        | case_category      | location_name |
             | Allwork test scr | auto test category | London QA lab |
-
+  
         Given I start MockApp
         Given I navigate to home page
 
@@ -118,7 +118,7 @@ Feature: WA Release 2: My work - My tasks - Task actions
 
         Then I see "<actionHeader>" task action page
         Then I validate task action page has description "<actionDescription>"
-
+       
 
         Then I validate task details displayed in task action page
             | Case name        | Case category      | Location      |

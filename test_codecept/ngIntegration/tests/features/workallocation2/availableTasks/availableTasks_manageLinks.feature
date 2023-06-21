@@ -1,10 +1,10 @@
-@ng @functional_enabled
+@ng @codecept_enabled 
 Feature: WA Release 2: My work - Available tasks - Manage links
 
     Background: Mock and browser setup
         Given I init MockApp
-
-
+       
+            
     Scenario Outline:  Available Tasks, colums and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo

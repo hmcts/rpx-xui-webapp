@@ -1,4 +1,4 @@
-@ng @functional_enabled @links_testing
+@ng @codecept_enabled @links_testing
 Feature: WA Release 2: Case details Tasks tab - Manage links (@integration_todo)
 
 Feature Description
@@ -51,7 +51,7 @@ Feature Description
         Then I see case details tab label "Tasks" is displayed is "true"
         Then I see case details page with message banner "You've assigned yourself a task"
 
-@reassign
+
   Scenario: Task manage link actions Reassign
 
     Given I start MockApp
@@ -77,10 +77,10 @@ Feature Description
     When In workflow "Reassign task", I click continue
 
     Then In workflow "Reassign task", I see find person page displayed with caption "Reassign task"
-    When In workflow "Reassign task", I enter search term "test" in find person input text
+    When In workflow "Reassign task", I enter search term "legal" in find person input text
 
-    When In workflow "Reassign task", I select find person result "test_first test_last (test_user@testing.net)"
-    Then In workflow "Reassign task", I see find person is selected with "test_first test_last (test_user@testing.net)"
+    When In workflow "Reassign task", I select find person result "ia_civil_legal_operations_1@justice.gov.uk"
+    Then In workflow "Reassign task", I see find person is selected with "ia_civil_legal_operations_1@justice.gov.uk"
 
     When In workflow "Reassign task", I click continue
 
@@ -90,7 +90,7 @@ Feature Description
       | Case name        | Case category      | Location      |
       | José González | Protection | Taylor House |
 
-    Then I validate column "Person" value is set to "test_first test_last" in task check your changes page
+    Then I validate column "Person" value is set to "LEGAL_OPERATIONS 1 IA_CIVIL" in task check your changes page
     When I click submit button "Reassign" in task check your changes page
          # Then I see navigation header tab page "My work"
     Then I see case details tab label "Tasks" is displayed is "true"

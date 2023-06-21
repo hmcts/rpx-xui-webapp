@@ -1,17 +1,20 @@
+import { Location } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import {
   CaseNotifier,
+  CaseView,
   FormDocument,
   QueryItemType,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent
 } from '@hmcts/ccd-case-ui-toolkit';
-import { QueryManagementContainerComponent } from './query-management-container.component';
-import { By } from '@angular/platform-browser';
-import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { BehaviorSubject } from 'rxjs';
+import { QueryManagementContainerComponent } from './query-management-container.component';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -29,6 +32,29 @@ describe('QueryManagementContainerComponent', () => {
   };
   const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['getValue']);
+  const locationMock = jasmine.createSpyObj('Location', ['back']);
+  const CASE_VIEW: CaseView = {
+    case_id: '1234',
+    case_type: {
+      id: 'TestAddressBookCase',
+      name: 'Test Address Book Case',
+      jurisdiction: {
+        id: 'TEST',
+        name: 'Test'
+      }
+    },
+    channels: [],
+    state: {
+      id: 'CaseCreated',
+      name: 'Case created'
+    },
+    tabs: [],
+    triggers: [],
+    events: []
+  };
+  const casesService = jasmine.createSpyObj('casesService', ['caseView']);
+  const mockCaseNotifier = new CaseNotifier(casesService);
+  mockCaseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -44,11 +70,12 @@ describe('QueryManagementContainerComponent', () => {
           provide: ActivatedRoute, useValue: {
             snapshot: {
               data: {},
-              params: {}
+              params: { cid: '123' }
             }
           }
         },
         { provide: Router, useValue: mockRouter },
+        { provide: Location, useValue: locationMock },
         { provide: CaseNotifier, useValue: mockNotifierService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
@@ -69,6 +96,11 @@ describe('QueryManagementContainerComponent', () => {
   it('showResponseForm - should not show summary', () => {
     component.showResponseForm();
     expect(component.showSummary).toBeFalsy();
+  });
+
+  it('should navigate to previous page', () => {
+    component.previous();
+    expect(locationMock.back).toHaveBeenCalled();
   });
 
   describe('when it does not have a query id', () => {
@@ -163,11 +195,10 @@ describe('QueryManagementContainerComponent', () => {
 
     it('should navigate to raise a new query page after qualifying question is selected', () => {
       spyOn(component, 'validateForm');
-      component.caseId = '1111-2222-3333-4444';
       component.queryCreateContext = QueryItemType.NONE;
       component.submitForm();
       expect(component.showSummary).toEqual(false);
-      expect(component.validateForm).not.toHaveBeenCalledWith(['query-management', 'query', '1111-2222-3333-4444', '1']);
+      expect(component.validateForm).not.toHaveBeenCalledWith(['query-management', 'query', '123', '1']);
       expect(mockRouter.navigate).toHaveBeenCalled();
     });
   });

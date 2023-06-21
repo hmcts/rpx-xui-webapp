@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import * as sinon from 'sinon';
 import * as chai from 'chai';
+import { expect } from 'chai';
 import * as sinonChai from 'sinon-chai';
 import 'mocha';
 import { mockReq, mockRes } from 'sinon-express-mock';

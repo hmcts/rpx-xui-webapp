@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import {
   CaseNotifier,
-  FormDocument,
+  FormDocument, QualifyingQuestionsErrorMessage,
   QueryItemType,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent
@@ -161,14 +161,52 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.validateForm).toHaveBeenCalled();
     });
 
-    it('should navigate to raise a new query page after qualifying question is selected', () => {
-      spyOn(component, 'validateForm');
-      component.caseId = '1111-2222-3333-4444';
-      component.queryCreateContext = QueryItemType.NONE;
-      component.submitForm();
-      expect(component.showSummary).toEqual(false);
-      expect(component.validateForm).not.toHaveBeenCalledWith(['query-management', 'query', '1111-2222-3333-4444', '1']);
-      expect(mockRouter.navigate).toHaveBeenCalled();
+    describe('queryCreateContext is QueryItemType.None', () => {
+      beforeEach(() => {
+        component.queryCreateContext = QueryItemType.NONE;
+      });
+
+      it('should mark control as touched', () => {
+        spyOn(component.qualifyingQuestionsControl, 'markAsTouched');
+        component.submitForm();
+        expect(component.qualifyingQuestionsControl.markAsTouched).toHaveBeenCalled();
+      });
+
+      describe('qualifyingQuestionsControl is valid', () => {
+        beforeEach(() => {
+          component.qualifyingQuestionsControl.setValue(QueryItemType.NEW);
+          fixture.detectChanges();
+        });
+
+        it('should set queryCreateContext to raise a new query when qualifying question value is QueryItemType.NEW', () => {
+          component.submitForm();
+          expect(component.queryCreateContext).toEqual(QueryItemType.NEW);
+        });
+      });
+
+      describe('qualifyingQuestionsControl is not valid', () => {
+        beforeEach(() => {
+          component.qualifyingQuestionsControl.setValue(null);
+          fixture.detectChanges();
+        });
+
+        it('should set error messages when control is empty', () => {
+          component.submitForm();
+          expect(component.errorMessages).toEqual([
+            {
+              title: '',
+              description: QualifyingQuestionsErrorMessage.SELECT_AN_OPTION,
+              fieldId: 'qualifyingQuestionOption'
+            }
+          ]);
+        });
+
+        it('should scroll to top', () => {
+          spyOn(window, 'scrollTo');
+          component.submitForm();
+          expect(window.scrollTo).toHaveBeenCalledWith({ left: 0, top: 0, behavior: 'smooth' });
+        });
+      });
     });
   });
 

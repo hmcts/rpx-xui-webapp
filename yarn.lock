@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-create-qualifying-questions-component-v2":
-  version: 6.16.0-create-qualifying-questions-component-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-create-qualifying-questions-component-v2"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-create-qualifying-questions-continue-raise-a-query":
+  version: 6.16.0-create-qualifying-questions-continue-raise-a-query
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-create-qualifying-questions-continue-raise-a-query"
   dependencies:
     tslib: ^2.0.0
-  checksum: 08489c8f91e84bded20636894accc01cb7ab99c367cb7c56c35e585617bc33dc975366a24fa89d5814b23ab684bf310ec7208d99df59d8bf180447977c1e4910
+  checksum: b6c1f3d129574ae6ab26b775e5b53195aecf11f953bd335c45cb2a9fd19e0e022b5af7c960662d24bf418a35300e009e9593bbafebdfded063c943a4f92cac9f
   languageName: node
   linkType: hard
 
@@ -19117,7 +19117,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-create-qualifying-questions-component-v2
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-create-qualifying-questions-continue-raise-a-query
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

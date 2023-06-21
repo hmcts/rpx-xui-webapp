@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CaseNotifier, CaseView, Document, FormDocument, QueryItemType, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseNotifier, CaseView, Document, FormDocument, QualifyingQuestionsErrorMessage, QueryItemType, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -26,7 +26,9 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public submitted = false;
   public errorMessages: ErrorMessage[] = [];
   public queryCreateContext: QueryItemType;
+
   public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
+  public qualifyingQuestionsControl: FormControl;
   public qualifyingQuestionsSubscription: Subscription;
 
   constructor(private readonly activatedRoute: ActivatedRoute,
@@ -43,22 +45,16 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
     }
 
-    if (this.queryCreateContext === QueryItemType.NONE) {
-      this.formGroup = new FormGroup({
-        qualifyingQuestionOption: new FormControl(null, Validators.required)
-      });
-      this.qualifyingQuestions$ = this.getQualifyingQuestions();
-    }
+    this.qualifyingQuestions$ = this.getQualifyingQuestions();
+    this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
 
-    if (this.queryCreateContext === QueryItemType.NEW) {
-      this.formGroup = new FormGroup({
-        fullName: new FormControl(null, Validators.required),
-        subject: new FormControl(null, Validators.required),
-        body: new FormControl(null, Validators.required),
-        isHearingRelated: new FormControl(null, Validators.required),
-        attachments: new FormControl([] as Document[])
-      });
-    }
+    this.formGroup = new FormGroup({
+      fullName: new FormControl(null, Validators.required),
+      subject: new FormControl(null, Validators.required),
+      body: new FormControl(null, Validators.required),
+      isHearingRelated: new FormControl(null, Validators.required),
+      attachments: new FormControl([] as Document[])
+    });
   }
 
   public showResponseForm(): void {
@@ -66,8 +62,26 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   public submitForm(): void {
+    this.errorMessages = [];
+
     if (this.queryCreateContext === QueryItemType.NONE) {
-      this.router.navigate(['query-management', 'query', `${this.caseId}`, '1']);
+      this.qualifyingQuestionsControl.markAsTouched();
+      if (this.qualifyingQuestionsControl.valid) {
+        // Set to Raise A Query if the user has selected the Raise A Query option (i.e. QueryItemType.NEW)
+        if (this.qualifyingQuestionsControl.value === QueryItemType.NEW) {
+          this.queryCreateContext = QueryItemType.NEW;
+        }
+      } else {
+        this.errorMessages = [
+          {
+            title: '',
+            description: QualifyingQuestionsErrorMessage.SELECT_AN_OPTION,
+            fieldId: 'qualifyingQuestionOption'
+          }
+        ];
+
+        window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+      }
     } else {
       this.showSummary = true;
       this.submitted = true;
@@ -96,6 +110,16 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.qualifyingQuestionsSubscription?.unsubscribe();
+  }
+
+  public navigateToErrorElement(elementId: string): void {
+    if (elementId) {
+      const htmlElement = document.getElementById(elementId);
+      if (htmlElement) {
+        htmlElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        htmlElement.focus();
+      }
+    }
   }
 
   public validateForm(): void {
@@ -129,7 +153,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       });
     } else {
       if (this.formGroup.get('isHearingRelated').value === true &&
-          this.formGroup.get('hearingDate').value === null) {
+        this.formGroup.get('hearingDate').value === null) {
         this.errorMessages.push({
           title: '',
           description: RaiseQueryErrorMessage.QUERY_HEARING_DATE,
@@ -138,16 +162,6 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       }
     }
     window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
-  }
-
-  public navigateToErrorElement(elementId: string): void {
-    if (elementId) {
-      const htmlElement = document.getElementById(elementId);
-      if (htmlElement) {
-        htmlElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        htmlElement.focus();
-      }
-    }
   }
 
   private getQueryCreateContext(queryItemId: string): QueryItemType {

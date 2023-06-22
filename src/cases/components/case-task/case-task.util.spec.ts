@@ -63,6 +63,13 @@ describe('CaseTaskUtil', () => {
     expect(appendedTaskDescription).toEqual('Click link to proceed to next step [test link next step](/cases/case-details/1547652071308205/trigger/editAppealAfterSubmit?abc=123&tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6)');
   });
 
+  it('should return task id appended to only url as querystring not to text', () => {
+    const taskToCheck = task;
+    taskToCheck.description = 'Click link to proceed to next step [test link next step (testing)](/cases/case-details/1547652071308205/trigger/editAppealAfterSubmit?abc=123)';
+    const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(taskToCheck);
+    expect(appendedTaskDescription).toEqual('Click link to proceed to next step [test link next step (testing)](/cases/case-details/1547652071308205/trigger/editAppealAfterSubmit?abc=123&tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6)');
+  });
+
   it('should return empty string if there is no task description', () => {
     const taskToCheck = task;
     taskToCheck.description = null;

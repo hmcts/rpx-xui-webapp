@@ -3,6 +3,7 @@ import { StaffUserLocation } from './staff-user-location.model';
 import { StaffUserStatus } from './staff-user-status.enum';
 
 export class StaffUser {
+  public case_worker_id: string;
   public email_id: string;
   public first_name: string;
   public last_name: string;
@@ -39,12 +40,8 @@ export class StaffUser {
   public region: string;
   public region_id: number;
 
-  public get status(): StaffUserStatus {
-    if (this.suspended) {
-      return StaffUserStatus.SUSPENDED;
-    }
-    // No longer need to apply pending status as this is updated automatically
-    return StaffUserStatus.ACTIVE;
+  public get status(): StaffUserIDAMStatus {
+    return this.up_idam_status;
   }
 
   public get primaryLocation() {

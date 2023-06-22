@@ -20,7 +20,7 @@
       <ng-container [ngSwitch]="queryCreateContext">
         <div class="query-form-container">
           <ccd-qualifying-question-options *ngSwitchCase="queryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS"
-            [qualifyingQuestionControl]="qualifyingQuestionControl"
+            [qualifyingQuestionsControl]="qualifyingQuestionsControl"
             [qualifyingQuestions$]="qualifyingQuestions$">
           </ccd-qualifying-question-options>
           <ccd-qualifying-question-detail *ngSwitchCase="queryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL"
@@ -44,6 +44,15 @@
           <ccd-query-write-add-documents [formGroup]="formGroup" (documentCollectionUpdate)="onDocumentCollectionUpdate($event)">
           </ccd-query-write-add-documents>
         </div>
+      </div>
+
+      <div class="govuk-button-group">
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="previous()">
+          {{ 'Previous' | rpxTranslate }}
+        </button>
+        <button class="govuk-button" data-module="govuk-button" (click)="submitForm()">
+          {{ 'Continue' | rpxTranslate }}
+        </button>
       </div>
     </ng-container>
 

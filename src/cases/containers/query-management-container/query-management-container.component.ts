@@ -40,7 +40,7 @@ export class QueryManagementContainerComponent implements OnInit {
   public queryCreateContext: QueryItemType;
   public qualifyingQuestion: QualifyingQuestion;
   public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
-  public qualifyingQuestionControl: FormControl;
+  public qualifyingQuestionsControl: FormControl;
 
   constructor(private readonly activatedRoute: ActivatedRoute,
               private readonly router: Router,
@@ -59,7 +59,7 @@ export class QueryManagementContainerComponent implements OnInit {
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
     }
 
-    this.qualifyingQuestionControl = new FormControl(null, Validators.required);
+    this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
 
     this.formGroup = new FormGroup({
       fullName: new FormControl(null, Validators.required),
@@ -81,7 +81,7 @@ export class QueryManagementContainerComponent implements OnInit {
       if (this.validateQualifyingQuestion()) {
         // Submit triggered after selecting a qualifying question from qualifying questions radio options display page
         // Display the markdown page if markdown content is available, else navigate to the URL provided in the config
-        this.qualifyingQuestion = this.qualifyingQuestionControl.value;
+        this.qualifyingQuestion = this.qualifyingQuestionsControl.value;
         if (this.qualifyingQuestion.markdown?.length) {
           this.queryCreateContext = this.getQueryCreateContext();
         } else {
@@ -124,19 +124,23 @@ export class QueryManagementContainerComponent implements OnInit {
   }
 
   public previous(): void {
-    this.location.back();
+    if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL) {
+      this.queryCreateContext = QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
+    } else {
+      this.location.back();
+    }
   }
 
   public validateQualifyingQuestion(): boolean {
     this.errorMessages = [];
     if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS) {
-      this.qualifyingQuestionControl.markAsTouched();
-      if (!this.qualifyingQuestionControl.valid) {
+      this.qualifyingQuestionsControl.markAsTouched();
+      if (!this.qualifyingQuestionsControl.valid) {
         this.errorMessages = [
           {
             title: '',
             description: QualifyingQuestionsErrorMessage.SELECT_AN_OPTION,
-            fieldId: 'qualifyingQuestionOption'
+            fieldId: 'qualifyingQuestionsOption'
           }
         ];
         window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
@@ -231,7 +235,7 @@ export class QueryManagementContainerComponent implements OnInit {
         if (!qualifyingQuestions.map((question) => question.name).includes(this.RAISE_A_QUERY_NAME)) {
           // Add the default qualifying question to the list if not present
           qualifyingQuestions.push({
-            name: 'Raise another query relating to this case',
+            name: this.RAISE_A_QUERY_NAME,
             markdown: '',
             url: `/query-management/query/${this.caseId}/2`
           });

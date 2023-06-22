@@ -2,7 +2,16 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CaseNotifier, CaseView, Document, FormDocument, QueryItemType, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
+import {
+  CaseNotifier,
+  CaseView,
+  Document,
+  FormDocument,
+  QualifyingQuestionsErrorMessage,
+  QueryItemType,
+  QueryListItem,
+  partyMessagesMockData
+} from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -23,11 +32,11 @@ export class QueryManagementContainerComponent implements OnInit {
   private queryItemId: string;
 
   public queryItem: QueryListItem | undefined;
-  public queryItemType = QueryItemType;
   public showSummary: boolean = false;
   public formGroup: FormGroup = new FormGroup({});
   public submitted = false;
   public errorMessages: ErrorMessage[] = [];
+  public queryItemType = QueryItemType;
   public queryCreateContext: QueryItemType;
   public qualifyingQuestion: QualifyingQuestion;
   public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
@@ -68,13 +77,16 @@ export class QueryManagementContainerComponent implements OnInit {
 
   public submitForm(): void {
     if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS) {
-      // Submit triggered after selecting a qualifying question from qualifying questions radio options display page
-      // Display the markdown page if markdown content is available, else navigate to the URL provided in the config
-      this.qualifyingQuestion = this.qualifyingQuestionControl.value;
-      if (this.qualifyingQuestion.markdown?.length) {
-        this.queryCreateContext = this.getQueryCreateContext();
-      } else {
-        this.router.navigateByUrl(this.qualifyingQuestion.url);
+      // Validate qualifying question selection
+      if (this.validateQualifyingQuestion()) {
+        // Submit triggered after selecting a qualifying question from qualifying questions radio options display page
+        // Display the markdown page if markdown content is available, else navigate to the URL provided in the config
+        this.qualifyingQuestion = this.qualifyingQuestionControl.value;
+        if (this.qualifyingQuestion.markdown?.length) {
+          this.queryCreateContext = this.getQueryCreateContext();
+        } else {
+          this.router.navigateByUrl(this.qualifyingQuestion.url);
+        }
       }
     } else if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL) {
       // Submit triggered from the markdown page, navigate to the URL provided in the config
@@ -115,6 +127,25 @@ export class QueryManagementContainerComponent implements OnInit {
     this.location.back();
   }
 
+  public validateQualifyingQuestion(): boolean {
+    this.errorMessages = [];
+    if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS) {
+      this.qualifyingQuestionControl.markAsTouched();
+      if (!this.qualifyingQuestionControl.valid) {
+        this.errorMessages = [
+          {
+            title: '',
+            description: QualifyingQuestionsErrorMessage.SELECT_AN_OPTION,
+            fieldId: 'qualifyingQuestionOption'
+          }
+        ];
+        window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+        return false;
+      }
+    }
+    return true;
+  }
+
   public validateForm(): void {
     this.errorMessages = [];
     if (!this.formGroup.get('fullName').valid) {
@@ -146,7 +177,7 @@ export class QueryManagementContainerComponent implements OnInit {
       });
     } else {
       if (this.formGroup.get('isHearingRelated').value === true &&
-          this.formGroup.get('hearingDate').value === null) {
+        this.formGroup.get('hearingDate').value === null) {
         this.errorMessages.push({
           title: '',
           description: RaiseQueryErrorMessage.QUERY_HEARING_DATE,

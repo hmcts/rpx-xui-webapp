@@ -103,7 +103,7 @@
   "sessionSecret": "secretSauce",
   "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
   "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
-  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW,ST_CIC",
   "serviceRefDataMapping": [
     { "service": "IA", "serviceCodes": ["BFA1"] },
     { "service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"] },

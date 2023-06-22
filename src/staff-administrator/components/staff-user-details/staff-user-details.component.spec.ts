@@ -35,7 +35,7 @@ describe('StaffUserDetailsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>(
-      'mockStaffDataAccessService', ['updateUser']
+      'mockStaffDataAccessService', ['updateUser', 'fetchSingleUserById']
     );
 
     mockMessageService = jasmine.createSpyObj<InfoMessageCommService>(
@@ -47,6 +47,7 @@ describe('StaffUserDetailsComponent', () => {
     );
 
     testStaffUserData = {
+      case_worker_id: '123',
       email_id: 'email@test.hmcts',
       first_name: 'Kevin',
       last_name: 'Silver',
@@ -220,10 +221,11 @@ describe('StaffUserDetailsComponent', () => {
   it('should set suspendedStatus to "suspended" to show the banner when calling updateUserStatus with isSuspended true', () => {
     expect(component.userDetails.suspended).toBe(false);
     mockStaffDataAccessService.updateUser.and.returnValue(of({ case_worker_id: '123' }));
+    mockStaffDataAccessService.fetchSingleUserById.and.returnValue(of(StaffUser.from(testStaffUserData)));
     component.updateUserStatus();
 
     expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
-    expect(component.userDetails.suspended).toBe(true);
+    expect(component.userDetails.suspended).toBe(false);
     expect(component.status).toBe('success');
   });
 
@@ -243,7 +245,7 @@ describe('StaffUserDetailsComponent', () => {
   it('should call onCopyUser when clicking copy primary button for suspended user', fakeAsync(() => {
     spyOn(component, 'onCopyUser').and.callThrough();
     spyOn(router, 'navigateByUrl').and.callThrough();
-    component.userDetails.suspended = true;
+    component.userDetails.up_idam_status = StaffUserIDAMStatus.SUSPENDED;
     fixture.detectChanges();
     const primaryActionButton = fixture.debugElement.query(By.css('#primaryActionButton'));
     primaryActionButton.triggerEventHandler('click', null);
@@ -296,6 +298,7 @@ describe('StaffUserDetailsComponent', () => {
 
   it('should make an api call if user is suspended when calling updateUserStatus', () => {
     mockStaffDataAccessService.updateUser.and.returnValue(of({ case_worker_id: '123' }));
+    mockStaffDataAccessService.fetchSingleUserById.and.returnValue(of(StaffUser.from(testStaffUserData)));
     component.userDetails.suspended = true;
     component.updateUserStatus();
     expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
@@ -304,6 +307,7 @@ describe('StaffUserDetailsComponent', () => {
   describe('resendInvite', () => {
     it('Should show success message on sending activation email', () => {
       mockStaffDataAccessService.updateUser.and.returnValue(of({ case_worker_id: '123' }));
+      mockStaffDataAccessService.fetchSingleUserById.and.returnValue(of(StaffUser.from(testStaffUserData)));
       component.resendInvite();
       fixture.detectChanges();
       const staffUser = new StaffUser();
@@ -318,6 +322,7 @@ describe('StaffUserDetailsComponent', () => {
 
     it('should show error message on failure in sending activation emails', () => {
       mockStaffDataAccessService.updateUser.and.returnValue(throwError({ status: 500 }));
+      mockStaffDataAccessService.fetchSingleUserById.and.returnValue(of(StaffUser.from(testStaffUserData)));
       component.resendInvite();
       fixture.detectChanges();
       const staffUser = new StaffUser();

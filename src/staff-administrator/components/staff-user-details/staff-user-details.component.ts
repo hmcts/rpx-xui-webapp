@@ -1,7 +1,8 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GroupOptions } from '@hmcts/rpx-xui-common-lib';
-import { finalize } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -44,29 +45,47 @@ export class StaffUserDetailsComponent {
       const staffUser = new StaffUser();
       Object.assign(staffUser, this.userDetails);
       staffUser.suspended = !staffUser.suspended;
-      this.staffDataAccessService.updateUser(staffUser).pipe(
-        finalize(() => {
-          this.loading = false;
-          window.scrollTo(0, 0);
-        })
-      )
+      this.staffDataAccessService.updateUser(staffUser)
         .subscribe(
           () => {
-            this.status = InfoMessageType.SUCCESS;
-            // User either restored or suspended if successful
-            this.title = staffUser.suspended ? 'User suspended' : 'User restored';
-            this.message = staffUser.suspended ? InfoMessage.SUSPEND_USER_SUCCESS : InfoMessage.USER_RESTORED;
-            this.userDetails.suspended = staffUser.suspended;
+            this.getUpdatedUser();
           },
           (err) => {
-            if (err.status === 401 || err.status.toString().startsWith('5')) {
-              this.router.navigateByUrl('/service-down');
-            } else {
-              this.status = 'warning';
-              this.message = InfoMessage.SUSPEND_USER_ERROR;
-            }
+            this.setErrorSteps(err);
           }
         );
+    }
+  }
+
+  // this is order to ensure the status of the user is correct (i.e. not pending or previous status)
+  private getUpdatedUser(): void {
+    this.staffDataAccessService.fetchSingleUserById(this.userDetails.case_worker_id).pipe(
+      map((user) => this.userDetails = StaffUser.from(user)),
+      finalize(() => {
+        this.loading = false;
+        window.scrollTo(0, 0);
+      })
+    ).subscribe(() => {
+      if (this.userDetails.up_idam_status !== StaffUserIDAMStatus.PENDING) {
+        this.status = InfoMessageType.SUCCESS;
+        // User either restored or suspended if successful
+        this.title = this.userDetails.suspended ? 'User suspended' : 'User restored';
+        this.message = this.userDetails.suspended ? InfoMessage.SUSPEND_USER_SUCCESS : InfoMessage.USER_RESTORED;
+      }
+    },
+    (err) => {
+      this.setErrorSteps(err);
+    });
+  }
+
+  private setErrorSteps(err: HttpErrorResponse): void {
+    if (err.status === 401 || err.status.toString().startsWith('5')) {
+      this.router.navigateByUrl('/service-down');
+    } else {
+      this.status = 'warning';
+      this.message = InfoMessage.SUSPEND_USER_ERROR;
+      this.loading = false;
+      window.scrollTo(0, 0);
     }
   }
 

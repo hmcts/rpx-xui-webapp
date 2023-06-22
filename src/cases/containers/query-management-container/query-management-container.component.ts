@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CaseNotifier, CaseView, Document, FormDocument, QueryItemType, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable, Subscription, combineLatest } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models/error-message.model';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
@@ -15,10 +16,10 @@ import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.e
   templateUrl: './query-management-container.component.html',
   styleUrls: ['./query-management-container.component.scss']
 })
-export class QueryManagementContainerComponent implements OnInit, OnDestroy {
+export class QueryManagementContainerComponent implements OnInit {
   private readonly LD_QUALIFYING_QUESTIONS = 'qm-qualifying-questions';
+  private caseId: string;
 
-  public caseId: string;
   public queryItem: QueryListItem | undefined;
   public queryItemType = QueryItemType;
   public showSummary: boolean = false;
@@ -28,10 +29,11 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public queryCreateContext: QueryItemType;
   public qualifyingQuestion: QualifyingQuestion;
   public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
-  public qualifyingQuestionsSubscription: Subscription;
+  public qualifyingQuestionControl: FormControl;
 
   constructor(private readonly activatedRoute: ActivatedRoute,
               private readonly router: Router,
+              private readonly location: Location,
               private readonly caseNotifier: CaseNotifier,
               private readonly featureToggleService: FeatureToggleService) {
     // Get current navigation
@@ -40,30 +42,26 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.caseId = this.activatedRoute.snapshot.params.cid;
     const queryItemId = this.activatedRoute.snapshot.params.qid;
     this.queryCreateContext = this.getQueryCreateContext(queryItemId);
+    this.qualifyingQuestions$ = this.getQualifyingQuestions();
 
     if (queryItemId) {
       this.queryItem = new QueryListItem();
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
     }
 
-    if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS) {
-      this.formGroup = new FormGroup({
-        qualifyingQuestionOption: new FormControl(null, Validators.required)
-      });
-      this.qualifyingQuestions$ = this.getQualifyingQuestions();
-    }
+    this.qualifyingQuestionControl = new FormControl(null, Validators.required);
 
-    if (this.queryCreateContext === QueryItemType.NEW_QUERY) {
-      this.formGroup = new FormGroup({
-        fullName: new FormControl(null, Validators.required),
-        subject: new FormControl(null, Validators.required),
-        body: new FormControl(null, Validators.required),
-        isHearingRelated: new FormControl(null, Validators.required),
-        attachments: new FormControl([] as Document[])
-      });
-    }
+    this.formGroup = new FormGroup({
+      fullName: new FormControl(null, Validators.required),
+      subject: new FormControl(null, Validators.required),
+      body: new FormControl(null, Validators.required),
+      isHearingRelated: new FormControl(null, Validators.required),
+      hearingDate: new FormControl(null),
+      attachments: new FormControl([] as Document[])
+    });
   }
 
   public showResponseForm(): void {
@@ -108,8 +106,14 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     this.formGroup.get('attachments').setValue(attachments);
   }
 
-  public ngOnDestroy(): void {
-    this.qualifyingQuestionsSubscription?.unsubscribe();
+  public goToQueryList(): void {
+    this.router.navigate(['cases', 'case-details', this.caseId]).then(() => {
+      window.location.hash = 'Queries (read-only view)';
+    });
+  }
+
+  public previous(): void {
+    this.location.back();
   }
 
   public validateForm(): void {

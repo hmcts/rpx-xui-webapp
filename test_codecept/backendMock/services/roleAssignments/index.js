@@ -83,9 +83,9 @@ class RoleAssignments{
                     "userId": "string",
                     "regionId": "string",
                     "locationId": "string",
-                    "created": "2023-03-16T15:35:52.582Z",
-                    "beginTime": "2023-03-16T15:35:52.582Z",
-                    "endTime": "2023-03-16T15:35:52.582Z",
+                    "created": new Date(),
+                    "beginTime": new Date(),
+                    "endTime": new Date(),
                     "log": "string"
                 }
             ]

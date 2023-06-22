@@ -8,6 +8,7 @@ import {
   CaseNotifier,
   CaseView,
   FormDocument,
+  QualifyingQuestionsErrorMessage,
   QueryItemType,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent
@@ -31,7 +32,6 @@ describe('QueryManagementContainerComponent', () => {
     navigate: jasmine.createSpy('navigate'),
     navigateByUrl: jasmine.createSpy('navigateByUrl')
   };
-  const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['getValue']);
   const locationMock = jasmine.createSpyObj('Location', ['back']);
   const CASE_VIEW: CaseView = {
@@ -53,7 +53,7 @@ describe('QueryManagementContainerComponent', () => {
     triggers: [],
     events: []
   };
-  const casesService = jasmine.createSpyObj('casesService', ['caseView']);
+  const casesService = jasmine.createSpyObj('casesService', ['caseView, cachedCaseView']);
   const mockCaseNotifier = new CaseNotifier(casesService);
   mockCaseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
 
@@ -77,7 +77,7 @@ describe('QueryManagementContainerComponent', () => {
         },
         { provide: Router, useValue: mockRouter },
         { provide: Location, useValue: locationMock },
-        { provide: CaseNotifier, useValue: mockNotifierService },
+        { provide: CaseNotifier, useValue: mockCaseNotifier },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
     }).compileComponents();
@@ -207,6 +207,54 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.showSummary).toEqual(false);
       expect(mockRouter.navigateByUrl).toHaveBeenCalled();
       expect(component.validateForm).not.toHaveBeenCalled();
+    });
+
+    describe('queryCreateContext is QueryItemType.None', () => {
+      beforeEach(() => {
+        component.queryCreateContext = QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
+      });
+
+      it('should mark control as touched', () => {
+        spyOn(component.qualifyingQuestionControl, 'markAsTouched');
+        component.submitForm();
+        expect(component.qualifyingQuestionControl.markAsTouched).toHaveBeenCalled();
+      });
+
+      describe('qualifyingQuestionsControl is valid', () => {
+        beforeEach(() => {
+          component.qualifyingQuestionControl.setValue(QueryItemType.NEW_QUERY);
+          fixture.detectChanges();
+        });
+
+        it('should set queryCreateContext to raise a new query when qualifying question value is QueryItemType.NEW', () => {
+          component.submitForm();
+          expect(component.queryCreateContext).toEqual(QueryItemType.NEW_QUERY);
+        });
+      });
+
+      describe('qualifyingQuestionsControl is not valid', () => {
+        beforeEach(() => {
+          component.qualifyingQuestionControl.setValue(null);
+          fixture.detectChanges();
+        });
+
+        it('should set error messages when control is empty', () => {
+          component.submitForm();
+          expect(component.errorMessages).toEqual([
+            {
+              title: '',
+              description: QualifyingQuestionsErrorMessage.SELECT_AN_OPTION,
+              fieldId: 'qualifyingQuestionOption'
+            }
+          ]);
+        });
+
+        it('should scroll to top', () => {
+          spyOn(window, 'scrollTo');
+          component.submitForm();
+          expect(window.scrollTo).toHaveBeenCalledWith({ left: 0, top: 0, behavior: 'smooth' });
+        });
+      });
     });
   });
 

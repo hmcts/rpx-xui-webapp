@@ -186,11 +186,9 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   }
 
   private getHearingTime(value:string, actualIndex: number, plannedIndex: number, time: 'startTime' | 'endTime'): string {
-    const [hearingActual, plannedTime] = time === 'startTime' ? ['hearingStartTime', 'plannedStartTime'] : ['hearingEndTime', 'plannedEndTime'];
-    const hearingTime = (actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex][hearingActual])
-    || (plannedIndex && this.hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex][plannedTime]);
+    const hearingDate = this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingDate;
 
-    return !!value ? HearingActualsTimingComponent.replaceTime(hearingTime, moment(value, 'HH:mm')) : null;
+    return value ? HearingActualsTimingComponent.replaceTime(hearingDate, moment(value, 'HH:mm')) : null;
   }
 
   public updateControl(event: any, control: AbstractControl): void {

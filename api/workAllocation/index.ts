@@ -320,10 +320,12 @@ export async function retrieveCaseWorkersForServices(req: EnhancedRequest): Prom
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
   const jurisdictions = req.body.serviceIds as string[];
   // will need to check specific jurisdiction have caseworkers in session
+  console.log('serviceIds : ' + jurisdictions);
   let newJurisdictions: string[];
   let sessionCaseworkersByService: CaseworkersByService[] = [];
   if (req.session && req.session.caseworkersByService) {
     const sessionCaseworkerInfo = getSessionCaseworkerInfo(jurisdictions, req.session.caseworkersByService);
+    console.log('sessionCaseworkerInfo : ' + JSON.stringify(sessionCaseworkerInfo));
     newJurisdictions = sessionCaseworkerInfo[0];
     sessionCaseworkersByService = sessionCaseworkerInfo[1];
   }
@@ -337,17 +339,23 @@ export async function retrieveCaseWorkersForServices(req: EnhancedRequest): Prom
   const roleResponse = await getAllRoles(req); // get the roles from the endpoint
   const roles: Role[] = roleResponse.data;
   const payloads: CaseworkerPayload[] = prepareServiceRoleApiRequest(newJurisdictions, roles);
+  console.log('payloads : ' + JSON.stringify(payloads));
   const data: ServiceCaseworkerData[] = await handleCaseWorkersForServicesPost(roleApiPath, payloads, req);
   const userIdsByJurisdiction = getUserIdsFromJurisdictionRoleResponse(data);
+  console.log('userIdsByJurisdiction : ' + JSON.stringify(userIdsByJurisdiction));
+
   if (userIdsByJurisdiction.length === 0) {
     return sessionCaseworkersByService;
   }
   const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
   const fullCaseworkerByServiceInfo = [];
   const userResponse = await handlePostCaseWorkersRefData(userUrl, userIdsByJurisdiction, req);
+  console.log('userResponse : ' + JSON.stringify(userResponse));
+
   userResponse.forEach((userList) => {
     const jurisdictionData = data.find((caseworkerData) => caseworkerData.jurisdiction === userList.jurisdiction);
     const caseWorkerReferenceData = getCaseworkerDataForServices(userList.data, jurisdictionData);
+    console.log('caseWorkerReferenceData : ' + JSON.stringify(caseWorkerReferenceData));
     // note have to merge any new service caseworker data for full session as well as services specified in params
     fullCaseworkerByServiceInfo.push(caseWorkerReferenceData);
   });

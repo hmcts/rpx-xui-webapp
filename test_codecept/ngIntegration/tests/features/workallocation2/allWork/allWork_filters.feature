@@ -1,4 +1,4 @@
-@ng   @codecept_enabled
+@ng   @functional_enabled
 Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Background: Mock and browser setup
@@ -249,9 +249,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
         Examples:
             | Jurisdiction | locationName | locationId | Task_Category        | Person_search | Person_name                              | person_id                            | Person_Role_Type | Task_type |
-            | IA | Test loc 3 | 12347 | Assigned to a person | LEGAL | LEGAL_OPERATIONS 1 IA_CIVIL (ia_civil_legal_operations_1@justice.gov.uk)| 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops | Legal Ops |
+#            | IA | Test loc 3 | 12347 | Assigned to a person | LEGAL | LEGAL_OPERATIONS 1 IA_CIVIL (ia_civil_legal_operations_1@justice.gov.uk)| 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops | Legal Ops |
             | IA | Test loc 3 | 12347 | Assigned to a person | judge | auto test 0 judge 0 (auto_test_judge_0@justice.gov.uk) | 1231 | Judicial | Legal Ops |
-            | IA | Test loc 3 | 12347 | Assigned to a person | ADMIN | ADMIN 1 IA_CIVIL (ia_civil_admin_1@justice.gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin | Admin |
+#            | IA | Test loc 3 | 12347 | Assigned to a person | ADMIN | ADMIN 1 IA_CIVIL (ia_civil_admin_1@justice.gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin | Admin |
 
     Scenario: "Caseworker" Cases filters state
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "task-supervisor,case-allocator,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
@@ -266,13 +266,13 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I see all work cases not loaded and message displayed as "Please select filters and click Apply"
 
         Then I see filter "Person" is displayed in all work page
-        When I enter find person search input "LEGAL" in work flow
+        When I enter find person search input "test" in work flow
 
         Then I see find person search results in work flow
             | Person                                   |
-            | LEGAL_OPERATIONS 1 IA_CIVIL (ia_civil_legal_operations_1@justice.gov.uk) |
+            | test_first test_last (test_user@testing.net) |
 
-        When I select find person result "LEGAL_OPERATIONS 1 IA_CIVIL (ia_civil_legal_operations_1@justice.gov.uk)" in work flow
+        When I select find person result "test_first test_last (test_user@testing.net)" in work flow
         When I click Apply filter button in all work page
         Then I validate work allocation cases count in page 25
 

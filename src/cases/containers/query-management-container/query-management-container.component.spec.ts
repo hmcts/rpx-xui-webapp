@@ -28,7 +28,8 @@ describe('QueryManagementContainerComponent', () => {
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
   let activatedRoute: ActivatedRoute;
   const mockRouter = {
-    navigate: jasmine.createSpy('navigate')
+    navigate: jasmine.createSpy('navigate'),
+    navigateByUrl: jasmine.createSpy('navigateByUrl')
   };
   const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['getValue']);
@@ -108,11 +109,12 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.queryItem).toBeUndefined();
     });
 
-    it('should set the queryCreateContext to be query item type of none', () => {
-      expect(component.queryCreateContext).toEqual(QueryItemType.NONE);
+    it('should set the queryCreateContext to be query item type of new query qualifying question options', () => {
+      expect(component.queryCreateContext).toEqual(QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
     });
 
     it('should have the ccd-qualifying-questions component', () => {
+      console.log('SUMMARY', component.showSummary);
       const compiled = fixture.debugElement.nativeElement;
       expect(compiled.querySelector('ccd-qualifying-questions')).toBeTruthy();
     });
@@ -129,9 +131,9 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.queryItem).toBeDefined();
     });
 
-    it('should have the ccd-query-write-respond-to-query component', () => {
+    it('should have the ccd-query-write-raise-query component', () => {
       const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector('ccd-query-write-respond-to-query')).toBeTruthy();
+      expect(compiled.querySelector('ccd-query-write-raise-query')).toBeTruthy();
     });
   });
 
@@ -187,7 +189,7 @@ describe('QueryManagementContainerComponent', () => {
   describe('submitForm', () => {
     it('should set submitted to true and initiate form validation', () => {
       spyOn(component, 'validateForm');
-      component.queryCreateContext = QueryItemType.NEW;
+      component.queryCreateContext = QueryItemType.NEW_QUERY;
       component.submitForm();
       expect(component.submitted).toEqual(true);
       expect(component.validateForm).toHaveBeenCalled();
@@ -195,17 +197,22 @@ describe('QueryManagementContainerComponent', () => {
 
     it('should navigate to raise a new query page after qualifying question is selected', () => {
       spyOn(component, 'validateForm');
-      component.queryCreateContext = QueryItemType.NONE;
+      component.qualifyingQuestion = {
+        name: 'Raise another query relating to this case',
+        markdown: '',
+        url: '/query-management/query/123/2'
+      };
+      component.queryCreateContext = QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL;
       component.submitForm();
       expect(component.showSummary).toEqual(false);
-      expect(component.validateForm).not.toHaveBeenCalledWith(['query-management', 'query', '123', '1']);
-      expect(mockRouter.navigate).toHaveBeenCalled();
+      expect(mockRouter.navigateByUrl).toHaveBeenCalled();
+      expect(component.validateForm).not.toHaveBeenCalled();
     });
   });
 
   describe('validateForm', () => {
     beforeEach(() => {
-      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '1' } } as unknown as ActivatedRouteSnapshot;
+      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '2' } } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       fixture.detectChanges();
     });
@@ -231,7 +238,7 @@ describe('QueryManagementContainerComponent', () => {
 
   describe('navigateToErrorElement', () => {
     beforeEach(() => {
-      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '1' } } as unknown as ActivatedRouteSnapshot;
+      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '2' } } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       fixture.detectChanges();
     });
@@ -253,16 +260,22 @@ describe('QueryManagementContainerComponent', () => {
   });
 
   describe('getQueryCreateContext', () => {
-    it('should return query item type follow up as the query context', () => {
+    it('should return query item type respond as the query context', () => {
       activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '3' } } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+      expect(component.queryCreateContext).toEqual(QueryItemType.RESPOND);
+    });
+
+    it('should return query item type follow up as the query context', () => {
+      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '4' } } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       expect(component.queryCreateContext).toEqual(QueryItemType.FOLLOWUP);
     });
 
-    it('should return query item type none as the query context', () => {
-      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '4' } } as unknown as ActivatedRouteSnapshot;
+    it('should return query item type new query qualifying question options as the query context', () => {
+      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '5' } } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
-      expect(component.queryCreateContext).toEqual(QueryItemType.NONE);
+      expect(component.queryCreateContext).toEqual(QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
     });
   });
 });

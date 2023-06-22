@@ -221,11 +221,14 @@ describe('StaffUserDetailsComponent', () => {
   it('should set suspendedStatus to "suspended" to show the banner when calling updateUserStatus with isSuspended true', () => {
     expect(component.userDetails.suspended).toBe(false);
     mockStaffDataAccessService.updateUser.and.returnValue(of({ case_worker_id: '123' }));
-    mockStaffDataAccessService.fetchSingleUserById.and.returnValue(of(StaffUser.from(testStaffUserData)));
+    const suspendedStaffUser = testStaffUserData;
+    suspendedStaffUser.up_idam_status = StaffUserIDAMStatus.SUSPENDED;
+    suspendedStaffUser.suspended = true;
+    mockStaffDataAccessService.fetchSingleUserById.and.returnValue(of(StaffUser.from(suspendedStaffUser)));
     component.updateUserStatus();
 
     expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
-    expect(component.userDetails.suspended).toBe(false);
+    expect(component.userDetails.suspended).toBe(true);
     expect(component.status).toBe('success');
   });
 

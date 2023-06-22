@@ -18,7 +18,9 @@ import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.e
 })
 export class QueryManagementContainerComponent implements OnInit {
   private readonly LD_QUALIFYING_QUESTIONS = 'qm-qualifying-questions';
+  private readonly RAISE_A_QUERY_NAME = 'Raise another query relating to this case';
   private caseId: string;
+  private queryItemId: string;
 
   public queryItem: QueryListItem | undefined;
   public queryItemType = QueryItemType;
@@ -35,19 +37,15 @@ export class QueryManagementContainerComponent implements OnInit {
               private readonly router: Router,
               private readonly location: Location,
               private readonly caseNotifier: CaseNotifier,
-              private readonly featureToggleService: FeatureToggleService) {
-    // Get current navigation
-    const currentNavigation = this.router.getCurrentNavigation();
-    this.qualifyingQuestion = currentNavigation?.extras?.state?.qualifyingQuestion;
-  }
+              private readonly featureToggleService: FeatureToggleService) {}
 
   public ngOnInit(): void {
     this.caseId = this.activatedRoute.snapshot.params.cid;
-    const queryItemId = this.activatedRoute.snapshot.params.qid;
-    this.queryCreateContext = this.getQueryCreateContext(queryItemId);
+    this.queryItemId = this.activatedRoute.snapshot.params.qid;
+    this.queryCreateContext = this.getQueryCreateContext();
     this.qualifyingQuestions$ = this.getQualifyingQuestions();
 
-    if (queryItemId) {
+    if (this.queryItemId) {
       this.queryItem = new QueryListItem();
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
     }
@@ -70,15 +68,16 @@ export class QueryManagementContainerComponent implements OnInit {
 
   public submitForm(): void {
     if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS) {
-      console.log('FORM GROUP VALUE', this.formGroup.value);
-      console.log('QQ SELECTED VALUE', this.formGroup.get('qualifyingQuestionOption').value);
-      const qualifyingQuestionOption = this.formGroup.get('qualifyingQuestionOption').value;
-      if (qualifyingQuestionOption.markdown?.length) {
-        this.router.navigate(['query-management', 'query', `${this.caseId}`, '1'], { state: { qualifyingQuestion: this.formGroup.get('qualifyingQuestionOption').value } });
+      // Submit triggered after selecting a qualifying question from qualifying questions radio options display page
+      // Display the markdown page if markdown content is available, else navigate to the URL provided in the config
+      this.qualifyingQuestion = this.qualifyingQuestionControl.value;
+      if (this.qualifyingQuestion.markdown?.length) {
+        this.queryCreateContext = this.getQueryCreateContext();
       } else {
-        this.router.navigateByUrl(qualifyingQuestionOption.url);
+        this.router.navigateByUrl(this.qualifyingQuestion.url);
       }
     } else if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL) {
+      // Submit triggered from the markdown page, navigate to the URL provided in the config
       this.router.navigateByUrl(this.qualifyingQuestion.url);
     } else {
       this.showSummary = true;
@@ -168,11 +167,8 @@ export class QueryManagementContainerComponent implements OnInit {
     }
   }
 
-  private getQueryCreateContext(queryItemId: string): QueryItemType {
-    if (!queryItemId) {
-      return QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
-    }
-    switch (queryItemId) {
+  private getQueryCreateContext(): QueryItemType {
+    switch (this.queryItemId) {
       case '1':
         return QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL;
       case '2':
@@ -182,7 +178,14 @@ export class QueryManagementContainerComponent implements OnInit {
       case '4':
         return QueryItemType.FOLLOWUP;
       default:
-        return QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
+        // When raise a query event is initiated, the queryItemId will be null for
+        // both 'display of qualifying questions radio options' and 'display of markdown' pages
+        // If the qualifying questions radio options are displayed then clicking on continue
+        // must show the markdown of the selected qualifying question radio option, else just
+        // display the qualifying questions radio options
+        return this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS
+          ? QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL
+          : QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
     }
   }
 
@@ -193,12 +196,15 @@ export class QueryManagementContainerComponent implements OnInit {
     ]).pipe(
       map(([caseView, caseTypeQualifyingQuestions]: [CaseView, CaseTypeQualifyingQuestions[]]) => {
         this.caseId = caseView.case_id;
-        const qualifyingQuestions = caseTypeQualifyingQuestions[caseView.case_type.id];
-        qualifyingQuestions.push({
-          name: 'Raise another query relating to this case',
-          markdown: '',
-          url: `/query-management/query/${this.caseId}/2`
-        });
+        const qualifyingQuestions: QualifyingQuestion[] = caseTypeQualifyingQuestions[caseView.case_type.id];
+        if (!qualifyingQuestions.map((question) => question.name).includes(this.RAISE_A_QUERY_NAME)) {
+          // Add the default qualifying question to the list if not present
+          qualifyingQuestions.push({
+            name: 'Raise another query relating to this case',
+            markdown: '',
+            url: `/query-management/query/${this.caseId}/2`
+          });
+        }
         return qualifyingQuestions;
       })
     );

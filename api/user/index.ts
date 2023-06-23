@@ -16,7 +16,7 @@ import { trackTrace } from '../lib/appInsights';
 
 export async function getUserDetails(req, res: Response, next: NextFunction): Promise<Response> {
   if (!exists(req, 'session.passport.user')) {
-    return res.send({}).status(200);
+    return res.send({}).status(401);
   }
   try {
     const { roles } = req.session.passport.user.userinfo;

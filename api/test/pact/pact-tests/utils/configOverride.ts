@@ -57,3 +57,10 @@ export function getJudicialRefDataAPIOverrides(judicialRefApiUrl) {
     ...defaultConfig
   };
 }
+
+export function getCcdDataAPIOverrides(ccdDataApiUrl) {
+  return {
+    'services.ccd.dataApi': ccdDataApiUrl,
+    ...defaultConfig
+  };
+}

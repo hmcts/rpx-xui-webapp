@@ -40,10 +40,6 @@ export class StaffUser {
   public region: string;
   public region_id: number;
 
-  public get status(): StaffUserIDAMStatus {
-    return this.up_idam_status;
-  }
-
   public get primaryLocation() {
     return this.base_locations.find((item) => item.is_primary);
   }

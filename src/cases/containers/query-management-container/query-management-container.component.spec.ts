@@ -13,6 +13,7 @@ import {
 import { BehaviorSubject } from 'rxjs';
 import { QueryManagementContainerComponent } from './query-management-container.component';
 import { By } from '@angular/platform-browser';
+import { provideMockStore } from '@ngrx/store/testing';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -59,6 +60,16 @@ describe('QueryManagementContainerComponent', () => {
       ],
       imports: [RouterTestingModule],
       providers: [
+        provideMockStore({
+          initialState: {
+            state: {
+              userDetails: { userInfo: { name: '123' } },
+              appConfig: { userDetails: { userInfo: { name: '123' } } }
+            },
+            appConfig: { userDetails: { userInfo: { name: 'Test User' } } },
+            userDetails: { userInfo: { name: '123' } }
+          }
+        }),
         {
           provide: ActivatedRoute, useValue: {
             snapshot: {
@@ -177,14 +188,12 @@ describe('QueryManagementContainerComponent', () => {
   describe('validateForm', () => {
     it('should validate the form', () => {
       const nativeElement = fixture.debugElement.nativeElement;
-      component.formGroup.get('fullName').setValue('');
       component.formGroup.get('subject').setValue('');
       component.formGroup.get('body').setValue('');
       component.submitForm();
       fixture.detectChanges();
       expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
 
-      component.formGroup.get('fullName').setValue('John Smith');
       component.formGroup.get('subject').setValue('Bring relatives');
       component.formGroup.get('body').setValue('Can I bring my grandma with me so she get out from the residence?');
       component.formGroup.get('isHearingRelated').setValue(false);
@@ -197,17 +206,24 @@ describe('QueryManagementContainerComponent', () => {
   describe('navigateToErrorElement', () => {
     it('should navigate to the correct element', () => {
       const nativeElement = fixture.debugElement.nativeElement;
-      component.formGroup.get('fullName').setValue('');
       component.formGroup.get('subject').setValue('');
       component.formGroup.get('body').setValue('');
       component.submitForm();
       fixture.detectChanges();
       expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
-      nativeElement.querySelector('#error-fullName').click();
+      nativeElement.querySelector('#error-subject').click();
       fixture.detectChanges();
-      const fullNameElement = nativeElement.querySelector('#fullName');
+      const nameElement = nativeElement.querySelector('#subject');
       const focusedElement = fixture.debugElement.query(By.css(':focus')).nativeElement;
-      expect(focusedElement).toBe(fullNameElement);
+      expect(focusedElement).toBe(nameElement);
+    });
+  });
+
+  describe('setNameFromUserDetails', () => {
+    it('should set the name from user details', async () => {
+      // @ts-expect-error - private method
+      await component.setNameFromUserDetails();
+      expect(component.formGroup.get('name').value).toEqual('Test User');
     });
   });
 });

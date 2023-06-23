@@ -3,8 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Document, FormDocument, QueryItemType, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
-import { ErrorMessage } from '../../../app/models/error-message.model';
+import { ErrorMessage } from '../../../app/models';
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
+import { select, Store } from '@ngrx/store';
+import * as fromRoot from '../../../app/store';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -20,19 +23,24 @@ export class QueryManagementContainerComponent implements OnInit {
   public errorMessages: ErrorMessage[] = [];
   public queryCreateContext: QueryItemType;
 
-  constructor(private activatedRoute: ActivatedRoute,
+  constructor(
+    private activatedRoute: ActivatedRoute,
     private readonly router: Router,
-    private location: Location) { }
+    private location: Location,
+    private readonly store: Store<fromRoot.State>
+  ) { }
 
   public ngOnInit(): void {
     this.formGroup = new FormGroup({
-      fullName: new FormControl(null, Validators.required),
+      name: new FormControl(null),
       subject: new FormControl(null, Validators.required),
       body: new FormControl(null, Validators.required),
       isHearingRelated: new FormControl(null, Validators.required),
       hearingDate: new FormControl(null),
       attachments: new FormControl([] as Document[])
     });
+
+    this.setNameFromUserDetails();
 
     const queryItemId = this.activatedRoute.snapshot.params.qid;
     this.caseId = this.activatedRoute.snapshot.params.cid;
@@ -83,13 +91,7 @@ export class QueryManagementContainerComponent implements OnInit {
 
   public validateForm(): void {
     this.errorMessages = [];
-    if (!this.formGroup.get('fullName').valid) {
-      this.errorMessages.push({
-        title: '',
-        description: RaiseQueryErrorMessage.FULL_NAME,
-        fieldId: 'fullName'
-      });
-    }
+
     if (!this.formGroup.get('subject').valid) {
       this.errorMessages.push({
         title: '',
@@ -131,5 +133,10 @@ export class QueryManagementContainerComponent implements OnInit {
         htmlElement.focus();
       }
     }
+  }
+
+  private async setNameFromUserDetails(): Promise<void> {
+    const userDetails = await this.store.pipe(select(fromRoot.getUserDetails), first()).toPromise();
+    this.formGroup.get('name').setValue(userDetails.userInfo.name);
   }
 }

@@ -16,11 +16,12 @@
         </ul>
       </div>
     </div>
+
     <ng-container *ngIf="!showSummary" [formGroup]="formGroup">
       <div>
         <ng-container *ngIf="queryItem; else raiseQuery">
-          <ccd-query-write-respond-to-query [queryItem]="queryItem" [formGroup]="formGroup" 
-            [queryCreateContext]="queryCreateContext" [submitted]="submitted"> 
+          <ccd-query-write-respond-to-query [queryItem]="queryItem" [formGroup]="formGroup"
+            [queryCreateContext]="queryCreateContext" [submitted]="submitted">
           </ccd-query-write-respond-to-query>
         </ng-container>
         <ng-template #raiseQuery>

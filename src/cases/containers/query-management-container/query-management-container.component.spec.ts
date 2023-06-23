@@ -62,12 +62,7 @@ describe('QueryManagementContainerComponent', () => {
       providers: [
         provideMockStore({
           initialState: {
-            state: {
-              userDetails: { userInfo: { name: '123' } },
-              appConfig: { userDetails: { userInfo: { name: '123' } } }
-            },
-            appConfig: { userDetails: { userInfo: { name: 'Test User' } } },
-            userDetails: { userInfo: { name: '123' } }
+            appConfig: {userDetails: {userInfo: {name: 'Test User'}}},
           }
         }),
         {
@@ -213,9 +208,9 @@ describe('QueryManagementContainerComponent', () => {
       expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
       nativeElement.querySelector('#error-subject').click();
       fixture.detectChanges();
-      const nameElement = nativeElement.querySelector('#subject');
+      const subjectElement = nativeElement.querySelector('#subject');
       const focusedElement = fixture.debugElement.query(By.css(':focus')).nativeElement;
-      expect(focusedElement).toBe(nameElement);
+      expect(focusedElement).toBe(subjectElement);
     });
   });
 

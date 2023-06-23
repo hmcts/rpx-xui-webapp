@@ -120,7 +120,6 @@ describe('QueryManagementContainerComponent', () => {
     });
 
     it('should have the ccd-qualifying-question-options component', () => {
-      console.log('SUMMARY', component.showSummary);
       const compiled = fixture.debugElement.nativeElement;
       expect(compiled.querySelector('ccd-qualifying-question-options')).toBeTruthy();
     });

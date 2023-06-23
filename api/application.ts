@@ -3,6 +3,7 @@ import * as cookieParser from 'cookie-parser';
 import * as csrf from 'csurf';
 import * as express from 'express';
 import * as helmet from 'helmet';
+import * as compression from 'compression';
 import amRoutes from './accessManagement/routes';
 import { getXuiNodeMiddleware } from './auth';
 import { getConfigValue, showFeature } from './configuration';
@@ -93,6 +94,8 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
 }
 
 app.use(cookieParser(getConfigValue(SESSION_SECRET)));
+
+app.use(compression());
 
 // TODO: remove tunnel and configurations
 tunnel.init();

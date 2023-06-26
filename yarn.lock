@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-ccpay-5.2.8-beta06":
-  version: 6.16.0-ccpay-5.2.8-beta06
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-ccpay-5.2.8-beta06"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-ccpay-5.2.8-beta06-rc1":
+  version: 6.16.0-ccpay-5.2.8-beta06-rc1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-ccpay-5.2.8-beta06-rc1"
   dependencies:
     tslib: ^2.0.0
-  checksum: ef36afcdd3c1df1372dd4524ac12b7669201fab275de43f45f212a1cfd276299fc81c262d408c3d3037c72ccd49c18889ed7113ad1f05464574351fe18df2fb2
+  checksum: 08f7ce00c775d82a85367b77362e151736126d75c5bcf5a4afc6a9914e0d8a57a5a9275077418edfae3ef93c4d6e34d4b052326838f0dc5ac47bbb2d694740b4
   languageName: node
   linkType: hard
 

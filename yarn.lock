@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-details-response-and-follow-display-v3":
-  version: 6.16.0-query-details-response-and-follow-display-v3
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-details-response-and-follow-display-v3"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-details-response-and-follow-display-v5":
+  version: 6.16.0-query-details-response-and-follow-display-v5
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-details-response-and-follow-display-v5"
   dependencies:
     tslib: ^2.0.0
-  checksum: 7bbd4e508122518fe645b73fe967534f44b1b151cddf24c6ea4440e414276acb0b5bab314cefec4e8bded01081070613f2848b5c758b821da507b0f988381eec
+  checksum: c3a2dec5db37e49e057871f36a0fc98a2d5c1c17e31a5514bf64a881773d26359c5ee9d87d468546bebe79be5deaf40ee2e987d8fae86322986f47abf7e80f52
   languageName: node
   linkType: hard
 
@@ -19117,7 +19117,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-details-response-and-follow-display-v3
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-details-response-and-follow-display-v5
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

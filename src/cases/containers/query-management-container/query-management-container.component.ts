@@ -35,7 +35,7 @@ export class QueryManagementContainerComponent implements OnInit {
   ) { }
 
   public ngOnInit(): void {
-    this.caseView = this.activatedRoute.snapshot.data.case as CaseView
+    this.caseView = this.activatedRoute.snapshot.data.case as CaseView;
 
     this.formGroup = new FormGroup({
       fullName: new FormControl(null, Validators.required),

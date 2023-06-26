@@ -62,7 +62,13 @@ describe('QueryManagementContainerComponent', () => {
       providers: [
         provideMockStore({
           initialState: {
-            appConfig: {userDetails: {userInfo: {name: 'Test User'}}},
+            appConfig: {
+              userDetails: {
+                userInfo: {
+                  name: 'Test User'
+                }
+              }
+            }
           }
         }),
         {

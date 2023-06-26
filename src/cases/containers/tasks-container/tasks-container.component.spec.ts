@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import { AlertService, CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, CaseField, CaseView, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { TaskAlertBannerComponent } from '../../../cases/components';
@@ -116,6 +116,7 @@ describe('TasksContainerComponent', () => {
   const mockCaseworkerService = jasmine.createSpyObj('caseworkerService', ['getCaseworkersForServices']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled']);
+  const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   let component: TasksContainerComponent;
   let fixture: ComponentFixture<TasksContainerComponent>;
 
@@ -131,6 +132,7 @@ describe('TasksContainerComponent', () => {
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
         { provide: AllocateRoleService, useValue: mockRoleService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: LoadingService, useValue: mockLoadingService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -177,7 +179,8 @@ describe('TasksContainerComponent', () => {
 
   it('should return task with corect name when getJudicialNamedTasks called', () => {
     component.tasks = [
-      { id: '5f677ab6-ee64-11ec-b9f6-fe3569506667',
+      {
+        id: '5f677ab6-ee64-11ec-b9f6-fe3569506667',
         name: 'Review the appeal',
         assignee: '09f1f25d-7d7e-4481-b8e3-8624227438ef'
       } as any

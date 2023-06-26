@@ -8,13 +8,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CaseNotifier, PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
+import { InfoMessage } from 'src/app/shared/enums/info-message';
+import { InformationMessage } from 'src/app/shared/models';
+import { InfoMessageType } from 'src/role-access/models/enums';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { InfoMessage, InfoMessageType } from '../../enums';
-import { InformationMessage } from '../../models/comms';
 import { Task } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
@@ -34,7 +35,7 @@ class WrapperComponent {
   template: `
     <div>Nothing</div>`
 })
-class NothingComponent {}
+class NothingComponent { }
 
 describe('WorkAllocation', () => {
   describe('TaskActionContainerComponent', () => {
@@ -53,7 +54,9 @@ describe('WorkAllocation', () => {
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
     const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
     const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['getValue']);
-    mockFeatureToggleService.getValue.and.returnValue(of(false));
+    mockFeatureToggleService.getValue.and.returnValue(
+      of({ configurations: [{ serviceName: 'IA', releaseVersion: '4' }] })
+    );
 
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
@@ -350,6 +353,167 @@ describe('WorkAllocation', () => {
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
 
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          TaskActionContainerComponent, WrapperComponent, TaskListComponent,
+          ErrorMessageComponent, NothingComponent
+        ],
+        imports: [
+          WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientTestingModule, PaginationModule,
+          RouterTestingModule.withRoutes(
+            [
+              { path: 'mywork/list', component: NothingComponent }
+            ]
+          )
+        ],
+        providers: [
+          { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
+          { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              snapshot: {
+                data: {
+                  taskAndCaseworkers: {
+                    task: { task: mockTask[0] }, caseworkers: []
+                  },
+                  ...TaskActionConstants.Unassign
+                }
+              },
+              params: of({ task: mockTask[0] })
+            }
+          },
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+          { provide: CaseNotifier, useValue: mockNotifierService }
+        ]
+      }).compileComponents();
+      fixture = TestBed.createComponent(WrapperComponent);
+      wrapper = fixture.componentInstance;
+      component = wrapper.appComponentRef;
+      router = TestBed.inject(Router);
+
+      wrapper.tasks = null;
+      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
+      fixture.detectChanges();
+    });
+
+    afterEach(() => {
+      fixture.destroy();
+    });
+
+    it('should perform the Un-assign action successfully', () => {
+      const submit: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#submit-button');
+      submit.click();
+      expect(mockWorkAllocationService.assignTask).toHaveBeenCalledWith(mockTask[0].id, { userId: null });
+    });
+  });
+
+  describe('TaskActionContainerComponent performActionOnTask', () => {
+    let component: TaskActionContainerComponent;
+    let wrapper: WrapperComponent;
+    let fixture: ComponentFixture<WrapperComponent>;
+    let router: Router;
+
+    const mockWorkAllocationService = {
+      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({})),
+      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
+    };
+    const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
+    const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
+    const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
+    const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['getValue']);
+    mockFeatureToggleService.getValue.and.returnValue(of(true));
+    const userDetails = {
+      id: 'id123',
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@email.com',
+      roles: ['caseworker-ia-iacjudge']
+    };
+    mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          TaskActionContainerComponent, WrapperComponent, TaskListComponent,
+          ErrorMessageComponent, NothingComponent
+        ],
+        imports: [
+          WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientTestingModule, PaginationModule,
+          RouterTestingModule.withRoutes(
+            [
+              { path: 'mywork/list', component: NothingComponent }
+            ]
+          )
+        ],
+        providers: [
+          { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
+          { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              snapshot: {
+                data: {
+                  taskAndCaseworkers: {
+                    task: { task: mockTask[0] }, caseworkers: []
+                  },
+                  ...TaskActionConstants.Unassign
+                }
+              },
+              params: of({ task: mockTask[0] })
+            }
+          },
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
+        ]
+      }).compileComponents();
+      fixture = TestBed.createComponent(WrapperComponent);
+      wrapper = fixture.componentInstance;
+      component = wrapper.appComponentRef;
+      router = TestBed.inject(Router);
+
+      wrapper.tasks = null;
+      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
+      fixture.detectChanges();
+    });
+
+    afterEach(() => {
+      fixture.destroy();
+    });
+
+    it('should perform the unclaim action successfully', () => {
+      const submit: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#submit-button');
+      submit.click();
+      expect(mockWorkAllocationService.performActionOnTask).toHaveBeenCalledWith(mockTask[0].id, ACTION.UNCLAIM, false);
+    });
+  });
+
+  describe('TaskActionContainerComponent performActionOnTask', () => {
+    let component: TaskActionContainerComponent;
+    let wrapper: WrapperComponent;
+    let fixture: ComponentFixture<WrapperComponent>;
+    let router: Router;
+
+    const mockWorkAllocationService = {
+      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({})),
+      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
+    };
+    const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
+    const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
+    const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
+    const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['getValue']);
+    mockFeatureToggleService.getValue.and.returnValue(of(true));
+    const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
+    mockNotifierService.cachedCaseView = {};
+    const userDetails = {
+      id: 'id122',
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@email.com',
+      roles: ['caseworker-ia-iacjudge']
+    };
+    mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [

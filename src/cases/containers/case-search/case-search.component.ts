@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
-import { combineLatest, Observable, Subscription } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { Observable, Subscription, combineLatest } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { ActionBindingModel } from '../../../cases/models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
@@ -125,12 +125,12 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   /**
    * Handles the return of Pagination Metadata.
    *
-   * @param result - {total_pages_count: 33, total_results_count: 811}
+   * @param result - {totalPagesCount: 33, totalResultsCount: 811}
    */
   public onPaginationSubscribeHandler = (paginationMetadata) => {
-    if (typeof paginationMetadata !== 'undefined' && typeof paginationMetadata.total_pages_count !== 'undefined') {
-      this.paginationMetadata.total_pages_count = paginationMetadata.total_pages_count;
-      this.paginationMetadata.total_results_count = paginationMetadata.total_results_count;
+    if (typeof paginationMetadata !== 'undefined' && typeof paginationMetadata.totalPagesCount !== 'undefined') {
+      this.paginationMetadata.totalPagesCount = paginationMetadata.totalPagesCount;
+      this.paginationMetadata.totalResultsCount = paginationMetadata.totalResultsCount;
       const event = this.getEvent();
       if (event !== null && !this.elasticSearchFlag) {
         this.store.dispatch(new fromCasesFeature.ApplySearchFilter(event));
@@ -141,8 +141,8 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   public onResultsViewHandler = (resultView) => {
     if (this.elasticSearchFlag) {
       const paginationDataFromResult: PaginationMetadata = {
-        total_results_count: resultView.total,
-        total_pages_count: Math.ceil(resultView.total / this.appConfig.getPaginationPageSize())
+        totalResultsCount: resultView.total,
+        totalPagesCount: Math.ceil(resultView.total / this.appConfig.getPaginationPageSize())
       };
       this.onPaginationSubscribeHandler(paginationDataFromResult);
     }

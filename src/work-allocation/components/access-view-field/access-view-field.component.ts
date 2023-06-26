@@ -29,7 +29,8 @@ export class AccessViewFieldComponent {
       dateSubmitted: thisRole.requestDate,
       specificAccessReason: thisRole.specificAccessReason,
       reviewerRoleCategory: thisRole.reviewerRoleCategory,
-      infoRequiredComment: thisRole.infoRequiredComment
+      infoRequiredComment: thisRole.infoRequiredComment,
+      endDate: thisRole.endDate
     };
     this.router.navigate(['/role-access/rejected-request'], { queryParams });
   }

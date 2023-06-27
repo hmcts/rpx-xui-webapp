@@ -1,5 +1,5 @@
 @search @ignore
-Feature: search criteria workflow
+Feature: search criteria workflow 2
 
   Background:
     When I navigate to Expert UI Url
@@ -22,7 +22,7 @@ Feature: search criteria workflow
 
 
 
-  Scenario Outline:  search criteria apply workflow from Search Case Page
+  Scenario Outline:  search criteria apply workflow from Search Case Page 2
 
     When I select search criteria jurisdiction "<Jurisdiction>" case type "<CaseType>" state "Any" in case list page
     When I click search Reset in case list page

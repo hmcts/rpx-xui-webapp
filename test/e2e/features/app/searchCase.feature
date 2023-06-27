@@ -1,5 +1,5 @@
 @search @ignore
-Feature: search criteria workflow
+Feature: search criteria workflow 1
 
   Background:
     When I navigate to Expert UI Url

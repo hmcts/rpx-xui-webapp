@@ -1,4 +1,4 @@
-Feature: IA create case workflow
+Feature: IA create case workflow 2
 
     Background:
         When I navigate to Expert UI Url
@@ -7,7 +7,7 @@ Feature: IA create case workflow
         When I click on create case button
         Then Create case page should be displayed
 
-    Scenario: Create and Submit IA Case start appeal
+    Scenario: Create and Submit IA Case start appeal complete
         When I start case with jurisdiction "Immigration & Asylum" case type "Appeal* master" and event "Start your appeal"
         When I check all fields IAC case
         Then I am on check your answers page

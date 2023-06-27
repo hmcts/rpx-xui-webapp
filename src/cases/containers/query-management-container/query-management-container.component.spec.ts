@@ -115,6 +115,17 @@ describe('QueryManagementContainerComponent', () => {
       const compiled = fixture.debugElement.nativeElement;
       expect(compiled.querySelector('ccd-query-write-raise-query')).toBeTruthy();
     });
+
+    it('should have required validators for subject and isHearingRelated', () => {
+      const subjectControl = component.formGroup.get('subject');
+      const isHearingRelatedControl = component.formGroup.get('isHearingRelated');
+
+      subjectControl.setValue(null);
+      isHearingRelatedControl.setValue(null);
+
+      expect(subjectControl.hasError('required')).toBe(true);
+      expect(isHearingRelatedControl.hasError('required')).toBe(true);
+    });
   });
 
   describe('when it has a query id', () => {
@@ -131,6 +142,17 @@ describe('QueryManagementContainerComponent', () => {
     it('should have the ccd-query-write-respond-to-query component', () => {
       const compiled = fixture.debugElement.nativeElement;
       expect(compiled.querySelector('ccd-query-write-respond-to-query')).toBeTruthy();
+    });
+
+    it('should not have required validators for subject and isHearingRelated', () => {
+      const subjectControl = component.formGroup.get('subject');
+      const isHearingRelatedControl = component.formGroup.get('isHearingRelated');
+
+      subjectControl.setValue(null);
+      isHearingRelatedControl.setValue(null);
+
+      expect(subjectControl.hasError('required')).toBe(false);
+      expect(isHearingRelatedControl.hasError('required')).toBe(false);
     });
   });
 

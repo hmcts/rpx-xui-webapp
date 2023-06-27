@@ -33,9 +33,9 @@ export class QueryManagementContainerComponent implements OnInit {
   public ngOnInit(): void {
     this.formGroup = new FormGroup({
       name: new FormControl(null),
-      subject: new FormControl(null, Validators.required),
+      subject: new FormControl(null),
       body: new FormControl(null, Validators.required),
-      isHearingRelated: new FormControl(null, Validators.required),
+      isHearingRelated: new FormControl(null),
       hearingDate: new FormControl(null),
       attachments: new FormControl([] as Document[])
     });
@@ -48,6 +48,9 @@ export class QueryManagementContainerComponent implements OnInit {
       this.queryItem = new QueryListItem();
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
       this.queryCreateContext = queryItemId === '1' ? QueryItemType.RESPOND : QueryItemType.FOLLOWUP;
+    } else {
+      this.formGroup.get('subject')?.setValidators([Validators.required]);
+      this.formGroup.get('isHearingRelated')?.setValidators([Validators.required]);
     }
   }
 

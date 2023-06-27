@@ -33,6 +33,21 @@ resource "azurerm_key_vault_secret" "redis_connection_string" {
 }
 
 module "redis-cache" {
+  source      = "git@github.com:hmcts/cnp-module-redis?ref=master"
+  product     = "${var.shared_product_name}-mc-redis"
+  location    = var.location
+  env         = var.env
+  subnetid    = data.azurerm_subnet.core_infra_redis_subnet.id
+  common_tags = var.common_tags
+}
+
+resource "azurerm_key_vault_secret" "redis6_connection_string" {
+  name         = "${var.component}-redis6-connection-string"
+  value        = "redis://${urlencode(module.redis6-cache.access_key)}@${module.redis6-cache.host_name}:${module.redis6-cache.redis_port}?tls=true"
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+}
+
+module "redis6-cache" {
   source        = "git@github.com:hmcts/cnp-module-redis?ref=master"
   product       = "${var.shared_product_name}-mc-redis"
   location      = var.location

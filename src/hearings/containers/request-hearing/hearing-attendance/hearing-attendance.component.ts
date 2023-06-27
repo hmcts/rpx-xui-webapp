@@ -102,7 +102,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public prepareHearingRequestData(): void {
-       this.hearingRequestMainModel = {
+      this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       partyDetails: [...this.getIndividualParties(), ...this.getOrganisationParties()],
       hearingDetails: {

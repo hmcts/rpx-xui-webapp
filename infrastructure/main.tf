@@ -40,6 +40,9 @@ module "redis-cache" {
   subnetid      = data.azurerm_subnet.core_infra_redis_subnet.id
   common_tags   = var.common_tags
   redis_version = "6"
+  business_area = "cft"
+  private_endpoint_enabled = true
+  public_network_access_enabled = false
 }
 
 resource "azurerm_application_insights" "appinsights" {

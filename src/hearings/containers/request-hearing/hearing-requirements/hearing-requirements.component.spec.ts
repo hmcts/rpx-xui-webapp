@@ -141,7 +141,7 @@ describe('HearingRequirementsComponent', () => {
           preferredHearingChannel: 'inPerson',
           interpreterLanguage: 'POR'
         },
-        unavailabilityRanges: [
+        unavailabilityRange: [
           {
             unavailableFromDate: '2021-12-10T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
@@ -166,7 +166,7 @@ describe('HearingRequirementsComponent', () => {
           organisationType: 'GOV',
           cftOrganisationID: 'O100000'
         },
-        unavailabilityRanges: [
+        unavailabilityRange: [
           {
             unavailableFromDate: '2021-12-20T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
@@ -2341,7 +2341,7 @@ describe('HearingRequirementsComponent', () => {
         partyType: PartyType.IND,
         partyRole: 'appellant',
         partyName: 'Jane Smith',
-        unavailabilityRanges: [{
+        unavailabilityRange: [{
           unavailableFromDate: '2021-12-10T09:00:00.000Z',
           unavailableToDate: '2021-12-31T09:00:00.000Z',
           unavailabilityType: UnavailabilityType.ALL_DAY
@@ -2364,7 +2364,7 @@ describe('HearingRequirementsComponent', () => {
         partyType: PartyType.ORG,
         partyRole: 'claimant',
         partyName: 'DWP',
-        unavailabilityRanges: [{
+        unavailabilityRange: [{
           unavailableFromDate: '2021-12-20T09:00:00.000Z',
           unavailableToDate: '2021-12-31T09:00:00.000Z',
           unavailabilityType: UnavailabilityType.ALL_DAY

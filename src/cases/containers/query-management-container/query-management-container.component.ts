@@ -2,8 +2,13 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Document, FormDocument, QueryItemType, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseNotifier, CaseView, Document, FormDocument, QueryItemType, QueryListItem, partyMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Observable, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models/error-message.model';
+import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
+import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 
 @Component({
@@ -12,19 +17,38 @@ import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.e
   styleUrls: ['./query-management-container.component.scss']
 })
 export class QueryManagementContainerComponent implements OnInit {
+  private readonly LD_QUALIFYING_QUESTIONS = 'qm-qualifying-questions';
+  private caseId: string;
+
   public queryItem: QueryListItem | undefined;
+  public queryItemType = QueryItemType;
   public showSummary: boolean = false;
   public formGroup: FormGroup = new FormGroup({});
-  private caseId: string;
   public submitted = false;
   public errorMessages: ErrorMessage[] = [];
   public queryCreateContext: QueryItemType;
+  public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
+  public qualifyingQuestionControl: FormControl;
 
-  constructor(private activatedRoute: ActivatedRoute,
-    private readonly router: Router,
-    private location: Location) { }
+  constructor(private readonly activatedRoute: ActivatedRoute,
+              private readonly router: Router,
+              private readonly location: Location,
+              private readonly caseNotifier: CaseNotifier,
+              private readonly featureToggleService: FeatureToggleService) {}
 
   public ngOnInit(): void {
+    this.caseId = this.activatedRoute.snapshot.params.cid;
+    const queryItemId = this.activatedRoute.snapshot.params.qid;
+    this.queryCreateContext = this.getQueryCreateContext(queryItemId);
+    this.qualifyingQuestions$ = this.getQualifyingQuestions();
+
+    if (queryItemId) {
+      this.queryItem = new QueryListItem();
+      Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
+    }
+
+    this.qualifyingQuestionControl = new FormControl(null, Validators.required);
+
     this.formGroup = new FormGroup({
       fullName: new FormControl(null, Validators.required),
       subject: new FormControl(null, Validators.required),
@@ -33,14 +57,6 @@ export class QueryManagementContainerComponent implements OnInit {
       hearingDate: new FormControl(null),
       attachments: new FormControl([] as Document[])
     });
-
-    const queryItemId = this.activatedRoute.snapshot.params.qid;
-    this.caseId = this.activatedRoute.snapshot.params.cid;
-    if (queryItemId) {
-      this.queryItem = new QueryListItem();
-      Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
-      this.queryCreateContext = queryItemId === '1' ? QueryItemType.RESPOND : QueryItemType.FOLLOWUP;
-    }
   }
 
   public showResponseForm(): void {
@@ -48,9 +64,14 @@ export class QueryManagementContainerComponent implements OnInit {
   }
 
   public submitForm(): void {
-    this.submitted = true;
-    this.validateForm();
-    this.showSummary = this.errorMessages?.length === 0;
+    if (this.queryCreateContext === QueryItemType.NONE) {
+      this.router.navigate(['query-management', 'query', `${this.caseId}`, '1']);
+    } else {
+      this.showSummary = true;
+      this.submitted = true;
+      this.validateForm();
+      this.showSummary = this.errorMessages?.length === 0;
+    }
   }
 
   public onDocumentCollectionUpdate(uploadedDocuments: FormDocument[]): void {
@@ -131,5 +152,33 @@ export class QueryManagementContainerComponent implements OnInit {
         htmlElement.focus();
       }
     }
+  }
+
+  private getQueryCreateContext(queryItemId: string): QueryItemType {
+    if (!queryItemId) {
+      return QueryItemType.NONE;
+    }
+    switch (queryItemId) {
+      case '1':
+        return QueryItemType.NEW;
+      case '2':
+        return QueryItemType.RESPOND;
+      case '3':
+        return QueryItemType.FOLLOWUP;
+      default:
+        return QueryItemType.NONE;
+    }
+  }
+
+  private getQualifyingQuestions(): Observable<QualifyingQuestion[]> {
+    return combineLatest([
+      this.caseNotifier.caseView,
+      this.featureToggleService.getValue(this.LD_QUALIFYING_QUESTIONS, [])
+    ]).pipe(
+      map(([caseView, caseTypeQualifyingQuestions]: [CaseView, CaseTypeQualifyingQuestions[]]) => {
+        this.caseId = caseView.case_id;
+        return caseTypeQualifyingQuestions[caseView.case_type.id];
+      })
+    );
   }
 }

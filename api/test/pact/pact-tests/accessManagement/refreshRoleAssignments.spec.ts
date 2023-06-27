@@ -21,52 +21,29 @@ describe('access management service, refresh role assignments for judicial user'
   });
   const RESPONSE_BODY = {
     roleAssignmentResponse: [
-        {
-            "substantive": "N",
-            "primaryLocation": "231596",
-            "jurisdiction": "PRIVATELAW",
-            "isCaseAllocator": false,
-            "roleType": "ORGANISATION",
-            "roleName": "hearing-viewer",
-            "roleCategory": "JUDICIAL",
-            "beginTime": "2017-04-01T00:00:00Z"
-        },
-        {
-            "substantive": "Y",
-            "contractType": "Salaried",
-            "primaryLocation": "231596",
-            "jurisdiction": "PRIVATELAW",
-            "region": "2",
-            "workTypes": "hearing_work,decision_making_work,applications",
-            "isCaseAllocator": false,
-            "roleType": "ORGANISATION",
-            "roleName": "judge",
-            "roleCategory": "JUDICIAL",
-            "beginTime": "2017-04-01T00:00:00Z"
-        },
-        {
-            "substantive": "N",
-            "contractType": "Salaried",
-            "isCaseAllocator": false,
-            "roleType": "ORGANISATION",
-            "roleName": "hmcts-judiciary",
-            "roleCategory": "JUDICIAL",
-            "beginTime": "2017-04-01T00:00:00Z"
-        },
-        {
-            "substantive": "Y",
-            "contractType": "Salaried",
-            "primaryLocation": "231596",
-            "jurisdiction": "CIVIL",
-            "region": "2",
-            "workTypes": "hearing_work,decision_making_work,applications",
-            "isCaseAllocator": false,
-            "roleType": "ORGANISATION",
-            "roleName": "judge",
-            "roleCategory": "JUDICIAL",
-            "beginTime": "2017-04-01T00:00:00Z"
-        }
-    ]
+      {
+        'substantive': 'N',
+        'primaryLocation': '231596',
+        'jurisdiction': 'PRIVATELAW',
+        'isCaseAllocator': false,
+        'roleType': 'ORGANISATION',
+        'roleName': 'hearing-viewer',
+        'roleCategory': 'JUDICIAL',
+        'beginTime': '2017-04-01T00:00:00Z'
+      },
+      {
+        'substantive': 'Y',
+        'contractType': 'Salaried',
+        'primaryLocation': '231596',
+        'jurisdiction': 'PRIVATELAW',
+        'region': '2',
+        'workTypes': 'hearing_work,decision_making_work,applications',
+        'isCaseAllocator': false,
+        'roleType': 'ORGANISATION',
+        'roleName': 'judge',
+        'roleCategory': 'JUDICIAL',
+        'beginTime': '2017-04-01T00:00:00Z'
+      }]
   };
 
   describe('get /am/role-mapping/judicial/refresh', () => {
@@ -85,7 +62,7 @@ describe('access management service, refresh role assignments for judicial user'
         uponReceiving: 'get roles assignments for actorId',
         withRequest: {
           method: 'POST',
-          path: `/am/role-mapping/judicial/refresh`,
+          path: '/am/role-mapping/judicial/refresh',
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
@@ -152,14 +129,14 @@ describe('access management service, refresh role assignments for judicial user'
 });
 
 function assertResponses(dto: any) {
-    const roleAssignmentResponse = dto.roleAssignmentResponse;
-    expect(roleAssignmentResponse[0].substantive).to.be.equal('N');
-    expect(roleAssignmentResponse[0].primaryLocation).to.be.equal('231596');
-    expect(roleAssignmentResponse[0].jurisdiction).to.be.equal('PRIVATELAW');
-    expect(roleAssignmentResponse[0].isCaseAllocator).to.be.equal(false);
-    expect(roleAssignmentResponse[0].roleType).to.be.equal('ORGANISATION');
-    expect(roleAssignmentResponse[0].roleName).to.be.equal('hearing-viewer');
-    expect(roleAssignmentResponse[0].roleCategory).to.be.equal('JUDICIAL');
-    expect(roleAssignmentResponse[0].beginTime).to.be.equal('2017-04-01T00:00:00Z');
+  const roleAssignmentResponse = dto.roleAssignmentResponse;
+  expect(roleAssignmentResponse[0].substantive).to.be.equal('N');
+  expect(roleAssignmentResponse[0].primaryLocation).to.be.equal('231596');
+  expect(roleAssignmentResponse[0].jurisdiction).to.be.equal('PRIVATELAW');
+  expect(roleAssignmentResponse[0].isCaseAllocator).to.be.equal(false);
+  expect(roleAssignmentResponse[0].roleType).to.be.equal('ORGANISATION');
+  expect(roleAssignmentResponse[0].roleName).to.be.equal('hearing-viewer');
+  expect(roleAssignmentResponse[0].roleCategory).to.be.equal('JUDICIAL');
+  expect(roleAssignmentResponse[0].beginTime).to.be.equal('2017-04-01T00:00:00Z');
 }
 

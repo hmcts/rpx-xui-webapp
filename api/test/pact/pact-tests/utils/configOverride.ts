@@ -57,3 +57,10 @@ export function getJudicialRefDataAPIOverrides(judicialRefApiUrl) {
     ...defaultConfig
   };
 }
+
+export function getAccessManagementRoleMappingServiceAPIOverrides(accessManagementRoleMappingAPI) {
+  return {
+    'services.role_assignment.roleMappingApi': accessManagementRoleMappingAPI,
+    ...defaultConfig
+  };
+}

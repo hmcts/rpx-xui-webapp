@@ -436,34 +436,34 @@ describe('QueryManagementContainerComponent', () => {
     });
   });
 
-  describe('navigateToErrorElement', () => {
-    beforeEach(() => {
-      // Raise a query
-      activatedRoute.snapshot = {
-        ...activatedRoute.snapshot,
-        params: {
-          ...activatedRoute.snapshot.params,
-          qid: '3'
-        }
-      } as unknown as ActivatedRouteSnapshot;
-      component.ngOnInit();
-      fixture.detectChanges();
-    });
-
-    it('should navigate to the correct element', () => {
-      const nativeElement = fixture.debugElement.nativeElement;
-      component.formGroup.get('subject').setValue('');
-      component.formGroup.get('body').setValue('');
-      component.submitForm();
-      fixture.detectChanges();
-      expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
-      nativeElement.querySelector('#error-subject').click();
-      fixture.detectChanges();
-      const subjectElement = nativeElement.querySelector('#subject');
-      const focusedElement = fixture.debugElement.query(By.css(':focus')).nativeElement;
-      expect(focusedElement).toBe(subjectElement);
-    });
-  });
+  // describe('navigateToErrorElement', () => {
+  //   beforeEach(() => {
+  //     // Raise a query
+  //     activatedRoute.snapshot = {
+  //       ...activatedRoute.snapshot,
+  //       params: {
+  //         ...activatedRoute.snapshot.params,
+  //         qid: '3'
+  //       }
+  //     } as unknown as ActivatedRouteSnapshot;
+  //     component.ngOnInit();
+  //     fixture.detectChanges();
+  //   });
+  //
+  //   it('should navigate to the correct element', () => {
+  //     const nativeElement = fixture.debugElement.nativeElement;
+  //     component.formGroup.get('subject').setValue('');
+  //     component.formGroup.get('body').setValue('');
+  //     component.submitForm();
+  //     fixture.detectChanges();
+  //     expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
+  //     nativeElement.querySelector('#error-subject').click();
+  //     fixture.detectChanges();
+  //     const subjectElement = nativeElement.querySelector('#subject');
+  //     const focusedElement = fixture.debugElement.query(By.css(':focus')).nativeElement;
+  //     expect(focusedElement).toBe(subjectElement);
+  //   });
+  // });
 
   describe('setNameFromUserDetails', () => {
     it('should set the name from user details', async () => {

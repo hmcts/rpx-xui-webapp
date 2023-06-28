@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
-import { combineLatest, Subscription } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import { isEqual } from 'underscore';
 import { ActualHearingDayModel, HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
@@ -184,11 +184,9 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   }
 
   private getHearingTime(value:string, actualIndex: number, plannedIndex: number, time: 'startTime' | 'endTime'): string {
-    const [hearingActual, plannedTime] = time === 'startTime' ? ['hearingStartTime', 'plannedStartTime'] : ['hearingEndTime', 'plannedEndTime'];
-    const hearingTime = (actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex][hearingActual])
-    || (plannedIndex && this.hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex][plannedTime]);
+    const hearingDate = this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingDate;
 
-    return !!value ? HearingActualsTimingComponent.replaceTime(hearingTime, moment(value, 'HH:mm')) : null;
+    return value ? HearingActualsTimingComponent.replaceTime(hearingDate, moment(value, 'HH:mm')) : null;
   }
 
   public updateControl(event: any, control: AbstractControl): void {

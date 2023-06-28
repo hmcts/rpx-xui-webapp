@@ -125,7 +125,7 @@ export enum DOW {
 export enum DOWUnavailabilityType {
   AM = 'AM',
   PM = 'PM',
-  ALL = 'ALL',
+  ALL_DAY = 'All Day'
 }
 
 export enum HearingCategory {
@@ -191,6 +191,7 @@ export enum HearingLinkedSelectionEnum {
   HearingSelection = 'Which hearings should be linked?',
   NoHearingSelection = 'There are no hearings available to link to',
   NoLinkedCases = 'No linked Cases',
+  NoHearingsAvailable = 'To make a hearing available for linking, you need to edit the hearing listing.'
 }
 
 export enum HearingDatePriorityEnum {

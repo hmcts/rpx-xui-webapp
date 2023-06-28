@@ -6,7 +6,7 @@ import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
-import { getServiceRefDataMappingList } from '../serviceRefData';
+import { getServiceRefDataMappingList } from '../ref-data/ref-data-utils';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRole } from '../workAllocation/interfaces/caseRole';
@@ -140,7 +140,7 @@ export async function getMyAccessNewCount(req, resp, next) {
 export async function manageLabellingRoleAssignment(req: EnhancedRequest, resp: Response, next: NextFunction) {
   try {
     if (!req.session || !req.session.roleAssignmentResponse) {
-      return resp.status(401);
+      return resp.status(500).send();
     }
     const currentUserAssignments = (req.session.roleAssignmentResponse as RoleAssignment[]);
     const challengedAccessRequest = currentUserAssignments.find((roleAssignment) => roleAssignment.attributes
@@ -148,7 +148,7 @@ export async function manageLabellingRoleAssignment(req: EnhancedRequest, resp: 
       && roleAssignment.attributes.isNew);
 
     if (!challengedAccessRequest) {
-      return resp.status(204);
+      return resp.status(204).send();
     }
     challengedAccessRequest.attributes.isNew = false;
     return resp.status(200).send({ id: challengedAccessRequest.id });

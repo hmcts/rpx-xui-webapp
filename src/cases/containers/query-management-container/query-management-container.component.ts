@@ -10,7 +10,8 @@ import {
   QualifyingQuestionsErrorMessage,
   QueryItemType,
   QueryListItem,
-  partyMessagesMockData
+  partyMessagesMockData,
+  RaiseQueryErrorMessage
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, combineLatest } from 'rxjs';
@@ -18,7 +19,6 @@ import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models/error-message.model';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
 import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
-import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -31,7 +31,7 @@ export class QueryManagementContainerComponent implements OnInit {
   private caseId: string;
   private queryItemId: string;
 
-  public queryCreateContext: QueryItemType = QueryItemType.NEW;
+  public queryCreateContext: QueryItemType;
   public queryItem: QueryListItem | undefined;
   public showSummary: boolean = false;
   public formGroup: FormGroup = new FormGroup({});
@@ -54,11 +54,6 @@ export class QueryManagementContainerComponent implements OnInit {
     this.queryCreateContext = this.getQueryCreateContext();
     this.qualifyingQuestions$ = this.getQualifyingQuestions();
 
-    if (this.queryItemId) {
-      this.queryItem = new QueryListItem();
-      Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
-    }
-
     this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
 
     this.formGroup = new FormGroup({
@@ -70,14 +65,12 @@ export class QueryManagementContainerComponent implements OnInit {
       attachments: new FormControl([] as Document[])
     });
 
-    const queryItemId = this.activatedRoute.snapshot.params.qid;
-    if (queryItemId) {
+    if (this.queryItemId) {
       this.queryItem = new QueryListItem();
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
-      this.queryCreateContext = queryItemId === '1' ? QueryItemType.RESPOND : QueryItemType.FOLLOWUP;
     } else {
-      (this.formGroup.get('subject') as FormControl).setValidators([Validators.required]);
-      (this.formGroup.get('isHearingRelated') as FormControl).setValidators([Validators.required]);
+      this.formGroup.get('subject')?.setValidators([Validators.required]);
+      this.formGroup.get('isHearingRelated')?.setValidators([Validators.required]);
     }
   }
 
@@ -95,7 +88,7 @@ export class QueryManagementContainerComponent implements OnInit {
         if (this.qualifyingQuestion.markdown?.length) {
           this.queryCreateContext = this.getQueryCreateContext();
         } else {
-          this.router.navigateByUrl(this.qualifyingQuestion.url);
+          this.queryCreateContext = QueryItemType.NEW_QUERY;
         }
       }
     } else if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL) {
@@ -182,9 +175,12 @@ export class QueryManagementContainerComponent implements OnInit {
     if (!this.formGroup.get('body').valid) {
       this.errorMessages.push({
         title: '',
-        description: this.queryCreateContext === QueryItemType.RESPOND ? RaiseQueryErrorMessage.RESPOND_QUERY_BODY : RaiseQueryErrorMessage.QUERY_BODY,
+        description:
+          this.queryCreateContext === QueryItemType.RESPOND ?
+            RaiseQueryErrorMessage.RESPOND_QUERY_BODY : RaiseQueryErrorMessage.QUERY_BODY,
         fieldId: 'body'
       });
+      console.log(this.queryCreateContext);
     }
 
     if (!this.formGroup.get('isHearingRelated').valid) {

@@ -36,7 +36,7 @@
           <ccd-query-write-respond-to-query
             *ngSwitchCase="[queryItemType.RESPOND, queryItemType.FOLLOWUP].includes(queryCreateContext) ? queryCreateContext : !queryCreateContext"
             [queryItem]="queryItem" [formGroup]="formGroup"
-            [submitted]="submitted" [QueryCreateContext]="queryCreateContext">
+            [submitted]="submitted" [queryCreateContext]="queryCreateContext">
           </ccd-query-write-respond-to-query>
         </div>
       </ng-container>

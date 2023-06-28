@@ -164,7 +164,10 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.queryItem).toBeDefined();
     });
 
-    it('should have the ccd-query-write-raise-query component', () => {
+    it('should have the ccd-query-write-raise-query component when route is raiseAQuery', () => {
+      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION } } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+      fixture.detectChanges();
       const compiled = fixture.debugElement.nativeElement;
       expect(compiled.querySelector('ccd-query-write-raise-query')).toBeTruthy();
     });

@@ -10,8 +10,7 @@ import {
   QualifyingQuestionsErrorMessage,
   QueryItemType,
   QueryListItem,
-  partyMessagesMockData,
-  RaiseQueryErrorMessage
+  partyMessagesMockData
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, combineLatest } from 'rxjs';
@@ -22,6 +21,7 @@ import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
 import { first } from 'rxjs/operators';
+import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -74,15 +74,6 @@ export class QueryManagementContainerComponent implements OnInit {
     this.qualifyingQuestions$ = this.getQualifyingQuestions();
 
     this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
-
-    this.formGroup = new FormGroup({
-      fullName: new FormControl(null, Validators.required),
-      subject: new FormControl(null),
-      body: new FormControl(null, Validators.required),
-      isHearingRelated: new FormControl(null),
-      hearingDate: new FormControl(null),
-      attachments: new FormControl([] as Document[])
-    });
 
     if (this.queryItemId && this.queryItemId !== QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION) {
       this.queryItem = new QueryListItem();

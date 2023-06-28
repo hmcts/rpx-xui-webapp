@@ -269,7 +269,7 @@ describe('QueryManagementContainerComponent', () => {
         const qualifyingQuestion = {
           name: 'Raise another query relating to this case',
           markdown: '<p>Test markdown</p>',
-          url: '/query-management/query/123/2'
+          url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`
         };
         beforeEach(() => {
           component.qualifyingQuestionsControl.setValue(qualifyingQuestion);
@@ -292,7 +292,7 @@ describe('QueryManagementContainerComponent', () => {
         const qualifyingQuestion = {
           name: 'Raise another query relating to this case',
           markdown: '',
-          url: '/query-management/query/123/2'
+          url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`
         };
         beforeEach(() => {
           component.qualifyingQuestionsControl.setValue(qualifyingQuestion);
@@ -302,7 +302,7 @@ describe('QueryManagementContainerComponent', () => {
           spyOn(component, 'validateQualifyingQuestion').and.returnValue(true);
           component.submitForm();
           expect(component.queryCreateContext).toEqual(QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
-          expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/query-management/query/123/2');
+          expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(`/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
         });
 
         it('should not change the queryCreateContext if qualifying questions validation failed', () => {
@@ -339,7 +339,7 @@ describe('QueryManagementContainerComponent', () => {
 
   describe('validateForm', () => {
     beforeEach(() => {
-      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: 'raiseAQuery' } } as unknown as ActivatedRouteSnapshot;
+      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION } } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       fixture.detectChanges();
     });
@@ -366,7 +366,7 @@ describe('QueryManagementContainerComponent', () => {
       const qualifyingQuestion = {
         name: 'Raise another query relating to this case',
         markdown: '',
-        url: '/query-management/query/123/2'
+        url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`
       };
       component.qualifyingQuestionsControl.setValue(qualifyingQuestion);
       component.queryCreateContext = QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;

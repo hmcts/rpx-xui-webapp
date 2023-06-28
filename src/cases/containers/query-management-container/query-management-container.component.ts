@@ -91,8 +91,8 @@ export class QueryManagementContainerComponent implements OnInit {
       this.formGroup.get('subject')?.setValidators([Validators.required]);
       this.formGroup.get('isHearingRelated')?.setValidators([Validators.required]);
     }
-    this.setNameFromUserDetails();
 
+    this.setNameFromUserDetails();
   }
 
   public showResponseForm(): void {
@@ -107,7 +107,6 @@ export class QueryManagementContainerComponent implements OnInit {
         // Display the markdown page if markdown content is available, else navigate to the URL provided in the config
         this.qualifyingQuestion = this.qualifyingQuestionsControl.value;
 
-        this.qualifyingQuestion = this.qualifyingQuestionsControl.value;
         if (this.qualifyingQuestion.markdown?.length) {
           this.queryCreateContext = this.getQueryCreateContext();
         } else {

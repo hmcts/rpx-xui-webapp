@@ -113,7 +113,7 @@ describe('QueryManagementContainerComponent', () => {
 
   describe('when it does not have a query id', () => {
     it('should set the query create context', () => {
-      expect(component.queryCreateContext).toEqual(QueryItemType.NEW);
+      expect(component.queryCreateContext).toEqual(QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL);
     });
 
     it('should not set the query item', () => {

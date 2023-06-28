@@ -45,27 +45,16 @@ export class QueryManagementContainerComponent implements OnInit {
   public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
   public qualifyingQuestionsControl: FormControl;
 
-  constructor(private readonly activatedRoute: ActivatedRoute,
-              private readonly router: Router,
-              private readonly location: Location,
-              private readonly caseNotifier: CaseNotifier,
-              private readonly featureToggleService: FeatureToggleService,
-              private readonly store: Store<fromRoot.State>
+  constructor(
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly router: Router,
+    private readonly location: Location,
+    private readonly caseNotifier: CaseNotifier,
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly store: Store<fromRoot.State>
   ) {}
 
   public ngOnInit(): void {
-    this.caseId = this.activatedRoute.snapshot.params.cid;
-    this.queryItemId = this.activatedRoute.snapshot.params.qid;
-    this.queryCreateContext = this.getQueryCreateContext();
-    this.qualifyingQuestions$ = this.getQualifyingQuestions();
-
-    if (this.queryItemId) {
-      this.queryItem = new QueryListItem();
-      Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
-    }
-
-    this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
-
     this.formGroup = new FormGroup({
       name: new FormControl(null),
       subject: new FormControl(null),
@@ -75,18 +64,22 @@ export class QueryManagementContainerComponent implements OnInit {
       attachments: new FormControl([] as Document[])
     });
 
-    this.setNameFromUserDetails();
+    this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
 
-    const queryItemId = this.activatedRoute.snapshot.params.qid;
     this.caseId = this.activatedRoute.snapshot.params.cid;
-    if (queryItemId) {
+    this.queryItemId = this.activatedRoute.snapshot.params.qid;
+    this.queryCreateContext = this.getQueryCreateContext();
+    this.qualifyingQuestions$ = this.getQualifyingQuestions();
+
+    if (this.queryItemId) {
       this.queryItem = new QueryListItem();
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
-      this.queryCreateContext = queryItemId === '1' ? QueryItemType.RESPOND : QueryItemType.FOLLOWUP;
+      this.queryCreateContext = this.queryItemId === '1' ? QueryItemType.RESPOND : QueryItemType.FOLLOWUP;
     } else {
-      this.formGroup.get('subject')?.setValidators([Validators.required]);
-      this.formGroup.get('isHearingRelated')?.setValidators([Validators.required]);
+      this.setValidatorsForCreate();
     }
+
+    this.setNameFromUserDetails();
   }
 
   public showResponseForm(): void {
@@ -100,10 +93,10 @@ export class QueryManagementContainerComponent implements OnInit {
         // Submit triggered after selecting a qualifying question from qualifying questions radio options display page
         // Display the markdown page if markdown content is available, else navigate to the URL provided in the config
         this.qualifyingQuestion = this.qualifyingQuestionsControl.value;
-        if (this.qualifyingQuestion.markdown?.length) {
-          this.queryCreateContext = this.getQueryCreateContext();
-        } else {
-          this.router.navigateByUrl(this.qualifyingQuestion.url);
+
+        if (this.qualifyingQuestion?.markdown) {
+          this.queryCreateContext = QueryItemType.NEW_QUERY;
+          this.setValidatorsForCreate();
         }
       }
     } else if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL) {
@@ -253,12 +246,17 @@ export class QueryManagementContainerComponent implements OnInit {
           // Add the default qualifying question to the list if not present
           qualifyingQuestions.push({
             name: this.RAISE_A_QUERY_NAME,
-            markdown: '',
+            markdown: '## Markdown',
             url: `/query-management/query/${this.caseId}/2`
           });
         }
         return qualifyingQuestions;
       })
     );
+  }
+
+  private setValidatorsForCreate() {
+    this.formGroup.get('subject')?.setValidators([Validators.required]);
+    this.formGroup.get('isHearingRelated')?.setValidators([Validators.required]);
   }
 }

@@ -49,7 +49,8 @@ resource "azurerm_key_vault_secret" "redis6_connection_string" {
 
 module "redis6-cache" {
   source        = "git@github.com:hmcts/cnp-module-redis?ref=master"
-  product       = "${var.shared_product_name}-mc-redis"
+  product       = var.product
+  name          = "${var.product}-${var.component}-${var.env}"
   location      = var.location
   env           = var.env
   subnetid      = data.azurerm_subnet.core_infra_redis_subnet.id

@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-respond-validation-v2":
-  version: 6.16.0-query-management-respond-validation-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-respond-validation-v2"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-create-qualifying-questions-component-step-2":
+  version: 6.16.0-create-qualifying-questions-component-step-2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-create-qualifying-questions-component-step-2"
   dependencies:
     tslib: ^2.0.0
-  checksum: cc38837ba47d7bd70652bd016438c918ac48ffb0dc3a2cfa7640dabbf51e2e3c0480fcacb125d0a2c1a998e5c72f98bfbffbf8d61db4f70e8c88bec86a794b22
+  checksum: ec90b53b5d61b2d957df9c1de2ce87f0dad7fae55b4007381583c5a22bb7e8d3d34821eb568d2654c9b73355f0f1b3313874f3933dc723c51612e135d0dabe43
   languageName: node
   linkType: hard
 
@@ -19117,7 +19117,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-respond-validation-v2
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-create-qualifying-questions-component-step-2
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

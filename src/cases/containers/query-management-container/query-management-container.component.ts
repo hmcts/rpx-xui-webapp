@@ -219,13 +219,12 @@ export class QueryManagementContainerComponent implements OnInit {
     }
   }
 
-  private getQueryCreateContext(): QueryCreateContext {
   private async setNameFromUserDetails(): Promise<void> {
     const userDetails = await this.store.pipe(select(fromRoot.getUserDetails), first()).toPromise();
     this.formGroup.get('name').setValue(userDetails.userInfo.name);
   }
 
-  private getQueryCreateContext(): QueryItemType {
+  private getQueryCreateContext(): QueryCreateContext {
     switch (this.queryItemId) {
       case '1':
         return QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL;

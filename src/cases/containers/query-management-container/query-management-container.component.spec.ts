@@ -443,7 +443,7 @@ describe('QueryManagementContainerComponent', () => {
         ...activatedRoute.snapshot,
         params: {
           ...activatedRoute.snapshot.params,
-          qid: QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION
+          qid: '3'
         }
       } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();

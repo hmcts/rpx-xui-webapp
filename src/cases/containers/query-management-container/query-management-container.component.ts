@@ -10,7 +10,8 @@ import {
   QualifyingQuestionsErrorMessage,
   QueryItemType,
   QueryListItem,
-  partyMessagesMockData
+  partyMessagesMockData,
+  RaiseQueryErrorMessage
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, combineLatest } from 'rxjs';
@@ -18,7 +19,6 @@ import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
 import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
-import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
 import { first } from 'rxjs/operators';
@@ -31,16 +31,18 @@ import { first } from 'rxjs/operators';
 export class QueryManagementContainerComponent implements OnInit {
   private readonly LD_QUALIFYING_QUESTIONS = 'qm-qualifying-questions';
   private readonly RAISE_A_QUERY_NAME = 'Raise another query relating to this case';
+  public static readonly RAISE_A_QUERY_QUESTION_OPTION = 'raiseAQuery';
+
   private caseId: string;
   private queryItemId: string;
 
+  public queryCreateContext: QueryItemType;
   public queryItem: QueryListItem | undefined;
   public showSummary: boolean = false;
   public formGroup: FormGroup = new FormGroup({});
   public submitted = false;
   public errorMessages: ErrorMessage[] = [];
   public queryItemType = QueryItemType;
-  public queryCreateContext: QueryItemType;
   public qualifyingQuestion: QualifyingQuestion;
   public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
   public qualifyingQuestionsControl: FormControl;
@@ -71,15 +73,26 @@ export class QueryManagementContainerComponent implements OnInit {
     this.queryCreateContext = this.getQueryCreateContext();
     this.qualifyingQuestions$ = this.getQualifyingQuestions();
 
-    if (this.queryItemId) {
+    this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
+
+    this.formGroup = new FormGroup({
+      fullName: new FormControl(null, Validators.required),
+      subject: new FormControl(null),
+      body: new FormControl(null, Validators.required),
+      isHearingRelated: new FormControl(null),
+      hearingDate: new FormControl(null),
+      attachments: new FormControl([] as Document[])
+    });
+
+    if (this.queryItemId && this.queryItemId !== QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION) {
       this.queryItem = new QueryListItem();
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
-      this.queryCreateContext = this.queryItemId === '1' ? QueryItemType.RESPOND : QueryItemType.FOLLOWUP;
     } else {
-      this.setValidatorsForCreate();
+      this.formGroup.get('subject')?.setValidators([Validators.required]);
+      this.formGroup.get('isHearingRelated')?.setValidators([Validators.required]);
     }
-
     this.setNameFromUserDetails();
+
   }
 
   public showResponseForm(): void {
@@ -94,9 +107,11 @@ export class QueryManagementContainerComponent implements OnInit {
         // Display the markdown page if markdown content is available, else navigate to the URL provided in the config
         this.qualifyingQuestion = this.qualifyingQuestionsControl.value;
 
-        if (this.qualifyingQuestion?.markdown) {
-          this.queryCreateContext = QueryItemType.NEW_QUERY;
-          this.setValidatorsForCreate();
+        this.qualifyingQuestion = this.qualifyingQuestionsControl.value;
+        if (this.qualifyingQuestion.markdown?.length) {
+          this.queryCreateContext = this.getQueryCreateContext();
+        } else {
+          this.router.navigateByUrl(this.qualifyingQuestion.url);
         }
       }
     } else if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL) {
@@ -171,13 +186,17 @@ export class QueryManagementContainerComponent implements OnInit {
         fieldId: 'subject'
       });
     }
+
     if (!this.formGroup.get('body').valid) {
       this.errorMessages.push({
         title: '',
-        description: RaiseQueryErrorMessage.QUERY_BODY,
+        description:
+          this.queryCreateContext === QueryItemType.RESPOND ?
+            RaiseQueryErrorMessage.RESPOND_QUERY_BODY : RaiseQueryErrorMessage.QUERY_BODY,
         fieldId: 'body'
       });
     }
+
     if (!this.formGroup.get('isHearingRelated').valid) {
       this.errorMessages.push({
         title: '',
@@ -216,7 +235,7 @@ export class QueryManagementContainerComponent implements OnInit {
     switch (this.queryItemId) {
       case '1':
         return QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL;
-      case '2':
+      case QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION:
         return QueryItemType.NEW_QUERY;
       case '3':
         return QueryItemType.RESPOND;
@@ -246,17 +265,12 @@ export class QueryManagementContainerComponent implements OnInit {
           // Add the default qualifying question to the list if not present
           qualifyingQuestions.push({
             name: this.RAISE_A_QUERY_NAME,
-            markdown: '## Markdown',
-            url: `/query-management/query/${this.caseId}/2`
+            markdown: '',
+            url: `/query-management/query/${this.caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`
           });
         }
         return qualifyingQuestions;
       })
     );
-  }
-
-  private setValidatorsForCreate() {
-    this.formGroup.get('subject')?.setValidators([Validators.required]);
-    this.formGroup.get('isHearingRelated')?.setValidators([Validators.required]);
   }
 }

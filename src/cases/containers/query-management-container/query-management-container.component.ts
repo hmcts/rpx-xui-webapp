@@ -28,6 +28,8 @@ import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying
 export class QueryManagementContainerComponent implements OnInit {
   private readonly LD_QUALIFYING_QUESTIONS = 'qm-qualifying-questions';
   private readonly RAISE_A_QUERY_NAME = 'Raise another query relating to this case';
+  public static readonly RAISE_A_QUERY_QUESTION_OPTION = 'raiseAQuery';
+
   private caseId: string;
   private queryItemId: string;
 
@@ -65,7 +67,7 @@ export class QueryManagementContainerComponent implements OnInit {
       attachments: new FormControl([] as Document[])
     });
 
-    if (this.queryItemId) {
+    if (this.queryItemId && this.queryItemId !== QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION) {
       this.queryItem = new QueryListItem();
       Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
     } else {
@@ -88,7 +90,7 @@ export class QueryManagementContainerComponent implements OnInit {
         if (this.qualifyingQuestion.markdown?.length) {
           this.queryCreateContext = this.getQueryCreateContext();
         } else {
-          this.queryCreateContext = QueryItemType.NEW_QUERY;
+          this.router.navigateByUrl(this.qualifyingQuestion.url);
         }
       }
     } else if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL) {
@@ -180,7 +182,6 @@ export class QueryManagementContainerComponent implements OnInit {
             RaiseQueryErrorMessage.RESPOND_QUERY_BODY : RaiseQueryErrorMessage.QUERY_BODY,
         fieldId: 'body'
       });
-      console.log(this.queryCreateContext);
     }
 
     if (!this.formGroup.get('isHearingRelated').valid) {
@@ -216,7 +217,7 @@ export class QueryManagementContainerComponent implements OnInit {
     switch (this.queryItemId) {
       case '1':
         return QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL;
-      case '2':
+      case QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION:
         return QueryItemType.NEW_QUERY;
       case '3':
         return QueryItemType.RESPOND;
@@ -247,7 +248,7 @@ export class QueryManagementContainerComponent implements OnInit {
           qualifyingQuestions.push({
             name: this.RAISE_A_QUERY_NAME,
             markdown: '',
-            url: `/query-management/query/${this.caseId}/2`
+            url: `/query-management/query/${this.caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`
           });
         }
         return qualifyingQuestions;

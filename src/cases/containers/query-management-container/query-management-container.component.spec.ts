@@ -113,7 +113,7 @@ describe('QueryManagementContainerComponent', () => {
 
   describe('when it does not have a query id', () => {
     it('should set the query create context', () => {
-      expect(component.queryCreateContext).toEqual(QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL);
+      expect(component.queryCreateContext).toEqual(QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
     });
 
     it('should not set the query item', () => {
@@ -151,11 +151,6 @@ describe('QueryManagementContainerComponent', () => {
 
     it('should set the query item', () => {
       expect(component.queryItem).toBeDefined();
-    });
-
-    it('should have the ccd-query-write-raise-query component', () => {
-      const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector('ccd-query-write-raise-query')).toBeTruthy();
     });
   });
 
@@ -222,8 +217,9 @@ describe('QueryManagementContainerComponent', () => {
       component.qualifyingQuestion = {
         name: 'Raise another query relating to this case',
         markdown: '',
-        url: '/query-management/query/123/2'
+        url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}}`
       };
+      fixture.detectChanges();
       component.queryCreateContext = QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL;
       component.submitForm();
       expect(component.showSummary).toEqual(false);
@@ -316,7 +312,7 @@ describe('QueryManagementContainerComponent', () => {
 
   describe('validateForm', () => {
     beforeEach(() => {
-      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '2' } } as unknown as ActivatedRouteSnapshot;
+      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: 'raiseAQuery' } } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       fixture.detectChanges();
     });
@@ -364,7 +360,11 @@ describe('QueryManagementContainerComponent', () => {
 
   describe('navigateToErrorElement', () => {
     beforeEach(() => {
-      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '2' } } as unknown as ActivatedRouteSnapshot;
+      // Raise a query
+      activatedRoute.snapshot = {
+        ...activatedRoute.snapshot,
+        params: { qid: QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION }
+      } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       fixture.detectChanges();
     });

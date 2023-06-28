@@ -138,7 +138,7 @@ describe('DurationHelperService', () => {
 
       // get date a week from todays date
       const weekFromToday = new Date();
-      weekFromToday.setDate(today.getDate() + 7);
+      weekFromToday.setUTCDate(today.getUTCDate() + 7);
       weekFromToday.setUTCHours(23, 59, 59, 999);
 
       // get date a week from today using duration helper service method

@@ -4,22 +4,30 @@ import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { AppUtils } from 'src/app/app-utils';
-import { UserRole } from 'src/app/models';
-import { InfoMessageCommService } from 'src/app/shared/services/info-message-comms.service';
-import { AllocateRoleService } from 'src/role-access/services';
-import { ConfigConstants, ListConstants, SortConstants } from 'src/work-allocation/components/constants';
-import { SortOrder } from 'src/work-allocation/enums';
-import { JurisdictionsService } from 'src/work-allocation/services/juridictions.service';
+import { AppUtils } from '../../../app/app-utils';
+import { UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';
+import { AllocateRoleService } from '../../../role-access/services';
+import { ConfigConstants, ListConstants, SortConstants } from '../../../work-allocation/components/constants';
+import { SortOrder } from '../../../work-allocation/enums';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService } from '../../services';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
+import { JurisdictionsService } from '../../services/juridictions.service';
 import { MyCasesComponent } from './my-cases.component';
 
 describe('MyCasesComponent', () => {
   let component: MyCasesComponent;
 
   const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem', 'setItem']);
+  const mockCheckReleaseVersionService = {
+    isRelease4: () => {
+      return {
+        subscribe: () => true
+      };
+    }
+  };
 
   const initializeComponent = ({
     changeDetectorRef = {},
@@ -37,7 +45,8 @@ describe('MyCasesComponent', () => {
     jurisdictionsService = {},
     allocateRoleService = {},
     httpClient = {},
-    store = {}
+    store = {},
+    checkReleaseVersionService = {}
   }) => new MyCasesComponent(
     changeDetectorRef as ChangeDetectorRef,
     workAllocationTaskService as WorkAllocationCaseService,
@@ -54,18 +63,19 @@ describe('MyCasesComponent', () => {
     jurisdictionsService as JurisdictionsService,
     allocateRoleService as AllocateRoleService,
     httpClient as HttpClient,
-    store as Store<fromActions.State>
+    store as Store<fromActions.State>,
+    checkReleaseVersionService as CheckReleaseVersionService
   );
 
   it('should create', () => {
-    component = initializeComponent({});
+    component = initializeComponent({ checkReleaseVersionService: mockCheckReleaseVersionService });
 
     expect(component).toBeTruthy();
   });
 
   describe('getSearchCaseRequestPagination', () => {
     it('should return a SearchCaseRequest', () => {
-      component = initializeComponent({ sessionStorageService: mockSessionStorageService });
+      component = initializeComponent({ sessionStorageService: mockSessionStorageService, checkReleaseVersionService: mockCheckReleaseVersionService });
       component.sortedBy = {
         fieldName: 'fieldName',
         order: SortOrder.ASC
@@ -77,7 +87,7 @@ describe('MyCasesComponent', () => {
 
       mockSessionStorageService.getItem.withArgs('userDetails').and.returnValue(JSON.stringify(userInfo));
       localStorageGetItemSpy.and.returnValue(JSON.stringify(locations));
-      spyOn(AppUtils, 'isLegalOpsOrJudicial').and.returnValue(UserRole.Admin);
+      spyOn(AppUtils, 'getUserRole').and.returnValue(UserRole.Admin);
 
       const actual = component.getSearchCaseRequestPagination();
 
@@ -99,7 +109,11 @@ describe('MyCasesComponent', () => {
     });
 
     it('should return a SearchCaseRequest with user \'uid\'', () => {
-      component = initializeComponent({ sessionStorageService: mockSessionStorageService });
+      component = initializeComponent({
+        sessionStorageService: mockSessionStorageService,
+        checkReleaseVersionService: mockCheckReleaseVersionService
+      });
+
       component.sortedBy = {
         fieldName: 'fieldName',
         order: SortOrder.ASC
@@ -109,13 +123,9 @@ describe('MyCasesComponent', () => {
       const locations = { fields: [{ name: 'locations', value: [{ epimms_id: 'locationID' }] }] };
       mockSessionStorageService.getItem.withArgs('userDetails').and.returnValue(JSON.stringify(userInfo));
       spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify(locations));
-      spyOn(AppUtils, 'isLegalOpsOrJudicial').and.returnValue(UserRole.Admin);
+      spyOn(AppUtils, 'getUserRole').and.returnValue(UserRole.Admin);
 
       const actual = component.getSearchCaseRequestPagination();
-
-      actual.search_parameters.forEach((se) => {
-        console.log(se.key, se.values);
-      });
 
       expect(actual).toEqual(jasmine.objectContaining({
         search_parameters: [
@@ -132,7 +142,10 @@ describe('MyCasesComponent', () => {
     });
 
     it('should NOT return a SearchCaseRequest', () => {
-      component = initializeComponent({ sessionStorageService: mockSessionStorageService });
+      component = initializeComponent({
+        sessionStorageService: mockSessionStorageService,
+        checkReleaseVersionService: mockCheckReleaseVersionService
+      });
 
       mockSessionStorageService.getItem.withArgs('userDetails').and.returnValue(undefined);
 
@@ -163,7 +176,7 @@ describe('MyCasesComponent', () => {
     ];
     getters.forEach(({ method, result }) => {
       it(`should return '${result}'`, () => {
-        component = initializeComponent({});
+        component = initializeComponent({ checkReleaseVersionService: mockCheckReleaseVersionService });
 
         expect(component[method]).toEqual(result);
       });

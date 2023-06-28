@@ -349,3 +349,126 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I see filter "Select a role type" is enabled in all work page
 
         Then I see filter "Person input" is displayed in all work page
+
+    # Scenario Outline: "Caseworker" Case filter selection, with role type <Role_Type>
+    #     Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
+    #     Given I set Mock user with ref "userDetails", ORGANISATION roles for services "" allow empty service
+    #         | roleName    | task-supervisor |
+    #         | substantive | Y               |
+    #     Given I start MockApp
+
+    #     Given I navigate to home page
+    #     When I click on primary navigation header tab "All work", I see selected tab page displayed
+    #     When I navigate to All work sub navigation tab "Cases"
+
+    #     Then I validate work allocation cases count in page 25
+
+    #     Given I reset reference "caseSearchRequest" value to null
+
+    #     Then I see filter "Service" is displayed in all work page
+    #     Then I see filter "Service" is enabled in all work page
+    #     Then I validate filter item "Service" select or radio options present in all work page
+    #         | option |
+    #         | IA     |
+
+    #     Then I see filter "Location" is displayed in all work page
+    #     Then I validate filter item "Location radios" select or radio options present in all work page
+    #         | option                |
+    #         | All                   |
+    #         | Search for a location |
+    #     When I select filter item "Location radios" select or radio option "Search for a location" in all work page
+    #     Then I see location search input is enabled in all work filters
+    #     Then I enter location search "IA Court Taylor House" in all work filter
+    #     Then I see location search results in all work filter
+    #         | location              |
+    #         | IA Court Taylor House |
+    #     Then I select location search result "IA Court Taylor House" in all work filter
+    #     Then I see location "IA Court Taylor House" selected in all work filter
+
+
+    #     When I select filter item "Person" select or radio option "<Person_radio>" in all work page
+    #     When I select filter item "Role type" select or radio option "<Role_Type>" in all work page
+
+    #     When I enter find person search input "<Person_search>" in work flow
+
+    #     Then I see find person search results in work flow
+    #         | Person        |
+    #         | <Person_name> |
+
+    #     When I select find person result "<Person_name>" in work flow
+
+
+    #     When I click Apply filter button in all work page
+    #     When I wait for reference "caseSearchRequest" value not null
+    #     Then I validate task search request with reference "caseSearchRequest" have search parameters
+    #         | key          | value          |
+    #         | location_id  | <locationId>   |
+    #         | actorId      | <person_id>    |
+    #         | jurisdiction | <Jurisdiction> |
+    #         | role         | <Role_Type>    |
+    #     Examples:
+    #         | Jurisdiction | locationName | locationId | Person_radio    | Person_search | Person_name                   | person_id                            | Role_Type |
+    #         | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j (judge_user1@gov.uk)  | 1231                                 | Judicial  |
+    #         | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a (admin_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |
+
+    # Scenario Outline: "Judicial" Case filter selection, with role type <Role_Type>
+    #     Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
+    #     Given I set Mock user with ref "userDetails", ORGANISATION roles for services "" allow empty service
+    #         | roleName    | task-supervisor |
+    #         | substantive | Y               |
+    #     Given I start MockApp
+
+    #     Given I navigate to home page
+    #     When I click on primary navigation header tab "All work", I see selected tab page displayed
+    #     When I navigate to All work sub navigation tab "Cases"
+
+    #     Then I validate work allocation cases count in page 25
+
+    #     Given I reset reference "caseSearchRequest" value to null
+
+    #     Then I see filter "Service" is displayed in all work page
+    #     Then I see filter "Service" is enabled in all work page
+    #     Then I validate filter item "Service" select or radio options present in all work page
+    #         | option |
+    #         | IA     |
+
+    #     Then I see filter "Location" is displayed in all work page
+    #     Then I validate filter item "Location radios" select or radio options present in all work page
+    #         | option                |
+    #         | All                   |
+    #         | Search for a location |
+    #     When I select filter item "Location radios" select or radio option "Search for a location" in all work page
+    #     Then I see location search input is enabled in all work filters
+    #     Then I enter location search "IA Court Taylor House" in all work filter
+    #     Then I see location search results in all work filter
+    #         | location              |
+    #         | IA Court Taylor House |
+    #     Then I select location search result "IA Court Taylor House" in all work filter
+    #     Then I see location "IA Court Taylor House" selected in all work filter
+
+
+
+    #     When I select filter item "Person" select or radio option "<Person_radio>" in all work page
+    #     When I select filter item "Role type" select or radio option "<Role_Type>" in all work page
+
+    #     When I enter find person search input "<Person_search>" in work flow
+
+    #     Then I see find person search results in work flow
+    #         | Person        |
+    #         | <Person_name> |
+
+    #     When I select find person result "<Person_name>" in work flow
+
+
+    #     When I click Apply filter button in all work page
+    #     When I wait for reference "caseSearchRequest" value not null
+    #     Then I validate task search request with reference "caseSearchRequest" have search parameters
+    #         | key          | value          |
+    #         | location_id  | <locationId>   |
+    #         | actorId      | <person_id>    |
+    #         | jurisdiction | <Jurisdiction> |
+    #         | role         | <Role_Type>    |
+    #     Examples:
+    #         | Jurisdiction | locationName | locationId | Person_radio    | Person_search | Person_name                   | person_id                            | Role_Type |
+    #         | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j (judge_user1@gov.uk)  | 1231                                 | Judicial  |
+    #         | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a (admin_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |

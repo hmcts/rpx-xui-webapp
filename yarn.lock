@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-read-view-changes":
-  version: 6.16.0-query-management-read-view-changes
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-read-view-changes"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-read-view-changes-v3":
+  version: 6.16.0-query-management-read-view-changes-v3
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-read-view-changes-v3"
   dependencies:
     tslib: ^2.0.0
-  checksum: 34de6588e7ff0b14f7965a9748e752d79ca606009208fc7b5a9241339290889c113eefacbd51ac825531d0a66f0a7de0cd456e43d412d3e611c7eaf4f5984178
+  checksum: aa4cd3788906411de40dfabf132da042cea9b9fd99e56cc739157d5bd1e9713bc5a7fcfb49a6bfca3107b95592f93cac89932d699d6116418edaf36be16d6ac2
   languageName: node
   linkType: hard
 
@@ -19117,7 +19117,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-read-view-changes
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-read-view-changes-v3
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

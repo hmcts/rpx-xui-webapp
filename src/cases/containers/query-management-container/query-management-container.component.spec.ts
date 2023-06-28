@@ -7,13 +7,16 @@ import {
   CaseNotifier,
   CaseView,
   FormDocument,
+  QualifyingQuestionsErrorMessage,
   QueryCreateContext,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent
 } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { BehaviorSubject } from 'rxjs';
 import { QueryManagementContainerComponent } from './query-management-container.component';
 import { By } from '@angular/platform-browser';
+import { FormControl } from '@angular/forms';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -26,6 +29,11 @@ describe('QueryManagementContainerComponent', () => {
   let component: QueryManagementContainerComponent;
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
   let activatedRoute: ActivatedRoute;
+  const mockRouter = {
+    navigate: jasmine.createSpy('navigate'),
+    navigateByUrl: jasmine.createSpy('navigateByUrl')
+  };
+  const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['getValue']);
   let router: Router;
 
   const locationMock = jasmine.createSpyObj('Location', ['back']);
@@ -48,7 +56,7 @@ describe('QueryManagementContainerComponent', () => {
     triggers: [],
     events: []
   };
-  const casesService = jasmine.createSpyObj('casesService', ['caseView']);
+  const casesService = jasmine.createSpyObj('casesService', ['caseView, cachedCaseView']);
   const mockCaseNotifier = new CaseNotifier(casesService);
   mockCaseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
 
@@ -72,8 +80,10 @@ describe('QueryManagementContainerComponent', () => {
             }
           }
         },
+        { provide: Router, useValue: mockRouter },
         { provide: Location, useValue: locationMock },
-        { provide: CaseNotifier, useValue: mockCaseNotifier }
+        { provide: CaseNotifier, useValue: mockCaseNotifier },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
     }).compileComponents();
   }));
@@ -100,23 +110,46 @@ describe('QueryManagementContainerComponent', () => {
     expect(locationMock.back).toHaveBeenCalled();
   });
 
+  it('should navigate to qualifying questions selection page', () => {
+    component.queryCreateContext = QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL;
+    component.previous();
+    expect(component.queryCreateContext).toEqual(QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
+  });
+
   describe('when it does not have a query id', () => {
+    it('should set the query create context', () => {
+      expect(component.queryCreateContext).toEqual(QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
+    });
+
     it('should not set the query item', () => {
       expect(component.queryItem).toBeUndefined();
     });
 
-    it('should have the ccd-query-write-raise-query component', () => {
+    it('should set the queryCreateContext to be query item type of new query qualifying question options', () => {
+      expect(component.queryCreateContext).toEqual(QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
+    });
+
+    it('should have the ccd-qualifying-question-options component', () => {
       const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector('ccd-query-write-raise-query')).toBeTruthy();
+      expect(compiled.querySelector('ccd-qualifying-question-options')).toBeTruthy();
+    });
+
+    describe('validators', () => {
+      it('should set fullName required validator', () => {
+        const fullNameControl = component.formGroup.get('fullName') as FormControl;
+        expect(Object.keys(fullNameControl.validator(fullNameControl))).toContain('required');
+      });
+
+      it('should set isHearingRelated required validator', () => {
+        const isHearingControl = component.formGroup.get('isHearingRelated') as FormControl;
+        expect(Object.keys(isHearingControl.validator(isHearingControl))).toContain('required');
+      });
     });
   });
 
   describe('when it has a query id', () => {
     beforeEach(() => {
-      activatedRoute.snapshot = {
-        ...activatedRoute.snapshot,
-        params: { qid: '123' }
-      } as unknown as ActivatedRouteSnapshot;
+      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '2' } } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       fixture.detectChanges();
     });
@@ -139,63 +172,26 @@ describe('QueryManagementContainerComponent', () => {
     });
   });
 
-  describe('submitForm', () => {
-    it('should set submitted to true', () => {
-      expect(component.submitted).toBe(false);
-      component.submitForm();
-      expect(component.submitted).toBe(true);
+  describe('onDocumentCollectionUpdate', () => {
+    beforeEach(() => {
+      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '1' } } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+      fixture.detectChanges();
     });
 
-    it('should reset hearing date if isHearingRelated is false', () => {
-      component.formGroup.get('isHearingRelated').setValue(false);
-      component.formGroup.get('hearingDate').setValue('12/12/2023');
-      component.submitForm();
-      expect(component.formGroup.get('hearingDate').value).toBe(null);
-    });
-
-    describe('when form is valid', () => {
-      beforeEach(() => {
-        // Set values so the form is valid
-        component.formGroup.patchValue({
-          fullName: 'Full name',
-          subject: 'subject',
-          body: 'body',
-          isHearingRelated: true,
-          hearingDate: '12/04/2024',
-          attachments: []
-        });
-      });
-
-      it('should set showSummary to true when there are no errorMessages', () => {
-        expect(component.showSummary).toBe(false);
-        component.submitForm();
-        component.errorMessages = [];
-        expect(component.showSummary).toBe(true);
-      });
-    });
-
-    describe('when form is invalid', () => {
-      it('should not set showSummary to true', () => {
-        expect(component.showSummary).toBe(false);
-        component.submitForm();
-        expect(component.showSummary).toBe(false);
-      });
-    });
-
-    describe('onDocumentCollectionUpdate', () => {
-      it('should set documents value', () => {
-        const documents: FormDocument[] = [
-          {
-            document_filename: 'file1',
-            document_url: 'url1',
-            document_binary_url: 'binary_url1'
-          },
-          {
-            document_filename: 'file2',
-            document_url: 'url2',
-            document_binary_url: 'binary_url2'
-          }
-        ];
+    it('should set documents value', () => {
+      const documents: FormDocument[] = [
+        {
+          document_filename: 'file1',
+          document_url: 'url1',
+          document_binary_url: 'binary_url1'
+        },
+        {
+          document_filename: 'file2',
+          document_url: 'url2',
+          document_binary_url: 'binary_url2'
+        }
+      ];
 
         component.onDocumentCollectionUpdate(documents);
         expect(component.formGroup.get('attachments').value).toEqual([
@@ -233,16 +229,128 @@ describe('QueryManagementContainerComponent', () => {
         expect(component.validateForm).toHaveBeenCalled();
       });
     });
+  describe('submitForm', () => {
+    it('should set submitted to true and initiate form validation', () => {
+      spyOn(component, 'validateForm');
+      component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+      component.submitForm();
+      expect(component.submitted).toEqual(true);
+      expect(component.validateForm).toHaveBeenCalled();
+    });
 
-    describe('validateForm', () => {
-      it('should validate the form', () => {
-        const nativeElement = fixture.debugElement.nativeElement;
-        component.formGroup.get('fullName').setValue('');
-        component.formGroup.get('subject').setValue('');
-        component.formGroup.get('body').setValue('');
+    it('should navigate to raise a new query page after qualifying question is selected', () => {
+      spyOn(component, 'validateForm');
+      component.qualifyingQuestion = {
+        name: 'Raise another query relating to this case',
+        markdown: '',
+        url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}}`
+      };
+      fixture.detectChanges();
+      component.queryCreateContext = QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL;
+      component.submitForm();
+      expect(component.showSummary).toEqual(false);
+      expect(mockRouter.navigateByUrl).toHaveBeenCalled();
+      expect(component.validateForm).not.toHaveBeenCalled();
+    });
+
+    describe('queryCreateContext is QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS', () => {
+      beforeEach(() => {
+        component.queryCreateContext = QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
+      });
+
+      it('should mark control as touched', () => {
+        spyOn(component.qualifyingQuestionsControl, 'markAsTouched');
         component.submitForm();
-        fixture.detectChanges();
-        expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
+        expect(component.qualifyingQuestionsControl.markAsTouched).toHaveBeenCalled();
+      });
+
+      describe('qualifyingQuestionsControl is valid', () => {
+        const qualifyingQuestion = {
+          name: 'Raise another query relating to this case',
+          markdown: '<p>Test markdown</p>',
+          url: '/query-management/query/123/2'
+        };
+        beforeEach(() => {
+          component.qualifyingQuestionsControl.setValue(qualifyingQuestion);
+        });
+
+        it('should set queryCreateContext to QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL', () => {
+          spyOn(component, 'validateQualifyingQuestion').and.returnValue(true);
+          component.submitForm();
+          expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL);
+        });
+
+        it('should not change the queryCreateContext if qualifying questions validation failed', () => {
+          spyOn(component, 'validateQualifyingQuestion').and.returnValue(false);
+          component.submitForm();
+          expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
+        });
+      });
+
+      describe('qualifyingQuestionsControl is valid with empty markdown', () => {
+        const qualifyingQuestion = {
+          name: 'Raise another query relating to this case',
+          markdown: '',
+          url: '/query-management/query/123/2'
+        };
+        beforeEach(() => {
+          component.qualifyingQuestionsControl.setValue(qualifyingQuestion);
+        });
+
+        it('should not change queryCreateContext and navigate to the URL specified in the config', () => {
+          spyOn(component, 'validateQualifyingQuestion').and.returnValue(true);
+          component.submitForm();
+          expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
+          expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/query-management/query/123/2');
+        });
+
+        it('should not change the queryCreateContext if qualifying questions validation failed', () => {
+          spyOn(component, 'validateQualifyingQuestion').and.returnValue(false);
+          component.submitForm();
+          expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
+        });
+      });
+
+      describe('qualifyingQuestionsControl is not valid', () => {
+        beforeEach(() => {
+          component.qualifyingQuestionsControl.setValue(null);
+        });
+
+        it('should set error messages when control is empty', () => {
+          component.submitForm();
+          expect(component.errorMessages).toEqual([
+            {
+              title: '',
+              description: QualifyingQuestionsErrorMessage.SELECT_AN_OPTION,
+              fieldId: 'qualifyingQuestionsOption'
+            }
+          ]);
+        });
+
+        it('should scroll to top', () => {
+          spyOn(window, 'scrollTo');
+          component.submitForm();
+          expect(window.scrollTo).toHaveBeenCalledWith({ left: 0, top: 0, behavior: 'smooth' });
+        });
+      });
+    });
+  });
+
+  describe('validateForm', () => {
+    beforeEach(() => {
+      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: 'raiseAQuery' } } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+      fixture.detectChanges();
+    });
+
+    it('should validate the form', () => {
+      const nativeElement = fixture.debugElement.nativeElement;
+      component.formGroup.get('fullName').setValue('');
+      component.formGroup.get('subject').setValue('');
+      component.formGroup.get('body').setValue('');
+      component.submitForm();
+      fixture.detectChanges();
+      expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
 
         component.formGroup.get('fullName').setValue('John Smith');
         component.formGroup.get('subject').setValue('Bring relatives');
@@ -254,21 +362,52 @@ describe('QueryManagementContainerComponent', () => {
       });
     });
 
-    describe('navigateToErrorElement', () => {
-      it('should navigate to the correct element', () => {
-        const nativeElement = fixture.debugElement.nativeElement;
-        component.formGroup.get('fullName').setValue('');
-        component.formGroup.get('subject').setValue('');
-        component.formGroup.get('body').setValue('');
-        component.submitForm();
-        fixture.detectChanges();
-        expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
-        nativeElement.querySelector('#error-fullName').click();
-        fixture.detectChanges();
-        const fullNameElement = nativeElement.querySelector('#fullName');
-        const focusedElement = fixture.debugElement.query(By.css(':focus')).nativeElement;
-        expect(focusedElement).toBe(fullNameElement);
-      });
+  describe('validateQualifyingQuestion', () => {
+    it('should return true with no error message', () => {
+      const qualifyingQuestion = {
+        name: 'Raise another query relating to this case',
+        markdown: '',
+        url: '/query-management/query/123/2'
+      };
+      component.qualifyingQuestionsControl.setValue(qualifyingQuestion);
+      component.queryCreateContext = QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
+      expect(component.validateQualifyingQuestion()).toEqual(true);
+      expect(component.qualifyingQuestionsControl.valid).toBe(true);
+    });
+
+    it('should return false with error message', () => {
+      component.qualifyingQuestionsControl.setValue(null);
+      component.queryCreateContext = QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
+      expect(component.validateQualifyingQuestion()).toEqual(false);
+      expect(component.qualifyingQuestionsControl.valid).toBe(false);
+      expect(component.errorMessages[0]).toEqual({ title: '', description: QualifyingQuestionsErrorMessage.SELECT_AN_OPTION, fieldId: 'qualifyingQuestionsOption' });
+    });
+  });
+
+  describe('navigateToErrorElement', () => {
+    beforeEach(() => {
+      // Raise a query
+      activatedRoute.snapshot = {
+        ...activatedRoute.snapshot,
+        params: { qid: QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION }
+      } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+      fixture.detectChanges();
+    });
+
+    it('should navigate to the correct element', () => {
+      const nativeElement = fixture.debugElement.nativeElement;
+      component.formGroup.get('fullName').setValue('');
+      component.formGroup.get('subject').setValue('');
+      component.formGroup.get('body').setValue('');
+      component.submitForm();
+      fixture.detectChanges();
+      expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
+      nativeElement.querySelector('#error-fullName').click();
+      fixture.detectChanges();
+      const fullNameElement = nativeElement.querySelector('#fullName');
+      const focusedElement = fixture.debugElement.query(By.css(':focus')).nativeElement;
+      expect(focusedElement).toBe(fullNameElement);
     });
 
     describe('navigateToCaseOverviewTab', () => {
@@ -279,6 +418,27 @@ describe('QueryManagementContainerComponent', () => {
           { fragment: 'Overview' }
         );
       });
+    });
+  });
+
+  describe('getQueryCreateContext', () => {
+    it('should return query item type respond as the query context', () => {
+      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '3' } } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+      expect(component.queryCreateContext).toEqual(QueryCreateContext.RESPOND);
+    });
+
+    it('should return query item type follow up as the query context', () => {
+      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '4' } } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+      expect(component.queryCreateContext).toEqual(QueryCreateContext.FOLLOWUP);
+    });
+
+    it('should return query item type new query qualifying question options as the query context', () => {
+      component.queryCreateContext = QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL;
+      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '5' } } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+      expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
     });
   });
 });

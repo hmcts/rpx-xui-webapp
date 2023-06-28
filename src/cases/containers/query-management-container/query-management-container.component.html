@@ -1,15 +1,18 @@
 <exui-app-header></exui-app-header>
+
 <div class="govuk-width-container">
   <main class="govuk-main-wrapper" id="main-content" role="main">
     <!-- Error message summary -->
-    <div *ngIf="errorMessages.length > 0" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+    <div *ngIf="errorMessages.length > 0" class="govuk-error-summary"
+         aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+         data-module="govuk-error-summary">
       <h2 class="govuk-error-summary__title" id="error-summary-title">
         {{ 'There is a problem' | rpxTranslate }}
       </h2>
-      <div *ngFor="let errorMessage of errorMessages" class="govuk-error-summary__body">
+      <div class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
-          <li>
-            <a [id]="'error-' + errorMessage.fieldId"
+          <li *ngFor="let errorMessage of errorMessages">
+            <a [id]="'error-' + errorMessage.fieldId" href="javascript:void(0)"
               (click)="navigateToErrorElement(errorMessage.fieldId)"
               class="validation-error">{{ errorMessage.description | rpxTranslate }}</a>
           </li>
@@ -17,42 +20,50 @@
       </div>
     </div>
     <ng-container *ngIf="!showSummary" [formGroup]="formGroup">
-      <div>
-        <ng-container *ngIf="queryItem; else raiseQuery">
-          <ccd-query-write-respond-to-query [queryItem]="queryItem" [formGroup]="formGroup" 
-            [queryCreateContext]="queryCreateContext" [submitted]="submitted"> 
+      <ng-container [ngSwitch]="queryCreateContext">
+        <div class="query-form-container">
+          <ccd-qualifying-question-options *ngSwitchCase="queryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS"
+            [qualifyingQuestionsControl]="qualifyingQuestionsControl"
+            [qualifyingQuestions$]="qualifyingQuestions$">
+          </ccd-qualifying-question-options>
+          <ccd-qualifying-question-detail *ngSwitchCase="queryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL"
+            [qualifyingQuestion]="qualifyingQuestion">
+          </ccd-qualifying-question-detail>
+          <ccd-query-write-raise-query *ngSwitchCase="queryItemType.NEW_QUERY"
+            [formGroup]="formGroup"
+            [queryCreateContext]="queryCreateContext" [submitted]="submitted">
+          </ccd-query-write-raise-query>
+          <ccd-query-write-respond-to-query
+            *ngSwitchCase="[queryItemType.RESPOND, queryItemType.FOLLOWUP].includes(queryCreateContext) ? queryCreateContext : !queryCreateContext"
+            [queryItem]="queryItem" [formGroup]="formGroup"
+            [submitted]="submitted" [queryCreateContext]="queryCreateContext">
           </ccd-query-write-respond-to-query>
-        </ng-container>
-        <ng-template #raiseQuery>
-          <div class="query-form-container">
-            <ccd-query-write-raise-query
-              [formGroup]="formGroup"
-              [submitted]="submitted">
-            </ccd-query-write-raise-query>
-          </div>
-        </ng-template>
-      </div>
+        </div>
+      </ng-container>
 
-      <div class="query-form-container">
+      <div class="query-form-container"
+        *ngIf="queryCreateContext !== queryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS && queryCreateContext !== queryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL">
         <div class="govuk-form-group" [class.govuk-form-group--error]="formGroup.get('attachments')?.errors?.length">
           <ccd-query-write-add-documents [formGroup]="formGroup" (documentCollectionUpdate)="onDocumentCollectionUpdate($event)">
           </ccd-query-write-add-documents>
         </div>
       </div>
 
-      <div>
-        <div class="govuk-button-group">
-          <button class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="previous()">
-            {{ 'Previous' | rpxTranslate }}
-          </button>
-          <button class="govuk-button" data-module="govuk-button" (click)="submitForm()">
-            {{ 'Continue' | rpxTranslate }}
-          </button>
-        </div>
+      <div class="govuk-button-group">
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="previous()">
+          {{ 'Previous' | rpxTranslate }}
+        </button>
+        <button class="govuk-button" data-module="govuk-button" (click)="submitForm()">
+          {{ 'Continue' | rpxTranslate }}
+        </button>
       </div>
     </ng-container>
 
-    <ccd-query-check-your-answers *ngIf="showSummary" [queryItem]="queryItem" [formGroup]="formGroup" (backClicked)="showResponseForm()">
+    <ccd-query-check-your-answers
+      *ngIf="showSummary"
+      [queryItem]="queryItem"
+      [formGroup]="formGroup"
+      (backClicked)="showResponseForm()">
     </ccd-query-check-your-answers>
 
     <div>

@@ -10,15 +10,18 @@ import {
   QualifyingQuestionsErrorMessage,
   QueryCreateContext,
   QueryListItem,
-  partyMessagesMockData,
-  RaiseQueryErrorMessage
+  partyMessagesMockData
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ErrorMessage } from '../../../app/models/error-message.model';
+import { ErrorMessage } from '../../../app/models';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
 import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
+import { select, Store } from '@ngrx/store';
+import * as fromRoot from '../../../app/store';
+import { first } from 'rxjs/operators';
+import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -44,23 +47,25 @@ export class QueryManagementContainerComponent implements OnInit {
   public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
   public qualifyingQuestionsControl: FormControl;
 
-  constructor(private readonly activatedRoute: ActivatedRoute,
-              private readonly router: Router,
-              private readonly location: Location,
-              private readonly caseNotifier: CaseNotifier,
-              private readonly featureToggleService: FeatureToggleService) {}
+  constructor(
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly router: Router,
+    private readonly location: Location,
+    private readonly caseNotifier: CaseNotifier,
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly store: Store<fromRoot.State>
+  ) {}
 
   public ngOnInit(): void {
     this.caseId = this.activatedRoute.snapshot.params.cid;
     this.queryItemId = this.activatedRoute.snapshot.params.qid;
     this.queryCreateContext = this.getQueryCreateContext();
     this.qualifyingQuestions$ = this.getQualifyingQuestions();
-    console.log(this.queryCreateContext);
 
     this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
 
     this.formGroup = new FormGroup({
-      fullName: new FormControl(null, Validators.required),
+      name: new FormControl(null),
       subject: new FormControl(null),
       body: new FormControl(null, Validators.required),
       isHearingRelated: new FormControl(null),
@@ -75,6 +80,8 @@ export class QueryManagementContainerComponent implements OnInit {
       this.formGroup.get('subject')?.setValidators([Validators.required]);
       this.formGroup.get('isHearingRelated')?.setValidators([Validators.required]);
     }
+
+    this.setNameFromUserDetails();
   }
 
   public showResponseForm(): void {
@@ -88,6 +95,7 @@ export class QueryManagementContainerComponent implements OnInit {
         // Submit triggered after selecting a qualifying question from qualifying questions radio options display page
         // Display the markdown page if markdown content is available, else navigate to the URL provided in the config
         this.qualifyingQuestion = this.qualifyingQuestionsControl.value;
+
         if (this.qualifyingQuestion.markdown?.length) {
           this.queryCreateContext = this.getQueryCreateContext();
         } else {
@@ -164,14 +172,6 @@ export class QueryManagementContainerComponent implements OnInit {
   public validateForm(): void {
     this.errorMessages = [];
 
-    if (!this.formGroup.get('fullName').valid) {
-      this.errorMessages.push({
-        title: '',
-        description: RaiseQueryErrorMessage.FULL_NAME,
-        fieldId: 'fullName'
-      });
-    }
-
     if (!this.formGroup.get('subject').valid) {
       this.errorMessages.push({
         title: '',
@@ -217,6 +217,11 @@ export class QueryManagementContainerComponent implements OnInit {
         htmlElement.focus();
       }
     }
+  }
+
+  private async setNameFromUserDetails(): Promise<void> {
+    const userDetails = await this.store.pipe(select(fromRoot.getUserDetails), first()).toPromise();
+    this.formGroup.get('name').setValue(userDetails.userInfo.name);
   }
 
   private getQueryCreateContext(): QueryCreateContext {

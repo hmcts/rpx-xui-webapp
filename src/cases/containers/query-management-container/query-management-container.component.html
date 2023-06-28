@@ -19,6 +19,7 @@
         </ul>
       </div>
     </div>
+
     <ng-container *ngIf="!showSummary" [formGroup]="formGroup">
       <ng-container [ngSwitch]="queryCreateContext">
         <div class="query-form-container">
@@ -63,6 +64,7 @@
       *ngIf="showSummary"
       [queryItem]="queryItem"
       [formGroup]="formGroup"
+      [queryCreateContext]="queryCreateContext"
       (backClicked)="showResponseForm()">
     </ccd-query-check-your-answers>
 

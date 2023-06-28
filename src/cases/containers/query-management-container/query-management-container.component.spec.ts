@@ -1,7 +1,6 @@
 import { Location } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
@@ -16,6 +15,8 @@ import {
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { BehaviorSubject } from 'rxjs';
 import { QueryManagementContainerComponent } from './query-management-container.component';
+import { By } from '@angular/platform-browser';
+import { FormControl } from '@angular/forms';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -111,6 +112,10 @@ describe('QueryManagementContainerComponent', () => {
   });
 
   describe('when it does not have a query id', () => {
+    it('should set the query create context', () => {
+      expect(component.queryCreateContext).toEqual(QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
+    });
+
     it('should not set the query item', () => {
       expect(component.queryItem).toBeUndefined();
     });
@@ -123,6 +128,18 @@ describe('QueryManagementContainerComponent', () => {
       const compiled = fixture.debugElement.nativeElement;
       expect(compiled.querySelector('ccd-qualifying-question-options')).toBeTruthy();
     });
+
+    describe('validators', () => {
+      it('should set fullName required validator', () => {
+        const fullNameControl = component.formGroup.get('fullName') as FormControl;
+        expect(Object.keys(fullNameControl.validator(fullNameControl))).toContain('required');
+      });
+
+      it('should set isHearingRelated required validator', () => {
+        const isHearingControl = component.formGroup.get('isHearingRelated') as FormControl;
+        expect(Object.keys(isHearingControl.validator(isHearingControl))).toContain('required');
+      });
+    });
   });
 
   describe('when it has a query id', () => {
@@ -134,11 +151,6 @@ describe('QueryManagementContainerComponent', () => {
 
     it('should set the query item', () => {
       expect(component.queryItem).toBeDefined();
-    });
-
-    it('should have the ccd-query-write-raise-query component', () => {
-      const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector('ccd-query-write-raise-query')).toBeTruthy();
     });
   });
 
@@ -205,8 +217,9 @@ describe('QueryManagementContainerComponent', () => {
       component.qualifyingQuestion = {
         name: 'Raise another query relating to this case',
         markdown: '',
-        url: '/query-management/query/123/2'
+        url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}}`
       };
+      fixture.detectChanges();
       component.queryCreateContext = QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL;
       component.submitForm();
       expect(component.showSummary).toEqual(false);
@@ -299,7 +312,7 @@ describe('QueryManagementContainerComponent', () => {
 
   describe('validateForm', () => {
     beforeEach(() => {
-      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '2' } } as unknown as ActivatedRouteSnapshot;
+      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: 'raiseAQuery' } } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       fixture.detectChanges();
     });
@@ -347,7 +360,11 @@ describe('QueryManagementContainerComponent', () => {
 
   describe('navigateToErrorElement', () => {
     beforeEach(() => {
-      activatedRoute.snapshot = { ...activatedRoute.snapshot, params: { qid: '2' } } as unknown as ActivatedRouteSnapshot;
+      // Raise a query
+      activatedRoute.snapshot = {
+        ...activatedRoute.snapshot,
+        params: { qid: QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION }
+      } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       fixture.detectChanges();
     });

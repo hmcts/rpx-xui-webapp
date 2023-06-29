@@ -73,40 +73,15 @@ export class HearingsService {
   }
 
   public submitHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<ResponseDetailsModel> {
-    let hearingRequestMainModel1 = hearingRequestMainModel;
-    const hearingRequestMainModel2: HearingRequestMainModel = {
-      ...hearingRequestMainModel,
-      hearingDetails: {
-        ...hearingRequestMainModel.hearingDetails,
-        hearingWindow: null
-      }
-    };
-
-    if (hearingRequestMainModel.hearingDetails.hearingWindow && Object.keys(hearingRequestMainModel.hearingDetails.hearingWindow).length === 0) {
-      hearingRequestMainModel1 = hearingRequestMainModel2;
-    }
-    return this.http.post<ResponseDetailsModel>('api/hearings/submitHearingRequest', hearingRequestMainModel1);
+    return this.http.post<ResponseDetailsModel>('api/hearings/submitHearingRequest', hearingRequestMainModel);
   }
 
   public updateHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<ResponseDetailsModel> {
-    let hearingRequestMainModel1 = hearingRequestMainModel;
-    const hearingRequestMainModel2: HearingRequestMainModel = {
-      ...hearingRequestMainModel,
-      hearingDetails: {
-        ...hearingRequestMainModel.hearingDetails,
-        hearingWindow: null
-      }
-    };
-
-    if (hearingRequestMainModel.hearingDetails.hearingWindow && Object.keys(hearingRequestMainModel.hearingDetails.hearingWindow).length === 0) {
-      hearingRequestMainModel1 = hearingRequestMainModel2;
-    }
-
     const options = {
       params: new HttpParams()
         .set('hearingId', hearingRequestMainModel.requestDetails.hearingRequestID)
     };
-    return this.http.put<ResponseDetailsModel>('api/hearings/updateHearingRequest', hearingRequestMainModel1, options);
+    return this.http.put<ResponseDetailsModel>('api/hearings/updateHearingRequest', hearingRequestMainModel, options);
   }
 
   public getHearingActuals(hearingId: string): Observable<HearingActualsMainModel> {

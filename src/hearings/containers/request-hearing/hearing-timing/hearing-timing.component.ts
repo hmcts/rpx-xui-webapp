@@ -83,7 +83,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     let secondDate: Date = null;
     duration = this.hearingRequestMainModel.hearingDetails.duration ?
       this.hearingRequestMainModel.hearingDetails.duration : 0;
-    const hearingWindow: HearingWindowModel = this.hearingRequestMainModel.hearingDetails.hearingWindow;
+    const hearingWindow: HearingWindowModel = this.getHearingWindow();
     if (hearingWindow && (hearingWindow.dateRangeStart || hearingWindow.dateRangeEnd)) {
       this.checkedHearingAvailability = RadioOptions.CHOOSE_DATE_RANGE;
       startDate = hearingWindow.dateRangeStart && new Date(hearingWindow.dateRangeStart);
@@ -407,5 +407,10 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
 
   public ngOnDestroy(): void {
     super.unsubscribe();
+  }
+
+  public getHearingWindow(): HearingWindowModel {
+    return this.hearingRequestMainModel.hearingDetails.hearingWindow && Object.keys(this.hearingRequestMainModel.hearingDetails.hearingWindow).length === 0 ?
+      null : this.hearingRequestMainModel.hearingDetails.hearingWindow;
   }
 }

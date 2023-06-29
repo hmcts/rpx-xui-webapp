@@ -17,6 +17,7 @@ import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { CaseTypesUtils } from '../../../utils/case-types.utils';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import { HearingWindowModel } from 'api/hearings/models/hearingWindow.model';
 
 @Component({
   selector: 'exui-hearing-requirements',
@@ -85,7 +86,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         hearingType: this.serviceHearingValuesModel.hearingType,
         hearingLocations: this.serviceHearingValuesModel.hearingLocations,
         hearingIsLinkedFlag: this.serviceHearingValuesModel.hearingIsLinkedFlag,
-        hearingWindow: this.serviceHearingValuesModel.hearingWindow,
+        hearingWindow: this.getHearingWindow(),
         privateHearingRequiredFlag: this.serviceHearingValuesModel.privateHearingRequiredFlag,
         panelRequirements: this.serviceHearingValuesModel.panelRequirements,
         autolistFlag: this.serviceHearingValuesModel.autoListFlag,
@@ -181,5 +182,11 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   public ngOnDestroy() {
     super.unsubscribe();
+  }
+
+  public getHearingWindow(): HearingWindowModel {
+    return this.hearingRequestMainModel.hearingDetails.hearingWindow &&
+    Object.keys(this.hearingRequestMainModel.hearingDetails.hearingWindow).length === 0 ?
+      null : this.hearingRequestMainModel.hearingDetails.hearingWindow;
   }
 }

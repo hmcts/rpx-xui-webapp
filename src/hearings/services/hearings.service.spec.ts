@@ -70,7 +70,18 @@ describe('HearingsService', () => {
   describe('submitHearingRequest', () => {
     const payload = {
       requestDetails: null,
-      hearingDetails: null,
+      hearingDetails: {
+        duration: 0,
+        hearingType: null,
+        hearingLocations: null,
+        hearingWindow: null,
+        panelRequirements: null,
+        autolistFlag: null,
+        hearingPriorityType: null,
+        amendReasonCodes: null,
+        hearingChannels: null,
+        listingAutoChangeReasonCode: null
+      },
       partyDetails: null
     };
 
@@ -92,6 +103,10 @@ describe('HearingsService', () => {
       requestDetails: {
         ...hearingRequest.requestDetails,
         hearingRequestID: 'h100000'
+      },
+      ...hearingRequest,
+      hearingDetails: {
+        ...hearingRequest.hearingDetails
       }
     };
 

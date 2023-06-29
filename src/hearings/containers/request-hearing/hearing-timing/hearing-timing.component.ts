@@ -72,7 +72,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     this.initForm();
     this.priorities = this.route.snapshot.data.hearingPriorities.sort((currentPriority: { order: number; }, nextPriority: { order: number; }) => (currentPriority.order < nextPriority.order ? -1 : 1));
     // @ts-ignore
-    const unavailabilityDateList: UnavailabilityRangeModel[] = this.serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRanges);
+    const unavailabilityDateList: UnavailabilityRangeModel[] = this.serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRangess);
     this.checkUnavailableDatesList(unavailabilityDateList);
   }
 
@@ -112,6 +112,11 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
       minutes: minutes > 0 ? `${minutes}` : '',
       firstDate, secondDate, priority, startDate
     };
+  }
+
+  public getHearingWindow(): HearingWindowModel {
+    return this.hearingRequestMainModel.hearingDetails.hearingWindow && Object.keys(this.hearingRequestMainModel.hearingDetails.hearingWindow).length === 0 ?
+      null : this.hearingRequestMainModel.hearingDetails.hearingWindow;
   }
 
   public initDateConfig(): void {

@@ -122,6 +122,12 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     this.hearingStore.dispatch(new fromHearingStore.InitializeHearingRequest(hearingRequestMainModel));
   }
 
+  public getHearingWindow(): HearingWindowModel {
+    return this.hearingRequestMainModel.hearingDetails.hearingWindow &&
+    Object.keys(this.hearingRequestMainModel.hearingDetails.hearingWindow).length === 0 ?
+      null : this.hearingRequestMainModel.hearingDetails.hearingWindow;
+  }
+
   public updatePartyFlagsFromHearingValues(): void {
     const combinedParties: PartyDetailsModel[] = this.combinePartiesWithIndOrOrg(this.serviceHearingValuesModel.parties);
     const hearingRequestMainModel: HearingRequestMainModel = {

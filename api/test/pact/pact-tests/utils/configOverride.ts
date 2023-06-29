@@ -57,3 +57,10 @@ export function getJudicialRefDataAPIOverrides(judicialRefApiUrl) {
     ...defaultConfig
   };
 }
+
+export function getJudicialBookingAPIOverrides(judicialBookingApiUrl) {
+  return {
+    'services.judicialBookingApi': judicialBookingApiUrl,
+    ...defaultConfig
+  };
+}

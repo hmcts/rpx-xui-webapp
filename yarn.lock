@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-follow-up-query-check-your-answers":
-  version: 6.16.0-follow-up-query-check-your-answers
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-follow-up-query-check-your-answers"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-follow-up-query-check-your-answers-v2":
+  version: 6.16.0-follow-up-query-check-your-answers-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-follow-up-query-check-your-answers-v2"
   dependencies:
     tslib: ^2.0.0
-  checksum: effd77e011f7a82aff67da462c0e35e5408b02553b71b4f16e8dbf317a3bd89bcdab66010199893445cc4eb6e7b81dc3a24981145de3ca66aee2727aca3b13bc
+  checksum: c88533278322327ddf8a1a063afde26f9506eac1c956e2848603719d232bf48b60e84765323e362f8eb0e1b733ef34b97bcbe46c7a5bf870185f78e698f1f951
   languageName: node
   linkType: hard
 
@@ -19117,7 +19117,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-follow-up-query-check-your-answers
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-follow-up-query-check-your-answers-v2
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

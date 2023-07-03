@@ -311,4 +311,49 @@ describe('HearingsService', () => {
         .flush(null);
     }));
   });
+
+  describe('prepareHearingRequestModel', () => {
+    const model:HearingRequestMainModel = {
+      hearingDetails: {
+        duration: 0,
+        hearingType: null,
+        hearingLocations: null,
+        hearingWindow: {
+          dateRangeStart: '2022-11-23T09:00:00.000Z',
+          dateRangeEnd: '2022-11-30T09:00:00.000Z',
+          firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
+        },
+        panelRequirements: null,
+        autolistFlag: null,
+        hearingPriorityType: null,
+        amendReasonCodes: null,
+        hearingChannels: null,
+        listingAutoChangeReasonCode: null
+      },
+      partyDetails: []
+    };
+
+    it('should return HearingRequestMainModel with no update', inject([HearingsService], (service: HearingsService) => {
+      expect(service.prepareHearingRequestModel(model)).toEqual(model);
+    }));
+
+    it('should return HearingRequestMainModel hearingWindow null', inject([HearingsService], (service: HearingsService) => {
+      const newModel:HearingRequestMainModel = {
+        ...model,
+        hearingDetails: {
+          ...model.hearingDetails,
+          hearingWindow: {}
+        }
+      };
+
+      const result:HearingRequestMainModel = {
+        ...model,
+        hearingDetails: {
+          ...model.hearingDetails,
+          hearingWindow: null
+        }
+      };
+      expect(service.prepareHearingRequestModel(newModel)).toEqual(result);
+    }));
+  });
 });

@@ -8,17 +8,20 @@ import {
   Document,
   FormDocument,
   QualifyingQuestionsErrorMessage,
-  QueryItemType,
+  QueryCreateContext,
   QueryListItem,
-  partyMessagesMockData,
-  RaiseQueryErrorMessage
+  partyMessagesMockData
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ErrorMessage } from '../../../app/models/error-message.model';
+import { ErrorMessage } from '../../../app/models';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
 import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
+import { select, Store } from '@ngrx/store';
+import * as fromRoot from '../../../app/store';
+import { first } from 'rxjs/operators';
+import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -33,22 +36,25 @@ export class QueryManagementContainerComponent implements OnInit {
   private caseId: string;
   private queryItemId: string;
 
-  public queryCreateContext: QueryItemType;
+  public queryCreateContext: QueryCreateContext;
   public queryItem: QueryListItem | undefined;
   public showSummary: boolean = false;
   public formGroup: FormGroup = new FormGroup({});
   public submitted = false;
   public errorMessages: ErrorMessage[] = [];
-  public queryItemType = QueryItemType;
+  public queryCreateContextEnum = QueryCreateContext;
   public qualifyingQuestion: QualifyingQuestion;
   public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
   public qualifyingQuestionsControl: FormControl;
 
-  constructor(private readonly activatedRoute: ActivatedRoute,
-              private readonly router: Router,
-              private readonly location: Location,
-              private readonly caseNotifier: CaseNotifier,
-              private readonly featureToggleService: FeatureToggleService) {}
+  constructor(
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly router: Router,
+    private readonly location: Location,
+    private readonly caseNotifier: CaseNotifier,
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly store: Store<fromRoot.State>
+  ) {}
 
   public ngOnInit(): void {
     this.caseId = this.activatedRoute.snapshot.params.cid;
@@ -59,7 +65,7 @@ export class QueryManagementContainerComponent implements OnInit {
     this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
 
     this.formGroup = new FormGroup({
-      fullName: new FormControl(null, Validators.required),
+      name: new FormControl(null),
       subject: new FormControl(null),
       body: new FormControl(null, Validators.required),
       isHearingRelated: new FormControl(null),
@@ -74,6 +80,8 @@ export class QueryManagementContainerComponent implements OnInit {
       this.formGroup.get('subject')?.setValidators([Validators.required]);
       this.formGroup.get('isHearingRelated')?.setValidators([Validators.required]);
     }
+
+    this.setNameFromUserDetails();
   }
 
   public showResponseForm(): void {
@@ -81,19 +89,20 @@ export class QueryManagementContainerComponent implements OnInit {
   }
 
   public submitForm(): void {
-    if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS) {
+    if (this.queryCreateContext === QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS) {
       // Validate qualifying question selection
       if (this.validateQualifyingQuestion()) {
         // Submit triggered after selecting a qualifying question from qualifying questions radio options display page
         // Display the markdown page if markdown content is available, else navigate to the URL provided in the config
         this.qualifyingQuestion = this.qualifyingQuestionsControl.value;
+
         if (this.qualifyingQuestion.markdown?.length) {
           this.queryCreateContext = this.getQueryCreateContext();
         } else {
           this.router.navigateByUrl(this.qualifyingQuestion.url);
         }
       }
-    } else if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL) {
+    } else if (this.queryCreateContext === QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL) {
       // Submit triggered from the markdown page, navigate to the URL provided in the config
       this.router.navigateByUrl(this.qualifyingQuestion.url);
     } else {
@@ -101,6 +110,11 @@ export class QueryManagementContainerComponent implements OnInit {
       this.submitted = true;
       this.validateForm();
       this.showSummary = this.errorMessages?.length === 0;
+
+      // Reset hearing date if isHearingRelated
+      if (!this.formGroup.get('isHearingRelated').value) {
+        this.formGroup.get('hearingDate').setValue(null);
+      }
     }
   }
 
@@ -129,8 +143,8 @@ export class QueryManagementContainerComponent implements OnInit {
   }
 
   public previous(): void {
-    if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL) {
-      this.queryCreateContext = QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
+    if (this.queryCreateContext === QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL) {
+      this.queryCreateContext = QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
     } else {
       this.location.back();
     }
@@ -138,7 +152,7 @@ export class QueryManagementContainerComponent implements OnInit {
 
   public validateQualifyingQuestion(): boolean {
     this.errorMessages = [];
-    if (this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS) {
+    if (this.queryCreateContext === QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS) {
       this.qualifyingQuestionsControl.markAsTouched();
       if (!this.qualifyingQuestionsControl.valid) {
         this.errorMessages = [
@@ -158,14 +172,6 @@ export class QueryManagementContainerComponent implements OnInit {
   public validateForm(): void {
     this.errorMessages = [];
 
-    if (!this.formGroup.get('fullName').valid) {
-      this.errorMessages.push({
-        title: '',
-        description: RaiseQueryErrorMessage.FULL_NAME,
-        fieldId: 'fullName'
-      });
-    }
-
     if (!this.formGroup.get('subject').valid) {
       this.errorMessages.push({
         title: '',
@@ -178,7 +184,7 @@ export class QueryManagementContainerComponent implements OnInit {
       this.errorMessages.push({
         title: '',
         description:
-          this.queryCreateContext === QueryItemType.RESPOND ?
+          this.queryCreateContext === QueryCreateContext.RESPOND ?
             RaiseQueryErrorMessage.RESPOND_QUERY_BODY : RaiseQueryErrorMessage.QUERY_BODY,
         fieldId: 'body'
       });
@@ -213,25 +219,30 @@ export class QueryManagementContainerComponent implements OnInit {
     }
   }
 
-  private getQueryCreateContext(): QueryItemType {
+  private async setNameFromUserDetails(): Promise<void> {
+    const userDetails = await this.store.pipe(select(fromRoot.getUserDetails), first()).toPromise();
+    this.formGroup.get('name').setValue(userDetails.userInfo.name);
+  }
+
+  private getQueryCreateContext(): QueryCreateContext {
     switch (this.queryItemId) {
       case '1':
-        return QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL;
+        return QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL;
       case QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION:
-        return QueryItemType.NEW_QUERY;
+        return QueryCreateContext.NEW_QUERY;
       case '3':
-        return QueryItemType.RESPOND;
+        return QueryCreateContext.RESPOND;
       case '4':
-        return QueryItemType.FOLLOWUP;
+        return QueryCreateContext.FOLLOWUP;
       default:
         // When raise a query event is initiated, the queryItemId will be null for
         // both 'display of qualifying questions radio options' and 'display of markdown' pages
         // If the qualifying questions radio options are displayed then clicking on continue
         // must show the markdown of the selected qualifying question radio option, else just
         // display the qualifying questions radio options
-        return this.queryCreateContext === QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS
-          ? QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_DETAIL
-          : QueryItemType.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
+        return this.queryCreateContext === QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS
+          ? QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL
+          : QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
     }
   }
 
@@ -253,6 +264,12 @@ export class QueryManagementContainerComponent implements OnInit {
         }
         return qualifyingQuestions;
       })
+    );
+  }
+
+  public async navigateToCaseOverviewTab(): Promise<void> {
+    await this.router.navigate(['cases', 'case-details', this.caseId],
+      { fragment: 'Overview' }
     );
   }
 }

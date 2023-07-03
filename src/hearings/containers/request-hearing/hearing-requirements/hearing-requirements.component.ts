@@ -17,6 +17,8 @@ import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { CaseTypesUtils } from '../../../utils/case-types.utils';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import { HearingWindowModel } from 'api/hearings/models/hearingWindow.model';
+import { ValidatorsUtils } from 'src/hearings/utils/validators.utils';
 
 @Component({
   selector: 'exui-hearing-requirements',
@@ -52,7 +54,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   constructor(protected readonly route: ActivatedRoute,
               public readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
-              public readonly locationsDataService: LocationsDataService) {
+              public readonly locationsDataService: LocationsDataService,
+              private readonly validatorsUtils: ValidatorsUtils) {
     super(hearingStore, hearingsService, route);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
     this.caseTypeRefData = this.route.snapshot.data.caseType;
@@ -85,7 +88,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         hearingType: this.serviceHearingValuesModel.hearingType,
         hearingLocations: this.serviceHearingValuesModel.hearingLocations,
         hearingIsLinkedFlag: this.serviceHearingValuesModel.hearingIsLinkedFlag,
-        hearingWindow: this.serviceHearingValuesModel.hearingWindow,
+        hearingWindow: this.validatorsUtils.getHearingWindow(this.hearingRequestMainModel),
         privateHearingRequiredFlag: this.serviceHearingValuesModel.privateHearingRequiredFlag,
         panelRequirements: this.serviceHearingValuesModel.panelRequirements,
         autolistFlag: this.serviceHearingValuesModel.autoListFlag,

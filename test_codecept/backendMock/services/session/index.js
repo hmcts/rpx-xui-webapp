@@ -6,12 +6,19 @@ const axios = require('axios')
 const session = require('./sampleSession.json')
 
 class MockSessionService{
-    constructor(){
+    constructor(mode){
         this.http = axios.create({
             baseURL: "http://localhost:3000",
             timeout: 60000,
         })
-        this.sessionsPath = path.resolve(__dirname, '../../../../.sessions')
+
+        if(mode && mode === 'DEBUG'){
+            this.sessionsPath = path.resolve(__dirname, '../../../../api/.sessions')
+
+        }else{
+            this.sessionsPath = path.resolve(__dirname, '../../../../.sessions')
+
+        }
         this.defaultSession = '';
     }
 
@@ -81,7 +88,7 @@ class MockSessionService{
         return new Promise((resolve,reject) => {
             const interval = setInterval(async () => {
                 const sessionFile = await this.getSessionFileAuth(auth);
-                let sessionJson = await fs.readFileSync(sessionFile);
+                let sessionJson = await fs.readFileSync(sessionFile,'utf8');
                 sessionJson = JSON.parse(sessionJson);
 
                 if(sessionJson.roleAssignmentResponse){
@@ -110,6 +117,18 @@ class MockSessionService{
         await fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
     }
 
+
+    async updateAuthSessionWithUserInfo(auth, userInfo) {
+        await this.waitForSessionWithRoleAssignments(auth)
+        const sessionFile = await this.getSessionFileAuth(auth);
+        let sessionJson = await fs.readFileSync(sessionFile);
+
+        sessionJson = JSON.parse(sessionJson)
+
+        sessionJson.passport.user.userinfo = userInfo;
+        await fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
+    }
+
     async updateAuthSessionWithRoleAssignments(auth, roleAssignments) {
         await this.waitForSessionWithRoleAssignments(auth)
 
@@ -124,7 +143,7 @@ class MockSessionService{
         
         await fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
 
-        sessionJson = await fs.readFileSync(sessionFile);
+        sessionJson = await fs.readFileSync(sessionFile,'utf-8');
         sessionJson = JSON.parse(sessionJson)
         return sessionJson.roleAssignmentResponse;
     }
@@ -140,6 +159,6 @@ class MockSessionService{
     }
 }
 
-
-module.exports = new MockSessionService();
+const mode = process.env.DEBUG && process.env.DEBUG === "true" ? "DEBUG" : ""
+module.exports = new MockSessionService(mode);
 

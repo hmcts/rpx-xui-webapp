@@ -44,6 +44,13 @@ export function getLocationsRefDataAPIOverrides(locationRefApiUrl) {
   };
 }
 
+export function getPrdLocationsRefDataAPIOverrides(prdLocationRefApiUrl) {
+  return {
+    'services.prd.locationApi': prdLocationRefApiUrl,
+    ...defaultConfig
+  };
+}
+
 export function getAccessManagementServiceAPIOverrides(accessManagementAPI) {
   return {
     'services.role_assignment.roleApi': accessManagementAPI,

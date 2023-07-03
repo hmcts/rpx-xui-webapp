@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-raise-a-query-check-your-answers":
-  version: 6.16.0-raise-a-query-check-your-answers
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-raise-a-query-check-your-answers"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-raise-a-query-check-your-answers-v2":
+  version: 6.16.0-raise-a-query-check-your-answers-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-raise-a-query-check-your-answers-v2"
   dependencies:
     tslib: ^2.0.0
-  checksum: 5d41c79389f31101aa556370944948bfbe67f20c15ea590bd3b74c71632fa59b79e47c23e30a307e6613ab14b31a827bc5155ff812074f655bf99cb011f5e06b
+  checksum: 836200a3677a065eb79ef79ec63984453bc26c249535a86034835c6975a9868d7115c3b367d1be1a4dd13bada9b62cfd35e904f29666cdc76525087362cd87c6
   languageName: node
   linkType: hard
 
@@ -19117,7 +19117,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-raise-a-query-check-your-answers
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-raise-a-query-check-your-answers-v2
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

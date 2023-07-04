@@ -57,3 +57,10 @@ export function getJudicialRefDataAPIOverrides(judicialRefApiUrl) {
     ...defaultConfig
   };
 }
+
+export function getHearingsAPIOverrides(hearingsRefApiUrl: string) {
+  return {
+    'services.hearings.hmcApi': hearingsRefApiUrl,
+    ...defaultConfig
+  };
+}

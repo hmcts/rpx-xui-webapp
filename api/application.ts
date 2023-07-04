@@ -10,7 +10,6 @@ import {
   FEATURE_HELMET_ENABLED,
   HELMET,
   PROTOCOL,
-  SERVICES_IDAM_LOGIN_URL,
   SESSION_SECRET
 } from './configuration/references';
 import * as health from './health';
@@ -120,4 +119,4 @@ app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ign
 const logger: JUILogger = log4jui.getLogger('Application');
 logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
 
-new Promise(idamCheck).then(() => 'IDAM is up and running')
+new Promise(idamCheck).then(() => 'IDAM is up and running');

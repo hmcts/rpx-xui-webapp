@@ -118,15 +118,13 @@ describe('Hearings, get hearings for a given caseId', () => {
 
       try {
         await getHearings(req, response, next);
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
       } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
         throw new Error(err);
       }
+
+      assertResponses(returnedResponse);
+      pactSetUp.provider.verify();
+      pactSetUp.provider.finalize();
     });
   });
 });

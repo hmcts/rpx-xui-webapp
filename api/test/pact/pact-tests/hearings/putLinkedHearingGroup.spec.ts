@@ -9,7 +9,7 @@ import { InteractionObject } from '@pact-foundation/pact/src/dsl/interaction';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'hmc_hearingActuals', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'hmc_hearingGroup', port: 8000 });
 
 const groupId = '123456789';
 

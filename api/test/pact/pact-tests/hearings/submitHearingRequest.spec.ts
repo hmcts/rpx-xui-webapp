@@ -289,7 +289,6 @@ describe('Hearings, create single hearing request', () => {
         throw new Error(err);
       }
 
-
       assertResponses(returnedResponse);
       pactSetUp.provider.verify();
       pactSetUp.provider.finalize();

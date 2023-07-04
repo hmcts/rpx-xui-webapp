@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-details-add-follow-up-button":
-  version: 6.16.0-query-details-add-follow-up-button
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-details-add-follow-up-button"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-details-add-follow-up-button-v2":
+  version: 6.16.0-query-details-add-follow-up-button-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-details-add-follow-up-button-v2"
   dependencies:
     tslib: ^2.0.0
-  checksum: 67a3a0829eb628179f2bc8089bcca9841af1be09664fafaf9a521690aed3ce9e78db664cdce7a0fe354e937797015f23da37126a538f6e5a1f89b92906ca9b89
+  checksum: a97c28f88decdf5a44d2598d20d3e7f525529bcd83b8a285bfe7d1b5bac7fa3d9a6bc9e729af28752d52a656ff90ccc8029f1f925e7185d56facb84f0b48ac70
   languageName: node
   linkType: hard
 
@@ -19117,7 +19117,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-details-add-follow-up-button
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-details-add-follow-up-button-v2
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

@@ -120,8 +120,7 @@ export async function updateHearingActuals(req: EnhancedRequest, res: Response, 
   const reqBody = req.body;
   const hearingId = req.query.hearingId;
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
-  console.log('hearingId123123', hearingId);
-  console.log(markupPath);
+
   try {
     const { status, data }: { status: number, data: HearingActualsModel } = await sendPut(markupPath, reqBody, req);
     res.status(status).send(data);
@@ -136,8 +135,7 @@ export async function updateHearingActuals(req: EnhancedRequest, res: Response, 
 export async function submitHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction) {
   const hearingId = req.params.hearingId;
   const markupPath = `${hmcHearingsUrl}/hearingActualsCompletion/${hearingId}`;
-  console.log('hearingId123', hearingId);
-  console.log('markupPath', markupPath);
+
   try {
     const { status, data }: { status: number, data: HearingActualsCompletionResponseModel } = await handlePost(markupPath, null, req, next);
     res.status(status).send(data);

@@ -57,3 +57,10 @@ export function getJudicialRefDataAPIOverrides(judicialRefApiUrl) {
     ...defaultConfig
   };
 }
+
+export function getRdCommonDataAPIOverrides(rdCommonDataApiUrl) {
+  return {
+    'services.prd.commondataApi': rdCommonDataApiUrl,
+    ...defaultConfig
+  };
+}

@@ -118,7 +118,7 @@ describe('Hearings, get single hearing for given hearingId', () => {
       organisationDetails: {
         cftOrganisationID: somethingLike('string'),
         name: somethingLike('string'),
-        organisationType: somethingLike('string'),
+        organisationType: somethingLike('string')
       },
       partyChannelSubType: somethingLike('string'),
       partyID: somethingLike('string'),

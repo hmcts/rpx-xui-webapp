@@ -6,7 +6,6 @@ import { getHearingsAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 import { InteractionObject } from '@pact-foundation/pact/src/dsl/interaction';
 import { expect } from 'chai';
-import { cancelHearingRequest } from '../../../../hearings/hmc.index';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
@@ -89,7 +88,7 @@ describe('Hearings, delete a single hearing request', () => {
         },
         body: {
           cancellationReasonCodes: ['string']
-        },
+        }
       });
       let returnedResponse = null;
       const response = mockRes();

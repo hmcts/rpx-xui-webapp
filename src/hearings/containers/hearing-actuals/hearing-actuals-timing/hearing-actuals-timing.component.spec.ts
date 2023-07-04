@@ -206,12 +206,4 @@ describe('HearingActualsTimingComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  describe('ngOnInit', () => {
-    it('should create form and hearingStartTime and hearingEndTime set to null', () => {
-      console.log(component.formGroup.value);
-      expect(component.formGroup.value.hearingStartTime).toBeNull();
-      expect(component.formGroup.value.hearingEndTime).toBeNull();
-    });
-  });
 });

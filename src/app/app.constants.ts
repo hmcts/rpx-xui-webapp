@@ -83,10 +83,10 @@ const helpContactDetails: ContactDetailsDataModel[] = [
     badgeColour: BadgeColour.BADGE_RED,
     email: 'contactia@justice.gov.uk',
     phone: '0300 123 1711',
-    openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
+    openingTimes: 'Monday to Friday, 8:30am to 5pm (excluding public holidays)'
   },
   {
-    title: 'Family Public Law and Adoption',
+    title: 'Family Public Law',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'contactfpl@justice.gov.uk',
     phone: '0330 808 4424',
@@ -104,14 +104,33 @@ const helpContactDetails: ContactDetailsDataModel[] = [
     badgeColour: BadgeColour.BADGE_RED,
     email: 'contactsscs@justice.gov.uk',
     phone: '0300 123 1142',
-    openingTimes: 'Monday to Friday, 8am to 5pm (excluding public holidays)'
+    openingTimes: 'Monday to Friday, 8am to 5pm'
   },
   {
     title: 'SSCS (Scotland)',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'SSCSA-Glasgow@justice.gov.uk',
     phone: '0300 790 6234',
-    openingTimes: 'Monday to Friday, 8:30am to 5pm (excluding public holidays)'
+    openingTimes: 'Monday to Friday, 8:30am to 5pm'
+  },
+  {
+    title: 'For damages general enquires is:',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'DamagesClaims@justice.gov.uk',
+    phone: '0300 123 1372',
+    openingTimes: 'Monday to Friday, 8:30am to 5pm'
+  },
+  {
+    title: 'For damages tech support:',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'DCPTechSupport@justice.gov.uk',
+  },
+  {
+    title: 'OCMC',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'contactocmc@justice.gov.uk',
+    phone: '0300 123 7050',
+    openingTimes: 'Monday to Friday, 8:30am to 5pm'
   }
 ];
 

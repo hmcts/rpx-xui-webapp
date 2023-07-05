@@ -69,14 +69,23 @@
     </ccd-query-check-your-answers>
 
     <div>
-      <ng-container *ngIf="queryItem; else raiseQueryBackLink">
-        <a href="javascript:void(0)" (click)="goToQueryList()" class="govuk-back-link govuk-!-margin-bottom-0">
-          {{ 'Cancel and return to query list' | rpxTranslate }}
-        </a>
+      <ng-container *ngIf="queryCreateContext !== queryCreateContextEnum.RESPOND; else respondQuery">
+        <ng-container *ngIf="queryItem; else raiseQueryBackLink">
+          <a href="javascript:void(0)" (click)="goToQueryList()" class="govuk-back-link govuk-!-margin-bottom-0">
+            {{ 'Cancel and return to query list' | rpxTranslate }}
+          </a>
+        </ng-container>
+        <ng-template #raiseQueryBackLink>
+          <a href="javascript:void(0)" class="govuk-back-link govuk-!-margin-bottom-0"
+            (click)="navigateToCaseOverviewTab()">
+            {{ 'Cancel and return to case' | rpxTranslate }}
+          </a>
+        </ng-template>        
       </ng-container>
-      <ng-template #raiseQueryBackLink>
-        <a href="javascript:void(0)" class="govuk-back-link govuk-!-margin-bottom-0" (click)="navigateToCaseOverviewTab()">
-          {{ 'Cancel and return to case' | rpxTranslate }}
+      <ng-template #respondQuery>
+        <a href="javascript:void(0)" class="govuk-back-link govuk-!-margin-top-0"
+          (click)="navigateToCaseTaskTab()">
+          {{ 'Cancel and return to tasks' | rpxTranslate }}
         </a>
       </ng-template>
     </div>

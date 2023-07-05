@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-raise-a-query-check-your-answers-v2":
-  version: 6.16.0-raise-a-query-check-your-answers-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-raise-a-query-check-your-answers-v2"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-response-UI-changes-v2":
+  version: 6.16.0-query-management-response-UI-changes-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-response-UI-changes-v2"
   dependencies:
     tslib: ^2.0.0
-  checksum: 836200a3677a065eb79ef79ec63984453bc26c249535a86034835c6975a9868d7115c3b367d1be1a4dd13bada9b62cfd35e904f29666cdc76525087362cd87c6
+  checksum: 46d052e287ce5daf623df17003a0570f2890e05ebf40d3ee387e8bcf3eb8772b00b2d301f99f54a2f58710bd16bde9bcda973329e28a7776473f4dae159128c0
   languageName: node
   linkType: hard
 
@@ -19117,7 +19117,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-raise-a-query-check-your-answers-v2
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-response-UI-changes-v2
     "@hmcts/ccpay-web-component": 5.2.3
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

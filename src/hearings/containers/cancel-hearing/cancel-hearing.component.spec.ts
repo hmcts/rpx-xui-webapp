@@ -11,11 +11,13 @@ import { initialState } from '../../hearing.test.data';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import { HearingsService } from '../../services/hearings.service';
 import { CancelHearingComponent } from './cancel-hearing.component';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 describe('CancelHearingComponent', () => {
   let component: CancelHearingComponent;
   let fixture: ComponentFixture<CancelHearingComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post', 'delete']);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const hearingsService = new HearingsService(mockedHttpClient);
   const reasons: LovRefDataModel[] = [
     {
@@ -73,6 +75,7 @@ describe('CancelHearingComponent', () => {
       providers: [
         LoadingService,
         { provide: HearingsService, useValue: hearingsService },
+        { provide: LoggerService, useValue: loggerServiceMock },
         {
           provide: ActivatedRoute,
           useValue: {

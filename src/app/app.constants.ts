@@ -98,6 +98,20 @@ const helpContactDetails: ContactDetailsDataModel[] = [
     email: 'etreform@justice.gov.uk',
     phone: 'England and Wales: 0330 123 1024, Scotland: 0300 790 6234',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
+  },
+  {
+    title: 'SSCS (England and Wales)',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'contactsscs@justice.gov.uk',
+    phone: '0300 123 1142',
+    openingTimes: 'Monday to Friday, 8am to 5pm (excluding public holidays)'
+  },
+  {
+    title: 'SSCS (Scotland)',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'SSCSA-Glasgow@justice.gov.uk',
+    phone: '0300 790 6234',
+    openingTimes: 'Monday to Friday, 8:30am to 5pm (excluding public holidays)'
   }
 ];
 

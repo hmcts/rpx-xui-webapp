@@ -2230,15 +2230,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:1.8.7-include-current-user":
-  version: 1.8.7-include-current-user
-  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.7-include-current-user"
+"@hmcts/rpx-xui-common-lib@npm:1.8.9-exui-249-timout-service-fix-a":
+  version: 1.8.9-exui-249-timout-service-fix-a
+  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.9-exui-249-timout-service-fix-a"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
-  checksum: ace14d81897bd13b157572640a90e5bc2dc8a99423d2ab4651b3267ef9a6c9509104c220ec185afe4ec4e1ff6b5b99b2f4a56157feb680a7ace3175b3340a07e
+  checksum: c33668f1b0bdca2b9e68e07e0c551b41de861f6718b86dc7307832d632f3115e7c5420dd76685e6d89c9b2c30e0e8dfd52da98115bc576fe575f1359516efa17
   languageName: node
   linkType: hard
 
@@ -19109,7 +19109,7 @@ __metadata:
     "@hmcts/media-viewer": 2.9.3
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 1.8.7-include-current-user
+    "@hmcts/rpx-xui-common-lib": 1.8.9-exui-249-timout-service-fix-a
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3

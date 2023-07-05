@@ -69,25 +69,23 @@
     </ccd-query-check-your-answers>
 
     <div>
-      <ng-container *ngIf="queryCreateContext !== queryCreateContextEnum.RESPOND; else respondQuery">
-        <ng-container *ngIf="queryItem; else raiseQueryBackLink">
-          <a href="javascript:void(0)" (click)="goToQueryList()" class="govuk-back-link govuk-!-margin-bottom-0">
-            {{ 'Cancel and return to query list' | rpxTranslate }}
-          </a>
-        </ng-container>
-        <ng-template #raiseQueryBackLink>
-          <a href="javascript:void(0)" class="govuk-back-link govuk-!-margin-bottom-0"
-            (click)="navigateToCaseOverviewTab()">
+      <ng-container [ngSwitch]="queryCreateContext">
+        <a *ngSwitchCase="queryCreateContextEnum.NEW_QUERY"
+          href="javascript:void(0)" (click)="navigateToCaseOverviewTab()"
+          class="govuk-back-link govuk-!-margin-bottom-0">
             {{ 'Cancel and return to case' | rpxTranslate }}
-          </a>
-        </ng-template>        
-      </ng-container>
-      <ng-template #respondQuery>
-        <a href="javascript:void(0)" class="govuk-back-link govuk-!-margin-top-0"
-          (click)="navigateToCaseTaskTab()">
+        </a>
+        <a *ngSwitchCase="queryCreateContextEnum.FOLLOWUP"
+          href="javascript:void(0)" (click)="goToQueryList()" 
+          class="govuk-back-link govuk-!-margin-bottom-0">
+          {{ 'Cancel and return to query list' | rpxTranslate }}
+        </a>
+        <a *ngSwitchCase="queryCreateContextEnum.RESPOND"
+          href="javascript:void(0)" (click)="navigateToCaseTaskTab()"
+          class="govuk-back-link govuk-!-margin-top-0">
           {{ 'Cancel and return to tasks' | rpxTranslate }}
         </a>
-      </ng-template>
+      </ng-container>
     </div>
   </main>
 </div>

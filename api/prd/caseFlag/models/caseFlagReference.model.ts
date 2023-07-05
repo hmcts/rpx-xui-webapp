@@ -6,4 +6,6 @@ export interface CaseFlagReferenceModel {
   isParent: boolean;
   Path: string[];
   childFlags: CaseFlagReferenceModel[];
+  defaultStatus: string;
+  externallyActive: boolean;
 }

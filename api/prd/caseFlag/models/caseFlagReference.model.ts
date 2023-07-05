@@ -7,5 +7,5 @@ export interface CaseFlagReferenceModel {
   Path: string[];
   childFlags: CaseFlagReferenceModel[];
   defaultStatus?: string;
-  externallyActive?: boolean;
+  externallyAvailable?: boolean;
 }

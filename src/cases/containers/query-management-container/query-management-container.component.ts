@@ -32,9 +32,8 @@ export class QueryManagementContainerComponent implements OnInit {
   private readonly RAISE_A_QUERY_NAME = 'Raise another query relating to this case';
   public static readonly RAISE_A_QUERY_QUESTION_OPTION = 'raiseAQuery';
 
-  private caseId: string;
-  private queryItemId: string;
-
+  private queryItemId: string;  
+  public caseId: string;
   public queryCreateContext: QueryCreateContext;
   public queryItem: QueryListItem | undefined;
   public showSummary: boolean = false;

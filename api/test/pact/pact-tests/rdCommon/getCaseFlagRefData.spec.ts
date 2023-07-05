@@ -22,7 +22,7 @@ describe('RD get case flag ref data', async () => {
     Path: somethingLike(['/flag1']),
     childFlags: somethingLike([]),
     defaultStatus: somethingLike('Active'),
-    externallyActive: somethingLike(false)
+    externallyAvailable: somethingLike(false)
   };
 
   describe('get case flag ref data', () => {
@@ -106,5 +106,5 @@ function assertResponses(dto: any) {
   expect(dto.isParent).to.be.equal(false);
   expect(dto.Path[0]).to.be.equal('/flag1');
   expect(dto.defaultStatus).to.be.equal('Active');
-  expect(dto.externallyActive).to.be.equal(false);
+  expect(dto.externallyAvailable).to.be.equal(false);
 }

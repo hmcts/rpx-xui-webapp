@@ -19,8 +19,10 @@ describe('RD get case flag ref data', async () => {
     flagComment: somethingLike(false),
     flagCode: somethingLike('xflag'),
     isParent: somethingLike(false),
-    Path: somethingLike('/flag1'),
-    childFlags: somethingLike([])
+    Path: somethingLike(['/flag1']),
+    childFlags: somethingLike([]),
+    defaultStatus: somethingLike('Active'),
+    externallyActive: somethingLike(false)
   };
 
   describe('get case flag ref data', () => {
@@ -39,6 +41,7 @@ describe('RD get case flag ref data', async () => {
         withRequest: {
           method: 'GET',
           path: `/refdata/commondata/caseflags/service-id=${serviceId}`,
+          // query also present on API but not on current function, e.g. ?flag-type=PARTY
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
@@ -87,7 +90,6 @@ describe('RD get case flag ref data', async () => {
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
       } catch (err) {
-        console.log(err.stack);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
         throw new Error(err);
@@ -102,5 +104,7 @@ function assertResponses(dto: any) {
   expect(dto.flagComment).to.be.equal(false);
   expect(dto.flagCode).to.be.equal('xflag');
   expect(dto.isParent).to.be.equal(false);
-  expect(dto.Path).to.be.equal('/flag1');
+  expect(dto.Path[0]).to.be.equal('/flag1');
+  expect(dto.defaultStatus).to.be.equal('Active');
+  expect(dto.externallyActive).to.be.equal(false);
 }

@@ -123,7 +123,7 @@ const helpContactDetails: ContactDetailsDataModel[] = [
   {
     title: 'For damages tech support:',
     badgeColour: BadgeColour.BADGE_RED,
-    email: 'DCPTechSupport@justice.gov.uk',
+    email: 'DCPTechSupport@justice.gov.uk'
   },
   {
     title: 'OCMC',

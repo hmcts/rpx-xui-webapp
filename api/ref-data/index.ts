@@ -48,7 +48,10 @@ export async function getLocationsByServiceCode(req, res, next: NextFunction) {
   try {
     const { status, data }: { status: number; data: LocationByServiceCodeResponse }
       = await http.get(`${apiPath}?${queryParams}`, { headers: setHeaders(req) });
-
+    data.court_venues.map((court_venue) => {
+      // EUI-8051 - List value as we want to store all services with that location
+      court_venue.serviceCodes = [queryParams.substring(queryParams.indexOf('=')+1)];
+    });
     res.status(status).send(data);
   } catch (error) {
     next(error);

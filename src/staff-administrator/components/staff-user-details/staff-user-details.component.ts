@@ -1,7 +1,8 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GroupOptions } from '@hmcts/rpx-xui-common-lib';
-import { finalize } from 'rxjs/operators';
+import { finalize, map, switchMap, tap } from 'rxjs/operators';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -39,33 +40,43 @@ export class StaffUserDetailsComponent {
   }
 
   public updateUserStatus(): void {
-    if (!this.loading && !this.userDetails.suspended) {
+    if (!this.loading) {
       this.loading = true;
       const staffUser = new StaffUser();
       Object.assign(staffUser, this.userDetails);
-      staffUser.suspended = true;
+      staffUser.suspended = !staffUser.suspended;
       this.staffDataAccessService.updateUser(staffUser).pipe(
-        finalize(() => {
-          this.loading = false;
-          window.scrollTo(0, 0);
-        })
-      )
+        switchMap(() => this.staffDataAccessService.fetchSingleUserById(this.userDetails.case_worker_id).pipe(
+          finalize(() => {
+            this.loading = false;
+            window.scrollTo(0, 0);
+          })
+        )),
+        tap((user) => this.userDetails = StaffUser.from(user)))
         .subscribe(
           () => {
-            this.status = InfoMessageType.SUCCESS;
-            this.title = 'User suspended';
-            this.message = InfoMessage.SUSPEND_USER_SUCCESS;
-            this.userDetails.suspended = staffUser.suspended;
+            if (this.userDetails.up_idam_status !== StaffUserIDAMStatus.PENDING) {
+              this.status = InfoMessageType.SUCCESS;
+              // User either restored or suspended if successful
+              this.title = this.userDetails.suspended ? 'User suspended' : 'User restored';
+              this.message = this.userDetails.suspended ? InfoMessage.SUSPEND_USER_SUCCESS : InfoMessage.USER_RESTORED;
+            }
           },
           (err) => {
-            if (err.status === 401 || err.status.toString().startsWith('5')) {
-              this.router.navigateByUrl('/service-down');
-            } else {
-              this.status = 'warning';
-              this.message = InfoMessage.SUSPEND_USER_ERROR;
-            }
+            this.setErrorSteps(err);
           }
         );
+    }
+  }
+
+  private setErrorSteps(err: HttpErrorResponse): void {
+    if (err.status === 401 || err.status.toString().startsWith('5')) {
+      this.router.navigateByUrl('/service-down');
+    } else {
+      this.status = 'warning';
+      this.message = InfoMessage.SUSPEND_USER_ERROR;
+      this.loading = false;
+      window.scrollTo(0, 0);
     }
   }
 

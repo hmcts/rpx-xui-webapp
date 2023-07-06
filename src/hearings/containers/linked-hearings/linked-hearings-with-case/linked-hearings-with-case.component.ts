@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import {
   HearingLinkedSelectionEnum,
@@ -143,10 +143,14 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
 
   public getHearingsAvailable() {
     this.linkedCases.forEach((caseInfo) => {
-      if (caseInfo.caseHearings && caseInfo.caseHearings.length > 0) {
+      if (caseInfo.caseRef !== this.caseId && caseInfo.caseHearings?.length > 0) {
         this.isHearingsAvailable = true;
       }
     });
+    // No hearings available for linking, do not display the current case
+    if (!this.isHearingsAvailable) {
+      this.linkedCases = this.linkedCases?.filter((linkedCase) => linkedCase.caseRef !== this.caseId);
+    }
   }
 
   public updateLinkedCase(casePos: number, hearingPos: number) {

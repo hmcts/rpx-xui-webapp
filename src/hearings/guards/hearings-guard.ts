@@ -13,6 +13,7 @@ import { Utils } from '../../cases/utils/utils';
 export class HearingsGuard {
   public static CASE_INFO: string = 'caseInfo';
   public static JURISDICTION: string = 'jurisdiction';
+  public static CASE_TYPE: string = 'caseType';
   public static DEFAULT_URL: string = '/cases';
   public userRoles$: Observable<string[]>;
 
@@ -24,7 +25,7 @@ export class HearingsGuard {
     );
   }
 
-  public hasMatchedJurisdictionAndRole(): Observable<boolean> {
+  public hasMatchedPermissions(): Observable<boolean> {
     return combineLatest([
       this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []),
       this.userRoles$
@@ -32,8 +33,9 @@ export class HearingsGuard {
       map(([featureVariations, userRoles]: [FeatureVariation[], string[]]) => {
         const caseInfo = JSON.parse(this.sessionStorageService.getItem(HearingsGuard.CASE_INFO));
         const jurisdiction = caseInfo && caseInfo.hasOwnProperty(HearingsGuard.JURISDICTION) ? caseInfo[HearingsGuard.JURISDICTION] : '';
+        const caseType = caseInfo && caseInfo.hasOwnProperty(HearingsGuard.CASE_TYPE) ? caseInfo[HearingsGuard.CASE_TYPE] : '';
         return featureVariations.some((featureVariation) =>
-          Utils.hasMatchedJurisdictionAndRole(featureVariation, jurisdiction, userRoles));
+          Utils.hasMatchedPermissions(featureVariation, jurisdiction, caseType, userRoles));
       })
     );
   }

@@ -1,14 +1,13 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, FilterService, FilterSetting, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
-import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
-import { UserInfo, UserRole } from '../../../app/models';
+import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
@@ -30,7 +29,7 @@ import {
   WorkAllocationTaskService
 } from '../../services';
 import { CheckReleaseVersionService } from '../../services/check-release-version.service';
-import { REDIRECTS, getAssigneeName, handleFatalErrors, handleTasksFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -166,7 +165,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.isUpdatedTaskPermissions$.pipe(filter((v) => !!v)).subscribe((value) => {
       this.updatedTaskPermission = value;
     });
-
+    this.userRoleCategory = this.getCurrentUserRoleCategory();
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
     this.setupTaskList();
@@ -403,12 +402,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public isCurrentUserJudicial(): boolean {
-    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
-    if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
-    }
-    return false;
+    return this.userRoleCategory === RoleCategory.JUDICIAL;
   }
 
   // Do the actual load. This is separate as it's called from two methods.

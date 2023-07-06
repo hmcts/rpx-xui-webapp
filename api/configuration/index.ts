@@ -4,7 +4,7 @@ import * as config from 'config';
 /**
  * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
  */
-propertiesVolume.addTo(config);
+propertiesVolume.addTo(config, { mountPoint: '/Volumes/mnt/secrets/' });
 
 /**
  * Get Configuration Value

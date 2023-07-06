@@ -9,11 +9,11 @@ describe('OpenId Connect API', () => {
   // Write Pact when all tests done
   after(() => pactSetUp.provider.finalize());
 
-  describe('when a request to .well-known endpoint is made', () => {
+  describe('when a request to a well-known endpoint is made', () => {
     before(async () => {
       await pactSetUp.provider.setup();
       pactSetUp.provider.addInteraction({
-        state: '.well-known endpoint',
+        state: 'a well-known endpoint',
         uponReceiving: 'a request for configuration',
         withRequest: {
           method: 'GET',

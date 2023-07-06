@@ -17,6 +17,7 @@ import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { CaseTypesUtils } from '../../../utils/case-types.utils';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import { LoggerService } from '../../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-hearing-requirements',
@@ -52,7 +53,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   constructor(protected readonly route: ActivatedRoute,
               public readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
-              public readonly locationsDataService: LocationsDataService) {
+              public readonly locationsDataService: LocationsDataService,
+              private readonly loggerService: LoggerService,) {
     super(hearingStore, hearingsService, route);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
     this.caseTypeRefData = this.route.snapshot.data.caseType;
@@ -137,7 +139,9 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       const party: PartyDetailsModel = {
         ...partyDetail,
         individualDetails: {
-          ...partyDetail.individualDetails
+          ...partyDetail.individualDetails,
+          reasonableAdjustments: this.getAllPartyFlagsByPartyId(partyDetail.partyID)
+            .filter((flagId) => flagId !== CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID)
         },
         ...organisationDetails && ({ organisationDetails })
       };
@@ -165,7 +169,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
             regionId: this.strRegions
           };
           this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-        });
+        }).catch((err) => this.loggerService.error(err));
     }
   }
 

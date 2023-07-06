@@ -4,17 +4,20 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of, throwError } from 'rxjs';
 import { initialState } from '../../hearing.test.data';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import { HearingsService } from '../../services/hearings.service';
 import { CancelHearingComponent } from './cancel-hearing.component';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 describe('CancelHearingComponent', () => {
   let component: CancelHearingComponent;
   let fixture: ComponentFixture<CancelHearingComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post', 'delete']);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const hearingsService = new HearingsService(mockedHttpClient);
   const reasons: LovRefDataModel[] = [
     {
@@ -70,7 +73,9 @@ describe('CancelHearingComponent', () => {
       ]), HttpClientTestingModule],
       declarations: [CancelHearingComponent],
       providers: [
+        LoadingService,
         { provide: HearingsService, useValue: hearingsService },
+        { provide: LoggerService, useValue: loggerServiceMock },
         {
           provide: ActivatedRoute,
           useValue: {

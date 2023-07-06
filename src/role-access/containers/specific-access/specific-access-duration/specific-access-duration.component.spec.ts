@@ -36,9 +36,6 @@ describe('SpecificAccessDurationComponent', () => {
   describe('setFormControlRefs', () => {
     it('should assign form control objects to component properties as expected', () => {
       const expectedType = 'object';
-      expect(typeof component.startDateDayCtrl).toEqual(expectedType);
-      expect(typeof component.startDateMonthCtrl).toEqual(expectedType);
-      expect(typeof component.startDateYearCtrl).toEqual(expectedType);
       expect(typeof component.endDateDayCtrl).toEqual(expectedType);
       expect(typeof component.endDateMonthCtrl).toEqual(expectedType);
       expect(typeof component.endDateYearCtrl).toEqual(expectedType);
@@ -150,9 +147,6 @@ describe('SpecificAccessDurationComponent', () => {
         }
       };
       // fake form group and form control values
-      component.startDateDayCtrl = new FormControl(7);
-      component.startDateMonthCtrl = new FormControl(7);
-      component.startDateYearCtrl = new FormControl(2025);
       component.endDateDayCtrl = new FormControl(8);
       component.endDateMonthCtrl = new FormControl(7);
       component.endDateYearCtrl = new FormControl(2025);
@@ -216,10 +210,6 @@ describe('SpecificAccessDurationComponent', () => {
 
     it('should return a Period object for ANOTHER_PERIOD duration type', () => {
       // fake form group and form control values
-      component.startDateDayCtrl = new FormControl(7);
-      component.startDateMonthCtrl = new FormControl(7);
-      component.startDateYearCtrl = new FormControl(2025);
-
       component.endDateDayCtrl = new FormControl(8);
       component.endDateMonthCtrl = new FormControl(7);
       component.endDateYearCtrl = new FormControl(2025);
@@ -228,7 +218,7 @@ describe('SpecificAccessDurationComponent', () => {
 
       const period = component.getPeriod(DurationType.ANOTHER_PERIOD);
       expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
-      date = new Date(2025, 6, 7);
+      date = new Date();
       date.setUTCHours(0, 0, 0, 0);
       expect(period.startDate).toEqual(date);
       date = new Date(2025, 6, 8);
@@ -238,10 +228,6 @@ describe('SpecificAccessDurationComponent', () => {
 
     it('should return a Period object for ANOTHER_PERIOD duration type for the same start and end date', () => {
       // fake form group and form control values
-      component.startDateDayCtrl = new FormControl(7);
-      component.startDateMonthCtrl = new FormControl(7);
-      component.startDateYearCtrl = new FormControl(2025);
-
       component.endDateDayCtrl = new FormControl(7);
       component.endDateMonthCtrl = new FormControl(7);
       component.endDateYearCtrl = new FormControl(2025);
@@ -250,7 +236,7 @@ describe('SpecificAccessDurationComponent', () => {
 
       const period = component.getPeriod(DurationType.ANOTHER_PERIOD);
       expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
-      date = new Date(2025, 6, 7);
+      date = new Date();
       date.setUTCHours(0, 0, 0, 0);
       expect(period.startDate).toEqual(date);
       date = new Date(2025, 6, 7);
@@ -260,10 +246,6 @@ describe('SpecificAccessDurationComponent', () => {
 
     it('should return control values when getRawData called', () => {
       // fake form group and form control values
-      component.startDateDayCtrl = new FormControl(7);
-      component.startDateMonthCtrl = new FormControl(7);
-      component.startDateYearCtrl = new FormControl(2025);
-
       component.endDateDayCtrl = new FormControl(8);
       component.endDateMonthCtrl = new FormControl(7);
       component.endDateYearCtrl = new FormControl(2025);
@@ -274,44 +256,19 @@ describe('SpecificAccessDurationComponent', () => {
       expect(period.endDate.day).toEqual(8);
       expect(period.endDate.month).toEqual(7);
       expect(period.endDate.year).toEqual(2025);
-      expect(period.startDate.day).toEqual(7);
-      expect(period.startDate.month).toEqual(7);
-      expect(period.startDate.year).toEqual(2025);
-      expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
+      expect(period.hasOwnProperty('endDate')).toEqual(true);
     });
 
     it('should display invalid date messages', () => {
-      component.startDateDayCtrl = new FormControl(99);
-      component.startDateMonthCtrl = new FormControl(99);
-      component.startDateYearCtrl = new FormControl(2025);
-
       component.endDateDayCtrl = new FormControl(99);
       component.endDateMonthCtrl = new FormControl(99);
       component.endDateYearCtrl = new FormControl(2025);
 
       component.getPeriod(DurationType.ANOTHER_PERIOD);
-      expect(component.startDateErrorMessage).toEqual({ isInvalid: true, messages: ['Invalid Start date'] });
       expect(component.endDateErrorMessage).toEqual({ isInvalid: true, messages: ['Invalid End date'] });
     });
 
-    it('should display start date in past error message', () => {
-      component.startDateDayCtrl = new FormControl(1);
-      component.startDateMonthCtrl = new FormControl(1);
-      component.startDateYearCtrl = new FormControl(2021);
-
-      component.endDateDayCtrl = new FormControl(2);
-      component.endDateMonthCtrl = new FormControl(1);
-      component.endDateYearCtrl = new FormControl(2021);
-
-      component.getPeriod(DurationType.ANOTHER_PERIOD);
-      expect(component.startDateErrorMessage).toEqual({ isInvalid: true, messages: ['The access start date must not be in the past'] });
-    });
-
     it('should display end date must be after start date message', () => {
-      component.startDateDayCtrl = new FormControl(2);
-      component.startDateMonthCtrl = new FormControl(1);
-      component.startDateYearCtrl = new FormControl(2021);
-
       component.endDateDayCtrl = new FormControl(1);
       component.endDateMonthCtrl = new FormControl(1);
       component.endDateYearCtrl = new FormControl(2021);

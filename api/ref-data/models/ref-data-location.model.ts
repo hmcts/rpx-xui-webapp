@@ -23,4 +23,5 @@ export interface RefDataLocation {
   venue_name: string;
   welsh_court_address: string;
   welsh_site_name: string;
+  serviceCodes?: string[];
 }

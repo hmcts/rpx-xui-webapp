@@ -1,14 +1,13 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, FilterService, FilterSetting, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription, of } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
-import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
-import { UserInfo, UserRole } from '../../../app/models';
+import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
@@ -55,6 +54,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public routeEventsSubscription: Subscription;
   public isUpdatedTaskPermissions$: Observable<boolean>;
   public updatedTaskPermission: boolean;
+  public userRoleCategory: string;
+  private goneBackOne = false;
+  private initialFilterApplied = false;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -164,7 +166,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.isUpdatedTaskPermissions$.pipe(filter((v) => !!v)).subscribe((value) => {
       this.updatedTaskPermission = value;
     });
-
+    this.userRoleCategory = this.getCurrentUserRoleCategory();
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
     this.setupTaskList();
@@ -187,10 +189,12 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         const typesOfWork = f.fields.find((field) => field.name === 'types-of-work');
         const services = f.fields.find((field) => field.name === 'services').value;
         const newWorkTypes = typesOfWork ? typesOfWork.value : [];
-        this.resetPagination(this.selectedLocations, newLocations);
-        if (newLocations) {
-          this.selectedLocations = (newLocations).map((l) => l.epimms_id);
+        if (this.initialFilterApplied) {
+          // do not reset the pagination when the initial filter value has not been consumed
+          this.resetPagination(newLocations);
         }
+        this.initialFilterApplied = true;
+        this.selectedLocations = (newLocations).map((l) => l.epimms_id);
         this.selectedWorkTypes = newWorkTypes.filter((workType) => workType !== 'types_of_work_all');
         this.selectedServices = services.filter((service) => service !== 'services_all');
         this.doLoad();
@@ -397,12 +401,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public isCurrentUserJudicial(): boolean {
-    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
-    if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
-    }
-    return false;
+    return this.userRoleCategory === RoleCategory.JUDICIAL;
   }
 
   // Do the actual load. This is separate as it's called from two methods.
@@ -435,21 +434,51 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       })));
     })));
     mappedSearchResult$.subscribe((result) => {
-      this.loadingService.unregister(loadingToken);
-      this.tasks = result.tasks;
-      this.tasksTotal = result.total_records;
-      this.ref.detectChanges();
+      this.setTaskListDetails(result, loadingToken);
     }, (error) => {
       this.loadingService.unregister(loadingToken);
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
   }
 
+  private setTaskListDetails(result: TaskResponse, loadingToken: string): void {
+    this.loadingService.unregister(loadingToken);
+    this.tasks = result.tasks;
+    this.tasksTotal = result.total_records;
+    this.ref.detectChanges();
+    if (result.tasks && result.tasks.length === 0 && this.pagination.page_number > 1 && !this.goneBackOne) {
+      // if possibly back at a page that has been removed by actions to task, go back one to attempt to get tasks
+      this.goneBackOne = true;
+      this.onPaginationHandler(this.pagination.page_number - 1);
+    }
+  }
+
   // reset pagination when filter is applied
-  private resetPagination(selectedLocations: string[], newLocations: string[]): void {
-    if (this.selectedLocations !== newLocations && selectedLocations.length !== 0) {
+  private resetPagination(newLocations: string[]): void {
+    if (!this.locationListsEqual(newLocations)) {
+      // check to ensure locations are not the same
       this.pagination.page_number = 1;
       this.sessionStorageService.setItem(this.pageSessionKey, '1');
     }
+  }
+
+  public getCurrentUserRoleCategory(): string {
+    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      return userInfo.roleCategory;
+    }
+  }
+
+  private locationListsEqual(newLocations: string[]): boolean {
+    if (newLocations.length !== this.selectedLocations.length) {
+      return false;
+    }
+    for (let i = 0; i < newLocations.length; i++) {
+      if (!this.selectedLocations.includes(newLocations[i])) {
+        return false;
+      }
+    }
+    return true;
   }
 }

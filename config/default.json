@@ -128,7 +128,7 @@
        "caseTypes": "PUBLICLAW",
        "releaseVersion": "3.5"
       }
-  }, 
+  },
   "wildcardSearchFields": {
     "Benefit": [
       "generatedSurname",

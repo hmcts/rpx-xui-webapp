@@ -27,6 +27,9 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
     const sessionTimeout = getUserSessionTimeout(roles, sessionTimeouts);
     const roleAssignmentInfo = await getUserRoleAssignments(req.session.passport.user.userinfo, req);
     const userInfo = { ...req.session.passport.user.userinfo, token: `Bearer ${req.session.passport.user.tokenset.accessToken}` };
+    const syntheticRoles = getSyntheticRoles(roleAssignmentInfo);
+    const allRoles = [...new Set([...userInfo.roles, ...syntheticRoles])];
+    userInfo.roles = allRoles;
     res.send({
       canShareCases,
       roleAssignmentInfo,
@@ -36,6 +39,29 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
   } catch (error) {
     next(error);
   }
+}
+export function getSyntheticRoles(roleAssignments: RoleAssignment[]): string [] {
+  let syntheticRoles = [];
+  const activeRoleAssignments = getActiveRoleAssignments(roleAssignments, new Date());
+  activeRoleAssignments.forEach((roleAssignment) => {
+    if (roleAssignment.substantive === 'Y'
+        &&
+        roleAssignment.jurisdiction
+        &&
+        roleAssignment.roleName
+        &&
+        roleAssignment.roleType
+        &&
+        roleAssignment.roleType.toUpperCase() === 'ORGANISATION') {
+      syntheticRoles = [...syntheticRoles, getSyntheticRole(roleAssignment.jurisdiction, roleAssignment.roleName)];
+    }
+  });
+  syntheticRoles = [...new Set(syntheticRoles)];
+  return syntheticRoles;
+}
+
+export function getSyntheticRole(jurisdiction: string, roleName: string): string {
+  return jurisdiction && roleName ? `${jurisdiction.toLocaleLowerCase()}-${roleName.toLocaleLowerCase()}` : '';
 }
 
 export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any): Promise<any[]> {

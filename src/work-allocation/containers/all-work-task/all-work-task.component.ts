@@ -46,6 +46,8 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private selectedTaskType: string = 'All';
   private selectedTaskName: string = '';
 
+  private initialFilterRan = false;
+
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.AllWork;
   }
@@ -144,7 +146,17 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.selectedPerson = selection.person ? selection.person.id : null;
     this.selectedTaskType = selection.taskType;
     this.selectedTaskName = selection.taskName ? selection.taskName.task_type_id : null;
-    this.onPaginationHandler(1);
+    this.loadBasedOnFilter();
+  }
+
+  private loadBasedOnFilter(): void {
+    if (this.initialFilterRan) {
+      // added to only reset task list on filter
+      this.onPaginationHandler(1);
+    } else {
+      this.initialFilterRan = true;
+      this.loadTasks();
+    }
   }
 
   private getLocationParameter(): any {

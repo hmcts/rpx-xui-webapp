@@ -2140,15 +2140,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccpay-web-component@npm:5.2.3":
-  version: 5.2.3
-  resolution: "@hmcts/ccpay-web-component@npm:5.2.3"
+"@hmcts/ccpay-web-component@npm:5.2.8":
+  version: 5.2.8
+  resolution: "@hmcts/ccpay-web-component@npm:5.2.8"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     "@angular/common": ^9.0.0-rc.0 || ^9.0.0
     "@angular/core": ^9.0.0-rc.0 || ^9.0.0
-  checksum: 0da60f09b4518978bce1deabe4aa07f6ded056ed77962a0663c8366a560a3afe59751de8c56fc5b491c995ba7c08ec5fe4fca2499a01dfe4e757780b5dda51d2
+  checksum: d25ca7b6872aac085189e364551a04ccd1fcbe115e7881dd092e90d098e43f50a537126fce31ca1a1f25c3cd560730d98beb16e98bb7000108c421f9dca9e449
   languageName: node
   linkType: hard
 
@@ -2230,15 +2230,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:1.8.7-include-current-user":
-  version: 1.8.7-include-current-user
-  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.7-include-current-user"
+"@hmcts/rpx-xui-common-lib@npm:1.8.9-exui-249-timout-service-fix-a":
+  version: 1.8.9-exui-249-timout-service-fix-a
+  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.9-exui-249-timout-service-fix-a"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
-  checksum: ace14d81897bd13b157572640a90e5bc2dc8a99423d2ab4651b3267ef9a6c9509104c220ec185afe4ec4e1ff6b5b99b2f4a56157feb680a7ace3175b3340a07e
+  checksum: c33668f1b0bdca2b9e68e07e0c551b41de861f6718b86dc7307832d632f3115e7c5420dd76685e6d89c9b2c30e0e8dfd52da98115bc576fe575f1359516efa17
   languageName: node
   linkType: hard
 
@@ -19118,12 +19118,12 @@ __metadata:
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
     "@hmcts/ccd-case-ui-toolkit": 6.10.7-case-flags-v2-welsh-language-support-additional-rework-2
-    "@hmcts/ccpay-web-component": 5.2.3
+    "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 1.8.7-include-current-user
+    "@hmcts/rpx-xui-common-lib": 1.8.9-exui-249-timout-service-fix-a
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3

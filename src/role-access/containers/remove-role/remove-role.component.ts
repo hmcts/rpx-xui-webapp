@@ -8,10 +8,10 @@ import { Utils } from '../../../cases/utils/utils';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { CaseworkerDataService } from '../../../work-allocation/services';
 import { handleFatalErrors } from '../../../work-allocation/utils';
-import { Answer, CaseRole, RemoveAllocationNavigationEvent } from '../../models';
-import { CaseRoleDetails } from '../../models/case-role-details.interface';
+import { Answer, CaseRole, RemoveAllocationNavigationEvent, CaseRoleDetails } from '../../models';
 import { RemoveRoleText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-remove-role',
@@ -37,7 +37,8 @@ export class RemoveRoleComponent implements OnInit {
               private readonly location: Location,
               private readonly allocateRoleService: AllocateRoleService,
               private readonly sessionStorageService: SessionStorageService,
-              private readonly caseworkerDataService: CaseworkerDataService) {
+              private readonly caseworkerDataService: CaseworkerDataService,
+              private readonly loggerService: LoggerService) {
 
   }
 
@@ -93,7 +94,7 @@ export class RemoveRoleComponent implements OnInit {
               message,
               messageText: RemoveRoleText.infoMessage
             }
-          });
+          }).catch((err) => this.loggerService.error(`Error navigating to ${this.backUrl} `, err));
         },
         (error) => {
           handleFatalErrors(error.status, this.router);

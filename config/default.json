@@ -1,4 +1,4 @@
-{
+  {
   "environment": "production",
   "cookies": {
     "token": "__auth__",
@@ -108,7 +108,9 @@
     { "service": "IA", "serviceCodes": ["BFA1"] },
     { "service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"] },
     { "service": "PRIVATELAW", "serviceCodes": ["ABA5"] },
-    { "service": "PUBLICLAW", "serviceCodes": ["ABA3"] }
+    { "service": "PUBLICLAW", "serviceCodes": ["ABA3"] },
+    { "service": "SSCS", "serviceCodes": ["BBA3"] },
+    { "service": "EMPLOYMENT", "serviceCodes": ["BHA1"] }
   ],
   "waSupportedServiceandCaseTypes": {
     "IA": {
@@ -127,8 +129,7 @@
        "caseTypes": "PUBLICLAW",
        "releaseVersion": "3.5"
       }
-      
-  }, 
+  },
   "wildcardSearchFields": {
     "Benefit": [
       "generatedSurname",

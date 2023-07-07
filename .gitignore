@@ -90,3 +90,5 @@ ignore/
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+/infrastructure/.terraform/

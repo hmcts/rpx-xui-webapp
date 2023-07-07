@@ -11,6 +11,7 @@ import { NocNavigationEvent, NocState } from '../../models';
 import * as fromNocStore from '../../store';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocHomeComponent } from './noc-home.component';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Pipe({ name: 'rpxTranslate' })
 class RpxTranslateMockPipe implements PipeTransform {
@@ -30,6 +31,8 @@ describe('NocHomeComponent', () => {
     'navigateByUrl'
   ]);
 
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -46,10 +49,8 @@ describe('NocHomeComponent', () => {
       ],
       providers: [
         provideMockStore(),
-        {
-          provide: Router,
-          useValue: routerMock
-        }
+        { provide: Router, useValue: routerMock },
+        { provide: LoggerService, useValue: loggerServiceMock }
       ]
     }).compileComponents();
 

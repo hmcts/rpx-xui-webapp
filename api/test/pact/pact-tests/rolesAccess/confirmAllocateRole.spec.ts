@@ -1,41 +1,44 @@
-import { somethingLike } from '@pact-foundation/pact/src/dsl/matchers';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactTestSetup } from '../settings/provider.mock';
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
+import { somethingLike } from '@pact-foundation/pact/src/dsl/matchers';
 
-const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_confirmAllocateRole', port: 8000 });
 
 const REQUEST_BODY = {
-  roleRequest: {
-    assignerId: somethingLike('123'),
-    replaceExisting: somethingLike(false)
-  },
-  requestedRoles: [{
-    roleType: somethingLike('CASE'),
-    grantType: somethingLike('EXCLUDED'),
-    classification: somethingLike('RESTRICTED'),
-    attributes: {
-      caseId: somethingLike('123456789'),
-      jurisdiction: somethingLike('IA'),
-      notes: {
-        contents: []
-      }
-    },
-    roleName: somethingLike('conflict-of-interest'),
-    actorIdType: somethingLike('IDAM'),
-    actorId: somethingLike('123')
-  }]
+  caseId: somethingLike('1234123412341234'),
+  jurisdiction: somethingLike('IA'),
+  assignmentId: somethingLike('a123456'),
+  state: somethingLike(1),
+  typeOfRole: somethingLike({
+    id: 'lead-judge',
+    name: 'Lead judge'
+  }),
+  allocateTo: somethingLike('Reserve to me'),
+  personToBeRemoved: somethingLike({
+    id: 'p111111',
+    name: 'test1',
+    domain: ''
+  }),
+  person: somethingLike({
+    id: 'p222222',
+    name: 'test2',
+    domain: ''
+  }),
+  durationOfRole: somethingLike('7 days'),
+  action: somethingLike('allocate'),
+  period: somethingLike({
+    startDate: new Date(),
+    endDate: new Date()
+  }),
+  roleCategory: somethingLike('LEGAL_OPERATIONS')
 };
 
-const RESPONSE_BODY = {
-  data: { exclusionDescription: somethingLike(['exclusion confirmed']) }
-};
-
-describe('access management service, confirm exclusion', () => {
-  describe('confirm /am/role-assignments', () => {
+describe.only('access management service, confirm allocate role', () => {
+  describe('confirm allocate role /allocate-role/confirm', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
     let next;
 
@@ -43,11 +46,11 @@ describe('access management service, confirm exclusion', () => {
       next = sandbox.spy();
     });
 
-    before(async () => {
+    before(async() => {
       await pactSetUp.provider.setup();
       const interaction = {
         state: 'An actor with provided id is available in role assignment service',
-        uponReceiving: 'confirm role assignment for exclusion',
+        uponReceiving: 'confirm role allocation',
         withRequest: {
           method: 'POST',
           path: '/am/role-assignments',
@@ -82,7 +85,7 @@ describe('access management service, confirm exclusion', () => {
         return configValues[prop];
       });
 
-      const { confirmUserExclusion } = requireReloaded('../../../../roleAccess/exclusionService');
+      const { confirmAllocateRole } = requireReloaded('../../../../roleAccess/index');
       const req = mockReq({
         headers: {
           'Authorization': 'Bearer someAuthorizationToken',
@@ -91,17 +94,25 @@ describe('access management service, confirm exclusion', () => {
         },
         session: { passport: { user: { userinfo: { id: '123' } } } },
         body: {
-          caseId: '123456789',
-          jurisdiction: 'IA',
-          state: 5,
-          exclusionOption: 'Exclude another person',
-          personRole: 'Judicial',
-          person: {
-            id: '123',
-            name: 'Test user',
-            domain: 'Judicial'
+          roleRequest: {
+            assignerId: '123',
+            replaceExisting: false
           },
-          exclusionDescription: ['testing exclusion']
+          requestedRoles: [{
+            roleType: 'CASE',
+            grantType: 'SPECIFIC',
+            classification: 'PUBLIC',
+            attributes: {
+              caseId: '1234123412341234',
+              jurisdiction: 'IA'
+            },
+            roleName: 'lead-judge',
+            roleCategory: 'LEGAL_OPERATIONS',
+            actorIdType: 'IDAM',
+            actorId: '123',
+            beginTime: new Date(),
+            endTime: new Date()
+          }]
         }
       });
       let returnedResponse = null;
@@ -111,10 +122,12 @@ describe('access management service, confirm exclusion', () => {
       };
 
       try {
-        await confirmUserExclusion(req, response, next);
+        await confirmAllocateRole(req, response, next);
+        assertResponses(returnedResponse);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
       } catch (err) {
+        console.log(err.stack);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
         throw new Error(err);
@@ -122,3 +135,7 @@ describe('access management service, confirm exclusion', () => {
     });
   });
 });
+
+function assertResponses(dto: any) {
+  console.log(JSON.stringify(dto));
+}

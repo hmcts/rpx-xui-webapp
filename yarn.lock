@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-remove-grey-bar-styling-v2":
-  version: 6.16.0-query-management-remove-grey-bar-styling-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-remove-grey-bar-styling-v2"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-show-caseworker-name":
+  version: 6.16.0-show-caseworker-name
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-show-caseworker-name"
   dependencies:
     tslib: ^2.0.0
-  checksum: 8014f0ad17ec7c014f2750b3a0a94d4fb1a182a522027a1502765e45c68b9e281e2ceeb54084af4c4d07e928d8cf80e57deda01ba3dc31c3ea727f4d911dbef6
+  checksum: c3fbba8945f63ca727e8acec05b40a038a1c2216ca5fcf17d481aaac1bfa4d0959bca9af89c71b8f6e5311cf92e6ee5a02fd9da4499e3854eab381a67228a82d
   languageName: node
   linkType: hard
 
@@ -19117,7 +19117,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-remove-grey-bar-styling-v2
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-show-caseworker-name
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

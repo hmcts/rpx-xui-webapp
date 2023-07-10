@@ -46,7 +46,8 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private selectedTaskType: string = 'All';
   private selectedTaskName: string = '';
 
-  private initialFilterRan = false;
+  // has the initial filter been ran previously
+  private hasInitialFilterRan = false;
 
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.AllWork;
@@ -150,11 +151,11 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   }
 
   private loadBasedOnFilter(): void {
-    if (this.initialFilterRan) {
+    if (this.hasInitialFilterRan) {
       // added to only reset task list on filter
       this.onPaginationHandler(1);
     } else {
-      this.initialFilterRan = true;
+      this.hasInitialFilterRan = true;
       this.loadTasks();
     }
   }

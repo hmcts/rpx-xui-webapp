@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { ValidatorsUtils } from 'src/hearings/utils/validators.utils';
+import { LoggerService } from '../../../../app/services/logger/logger.service';
 import * as fromHearingStore from '../../../../hearings/store';
 import { CaseCategoryDisplayModel } from '../../../models/caseCategory.model';
 import { CaseFlagGroup } from '../../../models/caseFlagGroup.model';
@@ -17,8 +19,6 @@ import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { CaseTypesUtils } from '../../../utils/case-types.utils';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
-import { HearingWindowModel } from 'api/hearings/models/hearingWindow.model';
-import { ValidatorsUtils } from 'src/hearings/utils/validators.utils';
 
 @Component({
   selector: 'exui-hearing-requirements',
@@ -55,6 +55,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
               public readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
               public readonly locationsDataService: LocationsDataService,
+              private readonly loggerService: LoggerService,
               private readonly validatorsUtils: ValidatorsUtils) {
     super(hearingStore, hearingsService, route);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
@@ -170,7 +171,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
             regionId: this.strRegions
           };
           this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-        });
+        }).catch((err) => this.loggerService.error(err));
     }
   }
 

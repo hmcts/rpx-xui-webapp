@@ -44,6 +44,8 @@ module "redis6-cache" {
   business_area = "cft"
   private_endpoint_enabled = true
   public_network_access_enabled = false
+  family        = "${var.redis_family}"
+  capacity      = "${var.redis_capacity}"
 }
 
 resource "azurerm_application_insights" "appinsights" {

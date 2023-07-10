@@ -34,11 +34,9 @@ export async function findExclusionsForCaseId(req: EnhancedRequest, res: Respons
 export async function confirmUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
   const body = req.body;
   const currentUser: UserInfo = req.session.passport.user.userinfo;
-  console.log('currentUser', currentUser);
   const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
   let roleCategory: string;
   let assigneeId: string;
-  console.log('not trying yet', body);
   try {
     if (body.exclusionOption === 'Exclude another person') {
       roleCategory = getCorrectRoleCategory(body.person.domain);
@@ -47,12 +45,9 @@ export async function confirmUserExclusion(req: EnhancedRequest, res: Response, 
       roleCategory = currentUser.roleCategory;
       assigneeId = currentUserId;
     }
-    console.log('ssd game', roleCategory);
     const roleAssignmentsBody = prepareExclusionBody(currentUserId, assigneeId, body, roleCategory);
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
-    console.log(basePath, 'crash bandicoot')
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
-    console.log(response, 'hello there');
     const { status, data } = response;
     return res.status(status).send(data);
   } catch (error) {
@@ -61,7 +56,6 @@ export async function confirmUserExclusion(req: EnhancedRequest, res: Response, 
 }
 
 export function prepareExclusionBody(currentUserId: string, assigneeId: string, body: any, roleCategory: string): any {
-  console.log(body, 'hey')
   return {
     roleRequest: {
       assignerId: currentUserId,

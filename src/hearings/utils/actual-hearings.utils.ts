@@ -19,23 +19,36 @@ export class ActualHearingsUtils {
     let hearingDays: ActualHearingDayModel[];
     const hasAnyActuals = hearingActualsMainModel.hearingActuals?.actualHearingDays?.length > 0;
 
-    hearingDays = hearingActualsMainModel.hearingPlanned.plannedHearingDays.map((plannedDay) => {
-      let existingActualData = {} as ActualHearingDayModel;
-      if (hasAnyActuals) {
-        existingActualData = hearingActualsMainModel.hearingActuals.actualHearingDays.find(
-          (item) => item.hearingDate === this.getDate(plannedDay.plannedStartTime)
-        );
-      }
-
-      return {
-        hearingDate: existingActualData?.hearingDate || this.getDate(plannedDay.plannedStartTime),
-        hearingStartTime: existingActualData?.hearingStartTime,
-        hearingEndTime: existingActualData?.hearingEndTime,
-        pauseDateTimes: existingActualData?.pauseDateTimes || [],
-        notRequired: existingActualData?.notRequired || false,
-        actualDayParties: ActualHearingsUtils.getActualDayParties(existingActualData, plannedDay, isCheckYourAnswersPage)
-      };
-    });
+    hearingDays = hearingActualsMainModel.hearingPlanned.plannedHearingDays.map(
+      (plannedDay) => {
+        let existingActualData = {} as ActualHearingDayModel;
+        if (hasAnyActuals) {
+          existingActualData = hearingActualsMainModel.hearingActuals.actualHearingDays.find(
+            (item) => item.hearingDate === this.getDate(plannedDay.plannedStartTime)
+          );
+        }
+        // Check your answers page must display only actuals data
+        if (isCheckYourAnswersPage) {
+          return {
+            hearingDate: existingActualData?.hearingDate || this.getDate(plannedDay.plannedStartTime),
+            hearingStartTime: existingActualData?.hearingStartTime,
+            hearingEndTime: existingActualData?.hearingEndTime,
+            pauseDateTimes: existingActualData?.pauseDateTimes || [],
+            notRequired: existingActualData?.notRequired || false,
+            actualDayParties: ActualHearingsUtils.getActualDayParties(existingActualData, plannedDay, isCheckYourAnswersPage)
+          };
+        }
+        // If not check your answers page, then if actual data exists then display
+        // actual data else display planned data
+        return {
+          hearingDate: existingActualData?.hearingDate || this.getDate(plannedDay.plannedStartTime),
+          hearingStartTime: existingActualData?.hearingStartTime ? existingActualData.hearingStartTime : plannedDay.plannedStartTime,
+          hearingEndTime: existingActualData?.hearingEndTime ? existingActualData.hearingEndTime : plannedDay.plannedEndTime,
+          pauseDateTimes: existingActualData?.pauseDateTimes || [],
+          notRequired: existingActualData?.notRequired || false,
+          actualDayParties: ActualHearingsUtils.getActualDayParties(existingActualData, plannedDay, isCheckYourAnswersPage)
+        };
+      });
 
     if (hearingDays && hearingDays.length > 0) {
       hearingDays = hearingDays.sort((a, b) => {

@@ -2497,9 +2497,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.27.0":
-  version: 2.27.0
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.27.0"
+"@hmcts/rpx-xui-node-lib@npm:2.25.12":
+  version: 2.25.12
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.25.12"
   dependencies:
     "@hapi/joi": ^17.1.1
     axios: ^0.21.1
@@ -2510,8 +2510,8 @@ __metadata:
     deepmerge: ^4.2.2
     express: ^4.17.1
     express-session: ^1.17.0
-    jest-mock-axios: ^4.6.2
-    jest-ts-auto-mock: ^2.0.0
+    jest-mock-axios: ^4.2.0
+    jest-ts-auto-mock: ^1.0.11
     jwt-decode: ^2.2.0
     openid-client: ^3.10.0
     otplib: ^12.0.1
@@ -2519,9 +2519,9 @@ __metadata:
     passport-oauth2: ^1.5.0
     redis: ^3.0.2
     session-file-store: ^1.3.1
-    ts-auto-mock: ^3.5.0
-    ttypescript: ^1.5.13
-  checksum: c5bf12e874fd84542922efdcca90ec1150e39366222512e85385389be5a4141604b27580959d556d6d9cdff3c6ad5c4d28538125e00e8fef3d3d27d304b1a606
+    ts-auto-mock: ^2.2.5
+    ttypescript: ^1.5.10
+  checksum: 5683587e49b3a5a465364779585caaa2e122856239e1b3f658f30e9684b30f949cecd0d1b4179722786ae8be592ba7aa3d5803f11adfcb50c17bcdea5011fdc6
   languageName: node
   linkType: hard
 
@@ -13205,7 +13205,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-mock-axios@npm:^4.6.2":
+"jest-mock-axios@npm:^4.2.0":
   version: 4.7.2
   resolution: "jest-mock-axios@npm:4.7.2"
   dependencies:
@@ -13363,12 +13363,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-ts-auto-mock@npm:^2.0.0":
-  version: 2.1.0
-  resolution: "jest-ts-auto-mock@npm:2.1.0"
+"jest-ts-auto-mock@npm:^1.0.11":
+  version: 1.0.12
+  resolution: "jest-ts-auto-mock@npm:1.0.12"
   peerDependencies:
-    ts-auto-mock: ^3.5.0
-  checksum: 2736f52e452f1733de3e8e9042b3189b9bd120d4ce885320b34323ca98bdc1c552a60ff0659c33a454638750d33256f48d28ddbf7cfaeaa9bd4c5197da9e5e58
+    ts-auto-mock: ^1.5.0
+  checksum: d7d30ce101686ef40b6d3fa9ee83bb1c8895640279debc02e1cbf09e23d0263eec760993bfea1dc27377844d4957e1e25a30900d6b8d36b3d1e1aab2de51fb3b
   languageName: node
   linkType: hard
 
@@ -14338,7 +14338,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash-es@npm:4.17.21":
+"lodash-es@npm:^4.17.15":
   version: 4.17.21
   resolution: "lodash-es@npm:4.17.21"
   checksum: 05cbffad6e2adbb331a4e16fbd826e7faee403a1a04873b82b42c0f22090f280839f85b95393f487c1303c8a3d2a010048bf06151a6cbe03eee4d388fb0a12d2
@@ -15024,16 +15024,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromatch@npm:4.0.5, micromatch@npm:^4.0.0, micromatch@npm:^4.0.2, micromatch@npm:^4.0.4":
-  version: 4.0.5
-  resolution: "micromatch@npm:4.0.5"
-  dependencies:
-    braces: ^3.0.2
-    picomatch: ^2.3.1
-  checksum: 02a17b671c06e8fefeeb6ef996119c1e597c942e632a21ef589154f23898c9c6a9858526246abb14f8bca6e77734aa9dcf65476fca47cedfb80d9577d52843fc
-  languageName: node
-  linkType: hard
-
 "micromatch@npm:^3.1.10, micromatch@npm:^3.1.4":
   version: 3.1.10
   resolution: "micromatch@npm:3.1.10"
@@ -15052,6 +15042,16 @@ __metadata:
     snapdragon: ^0.8.1
     to-regex: ^3.0.2
   checksum: ad226cba4daa95b4eaf47b2ca331c8d2e038d7b41ae7ed0697cde27f3f1d6142881ab03d4da51b65d9d315eceb5e4cdddb3fbb55f5f72cfa19cf3ea469d054dc
+  languageName: node
+  linkType: hard
+
+"micromatch@npm:^4.0.0, micromatch@npm:^4.0.2, micromatch@npm:^4.0.4":
+  version: 4.0.5
+  resolution: "micromatch@npm:4.0.5"
+  dependencies:
+    braces: ^3.0.2
+    picomatch: ^2.3.1
+  checksum: 02a17b671c06e8fefeeb6ef996119c1e597c942e632a21ef589154f23898c9c6a9858526246abb14f8bca6e77734aa9dcf65476fca47cedfb80d9577d52843fc
   languageName: node
   linkType: hard
 
@@ -19262,7 +19262,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
     "@hmcts/rpx-xui-common-lib": 1.8.7-include-current-user
-    "@hmcts/rpx-xui-node-lib": 2.27.0
+    "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3
     "@ngrx/effects": ^7.4.0
@@ -21727,16 +21727,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-auto-mock@npm:^3.5.0":
-  version: 3.7.0
-  resolution: "ts-auto-mock@npm:3.7.0"
+"ts-auto-mock@npm:^2.2.5":
+  version: 2.7.0
+  resolution: "ts-auto-mock@npm:2.7.0"
   dependencies:
-    lodash-es: 4.17.21
-    micromatch: 4.0.5
-    winston: 3.7.2
+    lodash-es: ^4.17.15
+    micromatch: ^4.0.2
+    winston: ^3.3.3
   peerDependencies:
-    typescript: ^5.0.4
-  checksum: c6c894fabb48956d81de39cecbec272913fdd938503371db72a06a6172eeca9d54d2a1feeff87ccf37151807a59902303d59411652fa4bad7f4faef344fcf590
+    typescript: ^3.9.5
+  checksum: 83b8f805a4a285a16d424d6d1b89f608dfe6aa73d318f8437b760760a3341f3e3c91a615e5547052478eb0576cf09e9f98662cdedfb88ed278057ced1e0e9134
   languageName: node
   linkType: hard
 
@@ -21863,7 +21863,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ttypescript@npm:^1.5.13":
+"ttypescript@npm:^1.5.10":
   version: 1.5.15
   resolution: "ttypescript@npm:1.5.15"
   dependencies:
@@ -23083,24 +23083,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"winston@npm:3.7.2":
-  version: 3.7.2
-  resolution: "winston@npm:3.7.2"
-  dependencies:
-    "@dabh/diagnostics": ^2.0.2
-    async: ^3.2.3
-    is-stream: ^2.0.0
-    logform: ^2.4.0
-    one-time: ^1.0.0
-    readable-stream: ^3.4.0
-    safe-stable-stringify: ^2.3.1
-    stack-trace: 0.0.x
-    triple-beam: ^1.3.0
-    winston-transport: ^4.5.0
-  checksum: f1f1a860d2fa228b50880b20aaa6cc121085907791fe0d814ff9c062640f6b65da321726322094e7667eb63088b3bb67e7b4e219d998f29efcc6f583185a1cd3
-  languageName: node
-  linkType: hard
-
 "winston@npm:^2.4.1":
   version: 2.4.7
   resolution: "winston@npm:2.4.7"
@@ -23126,6 +23108,25 @@ __metadata:
     isstream: 0.1.x
     stack-trace: 0.0.x
   checksum: 507ebfde315a8a0bc78ed73f41cc4c499291c23c25c58deab200baf192614af9481d637b463f9853c86a586811c1c5ffe980c33f8a37279f07f8d2409e9eb77b
+  languageName: node
+  linkType: hard
+
+"winston@npm:^3.3.3":
+  version: 3.9.0
+  resolution: "winston@npm:3.9.0"
+  dependencies:
+    "@colors/colors": 1.5.0
+    "@dabh/diagnostics": ^2.0.2
+    async: ^3.2.3
+    is-stream: ^2.0.0
+    logform: ^2.4.0
+    one-time: ^1.0.0
+    readable-stream: ^3.4.0
+    safe-stable-stringify: ^2.3.1
+    stack-trace: 0.0.x
+    triple-beam: ^1.3.0
+    winston-transport: ^4.5.0
+  checksum: 410f82b7a502106e7d93e62cd21d7e9bcfd37884d0d95921b12526d2fe163e654ec9cd39e18f9884fad5cf6506a45d07bd2519c1dc9c88e82f0f12b2ce9fa510
   languageName: node
   linkType: hard
 

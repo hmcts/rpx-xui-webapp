@@ -20,6 +20,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingRequirementsComponent } from './hearing-requirements.component';
+import { LoggerService } from '../../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -2195,6 +2196,7 @@ describe('HearingRequirementsComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   const locationsDataService = new LocationsDataService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -2203,6 +2205,7 @@ describe('HearingRequirementsComponent', () => {
         provideMockStore({ initialState: initialStateImmutable }),
         { provide: HearingsService, useValue: hearingsService },
         { provide: LocationsDataService, useValue: locationsDataService },
+        { provide: LoggerService, useValue: loggerServiceMock },
         {
           provide: ActivatedRoute,
           useValue: {

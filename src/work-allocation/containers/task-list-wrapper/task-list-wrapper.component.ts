@@ -55,8 +55,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public isUpdatedTaskPermissions$: Observable<boolean>;
   public updatedTaskPermission: boolean;
   public userRoleCategory: string;
-  private goneBackOne = false;
   private initialFilterApplied = false;
+  private goneBackCount = 0;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -191,7 +191,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         const newWorkTypes = typesOfWork ? typesOfWork.value : [];
         if (this.initialFilterApplied) {
           // do not reset the pagination when the initial filter value has not been consumed
-          this.resetPagination(newLocations);
+          this.resetPagination(newLocations, newWorkTypes, services);
         }
         this.initialFilterApplied = true;
         this.selectedLocations = (newLocations).map((l) => l.epimms_id);
@@ -446,17 +446,25 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.tasks = result.tasks;
     this.tasksTotal = result.total_records;
     this.ref.detectChanges();
-    if (result.tasks && result.tasks.length === 0 && this.pagination.page_number > 1 && !this.goneBackOne) {
+    if (result.tasks && result.tasks.length === 0 && this.pagination.page_number > 1) {
       // if possibly back at a page that has been removed by actions to task, go back one to attempt to get tasks
-      this.goneBackOne = true;
-      this.onPaginationHandler(this.pagination.page_number - 1);
+      this.goneBackCount++;
+      if (this.goneBackCount < 10) {
+        this.onPaginationHandler(this.pagination.page_number - 1);
+      } else {
+        // if gone back 10 pages, we can avoid a potentially extraordinarily long loop by resetting
+        this.goneBackCount = 0;
+        this.onPaginationHandler(1);
+      }
+    } else {
+      this.goneBackCount = 0;
     }
   }
 
   // reset pagination when filter is applied
-  private resetPagination(newLocations: string[]): void {
-    if (!this.locationListsEqual(newLocations)) {
-      // check to ensure locations are not the same
+  private resetPagination(locations: string[], workTypes: string[], services: string[]): void {
+    if (!this.locationListsEqual(locations) || !this.listsEquivalent(this.selectedWorkTypes, workTypes) || !this.listsEquivalent(this.selectedServices, services)) {
+      // Sreekanth - to test looping back functionality please comment these two lines out
       this.pagination.page_number = 1;
       this.sessionStorageService.setItem(this.pageSessionKey, '1');
     }
@@ -474,8 +482,12 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     if (newLocations.length !== this.selectedLocations.length) {
       return false;
     }
-    for (let i = 0; i < newLocations.length; i++) {
-      if (!this.selectedLocations.includes(newLocations[i])) {
+    return this.listsEquivalent(this.selectedLocations, newLocations);
+  }
+
+  private listsEquivalent(originalList: string[], newList: string[]): boolean {
+    for (let i = 0; i < newList.length; i++) {
+      if (!originalList.includes(newList[i])) {
         return false;
       }
     }

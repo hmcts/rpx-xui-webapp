@@ -147,6 +147,11 @@
               <span
                 class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['base_locations.noPrimaryLocation'] }}
         </p>
+        <p *ngIf="submitted && form.get('base_locations')?.invalid && wrongLocationError" id="location-incorrect-error"
+           class="govuk-error-message">
+              <span
+                class="govuk-visually-hidden">Error: </span>{{ wrongLocationError }}
+        </p>
       </legend>
 
       <div id="base_locations_primary" class="govuk-form-group govuk-form-group--limited-width">
@@ -234,7 +239,6 @@
               <input type="checkbox" class="govuk-checkboxes__input" [formControlName]="'staff_admin'"
                      [id]="'checkbox_userRoles_staff_admin'"
                      [name]="'checkbox_userRoles_staff_admin'"
-                     [attr.disabled]="updateMode && form.get('staff_admin').value && !form.get('staff_admin').dirty ? '' : null"
               />
               <label [for]="'checkbox_userRoles_staff_admin'" class="govuk-label govuk-checkboxes__label">
                 Staff administrator
@@ -244,9 +248,7 @@
         </div>
       </div>
 
-      <div *ngIf="updateMode && form.get('staff_admin').value && !form.get('staff_admin').dirty">
-        Note: the Staff administrator role can only be removed using the IDAM Dashboard.
-      </div>
+      
     </div>
 
     <hr/>

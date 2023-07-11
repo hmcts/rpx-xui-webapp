@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { BehaviorSubject, Observable, combineLatest, of } from 'rxjs';
 import { map, skipWhile, switchMap, tap } from 'rxjs/operators';
 import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromAppStore from '../../../app/store';
@@ -60,7 +60,6 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   ) {}
 
   public ngOnInit(): void {
-    this.appStore.dispatch(new fromAppStore.LoadUserDetails());
     this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
     this.isUserCaseManager$ = this.userDetails$.pipe(
       skipWhile((details) => !('userInfo' in details)),

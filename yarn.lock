@@ -2131,12 +2131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-QM-respond-CYA-UI-changes":
-  version: 6.16.0-QM-respond-CYA-UI-changes
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-QM-respond-CYA-UI-changes"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-QM-respond-CYA-UI-changes-v2":
+  version: 6.16.0-QM-respond-CYA-UI-changes-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-QM-respond-CYA-UI-changes-v2"
   dependencies:
     tslib: ^2.0.0
-  checksum: 97469e8b52b8704bc7871d8a49237c0a2975f431411363fe98c29b03786aef8715cef8825eef5655d4aa6418d5ff688e1892cd4e6cbb8c830cb9c862a60b4079
+  checksum: d16794ab9ce4e9dc00d81ef91967beeb8ca7023358b12df8856a565801bed89ea1a2427ce3a6edd928a41d44f494f69e6b87ee233973bdffd0ae63bcb6f0c44d
   languageName: node
   linkType: hard
 
@@ -19117,7 +19117,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-QM-respond-CYA-UI-changes
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-QM-respond-CYA-UI-changes-v2
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

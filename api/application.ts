@@ -20,6 +20,7 @@ import openRoutes from './openRoutes';
 import { initProxy } from './proxy.config';
 import routes from './routes';
 import workAllocationRouter from './workAllocation/routes';
+import { idamCheck } from './idamCheck';
 
 export const app = express();
 
@@ -112,11 +113,10 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 app.use('/am', amRoutes);
 app.use('/api', routes);
 app.use('/external', openRoutes);
-// TODO: No dash?
-// TODO: taskRouter should be called workAllocationRouter
-//TODO101
 app.use('/workallocation', workAllocationRouter);
 app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ['GET'] }));
 
 const logger: JUILogger = log4jui.getLogger('Application');
 logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
+
+new Promise(idamCheck).then(() => 'IDAM is up and running');

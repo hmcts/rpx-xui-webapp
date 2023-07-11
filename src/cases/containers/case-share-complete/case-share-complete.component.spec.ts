@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import * as fromCasesFeature from '../../store';
@@ -40,6 +41,9 @@ describe('CaseShareCompleteComponent', () => {
       declarations: [CaseShareCompleteComponent, RpxTranslateMockPipe],
       imports: [RouterTestingModule],
       providers: [
+        LoadingService,
+        { provide: Store, useValue: mockStore },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: Store, useValue: mockStore },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]

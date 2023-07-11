@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
-
+import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskActionIds, TaskContext } from '../../enums';
+import { CONFIG_CONSTANTS_NOT_RELEASE4 } from '../../components/constants/config.constants';
+import { TaskActionIds, TaskContext } from '../../enums';
 import { FieldConfig } from '../../models/common';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
 import { handleTasksFatalErrors, REDIRECTS } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
+import { InfoMessageType } from '../../../role-access/models/enums';
 
 @Component({
   selector: 'exui-available-tasks',
@@ -16,7 +18,13 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
 })
 export class AvailableTasksComponent extends TaskListWrapperComponent {
   public get fields(): FieldConfig[] {
-    return this.isCurrentUserJudicial() ? ConfigConstants.AvailableTasksForJudicial : ConfigConstants.AvailableTasksForLegalOps;
+    let fields = [];
+    this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
+      fields = this.isCurrentUserJudicial() ?
+        (isRelease4 ? ConfigConstants.AvailableTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.AvailableTasksForJudicial) :
+        (isRelease4 ? ConfigConstants.AvailableTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AvailableTasksForLegalOps);
+    });
+    return fields;
   }
 
   public get sortSessionKey(): string {
@@ -44,11 +52,12 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
-      const searchParameters: SearchTaskParameter [] = [
+      const searchParameters: SearchTaskParameter[] = [
         { key: 'jurisdiction', operator: 'IN', values: this.selectedServices }
       ];
       const locationParameter = this.getLocationParameter();
       const typesOfWorkParameter = this.getTypesOfWorkParameter();
+
       if (locationParameter) {
         searchParameters.push(locationParameter);
       }

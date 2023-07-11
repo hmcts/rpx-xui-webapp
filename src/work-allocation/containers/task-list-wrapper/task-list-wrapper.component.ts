@@ -1,20 +1,22 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, FilterService, FilterSetting, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
-import { AppUtils } from '../../../app/app-utils';
+
 import { AppConstants } from '../../../app/app.constants';
-import { UserInfo, UserRole } from '../../../app/models';
+import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { TaskListFilterComponent } from '../../components';
 import { ListConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, SortOrder, TaskActionIds, TaskService } from '../../enums';
+import { SortOrder, TaskActionIds, TaskService } from '../../enums';
 import { Caseworker, Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
@@ -26,7 +28,8 @@ import {
   WASupportedJurisdictionsService,
   WorkAllocationTaskService
 } from '../../services';
-import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
+import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -51,6 +54,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public routeEventsSubscription: Subscription;
   public isUpdatedTaskPermissions$: Observable<boolean>;
   public updatedTaskPermission: boolean;
+  public userRoleCategory: string;
+  private initialFilterApplied = false;
+  private goneBackCount = 0;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -69,9 +75,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService,
     protected rolesService: AllocateRoleService,
-    protected store: Store<fromActions.State>
+    protected store: Store<fromActions.State>,
+    protected checkReleaseVersionService: CheckReleaseVersionService
   ) {
-    this.isUpdatedTaskPermissions$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
+    this.isUpdatedTaskPermissions$ = this.featureToggleService?.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
   }
 
   public get tasks(): Task[] {
@@ -159,7 +166,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.isUpdatedTaskPermissions$.pipe(filter((v) => !!v)).subscribe((value) => {
       this.updatedTaskPermission = value;
     });
-
+    this.userRoleCategory = this.getCurrentUserRoleCategory();
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
     this.setupTaskList();
@@ -182,15 +189,15 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         const typesOfWork = f.fields.find((field) => field.name === 'types-of-work');
         const services = f.fields.find((field) => field.name === 'services').value;
         const newWorkTypes = typesOfWork ? typesOfWork.value : [];
-        this.resetPagination(this.selectedLocations, newLocations);
-        if (newLocations) {
-          this.selectedLocations = (newLocations).map((l) => l.epimms_id);
+        if (this.initialFilterApplied) {
+          // do not reset the pagination when the initial filter value has not been consumed
+          this.resetPagination(newLocations, newWorkTypes, services);
         }
+        this.initialFilterApplied = true;
+        this.selectedLocations = (newLocations).map((l) => l.epimms_id);
         this.selectedWorkTypes = newWorkTypes.filter((workType) => workType !== 'types_of_work_all');
         this.selectedServices = services.filter((service) => service !== 'services_all');
-        if (this.selectedLocations.length) {
-          this.doLoad();
-        }
+        this.doLoad();
       });
   }
 
@@ -271,7 +278,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public getSortParameter(): SortParameter[] {
-    if (this.sortedBy.fieldName !== 'priority') {
+    if (this.sortedBy && this.sortedBy.fieldName !== 'priority') {
       return [{
         sort_by: this.sortedBy.fieldName,
         sort_order: this.sortedBy.order
@@ -314,7 +321,13 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
     try {
-      if (taskAction.action.id === TaskActionIds.GO) {
+      if (taskAction.action.id === TaskActionIds.CLAIM) {
+        this.claimTask(taskAction.task.id);
+        return;
+      } else if (taskAction.action.id === TaskActionIds.CLAIM_AND_GO) {
+        this.claimTaskAndGo(taskAction.task);
+        return;
+      } else if (taskAction.action.id === TaskActionIds.GO) {
         const goToTaskUrl = `/cases/case-details/${taskAction.task.case_id}/tasks`;
         this.router.navigate([goToTaskUrl]);
         return;
@@ -333,6 +346,54 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     }
   }
 
+  /**
+   * A User 'Claims' themselves a task aka. 'Assign to me'.
+   */
+  public claimTask(taskId: string): void {
+    this.taskService.claimTask(taskId).subscribe(() => {
+      this.infoMessageCommService.nextMessage({
+        type: InfoMessageType.SUCCESS,
+        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
+      });
+      this.refreshTasks();
+    }, (error) => {
+      this.claimTaskErrors(error.status);
+    });
+  }
+
+  /**
+   * A User 'Claims' themselves a task and goes to the case details page for that case aka. 'Assign to me'.
+   */
+  public claimTaskAndGo(task: Task): void {
+    this.taskService.claimTask(task.id).subscribe(() => {
+      const goToCaseUrl = `/cases/case-details/${task.case_id}/tasks`;
+      // navigates to case details page for specific case id
+      this.router.navigate([goToCaseUrl], {
+        state: {
+          showMessage: true,
+          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
+        }
+      });
+    }, (error) => {
+      this.claimTaskErrors(error.status);
+    });
+  }
+
+  /**
+   * Navigate the User to the correct error page, or throw an on page warning
+   * that the Task is no longer available.
+   */
+  public claimTaskErrors(status: number): void {
+    const REDIRECT_404 = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }];
+    const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
+    if (handledStatus > 0) {
+      this.infoMessageCommService.nextMessage({
+        type: InfoMessageType.WARNING,
+        message: InfoMessage.TASK_NO_LONGER_AVAILABLE
+      });
+    }
+  }
+
   public onPaginationHandler(pageNumber: number): void {
     this.pagination.page_number = pageNumber;
     this.sessionStorageService.setItem(this.pageSessionKey, pageNumber.toString());
@@ -340,12 +401,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public isCurrentUserJudicial(): boolean {
-    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
-    if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
-    }
-    return false;
+    return this.userRoleCategory === RoleCategory.JUDICIAL;
   }
 
   // Do the actual load. This is separate as it's called from two methods.
@@ -378,21 +434,63 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       })));
     })));
     mappedSearchResult$.subscribe((result) => {
-      this.loadingService.unregister(loadingToken);
-      this.tasks = result.tasks;
-      this.tasksTotal = result.total_records;
-      this.ref.detectChanges();
+      this.setTaskListDetails(result, loadingToken);
     }, (error) => {
       this.loadingService.unregister(loadingToken);
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
   }
 
+  private setTaskListDetails(result: TaskResponse, loadingToken: string): void {
+    this.loadingService.unregister(loadingToken);
+    this.tasks = result.tasks;
+    this.tasksTotal = result.total_records;
+    this.ref.detectChanges();
+    if (result.tasks && result.tasks.length === 0 && this.pagination.page_number > 1) {
+      // if possibly back at a page that has been removed by actions to task, go back one to attempt to get tasks
+      this.goneBackCount++;
+      if (this.goneBackCount < 10) {
+        this.onPaginationHandler(this.pagination.page_number - 1);
+      } else {
+        // if gone back 10 pages, we can avoid a potentially extraordinarily long loop by resetting
+        this.goneBackCount = 0;
+        this.onPaginationHandler(1);
+      }
+    } else {
+      this.goneBackCount = 0;
+    }
+  }
+
   // reset pagination when filter is applied
-  private resetPagination(selectedLocations: string[], newLocations: string[]): void {
-    if (this.selectedLocations !== newLocations && selectedLocations.length !== 0) {
+  private resetPagination(locations: string[], workTypes: string[], services: string[]): void {
+    if (!this.locationListsEqual(locations) || !this.listsEquivalent(this.selectedWorkTypes, workTypes) || !this.listsEquivalent(this.selectedServices, services)) {
+      // Sreekanth - to test looping back functionality please comment these two lines out
       this.pagination.page_number = 1;
       this.sessionStorageService.setItem(this.pageSessionKey, '1');
     }
+  }
+
+  public getCurrentUserRoleCategory(): string {
+    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      return userInfo.roleCategory;
+    }
+  }
+
+  private locationListsEqual(newLocations: string[]): boolean {
+    if (newLocations.length !== this.selectedLocations.length) {
+      return false;
+    }
+    return this.listsEquivalent(this.selectedLocations, newLocations);
+  }
+
+  private listsEquivalent(originalList: string[], newList: string[]): boolean {
+    for (let i = 0; i < newList.length; i++) {
+      if (!originalList.includes(newList[i])) {
+        return false;
+      }
+    }
+    return true;
   }
 }

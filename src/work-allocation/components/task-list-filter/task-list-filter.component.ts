@@ -4,6 +4,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import {
   BookingCheckType,
+  FeatureToggleService,
   FilterConfig,
   FilterError,
   FilterFieldConfig,
@@ -11,8 +12,8 @@ import {
   FilterService,
   FilterSetting
 } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
-import { combineLatest, Subscription } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { Subscription, combineLatest } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import * as _ from 'underscore';
 import { ErrorMessage } from '../../../app/models';
@@ -86,7 +87,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     private readonly service: WASupportedJurisdictionsService,
     private readonly taskTypesService: TaskTypesService,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly appStore: Store<fromAppStore.State>) {
+    private readonly appStore: Store<fromAppStore.State>,
+    private readonly featureToggleService: FeatureToggleService) {
     if (this.router.getCurrentNavigation() &&
       this.router.getCurrentNavigation().extras.state &&
       this.router.getCurrentNavigation().extras.state.location) {
@@ -154,9 +156,10 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       this.taskTypesService.getTypesOfWork(),
       this.service.getWASupportedJurisdictions(),
       this.taskService.getUsersAssignedTasks(),
-      this.locationService.getSpecificLocations(this.defaultLocations, this.baseLocationServices)
-    ]).subscribe(([typesOfWork, services, assignedTasks, locations]: [any[], string[], Task[], LocationByEPIMMSModel[]]) => {
-      this.setUpServicesFilter(services);
+      this.locationService.getSpecificLocations(this.defaultLocations, this.baseLocationServices),
+      this.featureToggleService.getValue('ServiceNames', servicesMap)
+    ]).subscribe(([typesOfWork, services, assignedTasks, locations, serviceNamesMap]: [any[], string[], Task[], LocationByEPIMMSModel[], any]) => {
+      this.setUpServicesFilter(services, serviceNamesMap);
       this.setUpLocationFilter(locations);
       this.setUpTypesOfWorkFilter(typesOfWork);
       this.persistFirstSetting();
@@ -295,13 +298,14 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     const field: FilterFieldConfig = {
       name: 'locations',
       options: [],
-      locationTitle: 'Search for a location by name',
-      minSelected: 1,
+      title: 'Search for a location by name',
+      titleHint: '(optional)',
+      locationTitle: 'Leave blank to return all locations available to you.',
+      minSelected: null,
       maxSelected: null,
       lineBreakBefore: true,
       findLocationField: 'services',
       displayMinSelectedError: true,
-      minSelectedError: 'Search for a location by name',
       type: 'find-location',
       enableAddButton: true,
       bookingCheckType: BookingCheckType.BOOKINGS_AND_BASE
@@ -311,6 +315,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     if ((locations.length === 0) && this.route.snapshot.data && this.route.snapshot.data.locations) {
       baseLocation = this.route.snapshot.data.locations;
     }
+
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
       name: 'locations',
       value: baseLocation ? baseLocation : locations
@@ -350,7 +355,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     this.fieldsConfig.fields.push(field);
   }
 
-  private setUpServicesFilter(services: any[]): void {
+  private setUpServicesFilter(services: any[], serviceNamesMap: { [key: string]: string }): void {
     // Available services need to be added to work-allocation-utils.ts -> servicesMap
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       (userDetails) => {
@@ -380,7 +385,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
               .map((service) => {
                 return {
                   key: service,
-                  label: servicesMap[service] || service
+                  label: serviceNamesMap[service] || service
                 };
               })
           ],
@@ -430,8 +435,10 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     this.toggleFilter = !this.toggleFilter;
     if (this.toggleFilter) {
       setTimeout(() => {
-        const typesOfWorkParentElem = document.getElementById('types-of-work').closest('.contain-classes');
-        (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
+        const typesOfWorkParentElem = document.getElementById('types-of-work')?.closest('.contain-classes');
+        if (typesOfWorkParentElem) {
+          (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
+        }
       }, 0);
     }
   }

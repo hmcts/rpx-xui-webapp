@@ -82,8 +82,7 @@ describe('TaskListComponent', () => {
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['setItem']);
-
+  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['setItem', 'getItem']);
   beforeEach((() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
@@ -123,6 +122,7 @@ describe('TaskListComponent', () => {
     };
     mockWorkAllocationService.getTask.and.returnValue(of({}));
     mockFeatureToggleService.isEnabled.and.returnValue(of(true));
+    mockFeatureToggleService.getValue.and.returnValue(of({ configurations: [{ serviceName: 'IA', releaseVersion: '4' }] }));
 
     fixture.detectChanges();
   }));

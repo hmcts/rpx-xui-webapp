@@ -4,7 +4,7 @@ import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
-import { getServiceRefDataMappingList } from '../serviceRefData';
+import { getServiceRefDataMappingList } from '../ref-data/ref-data-utils';
 import { prepareGetLocationsUrl } from './util';
 
 export async function handleLocationGet(fullPath: string, req: EnhancedRequest): Promise<AxiosResponse<any>> {
@@ -12,7 +12,7 @@ export async function handleLocationGet(fullPath: string, req: EnhancedRequest):
   return await http.get<any>(fullPath, { headers });
 }
 
-export async function commonGetFullLocation(req: EnhancedRequest) {
+export async function commonGetFullLocation(req) {
   let serviceCodes = [];
   let courtVenues = [];
 

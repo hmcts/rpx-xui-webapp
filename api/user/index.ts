@@ -18,7 +18,6 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
   if (!exists(req, 'session.passport.user')) {
     return res.send({}).status(200);
   }
-
   try {
     const { roles } = req.session.passport.user.userinfo;
 
@@ -28,6 +27,9 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
     const sessionTimeout = getUserSessionTimeout(roles, sessionTimeouts);
     const roleAssignmentInfo = await getUserRoleAssignments(req.session.passport.user.userinfo, req);
     const userInfo = { ...req.session.passport.user.userinfo, token: `Bearer ${req.session.passport.user.tokenset.accessToken}` };
+    const syntheticRoles = getSyntheticRoles(roleAssignmentInfo);
+    const allRoles = [...new Set([...userInfo.roles, ...syntheticRoles])];
+    userInfo.roles = allRoles;
     res.send({
       canShareCases,
       roleAssignmentInfo,
@@ -37,6 +39,29 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
   } catch (error) {
     next(error);
   }
+}
+export function getSyntheticRoles(roleAssignments: RoleAssignment[]): string [] {
+  let syntheticRoles = [];
+  const activeRoleAssignments = getActiveRoleAssignments(roleAssignments, new Date());
+  activeRoleAssignments.forEach((roleAssignment) => {
+    if (roleAssignment.substantive === 'Y'
+        &&
+        roleAssignment.jurisdiction
+        &&
+        roleAssignment.roleName
+        &&
+        roleAssignment.roleType
+        &&
+        roleAssignment.roleType.toUpperCase() === 'ORGANISATION') {
+      syntheticRoles = [...syntheticRoles, getSyntheticRole(roleAssignment.jurisdiction, roleAssignment.roleName)];
+    }
+  });
+  syntheticRoles = [...new Set(syntheticRoles)];
+  return syntheticRoles;
+}
+
+export function getSyntheticRole(jurisdiction: string, roleName: string): string {
+  return jurisdiction && roleName ? `${jurisdiction.toLocaleLowerCase()}-${roleName.toLocaleLowerCase()}` : '';
 }
 
 export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any): Promise<any[]> {
@@ -87,14 +112,18 @@ export function getRoleAssignmentInfo(roleAssignmentResponse: RoleAssignment[]):
     attributes.roleType = roleAssignment.roleType;
     attributes.roleName = roleAssignment.roleName;
     attributes.roleCategory = roleAssignment.roleCategory;
+    attributes.beginTime = roleAssignment.beginTime;
+    attributes.endTime = roleAssignment.endTime;
     roleAssignmentInfo.push(attributes);
   });
   return roleAssignmentInfo;
 }
 
 export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<any[]> {
-  const roleAssignmentInfo = req.session.roleAssignmentResponse ?
-    getRoleAssignmentInfo(req.session.roleAssignmentResponse) :
-    await refreshRoleAssignmentForUser(userInfo, req);
+  const refreshRoleAssignments = req.query && req.query.refreshRoleAssignments
+    ? req.query.refreshRoleAssignments === 'true' : false;
+  const roleAssignmentInfo =
+    req.session.roleAssignmentResponse && !refreshRoleAssignments ? getRoleAssignmentInfo(req.session.roleAssignmentResponse)
+      : await refreshRoleAssignmentForUser(userInfo, req);
   return roleAssignmentInfo;
 }

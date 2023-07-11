@@ -9,6 +9,7 @@ const browserUtil = require('../../util/browserUtil');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 const dummyCaseDetails = require('../../mockData/ccd/caseDetails_data');
 const ccdMockData = require('../../mockData/ccd/ccdApi');
+const mockClient = require('../../../backendMock/client/index.js');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const workAlloctionMockData = require('../../mockData/workAllocation/mockData');
@@ -17,20 +18,21 @@ const { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getMockJurisd
 const getEventConfig = require('../../mockData/ccdMockEventConfigs');
 
 const { DataTableArgument } = require('codeceptjs');
+const {postTaskAction, getTask} = require("../../../../api/workAllocation");
 
 
 
     Given('I set mock case create config {string}', async function (configReference) {
         // const caseConfig = getTestJurisdiction();
         // global.scenarioData[configReference] = caseConfig;
-        // MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => { 
+        // MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
         //     res.send(caseConfig.getCase());
         // });
-      
+
     });
 
     Given('I set MOCK event {string} props', async function(caseConfigReference, dataTable){
-        const caseConfig = global.scenarioData[caseConfigReference]; 
+        const caseConfig = global.scenarioData[caseConfigReference];
         const eventprops = convertDatatablePropsToccdObj(dataTable);
         caseConfig.updateEventProps(eventprops);
     });
@@ -63,26 +65,28 @@ const { DataTableArgument } = require('codeceptjs');
 
     Given('I set MOCK event config {string} field {string} properties', async function(eventConfigRef, fieldId, datatable){
         const eventConfig = global.scenarioData[eventConfigRef];
-        const fieldProps = convertDatatablePropsToccdObj(datatable); 
-        eventConfig.updateFieldProps(fieldId, fieldProps); 
+        const fieldProps = convertDatatablePropsToccdObj(datatable);
+        eventConfig.updateFieldProps(fieldId, fieldProps);
     });
 
     Given('I set MOCK case details with reference {string}', async function(caseDetailsReference){
-        // const caseDetails = ccdMockData.caseDetailsResponse;
-        // global.scenarioData[caseDetailsReference] = caseDetails;
-        // MockApp.onGet('/data/internal/cases/:caseid', (req, res) => {
-        //     res.send(caseDetails);
-        // });
+      const caseDetails = ccdMockData.caseDetailsResponse;
+         global.scenarioData[caseDetailsReference] = caseDetails;
+         const authCookie = await browser.driver.manage().getCookie('__auth__');
+         await mockClient.setUserApiData(authCookie.value, getTask, {
+           status: 200,
+           data: global.scenarioData[caseDetailsReference]
+         });
     });
 
     Given('I set MOCK case details {string} values', async function (caseDetailsReference, caseDetailsDatatable) {
         const caseDetails = global.scenarioData[caseDetailsReference];
-        
+
     });
 
     Given('I set MOCK case details {string} property {string} as {string}', async function(caseDetailsRef, property, value){
-        const caseDetails = global.scenarioData[caseDetailsRef];
-
+        const caseDetails = ccdMockData.caseDetailsResponse;
+        global.scenarioData['caseDetailsReference'] = caseDetails;
         if(property.toLowerCase().includes('jurisdiction')) {
             const field = getCaseDetailsMetadataField(caseDetails,'[JURISDICTION]');
             field.value = value;
@@ -93,12 +97,16 @@ const { DataTableArgument } = require('codeceptjs');
         else {
             throw Error(` metada field ${property} is not recognised or not implemented in test`);
         }
+
+        await mockClient.setUserApiData('','', {status: 200, data: global.scenarioData['caseDetailsReference']});
     });
 
     Given('I set MOCK case details {string} service name as {string}', async function (caseDetailsRef, serviceName) {
         const caseDetails = global.scenarioData[caseDetailsRef];
 
         caseDetails.case_type.jurisdiction.name = serviceName;
+        global.scenarioData[caseDetailsRef] = caseDetails;
+        await mockClient.setUserApiData('','', {status: 200, data: global.scenarioData['caseDetailsReference']});
     });
 
     Given('I set MOCK case details {string} state as {string}', async function (caseDetailsRef, name) {
@@ -180,7 +188,7 @@ const { DataTableArgument } = require('codeceptjs');
             "publish_as": null,
             "acls": null
         });
-       
+
     });
 
     Given('I set MOCK case details {string} trigger id {string} trigger name {string}', async function (caseDetailsRef, eventId, eventName) {
@@ -202,13 +210,13 @@ const { DataTableArgument } = require('codeceptjs');
                 }
 
                 if(key === 'role-name'){
-                    hash[key] = hash[key].toLowerCase().split(" ").join("-"); 
+                    hash[key] = hash[key].toLowerCase().split(" ").join("-");
                 }
             }
         }
         workAlloctionMockData.caseRoles = workAlloctionMockData.getCaseRoles(dateTableHashes);
-        
-    }); 
+
+    });
 
     Given('I set MOCK case role exclusions', async function (caseRoleExclusionsDatatable) {
         const dateTableHashes = caseRoleExclusionsdatatable.parse().hashes();
@@ -226,35 +234,42 @@ const { DataTableArgument } = require('codeceptjs');
 
     Given('I set MOCK case tasks with userDetails from reference {string}', async function (userDetailsRef, caseTasksDatatable) {
         const userDetails = global.scenarioData[userDetailsRef];
+        const authCookie = await browser.driver.manage().getCookie('__auth__');
 
-        const dateTableHashes = caseTasksdatatable.parse().hashes();
-        workAlloctionMockData.caseTasks = workAlloctionMockData.getCaseTasks(dateTableHashes, userDetails);
-        
+        const dateTableHashes = caseTasksDatatable.parse().hashes();
+        workAlloctionMockData.caseTasks = await workAlloctionMockData.getCaseTasks(dateTableHashes, userDetails);
+        await mockClient.setUserApiData(authCookie.value, 'OnTasksByCase', {
+          status: 200,
+          data: {
+            tasks: workAlloctionMockData.caseTasks,
+            'total_records': workAlloctionMockData.caseTasks.length
+          }
+        })
     });
 
     Given('I set MOCK case list values', async function(caseListAttributesDatatable){
         // const cases = ccdMockData.caseList.results;
         // const inputDatatableHashes = caseListAttributesdatatable.parse().hashes();
-        
+
         // for (let i = 0; i < inputDatatableHashes.length; i++){
         //     const caseItem = cases[i];
         //     const inputHash = inputDatatableHashes[i];
-            
+
         //     const keys = Object.keys(inputHash);
         //     for(const caseAttrib of keys){
         //         if (caseAttrib.startsWith('case_fields.')){
-        //             const caseFieldAttrib = caseAttrib.replace('case_fields.',''); 
-        //             caseItem['case_fields'][caseFieldAttrib] = inputHash[caseAttrib];  
+        //             const caseFieldAttrib = caseAttrib.replace('case_fields.','');
+        //             caseItem['case_fields'][caseFieldAttrib] = inputHash[caseAttrib];
         //         } else if (caseAttrib.startsWith('case_fields_formatted.')){
         //             const caseFieldAttrib = caseAttrib.replace('case_fields_formatted.', '');
-        //             caseItem['case_fields_formatted'][caseFieldAttrib] = inputHash[caseAttrib];  
+        //             caseItem['case_fields_formatted'][caseFieldAttrib] = inputHash[caseAttrib];
         //         }else{
-        //             caseItem[caseAttrib] = inputHash[caseAttrib]; 
+        //             caseItem[caseAttrib] = inputHash[caseAttrib];
         //         }
-        //     } 
+        //     }
 
         // }
-        
+
     });
 
 
@@ -275,10 +290,10 @@ function convertDatatablePropsToccdObj(datatable){
     for (const key in tableRowshash){
 
         if (tableRowshash[key].toUpperCase() === "YES"){
-            tableRowshash[key] = true; 
+            tableRowshash[key] = true;
         } else if (tableRowshash[key].toUpperCase() === "NO"){
-            tableRowshash[key] = false; 
+            tableRowshash[key] = false;
         }
-    } 
+    }
     return tableRowshash;
 }

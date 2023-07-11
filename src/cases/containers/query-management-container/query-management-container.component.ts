@@ -13,14 +13,13 @@ import {
   partyMessagesMockData
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Store, select } from '@ngrx/store';
 import { Observable, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
+import * as fromRoot from '../../../app/store';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
 import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
-import { select, Store } from '@ngrx/store';
-import * as fromRoot from '../../../app/store';
-import { first } from 'rxjs/operators';
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 
 @Component({
@@ -33,9 +32,8 @@ export class QueryManagementContainerComponent implements OnInit {
   private readonly RAISE_A_QUERY_NAME = 'Raise another query relating to this case';
   public static readonly RAISE_A_QUERY_QUESTION_OPTION = 'raiseAQuery';
 
-  private caseId: string;
   private queryItemId: string;
-
+  public caseId: string;
   public queryCreateContext: QueryCreateContext;
   public queryItem: QueryListItem | undefined;
   public showSummary: boolean = false;
@@ -270,6 +268,12 @@ export class QueryManagementContainerComponent implements OnInit {
   public async navigateToCaseOverviewTab(): Promise<void> {
     await this.router.navigate(['cases', 'case-details', this.caseId],
       { fragment: 'Overview' }
+    );
+  }
+
+  public async navigateToCaseTaskTab(): Promise<void> {
+    await this.router.navigate(['cases', 'case-details', this.caseId],
+      { fragment: 'tasks' }
     );
   }
 }

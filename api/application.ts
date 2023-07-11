@@ -22,6 +22,7 @@ import openRoutes from './openRoutes';
 import { initProxy } from './proxy.config';
 import routes from './routes';
 import workAllocationRouter from './workAllocation/routes';
+import { idamCheck } from './idamCheck';
 
 export const app = express();
 
@@ -123,3 +124,5 @@ app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ign
 
 const logger: JUILogger = log4jui.getLogger('Application');
 logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
+
+new Promise(idamCheck).then(() => 'IDAM is up and running');

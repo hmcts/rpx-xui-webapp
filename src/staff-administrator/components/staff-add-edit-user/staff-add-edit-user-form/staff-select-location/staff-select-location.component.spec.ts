@@ -3,8 +3,8 @@ import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { RefDataService } from '@hmcts/rpx-xui-common-lib';
-import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { of } from 'rxjs';
+import { LocationByEpimmsModelWithServiceCodes } from '../../../../models/location-by-service-code-model';
 import { StaffSelectLocationComponent } from './staff-select-location.component';
 
 describe('StaffSelectLocationComponent', () => {
@@ -38,7 +38,7 @@ describe('StaffSelectLocationComponent', () => {
   });
 
   describe('lookup by serviceCodes (i.e. servicesField does not exist)', () => {
-    let dummyLocations: LocationByEPIMMSModel[];
+    let dummyLocations: LocationByEpimmsModelWithServiceCodes[];
     beforeEach(() => {
       dummyLocations = [
         {
@@ -59,7 +59,8 @@ describe('StaffSelectLocationComponent', () => {
           dx_address: 'DX 123456 Aberdeen 1',
           venue_name: 'Aberdeen',
           is_hearing_location: 'Y',
-          is_case_management_location: 'Y'
+          is_case_management_location: 'Y',
+          serviceCodes: ['BFA1']
         },
         {
           site_name: 'Aberdeen Tribunal Hearing Centre',
@@ -77,7 +78,8 @@ describe('StaffSelectLocationComponent', () => {
           dx_address: 'DX 123456 Aberdeen 1',
           venue_name: 'Aberdeen',
           is_hearing_location: 'Y',
-          is_case_management_location: 'Y'
+          is_case_management_location: 'Y',
+          serviceCodes: ['AAA7']
         },
         {
           epimms_id: '827534',
@@ -91,7 +93,8 @@ describe('StaffSelectLocationComponent', () => {
           venue_name: 'Aberystwyth',
           open_for_public: 'Yes',
           court_address: 'TREFECHAN test3',
-          postcode: 'SY23 1AS '
+          postcode: 'SY23 1AS ',
+          serviceCodes: ['BFA1']
         },
         {
           epimms_id: '827534',
@@ -105,7 +108,8 @@ describe('StaffSelectLocationComponent', () => {
           venue_name: 'Aberystwyth',
           open_for_public: 'Yes',
           court_address: 'TREFECHAN test4',
-          postcode: 'SY23 1AS '
+          postcode: 'SY23 1AS ',
+          serviceCodes: ['BFA1']
         },
         {
           epimms_id: '827534',
@@ -119,7 +123,8 @@ describe('StaffSelectLocationComponent', () => {
           venue_name: 'Aberystwyth',
           open_for_public: 'Yes',
           court_address: 'TREFECHAN test5',
-          postcode: 'SY23 1AS '
+          postcode: 'SY23 1AS ',
+          serviceCodes: ['BFA1']
         },
         {
           epimms_id: '827534',
@@ -133,7 +138,8 @@ describe('StaffSelectLocationComponent', () => {
           venue_name: 'Aberystwyth',
           open_for_public: 'Yes',
           court_address: 'TREFECHAN test6',
-          postcode: 'SY23 1AS '
+          postcode: 'SY23 1AS ',
+          serviceCodes: ['BFA1']
         },
         {
           epimms_id: '450049',
@@ -149,7 +155,8 @@ describe('StaffSelectLocationComponent', () => {
           cluster_name: 'Hampshire, Wiltshire, IOW',
           open_for_public: 'Yes',
           court_address: 'THE COURT HOUSE, CIVIC CENTRE, WELLINGTON AVENUE test7',
-          postcode: 'GU11 1NY'
+          postcode: 'GU11 1NY',
+          serviceCodes: ['BFA1']
         },
         {
           epimms_id: '450049',
@@ -165,7 +172,8 @@ describe('StaffSelectLocationComponent', () => {
           cluster_name: 'Hampshire, Wiltshire, IOW',
           open_for_public: 'Yes',
           court_address: 'THE COURT HOUSE, CIVIC CENTRE, WELLINGTON AVENUE test8',
-          postcode: 'GU11 1NY'
+          postcode: 'GU11 1NY',
+          serviceCodes: ['AAA7']
         },
         {
           epimms_id: '450049',
@@ -181,7 +189,8 @@ describe('StaffSelectLocationComponent', () => {
           cluster_name: 'Hampshire, Wiltshire, IOW',
           open_for_public: 'Yes',
           court_address: 'THE COURT HOUSE, CIVIC CENTRE, WELLINGTON AVENUE test9',
-          postcode: 'GU11 1NY'
+          postcode: 'GU11 1NY',
+          serviceCodes: ['AAA7']
         },
         {
           epimms_id: '271588',
@@ -197,7 +206,8 @@ describe('StaffSelectLocationComponent', () => {
           cluster_name: 'Thames Valley',
           open_for_public: 'Yes',
           court_address: 'KING GEORGE V ROAD AMERSHAM BUCKINGHAMSHIRE test10',
-          postcode: 'HP6 5AJ'
+          postcode: 'HP6 5AJ',
+          serviceCodes: ['AAA7']
         },
         {
           epimms_id: '239985',
@@ -213,7 +223,8 @@ describe('StaffSelectLocationComponent', () => {
           cluster_name: 'Kent',
           open_for_public: 'Yes',
           court_address: 'COUNTY SQUARE test11',
-          postcode: 'TN23 1YB'
+          postcode: 'TN23 1YB',
+          serviceCodes: ['AAA7']
         },
         {
           epimms_id: '239985',
@@ -229,7 +240,8 @@ describe('StaffSelectLocationComponent', () => {
           cluster_name: 'Kent',
           open_for_public: 'Yes',
           court_address: 'MARCUS SQUARE',
-          postcode: 'TN23 1YB'
+          postcode: 'TN23 1YB',
+          serviceCodes: ['AAA7']
         }
       ];
       component.serviceCodes$ = of(['AAA7', 'BFA1']);
@@ -266,6 +278,17 @@ describe('StaffSelectLocationComponent', () => {
           expect(result).toEqual([dummyLocations[0]]);
         });
 
+        component.searchTermFormControl.setValue(dummyLocations[0].venue_name);
+        tick();
+        flush();
+      }));
+
+      it('should fill locations with correct service codes', fakeAsync(() => {
+        refDataServiceMock.getLocationsByServiceCodes.and.returnValue(of([dummyLocations[0], dummyLocations[1]]));
+        component.filteredList$.subscribe((result) => {
+          expect(result).toEqual([dummyLocations[0]]);
+          expect(result[0].serviceCodes).toEqual(['BFA1', 'AAA7']);
+        });
         component.searchTermFormControl.setValue(dummyLocations[0].venue_name);
         tick();
         flush();

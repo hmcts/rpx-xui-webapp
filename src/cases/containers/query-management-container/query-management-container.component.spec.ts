@@ -13,11 +13,9 @@ import {
   QueryWriteRespondToQueryComponent
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { provideMockStore } from '@ngrx/store/testing';
 import { BehaviorSubject } from 'rxjs';
 import { QueryManagementContainerComponent } from './query-management-container.component';
-import { provideMockStore } from '@ngrx/store/testing';
-import { By } from '@angular/platform-browser';
-import { FormControl } from '@angular/forms';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -436,35 +434,6 @@ describe('QueryManagementContainerComponent', () => {
     });
   });
 
-  // describe('navigateToErrorElement', () => {
-  //   beforeEach(() => {
-  //     // Raise a query
-  //     activatedRoute.snapshot = {
-  //       ...activatedRoute.snapshot,
-  //       params: {
-  //         ...activatedRoute.snapshot.params,
-  //         qid: '3'
-  //       }
-  //     } as unknown as ActivatedRouteSnapshot;
-  //     component.ngOnInit();
-  //     fixture.detectChanges();
-  //   });
-  //
-  //   it('should navigate to the correct element', () => {
-  //     const nativeElement = fixture.debugElement.nativeElement;
-  //     component.formGroup.get('subject').setValue('');
-  //     component.formGroup.get('body').setValue('');
-  //     component.submitForm();
-  //     fixture.detectChanges();
-  //     expect(nativeElement.querySelector('.govuk-error-summary')).toBeDefined();
-  //     nativeElement.querySelector('#error-subject').click();
-  //     fixture.detectChanges();
-  //     const subjectElement = nativeElement.querySelector('#subject');
-  //     const focusedElement = fixture.debugElement.query(By.css(':focus')).nativeElement;
-  //     expect(focusedElement).toBe(subjectElement);
-  //   });
-  // });
-
   describe('setNameFromUserDetails', () => {
     it('should set the name from user details', async () => {
       // @ts-expect-error - private method
@@ -475,9 +444,17 @@ describe('QueryManagementContainerComponent', () => {
     describe('navigateToCaseOverviewTab', () => {
       it('should navigate to case overview tab', () => {
         component.navigateToCaseOverviewTab();
-        // @ts-expect-error
         expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', component.caseId],
           { fragment: 'Overview' }
+        );
+      });
+    });
+
+    describe('navigateToCaseTaskTab', () => {
+      it('should navigate to case tasks tab', () => {
+        component.navigateToCaseTaskTab();
+        expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', component.caseId],
+          { fragment: 'tasks' }
         );
       });
     });

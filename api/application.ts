@@ -9,6 +9,7 @@ import { getXuiNodeMiddleware } from './auth';
 import { getConfigValue, showFeature } from './configuration';
 import {
   FEATURE_HELMET_ENABLED,
+  FEATURE_COMPRESSION_ENABLED,
   HELMET,
   PROTOCOL,
   SESSION_SECRET
@@ -95,7 +96,9 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
 
 app.use(cookieParser(getConfigValue(SESSION_SECRET)));
 
-app.use(compression());
+if (showFeature(FEATURE_COMPRESSION_ENABLED)) {
+  app.use(compression());
+}
 
 // TODO: remove tunnel and configurations
 tunnel.init();

@@ -8,33 +8,57 @@ import { somethingLike } from '@pact-foundation/pact/src/dsl/matchers';
 
 const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_confirmAllocateRole', port: 8000 });
 
+const MockApp = require('../../../../../test/nodeMock/app');
+
 const REQUEST_BODY = {
   caseId: somethingLike('1234123412341234'),
   jurisdiction: somethingLike('IA'),
   assignmentId: somethingLike('a123456'),
   state: somethingLike(1),
   typeOfRole: somethingLike({
-    id: 'lead-judge',
-    name: 'Lead judge'
+    id: somethingLike('lead-judge'),
+    name: somethingLike('Lead judge')
   }),
   allocateTo: somethingLike('Reserve to me'),
   personToBeRemoved: somethingLike({
-    id: 'p111111',
-    name: 'test1',
-    domain: ''
+    id: somethingLike('p111111'),
+    name: somethingLike('test1'),
+    domain: somethingLike('')
   }),
   person: somethingLike({
-    id: 'p222222',
-    name: 'test2',
-    domain: ''
+    id: somethingLike('p222222'),
+    name: somethingLike('test2'),
+    domain: somethingLike('')
   }),
   durationOfRole: somethingLike('7 days'),
   action: somethingLike('allocate'),
   period: somethingLike({
-    startDate: new Date(),
-    endDate: new Date()
+    startDate: somethingLike('11-07-2023'),
+    endDate: somethingLike('18-07-2023')
   }),
   roleCategory: somethingLike('LEGAL_OPERATIONS')
+};
+
+const ROLE_ASSIGNMENT_BODY = {
+  roleRequest: somethingLike({
+    assignerId: somethingLike('123'),
+    replaceExisting: somethingLike(false)
+  }),
+  requestedRoles: somethingLike([{
+    roleType: somethingLike('CASE'),
+    grantType: somethingLike('SPECIFIC'),
+    classification: somethingLike('PUBLIC'),
+    attributes: {
+      caseId: somethingLike('1234123412341234'),
+      jurisdiction: somethingLike('IA')
+    },
+    roleName: somethingLike('lead-judge'),
+    roleCategory: somethingLike('LEGAL_OPERATIONS'),
+    actorIdType: somethingLike('IDAM'),
+    actorId: somethingLike('123'),
+    beginTime: somethingLike('11-07-2023'),
+    endTime: somethingLike('18-07-2023')
+  }])
 };
 
 describe.only('access management service, confirm allocate role', () => {
@@ -59,7 +83,7 @@ describe.only('access management service, confirm allocate role', () => {
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
             'content-type': 'application/json'
           },
-          body: REQUEST_BODY
+          body: ROLE_ASSIGNMENT_BODY
         },
         willRespondWith: {
           status: 200,
@@ -77,9 +101,22 @@ describe.only('access management service, confirm allocate role', () => {
     afterEach(() => {
       sandbox.restore();
       sinon.reset();
+      MockApp.stopServer();
     });
 
     it('returns the correct response', async () => {
+      MockApp.setServerPort(8080);
+      MockApp.init();
+
+      MockApp.onGet('/am/role-assignments/actors/123', (req, res) => {
+        res.send({
+          roleAssignmentResponse: [
+            { actorId: '004b7164-0943-41b5-95fc-39794af4a9fe', roleCategory: 'case-worker' },
+          ]
+        });
+      });
+      await MockApp.startServer();
+
       const configValues = getAccessManagementServiceAPIOverrides(pactSetUp.provider.mockService.baseUrl);
       sandbox.stub(config, 'get').callsFake((prop) => {
         return configValues[prop];
@@ -94,25 +131,32 @@ describe.only('access management service, confirm allocate role', () => {
         },
         session: { passport: { user: { userinfo: { id: '123' } } } },
         body: {
-          roleRequest: {
-            assignerId: '123',
-            replaceExisting: false
+          caseId: '1234123412341234',
+          jurisdiction: 'IA',
+          assignmentId: 'a123456',
+          state: 1,
+          typeOfRole: {
+            id: 'lead-judge',
+            name: 'Lead judge'
           },
-          requestedRoles: [{
-            roleType: 'CASE',
-            grantType: 'SPECIFIC',
-            classification: 'PUBLIC',
-            attributes: {
-              caseId: '1234123412341234',
-              jurisdiction: 'IA'
-            },
-            roleName: 'lead-judge',
-            roleCategory: 'LEGAL_OPERATIONS',
-            actorIdType: 'IDAM',
-            actorId: '123',
-            beginTime: new Date(),
-            endTime: new Date()
-          }]
+          allocateTo: 'Reserve to me',
+          personToBeRemoved: {
+            id: 'p111111',
+            name: 'test1',
+            domain: ''
+          },
+          person: {
+            id: 'p222222',
+            name: 'test2',
+            domain: ''
+          },
+          durationOfRole: '7 days',
+          action: 'allocate',
+          period: {
+            startDate: '11-07-2023',
+            endDate: '18-07-2023'
+          },
+          roleCategory: 'LEGAL_OPERATIONS'
         }
       });
       let returnedResponse = null;

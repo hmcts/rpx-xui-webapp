@@ -6,16 +6,29 @@ const browser = require('./browser')
 const codeceptMochawesomeLog = require('./reportLogger')
 
 const e2eTestDataManager = require('../e2e/utils/testDataManager/index');
+const mockClient = require('../backendMock/client/index')
+const idamLogin = require('../ngIntegration/util/idamLogin');
+
+const isIntegrationTestType = process.env.TEST_TYPE && process.env.TEST_TYPE === 'ngIntegration'
 
 module.exports = async function () {
 
     event.dispatcher.on(event.test.before, function (test) {
-        output.print(`Test started : ${test.title}`)
+      global.scenarioData = {}
+      output.print(`Test started : ${test.title}`)
     });
 
     event.dispatcher.on(event.test.after, async function (test) {
         output.print(`Test ${test.state} : ${test.title}`)
         actor().flushLogsToReport();
+        if (test.state === 'failed' && isIntegrationTestType){
+            const authCookies = idamLogin.xuiCallbackResponse.details?.setCookies?.find(cookie => cookie.name === '__auth__')
+            const mockSessiondataResponse = await mockClient.getUserSesionData(authCookies ? authCookies.value : null);
+            codeceptMochawesomeLog.AddMessage('---------------------- Session mock data and requests ----------------------');
+            codeceptMochawesomeLog.AddJson(mockSessiondataResponse.data)
+            codeceptMochawesomeLog.AddMessage('---------------------- Session mock data and requests ----------------------');
+        }
+
         await e2eTestDataManager.cleanupForTags(test.tags);
     });
 
@@ -31,7 +44,7 @@ module.exports = async function () {
         codeceptMochawesomeLog.AddMessage(`************ Test failed : `)
     });
 
-    
+
     event.dispatcher.on(event.bddStep.before, function (bddStep) {
         // output.print(`STEP: ${bddStep.keyword} ${bddStep.text} `)
         codeceptMochawesomeLog.AddMessage(`*************** BDD) ${bddStep.keyword} ${bddStep.text}`)
@@ -74,6 +87,6 @@ async function attachBrowserLogs(){
             codeceptMochawesomeLog.AddMessage(`       ${stacktraceLocation.url}:${stacktraceLocation.lineNumber}`);
         }
     }
-    
+
 }
 

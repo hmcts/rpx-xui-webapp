@@ -1,6 +1,7 @@
 
 
 const roles = require('./roles')
+const { v4 } = require('uuid')
 class RoleAssignments{
 
     constructor(){
@@ -82,9 +83,9 @@ class RoleAssignments{
                     "userId": "string",
                     "regionId": "string",
                     "locationId": "string",
-                    "created": "2023-03-16T15:35:52.582Z",
-                    "beginTime": "2023-03-16T15:35:52.582Z",
-                    "endTime": "2023-03-16T15:35:52.582Z",
+                    "created": new Date(),
+                    "beginTime": new Date(),
+                    "endTime": new Date(),
                     "log": "string"
                 }
             ]
@@ -99,7 +100,7 @@ class RoleAssignments{
             "classification": "PUBLIC",
             "created": "2022-01-13T17:44:42.15304Z",
             "grantType": "STANDARD",
-            "id": "92aef8e3-ef7b-4bd4-a0c7-13b6414db239",
+            "id": v4(),
             "readOnly": false,
             "roleCategory": "LEGAL_OPERATIONS",
             "roleName": "senior-tribunal-caseworker",

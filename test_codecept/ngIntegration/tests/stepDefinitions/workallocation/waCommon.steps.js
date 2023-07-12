@@ -222,6 +222,25 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         await mockClient.updateAuthSessionWithUserInfo(auth.value, userDetails.userInfo);
     });
 
+    Given('I set MOCK with user details', async function (datatable) {
+        CucumberReporter.reportDatatable(datatable)
+        const rowsHash = datatable.parse().rowsHash()
+        const userDetails = await mockLoginWithRoles(rowsHash.roles.split(','))
+        const properties = rowsHash;
+        for (const key of Object.keys(properties)) {
+            if(key === 'roles'){
+                userDetails.userInfo[key] = properties[key].split(',').map(v => v.trim())
+            }else{
+                userDetails.userInfo[key] = properties[key]
+            }
+            
+        }
+        const auth = await browser.driver.manage().getCookie('__auth__')
+        await mockClient.updateAuthSessionWithUserInfo(auth.value, userDetails.userInfo);
+    });
+
+
+
     Given('I add roleAssignmentInfo to MOCK user with reference {string}', async function(userDetailsRef, roleAssignments){
         const boolAttributes = ['isCaseAllocator','bookable'];
         const userDetails = global.scenarioData[userDetailsRef];

@@ -19,6 +19,7 @@ class MockSessionService{
             this.sessionsPath = path.resolve(__dirname, '../../../../.sessions')
 
         }
+        console.log("Session path : "+this.sessionsPath)
         this.defaultSession = '';
     }
 
@@ -84,25 +85,22 @@ class MockSessionService{
 
     async waitForSessionWithRoleAssignments(auth){
 
+        let counter = 0;
+        while (counter < 20){
+            await sleepForSeconds(2)
+            const sessionFile = await this.getSessionFileAuth(auth);
+            let sessionJson = await fs.readFileSync(sessionFile, 'utf8');
+            sessionJson = JSON.parse(sessionJson);
 
-        return new Promise((resolve,reject) => {
-            const interval = setInterval(async () => {
-                const sessionFile = await this.getSessionFileAuth(auth);
-                let sessionJson = await fs.readFileSync(sessionFile,'utf8');
-                sessionJson = JSON.parse(sessionJson);
+            if (sessionJson.roleAssignmentResponse) {
+                break;
+            } else if(counter > 15) {
+                throw('Session not updated with actual role assignments')
+            }
+            counter++;
+        }
 
-                if(sessionJson.roleAssignmentResponse){
-                    clearInterval(interval);
-                    resolve(true)
-                }
-            }, 2000)
-
-            setTimeout(() => {
-                clearInterval(interval)
-                reject('Session not updated with actual role assignments')
-            },40000)
-            
-        })
+       
 
     }
 
@@ -162,3 +160,11 @@ class MockSessionService{
 const mode = process.env.DEBUG && process.env.DEBUG === "true" ? "DEBUG" : ""
 module.exports = new MockSessionService(mode);
 
+
+async function sleepForSeconds(seconds){
+    return new Promise((resolve,reject) => {
+        setTimeout(() => {
+            resolve(true)
+        }, seconds*1000)
+    })
+}

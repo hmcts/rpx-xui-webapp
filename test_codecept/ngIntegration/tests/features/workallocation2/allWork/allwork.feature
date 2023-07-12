@@ -5,7 +5,12 @@ Feature: WA Release 2: All work
         Given I init MockApp
 
     Scenario Outline:  All work Tasks, colums and column links for "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        
+        Given I set MOCK with user details
+            | roles | <Roles>,task-supervisor,case-allocator |
+            | roleCategory | <roleCategory>                         |
+
+        
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |
@@ -67,12 +72,17 @@ Feature: WA Release 2: All work
         When I click task column link "Task" at row 1, I see case details page
         Then I validate case details task tab page is displayed
         Examples:
-            | UserIdentifier     | UserType   | Roles                                              |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2 | Judge | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker |
+            | UserIdentifier     | UserType   | Roles                                              |roleCategory|
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |LEGAL_OPERATIONS|
+            | IAC_Judge_WA_R2 | Judge | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker |JUDICIAL|
 
     Scenario Outline: Tasks pagnation control display with only 1 page of items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+         
+        Given I set MOCK with user details
+            | roles        | <Roles>,task-supervisor,case-allocator |
+            | roleCategory | <roleCategory>                         |
+
+
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |
@@ -81,18 +91,24 @@ Feature: WA Release 2: All work
         Given I start MockApp
 
         Given I navigate to home page
-        When I click on primary navigation header tab "All work", I see selected tab page displayed
+        When I click on primary n
+        
+        
+        avigation header tab "All work", I see selected tab page displayed
 
         Then I validate tasks count in page 20
         Then I validate task table pagination controls, is displayed state is "false"
 
         Examples:
-            | UserIdentifier  | UserType | Roles                                           |
-            # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2 | Judge | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker |
+            | UserIdentifier  | UserType | Roles                                           |roleCategory|
+            # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |LEGAl_OPERATIONS|
+            | IAC_Judge_WA_R2 | Judge | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker |JUDICIAL|
 
     Scenario:  Tasks sort column persist in session with Caseworker user
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator" with reference "userDetails"
+       
+        Given I set MOCK with user details
+            | roles        | caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator |
+            | roleCategory | LEGAL_OPERATIONS                        |
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation |
@@ -123,7 +139,10 @@ Feature: WA Release 2: All work
 
 
     Scenario Outline:  All work Tasks, colums width "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+         Given I set MOCK with user details
+            | roles | <Roles>,task-supervisor,case-allocator |
+            | roleCategory | <roleCategory>                                                                   |
+       
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |
@@ -172,6 +191,6 @@ Feature: WA Release 2: All work
             | 3   | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | auto test category 3 | test location 3 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -30      |
 
         Examples:
-            | UserIdentifier     | UserType   | Roles                                                            |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            | UserIdentifier     | UserType   | Roles                                                            |roleCategory|
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |LEGAL_OPERATIONS|
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |JUDICIAL|

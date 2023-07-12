@@ -120,7 +120,7 @@ Feature: WA Release 2: My work - Work filters
         # Then I validate work location filter batch and hint labels are not displayed
         Then I validate location filter is not displayed
         When I click work filter button to "Show" filter
-        When I unselect service "CIVIL" in my work filter
+        When I unselect service "Civil" in my work filter
         When I unselect service "Immigration and Asylum" in my work filter
         When I click work location filter Apply button
         Then I see error message "Select a service" for service work filter in my work page

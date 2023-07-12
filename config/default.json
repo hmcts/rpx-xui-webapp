@@ -174,7 +174,7 @@
     "caseworkerRefEnabled": false,
     "substantiveRoleEnabled": true,
     "accessManagementEnabled": true,
-    "compressionEnabled": true
+    "compressionEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {

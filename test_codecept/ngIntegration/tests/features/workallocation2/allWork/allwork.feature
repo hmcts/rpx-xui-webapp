@@ -94,7 +94,7 @@ Feature: WA Release 2: All work
         When I click on primary n
         
         
-        avigation header tab "All work", I see selected tab page displayed
+        When I click on primary navigation header tab "All work", I see selected tab page displayed
 
         Then I validate tasks count in page 20
         Then I validate task table pagination controls, is displayed state is "false"

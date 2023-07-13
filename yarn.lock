@@ -19325,6 +19325,7 @@ __metadata:
     codeceptjs: 3.3.7
     codeceptjs-cucumber-json-reporter: ^1.0.11
     codelyzer: ^5.1.2
+    compression: ^1.7.4
     config: ^3.2.5
     cookie-parser: ^1.4.4
     core-js: ^3.19.3

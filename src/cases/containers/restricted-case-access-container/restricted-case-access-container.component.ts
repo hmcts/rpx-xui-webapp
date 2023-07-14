@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
+import { Subscription, of } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 import { CaseRole } from '../../../role-access/models/case-role.interface';
 import { AllocateRoleService } from '../../../role-access/services/allocate-role.service';
 import { Caseworker } from '../../../work-allocation/models/dtos';
@@ -13,12 +14,13 @@ import { RestrictedCase } from '../../models/restricted-case.model';
   selector: 'exui-restricted-case-access-container',
   templateUrl: './restricted-case-access-container.component.html'
 })
-export class RestrictedCaseAccessContainerComponent implements OnInit {
+export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy {
   public caseId: string;
   public caseRoles: CaseRole[];
   public caseWorkers: Caseworker[];
   public idamIds: string[];
   public restrictedCases: RestrictedCase[];
+  public allocateServiceSubscription: Subscription;
 
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
@@ -29,7 +31,7 @@ export class RestrictedCaseAccessContainerComponent implements OnInit {
 
   public ngOnInit(): void {
     this.caseId = this.route.snapshot.params.cid;
-    this.allocateService.getCaseAccessRolesByCaseId(this.caseId).pipe(
+    this.allocateServiceSubscription = this.allocateService.getCaseAccessRolesByCaseId(this.caseId).pipe(
       switchMap((caseRoles) => {
         this.caseRoles = caseRoles;
         return of(this.getUniqueIdamIds());
@@ -41,8 +43,14 @@ export class RestrictedCaseAccessContainerComponent implements OnInit {
       switchMap((caseworkers) => of(this.getRestrictedCases(caseworkers)))
     ).subscribe(
       (restrictedCases) => this.restrictedCases = restrictedCases,
-      () => this.router.navigate(['/', 'service-down']).then(undefined, undefined)
+      () => this.router.navigate(['/', 'service-down'])
     );
+  }
+
+  public ngOnDestroy(): void {
+    if (this.allocateServiceSubscription) {
+      this.allocateServiceSubscription.unsubscribe();
+    }
   }
 
   private getUniqueIdamIds(): string[] {

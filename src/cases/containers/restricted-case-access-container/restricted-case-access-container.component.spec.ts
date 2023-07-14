@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { CASEWORKERS } from '../../../../api/test/pact/constants/work-allocation/caseworkers.spec';
 import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
 import { CaseReferencePipe } from '../../../hearings/pipes/case-reference.pipe';
@@ -61,5 +61,12 @@ describe('RestrictedCaseAccessContainerComponent', () => {
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(throwError({ status: 500 }));
     component.ngOnInit();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'service-down']);
+  });
+
+  it('should unsubscribe', () => {
+    component.allocateServiceSubscription = new Observable().subscribe();
+    spyOn(component.allocateServiceSubscription, 'unsubscribe').and.callThrough();
+    component.ngOnDestroy();
+    expect(component.allocateServiceSubscription.unsubscribe).toHaveBeenCalled();
   });
 });

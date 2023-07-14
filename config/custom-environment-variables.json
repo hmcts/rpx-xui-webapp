@@ -172,6 +172,10 @@
     "accessManagementEnabled": {
       "__name": "FEATURE_ACCESS_MANAGEMENT_ENABLED",
       "__format":"json"
+    },
+    "compressionEnabled": {
+      "__name": "FEATURE_COMPRESSION_ENABLED",
+      "__format": "json"
     }
   },
   "helmet": {

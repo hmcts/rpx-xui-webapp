@@ -109,7 +109,8 @@
     { "service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"] },
     { "service": "PRIVATELAW", "serviceCodes": ["ABA5"] },
     { "service": "PUBLICLAW", "serviceCodes": ["ABA3"] },
-    { "service": "SSCS", "serviceCodes": ["BBA3"] }
+    { "service": "SSCS", "serviceCodes": ["BBA3"] },
+    { "service": "EMPLOYMENT", "serviceCodes": ["BHA1"] }
   ],
   "waSupportedServiceandCaseTypes": {
     "IA": {
@@ -128,7 +129,7 @@
        "caseTypes": "PUBLICLAW",
        "releaseVersion": "3.5"
       }
-  }, 
+  },
   "wildcardSearchFields": {
     "Benefit": [
       "generatedSurname",
@@ -172,7 +173,8 @@
     "roleEnabled": false,
     "caseworkerRefEnabled": false,
     "substantiveRoleEnabled": true,
-    "accessManagementEnabled": true
+    "accessManagementEnabled": true,
+    "compressionEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {

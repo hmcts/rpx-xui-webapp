@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { CASEWORKERS } from '../../../../api/test/pact/constants/work-allocation/caseworkers.spec';
 import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
 import { CaseReferencePipe } from '../../../hearings/pipes/case-reference.pipe';
@@ -54,13 +54,6 @@ describe('RestrictedCaseAccessContainerComponent', () => {
     expect(mockAllocateService.getCaseAccessRolesByCaseId).toHaveBeenCalled();
     expect(mockWASupportedJurisdictionsService.getWASupportedJurisdictions).toHaveBeenCalled();
     expect(mockCaseworkerDataService.getCaseworkersForServices).toHaveBeenCalled();
-    expect(mockRouter.navigate).not.toHaveBeenCalled();
-  });
-
-  it('should navigate to service down page if error', () => {
-    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(throwError({ status: 500 }));
-    component.ngOnInit();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'service-down']);
   });
 
   it('should unsubscribe', () => {

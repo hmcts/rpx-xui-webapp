@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, of } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
-import { LoggerService } from '../../../app/services/logger/logger.service';
 import { CaseRole } from '../../../role-access/models/case-role.interface';
 import { AllocateRoleService } from '../../../role-access/services/allocate-role.service';
 import { Caseworker } from '../../../work-allocation/models/dtos';
@@ -23,7 +22,6 @@ export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy
   public allocateServiceSubscription: Subscription;
 
   constructor(private readonly route: ActivatedRoute,
-              private readonly router: Router,
               private readonly allocateService: AllocateRoleService,
               private readonly caseworkerDataService: CaseworkerDataService,
               private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService) {
@@ -42,8 +40,7 @@ export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy
       take(1),
       switchMap((caseworkers) => of(this.getRestrictedCases(caseworkers)))
     ).subscribe(
-      (restrictedCases) => this.restrictedCases = restrictedCases,
-      () => this.router.navigate(['/', 'service-down'])
+      (restrictedCases) => this.restrictedCases = restrictedCases
     );
   }
 

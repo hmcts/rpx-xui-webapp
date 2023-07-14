@@ -41,7 +41,7 @@ export class RestrictedCaseAccessContainerComponent implements OnInit {
       switchMap((caseworkers) => of(this.getRestrictedCases(caseworkers)))
     ).subscribe(
       (restrictedCases) => this.restrictedCases = restrictedCases,
-      () => this.router.navigate(['/', 'service-down'])
+      () => this.router.navigate(['/', 'service-down']).then(undefined, undefined)
     );
   }
 

@@ -22,8 +22,8 @@
       <span class="govuk-error-message" *ngIf="linkedHearingSelectionError">
         <span class="govuk-visually-hidden">Error:</span> {{linkedHearingSelectionError}}
       </span>
-      <div [formGroupName]="i" *ngFor="let case of linkedCases; let i = index">
-        <table class="govuk-table">
+      <div [formGroupName]="i" *ngFor="let case of linkedCases; let i = index; first as isFirstCase">
+        <table class="govuk-table" *ngIf="!isFirstCase">
           <thead class="govuk-table__head">
             <tr class="govuk-table__row" *ngIf="case.caseHearings.length > 0">
               <th scope="col" [attr.colspan]="mode === pageMode.MANAGE_HEARINGS ? '2' : '3'" class="govuk-table__header"

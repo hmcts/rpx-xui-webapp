@@ -3939,10 +3939,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^12.11.1":
-  version: 12.20.55
-  resolution: "@types/node@npm:12.20.55"
-  checksum: e4f86785f4092706e0d3b0edff8dca5a13b45627e4b36700acd8dfe6ad53db71928c8dee914d4276c7fd3b6ccd829aa919811c9eb708a2c8e4c6eb3701178c37
+"@types/node@npm:18.11.9":
+  version: 18.11.9
+  resolution: "@types/node@npm:18.11.9"
+  checksum: cc0aae109e9b7adefc32eecb838d6fad931663bb06484b5e9cbbbf74865c721b03d16fd8d74ad90e31dbe093d956a7c2c306ba5429ba0c00f3f7505103d7a496
   languageName: node
   linkType: hard
 
@@ -19293,7 +19293,7 @@ __metadata:
     "@types/jasmine": ~3.3.8
     "@types/jasminewd2": ~2.0.3
     "@types/mocha": ^8.0.3
-    "@types/node": ^12.11.1
+    "@types/node": 18.11.9
     "@types/shortid": 0.0.29
     "@types/sinon": ^7.0.13
     "@typescript-eslint/eslint-plugin": ^5.57.0

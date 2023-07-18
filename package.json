@@ -146,7 +146,7 @@
     "pegjs": "^0.10.0",
     "portfinder": "^1.0.28",
     "protractor-screenshot-utils": "^1.0.5",
-    "rpx-xui-translation": "0.2.3",
+    "rpx-xui-translation": "0.2.3-yesno-translations-fix-v2",
     "rx-polling": "1.1.0",
     "rxjs": "^6.5.3",
     "rxjs-compat": "^6.6.7",

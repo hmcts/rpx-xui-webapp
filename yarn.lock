@@ -2386,12 +2386,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.2-a-ccpay-upgrade":
-  version: 6.16.2-a-ccpay-upgrade
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.2-a-ccpay-upgrade"
+"@hmcts/ccd-case-ui-toolkit@npm:6.18.2-EXUI-433-pass-all-fields":
+  version: 6.18.2-EXUI-433-pass-all-fields
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.18.2-EXUI-433-pass-all-fields"
   dependencies:
     tslib: ^2.0.0
-  checksum: e363197127674a192d67ede114d28e08b2f4dd081383c685cfb33c00d1c09fbeba65f0b09f0444de56ec98e59d6be054b77c285537526d89d60390a760bd3f83
+  checksum: 2f1a057c02eac47d71327685a10b87d4080f90eaff3af35dac0d5656d60640b77f24120d6a2abef7ab4bfec4ae5e5fb28bab8f5c3db7a25b74786d5cc5a9ffaa
   languageName: node
   linkType: hard
 
@@ -19255,7 +19255,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.2-a-ccpay-upgrade
+    "@hmcts/ccd-case-ui-toolkit": 6.18.2-EXUI-433-pass-all-fields
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

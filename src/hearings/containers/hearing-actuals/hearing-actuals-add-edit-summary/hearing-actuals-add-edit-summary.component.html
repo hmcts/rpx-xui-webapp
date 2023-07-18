@@ -1,6 +1,8 @@
 <a class="govuk-back-link" href="javascript:history.back()">Back</a>
 <xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'">
 </xuilib-hmcts-error-summary>
+<xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem'" *ngIf="errors$ | async">
+</xuilib-hmcts-error-summary>
 <div class="govuk-notification-banner govuk-notification-banner--success" role="alert"
   aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner"
   *ngIf="validationErrors.length == 0 && successBanner">
@@ -13,10 +15,6 @@
     <p class="govuk-body">Details submitted</p>
   </div>
 </div>
-
-<xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem'" *ngIf="errors$ | async">
-</xuilib-hmcts-error-summary>
-
 <div class="govuk-grid-row" *ngIf="hearingActualsMainModel">
   <div class="govuk-grid-column-two-thirds">
     <exui-hearing-case-name></exui-hearing-case-name>
@@ -104,7 +102,7 @@
                     </dt>
                     <dd class="govuk-summary-list__value"></dd>
                     <dd class="govuk-summary-list__actions">
-                      <a href="javascript:void(0)" (click)="confirmActualHearingTimeAndParties(actualHearingDay)"
+                      <a href="javascript:void(0)" (click)="confirmActualHearingTimeForDay(actualHearingDay)"
                         id="hearing-timing-result-confirm-link" class="govuk-link">
                         Confirm
                       </a>&nbsp;
@@ -141,7 +139,7 @@
                     </dt>
                     <dd class="govuk-summary-list__value"></dd>
                     <dd class="govuk-summary-list__actions">
-                      <a href="javascript:void(0)" (click)="confirmActualHearingTimeAndParties(actualHearingDay)"
+                      <a href="javascript:void(0)" (click)="confirmActualPartiesForDay(actualHearingDay)"
                         id="hearing-parties-result-confirm-link" class="govuk-link">Confirm</a>&nbsp;
                       <a *ngIf="!isPaperHearing" href="javascript:void(0)"
                         [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties', actualHearingDay.hearingDate]"

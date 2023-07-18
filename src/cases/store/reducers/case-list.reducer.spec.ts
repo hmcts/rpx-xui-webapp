@@ -130,16 +130,16 @@ describe('CaseList Filter Reducer', () => {
     it('should set correct object', () => {
       const { initialCaselistState } = filterCaseList;
       const action = new fromCases.FindCaselistPaginationMetadataSuccess({
-        total_pages_count: 10,
-        total_results_count: 25
+        totalPagesCount: 10,
+        totalResultsCount: 25
       });
 
       const state = filterCaseList.caselistReducer(initialCaselistState, action);
 
       expect(state.loading).toEqual(true);
       expect(state.loaded).toEqual(false);
-      expect(state.paginationMetadata.total_pages_count).toEqual(10);
-      expect(state.paginationMetadata.total_results_count).toEqual(25);
+      expect(state.paginationMetadata.totalPagesCount).toEqual(10);
+      expect(state.paginationMetadata.totalResultsCount).toEqual(25);
     });
   });
 

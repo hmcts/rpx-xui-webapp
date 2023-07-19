@@ -2386,12 +2386,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.18.0-welsh-release-v1":
-  version: 6.18.0-welsh-release-v1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.18.0-welsh-release-v1"
+"@hmcts/ccd-case-ui-toolkit@npm:6.18.0-welsh-release-v2":
+  version: 6.18.0-welsh-release-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.18.0-welsh-release-v2"
   dependencies:
     tslib: ^2.0.0
-  checksum: 39217ccff8f3d1426d627516f9ef6ea3a16ab8a7aa0e495cfdb7d2e0ce1a3cc803399aeeffcf6a6b683089eb73970f6ed31b812cf70ef1cce274f3e3036b9407
+  checksum: 5411781b8fa0bd6793e6e4b8194d98dc88d0da2640c4160c6f363cdf42a791b29cc7e7942a1736d24db6058536ad6326e4ccf2ee126b75c7da51155ce1302efe
   languageName: node
   linkType: hard
 
@@ -19270,7 +19270,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.18.0-welsh-release-v1
+    "@hmcts/ccd-case-ui-toolkit": 6.18.0-welsh-release-v2
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3
@@ -19394,7 +19394,7 @@ __metadata:
     protractor-cucumber-framework: 6.1.1
     protractor-multiple-cucumber-html-reporter-plugin: 1.8.0
     protractor-screenshot-utils: ^1.0.5
-    rpx-xui-translation: 0.2.3
+    rpx-xui-translation: 0.2.3-yesno-translations-fix-v2
     rx-polling: 1.1.0
     rxjs: ^6.5.3
     rxjs-compat: ^6.6.7
@@ -19424,9 +19424,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:0.2.3":
-  version: 0.2.3
-  resolution: "rpx-xui-translation@npm:0.2.3"
+"rpx-xui-translation@npm:0.2.3-yesno-translations-fix-v2":
+  version: 0.2.3-yesno-translations-fix-v2
+  resolution: "rpx-xui-translation@npm:0.2.3-yesno-translations-fix-v2"
   dependencies:
     dexie: ^3.2.2
     luxon: ^2.4.0
@@ -19434,7 +19434,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^9.1.13
     "@angular/core": ^9.1.13
-  checksum: 91ca03bc01fd214a5bf1081f9f25b4374db091179785e9251da2a88fc8dc2b0881dc5fea6a3e3ef8c3995730e2e7503b162ef0d699508420f41c49a07dff8a99
+  checksum: 5669fed9f095abfb90e69fb2d2c3eb927542d774e33da5f262948516814b6b4f1a55064e55135c0ffa8302a843789bcf79bb624aef747f6f858b081547fbd392
   languageName: node
   linkType: hard
 

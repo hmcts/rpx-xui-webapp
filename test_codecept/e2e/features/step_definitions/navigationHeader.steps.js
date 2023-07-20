@@ -217,14 +217,12 @@ const caseManager = new CaseManager()
         await browserWaits.retryWithActionCallback(async () => {
             await browserUtil.waitForLD(); 
             try{
-                await browserWaits.retryWithActionCallback(async () => {
-                    try {
+                 try {
                         await headerPage.validateHeaderDisplayedForUserType(userType);
                     } catch (err) {
                         await headerpage.clickManageCases();
                         throw new Error(err); 
                     }
-                });
             }catch(err){
                 const baseUrl = process.env.TEST_URL ? process.env.TEST_URL : 'http://localhost:3000/';
                 await browser.get(baseUrl);

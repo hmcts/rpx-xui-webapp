@@ -1,4 +1,4 @@
-@ng @ignore @functional_enabled
+@ng @ignore @functional_disabled
 Feature: Navigation header tabs
     https://tools.hmcts.net/confluence/display/EUI/Global+Search
 

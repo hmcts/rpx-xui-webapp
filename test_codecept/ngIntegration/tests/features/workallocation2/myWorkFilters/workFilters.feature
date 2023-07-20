@@ -1,7 +1,7 @@
-@ng @functional_enabled
+@ng @functional_enabled  @functional_test
 Feature: WA Release 2: My work - Work filters
 
-    Background: Mock and browser setup
+    Background: Mock and brow ser setup
         # Given I navigate to home page
     Scenario Outline:  Work filters show hide button and Apply for "<UserType>"
 

@@ -55,6 +55,13 @@ class BackendMockClient{
         })
     }
 
+
+    async logMessage(mesage){
+        return await axiosInstance.post(`${this.baseUrl}session/logMessage`, {
+            message: mesage
+        })
+    }
+
 }
 
 

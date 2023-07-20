@@ -182,29 +182,32 @@ exports.config = {
 
   },
   bootstrap:async () =>{
-    if (testType === "ngIntegration" && !parallel){
+    if(!parallel){
       await setup()
     }
+    
   },
   teardown: async () => {
     const status = await mochawesomeGenerateReport()
-      if (testType === "ngIntegration" && !parallel){
-        await teardown()
-      }
+    if (!parallel) {
+      await teardown()
+    }
+      
     process.exit(status === 'PASS' ? 0 : 1)
     
   },
   bootstrapAll: async () => {
-    if (testType === "ngIntegration" && parallel) {
+    if (parallel) {
       await setup()
-
     }
+   
   },
   teardownAll: async () => {  
     const status = await  mochawesomeGenerateReport()
-    if (testType === "ngIntegration" && parallel) {
-     await teardown()
+    if (parallel) {
+      await teardown()
     }
+    
 
     process.exit(status === 'PASS' ? 0 : 1)
     // return status === 'PASS' ? 0 : 1  
@@ -214,8 +217,6 @@ exports.config = {
 
 async function setup(){
 
-
-  
   if (!debugMode){
     await backendMockApp.startServer(debugMode);
     await applicationServer.start()

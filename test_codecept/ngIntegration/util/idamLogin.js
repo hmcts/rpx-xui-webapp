@@ -251,8 +251,21 @@ class IdamLogin{
         this.userDetailsResponse.details = {data:response.data}
         return response.data;
     }
+
+    async getUserDetailsWithCookieString(cookieString) {
+        const response = await axiosInstance.get(`${this.conf.xuiBaseUrl}/api/user/details`, {
+            headers: {
+                Cookie: cookieString
+            }
+        })
+        this.userDetailsResponse.status = this.getResponseStatus(response);
+        this.userDetailsResponse.details = { data: response.data }
+        return response.data;
+    }
     
 
 }
 
 module.exports = new IdamLogin();
+
+

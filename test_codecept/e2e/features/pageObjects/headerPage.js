@@ -99,31 +99,29 @@ function HeaderPage() {
     }
 
     this.validateHeaderDisplayedForUserType = async function(userType){
-      await BrowserWaits.retryWithActionCallback(async () => {
-        if (userType.toLowerCase() === 'caseworker') {
-          expect(await this.jcmLogoImg.isPresent(), "JCM logo displayed").to.be.false;
-          expect(await this.myHMCTSHeader.isPresent(), "MyHMCTS is displayed").to.be.false;
-          expect(await this.headerLink.getText(), "Header link mismatch").to.includes("Manage Cases");
-          // expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(32, 32, 32);");
+      if (userType.toLowerCase() === 'caseworker') {
+        expect(await this.jcmLogoImg.isPresent(), "JCM logo displayed").to.be.false;
+        expect(await this.myHMCTSHeader.isPresent(), "MyHMCTS is displayed").to.be.false;
+        expect(await this.headerLink.getText(), "Header link mismatch").to.includes("Manage Cases");
+        // expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(32, 32, 32);");
 
-        } else if (userType.toLowerCase() === 'judicial') {
-          await BrowserWaits.waitForElement(this.jcmLogoImg);
-          expect(await this.jcmLogoImg.isPresent(), "JCM logo not displayed").to.be.true;
-          expect(await this.myHMCTSHeader.isPresent(), "MyHMCTS is displayed").to.be.false;
-          expect(await this.headerLink.getText(), "Header link mismatch").to.includes("Judicial Case Manager");
-          // expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(141, 15, 14);");
+      } else if (userType.toLowerCase() === 'judicial') {
+        await BrowserWaits.waitForElement(this.jcmLogoImg);
+        expect(await this.jcmLogoImg.isPresent(), "JCM logo not displayed").to.be.true;
+        expect(await this.myHMCTSHeader.isPresent(), "MyHMCTS is displayed").to.be.false;
+        expect(await this.headerLink.getText(), "Header link mismatch").to.includes("Judicial Case Manager");
+        // expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(141, 15, 14);");
 
-        } else if (userType.toLowerCase() === 'solicitor') {
-          await BrowserWaits.waitForElement(this.myHMCTSHeader);
-          expect(await this.jcmLogoImg.isPresent(), "JCM displayed").to.be.false;
-          expect(await this.myHMCTSHeader.isPresent(), "MyHMCTS displayed").to.be.true;
-          expect(await this.headerLink.getText(), "Header link mismatch").to.includes("Manage Cases");
-          // expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(32, 32, 32);");
+      } else if (userType.toLowerCase() === 'solicitor') {
+        await BrowserWaits.waitForElement(this.myHMCTSHeader);
+        expect(await this.jcmLogoImg.isPresent(), "JCM displayed").to.be.false;
+        expect(await this.myHMCTSHeader.isPresent(), "MyHMCTS displayed").to.be.true;
+        expect(await this.headerLink.getText(), "Header link mismatch").to.includes("Manage Cases");
+        // expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(32, 32, 32);");
 
-        } else {
-          throw new Error(`User type ${userType} is not recognized`);
-        }
-      });
+      } else {
+        throw new Error(`User type ${userType} is not recognized`);
+      }
     }
 
     this.clickPrimaryNavigationWithLabel = async function(label){

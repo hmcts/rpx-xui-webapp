@@ -217,7 +217,7 @@ exports.config = {
 
 async function setup(){
 
-  if (!debugMode){
+  if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')){
     await backendMockApp.startServer(debugMode);
     await applicationServer.start()
   }
@@ -225,7 +225,7 @@ async function setup(){
 }
 
 async function teardown(){
-  if (!debugMode) {
+  if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
     await backendMockApp.stopServer();
     await applicationServer.stop()
   }

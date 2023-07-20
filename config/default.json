@@ -33,7 +33,7 @@
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
     "hearings": {
-      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL,IAC",
+      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL,IA",
       "sscs": {
         "serviceApi": "http://sscs-hearings-api-prod.service.core-compute-prod.internal",
         "caseTypes": "Benefit"
@@ -46,7 +46,7 @@
         "serviceApi": "http://civil-service-prod.service.core-compute-prod.internal",
         "caseTypes": "CIVIL"
       },
-      "iac": {
+      "ia": {
         "serviceApi": "http://ia-case-access-api-prod.service.core-compute-prod.internal",
         "caseTypes": "Asylum"
       },

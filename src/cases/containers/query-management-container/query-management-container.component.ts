@@ -9,8 +9,7 @@ import {
   FormDocument,
   QualifyingQuestionsErrorMessage,
   QueryCreateContext,
-  QueryListItem,
-  partyMessagesMockData
+  QueryListItem
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
@@ -18,6 +17,7 @@ import { Observable, combineLatest } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import * as fromRoot from '../../../app/store';
+import { caseMessagesMockData } from '../../mock/query-management.mock';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
 import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
@@ -73,7 +73,7 @@ export class QueryManagementContainerComponent implements OnInit {
 
     if (this.queryItemId && this.queryItemId !== QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION) {
       this.queryItem = new QueryListItem();
-      Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
+      Object.assign(this.queryItem, caseMessagesMockData[0].caseMessages[0].value);
     } else {
       this.formGroup.get('subject')?.setValidators([Validators.required]);
       this.formGroup.get('isHearingRelated')?.setValidators([Validators.required]);

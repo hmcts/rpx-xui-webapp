@@ -6,38 +6,46 @@ import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride'
 import { requireReloaded } from '../utils/moduleUtil';
 import { somethingLike } from '@pact-foundation/pact/src/dsl/matchers';
 
-const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_confirmAllocateRole', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_createSpecificAccessApprovalRole', port: 8000 });
 
 const REQUEST_BODY = {
-  caseId: '1234123412341234',
-  jurisdiction: 'IA',
-  assignmentId: 'a123456',
   state: 1,
-  typeOfRole: {
-    id: 'lead-judge',
-    name: 'Lead judge'
-  },
-  allocateTo: 'Reserve to me',
-  personToBeRemoved: {
-    id: 'p111111',
-    name: 'test1',
-    domain: ''
-  },
-  person: {
-    id: 'p222222',
-    name: 'test2',
-    domain: ''
-  },
-  durationOfRole: '7 days',
-  action: 'allocate',
+  accessReason: 'Approve request',
+  typeOfRole: { id: 'specific-access-granted', name: 'specific-access-granted' },
   period: {
-    startDate: '11-07-2023',
-    endDate: '18-07-2023'
+    startDate: new Date(),
+    endDate: new Date()
   },
-  roleCategory: 'LEGAL_OPERATIONS'
+  actorId: '123',
+  caseName: 'example name',
+  requestCreated: null,
+  caseId: '1594717367271987',
+  taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
+  requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
+  jurisdiction: 'IA',
+  roleCategory: 'LEGAL_OPERATIONS',
+  requestedRole: 'specific-access-legal-ops',
+  person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null },
+  specificAccessFormData: {
+    specificAccessDurationForm: {
+      selectedOption: '7 days',
+      selectedDuration: {
+        startDate: {
+          day: 11,
+          month: 11,
+          year: 2024
+        },
+        endDate: {
+          day: 11,
+          month: 11,
+          year: 2024
+        }
+      }
+    }
+  }
 };
 
-const ROLE_ASSIGNMENT_BODY = {
+const SPECIFIC_ACCESS_ROLE_ASSIGNMENT_BODY = {
   roleRequest: somethingLike({
     assignerId: somethingLike('123'),
     replaceExisting: somethingLike(false)
@@ -59,8 +67,8 @@ const ROLE_ASSIGNMENT_BODY = {
   }])
 };
 
-describe('access management service, confirm allocate role', () => {
-  describe('confirm allocate role /allocate-role/confirm', () => {
+describe('access management service, create specific access approval role', () => {
+  describe('create specific access approval role /allocate-role/specific-access-approval', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
     let next;
 
@@ -71,8 +79,8 @@ describe('access management service, confirm allocate role', () => {
     before(async() => {
       await pactSetUp.provider.setup();
       const roleAssignmentInteraction = {
-        state: 'Confirm allocate role for user',
-        uponReceiving: 'confirm role allocation',
+        state: 'Create specific access approval role for user',
+        uponReceiving: 'create specific access approval role',
         withRequest: {
           method: 'POST',
           path: '/am/role-assignments',
@@ -81,7 +89,7 @@ describe('access management service, confirm allocate role', () => {
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
             'content-type': 'application/json'
           },
-          body: ROLE_ASSIGNMENT_BODY
+          body: SPECIFIC_ACCESS_ROLE_ASSIGNMENT_BODY
         },
         willRespondWith: {
           status: 200,
@@ -129,7 +137,7 @@ describe('access management service, confirm allocate role', () => {
         return configValues[prop];
       });
 
-      const { confirmAllocateRole } = requireReloaded('../../../../roleAccess/index');
+      const { createSpecificAccessApprovalRole } = requireReloaded('../../../../roleAccess/index');
       const req = mockReq({
         headers: {
           'Authorization': 'Bearer someAuthorizationToken',
@@ -146,7 +154,7 @@ describe('access management service, confirm allocate role', () => {
       };
 
       try {
-        await confirmAllocateRole(req, response, next);
+        await createSpecificAccessApprovalRole(req, response, next);
         assertResponses(returnedResponse);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();

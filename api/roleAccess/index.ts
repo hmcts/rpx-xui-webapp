@@ -274,9 +274,9 @@ export async function reallocateRole(req: EnhancedRequest, res: Response, next: 
 export async function deleteRoleByCaseAndRoleId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
   const body = req.body;
-  const assigmentId = req.body.assigmentId;
+  const assignmentId = req.body.assignmentId;
   try {
-    const { status } = await sendDelete(`${basePath}/${assigmentId}`, body, req);
+    const { status } = await sendDelete(`${basePath}/${assignmentId}`, body, req);
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
     return res.send().status(status);
   } catch (e) {

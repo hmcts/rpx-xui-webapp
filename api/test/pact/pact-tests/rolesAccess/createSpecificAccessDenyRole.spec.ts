@@ -1,10 +1,11 @@
+import { somethingLike } from '@pact-foundation/pact/src/dsl/matchers';
+import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactTestSetup } from '../settings/provider.mock';
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
-import { somethingLike } from '@pact-foundation/pact/src/dsl/matchers';
 
 const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_createSpecificAccessDenyRole', port: 8000 });
 
@@ -153,5 +154,5 @@ describe('access management service, create specific access deny role', () => {
 });
 
 function assertResponses(dto: any) {
-  console.log('ASSERT RESPONSES', JSON.stringify(dto));
+  console.log(JSON.stringify(dto));
 }

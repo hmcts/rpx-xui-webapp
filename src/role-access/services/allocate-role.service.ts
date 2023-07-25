@@ -40,8 +40,8 @@ export class AllocateRoleService {
     return this.http.post(`${AllocateRoleService.specificAccessUrl}/request-more-information`, requestMoreInformationStateData);
   }
 
-  public removeAllocation(assigmentId: string): Observable<any> {
-    const body = { assigmentId };
+  public removeAllocation(assignmentId: string): Observable<any> {
+    const body = { assignmentId };
     return this.http.post(`${AllocateRoleService.allocateRoleBaseUrl}/delete`, body);
   }
 

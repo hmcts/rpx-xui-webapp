@@ -13,6 +13,7 @@ const idamLogin = require('../ngIntegration/util/idamLogin');
 
 const isIntegrationTestType = process.env.TEST_TYPE && process.env.TEST_TYPE === 'ngIntegration'
 
+const testType = process.env.TEST_TYPE
 
 function getFeatureFileName(test){
     const filePathSplit = test.file.split('/')
@@ -21,7 +22,7 @@ function getFeatureFileName(test){
 
 function featureLogsMessage(test, message){
     const fileName = getFeatureFileName(test)
-    fs.appendFileSync(`${__dirname}/../../functional-output/tests/${fileName}.txt`, message)
+    fs.appendFileSync(`${__dirname}/../../functional-output/tests/codecept-${testType}/featureLogs/${fileName}.txt`, message)
 }
 
 

@@ -174,11 +174,8 @@ export async function confirmAllocateRole(req: EnhancedRequest, res: Response, n
   try {
     const body = req.body;
     const currentUser = req.session.passport.user.userinfo;
-    console.log('USER INFO', JSON.stringify(currentUser));
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-    console.log('CURRENT USER ID', currentUserId);
     const roleAssignmentsBody = toRoleAssignmentBody(currentUserId, body);
-    console.log('ROLE ASSIGNMENT BODY', roleAssignmentsBody);
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);

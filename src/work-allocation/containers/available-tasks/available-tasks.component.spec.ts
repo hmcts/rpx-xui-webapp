@@ -130,7 +130,6 @@ describe('AvailableTasksComponent', () => {
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockFeatureToggleService.getValue.and.returnValue(of(true));
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
-    component.isUpdatedTaskPermissions$ = of(true);
     spyOn(mockRouter, 'navigate');
     fixture.detectChanges();
   });

@@ -25,7 +25,6 @@ export class TasksContainerComponent implements OnInit {
   public caseworkers: Caseworker[] = [];
   public warningIncluded: boolean;
   public showSpinner$ : Observable<boolean>;
-  public isUpdatedTaskPermissions$: Observable<boolean>;
   public showSpinner: boolean = true;
 
   constructor(private readonly waCaseService: WorkAllocationCaseService,
@@ -33,9 +32,7 @@ export class TasksContainerComponent implements OnInit {
               private readonly caseworkerService: CaseworkerDataService,
               private readonly rolesService: AllocateRoleService,
               private readonly featureToggleService: FeatureToggleService,
-              private readonly loadingService: LoadingService) {
-    this.isUpdatedTaskPermissions$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
-  }
+              private readonly loadingService: LoadingService) { }
 
   public ngOnInit(): void {
     this.showSpinner$ = this.loadingService.isLoading as any;

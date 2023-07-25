@@ -161,10 +161,6 @@
       "__name": "FEATURE_WORKALLOCATION_ENABLED",
       "__format":"json"
     },
-    "updatedTaskPermissionsEnabled": {
-      "__name": "FEATURE_UPDATED_TASK_PERMISSIONS_ENABLED",
-      "__format":"json"
-    },
     "substantiveRoleEnabled": {
       "__name": "FEATURE_SUBSTANTIVE_ROLE_ENABLED",
       "__format":"json"

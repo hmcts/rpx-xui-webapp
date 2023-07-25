@@ -4,8 +4,6 @@ import { CaseView, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of } from 'rxjs';
 import { first, mergeMap, switchMap } from 'rxjs/operators';
-
-import { AppConstants } from '../../../app/app.constants';
 import { CaseRoleDetails } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
 import { Caseworker } from '../../../work-allocation/models/dtos';

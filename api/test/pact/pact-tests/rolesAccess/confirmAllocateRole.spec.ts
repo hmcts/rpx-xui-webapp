@@ -37,7 +37,7 @@ const REQUEST_BODY = {
   roleCategory: 'LEGAL_OPERATIONS'
 };
 
-const ROLE_ASSIGNMENT_BODY = {
+const ROLE_ASSIGNMENTS_BODY = {
   roleRequest: somethingLike({
     assignerId: somethingLike('123'),
     replaceExisting: somethingLike(false)
@@ -81,7 +81,7 @@ describe('access management service, confirm allocate role', () => {
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
             'content-type': 'application/json'
           },
-          body: ROLE_ASSIGNMENT_BODY
+          body: ROLE_ASSIGNMENTS_BODY
         },
         willRespondWith: {
           status: 200,

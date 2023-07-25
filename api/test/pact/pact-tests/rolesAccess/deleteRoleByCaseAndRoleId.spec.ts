@@ -1,3 +1,5 @@
+import { somethingLike } from '@pact-foundation/pact/src/dsl/matchers';
+import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
@@ -7,10 +9,14 @@ import { requireReloaded } from '../utils/moduleUtil';
 
 const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_deleteRoleByCaseAndRoleId', port: 8000 });
 
-const assigmentId = '704c8b1c-e89b-436a-90f6-953b1dc40157';
+const assignmentId = '704c8b1c-e89b-436a-90f6-953b1dc40157';
+
+const REQUEST_BODY = {
+  'assignmentId': assignmentId
+};
 
 describe('access management service, delete role by case and role id', () => {
-  describe('delete /am/role-assignments/{assigmentId}', () => {
+  describe('delete /am/role-assignments/{assignmentId}', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
     let next;
 
@@ -25,11 +31,14 @@ describe('access management service, delete role by case and role id', () => {
         uponReceiving: 'delete role by case and role id',
         withRequest: {
           method: 'DELETE',
-          path: `/am/role-assignments/${assigmentId}`,
+          path: `/am/role-assignments/${assignmentId}`,
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
             'content-type': 'application/json'
+          },
+          body: {
+            'assignmentId': somethingLike(assignmentId)
           }
         },
         willRespondWith: {
@@ -59,9 +68,7 @@ describe('access management service, delete role by case and role id', () => {
           'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
           'content-type': 'application/json'
         },
-        body: {
-          assigmentId
-        }
+        body: REQUEST_BODY
       });
       let returnedResponse = null;
       const response = mockRes();
@@ -71,7 +78,6 @@ describe('access management service, delete role by case and role id', () => {
 
       try {
         await deleteRoleByCaseAndRoleId(req, response, next);
-
         assertResponses(returnedResponse);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();

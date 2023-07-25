@@ -4,6 +4,7 @@ import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactTestSetup } from '../settings/provider.mock';
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
+import { somethingLike } from '@pact-foundation/pact/src/dsl/matchers';
 
 const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_deleteRoleByAssignmentId', port: 8000 });
 
@@ -100,14 +101,10 @@ describe('access management service, delete role by assignment id', () => {
         body: REQUEST_BODY
       });
       let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
+      const response = null;
 
       try {
-        await deleteRoleByAssignmentId(req, response, next, assigmentId);
-
+        returnedResponse = await deleteRoleByAssignmentId(req, response, next, assigmentId);
         assertResponses(returnedResponse);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();

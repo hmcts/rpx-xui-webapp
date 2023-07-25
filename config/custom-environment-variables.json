@@ -51,7 +51,7 @@
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_CIVIL",
         "caseTypes": "CIVIL"
       },
-      "iac": {
+      "ia": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_IAC",
         "caseTypes": "Asylum"
       },

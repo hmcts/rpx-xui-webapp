@@ -47,7 +47,7 @@
         "caseTypes": "CIVIL"
       },
       "ia": {
-        "serviceApi": "http://ia-case-access-api-prod.service.core-compute-prod.internal",
+        "serviceApi": "http://ia-hearings-api-prod.service.core-compute-prod.internal",
         "caseTypes": "Asylum"
       },
       "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"

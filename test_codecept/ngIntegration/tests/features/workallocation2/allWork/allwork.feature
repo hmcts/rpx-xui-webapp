@@ -1,4 +1,4 @@
-@ng @functional_enabled
+@ng @functional_enabled @functional_debug
 Feature: WA Release 2: All work
 
     Background: Mock and browser setup
@@ -91,9 +91,7 @@ Feature: WA Release 2: All work
         Given I start MockApp
 
         Given I navigate to home page
-        When I click on primary n
-        
-        
+    
         When I click on primary navigation header tab "All work", I see selected tab page displayed
 
         Then I validate tasks count in page 20

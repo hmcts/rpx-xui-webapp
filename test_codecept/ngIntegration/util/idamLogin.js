@@ -242,9 +242,11 @@ class IdamLogin{
 
 
     async getUserDetails(){
+
+        const cookies = await this.getCookieString(this.xuiCallbackResponse.details.setCookies)
         const response = await axiosInstance.get(`${this.conf.xuiBaseUrl}/api/user/details`, {
             headers: {
-                Cookie: this.getCookieString(this.xuiCallbackResponse.details.setCookies)
+                Cookie: cookies
             }
         })
         this.userDetailsResponse.status = this.getResponseStatus(response);

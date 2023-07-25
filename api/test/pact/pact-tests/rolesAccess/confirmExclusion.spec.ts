@@ -50,7 +50,7 @@ const RESPONSE_BODY = {
   data: { exclusionDescription: somethingLike(['exclusion confirmed']) }
 };
 
-describe.only('access management service, confirm exclusion', () => {
+describe('access management service, confirm exclusion', () => {
   describe('confirm exclusion /am/role-assignments', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
     let next;

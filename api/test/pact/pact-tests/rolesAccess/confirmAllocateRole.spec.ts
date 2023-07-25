@@ -1,10 +1,11 @@
+import { somethingLike } from '@pact-foundation/pact/src/dsl/matchers';
+import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactTestSetup } from '../settings/provider.mock';
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
-import { somethingLike } from '@pact-foundation/pact/src/dsl/matchers';
 
 const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_confirmAllocateRole', port: 8000 });
 
@@ -107,8 +108,7 @@ describe('access management service, confirm allocate role', () => {
           status: 200,
           headers: {
             'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
-          },
-          body: {}
+          }
         }
       };
 
@@ -139,6 +139,7 @@ describe('access management service, confirm allocate role', () => {
         session: { passport: { user: { userinfo: { id: '123' } } } },
         body: REQUEST_BODY
       });
+
       let returnedResponse = null;
       const response = mockRes();
       response.send = (ret) => {
@@ -151,7 +152,6 @@ describe('access management service, confirm allocate role', () => {
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
       } catch (err) {
-        console.log(err.stack);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
         throw new Error(err);
@@ -161,5 +161,5 @@ describe('access management service, confirm allocate role', () => {
 });
 
 function assertResponses(dto: any) {
-  console.log('ASSERT RESPONSES', JSON.stringify(dto));
+  expect(dto).to.eql({});
 }

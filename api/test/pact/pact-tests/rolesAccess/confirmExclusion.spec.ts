@@ -1,4 +1,5 @@
 import { somethingLike } from '@pact-foundation/pact/src/dsl/matchers';
+import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
@@ -6,36 +7,51 @@ import { PactTestSetup } from '../settings/provider.mock';
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
-const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_confirmExclusion', port: 8000 });
 
 const REQUEST_BODY = {
-  roleRequest: {
+  caseId: '123456789',
+  jurisdiction: 'IA',
+  state: 5,
+  exclusionOption: 'Exclude another person',
+  personRole: 'Judicial',
+  person: {
+    id: '123',
+    name: 'Test user',
+    domain: 'Judicial'
+  },
+  exclusionDescription: ['testing exclusion']
+};
+
+const ROLE_ASSIGNMENTS_BODY = {
+  roleRequest: somethingLike({
     assignerId: somethingLike('123'),
     replaceExisting: somethingLike(false)
-  },
-  requestedRoles: [{
-    roleType: somethingLike('CASE'),
-    grantType: somethingLike('EXCLUDED'),
-    classification: somethingLike('RESTRICTED'),
-    attributes: {
-      caseId: somethingLike('123456789'),
-      jurisdiction: somethingLike('IA'),
-      notes: {
-        contents: []
-      }
-    },
-    roleName: somethingLike('conflict-of-interest'),
-    actorIdType: somethingLike('IDAM'),
-    actorId: somethingLike('123')
-  }]
+  }),
+  requestedRoles: somethingLike([
+    {
+      roleType: somethingLike('CASE'),
+      grantType: somethingLike('EXCLUDED'),
+      classification: somethingLike('RESTRICTED'),
+      attributes: somethingLike({
+        caseId: somethingLike('123456789'),
+        jurisdiction: somethingLike('IA'),
+        notes: somethingLike(['testing exclusion'])
+      }),
+      roleCategory: 'JUDICIAL',
+      roleName: somethingLike('conflict-of-interest'),
+      actorIdType: somethingLike('IDAM'),
+      actorId: somethingLike('123')
+    }
+  ])
 };
 
 const RESPONSE_BODY = {
   data: { exclusionDescription: somethingLike(['exclusion confirmed']) }
 };
 
-describe('access management service, confirm exclusion', () => {
-  describe('confirm /am/role-assignments', () => {
+describe.only('access management service, confirm exclusion', () => {
+  describe('confirm exclusion /am/role-assignments', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
     let next;
 
@@ -56,14 +72,14 @@ describe('access management service, confirm exclusion', () => {
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
             'content-type': 'application/json'
           },
-          body: REQUEST_BODY
+          body: ROLE_ASSIGNMENTS_BODY
         },
         willRespondWith: {
           status: 200,
           headers: {
             'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
           },
-          body: {}
+          body: RESPONSE_BODY
         }
       };
 
@@ -90,20 +106,9 @@ describe('access management service, confirm exclusion', () => {
           'content-type': 'application/json'
         },
         session: { passport: { user: { userinfo: { id: '123' } } } },
-        body: {
-          caseId: '123456789',
-          jurisdiction: 'IA',
-          state: 5,
-          exclusionOption: 'Exclude another person',
-          personRole: 'Judicial',
-          person: {
-            id: '123',
-            name: 'Test user',
-            domain: 'Judicial'
-          },
-          exclusionDescription: ['testing exclusion']
-        }
+        body: REQUEST_BODY
       });
+
       let returnedResponse = null;
       const response = mockRes();
       response.send = (ret) => {
@@ -112,6 +117,7 @@ describe('access management service, confirm exclusion', () => {
 
       try {
         await confirmUserExclusion(req, response, next);
+        assertResponses(returnedResponse);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
       } catch (err) {
@@ -122,3 +128,7 @@ describe('access management service, confirm exclusion', () => {
     });
   });
 });
+
+function assertResponses(dto: any) {
+  expect(dto.data.exclusionDescription[0]).to.be.equal('exclusion confirmed');
+}

@@ -1,4 +1,4 @@
-@ng @functional_enabled
+@ng @functional_enabled 
 Feature: WA Release 2: My work - My Tasks
 
     Background: Mock and browser setup
@@ -6,7 +6,12 @@ Feature: WA Release 2: My work - My Tasks
 
 
     Scenario Outline:  My Tasks, colums and column links for "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        
+        
+        Given I set MOCK with user details
+            | roles | <Roles>,task-supervisor,case-allocator |
+            | roleCategory | <roleCategory> |
+
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation | roleCategory |
             | IA | Y | ORGANISATION | 20001 | <roleCategory> |
@@ -82,7 +87,11 @@ Feature: WA Release 2: My work - My Tasks
 
 
     Scenario Outline: My Tasks sort column persist in session with Caseworker user "<SubNavigationTab>"
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator" with reference "userDetails"
+       
+        Given I set MOCK with user details
+            | roles        | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator |
+            | roleCategory | LEGAL_OPERATIONS                         |
+        
         Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
@@ -119,7 +128,11 @@ Feature: WA Release 2: My work - My Tasks
 
 
     Scenario Outline:  My Tasks, colums width "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+       
+        Given I set MOCK with user details
+            | roles | <Roles>,task-supervisor,case-allocator |
+            | roleCategory | <roleCategory> |
+        
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
@@ -174,7 +187,7 @@ Feature: WA Release 2: My work - My Tasks
             | 3   | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | auto test category 3 | test location 3 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -30      |
 
         Examples:
-            | UserIdentifier     | UserType   | Roles                                                            |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            | UserIdentifier     | UserType   | Roles                                                            |roleCategory|
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |LEGAL_OPERATIONS|
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |JUDICIAL|
 

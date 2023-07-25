@@ -3,9 +3,7 @@ import { AllocateRoleData } from '../models/allocate-role-state-data.interface';
 import { AllocateTo, Period, RoleCategory } from '../models/allocate-role.enum';
 
 export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData) {
-  console.log('ALLOCATE ROLE DATA', JSON.stringify(allocateRoleData));
-  console.log('ALLOCATE ROLE DATA CASE', JSON.stringify(allocateRoleData.caseId));
-  const abc = {
+  return {
     roleRequest: {
       assignerId: currentUserId,
       replaceExisting: false
@@ -26,8 +24,6 @@ export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: Al
       endTime: allocateRoleData.period.endDate
     }]
   };
-  console.log('ABC', abc);
-  return abc;
 }
 
 export function toSARoleAssignmentBody(
@@ -215,7 +211,6 @@ export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData
 }
 
 export function getActorId(currentUserId: string, allocateRoleData: AllocateRoleData): string {
-  console.log('GET ACTOR ID', currentUserId, allocateRoleData.allocateTo);
   if (allocateRoleData.allocateTo === AllocateTo.RESERVE_TO_ME) {
     return currentUserId;
   }

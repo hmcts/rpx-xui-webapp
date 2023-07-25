@@ -46,7 +46,7 @@ const REQUEST_BODY = {
   }
 };
 
-describe.only('access management service, delete role by assignment id', () => {
+describe('access management service, delete role by assignment id', () => {
   describe('delete /am/role-assignments/{assigmentId}', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
     let next;

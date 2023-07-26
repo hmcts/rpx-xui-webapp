@@ -2386,12 +2386,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-update-mock-data":
-  version: 6.16.0-query-management-update-mock-data
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-update-mock-data"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-navigate-back-to-query-list":
+  version: 6.16.0-query-management-navigate-back-to-query-list
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-navigate-back-to-query-list"
   dependencies:
     tslib: ^2.0.0
-  checksum: 3320c1a72b3620fda3119446effe575858f75848865276db42697171ca969b54607c29d936502d37ffa92bad3816e8e1b13d91b7d3ba8bb239157df9bb62436c
+  checksum: c1aee3d67b173f5fb4dd06fbbbe5fa3c10ac58e53aa256eed42ac5c94c28c2d7f765f3fa289940e390250bd9965cb5a03be1fab14d1841aa1e10f055ea3ea9bf
   languageName: node
   linkType: hard
 
@@ -19269,7 +19269,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-update-mock-data
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-navigate-back-to-query-list
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

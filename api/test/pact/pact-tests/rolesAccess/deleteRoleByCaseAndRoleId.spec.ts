@@ -46,8 +46,31 @@ describe('access management service, delete role by case and role id', () => {
         }
       };
 
+      const refreshRoleAssignmentInteraction = {
+        state: 'An actor with provided id is available in role assignment service',
+        uponReceiving: 'refresh role assignment for user',
+        withRequest: {
+          method: 'GET',
+          path: '/am/role-assignments/actors/123',
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          }
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+          },
+          body: {}
+        }
+      };
+
       // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
+      // @ts-ignore
+      pactSetUp.provider.addInteraction(refreshRoleAssignmentInteraction);
     });
 
     afterEach(() => {
@@ -68,8 +91,10 @@ describe('access management service, delete role by case and role id', () => {
           'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
           'content-type': 'application/json'
         },
+        session: { passport: { user: { userinfo: { id: '123' } } } },
         body: REQUEST_BODY
       });
+
       let returnedResponse = null;
       const response = mockRes();
       response.send = (ret) => {
@@ -82,7 +107,6 @@ describe('access management service, delete role by case and role id', () => {
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
       } catch (err) {
-        console.log(err.stack);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
         throw new Error(err);
@@ -92,5 +116,6 @@ describe('access management service, delete role by case and role id', () => {
 });
 
 function assertResponses(dto: any) {
-  console.log(JSON.stringify(dto));
+  // The API does not send any response back
+  expect(dto).to.be.equal(undefined);
 }

@@ -226,7 +226,6 @@ describe('access management service, restore specific access request role', () =
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
       } catch (err) {
-        console.log(err.stack);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
         throw new Error(err);

@@ -2,7 +2,7 @@ import { somethingLike } from '@pact-foundation/pact/src/dsl/matchers';
 import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
-import { mockReq, mockRes } from 'sinon-express-mock';
+import { mockReq } from 'sinon-express-mock';
 import { PactTestSetup } from '../settings/provider.mock';
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
@@ -132,19 +132,16 @@ describe('access management service, create specific access deny role', () => {
         session: { passport: { user: { userinfo: { id: '123' } } } },
         body: REQUEST_BODY
       });
+
       let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
+      const response = null;
 
       try {
-        await createSpecificAccessDenyRole(req, response, next);
+        returnedResponse = await createSpecificAccessDenyRole(req, response, next);
         assertResponses(returnedResponse);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
       } catch (err) {
-        console.log(err.stack);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
         throw new Error(err);
@@ -154,5 +151,6 @@ describe('access management service, create specific access deny role', () => {
 });
 
 function assertResponses(dto: any) {
-  console.log(JSON.stringify(dto));
+  expect(dto.status).to.be.equal(200);
+  expect(dto.data).to.eql({});
 }

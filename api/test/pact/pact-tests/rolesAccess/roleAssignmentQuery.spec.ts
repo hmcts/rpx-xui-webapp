@@ -152,12 +152,10 @@ describe('access management service, query role assignments', () => {
 
       try {
         await getRolesByCaseId(req, response, next);
-
         assertResponses(returnedResponse);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
       } catch (err) {
-        console.log(err.stack);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
         throw new Error(err);
@@ -167,7 +165,6 @@ describe('access management service, query role assignments', () => {
 });
 
 function assertResponses(dto: any) {
-  console.log(JSON.stringify(dto));
   expect(dto.length).to.be.equal(3);
 }
 

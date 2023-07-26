@@ -1,10 +1,10 @@
+import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
-import { mockReq, mockRes } from 'sinon-express-mock';
+import { mockReq } from 'sinon-express-mock';
 import { PactTestSetup } from '../settings/provider.mock';
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
-import { somethingLike } from '@pact-foundation/pact/src/dsl/matchers';
 
 const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_deleteRoleByAssignmentId', port: 8000 });
 
@@ -76,8 +76,31 @@ describe('access management service, delete role by assignment id', () => {
         }
       };
 
+      const refreshRoleAssignmentInteraction = {
+        state: 'An actor with provided id is available in role assignment service',
+        uponReceiving: 'refresh role assignment for user',
+        withRequest: {
+          method: 'GET',
+          path: '/am/role-assignments/actors/123',
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          }
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+          },
+          body: {}
+        }
+      };
+
       // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
+      // @ts-ignore
+      pactSetUp.provider.addInteraction(refreshRoleAssignmentInteraction);
     });
 
     afterEach(() => {
@@ -98,8 +121,10 @@ describe('access management service, delete role by assignment id', () => {
           'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
           'content-type': 'application/json'
         },
+        session: { passport: { user: { userinfo: { id: '123' } } } },
         body: REQUEST_BODY
       });
+
       let returnedResponse = null;
       const response = null;
 
@@ -109,7 +134,6 @@ describe('access management service, delete role by assignment id', () => {
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
       } catch (err) {
-        console.log(err.stack);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
         throw new Error(err);
@@ -119,5 +143,6 @@ describe('access management service, delete role by assignment id', () => {
 });
 
 function assertResponses(dto: any) {
-  console.log(JSON.stringify(dto));
+  expect(dto.status).to.be.equal(204);
+  expect(dto.data).to.eql('');
 }

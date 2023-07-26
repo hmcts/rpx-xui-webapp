@@ -77,54 +77,8 @@ describe('getAccessRolesByCaseId - access management service, query role assignm
           body: RESPONSE_BODY
         }
       };
-
-      const rolesResponseBody = [
-        {
-          actions: [
-            {
-              id: 'reallocate',
-              title: 'Reallocate'
-            }
-          ],
-          actorId: '271ebdd4-f757-492d-b57f-101b8e47c90e',
-          end: null,
-          id: 'b83acc2f-6720-4cf9-a1f8-52367c35963d',
-          roleId: null,
-          location: null,
-          roleCategory: 'LEGAL_OPERATIONS',
-          roleName: 'case-manager',
-          start: '2022-09-15T23:00:00Z',
-          created: '2022-09-16T13:06:44.295367Z',
-          notes: 'No reason for case access given',
-          requestedRole: null
-        }
-      ];
-
-      const getRolesInteraction = {
-        state: 'A list of role assignments for the search query',
-        uponReceiving: 'query role assignments for caseId',
-        withRequest: {
-          method: 'POST',
-          path: '/role-access/roles/access-get-by-caseId',
-          headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json; charset=utf-8'
-          }
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json; charset=utf-8'
-          },
-          body: rolesResponseBody
-        }
-      };
-
       // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
-      // @ts-ignore
-      pactSetUp.provider.addInteraction(getRolesInteraction);
     });
 
     afterEach(() => {

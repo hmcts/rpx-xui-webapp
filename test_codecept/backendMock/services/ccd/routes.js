@@ -11,8 +11,12 @@ const userApiData = require('../userApiData')
 
 router.get('/data/internal/cases/:caseId', (req, res) => {
     const caseId = req.params['caseId'];
-
-    userApiData.sendResponse(req, res, "OnCaseDetails", () => ccdMockData.getCaseDetailsWithID(caseId ))
+    ccdMockData.caseDetailsResponse.setCaseTypeProperties({
+        id:'test',
+        name:'test case type'
+    })
+    ccdMockData.caseDetailsResponse.addTab({ label:'ngIntegration mock data'})
+    userApiData.sendResponse(req, res, "OnCaseDetails", () => ccdMockData.caseDetailsResponse.data)
 
 });
 
@@ -33,7 +37,10 @@ router.get('/data/internal/case-types/:jurisdiction/search-inputs', (req, res) =
 })
 
 router.get('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
-    res.send(ccdMockData.getSolicitorCreateCaseConfig(req.params.jurisdiction, req.params.caseType))
+    ccdMockData.caseEventData.setEventProps({
+        show_summary:false
+    })
+    res.send(ccdMockData.caseEventData.eventData)
 })
 
 router.get('/data/internal/cases/:caseid/event-triggers/:eventId', (req, res) => {

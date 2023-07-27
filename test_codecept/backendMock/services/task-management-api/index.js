@@ -33,6 +33,24 @@ class TaskManagementApi{
         return { task: this.getTaskTemplate() }
     }
 
+    getTaskWithProperties(props){
+        const taskTemplate = this.getTaskTemplate();
+
+        for(const prop of Object.keys(props)){
+
+            if (prop.includes('warning_list') || prop.includes('permissions')){ 
+                taskTemplate[prop].values = props[prop].split(',');
+            }else{
+                taskTemplate[prop] = props[prop];
+
+            }
+
+        }
+        return taskTemplate;
+
+    }
+
+
     getWorkTypes(){
         return {
             'work_types':[

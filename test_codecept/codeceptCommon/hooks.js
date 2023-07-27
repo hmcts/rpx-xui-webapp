@@ -22,7 +22,11 @@ function getFeatureFileName(test){
 
 function featureLogsMessage(test, message){
     const fileName = getFeatureFileName(test)
-    fs.appendFileSync(`${__dirname}/../../functional-output/tests/codecept-${testType}/featureLogs/${fileName}.txt`, message)
+    const folderName = `${__dirname}/../../functional-output/tests/featureLogs-${testType}`
+    if (!fs.existsSync(folderName)) {
+        fs.mkdirSync(folderName);
+    }
+    fs.appendFileSync(`${folderName}/${fileName}.txt`, message)
 }
 
 

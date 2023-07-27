@@ -10,7 +10,7 @@ const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 const dummyCaseDetails = require('../../mockData/ccd/caseDetails_data');
 const ccdMockData = require('../../mockData/ccd/ccdApi');
 const mockClient = require('../../../backendMock/client/index.js');
-
+const serviceMock = require('../../../backendMock/client/serviceMock')
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const workAlloctionMockData = require('../../mockData/workAllocation/mockData');
 
@@ -72,11 +72,9 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
     Given('I set MOCK case details with reference {string}', async function(caseDetailsReference){
       const caseDetails = ccdMockData.caseDetailsResponse;
          global.scenarioData[caseDetailsReference] = caseDetails;
-         const authCookie = await browser.driver.manage().getCookie('__auth__');
-         await mockClient.setUserApiData(authCookie.value, getTask, {
-           status: 200,
-           data: global.scenarioData[caseDetailsReference]
-         });
+
+        await serviceMock.updateCaseData(global.scenarioData[caseDetailsReference], 200)
+       
     });
 
     Given('I set MOCK case details {string} values', async function (caseDetailsReference, caseDetailsDatatable) {
@@ -98,7 +96,7 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
             throw Error(` metada field ${property} is not recognised or not implemented in test`);
         }
 
-        await mockClient.setUserApiData('','', {status: 200, data: global.scenarioData['caseDetailsReference']});
+        await serviceMock.updateCaseData(caseDetails, 200)
     });
 
     Given('I set MOCK case details {string} service name as {string}', async function (caseDetailsRef, serviceName) {
@@ -106,12 +104,18 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
 
         caseDetails.case_type.jurisdiction.name = serviceName;
         global.scenarioData[caseDetailsRef] = caseDetails;
-        await mockClient.setUserApiData('','', {status: 200, data: global.scenarioData['caseDetailsReference']});
+
+
+        await serviceMock.updateCaseData(caseDetails, 200)
+
     });
 
     Given('I set MOCK case details {string} state as {string}', async function (caseDetailsRef, name) {
         const caseDetails = global.scenarioData[caseDetailsRef];
         caseDetails.state.name = name;
+
+        await serviceMock.updateCaseData(caseDetails, 200)
+
     });
 
     Given('I set MOCK case details {string} access process {string} and access granted {string}', async function (caseDetailsRef, accessProcess,accessGranted) {

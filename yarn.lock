@@ -2386,12 +2386,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-complete-task":
-  version: 6.16.0-query-management-complete-task
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-complete-task"
+"@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-complete-task-v1":
+  version: 6.16.0-query-management-complete-task-v1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.16.0-query-management-complete-task-v1"
   dependencies:
     tslib: ^2.0.0
-  checksum: fecbc84e67e813407b5899cfc7e08e6053a3eece5da7698350349dab8df8551f10ea2c1282b3558356812866f6fa755e12c7fbd5d64c6b7908eccb7c3c70062c
+  checksum: a7692e3e77ed66ccfe076a086c71d1e8a9a97cc5fc08bc014e71ca614857bbc52785068a6aef011d3ac5386531350f0eef4e1c34e9c554f99299ef7ff8f6ba9b
   languageName: node
   linkType: hard
 
@@ -19269,7 +19269,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-complete-task
+    "@hmcts/ccd-case-ui-toolkit": 6.16.0-query-management-complete-task-v1
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

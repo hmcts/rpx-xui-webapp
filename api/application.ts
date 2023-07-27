@@ -67,6 +67,7 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         '\'self\'',
         '\'unsafe-inline\'',
         '\'unsafe-eval\'',
+        'https://*.google-analytics.com',
         'https://*.googletagmanager.com',
         'az416426.vo.msecnd.net'
       ],

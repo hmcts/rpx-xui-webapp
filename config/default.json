@@ -110,6 +110,7 @@
     { "service": "PRIVATELAW", "serviceCodes": ["ABA5"] },
     { "service": "PUBLICLAW", "serviceCodes": ["ABA3"] },
     { "service": "SSCS", "serviceCodes": ["BBA3"] },
+    { "service": "ST_CIC", "serviceCodes": ["BBA2"] },
     { "service": "EMPLOYMENT", "serviceCodes": ["BHA1"] }
   ],
   "waSupportedServiceandCaseTypes": {

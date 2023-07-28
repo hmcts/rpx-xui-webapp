@@ -33,7 +33,7 @@
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
     "hearings": {
-      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL",
+      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL,IA",
       "sscs": {
         "serviceApi": "http://sscs-hearings-api-prod.service.core-compute-prod.internal",
         "caseTypes": "Benefit"
@@ -45,6 +45,10 @@
       "civil": {
         "serviceApi": "http://civil-service-prod.service.core-compute-prod.internal",
         "caseTypes": "CIVIL"
+      },
+      "ia": {
+        "serviceApi": "http://ia-hearings-api-prod.service.core-compute-prod.internal",
+        "caseTypes": "Asylum"
       },
       "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
     },
@@ -111,6 +115,7 @@
     { "service": "PRIVATELAW", "serviceCodes": ["ABA5"] },
     { "service": "PUBLICLAW", "serviceCodes": ["ABA3"] },
     { "service": "SSCS", "serviceCodes": ["BBA3"] },
+    { "service": "ST_CIC", "serviceCodes": ["BBA2"] },
     { "service": "EMPLOYMENT", "serviceCodes": ["BHA1"] }
   ],
   "waSupportedServiceandCaseTypes": {

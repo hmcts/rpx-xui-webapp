@@ -38,7 +38,7 @@
       "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },
     "hearings": {
-      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL",
+      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL,IA",
       "sscs": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_SSCS",
         "caseTypes": "Benefit"
@@ -50,6 +50,10 @@
       "civil": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_CIVIL",
         "caseTypes": "CIVIL"
+      },
+      "ia": {
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_IAC",
+        "caseTypes": "Asylum"
       },
       "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API"
     },

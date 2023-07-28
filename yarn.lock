@@ -10255,18 +10255,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flat@npm:^4.1.0":
-  version: 4.1.1
-  resolution: "flat@npm:4.1.1"
-  dependencies:
-    is-buffer: ~2.0.3
-  bin:
-    flat: cli.js
-  checksum: 398be12185eb0f3c59797c3670a8c35d07020b673363175676afbaf53d6b213660e060488554cf82c25504986e1a6059bdbcc5d562e87ca3e972e8a33148e3ae
-  languageName: node
-  linkType: hard
-
-"flat@npm:^5.0.2":
+"flat@npm:~5.0.1":
   version: 5.0.2
   resolution: "flat@npm:5.0.2"
   bin:
@@ -12174,7 +12163,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-buffer@npm:^2.0.5, is-buffer@npm:~2.0.3":
+"is-buffer@npm:^2.0.5":
   version: 2.0.5
   resolution: "is-buffer@npm:2.0.5"
   checksum: 764c9ad8b523a9f5a32af29bdf772b08eb48c04d2ad0a7240916ac2688c983bf5f8504bf25b35e66240edeb9d9085461f9b5dae1f3d2861c6b06a65fe983de42
@@ -13678,17 +13667,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json5@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "json5@npm:1.0.1"
-  dependencies:
-    minimist: ^1.2.0
-  bin:
-    json5: lib/cli.js
-  checksum: e76ea23dbb8fc1348c143da628134a98adf4c5a4e8ea2adaa74a80c455fc2cdf0e2e13e6398ef819bfe92306b610ebb2002668ed9fc1af386d593691ef346fc3
-  languageName: node
-  linkType: hard
-
 "json5@npm:^2.1.1, json5@npm:^2.1.2, json5@npm:^2.2.1":
   version: 2.2.1
   resolution: "json5@npm:2.2.1"
@@ -14270,36 +14248,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loader-utils@npm:2.0.0":
-  version: 2.0.0
-  resolution: "loader-utils@npm:2.0.0"
+"loader-utils@npm:~2.0.3":
+  version: 2.0.4
+  resolution: "loader-utils@npm:2.0.4"
   dependencies:
     big.js: ^5.2.2
     emojis-list: ^3.0.0
     json5: ^2.1.2
-  checksum: 6856423131b50b6f5f259da36f498cfd7fc3c3f8bb17777cf87fdd9159e797d4ba4288d9a96415fd8da62c2906960e88f74711dee72d03a9003bddcd0d364a51
-  languageName: node
-  linkType: hard
-
-"loader-utils@npm:^1.0.2, loader-utils@npm:^1.1.0, loader-utils@npm:^1.2.3, loader-utils@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "loader-utils@npm:1.4.0"
-  dependencies:
-    big.js: ^5.2.2
-    emojis-list: ^3.0.0
-    json5: ^1.0.1
-  checksum: d150b15e7a42ac47d935c8b484b79e44ff6ab4c75df7cc4cb9093350cf014ec0b17bdb60c5d6f91a37b8b218bd63b973e263c65944f58ca2573e402b9a27e717
-  languageName: node
-  linkType: hard
-
-"loader-utils@npm:^2.0.0":
-  version: 2.0.2
-  resolution: "loader-utils@npm:2.0.2"
-  dependencies:
-    big.js: ^5.2.2
-    emojis-list: ^3.0.0
-    json5: ^2.1.2
-  checksum: 9078d1ed47cadc57f4c6ddbdb2add324ee7da544cea41de3b7f1128e8108fcd41cd3443a85b7ee8d7d8ac439148aa221922774efe4cf87506d4fb054d5889303
+  checksum: a5281f5fff1eaa310ad5e1164095689443630f3411e927f95031ab4fb83b4a98f388185bb1fe949e8ab8d4247004336a625e9255c22122b815bb9a4c5d8fc3b7
   languageName: node
   linkType: hard
 
@@ -15194,10 +15150,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimist@npm:^1.1.3, minimist@npm:^1.2.0, minimist@npm:^1.2.5, minimist@npm:^1.2.6":
-  version: 1.2.5
-  resolution: "minimist@npm:1.2.5"
-  checksum: 86706ce5b36c16bfc35c5fe3dbb01d5acdc9a22f2b6cc810b6680656a1d2c0e44a0159c9a3ba51fb072bb5c203e49e10b51dcd0eec39c481f4c42086719bae52
+"minimist@npm:^1.2.8":
+  version: 1.2.8
+  resolution: "minimist@npm:1.2.8"
+  checksum: 75a6d645fb122dad29c06a7597bddea977258957ed88d7a6df59b5cd3fe4a527e253e9bbf2e783e4b73657f9098b96a5fe96ab8a113655d4109108577ecf85b0
   languageName: node
   linkType: hard
 
@@ -21997,14 +21953,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typed-rest-client@npm:~1.7.1":
-  version: 1.7.3
-  resolution: "typed-rest-client@npm:1.7.3"
+"typed-rest-client@npm:^1.8.0":
+  version: 1.8.11
+  resolution: "typed-rest-client@npm:1.8.11"
   dependencies:
     qs: ^6.9.1
     tunnel: 0.0.6
-    underscore: 1.8.3
-  checksum: 89048157a2fe576c6e7abb919a1fbc176f09a209cb52e2310eb788ef9746c8c38d1c2102dc94983d18048ab84e907756c2d6917757c2573c687c1a230361c077
+    underscore: ^1.12.1
+  checksum: baba87806381cb8e686e07dc0907bbc4a7588410f13f73f5a9fe662274d1961b84d0037bf2cb3966cb288ed6146b3350edcd896c42422f7dbc06625c347f3035
   languageName: node
   linkType: hard
 
@@ -22141,10 +22097,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"underscore@npm:1.8.3":
-  version: 1.8.3
-  resolution: "underscore@npm:1.8.3"
-  checksum: 46d9ea25c8b9f6f21080438f5abc1c8be3063efca5154670bf7ef6e61587660113581b258aea07ccab4045b9ab6e9293ef89103210a3491b64ef03c2d8051a36
+"underscore@npm:^1.12.1":
+  version: 1.13.6
+  resolution: "underscore@npm:1.13.6"
+  checksum: d5cedd14a9d0d91dd38c1ce6169e4455bb931f0aaf354108e47bd46d3f2da7464d49b2171a5cf786d61963204a42d01ea1332a903b7342ad428deaafaf70ec36
   languageName: node
   linkType: hard
 

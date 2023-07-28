@@ -23,11 +23,12 @@ const { DataTableArgument } = require('codeceptjs');
 
 
     Given('I set MOCK task required for event as {string}', async function (isTaskRequired) {
+
         waMockData.setTaskRequiredForEventAs(isTaskRequired.includes("true"));
     });
 
     Given('I set MOCK tasks required for event', async function (tasksDatatable) {
-        waMockData.setTaskRequiredForEventTasks(tasksdatatable.parse().hashes());
+        waMockData.setTaskRequiredForEventTasks(tasksDatatable.parse().hashes());
     });
 
     When('I complete and submit test event {string}', async function(eventId){

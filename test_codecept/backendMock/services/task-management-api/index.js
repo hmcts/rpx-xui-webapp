@@ -12,7 +12,12 @@ class TaskManagementApi{
             searchTasks: "ON_SEARCH_TASKS"
         }
 
+        this.setDefaultData()
+    }
+
+    setDefaultData(){
         this.searchTasksResponse = this.getSearchTasks(25, 140)
+        this.searchCompletableTasksRes = { task_required_for_event: true, tasks: [] }
     }
 
     setOnSearchTasks(token, response){

@@ -2,24 +2,83 @@
 class CaseDetailsData{
     constructor(){
         this.data = getTemplate();
+        this.defaultCase = JSON.parse(JSON.stringify(this.data));
+        this.hearingCase = JSON.parse(JSON.stringify(this.data));
+        this.qmCase = JSON.parse(JSON.stringify(this.data));
+
+        this.setupHearingCase()
+        this.setupDefaultCase()
+        this.setupQMCase()
     }
 
-    setCaseId(id){
-        this.data.case_id = id
+    setCaseId(data,id){
+        data.case_id = id
+       
     }
 
-    setCaseTypeProperties(props){
+    setupQMCase(){
+        this.setCaseTypeProperties(this.qmCase, {
+            id: 'Asylum',
+            name: 'Immigration & Asylum'
+        })
+        this.addTrigger(this.qmCase, {
+            id:'queryManagementRaiseQuery', name:'Raise a query'
+        })
+        this.addTab(this.qmCase, { id: '1', label: 'Queries' })
+        this.addFieldToTab(this.qmCase, '1', {
+            id: 'test', label: 'test field', value: 'test val',
+            field_type: { id: 'Text', type: 'Text' }
+        })
+        this.addFieldToTab(this.qmCase, '1', {
+            id: 'test1', label: 'test field 2', value: 'No',
+            field_type: { id: 'yesNo', type: 'YesOrNo' }
+        })
+    }
+
+    setupHearingCase(){
+        this.setCaseTypeProperties(this.hearingCase, {
+            id: 'IA',
+            name: 'Immigration & Asylum'
+        })
+        this.addTab(this.hearingCase, { id: '1', label: 'Hearings tab' })
+        this.addFieldToTab(this.hearingCase, '1', {
+            id: 'test', label: 'test field', value: 'test val',
+            field_type: { id: 'Text', type: 'Text' }
+        })
+        this.addFieldToTab(this.hearingCase, '1', {
+            id: 'test1', label: 'test field 2', value: 'No',
+            field_type: { id: 'yesNo', type: 'YesOrNo' }
+        })
+    }
+
+    setupDefaultCase(){
+        this.setCaseTypeProperties(this.defaultCase,{
+            id: 'test',
+            name: 'test case type'
+        })
+        this.addTab(this.defaultCase,{ id: '1', label: 'ngIntegration mock data' })
+        this.addFieldToTab(this.defaultCase, '1', {
+            id: 'test', label: 'test field', value: 'test val',
+            field_type: { id: 'Text', type: 'Text' }
+        })
+        this.addFieldToTab(this.defaultCase,'1', {
+            id: 'test1', label: 'test field 2', value: 'No',
+            field_type: { id: 'yesNo', type: 'YesOrNo' }
+        })
+    }
+
+    setCaseTypeProperties(data, props){
         for(const prop of Object.keys(props)){
             if (prop.startsWith("jurisdiction.")){
-                this.data.case_type.jurisdiction[prop.replace('jurisdiction.', '')] = props[prop]
+                data.case_type.jurisdiction[prop.replace('jurisdiction.', '')] = props[prop]
             }else{
-                this.data.case_type[prop] = props[prop]
+                data.case_type[prop] = props[prop]
             }
         }
     }
 
-    addTab(props){
-        this.data.tabs.push({
+    addTab(data, props){
+        data.tabs.push({
             "id": props.id ? props.id : "overview",
             "label": props.label ? props.label : "Overview",
             "order": props.order ? props.order : 15,
@@ -29,13 +88,82 @@ class CaseDetailsData{
         })
     }
 
-    addFieldToTab(tabId, fieldConfig){
-        const tab = this.data.tabs.find(t => t.id === tabId)
+    addFieldToTab(data,tabId, fieldConfig){
+        const tab = data.tabs.find(t => t.id === tabId)
 
-        tab.fields.push();
+        tab.fields.push(this.getCaseField(fieldConfig));
     }
 
-    
+    addTrigger(data, props){
+        data.triggers.push({
+            "id": props.id ? props.id : "FR_applicationPaymentSubmission",
+            "name": props.name ? props.name : "Case Submission",
+            "description": props.description ? props.description : "Case Submission",
+            "order": props.order ? props.order : 2
+        })
+    }
+
+    getCaseField(props){
+        return {
+            "id": props.id ? props.id : "payment",
+            "label": props.label ? props.label : "#### PAYMENT DETAILS",
+            "hidden": props.hidden ? props.hidden : null,
+            "value": props.value ? props.value : null,
+            "metadata": false,
+            "hint_text": props.hint_text ? props.hint_text : null,
+            "field_type": {
+                "id": props.field_type.id ? props.field_type.id : "Label",
+                "type": props.field_type.type ? props.field_type.type : "Label",
+                "min": props.field_type.min ? props.field_type.min : null,
+                "max": props.field_type.max ? props.field_type.max : null,
+                "regular_expression": props.field_type.regular_expression ? props.field_type.regular_expression : null,
+                "fixed_list_items": [],
+                "complex_fields": [],
+                "collection_field_type": props.field_type.collection_field_type ? props.field_type.collection_field_type :null
+            },
+            "validation_expr": props.validation_expr ? props.validation_expr : null,
+            "security_label": "PUBLIC",
+            "order": props.order ? props.order : 1,
+            "formatted_value": props.formatted_value ? props.formatted_value : null,
+            "display_context": props.display_context ? props.display_context : null,
+            "display_context_parameter": props.display_context_parameter ? props.display_context_parameter : null,
+            "show_condition": props.show_condition ? props.show_condition : null,
+            "show_summary_change_option": props.show_summary_change_option ? props.show_summary_change_option : null,
+            "show_summary_content_option": props.show_summary_content_option ? props.show_summary_content_option : null,
+            "retain_hidden_value": props.retain_hidden_value ? props.retain_hidden_value : null,
+            "acls": [
+                {
+                    "role": "caseworker-divorce-financialremedy",
+                    "create": true,
+                    "read": true,
+                    "update": false,
+                    "delete": false
+                },
+                {
+                    "role": "caseworker-divorce-financialremedy-courtadmin",
+                    "create": false,
+                    "read": true,
+                    "update": false,
+                    "delete": false
+                },
+                {
+                    "role": "caseworker-divorce-financialremedy-solicitor",
+                    "create": true,
+                    "read": true,
+                    "update": true,
+                    "delete": false
+                },
+                {
+                    "role": "caseworker-divorce-financialremedy-judiciary",
+                    "create": true,
+                    "read": true,
+                    "update": false,
+                    "delete": false
+                }
+            ],
+            "default_value": props.default_value ? props.default_value : null
+        }
+    }
 
 }
 

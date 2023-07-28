@@ -13,9 +13,9 @@ router.post('/', (req, res) => {
     const caseFilter = search_parameters.find(param => param.key === 'caseId' )
 
     const tasksResponse =  service.getSearchTasks(0,5);
-    tasksResponse.tasks.push(service.getTaskWithProperties({ assignee: '52b5a4b0-a69f-41c5-a89f-84b884d7a04d', description:"[Respond to query](/cases/case-details/${[CASE_REFERENCE]}/trigger/STANDARD_DIRECTION_ORDER_DJ/STANDARD_DIRECTION_ORDER_DJCaseManagementOrder)" }))
+    tasksResponse.tasks.push(service.getTaskWithProperties({ assignee: '52b5a4b0-a69f-41c5-a89f-84b884d7a04d', description:"[Respond to query](/query-management/query/1604309496714935/3)" }))
 
-    userApiData.sendResponse(req, res, service.method.searchTasks, () => tasksResponse)
+    userApiData.sendResponse(req, res, "OnSearchTasks", () => tasksResponse)
 });
 
 router.get('/:taskId', (req, res) => {
@@ -34,7 +34,8 @@ router.post('/search-for-completable', (req, res) => {
     const tasks = []
     // const task1 = { assignee:'8767657575675' }
     // tasks.push(service.getTaskWithProperties(task1))
-    res.send({ task_required_for_event: false, tasks: tasks })
+    userApiData.sendResponse(req, res, "OnSearchForCompletableTasks", () => service.searchCompletableTasksRes)
+
 })
 ;;
 module.exports =  router;

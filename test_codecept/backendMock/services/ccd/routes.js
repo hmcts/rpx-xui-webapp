@@ -11,12 +11,8 @@ const userApiData = require('../userApiData')
 
 router.get('/data/internal/cases/:caseId', (req, res) => {
     const caseId = req.params['caseId'];
-    ccdMockData.caseDetailsResponse.setCaseTypeProperties({
-        id:'test',
-        name:'test case type'
-    })
-    ccdMockData.caseDetailsResponse.addTab({ label:'ngIntegration mock data'})
-    userApiData.sendResponse(req, res, "OnCaseDetails", () => ccdMockData.caseDetailsResponse.data)
+   
+    userApiData.sendResponse(req, res, "OnCaseDetails", () => ccdMockData.caseDetailsResponse.hearingCase)
 
 });
 

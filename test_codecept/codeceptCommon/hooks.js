@@ -53,11 +53,12 @@ module.exports = async function () {
         if (test.state === 'failed' && isIntegrationTestType){
             const authCookies = idamLogin.xuiCallbackResponse.details?.setCookies?.find(cookie => cookie.name === '__auth__')
             const mockSessiondataResponse = await mockClient.getUserSesionData(authCookies ? authCookies.value : null);
-            codeceptMochawesomeLog.AddMessage('---------------------- Session mock data and requests ----------------------');
-            codeceptMochawesomeLog.AddJson(mockSessiondataResponse.data)
-            codeceptMochawesomeLog.AddMessage('---------------------- Session mock data and requests ----------------------');
+            // codeceptMochawesomeLog.AddMessage('---------------------- Session mock data and requests ----------------------');
+            // codeceptMochawesomeLog.AddJson(mockSessiondataResponse.data)
+            // codeceptMochawesomeLog.AddMessage('---------------------- Session mock data and requests ----------------------');
         }
-
+        const cookies = await browser.driver.manage().getCookies()
+        codeceptMochawesomeLog.AddJson(cookies);
         await e2eTestDataManager.cleanupForTags(test.tags);
     });
 

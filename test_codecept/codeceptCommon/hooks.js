@@ -20,6 +20,16 @@ function getFeatureFileName(test){
     return filePathSplit[filePathSplit.length - 1]
 }
 
+function clearFeatureLogFile(test){
+    const fileName = getFeatureFileName(test)
+    const folderName = `${__dirname}/../../functional-output/tests/featureLogs-${testType}`
+    if (!fs.existsSync(folderName)) {
+        fs.mkdirSync(folderName);
+    }
+    fs.writeFileSync(`${folderName}/${fileName}.txt`, 'Test initialised')
+
+}
+
 function featureLogsMessage(test, message){
     const fileName = getFeatureFileName(test)
     const folderName = `${__dirname}/../../functional-output/tests/featureLogs-${testType}`
@@ -46,40 +56,51 @@ module.exports = async function () {
 
     event.dispatcher.on(event.test.after, async function (test) {
         output.print(`Test ${test.state} : ${test.title}`)
-        codeceptMochawesomeLog.AddMessage(`************ Test status:  ${test.state} : ${test.title}`)
-        featureLogsMessage(test, `\n************ Test status:  ${test.state} : ${test.title}`);
-
+     
         actor().flushLogsToReport();
-        if (test.state === 'failed' && isIntegrationTestType){
-            const authCookies = idamLogin.xuiCallbackResponse.details?.setCookies?.find(cookie => cookie.name === '__auth__')
-            const mockSessiondataResponse = await mockClient.getUserSesionData(authCookies ? authCookies.value : null);
-            // codeceptMochawesomeLog.AddMessage('---------------------- Session mock data and requests ----------------------');
-            // codeceptMochawesomeLog.AddJson(mockSessiondataResponse.data)
-            // codeceptMochawesomeLog.AddMessage('---------------------- Session mock data and requests ----------------------');
-        }
-        const cookies = await browser.driver.manage().getCookies()
+
+        const authCookies = idamLogin.xuiCallbackResponse.details?.setCookies?.find(cookie => cookie.name === '__auth__')
+        const mockSessiondataResponse = await mockClient.getUserSesionData(authCookies ? authCookies.value : null);
+        featureLogsMessage(test, `${JSON.stringify(mockSessiondataResponse.data, null, 2)}`);
+
+        const cookies = idamLogin.xuiCallbackResponse;
         codeceptMochawesomeLog.AddJson(cookies);
-        await e2eTestDataManager.cleanupForTags(test.tags);
+        featureLogsMessage(test, `\n cookies \n ${JSON.stringify(cookies, null, 2)}`);
+        featureLogsMessage(test, `\n************ Test status:  ${test.state} : ${test.title}`);
+        // await e2eTestDataManager.cleanupForTags(test.tags);
+
     });
 
 
-    event.dispatcher.on(event.test.passed, function (test) {
+    event.dispatcher.on(event.test.passed,async function (test) {
         // output.print(`Test passed : ${test.title}`)
+
+
+        const authCookies = idamLogin.xuiCallbackResponse.details?.setCookies?.find(cookie => cookie.name === '__auth__')
+        const mockSessiondataResponse = await mockClient.getUserSesionData(authCookies ? authCookies.value : null);
+        featureLogsMessage(test,`${JSON.stringify(mockSessiondataResponse.data, null, 2)}`);
+
         codeceptMochawesomeLog.AddMessage("************ Test passed")
 
     });
 
-    event.dispatcher.on(event.test.failed, async function (test) {
-        output.print(`Test failed event : ${test.title}`)
-        codeceptMochawesomeLog.AddMessage(`************ Test failed : `)
-        featureLogsMessage(test, `\n************ Test failed:  ${test.state} : ${test.title}`);
+    // event.dispatcher.on(event.test.failed, async function (test) {
+    //     output.print(`Test failed event : ${test.title}`)
 
-    });
+
+    //     // const authCookies = idamLogin.xuiCallbackResponse.details?.setCookies?.find(cookie => cookie.name === '__auth__')
+    //     // const mockSessiondataResponse = await mockClient.getUserSesionData(authCookies ? authCookies.value : null);
+    //     // featureLogsMessage(test,`${JSON.stringify(mockSessiondataResponse.data, null, 2)}`);
+
+    //     // codeceptMochawesomeLog.AddMessage(`************ Test failed : `)
+    //     // featureLogsMessage(test, `\n************ Test failed:  ${test.state} : ${test.title}`);
+
+    // });
 
 
     event.dispatcher.on(event.bddStep.before, function (bddStep) {
         // output.print(`STEP: ${bddStep.keyword} ${bddStep.text} `)
-        codeceptMochawesomeLog.AddMessage(`*************** BDD) ${bddStep.keyword} ${bddStep.text}`)
+        codeceptMochawesomeLog.AddMessage(`=== BDD) ${bddStep.keyword} ${bddStep.text}`)
 
     });
 

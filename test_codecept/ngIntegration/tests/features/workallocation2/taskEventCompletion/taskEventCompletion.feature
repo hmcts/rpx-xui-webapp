@@ -1,4 +1,5 @@
-@ng @functional_debug
+@ng 
+
 
 Feature: WA Release 2: Case events and Task completion and states when task_required is true
 
@@ -61,14 +62,17 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
 
 
     Scenario Outline: Task not assigned
+
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
-         Given I set MOCK case "defaultCase" details with reference "WA_Case"
+
+
+        Given I set MOCK case "defaultCase" details with reference "WA_Case"
 
 
         Given I set MOCK case tasks with userDetails from reference "userDetails"
-            | id                                   | task_title | assignee    | assigneeName | created_date | due_date | permissions                | major_priority | minor_priority | warnings | description                                                                                                                                                                                                                                                               |
-            | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1     |  | Test user    | -10          | -1       | UnAssign,Assign,Own,Cancel | 2000           |                | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                                                                                                                                                 |
-            | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2     |  | Test user    | -10          | 0        | UnAssign,Assign,Own,Cancel | 2000           |                | true     | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/case/case-details/${[case_id]}/${[id]}/testaction2) \n Click link to proceed to [next step 3](/case/testroute?caseId=${[case_id]}/${[id]}/testaction2) |
+            | id                                   | task_title | assignee | assigneeName | created_date | due_date | permissions                | major_priority | minor_priority | warnings | description                                                                                                                                                                                                                                                               |
+            | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1     |          | Test user    | -10          | -1       | UnAssign,Assign,Own,Cancel | 2000           |                | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                                                                                                                                                 |
+            | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2     |          | Test user    | -10          | 0        | UnAssign,Assign,Own,Cancel | 2000           |                | true     | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/case/case-details/${[case_id]}/${[id]}/testaction2) \n Click link to proceed to [next step 3](/case/testroute?caseId=${[case_id]}/${[id]}/testaction2) |
 
         # Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case list values
@@ -80,7 +84,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | baseLocation |
-            | true            | IA           | 12345           |
+            | true            | IA           | 12345        |
 
 
         Given I set MOCK task required for event as "true"
@@ -111,9 +115,9 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
             | roles                                                                            |
             | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor |
 
+
     Scenario Outline: Task multiple tasks found unassigned
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
-
 
         Given I set MOCK case "defaultCase" details with reference "WA_Case"
 
@@ -129,6 +133,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
             | 1234567812345678 | 1234567812345678             | 1234567812345678                       |
             | 1234567812345679 | 1234567812345679             | 1234567812345679                       |
         Given I set MOCK case details "WA_Case" property "jurisdiction" as "IA"
+        Given I set MOCK case details "WA_Case" property "casetype" as "Asylum"
         Given I set MOCK case details "WA_Case" trigger id "text" trigger name "Test event"
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
@@ -164,9 +169,9 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
         Examples:
             | roles                                                                            |
             | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor |
-
     Scenario Outline: Task multiple tasks found assigned to this user
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
+
 
         Given I set MOCK case "defaultCase" details with reference "WA_Case"
 
@@ -182,6 +187,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
             | 1234567812345678 | 1234567812345678             | 1234567812345678                       |
             | 1234567812345679 | 1234567812345679             | 1234567812345679                       |
         Given I set MOCK case details "WA_Case" property "jurisdiction" as "IA"
+        Given I set MOCK case details "WA_Case" property "casetype" as "Asylum"
         Given I set MOCK case details "WA_Case" trigger id "text" trigger name "Test event"
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
@@ -192,8 +198,8 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
         Given I set MOCK task required for event as "true"
         Given I set MOCK tasks required for event
             | assignee                             | task_state |
-            | 3db21928-cbbc-4364-bd91-137c7031fe17 | assigned   |
-            | 3db21928-cbbc-4364-bd91-137c7031fe17 | assigned   |
+            | ***REMOVED*** | assigned   |
+            | ***REMOVED*** | assigned |
 
 
         Given I start MockApp
@@ -217,15 +223,17 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
             | roles                                                                            |
             | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor |
 
+@functional_debug
     Scenario Outline: Event with more than one task assigned to this user - Trigger from Active tasks
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
+        # Given I set MOCK browser cookies
 
         Given I set MOCK case "defaultCase" details with reference "WA_Case"
 
-        Given I set MOCK case tasks with userDetails from reference "userDetails"
-            | id                                   | task_title | assignee    | assigneeName | created_date | due_date | permissions                | major_priority | minor_priority | warnings | description                                                                                                                                                                                                                                                               |
-            | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1     | thissession | Test user    | -10          | -1       | UnAssign,Assign,Own,Cancel | 2000           |                | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                                                                                                                                                 |
-            | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2     | thissession | Test user    | -10          | 0        | UnAssign,Assign,Own,Cancel | 2000           |                | true     | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/case/case-details/${[case_id]}/${[id]}/testaction2) \n Click link to proceed to [next step 3](/case/testroute?caseId=${[case_id]}/${[id]}/testaction2) |
+        # Given I set MOCK case tasks with userDetails from reference "userDetails"
+        #     | id                                   | task_title | assignee    | assigneeName | created_date | due_date | permissions                | major_priority | minor_priority | warnings | description                                                                                                                                                                                                                                                               |
+        #     | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1     | thissession | Test user    | -10          | -1       | UnAssign,Assign,Own,Cancel | 2000           |                | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                                                                                                                                                 |
+        #     | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2     | thissession | Test user    | -10          | 0        | UnAssign,Assign,Own,Cancel | 2000           |                | true     | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/case/case-details/${[case_id]}/${[id]}/testaction2) \n Click link to proceed to [next step 3](/case/testroute?caseId=${[case_id]}/${[id]}/testaction2) |
 
         # Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case list values
@@ -274,6 +282,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
         When I click tab with label "Tasks" in case details page
 
         Then I validate case details task tab page is displayed
+
 
         When I click active tast attribute Next steps link "test link next step" for task at position 1 with name "Test task"
 

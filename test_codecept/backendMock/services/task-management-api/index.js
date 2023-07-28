@@ -1,7 +1,7 @@
 
 const { v4 } = require('uuid');
 const userApiData = require('../userApiData')
-
+const serviceMockClient = require('../../client/serviceMock')
 
 class TaskManagementApi{
     
@@ -53,6 +53,28 @@ class TaskManagementApi{
         }
         return taskTemplate;
 
+    }
+
+    async setTaskRequiredForEventAs(taskRequired) {
+        this.searchCompletableTasksRes.task_required_for_event = taskRequired;
+        await serviceMockClient.updateSearchForCompletableTasks(this.searchCompletableTasksRes, 200)
+    }
+
+    async setTaskRequiredForEventTasks(tasks) {
+
+        const watasks = tasks.map(task => {
+            const waTask = this.getTaskTemplate();
+            Object.keys(task).forEach(taskkey => {
+                if (task[taskkey].includes('true') || task[taskkey].includes('false')) {
+                    waTask[taskkey] = task[taskkey] === "true";
+                } else {
+                    waTask[taskkey] = task[taskkey];
+                }
+            });
+            return waTask;
+        })
+        this.searchCompletableTasksRes.tasks = watasks;
+        await serviceMockClient.updateSearchForCompletableTasks(this.searchCompletableTasksRes, 200)
     }
 
 

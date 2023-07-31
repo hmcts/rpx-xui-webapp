@@ -126,9 +126,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter()
       };
-      if (this.updatedTaskPermission) {
-        searchTaskParameter.request_context = TaskContext.ALL_WORK;
-      }
+      searchTaskParameter.request_context = TaskContext.ALL_WORK;
       return searchTaskParameter;
     }
   }

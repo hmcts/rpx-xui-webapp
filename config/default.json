@@ -100,6 +100,7 @@
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal",
     "payment_return_url": "https://paymentoutcome-web.prod.platform.hmcts.net",
+    "translation": "http://ts-translation-service-prod.service.core-compute-prod.internal",
     "judicialBookingApi": "http://am-judicial-booking-service-prod.service.core-compute-prod.internal"
   },
   "protocol": "https",

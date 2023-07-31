@@ -107,7 +107,8 @@
     "s2s": "SERVICES_S2S",
     "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS",
     "payment_return_url": "SERVICES_PAYMENT_RETURN_URL",
-    "judicialBookingApi": "SERVICES_JUDICIAL_BOOKING_API_PATH"
+    "judicialBookingApi": "SERVICES_JUDICIAL_BOOKING_API_PATH",
+    "translation": "SERVICES_TRANSLATION_API_URL"
   },
   "protocol": "PROTOCOL",
   "secureCookie": "SECURE_COOKIE",

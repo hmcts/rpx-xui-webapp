@@ -1,3 +1,4 @@
+import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
@@ -7,6 +8,13 @@ import { CaseReferencePipe } from '../../../hearings/pipes/case-reference.pipe';
 import { AllocateRoleService } from '../../../role-access/services';
 import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { RestrictedCaseAccessContainerComponent } from './restricted-case-access-container.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('RestrictedCaseAccessContainerComponent', () => {
   let component: RestrictedCaseAccessContainerComponent;
@@ -30,7 +38,8 @@ describe('RestrictedCaseAccessContainerComponent', () => {
       imports: [],
       declarations: [
         RestrictedCaseAccessContainerComponent,
-        CaseReferencePipe
+        CaseReferencePipe,
+        RpxTranslateMockPipe
       ],
       providers: [
         { provide: AllocateRoleService, useValue: mockAllocateService },

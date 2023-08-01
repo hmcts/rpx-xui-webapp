@@ -7,7 +7,6 @@ const featureNames = {
   waLandingPageRoles: 'wa-landing-page-roles',
   waAccess: 'wa-access',
   currentWAFeature: 'mc-work-allocation-active-feature',
-  updatedTaskPermissionsFeature: 'updated-task-permission',
   workAllocation: 'MC_Work_Allocation',
   noticeOfChange: 'MC_Notice_of_Change',
   waMvpPaginationFeature: 'mc-mvp-wa-pagination',

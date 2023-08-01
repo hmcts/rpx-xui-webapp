@@ -1,4 +1,4 @@
-@ng @functional_enabled 
+@ng @functional_enabled @functional_debug
 Feature: WA Release 2: All work
 
     Background: Mock and browser setup
@@ -11,6 +11,10 @@ Feature: WA Release 2: All work
             | roleCategory | <roleCategory>                         |
 
         
+        Given I set MOCK case "defaultCase" details with reference "WA_Case"
+        Given I set MOCK case details "WA_Case" property "jurisdiction" as "IA"
+        Given I set MOCK case details "WA_Case" trigger id "text" trigger name "Test event"
+
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |

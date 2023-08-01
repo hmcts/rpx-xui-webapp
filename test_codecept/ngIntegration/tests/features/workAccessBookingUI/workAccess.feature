@@ -1,4 +1,4 @@
-@ng @ignore 
+@ng @ignore @functional_enabled
 Feature: Work access page
 
     Background: Setup bookings data

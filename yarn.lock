@@ -2386,13 +2386,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@portal:/Users/davidjayakumar/HMCTS/ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@hmcts/ccd-case-ui-toolkit@portal:/Users/davidjayakumar/HMCTS/ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A."
+"@hmcts/ccd-case-ui-toolkit@npm:6.18.0-restricted-case-access-v2":
+  version: 6.18.0-restricted-case-access-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.18.0-restricted-case-access-v2"
   dependencies:
     tslib: ^2.0.0
+  checksum: 99866cc3d97f6fc2cf1d61a7f23854b75f766f795cd8970522563430855b5b0ca24a0a63332369330de0ce641cdd507f4f947b070fb811ec5400351e4b3eb830
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "@hmcts/ccpay-web-component@npm:5.2.8":
   version: 5.2.8

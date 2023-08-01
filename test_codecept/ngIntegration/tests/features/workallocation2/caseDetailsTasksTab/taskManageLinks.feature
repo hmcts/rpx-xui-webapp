@@ -29,7 +29,7 @@ Feature Description
       | 12 Permissions M assigned to someother    | someone     | Test 5 user  | -10          | 10       | Manage             | true     | warn 1, warn2 |                                                                                         |
       | 13 Permissions M unassigned               |             |              | -10          | 10       | Manage             | true     | warn 1, warn2 |                                                                                         |
       | 14 Permissions none assigned to someother | someone     | Test 6 user  | -10          | 10       |                    | true     | warn 1, warn2 |                                                                                         |
-      | 15 Permissions none unassigned            |             |              | -10          | 10       | Execute,UnAssignClaim  | true     | warn 1, warn2 |                                                                                         |
+      | 15 Permissions none unassigned |  |  | -10 | 10 | Execute,UnAssignClaim,Claim | true | warn 1, warn2 |  |
 
     Scenario: Task manage link actions Assign to me
 

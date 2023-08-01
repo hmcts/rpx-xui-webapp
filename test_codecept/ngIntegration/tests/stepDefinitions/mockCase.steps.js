@@ -258,7 +258,7 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
 
         const dateTableHashes = caseTasksDatatable.parse().hashes();
         workAlloctionMockData.caseTasks = await workAlloctionMockData.getCaseTasks(dateTableHashes, userDetails);
-        await mockClient.setUserApiData(authCookie.value, 'OnSearchTasks', {
+        await mockClient.setUserApiData(authCookie.value, 'OnCaseTasks', {
           status: 200,
           data: {
             tasks: workAlloctionMockData.caseTasks,

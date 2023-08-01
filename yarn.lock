@@ -2386,12 +2386,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.18.2-exui-659-mv-upgrade":
-  version: 6.18.2-exui-659-mv-upgrade
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.18.2-exui-659-mv-upgrade"
+"@hmcts/ccd-case-ui-toolkit@npm:6.18.2-exui-659-mv-upgrade-rc1":
+  version: 6.18.2-exui-659-mv-upgrade-rc1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.18.2-exui-659-mv-upgrade-rc1"
   dependencies:
     tslib: ^2.0.0
-  checksum: a99a5cb720a004a11a999ae5ff6dabb30c2b9d9c2a2e9650e85a201561b756449962ed3f841d337616613c339a564d06dd0df9206dd1d103650a28b7ba4893be
+  checksum: bbfc326e9cc7a0be92a8c282baa7788c767bdf70cb692823ccd2116e111c872ae29b490249e899ca31cc41ddb3d0f2b1df8cd41340981a7a5bf4da4ec0bde219
   languageName: node
   linkType: hard
 
@@ -19270,7 +19270,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.18.2-exui-659-mv-upgrade
+    "@hmcts/ccd-case-ui-toolkit": 6.18.2-exui-659-mv-upgrade-rc1
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.5

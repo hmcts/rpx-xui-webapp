@@ -223,7 +223,6 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
             | roles                                                                            |
             | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor |
 
-@functional_debug
     Scenario Outline: Event with more than one task assigned to this user - Trigger from Active tasks
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
         # Given I set MOCK browser cookies

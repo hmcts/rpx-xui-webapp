@@ -1,4 +1,4 @@
-@ferdi
+@ferdi @functional_debug
 
 Feature: Hearings: Create a non-paper hearing case
 

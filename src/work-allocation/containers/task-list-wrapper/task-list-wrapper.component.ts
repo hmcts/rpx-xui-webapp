@@ -52,8 +52,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private pTasksTotal: number;
   private currentUser: string;
   public routeEventsSubscription: Subscription;
-  public isUpdatedTaskPermissions$: Observable<boolean>;
-  public updatedTaskPermission: boolean;
   public userRoleCategory: string;
   private initialFilterApplied = false;
   private goneBackCount = 0;
@@ -77,9 +75,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected rolesService: AllocateRoleService,
     protected store: Store<fromActions.State>,
     protected checkReleaseVersionService: CheckReleaseVersionService
-  ) {
-    this.isUpdatedTaskPermissions$ = this.featureToggleService?.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
-  }
+  ) { }
 
   public get tasks(): Task[] {
     return this.pTasks;
@@ -162,10 +158,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public ngOnInit(): void {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
     this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
-    this.isUpdatedTaskPermissions$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
-    this.isUpdatedTaskPermissions$.pipe(filter((v) => !!v)).subscribe((value) => {
-      this.updatedTaskPermission = value;
-    });
     this.userRoleCategory = this.getCurrentUserRoleCategory();
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();

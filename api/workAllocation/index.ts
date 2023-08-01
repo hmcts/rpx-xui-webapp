@@ -88,7 +88,6 @@ const logger: JUILogger = log4jui.getLogger('workallocation');
 export async function getTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
-    console.log('h1');
     trackTrace(`get task Id: ${req.params.taskId}`, { functionCall: 'getTask' });
     const jsonResponse = await handleTaskGet(getTaskPath, req);
     if (jsonResponse && jsonResponse.task && jsonResponse.task.due_date) {
@@ -220,7 +219,6 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
   try {
     const payload = { case_id: caseId, event_id: eventId, case_jurisdiction: jurisdiction, case_type: caseType };
     const jurisdictions = getWASupportedJurisdictionsList();
-    console.log('h2');
     trackTrace(`Search for completable task for eventId and caseId: ${eventId} ${caseId}`, { functionCall: 'getTasksByCaseIdAndEventId' });
     const { status, data } = jurisdictions.includes(jurisdiction)
       ? await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req)
@@ -247,7 +245,6 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
       delete req.body.hasNoAssigneeOnComplete;
     }
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
-    console.log('h3');
     trackTrace(`Task Completion for task Id: ${req.params.taskId} ${req.params.action}`, { functionCall: 'postTaskAction' });
     const { status, data } = await handleTaskPost(getTaskPath, req.body, req);
     res.status(status);

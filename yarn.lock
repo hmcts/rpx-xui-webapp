@@ -2485,15 +2485,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:1.8.9-exui-249-timout-service-fix-a":
-  version: 1.8.9-exui-249-timout-service-fix-a
-  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.9-exui-249-timout-service-fix-a"
+"@hmcts/rpx-xui-common-lib@npm:1.9.0-welsh-translation":
+  version: 1.9.0-welsh-translation
+  resolution: "@hmcts/rpx-xui-common-lib@npm:1.9.0-welsh-translation"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
-  checksum: c33668f1b0bdca2b9e68e07e0c551b41de861f6718b86dc7307832d632f3115e7c5420dd76685e6d89c9b2c30e0e8dfd52da98115bc576fe575f1359516efa17
+    rpx-xui-translation: ^0.1.1
+  checksum: 5311fb348b925c1099bf8715a792f0b337f92313fe82a4fe7086cabc22bfad3eb404276add257efddad7205b93b727a30f96236b52b206d6ce9be1ea14ddae91
   languageName: node
   linkType: hard
 
@@ -8560,6 +8561,13 @@ __metadata:
   version: 0.0.981744
   resolution: "devtools-protocol@npm:0.0.981744"
   checksum: 609901bff551f5fbe98e272bdda7269de527e28fab138de371ffd7e9a06fa68ca2eec2e961bd1cd6fd98223ccee562c55b7ce3235d4e37cc8d85d6681bc45593
+  languageName: node
+  linkType: hard
+
+"dexie@npm:^3.2.2":
+  version: 3.2.4
+  resolution: "dexie@npm:3.2.4"
+  checksum: 4e5294a954118b6862c864b8c3970904a1733daebcd919488624520696411e2e81ed1bceeac3634c5c15a21e37ce4b8502ed41c4edfbc5ba3f5925c34d56497b
   languageName: node
   linkType: hard
 
@@ -14698,6 +14706,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"luxon@npm:^2.4.0":
+  version: 2.5.2
+  resolution: "luxon@npm:2.5.2"
+  checksum: d8b671ffd2ff0b438af862ac11082a81b3aedd9f8b6a4ca636f944224f8dd381125cd4d274ca0a8aedcaf2cfca0fc2ca96fe4cc1b16a28b7af701afb95c0bff8
+  languageName: node
+  linkType: hard
+
 "magic-string@npm:0.25.7":
   version: 0.25.7
   resolution: "magic-string@npm:0.25.7"
@@ -19261,7 +19276,7 @@ __metadata:
     "@hmcts/media-viewer": 2.9.5
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 1.8.9-exui-249-timout-service-fix-a
+    "@hmcts/rpx-xui-common-lib": 1.9.0-welsh-translation
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3
@@ -19379,6 +19394,7 @@ __metadata:
     protractor-cucumber-framework: 6.1.1
     protractor-multiple-cucumber-html-reporter-plugin: 1.8.0
     protractor-screenshot-utils: ^1.0.5
+    rpx-xui-translation: 0.2.3-yesno-translations-fix-v2
     rx-polling: 1.1.0
     rxjs: ^6.5.3
     rxjs-compat: ^6.6.7
@@ -19407,6 +19423,20 @@ __metadata:
     zone.js: ~0.10.2
   languageName: unknown
   linkType: soft
+
+"rpx-xui-translation@npm:0.2.3-yesno-translations-fix-v2":
+  version: 0.2.3-yesno-translations-fix-v2
+  resolution: "rpx-xui-translation@npm:0.2.3-yesno-translations-fix-v2"
+  dependencies:
+    dexie: ^3.2.2
+    luxon: ^2.4.0
+    tslib: ^1.10.0
+  peerDependencies:
+    "@angular/common": ^9.1.13
+    "@angular/core": ^9.1.13
+  checksum: 5669fed9f095abfb90e69fb2d2c3eb927542d774e33da5f262948516814b6b4f1a55064e55135c0ffa8302a843789bcf79bb624aef747f6f858b081547fbd392
+  languageName: node
+  linkType: hard
 
 "run-async@npm:^2.2.0, run-async@npm:^2.4.0":
   version: 2.4.1

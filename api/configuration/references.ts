@@ -75,6 +75,8 @@ export const SERVICES_REFUNDS_API_URL = 'services.refunds';
 export const SERVICES_NOTIFICATIONS_API_URL = 'services.notifications';
 export const SERVICES_LOCATION_REF_API_URL = 'services.locationref.api';
 
+export const SERVICES_TRANSLATION_API_URL = 'services.translation';
+
 export const PROTOCOL = 'protocol';
 export const MICROSERVICE = 'microservice';
 export const NOW = 'now';
@@ -117,7 +119,6 @@ export const FEATURE_ACCESS_MANAGEMENT_ENABLED = 'accessManagementEnabled';
 export const FEATURE_COMPRESSION_ENABLED = 'compressionEnabled';
 
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';
-export const FEATURE_UPDATED_TASK_PERMISSIONS_ENABLED = 'updatedTaskPermissionsEnabled';
 
 export const HELMET = 'helmet';
 

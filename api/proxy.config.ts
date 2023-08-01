@@ -16,7 +16,8 @@ import {
   SERVICES_PAYMENTS_URL,
   SERVICES_PRD_COMMONDATA_API,
   SERVICES_REFUNDS_API_URL,
-  SERVICES_NOTIFICATIONS_API_URL
+  SERVICES_NOTIFICATIONS_API_URL,
+  SERVICES_TRANSLATION_API_URL
 } from './configuration/references';
 import { applyProxy } from './lib/middleware/proxy';
 import * as searchCases from './searchCases';
@@ -171,6 +172,13 @@ export const initProxy = (app: Express) => {
     rewrite: false,
     source: '/getLinkedCases',
     target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)
+  });
+
+  applyProxy(app, {
+    rewrite: true,
+    source: '/api/translation',
+    rewriteUrl: '/translation',
+    target: getConfigValue(SERVICES_TRANSLATION_API_URL)
   });
 
   applyProxy(app, {

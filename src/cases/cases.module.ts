@@ -68,6 +68,8 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
 // from services
 import * as fromServices from './services';
 import { effects, reducers } from './store';
+import { RestrictedCaseAccessComponent } from './components/restricted-case-access/restricted-case-access.component';
+import { RestrictedCaseAccessContainerComponent } from './containers/restricted-case-access-container/restricted-case-access-container.component';
 
 @NgModule({
   imports: [
@@ -98,7 +100,7 @@ import { effects, reducers } from './store';
     CaseViewerModule,
     PipesModule
   ],
-  declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
+  declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives, RestrictedCaseAccessComponent, RestrictedCaseAccessContainerComponent],
   providers: [
     PlaceholderService,
     CaseReferencePipe,

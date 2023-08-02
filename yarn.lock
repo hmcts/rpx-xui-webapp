@@ -2386,12 +2386,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.18.0-welsh-release-v6":
-  version: 6.18.0-welsh-release-v6
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.18.0-welsh-release-v6"
+"@hmcts/ccd-case-ui-toolkit@npm:6.18.0-restricted-case-access-v3":
+  version: 6.18.0-restricted-case-access-v3
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.18.0-restricted-case-access-v3"
   dependencies:
     tslib: ^2.0.0
-  checksum: 073fd642c5bd9034b2f7dda34968a4792657ad05e4fb1e7ae510fecefc4099fa23c39d4adb0857a907f873b5245d69dd74cfb10fc312d40b4eaed458e3b7f028
+  checksum: e63fbacdfa76c291c085899a64b517782751c79970150af209651582c4f5c511b7029f5b92dc0d734b1a3f29917f05ced60e07446852c3ac28d793db81572486
   languageName: node
   linkType: hard
 
@@ -19270,7 +19270,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.18.0-welsh-release-v6
+    "@hmcts/ccd-case-ui-toolkit": 6.18.0-restricted-case-access-v3
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

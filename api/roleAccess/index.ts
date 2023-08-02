@@ -55,8 +55,26 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
   }
 }
 
-export async function getAccessRolesByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+export async function getAccessRoles(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const requestPayload = getAccessRolesRequestPayload(req.body.caseId, req.body.jurisdiction, req.body.caseType);
+  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+  const fullPath = `${basePath}/am/role-assignments/query`;
+  const headers = setHeaders(req, release2ContentType);
+  try {
+    const response: AxiosResponse = await http.post(fullPath, requestPayload, { headers });
+    const finalRoles: CaseRole[] = mapResponseToCaseRoles(
+      response.data.roleAssignmentResponse,
+      req.body.assignmentId,
+      req
+    );
+    return res.status(response.status).send(finalRoles);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getAccessRolesByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const requestPayload = getAccessRolesRequestPayloadForCaseId(req.body.caseId);
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const fullPath = `${basePath}/am/role-assignments/query`;
   const headers = setHeaders(req, release2ContentType);
@@ -325,6 +343,18 @@ export function getAccessRolesRequestPayload(caseId: string,
           jurisdiction: [jurisdiction]
         },
         roleName: ['specific-access-requested']
+      }
+    ]
+  };
+}
+
+export function getAccessRolesRequestPayloadForCaseId(caseId: string): CaseRoleRequestPayload {
+  return {
+    queryRequests: [
+      {
+        attributes: {
+          caseId: [caseId]
+        }
       }
     ]
   };

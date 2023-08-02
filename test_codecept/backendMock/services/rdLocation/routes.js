@@ -12,8 +12,8 @@ const userApiData = require('../userApiData')
 router.get('/court-venues', (req, res) => {
     const locationId = req.query['epimms_id'];
     const locations = service.getLocationById(locationId);
-    res.send(locations)
-    // userApiData.sendResponse(req, res, "onSearchLocations", () => service.searchLocations(searchTerm, serviceIds ))
+    // res.send(locations)
+    userApiData.sendResponse(req, res, "onServiceLocations", () => service.searchLocations(searchTerm, serviceIds ))
 
 });
 
@@ -35,5 +35,7 @@ router.get('/court-venues/services', (req, res) => {
 
    
 });
+
+
 
 module.exports = router;

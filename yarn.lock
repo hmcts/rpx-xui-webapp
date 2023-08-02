@@ -1909,12 +1909,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.18.0-restricted-case-access-v2":
-  version: 6.18.0-restricted-case-access-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.18.0-restricted-case-access-v2"
+"@hmcts/ccd-case-ui-toolkit@npm:6.18.0-restricted-case-access-v3":
+  version: 6.18.0-restricted-case-access-v3
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.18.0-restricted-case-access-v3"
   dependencies:
     tslib: ^2.0.0
-  checksum: 99866cc3d97f6fc2cf1d61a7f23854b75f766f795cd8970522563430855b5b0ca24a0a63332369330de0ce641cdd507f4f947b070fb811ec5400351e4b3eb830
+  checksum: e63fbacdfa76c291c085899a64b517782751c79970150af209651582c4f5c511b7029f5b92dc0d734b1a3f29917f05ced60e07446852c3ac28d793db81572486
   languageName: node
   linkType: hard
 
@@ -8487,9 +8487,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.477":
-  version: 1.4.479
-  resolution: "electron-to-chromium@npm:1.4.479"
-  checksum: a22b70435e163bf413bfb8f4da015c3f099b64fc1eebb0c39829c5ce66ee13a23a2d42c91a33524eb4d1e86e28cc046be940e4b78d74e43b54d883100711f7cd
+  version: 1.4.480
+  resolution: "electron-to-chromium@npm:1.4.480"
+  checksum: 074b9d81dffa6ca182f604326c62a12d22139ae141d6ffabdb3b267f42fac88ba3e69d3614f9e939f65a0f03a343f0c81f702e24064bc54c4f138e02378b1e54
   languageName: node
   linkType: hard
 
@@ -10827,11 +10827,11 @@ __metadata:
   linkType: hard
 
 "handlebars@npm:^4.0.1":
-  version: 4.7.7
-  resolution: "handlebars@npm:4.7.7"
+  version: 4.7.8
+  resolution: "handlebars@npm:4.7.8"
   dependencies:
     minimist: ^1.2.5
-    neo-async: ^2.6.0
+    neo-async: ^2.6.2
     source-map: ^0.6.1
     uglify-js: ^3.1.4
     wordwrap: ^1.0.0
@@ -10840,7 +10840,7 @@ __metadata:
       optional: true
   bin:
     handlebars: bin/handlebars
-  checksum: 1e79a43f5e18d15742977cb987923eab3e2a8f44f2d9d340982bcb69e1735ed049226e534d7c1074eaddaf37e4fb4f471a8adb71cddd5bc8cf3f894241df5cee
+  checksum: 00e68bb5c183fd7b8b63322e6234b5ac8fbb960d712cb3f25587d559c2951d9642df83c04a1172c918c41bcfc81bfbd7a7718bbce93b893e0135fc99edea93ff
   languageName: node
   linkType: hard
 
@@ -15470,7 +15470,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"neo-async@npm:^2.5.0, neo-async@npm:^2.6.0, neo-async@npm:^2.6.1, neo-async@npm:^2.6.2":
+"neo-async@npm:^2.5.0, neo-async@npm:^2.6.1, neo-async@npm:^2.6.2":
   version: 2.6.2
   resolution: "neo-async@npm:2.6.2"
   checksum: deac9f8d00eda7b2e5cd1b2549e26e10a0faa70adaa6fdadca701cc55f49ee9018e427f424bac0c790b7c7e2d3068db97f3093f1093975f2acb8f8818b936ed9
@@ -18971,7 +18971,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.18.0-restricted-case-access-v2
+    "@hmcts/ccd-case-ui-toolkit": 6.18.0-restricted-case-access-v3
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

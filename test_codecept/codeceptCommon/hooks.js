@@ -61,7 +61,7 @@ module.exports = async function () {
 
         const authCookies = idamLogin.xuiCallbackResponse.details?.setCookies?.find(cookie => cookie.name === '__auth__')
         const mockSessiondataResponse = await mockClient.getUserSesionData(authCookies ? authCookies.value : null);
-        // featureLogsMessage(test, `${JSON.stringify(mockSessiondataResponse.data, null, 2)}`);
+        featureLogsMessage(test, `${JSON.stringify(mockSessiondataResponse.data, null, 2)}`);
 
         const cookies = idamLogin.xuiCallbackResponse;
         codeceptMochawesomeLog.AddJson(cookies);

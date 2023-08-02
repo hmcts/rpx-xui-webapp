@@ -7,6 +7,7 @@ const courtTypeIds = {
     SSCS: ['31'],       // 31: Social Security and Child Support Tribunal
     CIVIL: ['10'],
     PRIVATELAW: ['18'],
+    PUBLICLAW: ['18']
 }
 
 const locationServiceCodes = {
@@ -20,15 +21,42 @@ class RDLocationService{
         this.locationsConfig = [
             {
                 service:'IA',
-                startIndex:20000
+                startIndex:20000,
+                serviceCode:['BFA1'],
+                locations:[]
             },
             {
                 service: 'CIVIL',
-                startIndex: 10000
+                startIndex: 10000,
+                serviceCode: [
+                "AAA6",
+                "AAA7"
+            ],
+                locations: []
             },
             {
-                service: 'SSCS',
-                startIndex: 30000
+                "service": "PUBLICLAW",
+                startIndex: 40000,
+                "serviceCode": [
+                    "ABA3"
+                ],
+                locations: []
+            },
+            {
+                "service": "SSCS",
+                startIndex: 50000,
+                "serviceCode": [
+                    "SSCS1"
+                ],
+                locations: []
+            },
+            {
+                "service": "PRIVATELAW",
+                startIndex: 60000,
+                "serviceCode": [
+                    "ABA5"
+                ],
+                locations: []
             }
         ];
 
@@ -50,7 +78,7 @@ class RDLocationService{
                 temp.site_name = `${service} Court Center ${i}`;
                 temp.court_type_id = typeIds[0];
                 temp.court_type = `${service} Court`;
-                this.caseManagementLocations.push(temp)
+                serviceConf.locations.push(temp)
             }
 
         })
@@ -91,7 +119,7 @@ class RDLocationService{
             "court_type_id": courtTypeIds[0],
             "court_type": "CASE_MANAGEMENT",
             "welsh_court_type": "N",
-            "court_venues": results
+            "court_venues": this.locationsConfig.find((sc) => sc.serviceCode.includes(serviceCode)).locations
         };
     }
 

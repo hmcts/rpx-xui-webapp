@@ -41,9 +41,7 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         '*.gov.uk',
         'dc.services.visualstudio.com',
         '*.launchdarkly.com',
-        'https://*.google-analytics.com',
-        'https://*.googletagmanager.com',
-        'https://*.analytics.google.com',
+        'www.google-analytics.com',
         '*.hmcts.net'
       ],
       defaultSrc: ['\'self\''],
@@ -54,8 +52,8 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
       imgSrc: [
         '\'self\'',
         'data:',
-        'https://*.google-analytics.com',
-        'https://*.googletagmanager.com',
+        'https://www.google-analytics.com',
+        'https://www.googletagmanager.com',
         'https://raw.githubusercontent.com/hmcts/',
         'http://stats.g.doubleclick.net/',
         'http://ssl.gstatic.com/',
@@ -67,8 +65,8 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         '\'self\'',
         '\'unsafe-inline\'',
         '\'unsafe-eval\'',
-        'https://*.google-analytics.com',
-        'https://*.googletagmanager.com',
+        'www.google-analytics.com',
+        'www.googletagmanager.com',
         'az416426.vo.msecnd.net'
       ],
       styleSrc: [

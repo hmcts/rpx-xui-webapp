@@ -197,8 +197,8 @@
           "'self'",
           "'unsafe-inline'",
           "'unsafe-eval'",
-          "https://*.google-analytics.com",
-          "https://*.googletagmanager.com",
+          "*.google-analytics.com",
+          "*.googletagmanager.com",
           "az416426.vo.msecnd.net"
         ],
         "connectSrc": [
@@ -206,9 +206,7 @@
           "*.gov.uk",
           "dc.services.visualstudio.com",
           "*.launchdarkly.com",
-          "https://*.google-analytics.com",
-          "https://*.googletagmanager.com",
-          "https://*.analytics.google.com"
+          "*.google-analytics.com"
         ],
         "mediaSrc": ["'self'"],
         "objectSrc": ["'self'"],

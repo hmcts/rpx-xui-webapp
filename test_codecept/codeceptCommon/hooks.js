@@ -8,6 +8,7 @@ const fs = require('fs');
 const browser = require('./browser')
 
 const codeceptMochawesomeLog = require('./reportLogger')
+const statsReporter = require('./statsReporter')
 
 const e2eTestDataManager = require('../e2e/utils/testDataManager/index');
 const mockClient = require('../backendMock/client/index')
@@ -69,6 +70,8 @@ module.exports = async function () {
         await mockClient.logMessage(`************ Test started : ${test.title}`)
         featureLogsMessage(test, `\n ************ Test started : ${test.title}`);
 
+        statsReporter.run()
+
     });
 
     // event.dispatcher.on(event.all.result, (status, completedTests, workerStats) => {
@@ -90,6 +93,7 @@ module.exports = async function () {
         codeceptMochawesomeLog.AddJson(cookies);
         // featureLogsMessage(test, `\n cookies \n ${JSON.stringify(cookies, null, 2)}`);
         featureLogsMessage(test, `\n************ Test status:  ${test.state} : ${test.title}`);
+        statsReporter.run()
         // await e2eTestDataManager.cleanupForTags(test.tags);
 
     });

@@ -1,4 +1,6 @@
 const event = require('codeceptjs').event;
+const worker = require('codeceptjs').worker;
+
 const output = require('codeceptjs').output;
 
 const fs = require('fs');
@@ -30,6 +32,25 @@ function clearFeatureLogFile(test){
 
 }
 
+function logsTestStats(status, completedTests, workerStats){
+    const folderName = `${__dirname}/../../functional-output/tests/featureStats-${testType}.log`
+    if (!fs.existsSync(folderName)) {
+        fs.mkdirSync(folderName);
+    }
+    console.log('Test status : ', status ? 'Passes' : 'Failed ');
+
+    // print stats
+
+    fs.appendFileSync(`${folderName}`, `Total tests : ${workerStats.tests}`);
+    fs.appendFileSync(`${folderName}`, `Passed tests : ${workerStats.passes}`);
+    fs.appendFileSync(`${folderName}`, `Failed test tests : ${workerStats.failures}`);
+
+    // If you don't want to listen for failed and passed test separately, use completedTests object
+    for (const test of Object.values(completedTests)) {
+        fs.appendFileSync(`${folderName}`, `Test status: ${test.err === null}, `, `Test : ${test.title}`);
+    }
+}
+
 function featureLogsMessage(test, message){
     const fileName = getFeatureFileName(test)
     const folderName = `${__dirname}/../../functional-output/tests/featureLogs-${testType}`
@@ -38,7 +59,6 @@ function featureLogsMessage(test, message){
     }
     fs.appendFileSync(`${folderName}/${fileName}.txt`, message)
 }
-
 
 module.exports = async function () {
 
@@ -51,7 +71,10 @@ module.exports = async function () {
 
     });
 
-
+    // event.dispatcher.on(event.all.result, (status, completedTests, workerStats) => {
+    //     // print output
+    //     logsTestStats(status, completedTests, workerStats)
+    // });
 
 
     event.dispatcher.on(event.test.after, async function (test) {
@@ -61,7 +84,7 @@ module.exports = async function () {
 
         const authCookies = idamLogin.xuiCallbackResponse.details?.setCookies?.find(cookie => cookie.name === '__auth__')
         const mockSessiondataResponse = await mockClient.getUserSesionData(authCookies ? authCookies.value : null);
-        featureLogsMessage(test, `${JSON.stringify(mockSessiondataResponse.data, null, 2)}`);
+        // featureLogsMessage(test, `${JSON.stringify(mockSessiondataResponse.data, null, 2)}`);
 
         const cookies = idamLogin.xuiCallbackResponse;
         codeceptMochawesomeLog.AddJson(cookies);
@@ -100,7 +123,9 @@ module.exports = async function () {
 
     event.dispatcher.on(event.bddStep.before, function (bddStep) {
         // output.print(`STEP: ${bddStep.keyword} ${bddStep.text} `)
-        codeceptMochawesomeLog.AddMessage(`=== BDD) ${bddStep.keyword} ${bddStep.text}`)
+        const log = `=== BDD) ${bddStep.keyword} ${bddStep.text}`;
+        codeceptMochawesomeLog.AddMessage(log)
+
 
     });
 

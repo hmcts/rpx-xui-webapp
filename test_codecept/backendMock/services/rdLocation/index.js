@@ -1,3 +1,4 @@
+const { assertNotNull } = require("@angular/compiler/src/output/output_ast");
 
 
 
@@ -91,35 +92,29 @@ class RDLocationService{
 
     searchLocations(seearchTerm, courtTypeIds){
         const results = [];
-        for (const court of this.caseManagementLocations){
-            if (courtTypeIds.includes(court.court_type_id) && court.court_name.toLowerCase().includes(seearchTerm.toLowerCase())){
-                results.push(court);
+        for (const service of this.locationsConfig){
+            for(const loc of service.locations){
+                if (loc.court_name.toLowerCase().includes(seearchTerm.toLowerCase())) {
+                    results.push(loc);
+                }
             }
+            
         }
         return results;
     }
 
     getServiceLocations(serviceCode){
 
-        const services = Object.keys(locationServiceCodes)
-        const courtTypeIds = []
-        for(const service of services){
-            if(locationServiceCodes[service].includes(serviceCode)){
-                courtTypeIds.push(courtTypeIds[service])
-            }
-        }
-        const results = [];
-        for (const court of this.caseManagementLocations) {
-            if (courtTypeIds.includes(court.court_type_id) && court.court_name.includes(seearchTerm)) {
-                results.push(court);
-            }
-        }
+        const serviceWithCode = this.locationsConfig.find(service => service.serviceCode.includes(serviceCode))
+
+        assertNotNull(serviceWithCode, `Mock service config not found for service code ${serviceCode}`)
+        
         return {
             "service_code": serviceCode,
-            "court_type_id": courtTypeIds[0],
+            "court_type_id": "18",
             "court_type": "CASE_MANAGEMENT",
             "welsh_court_type": "N",
-            "court_venues": this.locationsConfig.find((sc) => sc.serviceCode.includes(serviceCode)).locations
+            "court_venues": serviceWithCode.locations
         };
     }
 

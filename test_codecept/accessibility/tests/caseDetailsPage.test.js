@@ -21,11 +21,11 @@ describe('Case details page', function () {
     const caseDetailsRoute = 'cases/case-details/1547480421733777/'
     before(async function (done) {
         // MockApp.init()
-        ccdApi.caseDetailsResponse.case_type.id = "Asylum";
-        ccdApi.caseDetailsResponse.case_type.name ="Immigration & Asylum"
-        ccdApi.caseDetailsResponse.case_type.jurisdiction.id = "IA";
-        ccdApi.caseDetailsResponse.case_type.jurisdiction.name = "Immigration & Asylu";
-        ccdApi.caseDetailsResponse.case_type.jurisdiction.description = "Immigration & Asylu";
+        ccdApi.caseDetailsResponse.defaultCase.case_type.id = "Asylum";
+        ccdApi.caseDetailsResponse.defaultCase.case_type.name ="Immigration & Asylum"
+        ccdApi.caseDetailsResponse.defaultCase.case_type.jurisdiction.id = "IA";
+        ccdApi.caseDetailsResponse.defaultCase.case_type.jurisdiction.name = "Immigration & Asylu";
+        ccdApi.caseDetailsResponse.defaultCase.case_type.jurisdiction.description = "Immigration & Asylu";
 
         // nodeAppMockData.init();
         // nodeAppMockData.userDetails.userInfo.uid = "810b5601-4a8a-4c82-9294-34f087f2e67f";

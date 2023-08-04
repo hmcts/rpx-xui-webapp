@@ -108,15 +108,18 @@ class StatsReporter{
         // fs.writeFileSync(this.analysisOutputFile, JSON.stringify(analysis,null,2))
         fs.writeFileSync(this.analysisOutputFile, '**** Run nalaysis *****')
 
+        fs.appendFileSync(this.analysisOutputFile, `\n${"Inprogress".padEnd(15,' ')} ${"Done".padEnd(15,' ')} Feature `)
 
         analysis.features.forEach(f => {
-            fs.appendFileSync(this.analysisOutputFile, `\n${f.name} => started ${f.startedCount} , completed ${f.completedCount}`)
+            fs.appendFileSync(this.analysisOutputFile, `\n${f.startedCount.toString().padEnd(15,' ')} ${f.completedCount.toString().padEnd(15,' ')} ${f.name}`)
             
             const inprogress = f.inProgress.map(scr => scr.name)
             const completed = f.completed.map(scr => scr.name)
 
             if (inprogress.length > 0){
-                fs.appendFileSync(this.analysisOutputFile, `\n${JSON.stringify(inprogress, null, 2)}`)
+                for (const scr of inprogress){
+                    fs.appendFileSync(this.analysisOutputFile, `\n     - ${scr}`)
+                }
                 // fs.appendFileSync(this.analysisOutputFile, `\n${JSON.stringify(completed, null, 2)}`)
             }
 
@@ -128,4 +131,3 @@ class StatsReporter{
 const instance = new StatsReporter();
 module.exports = instance;
 
-instance.run();

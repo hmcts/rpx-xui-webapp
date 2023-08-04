@@ -8,7 +8,7 @@ Feature: Hearings: Create a non-paper hearing case
   Scenario Outline: Set user with correct privileges
     Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,caseworker-privatelaw,caseworker" with reference "userDetails"
 
-    Given I set MOCK case "defaultCase" details with reference "PL_Case"
+    Given I set MOCK case "defaultCase" details with reference "PRLAPPS"
         # Given I set MOCK case details with reference "caseDetails"
 
     Given I set MOCK case list values
@@ -16,9 +16,9 @@ Feature: Hearings: Create a non-paper hearing case
       | 1234567812345678 | 1234567812345678             | 1234567812345678                       |
       | 1234567812345679 | 1234567812345679             | 1234567812345679                       |
 
-    Given I set MOCK case details "PL_Case" property "jurisdiction" as "PL"
+    Given I set MOCK case details "PL_Case" property "jurisdiction" as "PRIVATELAW"
     Given I set MOCK case details "PL_Case" property "casetype" as "PRLAPPS"
 
     Examples:
-      | roles                                                       |
-      | task-supervisor,caseworker,caseworker-privatelaw,caseworker |
+      | roles                                                                                     |
+      | caseworker-privatelaw,caseworker-privatelaw-courtadmin,caseworker-privatelaw-judge        |

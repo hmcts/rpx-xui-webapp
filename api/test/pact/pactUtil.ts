@@ -103,3 +103,25 @@ export async function assignTaskToUser(taskUrl: string, payLoad: any) {
 
   return await axios.post(taskUrl, payLoad, axiosConfig);
 }
+
+export async function getOrgServices(path: string) {
+  const axiosConfig = {
+    headers: {
+      'Authorization': 'Bearer some-access-token',
+      'Content-Type': 'application/json',
+      'ServiceAuthorization': 'serviceAuthToken'
+    }
+  };
+  return axios.get(path, axiosConfig);
+}
+
+export async function getCaseFlagDetails(path: string) {
+  const axiosConfig = {
+    headers: {
+      'Authorization': 'Bearer some-access-token',
+      'Content-Type': 'application/json',
+      'ServiceAuthorization': 'serviceAuthToken'
+    }
+  };
+  return axios.get(path, axiosConfig);
+}

@@ -54,3 +54,47 @@ export interface SharedWithDto {
 export interface AssignAccessWithinOrganisationDto {
   status_message: string;
 }
+
+export interface OrgServicesDto {
+    jurisdiction: string;
+    service_id: number;
+    org_unit: string;
+    business_area: string;
+    sub_business_area: string;
+    service_description: string;
+    service_code: string;
+    service_short_description: string;
+    ccd_service_name: string;
+    last_update: string;
+    ccd_case_types: string[]
+}
+
+export interface flagsDto {
+  flags: flags[];
+}
+
+export interface flags {
+  FlagDetails: flagDetails[];
+}
+
+export interface flagDetails {
+    name: string;
+    hearingRelevant: boolean;
+    flagComment: boolean;
+    defaultStatus: string;
+    externallyAvailable: boolean;
+    flagCode: string;
+    childFlags: childFlags[];
+}
+
+export interface childFlags {
+    name: string;
+    hearingRelevant: boolean;
+    flagComment: boolean;
+    defaultStatus: string;
+    externallyAvailable: boolean;
+    flagCode: string;
+    childFlags: childFlags[];
+    isParent?: boolean;
+    Path?: string[];
+}

@@ -17,7 +17,7 @@ describe('RD commons API call for get Case Flag details', () => {
         withRequest: {
           method: 'GET',
           path: '/refdata/commondata/caseflags/service-id=ABA1',
-          query: 'flag-type=PARTY',
+          query: 'flag-type=PARTY&welsh-required=Y&available-external-flag=Y',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer some-access-token',
@@ -37,7 +37,7 @@ describe('RD commons API call for get Case Flag details', () => {
     });
 
     it('returns the correct response', async () => {
-      const path: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/commondata/caseflags/service-id=ABA1?flag-type=PARTY`;
+      const path: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/commondata/caseflags/service-id=ABA1?flag-type=PARTY&welsh-required=Y&available-external-flag=Y`;
 
       const resp = getCaseFlagDetails(path);
       resp.then((response) => {

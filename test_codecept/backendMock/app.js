@@ -19,11 +19,18 @@ const judicialRoutes = require('./services/rdJudicial/routes')
 
 const roleAssignmentRoutes = require('./services/roleAssignments/routes')
 const bookingRoutes = require('./services/roleAssignments/bookingRoutes')
+
+const hearingRoutes = require('./services/hearings/routes')
+
+
 const ccdRoutes = require('./services/ccd/routes')
 const ccdApi = require('./services/ccd/index')
 
 const caseAssignmentsRoutes = require('./services/caseAssignments/routes')
 const prdOrganisationRoutes = require('./services/prdOrganisations/routes')
+
+const prdCommondataroutes = require('./services/prd/routes')
+
 
 const globalSearchRoutes = require('./services/globalSearch/routes')
 
@@ -89,8 +96,13 @@ class MockApp {
         app.use('/refdata/location', locationRoutes)
         app.use('/refdata/case-worker', caseworkerRoutes )
         app.use('/refdata/judicial', judicialRoutes )
+        app.use('/refdata/commondata', prdCommondataroutes )
+
+
         app.use('/am/role-assignments', roleAssignmentRoutes)
         app.use('/am/bookings', bookingRoutes)
+
+        app.use('/', hearingRoutes)
 
         app.use('/globalSearch', globalSearchRoutes)
 

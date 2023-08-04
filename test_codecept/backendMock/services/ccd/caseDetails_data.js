@@ -37,24 +37,18 @@ class CaseDetailsData{
 
     setupHearingCase(){
         this.setCaseTypeProperties(this.hearingCase, {
-            id: 'IA',
-            name: 'Immigration & Asylum'
+            id: 'PRLAPPS',
+            name: 'Immigration & Asylum',
+            "jurisdiction.id": 'PRIVATELAW'
         })
-        this.addTab(this.hearingCase, { id: '1', label: 'Hearings tab' })
-        this.addFieldToTab(this.hearingCase, '1', {
-            id: 'test', label: 'test field', value: 'test val',
-            field_type: { id: 'Text', type: 'Text' }
-        })
-        this.addFieldToTab(this.hearingCase, '1', {
-            id: 'test1', label: 'test field 2', value: 'No',
-            field_type: { id: 'yesNo', type: 'YesOrNo' }
-        })
+      
     }
 
     setupDefaultCase(){
         this.setCaseTypeProperties(this.defaultCase,{
-            id: 'test',
-            name: 'test case type'
+            id: 'PRLAPPS',
+            name: 'test case type',
+            jurisdiction: 'PRIVATELAW'
         })
         this.addTab(this.defaultCase,{ id: '1', label: 'ngIntegration mock data' })
         this.addFieldToTab(this.defaultCase, '1', {

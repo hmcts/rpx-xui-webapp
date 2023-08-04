@@ -29,6 +29,10 @@ class ServiceMock{
     async setlocations(data,status){
         await this.updateMockServer('onServiceLocations', { status: status ? status : 200, data: data } )
     }
+
+    async setCaseHearings(data, status) {
+        await this.updateMockServer('OnCaseHearing', { status: status ? status : 200, data: data })
+    }
     
 
 }

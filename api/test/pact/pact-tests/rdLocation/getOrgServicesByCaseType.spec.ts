@@ -7,8 +7,8 @@ const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, eachLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_location', port: 8000 });
 
-describe('RD Locations API call for get OrgServices', () => {
-  describe('Get OrgServices', () => {
+describe('RD Locations API call for get OrgServices by case type', () => {
+  describe('Get OrgServices by case type', () => {
     before(async () => {
       await pactSetUp.provider.setup();
       const interaction = {
@@ -17,7 +17,7 @@ describe('RD Locations API call for get OrgServices', () => {
         withRequest: {
           method: 'GET',
           path: '/refdata/location/orgServices',
-          query: 'ccdServiceNames=DIVORCE',
+          query: 'ccdCaseType=CaseViewCallbackMessages2',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer some-access-token',
@@ -37,7 +37,7 @@ describe('RD Locations API call for get OrgServices', () => {
     });
 
     it('returns the correct response', async () => {
-      const path: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/location/orgServices?ccdServiceNames=DIVORCE`;
+      const path: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/location/orgServices?ccdCaseType=CaseViewCallbackMessages2`;
 
       const resp = getOrgServices(path);
       resp.then((response) => {

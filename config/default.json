@@ -100,6 +100,7 @@
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal",
     "payment_return_url": "https://paymentoutcome-web.prod.platform.hmcts.net",
+    "translation": "http://ts-translation-service-prod.service.core-compute-prod.internal",
     "judicialBookingApi": "http://am-judicial-booking-service-prod.service.core-compute-prod.internal"
   },
   "protocol": "https",
@@ -174,7 +175,6 @@
     "redisEnabled": false,
     "oidcEnabled": false,
     "workAllocationEnabled": false,
-    "updatedTaskPermissionsEnabled": true,
     "roleEnabled": false,
     "caseworkerRefEnabled": false,
     "substantiveRoleEnabled": true,
@@ -197,8 +197,8 @@
           "'self'",
           "'unsafe-inline'",
           "'unsafe-eval'",
-          "*.google-analytics.com",
-          "*.googletagmanager.com",
+          "https://*.google-analytics.com",
+          "https://*.googletagmanager.com",
           "az416426.vo.msecnd.net"
         ],
         "connectSrc": [
@@ -206,7 +206,9 @@
           "*.gov.uk",
           "dc.services.visualstudio.com",
           "*.launchdarkly.com",
-          "*.google-analytics.com"
+          "https://*.google-analytics.com",
+          "https://*.googletagmanager.com",
+          "https://*.analytics.google.com"
         ],
         "mediaSrc": ["'self'"],
         "objectSrc": ["'self'"],

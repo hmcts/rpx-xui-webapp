@@ -98,7 +98,6 @@ Feature Description
     Then I see case details page with message banner "You've reassigned a task to somebody else"
 
 
-
      Scenario: Task manage link actions Unassign
 
          Given I start MockApp
@@ -132,7 +131,7 @@ Feature Description
 
          Then I validate task details displayed in task action page
              | Case name        | Case category      | Location      |
-             | Allwork test scr | auto test category | London QA lab |
+      | José González | Protection | Taylor House |
 
          When I click "Unassign" submit button in task action page
          Then I see case details tab label "Tasks" is displayed is "true"

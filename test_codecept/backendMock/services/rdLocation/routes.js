@@ -8,7 +8,6 @@ const service = require('./index')
 const userApiData = require('../userApiData')
 
 
-
 router.get('/court-venues', (req, res) => {
     const locationId = req.query['epimms_id'];
     const locations = service.getLocationById(locationId);
@@ -35,7 +34,6 @@ router.get('/court-venues/services', (req, res) => {
 
    
 });
-
 
 
 module.exports = router;

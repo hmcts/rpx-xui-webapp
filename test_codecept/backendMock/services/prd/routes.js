@@ -10,10 +10,11 @@ const userApiData = require('../userApiData')
 
 router.get('/lov/categories/:categoryid', (req, res) => {
  
-    res.send({ list_of_values: lovRefData })
+    res.send({ list_of_values: service.categoryTypes[req.params.categoryid].value })
 });
 
-router.get('/caseflags/service-id=ABC', (req,res) => {
+router.get('/caseflags/:service-id=ABA5', (req,res) => {
+  
     res.send(service.caseFlags)
 })
 

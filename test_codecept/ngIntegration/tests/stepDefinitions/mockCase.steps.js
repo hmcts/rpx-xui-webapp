@@ -96,7 +96,7 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
         const caseDetails = global.scenarioData[caseDetailsRef];
         if(property.toLowerCase().includes('jurisdiction')) {
             caseDetailsMock.setCaseTypeProperties(caseDetails,{
-                id:'Asylum'
+                "jurisdiction.id": value
             })
             const field = getCaseDetailsMetadataField(caseDetails,'[JURISDICTION]');
             field.value = value;
@@ -105,6 +105,13 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
             field.value = value;
         }
 
+        else if (property.toLowerCase().includes('case_type')) {
+            caseDetailsMock.setCaseTypeProperties(caseDetails, {
+                "case_type.id": value
+            })
+            const field = getCaseDetailsMetadataField(caseDetails, '[JURISDICTION]');
+            field.value = value;
+        }
         else {
             throw Error(` metada field ${property} is not recognised or not implemented in test`);
         }

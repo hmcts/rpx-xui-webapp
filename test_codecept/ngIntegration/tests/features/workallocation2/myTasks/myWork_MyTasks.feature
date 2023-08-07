@@ -1,4 +1,4 @@
-@ng @functional_enabled
+@ng @functional_enabled 
 Feature: WA Release 2: My work - My Tasks
 
     Background: Mock and browser setup
@@ -18,7 +18,9 @@ Feature: WA Release 2: My work - My Tasks
             | SSCS | Y | ORGANISATION | 30001 | <roleCategory> |
 
         Given I set MOCK case "defaultCase" details with reference "WA_Case"
-        Given I set MOCK case details "WA_Case" property "jurisdiction" as "IA"
+        Given I set MOCK case details "WA_Case" property "jurisdiction.id" as "IA"
+        Given I set MOCK case details "WA_Case" property "case_type.id" as "Asylum"
+
         Given I set MOCK case details "WA_Case" trigger id "text" trigger name "Test event"
 
 
@@ -105,7 +107,9 @@ Feature: WA Release 2: My work - My Tasks
             | SSCS         | Y           | ORGANISATION | 30001        |
 
         Given I set MOCK case "defaultCase" details with reference "WA_Case"
-        Given I set MOCK case details "WA_Case" property "jurisdiction" as "IA"
+        Given I set MOCK case details "WA_Case" property "jurisdiction.id" as "IA"
+        Given I set MOCK case details "WA_Case" property "case_type.id" as "Asylum"
+
         Given I set MOCK case details "WA_Case" trigger id "text" trigger name "Test event"
 
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""

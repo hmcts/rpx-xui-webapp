@@ -1,4 +1,4 @@
-@ng @known_bug @EUI-4804 @functional_enabled @functional_debug
+@ng @known_bug @EUI-4804 @functional_enabled 
 Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
 
 

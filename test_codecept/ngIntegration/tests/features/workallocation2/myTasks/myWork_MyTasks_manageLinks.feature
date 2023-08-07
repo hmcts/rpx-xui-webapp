@@ -21,7 +21,9 @@ Feature: WA Release 2: My work - My tasks - Manage links
 
 
         Given I set MOCK case "defaultCase" details with reference "WA_Case"
-        Given I set MOCK case details "WA_Case" property "jurisdiction" as "IA"
+        Given I set MOCK case details "WA_Case" property "case_type.id" as "Asylum"
+
+        Given I set MOCK case details "WA_Case" property "jurisdiction.id" as "IA"
         Given I set MOCK case details "WA_Case" trigger id "text" trigger name "Test event"
 
 

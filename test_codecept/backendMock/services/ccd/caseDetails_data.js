@@ -48,7 +48,7 @@ class CaseDetailsData{
         this.setCaseTypeProperties(this.defaultCase,{
             id: 'PRLAPPS',
             name: 'test case type',
-            jurisdiction: 'PRIVATELAW'
+            "jurisdiction.id": 'PRIVATELAW'
         })
         this.addTab(this.defaultCase,{ id: '1', label: 'ngIntegration mock data' })
         this.addFieldToTab(this.defaultCase, '1', {
@@ -65,6 +65,8 @@ class CaseDetailsData{
         for(const prop of Object.keys(props)){
             if (prop.startsWith("jurisdiction.")){
                 data.case_type.jurisdiction[prop.replace('jurisdiction.', '')] = props[prop]
+            } else if (prop.startsWith("case_type.")){
+                data.case_type[prop.replace('case_type.','')] = props[prop]
             }else{
                 data.case_type[prop] = props[prop]
             }

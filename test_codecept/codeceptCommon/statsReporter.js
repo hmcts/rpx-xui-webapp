@@ -31,7 +31,7 @@ class StatsReporter{
         if (!scenario) {
             scenario = {
                 name: scenarioName,
-                status: status
+                status: status,
             }
             feature.scenarios.push(scenario)
         }
@@ -79,7 +79,12 @@ class StatsReporter{
             const completed = f.scenarios.filter(scr => scr.result !== 'unknown')
 
 
-            featureStats.push({ name: f.name, startedCount: scrStarted, completedCount: scrCompleted, inProgress: inProgress, completed:completed })
+            const passed = f.scenarios.filter(scr => scr.result !== 'unknown' && scr.result.toLowerCase().includes('passed')).length
+            const failed = f.scenarios.filter(scr => scr.result !== 'unknown' && scr.result.toLowerCase().includes('failed')).length
+
+
+
+            featureStats.push({ name: f.name, startedCount: scrStarted, completedCount: scrCompleted, inProgress: inProgress, completed: completed, passed: passed, failed: failed })
            
         })
         this.analysis = {
@@ -108,10 +113,10 @@ class StatsReporter{
         // fs.writeFileSync(this.analysisOutputFile, JSON.stringify(analysis,null,2))
         fs.writeFileSync(this.analysisOutputFile, '**** Run nalaysis *****')
 
-        fs.appendFileSync(this.analysisOutputFile, `\n${"Inprogress".padEnd(15,' ')} ${"Done".padEnd(15,' ')} Feature `)
+        fs.appendFileSync(this.analysisOutputFile, `\n${"Inprogress".padEnd(15, ' ')} ${"Done".padEnd(15, ' ')} ${"passed".padEnd(10, ' ')} ${"failed".padEnd(10, ' ')}  Feature `)
 
         analysis.features.forEach(f => {
-            fs.appendFileSync(this.analysisOutputFile, `\n${f.startedCount.toString().padEnd(15,' ')} ${f.completedCount.toString().padEnd(15,' ')} ${f.name}`)
+            fs.appendFileSync(this.analysisOutputFile, `\n${f.startedCount.toString().padEnd(15, ' ')} ${f.completedCount.toString().padEnd(15, ' ')} ${f.passed.toString().padEnd(10, ' ')} ${f.failed.toString().padEnd(10, ' ')} ${f.name}`)
             
             const inprogress = f.inProgress.map(scr => scr.name)
             const completed = f.completed.map(scr => scr.name)

@@ -21,6 +21,19 @@ router.post('/serviceHearingValues', (req,res) => {
     res.send(loadServicehearingValues)
 })
 
+router.post('/serviceLinkedCases', (req, res) => {
+    res.send(service.serviceLinkedcases)
+})
+
+router.post('/hearing', (req,res) => {
+    res.send({
+        "hearingRequestID": 2000006340,
+        "status": "HEARING_REQUESTED",
+        "timeStamp": "2023-08-07T09:30:52.213698",
+        "versionNumber": 1
+    })
+})
+
 
 module.exports =  router;
 

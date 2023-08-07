@@ -96,7 +96,6 @@ class MockApp {
         app.use('/refdata/location', locationRoutes)
         app.use('/refdata/case-worker', caseworkerRoutes )
         app.use('/refdata/judicial', judicialRoutes )
-        app.use('/refdata/commondata', prdCommondataroutes )
 
 
         app.use('/am/role-assignments', roleAssignmentRoutes)
@@ -117,6 +116,7 @@ class MockApp {
 
         app.use('/', ccdRoutes )
 
+        app.use('/refdata/commondata', prdCommondataroutes)
 
 
         // await this.stopServer();

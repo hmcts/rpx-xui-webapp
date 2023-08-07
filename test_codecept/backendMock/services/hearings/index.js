@@ -12,6 +12,7 @@ class HearingsApi{
             searchTasks: "ON_SEARCH_TASKS"
         }
         this.hearings = [];
+        this.serviceLinkedcases = []
 
     }
 

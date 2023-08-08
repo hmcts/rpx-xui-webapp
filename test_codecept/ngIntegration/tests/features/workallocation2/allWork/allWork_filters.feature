@@ -1,4 +1,4 @@
-@ng   @functional_enabled @functional_debug
+@ng   @functional_enabled
 Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Background: Mock and browser setup

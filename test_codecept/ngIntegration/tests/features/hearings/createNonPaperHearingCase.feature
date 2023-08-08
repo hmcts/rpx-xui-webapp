@@ -16,8 +16,8 @@ Feature: Hearings: Create a non-paper hearing case
       | 1234567812345678 | 1234567812345678             | 1234567812345678                       |
       | 1234567812345679 | 1234567812345679             | 1234567812345679                       |
 
-    Given I set MOCK case details "PL_Case" property "jurisdiction" as "PRIVATELAW"
-    Given I set MOCK case details "PL_Case" property "casetype" as "PRLAPPS"
+    Given I set MOCK case details "PRLAPPS" property "jurisdiction.id" as "PRIVATELAW"
+    Given I set MOCK case details "PRLAPPS" property "case_type.id" as "PRLAPPS"
 
     Examples:
       | roles                                                                                     |

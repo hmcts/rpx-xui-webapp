@@ -216,7 +216,6 @@ exports.config = {
 
 
 function exitWithStatus() {
-  const status = await mochawesomeGenerateReport()
   console.log(`FAILED: ${status.stats.failures}, PASSED: ${status.stats.passes}, TOTAL: ${status.stats.tests}`)
   return status === 'PASS' ? 0 : 1
 }

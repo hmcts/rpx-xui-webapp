@@ -392,13 +392,13 @@ const { DataTableArgument } = require('codeceptjs');
 
         const taskDetails = taskDetailsDatatable.parse().hashes()[0];
 
-        validateTaskDetailsDisplayed(taskDetails,taskActionPage);
+        await validateTaskDetailsDisplayed(taskDetails,taskActionPage);
     });
 
     Then('I validate task details displayed in task action page matching reference {string}', async function (reference) {
         const taskDetails = global.scenarioData[reference];;
 
-        validateTaskDetailsDisplayed(taskDetails, taskActionPage);
+        await validateTaskDetailsDisplayed(taskDetails, taskActionPage);
     });
 
     Then('I validate task details displayed in check your changes page', async function (taskDetailsDatatable) {
@@ -406,14 +406,14 @@ const { DataTableArgument } = require('codeceptjs');
 
         const taskDetails = taskDetailsDatatable.parse().hashes()[0];
         
-        validateTaskDetailsDisplayed(taskDetails, taskCheckYourChangesPage);
+       await  validateTaskDetailsDisplayed(taskDetails, taskCheckYourChangesPage);
 
     });
 
     Then('I validate task details displayed in check your changes page matching reference {string}', async function (reference) {
         const taskDetails = global.scenarioData[reference];
 
-        validateTaskDetailsDisplayed(taskDetails, taskCheckYourChangesPage);
+        await validateTaskDetailsDisplayed(taskDetails, taskCheckYourChangesPage);
 
     });
 
@@ -427,7 +427,7 @@ const { DataTableArgument } = require('codeceptjs');
             let expectColValue = taskDetails[columnName]
             softAssert.setScenario(`Validate column ${columnName} value is ${expectColValue}`);
             const columnActalValue = await actionPage.getColumnValue(columnName);
-            await softAssert.assert(async () => expect(columnActalValue).to.contains(expectColValue));
+            await softAssert.assert(async () => expect(columnActalValue.trim()).to.contains(expectColValue));
         }
         softAssert.finally();
     }

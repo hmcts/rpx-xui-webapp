@@ -21,6 +21,18 @@ class ServiceMock{
     async updateSearchForCompletableTasks(data, status){
         await this.updateMockServer('OnSearchForCompletableTasks', { status: status ? status : 200, data: data });
     }
+
+    async setBookings(data, status) {
+        await this.updateMockServer('OnBookings', { status: status ? status : 200, data: data });
+    }
+
+    async setlocations(data,status){
+        await this.updateMockServer('onServiceLocations', { status: status ? status : 200, data: data } )
+    }
+
+    async setCaseHearings(data, status) {
+        await this.updateMockServer('OnCaseHearing', { status: status ? status : 200, data: data })
+    }
     
 
 }

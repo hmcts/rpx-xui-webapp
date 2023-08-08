@@ -11,6 +11,12 @@ Feature: WA Release 2: All work
             | roleCategory | <roleCategory>                         |
 
         
+        Given I set MOCK case "defaultCase" details with reference "WA_Case"
+        Given I set MOCK case details "WA_Case" property "jurisdiction.id" as "IA"
+        Given I set MOCK case details "WA_Case" property "case_type.id" as "Asylum"
+
+        Given I set MOCK case details "WA_Case" trigger id "text" trigger name "Test event"
+
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |

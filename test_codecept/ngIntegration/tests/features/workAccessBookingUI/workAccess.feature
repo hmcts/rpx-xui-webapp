@@ -1,20 +1,10 @@
-@ng @ignore 
+@ng @ignore @functional_enabled 
 Feature: Work access page
 
     Background: Setup bookings data
-        Given I set mock locations for bookings
-            | epimms_id | site_name       |
-            | 100001    | Test location 1 |
-            | 100002    | Test location 2 |
-            | 100003    | Test location 3 |
 
-
-
-        Given I set mock for existing bookings
-            | appointmentId | locationId | locationName    | beginTime | endTime |
-            | 1001          | 100001     | Test location 1 | +1        | +2      |
-            | 1002          | 100002     | Test location 2 | +2        | +4      |
-            | 1003          | 100003     | Test location 3 | +4        | +8      |
+        Given I init MockApp
+        
 
 
     Scenario Outline: page access to user with roles "<Roles>" is displayed "<isDisplayed>"
@@ -26,6 +16,19 @@ Feature: Work access page
             | bookable | isCaseAllocator | substantive | jurisdiction | roleName       | roleCategory | contractType |
             | true     | true            | N           | CIVIL,IA     | fee-paid-judge | JUDICIAL     | Fee-Paid     |
 
+        Given I set mock locations for bookings
+            | epimms_id | site_name       |
+            | 100001    | Test location 1 |
+            | 100002    | Test location 2 |
+            | 100003    | Test location 3 |
+
+
+
+        Given I set mock for existing bookings
+            | appointmentId | locationId | locationName    | beginTime | endTime |
+            | 1001          | 100001     | Test location 1 | +1        | +3      |
+            | 1002          | 100002     | Test location 2 | +2        | +4      |
+            | 1003          | 100003     | Test location 3 | +4        | +8      |
 
         Given I start MockApp
         When I navigate to home page
@@ -43,7 +46,19 @@ Feature: Work access page
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | bookable | isCaseAllocator | substantive | jurisdiction | roleName       | roleCategory | contractType |
             | true     | true            | N           | CIVIL,IA     | fee-paid-judge | JUDICIAL     | Fee-Paid     |
+        Given I set mock locations for bookings
+            | epimms_id | site_name       |
+            | 100001    | Test location 1 |
+            | 100002    | Test location 2 |
+            | 100003    | Test location 3 |
 
+
+
+        Given I set mock for existing bookings
+            | appointmentId | locationId | locationName    | beginTime | endTime |
+            | 1001          | 100001     | Test location 1 | +1        | +3      |
+            | 1002          | 100002     | Test location 2 | +2        | +4      |
+            | 1003          | 100003     | Test location 3 | +4        | +8      |
         Given I start MockApp
         When I navigate to home page
 
@@ -71,8 +86,22 @@ Feature: Work access page
         
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | bookable | isCaseAllocator | substantive | jurisdiction | roleName       | roleCategory | contractType |
-            | true     | true            | N           | CIVIL,IA     | fee-paid-judge | JUDICIAL     | Fee-Paid     |
+            | true     | true            | N           | IA     | fee-paid-judge | JUDICIAL     | Fee-Paid     |
+            | true | true | N | CIVIL | fee-paid-judge | JUDICIAL | Fee-Paid |
 
+        Given I set mock locations for bookings
+            | epimms_id | site_name       |
+            | 100001    | Test location 1 |
+            | 100002    | Test location 2 |
+            | 100003    | Test location 3 |
+
+
+
+        Given I set mock for existing bookings
+            | appointmentId | locationId | locationName    | beginTime | endTime |
+            | 1001          | 100001     | Test location 1 | +1        | +3      |
+            | 1002          | 100002     | Test location 2 | +2        | +4      |
+            | 1003          | 100003     | Test location 3 | +4        | +8      |
         Given I start MockApp
         When I navigate to home page
 
@@ -94,13 +123,33 @@ Feature: Work access page
 
 
     Scenario: Work access View existing bookings with details
-        Given I set MOCK with user "BOOKING_UI-FT-ON" and userInfo with roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,fee-paid-judge" with reference "userDetails"
-         |roleCategory|
-            |JUDICIAL|
+        # Given I set MOCK with user "BOOKING_UI-FT-ON" and userInfo with roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,fee-paid-judge" with reference "userDetails"
+        #  |roleCategory|
+        #     |JUDICIAL|
+
+        Given I set MOCK with user details
+            | roles | caseworker-ia-iacjudge,caseworker-ia,caseworker,fee-paid-judge |
+            | roleCategory | JUDICIAL |
+     
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | bookable | isCaseAllocator | substantive | jurisdiction | roleName       | roleCategory | contractType |
-            | true     | true            | N           | CIVIL,IA     | fee-paid-judge | JUDICIAL     | Fee-Paid     |
+            | true     | true            | N           | IA           | fee-paid-judge | JUDICIAL     | Fee-Paid     |
+            | true     | true            | N           | CIVIL        | fee-paid-judge | JUDICIAL     | Fee-Paid     |
 
+
+        Given I set mock locations for bookings
+            | epimms_id | site_name       |
+            | 100001    | Test location 1 |
+            | 100002    | Test location 2 |
+            | 100003    | Test location 3 |
+
+
+
+        Given I set mock for existing bookings
+            | appointmentId | locationId | locationName    | beginTime | endTime |
+            | 1001          | 100001     | Test location 1 | +1        | +2      |
+            | 1002          | 100002     | Test location 2 | +2        | +4      |
+            | 1003          | 100003     | Test location 3 | +4        | +8      |
         Given I start MockApp
         When I navigate to home page
 
@@ -129,7 +178,19 @@ Feature: Work access page
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | bookable | isCaseAllocator | substantive | jurisdiction | roleName       | roleCategory | contractType |
             | true     | true            | N           | CIVIL,IA     | fee-paid-judge | JUDICIAL     | Fee-Paid     |
+        Given I set mock locations for bookings
+            | epimms_id | site_name       |
+            | 100001    | Test location 1 |
+            | 100002    | Test location 2 |
+            | 100003    | Test location 3 |
 
+
+
+        Given I set mock for existing bookings
+            | appointmentId | locationId | locationName    | beginTime | endTime |
+            | 1001          | 100001     | Test location 1 | +1        | +3      |
+            | 1002          | 100002     | Test location 2 | +2        | +4      |
+            | 1003          | 100003     | Test location 3 | +4        | +8      |
         Given I start MockApp
         When I navigate to home page
 
@@ -154,7 +215,19 @@ Feature: Work access page
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | bookable | isCaseAllocator | substantive | jurisdiction | roleName       | roleCategory | contractType |
             | true     | true            | N           | CIVIL,IA     | fee-paid-judge | JUDICIAL     | Fee-Paid     |
+        Given I set mock locations for bookings
+            | epimms_id | site_name       |
+            | 100001    | Test location 1 |
+            | 100002    | Test location 2 |
+            | 100003    | Test location 3 |
 
+
+
+        Given I set mock for existing bookings
+            | appointmentId | locationId | locationName    | beginTime | endTime |
+            | 1001          | 100001     | Test location 1 | +1        | +3      |
+            | 1002          | 100002     | Test location 2 | +2        | +4      |
+            | 1003          | 100003     | Test location 3 | +4        | +8      |
 
         Given I start MockApp
         When I navigate to home page
@@ -180,7 +253,19 @@ Feature: Work access page
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | bookable | isCaseAllocator | substantive | jurisdiction | roleName       | roleCategory | contractType |
             | true     | true            | N           | CIVIL,IA     | fee-paid-judge | JUDICIAL     | Fee-Paid     |
+        Given I set mock locations for bookings
+            | epimms_id | site_name       |
+            | 100001    | Test location 1 |
+            | 100002    | Test location 2 |
+            | 100003    | Test location 3 |
 
+
+
+        Given I set mock for existing bookings
+            | appointmentId | locationId | locationName    | beginTime | endTime |
+            | 1001          | 100001     | Test location 1 | +1        | +3      |
+            | 1002          | 100002     | Test location 2 | +2        | +4      |
+            | 1003          | 100003     | Test location 3 | +4        | +8      |
         Given I start MockApp
         When I navigate to home page
 

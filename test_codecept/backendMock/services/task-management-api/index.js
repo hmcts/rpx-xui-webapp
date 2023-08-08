@@ -9,7 +9,7 @@ class TaskManagementApi{
     constructor(){
 
         this.method = {
-            searchTasks: "ON_SEARCH_TASKS"
+            searchTasks: "OnSearchTasks"
         }
 
         this.setDefaultData()

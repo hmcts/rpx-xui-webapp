@@ -1,9 +1,12 @@
-@ng @known_bug @EUI-4804 @functional_enabled
+@ng @known_bug @EUI-4804 @functional_enabled 
 Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
 
 
     Scenario Outline: My Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+
+        Given I set MOCK with user details
+            | roles        | <Roles>,task-supervisor,case-allocator |
+            | roleCategory | <roleCategory>                         |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation |
             | IA           | Y           | ORGANISATION | 20001        |
@@ -56,12 +59,15 @@ Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
         #     | Judge      | Task created |
 
         Examples:
-            | UserIdentifier     | UserType   | Roles                                              |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            | UserIdentifier     | UserType   | Roles                                              |roleCategory|
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |LEGAL_OPERATIONS|
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |JUDICIAL|
 
     Scenario Outline: My Tasks pagnation control display with only 1 page of items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+
+        Given I set MOCK with user details
+            | roles        | <Roles>,task-supervisor,case-allocator |
+            | roleCategory | <roleCategory>                         |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation |
             | IA           | Y           | ORGANISATION | 20001        |
@@ -81,14 +87,17 @@ Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
         Then I validate task table pagination controls, is displayed state is "false"
 
         Examples:
-            | UserIdentifier     | UserType   | Roles                                              |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            | UserIdentifier     | UserType   | Roles                                              |roleCategory|
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |LEGAL_OPERATIONS|
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |JUDICIAL|
 
 
 
     Scenario Outline: My Tasks pagnation control display 0 items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+
+        Given I set MOCK with user details
+            | roles        | <Roles>,task-supervisor,case-allocator |
+            | roleCategory | <roleCategory>                         |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation |
             | IA           | Y           | ORGANISATION | 20001        |
@@ -110,6 +119,6 @@ Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
         Then I validate WA tasks table footer message is "You have no assigned tasks"
 
         Examples:
-            | UserIdentifier  | UserType | Roles                                           |
-            # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
+            | UserIdentifier  | UserType | Roles                                           |roleCategory|
+            # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |LEGAL_OPERATIONS|
+            | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |JUDICIAL|

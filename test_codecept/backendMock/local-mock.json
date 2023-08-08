@@ -85,5 +85,32 @@
         "prefix": "MC-activity:",
         "ttl": 86400
     },
-    "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW"
+    "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW","serviceRefDataMapping": [
+    {
+        "service": "IA",
+        "serviceCodes": [
+            "BFA1"
+        ]
+    },
+    {
+        "service": "CIVIL",
+        "serviceCodes": [
+            "AAA6",
+            "AAA7"
+        ]
+    },
+    {
+        "service": "PRIVATELAW",
+        "serviceCodes": [
+            "ABA5"
+        ]
+    },
+    {
+        "service": "PUBLICLAW",
+        "serviceCodes": [
+            "ABA3"
+        ]
+    }
+]
+
 }

@@ -40,7 +40,7 @@ router.get('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (
 })
 
 router.get('/data/internal/cases/:caseid/event-triggers/:eventId', (req, res) => {
-    res.send(ccdMockData.getSingleFieldCaseEventConfig(req.params.eventId));
+    res.send(ccdMockData.caseEventData.eventData);
 })
 
 router.get('/activity/cases/:cases/activity', (req, res) => {

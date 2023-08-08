@@ -109,23 +109,21 @@ class WAListTable {
     }
 
     async getColumnHeaderNames() {
-        return await BrowserWaits.retryWithActionCallback(async () => {
-            await this.waitForTable();
-            const headers = element.all(by.xpath(`//${ this.baseCssLocator }//table//thead//th`));
-            const headerElementsCount = await headers.count();
-            const names = [];
+        await this.waitForTable();
+        const headers = element.all(by.xpath(`//${this.baseCssLocator}//table//thead//th`));
+        const headerElementsCount = await headers.count();
+        const names = [];
 
 
-            for (let i = 0; i < headerElementsCount; i++) {
-                const headerElement = await headers.get(i);
-                const headerLabel = await headerElement.getText();
-                if (headerLabel.trim() !== ""){
-                    names.push(headerLabel.trim());
-                }
+        for (let i = 0; i < headerElementsCount; i++) {
+            const headerElement = await headers.get(i);
+            const headerLabel = await headerElement.getText();
+            if (headerLabel.trim() !== "") {
+                names.push(headerLabel.trim());
             }
-           
-            return names;
-        });
+        }
+
+        return names;
 
     }
 

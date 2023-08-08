@@ -143,11 +143,9 @@ exports.config = {
         }
     },
     teardown: async () => {
-        // const status = await mochawesomeGenerateReport()
         if (testType === "a11y" && !parallel) {
             await teardown()
         }
-        process.exit(0)
 
     },
     bootstrapAll: async () => {
@@ -157,13 +155,11 @@ exports.config = {
         }
     },
     teardownAll: async () => {
-        // const status = await mochawesomeGenerateReport()
         if (testType === "a11y" && parallel) {
             await teardown()
         }
 
-        process.exit(0)
-        // return status === 'PASS' ? 0 : 1  
+        // process.exit(0)
     }
 }
 
@@ -179,8 +175,6 @@ async function teardown() {
     await generateReport()
     // process.exit(1);
 }
-
-
 
 async function generateReport() {
     try {

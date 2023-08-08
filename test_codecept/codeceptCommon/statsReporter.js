@@ -102,33 +102,50 @@ class StatsReporter{
        
         // console.log(JSON.stringify(this.stats, null, 2))
         this.generateStats();
-        this.reportDatatable(this.analysis)
+        this.logsStatsToFile(this.analysis)
         // console.log(JSON.stringify(this.analysis, null, 2))
     }
 
+    logsStatsToFile(analysis){
+        fs.writeFileSync(this.analysisOutputFile, ``)
 
-
-    reportDatatable(analysis) {
+        this.reportStats(analysis, (message) => {
+            fs.appendFileSync(this.analysisOutputFile, `\n${message}`)
+        })
       
-        // fs.writeFileSync(this.analysisOutputFile, JSON.stringify(analysis,null,2))
-        fs.writeFileSync(this.analysisOutputFile, '**** Run nalaysis *****')
+    }
 
-        fs.appendFileSync(this.analysisOutputFile, `\n${"Inprogress".padEnd(15, ' ')} ${"Done".padEnd(15, ' ')} ${"passed".padEnd(10, ' ')} ${"failed".padEnd(10, ' ')}  Feature `)
+    logsStatsToConsole(analysis) {
+        this.reportStats(analysis, (message) => {
+            console.log(`${message}`)
+        })
+       
+
+
+    }
+
+    reportStats(analysis, callback) {
+        const stats = [];
+        // fs.writeFileSync(this.analysisOutputFile, JSON.stringify(analysis,null,2))
+        callback( '**** Run nalaysis *****')
+
+        callback( `${"Inprogress".padEnd(15, ' ')} ${"Done".padEnd(15, ' ')} ${"passed".padEnd(10, ' ')} ${"failed".padEnd(10, ' ')}  Feature `)
 
         analysis.features.forEach(f => {
-            fs.appendFileSync(this.analysisOutputFile, `\n${f.startedCount.toString().padEnd(15, ' ')} ${f.completedCount.toString().padEnd(15, ' ')} ${f.passed.toString().padEnd(10, ' ')} ${f.failed.toString().padEnd(10, ' ')} ${f.name}`)
+            callback( `${f.startedCount.toString().padEnd(15, ' ')} ${f.completedCount.toString().padEnd(15, ' ')} ${f.passed.toString().padEnd(10, ' ')} ${f.failed.toString().padEnd(10, ' ')} ${f.name}`)
             
             const inprogress = f.inProgress.map(scr => scr.name)
             const completed = f.completed.map(scr => scr.name)
 
             if (inprogress.length > 0){
                 for (const scr of inprogress){
-                    fs.appendFileSync(this.analysisOutputFile, `\n     - ${scr}`)
+                    callback( `     - ${scr}`)
                 }
                 // fs.appendFileSync(this.analysisOutputFile, `\n${JSON.stringify(completed, null, 2)}`)
             }
 
         })
+        return stats;
     }
 
 

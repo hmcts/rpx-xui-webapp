@@ -1,4 +1,4 @@
-@functional_enabled @functional_test
+@functional_test
 Feature: Check media viewer
 
     # Background:

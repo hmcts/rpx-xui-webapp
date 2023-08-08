@@ -215,6 +215,12 @@ exports.config = {
 }
 
 
+function exitWithStatus() {
+  const status = await mochawesomeGenerateReport()
+  console.log(`FAILED: ${status.stats.failures}, PASSED: ${status.stats.passes}, TOTAL: ${status.stats.tests}`)
+  return status === 'PASS' ? 0 : 1
+}
+
 async function setup(){
 
   if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')){
@@ -230,7 +236,8 @@ async function teardown(){
     await applicationServer.stop()
   }
   statsReporter.run()
- 
+  exitWithStatus()
+
   // process.exit(1);
 }
 
@@ -244,7 +251,7 @@ async function mochawesomeGenerateReport(){
     "reportFilename": `${functional_output_dir}/report`,
   });
 
-  
+
   return report.stats.failures > 0 ? 'FAIL' : 'PASS';
 }
 

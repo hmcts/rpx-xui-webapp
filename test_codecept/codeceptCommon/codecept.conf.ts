@@ -211,7 +211,8 @@ exports.config = {
 
 async function exitWithStatus() {
   const status = await mochawesomeGenerateReport()
-  return status === 'PASS' ? 0 : 1
+  process.exit(status === 'PASS' ? 0 : 1)
+
 }
 
 async function setup(){

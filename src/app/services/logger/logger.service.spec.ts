@@ -6,6 +6,7 @@ describe('Logger service', () => {
     'log', 'warn', 'error', 'fatal']);
   const mockedSessionStorageService = jasmine.createSpyObj('mockedCookieService', ['getItem']);
   const mockedCryptoWrapper = jasmine.createSpyObj('mockedCryptoWrapper', ['encrypt', 'decrypt']);
+  const mockedConsoleObject = jasmine.createSpyObj('mockedConsoleObject', ['log', 'trace', 'debug', 'info', 'warn', 'error']);
 
   it('should be Truthy', () => {
     const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
@@ -85,6 +86,62 @@ describe('Logger service', () => {
         mockedCryptoWrapper);
       service.enableCookies();
       expect(mockedMonitoringService.enableCookies).toHaveBeenCalled();
+    });
+  });
+
+  describe('switchConsoleLogs()', () => {
+    it('should switch off all console logs when needed', () => {
+      // Reset console to use a mocked object.
+      console.log = mockedConsoleObject.log;
+      console.debug = mockedConsoleObject.debug;
+      console.trace = mockedConsoleObject.trace;
+      console.info = mockedConsoleObject.info;
+      console.warn = mockedConsoleObject.warn;
+      console.error = mockedConsoleObject.error;
+
+      // Let LoggerService switch off the console logs, and use console.
+      LoggerService.switchConsoleLogs({ switchOffAll: true });
+      console.log('log');
+      console.trace('trace');
+      console.debug('debug');
+      console.info('info');
+      console.warn('warn');
+      console.error('error');
+
+      // Expect the mocked console object NOT to have received the console calls.
+      expect(mockedConsoleObject.log).not.toHaveBeenCalled();
+      expect(mockedConsoleObject.trace).not.toHaveBeenCalled();
+      expect(mockedConsoleObject.debug).not.toHaveBeenCalled();
+      expect(mockedConsoleObject.info).not.toHaveBeenCalled();
+      expect(mockedConsoleObject.warn).toHaveBeenCalledTimes(1);
+      expect(mockedConsoleObject.error).not.toHaveBeenCalled();
+    });
+
+    it('should NOT switch off any console logs when NOT needed', () => {
+      // Reset console to use a mocked object.
+      console.log = mockedConsoleObject.log;
+      console.debug = mockedConsoleObject.debug;
+      console.trace = mockedConsoleObject.trace;
+      console.info = mockedConsoleObject.info;
+      console.warn = mockedConsoleObject.warn;
+      console.error = mockedConsoleObject.error;
+
+      // Let LoggerService NOT switch off the console logs, and use console.
+      LoggerService.switchConsoleLogs({ switchOffAll: false });
+      console.log('log');
+      console.trace('trace');
+      console.debug('debug');
+      console.info('info');
+      console.warn('warn');
+      console.error('error');
+
+      // Expect the mocked console object to have received the console calls.
+      expect(mockedConsoleObject.log).toHaveBeenCalled();
+      expect(mockedConsoleObject.trace).toHaveBeenCalled();
+      expect(mockedConsoleObject.debug).toHaveBeenCalled();
+      expect(mockedConsoleObject.info).toHaveBeenCalled();
+      expect(mockedConsoleObject.warn).toHaveBeenCalled();
+      expect(mockedConsoleObject.error).toHaveBeenCalled();
     });
   });
 });

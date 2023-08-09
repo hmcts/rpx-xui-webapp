@@ -20,6 +20,11 @@ export interface ILoggerService {
 @Injectable({ providedIn: 'root' })
 export class LoggerService implements ILoggerService {
   public COOKIE_KEYS;
+
+  public static NOOP_FUNCTION_FOR_LOGGING = () => {
+    // Do nothing.
+  };
+
   constructor(private readonly monitoringService: MonitoringService,
               private readonly ngxLogger: NGXLogger,
               private readonly sessionStorageService: SessionStorageService,
@@ -28,6 +33,9 @@ export class LoggerService implements ILoggerService {
       TOKEN: config.cookies.token,
       USER: config.cookies.userId
     };
+    LoggerService.switchConsoleLogs({
+      switchOffAll: config.production
+    });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -95,5 +103,17 @@ export class LoggerService implements ILoggerService {
 
   public enableCookies(): void {
     this.monitoringService.enableCookies();
+  }
+
+  public static switchConsoleLogs(consoleConfig: any): void {
+    if (consoleConfig.switchOffAll === true) {
+      console.warn(`Console logs are disabled on production. No more log lines will be printed to console. consoleConfig.switchOffAll = ${consoleConfig.switchOffAll}`);
+      console.log = this.NOOP_FUNCTION_FOR_LOGGING;
+      console.debug = this.NOOP_FUNCTION_FOR_LOGGING;
+      console.trace = this.NOOP_FUNCTION_FOR_LOGGING;
+      console.info = this.NOOP_FUNCTION_FOR_LOGGING;
+      console.warn = this.NOOP_FUNCTION_FOR_LOGGING;
+      console.error = this.NOOP_FUNCTION_FOR_LOGGING;
+    }
   }
 }

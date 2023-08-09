@@ -173,7 +173,7 @@ async function teardown() {
     await backendMockApp.stopServer();
     await applicationServer.stop()
     await generateReport()
-    // process.exit(1);
+    process.exit(1);
 }
 
 async function generateReport() {

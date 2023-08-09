@@ -31,7 +31,7 @@ class ServiceMock{
     }
 
     async setCaseHearings(data, status) {
-        await this.updateMockServer('OnCaseHearing', { status: status ? status : 200, data: data })
+        await this.updateMockServer('OnCaseHearings', { status: status ? status : 200, data: data })
     }
     
 

@@ -10,8 +10,7 @@ const userApiData = require('../userApiData')
 
 router.get('/hearings/:caseId', (req, res) => {
     
-    service.addHearing()
-    service.addHearing({ hmcStatus :"COMPLETED"})
+ 
 
     userApiData.sendResponse(req, res, "OnCaseHearings", () => service.getCaseHearings())
    

@@ -57,6 +57,15 @@ const { I } = inject();
         });
     });
 
+    When('I click tab with label {string} in case details page, to see element with css selector {string}', async function (tabLabel, cssSelector) {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await caseDetailsPage.clickTabWithLabel(tabLabel) 
+            expect(await $(cssSelector).isDisplayed()).to.be.true
+        });
+
+    });
+
+
     Then('I see case details page displayed with tab {string} selected', async function(tabLabel){
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(await caseDetailsPage.amOnPage(), 'Not on case details page').to.be.true;

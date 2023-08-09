@@ -188,12 +188,10 @@ exports.config = {
     
   },
   teardown: async () => {
-    const status = await mochawesomeGenerateReport()
     if (!parallel) {
       await teardown()
     }
       
-    process.exit(status === 'PASS' ? 0 : 1)
     
   },
   bootstrapAll: async () => {
@@ -203,20 +201,16 @@ exports.config = {
    
   },
   teardownAll: async () => {  
-    const status = await  mochawesomeGenerateReport()
     if (parallel) {
       await teardown()
     }
     
-
-    process.exit(status === 'PASS' ? 0 : 1)
-    // return status === 'PASS' ? 0 : 1  
   }
 }
 
 
-function exitWithStatus() {
-  console.log(`FAILED: ${status.stats.failures}, PASSED: ${status.stats.passes}, TOTAL: ${status.stats.tests}`)
+async function exitWithStatus() {
+  const status = await mochawesomeGenerateReport()
   return status === 'PASS' ? 0 : 1
 }
 
@@ -235,7 +229,7 @@ async function teardown(){
     await applicationServer.stop()
   }
   statsReporter.run()
-  exitWithStatus()
+  await exitWithStatus()
 
   // process.exit(1);
 }
@@ -250,6 +244,7 @@ async function mochawesomeGenerateReport(){
     "reportFilename": `${functional_output_dir}/report`,
   });
 
+  console.log(`FAILED: ${report.stats.failures}, PASSED: ${report.stats.passes}, TOTAL: ${report.stats.tests}`)
 
   return report.stats.failures > 0 ? 'FAIL' : 'PASS';
 }

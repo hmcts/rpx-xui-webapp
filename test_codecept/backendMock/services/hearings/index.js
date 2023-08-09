@@ -14,11 +14,14 @@ class HearingsApi{
         this.hearings = [];
         this.serviceLinkedcases = []
 
+        // this.addHearing()
+        // this.addHearing({ hmcStatus: "COMPLETED" })
+
     }
 
     addHearing(props){
         this.hearings.push(this.gethearingTemplate(props))
-        }
+    }
     
 
     getCaseHearings(){
@@ -33,17 +36,17 @@ class HearingsApi{
     gethearingTemplate(props){
         props = props ? props : {}
         return {
-            hearingRequestDateTime: "2023-07-13T10:58:40.419815",
-            hearingType: "ABA5-FOF",
+            hearingRequestDateTime: props.hearingRequestDateTime ? props.hearingRequestDateTime : "2023-07-13T10:58:40.419815",
+            hearingType: props.hearingType ? props.hearingType : "ABA5-FOF",
             hmcStatus: props.hmcStatus ? props.hmcStatus : "AWAITING_ACTUALS",
-            lastResponseReceivedDateTime: "2023-07-13T16:12:15",
+            lastResponseReceivedDateTime: props.lastResponseReceivedDateTime ? props.lastResponseReceivedDateTime : "2023-07-13T16:12:15",
             requestVersion: 1,
-            hearingListingStatus: "FIXED",
-            listAssistCaseStatus: "LISTED",
+            hearingListingStatus: props.hearingListingStatus ? props.hearingListingStatus : "FIXED",
+            listAssistCaseStatus: props.listAssistCaseStatus ? props.listAssistCaseStatus : "LISTED",
             hearingDaySchedule: [
                 {
-                    hearingStartDateTime: "2023-07-21T10:00:00",
-                    hearingEndDateTime: "2023-07-21T14:05:00",
+                    hearingStartDateTime: props['hearingDaySchedule.hearingStartDateTime'] ? props['hearingDaySchedule.hearingStartDateTime'] : "2023-07-21T10:00:00",
+                    hearingEndDateTime: props['hearingDaySchedule.hearingEndDateTime'] ? props['hearingDaySchedule.hearingEndDateTime'] : "2023-07-21T14:05:00",
                     hearingVenueId: "497679",
                     hearingRoomId: "Coventry Combined Chambers 02",
                     hearingJudgeId: "",
@@ -80,7 +83,7 @@ class HearingsApi{
             ],
             hearingGroupRequestId: null,
             hearingIsLinkedFlag: false,
-            hearingChannels: [
+            hearingChannels: props.hearingChannels ? props.hearingChannels.split(",") : [
                 "INTER",
             ],
             hearingID: 2000006167,

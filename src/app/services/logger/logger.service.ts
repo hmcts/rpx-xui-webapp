@@ -112,8 +112,9 @@ export class LoggerService implements ILoggerService {
   }
 
   public static switchConsoleLogs(consoleConfig: any): void {
+    console.info(`consoleConfig.switchOffAll = ${consoleConfig.switchOffAll}`);
     if (consoleConfig.switchOffAll === true) {
-      console.warn(`Console logs are disabled on production. No more log lines will be printed to console. consoleConfig.switchOffAll = ${consoleConfig.switchOffAll}`);
+      console.warn('Console logs are disabled. No more log lines will be printed to console.');
       console.log = this.NOOP_FUNCTION_FOR_LOGGING;
       console.debug = this.NOOP_FUNCTION_FOR_LOGGING;
       console.trace = this.NOOP_FUNCTION_FOR_LOGGING;

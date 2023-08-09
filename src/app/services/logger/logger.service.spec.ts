@@ -115,7 +115,7 @@ describe('Logger service', () => {
       expect(mockedConsoleObject.log).not.toHaveBeenCalled();
       expect(mockedConsoleObject.trace).not.toHaveBeenCalled();
       expect(mockedConsoleObject.debug).not.toHaveBeenCalled();
-      expect(mockedConsoleObject.info).not.toHaveBeenCalled();
+      expect(mockedConsoleObject.info).toHaveBeenCalledTimes(1);
       expect(mockedConsoleObject.warn).toHaveBeenCalledTimes(1);
       expect(mockedConsoleObject.error).not.toHaveBeenCalled();
     });

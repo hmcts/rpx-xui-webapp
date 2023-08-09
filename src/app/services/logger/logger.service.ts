@@ -5,6 +5,7 @@ import { UserInfo } from '../../models/user-details.model';
 import { SessionStorageService } from '../session-storage/session-storage.service';
 import { CryptoWrapper } from './cryptoWrapper';
 import { MonitoringService } from './monitoring.service';
+import { EnvironmentService } from '../../shared/services/environment.service';
 
 export interface ILoggerService {
   trace(message: any, ...additional: any[]): void;
@@ -28,13 +29,18 @@ export class LoggerService implements ILoggerService {
   constructor(private readonly monitoringService: MonitoringService,
               private readonly ngxLogger: NGXLogger,
               private readonly sessionStorageService: SessionStorageService,
-              private readonly cryptoWrapper: CryptoWrapper) {
+              private readonly cryptoWrapper: CryptoWrapper,
+              private readonly environmentService: EnvironmentService) {
     this.COOKIE_KEYS = {
       TOKEN: config.cookies.token,
       USER: config.cookies.userId
     };
-    LoggerService.switchConsoleLogs({
-      switchOffAll: config.production
+    this.setupSwitcherForConsoleLogs();
+  }
+
+  private setupSwitcherForConsoleLogs() {
+    this.environmentService.config$.subscribe((config) => {
+      LoggerService.switchConsoleLogs({ switchOffAll: this.environmentService.isProd() });
     });
   }
 

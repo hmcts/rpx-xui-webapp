@@ -5,7 +5,7 @@
                      [showToolbar]="true"
                      [contentType]="mediaContentType"
                      [enableAnnotations]="true"
-                     [enableRedactions]="true"
+                     [enableRedactions]="isEnabledRedActions(enableRedActions$ | async)"
                      [enableICP]="isIcpEnabled((icpEnabled$ | async), (icpJurisdictions$ | async))"
                      [multimediaPlayerEnabled]="true"
                      [caseId]="caseId"

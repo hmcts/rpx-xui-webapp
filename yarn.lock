@@ -2386,12 +2386,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.0-case-flags-v2.1-warning-text-display":
-  version: 6.19.0-case-flags-v2.1-warning-text-display
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.0-case-flags-v2.1-warning-text-display"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.0-case-flags-v2.1-warning-text-display-v2":
+  version: 6.19.0-case-flags-v2.1-warning-text-display-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.0-case-flags-v2.1-warning-text-display-v2"
   dependencies:
     tslib: ^2.0.0
-  checksum: 1018fc7b5f06785bb53b48fa6d94bdd35bd389c42a47be37b51aec869c7133ecf39be46336986fe60e0f8089ff24b067824865e92792ece53fda7eb352580f7f
+  checksum: b2f69892211f8ef3ee964d5fe7daef1a47c5e42fe49f65c7df6d10658260c85d51f58887de8920c6b5c8d4f1546f292f8feb083dba9e4b6d19ab08e44144b475
   languageName: node
   linkType: hard
 
@@ -19270,7 +19270,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.0-case-flags-v2.1-warning-text-display
+    "@hmcts/ccd-case-ui-toolkit": 6.19.0-case-flags-v2.1-warning-text-display-v2
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

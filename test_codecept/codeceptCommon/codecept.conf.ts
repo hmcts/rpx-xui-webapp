@@ -22,18 +22,17 @@ console.log(`testType : ${testType}`)
 console.log(`parallel : ${parallel}`)
 console.log(`headless : ${!head}`)
 
-if (process.env.TEST_URL.includes('pr-29751') ||
-    process.env.TEST_URL.includes('localhost'))
-  {
-    process.env.TEST_ENV='demo';
-    process.env.TEST_URL = 'https://manage-case-int1.demo.platform.hmcts.net/';
-}
+
+let pipelineBranch = process.env.TEST_URL.includes('pr-') ? "preview" : "master"
 
 let features = ''
-if (testType === 'e2e' || testType === 'smoke'){
+if (testType === 'e2e' || testType === 'smoke'){  
   features = `../e2e/features/app/**/*.feature`
-} else if (testType === 'ngIntegration'){
+} else if (testType === 'ngIntegration' && pipelineBranch === 'preview'){
   features = `../ngIntegration/tests/features/**/*.feature`
+
+}else if (testType === 'ngIntegration' && pipelineBranch === 'master'){
+  features = `../ngIntegration/tests/features/**/notests.feature`
 
 } else{
   throw new Error(`Unrecognized test type ${testType}`);

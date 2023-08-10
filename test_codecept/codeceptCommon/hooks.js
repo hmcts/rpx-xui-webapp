@@ -85,12 +85,15 @@ module.exports = async function () {
      
         actor().flushLogsToReport();
 
-        const authCookies = idamLogin.xuiCallbackResponse.details?.setCookies?.find(cookie => cookie.name === '__auth__')
-        const mockSessiondataResponse = await mockClient.getUserSesionData(authCookies ? authCookies.value : null);
-        // featureLogsMessage(test, `${JSON.stringify(mockSessiondataResponse.data, null, 2)}`);
+        const authCookies = idamLogin.authToken
+        if (test.state === 'failed'){
+            const mockSessiondataResponse = await mockClient.getUserSesionData(authCookies);
+            featureLogsMessage(test, `${JSON.stringify(mockSessiondataResponse.data, null, 2)}`);
+            codeceptMochawesomeLog.AddJson(cookies);
+        }
+       
 
         const cookies = idamLogin.xuiCallbackResponse;
-        codeceptMochawesomeLog.AddJson(cookies);
         // featureLogsMessage(test, `\n cookies \n ${JSON.stringify(cookies, null, 2)}`);
         featureLogsMessage(test, `\n************ Test status:  ${test.state} : ${test.title}`);
         statsReporter.run()
@@ -100,13 +103,7 @@ module.exports = async function () {
 
 
     event.dispatcher.on(event.test.passed,async function (test) {
-        // output.print(`Test passed : ${test.title}`)
-
-
-        const authCookies = idamLogin.xuiCallbackResponse.details?.setCookies?.find(cookie => cookie.name === '__auth__')
-        const mockSessiondataResponse = await mockClient.getUserSesionData(authCookies ? authCookies.value : null);
-        featureLogsMessage(test,`${JSON.stringify(mockSessiondataResponse.data, null, 2)}`);
-
+       
         codeceptMochawesomeLog.AddMessage("************ Test passed")
 
     });

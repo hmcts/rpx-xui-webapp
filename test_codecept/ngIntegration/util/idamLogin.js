@@ -17,6 +17,8 @@ class IdamLogin{
             idamClientId: 'xuiwebapp',
         }
 
+        this.authToken = '';
+
        
 
         this.xuiCookies = {}
@@ -50,6 +52,9 @@ class IdamLogin{
             await this.onIdamLoginPost()
             await this.onXuiCallback()
             await this.getUserDetails()
+
+
+            this.authToken = this.userDetailsResponse.details.data.userInfo.token
 
         }catch(err){
             reportLogger.AddMessage('************* Login error *************')
@@ -133,6 +138,7 @@ class IdamLogin{
         reportLogger.AddMessage('API: XUI login call success')
 
     }
+
 
 
     async onIdamAuthorize() {

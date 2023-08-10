@@ -134,7 +134,11 @@
     "PUBLICLAW": {
        "caseTypes": "PUBLICLAW",
        "releaseVersion": "3.5"
-      }
+      },
+    "SSCS": {
+       "caseTypes": "Benefit,SSCS_ExceptionRecord",
+       "releaseVersion": "3.5"
+    }
   },
   "wildcardSearchFields": {
     "Benefit": [

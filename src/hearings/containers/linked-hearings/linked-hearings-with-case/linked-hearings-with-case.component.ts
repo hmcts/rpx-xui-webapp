@@ -87,10 +87,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     return (this.linkHearingForm.get('linkedCasesWithHearings') as FormArray);
   }
 
-  public getHearingsFormValue(position): FormArray {
-    return this.getCasesFormValue.controls[position].get('caseHearings') as FormArray;
-  }
-
   public isHearingsSelected(linkedCases: ServiceLinkedCasesWithHearingsModel[]) {
     linkedCases.forEach((caseInfo) => {
       if (caseInfo.caseHearings && caseInfo.caseHearings.find((hearingInfo) => hearingInfo.isSelected === true)) {
@@ -153,6 +149,14 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     }
   }
 
+  public getHearingsFormValue(casePos: number, hearingPos?: number): FormArray {
+    const formArray: FormArray = this.getCasesFormValue.controls[casePos].get('caseHearings') as FormArray;
+    if (String(hearingPos && formArray.controls[hearingPos].get('hearingID').value) === this.hearingId) {
+      this.updateLinkedCase(casePos, hearingPos);
+    }
+    return formArray;
+  }
+
   public updateLinkedCase(casePos: number, hearingPos: number) {
     this.clearHearings(casePos);
     this.getHearingsFormValue(casePos).controls[hearingPos].get('isSelected').setValue(true);
@@ -212,7 +216,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     if (this.isManageLink) {
       return this.hearingGroupRequestId === hearing.hearingGroupRequestId || isLinkable;
     }
-
     return isLinkable;
   }
 

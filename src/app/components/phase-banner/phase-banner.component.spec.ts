@@ -29,7 +29,7 @@ describe('PhaseBannerComponent', () => {
 
   beforeEach(() => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
+    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
     TestBed.configureTestingModule({
       imports: [],
       schemas: [NO_ERRORS_SCHEMA],

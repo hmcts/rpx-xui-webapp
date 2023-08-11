@@ -8,6 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CaseNotifier, PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { InfoMessage } from 'src/app/shared/enums/info-message';
 import { InformationMessage } from 'src/app/shared/models';
@@ -55,7 +56,7 @@ describe('WorkAllocation', () => {
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
     const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
+    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
     const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['getValue']);
     mockFeatureToggleService.getValue.and.returnValue(
       of({ configurations: [{ serviceName: 'IA', releaseVersion: '4' }] })

@@ -22,8 +22,9 @@
     </div>
   </div>
 
-  <p>{{"You must enter the client details exactly as they're written on the case, including any mistakes. For
-     example, if the client's last name is Smyth but it has been spelled 'Smith', you should enter Smith." | rpxTranslate}}</p>
+  <p>
+    {{"You must enter the client details exactly as they're written on the case, including any mistakes. For example, if the client's last name is Smyth but it has been spelled 'Smith', you should enter Smith." | rpxTranslate}}
+  </p>
 
   <ng-container *ngIf="(lastError$ | async)?.error.code === 'answers-not-matched-any-litigant' || allAnswerEmpty">
     <span id="error-answers-not-matched" class="govuk-error-message">

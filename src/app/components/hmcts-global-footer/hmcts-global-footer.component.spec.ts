@@ -32,7 +32,6 @@ describe('HmctsGlobalFooterComponent', () => {
     let testHostFixture: ComponentFixture<TestDummyHostComponent>;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let el: DebugElement;
-    // tslint:disable-next-line
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let de: any;
     let component: HmctsGlobalFooterComponent;

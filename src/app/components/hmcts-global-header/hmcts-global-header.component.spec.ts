@@ -19,7 +19,7 @@ class RpxTranslateMockPipe implements PipeTransform {
   }
 }
 
-describe('HmctsGlobalHeaderComponent', () => {
+describe('HmctsGlobalHeaderComponent - with active user', () => {
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
   let mockRouter: any;

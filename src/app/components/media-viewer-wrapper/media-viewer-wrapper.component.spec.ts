@@ -114,13 +114,4 @@ describe('MediaViewerWrapperComponent', () => {
     });
   });
 
-  describe('isEnableRedactSearch', () => {
-    it('should return true when enable-redact-search is true ', () => {
-      expect(component.isEnableRedactSearch(true)).toBeTruthy();
-    });
-
-    it('should return false when enable-redact-search is false ', () => {
-      expect(component.isEnableRedactSearch(false)).toBeFalsy();
-    });
-  });
 });

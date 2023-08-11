@@ -75,7 +75,4 @@ export class MediaViewerWrapperComponent implements OnInit {
     return icpJurisdictions && icpJurisdictions.length > 0 ? icpJurisdictions.includes(this.caseJurisdiction) : isEnabled;
   }
 
-  public isEnableRedactSearch(isEnabled: boolean): boolean {
-    return isEnabled;
-  }
 }

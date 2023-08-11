@@ -23,7 +23,7 @@ export class MediaViewerWrapperComponent implements OnInit {
 
   public icpJurisdictions$: Observable<string[]>;
   public icpEnabled$: Observable<boolean>;
-  public enableRedActions$: Observable<boolean>;
+  public enableRedactSearch$: Observable<boolean>;
 
   public constructor(
         private readonly windowService: WindowService,
@@ -61,7 +61,7 @@ export class MediaViewerWrapperComponent implements OnInit {
 
     this.icpJurisdictions$ = this.featureToggleService.getValue('icp-jurisdictions', []);
     this.icpEnabled$ = this.featureToggleService.isEnabled('icp-enabled');
-    this.enableRedActions$ = this.featureToggleService.isEnabled('enable-red-actions');
+    this.enableRedactSearch$ = this.featureToggleService.isEnabled('enable-redact-search');
   }
 
   /**
@@ -75,7 +75,7 @@ export class MediaViewerWrapperComponent implements OnInit {
     return icpJurisdictions && icpJurisdictions.length > 0 ? icpJurisdictions.includes(this.caseJurisdiction) : isEnabled;
   }
 
-  public isEnabledRedActions(isEnabled: boolean): boolean {
+  public isEnableRedactSearch(isEnabled: boolean): boolean {
     return isEnabled;
   }
 }

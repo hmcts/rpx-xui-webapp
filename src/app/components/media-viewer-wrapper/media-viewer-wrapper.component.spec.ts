@@ -95,7 +95,7 @@ describe('MediaViewerWrapperComponent', () => {
 
   describe('isIcpEnabled', () => {
     it('should return true when icp-enabled is true and jurisdiction is empty', () => {
-        expect(component.isIcpEnabled(true, [])).toBeTruthy();
+      expect(component.isIcpEnabled(true, [])).toBeTruthy();
     });
 
     it('should return false when icp-enabled is false and jurisdiction is empty', () => {
@@ -114,13 +114,13 @@ describe('MediaViewerWrapperComponent', () => {
     });
   });
 
-  describe('isEnabledRedActions', () => {
-    it('should return true when enable-red-actions is true ', () => {
-      expect(component.isEnabledRedActions(true)).toBeTruthy();
+  describe('isEnableRedactSearch', () => {
+    it('should return true when enable-redact-search is true ', () => {
+      expect(component.isEnableRedactSearch(true)).toBeTruthy();
     });
 
-    it('should return false when enable-red-actions is true ', () => {
-      expect(component.isEnabledRedActions(false)).toBeFalsy();
+    it('should return false when enable-redact-search is false ', () => {
+      expect(component.isEnableRedactSearch(false)).toBeFalsy();
     });
   });
 });

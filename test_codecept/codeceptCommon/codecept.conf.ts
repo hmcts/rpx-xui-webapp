@@ -9,27 +9,32 @@ import applicationServer from '../localServer'
 const path = require('path')
 var spawn = require('child_process').spawn;
 const backendMockApp = require('../backendMock/app');
-
+const statsReporter = require('./statsReporter')
 
 let appWithMockBackend = null;
 const testType = process.env.TEST_TYPE
-const parallel = process.env.PARALLEL
-const head = process.env.HEAD
 
-if (process.env.TEST_URL.includes('pr-29751') ||
-    process.env.TEST_URL.includes('localhost'))
-  {
-    process.env.TEST_ENV='demo';
-    process.env.TEST_URL = 'https://manage-case-int1.demo.platform.hmcts.net/';
-}
+const debugMode = process.env.DEBUG && process.env.DEBUG.includes('true')
+
+const parallel = process.env.PARALLEL ? process.env.PARALLEL === "true" : false
+const head = process.env.HEAD
+console.log(`testType : ${testType}`)
+console.log(`parallel : ${parallel}`)
+console.log(`headless : ${!head}`)
+
+
+let pipelineBranch = process.env.TEST_URL.includes('pr-') || process.env.TEST_URL.includes('manage-case.aat')  ? "preview" : "master"
 
 let features = ''
-if (testType === 'e2e'){
+if (testType === 'e2e' || testType === 'smoke'){  
   features = `../e2e/features/app/**/*.feature`
-} else if (testType === 'ngIntegration'){
+} else if (testType === 'ngIntegration' && pipelineBranch === 'preview'){
   features = `../ngIntegration/tests/features/**/*.feature`
 
-}else{
+}else if (testType === 'ngIntegration' && pipelineBranch === 'master'){
+  features = `../ngIntegration/tests/features/**/notests.feature`
+
+} else{
   throw new Error(`Unrecognized test type ${testType}`);
 }
 
@@ -105,17 +110,24 @@ exports.config = {
       reportName:'XUI_MC',
       "overwrite": false,
       "html": false,
-      "json": true
-      // inlineAssets: true
+      "json": true,
+      "codeceptjs-cli-reporter": {
+        "stdout": "-",
+        "options": {
+          "verbose": false,
+          "steps": true,
+        }
+      },
+      "mocha-junit-reporter": {
+        "stdout": `${functional_output_dir}/console.log`,
+        "options": {
+          "mochaFile": "./output/result.xml"
+        }
+      }
+      // inlineAssets: true,
+
     },
-    // "reporterOptions":{
-    //   "codeceptjs-cli-reporter": {
-    //     "stdout": "-",
-    //     "options": {
-    //       "verbose": true,
-    //       "steps": true,
-    //     }
-    //   },
+    
       "mochawesome": {
         "stdout": `${functional_output_dir}/`,
         "options": {
@@ -169,46 +181,59 @@ exports.config = {
 
   },
   bootstrap:async () =>{
-    if (testType === "ngIntegration" && !parallel){
+    if(!parallel){
       await setup()
     }
+    
   },
   teardown: async () => {
-    const status = await mochawesomeGenerateReport()
-      if (testType === "ngIntegration" && !parallel){
-        await teardown()
-      }
-    process.exit(status === 'PASS' ? 0 : 1)
+    if (!parallel) {
+      await teardown()
+    }
+      
     
   },
   bootstrapAll: async () => {
-    if (testType === "ngIntegration" && parallel) {
+    if (parallel) {
       await setup()
-
     }
+   
   },
   teardownAll: async () => {  
-    const status = await  mochawesomeGenerateReport()
-    if (testType === "ngIntegration" && parallel) {
-     await teardown()
+    if (parallel) {
+      await teardown()
     }
-
-    process.exit(status === 'PASS' ? 0 : 1)
-    // return status === 'PASS' ? 0 : 1  
+    
   }
 }
 
 
+async function exitWithStatus() {
+  const status = await mochawesomeGenerateReport()
+  process.exit(status === 'PASS' ? 0 : 1)
+
+}
+
 async function setup(){
-  await backendMockApp.startServer();
-  await applicationServer.start()
+
+  if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')){
+    await backendMockApp.startServer(debugMode);
+    await applicationServer.start()
+  }
+  
 }
 
 async function teardown(){
-  await backendMockApp.stopServer();
-  await applicationServer.stop()
+  if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
+    await backendMockApp.stopServer();
+    await applicationServer.stop()
+  }
+  statsReporter.run()
+  await exitWithStatus()
+
   // process.exit(1);
 }
+
 
 async function mochawesomeGenerateReport(){
   const report = await merge({
@@ -218,6 +243,9 @@ async function mochawesomeGenerateReport(){
     "reportDir": `${functional_output_dir}/`,
     "reportFilename": `${functional_output_dir}/report`,
   });
+
+  console.log(`FAILED: ${report.stats.failures}, PASSED: ${report.stats.passes}, TOTAL: ${report.stats.tests}`)
+
   return report.stats.failures > 0 ? 'FAIL' : 'PASS';
 }
 

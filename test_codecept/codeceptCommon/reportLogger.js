@@ -35,7 +35,13 @@ class CodeceptMochawesomeLog{
     }
 
     LogTestDataInput(message){
-        browser.get_I().addMochawesomeContext(`>>>>>>> [ Test data input ]: ${message}`);
+        try{
+            browser.get_I().addMochawesomeContext(`>>>>>>> [ Test data input ]: ${message}`);
+
+        } catch (err) {
+            console.log("Error occured adding message to report. " + err.stack);
+        }
+        console.log(message)
     }
 
     AddMessage(message, logLevel){
@@ -53,8 +59,13 @@ class CodeceptMochawesomeLog{
 
     AddMessageToReportOnly(message, logLevel) {
         // if (!this._isLevelEnabled(logLevel)) return;
+        try{
+            browser.get_I().addMochawesomeContext(this.getDate() + message);
 
-        browser.get_I().addMochawesomeContext(this.getDate() + message);
+        } catch (err) {
+            console.log("Error occured adding message to report. " + err.stack);
+        }
+        console.log(message)
         // browser.get_I().say(this.getDate() + message)
 
     }
@@ -75,7 +86,14 @@ class CodeceptMochawesomeLog{
 
     AddJsonToReportOnly(json, logLevel) {
         // if (!this._isLevelEnabled(logLevel)) return;
-        I.addMochawesomeContext(JSON.stringify(json, null, 2));
+        try{
+            I.addMochawesomeContext(JSON.stringify(json, null, 2));
+
+        } catch (err) {
+            console.log("Error occured adding message to report. " + err.stack);
+        }
+        console.log(JSON.stringify(json, null, 2));
+
     }
 
     async AddScreenshot(onbrowser, logLevel){

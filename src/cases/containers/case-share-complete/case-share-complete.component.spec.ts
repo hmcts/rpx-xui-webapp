@@ -9,7 +9,6 @@ import * as fromCasesFeature from '../../store';
 import { CaseShareCompleteComponent } from './case-share-complete.component';
 
 @Pipe({ name: 'rpxTranslate' })
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -42,14 +41,10 @@ describe('CaseShareCompleteComponent', () => {
       imports: [RouterTestingModule],
       providers: [
         LoadingService,
-        {
-          provide: Store,
-          useValue: mockStore
-        },
-        {
-          provide: FeatureToggleService,
-          useValue: mockFeatureToggleService
-        }
+        { provide: Store, useValue: mockStore },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: Store, useValue: mockStore },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(CaseShareCompleteComponent);

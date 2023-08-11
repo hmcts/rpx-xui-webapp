@@ -37,7 +37,15 @@ class WrapperComponent {
   template: `
     <div>Nothing</div>`
 })
-class NothingComponent { }
+class NothingComponent {
+}
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 @Pipe({ name: 'rpxTranslate' })
 class RpxTranslateMockPipe implements PipeTransform {
@@ -127,8 +135,8 @@ describe('TaskAssignmentContainerComponent2', () => {
           }
         },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
-        { provide: Router, useValue: mockRouter }
+        { provide: Router, useValue: mockRouter },
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);

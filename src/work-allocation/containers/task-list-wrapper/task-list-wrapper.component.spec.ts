@@ -3,7 +3,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { RpxTranslationService } from 'rpx-xui-translation';
@@ -56,7 +56,7 @@ describe('TaskListWrapperComponent', () => {
     }
   };
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
 
   beforeEach((() => {
     storeMock = jasmine.createSpyObj('Store', ['dispatch']);

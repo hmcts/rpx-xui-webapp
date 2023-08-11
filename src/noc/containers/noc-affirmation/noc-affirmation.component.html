@@ -5,9 +5,7 @@
       <p>{{"You should tick to 'sign' when:" | rpxTranslate}}</p>
       <ul class="govuk-list govuk-list--bullet">
         <li>{{"You're satisfied that all these details are accurate and match what is written on the case" | rpxTranslate}}</li>
-        <li>{{'You have served notice of this change on every party to the case, including the former legal
-          representative (if there was one)' | rpxTranslate}}
-        </li>
+        <li>{{'You have served notice of this change on every party to the case, including the former legal representative (if there was one)' | rpxTranslate}}</li>
       </ul>
       <div *ngIf="hasDisagreeError$ | async">
             <span id="tickbox-warning-affirmation" class="govuk-error-message">
@@ -45,8 +43,9 @@
 <div id="notification-section" class="govuk-form-group">
   <h2 class="govuk-heading-s govuk-!-margin-bottom-2">{{'Notifications' | rpxTranslate}}</h2>
 
-  <p class="govuk-body  govuk-!-margin-bottom-7">{{"If the client previously had legal representation, we'll let the legal
-    firm or legal representative know that they no longer have access to the case." | rpxTranslate}}</p>
+  <p class="govuk-body govuk-!-margin-bottom-7">
+    {{"If the client previously had legal representation, we'll let the legal firm or legal representative know that they no longer have access to the case." | rpxTranslate}}
+  </p>
 
   <div class="govuk-inset-text">
     {{'After you submit a notice of change, you might not see the confirmation page immediately' | rpxTranslate}}

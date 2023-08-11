@@ -53,7 +53,6 @@ describe('BookingDateComponent', () => {
           useFactory: rpxTranslationServiceStub
         }
       ]
-
     })
       .compileComponents();
     fixture = TestBed.createComponent(BookingDateComponent);

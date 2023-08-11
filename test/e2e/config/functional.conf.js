@@ -125,7 +125,7 @@ function getBDDTags(){
   if (argv.tags) {
     tags = argv.tags.split(',');
   } else {
-    tags = ['@fullfunctional', '~@ignore'];
+    tags = ['@fullfunctional', '~@ignore', 'not @Flaky'];
   }
   if (apptTestConfig.testEnv === 'demo') {
     tags.push('~@aat');

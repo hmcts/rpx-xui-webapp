@@ -107,8 +107,8 @@
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
   "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
-  "waSupportedJurisdictions": "EMPLOYMENT",
-  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
+  "waSupportedJurisdictions": "ST_CIC",
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW,ST_CIC",
   "serviceRefDataMapping": [
     { "service": "IA", "serviceCodes": ["BFA1"] },
     { "service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"] },
@@ -139,8 +139,8 @@
        "caseTypes": "Benefit,SSCS_ExceptionRecord",
        "releaseVersion": "3.5"
     },
-    "EMPLOYMENT": {
-       "caseTypes": "ET_EnglandWales,ET_EnglandWales_Listings,ET_EnglandWales_Multiple,ET_Scotland,ET_Scotland_Listings,ET_Scotland_Multiple",
+    "ST_CIC": {
+       "caseTypes": "CriminalInjuriesCompensation",
        "releaseVersion": "3.5"
       }
   },

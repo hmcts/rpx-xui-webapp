@@ -6,7 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseNotifier, PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-import { RpxTranslationService } from 'rpx-xui-translation';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';

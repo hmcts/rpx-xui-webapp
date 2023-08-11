@@ -1,4 +1,4 @@
-@fullfunctional @test @codecept_enabled
+@fullfunctional @test @functional_enabled
 Feature: Test case type case creation and case details validations
 
   Background:
@@ -55,7 +55,6 @@ Feature: Test case type case creation and case details validations
         Then I see case details page
         Then I should be able to see tabs in case details page
 
-
     Scenario: Validate tab details in case details page against API response
         When I click on search button
         Then Search page should be displayed
@@ -77,7 +76,6 @@ Feature: Test case type case creation and case details validations
         Then I see case details page
         Then Validate Case event next step trigger actions
 
-
     Scenario: Validate update form page click on next step trigger actions
         When I click on search button
         Then Search page should be displayed
@@ -88,6 +86,14 @@ Feature: Test case type case creation and case details validations
         Then I see case details page
         When I start case next step "Update case"
         Then Validate Case event update populating form page
+
+    Scenario: Validate invalid date error message
+        When I click on primary navigation header tab "Create case", I see selected tab page displayed
+        Then Create case page should be displayed
+        When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case"
+        Then I am on case form page
+        When I create case with invalid date
+        Then I see error message of type "validation" displayed with message "Date is not valid"
 
 
 

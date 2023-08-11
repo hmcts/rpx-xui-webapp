@@ -16,6 +16,7 @@ import { Task, TaskAction, TaskServiceConfig } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListComponent } from './task-list.component';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 @Component({
   template: `

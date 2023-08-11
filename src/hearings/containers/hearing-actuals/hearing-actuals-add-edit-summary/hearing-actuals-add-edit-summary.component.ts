@@ -25,6 +25,10 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
     this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
   }
 
+  public getHearingDateText(): string {
+    return this.actualHearingDays && this.actualHearingDays.length > 1 ? 'Hearing date(s)' : 'Hearing date';
+  }
+
   /**
    * TODO: Navigate to check your answers page if not cancelled and valid
    * Determines whether submit hearing details on

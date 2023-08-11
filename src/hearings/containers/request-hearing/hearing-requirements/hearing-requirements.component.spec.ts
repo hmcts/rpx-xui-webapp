@@ -20,6 +20,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingRequirementsComponent } from './hearing-requirements.component';
+import { LoggerService } from '../../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -139,7 +140,6 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'Jane',
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: ['RA0005'],
           interpreterLanguage: 'POR'
         },
         unavailabilityRanges: [
@@ -160,7 +160,6 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'DWP',
           lastName: null,
           preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: ['RA0005'],
           interpreterLanguage: null
         },
         organisationDetails: {
@@ -617,9 +616,16 @@ describe('HearingRequirementsComponent', () => {
                 title: 'Miss',
                 firstName: 'Jane',
                 lastName: 'Smith',
+                reasonableAdjustments: [
+                  'RA0042',
+                  'RA0053',
+                  'RA0013',
+                  'RA0016',
+                  'RA0042',
+                  'RA0009'
+                ],
                 interpreterLanguage: 'POR',
-                preferredHearingChannel: 'byVideo',
-                reasonableAdjustments: ['RA0005']
+                preferredHearingChannel: 'byVideo'
               },
               organisationDetails: {},
               unavailabilityDOW: null,
@@ -696,7 +702,6 @@ describe('HearingRequirementsComponent', () => {
                     firstName: 'Jane',
                     lastName: 'Smith',
                     preferredHearingChannel: 'inPerson',
-                    reasonableAdjustments: ['RA0005'],
                     interpreterLanguage: 'POR'
                   }
                 },
@@ -710,7 +715,6 @@ describe('HearingRequirementsComponent', () => {
                     firstName: 'DWP',
                     lastName: null,
                     preferredHearingChannel: 'byVideo',
-                    reasonableAdjustments: ['RA0005'],
                     interpreterLanguage: null
                   }
                 }
@@ -797,7 +801,13 @@ describe('HearingRequirementsComponent', () => {
                 firstName: 'Jane',
                 lastName: 'Smith',
                 preferredHearingChannel: 'inPerson',
-                reasonableAdjustments: ['RA0005'],
+                reasonableAdjustments: [
+                  'RA0042',
+                  'RA0053',
+                  'RA0013',
+                  'RA0016',
+                  'RA0042'
+                ],
                 interpreterLanguage: 'POR'
               },
               organisationDetails: {},
@@ -2186,6 +2196,7 @@ describe('HearingRequirementsComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   const locationsDataService = new LocationsDataService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -2194,6 +2205,7 @@ describe('HearingRequirementsComponent', () => {
         provideMockStore({ initialState: initialStateImmutable }),
         { provide: HearingsService, useValue: hearingsService },
         { provide: LocationsDataService, useValue: locationsDataService },
+        { provide: LoggerService, useValue: loggerServiceMock },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -2342,7 +2354,12 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'Jane',
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: ['RA0005'],
+          reasonableAdjustments: [
+            'RA0042',
+            'RA0053',
+            'RA0013',
+            'RA0016',
+            'RA0042'],
           interpreterLanguage: 'POR'
         }
       }, {

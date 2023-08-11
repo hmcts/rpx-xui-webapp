@@ -13,6 +13,8 @@ export interface RoleAssignment {
   created?: Date;
   attributes: LocationInfo;
   authorisations?: string[];
+  substantive?: string;
+  jurisdiction?: string;
 }
 
 export interface LocationInfo {
@@ -36,6 +38,8 @@ export interface LocationInfo {
   roleCategory?: string;
   reviewerRoleCategory?: string;
   baseLocation?: string;
+  beginTime?: Date;
+  endTime?: Date;
 }
 
 export interface Note {

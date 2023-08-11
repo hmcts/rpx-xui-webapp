@@ -1,0 +1,194 @@
+<xuilib-loading-spinner *ngIf="isLoading"></xuilib-loading-spinner>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds-from-desktop">
+    <exui-page-wrapper
+      [title]="'Check your answers before ' + (!isUpdateMode ? 'adding a new user' : 'updating the user')"
+      [backLink]="'../'">
+      <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="staffUser.first_name">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Name</dt>
+          <dd class="govuk-summary-list__value">{{ staffUser.first_name }} {{ staffUser.last_name }}</dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" [routerLink]="['../']" fragment="first_name">
+              Change<span class="govuk-visually-hidden"> name </span>
+            </a>
+          </dd>
+        </div>
+      </dl>
+
+      <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="staffUser.email_id">
+        <div class="govuk-summary-list__row">
+          <div class="govuk-summary-list__key">Email address</div>
+          <div class="govuk-summary-list__value">{{ staffUser.email_id }}</div>
+          <div class="govuk-summary-list__actions">
+            <a class="govuk-link" [routerLink]="['../']" fragment="email_id">
+              Change<span class="govuk-visually-hidden"> email </span>
+            </a>
+          </div>
+        </div>
+      </dl>
+
+      <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <div class="govuk-summary-list__row">
+          <div class="govuk-summary-list__key">Service</div>
+          <div class="govuk-summary-list__value">
+              <span *ngFor="let service of staffUser.services; let isLast=last">
+                {{service.service}}
+                <span *ngIf="!isLast"><br/></span>
+              </span>
+          </div>
+          <div class="govuk-summary-list__actions">
+            <a class="govuk-link" [routerLink]="['../']" fragment="services">
+              Change<span class="govuk-visually-hidden"> services </span>
+            </a>
+          </div>
+        </div>
+      </dl>
+
+      <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <div class="govuk-summary-list__row">
+          <div class="govuk-summary-list__key">Region</div>
+          <div class="govuk-summary-list__value">
+            {{ staffUser.region }}
+          </div>
+          <div class="govuk-summary-list__actions">
+            <a class="govuk-link" [routerLink]="['../']" fragment="region_id">
+              Change<span class="govuk-visually-hidden"> region</span>
+            </a>
+          </div>
+        </div>
+      </dl>
+
+      <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <div class="govuk-summary-list__row">
+          <div class="govuk-summary-list__key">Primary location</div>
+          <div class="govuk-summary-list__value">
+              <span *ngFor="let location of staffUser.base_locations; let isLast=last">
+                <ng-container *ngIf="location.is_primary">
+                  {{location.location}}
+                </ng-container>
+              </span>
+          </div>
+          <div class="govuk-summary-list__actions">
+            <a class="govuk-link" [routerLink]="['../']" fragment="base_locations_primary">
+              Change<span class="govuk-visually-hidden"> primary location</span>
+            </a>
+          </div>
+        </div>
+      </dl>
+
+      <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <div class="govuk-summary-list__row">
+          <div class="govuk-summary-list__key">Additional locations</div>
+          <div class="govuk-summary-list__value">
+              <span *ngFor="let location of staffUser.base_locations; let isLast=last">
+                <ng-container *ngIf="!location.is_primary">
+                  {{location.location}}
+                  <span *ngIf="!isLast"><br/></span>
+                </ng-container>
+              </span>
+          </div>
+          <div class="govuk-summary-list__actions">
+            <a class="govuk-link" [routerLink]="['../']" fragment="base_locations_additional">
+              Change<span class="govuk-visually-hidden"> additional locations</span>
+            </a>
+          </div>
+        </div>
+      </dl>
+
+      <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <div class="govuk-summary-list__row">
+          <div class="govuk-summary-list__key">User type</div>
+          <div class="govuk-summary-list__value">
+            {{ staffUser.user_type }}
+          </div>
+          <div class="govuk-summary-list__actions">
+            <a class="govuk-link" [routerLink]="['../']" fragment="user_type">
+              Change<span class="govuk-visually-hidden"> user type</span>
+            </a>
+          </div>
+        </div>
+      </dl>
+
+      <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <div class="govuk-summary-list__row">
+          <div class="govuk-summary-list__key">Role</div>
+          <div class="govuk-summary-list__value">
+            <div *ngIf="staffUser.case_allocator">Case allocator</div>
+            <div *ngIf="staffUser.task_supervisor">Task supervisor</div>
+            <div *ngIf="staffUser.staff_admin">Staff administrator</div>
+          </div>
+          <div class="govuk-summary-list__actions">
+            <a class="govuk-link" [routerLink]="['../']" fragment="userRoles">
+              Change<span class="govuk-visually-hidden"> roles</span>
+            </a>
+          </div>
+        </div>
+      </dl>
+
+      <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <div class="govuk-summary-list__row">
+          <div class="govuk-summary-list__key">Job title</div>
+          <div class="govuk-summary-list__value">
+              <span *ngFor="let jobTitle of staffUser.roles; let isLast=last">
+                {{jobTitle.role}}
+                <span *ngIf="!isLast"><br/></span>
+              </span>
+          </div>
+          <div class="govuk-summary-list__actions">
+            <a class="govuk-link" [routerLink]="['../']" fragment="roles">
+              Change<span class="govuk-visually-hidden"> job title</span>
+            </a>
+          </div>
+        </div>
+      </dl>
+
+      <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <div class="govuk-summary-list__row">
+          <div class="govuk-summary-list__key">Skills</div>
+          <div class="govuk-summary-list__value">
+              <span *ngFor="let skill of staffUser.skills; let isLast=last">
+                <span class="govuk-!-font-weight-bold">{{getServiceNameFromSkillId(skill.skill_id) }}
+                  :</span> {{skill.description}}
+                <span *ngIf="!isLast"><br/></span>
+              </span>
+          </div>
+          <div class="govuk-summary-list__actions">
+            <a class="govuk-link" [routerLink]="['../']" fragment="skills">
+              Change<span class="govuk-visually-hidden"> skills</span>
+            </a>
+          </div>
+        </div>
+      </dl>
+
+      <ng-container *ngIf="isUpdateMode">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+          <div class="govuk-summary-list__row">
+            <div class="govuk-summary-list__key">Status</div>
+            <div class="govuk-summary-list__value">
+              <exui-staff-status [status]="staffUser.status"></exui-staff-status>
+            </div>
+            <div class="govuk-summary-list__actions">
+            </div>
+          </div>
+        </dl>
+      </ng-container>
+
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          <button id="user-staff-check-answers-submit"
+                  class="govuk-button govuk-!-margin-right-1 govuk-!-margin-bottom-0"
+                  (click)="onSubmit()">
+            Submit
+          </button>
+
+          <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0"
+                  (click)="cancel()">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </exui-page-wrapper>
+  </div>
+</div>

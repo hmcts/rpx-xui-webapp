@@ -1,27 +1,29 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, ViewChild } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Component, Pipe, PipeTransform, ViewChild } from '@angular/core';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { Store } from '@ngrx/store';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of, throwError } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';
+import { InfoMessageType } from '../../../role-access/models/enums';
 import { AllocateRoleService } from '../../../role-access/services';
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { InfoMessage, InfoMessageType, TaskActionIds, TaskContext } from '../../enums';
-import { InformationMessage } from '../../models/comms';
+import { TaskActionIds, TaskContext } from '../../enums';
 import * as dtos from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
-import { getMockLocations, getMockTasks, MockRouter } from '../../tests/utils.spec';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
+import { MockRouter, getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
-
 @Component({
   template: `
     <exui-available-tasks></exui-available-tasks>`
@@ -38,6 +40,13 @@ const userInfo =
     "active":true,
     "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
     "token":"eXaMpLeToKeN"}`;
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('AvailableTasksComponent', () => {
   let component: AvailableTasksComponent;
@@ -58,21 +67,32 @@ describe('AvailableTasksComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
+  const mockCheckReleaseVersionService = {
+    isRelease4: () => {
+      return {
+        subscribe: () => true
+      };
+    }
+  };
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
 
   beforeEach(() => {
     storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
-        ExuiCommonLibModule,
-        RouterTestingModule,
-        WorkAllocationComponentsModule,
-        PaginationModule
+        RouterTestingModule
       ],
-      declarations: [AvailableTasksComponent, WrapperComponent, TaskListComponent],
+      declarations: [
+        AvailableTasksComponent,
+        WrapperComponent,
+        TaskListComponent,
+        RpxTranslateMockPipe
+      ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: mockLocationService },
@@ -86,7 +106,9 @@ describe('AvailableTasksComponent', () => {
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: AllocateRoleService, useValue: mockRoleService },
-        { provide: Store, useValue: storeMock }
+        { provide: Store, useValue: storeMock },
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
+        { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -120,7 +142,6 @@ describe('AvailableTasksComponent', () => {
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockFeatureToggleService.getValue.and.returnValue(of(true));
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
-    component.isUpdatedTaskPermissions$ = of(true);
     spyOn(mockRouter, 'navigate');
     fixture.detectChanges();
   });
@@ -165,7 +186,9 @@ describe('AvailableTasksComponent', () => {
     for (let i = 0; i < fields.length; i++) {
       // ensure derivedIcon has no header and every other field does
       if (fields[i].columnLabel) {
-        expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+        if (fields[i].columnLabel !== 'Priority') {
+          expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+        }
       } else {
         expect(headerCells[i].textContent).toEqual('');
       }

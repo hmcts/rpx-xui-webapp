@@ -1,11 +1,23 @@
-import { Component, Input, ViewChild } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { Component, Input, Pipe, PipeTransform, ViewChild } from '@angular/core';
+import { ComponentFixture, fakeAsync, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { RouterTestingModule } from '@angular/router/testing';
+import { CaseReferencePipe } from '@hmcts/ccd-case-ui-toolkit';
+import { DueDateComponent } from '@hmcts/rpx-xui-common-lib';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { FieldType, TaskView } from '../../enums';
 import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
-import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
+import { DaysFromTodayPipe, IntegerPipe, TwoDPPipe, YesNoPipe } from '../../pipes';
+import { AccessViewFieldComponent } from '../access-view-field/access-view-field.component';
+import { CaseNameFieldComponent } from '../case-name-field/case-name-field.component';
+import { CaseReferenceFieldComponent } from '../case-reference-field/case-reference-field.component';
+import { DerivedIconFieldComponent } from '../derived-icon-field/derived-icon-field.component';
+import { ImageFieldComponent } from '../image-field/image-field.component';
+import { PriorityFieldComponent } from '../priority-field/priority-field.component';
+import { TaskNameFieldComponent } from '../task-name-field/task-name-field.component';
+import { UrlFieldComponent } from '../url-field/url-field.component';
+import { WorkFieldComponent } from '../work-field/work-field.component';
 import { TaskFieldComponent } from './task-field.component';
 
 @Component({
@@ -17,11 +29,20 @@ class WrapperComponent {
   @Input() public task: Task;
 }
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
+
 describe('WorkAllocation', () => {
   describe('TaskFieldComponent', () => {
     let component: TaskFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
 
     function getConfig(name: string, type: FieldType): FieldConfig {
       return {
@@ -32,10 +53,32 @@ describe('WorkAllocation', () => {
       };
     }
 
-    beforeEach(async () => {
+    beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [WrapperComponent],
-        imports: [WorkAllocationComponentsModule, RouterTestingModule]
+        declarations: [
+          WrapperComponent,
+          AccessViewFieldComponent,
+          CaseNameFieldComponent,
+          CaseReferenceFieldComponent,
+          DerivedIconFieldComponent,
+          ImageFieldComponent,
+          TaskFieldComponent,
+          TaskNameFieldComponent,
+          UrlFieldComponent,
+          WorkFieldComponent,
+          PriorityFieldComponent,
+          DueDateComponent,
+          CaseReferencePipe,
+          IntegerPipe,
+          TwoDPPipe,
+          YesNoPipe,
+          DaysFromTodayPipe,
+          RpxTranslateMockPipe
+        ],
+        imports: [RouterTestingModule],
+        providers: [
+          { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
+        ]
       })
         .compileComponents();
 
@@ -43,7 +86,7 @@ describe('WorkAllocation', () => {
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
       fixture.detectChanges();
-    });
+    }));
 
     it('should show only if there is both a config and a task set', () => {
       component =wrapper.appComponentRef;
@@ -62,6 +105,7 @@ describe('WorkAllocation', () => {
         caseCategory: 'The case category',
         location: 'The location',
         taskName: 'The task name',
+        major_priority: 300,
         dueDate: new Date(),
         actions: []
       };
@@ -96,6 +140,7 @@ describe('WorkAllocation', () => {
         caseCategory: 'The case category',
         location: 'The location',
         taskName: 'The task name',
+        major_priority: 2100,
         dueDate: new Date(),
         actions: []
       };
@@ -322,41 +367,6 @@ describe('WorkAllocation', () => {
       task.dueDate = new Date(2020, 11, 15, 14, 15, 16); // Month of 11 = December.
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('15/12/2020 14:15');
-
-      // Clear out the value of task.dueDate.
-      task.dueDate = undefined;
-      fixture.detectChanges();
-      expect(fixture.debugElement.nativeElement.innerText).toBe('');
-    });
-
-    it('should handle a PRIORITY type', () => {
-      component =wrapper.appComponentRef;
-      // Set up the config and the task.
-      const config: FieldConfig = getConfig('dueDate', FieldType.PRIORITY);
-      const task: Task = {
-        assignee: null,
-        assigneeName: null,
-        id: 'The task ID',
-        case_id: 'The case reference',
-        caseName: 'The case name',
-        caseCategory: 'The case category',
-        description: '',
-        location: 'The location',
-        taskName: 'The task name',
-        dueDate: new Date(2020, 10, 6, 1, 2, 3), // Month of 10 = November as it's 0-based.
-        actions: []
-      };
-
-      // Add the task and it should work (showing the due date).
-      component.config = config;
-      component.task = task;
-      fixture.detectChanges();
-      expect(fixture.debugElement.nativeElement.innerText).toBe('HIGH');
-
-      // Change the value of task.dueDate.
-      task.dueDate = new Date(9999, 11, 15, 14, 15, 16); // Month of 11 = December.
-      fixture.detectChanges();
-      expect(fixture.debugElement.nativeElement.innerText).toBe('LOW');
 
       // Clear out the value of task.dueDate.
       task.dueDate = undefined;

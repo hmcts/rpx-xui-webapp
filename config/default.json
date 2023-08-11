@@ -1,4 +1,4 @@
-{
+  {
   "environment": "production",
   "cookies": {
     "token": "__auth__",
@@ -33,7 +33,7 @@
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
     "hearings": {
-      "hearingsJurisdictions": "SSCS,PRIVATELAW",
+      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL,IA",
       "sscs": {
         "serviceApi": "http://sscs-hearings-api-prod.service.core-compute-prod.internal",
         "caseTypes": "Benefit"
@@ -41,6 +41,14 @@
       "privatelaw": {
         "serviceApi": "http://fis-hmc-api-prod.service.core-compute-prod.internal",
         "caseTypes": "PRLAPPS"
+      },
+      "civil": {
+        "serviceApi": "http://civil-service-prod.service.core-compute-prod.internal",
+        "caseTypes": "CIVIL"
+      },
+      "ia": {
+        "serviceApi": "http://ia-hearings-api-prod.service.core-compute-prod.internal",
+        "caseTypes": "Asylum"
       },
       "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
     },
@@ -92,42 +100,46 @@
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal",
     "payment_return_url": "https://paymentoutcome-web.prod.platform.hmcts.net",
+    "translation": "http://ts-translation-service-prod.service.core-compute-prod.internal",
     "judicialBookingApi": "http://am-judicial-booking-service-prod.service.core-compute-prod.internal"
   },
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "globalSearchServices": "IA,CIVIL,PRIVATELAW",
-  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW",
+  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
+  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
-  "serviceRefDataMapping": [{"service": "IA", "serviceCodes": ["BFA1"]}, {"service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"]}, {"service": "PRIVATELAW", "serviceCodes": ["ABA5"]}],
+  "serviceRefDataMapping": [
+    { "service": "IA", "serviceCodes": ["BFA1"] },
+    { "service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"] },
+    { "service": "PRIVATELAW", "serviceCodes": ["ABA5"] },
+    { "service": "PUBLICLAW", "serviceCodes": ["ABA3"] },
+    { "service": "SSCS", "serviceCodes": ["BBA3"] },
+    { "service": "ST_CIC", "serviceCodes": ["BBA2"] },
+    { "service": "EMPLOYMENT", "serviceCodes": ["BHA1"] }
+  ],
   "waSupportedServiceandCaseTypes": {
-    "configurations": [
-      {
-        "caseTypes": [
-          "Asylum"
-        ],
-        "releaseVersion": "3.5",
-        "serviceName": "IA"
+    "IA": {
+        "caseTypes": "Asylum",
+        "releaseVersion": "3.5"
       },
-      {
-        "caseTypes": [
-          "PRIVATELAW",
-          "PRLAPPS"
-        ],
-        "releaseVersion": "3.5",
-        "serviceName": "PRIVATELAW"
+    "CIVIL": {
+        "caseTypes": "CIVIL,GENERALAPPLICATION",
+        "releaseVersion": "3.5"
       },
-      {
-        "caseTypes": [
-          "CIVIL",
-          "GENERALAPPLICATION"
-        ],
-        "releaseVersion": "3.5",
-        "serviceName": "CIVIL"
-      }
-    ]
-  }, 
+    "PRIVATELAW": {
+        "caseTypes": "PRIVATELAW,PRLAPPS",
+        "releaseVersion": "3.5"
+      },
+    "PUBLICLAW": {
+       "caseTypes": "PUBLICLAW",
+       "releaseVersion": "3.5"
+      },
+    "SSCS": {
+       "caseTypes": "Benefit,SSCS_ExceptionRecord",
+       "releaseVersion": "3.5"
+    }
+  },
   "wildcardSearchFields": {
     "Benefit": [
       "generatedSurname",
@@ -167,11 +179,11 @@
     "redisEnabled": false,
     "oidcEnabled": false,
     "workAllocationEnabled": false,
-    "updatedTaskPermissionsEnabled": true,
     "roleEnabled": false,
     "caseworkerRefEnabled": false,
     "substantiveRoleEnabled": true,
-    "accessManagementEnabled": true
+    "accessManagementEnabled": true,
+    "compressionEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {
@@ -189,8 +201,8 @@
           "'self'",
           "'unsafe-inline'",
           "'unsafe-eval'",
-          "www.google-analytics.com",
-          "www.googletagmanager.com",
+          "https://*.google-analytics.com",
+          "https://*.googletagmanager.com",
           "az416426.vo.msecnd.net"
         ],
         "connectSrc": [
@@ -198,7 +210,9 @@
           "*.gov.uk",
           "dc.services.visualstudio.com",
           "*.launchdarkly.com",
-          "www.google-analytics.com"
+          "https://*.google-analytics.com",
+          "https://*.googletagmanager.com",
+          "https://*.analytics.google.com"
         ],
         "mediaSrc": ["'self'"],
         "objectSrc": ["'self'"],
@@ -206,8 +220,8 @@
         "imgSrc": [
           "'self'",
           "data:",
-          "https://www.google-analytics.com",
-          "https://www.googletagmanager.com",
+          "https://*.google-analytics.com",
+          "https://*.googletagmanager.com",
           "https://raw.githubusercontent.com/hmcts/",
           "http://stats.g.doubleclick.net/",
           "http://ssl.gstatic.com/",

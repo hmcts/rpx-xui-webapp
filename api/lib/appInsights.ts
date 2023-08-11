@@ -5,7 +5,7 @@ import {
   APP_INSIGHTS_KEY, FEATURE_APP_INSIGHTS_ENABLED
 } from '../configuration/references';
 
-export let client;
+export let client: applicationinsights.TelemetryClient;
 
 if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
   applicationinsights
@@ -32,4 +32,10 @@ export function appInsights(req: express.Request, res: express.Response, next) {
   }
 
   next();
+}
+
+export function trackTrace(trace: string, properties?: {[key: string]: any}) {
+  if (client) {
+    client.trackTrace({ message: trace, properties });
+  }
 }

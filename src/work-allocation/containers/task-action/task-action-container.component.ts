@@ -4,17 +4,20 @@ import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
+
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { UserInfo, UserRole } from '../../../app/models';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { Actions } from '../../../role-access/models';
+import { InfoMessageType } from '../../../role-access/models/enums';
 import { AllocateRoleService } from '../../../role-access/services';
 import { ConfigConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, SortOrder, TaskActionType, TaskService } from '../../enums';
+import { SortOrder, TaskActionType, TaskService } from '../../enums';
 import { FieldConfig } from '../../models/common';
 import { RouteData } from '../../models/common/route-data';
-import { InformationMessage } from '../../models/comms';
 import { Task, TaskServiceConfig } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
@@ -30,8 +33,6 @@ export class TaskActionContainerComponent implements OnInit {
   public routeData: RouteData;
   protected userDetailsKey: string = 'userDetails';
   public isJudicial: boolean;
-  public isUpdatedTaskPermissions$: Observable<boolean>;
-  public updatedTaskPermission: boolean;
   constructor(
     private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
@@ -86,11 +87,6 @@ export class TaskActionContainerComponent implements OnInit {
         });
       }
     }
-
-    this.isUpdatedTaskPermissions$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
-    this.isUpdatedTaskPermissions$.pipe(filter((v) => !!v)).subscribe((value) => {
-      this.updatedTaskPermission = value;
-    });
   }
 
   public isCurrentUserJudicial(): boolean {
@@ -113,15 +109,13 @@ export class TaskActionContainerComponent implements OnInit {
         break;
       case TaskActionType.Unassign:
         action = ACTION.UNCLAIM;
-        if (this.updatedTaskPermission) {
-          const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
-          let userId: string;
-          if (userInfoStr) {
-            const userInfo: UserInfo = JSON.parse(userInfoStr);
-            userId = userInfo.id ? userInfo.id : userInfo.uid;
-            if (this.tasks[0].assignee !== userId) {
-              action = ACTION.UNASSIGN;
-            }
+        const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+        let userId: string;
+        if (userInfoStr) {
+          const userInfo: UserInfo = JSON.parse(userInfoStr);
+          userId = userInfo.id ? userInfo.id : userInfo.uid;
+          if (this.tasks[0].assignee !== userId) {
+            action = ACTION.UNASSIGN;
           }
         }
         break;

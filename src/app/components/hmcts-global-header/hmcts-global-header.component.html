@@ -1,6 +1,5 @@
 <div class="hmcts-header transparent-background">
   <div class="hmcts-header__container" [ngClass]="{ 'set-min-height': items?.length === 0}">
-
     <ng-container [ngSwitch]="logo">
 
       <!-- Logo for Judicial Users -->
@@ -12,7 +11,10 @@
         </div>
         <div class="govuk-header__logo">
         </div>
-        <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name">{{headerTitle?.name}}</a>
+        <a class="hmcts-header__link" [routerLink]="headerTitle?.url"
+           [attr.aria-label]="headerTitle?.name | rpxTranslate">
+          {{headerTitle?.name | rpxTranslate}}
+        </a>
       </ng-container>
 
       <!-- Logo for Case Manager Users -->
@@ -26,13 +28,19 @@
             </span>
           </a>
         </div>
-        <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name">{{headerTitle?.name}}</a>
+        <a class="hmcts-header__link" [routerLink]="headerTitle?.url"
+           [attr.aria-label]="headerTitle?.name | rpxTranslate">
+          {{headerTitle?.name | rpxTranslate}}
+        </a>
       </ng-container>
 
       <!-- Logo for Users (Default) -->
       <ng-container *ngSwitchDefault>
         <div class="hmcts-header__logo">
-          <a class="hmcts-header__link" [routerLink]="'/'" [attr.aria-label]="headerTitle?.name">{{headerTitle?.name}}</a>
+          <a class="hmcts-header__link" [routerLink]="'/'"
+             [attr.aria-label]="headerTitle?.name | rpxTranslate">
+            {{headerTitle?.name | rpxTranslate}}
+          </a>
         </div>
       </ng-container>
 
@@ -40,10 +48,13 @@
 
     <!-- HMCTS header navigation items displayed in top right-hand corner (currently, just one: "Sign out") -->
     <div class="hmcts-header__content">
-      <nav class="hmcts-header__navigation" attr.aria-label="{{navigation.label}}">
+      <nav class="hmcts-header__navigation" attr.aria-label="{{navigation.label | rpxTranslate}}">
         <ul class="hmcts-header__navigation-list">
           <li *ngFor="let item of navigation.items; let i = index" class="hmcts-header__navigation-item">
-            <a class="hmcts-header__navigation-link" (click)="onEmitEvent(i)" *ngIf="userValue" [routerLink]="">{{item.text}}</a>
+            <a class="hmcts-header__navigation-link" (click)="onEmitEvent(i)" *ngIf="userValue"
+               [routerLink]="">
+              {{item.text | rpxTranslate}}
+            </a>
           </li>
         </ul>
       </nav>
@@ -58,7 +69,9 @@
       <nav class="hmcts-primary-navigation transparent-background" aria-label="Primary navigation">
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of (leftItems | async)">
-            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true : null" [routerLink]="item.href">{{item.text}}</a>
+            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true : null" [routerLink]="item.href">
+              {{item.text | rpxTranslate}}
+            </a>
           </li>
         </ul>
       </nav>
@@ -73,7 +86,8 @@
               [ngClass]="item.ngClass"
               (click)="onEmitSubMenu(item)"
               [attr.aria-current]="item.active ? true : null"
-              [routerLink]="item.href">{{item.text}}
+              [routerLink]="item.href">
+              {{item.text | rpxTranslate}}
             </a>
             <exui-case-reference-search-box
               *ngIf="!(isUserCaseManager$ | async) && (isGlobalSearchEnabled$ | async)"

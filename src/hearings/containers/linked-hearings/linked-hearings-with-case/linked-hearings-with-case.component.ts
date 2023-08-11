@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import {
   HearingLinkedSelectionEnum,
@@ -87,10 +87,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     return (this.linkHearingForm.get('linkedCasesWithHearings') as FormArray);
   }
 
-  public getHearingsFormValue(position): FormArray {
-    return this.getCasesFormValue.controls[position].get('caseHearings') as FormArray;
-  }
-
   public isHearingsSelected(linkedCases: ServiceLinkedCasesWithHearingsModel[]) {
     linkedCases.forEach((caseInfo) => {
       if (caseInfo.caseHearings && caseInfo.caseHearings.find((hearingInfo) => hearingInfo.isSelected === true)) {
@@ -143,10 +139,22 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
 
   public getHearingsAvailable() {
     this.linkedCases.forEach((caseInfo) => {
-      if (caseInfo.caseHearings && caseInfo.caseHearings.length > 0) {
+      if (caseInfo.caseRef !== this.caseId && caseInfo.caseHearings?.length > 0) {
         this.isHearingsAvailable = true;
       }
     });
+    // No hearings available for linking, do not display the current case
+    if (!this.isHearingsAvailable) {
+      this.linkedCases = this.linkedCases?.filter((linkedCase) => linkedCase.caseRef !== this.caseId);
+    }
+  }
+
+  public getHearingsFormValue(casePos: number, hearingPos?: number): FormArray {
+    const formArray: FormArray = this.getCasesFormValue.controls[casePos].get('caseHearings') as FormArray;
+    if (String(hearingPos && formArray.controls[hearingPos].get('hearingID').value) === this.hearingId) {
+      this.updateLinkedCase(casePos, hearingPos);
+    }
+    return formArray;
   }
 
   public updateLinkedCase(casePos: number, hearingPos: number) {
@@ -208,7 +216,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     if (this.isManageLink) {
       return this.hearingGroupRequestId === hearing.hearingGroupRequestId || isLinkable;
     }
-
     return isLinkable;
   }
 

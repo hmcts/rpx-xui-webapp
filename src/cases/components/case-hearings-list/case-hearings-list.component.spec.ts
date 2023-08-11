@@ -16,7 +16,7 @@ import { CaseHearingsListComponent } from './case-hearings-list.component';
 
 class MockRoleCategoryMappingService {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public initialize = (): void => {};
+  public initialize = (): void => { };
   public isEnabled = (): Observable<boolean> => of(true);
   public getValue = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
   public getValueOnce = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);

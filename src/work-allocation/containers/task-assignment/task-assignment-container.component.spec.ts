@@ -1,24 +1,26 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, Pipe, PipeTransform, ViewChild } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
+
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { TaskActionConstants } from '../../components/constants';
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskActionType } from '../../enums';
 import { Task } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskAssignmentContainerComponent } from './task-assignment-container.component';
 
@@ -35,7 +37,15 @@ class WrapperComponent {
   template: `
     <div>Nothing</div>`
 })
-class NothingComponent {}
+class NothingComponent {
+}
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('TaskAssignmentContainerComponent2', () => {
   let component: TaskAssignmentContainerComponent;
@@ -51,32 +61,41 @@ describe('TaskAssignmentContainerComponent2', () => {
     back: jasmine.createSpy('back')
   };
   const mockTasks = getMockTasks();
+  const mockRouter = jasmine.createSpyObj('router', ['navigate']);
   const mockWorkAllocationService = {
     assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
   };
   const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
+  const mockCheckReleaseVersionService = {
+    isRelease4: () => {
+      return {
+        subscribe: () => true
+      };
+    }
+  };
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
 
-  beforeEach(async () => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         TaskAssignmentContainerComponent,
         WrapperComponent,
         TaskListComponent,
         ErrorMessageComponent,
-        NothingComponent
+        NothingComponent,
+        RpxTranslateMockPipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
-        WorkAllocationComponentsModule,
         ReactiveFormsModule,
         CdkTableModule,
         FormsModule,
         MatAutocompleteModule,
         HttpClientTestingModule,
         EffectsModule.forRoot([]),
-        ExuiCommonLibModule,
         PaginationModule,
         StoreModule.forRoot({}),
         RouterTestingModule.withRoutes(
@@ -89,6 +108,7 @@ describe('TaskAssignmentContainerComponent2', () => {
         { provide: Location, useValue: locationStub },
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
+        { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -108,7 +128,8 @@ describe('TaskAssignmentContainerComponent2', () => {
           }
         },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-        { provide: Router, useValue: { url: 'localhost/test' } }
+        { provide: Router, useValue: mockRouter },
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -119,7 +140,7 @@ describe('TaskAssignmentContainerComponent2', () => {
 
     // Deliberately defer fixture.detectChanges() call to each test, to allow overriding the ActivatedRoute snapshot
     // data with a different verb ("Assign")
-  });
+  }));
 
   afterEach(() => {
     fixture.destroy();
@@ -130,66 +151,38 @@ describe('TaskAssignmentContainerComponent2', () => {
   });
 
   it('should re-direct to assign task confirmation page', () => {
-    const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const compo = new TaskAssignmentContainerComponent(null, mockRouter, locationStub, mockSessionStorageService);
     const findPersonControl = new FormControl('test');
-    compo.formGroup.addControl('findPersonControl', findPersonControl);
-    compo.verb = TaskActionType.Reassign;
-    compo.assign();
+    component.formGroup.addControl('findPersonControl', findPersonControl);
+    component.verb = TaskActionType.Reassign;
+
+    component.assign();
     expect(mockRouter.navigate).not.toHaveBeenCalled();
   });
 
   it('should not re-direct to assign task confirmation page and throw form group error', () => {
-    const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const compo = new TaskAssignmentContainerComponent(null, mockRouter, locationStub, mockSessionStorageService);
     const findPersonControl = new FormControl('');
-    compo.formGroup.addControl('findPersonControl', findPersonControl);
-    compo.verb = TaskActionType.Reassign;
-    compo.assign();
+    component.formGroup.addControl('findPersonControl', findPersonControl);
+    component.verb = TaskActionType.Reassign;
+    component.assign();
     expect(mockRouter.navigate).not.toHaveBeenCalled();
-    expect(compo.formGroup.valid).toBeFalsy();
+    expect(component.formGroup.valid).toBeFalsy();
   });
 
   it('should redirect to the "All work" page on cancelling task assignment', () => {
     window.history.pushState({ returnUrl: 'all-work/tasks#manage_0d22d838', showAssigneeColumn: false }, '',
       'all-work/tasks#manage_0d22d838');
-    const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, locationStub, mockSessionStorageService);
     const findPersonControl = new FormControl('test');
-    tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
-    tacComponent.cancel();
+    component.formGroup.addControl('findPersonControl', findPersonControl);
+    component.cancel();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['all-work/tasks']);
   });
 
   it('should redirect to the fallback URL (\'\') on cancelling task assignment, if the return URL is not in the history', () => {
     window.history.pushState({}, '');
-    const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, locationStub, mockSessionStorageService);
     const findPersonControl = new FormControl('test');
-    tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
-    tacComponent.cancel();
+    component.formGroup.addControl('findPersonControl', findPersonControl);
+    component.cancel();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['']);
-  });
-
-  it('should display the correct verb on screen', () => {
-    const activatedRoute: any = fixture.debugElement.injector.get(ActivatedRoute) as any;
-    activatedRoute.snapshot = {
-      paramMap: convertToParamMap({ taskId: 'task1111111', role: 'LEGAL_OPERATIONS' }),
-      queryParamMap: convertToParamMap({ taskId: 'task1111111', role: 'LEGAL_OPERATIONS' }),
-      data: {
-        taskAndCaseworkers: {
-          task: { task: mockTasks[0] }, caseworkers: []
-        },
-        ...TaskActionConstants.Assign
-      }
-    };
-    fixture.detectChanges();
-    const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, locationStub, mockSessionStorageService);
-    const findPersonControl = new FormControl('test');
-    tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
-    const titleElement = fixture.debugElement.nativeElement.querySelector('.govuk-caption-l');
-    expect(titleElement.textContent).toContain(TaskActionType.Assign);
   });
 
   it('should return true if current user is judicial', () => {

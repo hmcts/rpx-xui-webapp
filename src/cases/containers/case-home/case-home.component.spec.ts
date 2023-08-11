@@ -89,7 +89,7 @@ describe('CaseHomeComponent', () => {
       expect(resultingKeys).toContain('query');
       expect(resultingKeys).toContain('errorHandler');
 
-      const mockComponentHandleError = spyOn(component, 'handleError');
+      const mockComponentHandleError = spyOn(component, 'handleErrorWithTriggerId');
       result.errorHandler({});
       expect(mockComponentHandleError).toHaveBeenCalled();
     });
@@ -111,7 +111,7 @@ describe('CaseHomeComponent', () => {
       expect(resultingKeys).toContain('query');
       expect(resultingKeys).toContain('errorHandler');
 
-      const mockComponentHandleError = spyOn(component, 'handleError');
+      const mockComponentHandleError = spyOn(component, 'handleErrorWithTriggerId');
       result.errorHandler({});
       expect(mockComponentHandleError).toHaveBeenCalled();
     });
@@ -157,16 +157,27 @@ describe('CaseHomeComponent', () => {
     });
   });
 
-  describe('handleError', () => {
+  describe('handleErrorWithTriggerId', () => {
     it('should handle error', () => {
       const error: HttpError = new HttpError();
       error.status = 400;
       const triggerId = 'dummy';
 
-      component.handleError(error, triggerId);
+      component.handleErrorWithTriggerId(error, triggerId);
 
       expect(mockErrorNotifierService.announceError).toHaveBeenCalledWith(error);
-      expect(mockAlertService.error).toHaveBeenCalledWith(error.message);
+      expect(mockAlertService.error).toHaveBeenCalledWith({ phrase: error.message });
+    });
+  });
+
+  describe('handleCaseViewError', () => {
+    it('should throw back the error as is', () => {
+      const errorIn: Error = new Error();
+      try {
+        component.handleCaseViewError(errorIn);
+      } catch (errorOut) {
+        expect(errorOut).toBe(errorIn);
+      }
     });
   });
 });

@@ -4,6 +4,7 @@ import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { ConfigConstants } from '../../components/constants';
@@ -81,15 +82,22 @@ describe('TaskListComponent', () => {
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['setItem']);
-
+  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['setItem', 'getItem']);
   beforeEach((() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
       imports: [
         WorkAllocationComponentsModule,
         CdkTableModule,
-        PaginationModule
+        PaginationModule,
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true
+        })
       ],
       declarations: [TaskListComponent, WrapperComponent],
       providers: [
@@ -114,6 +122,7 @@ describe('TaskListComponent', () => {
     };
     mockWorkAllocationService.getTask.and.returnValue(of({}));
     mockFeatureToggleService.isEnabled.and.returnValue(of(true));
+    mockFeatureToggleService.getValue.and.returnValue(of({ configurations: [{ serviceName: 'IA', releaseVersion: '4' }] }));
 
     fixture.detectChanges();
   }));

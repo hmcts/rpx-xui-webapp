@@ -23,7 +23,7 @@ console.log(`parallel : ${parallel}`)
 console.log(`headless : ${!head}`)
 
 
-let pipelineBranch = process.env.TEST_URL.includes('pr-') ? "preview" : "master"
+let pipelineBranch = process.env.TEST_URL.includes('pr-') || process.env.TEST_URL.includes('manage-case.aat')  ? "preview" : "master"
 
 let features = ''
 if (testType === 'e2e' || testType === 'smoke'){  

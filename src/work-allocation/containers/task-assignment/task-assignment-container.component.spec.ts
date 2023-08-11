@@ -47,13 +47,6 @@ class RpxTranslateMockPipe implements PipeTransform {
   }
 }
 
-@Pipe({ name: 'rpxTranslate' })
-class RpxTranslateMockPipe implements PipeTransform {
-  public transform(value: string): string {
-    return value;
-  }
-}
-
 describe('TaskAssignmentContainerComponent2', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;

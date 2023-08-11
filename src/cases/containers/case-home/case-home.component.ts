@@ -46,6 +46,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
    * have yet to be logged in. ie. Viewing an accessibility page.
    */
   public ngOnInit(): void {
+    console.info('ngOnInit started - CaseHomeComponent');
     this.navigationSubscription = this.navigationNotifier.navigation.subscribe((navigation) => {
       if (navigation.action) {
         this.actionDispatcher(this.paramHandler(navigation));
@@ -58,6 +59,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     ]);
 
     this.showSpinner$ = libServices$.pipe(delay(0), map((states) => states.reduce((c, s) => c || s, false)));
+    console.info('ngOnInit finished - CaseHomeComponent');
   }
 
   public ngOnDestroy(): void {
@@ -93,7 +95,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
             navigation.ctid,
             navigation.etid],
           query: navigation.queryParams,
-          errorHandler: (error) => this.handleError(error, navigation.etid)
+          errorHandler: (error) => this.handleErrorWithTriggerId(error, navigation.etid)
         };
         break;
       case NavigationOrigin.EVENT_TRIGGERED:
@@ -105,7 +107,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
             'trigger',
             navigation.etid],
           query: { ...query },
-          errorHandler: (error) => this.handleError(error, navigation.etid)
+          errorHandler: (error) => this.handleErrorWithTriggerId(error, navigation.etid)
         };
         break;
       case NavigationOrigin.NO_READ_ACCESS_REDIRECTION:
@@ -120,7 +122,9 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
         params = {
           path: ['cases',
             'case-details',
-            navigation.relativeTo.snapshot.params.cid]
+            navigation.relativeTo.snapshot.params.cid
+          ],
+          errorHandler: (error) => this.handleCaseViewError(error)
         };
     }
     return params;
@@ -130,12 +134,18 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     return this.store.dispatch(new fromRoot.Go(params));
   }
 
-  public handleError(error: HttpError, triggerId: string): void {
+  public handleErrorWithTriggerId(error: HttpError, triggerId: string): void {
+    console.error(`Handling error with handleErrorWithTriggerId ${triggerId}`);
+    console.error(error);
     if (error.status !== 401 && error.status !== 403) {
-      console.log('error during triggering event:', triggerId);
-      console.log(error);
       this.errorNotifierService.announceError(error);
       this.alertService.error({ phrase: error.message });
     }
+  }
+
+  public handleCaseViewError(error: Error): void {
+    console.error('Handling error with handleCaseViewError');
+    console.error(error);
+    throw error;
   }
 }

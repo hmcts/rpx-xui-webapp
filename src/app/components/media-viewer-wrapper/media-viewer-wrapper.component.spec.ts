@@ -113,5 +113,4 @@ describe('MediaViewerWrapperComponent', () => {
       expect(component.isIcpEnabled(false, ['dummy1'])).toBeFalsy();
     });
   });
-
 });

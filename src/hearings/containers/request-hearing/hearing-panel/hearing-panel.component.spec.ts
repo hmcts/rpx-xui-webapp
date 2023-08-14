@@ -276,10 +276,7 @@ describe('HearingPanelComponent', () => {
       postNominals: 'JP',
       emailId: 'jacky.collins@judicial.com',
       personalCode: 'P0000001',
-      idamId: '1102839232',
-      isJudge: '',
-      isMagistrate: '',
-      isPanelMember: ''
+      idamId: '1102839232'
     }];
     component.initForm();
     expect(component.includedJudgeList.length).toBe(1);
@@ -298,10 +295,7 @@ describe('HearingPanelComponent', () => {
       postNominals: 'JP',
       emailId: 'jacky.collins@judicial.com',
       personalCode: 'P0000001',
-      idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      isJudge: '',
-      isMagistrate: '',
-      isPanelMember: ''
+      idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1'
     };
 
     component.includedJudge.judgeList = [judgeInfo];

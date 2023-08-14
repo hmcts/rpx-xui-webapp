@@ -81,10 +81,7 @@ export const judicialUsersRefData: JudicialUserModel[] = [{
   postNominals: 'JP',
   emailId: 'jacky.collins@judicial.com',
   personalCode: 'P0000001',
-  idamId: '1102839232',
-  isJudge: '',
-  isMagistrate: '',
-  isPanelMember: ''
+  idamId: '1102839232'
 }];
 
 export const panelMembersRefData: JudicialUserModel[] = [{
@@ -96,10 +93,7 @@ export const panelMembersRefData: JudicialUserModel[] = [{
   postNominals: 'JP',
   emailId: '7007496EMP-@ejudiciary.net',
   personalCode: '7007496',
-  idamId: 'a229ec37-d84d-4eed-bd7f-0c77a6721da6',
-  isJudge: '',
-  isMagistrate: '',
-  isPanelMember: ''
+  idamId: 'a229ec37-d84d-4eed-bd7f-0c77a6721da6'
 }];
 
 export const judgeRefData: JudicialUserModel[] = [
@@ -112,10 +106,7 @@ export const judgeRefData: JudicialUserModel[] = [
     postNominals: 'JP',
     emailId: 'jacky.collins@judicial.com',
     personalCode: 'P0000001',
-    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-    isJudge: '',
-    isMagistrate: '',
-    isPanelMember: ''
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1'
   }];
 
 export const hearingPriorityRefData = [

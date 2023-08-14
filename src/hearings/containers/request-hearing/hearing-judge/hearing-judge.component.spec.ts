@@ -133,10 +133,7 @@ describe('HearingJudgeComponent', () => {
       postNominals: 'JP',
       emailId: 'jacky.collins@judicial.com',
       personalCode: 'P100001',
-      idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      isJudge: '',
-      isMagistrate: '',
-      isPanelMember: ''
+      idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1'
     };
     component.showSpecificJudge(RadioOptions.YES);
     expect(component.specificJudgeSelection).toBe(RadioOptions.YES);
@@ -166,10 +163,7 @@ describe('HearingJudgeComponent', () => {
       postNominals: 'JP',
       emailId: 'jacky.collins@judicial.com',
       personalCode: 'P100001',
-      idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      isJudge: '',
-      isMagistrate: '',
-      isPanelMember: ''
+      idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1'
     };
 
     component.hearingJudgeForm.controls.specificJudge.setValue(RadioOptions.YES);
@@ -217,10 +211,7 @@ describe('HearingJudgeComponent', () => {
       postNominals: 'JP',
       emailId: 'jacky.collins@judicial.com',
       personalCode: 'P100001',
-      idamId: '1102839232',
-      isJudge: '',
-      isMagistrate: '',
-      isPanelMember: ''
+      idamId: '1102839232'
     },
     {
       title: 'Mr',
@@ -231,10 +222,7 @@ describe('HearingJudgeComponent', () => {
       initials: 'JC',
       postNominals: 'JP',
       personalCode: 'P0000002',
-      idamId: '1102839233',
-      isJudge: '',
-      isMagistrate: '',
-      isPanelMember: ''
+      idamId: '1102839233'
     }];
     component.specificJudgeSelection = RadioOptions.YES;
     component.hearingJudgeFormInfo.includedJudges = ['P0000001'];

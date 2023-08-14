@@ -61,51 +61,47 @@ export const RAW_JUDICIAL_USERS: RawJudicialUserModel[] = [
 
 export const ALL_JUDICIAL_USERS: JudicialUserModel[] = [
   {
-    emailId: 'jacky.collins@judicial.com',
-    fullName: 'Jacky Collins',
-    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-    isJudge: 'Y',
-    isMagistrate: 'Y',
-    isPanelMember: 'Y',
+    title: 'Mr',
     knownAs: 'Hearing Judge',
-    personalCode: 'p1000000',
     surname: 'Collins',
-    title: 'Mr'
+    fullName: 'Jacky Collins',
+    initials: 'JC',
+    postNominals: 'JP',
+    emailId: 'jacky.collins@judicial.com',
+    personalCode: 'p1000000',
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1'
   },
   {
-    emailId: 'jasmine.chiswell@judicial.com',
-    fullName: 'Jasmine Chiswell',
-    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c2',
-    isJudge: 'Y',
-    isMagistrate: 'Y',
-    isPanelMember: 'Y',
+    title: 'Mr',
     knownAs: 'Lead Judge',
-    personalCode: 'p1000001',
     surname: 'Chiswell',
-    title: 'Mr'
+    fullName: 'Jasmine Chiswell',
+    initials: 'JC',
+    postNominals: 'JP',
+    emailId: 'jasmine.chiswell@judicial.com',
+    personalCode: 'p1000001',
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c2'
   },
   {
-    emailId: 'jamie.vardy@judicial.com',
-    fullName: 'Jamie Vardy',
-    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
-    isJudge: 'Y',
-    isMagistrate: 'Y',
-    isPanelMember: 'Y',
+    title: 'Mr',
     knownAs: 'Lead Judge',
-    personalCode: 'p1000002',
     surname: 'Vardy',
-    title: 'Mr'
+    fullName: 'Jamie Vardy',
+    initials: 'JV',
+    postNominals: 'JP',
+    emailId: 'jamie.vardy@judicial.com',
+    personalCode: 'p1000002',
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3'
   },
   {
-    emailId: 'james.priest@judicial.com',
-    fullName: 'James Priest',
-    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c4',
-    isJudge: 'Y',
-    isMagistrate: 'Y',
-    isPanelMember: 'Y',
+    title: 'Mr',
     knownAs: 'Hearing Judge',
-    personalCode: 'p1000003',
     surname: 'Priest',
-    title: 'Mr'
+    fullName: 'James Priest',
+    initials: 'JP',
+    postNominals: 'JP',
+    emailId: 'james.priest@judicial.com',
+    personalCode: 'p1000003',
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c4'
   }
 ];

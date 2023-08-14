@@ -23,9 +23,6 @@ export interface JudicialUserModel {
   emailId: string;
   personalCode: string;
   idamId: string;
-  isJudge: string;
-  isMagistrate: string;
-  isPanelMember: string;
 }
 
 /**
@@ -45,9 +42,6 @@ export function transformToJudicialUserModel(rawJudicialUserModel: RawJudicialUs
     postNominals: '',
     emailId: rawJudicialUserModel.email_id,
     personalCode: rawJudicialUserModel.personal_code,
-    idamId: rawJudicialUserModel.sidam_id,
-    isJudge: rawJudicialUserModel.is_judge,
-    isMagistrate: rawJudicialUserModel.is_magistrate,
-    isPanelMember: rawJudicialUserModel.is_panel_number
+    idamId: rawJudicialUserModel.sidam_id
   };
 }

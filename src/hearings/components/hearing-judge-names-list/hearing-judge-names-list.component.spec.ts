@@ -17,10 +17,7 @@ describe('HearingJudgeNamesListComponent', () => {
     postNominals: 'JP',
     emailId: 'jacky.collins@judicial.com',
     personalCode: 'P100001',
-    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-    isJudge: '',
-    isMagistrate: '',
-    isPanelMember: ''
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1'
   };
 
   beforeEach(waitForAsync(() => {

@@ -8,7 +8,4 @@ export interface JudicialUserModel {
   emailId: string;
   personalCode: string;
   idamId: string;
-  isJudge: string;
-  isMagistrate: string;
-  isPanelMember: string;
 }

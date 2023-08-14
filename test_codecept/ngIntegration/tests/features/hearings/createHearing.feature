@@ -1,5 +1,5 @@
 
-@ng @functional_debug @functional_debug
+@ng 
 Feature: Hearings
 
     Scenario: Hearings tab

@@ -675,7 +675,6 @@ class WorkAllocationMockData {
 
     async getCaseTasks(tasksObjects, userDetails) {
 
-      const authCookie = browser.driver.manage().getCookie('__auth__');
         const integerValues = ['minor_priority','major_priority']
         const tasks = [];
         for (let task of tasksObjects) {

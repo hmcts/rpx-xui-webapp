@@ -33,7 +33,7 @@
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
     "hearings": {
-      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL,IA",
+      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL,IA,EMPLOYMENT",
       "sscs": {
         "serviceApi": "http://sscs-hearings-api-prod.service.core-compute-prod.internal",
         "caseTypes": "Benefit"
@@ -51,7 +51,7 @@
         "caseTypes": "Asylum"
       },
       "employment": {
-        "serviceApi": "http://et-hearings-api-prod.service.core-compute-prod.internal",
+        "serviceApi": "http://ia-et-api-prod.service.core-compute-et.internal",
         "caseTypes": "ET_EnglandWales,ET_Scotland"
       },
       "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"

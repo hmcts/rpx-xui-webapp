@@ -58,7 +58,7 @@ export class HearingJudgeNamesListComponent {
   }
 
   public displayedJudgeName(judge: JudicialUserModel) {
-    if (judge && judge.fullName) {
+    if (judge?.fullName) {
       return `${judge.fullName} (${judge.emailId})`;
     }
     return '';

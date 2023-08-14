@@ -73,43 +73,49 @@ export const hearingStageRefData = [
 ];
 
 export const judicialUsersRefData: JudicialUserModel[] = [{
-  emailId: 'jacky.collins@judicial.com',
+  title: 'Mr',
+  knownAs: 'Jacky Collins',
+  surname: 'Jacky Collins',
   fullName: 'Jacky Collins',
+  initials: 'JC',
+  postNominals: 'JP',
+  emailId: 'jacky.collins@judicial.com',
+  personalCode: 'P0000001',
   idamId: '1102839232',
   isJudge: '',
   isMagistrate: '',
-  isPanelMember: '',
-  knownAs: 'Jacky Collins',
-  personalCode: 'P0000001',
-  surname: 'Jacky Collins',
-  title: 'Mr'
+  isPanelMember: ''
 }];
 
 export const panelMembersRefData: JudicialUserModel[] = [{
-  emailId: '7007496EMP-@ejudiciary.net',
+  title: 'Mr',
+  knownAs: 'Ramon',
+  surname: 'Herrera',
   fullName: 'Ramon Herrera',
+  initials: 'RH',
+  postNominals: 'JP',
+  emailId: '7007496EMP-@ejudiciary.net',
+  personalCode: '7007496',
   idamId: 'a229ec37-d84d-4eed-bd7f-0c77a6721da6',
   isJudge: '',
   isMagistrate: '',
-  isPanelMember: '',
-  knownAs: 'Ramon',
-  personalCode: '7007496',
-  surname: 'Herrera',
-  title: 'Mr'
+  isPanelMember: ''
 }];
 
 export const judgeRefData: JudicialUserModel[] = [
   {
-    emailId: 'jacky.collins@judicial.com',
+    title: 'Mr',
+    knownAs: 'Jacky Collins',
+    surname: 'Collins',
     fullName: 'Jacky Collins',
+    initials: 'JC',
+    postNominals: 'JP',
+    emailId: 'jacky.collins@judicial.com',
+    personalCode: 'P0000001',
     idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
     isJudge: '',
     isMagistrate: '',
-    isPanelMember: '',
-    knownAs: 'Jacky Collins',
-    personalCode: 'P0000001',
-    surname: 'Collins',
-    title: 'Mr'
+    isPanelMember: ''
   }];
 
 export const hearingPriorityRefData = [

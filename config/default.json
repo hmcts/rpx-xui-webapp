@@ -51,7 +51,7 @@
         "caseTypes": "Asylum"
       },
       "employment": {
-        "serviceApi": "http://ia-et-api-prod.service.core-compute-et.internal",
+        "serviceApi": "http://et-hearings-api-prod.service.core-compute-prod.internal",
         "caseTypes": "ET_EnglandWales,ET_Scotland"
       },
       "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"

@@ -11,7 +11,6 @@ import {
   CaseEventTrigger,
   CaseField,
   CasesService,
-  RetryUtil,
   createCaseEventTrigger,
   DraftService,
   HttpErrorService,
@@ -35,9 +34,9 @@ import { CaseCreateSubmitComponent } from './case-create-submit.component';
 class MockSortService {
   public features = {};
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public getFeatureToggle() { }
+  public getFeatureToggle() {}
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public getEditorConfiguration() { }
+  public getEditorConfiguration() {}
 }
 
 const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
@@ -79,7 +78,7 @@ const SANITISED_EDIT_FORM: CaseEventData = {
   template: '<div></div>'
 })
 
-class FakeExuidCcdConnectorComponent { }
+class FakeExuidCcdConnectorComponent {}
 
 describe('CaseCreateSubmitComponent', () => {
   let component: CaseCreateSubmitComponent;
@@ -128,7 +127,6 @@ describe('CaseCreateSubmitComponent', () => {
           }
         },
         CasesService,
-        RetryUtil,
         CCDAuthService,
         DraftService,
         AlertService,

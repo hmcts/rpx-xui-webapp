@@ -2386,12 +2386,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.18.3-ConsoleLogs.1":
-  version: 6.18.3-ConsoleLogs.1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.18.3-ConsoleLogs.1"
+"@hmcts/ccd-case-ui-toolkit@npm:6.18.3-hotfix-EUI-8737":
+  version: 6.18.3-hotfix-EUI-8737
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.18.3-hotfix-EUI-8737"
   dependencies:
     tslib: ^2.0.0
-  checksum: b8612d60d8cd86303ef6ac126f99f4a00973133a5cf60fc8147120efa783a87b969ff2169163481cbd47c0387f17c44203041d9f046e4d36e789d25780626a45
+  checksum: 9e3554e0716a82c7521d7c3ce39dacd1f8f35b5df16b49d31e259c3558f956c285acf062f1c405764961fe95b1df1f4f46bf929b8b085d70224830f6a4be3866
   languageName: node
   linkType: hard
 
@@ -19270,7 +19270,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.18.3-ConsoleLogs.1
+    "@hmcts/ccd-case-ui-toolkit": 6.18.3-hotfix-EUI-8737
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

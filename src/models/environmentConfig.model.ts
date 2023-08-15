@@ -14,5 +14,5 @@ export interface EnvironmentConfig {
   accessManagementEnabled?: boolean;
   paymentReturnUrl: string;
   waSupportedServices?: WAFeatureConfig;
-  getTimeoutsCaseRetrievalArtificialDelay: number;
+  timeoutsCaseRetrievalArtificialDelay: number;
 }

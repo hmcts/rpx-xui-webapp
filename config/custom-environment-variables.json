@@ -12,6 +12,7 @@
     "__format": "json"
   },
   "maxLogLine": "MAX_LOG_LINE",
+  "timeoutsCaseRetrievalArtificialDelay": "TIMEOUTS_CASE_RETRIEVAL_ARTIFICIAL_DELAY",
   "stub": {
     "__name": "STUB",
     "__format": "json"
@@ -160,19 +161,19 @@
     },
     "oidcEnabled": {
       "__name": "FEATURE_OIDC_ENABLED",
-      "__format":"json"
+      "__format": "json"
     },
     "workAllocationEnabled": {
       "__name": "FEATURE_WORKALLOCATION_ENABLED",
-      "__format":"json"
+      "__format": "json"
     },
     "substantiveRoleEnabled": {
       "__name": "FEATURE_SUBSTANTIVE_ROLE_ENABLED",
-      "__format":"json"
+      "__format": "json"
     },
     "accessManagementEnabled": {
       "__name": "FEATURE_ACCESS_MANAGEMENT_ENABLED",
-      "__format":"json"
+      "__format": "json"
     },
     "compressionEnabled": {
       "__name": "FEATURE_COMPRESSION_ENABLED",

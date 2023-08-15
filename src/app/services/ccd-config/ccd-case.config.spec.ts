@@ -35,7 +35,9 @@ const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService'
 let mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', ['get', 'getTimeoutsForCaseRetrieval', 'getTimeoutsCaseRetrievalArtificialDelay']);
 mockEnvironmentService = {
   config$: of({} as EnvironmentConfig),
-  get: 'someUrl'
+  get: 'someUrl',
+  getTimeoutsForCaseRetrieval: [20],
+  getTimeoutsCaseRetrievalArtificialDelay: 3
 };
 
 describe('AppConfiguration', () => {
@@ -191,17 +193,17 @@ describe('AppConfiguration', () => {
     expect(service.getCamRoleAssignmentsApiUrl()).toBe('dummy');
   }));
 
-  it('should have getTimeoutsCaseRetrieval return correct values', inject([AppConfig], (service: AppConfig) => {
-    spyOn(mockEnvironmentService, 'getTimeoutsCaseRetrieval').and.returnValue([20]);
-    expect(service.getTimeoutsForCaseRetrieval()).toBe([20]);
-    spyOn(mockEnvironmentService, 'getTimeoutsCaseRetrieval').and.returnValue(null);
-    expect(service.getTimeoutsForCaseRetrieval()).toBe([10]);
+  it('should have getTimeoutsForCaseRetrieval return correct values', inject([AppConfig], (service: AppConfig) => {
+    mockEnvironmentService.getTimeoutsForCaseRetrieval.and.returnValue([20]);
+    expect(service.getTimeoutsForCaseRetrieval()).toEqual([20]);
+    mockEnvironmentService.getTimeoutsForCaseRetrieval.and.returnValue(null);
+    expect(service.getTimeoutsForCaseRetrieval()).toEqual([10]);
   }));
 
   it('should have getTimeoutsCaseRetrievalArtificialDelay return correct values', inject([AppConfig], (service: AppConfig) => {
-    spyOn(mockEnvironmentService, 'getTimeoutsCaseRetrievalArtificialDelay').and.returnValue(3);
+    mockEnvironmentService.getTimeoutsCaseRetrievalArtificialDelay.and.returnValue(3);
     expect(service.getTimeoutsCaseRetrievalArtificialDelay()).toBe(3);
-    spyOn(mockEnvironmentService, 'getTimeoutsCaseRetrievalArtificialDelay').and.returnValue(-1);
+    mockEnvironmentService.getTimeoutsCaseRetrievalArtificialDelay.and.returnValue(-1);
     expect(service.getTimeoutsCaseRetrievalArtificialDelay()).toBe(7);
   }));
 });

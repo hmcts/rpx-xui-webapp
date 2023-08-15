@@ -42,7 +42,8 @@ import {
   RouterHelperService,
   SearchFiltersModule,
   SearchResultModule,
-  WorkbasketFiltersModule
+  WorkbasketFiltersModule,
+  RetryUtil
 } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
@@ -106,6 +107,7 @@ import { effects, reducers } from './store';
     ErrorNotifierService,
     NavigationNotifierService,
     CasesService,
+    RetryUtil,
     CCDAuthService,
     HttpService,
     HttpErrorService,

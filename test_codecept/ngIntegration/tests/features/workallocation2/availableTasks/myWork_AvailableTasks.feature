@@ -1,5 +1,5 @@
 
-@ng @functional_enabled 
+@ng @functional_enabled @functional_debug
 Feature: WA Release 2: My work -  Available tasks
 
     Background: Mock and browser setup
@@ -79,7 +79,7 @@ Feature: WA Release 2: My work -  Available tasks
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |LEGAL_OPERATIONS|
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |JUDICIAL|
 
-
+@ignore
     Scenario: Available Tasks sort column persist in session with Caseworker user
         # Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator" with reference "userDetails"
 

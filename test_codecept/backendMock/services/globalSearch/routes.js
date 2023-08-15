@@ -12,7 +12,7 @@ const jwt = require('jsonwebtoken');
 router.post('/', (req, res) => {
 
     // res.status(200).send(service.getDefaulstResponse());
-    userApiData.sendResponse(req, res, "GlobalSearchResults", () => service.getDefaulstResponse())
+    userApiData.sendResponse(req, res, "GlobalSearchResults", () => service.getDefaultResponse())
 });
 
 

@@ -131,8 +131,12 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.activity_retry;
   }
 
-  public getCaseRetrievalTimeouts() {
+  public getTimeoutsForCaseRetrieval() {
     return this.config.timeouts_case_retrieval;
+  }
+
+  public getTimeoutsCaseRetrievalArtificialDelay() {
+    return this.config.timeouts_case_retrieval_artificial_delay;
   }
 
   public getActivityBatchCollectionDelayMs() {

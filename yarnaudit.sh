@@ -1,1 +1,1 @@
-yarn npm audit --recursive --environment production --json > yarn-audit-known-issues
+yarn npm audit --environment production --json | jq -cr '.advisories| to_entries[] | {"type": "auditAdvisory", "data": { "advisory": .value }}' > yarn-audit-known-issues

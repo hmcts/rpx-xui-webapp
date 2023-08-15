@@ -5,7 +5,7 @@ const { v4 } = require('uuid');
 class GlobalSearch{
   
 
-    getDefaulstResponse(){
+    getDefaultResponse(){
         return this.getGlobalSearchResponseTemplate()
     }
 

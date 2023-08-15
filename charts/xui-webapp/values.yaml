@@ -26,6 +26,7 @@ nodejs:
     NODE_OPTIONS: --max-old-space-size=8192
     UV_THREADPOOL_SIZE: 64
     XUI_ENV: preview
+    TIMEOUTS_CASE_RETRIEVAL_ARTIFICIAL_DELAY: 0
     LOGGING: debug
     MAX_LOG_LINE: 80
     PROTOCOL: https

@@ -32,7 +32,7 @@ export class EnvironmentService {
 
   public getTimeoutsCaseRetrievalArtificialDelay(): number {
     if (this.data?.timeoutsCaseRetrievalArtificialDelay >= 0) {
-      return this.data.getTimeoutsCaseRetrievalArtificialDelay;
+      return this.data.timeoutsCaseRetrievalArtificialDelay;
     }
     return -1;
   }

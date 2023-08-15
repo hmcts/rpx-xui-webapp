@@ -2386,12 +2386,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.0-RetryCaseRetrievals.1":
-  version: 6.19.0-RetryCaseRetrievals.1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.0-RetryCaseRetrievals.1"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.0-RetryCaseRetrievals.3":
+  version: 6.19.0-RetryCaseRetrievals.3
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.0-RetryCaseRetrievals.3"
   dependencies:
     tslib: ^2.0.0
-  checksum: 1595cb40d25165db1e8c67ac2f0f2011d935c44c9e02dcd16054311da6a76054cf0f5d9bb7de25925d1d5646745d3bdc8eea4a50cf750532b812ce28d057ce3c
+  checksum: ea7808fea938bd27daa515e43f627f284c4636d22c9ffb910e953c2ccc2e4652af0682e602f1aa459680606f4e8a339d9141260616163585c29138c6208a7bd0
   languageName: node
   linkType: hard
 
@@ -19270,7 +19270,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.0-RetryCaseRetrievals.1
+    "@hmcts/ccd-case-ui-toolkit": 6.19.0-RetryCaseRetrievals.3
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

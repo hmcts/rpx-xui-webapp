@@ -1,9 +1,5 @@
 
 const { v4 } = require('uuid');
-const userApiData = require('../userApiData')
-
-
-const hearingTypes = [
 
 class PRDApi{
 
@@ -127,7 +123,6 @@ class PRDApi{
         }
 
     }
-
 
 
 module.exports = new PRDApi();

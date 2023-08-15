@@ -5,6 +5,7 @@
     "node": ">=12.13.0"
   },
   "scripts": {
+    "audit": "yarn npm audit --environment production --json | jq -cr '.advisories| to_entries[] | {\"type\": \"auditAdvisory\", \"data\": { \"advisory\": .value }}' > yarn-audit-known-issues",
     "build": "yarn build:prod && yarn build:node",
     "build:docker": "docker build -t xui .",
     "build:ng": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --prod build",

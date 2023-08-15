@@ -36,4 +36,11 @@ export class EnvironmentService {
     }
     return -1;
   }
+
+  public getTimeoutsCaseRetrieval(): number[] {
+    if (this.data?.timeoutsCaseRetrieval) {
+      return this.data.timeoutsCaseRetrieval;
+    }
+    return null;
+  }
 }

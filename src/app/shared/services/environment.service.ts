@@ -29,4 +29,11 @@ export class EnvironmentService {
     }
     return isProd;
   }
+
+  public getTimeoutsCaseRetrievalArtificialDelay(): number {
+    if (this.data?.timeoutsCaseRetrievalArtificialDelay >= 0) {
+      return this.data.getTimeoutsCaseRetrievalArtificialDelay;
+    }
+    return -1;
+  }
 }

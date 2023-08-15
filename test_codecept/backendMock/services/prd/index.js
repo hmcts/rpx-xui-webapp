@@ -5,15 +5,9 @@ const userApiData = require('../userApiData')
 
 const hearingTypes = [
 
-]
-
 class PRDApi{
-    
 
     constructor(){
-
-
-
         this.method = {
             searchTasks: "ON_SEARCH_TASKS"
         }

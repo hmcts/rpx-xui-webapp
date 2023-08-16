@@ -32,6 +32,26 @@ router.get('/', uiConfigurationRouter);
  * we only pass what's needed to be precise.
  */
 async function uiConfigurationRouter(req, res) {
+  const toNumber = (str: string) => {
+    if (str?.toString() === '0') {
+      return 0;
+    } else if (!str) {
+      return null;
+    }
+    return Number(str);
+  };
+
+  const toNumberArray = (str: string) => {
+    if (str?.toString() === '0') {
+      return [0];
+    }
+    else if (!str) {
+      return null;
+    }
+    str = str.toString().replace('[', '').replace(']', '');
+    return str.split(',').map(Number);
+  };
+
   res.status(200).send({
     accessManagementEnabled: showFeature(FEATURE_ACCESS_MANAGEMENT_ENABLED),
     ccdGatewayUrl: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
@@ -45,8 +65,8 @@ async function uiConfigurationRouter(req, res) {
     paymentReturnUrl: getConfigValue(SERVICES_PAYMENT_RETURN_URL),
     waWorkflowApi: getConfigValue(SERVICES_WA_WORKFLOW_API_URL),
     judicialBookingApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
-    timeoutsForCaseRetrieval: getConfigValue(TIMEOUTS_FOR_CASE_RETRIEVAL),
-    timeoutsCaseRetrievalArtificialDelay: getConfigValue(TIMEOUTS_CASE_RETRIEVAL_ARTIFICIAL_DELAY),
+    timeoutsForCaseRetrieval: toNumberArray(getConfigValue(TIMEOUTS_FOR_CASE_RETRIEVAL)),
+    timeoutsCaseRetrievalArtificialDelay: toNumber(getConfigValue(TIMEOUTS_CASE_RETRIEVAL_ARTIFICIAL_DELAY)),
     waSupportedServices: getFormattedSupportedServicesCaseTypes(getConfigValue(WA_SUPPORTED_JURISDICTIONS))
   });
 }

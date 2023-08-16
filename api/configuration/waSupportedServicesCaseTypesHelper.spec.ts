@@ -35,7 +35,7 @@ describe('getFormattedSupportedServicesCaseTypes', () => {
           caseTypes: [
             'Asylum'
           ],
-          releaseVersion: '3.5',
+          releaseVersion: '4.0',
           serviceName: 'IA'
         }]
     };
@@ -48,7 +48,7 @@ describe('getFormattedSupportedServicesCaseTypes', () => {
         caseTypes: [
           'Asylum'
         ],
-        releaseVersion: '3.5',
+        releaseVersion: '4.0',
         serviceName: 'IA'
       },
       {
@@ -56,7 +56,7 @@ describe('getFormattedSupportedServicesCaseTypes', () => {
           'CIVIL',
           'GA'
         ],
-        releaseVersion: '3.5',
+        releaseVersion: '4.0',
         serviceName: 'CIVIL'
       }]
     };

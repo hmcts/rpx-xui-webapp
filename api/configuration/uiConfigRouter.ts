@@ -44,8 +44,7 @@ async function uiConfigurationRouter(req, res) {
   const toNumberArray = (str: string) => {
     if (str?.toString() === '0') {
       return [0];
-    }
-    else if (!str) {
+    } else if (!str) {
       return null;
     }
     str = str.toString().replace('[', '').replace(']', '');

@@ -24,6 +24,8 @@ export interface JudicialUserModel {
   personalCode: string;
   surname: string;
   title: string;
+  initials: string;
+  postNominals: string;
 }
 
 /**
@@ -44,6 +46,8 @@ export function transformToJudicialUserModel(rawJudicialUserModel: RawJudicialUs
     knownAs: rawJudicialUserModel.known_as,
     personalCode: rawJudicialUserModel.personal_code,
     surname: rawJudicialUserModel.surname,
-    title: rawJudicialUserModel.title
+    title: rawJudicialUserModel.title,
+    initials: '',
+    postNominals: ''
   };
 }

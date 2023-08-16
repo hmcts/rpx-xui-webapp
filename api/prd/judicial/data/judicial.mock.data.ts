@@ -70,7 +70,9 @@ export const ALL_JUDICIAL_USERS: JudicialUserModel[] = [
     knownAs: 'Hearing Judge',
     personalCode: 'p1000000',
     surname: 'Collins',
-    title: 'Mr'
+    title: 'Mr',
+    initials: 'JC',
+    postNominals: 'JP'
   },
   {
     emailId: 'jasmine.chiswell@judicial.com',
@@ -82,7 +84,9 @@ export const ALL_JUDICIAL_USERS: JudicialUserModel[] = [
     knownAs: 'Lead Judge',
     personalCode: 'p1000001',
     surname: 'Chiswell',
-    title: 'Mr'
+    title: 'Mr',
+    initials: 'JC',
+    postNominals: 'JP'
   },
   {
     emailId: 'jamie.vardy@judicial.com',
@@ -94,7 +98,9 @@ export const ALL_JUDICIAL_USERS: JudicialUserModel[] = [
     knownAs: 'Lead Judge',
     personalCode: 'p1000002',
     surname: 'Vardy',
-    title: 'Mr'
+    title: 'Mr',
+    initials: 'JV',
+    postNominals: 'JP'
   },
   {
     emailId: 'james.priest@judicial.com',
@@ -106,6 +112,8 @@ export const ALL_JUDICIAL_USERS: JudicialUserModel[] = [
     knownAs: 'Hearing Judge',
     personalCode: 'p1000003',
     surname: 'Priest',
-    title: 'Mr'
+    title: 'Mr',
+    initials: 'JP',
+    postNominals: 'JP'
   }
 ];

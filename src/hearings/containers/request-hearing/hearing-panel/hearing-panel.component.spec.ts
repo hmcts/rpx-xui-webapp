@@ -277,7 +277,9 @@ describe('HearingPanelComponent', () => {
       knownAs: 'Hearing Judge',
       personalCode: 'P0000001',
       surname: 'Jacky Collins',
-      title: 'Mr'
+      title: 'Mr',
+      initials: 'JC',
+      postNominals: 'JP'
     }];
     component.initForm();
     expect(component.includedJudgeList.length).toBe(1);
@@ -297,7 +299,9 @@ describe('HearingPanelComponent', () => {
       knownAs: 'Hearing Judge',
       personalCode: 'P0000001',
       surname: 'Jacky',
-      title: 'Mr'
+      title: 'Mr',
+      initials: 'JC',
+      postNominals: 'JP'
     };
 
     component.includedJudge.judgeList = [judgeInfo];

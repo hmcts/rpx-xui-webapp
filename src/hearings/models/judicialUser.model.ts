@@ -9,4 +9,6 @@ export interface JudicialUserModel {
   personalCode: string;
   surname: string;
   title: string;
+  initials: string;
+  postNominals: string;
 }

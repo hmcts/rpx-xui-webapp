@@ -84,7 +84,7 @@ export const NOW = 'now';
 export const SESSION_SECRET = 'sessionSecret';
 
 export const ENVIRONMENT = 'environment';
-export const TIMEOUTS_CASE_RETRIEVAL = 'timeoutsCaseRetrieval';
+export const TIMEOUTS_FOR_CASE_RETRIEVAL = 'timeoutsForCaseRetrieval';
 export const TIMEOUTS_CASE_RETRIEVAL_ARTIFICIAL_DELAY = 'timeoutsCaseRetrievalArtificialDelay';
 export const JURISDICTIONS = 'jurisdictions';
 

@@ -125,28 +125,24 @@
   "waSupportedServiceandCaseTypes": {
     "IA": {
         "caseTypes": "Asylum",
-        "releaseVersion": "3.5"
+        "releaseVersion": "4.0"
       },
     "CIVIL": {
         "caseTypes": "CIVIL,GENERALAPPLICATION",
-        "releaseVersion": "3.5"
+        "releaseVersion": "4.0"
       },
     "PRIVATELAW": {
         "caseTypes": "PRIVATELAW,PRLAPPS",
-        "releaseVersion": "3.5"
+        "releaseVersion": "4.0"
       },
     "PUBLICLAW": {
        "caseTypes": "PUBLICLAW",
-       "releaseVersion": "3.5"
+       "releaseVersion": "4.0"
       },
     "SSCS": {
        "caseTypes": "Benefit,SSCS_ExceptionRecord",
-       "releaseVersion": "3.5"
-      },
-    "EMPLOYMENT": {
-      "caseTypes": "ET_EnglandWales,ET_EnglandWales_Listings,ET_EnglandWales_Multiple,ET_Scotland,ET_Scotland_Listings,ET_Scotland_Multiple",
-      "releaseVersion": "4.0"
-      }
+       "releaseVersion": "4.0"
+    }
   },
   "wildcardSearchFields": {
     "Benefit": [

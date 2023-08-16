@@ -42,7 +42,8 @@ import {
   RouterHelperService,
   SearchFiltersModule,
   SearchResultModule,
-  WorkbasketFiltersModule
+  WorkbasketFiltersModule,
+  RetryUtil
 } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
@@ -108,6 +109,7 @@ import { RestrictedCaseAccessContainerComponent } from './containers/restricted-
     ErrorNotifierService,
     NavigationNotifierService,
     CasesService,
+    RetryUtil,
     CCDAuthService,
     HttpService,
     HttpErrorService,

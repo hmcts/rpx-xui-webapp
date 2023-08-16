@@ -132,10 +132,18 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getTimeoutsForCaseRetrieval() {
+    const valueInEnv = this.environmentService.getTimeoutsForCaseRetrieval();
+    if (valueInEnv) {
+      return valueInEnv;
+    }
     return this.config.timeouts_case_retrieval;
   }
 
   public getTimeoutsCaseRetrievalArtificialDelay() {
+    const valueInEnv = this.environmentService.getTimeoutsCaseRetrievalArtificialDelay();
+    if (valueInEnv >= 0) {
+      return valueInEnv;
+    }
     return this.config.timeouts_case_retrieval_artificial_delay;
   }
 

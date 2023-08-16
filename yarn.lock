@@ -2124,12 +2124,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.13.10-case-file-view-sort-by-document-upload-date-v6":
-  version: 6.13.10-case-file-view-sort-by-document-upload-date-v6
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.13.10-case-file-view-sort-by-document-upload-date-v6"
+"@hmcts/ccd-case-ui-toolkit@npm:6.13.10-case-file-view-sort-by-document-upload-date-v7":
+  version: 6.13.10-case-file-view-sort-by-document-upload-date-v7
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.13.10-case-file-view-sort-by-document-upload-date-v7"
   dependencies:
     tslib: ^2.0.0
-  checksum: 2a561b2000308cfa122f8781f9c41ca3dc58ce54fbc65382bcb21bce2249342e06c4e2ff50e47614c0fab3973abe6b0bc69a0ce218cce3c3007d318de9117040
+  checksum: c39c4fca59d85c38c23e1fae963c076b043fa5b30db094d434adf5d27d1be40515a59d0afec6061547aa01576eb788646dbe3e516156d2fc53a0fd473c491b6c
   languageName: node
   linkType: hard
 
@@ -19170,7 +19170,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.13.10-case-file-view-sort-by-document-upload-date-v6
+    "@hmcts/ccd-case-ui-toolkit": 6.13.10-case-file-view-sort-by-document-upload-date-v7
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

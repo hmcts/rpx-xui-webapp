@@ -82,7 +82,9 @@ export const judicialUsersRefData: JudicialUserModel[] = [{
   knownAs: 'Jacky Collins',
   personalCode: 'P0000001',
   surname: 'Jacky Collins',
-  title: 'Mr'
+  title: 'Mr',
+  initials: 'JC',
+  postNominals: 'JP'
 }];
 
 export const panelMembersRefData: JudicialUserModel[] = [{
@@ -95,7 +97,9 @@ export const panelMembersRefData: JudicialUserModel[] = [{
   knownAs: 'Ramon',
   personalCode: '7007496',
   surname: 'Herrera',
-  title: 'Mr'
+  title: 'Mr',
+  initials: 'RH',
+  postNominals: 'JP'
 }];
 
 export const judgeRefData: JudicialUserModel[] = [
@@ -109,7 +113,9 @@ export const judgeRefData: JudicialUserModel[] = [
     knownAs: 'Jacky Collins',
     personalCode: 'P0000001',
     surname: 'Collins',
-    title: 'Mr'
+    title: 'Mr',
+    initials: 'JC',
+    postNominals: 'JP'
   }];
 
 export const hearingPriorityRefData = [

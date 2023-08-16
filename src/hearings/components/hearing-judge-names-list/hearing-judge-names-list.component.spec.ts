@@ -18,7 +18,9 @@ describe('HearingJudgeNamesListComponent', () => {
     knownAs: 'Hearing Judge',
     personalCode: 'P100001',
     surname: 'Jacky',
-    title: ''
+    title: '',
+    initials: 'JC',
+    postNominals: 'JP'
   };
 
   beforeEach(waitForAsync(() => {

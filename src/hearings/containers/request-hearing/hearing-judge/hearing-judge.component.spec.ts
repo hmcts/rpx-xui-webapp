@@ -134,7 +134,9 @@ describe('HearingJudgeComponent', () => {
       knownAs: 'Hearing Judge',
       personalCode: 'P100001',
       surname: 'Jacky',
-      title: 'Mr'
+      title: 'Mr',
+      initials: 'JC',
+      postNominals: 'JP'
     };
     component.showSpecificJudge(RadioOptions.YES);
     expect(component.specificJudgeSelection).toBe(RadioOptions.YES);
@@ -165,7 +167,9 @@ describe('HearingJudgeComponent', () => {
       knownAs: 'Hearing Judge',
       personalCode: 'P100001',
       surname: 'Jacky',
-      title: 'Mr'
+      title: 'Mr',
+      initials: 'JC',
+      postNominals: 'JP'
     };
 
     component.hearingJudgeForm.controls.specificJudge.setValue(RadioOptions.YES);
@@ -214,7 +218,9 @@ describe('HearingJudgeComponent', () => {
       knownAs: 'Jacky Collins',
       personalCode: 'P100001',
       surname: 'Jacky Collins',
-      title: 'Mr'
+      title: 'Mr',
+      initials: 'JC',
+      postNominals: 'JP'
     },
     {
       emailId: 'jammie.williams@judicial.com',
@@ -226,7 +232,9 @@ describe('HearingJudgeComponent', () => {
       knownAs: 'Jammie Williams',
       personalCode: 'P0000002',
       surname: 'Jammie Williams',
-      title: 'Mr'
+      title: 'Mr',
+      initials: 'JW',
+      postNominals: 'JP'
     }];
     component.specificJudgeSelection = RadioOptions.YES;
     component.hearingJudgeFormInfo.includedJudges = ['P0000001'];

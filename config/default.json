@@ -108,6 +108,8 @@
   "sessionSecret": "secretSauce",
   "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
   "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
+  "timeoutsCaseRetrievalArtificialDelay": 0,
+  "timeoutsCaseRetrieval": [20],
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
   "serviceRefDataMapping": [
     { "service": "IA", "serviceCodes": ["BFA1"] },

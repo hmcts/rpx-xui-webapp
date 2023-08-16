@@ -29,4 +29,18 @@ export class EnvironmentService {
     }
     return isProd;
   }
+
+  public getTimeoutsCaseRetrievalArtificialDelay(): number {
+    if (this.data?.timeoutsCaseRetrievalArtificialDelay >= 0) {
+      return this.data.timeoutsCaseRetrievalArtificialDelay;
+    }
+    return -1;
+  }
+
+  public getTimeoutsForCaseRetrieval(): number[] {
+    if (this.data?.timeoutsCaseRetrieval) {
+      return this.data.timeoutsCaseRetrieval;
+    }
+    return null;
+  }
 }

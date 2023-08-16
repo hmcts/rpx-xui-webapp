@@ -22,7 +22,9 @@ class MockConfigService {
       access_management_basic_view_mock: 'dummy',
       location_ref_api_url: 'dummy',
       cam_role_assignments_api_url: 'dummy',
-      notification_url: 'dummy'
+      notification_url: 'dummy',
+      timeouts_case_retrieval: [10],
+      timeouts_case_retrieval_artificial_delay: 7
     };
   }
 
@@ -30,10 +32,12 @@ class MockConfigService {
 }
 
 const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
-let mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', ['get']);
+let mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', ['get', 'getTimeoutsForCaseRetrieval', 'getTimeoutsCaseRetrievalArtificialDelay']);
 mockEnvironmentService = {
   config$: of({} as EnvironmentConfig),
-  get: 'someUrl'
+  get: 'someUrl',
+  getTimeoutsForCaseRetrieval: [20],
+  getTimeoutsCaseRetrievalArtificialDelay: 3
 };
 
 describe('AppConfiguration', () => {
@@ -54,6 +58,8 @@ describe('AppConfiguration', () => {
       ]
     });
     spyOn(mockEnvironmentService, 'get').and.returnValue('someUrl');
+    spyOn(mockEnvironmentService, 'getTimeoutsForCaseRetrieval').and.returnValue([20]);
+    spyOn(mockEnvironmentService, 'getTimeoutsCaseRetrievalArtificialDelay').and.returnValue(3);
     mockFeatureToggleService.getValue.and.returnValue(of(true));
   });
 
@@ -185,5 +191,19 @@ describe('AppConfiguration', () => {
 
   it('should have getCamRoleAssignmentsApiUrl return value', inject([AppConfig], (service: AppConfig) => {
     expect(service.getCamRoleAssignmentsApiUrl()).toBe('dummy');
+  }));
+
+  it('should have getTimeoutsForCaseRetrieval return correct values', inject([AppConfig], (service: AppConfig) => {
+    mockEnvironmentService.getTimeoutsForCaseRetrieval.and.returnValue([20]);
+    expect(service.getTimeoutsForCaseRetrieval()).toEqual([20]);
+    mockEnvironmentService.getTimeoutsForCaseRetrieval.and.returnValue(null);
+    expect(service.getTimeoutsForCaseRetrieval()).toEqual([10]);
+  }));
+
+  it('should have getTimeoutsCaseRetrievalArtificialDelay return correct values', inject([AppConfig], (service: AppConfig) => {
+    mockEnvironmentService.getTimeoutsCaseRetrievalArtificialDelay.and.returnValue(3);
+    expect(service.getTimeoutsCaseRetrievalArtificialDelay()).toBe(3);
+    mockEnvironmentService.getTimeoutsCaseRetrievalArtificialDelay.and.returnValue(-1);
+    expect(service.getTimeoutsCaseRetrievalArtificialDelay()).toBe(7);
   }));
 });

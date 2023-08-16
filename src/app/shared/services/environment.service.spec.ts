@@ -40,4 +40,34 @@ describe('EnvironmentService', () => {
     dummyWithData.data.ccdGatewayUrl = 'https://gateway.ccd.platform.hmcts.net';
     expect(dummyWithData.isProd()).toBe(true);
   }));
+
+  it('should return correct values from getTimeoutsForCaseRetrieval', inject([EnvironmentService], (service: EnvironmentService) => {
+    expect(service.getTimeoutsForCaseRetrieval()).toBe(null);
+
+    const dummyWithData = {
+      data: {
+        timeoutsCaseRetrieval: [33]
+      },
+      isProd: () => {
+        return false;
+      }
+    };
+    const getTimeoutsForCaseRetrieval = service.getTimeoutsForCaseRetrieval.bind(dummyWithData);
+    expect(getTimeoutsForCaseRetrieval()).toEqual([33]);
+  }));
+
+  it('should return correct values from getTimeoutsCaseRetrievalArtificialDelay', inject([EnvironmentService], (service: EnvironmentService) => {
+    expect(service.getTimeoutsCaseRetrievalArtificialDelay()).toBe(-1);
+
+    const dummyWithData = {
+      data: {
+        timeoutsCaseRetrievalArtificialDelay: 5
+      },
+      isProd: () => {
+        return false;
+      }
+    };
+    const getTimeoutsCaseRetrievalArtificialDelay = service.getTimeoutsCaseRetrievalArtificialDelay.bind(dummyWithData);
+    expect(getTimeoutsCaseRetrievalArtificialDelay()).toBe(5);
+  }));
 });

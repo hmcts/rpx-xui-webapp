@@ -46,7 +46,7 @@ describe('EnvironmentService', () => {
 
     const dummyWithData = {
       data: {
-        timeoutsCaseRetrieval: [33]
+        timeoutsForCaseRetrieval: [33]
       },
       isProd: () => {
         return false;

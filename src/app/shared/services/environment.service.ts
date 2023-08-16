@@ -38,8 +38,8 @@ export class EnvironmentService {
   }
 
   public getTimeoutsForCaseRetrieval(): number[] {
-    if (this.data?.timeoutsCaseRetrieval) {
-      return this.data.timeoutsCaseRetrieval;
+    if (this.data?.timeoutsForCaseRetrieval) {
+      return this.data.timeoutsForCaseRetrieval;
     }
     return null;
   }

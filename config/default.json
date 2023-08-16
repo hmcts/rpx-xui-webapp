@@ -1,284 +1,339 @@
   {
-  "environment": "production",
-  "cookies": {
-    "token": "__auth__",
-    "userId": "__userid__",
-    "sessionId": "__sessionId__",
-    "roles": "roles"
-  },
-  "logging": "debug",
-  "now": false,
-  "maxLogLine": 80,
-  "stub": false,
-  "health": {
-    "ccdComponentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health",
-    "ccdActivityApi": "http://ccd-case-activity-api-prod.service.core-compute-prod.internal/health",
-    "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",
-    "documentsApi": "http://dm-store-prod.service.core-compute-prod.internal/health",
-    "documentsApiV2": "http://ccd-case-document-am-api-prod.service.core-compute-prod.internal/v2/health",
-    "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal/health",
-    "em_docassembly_api": "http://dg-docassembly-prod.service.core-compute-prod.internal/health",
-    "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health",
-    "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal/health",
-    "taskApi": "http://wa-task-management-api-prod.service.core-compute-prod.internal/health",
-    "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal/health",
-    "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal/health",
-    "locationApi": "http://rd-location-ref-api-prod.service.core-compute-prod.internal/health"
-  },
-  "services": {
-    "ccd": {
-      "componentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal",
-      "activityApi": "http://ccd-case-activity-api-prod.service.core-compute-prod.internal",
-      "dataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal",
-      "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
+    "environment": "production",
+    "cookies": {
+      "token": "__auth__",
+      "userId": "__userid__",
+      "sessionId": "__sessionId__",
+      "roles": "roles"
     },
-    "hearings": {
-      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL,IA",
-      "sscs": {
-        "serviceApi": "http://sscs-hearings-api-prod.service.core-compute-prod.internal",
-        "caseTypes": "Benefit"
+    "logging": "debug",
+    "now": false,
+    "maxLogLine": 80,
+    "stub": false,
+    "health": {
+      "ccdComponentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health",
+      "ccdActivityApi": "http://ccd-case-activity-api-prod.service.core-compute-prod.internal/health",
+      "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",
+      "documentsApi": "http://dm-store-prod.service.core-compute-prod.internal/health",
+      "documentsApiV2": "http://ccd-case-document-am-api-prod.service.core-compute-prod.internal/v2/health",
+      "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal/health",
+      "em_docassembly_api": "http://dg-docassembly-prod.service.core-compute-prod.internal/health",
+      "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health",
+      "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal/health",
+      "taskApi": "http://wa-task-management-api-prod.service.core-compute-prod.internal/health",
+      "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal/health",
+      "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal/health",
+      "locationApi": "http://rd-location-ref-api-prod.service.core-compute-prod.internal/health"
+    },
+    "services": {
+      "ccd": {
+        "componentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal",
+        "activityApi": "http://ccd-case-activity-api-prod.service.core-compute-prod.internal",
+        "dataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal",
+        "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
       },
-      "privatelaw": {
-        "serviceApi": "http://fis-hmc-api-prod.service.core-compute-prod.internal",
-        "caseTypes": "PRLAPPS"
+      "hearings": {
+        "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL,IA",
+        "sscs": {
+          "serviceApi": "http://sscs-hearings-api-prod.service.core-compute-prod.internal",
+          "caseTypes": "Benefit"
+        },
+        "privatelaw": {
+          "serviceApi": "http://fis-hmc-api-prod.service.core-compute-prod.internal",
+          "caseTypes": "PRLAPPS"
+        },
+        "civil": {
+          "serviceApi": "http://civil-service-prod.service.core-compute-prod.internal",
+          "caseTypes": "CIVIL"
+        },
+        "ia": {
+          "serviceApi": "http://ia-hearings-api-prod.service.core-compute-prod.internal",
+          "caseTypes": "Asylum"
+        },
+        "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
       },
-      "civil": {
-        "serviceApi": "http://civil-service-prod.service.core-compute-prod.internal",
-        "caseTypes": "CIVIL"
+      "documents": {
+        "api": "http://dm-store-prod.service.core-compute-prod.internal"
       },
-      "ia": {
-        "serviceApi": "http://ia-hearings-api-prod.service.core-compute-prod.internal",
-        "caseTypes": "Asylum"
+      "documentsv2": {
+        "api": "http://ccd-case-document-am-api-prod.service.core-compute-prod.internal"
       },
-      "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
+      "prd": {
+        "api": "http://rd-professional-api-prod.service.core-compute-prod.internal",
+        "locationApi": "http://rd-location-ref-api-demo.service.core-compute-demo.internal",
+        "judicialApi": "http://rd-judicial-api-aat.service.core-compute-aat.internal",
+        "commondataApi": "http://rd-commondata-api-aat.service.core-compute-aat.internal"
+      },
+      "locationref": {
+        "api": "http://rd-location-ref-api-prod.service.core-compute-prod.internal"
+      },
+      "em_hrs_api": "http://em-hrs-api-prod.service.core-compute-prod.internal",
+      "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
+      "em_docassembly_api": "http://dg-docassembly-prod.service.core-compute-prod.internal/",
+      "waWorkflowApi": "http://wa-workflow-api-prod.service.core-compute-prod.internal",
+      "idam": {
+        "idamApiUrl": "https://idam-api.platform.hmcts.net",
+        "idamClientID": "xuiwebapp",
+        "idamLoginUrl": "https://hmcts-access.service.gov.uk",
+        "indexUrl": "/",
+        "oauthCallbackUrl": "oauth2/callback",
+        "iss": "https://forgerock-am.service.core-compute-idam-prod.internal:8443/openam/oauth2/hmcts"
+      },
+      "location_api": "http://rd-location-ref-api-prod.service.core-compute-prod.internal",
+      "work_allocation": {
+        "taskApi": "http://wa-task-management-api-prod.service.core-compute-prod.internal"
+      },
+      "refunds": "http://ccpay-refunds-api-prod.service.core-compute-prod.internal",
+      "notifications": "http://ccpay-notifications-service-prod.service.core-compute-prod.internal",
+      "role_assignment": {
+        "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal",
+        "roleMappingApi": "http://am-org-role-mapping-service-prod.service.core-compute-prod.internal"
+      },
+      "case": {
+        "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal",
+        "judicialworkerApi": "http://rd-judicialworker-ref-api-prod.service.core-compute-prod.internal",
+        "judicialApi": "http://rd-judicial-api-prod.service.core-compute-prod.internal"
+      },
+      "payments": "http://payment-api-prod.service.core-compute-prod.internal",
+      "markup_api": "http://em-npa-prod.service.core-compute-prod.internal",
+      "icp_api": "http://em-icp-prod.service.core-compute-prod.internal",
+      "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
+      "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal",
+      "payment_return_url": "https://paymentoutcome-web.prod.platform.hmcts.net",
+      "translation": "http://ts-translation-service-prod.service.core-compute-prod.internal",
+      "judicialBookingApi": "http://am-judicial-booking-service-prod.service.core-compute-prod.internal"
     },
-    "documents": {
-      "api": "http://dm-store-prod.service.core-compute-prod.internal"
-    },
-    "documentsv2": {
-      "api": "http://ccd-case-document-am-api-prod.service.core-compute-prod.internal"
-    },
-    "prd": {
-      "api": "http://rd-professional-api-prod.service.core-compute-prod.internal",
-      "locationApi": "http://rd-location-ref-api-demo.service.core-compute-demo.internal",
-      "judicialApi": "http://rd-judicial-api-aat.service.core-compute-aat.internal",
-      "commondataApi": "http://rd-commondata-api-aat.service.core-compute-aat.internal"
-    },
-    "locationref": {
-      "api": "http://rd-location-ref-api-prod.service.core-compute-prod.internal"
-    },
-    "em_hrs_api": "http://em-hrs-api-prod.service.core-compute-prod.internal",
-    "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
-    "em_docassembly_api": "http://dg-docassembly-prod.service.core-compute-prod.internal/",
-    "waWorkflowApi": "http://wa-workflow-api-prod.service.core-compute-prod.internal",
-    "idam": {
-      "idamApiUrl": "https://idam-api.platform.hmcts.net",
-      "idamClientID": "xuiwebapp",
-      "idamLoginUrl": "https://hmcts-access.service.gov.uk",
-      "indexUrl": "/",
-      "oauthCallbackUrl": "oauth2/callback",
-      "iss": "https://forgerock-am.service.core-compute-idam-prod.internal:8443/openam/oauth2/hmcts"
-    },
-    "location_api": "http://rd-location-ref-api-prod.service.core-compute-prod.internal",
-    "work_allocation": {
-      "taskApi": "http://wa-task-management-api-prod.service.core-compute-prod.internal"
-    },
-    "refunds": "http://ccpay-refunds-api-prod.service.core-compute-prod.internal",
-    "notifications": "http://ccpay-notifications-service-prod.service.core-compute-prod.internal",
-    "role_assignment": {
-      "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal",
-      "roleMappingApi": "http://am-org-role-mapping-service-prod.service.core-compute-prod.internal"
-    },
-    "case": {
-      "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal",
-      "judicialworkerApi": "http://rd-judicialworker-ref-api-prod.service.core-compute-prod.internal",
-      "judicialApi": "http://rd-judicial-api-prod.service.core-compute-prod.internal"
-    },
-    "payments": "http://payment-api-prod.service.core-compute-prod.internal",
-    "markup_api": "http://em-npa-prod.service.core-compute-prod.internal",
-    "icp_api": "http://em-icp-prod.service.core-compute-prod.internal",
-    "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
-    "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal",
-    "payment_return_url": "https://paymentoutcome-web.prod.platform.hmcts.net",
-    "translation": "http://ts-translation-service-prod.service.core-compute-prod.internal",
-    "judicialBookingApi": "http://am-judicial-booking-service-prod.service.core-compute-prod.internal"
-  },
-  "protocol": "https",
-  "microservice": "xui_webapp",
-  "sessionSecret": "secretSauce",
-  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
-  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
-  "timeoutsCaseRetrievalArtificialDelay": 0,
-  "timeoutsCaseRetrieval": [20],
-  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
-  "serviceRefDataMapping": [
-    { "service": "IA", "serviceCodes": ["BFA1"] },
-    { "service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"] },
-    { "service": "PRIVATELAW", "serviceCodes": ["ABA5"] },
-    { "service": "PUBLICLAW", "serviceCodes": ["ABA3"] },
-    { "service": "SSCS", "serviceCodes": ["BBA3"] },
-    { "service": "ST_CIC", "serviceCodes": ["BBA2"] },
-    { "service": "EMPLOYMENT", "serviceCodes": ["BHA1"] }
-  ],
-  "waSupportedServiceandCaseTypes": {
-    "IA": {
+    "protocol": "https",
+    "microservice": "xui_webapp",
+    "sessionSecret": "secretSauce",
+    "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
+    "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
+    "timeoutsCaseRetrievalArtificialDelay": 0,
+    "timeoutsForCaseRetrieval": [
+      20
+    ],
+    "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
+    "serviceRefDataMapping": [
+      {
+        "service": "IA",
+        "serviceCodes": [
+          "BFA1"
+        ]
+      },
+      {
+        "service": "CIVIL",
+        "serviceCodes": [
+          "AAA6",
+          "AAA7"
+        ]
+      },
+      {
+        "service": "PRIVATELAW",
+        "serviceCodes": [
+          "ABA5"
+        ]
+      },
+      {
+        "service": "PUBLICLAW",
+        "serviceCodes": [
+          "ABA3"
+        ]
+      },
+      {
+        "service": "SSCS",
+        "serviceCodes": [
+          "BBA3"
+        ]
+      },
+      {
+        "service": "ST_CIC",
+        "serviceCodes": [
+          "BBA2"
+        ]
+      },
+      {
+        "service": "EMPLOYMENT",
+        "serviceCodes": [
+          "BHA1"
+        ]
+      }
+    ],
+    "waSupportedServiceandCaseTypes": {
+      "IA": {
         "caseTypes": "Asylum",
         "releaseVersion": "3.5"
       },
-    "CIVIL": {
+      "CIVIL": {
         "caseTypes": "CIVIL,GENERALAPPLICATION",
         "releaseVersion": "3.5"
       },
-    "PRIVATELAW": {
+      "PRIVATELAW": {
         "caseTypes": "PRIVATELAW,PRLAPPS",
         "releaseVersion": "3.5"
       },
-    "PUBLICLAW": {
-       "caseTypes": "PUBLICLAW",
-       "releaseVersion": "3.5"
+      "PUBLICLAW": {
+        "caseTypes": "PUBLICLAW",
+        "releaseVersion": "3.5"
       },
-    "SSCS": {
-       "caseTypes": "Benefit,SSCS_ExceptionRecord",
-       "releaseVersion": "3.5"
-    }
-  },
-  "wildcardSearchFields": {
-    "Benefit": [
-      "generatedSurname",
-      "appeal.appellant.name.lastName"
-    ],
-    "HearingRecordings": [
-      "recordingReference"
-    ],
-    "xuiTestCaseType": [
-      "TextField"
-    ]
-  },
-  "wildcardSearchRoles": [
-    "caseworker"
-  ],
-  "loginRoleMatcher": "caseworker",
-  "log4JConfig": {
-    "appenders": {
-      "out": {
-        "layout": {
-          "pattern": "%[%d | %p |%X{catFormatted}|%] %m%n",
-          "type": "pattern"
-        },
-        "type": "stdout"
+      "SSCS": {
+        "caseTypes": "Benefit,SSCS_ExceptionRecord",
+        "releaseVersion": "3.5"
       }
     },
-    "categories": {
-      "default": { "appenders": ["out"], "level": "info" }
-    }
-  },
-  "feature": {
-    "appInsightsEnabled": true,
-    "proxyEnabled": false,
-    "secureCookieEnabled": true,
-    "helmetEnabled": false,
-    "termsAndConditionsEnabled": false,
-    "redisEnabled": false,
-    "oidcEnabled": false,
-    "workAllocationEnabled": false,
-    "roleEnabled": false,
-    "caseworkerRefEnabled": false,
-    "substantiveRoleEnabled": true,
-    "accessManagementEnabled": true,
-    "compressionEnabled": false
-  },
-  "helmet": {
-    "contentSecurityPolicy": {
-      "directives": {
-        "defaultSrc": ["'self'"],
-        "fontSrc": ["'self'", "https://fonts.gstatic.com", "data:"],
-        "styleSrc": [
-          "'self'",
-          "'unsafe-inline'",
-          "https://fonts.googleapis.com",
-          "https://fonts.gstatic.com",
-          "http://tagmanager.google.com/"
-        ],
-        "scriptSrc": [
-          "'self'",
-          "'unsafe-inline'",
-          "'unsafe-eval'",
-          "https://*.google-analytics.com",
-          "https://*.googletagmanager.com",
-          "az416426.vo.msecnd.net"
-        ],
-        "connectSrc": [
-          "'self'",
-          "*.gov.uk",
-          "dc.services.visualstudio.com",
-          "*.launchdarkly.com",
-          "https://*.google-analytics.com",
-          "https://*.googletagmanager.com",
-          "https://*.analytics.google.com"
-        ],
-        "mediaSrc": ["'self'"],
-        "objectSrc": ["'self'"],
-        "frameAncestors": ["'none'"],
-        "imgSrc": [
-          "'self'",
-          "data:",
-          "https://*.google-analytics.com",
-          "https://*.googletagmanager.com",
-          "https://raw.githubusercontent.com/hmcts/",
-          "http://stats.g.doubleclick.net/",
-          "http://ssl.gstatic.com/",
-          "http://www.gstatic.com/",
-          "https://fonts.gstatic.com"
-        ]
+    "wildcardSearchFields": {
+      "Benefit": [
+        "generatedSurname",
+        "appeal.appellant.name.lastName"
+      ],
+      "HearingRecordings": [
+        "recordingReference"
+      ],
+      "xuiTestCaseType": [
+        "TextField"
+      ]
+    },
+    "wildcardSearchRoles": [
+      "caseworker"
+    ],
+    "loginRoleMatcher": "caseworker",
+    "log4JConfig": {
+      "appenders": {
+        "out": {
+          "layout": {
+            "pattern": "%[%d | %p |%X{catFormatted}|%] %m%n",
+            "type": "pattern"
+          },
+          "type": "stdout"
+        }
+      },
+      "categories": {
+        "default": {
+          "appenders": [
+            "out"
+          ],
+          "level": "info"
+        }
       }
     },
-    "referrerPolicy": {
-      "policy": "origin"
+    "feature": {
+      "appInsightsEnabled": true,
+      "proxyEnabled": false,
+      "secureCookieEnabled": true,
+      "helmetEnabled": false,
+      "termsAndConditionsEnabled": false,
+      "redisEnabled": false,
+      "oidcEnabled": false,
+      "workAllocationEnabled": false,
+      "roleEnabled": false,
+      "caseworkerRefEnabled": false,
+      "substantiveRoleEnabled": true,
+      "accessManagementEnabled": true,
+      "compressionEnabled": false
     },
-    "noCache": {
-      "enable": true
+    "helmet": {
+      "contentSecurityPolicy": {
+        "directives": {
+          "defaultSrc": [
+            "'self'"
+          ],
+          "fontSrc": [
+            "'self'",
+            "https://fonts.gstatic.com",
+            "data:"
+          ],
+          "styleSrc": [
+            "'self'",
+            "'unsafe-inline'",
+            "https://fonts.googleapis.com",
+            "https://fonts.gstatic.com",
+            "http://tagmanager.google.com/"
+          ],
+          "scriptSrc": [
+            "'self'",
+            "'unsafe-inline'",
+            "'unsafe-eval'",
+            "https://*.google-analytics.com",
+            "https://*.googletagmanager.com",
+            "az416426.vo.msecnd.net"
+          ],
+          "connectSrc": [
+            "'self'",
+            "*.gov.uk",
+            "dc.services.visualstudio.com",
+            "*.launchdarkly.com",
+            "https://*.google-analytics.com",
+            "https://*.googletagmanager.com",
+            "https://*.analytics.google.com"
+          ],
+          "mediaSrc": [
+            "'self'"
+          ],
+          "objectSrc": [
+            "'self'"
+          ],
+          "frameAncestors": [
+            "'none'"
+          ],
+          "imgSrc": [
+            "'self'",
+            "data:",
+            "https://*.google-analytics.com",
+            "https://*.googletagmanager.com",
+            "https://raw.githubusercontent.com/hmcts/",
+            "http://stats.g.doubleclick.net/",
+            "http://ssl.gstatic.com/",
+            "http://www.gstatic.com/",
+            "https://fonts.gstatic.com"
+          ]
+        }
+      },
+      "referrerPolicy": {
+        "policy": "origin"
+      },
+      "noCache": {
+        "enable": true
+      },
+      "frameguard": {
+        "action": "deny"
+      },
+      "hidePoweredBy": {
+        "setTo": "XUI Server 1.0"
+      }
     },
-    "frameguard": {
-      "action": "deny"
+    "redis": {
+      "host": "xui-ao-webapp-prod.redis.cache.windows.net",
+      "port": 6380,
+      "tls": true,
+      "prefix": "activity:",
+      "ttl": 86400
     },
-    "hidePoweredBy": {
-      "setTo": "XUI Server 1.0"
+    "sessionTimeouts": [
+      {
+        "idleModalDisplayTime": 3,
+        "pattern": "-dwpresponsewriter",
+        "totalIdleTime": 30
+      },
+      {
+        "idleModalDisplayTime": 3,
+        "pattern": "-homeoffice",
+        "totalIdleTime": 240
+      },
+      {
+        "idleModalDisplayTime": 10,
+        "pattern": "-solicitor",
+        "totalIdleTime": 50
+      },
+      {
+        "idleModalDisplayTime": 10,
+        "pattern": ".",
+        "totalIdleTime": 480
+      }
+    ],
+    "pact": {
+      "branchName": "master",
+      "brokerUrl": "https://pact-broker.platform.hmcts.net",
+      "consumerVersion": "",
+      "brokerUsername": "",
+      "brokerPassword": ""
     }
-  },
-  "redis": {
-    "host": "xui-ao-webapp-prod.redis.cache.windows.net",
-    "port": 6380,
-    "tls": true,
-    "prefix": "activity:",
-    "ttl": 86400
-  },
-  "sessionTimeouts": [
-    {
-      "idleModalDisplayTime": 3,
-      "pattern": "-dwpresponsewriter",
-      "totalIdleTime": 30
-    },
-    {
-      "idleModalDisplayTime": 3,
-      "pattern": "-homeoffice",
-      "totalIdleTime": 240
-    },
-    {
-      "idleModalDisplayTime": 10,
-      "pattern": "-solicitor",
-      "totalIdleTime": 50
-    },
-    {
-      "idleModalDisplayTime": 10,
-      "pattern": ".",
-      "totalIdleTime": 480
-    }
-  ],
-  "pact": {
-    "branchName": "master",
-    "brokerUrl": "https://pact-broker.platform.hmcts.net",
-    "consumerVersion": "",
-    "brokerUsername": "",
-    "brokerPassword": ""
   }
-}

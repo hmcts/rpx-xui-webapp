@@ -26,6 +26,7 @@ jobs:
         with:
           node-version: 12
           node-version-file: ".nvmrc"
+      - run: yarn cache clean
       - name: Install dependencies
         run: yarn install
       - name: Run automated update of known-issue suppression

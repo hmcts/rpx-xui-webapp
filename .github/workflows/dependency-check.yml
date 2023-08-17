@@ -26,7 +26,7 @@ jobs:
         with:
           node-version: 16
       - name: Build application
-          run: yarn install
+        run: yarn install
       - name: Run automated update of known-issue suppression
         run: yarn update-audit-known-issues
       - name: Commit

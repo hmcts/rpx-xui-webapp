@@ -1,5 +1,6 @@
 export interface LocationByEpimmsModelWithServiceCodes {
     epimms_id: string;
+    location_id?: string;
     site_name?: string;
     court_name?: string;
     open_for_public?: string;

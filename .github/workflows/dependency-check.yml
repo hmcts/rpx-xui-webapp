@@ -28,10 +28,10 @@ jobs:
           node-version-file: ".nvmrc"
       - name: Install dependencies
         run: yarn install
-      - name: Build
-        run: yarn build
+      - name: Print current working directory
+        run: pwd
       - name: Run automated update of known-issue suppression
-        run: yarn audit
+        run: yarn update-audit-known-issues
       - name: Commit
         uses: stefanzweifel/git-auto-commit-action@v4
         with:

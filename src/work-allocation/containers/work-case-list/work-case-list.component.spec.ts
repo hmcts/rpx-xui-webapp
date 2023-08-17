@@ -4,6 +4,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { RouterTestingModule } from '@angular/router/testing';
+import { PaginatePipe } from 'ngx-pagination';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { ConfigConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { CaseService, SortOrder } from '../../enums';
@@ -74,23 +76,21 @@ describe('WorkCaseListComponent', () => {
   let routerSpy: jasmine.SpyObj<any>;
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getCase']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
-  // const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
 
   beforeEach(() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
-      declarations: [
-        WorkCaseListComponent,
-        WrapperComponent,
-        MockPaginatePipe
-      ],
+      declarations: [WorkCaseListComponent, WrapperComponent, PaginatePipe],
       imports: [
         WorkAllocationComponentsModule,
         CdkTableModule,
         RouterTestingModule
       ],
-      providers: [],
-      schemas: [NO_ERRORS_SCHEMA]
+      providers: [
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
+      ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;

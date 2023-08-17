@@ -110,7 +110,7 @@ export class CaseTaskComponent implements OnInit {
     return this.isUserJudicial ? 'Task created' : 'Due date';
   }
 
-  public async onActionHandler(task: Task, option: any): Promise<void> {
+  public onActionHandler(task: Task, option: any): void {
     if (option.id === 'claim') {
       this.taskService.claimTask(task.id).subscribe(() => {
         this.alertService.success({ phrase: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS });
@@ -126,7 +126,7 @@ export class CaseTaskComponent implements OnInit {
       showAssigneeColumn: true
     };
     const actionUrl = `/work/${task.id}/${option.id}`;
-    await this.router.navigate([actionUrl], { queryParams: { service: task.jurisdiction }, state });
+    this.router.navigate([actionUrl], { queryParams: { service: task.jurisdiction }, state });
   }
 
   /**

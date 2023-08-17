@@ -3,9 +3,10 @@ import { ChangeDetectorRef, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { TaskListComponent } from '..';
@@ -62,7 +63,8 @@ describe('TaskListWrapperComponent', () => {
       unsubscribe: () => null
     }
   };
-  let mockRpxTranslationService: jasmine.SpyObj<RpxTranslationService>;
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
 
   beforeEach((() => {
     mockRpxTranslationService = jasmine.createSpyObj('mockRpxTranslationService', ['translate', 'getTranslation$']);
@@ -72,8 +74,7 @@ describe('TaskListWrapperComponent', () => {
         WorkAllocationComponentsModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        CdkTableModule,
-        PaginationModule
+        CdkTableModule
       ],
       declarations: [TaskListComponent, TaskListWrapperComponent, RpxTranslationMockPipe],
       providers: [
@@ -90,8 +91,8 @@ describe('TaskListWrapperComponent', () => {
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: Store, useValue: storeMock },
-        { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService },
-        { provide: RpxTranslationService, useValue: mockRpxTranslationService }
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
+        { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);

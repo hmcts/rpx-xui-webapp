@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { RefDataService } from '@hmcts/rpx-xui-common-lib';
 import { combineLatest, iif, Observable, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
 import { LocationByEpimmsModelWithServiceCodes } from '../../../../models/location-by-service-code-model';
 import { StaffUserLocation } from '../../../../models/staff-user-location.model';
 
@@ -22,6 +22,8 @@ export class StaffSelectLocationComponent implements OnInit {
   public autocompleteSelectedLocation: LocationByEpimmsModelWithServiceCodes | false;
   private fullLocations: LocationByEpimmsModelWithServiceCodes[];
 
+  private initialLocationServicesSet = false;
+
   public get selectedLocations(): StaffUserLocation[] {
     return this.locationsControl?.value;
   }
@@ -30,7 +32,7 @@ export class StaffSelectLocationComponent implements OnInit {
 
   public ngOnInit() {
     this.filteredList$ = combineLatest([
-      this.searchTermFormControl.valueChanges,
+      this.searchTermFormControl.valueChanges.pipe(startWith('')),
       this.serviceCodes$
     ]).pipe(
       tap(([term]: [string, string[]]) => {
@@ -39,7 +41,7 @@ export class StaffSelectLocationComponent implements OnInit {
         }
       }),
       switchMap(([term, serviceCodes]: [string, string[]]) => iif(
-        () => (!!term && term.length >= 0),
+        () => ((!!term && term.length >= 0) || !this.initialLocationServicesSet),
         this.refDataService.getLocationsByServiceCodes(
           serviceCodes
         ).pipe(
@@ -64,7 +66,7 @@ export class StaffSelectLocationComponent implements OnInit {
 
   private setLocationServiceCodes(locations: LocationByEpimmsModelWithServiceCodes[]): LocationByEpimmsModelWithServiceCodes[] {
     locations.map((location) => {
-      const currentId = location.epimms_id;
+      const currentId = location.epimms_id.toString();
       const serviceCodes = location.serviceCodes;
       location.serviceCodes = this.getAllServiceCodes(serviceCodes, currentId);
     });
@@ -72,11 +74,12 @@ export class StaffSelectLocationComponent implements OnInit {
     // note: we could edit location types to produce less code - i.e. making them the same
     const fixedSelectedLocations = this.locationsControl.value;
     fixedSelectedLocations.forEach((location) => {
-      const currentId = location.location_id;
-      const serviceCodes = location.service_codes;
+      const currentId = location.location_id.toString();
+      const serviceCodes = location.service_codes ? location.service_codes : [];
       location.service_codes = this.getAllServiceCodes(serviceCodes, currentId);
     });
     this.locationsControl.setValue(fixedSelectedLocations);
+    this.initialLocationServicesSet = true;
     return locations;
   }
 

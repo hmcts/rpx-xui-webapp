@@ -30,13 +30,12 @@ jobs:
           ## Move to root
           cd ${CHART_DIRECTORY}
 
-          CHART_VERSION=$(cat "${CHART_DIRECTORY}/charts/xui-webapp/Chart.yaml" | grep ^version | cut -d ':' -f 2 | sed -e 's/^[[:space:]]*//')
-          NEW_VERSION=$(echo $CHART_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g' )
-          sed -i -e "s/^PREVIEW_DEPLOYMENT_ID:.*/PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-$NEW_VERSION/" "${CHART_DIRECTORY}/charts/xui-webapp/values.preview.template.yaml"
+          sed -i -e "s/^PREVIEW_DEPLOYMENT_ID:.*/PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-BRANCH_PR_NUMBER/" "${CHART_DIRECTORY}/charts/xui-webapp/values.preview.template.yaml"
+
           exit 1
 
         env:
-        chartPath: ${{ parameters.chartPath }} # TODO: sort out correct path
+        chartPath: ${{ github.workspace }}
         chartBranch: ${{ github.ref }}
         branchPrNumber: ${{ github.event.number }}
       - name: Commit

@@ -27,7 +27,7 @@ jobs:
           node-version: 12
           cache: 'yarn'
       - run: yarn install --frozen-lockfile
-      - run: yarn update-audit-known-issues
+      - run: yarn npm audit --recursive --environment production --json > yarn-audit-known-issues
       - name: Commit
         uses: stefanzweifel/git-auto-commit-action@v4
         with:

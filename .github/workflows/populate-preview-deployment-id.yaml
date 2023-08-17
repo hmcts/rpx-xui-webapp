@@ -5,10 +5,6 @@ on:
     branches:
       - master
 
-env:
-  GITHUB_PR_BRANCH: ${{ github.ref }}
-  GITHUB_PR_NUMBER: ${{ github.event.number }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,14 +22,9 @@ jobs:
           CHART_DIRECTORY="${chartPath}"
           BRANCH="${chartBranch}"
           BRANCH_PR_NUMBER="${branchPrNumber}"
-
-          ## Move to root
           cd ${CHART_DIRECTORY}
-
           sed -i -e "s/^PREVIEW_DEPLOYMENT_ID:.*/PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-BRANCH_PR_NUMBER/" "${CHART_DIRECTORY}/charts/xui-webapp/values.preview.template.yaml"
-
           exit 1
-
         env:
         chartPath: ${{ github.workspace }}
         chartBranch: ${{ github.ref }}

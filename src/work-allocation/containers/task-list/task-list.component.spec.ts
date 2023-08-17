@@ -4,6 +4,7 @@ import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { ConfigConstants } from '../../components/constants';
@@ -106,13 +107,16 @@ describe('TaskListComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         WorkAllocationComponentsModule,
-        CdkTableModule
-      ],
-      declarations: [
-        TaskListComponent,
-        WrapperComponent,
-        MockRpxTranslatePipe,
-        MockPaginatePipe
+        CdkTableModule,
+        PaginationModule,
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true
+        })
       ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },

@@ -35,15 +35,15 @@ import {
   LoggerModule,
   NGXLogger,
   NGXLoggerHttpService,
-  NgxLoggerLevel,
-  NGXMapperService
+  NGXMapperService,
+  NgxLoggerLevel
 } from 'ngx-logger';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
 import { environment } from '../environments/environment';
 import {
-  EnvironmentConfig,
-  ENVIRONMENT_CONFIG
+  ENVIRONMENT_CONFIG,
+  EnvironmentConfig
 } from '../models/environmentConfig.model';
 import { initApplication } from './app-initilizer';
 // app routes
@@ -64,7 +64,6 @@ import { effects } from './store/effects';
 // ngrx modules - END
 // APP store
 import { CustomSerializer, reducers } from './store/reducers';
-import { RpxTranslationModule } from 'rpx-xui-translation';
 // enforces immutability
 export const metaReducers: MetaReducer<any>[] = !environment.production
   ? [storeFreeze]

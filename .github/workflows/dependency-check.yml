@@ -24,7 +24,7 @@ jobs:
           ref: master
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 12
           node-version-file: ".nvmrc"
       - name: Install dependencies
         run: yarn install

@@ -1,9 +1,12 @@
-name: Suppressions
+name: Automated update of known-issue suppression
 
 on:
+  pull_request:
+    branches:
+      - master
   schedule:
-    # At 12 midnight and every 3rd hour from 10am through 11pm
-    - cron: "0 0,10-23/3 * * *"
+    # At 12 midnight, 7am and 5pm
+    - cron: "0 0,7,17 * * *"
   workflow_dispatch:
 
 jobs:
@@ -22,11 +25,11 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 16
-      - name: Run dependencyCheck
-        run: yarn audit
+      - name: Run automated update of known-issue suppression
+        run: yarn update-audit-known-issues
       - name: Commit
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           skip_dirty_check: false
-          commit_message: "Suppressing CVE - Actions"
+          commit_message: "Automated update of known-issue suppression"
           branch: master

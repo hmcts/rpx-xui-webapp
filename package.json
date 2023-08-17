@@ -5,7 +5,6 @@
     "node": ">=12.13.0"
   },
   "scripts": {
-    "audit": "yarn npm audit --recursive --environment production --json > yarn-audit-known-issues",
     "build": "yarn build:prod && yarn build:node",
     "build:docker": "docker build -t xui .",
     "build:ng": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --prod build",
@@ -70,7 +69,8 @@
     "test:codeceptE2EDebug": "TEST_TYPE=e2e  npx codeceptjs run  --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @codecept_test --reporter mochawesome ",
     "test:codeceptE2E": "TEST_TYPE=e2e  npx codeceptjs run-workers --suites 5 --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @codecept_enabled --reporter mochawesome ",
     "test:xuiIntegrationDebug": "NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration TEST_URL=http://localhost:3000  npx codeceptjs run  --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @codecept_test --reporter mochawesome ",
-    "test:xuiIntegration": "yarn build && node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration PARALLEL=true  npx codeceptjs run-workers --suites 5  --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @codecept_enabled --reporter mochawesome "
+    "test:xuiIntegration": "yarn build && node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration PARALLEL=true  npx codeceptjs run-workers --suites 5  --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @codecept_enabled --reporter mochawesome ",
+    "update-audit-known-issues": "yarn npm audit --recursive --environment production --json > yarn-audit-known-issues"
   },
   "private": true,
   "dependencies": {

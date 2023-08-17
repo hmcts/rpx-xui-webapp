@@ -22,9 +22,12 @@ jobs:
         with:
           token: ${{ steps.generate-token.outputs.token }}
           ref: master
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
           node-version: 16
+          node-version-file: ".nvmrc"
+      - name: Install dependencies
+        run: yarn install
       - name: Run automated update of known-issue suppression
         run: yarn update-audit-known-issues
       - name: Commit

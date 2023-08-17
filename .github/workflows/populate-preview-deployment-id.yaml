@@ -1,0 +1,47 @@
+name: Populate Preview Deployment ID
+
+on:
+  pull_request:
+    branches:
+      - master
+
+env:
+  GITHUB_PR_BRANCH: ${{ github.ref }}
+  GITHUB_PR_NUMBER: ${{ github.event.number }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.HMCTS_GITHUB_EXUI_APP_ID }}
+          private_key: ${{ secrets.HMCTS_GITHUB_EXUI_PRIVATE_KEY }}
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          ref: master
+      - bash: |
+          CHART_DIRECTORY="${chartPath}"
+          BRANCH="${chartBranch}"
+          BRANCH_PR_NUMBER="${branchPrNumber}"
+
+          ## Move to root
+          cd ${CHART_DIRECTORY}
+
+          CHART_VERSION=$(cat "${CHART_DIRECTORY}/charts/xui-webapp/Chart.yaml" | grep ^version | cut -d ':' -f 2 | sed -e 's/^[[:space:]]*//')
+          NEW_VERSION=$(echo $CHART_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g' )
+          sed -i -e "s/^PREVIEW_DEPLOYMENT_ID:.*/PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-$NEW_VERSION/" "${CHART_DIRECTORY}/charts/xui-webapp/values.preview.template.yaml"
+          exit 1
+
+        env:
+        chartPath: ${{ parameters.chartPath }} # TODO: sort out correct path
+        chartBranch: ${{ github.ref }}
+        branchPrNumber: ${{ github.event.number }}
+      - name: Commit
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          skip_dirty_check: false
+          commit_message: "Setting Preview Deployment ID"
+          branch: master

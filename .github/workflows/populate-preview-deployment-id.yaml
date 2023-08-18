@@ -19,7 +19,7 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
           ref: master
       - name: Make script executable
-        run: chmod +x populatepreviewdeploymentid.sh
+        run: chmod +x ${{ github.workspace }}/populatepreviewdeploymentid.sh
       - name: Running script to populate preview deployment ID
         run: ./populatepreviewdeploymentid.sh ${{ github.workspace }} ${{ github.ref }} ${{ github.event.number }}
         working-directory: ./

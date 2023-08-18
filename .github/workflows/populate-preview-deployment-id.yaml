@@ -19,7 +19,7 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
           ref: master
       - name: Running script to populate preview deployment ID
-        run: ./populatepreviewdeploymentid.sh ${{ github.workspace }} ${{ github.ref }} ${{ github.event.number }}
+        run: ./populatepreviewdeploymentid.sh ${{ github.event.number }}
         working-directory: ./
         shell: bash
       - name: Commit

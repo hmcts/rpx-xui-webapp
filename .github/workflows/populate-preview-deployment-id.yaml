@@ -18,17 +18,12 @@ jobs:
         with:
           token: ${{ steps.generate-token.outputs.token }}
           ref: master
-      - bash: |
-          CHART_DIRECTORY="${chartPath}"
-          BRANCH="${chartBranch}"
-          BRANCH_PR_NUMBER="${branchPrNumber}"
-          cd ${CHART_DIRECTORY}
-          sed -i -e "s/^PREVIEW_DEPLOYMENT_ID:.*/PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-BRANCH_PR_NUMBER/" "${CHART_DIRECTORY}/charts/xui-webapp/values.preview.template.yaml"
-          exit 1
-        env:
-        chartPath: ${{ github.workspace }}
-        chartBranch: ${{ github.ref }}
-        branchPrNumber: ${{ github.event.number }}
+      - name: Make script executable
+        run: chmod +x populatepreviewdeploymentid.sh
+      - name: Running script to populate preview deployment ID
+        run: ./populatepreviewdeploymentid.sh ${{ github.workspace }} ${{ github.ref }} ${{ github.event.number }}
+        working-directory: ./
+        shell: bash
       - name: Commit
         uses: stefanzweifel/git-auto-commit-action@v4
         with:

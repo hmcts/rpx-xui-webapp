@@ -26,4 +26,4 @@ jobs:
         shell: bash
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "${{ github.ref }}: Setting Preview Deployment ID"
+          commit_message: "${GITHUB_HEAD_REF}: Setting Preview Deployment ID"

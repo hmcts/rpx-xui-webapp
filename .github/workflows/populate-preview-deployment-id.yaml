@@ -23,7 +23,6 @@ jobs:
       - name: Populate preview deployment ID
         run: |
           sed -i 's/PREVIEW_DEPLOYMENT_ID:.*/PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-${{ github.event.number }}/' charts/xui-webapp/values.preview.template.yaml
-          echo ${{ steps.generate-token.outputs.token }}
         shell: bash
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:

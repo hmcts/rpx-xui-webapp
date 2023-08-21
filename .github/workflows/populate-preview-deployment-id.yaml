@@ -20,7 +20,7 @@ jobs:
           ref: master
       - name: Running script to populate preview deployment ID
         run: |
-          sed -i '' -e 's/PREVIEW_DEPLOYMENT_ID:.*/PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-${{ github.event.number }}' charts/xui-webapp/values.preview.template.yaml
+          sed -i '' -e 's/PREVIEW_DEPLOYMENT_ID:.*/PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-${{ github.event.number }}/' charts/xui-webapp/values.preview.template.yaml
         working-directory: ./
         shell: bash
       - name: Commit

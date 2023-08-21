@@ -18,7 +18,9 @@ jobs:
           ref: master
       - name: Populate preview deployment ID
         run: |
+          git branch
           sed -i 's/PREVIEW_DEPLOYMENT_ID:.*/PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-${{ github.event.number }}/' charts/xui-webapp/values.preview.template.yaml
+          sed -e 's/PREVIEW_DEPLOYMENT_ID:.*/PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-${{ github.event.number }}/' charts/xui-webapp/values.preview.template.yaml
           git status
           git diff
           git config --global user.name "${{github.actor}}"

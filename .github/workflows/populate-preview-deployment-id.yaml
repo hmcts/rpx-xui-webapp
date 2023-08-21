@@ -25,10 +25,9 @@ jobs:
           cd ../..
           git status
           git diff
-          git config --global user.name "${{github.actor}}"
-          git config --global user.email "${{github.actor_id}}+${{github.actor}}@users.noreply.github.com"
-          git add .
-          git commit -m "Setting Preview Deployment ID"
-          git push origin HEAD:${{ github.ref }} --force
-          echo 'Preview deployment ID populated successfully'
         shell: bash
+      - name: Commit
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          skip_dirty_check: false
+          commit_message: "Setting Preview Deployment ID"

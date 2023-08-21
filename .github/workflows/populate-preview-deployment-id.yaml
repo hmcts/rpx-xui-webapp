@@ -22,7 +22,7 @@ jobs:
       - name: Populate preview deployment ID
         run: |
           cd charts/xui-webapp
-          sed -i 's/PREVIEW_DEPLOYMENT_ID:.*/PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-${{ github.event.number }}/' values.preview.template.yaml
+          sed -i -e 's/PREVIEW_DEPLOYMENT_ID:.*/PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-${{ github.event.number }}/' values.preview.template.yaml
           cd ../..
           git status
           git diff

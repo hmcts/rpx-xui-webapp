@@ -125,23 +125,23 @@
   "waSupportedServiceandCaseTypes": {
     "IA": {
         "caseTypes": "Asylum",
-        "releaseVersion": "4.0"
+        "releaseVersion": "3.5"
       },
     "CIVIL": {
         "caseTypes": "CIVIL,GENERALAPPLICATION",
-        "releaseVersion": "4.0"
+        "releaseVersion": "3.5"
       },
     "PRIVATELAW": {
         "caseTypes": "PRIVATELAW,PRLAPPS",
-        "releaseVersion": "4.0"
+        "releaseVersion": "3.5"
       },
     "PUBLICLAW": {
        "caseTypes": "PUBLICLAW",
-       "releaseVersion": "4.0"
+       "releaseVersion": "3.5"
       },
     "SSCS": {
        "caseTypes": "Benefit,SSCS_ExceptionRecord",
-       "releaseVersion": "4.0"
+       "releaseVersion": "3.5"
     }
   },
   "wildcardSearchFields": {

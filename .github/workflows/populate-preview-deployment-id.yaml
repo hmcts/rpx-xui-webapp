@@ -3,11 +3,12 @@ name: Populate Preview Deployment ID
 on:
   pull_request:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: tibdex/github-app-token@v1
         id: generate-token

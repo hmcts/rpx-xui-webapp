@@ -20,7 +20,7 @@ jobs:
           ref: master
       - name: Populate preview deployment ID
         run: |
-          pwd ; ls ; cd charts/xui-webapp ; pwd; ls ; sed -i '' -e 's/PREVIEW_DEPLOYMENT_ID:.*/PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-${{ github.event.number }}/' values.preview.template.yaml
+          pwd ; ls ; cd charts/xui-webapp ; pwd; ls ; sed -i 's/PREVIEW_DEPLOYMENT_ID:.*/PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-${{ github.event.number }}/' values.preview.template.yaml
         shell: bash
       - name: Commit
         uses: stefanzweifel/git-auto-commit-action@v4

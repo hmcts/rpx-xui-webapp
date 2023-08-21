@@ -18,11 +18,7 @@ jobs:
       - name: Populate preview deployment ID
         run: |
           sed -i 's/PREVIEW_DEPLOYMENT_ID:.*/PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-${{ github.event.number }}/' charts/xui-webapp/values.preview.template.yaml
-          git status
-          git diff
-          git config --global user.name "${{github.actor}}"
-          git config --global user.email "${{github.actor_id}}+${{github.actor}}@users.noreply.github.com"
-          git add .
-          git commit -m "Setting Preview Deployment ID"
-          git push origin HEAD:${{ github.ref }} --force
         shell: bash
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Setting Preview Deployment ID

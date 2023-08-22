@@ -4,8 +4,7 @@ import { config } from './config/config';
 import { getXSRFToken } from './utils/authUtil';
 import { setTestContext } from './utils/helper';
 import Request from './utils/request';
-import { getAuthToken } from "./utils/getToken";
-const { getS2SToken } = require('./support');
+import { getAuthToken, getS2SToken } from "./utils/getToken";
 
 describe('CCD Endpoints', () => {
   const userName = config.users[config.testEnv].solicitor.e;

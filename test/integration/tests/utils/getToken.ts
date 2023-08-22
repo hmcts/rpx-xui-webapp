@@ -1,5 +1,10 @@
 import { getConfigValue } from '../../../../api/configuration';
-import { IDAM_SECRET, SERVICES_IDAM_API_URL, SERVICES_IDAM_CLIENT_ID } from '../../../../api/configuration/references';
+import {
+  IDAM_SECRET,
+  SERVICE_S2S_PATH,
+  SERVICES_IDAM_API_URL,
+  SERVICES_IDAM_CLIENT_ID
+} from '../../../../api/configuration/references';
 
 import axios, { AxiosInstance } from 'axios';
 
@@ -8,6 +13,7 @@ const idamApi = getConfigValue(SERVICES_IDAM_API_URL);
 const idamSecret = getConfigValue(IDAM_SECRET) || 'AAAAAAAAAAAAAAAA';
 const baseUrl = 'http://localhost:3000';
 const idamClient = getConfigValue(SERVICES_IDAM_CLIENT_ID);
+const s2sApi = getConfigValue(SERVICE_S2S_PATH);
 
 export async function getAuthCode() {
   const redirectUri = `${baseUrl}/oauth2/callback`;
@@ -45,4 +51,16 @@ export async function getAuthToken() {
 
   const response = await axiosInstance.post(tokenUrlPost, {}, options);
   return response.data.access_token;
+}
+
+export async function getS2SToken(){
+  const response = await axiosInstance.post(`${s2sApi}/testing-support/lease`,
+    { "microservice": "xui_webapp" },
+    {
+      headers:{
+        "accept": "*/*",
+        "Content-Type": "application/json"
+      }
+    } );
+  return response.data;
 }

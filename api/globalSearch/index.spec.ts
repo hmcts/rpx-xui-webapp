@@ -20,8 +20,7 @@ describe('Jurisdiction', () => {
     { id: 'IA', name: 'Immigration & Asylum', description: null, caseTypes: null },
     { id: 'PUBLICLAW', name: 'Public Law', description: null, caseTypes: null },
     { id: 'PRIVATELAW', name: 'PRIVATE LAW', description: null, caseTypes: null },
-    { id: 'PUBLICLAW', name: 'Public Law', description: null, caseTypes: null },
-    
+    { id: 'PUBLICLAW', name: 'Public Law', description: null, caseTypes: null }
   ];
   const serviceList: GlobalSearchService[] = [
     { serviceId: 'BEFTA_MASTER', serviceName: 'BEFTA_MASTER' },

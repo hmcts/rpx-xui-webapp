@@ -8,8 +8,10 @@ import {
   RawJudicialUserModel,
   transformToJudicialUserModel
 } from './models/judicialUser.model';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 const prdUrl: string = getConfigValue(SERVICES_PRD_JUDICIAL_API);
+const ENABLE_JRD_E_LINKS_API_V2 = 'enable-jrd-e-links-api-v2';
 
 /**
  * @overview searchJudicialUserByPersonalCodes from personalCodes, i.e. ['p1000000','p1000001']
@@ -20,9 +22,13 @@ export async function searchJudicialUserByPersonalCodes(req: EnhancedRequest, re
   const reqBody = req.body;
   const markupPath: string = `${prdUrl}/refdata/judicial/users`;
   try {
-    const { status, data }: { status: number, data: RawJudicialUserModel[] } = await handlePost(markupPath, reqBody, req, next);
-    const result = data.map(transformToJudicialUserModel);
-    res.status(status).send(result);
+    const featureToggleService = new FeatureToggleService();
+    const isV2FeatureEnabled = await featureToggleService.getValue(ENABLE_JRD_E_LINKS_API_V2, false);
+    const response = await handlePost(markupPath, reqBody, req, next);
+    const data = isV2FeatureEnabled
+      ? response.data as JudicialUserModel[]
+      : (response.data as RawJudicialUserModel[]).map(transformToJudicialUserModel);
+    res.status(response.status).send(data);
   } catch (error) {
     next(error);
   }

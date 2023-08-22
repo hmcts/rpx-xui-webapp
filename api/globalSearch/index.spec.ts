@@ -22,10 +22,10 @@ describe('Jurisdiction', () => {
     { id: 'PRIVATELAW', name: 'PRIVATE LAW', description: null, caseTypes: null }
   ];
   const serviceList: GlobalSearchService[] = [
-    { serviceId: 'IA', serviceName: 'Immigration & Asylum' },
+    { serviceId: 'BEFTA_MASTER', serviceName: 'BEFTA_MASTER' },
     { serviceId: 'CIVIL', serviceName: 'CIVIL' },
-    { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' },
-    { serviceId: 'PUBLICLAW', serviceName: 'Public Law' }
+    { serviceId: 'IA', serviceName: 'Immigration & Asylum' },
+    { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' }
   ];
 
   beforeEach(() => {

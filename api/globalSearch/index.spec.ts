@@ -14,19 +14,20 @@ chai.use(sinonChai);
 
 describe('Jurisdiction', () => {
   let sandbox: sinon.SinonSandbox;
+
   const jurisdictionList: Jurisdiction[] = [
     { id: 'PROBATE', name: 'Manage probate application', description: null, caseTypes: null },
     { id: 'IA', name: 'Immigration & Asylum', description: null, caseTypes: null },
     { id: 'PUBLICLAW', name: 'Public Law', description: null, caseTypes: null },
-    { id: 'DIVORCE', name: 'Family Divorce', description: null, caseTypes: null },
-    { id: 'PRIVATELAW', name: 'PRIVATE LAW', description: null, caseTypes: null }
+    { id: 'PRIVATELAW', name: 'PRIVATE LAW', description: null, caseTypes: null },
+    { id: 'PUBLICLAW', name: 'Public Law', description: null, caseTypes: null },
+    
   ];
   const serviceList: GlobalSearchService[] = [
-
-    { serviceId: 'IA', serviceName: 'Immigration & Asylum' },
+    { serviceId: 'BEFTA_MASTER', serviceName: 'BEFTA_MASTER' },
     { serviceId: 'CIVIL', serviceName: 'CIVIL' },
-    { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' },
-    { serviceId: 'PUBLICLAW', serviceName: 'Public Law' }
+    { serviceId: 'IA', serviceName: 'Immigration & Asylum' },
+    { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' }
   ];
 
   beforeEach(() => {
@@ -60,7 +61,7 @@ describe('Jurisdiction', () => {
     expect(response).to.deep.equal(res);
   });
 
-  it('should return global search services', async() => {
+  it('should return global search services_1', async() => {
     let services = globalSearchServices.generateServices(undefined);
     expect(services.length).to.equal(4);
 
@@ -71,7 +72,7 @@ describe('Jurisdiction', () => {
     expect(services.length).to.equal(4);
   });
 
-  it('should return global search services', async() => {
+  it('should return global search services_2', async() => {
     const services = globalSearchServices.generateServices(jurisdictionList);
     expect(services).to.deep.equal(serviceList);
   });

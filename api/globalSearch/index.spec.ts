@@ -61,7 +61,7 @@ describe('Jurisdiction', () => {
     expect(response).to.deep.equal(res);
   });
 
-  it('should return global search services_1', async() => {
+  it('should return global search services', async() => {
     let services = globalSearchServices.generateServices(undefined);
     expect(services.length).to.equal(4);
 
@@ -72,7 +72,7 @@ describe('Jurisdiction', () => {
     expect(services.length).to.equal(4);
   });
 
-  it('should return global search services_2', async() => {
+  it('should return global search services', async() => {
     const services = globalSearchServices.generateServices(jurisdictionList);
     expect(services).to.deep.equal(serviceList);
   });

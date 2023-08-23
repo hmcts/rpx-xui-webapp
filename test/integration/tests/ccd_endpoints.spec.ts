@@ -18,8 +18,8 @@ describe('CCD Endpoints', () => {
   });
 
   it('Jurisdictions for user role', async function() {
-    const auth = getAuthToken();
-    const s2sToken = getS2SToken();
+    const auth = await getAuthToken();
+    const s2sToken = await getS2SToken();
     const headers = {
       'Authorization': `Bearer ${auth}`,
       'ServiceAuthorization': s2sToken

@@ -2197,7 +2197,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@circlon/angular-tree-component@npm:^11.0.0":
+"@circlon/angular-tree-component@npm:^11.0.4":
   version: 11.0.4
   resolution: "@circlon/angular-tree-component@npm:11.0.4"
   dependencies:
@@ -2386,26 +2386,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.3-RetryCaseRetrievals.1":
-  version: 6.19.3-RetryCaseRetrievals.1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.3-RetryCaseRetrievals.1"
-  dependencies:
-    tslib: ^2.0.0
-  checksum: 804b26964c596540b05e0c88baadda0f07a4d3a9aaa5ca6782d3d9879ae01f7e6cfb59e4892483385a9d4a8428e709b06f64efa0b99518039ade9e81ced3175c
+"@hmcts/ccd-case-ui-toolkit@link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@hmcts/ccd-case-ui-toolkit@link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A."
   languageName: node
-  linkType: hard
+  linkType: soft
 
-"@hmcts/ccpay-web-component@npm:5.2.8":
-  version: 5.2.8
-  resolution: "@hmcts/ccpay-web-component@npm:5.2.8"
-  dependencies:
-    tslib: ^2.0.0
-  peerDependencies:
-    "@angular/common": ^9.0.0-rc.0 || ^9.0.0
-    "@angular/core": ^9.0.0-rc.0 || ^9.0.0
-  checksum: d25ca7b6872aac085189e364551a04ccd1fcbe115e7881dd092e90d098e43f50a537126fce31ca1a1f25c3cd560730d98beb16e98bb7000108c421f9dca9e449
+"@hmcts/ccpay-web-component@link:../ccpay-web-component/dist/payment-lib::locator=rpx-exui%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@hmcts/ccpay-web-component@link:../ccpay-web-component/dist/payment-lib::locator=rpx-exui%40workspace%3A."
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@hmcts/frontend@npm:0.0.39-alpha":
   version: 0.0.39-alpha
@@ -2414,30 +2405,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:2.9.3":
-  version: 2.9.3
-  resolution: "@hmcts/media-viewer@npm:2.9.3"
+"@hmcts/media-viewer@npm:2.10.0":
+  version: 2.10.0
+  resolution: "@hmcts/media-viewer@npm:2.10.0"
   dependencies:
-    "@circlon/angular-tree-component": ^11.0.0
-    "@swimlane/ngx-datatable": ^19.0.0
+    "@circlon/angular-tree-component": ^11.0.4
+    "@swimlane/ngx-datatable": ^20.0.0
     hammerjs: ^2.0.8
-    mutable-div: 0.0.11
+    mutable-div: ^1.0.0
     pdfjs-dist: 2.5.207
     socket.io-client: ^3.1.1
-    tslib: ^2.0.0
+    tslib: ^2.3.0
     uuid: ^3.4.0
   peerDependencies:
-    "@angular/animations": ^11.2.14
-    "@angular/common": ^11.2.14
-    "@angular/core": ^11.2.14
-    "@angular/forms": ^11.2.14
-    "@angular/material": ^11.2.14
-    "@angular/platform-browser": ^11.2.14
-    "@ngrx/effects": ^11.0.0
-    "@ngrx/router-store": ^11.0.0
-    "@ngrx/store": ^11.0.0
-    "@ngrx/store-devtools": ^11.0.0
-  checksum: d6702c0141da24cd7ebaecb5764f5f6eae825cdcd4633c06cfb5d613b314dac4ba899292be9543a8b359f48091f78d36e5ea58bfc050afc5f0947bdedc06a628
+    "@angular/animations": ^15.2.9
+    "@angular/common": ^15.2.9
+    "@angular/core": ^15.2.9
+    "@angular/forms": ^15.2.9
+    "@angular/material": ^15.2.9
+    "@angular/platform-browser": ^15.2.9
+    "@ngrx/effects": ^15.0.0
+    "@ngrx/router-store": ^15.0.0
+    "@ngrx/store": ^15.0.0
+    "@ngrx/store-devtools": ^15.0.0
+  checksum: b401939f6d96a4732836cab5748bb18573f863661d57b0710f02015f6db23b4f87d0b5dcc24cd6240a231514865cbe71a72e8d0d1354d92b4f6e0655af8340fd
   languageName: node
   linkType: hard
 
@@ -3500,17 +3491,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swimlane/ngx-datatable@npm:^19.0.0":
-  version: 19.0.0
-  resolution: "@swimlane/ngx-datatable@npm:19.0.0"
+"@swimlane/ngx-datatable@npm:^20.0.0":
+  version: 20.1.0
+  resolution: "@swimlane/ngx-datatable@npm:20.1.0"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
-    "@angular/common": ^11.0.2
-    "@angular/core": ^11.0.2
-    "@angular/platform-browser": ^11.0.2
-    rxjs: ^6.6.3
-  checksum: 34a3a7568b0c82caed1fd226ba37344c4cf6897244bf03dfcb9e94cd08e3838977fdba48464fdc89e0336d94d6ec4d5c3f281eb192dffde468f935df187ae858
+    "@angular/common": ">=11.0.2"
+    "@angular/core": ">=11.0.2"
+    "@angular/platform-browser": ">=11.0.2"
+    rxjs: ^6.6.3 || ^7.4.0
+  checksum: ecc6ddab9e68ca07a100183357a6c8d1335d066d1676e0156202ca33f7008b6c7debe1b31bc4404cf3f25fe874a04a7ae39c6430c2340c6831dfafc282a38e66
   languageName: node
   linkType: hard
 
@@ -15707,16 +15698,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mutable-div@npm:0.0.11":
-  version: 0.0.11
-  resolution: "mutable-div@npm:0.0.11"
+"mutable-div@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "mutable-div@npm:1.0.0"
   dependencies:
     tslib: ^1.9.0
   peerDependencies:
     "@angular/common": ^8.2.13
     "@angular/core": ^8.2.13
     hammerjs: ^2.0.8
-  checksum: b47f171e5d8ba9ecfcb32347c21ebd6553b472a07ff0985e3a852e8705cebe1f8b1a065038b00015f01a01df10eabc1b800441e3a3d1474b6bdf03a156bfb664
+  checksum: 162d3c33dd18abb22b6554fbb272f95cacc9fdb939e030436e9d7a13a87addacd93bcdb80646586e4ff19d94119b7d3205ab782e3243e0cad17b437b153cd17e
   languageName: node
   linkType: hard
 
@@ -19364,10 +19355,10 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.3-RetryCaseRetrievals.1
-    "@hmcts/ccpay-web-component": 5.2.8
+    "@hmcts/ccd-case-ui-toolkit": "link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit"
+    "@hmcts/ccpay-web-component": "link:../ccpay-web-component/dist/payment-lib"
     "@hmcts/frontend": 0.0.39-alpha
-    "@hmcts/media-viewer": 2.9.3
+    "@hmcts/media-viewer": 2.10.0
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
     "@hmcts/rpx-xui-common-lib": 2.0.0-NodeAndNgUpgrades-03
@@ -21958,6 +21949,13 @@ __metadata:
   version: 2.4.0
   resolution: "tslib@npm:2.4.0"
   checksum: 8c4aa6a3c5a754bf76aefc38026134180c053b7bd2f81338cb5e5ebf96fefa0f417bff221592bf801077f5bf990562f6264fecbc42cd3309b33872cb6fc3b113
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^2.3.0":
+  version: 2.6.2
+  resolution: "tslib@npm:2.6.2"
+  checksum: 329ea56123005922f39642318e3d1f0f8265d1e7fcb92c633e0809521da75eeaca28d2cf96d7248229deb40e5c19adf408259f4b9640afd20d13aecc1430f3ad
   languageName: node
   linkType: hard
 

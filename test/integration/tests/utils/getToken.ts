@@ -39,6 +39,7 @@ export async function getAuthCode() {
 
 export async function getAuthToken() {
   const codeValue = await getAuthCode();
+  console.log('code value ', codeValue)
   const redirectUri = `${baseUrl}/oauth2/callback`;
   const tokenUrlPost = `${idamApi}/oauth2/token?grant_type=authorization_code&code=${codeValue}&redirect_uri=${redirectUri}`;
 
@@ -50,6 +51,7 @@ export async function getAuthToken() {
   };
 
   const response = await axiosInstance.post(tokenUrlPost, {}, options);
+  console.log('response from idam; ', response)
   return response.data.access_token;
 }
 

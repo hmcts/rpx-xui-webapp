@@ -25,7 +25,8 @@ describe('Jurisdiction', () => {
     { serviceId: 'IA', serviceName: 'Immigration & Asylum' },
     { serviceId: 'CIVIL', serviceName: 'CIVIL' },
     { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' },
-    { serviceId: 'PUBLICLAW', serviceName: 'Public Law' }
+    { serviceId: 'PUBLICLAW', serviceName: 'Public Law' },
+    { serviceId: 'EMPLOYMENT', serviceName: 'EMPLOYMENT' }
   ];
 
   beforeEach(() => {

@@ -24,6 +24,7 @@ describe('CCD Endpoints', () => {
       'Authorization': `Bearer ${auth}`,
       'ServiceAuthorization': s2sToken
     };
+    console.log('Headers ', headers);
 
     await Request.withSession(userName, password);
     const response = await Request.get('aggregated/caseworkers/:uid/jurisdictions?access=read', headers, 200);

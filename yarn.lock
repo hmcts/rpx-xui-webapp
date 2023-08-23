@@ -247,19 +247,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cdk@npm:^11.2.13":
-  version: 11.2.13
-  resolution: "@angular/cdk@npm:11.2.13"
+"@angular/cdk@npm:^12.2.13":
+  version: 12.2.13
+  resolution: "@angular/cdk@npm:12.2.13"
   dependencies:
     parse5: ^5.0.0
-    tslib: ^2.0.0
+    tslib: ^2.2.0
   peerDependencies:
-    "@angular/common": ^11.0.0 || ^12.0.0-0
-    "@angular/core": ^11.0.0 || ^12.0.0-0
+    "@angular/common": ^12.0.0 || ^13.0.0-0
+    "@angular/core": ^12.0.0 || ^13.0.0-0
+    rxjs: ^6.5.3 || ^7.0.0
   dependenciesMeta:
     parse5:
       optional: true
-  checksum: d928ebdf16c804edeece5d155209ea0dba15b5dc29ed12cc24a58f10a219c29ee2a601154d4d1b156a2c63308f9ea3d937aa486ef7793f462a588f15243a541a
+  checksum: 56da5877935d23147aa627522cfa567b6bbcbfb54e61dd9f01dcf821de2e3fbb97ab42e4a8e88af5dcc2980a68448aca59bfaec69199a48f26fedd1f07c8b56f
   languageName: node
   linkType: hard
 
@@ -376,18 +377,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/material@npm:11.2.13":
-  version: 11.2.13
-  resolution: "@angular/material@npm:11.2.13"
+"@angular/material@npm:12.2.13":
+  version: 12.2.13
+  resolution: "@angular/material@npm:12.2.13"
   dependencies:
-    tslib: ^2.0.0
+    tslib: ^2.2.0
   peerDependencies:
-    "@angular/animations": ^11.0.0 || ^12.0.0-0
-    "@angular/cdk": 11.2.13
-    "@angular/common": ^11.0.0 || ^12.0.0-0
-    "@angular/core": ^11.0.0 || ^12.0.0-0
-    "@angular/forms": ^11.0.0 || ^12.0.0-0
-  checksum: ed7749c702aca0ff3689ab3e4dbea02ca96866639f470fa1b40f52ebab81773b780c6b2ddb1202d6a819b9da86106e01e196c2824a22dbcba6ae24971b0e9e2f
+    "@angular/animations": ^12.0.0 || ^13.0.0-0
+    "@angular/cdk": 12.2.13
+    "@angular/common": ^12.0.0 || ^13.0.0-0
+    "@angular/core": ^12.0.0 || ^13.0.0-0
+    "@angular/forms": ^12.0.0 || ^13.0.0-0
+    rxjs: ^6.5.3 || ^7.0.0
+  checksum: 6ba0a97ec3ea93f09653e696af4460fb3c9d95d726adc159c7e9faa7a3f7b1158578e73e9b1a5036c29db6e135ae001173294873c5227704e52914db1534d88b
   languageName: node
   linkType: hard
 
@@ -19583,7 +19585,7 @@ __metadata:
     "@angular-material-components/datetime-picker": 5.1.1
     "@angular-material-components/moment-adapter": ^5.0.0
     "@angular/animations": ^12.2.17
-    "@angular/cdk": ^11.2.13
+    "@angular/cdk": ^12.2.13
     "@angular/cli": ^12.2.18
     "@angular/common": ^12.2.17
     "@angular/compiler": ^12.2.17
@@ -19591,7 +19593,7 @@ __metadata:
     "@angular/core": ^12.2.17
     "@angular/forms": ^12.2.17
     "@angular/language-service": ~12.2.17
-    "@angular/material": 11.2.13
+    "@angular/material": 12.2.13
     "@angular/platform-browser": ^12.2.17
     "@angular/platform-browser-dynamic": ^12.2.17
     "@angular/router": ^12.2.17

@@ -2,7 +2,7 @@
   "name": "rpx-exui",
   "version": "0.0.0",
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=18.17.0"
   },
   "scripts": {
     "build": "yarn build:prod && yarn build:node",
@@ -91,7 +91,7 @@
     "@hmcts/media-viewer": "2.9.3",
     "@hmcts/nodejs-healthcheck": "1.7.0",
     "@hmcts/properties-volume": "^0.0.13",
-    "@hmcts/rpx-xui-common-lib": "1.9.0-welsh-translation",
+    "@hmcts/rpx-xui-common-lib": "2.0.0-NodeAndNgUpgrades-03",
     "@hmcts/rpx-xui-node-lib": "2.25.12",
     "@ng-idle/core": "^11.1.0",
     "@ng-idle/keepalive": "^11.0.3",
@@ -188,7 +188,7 @@
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/mocha": "^8.0.3",
-    "@types/node": "^12.11.1",
+    "@types/node": "^18.17.0",
     "@types/shortid": "0.0.29",
     "@types/sinon": "^7.0.13",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
@@ -222,8 +222,8 @@
     "ngrx-store-freeze": "^0.2.4",
     "node-fetch": "^2.6.1",
     "node-html-parser": "^6.1.5",
-    "node-sass": "^4.13.0",
-    "nodemon": "^2.0.2",
+    "node-sass": "^9.0.0",
+    "nodemon": "^2.0.19",
     "npm-run-all": "^4.1.5",
     "pa11y": "^5.3.0",
     "protractor": "~5.4.0",

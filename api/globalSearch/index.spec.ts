@@ -22,10 +22,11 @@ describe('Jurisdiction', () => {
     { id: 'PRIVATELAW', name: 'PRIVATE LAW', description: null, caseTypes: null }
   ];
   const serviceList: GlobalSearchService[] = [
-    { serviceId: 'BEFTA_MASTER', serviceName: 'BEFTA_MASTER' },
-    { serviceId: 'CIVIL', serviceName: 'CIVIL' },
     { serviceId: 'IA', serviceName: 'Immigration & Asylum' },
-    { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' }
+    { serviceId: 'CIVIL', serviceName: 'CIVIL' },
+    { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' },
+    { serviceId: 'PUBLICLAW', serviceName: 'Public Law' },
+    { serviceId: 'ST_CIC', serviceName: 'ST_CIC' }
   ];
 
   beforeEach(() => {
@@ -61,13 +62,13 @@ describe('Jurisdiction', () => {
 
   it('should return global search services', async() => {
     let services = globalSearchServices.generateServices(undefined);
-    expect(services.length).to.equal(4);
+    expect(services.length).to.equal(5);
 
     services = globalSearchServices.generateServices(null);
-    expect(services.length).to.equal(4);
+    expect(services.length).to.equal(5);
 
     services = globalSearchServices.generateServices([]);
-    expect(services.length).to.equal(4);
+    expect(services.length).to.equal(5);
   });
 
   it('should return global search services', async() => {

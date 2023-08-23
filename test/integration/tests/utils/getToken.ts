@@ -56,7 +56,7 @@ export async function getAuthToken() {
 }
 
 export async function getS2SToken(){
-  const response = await axiosInstance.post(`${s2sApi}/testing-support/lease`,
+  const response = await axiosInstance.post(`${s2sApi}/lease`,
     { "microservice": "xui_webapp" },
     {
       headers:{

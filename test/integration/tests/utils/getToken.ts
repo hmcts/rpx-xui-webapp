@@ -56,13 +56,19 @@ export async function getAuthToken() {
 }
 
 export async function getS2SToken(){
-  const response = await axiosInstance.post(`${s2sApi}/lease`,
-    { "microservice": "xui_webapp" },
-    {
-      headers:{
-        "accept": "*/*",
-        "Content-Type": "application/json"
-      }
-    } );
-  return response.data;
+  let response;
+  try {
+    const response = await axiosInstance.post(`${s2sApi}/lease`,
+      { "microservice": "xui_webapp" },
+      {
+        headers:{
+          "accept": "*/*",
+          "Content-Type": "application/json"
+        }
+      } );
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(`Error with s2s token generation: ${e}`);
+  }
 }

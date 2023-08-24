@@ -18,7 +18,7 @@ s2s.configure({
   s2sSecret
 });
 
-const s2sToken = await s2s.serviceTokenGenerator();
+const s2sToken = s2s.serviceTokenGenerator();
 // const authToken = await getAuthToken();
 
 const axiosOptions = {};

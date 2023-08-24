@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import { UserDetails } from '../../../../app/models';

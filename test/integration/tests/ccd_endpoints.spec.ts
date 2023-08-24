@@ -31,7 +31,7 @@ describe('CCD Endpoints', () => {
       s2sSecret
     });
 
-    const s2sToken = s2s.serviceTokenGenerator();
+    const s2sToken = await s2s.serviceTokenGenerator();
     // const authToken = await getAuthToken();
     // axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
     axios.defaults.headers.common['ServiceAuthorization'] = s2sToken;

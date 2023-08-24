@@ -2751,26 +2751,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.3-RetryCaseRetrievals.1":
-  version: 6.19.3-RetryCaseRetrievals.1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.3-RetryCaseRetrievals.1"
-  dependencies:
-    tslib: ^2.0.0
-  checksum: 804b26964c596540b05e0c88baadda0f07a4d3a9aaa5ca6782d3d9879ae01f7e6cfb59e4892483385a9d4a8428e709b06f64efa0b99518039ade9e81ced3175c
+"@hmcts/ccd-case-ui-toolkit@link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@hmcts/ccd-case-ui-toolkit@link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A."
   languageName: node
-  linkType: hard
+  linkType: soft
 
-"@hmcts/ccpay-web-component@npm:5.2.8":
-  version: 5.2.8
-  resolution: "@hmcts/ccpay-web-component@npm:5.2.8"
-  dependencies:
-    tslib: ^2.0.0
-  peerDependencies:
-    "@angular/common": ^9.0.0-rc.0 || ^9.0.0
-    "@angular/core": ^9.0.0-rc.0 || ^9.0.0
-  checksum: d25ca7b6872aac085189e364551a04ccd1fcbe115e7881dd092e90d098e43f50a537126fce31ca1a1f25c3cd560730d98beb16e98bb7000108c421f9dca9e449
+"@hmcts/ccpay-web-component@link:../ccpay-web-component/dist/payment-lib::locator=rpx-exui%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@hmcts/ccpay-web-component@link:../ccpay-web-component/dist/payment-lib::locator=rpx-exui%40workspace%3A."
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@hmcts/frontend@npm:0.0.39-alpha":
   version: 0.0.39-alpha
@@ -19430,8 +19421,8 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.3-RetryCaseRetrievals.1
-    "@hmcts/ccpay-web-component": 5.2.8
+    "@hmcts/ccd-case-ui-toolkit": "link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit"
+    "@hmcts/ccpay-web-component": "link:../ccpay-web-component/dist/payment-lib"
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.10.0
     "@hmcts/nodejs-healthcheck": 1.7.0

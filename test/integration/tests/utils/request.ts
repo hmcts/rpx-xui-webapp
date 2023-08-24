@@ -8,30 +8,15 @@ import { s2s } from "@hmcts/rpx-xui-node-lib";
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-const s2sSecret = getConfigValue(S2S_SECRET).trim();
-const microservice = getConfigValue(MICROSERVICE);
-const s2sEndpointUrl = `${getConfigValue(SERVICE_S2S_PATH)}/lease`;
-
-s2s.configure({
-  microservice,
-  s2sEndpointUrl,
-  s2sSecret
-});
-
-const s2sToken = s2s.serviceTokenGenerator();
-// const authToken = await getAuthToken();
-
 const axiosOptions = {};
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = config.baseUrl;
 axios.defaults.headers.common['Content-Type'] = 'application/json';
-// axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
-axios.defaults.headers.common['ServiceAuthorization'] = s2sToken;
 const http: AxiosInstance = axios.create(axiosOptions);
 
 const requestInterceptor = (request) => {
-  console.log(`Request here ------>>>> ${request}`)
-  console.log(`Request headers here ------>>>> ${request.headers}`)
+  console.log(`Request here ------>>>> ${JSON.stringify(request)}`)
+  console.log(`Request headers here ------>>>> ${JSON.stringify(request.headers)}`)
   console.log(`${request.method.toUpperCase()} to ${request.url}`);
   return request;
 };

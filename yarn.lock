@@ -2906,6 +2906,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@launchdarkly/js-sdk-common@npm:1.1.0":
+  version: 1.1.0
+  resolution: "@launchdarkly/js-sdk-common@npm:1.1.0"
+  checksum: d7d98005973fb02637f9e064d360c06a3a7cfada3e853d3966b28ac69d288c28bba20aece4ab0a3b8444cd75ea0edd8ea303a384dbf834ce8e5b77f3750c7701
+  languageName: node
+  linkType: hard
+
+"@launchdarkly/js-server-sdk-common@npm:1.2.0":
+  version: 1.2.0
+  resolution: "@launchdarkly/js-server-sdk-common@npm:1.2.0"
+  dependencies:
+    "@launchdarkly/js-sdk-common": 1.1.0
+    semver: 7.5.4
+  checksum: 59410b3b32dffc01cc11fdde4eb282795b525b57673c1aaaa4f19d7d610d4b7c91c3ce214488a2e3fda7dfac03ef832df55f5b604df286d71e989656ea4932fb
+  languageName: node
+  linkType: hard
+
+"@launchdarkly/node-server-sdk@npm:^8.2.1":
+  version: 8.2.1
+  resolution: "@launchdarkly/node-server-sdk@npm:8.2.1"
+  dependencies:
+    "@launchdarkly/js-server-sdk-common": 1.2.0
+    https-proxy-agent: ^5.0.1
+    launchdarkly-eventsource: 2.0.0
+  checksum: 768a0615e69285030632158dc68d3cb4cef7c465be275032cbcd6d6bd72881d91af2471ea2c4ee1846824435bd651867be15f6219446c60fb619e380d6578d9b
+  languageName: node
+  linkType: hard
+
 "@ng-idle/core@npm:^11.1.0":
   version: 11.1.0
   resolution: "@ng-idle/core@npm:11.1.0"
@@ -11690,7 +11718,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"https-proxy-agent@npm:5.0.1, https-proxy-agent@npm:^5.0.0":
+"https-proxy-agent@npm:5.0.1, https-proxy-agent@npm:^5.0.0, https-proxy-agent@npm:^5.0.1":
   version: 5.0.1
   resolution: "https-proxy-agent@npm:5.0.1"
   dependencies:
@@ -14079,6 +14107,13 @@ __metadata:
   version: 2.0.0
   resolution: "kuler@npm:2.0.0"
   checksum: 9e10b5a1659f9ed8761d38df3c35effabffbd19fc6107324095238e4ef0ff044392cae9ac64a1c2dda26e532426485342226b93806bd97504b174b0dcf04ed81
+  languageName: node
+  linkType: hard
+
+"launchdarkly-eventsource@npm:2.0.0":
+  version: 2.0.0
+  resolution: "launchdarkly-eventsource@npm:2.0.0"
+  checksum: e945c08e9eb9f93cf6f5e25610fe052788936ca02d458489c67205b59fc6af43154cccb10b31a9cbde13b43d59ec3de18dccb4ee92beb8b6930526e3a00a14be
   languageName: node
   linkType: hard
 
@@ -19278,6 +19313,7 @@ __metadata:
     "@hmcts/properties-volume": ^0.0.13
     "@hmcts/rpx-xui-common-lib": 1.9.0-welsh-translation
     "@hmcts/rpx-xui-node-lib": 2.25.12
+    "@launchdarkly/node-server-sdk": ^8.2.1
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3
     "@ngrx/effects": ^7.4.0
@@ -19731,6 +19767,17 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 96451bfd7cba9b60ee87571959dc47e87c95b2fe58a9312a926340fee9907fc7bc062c352efdaf5bb24b2dff59c145e14faf7eb9d718a84b4751312531b39f43
+  languageName: node
+  linkType: hard
+
+"semver@npm:7.5.4":
+  version: 7.5.4
+  resolution: "semver@npm:7.5.4"
+  dependencies:
+    lru-cache: ^6.0.0
+  bin:
+    semver: bin/semver.js
+  checksum: 12d8ad952fa353b0995bf180cdac205a4068b759a140e5d3c608317098b3575ac2f1e09182206bf2eb26120e1c0ed8fb92c48c592f6099680de56bb071423ca3
   languageName: node
   linkType: hard
 

@@ -32,7 +32,7 @@ module.exports = {
     'comma-style': 'error',
     'computed-property-spacing': 'error',
     'curly': ['error', 'all'],
-    'dot-notation': 'error',
+    'dot-notation': 'off', 
     'eol-last': 'error',
     'eqeqeq': 'error',
     'func-call-spacing': ['error', 'never'],

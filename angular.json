@@ -179,7 +179,6 @@
       }
     }
   },
-  "defaultProject": "rpx-exui",
   "schematics": {
     "@schematics/angular:component": {
       "style": "scss"

@@ -3579,14 +3579,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngrx/effects@npm:^7.4.0":
-  version: 7.4.0
-  resolution: "@ngrx/effects@npm:7.4.0"
+"@ngrx/effects@npm:^11.1.0":
+  version: 11.1.1
+  resolution: "@ngrx/effects@npm:11.1.1"
+  dependencies:
+    tslib: ^2.0.0
   peerDependencies:
-    "@angular/core": ^7.0.0
-    "@ngrx/store": 7.4.0
-    rxjs: ^6.0.0
-  checksum: c2b05a8b824ebf9d6e80dffadd2b9d9d16808e4c477b548cb5cd470bd718193809576196af5686d2a4e35ed9cd96e83e55dae6fdc09d0cb9a26dc6a2ecf79699
+    "@angular/core": ^11.0.0
+    "@ngrx/store": 11.1.1
+    rxjs: ^6.5.3
+  checksum: ec66a6e6b3ca6c07fb2f38a9e847025007d83bed168b9ac77d34eec5aa15a0a09f3fec83094dd7bffb8105708ac735619e4e5c9772c0f733562f1d379e8274e8
   languageName: node
   linkType: hard
 
@@ -18402,7 +18404,7 @@ __metadata:
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3
-    "@ngrx/effects": ^7.4.0
+    "@ngrx/effects": ^11.1.0
     "@ngrx/router-store": ^15.2.1
     "@ngrx/schematics": ^14.3.0
     "@ngrx/store": ^15.2.1

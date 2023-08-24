@@ -1,5 +1,5 @@
 @import '_typography';
-@import '~govuk-frontend/govuk/all';
+@import 'govuk-frontend/govuk/all';
 @import 'shims';
 @import 'conditionals';
 @import 'measurements';
@@ -35,7 +35,7 @@ $govuk-compatibility-govukfrontendtoolkit: true;
 
 // Ensure Media Viewer CSS styles and icons are available globally across Manage Cases. Required for correct display
 // of the Media Viewer toolbar when this component is embedded in another CCD Case UI Toolkit component
-@import '@hmcts/media-viewer/assets/all';
+// @import '@hmcts/media-viewer/assets/all';
 
 body {
   margin: 0;

@@ -1,5 +1,5 @@
 import { AxiosInstance } from 'axios';
-import MockAdapter from 'axios-mock-adapter';
+import MockAdapter = require('axios-mock-adapter');
 import { HttpMock } from './httpMock';
 
 export class HttpMockAdapter {
@@ -10,6 +10,6 @@ export class HttpMockAdapter {
     return this.adapterInstance;
   }
 
-  private static adapterInstance?: MockAdapter;
+  private static adapterInstance?;
   private static mockInstance: AxiosInstance = HttpMock.getInstance();
 }

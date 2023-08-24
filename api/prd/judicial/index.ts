@@ -1,14 +1,18 @@
 import { NextFunction, Response } from 'express';
 import { handlePost } from '../../common/crudService';
 import { getConfigValue } from '../../configuration';
-import { SERVICES_PRD_JUDICIAL_API } from '../../configuration/references';
+import { FEATURE_JRD_E_LINKS_V2_ENABLED, SERVICES_PRD_JUDICIAL_API } from '../../configuration/references';
+import { http } from '../../lib/http';
 import { EnhancedRequest } from '../../lib/models';
+import { setHeaders } from '../../lib/proxy';
 import {
   JudicialUserModel,
   RawJudicialUserModel,
   transformToJudicialUserModel
 } from './models/judicialUser.model';
 
+const CONTENT_TYPE_V1 = 'application/json';
+const CONTENT_TYPE_V2 = 'application/vnd.jrd.api+json;Version=2.0';
 const prdUrl: string = getConfigValue(SERVICES_PRD_JUDICIAL_API);
 
 /**
@@ -37,7 +41,15 @@ export async function getJudicialUsersSearch(req: EnhancedRequest, res: Response
   const reqBody = req.body;
   const markupPath: string = `${prdUrl}/refdata/judicial/users/search`;
   try {
-    const { status, data }: { status: number, data: JudicialUserModel[] } = await handlePost(markupPath, reqBody, req, next);
+    console.log('FEATURE_JRD_E_LINKS_V2_ENABLED', getConfigValue(FEATURE_JRD_E_LINKS_V2_ENABLED));
+
+    const headers = getConfigValue(FEATURE_JRD_E_LINKS_V2_ENABLED)
+      ? setHeaders(req, CONTENT_TYPE_V1)
+      : setHeaders(req, CONTENT_TYPE_V2);
+
+    console.log('HEADERS', headers);
+
+    const { status, data }: { status: number, data: JudicialUserModel[] } = await http.post(markupPath, reqBody, { headers });
     res.status(status).send(data);
   } catch (error) {
     next(error);

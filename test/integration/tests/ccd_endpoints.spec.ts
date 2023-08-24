@@ -4,7 +4,6 @@ import { config } from './config/config';
 import { getXSRFToken } from './utils/authUtil';
 import { setTestContext } from './utils/helper';
 import Request from './utils/request';
-import { getAuthToken, getS2SToken } from "./utils/getToken";
 
 describe('CCD Endpoints', () => {
   const userName = config.users[config.testEnv].solicitor.e;
@@ -18,20 +17,8 @@ describe('CCD Endpoints', () => {
   });
 
   it('Jurisdictions for user role', async function() {
-    console.log('ServiceAuthorization ', await getS2SToken());
-    const s2sToken = await getS2SToken();
-
-    console.log('Authorization ', await getAuthToken());
-    const auth = await getAuthToken();
-
-    const headers = {
-      'Authorization': `Bearer ${auth}`,
-      'ServiceAuthorization': s2sToken
-    };
-    console.log('Headers ', headers);
-
     await Request.withSession(userName, password);
-    const response = await Request.get('aggregated/caseworkers/:uid/jurisdictions?access=read', headers, 200);
+    const response = await Request.get('aggregated/caseworkers/:uid/jurisdictions?access=read', null, 200);
     expect(response.data).to.be.an('array');
     expect(response.data.map((e) => e.name)).to.include.members(config.jurisdcitionNames[config.testEnv]);
   });

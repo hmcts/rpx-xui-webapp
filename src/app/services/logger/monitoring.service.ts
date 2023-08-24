@@ -86,8 +86,13 @@ export class MonitoringService implements IMonitoringService {
     } else {
       this.http.get('/api/monitoring-tools').subscribe((it) => {
         this.config = {
-          // eslint-disable-next-line dot-notation
+          // eslint-disable dot-notation
           instrumentationKey: it['key']
+          disableTelemetry: true,
+          disableExceptionTracking: true,
+          disableAjaxTracking: true,
+          disableDataLossAnalysis: true
+          // eslint-enable dot-notation
         };
         if (!this.areCookiesEnabled) {
           this.config = {

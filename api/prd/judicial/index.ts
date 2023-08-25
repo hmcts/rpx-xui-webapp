@@ -1,6 +1,5 @@
 import { NextFunction, Response } from 'express';
-import { handlePost } from '../../common/crudService';
-import { getConfigValue } from '../../configuration';
+import { getConfigValue, showFeature } from '../../configuration';
 import { FEATURE_JRD_E_LINKS_V2_ENABLED, SERVICES_PRD_JUDICIAL_API } from '../../configuration/references';
 import { http } from '../../lib/http';
 import { EnhancedRequest } from '../../lib/models';
@@ -24,7 +23,11 @@ export async function searchJudicialUserByPersonalCodes(req: EnhancedRequest, re
   const reqBody = req.body;
   const markupPath: string = `${prdUrl}/refdata/judicial/users`;
   try {
-    const { status, data }: { status: number, data: RawJudicialUserModel[] } = await handlePost(markupPath, reqBody, req, next);
+    // Judicial User search API version to be used depends on the config entry FEATURE_JRD_E_LINKS_V2_ENABLED's value
+    const headers = showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED)
+      ? setHeaders(req, CONTENT_TYPE_V2)
+      : setHeaders(req, CONTENT_TYPE_V1);
+    const { status, data }: { status: number, data: RawJudicialUserModel[] } = await http.post(markupPath, reqBody, { headers });
     const result = data.map(transformToJudicialUserModel);
     res.status(status).send(result);
   } catch (error) {
@@ -41,14 +44,10 @@ export async function getJudicialUsersSearch(req: EnhancedRequest, res: Response
   const reqBody = req.body;
   const markupPath: string = `${prdUrl}/refdata/judicial/users/search`;
   try {
-    console.log('FEATURE_JRD_E_LINKS_V2_ENABLED', getConfigValue(FEATURE_JRD_E_LINKS_V2_ENABLED));
-
-    const headers = getConfigValue(FEATURE_JRD_E_LINKS_V2_ENABLED)
-      ? setHeaders(req, CONTENT_TYPE_V1)
-      : setHeaders(req, CONTENT_TYPE_V2);
-
-    console.log('HEADERS', headers);
-
+    // Judicial User search API version to be used depends on the config entry FEATURE_JRD_E_LINKS_V2_ENABLED's value
+    const headers = showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED)
+      ? setHeaders(req, CONTENT_TYPE_V2)
+      : setHeaders(req, CONTENT_TYPE_V1);
     const { status, data }: { status: number, data: JudicialUserModel[] } = await http.post(markupPath, reqBody, { headers });
     res.status(status).send(data);
   } catch (error) {

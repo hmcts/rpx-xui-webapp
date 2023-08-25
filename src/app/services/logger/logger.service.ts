@@ -76,15 +76,11 @@ export class LoggerService implements ILoggerService {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public error(message: any, ...additional: any[]): void {
     this.ngxLogger.error(message);
-    const formattedMessage = this.getMessage(message);
-    const error = new Error(formattedMessage);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public fatal(message: any, ...additional: any[]): void {
     this.ngxLogger.fatal(message);
-    const formattedMessage = this.getMessage(message);
-    const error = new Error(formattedMessage);
   }
 
   public getMessage(message: any): string {
@@ -100,7 +96,7 @@ export class LoggerService implements ILoggerService {
   }
 
   public enableCookies(): void {
-    // this.monitoringService.enableCookies();
+    // do nothing.
   }
 
   public static switchConsoleLogs(consoleConfig: any): void {

@@ -20,11 +20,9 @@ describe('Jurisdiction', () => {
     { id: 'IA', name: 'Immigration & Asylum', description: null, caseTypes: null },
     { id: 'PUBLICLAW', name: 'Public Law', description: null, caseTypes: null },
     { id: 'DIVORCE', name: 'Family Divorce', description: null, caseTypes: null },
-    { id: 'PRIVATELAW', name: 'PRIVATE LAW', description: null, caseTypes: null },
-    { id: 'PUBLICLAW', name: 'Public Law', description: null, caseTypes: null }
+    { id: 'PRIVATELAW', name: 'PRIVATE LAW', description: null, caseTypes: null }
   ];
   const serviceList: GlobalSearchService[] = [
-    { serviceId: 'PROBATE', serviceName: 'Manage probate application' },
     { serviceId: 'IA', serviceName: 'Immigration & Asylum' },
     { serviceId: 'CIVIL', serviceName: 'CIVIL' },
     { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' },

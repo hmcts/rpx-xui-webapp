@@ -1,8 +1,10 @@
 @fullfunctional @ignore
 Feature: Global search
 
+   # Some dummy comments put in for this test.
 
-    Scenario Outline: Search from page "Search"
+
+  Scenario Outline: Search from page "Search"
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with test user identified as "CASEWORKER_GLOBALSEARCH"
 

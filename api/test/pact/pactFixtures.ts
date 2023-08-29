@@ -54,3 +54,14 @@ export interface SharedWithDto {
 export interface AssignAccessWithinOrganisationDto {
   status_message: string;
 }
+
+export interface TranslationsDto {
+  translations: Translation[]
+}
+
+export interface Translation {
+  translation: string;
+  yesOrNo: boolean;
+  yes: string;
+  no: string;
+}

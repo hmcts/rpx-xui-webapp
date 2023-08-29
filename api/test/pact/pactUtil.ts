@@ -103,3 +103,14 @@ export async function assignTaskToUser(taskUrl: string, payLoad: any) {
 
   return await axios.post(taskUrl, payLoad, axiosConfig);
 }
+
+export async function getTranslations(path: string, payLoad: any) {
+  const axiosConfig = {
+    headers: {
+      'Authorization': 'Bearer some-access-token',
+      'Content-Type': 'application/json',
+      'ServiceAuthorization': 'serviceAuthToken'
+    }
+  };
+  return axios.post(path, payLoad, axiosConfig);
+}

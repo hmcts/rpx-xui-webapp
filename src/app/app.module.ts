@@ -55,10 +55,8 @@ import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
 import { CaseShareService } from './services/case/share-case.service';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { JurisdictionService } from './services/jurisdiction/jurisdiction.service';
-import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { CryptoWrapper } from './services/logger/cryptoWrapper';
 import { LoggerService } from './services/logger/logger.service';
-import { MonitoringService } from './services/logger/monitoring.service';
 import { SharedModule } from './shared/shared.module';
 import { effects } from './store/effects';
 // ngrx modules - END
@@ -125,12 +123,7 @@ export function launchDarklyClientIdFactory(
       multi: true
     },
     CryptoWrapper,
-    MonitoringService,
     LoggerService,
-    {
-      provide: AbstractAppInsights,
-      useClass: AppInsightsWrapper
-    },
     {
       provide: ErrorHandler,
       useClass: DefaultErrorHandler
@@ -150,4 +143,4 @@ export function launchDarklyClientIdFactory(
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class AppModule {}
+export class AppModule { }

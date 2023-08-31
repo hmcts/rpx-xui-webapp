@@ -2386,12 +2386,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.1-RetryCaseRetrievals.2":
-  version: 6.19.1-RetryCaseRetrievals.2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.1-RetryCaseRetrievals.2"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.3-RetryCaseRetrievals.1":
+  version: 6.19.3-RetryCaseRetrievals.1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.3-RetryCaseRetrievals.1"
   dependencies:
     tslib: ^2.0.0
-  checksum: bab9f194f43f1ba2dc60685d576a8460fbf07cb69d13945cd6f628bf377ded6886fd1760f319f35b4f1afd845a799cf562bbb0470c6d1df98aa223ffef6deff6
+  checksum: 804b26964c596540b05e0c88baadda0f07a4d3a9aaa5ca6782d3d9879ae01f7e6cfb59e4892483385a9d4a8428e709b06f64efa0b99518039ade9e81ced3175c
   languageName: node
   linkType: hard
 
@@ -3576,13 +3576,6 @@ __metadata:
   version: 1.0.3
   resolution: "@tsconfig/node16@npm:1.0.3"
   checksum: 3a8b657dd047495b7ad23437d6afd20297ce90380ff0bdee93fc7d39a900dbd8d9e26e53ff6b465e7967ce2adf0b218782590ce9013285121e6a5928fbd6819f
-  languageName: node
-  linkType: hard
-
-"@types/applicationinsights-js@npm:^1.0.9":
-  version: 1.0.9
-  resolution: "@types/applicationinsights-js@npm:1.0.9"
-  checksum: 642b3ba588253a3fa3cd32452e8eb99258057b8f7c99014f0006a707c858053f0d465dec1c727d47c646649343a88bab615d031e571a175aa6ccf743f8681b88
   languageName: node
   linkType: hard
 
@@ -5057,13 +5050,6 @@ __metadata:
   dependencies:
     default-require-extensions: ^2.0.0
   checksum: 65fc4fe074aa1cf291763a5835b1e209b5e407597d6662c30b0921928be8a074f75e69e751ddf388ad16411dd61cb70351a10914090b354a7a447c7bc164b0ac
-  languageName: node
-  linkType: hard
-
-"applicationinsights-js@npm:^1.0.20":
-  version: 1.0.21
-  resolution: "applicationinsights-js@npm:1.0.21"
-  checksum: a9c50f469f75d6aa571012c7d7bf4161a60da8f6e8c81bf2f6e575486455d0711762cfca788102e08f2c168968c96c93d3a8fe13d63bfd6cf09584d0e8310439
   languageName: node
   linkType: hard
 
@@ -19270,7 +19256,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.1-RetryCaseRetrievals.2
+    "@hmcts/ccd-case-ui-toolkit": 6.19.3-RetryCaseRetrievals.1
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3
@@ -19295,7 +19281,6 @@ __metadata:
     "@stryker-mutator/karma-runner": ^3.0.1
     "@stryker-mutator/mocha-runner": ^3.0.1
     "@stryker-mutator/typescript": ^3.0.1
-    "@types/applicationinsights-js": ^1.0.9
     "@types/config": ^0.0.36
     "@types/cookie-parser": ^1.4.2
     "@types/crypto-js": ^3.1.43
@@ -19315,7 +19300,6 @@ __metadata:
     "@typescript-eslint/parser": ^5.57.0
     accessibility-checker: ^3.0.6
     applicationinsights: 1.7.2
-    applicationinsights-js: ^1.0.20
     axios: ^0.21.1
     axios-mock-adapter: ^1.18.2
     base-64: ^0.1.0

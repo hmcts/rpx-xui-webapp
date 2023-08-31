@@ -33,7 +33,7 @@
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
     "hearings": {
-      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL,IA",
+      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL,IA,EMPLOYMENT",
       "sscs": {
         "serviceApi": "http://sscs-hearings-api-prod.service.core-compute-prod.internal",
         "caseTypes": "Benefit"

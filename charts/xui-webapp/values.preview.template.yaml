@@ -24,6 +24,7 @@ nodejs:
      SERVICES_LOCATION_REF_API_URL: http://rd-location-ref-api-aat.service.core-compute-aat.internal
      FEATURE_ACCESS_MANAGEMENT_ENABLED: true
      PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-3215
+     JURISDICTIONS: SSCS,PRIVATELAW,CIVIL,IA,EMPLOYMENT
   keyVaults:
     rpx:
       secrets:

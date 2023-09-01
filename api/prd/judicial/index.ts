@@ -47,7 +47,6 @@ export async function getJudicialUsersSearch(req: EnhancedRequest, res: Response
     const { status, data }: { status: number, data: JudicialUserModel[] } = await http.post(markupPath, reqBody, { headers });
     res.status(status).send(data);
   } catch (error) {
-    // console.log('ERROR', error);
     next(error);
   }
 }

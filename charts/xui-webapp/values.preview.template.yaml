@@ -25,6 +25,7 @@ nodejs:
      FEATURE_ACCESS_MANAGEMENT_ENABLED: true
      PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-3236
      PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-3236
+     PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-3250
   keyVaults:
     rpx:
       secrets:

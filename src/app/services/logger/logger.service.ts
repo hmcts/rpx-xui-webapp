@@ -4,6 +4,7 @@ import { environment as config } from '../../../environments/environment';
 import { UserInfo } from '../../models/user-details.model';
 import { SessionStorageService } from '../session-storage/session-storage.service';
 import { CryptoWrapper } from './cryptoWrapper';
+import { MonitoringService } from './monitoring.service';
 import { EnvironmentService } from '../../shared/services/environment.service';
 
 export interface ILoggerService {
@@ -25,10 +26,11 @@ export class LoggerService implements ILoggerService {
     // Do nothing.
   };
 
-  constructor(private readonly ngxLogger: NGXLogger,
-    private readonly sessionStorageService: SessionStorageService,
-    private readonly cryptoWrapper: CryptoWrapper,
-    private readonly environmentService: EnvironmentService) {
+  constructor(private readonly monitoringService: MonitoringService,
+              private readonly ngxLogger: NGXLogger,
+              private readonly sessionStorageService: SessionStorageService,
+              private readonly cryptoWrapper: CryptoWrapper,
+              private readonly environmentService: EnvironmentService) {
     this.COOKIE_KEYS = {
       TOKEN: config.cookies.token,
       USER: config.cookies.userId
@@ -44,43 +46,54 @@ export class LoggerService implements ILoggerService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public trace(message: any, ...additional: any[]): void {
+  public trace(message: any, ... additional: any[]): void {
     const formattedMessage = this.getMessage(message);
     this.ngxLogger.trace(formattedMessage);
+    this.monitoringService.logEvent(message);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public debug(message: any, ...additional: any[]): void {
     const formattedMessage = this.getMessage(message);
     this.ngxLogger.debug(formattedMessage);
+    this.monitoringService.logEvent(message);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public info(message: any, ...additional: any[]): void {
     const formattedMessage = this.getMessage(message);
     this.ngxLogger.info(formattedMessage);
+    this.monitoringService.logEvent(message);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public log(message: any, ...additional: any[]): void {
     const formattedMessage = this.getMessage(message);
     this.ngxLogger.log(formattedMessage, ...additional);
+    this.monitoringService.logEvent(message);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public warn(message: any, ...additional: any[]): void {
     const formattedMessage = this.getMessage(message);
     this.ngxLogger.warn(formattedMessage);
+    this.monitoringService.logEvent(message);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public error(message: any, ...additional: any[]): void {
     this.ngxLogger.error(message);
+    const formattedMessage = this.getMessage(message);
+    const error = new Error(formattedMessage);
+    this.monitoringService.logException(error);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public fatal(message: any, ...additional: any[]): void {
     this.ngxLogger.fatal(message);
+    const formattedMessage = this.getMessage(message);
+    const error = new Error(formattedMessage);
+    this.monitoringService.logException(error);
   }
 
   public getMessage(message: any): string {
@@ -96,7 +109,7 @@ export class LoggerService implements ILoggerService {
   }
 
   public enableCookies(): void {
-    // do nothing.
+    this.monitoringService.enableCookies();
   }
 
   public static switchConsoleLogs(consoleConfig: any): void {

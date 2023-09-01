@@ -35,4 +35,5 @@ jobs:
         with:
           skip_dirty_check: false
           commit_message: "Automated update of known-issue suppression"
-          branch: master
+          # uncomment the next line once testing is completed
+          # branch: master

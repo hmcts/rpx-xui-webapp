@@ -41,19 +41,19 @@
       "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL,IA",
       "sscs": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_SSCS",
-        "caseTypes": "Benefit"
+        "caseTypes": "SERVICES_HEARINGS_COMPONENT_SSCS_CASE_TYPE: Benefit"
       },
       "privatelaw": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_PRIVATELAW",
-        "caseTypes": "PRLAPPS"
+        "caseTypes": "SERVICES_HEARINGS_COMPONENT_PRIVATELAW_CASE_TYPE"
       },
       "civil": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_CIVIL",
-        "caseTypes": "CIVIL"
+        "caseTypes": "SERVICES_HEARINGS_COMPONENT_CIVIL_CASE_TYPE"
       },
       "ia": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_IAC",
-        "caseTypes": "Asylum"
+        "caseTypes": "SERVICES_HEARINGS_COMPONENT_IAC_CASE_TYPE"
       },
       "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API"
     },

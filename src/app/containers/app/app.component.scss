@@ -34,6 +34,17 @@ header, footer.govuk-footer{
     min-width: 900px;
   }
 
+  .govuk-phase-banner .language {
+    float: right;  
+  }
+
+  .govuk-notification-banner__header .close {
+    float: right;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
 @import "~govuk-frontend/govuk/all";
 @import "~@hmcts/frontend/all";
 

@@ -38,7 +38,7 @@
       "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },
     "hearings": {
-      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL",
+      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL,IA",
       "sscs": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_SSCS",
         "caseTypes": "Benefit"
@@ -50,6 +50,10 @@
       "civil": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_CIVIL",
         "caseTypes": "CIVIL"
+      },
+      "ia": {
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_IAC",
+        "caseTypes": "Asylum"
       },
       "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API"
     },
@@ -103,7 +107,8 @@
     "s2s": "SERVICES_S2S",
     "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS",
     "payment_return_url": "SERVICES_PAYMENT_RETURN_URL",
-    "judicialBookingApi": "SERVICES_JUDICIAL_BOOKING_API_PATH"
+    "judicialBookingApi": "SERVICES_JUDICIAL_BOOKING_API_PATH",
+    "translation": "SERVICES_TRANSLATION_API_URL"
   },
   "protocol": "PROTOCOL",
   "secureCookie": "SECURE_COOKIE",
@@ -161,10 +166,6 @@
       "__name": "FEATURE_WORKALLOCATION_ENABLED",
       "__format":"json"
     },
-    "updatedTaskPermissionsEnabled": {
-      "__name": "FEATURE_UPDATED_TASK_PERMISSIONS_ENABLED",
-      "__format":"json"
-    },
     "substantiveRoleEnabled": {
       "__name": "FEATURE_SUBSTANTIVE_ROLE_ENABLED",
       "__format":"json"
@@ -172,6 +173,10 @@
     "accessManagementEnabled": {
       "__name": "FEATURE_ACCESS_MANAGEMENT_ENABLED",
       "__format":"json"
+    },
+    "compressionEnabled": {
+      "__name": "FEATURE_COMPRESSION_ENABLED",
+      "__format": "json"
     }
   },
   "helmet": {

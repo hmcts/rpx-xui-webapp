@@ -16,8 +16,14 @@ jobs:
       contents: write
       
     steps:
+      - uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.HMCTS_GITHUB_EXUI_APP_ID }}
+          private_key: ${{ secrets.HMCTS_GITHUB_EXUI_PRIVATE_KEY }}
       - uses: actions/checkout@v3
-      
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
       - name: Push Dummy Commit to develop Branch
         uses: stefanzweifel/git-auto-commit-action@v4
         with:

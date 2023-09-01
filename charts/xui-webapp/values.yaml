@@ -115,6 +115,8 @@ nodejs:
     SERVICES_PAYMENT_RETURN_URL: https://paymentoutcome-web.{{ .Values.global.environment }}.platform.hmcts.net
     # Judicial Booking Url
     SERVICES_JUDICIAL_BOOKING_API_PATH: http://am-judicial-booking-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Welsh Translation endpoints
+    SERVICES_TRANSLATION_API_URL: http://ts-translation-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
 
     #Feature Flags
     FEATURE_APP_INSIGHTS_ENABLED: true
@@ -140,7 +142,8 @@ nodejs:
         - mc-s2s-client-secret
         - mc-idam-client-secret
         - appinsights-instrumentationkey-mc
-        - webapp-redis-connection-string
+        - name: webapp-redis6-connection-string
+          alias: webapp-redis-connection-string
         - launch-darkly-client-id
         - system-user-name
         - system-user-password

@@ -10,10 +10,11 @@ import { Caseworker } from '../../../work-allocation/models/dtos';
 import { CaseworkerDataService } from '../../../work-allocation/services';
 import { AnswersComponent } from '../../components';
 import { AllocateRoleStateData, CaseRole, RemoveAllocationNavigationEvent, Role, RoleCategory, TypeOfRole } from '../../models';
-import { CaseRoleDetails } from '../../models/case-role-details.interface';
+import { CaseRoleDetails } from '../../models';
 import { AnswerLabelText, RemoveRoleText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
 import { RemoveRoleComponent } from './remove-role.component';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
   template: `
@@ -39,10 +40,12 @@ describe('RemoveRoleComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', [
     'navigateByUrl', 'navigate', 'getCurrentNavigation'
   ]);
+  routerMock.navigate.and.returnValue(Promise.resolve(true));
   const locationMock = jasmine.createSpyObj('Location', [
     'back'
   ]);
   const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll']);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const allworkUrl = 'work/all-work/cases';
   window.history.pushState({ backUrl: allworkUrl }, '', allworkUrl);
 
@@ -147,6 +150,10 @@ describe('RemoveRoleComponent', () => {
         {
           provide: CaseworkerDataService,
           useValue: mockCaseworkerDataService
+        },
+        {
+          provide: LoggerService,
+          useValue: loggerServiceMock
         }
       ]
     })

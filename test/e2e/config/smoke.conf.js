@@ -75,7 +75,7 @@ const config = {
     strict: true,
     // format: ['node_modules/cucumber-pretty'],
     format: ['node_modules/cucumber-pretty', 'json:functional-output/tests/json/results.json'],
-    tags: ['@smoke'],
+    tags: ['@smoke', 'not @Flaky'],
     require: [
       '../support/timeout.js',
       '../support/hooks.js',

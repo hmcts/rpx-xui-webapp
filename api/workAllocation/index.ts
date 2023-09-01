@@ -221,7 +221,7 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
     const payload = { case_id: caseId, event_id: eventId, case_jurisdiction: jurisdiction, case_type: caseType };
     const jurisdictions = getWASupportedJurisdictionsList();
     // Adding log in app insights for task completion journey
-    trackTrace(`Search for completable task for eventId and caseId: ${eventId} ${caseId}`, { functionCall: 'getTasksByCaseIdAndEventId' });
+    trackTrace(`Search for completable task of eventId and caseId: ${eventId} ${caseId}`, { functionCall: 'getTasksByCaseIdAndEventId' });
     const { status, data } = jurisdictions.includes(jurisdiction)
       ? await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req)
       : { status: 200, data: [] };
@@ -248,9 +248,9 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
     }
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
     if (req.body.hasActionTriggeredManually === true && req.params.action === 'complete') {
-      trackTrace(`Manual Task Completion for task Id: ${req.params.taskId} ${req.params.action}`, { functionCall: 'postTaskAction' });
+      trackTrace(`Manual Task Completion of task Id: ${req.params.taskId} ${req.params.action}`, { functionCall: 'postTaskAction' });
     } else if (req.params.action === 'complete') {
-      trackTrace(`Task Completion for task Id: ${req.params.taskId} ${req.params.action}`, { functionCall: 'postTaskAction' });
+      trackTrace(`Automated Task Completion of task Id: ${req.params.taskId} ${req.params.action}`, { functionCall: 'postTaskAction' });
     }
     const { status, data } = await handleTaskPost(getTaskPath, req.body, req);
     res.status(status);

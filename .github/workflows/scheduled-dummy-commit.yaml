@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    if: ${{ github.event.label.name == 'keep-image' }}
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'keep-image') }}
     runs-on: ubuntu-latest
 
     permissions:

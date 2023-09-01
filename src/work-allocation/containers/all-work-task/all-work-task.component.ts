@@ -46,6 +46,9 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private selectedTaskType: string = 'All';
   private selectedTaskName: string = '';
 
+  // has the initial filter been ran previously
+  private hasInitialFilterRan = false;
+
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.AllWork;
   }
@@ -123,9 +126,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter()
       };
-      if (this.updatedTaskPermission) {
-        searchTaskParameter.request_context = TaskContext.ALL_WORK;
-      }
+      searchTaskParameter.request_context = TaskContext.ALL_WORK;
       return searchTaskParameter;
     }
   }
@@ -144,7 +145,17 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.selectedPerson = selection.person ? selection.person.id : null;
     this.selectedTaskType = selection.taskType;
     this.selectedTaskName = selection.taskName ? selection.taskName.task_type_id : null;
-    this.onPaginationHandler(1);
+    this.loadBasedOnFilter();
+  }
+
+  private loadBasedOnFilter(): void {
+    if (this.hasInitialFilterRan) {
+      // added to only reset task list on filter
+      this.onPaginationHandler(1);
+    } else {
+      this.hasInitialFilterRan = true;
+      this.loadTasks();
+    }
   }
 
   private getLocationParameter(): any {

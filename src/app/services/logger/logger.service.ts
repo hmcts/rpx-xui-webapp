@@ -5,6 +5,7 @@ import { UserInfo } from '../../models/user-details.model';
 import { SessionStorageService } from '../session-storage/session-storage.service';
 import { CryptoWrapper } from './cryptoWrapper';
 import { MonitoringService } from './monitoring.service';
+import { EnvironmentService } from '../../shared/services/environment.service';
 
 export interface ILoggerService {
   trace(message: any, ...additional: any[]): void;
@@ -20,14 +21,28 @@ export interface ILoggerService {
 @Injectable({ providedIn: 'root' })
 export class LoggerService implements ILoggerService {
   public COOKIE_KEYS;
+
+  public static NOOP_FUNCTION_FOR_LOGGING = () => {
+    // Do nothing.
+  };
+
   constructor(private readonly monitoringService: MonitoringService,
               private readonly ngxLogger: NGXLogger,
               private readonly sessionStorageService: SessionStorageService,
-              private readonly cryptoWrapper: CryptoWrapper) {
+              private readonly cryptoWrapper: CryptoWrapper,
+              private readonly environmentService: EnvironmentService) {
     this.COOKIE_KEYS = {
       TOKEN: config.cookies.token,
       USER: config.cookies.userId
     };
+    this.setupSwitcherForConsoleLogs();
+  }
+
+  private setupSwitcherForConsoleLogs() {
+    this.environmentService.config$.subscribe((config) => {
+      console.info(`Environment is ${this.environmentService.isProd() ? 'prod' : 'non-prod'}.`);
+      LoggerService.switchConsoleLogs({ switchOffAll: false });
+    });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -54,7 +69,7 @@ export class LoggerService implements ILoggerService {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public log(message: any, ...additional: any[]): void {
     const formattedMessage = this.getMessage(message);
-    this.ngxLogger.log(formattedMessage);
+    this.ngxLogger.log(formattedMessage, ...additional);
     this.monitoringService.logEvent(message);
   }
 
@@ -95,5 +110,18 @@ export class LoggerService implements ILoggerService {
 
   public enableCookies(): void {
     this.monitoringService.enableCookies();
+  }
+
+  public static switchConsoleLogs(consoleConfig: any): void {
+    console.info(`consoleConfig.switchOffAll = ${consoleConfig.switchOffAll}`);
+    if (consoleConfig.switchOffAll === true) {
+      console.warn('Console logs are disabled. No more log lines will be printed to console.');
+      console.log = this.NOOP_FUNCTION_FOR_LOGGING;
+      console.debug = this.NOOP_FUNCTION_FOR_LOGGING;
+      console.trace = this.NOOP_FUNCTION_FOR_LOGGING;
+      console.info = this.NOOP_FUNCTION_FOR_LOGGING;
+      console.warn = this.NOOP_FUNCTION_FOR_LOGGING;
+      console.error = this.NOOP_FUNCTION_FOR_LOGGING;
+    }
   }
 }

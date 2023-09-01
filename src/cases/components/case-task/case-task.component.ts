@@ -36,6 +36,7 @@ export class CaseTaskComponent implements OnInit {
   public isTaskUrgent: boolean;
   private pTask: Task;
   public isRelease4: boolean;
+  public userRoleCategory: string;
 
   constructor(private readonly alertService: AlertService,
               private readonly router: Router,
@@ -98,6 +99,7 @@ export class CaseTaskComponent implements OnInit {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userId = userInfo.id ? userInfo.id : userInfo.uid;
+      this.userRoleCategory = userInfo.roleCategory;
       this.isUserJudicial = AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
       return task.assignee && task.assignee === userId;
     }
@@ -108,10 +110,10 @@ export class CaseTaskComponent implements OnInit {
     return this.isUserJudicial ? 'Task created' : 'Due date';
   }
 
-  public async onActionHandler(task: Task, option: any): Promise<void> {
+  public onActionHandler(task: Task, option: any): void {
     if (option.id === 'claim') {
       this.taskService.claimTask(task.id).subscribe(() => {
-        this.alertService.success(InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS);
+        this.alertService.success({ phrase: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS });
         this.taskRefreshRequired.emit();
       }, (error) => {
         this.claimTaskErrors(error.status);
@@ -124,7 +126,7 @@ export class CaseTaskComponent implements OnInit {
       showAssigneeColumn: true
     };
     const actionUrl = `/work/${task.id}/${option.id}`;
-    await this.router.navigate([actionUrl], { queryParams: { service: task.jurisdiction }, state });
+    this.router.navigate([actionUrl], { queryParams: { service: task.jurisdiction }, state });
   }
 
   /**
@@ -135,7 +137,7 @@ export class CaseTaskComponent implements OnInit {
     const REDIRECT_404 = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }];
     const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
     if (handledStatus > 0) {
-      this.alertService.warning(InfoMessage.TASK_NO_LONGER_AVAILABLE);
+      this.alertService.warning({ phrase: InfoMessage.TASK_NO_LONGER_AVAILABLE });
       if (handledStatus === 400) {
         this.taskRefreshRequired.emit();
       }

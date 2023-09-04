@@ -5,11 +5,12 @@
     "node": ">=18.17.0"
   },
   "scripts": {
-    "build": "yarn build:prod && yarn build:node",
+    "build": "yarn fix_dependencies && yarn build:prod && yarn build:node",
     "build:docker": "docker build -t xui .",
     "build:ng": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --configuration production build",
     "build:node": "cd api && yarn build",
     "build:prod": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --configuration production",
+    "fix_dependencies": "sed -i \"s|\\$colour: quote(\\$colour);|\\$colour: quote(\\\"#{\\$colour}\\\");|g\" ./node_modules/govuk-frontend/govuk/helpers/_colour.scss",
     "cve": "yarn audit --groups dependencies --json | grep auditAdvisory > yarn-audit-known-issues",
     "clean": "rimraf node_modules",
     "coverage:node": "cd api && yarn coverage",
@@ -85,7 +86,7 @@
     "@angular/platform-browser-dynamic": "^15.2.9",
     "@angular/router": "^15.2.9",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit",
+    "@hmcts/ccd-case-ui-toolkit": "link:./temp-dist/ccd-case-ui-toolkit",
     "@hmcts/ccpay-web-component": "link:./temp-dist/payment-lib",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.10.0",

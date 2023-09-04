@@ -1,0 +1,7 @@
+export var CaseFlagStatus;
+(function (CaseFlagStatus) {
+    CaseFlagStatus["ACTIVE"] = "Active";
+    CaseFlagStatus["INACTIVE"] = "Inactive";
+    CaseFlagStatus["REQUESTED"] = "Requested";
+})(CaseFlagStatus || (CaseFlagStatus = {}));
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY2FzZS1mbGFnLXN0YXR1cy5lbnVtLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vLi4vLi4vLi4vLi4vLi4vcHJvamVjdHMvY2NkLWNhc2UtdWktdG9vbGtpdC9zcmMvbGliL3NoYXJlZC9jb21wb25lbnRzL3BhbGV0dGUvY2FzZS1mbGFnL2VudW1zL2Nhc2UtZmxhZy1zdGF0dXMuZW51bS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxNQUFNLENBQU4sSUFBWSxjQUlYO0FBSkQsV0FBWSxjQUFjO0lBQ3hCLG1DQUFpQixDQUFBO0lBQ2pCLHVDQUFxQixDQUFBO0lBQ3JCLHlDQUF1QixDQUFBO0FBQ3pCLENBQUMsRUFKVyxjQUFjLEtBQWQsY0FBYyxRQUl6QiIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCBlbnVtIENhc2VGbGFnU3RhdHVzIHtcbiAgQUNUSVZFID0gJ0FjdGl2ZScsXG4gIElOQUNUSVZFID0gJ0luYWN0aXZlJyxcbiAgUkVRVUVTVEVEID0gJ1JlcXVlc3RlZCdcbn1cbiJdfQ==

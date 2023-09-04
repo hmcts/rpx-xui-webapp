@@ -1,0 +1,7 @@
+export var SortOrder;
+(function (SortOrder) {
+    SortOrder[SortOrder["ASCENDING"] = 0] = "ASCENDING";
+    SortOrder[SortOrder["DESCENDING"] = 1] = "DESCENDING";
+    SortOrder[SortOrder["UNSORTED"] = 2] = "UNSORTED";
+})(SortOrder || (SortOrder = {}));
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic29ydC1vcmRlci5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uLy4uL3Byb2plY3RzL2NjZC1jYXNlLXVpLXRvb2xraXQvc3JjL2xpYi9zaGFyZWQvZG9tYWluL3NlYXJjaC9zb3J0aW5nL3NvcnQtb3JkZXIudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsTUFBTSxDQUFOLElBQVksU0FJWDtBQUpELFdBQVksU0FBUztJQUVuQixtREFBUyxDQUFBO0lBQUUscURBQVUsQ0FBQTtJQUFFLGlEQUFRLENBQUE7QUFFakMsQ0FBQyxFQUpXLFNBQVMsS0FBVCxTQUFTLFFBSXBCIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0IGVudW0gU29ydE9yZGVyIHtcblxuICBBU0NFTkRJTkcsIERFU0NFTkRJTkcsIFVOU09SVEVEXG5cbn1cbiJdfQ==

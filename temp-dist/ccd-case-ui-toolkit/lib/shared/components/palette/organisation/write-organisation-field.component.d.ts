@@ -1,0 +1,47 @@
+import { OnInit } from '@angular/core';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { OrganisationConverter } from '../../../domain/organisation/organisation-converter';
+import { SimpleOrganisationModel } from '../../../domain/organisation/simple-organisation.model';
+import { OrganisationService, OrganisationVm } from '../../../services/organisation/organisation.service';
+import { WindowService } from '../../../services/window/window.service';
+import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
+import * as i0 from "@angular/core";
+export declare class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+    private readonly organisationService;
+    private readonly organisationConverter;
+    private readonly windowService;
+    private static readonly EMPTY_SIMPLE_ORG;
+    private static readonly MAX_RESULT_COUNT;
+    private static readonly ORGANISATION_ID;
+    private static readonly ORGANISATION_NAME;
+    private static readonly PRE_POPULATE_TO_USERS_ORGANISATION;
+    private static readonly ORGANISATION_DETAILS;
+    private static readonly YES;
+    private static readonly MANDATORY;
+    defaultOrg: any;
+    organisationFormGroup: UntypedFormGroup;
+    searchOrgTextFormControl: FormControl;
+    organisationIDFormControl: FormControl;
+    organisationNameFormControl: FormControl;
+    organisations$: Observable<OrganisationVm[]>;
+    searchOrgValue$: Observable<string>;
+    simpleOrganisations$: Observable<SimpleOrganisationModel[]>;
+    selectedOrg$: Observable<SimpleOrganisationModel>;
+    constructor(organisationService: OrganisationService, organisationConverter: OrganisationConverter, windowService: WindowService);
+    ngOnInit(): void;
+    onSearchOrg(orgSearchText: string): void;
+    searchOrg(organisations: OrganisationVm[], lowerOrgSearchText: string): SimpleOrganisationModel[];
+    trimAll(oldText: string): string;
+    selectOrg(selectedOrg: SimpleOrganisationModel): void;
+    deSelectOrg(): void;
+    private preSelectDefaultOrg;
+    private preSelectEmptyOrg;
+    private instantiateOrganisationFormGroup;
+    private addOrganisationValidators;
+    private searchCriteria;
+    private searchWithSpace;
+    static ɵfac: i0.ɵɵFactoryDeclaration<WriteOrganisationFieldComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<WriteOrganisationFieldComponent, "ccd-write-organisation-field", never, {}, {}, never, never, false, never>;
+}
+//# sourceMappingURL=write-organisation-field.component.d.ts.map

@@ -1,0 +1,7 @@
+export var AddressType;
+(function (AddressType) {
+    AddressType["DPA"] = "DPA";
+    AddressType["UK"] = "United Kingdom";
+    AddressType["RD06"] = "RD06";
+})(AddressType || (AddressType = {}));
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYWRkcmVzcy10eXBlLmVudW0uanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi8uLi8uLi8uLi8uLi9wcm9qZWN0cy9jY2QtY2FzZS11aS10b29sa2l0L3NyYy9saWIvc2hhcmVkL3NlcnZpY2VzL2FkZHJlc3Nlcy9hZGRyZXNzLXR5cGUuZW51bS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxNQUFNLENBQU4sSUFBWSxXQUlYO0FBSkQsV0FBWSxXQUFXO0lBQ25CLDBCQUFXLENBQUE7SUFDWCxvQ0FBcUIsQ0FBQTtJQUNyQiw0QkFBYSxDQUFBO0FBQ2pCLENBQUMsRUFKVyxXQUFXLEtBQVgsV0FBVyxRQUl0QiIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCBlbnVtIEFkZHJlc3NUeXBlIHtcbiAgICBEUEEgPSAnRFBBJyxcbiAgICBVSyA9ICdVbml0ZWQgS2luZ2RvbScsXG4gICAgUkQwNiA9ICdSRDA2J1xufVxuIl19

@@ -1,0 +1,1 @@
+{"version":3,"file":"role-assignment-response.model.d.ts","sourceRoot":"","sources":["../../../../../../projects/ccd-case-ui-toolkit/src/lib/shared/domain/case-view/role-assignment-response.model.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,WAAW,EAAE,MAAM,sBAAsB,CAAC;AAElE,MAAM,WAAW,sBAAsB;IACrC,WAAW,EAAE,WAAW,CAAC;IACzB,cAAc,EAAE,aAAa,EAAE,CAAC;CACjC"}

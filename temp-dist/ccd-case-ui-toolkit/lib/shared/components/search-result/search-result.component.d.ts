@@ -1,0 +1,97 @@
+import { EventEmitter, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { UntypedFormGroup } from '@angular/forms';
+import { AbstractAppConfig } from '../../../app.config';
+import { PlaceholderService } from '../../directives';
+import { CaseField, CaseState, CaseType, DisplayMode, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn, SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters } from '../../domain';
+import { CaseReferencePipe } from '../../pipes';
+import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory, SessionStorageService } from '../../services';
+import * as i0 from "@angular/core";
+export declare class SearchResultComponent implements OnChanges, OnInit {
+    private readonly activityService;
+    private readonly caseReferencePipe;
+    private readonly placeholderService;
+    private readonly browserService;
+    private readonly sessionStorageService;
+    static readonly PARAM_JURISDICTION = "jurisdiction";
+    static readonly PARAM_CASE_TYPE = "case-type";
+    static readonly PARAM_CASE_STATE = "case-state";
+    private readonly PAGINATION_MAX_ITEM_RESULT;
+    ICON: DisplayMode;
+    caseLinkUrlTemplate: string;
+    jurisdiction: Jurisdiction;
+    caseType: CaseType;
+    caseState: CaseState;
+    caseFilterFG: UntypedFormGroup;
+    resultView: SearchResultView;
+    page: number;
+    paginationMetadata: PaginationMetadata;
+    metadataFields: string[];
+    selectionEnabled: boolean;
+    showOnlySelected: boolean;
+    preSelectedCases: SearchResultViewItem[];
+    consumerSortingEnabled: boolean;
+    selection: EventEmitter<SearchResultViewItem[]>;
+    changePage: EventEmitter<any>;
+    clickCase: EventEmitter<any>;
+    sortHandler: EventEmitter<any>;
+    paginationLimitEnforced: boolean;
+    paginationPageSize: number;
+    hideRows: boolean;
+    selected: {
+        init?: boolean;
+        jurisdiction?: Jurisdiction;
+        caseType?: CaseType;
+        caseState?: CaseState;
+        formGroup?: UntypedFormGroup;
+        metadataFields?: string[];
+        page?: number;
+    };
+    sortParameters: SortParameters;
+    searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory;
+    draftsCount: number;
+    consumerSortParameters: {
+        column: string;
+        order: SortOrder;
+        type: string;
+    };
+    selectedCases: SearchResultViewItem[];
+    constructor(searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory, appConfig: AbstractAppConfig, activityService: ActivityService, caseReferencePipe: CaseReferencePipe, placeholderService: PlaceholderService, browserService: BrowserService, sessionStorageService: SessionStorageService);
+    ngOnInit(): void;
+    ngOnChanges(changes: SimpleChanges): void;
+    get resultTotal(): number;
+    clearSelection(): void;
+    canBeShared(caseView: SearchResultViewItem): boolean;
+    canAnyBeShared(): boolean;
+    selectAll(): void;
+    changeSelection(c: SearchResultViewItem): void;
+    isSelected(c: SearchResultViewItem): boolean;
+    allOnPageSelected(): boolean;
+    /**
+     * Hydrates result view with case field definitions.
+     */
+    hydrateResultView(): void;
+    goToPage(page: any): void;
+    buildCaseField(col: SearchResultViewColumn, result: SearchResultViewItem): CaseField;
+    getColumnsWithPrefix(col: CaseField, result: SearchResultViewItem): CaseField;
+    hasResults(): any;
+    hasDrafts(): boolean;
+    comparator(column: SearchResultViewColumn): SearchResultViewItemComparator;
+    sort(column: SearchResultViewColumn): void;
+    sortWidget(column: SearchResultViewColumn): "&#9660;" | "&#9650;";
+    activityEnabled(): boolean;
+    hyphenateIfCaseReferenceOrGet(col: any, result: any): any;
+    draftPrefixOrGet(col: any, result: any): any;
+    isSortAscending(column: SearchResultViewColumn): boolean;
+    private currentSortOrder;
+    getFirstResult(): number;
+    getLastResult(): number;
+    getTotalResults(): number;
+    prepareCaseLinkUrl(caseId: string): string;
+    private getDraftsCountIfNotPageOne;
+    private numberOfDrafts;
+    goToCase(caseId: string): void;
+    onKeyUp($event: KeyboardEvent, c: SearchResultViewItem): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<SearchResultComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SearchResultComponent, "ccd-search-result", never, { "caseLinkUrlTemplate": "caseLinkUrlTemplate"; "jurisdiction": "jurisdiction"; "caseType": "caseType"; "caseState": "caseState"; "caseFilterFG": "caseFilterFG"; "resultView": "resultView"; "page": "page"; "paginationMetadata": "paginationMetadata"; "metadataFields": "metadataFields"; "selectionEnabled": "selectionEnabled"; "showOnlySelected": "showOnlySelected"; "preSelectedCases": "preSelectedCases"; "consumerSortingEnabled": "consumerSortingEnabled"; }, { "selection": "selection"; "changePage": "changePage"; "clickCase": "clickCase"; "sortHandler": "sortHandler"; }, never, never, false, never>;
+}
+//# sourceMappingURL=search-result.component.d.ts.map

@@ -1,0 +1,12 @@
+export var DisplayContextParameter;
+(function (DisplayContextParameter) {
+    DisplayContextParameter["Read"] = "READ";
+    DisplayContextParameter["Create"] = "CREATE";
+    DisplayContextParameter["Update"] = "UPDATE";
+})(DisplayContextParameter || (DisplayContextParameter = {}));
+export var DisplayContextCustomParameter;
+(function (DisplayContextCustomParameter) {
+    DisplayContextCustomParameter["CaseFileView"] = "CaseFileView";
+    DisplayContextCustomParameter["LinkedCases"] = "LinkedCases";
+})(DisplayContextCustomParameter || (DisplayContextCustomParameter = {}));
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZGlzcGxheS1jb250ZXh0LWVudW0ubW9kZWwuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi8uLi8uLi8uLi8uLi9wcm9qZWN0cy9jY2QtY2FzZS11aS10b29sa2l0L3NyYy9saWIvc2hhcmVkL2RvbWFpbi9kZWZpbml0aW9uL2Rpc3BsYXktY29udGV4dC1lbnVtLm1vZGVsLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLE1BQU0sQ0FBTixJQUFZLHVCQUlYO0FBSkQsV0FBWSx1QkFBdUI7SUFDakMsd0NBQWEsQ0FBQTtJQUNiLDRDQUFpQixDQUFBO0lBQ2pCLDRDQUFpQixDQUFBO0FBQ25CLENBQUMsRUFKVyx1QkFBdUIsS0FBdkIsdUJBQXVCLFFBSWxDO0FBRUQsTUFBTSxDQUFOLElBQVksNkJBR1g7QUFIRCxXQUFZLDZCQUE2QjtJQUN2Qyw4REFBNkIsQ0FBQTtJQUM3Qiw0REFBMkIsQ0FBQTtBQUM3QixDQUFDLEVBSFcsNkJBQTZCLEtBQTdCLDZCQUE2QixRQUd4QyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCBlbnVtIERpc3BsYXlDb250ZXh0UGFyYW1ldGVyIHtcbiAgUmVhZCA9ICdSRUFEJyxcbiAgQ3JlYXRlID0gJ0NSRUFURScsXG4gIFVwZGF0ZSA9ICdVUERBVEUnXG59XG5cbmV4cG9ydCBlbnVtIERpc3BsYXlDb250ZXh0Q3VzdG9tUGFyYW1ldGVyIHtcbiAgQ2FzZUZpbGVWaWV3ID0gJ0Nhc2VGaWxlVmlldycsXG4gIExpbmtlZENhc2VzID0gJ0xpbmtlZENhc2VzJ1xufVxuIl19

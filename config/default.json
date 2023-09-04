@@ -50,6 +50,10 @@
         "serviceApi": "http://ia-hearings-api-prod.service.core-compute-prod.internal",
         "caseTypes": "Asylum"
       },
+      "employment": {
+        "serviceApi": "http://et-hearings-api-prod.service.core-compute-prod.internal",
+        "caseTypes": "ET_EnglandWales,ET_Scotland"
+      },
       "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
     },
     "documents": {
@@ -106,8 +110,8 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT",
-  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT",
+  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
+  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
   "serviceRefDataMapping": [
     { "service": "IA", "serviceCodes": ["BFA1"] },
@@ -138,7 +142,11 @@
     "SSCS": {
        "caseTypes": "Benefit,SSCS_ExceptionRecord",
        "releaseVersion": "3.5"
-    }
+      },
+    "EMPLOYMENT": {
+      "caseTypes": "ET_EnglandWales,ET_EnglandWales_Listings,ET_EnglandWales_Multiple,ET_Scotland,ET_Scotland_Listings,ET_Scotland_Multiple",
+      "releaseVersion": "4.0"
+      }
   },
   "wildcardSearchFields": {
     "Benefit": [

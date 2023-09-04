@@ -2258,9 +2258,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A.":
+"@hmcts/ccd-case-ui-toolkit@link:./temp-dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@hmcts/ccd-case-ui-toolkit@link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A."
+  resolution: "@hmcts/ccd-case-ui-toolkit@link:./temp-dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A."
   languageName: node
   linkType: soft
 
@@ -17978,7 +17978,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": "link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit"
+    "@hmcts/ccd-case-ui-toolkit": "link:./temp-dist/ccd-case-ui-toolkit"
     "@hmcts/ccpay-web-component": "link:./temp-dist/payment-lib"
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.10.0

@@ -1,0 +1,42 @@
+import { EventEmitter, OnDestroy, OnInit } from '@angular/core';
+import { UntypedFormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { ErrorMessage } from '../../../../../domain';
+import { FlagType } from '../../../../../domain/case-flag';
+import { CaseFlagRefdataService } from '../../../../../services';
+import { CaseFlagState } from '../../domain';
+import { CaseFlagWizardStepTitle } from '../../enums';
+import * as i0 from "@angular/core";
+export declare class SelectFlagTypeComponent implements OnInit, OnDestroy {
+    private readonly caseFlagRefdataService;
+    formGroup: UntypedFormGroup;
+    jurisdiction: string;
+    caseTypeId: string;
+    hmctsServiceId: string;
+    caseFlagStateEmitter: EventEmitter<CaseFlagState>;
+    flagCommentsOptionalEmitter: EventEmitter<any>;
+    flagTypes: FlagType[];
+    selectedFlagType: FlagType;
+    errorMessages: ErrorMessage[];
+    flagTypeNotSelectedErrorMessage: string;
+    flagTypeErrorMessage: string;
+    flagRefdata$: Subscription;
+    otherFlagTypeSelected: boolean;
+    refdataError: boolean;
+    readonly flagTypeControlName = "flagType";
+    readonly descriptionControlName = "otherFlagTypeDescription";
+    private readonly maxCharactersForOtherFlagType;
+    private readonly otherFlagTypeCode;
+    readonly caseLevelCaseFlagsFieldId = "caseFlags";
+    get caseFlagWizardStepTitle(): typeof CaseFlagWizardStepTitle;
+    constructor(caseFlagRefdataService: CaseFlagRefdataService);
+    ngOnInit(): void;
+    ngOnDestroy(): void;
+    onFlagTypeChanged(flagType: FlagType): void;
+    onNext(): void;
+    private validateForm;
+    private onRefdataError;
+    static ɵfac: i0.ɵɵFactoryDeclaration<SelectFlagTypeComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SelectFlagTypeComponent, "ccd-select-flag-type", never, { "formGroup": "formGroup"; "jurisdiction": "jurisdiction"; "caseTypeId": "caseTypeId"; "hmctsServiceId": "hmctsServiceId"; }, { "caseFlagStateEmitter": "caseFlagStateEmitter"; "flagCommentsOptionalEmitter": "flagCommentsOptionalEmitter"; }, never, never, false, never>;
+}
+//# sourceMappingURL=select-flag-type.component.d.ts.map

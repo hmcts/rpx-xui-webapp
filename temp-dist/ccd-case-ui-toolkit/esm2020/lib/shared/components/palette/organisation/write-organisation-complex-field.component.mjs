@@ -1,0 +1,33 @@
+import { Component, Input } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
+import * as i0 from "@angular/core";
+import * as i1 from "@angular/common";
+export class WriteOrganisationComplexFieldComponent extends AbstractFormFieldComponent {
+    constructor() {
+        super();
+    }
+}
+WriteOrganisationComplexFieldComponent.ɵfac = function WriteOrganisationComplexFieldComponent_Factory(t) { return new (t || WriteOrganisationComplexFieldComponent)(); };
+WriteOrganisationComplexFieldComponent.ɵcmp = /*@__PURE__*/ i0.ɵɵdefineComponent({ type: WriteOrganisationComplexFieldComponent, selectors: [["ccd-write-organisation-complex-field"]], inputs: { selectedOrg$: "selectedOrg$" }, features: [i0.ɵɵInheritDefinitionFeature], decls: 5, vars: 6, consts: [["type", "hidden", "name", "organisationID", 3, "value"], ["type", "hidden", "name", "organisationName", 3, "value"]], template: function WriteOrganisationComplexFieldComponent_Template(rf, ctx) { if (rf & 1) {
+        i0.ɵɵelementStart(0, "div");
+        i0.ɵɵelement(1, "input", 0);
+        i0.ɵɵpipe(2, "async");
+        i0.ɵɵelement(3, "input", 1);
+        i0.ɵɵpipe(4, "async");
+        i0.ɵɵelementEnd();
+    } if (rf & 2) {
+        let tmp_0_0;
+        let tmp_1_0;
+        i0.ɵɵadvance(1);
+        i0.ɵɵproperty("value", (tmp_0_0 = i0.ɵɵpipeBind1(2, 2, ctx.selectedOrg$)) == null ? null : tmp_0_0.organisationIdentifier);
+        i0.ɵɵadvance(2);
+        i0.ɵɵproperty("value", (tmp_1_0 = i0.ɵɵpipeBind1(4, 4, ctx.selectedOrg$)) == null ? null : tmp_1_0.name);
+    } }, dependencies: [i1.AsyncPipe], styles: [".hmcts-banner[_ngcontent-%COMP%]{border:0 solid;margin-bottom:10px;color:#000}.hmcts-banner[_ngcontent-%COMP%]   .warning-message[_ngcontent-%COMP%]{font-weight:700}.govuk-hint[_ngcontent-%COMP%]{font-size:1.1rem}.name-header[_ngcontent-%COMP%]{font-weight:700;margin-top:10px;font-size:18px}.td-address[_ngcontent-%COMP%]{width:90%;padding-top:2px}.td-select[_ngcontent-%COMP%]{width:10%}.warning-panel[_ngcontent-%COMP%]{background-color:#e7ebef;height:40px;margin-bottom:0;align-items:center;display:flex}.warning-panel[_ngcontent-%COMP%]   .warning-message[_ngcontent-%COMP%]{padding-left:15px}.complex-field-table[_ngcontent-%COMP%] > tbody[_ngcontent-%COMP%] > tr[_ngcontent-%COMP%] > th[_ngcontent-%COMP%]{border:none}.complex-field-table[_ngcontent-%COMP%] > tbody[_ngcontent-%COMP%] > tr[_ngcontent-%COMP%]:last-child > th[_ngcontent-%COMP%], .complex-field-table[_ngcontent-%COMP%] > tbody[_ngcontent-%COMP%] > tr[_ngcontent-%COMP%]:last-child > td[_ngcontent-%COMP%]{border-bottom:none}.complex-field-title[_ngcontent-%COMP%]{width:300px}.label-width-small[_ngcontent-%COMP%]{width:100px}.label-width-medium[_ngcontent-%COMP%]{width:150px}.scroll-container[_ngcontent-%COMP%]{height:600px;overflow-y:scroll}.no-result-message[_ngcontent-%COMP%]{margin-top:15px}"] });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassMetadata(WriteOrganisationComplexFieldComponent, [{
+        type: Component,
+        args: [{ selector: 'ccd-write-organisation-complex-field', template: "<div>\n  <input type=\"hidden\" name=\"organisationID\" [value]=\"(selectedOrg$ | async)?.organisationIdentifier\">\n  <input type=\"hidden\" name=\"organisationName\" [value]=\"(selectedOrg$ | async)?.name\">\n</div>\n", styles: [".hmcts-banner{border:0 solid;margin-bottom:10px;color:#000}.hmcts-banner .warning-message{font-weight:700}.govuk-hint{font-size:1.1rem}.name-header{font-weight:700;margin-top:10px;font-size:18px}.td-address{width:90%;padding-top:2px}.td-select{width:10%}.warning-panel{background-color:#e7ebef;height:40px;margin-bottom:0;align-items:center;display:flex}.warning-panel .warning-message{padding-left:15px}.complex-field-table>tbody>tr>th{border:none}.complex-field-table>tbody>tr:last-child>th,.complex-field-table>tbody>tr:last-child>td{border-bottom:none}.complex-field-title{width:300px}.label-width-small{width:100px}.label-width-medium{width:150px}.scroll-container{height:600px;overflow-y:scroll}.no-result-message{margin-top:15px}\n"] }]
+    }], function () { return []; }, { selectedOrg$: [{
+            type: Input
+        }] }); })();
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoid3JpdGUtb3JnYW5pc2F0aW9uLWNvbXBsZXgtZmllbGQuY29tcG9uZW50LmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vLi4vLi4vLi4vLi4vcHJvamVjdHMvY2NkLWNhc2UtdWktdG9vbGtpdC9zcmMvbGliL3NoYXJlZC9jb21wb25lbnRzL3BhbGV0dGUvb3JnYW5pc2F0aW9uL3dyaXRlLW9yZ2FuaXNhdGlvbi1jb21wbGV4LWZpZWxkLmNvbXBvbmVudC50cyIsIi4uLy4uLy4uLy4uLy4uLy4uLy4uLy4uL3Byb2plY3RzL2NjZC1jYXNlLXVpLXRvb2xraXQvc3JjL2xpYi9zaGFyZWQvY29tcG9uZW50cy9wYWxldHRlL29yZ2FuaXNhdGlvbi93cml0ZS1vcmdhbmlzYXRpb24tY29tcGxleC1maWVsZC5jb21wb25lbnQuaHRtbCJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxPQUFPLEVBQUUsU0FBUyxFQUFFLEtBQUssRUFBRSxNQUFNLGVBQWUsQ0FBQztBQUNqRCxPQUFPLEVBQUUsVUFBVSxFQUFFLE1BQU0sTUFBTSxDQUFDO0FBRWxDLE9BQU8sRUFBRSwwQkFBMEIsRUFBRSxNQUFNLDZDQUE2QyxDQUFDOzs7QUFPekYsTUFBTSxPQUFPLHNDQUF1QyxTQUFRLDBCQUEwQjtJQUtwRjtRQUNFLEtBQUssRUFBRSxDQUFDO0lBQ1YsQ0FBQzs7NEhBUFUsc0NBQXNDO3lGQUF0QyxzQ0FBc0M7UUNWbkQsMkJBQUs7UUFDSCwyQkFBb0c7O1FBQ3BHLDJCQUFvRjs7UUFDdEYsaUJBQU07Ozs7UUFGdUMsZUFBd0Q7UUFBeEQsMEhBQXdEO1FBQ3RELGVBQXNDO1FBQXRDLHdHQUFzQzs7dUZEUXhFLHNDQUFzQztjQUxsRCxTQUFTOzJCQUNFLHNDQUFzQztzQ0FPekMsWUFBWTtrQkFEbEIsS0FBSyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IENvbXBvbmVudCwgSW5wdXQgfSBmcm9tICdAYW5ndWxhci9jb3JlJztcbmltcG9ydCB7IE9ic2VydmFibGUgfSBmcm9tICdyeGpzJztcbmltcG9ydCB7IFNpbXBsZU9yZ2FuaXNhdGlvbk1vZGVsIH0gZnJvbSAnLi4vLi4vLi4vZG9tYWluL29yZ2FuaXNhdGlvbic7XG5pbXBvcnQgeyBBYnN0cmFjdEZvcm1GaWVsZENvbXBvbmVudCB9IGZyb20gJy4uL2Jhc2UtZmllbGQvYWJzdHJhY3QtZm9ybS1maWVsZC5jb21wb25lbnQnO1xuXG5AQ29tcG9uZW50KHtcbiAgc2VsZWN0b3I6ICdjY2Qtd3JpdGUtb3JnYW5pc2F0aW9uLWNvbXBsZXgtZmllbGQnLFxuICB0ZW1wbGF0ZVVybDogJy4vd3JpdGUtb3JnYW5pc2F0aW9uLWNvbXBsZXgtZmllbGQuY29tcG9uZW50Lmh0bWwnLFxuICBzdHlsZVVybHM6IFsnLi9vcmdhbmlzYXRpb24tZmllbGQuc2NzcyddXG59KVxuZXhwb3J0IGNsYXNzIFdyaXRlT3JnYW5pc2F0aW9uQ29tcGxleEZpZWxkQ29tcG9uZW50IGV4dGVuZHMgQWJzdHJhY3RGb3JtRmllbGRDb21wb25lbnQge1xuXG4gIEBJbnB1dCgpXG4gIHB1YmxpYyBzZWxlY3RlZE9yZyQ6IE9ic2VydmFibGU8U2ltcGxlT3JnYW5pc2F0aW9uTW9kZWw+O1xuXG4gIGNvbnN0cnVjdG9yKCkge1xuICAgIHN1cGVyKCk7XG4gIH1cblxufVxuIiwiPGRpdj5cbiAgPGlucHV0IHR5cGU9XCJoaWRkZW5cIiBuYW1lPVwib3JnYW5pc2F0aW9uSURcIiBbdmFsdWVdPVwiKHNlbGVjdGVkT3JnJCB8IGFzeW5jKT8ub3JnYW5pc2F0aW9uSWRlbnRpZmllclwiPlxuICA8aW5wdXQgdHlwZT1cImhpZGRlblwiIG5hbWU9XCJvcmdhbmlzYXRpb25OYW1lXCIgW3ZhbHVlXT1cIihzZWxlY3RlZE9yZyQgfCBhc3luYyk/Lm5hbWVcIj5cbjwvZGl2PlxuIl19

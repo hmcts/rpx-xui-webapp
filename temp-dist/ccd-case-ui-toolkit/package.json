@@ -1,0 +1,43 @@
+{
+  "name": "@hmcts/ccd-case-ui-toolkit",
+  "version": "0.0.0-watch+1693832711930",
+  "engines": {
+    "yarn": "^3.5.0",
+    "npm": "^8.10.0"
+  },
+  "description": "Case UI Toolkit",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hmcts/ccd-case-ui-toolkit.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "module": "fesm2015/hmcts-ccd-case-ui-toolkit.mjs",
+  "es2020": "fesm2020/hmcts-ccd-case-ui-toolkit.mjs",
+  "esm2020": "esm2020/hmcts-ccd-case-ui-toolkit.mjs",
+  "fesm2020": "fesm2020/hmcts-ccd-case-ui-toolkit.mjs",
+  "fesm2015": "fesm2015/hmcts-ccd-case-ui-toolkit.mjs",
+  "typings": "index.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./index.d.ts",
+      "esm2020": "./esm2020/hmcts-ccd-case-ui-toolkit.mjs",
+      "es2020": "./fesm2020/hmcts-ccd-case-ui-toolkit.mjs",
+      "es2015": "./fesm2015/hmcts-ccd-case-ui-toolkit.mjs",
+      "node": "./fesm2015/hmcts-ccd-case-ui-toolkit.mjs",
+      "default": "./fesm2020/hmcts-ccd-case-ui-toolkit.mjs"
+    }
+  },
+  "sideEffects": false,
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "scripts": {
+    "prepublishOnly": "node --eval \"console.error('ERROR: Trying to publish a package that has been compiled by Ivy in full compilation mode. This is not allowed.\\nPlease delete and rebuild the package with Ivy partial compilation mode, before attempting to publish.\\n')\" && exit 1"
+  }
+}

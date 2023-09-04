@@ -1,0 +1,1 @@
+{"version":3,"file":"TaskPayload.d.ts","sourceRoot":"","sources":["../../../../../../projects/ccd-case-ui-toolkit/src/lib/shared/domain/work-allocation/TaskPayload.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,IAAI,EAAE,MAAM,QAAQ,CAAC;AAE9B,MAAM,WAAW,WAAW;IAC1B,uBAAuB,EAAE,OAAO,CAAC;IACjC,KAAK,EAAE,IAAI,EAAE,CAAC;CACf"}

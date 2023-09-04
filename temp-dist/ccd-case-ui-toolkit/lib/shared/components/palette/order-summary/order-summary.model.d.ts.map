@@ -1,0 +1,1 @@
+{"version":3,"file":"order-summary.model.d.ts","sourceRoot":"","sources":["../../../../../../../projects/ccd-case-ui-toolkit/src/lib/shared/components/palette/order-summary/order-summary.model.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,QAAQ,EAAE,MAAM,mBAAmB,CAAC;AAE7C,qBAAa,YAAY;IAChB,gBAAgB,EAAE,MAAM,CAAC;IACzB,IAAI,EAAE,QAAQ,EAAE,CAAC;IACjB,YAAY,EAAE,MAAM,CAAC;CAC7B"}

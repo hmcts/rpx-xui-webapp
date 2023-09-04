@@ -1,0 +1,1 @@
+{"version":3,"file":"case-state.model.d.ts","sourceRoot":"","sources":["../../../../../../projects/ccd-case-ui-toolkit/src/lib/shared/domain/definition/case-state.model.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,UAAU,CAAC;AAErC,qBAAa,SAAU,YAAW,SAAS;IAClC,EAAE,EAAE,MAAM,CAAC;IACX,IAAI,EAAE,MAAM,CAAC;IACb,WAAW,EAAE,MAAM,CAAC;IACpB,KAAK,CAAC,EAAE,MAAM,CAAC;CACvB"}

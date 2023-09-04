@@ -1,0 +1,57 @@
+import { EventEmitter, OnInit } from '@angular/core';
+import { UntypedFormGroup } from '@angular/forms';
+import { CaseField } from '../../domain/definition/case-field.model';
+import { CaseState } from '../../domain/definition/case-state.model';
+import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
+import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
+import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
+import { OrderService } from '../../services/order/order.service';
+import { SearchService } from '../../services/search/search.service';
+import { WindowService } from '../../services/window/window.service';
+import { SearchInput } from './domain/search-input.model';
+import * as i0 from "@angular/core";
+export declare class SearchFiltersComponent implements OnInit {
+    private readonly searchService;
+    private readonly orderService;
+    private readonly jurisdictionService;
+    private readonly windowService;
+    readonly PARAM_JURISDICTION = "jurisdiction";
+    readonly PARAM_CASE_TYPE = "case-type";
+    readonly PARAM_CASE_STATE = "case-state";
+    caseFields: CaseField[];
+    jurisdictions: Jurisdiction[];
+    autoApply: boolean;
+    onApply: EventEmitter<any>;
+    onReset: EventEmitter<any>;
+    onJurisdiction: EventEmitter<any>;
+    searchInputs: SearchInput[];
+    searchInputsReady: boolean;
+    selected: {
+        jurisdiction?: Jurisdiction;
+        caseType?: CaseTypeLite;
+        formGroup?: UntypedFormGroup;
+        caseState?: CaseState;
+        page?: number;
+        metadataFields?: string[];
+    };
+    selectedJurisdictionCaseTypes?: CaseTypeLite[];
+    formGroup: UntypedFormGroup;
+    constructor(searchService: SearchService, orderService: OrderService, jurisdictionService: JurisdictionService, windowService: WindowService);
+    ngOnInit(): void;
+    reset(): void;
+    apply(): void;
+    populateValuesInLocalStorage(): void;
+    getMetadataFields(): string[];
+    isSearchable(): boolean;
+    isSearchableAndSearchInputsReady(): boolean;
+    onJurisdictionIdChange(): void;
+    onCaseTypeIdChange(): void;
+    isJurisdictionSelected(): boolean;
+    private getQueryParams;
+    private selectCaseType;
+    private setFocusToTop;
+    private getCaseFields;
+    static ɵfac: i0.ɵɵFactoryDeclaration<SearchFiltersComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SearchFiltersComponent, "ccd-search-filters", never, { "jurisdictions": "jurisdictions"; "autoApply": "autoApply"; }, { "onApply": "onApply"; "onReset": "onReset"; "onJurisdiction": "onJurisdiction"; }, never, never, false, never>;
+}
+//# sourceMappingURL=search-filters.component.d.ts.map

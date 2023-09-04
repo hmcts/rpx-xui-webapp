@@ -1,0 +1,6 @@
+export var RefdataCaseFlagType;
+(function (RefdataCaseFlagType) {
+    RefdataCaseFlagType["PARTY"] = "PARTY";
+    RefdataCaseFlagType["CASE"] = "CASE";
+})(RefdataCaseFlagType || (RefdataCaseFlagType = {}));
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmVmZGF0YS1jYXNlLWZsYWctdHlwZS5lbnVtLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vLi4vLi4vLi4vcHJvamVjdHMvY2NkLWNhc2UtdWktdG9vbGtpdC9zcmMvbGliL3NoYXJlZC9zZXJ2aWNlcy9jYXNlLWZsYWcvcmVmZGF0YS1jYXNlLWZsYWctdHlwZS5lbnVtLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLE1BQU0sQ0FBTixJQUFZLG1CQUdYO0FBSEQsV0FBWSxtQkFBbUI7SUFDN0Isc0NBQWUsQ0FBQTtJQUNmLG9DQUFhLENBQUE7QUFDZixDQUFDLEVBSFcsbUJBQW1CLEtBQW5CLG1CQUFtQixRQUc5QiIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCBlbnVtIFJlZmRhdGFDYXNlRmxhZ1R5cGUge1xuICBQQVJUWSA9ICdQQVJUWScsXG4gIENBU0UgPSAnQ0FTRSdcbn1cbiJdfQ==

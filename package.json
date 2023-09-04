@@ -86,7 +86,7 @@
     "@angular/router": "^15.2.9",
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccd-case-ui-toolkit": "link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit",
-    "@hmcts/ccpay-web-component": "link:../ccpay-web-component/dist/payment-lib",
+    "@hmcts/ccpay-web-component": "link:./temp-dist/payment-lib",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.10.0",
     "@hmcts/nodejs-healthcheck": "1.7.0",

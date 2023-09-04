@@ -1,0 +1,110 @@
+import { OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { PaymentLibComponent } from '../../payment-lib.component';
+import { PaymentViewService } from '../../services/payment-view/payment-view.service';
+import { CaseTransactionsService } from '../../services/case-transactions/case-transactions.service';
+import { BulkScaningPaymentService } from '../../services/bulk-scaning-payment/bulk-scaning-payment.service';
+import { ErrorHandlerService } from '../../services/shared/error-handler.service';
+import { IPaymentGroup } from '../../interfaces/IPaymentGroup';
+import { IBSPayments } from '../../interfaces/IBSPayments';
+import { IOrderReferenceFee } from '../../interfaces/IOrderReferenceFee';
+import { OrderslistService } from '../../services/orderslist.service';
+import * as i0 from "@angular/core";
+export declare class AllocatePaymentsComponent implements OnInit {
+    private errorHandlerService;
+    private caseTransactionsService;
+    private formBuilder;
+    private paymentViewService;
+    private paymentLibComponent;
+    private bulkScaningPaymentService;
+    private OrderslistService;
+    isTurnOff: boolean;
+    caseType: string;
+    overUnderPaymentForm: FormGroup;
+    viewStatus: string;
+    ccdCaseNumber: string;
+    bspaymentdcn: string;
+    recordId: string;
+    feedbackUrlLabel: string;
+    unAllocatedPayment: IBSPayments;
+    siteID: string;
+    errorMessage: any;
+    paymentGroup: IPaymentGroup;
+    paymentGroups: IPaymentGroup[];
+    remainingAmount: number;
+    isRemainingAmountGtZero: boolean;
+    isMoreDetailsBoxHide: boolean;
+    isRemainingAmountLtZero: boolean;
+    afterFeeAllocateOutstanding: number;
+    amountForAllocation: number;
+    isConfirmButtondisabled: boolean;
+    isContinueButtondisabled: boolean;
+    otherPaymentExplanation: string;
+    selectedOption: string;
+    isFeeAmountZero: boolean;
+    paymentReasonHasError: boolean;
+    paymentExplanationHasError: boolean;
+    isPaymentDetailsEmpty: boolean;
+    isPaymentDetailsInvalid: boolean;
+    paymentDetailsMinHasError: boolean;
+    paymentDetailsMaxHasError: boolean;
+    isUserNameEmpty: boolean;
+    isUserNameInvalid: boolean;
+    ccdReference: string;
+    exceptionReference: string;
+    paymentReason: string;
+    paymentExplanation: string;
+    userName: string;
+    paymentSectionLabel: any;
+    paymentRef: string;
+    isStrategicFixEnable: boolean;
+    orderLevelFees: IOrderReferenceFee[];
+    cookieUserName: string[];
+    enCookieUserName: any;
+    userNameField: string;
+    reasonList: {
+        [key: string]: {
+            [key: string]: string;
+        };
+    };
+    explanationList: {
+        overPayment: {
+            referRefund: string;
+            noRefund: string;
+            noCase: string;
+            other: string;
+        };
+        shortFall: {
+            holdCase: string;
+            heldCase: string;
+            other: string;
+        };
+    };
+    refund: {
+        reason: {
+            duplicate: string;
+            humanerror: string;
+            caseWithdrawn: string;
+            other: string;
+        };
+    };
+    constructor(errorHandlerService: ErrorHandlerService, caseTransactionsService: CaseTransactionsService, formBuilder: FormBuilder, paymentViewService: PaymentViewService, paymentLibComponent: PaymentLibComponent, bulkScaningPaymentService: BulkScaningPaymentService, OrderslistService: OrderslistService);
+    ngOnInit(): void;
+    getGroupOutstandingAmount(paymentGroup: IPaymentGroup): number;
+    getPaymentGroupDetails(): void;
+    selectedPaymentGroup(paymentGroup: IPaymentGroup): void;
+    gotoCasetransationPage(): void;
+    gotoSummaryPage(event: any): void;
+    cancelAllocatePayment(event: any): void;
+    confirmAllocatePayement(): void;
+    resetForm(vals: any, field: any): void;
+    finalServiceCall(): void;
+    saveAndContinue(): void;
+    getUnassignedPayment(): void;
+    selectRadioButton(key: any, type: any): void;
+    OrderListSelectEvent(orderef: any): void;
+    redirectToOrderFeeSearchPage(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<AllocatePaymentsComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<AllocatePaymentsComponent, "app-allocate-payments", never, { "isTurnOff": { "alias": "isTurnOff"; "required": false; }; "caseType": { "alias": "caseType"; "required": false; }; }, {}, never, never, false, never>;
+}
+//# sourceMappingURL=allocate-payments.component.d.ts.map

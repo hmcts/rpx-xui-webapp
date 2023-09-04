@@ -1,0 +1,1 @@
+{"version":3,"file":"IStatusHistory.d.ts","sourceRoot":"","sources":["../../../../projects/payment-lib/src/lib/interfaces/IStatusHistory.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,cAAc;IAC7B,MAAM,EAAE,MAAM,CAAC;IACf,eAAe,EAAE,MAAM,CAAC;IACxB,YAAY,EAAE,IAAI,CAAC;IACnB,UAAU,EAAE,MAAM,CAAC;IACnB,aAAa,EAAE,MAAM,CAAC;CACvB"}

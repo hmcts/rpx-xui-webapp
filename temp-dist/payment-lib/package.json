@@ -1,0 +1,49 @@
+{
+  "name": "@hmcts/ccpay-web-component",
+  "version": "6.0.0-beta01",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@angular/common": "^16.1.6",
+    "@angular/core": "^16.1.6"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/hmcts/ccpay-web-component.git",
+  "description": "Angular web component for displaying payments returned from ccpay api",
+  "author": "Mateusz Swirski <mateusz.swirski@hmcts.net>",
+  "contributors": [
+    {
+      "name": "Santosh Govindu",
+      "email": "santosh.govindu@hmcts.net"
+    },
+    {
+      "name": "Tarun Palisetty",
+      "email": "tarun.palisetty@hmcts.net"
+    },
+    {
+      "name": "Mateusz Swirski",
+      "email": "mateusz.swirski@hmcts.net"
+    }
+  ],
+  "module": "fesm2022/hmcts-ccpay-web-component.mjs",
+  "typings": "index.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./index.d.ts",
+      "esm2022": "./esm2022/hmcts-ccpay-web-component.mjs",
+      "esm": "./esm2022/hmcts-ccpay-web-component.mjs",
+      "default": "./fesm2022/hmcts-ccpay-web-component.mjs"
+    }
+  },
+  "sideEffects": false,
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "scripts": {
+    "prepublishOnly": "node --eval \"console.error('ERROR: Trying to publish a package that has been compiled by Ivy in full compilation mode. This is not allowed.\\nPlease delete and rebuild the package with Ivy partial compilation mode, before attempting to publish.\\n')\" && exit 1"
+  }
+}

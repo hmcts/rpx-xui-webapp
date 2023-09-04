@@ -1,0 +1,1 @@
+{"version":3,"file":"RefundsRequest.d.ts","sourceRoot":"","sources":["../../../../projects/payment-lib/src/lib/interfaces/RefundsRequest.ts"],"names":[],"mappings":"AACA,qBAAa,cAAc;IACvB,iBAAiB,EAAE,MAAM,CAAC;IAC1B,aAAa,EAAE,MAAM,CAAA;gBAET,iBAAiB,EAAG,MAAM,EAAG,aAAa,EAAG,MAAM;CAKhE"}

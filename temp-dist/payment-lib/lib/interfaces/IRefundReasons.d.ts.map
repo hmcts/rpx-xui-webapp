@@ -1,0 +1,1 @@
+{"version":3,"file":"IRefundReasons.d.ts","sourceRoot":"","sources":["../../../../projects/payment-lib/src/lib/interfaces/IRefundReasons.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,cAAc;IAC3B,IAAI,EAAE,MAAM,CAAC;IACb,WAAW,EAAE,MAAM,CAAC;IACpB,IAAI,EAAE,MAAM,CAAC;IACb,aAAa,EAAE,OAAO,CAAC;CACxB"}

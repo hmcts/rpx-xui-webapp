@@ -1,0 +1,1 @@
+{"version":3,"file":"PayhubAntennaRequest.d.ts","sourceRoot":"","sources":["../../../../projects/payment-lib/src/lib/interfaces/PayhubAntennaRequest.ts"],"names":[],"mappings":"AAAA,qBAAa,oBAAoB;IAC/B,QAAQ,SAAS;IACjB,SAAS,EAAE,MAAM,CAAC;IAClB,eAAe,EAAE,MAAM,CAAC;IACxB,MAAM,EAAE,MAAM,CAAC;gBAEH,eAAe,EAAE,MAAM,EAAE,MAAM,EAAE,MAAM,EAAE,QAAQ,EAAE,MAAM;CAKtE"}

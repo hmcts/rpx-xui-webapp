@@ -1,0 +1,44 @@
+import * as i0 from "@angular/core";
+import * as i1 from "./payment-lib.component";
+import * as i2 from "./components/payment-list/payment-list.component";
+import * as i3 from "./components/payment-view/payment-view.component";
+import * as i4 from "./components/pba-payment/pba-payment.component";
+import * as i5 from "./components/contact-details/contact-details.component";
+import * as i6 from "./components/process-refund/process-refund.component";
+import * as i7 from "./components/refund-list/refund-list.component";
+import * as i8 from "./components/card-details/card-details.component";
+import * as i9 from "./components/page-not-found.component";
+import * as i10 from "./components/status-history/status-history.component";
+import * as i11 from "./components/mark-unidentified-payment/mark-unidentified-payment.component";
+import * as i12 from "./components/mark-unsolicited-payment/mark-unsolicited-payment.component";
+import * as i13 from "./components/unprocessed-payments/unprocessed-payments.component";
+import * as i14 from "./components/processed-payments/processed-payments.component";
+import * as i15 from "./components/allocate-payments/allocate-payments.component";
+import * as i16 from "./components/pba-details/pba-details.component";
+import * as i17 from "./components/case-transactions/case-transactions.component";
+import * as i18 from "./components/fee-summary/fee-summary.component";
+import * as i19 from "./components/add-remission/add-remission.component";
+import * as i20 from "./pipes/ccd-hyphens.pipe";
+import * as i21 from "./pipes/capitalize.pipe";
+import * as i22 from "./pipes/key-value.pipe";
+import * as i23 from "./pipes/sanitize-html.pipe";
+import * as i24 from "./components/reports/reports.component";
+import * as i25 from "./components/error-banner/error-banner.component";
+import * as i26 from "./components/table/table.component";
+import * as i27 from "./components/refund-status/refund-status.component";
+import * as i28 from "./components/service-request/service-request.component";
+import * as i29 from "./components/notification-preview/notification-preview.component";
+import * as i30 from "@angular/common";
+import * as i31 from "@angular/common/http";
+import * as i32 from "@angular/forms";
+import * as i33 from "@angular/material/table";
+import * as i34 from "@angular/material/paginator";
+import * as i35 from "@angular/material/sort";
+import * as i36 from "@angular/material/form-field";
+import * as i37 from "@angular/material/input";
+export declare class PaymentLibModule {
+    static ɵfac: i0.ɵɵFactoryDeclaration<PaymentLibModule, never>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<PaymentLibModule, [typeof i1.PaymentLibComponent, typeof i2.PaymentListComponent, typeof i3.PaymentViewComponent, typeof i4.PbaPaymentComponent, typeof i5.ContactDetailsComponent, typeof i6.ProcessRefundComponent, typeof i7.RefundListComponent, typeof i8.CardDetailsComponent, typeof i9.PageNotFoundComponent, typeof i10.StatusHistoryComponent, typeof i11.MarkUnidentifiedPaymentComponent, typeof i12.MarkUnsolicitedPaymentComponent, typeof i13.UnprocessedPaymentsComponent, typeof i14.ProcessedPaymentsComponent, typeof i15.AllocatePaymentsComponent, typeof i16.PbaDetailsComponent, typeof i17.CaseTransactionsComponent, typeof i18.FeeSummaryComponent, typeof i19.AddRemissionComponent, typeof i20.CcdHyphensPipe, typeof i21.CapitalizePipe, typeof i22.keyValuePipe, typeof i23.SanitizeHtmlPipe, typeof i24.ReportsComponent, typeof i25.ErrorBannerComponent, typeof i26.TableComponent, typeof i27.RefundStatusComponent, typeof i28.ServiceRequestComponent, typeof i29.NotificationPreviewComponent], [typeof i30.CommonModule, typeof i31.HttpClientModule, typeof i32.FormsModule, typeof i32.ReactiveFormsModule, typeof i33.MatTableModule, typeof i34.MatPaginatorModule, typeof i35.MatSortModule, typeof i36.MatFormFieldModule, typeof i37.MatInputModule], [typeof i1.PaymentLibComponent]>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<PaymentLibModule>;
+}
+//# sourceMappingURL=payment-lib.module.d.ts.map

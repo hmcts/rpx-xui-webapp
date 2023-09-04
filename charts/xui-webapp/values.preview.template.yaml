@@ -26,7 +26,7 @@ nodejs:
      PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-3236
      PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-3236
      PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-3236
-     PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-3205
+     PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-3236
   keyVaults:
     rpx:
       secrets:

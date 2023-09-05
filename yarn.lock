@@ -2386,12 +2386,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.3-RetryCaseRetrievals.1":
-  version: 6.19.3-RetryCaseRetrievals.1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.3-RetryCaseRetrievals.1"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.3-mv-upgrade":
+  version: 6.19.3-mv-upgrade
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.3-mv-upgrade"
   dependencies:
     tslib: ^2.0.0
-  checksum: 804b26964c596540b05e0c88baadda0f07a4d3a9aaa5ca6782d3d9879ae01f7e6cfb59e4892483385a9d4a8428e709b06f64efa0b99518039ade9e81ced3175c
+  checksum: 0eafe53da0b2f4265af23dca92e83ebd34ce358483c09d094f9f810006c2e614007ac78e642531078cbeb2d63421f1eb84e6e7d6a7acefe6d880b10fdb2bf754
   languageName: node
   linkType: hard
 
@@ -2414,9 +2414,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:2.9.3":
-  version: 2.9.3
-  resolution: "@hmcts/media-viewer@npm:2.9.3"
+"@hmcts/media-viewer@npm:2.9.5":
+  version: 2.9.5
+  resolution: "@hmcts/media-viewer@npm:2.9.5"
   dependencies:
     "@circlon/angular-tree-component": ^11.0.0
     "@swimlane/ngx-datatable": ^19.0.0
@@ -2437,7 +2437,7 @@ __metadata:
     "@ngrx/router-store": ^11.0.0
     "@ngrx/store": ^11.0.0
     "@ngrx/store-devtools": ^11.0.0
-  checksum: d6702c0141da24cd7ebaecb5764f5f6eae825cdcd4633c06cfb5d613b314dac4ba899292be9543a8b359f48091f78d36e5ea58bfc050afc5f0947bdedc06a628
+  checksum: c089394177ea3d28b9913b4072154cc5c33879b11062b07631adf1594786b533ba9593aea15919eedd50b0c91bd2814689f8f2e9b95d703eed20e6976b5eb2fb
   languageName: node
   linkType: hard
 
@@ -19270,10 +19270,10 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.3-RetryCaseRetrievals.1
+    "@hmcts/ccd-case-ui-toolkit": 6.19.3-mv-upgrade
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
-    "@hmcts/media-viewer": 2.9.3
+    "@hmcts/media-viewer": 2.9.5
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
     "@hmcts/rpx-xui-common-lib": 1.9.0-welsh-translation

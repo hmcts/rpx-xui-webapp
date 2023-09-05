@@ -19,7 +19,7 @@ router.post('/', (req, res) => {
 });
 
 router.get('/:taskId', (req, res) => {
-    userApiData.sendResponse(req, res, "OnTask", () => service.getTask())
+    userApiData.sendResponse(req, res, "OnTaskDetails", () => service.getTask())
 });
 
 router.get('/:taskId/roles', (req, res) => {

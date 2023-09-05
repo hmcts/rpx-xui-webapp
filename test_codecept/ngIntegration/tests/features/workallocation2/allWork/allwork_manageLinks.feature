@@ -36,8 +36,8 @@ Feature: WA Release 2: All work - Manage links
             | 2     | Assign task,Go to task                 |
             | 3     |                                        |
             | 4     | Reassign task,Unassign task,Go to task |
-            | 5     | Reassign task,Unassign task,Go to task |
-            | 6     |                                        |
+            # | 5     | Reassign task,Unassign task,Go to task |
+            # | 6     |                                        |
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |

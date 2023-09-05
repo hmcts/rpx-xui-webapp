@@ -65,10 +65,6 @@ class IdamLogin{
             throw err
         }
 
-
-       
-
-
     }
 
     getResponseStatus(response){

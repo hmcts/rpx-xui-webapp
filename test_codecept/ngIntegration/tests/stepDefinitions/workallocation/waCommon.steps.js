@@ -103,14 +103,13 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
         await browser.get('http://localhost:3000/get-help');
 
-        await idamLogin.do();
-      
+       
+
         await BrowserWaits.retryWithActionCallback(async () => {
+            await idamLogin.do();
             const userDetails = idamLogin.userDetailsResponse.details.data;
             const sessionUserName = userDetails.userInfo ? userDetails.userInfo.sub : '';
             if (sessionUserName !== 'lukesuperuserxui@mailnesia.com' ){
-                await idamLogin.do();
-                await browser.sleep(2)
                 throw new Error('session not updated with user, retrying');
             }
 
@@ -122,12 +121,12 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
         })
 
-        const authCookies = await browser.driver.manage().getCookies()
+        const authCookies = idamLogin.xuiCallbackResponse.details.setCookies
         const authCookie = authCookies.find(cookie => cookie.name === '__auth__')
         await browser.sleep(10)
         await mockClient.updateAuthSessionWithRoles(authCookie.value, roles)
 
-        await browser.get('http://localhost:3000/');
+        // await browser.get('http://localhost:3000/');
     }
 
     Given('I set MOCK with {string} release user and roles', async function (releaseUer,datatableroles ) {
@@ -290,7 +289,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
             for(const attr of roleKeys){
                 const value = boolAttributes.includes(attr) ? roleAssignment[attr].includes('Y') : roleAssignment[attr];
-                if (attributeProperties.includes(attr)){
+                if (attributeProperties.includes(attr) && value !== ''){
                     roleAssignmentTemplate.attributes[attr] = value;
                 }else{
                     roleAssignmentTemplate[attr] = value;
@@ -303,13 +302,22 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
         const cookies = await browser.driver.manage().getCookies();
         const authCookie = cookies.find(cookie => cookie.name === '__auth__')
-        CucumberReporter.AddJson(nodeAppMock.userDetails);
-        const newRoleAssignmentsInSession = await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr)
-        CucumberReporter.AddJson(newRoleAssignmentsInSession.data);
+
+        
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr)
+
+            const userDetails = await idamLogin.getUserDetails();
+            if (!userDetails.roleAssignmentInfo.length >= roleAssignmentArr.length) {
+                reportLogger.AddMessage(`Mock role assignments not updated in user session. Retrying user session update`);
+                throw new Error('Mock role assignments not updated');
+            }
+        })
+
+        const userDetails = await idamLogin.getUserDetails();
+        CucumberReporter.AddJson(userDetails.roleAssignmentInfo);
         await browser.get(await browser.getCurrentUrl());
 
-        const userSession = await mockClient.getSessionRolesAndRoleAssignments(authCookie.value);
-        console.log(userSession)
     });
 
     Given('I set MOCK with user identifer {string} role type {string} and role identifiers {string}', async function (useridentifier,roleType ,roleIdentifiers) {
@@ -335,10 +343,10 @@ async function loginattemptCheckAndRelogin(username, password, world) {
             roles.push(...rolesForIdentifier);
         }
         const userDetails = nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
-        if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
-            workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
-        }
-        
+        // if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
+        //     workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
+        // }
+        await mockLoginWithRoles(roles)
 
     });
 

@@ -9,6 +9,7 @@ Feature: Global search
         Then I click on primary navigation header tab "Search", I see selected tab page displayed
         Then I see global search Page
 
+
     Scenario: Search page field validation
         Then I validate field services has following values in global search page
             | value                |

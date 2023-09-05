@@ -16,9 +16,9 @@ router.get('/data/internal/cases/:caseId', (req, res) => {
 
 });
 
-router.get('/data/internal/cases/:caseid', (req,res) => {
-    res.send(ccdMockData.getCaseDetailsWithID(req.params.caseid));
-})
+// router.get('/data/internal/cases/:caseid', (req,res) => {
+//     res.send(ccdMockData.getCaseDetailsWithID(req.params.caseid));
+// })
 
 router.get('/aggregated/caseworkers/:uid/jurisdictions', (req, res) => {
     res.send(ccdMockData.getJurisdictions());
@@ -134,7 +134,8 @@ router.post('/data/cases/:caseid/events', (req, res) => {
 
 
 router.post('/data/internal/searchCases', (req, res) => {
-    res.send(ccdMockData.caseList);
+    const responseBody = ccdMockData.caseList;
+    res.send(responseBody);
 })
 
 module.exports = router;

@@ -153,8 +153,8 @@ class CaseManager {
         if (isCheckYourAnswersPage) {
             var submit = element(by.xpath('//button[@type= "submit"]'));
             await BrowserWaits.waitForElement(submit);
-            await browser.executeScript('arguments[0].scrollIntoView()',
-                submit.getWebElement());
+            // await browser.executeScript('arguments[0].scrollIntoView()',
+            //     submit.getWebElement());
 
             var thisPageUrl = await browser.getCurrentUrl();
 
@@ -198,10 +198,7 @@ class CaseManager {
         });
     }
 
-    async AmOnCCDCaseEditPage() {
         await BrowserWaits.retryWithActionCallback(async () => {
-            try{
-                await BrowserWaits.waitForElement(this.ccdCaseEdit);
                 expect(await this.ccdCaseEdit.isPresent()).to.be.true;
             }catch(err){
 
@@ -490,24 +487,20 @@ class CaseManager {
             case "ccd-write-collection-field":
                 cucumberReporter.AddMessage(fieldName + " : complex write collection values", LOG_LEVELS.Debug);
                 var addNewBtn = await ccdField.$(".panel button");
+                for(let i = 0 ; i < 3;i++){
+                    await addNewBtn.click();
+                    var writeFields = await ccdField.$$(".panel > .form-group > .form-group>ccd-field-write");
+                    var writeFieldsCount = await writeFields.count();
 
-                // let arrval = this._fieldValue(fieldName);
-                // if (!(arrval instanceof Array)){
-                //     break;
-                // }
-                // await browser.executeScript('arguments[0].scrollIntoView()',
-                //     addNewBtn.getWebElement());
-                await addNewBtn.click();
-                var writeFields = await ccdField.$$(".panel > .form-group > .form-group>ccd-field-write");
-                var writeFieldsCount = await writeFields.count();
+                    for (var count = 0; count < writeFieldsCount; count++) {
+                        var ccdSubField = await (await writeFields.get(count)).element(by.xpath("./div/*"));
+                        var subFieldText = await ccdSubField.getText();
+                        await this._writeToField(ccdSubField, `${fieldName}[0]`)
+                    }
 
-                for (var count = 0; count < writeFieldsCount; count++) {
-                    var ccdSubField = await ( await writeFields.get(count)).element(by.xpath("./div/*"));
-                    var subFieldText = await ccdSubField.getText();
-                    await this._writeToField(ccdSubField, `${fieldName}[0]`)
+                    cucumberReporter.AddMessage(fieldName + " : complex write collection values", LOG_LEVELS.Debug);
                 }
-
-                cucumberReporter.AddMessage(fieldName + " : complex write collection values", LOG_LEVELS.Debug);
+                
                 break;
             default:
                 console.log("Unknown field type : " + ccdFileTagName);

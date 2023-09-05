@@ -13,8 +13,11 @@ const backendMockApp = require('../backendMock/app');
 
 let appWithMockBackend = null;
 const testType = process.env.TEST_TYPE
-const parallel = process.env.PARALLEL
+const parallel = process.env.PARALLEL ? process.env.PARALLEL === "true" : false
 const head = process.env.HEAD
+console.log(`testType : ${testType}`)
+console.log(`parallel : ${parallel}`)
+console.log(`headless : ${!head}`)
 
 if (process.env.TEST_URL.includes('pr-29751') ||
     process.env.TEST_URL.includes('localhost'))
@@ -24,12 +27,12 @@ if (process.env.TEST_URL.includes('pr-29751') ||
 }
 
 let features = ''
-if (testType === 'e2e'){
+if (testType === 'e2e' || testType === 'smoke'){
   features = `../e2e/features/app/**/*.feature`
 } else if (testType === 'ngIntegration'){
   features = `../ngIntegration/tests/features/**/*.feature`
 
-}else{
+} else{
   throw new Error(`Unrecognized test type ${testType}`);
 }
 
@@ -105,17 +108,24 @@ exports.config = {
       reportName:'XUI_MC',
       "overwrite": false,
       "html": false,
-      "json": true
-      // inlineAssets: true
+      "json": true,
+      "codeceptjs-cli-reporter": {
+        "stdout": "-",
+        "options": {
+          "verbose": false,
+          "steps": true,
+        }
+      },
+      "mocha-junit-reporter": {
+        "stdout": `${functional_output_dir}/console.log`,
+        "options": {
+          "mochaFile": "./output/result.xml"
+        }
+      }
+      // inlineAssets: true,
+
     },
-    // "reporterOptions":{
-    //   "codeceptjs-cli-reporter": {
-    //     "stdout": "-",
-    //     "options": {
-    //       "verbose": true,
-    //       "steps": true,
-    //     }
-    //   },
+    
       "mochawesome": {
         "stdout": `${functional_output_dir}/`,
         "options": {

@@ -6654,7 +6654,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browser-stdout@npm:1.3.1":
+"browser-stdout@npm:1.3.1, browser-stdout@npm:^1.3.1":
   version: 1.3.1
   resolution: "browser-stdout@npm:1.3.1"
   checksum: b717b19b25952dd6af483e368f9bcd6b14b87740c3d226c2977a65e84666ffd67000bddea7d911f111a9b6ddc822b234de42d52ab6507bce4119a4cc003ef7b3
@@ -18036,6 +18036,7 @@ __metadata:
     axios: ^1.4.0
     axios-mock-adapter: ^1.21.5
     base-64: ^0.1.0
+    browser-stdout: ^1.3.1
     chai: ^4.2.0
     chai-as-promised: 7.1.1
     class-transformer: ^0.3.2

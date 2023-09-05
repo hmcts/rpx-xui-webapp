@@ -1,1 +1,0 @@
-{"version":3,"file":"fixed-list-item.model.d.ts","sourceRoot":"","sources":["../../../../../../projects/ccd-case-ui-toolkit/src/lib/shared/domain/definition/fixed-list-item.model.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,UAAU,CAAC;AAErC,qBAAa,aAAc,YAAW,SAAS;IACtC,IAAI,EAAE,MAAM,CAAC;IACb,KAAK,EAAE,MAAM,CAAC;IACd,KAAK,CAAC,EAAE,MAAM,CAAC;CACvB"}

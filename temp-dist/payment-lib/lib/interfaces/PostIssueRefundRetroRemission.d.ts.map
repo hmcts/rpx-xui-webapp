@@ -1,1 +1,0 @@
-{"version":3,"file":"PostIssueRefundRetroRemission.d.ts","sourceRoot":"","sources":["../../../../projects/payment-lib/src/lib/interfaces/PostIssueRefundRetroRemission.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,qBAAqB,EAAE,MAAM,yBAAyB,CAAC;AAEhE,qBAAa,6BAA6B;IACtC,kBAAkB,EAAE,MAAM,CAAC;IAC3B,eAAe,EAAE,qBAAqB,CAAC;gBAE3B,kBAAkB,EAAG,MAAM,EAAE,cAAc,EAAE,GAAG;CAI/D"}

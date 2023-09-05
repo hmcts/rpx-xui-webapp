@@ -1,8 +1,0 @@
-export var NotificationBannerType;
-(function (NotificationBannerType) {
-    NotificationBannerType["WARNING"] = "warning";
-    NotificationBannerType["SUCCESS"] = "success";
-    NotificationBannerType["ERROR"] = "error";
-    NotificationBannerType["INFORMATION"] = "information";
-})(NotificationBannerType || (NotificationBannerType = {}));
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibm90aWZpY2F0aW9uLWJhbm5lci10eXBlLmVudW0uanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi8uLi8uLi8uLi8uLi8uLi9wcm9qZWN0cy9jY2QtY2FzZS11aS10b29sa2l0L3NyYy9saWIvY29tcG9uZW50cy9iYW5uZXJzL25vdGlmaWNhdGlvbi1iYW5uZXIvZW51bXMvbm90aWZpY2F0aW9uLWJhbm5lci10eXBlLmVudW0udHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsTUFBTSxDQUFOLElBQVksc0JBS1g7QUFMRCxXQUFZLHNCQUFzQjtJQUNoQyw2Q0FBbUIsQ0FBQTtJQUNuQiw2Q0FBbUIsQ0FBQTtJQUNuQix5Q0FBZSxDQUFBO0lBQ2YscURBQTJCLENBQUE7QUFDN0IsQ0FBQyxFQUxXLHNCQUFzQixLQUF0QixzQkFBc0IsUUFLakMiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgZW51bSBOb3RpZmljYXRpb25CYW5uZXJUeXBlIHtcbiAgV0FSTklORyA9ICd3YXJuaW5nJyxcbiAgU1VDQ0VTUyA9ICdzdWNjZXNzJyxcbiAgRVJST1IgPSAnZXJyb3InLFxuICBJTkZPUk1BVElPTiA9ICdpbmZvcm1hdGlvbidcbn1cbiJdfQ==

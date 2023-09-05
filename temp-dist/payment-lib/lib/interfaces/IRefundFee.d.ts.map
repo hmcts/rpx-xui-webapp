@@ -1,1 +1,0 @@
-{"version":3,"file":"IRefundFee.d.ts","sourceRoot":"","sources":["../../../../projects/payment-lib/src/lib/interfaces/IRefundFee.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,UAAU;IACzB,MAAM,EAAE,MAAM,CAAC;IACf,IAAI,EAAE,MAAM,CAAC;IACb,OAAO,EAAE,MAAM,CAAC;IAChB,MAAM,EAAE,MAAM,CAAC;IACf,aAAa,EAAE,MAAM,CAAC;CACvB"}

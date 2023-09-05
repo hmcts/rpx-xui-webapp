@@ -1,1 +1,0 @@
-{"version":3,"file":"case-reference.pipe.d.ts","sourceRoot":"","sources":["../../../../../../projects/ccd-case-ui-toolkit/src/lib/shared/pipes/case-reference/case-reference.pipe.ts"],"names":[],"mappings":"AAAA,OAAO,EAAQ,aAAa,EAAE,MAAM,eAAe,CAAC;;AAGpD,qBAGa,iBAAkB,YAAW,aAAa;IAE9C,SAAS,CAAC,aAAa,EAAE,MAAM,GAAG,MAAM;yCAFpC,iBAAiB;uCAAjB,iBAAiB;CAuB7B"}

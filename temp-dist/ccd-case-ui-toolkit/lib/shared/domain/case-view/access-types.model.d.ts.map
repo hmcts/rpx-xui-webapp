@@ -1,1 +1,0 @@
-{"version":3,"file":"access-types.model.d.ts","sourceRoot":"","sources":["../../../../../../projects/ccd-case-ui-toolkit/src/lib/shared/domain/case-view/access-types.model.ts"],"names":[],"mappings":"AAAA,oBAAY,cAAc,GACtB,MAAM,GACJ,QAAQ,GACR,QAAQ,CAAC;AAEf,eAAO,MAAM,WAAW,EAAE,cAAuB,CAAC;AAClD,eAAO,MAAM,aAAa,EAAE,cAAyB,CAAC;AACtD,eAAO,MAAM,aAAa,EAAE,cAAyB,CAAC"}

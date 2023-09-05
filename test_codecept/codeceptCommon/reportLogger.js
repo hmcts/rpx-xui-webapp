@@ -48,8 +48,10 @@ class CodeceptMochawesomeLog{
         // if (!this._isLevelEnabled(logLevel)) return;
 
         try{
-            browser.get_I().addMochawesomeContext(this.getDate() + message);
-            // browser.get_I().say( message)
+            // browser.get_I().addMochawesomeContext(this.getDate() + message);
+
+            var buf = message.toString("binary")
+            browser.get_I().say( buf)
         }
         catch(err){
             console.log("Error occured adding message to report. "+err.stack);
@@ -60,7 +62,8 @@ class CodeceptMochawesomeLog{
     AddMessageToReportOnly(message, logLevel) {
         // if (!this._isLevelEnabled(logLevel)) return;
         try{
-            browser.get_I().addMochawesomeContext(this.getDate() + message);
+            // browser.get_I().addMochawesomeContext(this.getDate() + message);
+            browser.get_I().say( message)
 
         } catch (err) {
             console.log("Error occured adding message to report. " + err.stack);
@@ -74,8 +77,8 @@ class CodeceptMochawesomeLog{
         // if (!this._isLevelEnabled(logLevel)) return;
 
         try {
-            browser.get_I().addMochawesomeContext(JSON.stringify(json, null, 2));
-            // browser.get_I().say(JSON.stringify(json, null, 2))
+            // browser.get_I().addMochawesomeContext(JSON.stringify(json, null, 2));
+            browser.get_I().say(JSON.stringify(json, null, 2))
 
         }
         catch(err) {
@@ -88,7 +91,7 @@ class CodeceptMochawesomeLog{
         // if (!this._isLevelEnabled(logLevel)) return;
         try{
             I.addMochawesomeContext(JSON.stringify(json, null, 2));
-
+                
         } catch (err) {
             console.log("Error occured adding message to report. " + err.stack);
         }

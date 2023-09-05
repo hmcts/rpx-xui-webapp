@@ -2,11 +2,12 @@
 const report = require("multiple-cucumber-html-reporter");
 const { merge } = require('mochawesome-merge')
 const marge = require('mochawesome-report-generator')
+const fs = require('fs')
+const path = require('path')
 
 const global = require('./globals')
 import applicationServer from '../localServer'
 
-const path = require('path')
 var spawn = require('child_process').spawn;
 const backendMockApp = require('../backendMock/app');
 const statsReporter = require('./statsReporter')
@@ -41,6 +42,8 @@ if (testType === 'e2e' || testType === 'smoke'){
 
 
 const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`)
+
+const cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/cucumber-codecept-${testType}`)
 
 exports.config = {
   timeout: 600,
@@ -103,41 +106,41 @@ exports.config = {
     // }
   },
   "mocha": {
-    reporter: 'mochawesome',
+    // reporter: 'mochawesome',
    
-    "reporterOptions": {
-      "reportDir": functional_output_dir,
-      reportName:'XUI_MC',
-      "overwrite": false,
-      "html": false,
-      "json": true,
-      "codeceptjs-cli-reporter": {
-        "stdout": "-",
-        "options": {
-          "verbose": false,
-          "steps": true,
-        }
-      },
-      "mocha-junit-reporter": {
-        "stdout": `${functional_output_dir}/console.log`,
-        "options": {
-          "mochaFile": "./output/result.xml"
-        }
-      }
-      // inlineAssets: true,
+    // "reporterOptions": {
+    //   "reportDir": functional_output_dir,
+    //   reportName:'XUI_MC',
+    //   "overwrite": false,
+    //   "html": false,
+    //   "json": true,
+    //   "codeceptjs-cli-reporter": {
+    //     "stdout": "-",
+    //     "options": {
+    //       "verbose": false,
+    //       "steps": true,
+    //     }
+    //   },
+    //   "mocha-junit-reporter": {
+    //     "stdout": `${functional_output_dir}/console.log`,
+    //     "options": {
+    //       "mochaFile": "./output/result.xml"
+    //     }
+    //   }
+    //   // inlineAssets: true,
 
-    },
+    // },
     
-      "mochawesome": {
-        "stdout": `${functional_output_dir}/`,
-        "options": {
-          "reportDir": `${functional_output_dir}/output`,
-          "reportFilename": `${functional_output_dir}/output/report`,
-          "overwrite": false,
-          "html":false,
-          "json":true
-        }
-      },
+    //   "mochawesome": {
+    //     "stdout": `${functional_output_dir}/`,
+    //     "options": {
+    //       "reportDir": `${functional_output_dir}/output`,
+    //       "reportFilename": `${functional_output_dir}/output/report`,
+    //       "overwrite": false,
+    //       "html":false,
+    //       "json":true
+    //     }
+    //   },
     //   "mocha-junit-reporter": {
     //     "stdout": "./output/console.log",
     //     "options": {
@@ -161,17 +164,17 @@ exports.config = {
     retryFailedStep: {
       enabled: true
     },
-    // pauseOnFail: {},
-    // cucumberJsonReporter: {
-    //   require: 'codeceptjs-cucumber-json-reporter',
-    //   enabled: true,               // if false, pass --plugins cucumberJsonReporter
-    //   attachScreenshots: true,     // true by default
-    //   attachComments: true,        // true by default
-    //   outputFile: functional_output_dir + '/cucumberOutput/',     // cucumber_output.json by default
-    //   uniqueFileNames: true,      // if true outputFile is ignored in favor of unique file names in the format of `cucumber_output_<UUID>.json`.  Useful for parallel test execution
-    //   includeExampleValues: false, // if true incorporate actual values from Examples table along with variable placeholder when writing steps to the report
-    //   timeMultiplier: 1000000,     // Used when calculating duration of individual BDD steps.  Defaults to nanoseconds
-    // }
+    pauseOnFail: {},
+    cucumberJsonReporter: {
+      require: 'codeceptjs-cucumber-json-reporter',
+      enabled: true,               // if false, pass --plugins cucumberJsonReporter
+      attachScreenshots: true,     // true by default
+      attachComments: true,        // true by default
+      outputFile: cucumber_functional_output_dir + '/cucumberOutput/',     // cucumber_output.json by default
+      uniqueFileNames: true,      // if true outputFile is ignored in favor of unique file names in the format of `cucumber_output_<UUID>.json`.  Useful for parallel test execution
+      includeExampleValues: false, // if true incorporate actual values from Examples table along with variable placeholder when writing steps to the report
+      timeMultiplier: 1000000,     // Used when calculating duration of individual BDD steps.  Defaults to nanoseconds
+    }
    
   },
   include: {
@@ -209,8 +212,8 @@ exports.config = {
 
 
 async function exitWithStatus() {
-  const status = await mochawesomeGenerateReport()
-  process.exit(status === 'PASS' ? 0 : 1)
+  // const status = await mochawesomeGenerateReport()
+  // process.exit(status === 'PASS' ? 0 : 1)
 
 }
 
@@ -228,7 +231,8 @@ async function teardown(){
     await backendMockApp.stopServer();
     await applicationServer.stop()
   }
-  statsReporter.run()
+  statsReporter.run();
+  generateCucumberReport();
   await exitWithStatus()
 
   // process.exit(1);
@@ -249,7 +253,13 @@ async function mochawesomeGenerateReport(){
   return report.stats.failures > 0 ? 'FAIL' : 'PASS';
 }
 
-function generateCucumberReport(){
+async function generateCucumberReport(){
+  await new Promise((resolve,reject) => {
+    setTimeout(() => {
+        cucumberReportUpdateEmbeddings();
+        resolve(true)
+    }, 2000);
+  });
    report.generate({
       jsonDir: functional_output_dir + '',
       reportPath: functional_output_dir + '',
@@ -267,4 +277,31 @@ function generateCucumberReport(){
     });
 }
 
+async function cucumberReportUpdateEmbeddings() {
+  const files = fs.readdirSync(functional_output_dir);
+  for (const f of files) {
+    if (f.startsWith('cucumber_output') && f.endsWith('.json')) {
+      const jsonString = fs.readFileSync(functional_output_dir + '/' + f, 'utf-8');
+      const json = JSON.parse(jsonString);
 
+      const ObjCount = json.length;
+      for (let i = 0; i < ObjCount; i++) {
+        const obj = json[i]
+        for (const element of obj.elements) {
+          for (const step of element.steps) {
+            for (const embedd of step.embeddings) {
+              embedd.data = new Buffer(embedd.data, 'base64').toString('ascii')
+            }
+          }
+        }
+      }
+      // console.log(json)
+      fs.writeFileSync(functional_output_dir + '/' + f, JSON.stringify(json, null, 2))
+
+
+    }
+
+
+  }
+
+}

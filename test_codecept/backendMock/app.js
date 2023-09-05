@@ -19,14 +19,26 @@ const judicialRoutes = require('./services/rdJudicial/routes')
 
 const roleAssignmentRoutes = require('./services/roleAssignments/routes')
 const bookingRoutes = require('./services/roleAssignments/bookingRoutes')
+
+const hearingRoutes = require('./services/hearings/routes')
+
+
 const ccdRoutes = require('./services/ccd/routes')
 const ccdApi = require('./services/ccd/index')
+
+const caseAssignmentsRoutes = require('./services/caseAssignments/routes')
+const prdOrganisationRoutes = require('./services/prdOrganisations/routes')
+
+const prdCommondataroutes = require('./services/prd/routes')
+
+
+const globalSearchRoutes = require('./services/globalSearch/routes')
 
 const idamOpenId = require('./services/idam/routes')
 const sessionRoutes = require('./services/session/routes')
 
 const users = require('./services/users');
-
+const userApiData = require('./services/userApiData');
 class MockApp {
 
     constructor() {
@@ -67,6 +79,12 @@ class MockApp {
 
         app.use((req,res,next) => {
             // console.log(`${req.method} : ${req.url}`);
+            const authToken = req.headers.authorization;
+            if (authToken){
+                const token = authToken.replace('Bearer ','')
+                userApiData.logSessionRequest(token, req);
+
+            }
             next();
         })
 
@@ -78,9 +96,17 @@ class MockApp {
         app.use('/refdata/location', locationRoutes)
         app.use('/refdata/case-worker', caseworkerRoutes )
         app.use('/refdata/judicial', judicialRoutes )
+
+
         app.use('/am/role-assignments', roleAssignmentRoutes)
         app.use('/am/bookings', bookingRoutes)
-        
+
+        app.use('/', hearingRoutes)
+
+        app.use('/globalSearch', globalSearchRoutes)
+
+        app.use('/case-assignments', caseAssignmentsRoutes)
+        app.use('/refdata/external/v1/organisations',prdOrganisationRoutes )
         
         app.post('/searchCases', (req,res) => {
             const cases = ccdApi.getSearchCases(req,res)
@@ -90,12 +116,13 @@ class MockApp {
 
         app.use('/', ccdRoutes )
 
+        app.use('/refdata/commondata', prdCommondataroutes)
 
 
         // await this.stopServer();
         this.server = await app.listen(8080);
 
-        console.log("mock server started on port : " + this.serverPort);
+        console.log("mock server started on port : " + 8080);
         // return "Mock started successfully"
 
     }

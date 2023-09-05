@@ -189,7 +189,7 @@ class BrowserWaits{
                 if (this.logLevel === 'DEBUG') {
                     await BrowserLogs.printBrowserLogs();
                 }
-                CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err.message} ${err.stack}. `);
+                CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err}. `);
 
                 error = err
                 console.log(err)

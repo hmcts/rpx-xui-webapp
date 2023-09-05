@@ -81,3 +81,7 @@ Then('I validate route guard route {string} with locator {string}, is route allo
     }
 
 });
+
+Then('I pause test', async function (routeUrl, locator) {
+    await browser.pause()
+});

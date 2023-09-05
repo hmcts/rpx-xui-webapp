@@ -1,1 +1,0 @@
-{"version":3,"file":"IPaymentView.d.ts","sourceRoot":"","sources":["../../../../projects/payment-lib/src/lib/interfaces/IPaymentView.ts"],"names":[],"mappings":"AAEA,MAAM,WAAW,YAAY;IAC3B,MAAM,EAAE,MAAM,CAAC;IACf,uBAAuB,EAAE,MAAM,CAAC;IAChC,SAAS,EAAE,MAAM,CAAC;CACnB"}

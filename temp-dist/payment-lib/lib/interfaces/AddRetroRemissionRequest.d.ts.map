@@ -1,1 +1,0 @@
-{"version":3,"file":"AddRetroRemissionRequest.d.ts","sourceRoot":"","sources":["../../../../projects/payment-lib/src/lib/interfaces/AddRetroRemissionRequest.ts"],"names":[],"mappings":"AAAA,qBAAa,wBAAwB;IACnC,UAAU,EAAE,MAAM,CAAC;IACnB,aAAa,EAAE,MAAM,CAAC;gBAEV,UAAU,EAAE,MAAM,EAAE,aAAa,EAAE,MAAM;CAItD"}

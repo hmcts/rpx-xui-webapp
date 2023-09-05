@@ -1,1 +1,0 @@
-{"version":3,"file":"IRefundStatus.d.ts","sourceRoot":"","sources":["../../../../projects/payment-lib/src/lib/interfaces/IRefundStatus.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,aAAa;IAC5B,YAAY,EAAE,MAAM,CAAC;IACrB,UAAU,EAAE,MAAM,CAAC;IACnB,EAAE,EAAE,MAAM,CAAC;IACX,KAAK,EAAE,MAAM,CAAC;IACd,UAAU,EAAE,MAAM,CAAC;IACnB,MAAM,EAAE,MAAM,CAAA;CACf"}

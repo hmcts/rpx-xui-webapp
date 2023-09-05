@@ -1,7 +1,0 @@
-export * from './footer';
-export * from './header';
-export * from './body';
-export * from './form';
-export * from './banners';
-export * from './tabs';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi8uLi8uLi9wcm9qZWN0cy9jY2QtY2FzZS11aS10b29sa2l0L3NyYy9saWIvY29tcG9uZW50cy9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxjQUFjLFVBQVUsQ0FBQztBQUN6QixjQUFjLFVBQVUsQ0FBQztBQUN6QixjQUFjLFFBQVEsQ0FBQztBQUN2QixjQUFjLFFBQVEsQ0FBQztBQUN2QixjQUFjLFdBQVcsQ0FBQztBQUMxQixjQUFjLFFBQVEsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCAqIGZyb20gJy4vZm9vdGVyJztcbmV4cG9ydCAqIGZyb20gJy4vaGVhZGVyJztcbmV4cG9ydCAqIGZyb20gJy4vYm9keSc7XG5leHBvcnQgKiBmcm9tICcuL2Zvcm0nO1xuZXhwb3J0ICogZnJvbSAnLi9iYW5uZXJzJztcbmV4cG9ydCAqIGZyb20gJy4vdGFicyc7XG4iXX0=

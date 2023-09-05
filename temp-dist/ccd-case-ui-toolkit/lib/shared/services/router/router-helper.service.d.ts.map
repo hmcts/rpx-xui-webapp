@@ -1,1 +1,0 @@
-{"version":3,"file":"router-helper.service.d.ts","sourceRoot":"","sources":["../../../../../../projects/ccd-case-ui-toolkit/src/lib/shared/services/router/router-helper.service.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,sBAAsB,EAAE,MAAM,iBAAiB,CAAC;;AAEzD,qBACa,mBAAmB;IACvB,sBAAsB,CAAC,KAAK,EAAE,sBAAsB,GAAG,MAAM,EAAE;yCAD3D,mBAAmB;6CAAnB,mBAAmB;CAW/B"}

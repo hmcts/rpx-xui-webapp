@@ -1,1 +1,0 @@
-{"version":3,"file":"alert-status-params.model.d.ts","sourceRoot":"","sources":["../../../../../../projects/ccd-case-ui-toolkit/src/lib/shared/domain/alert/alert-status-params.model.ts"],"names":[],"mappings":"AAEA,MAAM,WAAW,iBAAiB;IAChC,MAAM,EAAE,MAAM,CAAC;IACf,YAAY,CAAC,EAAE,MAAM,CAAC,MAAM,EAAE,MAAM,CAAC,CAAC;IACtC,QAAQ,CAAC,EAAE,OAAO,CAAC;CACpB"}

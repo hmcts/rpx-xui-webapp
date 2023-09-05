@@ -86,7 +86,7 @@
     "@angular/platform-browser-dynamic": "^15.2.9",
     "@angular/router": "^15.2.9",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "7.0.0-NodeAndNgUpgrades.1.7",
+    "@hmcts/ccd-case-ui-toolkit": "7.0.0-NodeAndNgUpgrades.1",
     "@hmcts/ccpay-web-component": "6.0.0-beta01",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.10.0",

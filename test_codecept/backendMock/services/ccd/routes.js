@@ -11,14 +11,14 @@ const userApiData = require('../userApiData')
 
 router.get('/data/internal/cases/:caseId', (req, res) => {
     const caseId = req.params['caseId'];
-
-    userApiData.sendResponse(req, res, "OnCaseDetails", () => ccdMockData.getCaseDetailsWithID(caseId ))
+   
+    userApiData.sendResponse(req, res, "OnCaseDetails", () => ccdMockData.caseDetailsResponse.hearingCase)
 
 });
 
-router.get('/data/internal/cases/:caseid', (req,res) => {
-    res.send(ccdMockData.getCaseDetailsWithID(req.params.caseid));
-})
+// router.get('/data/internal/cases/:caseid', (req,res) => {
+//     res.send(ccdMockData.getCaseDetailsWithID(req.params.caseid));
+// })
 
 router.get('/aggregated/caseworkers/:uid/jurisdictions', (req, res) => {
     res.send(ccdMockData.getJurisdictions());
@@ -33,11 +33,14 @@ router.get('/data/internal/case-types/:jurisdiction/search-inputs', (req, res) =
 })
 
 router.get('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
-    res.send(ccdMockData.getSolicitorCreateCaseConfig(req.params.jurisdiction, req.params.caseType))
+    ccdMockData.caseEventData.setEventProps({
+        show_summary:false
+    })
+    res.send(ccdMockData.caseEventData.eventData)
 })
 
 router.get('/data/internal/cases/:caseid/event-triggers/:eventId', (req, res) => {
-    res.send(ccdMockData.getSingleFieldCaseEventConfig(req.params.eventId));
+    res.send(ccdMockData.caseEventData.eventData);
 })
 
 router.get('/activity/cases/:cases/activity', (req, res) => {
@@ -134,7 +137,8 @@ router.post('/data/cases/:caseid/events', (req, res) => {
 
 
 router.post('/data/internal/searchCases', (req, res) => {
-    res.send(ccdMockData.caseList);
+    const responseBody = ccdMockData.caseList;
+    res.send(responseBody);
 })
 
 module.exports = router;

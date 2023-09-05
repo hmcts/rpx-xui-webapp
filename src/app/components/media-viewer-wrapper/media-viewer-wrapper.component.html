@@ -6,6 +6,7 @@
                      [contentType]="mediaContentType"
                      [enableAnnotations]="true"
                      [enableRedactions]="true"
+                     [enableRedactSearch]="enableRedactSearch$ | async"
                      [enableICP]="isIcpEnabled((icpEnabled$ | async), (icpJurisdictions$ | async))"
                      [multimediaPlayerEnabled]="true"
                      [caseId]="caseId"

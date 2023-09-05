@@ -35,7 +35,7 @@ describe('getFormattedSupportedServicesCaseTypes', () => {
           caseTypes: [
             'Asylum'
           ],
-          releaseVersion: '3.5',
+          releaseVersion: '4.0',
           serviceName: 'IA'
         }]
     };
@@ -48,7 +48,7 @@ describe('getFormattedSupportedServicesCaseTypes', () => {
         caseTypes: [
           'Asylum'
         ],
-        releaseVersion: '3.5',
+        releaseVersion: '4.0',
         serviceName: 'IA'
       },
       {
@@ -56,16 +56,16 @@ describe('getFormattedSupportedServicesCaseTypes', () => {
           'CIVIL',
           'GA'
         ],
-        releaseVersion: '3.5',
+        releaseVersion: '4.0',
         serviceName: 'CIVIL'
       }]
     };
 
     const stub = sinon.stub(SharedUtilities, 'getConfigValue');
     stub.withArgs('waSupportedServiceandCaseTypes.IA.caseTypes').returns('Asylum');
-    stub.withArgs('waSupportedServiceandCaseTypes.IA.releaseVersion').returns('3.5');
+    stub.withArgs('waSupportedServiceandCaseTypes.IA.releaseVersion').returns('4.0');
     stub.withArgs('waSupportedServiceandCaseTypes.CIVIL.caseTypes').returns('CIVIL,GA');
-    stub.withArgs('waSupportedServiceandCaseTypes.CIVIL.releaseVersion').returns('3.5');
+    stub.withArgs('waSupportedServiceandCaseTypes.CIVIL.releaseVersion').returns('4.0');
     const formattedServiceCasetypes = service.getFormattedSupportedServicesCaseTypes('IA,CIVIL');
     stub.restore();
     expect(formattedServiceCasetypes).to.deep.equal(expectedValue);

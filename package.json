@@ -67,8 +67,8 @@
     "test:backendMock": "DEBUG=true nodemon test_codecept/backendMock/app --standalone",
     "test:codeceptE2EDebug": "TEST_TYPE=e2e  npx codeceptjs run  --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @functional_test --reporter mochawesome ",
     "test:codeceptE2E": "TEST_TYPE=e2e  npx codeceptjs run-workers --suites 6 --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @functional_enabled --reporter mochawesome ",
-    "test:xuiIntegrationDebug": "DEBUG=true NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration  npx codeceptjs run  -p pauseOnFail --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep '(?=.*@functional_debug)^(?!.*@ignore)' --reporter mochawesome ",
-    "test:xuiIntegration": "yarn build && node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration PARALLEL=true  npx codeceptjs run-workers --suites 6  --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep '(?=.*@functional_enabled)^(?!.*@ignore)' --reporter mochawesome "
+    "test:xuiIntegrationDebug": "DEBUG=true NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration  npx codeceptjs run  -p pauseOnFail --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep '(?=.*@functional_debug)^(?!.*@ignore)' ",
+    "test:xuiIntegration": "yarn build && node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration PARALLEL=true  npx codeceptjs run-workers --suites 6  --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep '(?=.*@functional_enabled)^(?!.*@ignore)'  "
   },
   "private": true,
   "dependencies": {
@@ -199,7 +199,7 @@
     "codelyzer": "^5.1.2",
     "cucumber": "5.1.0",
     "cucumber-html-report": "0.6.5",
-    "cucumber-html-reporter": "^4.0.5",
+    "cucumber-html-reporter": "^7.1.1",
     "cucumber-pretty": "1.5.0",
     "cucumberjs-allure-reporter": "1.0.3",
     "eslint": "^8.37.0",

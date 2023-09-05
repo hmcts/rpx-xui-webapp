@@ -2386,12 +2386,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.2-case-flags-v2-reasonable-adjustments-text-amendments-v2":
-  version: 6.19.2-case-flags-v2-reasonable-adjustments-text-amendments-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.2-case-flags-v2-reasonable-adjustments-text-amendments-v2"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.3-mv-upgrade":
+  version: 6.19.3-mv-upgrade
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.3-mv-upgrade"
   dependencies:
     tslib: ^2.0.0
-  checksum: c188b7304353c96b8e4ae43384d989b5b6cc242b2199a6583e81acc7b6138c8df2319a35c2a3ce31e717057b1efae79842661b95e9b97725b48148a9008e692d
+  checksum: 0eafe53da0b2f4265af23dca92e83ebd34ce358483c09d094f9f810006c2e614007ac78e642531078cbeb2d63421f1eb84e6e7d6a7acefe6d880b10fdb2bf754
   languageName: node
   linkType: hard
 
@@ -2414,9 +2414,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:2.9.3":
-  version: 2.9.3
-  resolution: "@hmcts/media-viewer@npm:2.9.3"
+"@hmcts/media-viewer@npm:2.9.5":
+  version: 2.9.5
+  resolution: "@hmcts/media-viewer@npm:2.9.5"
   dependencies:
     "@circlon/angular-tree-component": ^11.0.0
     "@swimlane/ngx-datatable": ^19.0.0
@@ -2437,7 +2437,7 @@ __metadata:
     "@ngrx/router-store": ^11.0.0
     "@ngrx/store": ^11.0.0
     "@ngrx/store-devtools": ^11.0.0
-  checksum: d6702c0141da24cd7ebaecb5764f5f6eae825cdcd4633c06cfb5d613b314dac4ba899292be9543a8b359f48091f78d36e5ea58bfc050afc5f0947bdedc06a628
+  checksum: c089394177ea3d28b9913b4072154cc5c33879b11062b07631adf1594786b533ba9593aea15919eedd50b0c91bd2814689f8f2e9b95d703eed20e6976b5eb2fb
   languageName: node
   linkType: hard
 
@@ -3576,6 +3576,13 @@ __metadata:
   version: 1.0.3
   resolution: "@tsconfig/node16@npm:1.0.3"
   checksum: 3a8b657dd047495b7ad23437d6afd20297ce90380ff0bdee93fc7d39a900dbd8d9e26e53ff6b465e7967ce2adf0b218782590ce9013285121e6a5928fbd6819f
+  languageName: node
+  linkType: hard
+
+"@types/applicationinsights-js@npm:^1.0.9":
+  version: 1.0.9
+  resolution: "@types/applicationinsights-js@npm:1.0.9"
+  checksum: 642b3ba588253a3fa3cd32452e8eb99258057b8f7c99014f0006a707c858053f0d465dec1c727d47c646649343a88bab615d031e571a175aa6ccf743f8681b88
   languageName: node
   linkType: hard
 
@@ -5050,6 +5057,13 @@ __metadata:
   dependencies:
     default-require-extensions: ^2.0.0
   checksum: 65fc4fe074aa1cf291763a5835b1e209b5e407597d6662c30b0921928be8a074f75e69e751ddf388ad16411dd61cb70351a10914090b354a7a447c7bc164b0ac
+  languageName: node
+  linkType: hard
+
+"applicationinsights-js@npm:^1.0.20":
+  version: 1.0.21
+  resolution: "applicationinsights-js@npm:1.0.21"
+  checksum: a9c50f469f75d6aa571012c7d7bf4161a60da8f6e8c81bf2f6e575486455d0711762cfca788102e08f2c168968c96c93d3a8fe13d63bfd6cf09584d0e8310439
   languageName: node
   linkType: hard
 
@@ -19256,10 +19270,10 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.2-case-flags-v2-reasonable-adjustments-text-amendments-v2
+    "@hmcts/ccd-case-ui-toolkit": 6.19.3-mv-upgrade
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
-    "@hmcts/media-viewer": 2.9.3
+    "@hmcts/media-viewer": 2.9.5
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
     "@hmcts/rpx-xui-common-lib": 1.9.0-welsh-translation
@@ -19281,6 +19295,7 @@ __metadata:
     "@stryker-mutator/karma-runner": ^3.0.1
     "@stryker-mutator/mocha-runner": ^3.0.1
     "@stryker-mutator/typescript": ^3.0.1
+    "@types/applicationinsights-js": ^1.0.9
     "@types/config": ^0.0.36
     "@types/cookie-parser": ^1.4.2
     "@types/crypto-js": ^3.1.43
@@ -19300,6 +19315,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.57.0
     accessibility-checker: ^3.0.6
     applicationinsights: 1.7.2
+    applicationinsights-js: ^1.0.20
     axios: ^0.21.1
     axios-mock-adapter: ^1.18.2
     base-64: ^0.1.0

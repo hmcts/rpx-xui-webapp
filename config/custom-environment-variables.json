@@ -54,6 +54,23 @@
       "ia": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_IAC",
         "caseTypes": "SERVICES_HEARINGS_COMPONENT_IAC_CASE_TYPE"
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_SSCS"
+      },
+      "privatelaw": {
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_PRIVATELAW",
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_PRIVATELAW"
+      },
+      "civil": {
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_CIVIL",
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_CIVIL"
+      },
+      "ia": {
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_IAC",
+        "caseTypes": "SERVICES_HEAARINGS_CASETYPES_IAC"
+      },
+      "employment": {
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_ET",
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_ET"
       },
       "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API"
     },

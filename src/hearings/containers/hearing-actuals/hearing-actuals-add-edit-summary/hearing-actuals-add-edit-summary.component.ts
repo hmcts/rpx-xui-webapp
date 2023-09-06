@@ -27,11 +27,7 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
 
   public onSubmitHearingDetails(): void {
     if (this.hearingResult === HearingResult.CANCELLED || this.isValid()) {
-      // Had to add then() due to sonarcloud failure
-      this.router.navigate(['/', 'hearings', 'actuals', this.hearingRequestID, 'hearing-actual-edit-summary']).then(
-        (result) => console.log(result),
-        (error) => console.error(error)
-      );
+      this.router.navigate(['/', 'hearings', 'actuals', this.hearingRequestID, 'hearing-actual-edit-summary']);
     }
   }
 

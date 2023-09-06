@@ -30,6 +30,7 @@ describe('Pa11y Accessibility tests', function () {
         // //await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-ccd-connector'))
+        await initBrowser()
         await pa11ytest(this, actions, conf.baseUrl + 'cases/case-filter');
     });
 
@@ -42,6 +43,7 @@ describe('Pa11y Accessibility tests', function () {
                 // //await MockApp.startServer();
                 const actions = [];
                 actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
+                await initBrowser()
                 await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/test/casetype_1/solicitorCreate/' + page.id);
 
             });

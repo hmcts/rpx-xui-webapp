@@ -13,12 +13,12 @@ class UserDetails{
 
 
     async withIACJudicialUser() {
-        return await this.mockUserDetailsWithIdentifierAndRoles( ['caseworker', 'caseworker-ia','caseworker-ia-iacjudge']);
+        return await this.mockUserDetailsWithIdentifierAndRoles( ['caseworker', 'caseworker-ia','caseworker-ia-iacjudge','case-allocator', 'task-supervisor']);
 
     }
 
     async withIACLegalOpsUser() {
-       return await this.mockUserDetailsWithIdentifierAndRoles( ['caseworker', 'caseworker-ia','caseworker-ia-caseofficer']);
+        return await this.mockUserDetailsWithIdentifierAndRoles(['caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer','case-allocator', 'task-supervisor']);
 
     }
 

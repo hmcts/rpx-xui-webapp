@@ -290,7 +290,9 @@ async function cucumberReportUpdateEmbeddings() {
         for (const element of obj.elements) {
           for (const step of element.steps) {
             for (const embedd of step.embeddings) {
-              embedd.data = new Buffer(embedd.data, 'base64').toString('ascii')
+              if (embedd.mime_type === 'text/plain'){
+                embedd.data = new Buffer(embedd.data, 'base64').toString('ascii')
+              }
             }
           }
         }

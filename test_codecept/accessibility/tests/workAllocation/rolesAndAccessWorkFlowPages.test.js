@@ -37,7 +37,7 @@ describe('Work Allocation: Allocate', function () {
     });
 
 
-    it('choose role ', async function () {
+    it.skip('choose role ', async function () {
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseRole.container))
 

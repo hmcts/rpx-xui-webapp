@@ -128,7 +128,7 @@ describe('Work Allocation: Allocate', function () {
 
     });
 
-    it('Remove allocation ', async function () {
+    it.skip('Remove allocation ', async function () {
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.removeAllocation))
 

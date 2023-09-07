@@ -159,7 +159,7 @@ function HeaderPage() {
     this.clickPrimaryNavigationWithLabel = async function(label){
       const ele = element(by.xpath(`//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'${label}')]`));
       await BrowserWaits.waitForElement(ele)
-      await ele.wait()
+      await ele.click()
       
     }
 

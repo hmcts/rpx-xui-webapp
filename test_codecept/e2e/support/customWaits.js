@@ -214,7 +214,7 @@ class BrowserWaits{
         let counter = 0;
         do{
             status = await $("div.spinner-container").isPresent();
-            await BrowserWaits.waitForSeconds(2)
+            await this.waitForSeconds(2)
             counter++;
         }
         while (status && counter < 10)

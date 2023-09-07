@@ -1,4 +1,4 @@
-@ng   @codecept_enabled
+@ng  @codecept_enabled
 Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Background: Mock and browser setup

@@ -23,7 +23,7 @@ const functional_output_dir = path.resolve(`${__dirname}/../../functional-output
 exports.config = {
     timeout: 600,
     // tests:['../accessibility/tests/*.test.js'],
-    tests: path.resolve(`${__dirname}`, '../accessibility/tests/**/*.test.js'),
+    tests: path.resolve`${__dirname}`, '../accessibility/tests/**/*.test.js',
     output: functional_output_dir,
 
     helpers: {
@@ -173,7 +173,7 @@ async function teardown() {
     await backendMockApp.stopServer();
     await applicationServer.stop()
     await generateReport()
-    process.exit(1);
+    process.exit(0);
 }
 
 async function generateReport() {

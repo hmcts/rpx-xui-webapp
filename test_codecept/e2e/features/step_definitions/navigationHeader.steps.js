@@ -59,7 +59,10 @@ const caseManager = new CaseManager()
         await browserWaits.retryWithActionCallback(async () => {
             try{
                 await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
-                expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+                await browserWaits.retryWithActionCallback(async () => {
+                    expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+                })
+                
             }catch(err){
                 reportLogger.AddMessage(`failed to load primary nav page ${headerTabLabel}, retrying refresh`);
                 await browser.refresh();

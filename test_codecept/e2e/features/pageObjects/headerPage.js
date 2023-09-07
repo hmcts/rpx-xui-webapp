@@ -157,23 +157,9 @@ function HeaderPage() {
 
 
     this.clickPrimaryNavigationWithLabel = async function(label){
-      await BrowserWaits.retryWithActionCallback(async () => {
-        try {
-          const ele = element(by.xpath(`//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'${label}')]`));
-          await ele.wait()
-
-          await BrowserWaits.waitForSpinnerToDissappear();
-          // await BrowserWaits.waitForElementClickable(ele);
-          await ele.click();
-          await CucumberReporter.AddMessage(`Primary nav tab clicked successfully. "${label}"`, LOG_LEVELS.Debug);
-        } catch (err) {
-          await CucumberReporter.AddMessage(`Failed to click Primary nav tab . "${label}"`, LOG_LEVELS.Error);
-          await this.refreshBrowser();
-          throw new Error(err);
-        }
-
-        
-      });
+      const ele = element(by.xpath(`//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'${label}')]`));
+      await BrowserWaits.waitForElement(ele)
+      await ele.wait()
       
     }
 

@@ -11,7 +11,6 @@ Feature: Login
     Then I should be redirected to the Idam login page
     Then I should see failure error summary
 
-
   Scenario: login and log out from EUI with valid user
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page

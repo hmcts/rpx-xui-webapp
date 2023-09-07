@@ -59,6 +59,7 @@ const RuntimeTestData = require("../../support/runtimeTestData");
 
   When('I enter search fields jurisdiction {string} case type {string}', async function (jurisdiction,caseType) {
     await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForSpinnerToDissappear();
       try{
         await searchPage.selectJurisdiction(jurisdiction);
         await searchPage.selectCaseType(caseType);

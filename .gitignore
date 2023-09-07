@@ -63,6 +63,7 @@ local-only-tools
 /test/reports/
 reports/
 functional-output/
+mochawesome-report/
 
 /local-only-tools
 

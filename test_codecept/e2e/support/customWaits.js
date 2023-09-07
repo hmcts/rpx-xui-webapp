@@ -211,10 +211,13 @@ class BrowserWaits{
 
     async waitForSpinnerToDissappear() {
         let status = true
+        let counter = 0;
         do{
             status = await $("div.spinner-container").isPresent();
+            await BrowserWaits.waitForSeconds(2)
+            counter++;
         }
-        while (status)
+        while (status && counter < 10)
         
         // const isSpinnerPresent = await $("div.spinner-container").isPresent();
 

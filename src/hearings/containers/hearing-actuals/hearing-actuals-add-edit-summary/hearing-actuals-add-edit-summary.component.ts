@@ -25,13 +25,9 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
     this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
   }
 
-  /**
-   * TODO: Navigate to check your answers page if not cancelled and valid
-   * Determines whether submit hearing details on
-   */
-  public async onSubmitHearingDetails(): Promise<void> {
+  public onSubmitHearingDetails(): void {
     if (this.hearingResult === HearingResult.CANCELLED || this.isValid()) {
-      await this.router.navigate(['/', 'hearings', 'actuals', this.hearingRequestID, 'hearing-actual-edit-summary']);
+      this.router.navigate(['/', 'hearings', 'actuals', this.hearingRequestID, 'hearing-actual-edit-summary']);
     }
   }
 

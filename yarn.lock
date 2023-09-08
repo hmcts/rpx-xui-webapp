@@ -6654,7 +6654,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browser-stdout@npm:1.3.1, browser-stdout@npm:^1.3.1":
+"browser-stdout@npm:1.3.1":
   version: 1.3.1
   resolution: "browser-stdout@npm:1.3.1"
   checksum: b717b19b25952dd6af483e368f9bcd6b14b87740c3d226c2977a65e84666ffd67000bddea7d911f111a9b6ddc822b234de42d52ab6507bce4119a4cc003ef7b3
@@ -9000,6 +9000,13 @@ __metadata:
   version: 1.2.20180112
   resolution: "eligrey-classlist.js@npm:1.2.20180112"
   checksum: ccdaeb0bab27aaca0f0f16c8aae0e8d04cc0e94a098baaaf9c669ee320f8512faf982b754517524c3beb8c7c48f9f50aa58abc4638eb93a9a84a77bf4be14740
+  languageName: node
+  linkType: hard
+
+"emitter-component@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "emitter-component@npm:1.1.1"
+  checksum: 10e907f507a8c16a318e07595119e58b5c3267528d4e3b962ee9b14fd83c97599e7931ccb983ec551a8de8116955c1d6ae7d213c5b0c920b62c02b7cb8d7a4d7
   languageName: node
   linkType: hard
 
@@ -18036,7 +18043,6 @@ __metadata:
     axios: ^1.4.0
     axios-mock-adapter: ^1.21.5
     base-64: ^0.1.0
-    browser-stdout: ^1.3.1
     chai: ^4.2.0
     chai-as-promised: 7.1.1
     class-transformer: ^0.3.2
@@ -18122,6 +18128,7 @@ __metadata:
     sinon-express-mock: ^2.2.0
     smoothscroll-polyfill: ^0.4.3
     sonar-scanner: ^3.1.0
+    stream: ^0.0.2
     striptags: ^3.1.1
     terser-webpack-plugin: ^5.3.3
     ts-enum-util: 4.0.2
@@ -19252,6 +19259,15 @@ __metadata:
   dependencies:
     internal-slot: ^1.0.4
   checksum: d04173690b2efa40e24ab70e5e51a3ff31d56d699550cfad084104ab3381390daccb36652b25755e420245f3b0737de66c1879eaa2a8d4fc0a78f9bf892fcb42
+  languageName: node
+  linkType: hard
+
+"stream@npm:^0.0.2":
+  version: 0.0.2
+  resolution: "stream@npm:0.0.2"
+  dependencies:
+    emitter-component: ^1.1.1
+  checksum: 43d89e176c282234d452754f9b55a82c74ea68345bf6176af32c4c213801f88df7984c83ec5a735457705dddf4668373edb9f0ec270a7491e1d881631a763978
   languageName: node
   linkType: hard
 

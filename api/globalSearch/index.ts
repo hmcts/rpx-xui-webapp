@@ -4,7 +4,8 @@ import { handlePost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import {
   GLOBAL_SEARCH_SERVICES,
-  SERVICES_CCD_DATA_STORE_API_PATH
+  SERVICES_CCD_DATA_STORE_API_PATH,
+  SERVICE_NAME_MAPPINGS
 } from '../configuration/references';
 import { GlobalSearchService } from '../interfaces/globalSearchService';
 import { EnhancedRequest } from '../lib/models';
@@ -58,6 +59,8 @@ export function generateServices(jurisdictions: Jurisdiction[]): GlobalSearchSer
   const globalSearchServiceIds = getConfigValue(GLOBAL_SEARCH_SERVICES);
   const globalSearchServiceIdsArray = globalSearchServiceIds.split(',');
 
+  const serviceNamesMappings = getConfigValue(SERVICE_NAME_MAPPINGS) as GlobalSearchService [];
+
   // Generate global search services
   const globalSearchServices: GlobalSearchService[] = [];
   globalSearchServiceIdsArray.forEach((serviceId) => {
@@ -65,7 +68,8 @@ export function generateServices(jurisdictions: Jurisdiction[]): GlobalSearchSer
     if (jurisdiction) {
       globalSearchServices.push({ serviceId: jurisdiction.id, serviceName: jurisdiction.name });
     } else {
-      globalSearchServices.push({ serviceId, serviceName: serviceId });
+      const serviceName = serviceNamesMappings.find((map) => map.serviceId === serviceId).serviceName;
+      globalSearchServices.push({ serviceId, serviceName });
     }
   });
 

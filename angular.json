@@ -128,6 +128,10 @@
             "styles": [
               "src/styles.scss"
             ],
+            "include": [
+              "src/app/*.spec.*"
+            ],
+            "exclude": [],
             "scripts": [],
             "assets": [
               "src/favicon.ico",

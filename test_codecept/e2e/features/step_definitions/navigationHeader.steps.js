@@ -4,7 +4,6 @@ const cucumberReporter = require('../../../codeceptCommon/reportLogger');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const constants = require('../../support/constants');
 const featureToggleUtil = require('../../../ngIntegration/util/featureToggleUtil');
-const browserUtil = require("../../../ngIntegration/util/browserUtil");
 const headerpage = require('../pageObjects/headerPage');
 const config = require('../../config/conf.js');
 const reportLogger = require('../../../codeceptCommon/reportLogger');
@@ -17,6 +16,7 @@ const CaseManager = require('../pageObjects/common/CaseManager')
 
 const browser = require('../../../codeceptCommon/browser');
 
+const browserutil = require('../../../ngIntegration/util/browserUtil')
 
 
 const caseManager = new CaseManager()
@@ -65,7 +65,9 @@ const caseManager = new CaseManager()
                 
             }catch(err){
                 reportLogger.AddMessage(`failed to load primary nav page ${headerTabLabel}, retrying refresh`);
-                await browser.refresh();
+                 await browserutil.gotoHomePage();
+                await headerPage.waitForPrimaryNavDisplay();
+                await browserutil.waitForLD();
                 throw err;
             }
         //     try{

@@ -1,4 +1,4 @@
-@ng @functional_enabled @links_testing 
+@ng @links_testing 
 Feature: WA Release 2: Case details Tasks tab - Manage links (@integration_todo)
 
 Feature Description

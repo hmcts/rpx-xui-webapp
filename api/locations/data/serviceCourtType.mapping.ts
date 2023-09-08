@@ -8,7 +8,7 @@ export const SERVICES_COURT_TYPE_MAPPINGS = {
   PUBLICLAW: ['18'],
   BHA1: ['17'], // Employment Claims
   BFA1: ['4', '23'], // 4: Asylum Support Appeals, 23: Immigration and Asylum Tribunal
-  BBA1: ['4'],  // Asylum Support
+  BBA1: ['4'], // Asylum Support
   BBA2: ['14'], // Criminal Injuries Compensation
   BBA3: ['31'], // Social Security and Child Support Tribunal
   ABA1: ['18'], // Divorce,
@@ -23,5 +23,5 @@ export const SERVICES_COURT_TYPE_MAPPINGS = {
   AAA4: ['10'], // Civil
   AAA5: ['10'], // Civil
   AAA6: ['10'], // Civil
-  AAA7: ['10'], // Civil
+  AAA7: ['10'] // Civil
 };

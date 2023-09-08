@@ -24,7 +24,7 @@ describe('Jurisdiction', () => {
   const serviceList: GlobalSearchService[] = [
 
     { serviceId: 'IA', serviceName: 'Immigration & Asylum' },
-    { serviceId: 'CIVIL', serviceName: 'CIVIL' },
+    { serviceId: 'CIVIL', serviceName: 'Civil' },
     { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' },
     { serviceId: 'PUBLICLAW', serviceName: 'Public Law' }
   ];

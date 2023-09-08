@@ -113,6 +113,12 @@
   "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
   "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
+  "serviceNamesMappings": [
+    { "serviceId": "IA", "serviceName": "Immigration And Asylum" },
+    { "serviceId": "CIVIL", "serviceName": "Civil" },
+    { "serviceId": "PRIVATELAW", "serviceName": "Family Private Law" },
+    { "serviceId": "PUBLICLAW", "serviceName": "Public Law" }
+  ],
   "serviceRefDataMapping": [
     { "service": "IA", "serviceCodes": ["BFA1"] },
     { "service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"] },

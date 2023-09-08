@@ -37,11 +37,11 @@ Then('I validate debug text {string} not present in element with css selector {s
 
 
 Given('I navigate to home page', async function () {
-    await browserutil.gotoHomePage();
     await BrowserWaits.retryWithActionCallback(async () => {
+        await browserutil.gotoHomePage();
         await headerPage.waitForPrimaryNavDisplay();
         await browserutil.waitForLD();
-        await headerPage.clickAppLogoLink();
+        // await headerPage.clickAppLogoLink();
     });
 });
 

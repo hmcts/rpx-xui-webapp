@@ -68,8 +68,10 @@ export function generateServices(jurisdictions: Jurisdiction[]): GlobalSearchSer
     if (jurisdiction) {
       globalSearchServices.push({ serviceId: jurisdiction.id, serviceName: jurisdiction.name });
     } else {
-      const serviceName = serviceNamesMappings.find((map) => map.serviceId === serviceId).serviceName;
-      globalSearchServices.push({ serviceId, serviceName });
+      const mappedService = serviceNamesMappings.find((map) => map.serviceId === serviceId);
+      if (mappedService && mappedService.serviceName) {
+        globalSearchServices.push({ serviceId, serviceName: mappedService.serviceName });
+      }
     }
   });
 

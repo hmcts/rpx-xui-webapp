@@ -16,7 +16,7 @@ const CaseManager = require('../pageObjects/common/CaseManager')
 
 const browser = require('../../../codeceptCommon/browser');
 
-const browserutil = require('../../../ngIntegration/util/browserUtil')
+const browserUtil = require('../../../ngIntegration/util/browserUtil')
 
 
 const caseManager = new CaseManager()

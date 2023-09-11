@@ -31,7 +31,6 @@ nodejs:
         - mc-idam-client-secret
         - system-user-name
         - system-user-password
-        - appinsights-instrumentationkey-mc
   autoscaling:
     enabled: false
 redis:

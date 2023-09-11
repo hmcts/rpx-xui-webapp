@@ -103,6 +103,7 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
         result = {
             documentTitle: "test name " + test.test.title,
             pageUrl:"",
+            steps: actions,
             issues:[{
                 code:"test execution error",
                 message:""+err.message,
@@ -134,6 +135,7 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
     if (conf.failTestOna11yIssues) {
         assert(result.issues.length === 0, "a11y issues reported")
     }
+    result.steps = actions
     return result;
 
 }

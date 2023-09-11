@@ -145,8 +145,12 @@ export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessio
     && (roleIncludes(role.permissions, TaskPermission.OWN) || roleIncludes(role.permissions, TaskPermission.EXECUTE))).
     map((taskRole) => taskRole.role_category as RoleCategory);
 
+  console.log('roleCategories: '+ roleCategories);
+
   // Decide the category to be selected by default
   const roleCategoryToSelectByDefault = getRoleCategoryToBeSelectedByDefault(taskRoles, sessionStorageService);
+  console.log('roleCategoryToSelectByDefault: '+ roleCategoryToSelectByDefault);
+
   roleCategories.forEach((roleCategory) => {
     if (!options.find((option) => option.optionId === roleCategory)) {
       let label;
@@ -167,6 +171,8 @@ export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessio
       }
     }
   });
+  console.log('options: '+ options);
+
   return options;
 }
 

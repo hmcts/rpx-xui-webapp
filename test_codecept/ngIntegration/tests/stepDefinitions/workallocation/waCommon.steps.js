@@ -107,7 +107,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         await BrowserWaits.retryWithActionCallback(async () => {
             await idamLogin.do();
             userDetails = idamLogin.userDetailsResponse.details.data;
-            const sessionUserName = userDetails.userInfo ? userDetails.userInfo.sub : '';
+            const sessionUserName = userDetails.userInfo ? userDetails.userInfo.email : '';
             if (sessionUserName !== 'lukesuperuserxui@mailnesia.com' ){
                 throw new Error('session not updated with user, retrying');
             }

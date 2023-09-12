@@ -89,11 +89,10 @@ module.exports = async function () {
         if (test.state === 'failed' && process.env.TEST_TYPE !== 'e2e'){
             const mockSessiondataResponse = await mockClient.getUserSesionData(authCookies);
             featureLogsMessage(test, `${JSON.stringify(mockSessiondataResponse.data, null, 2)}`);
-            codeceptMochawesomeLog.AddJson(cookies);
+            codeceptMochawesomeLog.AddJson(authCookies);
         }
        
 
-        const cookies = idamLogin.xuiCallbackResponse;
         // featureLogsMessage(test, `\n cookies \n ${JSON.stringify(cookies, null, 2)}`);
         featureLogsMessage(test, `\n************ Test status:  ${test.state} : ${test.title}`);
         statsReporter.run()

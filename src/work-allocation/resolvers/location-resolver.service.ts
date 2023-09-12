@@ -6,7 +6,7 @@ import { Store, select } from '@ngrx/store';
 import * as moment from 'moment';
 import { EMPTY } from 'rxjs';
 import { Observable } from 'rxjs';
-import { of } from 'rxjs/internal/observable/of';
+import { of } from 'rxjs';
 import { catchError, first, map, mergeMap } from 'rxjs/operators';
 import { RoleAssignmentInfo, UserDetails } from '../../app/models';
 import { SessionStorageService } from '../../app/services';

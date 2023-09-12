@@ -65,9 +65,9 @@ const caseManager = new CaseManager()
                 
             }catch(err){
                 reportLogger.AddMessage(`failed to load primary nav page ${headerTabLabel}, retrying refresh`);
-                 await browserutil.gotoHomePage();
+                 await browserUtil.gotoHomePage();
                 await headerPage.waitForPrimaryNavDisplay();
-                await browserutil.waitForLD();
+                await browserUtil.waitForLD();
                 throw err;
             }
         //     try{

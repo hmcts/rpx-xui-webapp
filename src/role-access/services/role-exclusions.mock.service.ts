@@ -1,5 +1,4 @@
-import { Observable } from 'rxjs';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ExclusionStateData, Role } from '../models';
 import { RoleExclusionsService } from './role-exclusions.service';
 

@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
-import { EMPTY, Observable } from 'rxjs';
-import { of } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, first, tap } from 'rxjs/operators';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation/utils';
 

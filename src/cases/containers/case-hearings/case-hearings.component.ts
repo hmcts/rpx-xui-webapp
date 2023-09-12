@@ -67,9 +67,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.userRoles$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
       map((userDetails) => userDetails.userInfo.roles)
     );
-
-    this.userRoles$.subscribe((r) => { console.log("Roles: ", r); })
-
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
     this.hearingListLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingListLastError));
     this.hearingValuesLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesLastError));
@@ -114,7 +111,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
     this.roleCatSubscription = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).subscribe(
       (userRole) => {
-        console.log("User Roles: ", userRole);
         this.hearingsActions = [Actions.READ];
         if (userRole === UserRole.LegalOps) {
           this.hearingsActions = [...this.hearingsActions, Actions.CREATE, Actions.UPDATE, Actions.DELETE];

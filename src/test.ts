@@ -1,13 +1,10 @@
 import 'zone.js/dist/zone-testing';
-
 import { getTestBed } from '@angular/core/testing';
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
 import { addMatchers, getTestScheduler, initTestScheduler, resetTestScheduler } from 'jasmine-marbles';
-
-declare const require: any;
 
 // REMOVE AFTER UPGRADING to jasmine-marbles 0.6.0
 jasmine.getEnv().beforeAll(() => {
@@ -26,4 +23,3 @@ getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting()
 );
-

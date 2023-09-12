@@ -9,7 +9,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
-import { of } from 'rxjs/internal/observable/of';
+import { of } from 'rxjs';
 import * as fromAppStore from '../../../app/store';
 import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';

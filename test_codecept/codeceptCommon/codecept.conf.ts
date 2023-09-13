@@ -227,6 +227,7 @@ async function setup(){
 }
 
 async function teardown(){
+  console.log('Tests execution completed')
   if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
     await backendMockApp.stopServer();
     await applicationServer.stop()
@@ -254,6 +255,8 @@ async function mochawesomeGenerateReport(){
 }
 
 async function generateCucumberReport(){
+  console.log('Generating cucumber report')
+
   await new Promise((resolve,reject) => {
     setTimeout(() => {
         cucumberReportUpdateEmbeddings();
@@ -275,6 +278,8 @@ async function generateCucumberReport(){
         },
       }
     });
+  console.log('completed cucumber report')
+
 }
 
 async function cucumberReportUpdateEmbeddings() {

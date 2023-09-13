@@ -51,7 +51,7 @@
     "test:crossbrowser": "protractor ./test/e2e/config/crossbrowser.conf.js",
     "test:fullfunctional": "node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock && yarn run test:api && yarn run test:codeceptE2E",
     "test:fullfunctional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js --local",
-    "test:functional": " yarn run test:functionalApiE2e & yarn run test:xuiIntegration",
+    "test:functional": "yarn run test:functionalApiE2e & yarn run test:xuiIntegration",
     "test:functional:backup": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",
     "test:functional:local": "yarn test:ngIntegration &&  webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/functional.conf.js --local",
     "test:functionalApiE2e": "yarn run test:api && yarn run test:codeceptE2E",

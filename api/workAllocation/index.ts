@@ -247,9 +247,8 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
       delete req.body.hasNoAssigneeOnComplete;
     }
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
-    if (req.params.action === 'complete') {
-      trackTrace(`Task Completion of task Id: ${req.params.taskId} ${req.params.action}`, { functionCall: 'postTaskAction' });
-    }
+
+    trackTrace(`${req.params.action} of task Id: ${req.params.taskId} ${req.params.action}`, { functionCall: 'postTaskAction' });
     const { status, data } = await handleTaskPost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);

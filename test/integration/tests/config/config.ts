@@ -46,8 +46,8 @@ export const config = {
       }
     ]
   },
-  jurisdcitionNames: {
-    aat: ['Family Divorce', 'Public Law', 'Immigration & Asylum', 'Manage probate application','Employment','Civil'],
+  jurisdictionNames: {
+    aat: ['Family Divorce', 'Public Law', 'Immigration & Asylum','Civil','Manage probate application','Money Claims','Employment'],
     demo: ['Family Divorce - v104-26.1', 'Public Law', 'Immigration & Asylum']
   },
   em: {

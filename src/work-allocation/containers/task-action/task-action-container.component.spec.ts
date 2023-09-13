@@ -118,7 +118,7 @@ describe('WorkAllocation', () => {
       expect(component).toBeDefined();
     });
 
-    xit('should perform the action successfully', () => {
+    it('should perform the action successfully', () => {
       const submit: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#submit-button');
       submit.click();
       expect(mockWorkAllocationService.performActionOnTask).toHaveBeenCalledWith(mockTasks[0].id, ACTION.UNCLAIM, false, true);
@@ -325,7 +325,7 @@ describe('WorkAllocation', () => {
       fixture.destroy();
     });
 
-    xit('should perform the unclaim action successfully', () => {
+    it('should perform the unclaim action successfully', () => {
       const submit: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#submit-button');
       submit.click();
       expect(mockWorkAllocationService.performActionOnTask).toHaveBeenCalledWith(mockTask[0].id, ACTION.UNCLAIM, false, true);
@@ -489,7 +489,7 @@ describe('WorkAllocation', () => {
       fixture.destroy();
     });
 
-    xit('should perform the unclaim action successfully', () => {
+    it('should perform the unclaim action successfully', () => {
       const submit: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#submit-button');
       submit.click();
       expect(mockWorkAllocationService.performActionOnTask).toHaveBeenCalledWith(mockTask[0].id, ACTION.UNCLAIM, false, true);

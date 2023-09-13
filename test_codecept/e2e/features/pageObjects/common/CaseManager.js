@@ -413,40 +413,6 @@ class CaseManager {
                 cucumberReporter.AddMessage(fieldName + " : " + dateValue, LOG_LEVELS.Debug);
                 this._appendFormPageValues(fieldName1, dateValue);
                 break;
-
-            // case "ccd-write-document-field":
-            //     await BrowserWaits.retryWithActionCallback(async () => {
-            //         var fileToUpload ="dummy.pdf";
-            //         await (await ccdField.$('input.form-control')).uploadFile(fileToUpload);
-            //         const statusMessageELement = await ccdField.$("span.error-message")
-            //         let statusMessage = "";
-
-            //         await BrowserWaits.waitForCondition(async () => {
-            //             let isStatusDisplayed = await statusMessageELement.isPresent();
-            //             if (isStatusDisplayed){
-            //                 statusMessage = await statusMessageELement.getText();
-            //             }
-            //             console.log(`file upload status : Status message is displayed : ${isStatusDisplayed} : ${statusMessage}` );
-            //             return !isStatusDisplayed || statusMessage.includes("error");
-            //         });
-
-            //         let isStatusDisplayed = await statusMessageELement.isPresent();
-            //         if (isStatusDisplayed) {
-            //             statusMessage = await statusMessageELement.getText();
-            //         }
-
-            //         let uploadError = isStatusDisplayed || statusMessage.includes("error");
-            //         if (uploadError) {
-            //             var fileToUpload1 = path.resolve(__dirname, "../../../documents/dummy1.pdf");
-            //             await (await ccdField.$('input.form-control')).sendKeys(fileToUpload1);
-
-            //             throw new Error(`file upload error occured : Status message is displayed : ${isStatusDisplayed} : ${statusMessage}` );
-            //         }
-            //         cucumberReporter.AddMessage(fieldName + " : dummy.pdf", LOG_LEVELS.Debug);
-            //         this._appendFormPageValues(fieldName1, "dummy.pdf");
-            //         // await browser.sleep(5000);
-            //     });
-            //   break;
             case "ccd-write-multi-select-list-field":
                 var selectionFields = await ccdField.$$(".multiple-choice input");
                 var selectionFieldsCount = await selectionFields.count();

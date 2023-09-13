@@ -183,6 +183,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@angular-eslint/builder@npm:15.2.1":
+  version: 15.2.1
+  resolution: "@angular-eslint/builder@npm:15.2.1"
+  peerDependencies:
+    eslint: ^7.20.0 || ^8.0.0
+    typescript: "*"
+  checksum: 919f46d705d8cab644b04c00d8968cc5f482cefe4e016d9c1c2b5dd0643d3dc31fb4746030eef6b95cf221ae9c100f96fbcf233c008c57c623613d4607f2e3cb
+  languageName: node
+  linkType: hard
+
 "@angular-material-components/datetime-picker@npm:15.0.0":
   version: 15.0.0
   resolution: "@angular-material-components/datetime-picker@npm:15.0.0"
@@ -2286,9 +2296,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:2.10.0":
-  version: 2.10.0
-  resolution: "@hmcts/media-viewer@npm:2.10.0"
+"@hmcts/media-viewer@npm:2.10.1-RC.1":
+  version: 2.10.1-RC.1
+  resolution: "@hmcts/media-viewer@npm:2.10.1-RC.1"
   dependencies:
     "@circlon/angular-tree-component": ^11.0.4
     "@swimlane/ngx-datatable": ^20.0.0
@@ -2309,7 +2319,7 @@ __metadata:
     "@ngrx/router-store": ^15.0.0
     "@ngrx/store": ^15.0.0
     "@ngrx/store-devtools": ^15.0.0
-  checksum: b401939f6d96a4732836cab5748bb18573f863661d57b0710f02015f6db23b4f87d0b5dcc24cd6240a231514865cbe71a72e8d0d1354d92b4f6e0655af8340fd
+  checksum: a5e13ac71d38010ae27b3fa98f4267d64156eb759d50b59365d4b79d60369987e1209bd1e247fdba1b76170bb8bb093738b99a99167274d60f729c6e7d3f65f7
   languageName: node
   linkType: hard
 
@@ -17978,6 +17988,7 @@ __metadata:
   resolution: "rpx-exui@workspace:."
   dependencies:
     "@angular-devkit/build-angular": ~15.2.9
+    "@angular-eslint/builder": 15.2.1
     "@angular-material-components/datetime-picker": 15.0.0
     "@angular-material-components/moment-adapter": ^15.0.0
     "@angular/animations": ^15.2.9
@@ -17997,7 +18008,7 @@ __metadata:
     "@hmcts/ccd-case-ui-toolkit": 7.0.0-NodeAndNgUpgrades.1
     "@hmcts/ccpay-web-component": 6.0.0-beta01
     "@hmcts/frontend": 0.0.39-alpha
-    "@hmcts/media-viewer": 2.10.0
+    "@hmcts/media-viewer": 2.10.1-RC.1
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
     "@hmcts/rpx-xui-common-lib": 2.0.0-NodeAndNgUpgrades-03

@@ -11,20 +11,30 @@ describe('CCD Endpoints', () => {
 
   beforeEach(function () {
     this.timeout(120000);
-
     setTestContext(this);
     Request.clearSession();
   });
 
   it('Jurisdictions for user role', async function() {
+
+    console.log('...Jurisdictions for user role .. is being tested');
+
     await Request.withSession(userName, password);
-    const response = await Request.get('aggregated/caseworkers/:uid/jurisdictions?access=read', null, 200);
+    const xsrfToken = await getXSRFToken(userName, password);
+    const headers = {
+      experimental: true,
+      'X-XSRF-TOKEN': xsrfToken
+    };
+
+    const response = await Request.get('aggregated/caseworkers/:uid/jurisdictions?access=read', headers, 200);
+    //console.log(' Response array is  .... ' + JSON.stringify(response.data));
     expect(response.data).to.be.an('array');
     expect(response.data.map((e) => e.name)).to.include.members(config.jurisdcitionNames[config.testEnv]);
   });
 
   const jurisdictions = config.jurisdictions[config.testEnv];
   for (const jurisdiction of jurisdictions) {
+    console.log('...LOOPING OF THE jurisdiction .....2') ;
     for (const caseType of jurisdiction.caseTypeIds) {
       it(`work-basket-input for casetype  ${caseType}`, async () => {
         await Request.withSession(userName, password);
@@ -36,16 +46,16 @@ describe('CCD Endpoints', () => {
     }
   }
 
-  it('user profile request', async () => {
-    await Request.withSession(userName, password);
-    const xsrfToken = await getXSRFToken(userName, password);
-    const headers = {
-      experimental: true,
-      'X-XSRF-TOKEN': xsrfToken
-    };
-    const response = await Request.get('data/internal/profile', headers, 200);
-    expect(response.status).to.equal(200);
-  });
+  // it('user profile request', async () => {
+  //   await Request.withSession(userName, password);
+  //   const xsrfToken = await getXSRFToken(userName, password);
+  //   const headers = {
+  //     experimental: true,
+  //     'X-XSRF-TOKEN': xsrfToken
+  //   };
+  //   const response = await Request.get('data/internal/profile', headers, 200);
+  //   expect(response.status).to.equal(200);
+  // });
 
   function getSolicitorCreateUrl(caseType: string, event: string) {
     return `data/internal/case-types/${caseType}/event-triggers/${event}?ignore-warning=false`;

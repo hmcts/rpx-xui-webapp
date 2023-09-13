@@ -129,7 +129,7 @@
               "src/styles.scss"
             ],
             "include": [
-              "src/app/*.spec.*"
+              "src/**/*.spec.*"
             ],
             "exclude": [],
             "scripts": [],
@@ -140,15 +140,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**",
-              "**/api/**"
+            "eslintConfig": ".eslintrc.cjs",
+            "lintFilePatterns": [
+              "src/**/*.ts"
             ]
           }
         }
@@ -172,8 +168,9 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
+            "eslintConfig": ".eslintrc.js",
             "tsConfig": "e2e/tsconfig.e2e.json",
             "exclude": [
               "**/node_modules/**"

@@ -48,8 +48,8 @@ export const config = {
   },
 
   jurisdcitionNames: {
-    //aat: ['Family Divorce', 'Public Law', 'Immigration & Asylum','Civil','Manage probate application','Money Claims','Employment'],
-      aat:  ['Immigration & Asylum','Civil','Employment'],
+      aat: ['Family Divorce', 'Public Law', 'Immigration & Asylum','Civil','Manage probate application','Money Claims','Employment'],
+      //aat:  ['Immigration & Asylum','Civil','Employment'],
       demo: ['Family Divorce - v104-26.1', 'Public Law', 'Immigration & Asylum']
   },
   em: {

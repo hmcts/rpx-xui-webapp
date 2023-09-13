@@ -48,7 +48,7 @@ describe('CCD Endpoints',  () => {
         expect(response.status).to.equal(200);
     });
 
-   
+
 
     function getSolicitorCreateUrl(caseType: string, event: string) {
         return `data/internal/case-types/${caseType}/event-triggers/${event}?ignore-warning=false`;

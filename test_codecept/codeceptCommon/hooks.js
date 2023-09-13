@@ -18,6 +18,51 @@ const isIntegrationTestType = process.env.TEST_TYPE && process.env.TEST_TYPE ===
 
 const testType = process.env.TEST_TYPE
 
+let featureLogFile = null;
+
+if (process.env.PARALLEL === "true" || true) {
+    global.console.log = (message) => {
+      
+        if (featureLogFile){
+            const folderName = `${__dirname}/../../functional-output/tests/featureLogs-${testType}`
+            if (!fs.existsSync(folderName)) {
+                fs.mkdirSync(folderName);
+            }
+            fs.appendFileSync(`${featureLogFile}`, '\n'+message)
+        }
+    }
+
+
+    global.console.error = (error) => {
+
+        if (featureLogFile) {
+            const folderName = `${__dirname}/../../functional-output/tests/featureLogs-${testType}`
+            if (!fs.existsSync(folderName)) {
+                fs.mkdirSync(folderName);
+            }
+            fs.appendFileSync(`${featureLogFile}`, "\n ERROR \n")
+
+            fs.appendFileSync(`${featureLogFile}`, '\n'+error)
+        }
+    }
+
+   
+}
+
+
+
+
+function setFeatureLogFile(test){
+    const fileName = getFeatureFileName(test)
+    const folderName = `${__dirname}/../../functional-output/tests/featureLogs-${testType}`
+    featureLogFile = `${folderName}/${fileName}.txt`
+    // if (!fs.existsSync(folderName)) {
+    //     fs.mkdirSync(folderName);
+    // }
+    codeceptMochawesomeLog.featureLogFilePath = featureLogFile;
+}
+
+
 function getFeatureFileName(test){
     const filePathSplit = test.file.split('/')
     return filePathSplit[filePathSplit.length - 1]
@@ -64,6 +109,7 @@ function featureLogsMessage(test, message){
 module.exports = async function () {
 
     event.dispatcher.on(event.test.before, async function (test) {
+        setFeatureLogFile(test)
       global.scenarioData = {}
       output.print(`Test started : ${test.title}`)
         codeceptMochawesomeLog.AddMessage(`************ Test started : ${test.title}`)

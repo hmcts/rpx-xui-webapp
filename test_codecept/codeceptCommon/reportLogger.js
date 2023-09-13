@@ -1,8 +1,13 @@
 const browser = require('./browser')
-
+const fs = require('fs')
 // const I = getActor();
 
 class CodeceptMochawesomeLog{
+
+    constructor(){
+        this.featureLogFilePath = null;
+    }
+
     getDate(){
         const d = new Date();
         const hh = d.getHours() < 10 ? `0${d.getHours()}` : d.getHours();
@@ -37,6 +42,8 @@ class CodeceptMochawesomeLog{
     LogTestDataInput(message){
         try{
             browser.get_I().addMochawesomeContext(`>>>>>>> [ Test data input ]: ${message}`);
+            // fs.appendFileSync(this.featureLogFilePath, '\n'+message)
+
 
         } catch (err) {
             console.log("Error occured adding message to report. " + err.stack);
@@ -52,9 +59,12 @@ class CodeceptMochawesomeLog{
             message = "=> " + message
             var buf = message.toString("binary")
             browser.get_I().say( buf)
+            // fs.appendFileSync(this.featureLogFilePath, '\n' + message)
         }
         catch(err){
-            console.log("Error occured adding message to report. "+err.stack);
+            console.log("Error occured adding message to report. "+err.message+' \n '+err.stack);
+            // fs.appendFileSync(this.featureLogFilePath, '\n' + err.message + ' \n ' + err.stack)
+
         }
         console.log( message)
     }
@@ -157,5 +167,7 @@ class CodeceptMochawesomeLog{
     // }
 
 }
+
+
 
 module.exports = new CodeceptMochawesomeLog();

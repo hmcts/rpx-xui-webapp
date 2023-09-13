@@ -295,7 +295,7 @@ async function cucumberReportUpdateEmbeddings() {
         for (const element of obj.elements) {
           for (const step of element.steps) {
             for (const embedd of step.embeddings) {
-              if (embedd.mime_type === 'text/plain'){
+              if (embedd.mime_type === 'text/plain' && !embedd.data.startsWith('=>')){
                 embedd.data = new Buffer(embedd.data, 'base64').toString('ascii')
               }
             }

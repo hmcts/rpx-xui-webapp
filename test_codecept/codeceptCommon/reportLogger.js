@@ -49,7 +49,7 @@ class CodeceptMochawesomeLog{
 
         try{
             // browser.get_I().addMochawesomeContext(this.getDate() + message);
-
+            message = "=> " + message
             var buf = message.toString("binary")
             browser.get_I().say( buf)
         }

@@ -2386,12 +2386,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.5-secure-doc-case-creation.1":
-  version: 6.19.5-secure-doc-case-creation.1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.5-secure-doc-case-creation.1"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.4":
+  version: 6.19.4
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.4"
   dependencies:
     tslib: ^2.0.0
-  checksum: 402336dbe92fbd8e28e24c53c28e62ba43f8f5f0097b986c95cb6a3867994d332548389ce51ef2c798df3716c607cbde215a5a79b4f731309de7960d52ebc634
+  checksum: b894da493c4316f6c8a9e6ddd4743bea16082ae366ca589f01b666cef543a9d1820d20e543204e1767600baf9190bd8a50549f681058d94b1d437af6dbe01252
   languageName: node
   linkType: hard
 
@@ -19270,7 +19270,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.5-secure-doc-case-creation.1
+    "@hmcts/ccd-case-ui-toolkit": 6.19.4
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.5

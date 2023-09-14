@@ -110,7 +110,7 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW,SCSSS",
+  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW,SCSS",
   "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW,SCSS",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
   "serviceRefDataMapping": [

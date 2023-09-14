@@ -17,8 +17,6 @@ describe('CCD Endpoints', () => {
 
   it('Jurisdictions for user role', async function() {
 
-    console.log('...Jurisdictions for user role .. is being tested');
-
     await Request.withSession(userName, password);
     const xsrfToken = await getXSRFToken(userName, password);
     const headers = {
@@ -34,7 +32,6 @@ describe('CCD Endpoints', () => {
 
   const jurisdictions = config.jurisdictions[config.testEnv];
   for (const jurisdiction of jurisdictions) {
-    console.log('...LOOPING OF THE jurisdiction .....2') ;
     for (const caseType of jurisdiction.caseTypeIds) {
       it(`work-basket-input for casetype  ${caseType}`, async () => {
         await Request.withSession(userName, password);
@@ -46,16 +43,16 @@ describe('CCD Endpoints', () => {
     }
   }
 
-  // it('user profile request', async () => {
-  //   await Request.withSession(userName, password);
-  //   const xsrfToken = await getXSRFToken(userName, password);
-  //   const headers = {
-  //     experimental: true,
-  //     'X-XSRF-TOKEN': xsrfToken
-  //   };
-  //   const response = await Request.get('data/internal/profile', headers, 200);
-  //   expect(response.status).to.equal(200);
-  // });
+  it('user profile request', async () => {
+    await Request.withSession(userName, password);
+    const xsrfToken = await getXSRFToken(userName, password);
+    const headers = {
+      experimental: true,
+      'X-XSRF-TOKEN': xsrfToken
+    };
+    const response = await Request.get('data/internal/profile', headers, 200);
+    expect(response.status).to.equal(200);
+  });
 
   function getSolicitorCreateUrl(caseType: string, event: string) {
     return `data/internal/case-types/${caseType}/event-triggers/${event}?ignore-warning=false`;

@@ -6,18 +6,6 @@ import {
 } from '@angular/platform-browser-dynamic/testing';
 import { addMatchers, getTestScheduler, initTestScheduler, resetTestScheduler } from 'jasmine-marbles';
 
-// REMOVE AFTER UPGRADING to jasmine-marbles 0.6.0
-jasmine.getEnv().beforeAll(() => {
-  return addMatchers();
-});
-jasmine.getEnv().beforeEach(() => {
-  initTestScheduler();
-});
-jasmine.getEnv().afterEach(() => {
-  getTestScheduler().flush();
-  resetTestScheduler();
-});
-
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,

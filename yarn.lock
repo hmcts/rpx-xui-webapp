@@ -12614,14 +12614,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jasmine-marbles@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "jasmine-marbles@npm:0.5.0"
+"jasmine-marbles@npm:^0.9.1":
+  version: 0.9.2
+  resolution: "jasmine-marbles@npm:0.9.2"
   dependencies:
-    lodash: ^4.5.0
+    lodash: ^4.17.20
   peerDependencies:
-    rxjs: ^6.4.0
-  checksum: 3f15cf1d74e546c0a3285af31d18eea66a395469745056ee9a34193a8a2780a458f9934804681d362556a1cd67fe0691072a96b1037353415d5cb7b7191a18f3
+    rxjs: ^7.0.0
+  checksum: 63d54eb6f8a8870af6c4b47cc1d1baba3c3448e40d76c9f0db379874a74b049de61856717073068acf037b60d760c82cc1aa4e853353c0beeb173649c640ca7e
   languageName: node
   linkType: hard
 
@@ -14197,7 +14197,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:>= 3.7.0, lodash@npm:^4.17.10, lodash@npm:^4.17.11, lodash@npm:^4.17.12, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.21, lodash@npm:^4.17.5, lodash@npm:^4.5.0":
+"lodash@npm:>= 3.7.0, lodash@npm:^4.17.10, lodash@npm:^4.17.11, lodash@npm:^4.17.12, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.5":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7
@@ -18089,7 +18089,7 @@ __metadata:
     http-proxy-middleware: 1.1.x
     isomorphic-fetch: ^3.0.0
     jasmine-core: ~3.4.0
-    jasmine-marbles: ^0.5.0
+    jasmine-marbles: ^0.9.1
     jasmine-spec-reporter: ~4.2.1
     jsonpath: ^1.1.1
     jsonwebtoken: ^8.5.1

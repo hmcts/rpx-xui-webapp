@@ -29,13 +29,15 @@ router.get('/roles', (req,res) => {
 
 
 router.post('/query' , (req,res) => {
-    // console.log(`am query ${JSON.stringify(req.body)}`)
+    console.log(`am query ${JSON.stringify(req.body)}`)
     const reqProps = Object.keys(req.body);
     if (reqProps.includes('queryRequests')){
         const serviceUsers = service.getQueryResults(req.body.queryRequests);
         res.send({ roleAssignmentResponse: serviceUsers });
     } else if (reqProps.includes('roleName') && reqProps.includes('roleType')){
         res.send({roleAssignmentResponse: service.getServiceUsersRolesAssignments(req.body)})
+    } else if (reqProps.includes('searchRequest')){
+
     }
 
 

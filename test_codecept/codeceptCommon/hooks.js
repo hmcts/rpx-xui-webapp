@@ -1,6 +1,5 @@
 const event = require('codeceptjs').event;
 const worker = require('codeceptjs').worker;
-
 const output = require('codeceptjs').output;
 
 const fs = require('fs');
@@ -20,7 +19,7 @@ const testType = process.env.TEST_TYPE
 
 let featureLogFile = null;
 
-if (process.env.PARALLEL === "true" || true) {
+if (process.env.PARALLEL === "true") {
     global.console.log = (message) => {
       
         if (featureLogFile){
@@ -28,7 +27,8 @@ if (process.env.PARALLEL === "true" || true) {
             if (!fs.existsSync(folderName)) {
                 fs.mkdirSync(folderName);
             }
-            fs.appendFileSync(`${featureLogFile}`, '\n'+message)
+            const dateTime = new Date('2022', '2', '28').toLocaleDateString('en-GB');
+            fs.appendFileSync(`${featureLogFile}`, `\n ${dateTime} : ${message}`)
         }
     }
 

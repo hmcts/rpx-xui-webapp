@@ -1,4 +1,4 @@
-@ng @functional_enabled @functional_debug
+@ng @functional_enabled 
 Feature: WA Release 2: My work - My Tasks
 
     Background: Mock and browser setup

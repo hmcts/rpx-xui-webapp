@@ -12,6 +12,8 @@ var spawn = require('child_process').spawn;
 const backendMockApp = require('../backendMock/app');
 const statsReporter = require('./statsReporter')
 
+let executionResult = '';
+
 let appWithMockBackend = null;
 const testType = process.env.TEST_TYPE
 
@@ -22,6 +24,7 @@ const head = process.env.HEAD
 console.log(`testType : ${testType}`)
 console.log(`parallel : ${parallel}`)
 console.log(`headless : ${!head}`)
+
 
 
 let pipelineBranch = process.env.TEST_URL.includes('pr-') || process.env.TEST_URL.includes('manage-case.aat')  ? "preview" : "master"
@@ -213,7 +216,9 @@ exports.config = {
 
 async function exitWithStatus() {
   // const status = await mochawesomeGenerateReport()
-  // process.exit(status === 'PASS' ? 0 : 1)
+  process.exit(executionResult === 'pass' ? 0 : 1)
+
+
 
 }
 
@@ -259,7 +264,7 @@ async function generateCucumberReport(){
 
   await new Promise((resolve,reject) => {
     setTimeout(() => {
-        cucumberReportUpdateEmbeddings();
+        processCucumberJsonReports();
         resolve(true)
     }, 2000);
   });
@@ -279,10 +284,11 @@ async function generateCucumberReport(){
       }
     });
   console.log('completed cucumber report')
+  
 
 }
 
-async function cucumberReportUpdateEmbeddings() {
+async function processCucumberJsonReports() {
   const files = fs.readdirSync(functional_output_dir);
   for (const f of files) {
     if (f.startsWith('cucumber_output') && f.endsWith('.json')) {
@@ -294,6 +300,9 @@ async function cucumberReportUpdateEmbeddings() {
         const obj = json[i]
         for (const element of obj.elements) {
           for (const step of element.steps) {
+            if (executionResult === 'pass'){
+              executionResult = step.result.status === 'passed' ? 'pass' : 'fail';
+            }
             for (const embedd of step.embeddings) {
               if (embedd.mime_type === 'text/plain' && !embedd.data.startsWith('=>')){
                 embedd.data = new Buffer(embedd.data, 'base64').toString('ascii')
@@ -304,11 +313,8 @@ async function cucumberReportUpdateEmbeddings() {
       }
       // console.log(json)
       fs.writeFileSync(functional_output_dir + '/' + f, JSON.stringify(json, null, 2))
-
-
     }
-
-
   }
 
+  return executionResult;
 }

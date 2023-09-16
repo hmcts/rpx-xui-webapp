@@ -12,7 +12,7 @@ var spawn = require('child_process').spawn;
 const backendMockApp = require('../backendMock/app');
 const statsReporter = require('./statsReporter')
 
-let executionResult = '';
+let executionResult = 'passed';
 
 let appWithMockBackend = null;
 const testType = process.env.TEST_TYPE
@@ -216,7 +216,8 @@ exports.config = {
 
 async function exitWithStatus() {
   // const status = await mochawesomeGenerateReport()
-  process.exit(executionResult === 'pass' ? 0 : 1)
+  console.log(`*************** executionResult: ${executionResult}  *************** `)
+  process.exit(executionResult === 'passed' ? 0 : 1)
 
 
 
@@ -238,7 +239,7 @@ async function teardown(){
     await applicationServer.stop()
   }
   statsReporter.run();
-  generateCucumberReport();
+  await generateCucumberReport();
   await exitWithStatus()
 
   // process.exit(1);
@@ -288,10 +289,11 @@ async function generateCucumberReport(){
 
 }
 
-async function processCucumberJsonReports() {
+function processCucumberJsonReports() {
   const files = fs.readdirSync(functional_output_dir);
   for (const f of files) {
     if (f.startsWith('cucumber_output') && f.endsWith('.json')) {
+      console.log(`processing cucumber-json-report : ${f}`);
       const jsonString = fs.readFileSync(functional_output_dir + '/' + f, 'utf-8');
       const json = JSON.parse(jsonString);
 
@@ -300,8 +302,8 @@ async function processCucumberJsonReports() {
         const obj = json[i]
         for (const element of obj.elements) {
           for (const step of element.steps) {
-            if (executionResult === 'pass'){
-              executionResult = step.result.status === 'passed' ? 'pass' : 'fail';
+            if (executionResult === 'passed'){
+              executionResult = step.result.status;
             }
             for (const embedd of step.embeddings) {
               if (embedd.mime_type === 'text/plain' && !embedd.data.startsWith('=>')){

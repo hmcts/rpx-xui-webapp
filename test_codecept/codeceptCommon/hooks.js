@@ -27,7 +27,7 @@ if (process.env.PARALLEL === "true") {
             if (!fs.existsSync(folderName)) {
                 fs.mkdirSync(folderName);
             }
-            const dateTime = new Date('2022', '2', '28').toLocaleDateString('en-GB');
+            const dateTime = new Date().toLocaleDateString('en-GB');
             fs.appendFileSync(`${featureLogFile}`, `\n ${dateTime} : ${message}`)
         }
     }
@@ -110,10 +110,12 @@ module.exports = async function () {
 
     event.dispatcher.on(event.test.before, async function (test) {
         setFeatureLogFile(test)
-      global.scenarioData = {}
-      output.print(`Test started : ${test.title}`)
+        global.scenarioData = {}
+        output.print(`Test started : ${test.title}`)
         codeceptMochawesomeLog.AddMessage(`************ Test started : ${test.title}`)
-        await mockClient.logMessage(`************ Test started : ${test.title}`)
+        if(process.env.TEST_TYPE !== 'e2e'){
+            await mockClient.logMessage(`************ Test started : ${test.title}`)
+        }
         featureLogsMessage(test, `\n ************ Test started : ${test.title}`);
 
         statsReporter.run()

@@ -57,9 +57,12 @@ class BackendMockClient{
 
 
     async logMessage(mesage){
-        return await axiosInstance.post(`${this.baseUrl}session/logMessage`, {
-            message: mesage
-        })
+        if (process.env.TEST_TYPE !== 'e2e') {
+            return await axiosInstance.post(`${this.baseUrl}session/logMessage`, {
+                message: mesage
+            })
+        }
+       
     }
 
 }

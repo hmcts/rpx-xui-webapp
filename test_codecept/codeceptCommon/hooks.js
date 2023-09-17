@@ -1,7 +1,7 @@
 const event = require('codeceptjs').event;
 const worker = require('codeceptjs').worker;
 const output = require('codeceptjs').output;
-
+const path = require('path')
 const fs = require('fs');
 
 const browser = require('./browser')
@@ -19,36 +19,41 @@ const testType = process.env.TEST_TYPE
 
 let featureLogFile = null;
 
-if (process.env.PARALLEL === "true") {
-    global.console.log = (message) => {
-      
-        if (featureLogFile){
-            const folderName = `${__dirname}/../../functional-output/tests/featureLogs-${testType}`
+function overrideConsoleLogforWorkersThreads(){
+
+    if (process.env.PARALLEL === "true") {
+        const consoleLogRef = console.log;
+        const consoleErrorRef = console.error;
+        global.console.log = function (message) {
+            const folderName = path.resolve(__dirname, `../../functional-output/tests/featureLogs-${testType}`)
+            if (!featureLogFile) {
+                featureLogFile = folderName + '/executionLogs.log'
+            }
             if (!fs.existsSync(folderName)) {
                 fs.mkdirSync(folderName);
             }
-            const dateTime = new Date().toLocaleDateString('en-GB');
+            const dateTime = new Date().toLocaleTimeString('en-GB');
+            consoleLogRef(message)
             fs.appendFileSync(`${featureLogFile}`, `\n ${dateTime} : ${message}`)
         }
-    }
 
 
-    global.console.error = (error) => {
-
-        if (featureLogFile) {
-            const folderName = `${__dirname}/../../functional-output/tests/featureLogs-${testType}`
+        global.console.error = (error) => {
+            const folderName = path.resolve(__dirname, `../../functional-output/tests/featureLogs-${testType}`)
+            if (!featureLogFile) {
+                featureLogFile = folderName + '/executionLogs.log'
+            }
             if (!fs.existsSync(folderName)) {
                 fs.mkdirSync(folderName);
             }
             fs.appendFileSync(`${featureLogFile}`, "\n ERROR \n")
 
-            fs.appendFileSync(`${featureLogFile}`, '\n'+error)
+            fs.appendFileSync(`${featureLogFile}`, '\n' + error)
+            consoleErrorRef(error)
         }
     }
 
-   
 }
-
 
 
 
@@ -107,7 +112,9 @@ function featureLogsMessage(test, message){
 }
 
 module.exports = async function () {
-
+    event.dispatcher.on(event.suite.before, async function (test) {
+        overrideConsoleLogforWorkersThreads();
+    });
     event.dispatcher.on(event.test.before, async function (test) {
         setFeatureLogFile(test)
         global.scenarioData = {}

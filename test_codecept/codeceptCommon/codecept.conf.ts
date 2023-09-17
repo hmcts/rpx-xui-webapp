@@ -290,6 +290,7 @@ async function generateCucumberReport(){
 }
 
 function processCucumberJsonReports() {
+  const executionOutcomes = {}
   const files = fs.readdirSync(functional_output_dir);
   for (const f of files) {
     if (f.startsWith('cucumber_output') && f.endsWith('.json')) {
@@ -302,6 +303,7 @@ function processCucumberJsonReports() {
         const obj = json[i]
         for (const element of obj.elements) {
           for (const step of element.steps) {
+            executionOutcomes[step.result.status] = step.result.status
             if (executionResult === 'passed'){
               executionResult = step.result.status;
             }
@@ -313,10 +315,11 @@ function processCucumberJsonReports() {
           }
         }
       }
-      // console.log(json)
       fs.writeFileSync(functional_output_dir + '/' + f, JSON.stringify(json, null, 2))
     }
   }
+  console.log(executionOutcomes)
+
 
   return executionResult;
 }

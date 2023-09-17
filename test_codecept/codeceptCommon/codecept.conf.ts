@@ -272,6 +272,8 @@ async function generateCucumberReport(){
    report.generate({
       jsonDir: functional_output_dir + '',
       reportPath: functional_output_dir + '',
+      displayDuration:true,
+      durationInMS: true,
       metadata: {
         browser: {
           name: "chrome",

@@ -5,7 +5,7 @@
     "node": ">=12.13.0"
   },
   "scripts": {
-    "build": "yarn build:prod && yarn build:node",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider; yarn build:prod && yarn build:node",
     "build:docker": "docker build -t xui .",
     "build:ng": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --prod build",
     "build:node": "cd api && yarn build",

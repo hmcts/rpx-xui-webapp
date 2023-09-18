@@ -25,7 +25,7 @@ withNightlyPipeline(type, product, component) {
    // enableFortifyScan('rpx-aat')
     // enableFullFunctionalTest(120)
     //enableSecurityScan()
-    //enableMutationTest()
+    enableMutationTest()
     enableCrossBrowserTest()
 
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net/'

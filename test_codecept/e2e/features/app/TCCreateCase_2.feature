@@ -1,6 +1,10 @@
 @fullfunctional @test @functional_enabled
 Feature: Test case type case creation and case details validations Part 2
 
+    Background:
+        When I navigate to Expert UI Url
+        Given I am logged into Expert UI with valid user details
+        Then I should be redirected to EUI dashboard page
 
     Scenario: Validate check your answers summary page
         When I click on primary navigation header tab "Create case", I see selected tab page displayed
@@ -23,4 +27,3 @@ Feature: Test case type case creation and case details validations Part 2
         When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case"
         Then I am on case form page
         Then Validate event pages display show condition logic
-        

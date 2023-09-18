@@ -135,7 +135,8 @@ module.exports = async function () {
 
     event.dispatcher.on(event.test.after, async function (test) {
         output.print(`Test ${test.state} : ${test.title}`)
-     
+        await mockClient.logMessage(`************ Test status : ${test.title}:${test.state }`)
+
         actor().flushLogsToReport();
 
         const authCookies = idamLogin.authToken

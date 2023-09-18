@@ -7,7 +7,7 @@ class StatsReporter{
 
     constructor(){
         this.analysisOutputFile = `${__dirname}/../../functional-output/tests/run-analysis-${testType}.txt`;
-        this.statLogsDir = `${__dirname}/../../functional-output/tests/featureLogs-${testType}`;
+        this.statLogsDir = `${__dirname}/../../functional-output/tests/featureRunLogs-${testType}`;
         this.stats = {
             features :[]
         }
@@ -50,14 +50,14 @@ class StatsReporter{
             for (const line of fileContent.split(/\r?\n/)){
                 // console.log(`Line from file: ${line}`);
                 if (line.includes('************ Test started')){
-                    let testName = line.split(':')[1]
+                    let testName = line.split('|')[2]
                     testName = testName.endsWith('{') ? testName.replace('{', '') : testName;
                     this.updateScenario(f.replace('.txt',''), testName, 'Started','unknown')
 
                 }
                 if (line.includes('************ Test status')) {
-                    const testName = line.split(':')[2]
-                    const result = line.split(':')[1]
+                    const testName = line.split('|')[3]
+                    const result = line.split('|')[2]
                     this.updateScenario(f.replace('.txt', ''), testName, 'Completed', result)
 
                 }

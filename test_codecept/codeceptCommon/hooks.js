@@ -104,7 +104,7 @@ function logsTestStats(status, completedTests, workerStats){
 
 function featureLogsMessage(test, message){
     const fileName = getFeatureFileName(test)
-    const folderName = `${__dirname}/../../functional-output/tests/featureLogs-${testType}`
+    const folderName = `${__dirname}/../../functional-output/tests/featureRunLogs-${testType}`
     if (!fs.existsSync(folderName)) {
         fs.mkdirSync(folderName);
     }
@@ -121,7 +121,9 @@ module.exports = async function () {
         output.print(`Test started : ${test.title}`)
         codeceptMochawesomeLog.AddMessage(`************ Test started : ${test.title}`)
         await mockClient.logMessage(`************ Test started : ${test.title}`)
-        featureLogsMessage(test, `\n ************ Test started : ${test.title}`);
+        const dateTime = new Date().toLocaleTimeString('en-GB');
+
+        featureLogsMessage(test, `\n${dateTime}| ************ Test started | ${test.title}`);
 
         statsReporter.run()
 
@@ -135,12 +137,12 @@ module.exports = async function () {
 
     event.dispatcher.on(event.test.after, async function (test) {
         output.print(`Test ${test.state} : ${test.title}`)
-        await mockClient.logMessage(`************ Test status : ${test.title}:${test.state }`)
+        await mockClient.logMessage(`************ Test status|${test.title}:${test.state }`)
 
         actor().flushLogsToReport();
 
         const authCookies = idamLogin.authToken
-        if (test.state === 'failed' && process.env.TEST_TYPE !== 'e2e'){
+        if (test.state === 'failed' && process.env.TEST_TYPE !== 'e2||e'){
             const mockSessiondataResponse = await mockClient.getUserSesionData(authCookies);
             featureLogsMessage(test, `${JSON.stringify(mockSessiondataResponse.data, null, 2)}`);
             codeceptMochawesomeLog.AddJson(authCookies);
@@ -148,7 +150,8 @@ module.exports = async function () {
        
 
         // featureLogsMessage(test, `\n cookies \n ${JSON.stringify(cookies, null, 2)}`);
-        featureLogsMessage(test, `\n************ Test status:  ${test.state} : ${test.title}`);
+        const dateTime = new Date().toLocaleTimeString('en-GB');
+        featureLogsMessage(test, `\n${dateTime}| ************ Test status|${test.state}|${test.title}`);
         statsReporter.run()
         // await e2eTestDataManager.cleanupForTags(test.tags);
 

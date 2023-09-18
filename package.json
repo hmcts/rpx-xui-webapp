@@ -49,9 +49,9 @@
     "test:smoke": "TEST_TYPE=smoke  npx codeceptjs run --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @smoke --reporter mochawesome",
     "test:smoke:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
     "test:crossbrowser": "protractor ./test/e2e/config/crossbrowser.conf.js",
-    "test:fullfunctional": "yarn run test:functionalApiE2e && yarn run test:xuiIntegration",
+    "test:fullfunctional": "yarn run test:functionalApiE2e & yarn run test:xuiIntegration",
     "test:fullfunctional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js --local",
-    "test:functional": "yarn run test:functionalApiE2e && yarn run test:xuiIntegration",
+    "test:functional": "yarn run test:functionalApiE2e & yarn run test:xuiIntegration",
     "test:functional:backup": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",
     "test:functional:local": "yarn test:ngIntegration &&  webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/functional.conf.js --local",
     "test:functionalApiE2e": "yarn run test:api && yarn run test:codeceptE2E",
@@ -66,9 +66,9 @@
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
     "test:backendMock": "DEBUG=true nodemon test_codecept/backendMock/app --standalone",
     "test:codeceptE2EDebug": "TEST_TYPE=e2e  npx codeceptjs run  --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @functional_test",
-    "test:codeceptE2E": "PARALLEL=true TEST_TYPE=e2e  npx codeceptjs run-workers --suites 8 --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @functional_enabled ",
+    "test:codeceptE2E": "PARALLEL=true TEST_TYPE=e2e  npx codeceptjs run-workers --suites 6 --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @functional_enabled ",
     "test:xuiIntegrationDebug": "DEBUG=true NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration  npx codeceptjs run  -p pauseOnFail --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep '(?=.*@functional_debug)^(?!.*@ignore)' ",
-    "test:xuiIntegration": "yarn build && node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration PARALLEL=true  npx codeceptjs run-workers --suites 8  --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep '(?=.*@functional_enabled)^(?!.*@ignore)'  "
+    "test:xuiIntegration": "yarn build && node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration PARALLEL=true  npx codeceptjs run-workers --suites 6  --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep '(?=.*@functional_enabled)^(?!.*@ignore)'  "
   },
   "private": true,
   "dependencies": {

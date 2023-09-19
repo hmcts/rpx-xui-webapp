@@ -2386,12 +2386,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.5-case-flags-v2-reasonable-adjustments":
-  version: 6.19.5-case-flags-v2-reasonable-adjustments
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.5-case-flags-v2-reasonable-adjustments"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.5-case-flags-v2-1-internal-external-grouping":
+  version: 6.19.5-case-flags-v2-1-internal-external-grouping
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.5-case-flags-v2-1-internal-external-grouping"
   dependencies:
     tslib: ^2.0.0
-  checksum: 0f4aa9de5dc3b1b641b782005c3021a69ce29ecb4f1407d2303bd3ecb04c32008b314545ae255464d10823dd20fee40ae184859d1aca15baae45a3f1b7047041
+  checksum: 7b2c9304f85fbe29f8363dae1c49eac9baf4422101df868191f8d20ca1a414c35318c525ed71aaad1bb9f5b4a5c6716c774efb03d5c966761ff86d1d69a4e0b1
   languageName: node
   linkType: hard
 
@@ -19270,7 +19270,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.5-case-flags-v2-reasonable-adjustments
+    "@hmcts/ccd-case-ui-toolkit": 6.19.5-case-flags-v2-1-internal-external-grouping
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.5

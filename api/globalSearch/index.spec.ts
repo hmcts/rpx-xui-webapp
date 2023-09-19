@@ -22,12 +22,7 @@ describe('Jurisdiction', () => {
     { id: 'PRIVATELAW', name: 'PRIVATE LAW', description: null, caseTypes: null }
   ];
   const serviceList: GlobalSearchService[] = [
-
-    { serviceId: 'IA', serviceName: 'Immigration & Asylum' },
-    { serviceId: 'CIVIL', serviceName: 'CIVIL' },
-    { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' },
-    { serviceId: 'PUBLICLAW', serviceName: 'Public Law' },
-    { serviceId: 'SCSS', serviceName: 'SCSS' }
+    { serviceId: 'GLOBAL_SEARCH_SERVICES', serviceName: 'GLOBAL_SEARCH_SERVICES' }
   ];
 
   beforeEach(() => {

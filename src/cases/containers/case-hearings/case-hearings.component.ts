@@ -1,16 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { Store, select } from '@ngrx/store';
-import * as moment from 'moment';
-import { Observable, Subscription, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { UserRole } from '../../../app/models';
-import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
-import * as fromAppStore from '../../../app/store';
-import { HearingConditions } from '../../../hearings/models/hearingConditions';
-import { HearingListModel } from '../../../hearings/models/hearingList.model';
-import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
+import {Component, OnDestroy, OnInit} from '@angular/core'
+import {ActivatedRoute, Router} from '@angular/router'
+import {LoadingService} from '@hmcts/ccd-case-ui-toolkit'
+import {select, Store} from '@ngrx/store'
+import * as moment from 'moment'
+import {combineLatest, Observable, Subscription} from 'rxjs'
+import {map} from 'rxjs/operators'
+import {UserRole} from '../../../app/models'
+import * as fromAppStore from '../../../app/store'
+import {HearingConditions} from '../../../hearings/models/hearingConditions'
+import {HearingListModel} from '../../../hearings/models/hearingList.model'
+import {HearingListViewModel} from '../../../hearings/models/hearingListView.model'
 import {
   Actions,
   EXUIDisplayStatusEnum,
@@ -18,10 +17,10 @@ import {
   HearingCategory,
   HearingSummaryEnum,
   Mode
-} from '../../../hearings/models/hearings.enum';
-import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
-import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
-import * as fromHearingStore from '../../../hearings/store';
+} from '../../../hearings/models/hearings.enum'
+import {LovRefDataModel} from '../../../hearings/models/lovRefData.model'
+import {LovRefDataService} from '../../../hearings/services/lov-ref-data.service'
+import * as fromHearingStore from '../../../hearings/store'
 
 @Component({
   selector: 'exui-case-hearings',
@@ -44,7 +43,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hearingListLastErrorState$: Observable<fromHearingStore.State>;
   public hearingValuesLastErrorState$: Observable<fromHearingStore.State>;
   public lastErrorSubscription: Subscription;
-  public roleCatSubscription: Subscription;
+  public userRolesSubscription: Subscription;
   public hasRequestAction: boolean = false;
   public caseId: string = '';
   public serverError: { id: string, message: string } = null;
@@ -59,7 +58,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly activatedRoute: ActivatedRoute,
-              private readonly roleCategoryMappingService: RoleCategoryMappingService,
               private readonly router: Router,
               private readonly lovRefDataService: LovRefDataService,
               private readonly loadingService: LoadingService) {
@@ -109,22 +107,18 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.pastAndCancelledHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.PAST_OR_CANCELLED);
     this.listedHearings$ = this.getHearingListByStatus(EXUIDisplayStatusEnum.LISTED);
 
-    this.roleCatSubscription = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).subscribe(
-      (userRole) => {
-        this.hearingsActions = [Actions.READ];
-        if (userRole === UserRole.LegalOps) {
-          this.hearingsActions = [...this.hearingsActions, Actions.CREATE, Actions.UPDATE, Actions.DELETE];
-        } else if (userRole === UserRole.Ogd) {
+    this.userRolesSubscription = this.userRoles$.subscribe (
+      (roles) => {
+        if (roles.includes(UserRole.HearingManager)) {
+          this.hearingsActions = [Actions.READ, Actions.CREATE, Actions.UPDATE, Actions.DELETE];
+          this.hasRequestAction = true;
+        } else if (roles.includes(UserRole.HearingViewer)) {
+          this.hearingsActions = [Actions.READ];
+        } else if (roles.includes(UserRole.ListedHearingViewer)) {
+          this.hearingsActions = [Actions.READ];
           this.isOgdRole = true;
         }
-        if (this.hearingsActions.includes(Actions.CREATE)) {
-          this.hasRequestAction = true;
-        }
-        if (this.hearingsActions.includes(Actions.CREATE)) {
-          this.hasRequestAction = true;
-        }
-      }
-    );
+      });
   }
 
   public getHearingListByStatus(status: EXUISectionStatusEnum | EXUIDisplayStatusEnum): Observable<HearingListViewModel[]> {
@@ -197,8 +191,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     if (this.lastErrorSubscription) {
       this.lastErrorSubscription.unsubscribe();
     }
-    if (this.roleCatSubscription) {
-      this.roleCatSubscription.unsubscribe();
+    if (this.userRolesSubscription) {
+      this.userRolesSubscription.unsubscribe();
     }
     if (this.hearingValuesSubscription) {
       this.hearingValuesSubscription.unsubscribe();

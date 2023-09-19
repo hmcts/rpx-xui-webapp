@@ -8,8 +8,6 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
 import { Observable, of } from 'rxjs';
-import { UserRole } from '../../../app/models';
-import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingDayScheduleModel } from '../../../hearings/models/hearingDaySchedule.model';
 import { HearingListModel } from '../../../hearings/models/hearingList.model';
@@ -25,14 +23,16 @@ import {
 import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import * as fromHearingStore from '../../../hearings/store';
+import * as appStore from '../../../app/store'
 import { CaseHearingsComponent } from './case-hearings.component';
+import {UserService} from '../../../app/services/user/user.service'
 
 describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
   let fixture: ComponentFixture<CaseHearingsComponent>;
   let mockStore: Store<fromHearingStore.State>;
+  let mockAppStore: Store<appStore.State>;
   let spyStore: any;
-  let mockRoleCategoryMappingService: RoleCategoryMappingService;
   let mockLovRefDataService: any;
 
   const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
@@ -398,8 +398,23 @@ describe('CaseHearingsComponent', () => {
     navigate: jasmine.createSpy('navigate')
   };
 
+  const USER_DETAILS = {
+    sessionTimeout: {
+      idleModalDisplayTime: 666,
+      totalIdleTime: 6666,
+    },
+    canShareCases: true,
+    userInfo: {
+      id: 999,
+      forename: 'David',
+      surname: 'St Hubbins',
+      email: 'david.st.hubbins@tap.com',
+      active: true,
+      roles: ['caseworker-sscs','hearing-manager']
+    }
+  };
+
   beforeEach(() => {
-    mockRoleCategoryMappingService = jasmine.createSpyObj('RoleCategoryMappingService', ['getUserRoleCategory']);
     mockLovRefDataService = jasmine.createSpyObj('LovRefDataService', ['getListOfValues']);
     mockLovRefDataService.getListOfValues.and.returnValue(of(HEARING_TYPES_REF_DATA));
     TestBed.configureTestingModule({
@@ -427,20 +442,21 @@ describe('CaseHearingsComponent', () => {
           useValue: mockRouter
         },
         {
-          provide: RoleCategoryMappingService,
-          useValue: mockRoleCategoryMappingService
-        },
-        {
           provide: LovRefDataService,
           useValue: mockLovRefDataService
+        },
+        {
+          provide: UserService,
+          useValue: {
+            getUserDetails: () => of( USER_DETAILS )
+          }
         }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(CaseHearingsComponent);
     mockStore = TestBed.inject(Store);
+
     component = fixture.componentInstance;
-    // @ts-ignore
-    mockRoleCategoryMappingService.getUserRoleCategory.and.returnValue(of(UserRole.Judicial));
     spyStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
     fixture.detectChanges();
   });
@@ -457,17 +473,17 @@ describe('CaseHearingsComponent', () => {
 
   it('should unsubscribe', () => {
     component.lastErrorSubscription = new Observable().subscribe();
-    component.roleCatSubscription = new Observable().subscribe();
+    component.userRolesSubscription = new Observable().subscribe();
     component.hearingValuesSubscription = new Observable().subscribe();
     component.refDataSubscription = new Observable().subscribe();
     spyOn(component.lastErrorSubscription, 'unsubscribe').and.callThrough();
-    spyOn(component.roleCatSubscription, 'unsubscribe').and.callThrough();
+    spyOn(component.userRolesSubscription, 'unsubscribe').and.callThrough();
     spyOn(component.hearingValuesSubscription, 'unsubscribe').and.callThrough();
     spyOn(component.refDataSubscription, 'unsubscribe').and.callThrough();
 
     component.ngOnDestroy();
     expect(component.lastErrorSubscription.unsubscribe).toHaveBeenCalled();
-    expect(component.roleCatSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.userRolesSubscription.unsubscribe).toHaveBeenCalled();
     expect(component.hearingValuesSubscription.unsubscribe).toHaveBeenCalled();
     expect(component.refDataSubscription.unsubscribe).toHaveBeenCalled();
   });
@@ -485,13 +501,12 @@ describe('CaseHearingsComponent', () => {
         surname: 'test',
         email: 'test@test.com',
         active: 'true',
-        roles: ['caseworker-sscs']
+        roles: ['caseworker-sscs', 'hearing-manager']
       }
     };
 
+    component.userRoles$ = of(USER_DETAILS.userInfo.roles);
     spyStore.pipe.and.returnValue(of(USER_DETAILS));
-    // @ts-ignore
-    mockRoleCategoryMappingService.getUserRoleCategory.and.returnValue(of(UserRole.LegalOps));
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.hearingsActions.length).toBe(4);
@@ -512,19 +527,18 @@ describe('CaseHearingsComponent', () => {
         surname: 'test',
         email: 'test@test.com',
         active: 'true',
-        roles: ['caseworker-sscs']
+        roles: ['caseworker-sscs', 'listed-hearing-viewer']
       }
     };
 
+    component.userRoles$ = of(USER_DETAILS.userInfo.roles);
     spyStore.pipe.and.returnValue(of(USER_DETAILS));
-    // @ts-ignore
-    mockRoleCategoryMappingService.getUserRoleCategory.and.returnValue(of(UserRole.Ogd));
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.isOgdRole).toBeTruthy();
   });
 
-  it('should getHearsList by EXUISectionStatus', (done) => {
+  it('should getHearingsList by EXUISectionStatus', (done) => {
     const hearingList = component.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
     hearingList.subscribe((hearing) => {
       expect(hearing.length).toBe(7);
@@ -532,7 +546,7 @@ describe('CaseHearingsComponent', () => {
     });
   });
 
-  it('should getHearsList by EXUIDisplayStatus', (done) => {
+  it('should getHearingsList by EXUIDisplayStatus', (done) => {
     const hearingList = component.getHearingListByStatus(EXUIDisplayStatusEnum.LISTED);
     hearingList.subscribe((hearing) => {
       expect(hearing.length).toBe(1);

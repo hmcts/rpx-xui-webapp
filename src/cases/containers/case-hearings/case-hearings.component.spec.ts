@@ -23,15 +23,13 @@ import {
 import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import * as fromHearingStore from '../../../hearings/store';
-import * as appStore from '../../../app/store'
 import { CaseHearingsComponent } from './case-hearings.component';
-import {UserService} from '../../../app/services/user/user.service'
+import { UserService } from '../../../app/services/user/user.service';
 
 describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
   let fixture: ComponentFixture<CaseHearingsComponent>;
   let mockStore: Store<fromHearingStore.State>;
-  let mockAppStore: Store<appStore.State>;
   let spyStore: any;
   let mockLovRefDataService: any;
 
@@ -401,7 +399,7 @@ describe('CaseHearingsComponent', () => {
   const USER_DETAILS = {
     sessionTimeout: {
       idleModalDisplayTime: 666,
-      totalIdleTime: 6666,
+      totalIdleTime: 6666
     },
     canShareCases: true,
     userInfo: {
@@ -410,7 +408,7 @@ describe('CaseHearingsComponent', () => {
       surname: 'St Hubbins',
       email: 'david.st.hubbins@tap.com',
       active: true,
-      roles: ['caseworker-sscs','hearing-manager']
+      roles: ['caseworker-sscs', 'hearing-manager']
     }
   };
 
@@ -448,7 +446,7 @@ describe('CaseHearingsComponent', () => {
         {
           provide: UserService,
           useValue: {
-            getUserDetails: () => of( USER_DETAILS )
+            getUserDetails: () => of(USER_DETAILS)
           }
         }
       ]

@@ -196,7 +196,8 @@ exports.config = {
     if (!parallel) {
       await teardown()
     }
-      
+    console.log(`*************** executionResult: ${executionResult}  *************** `)
+    process.exit(executionResult === 'passed' ? 0 : 1)
     
   },
   bootstrapAll: async () => {
@@ -209,7 +210,8 @@ exports.config = {
     if (parallel) {
       await teardown()
     }
-    
+    console.log(`*************** executionResult: ${executionResult}  *************** `)
+    process.exit(executionResult === 'passed' ? 0 : 1)
   }
 }
 
@@ -240,7 +242,6 @@ async function teardown(){
   }
   statsReporter.run();
   await generateCucumberReport();
-  await exitWithStatus()
 
   // process.exit(1);
 }

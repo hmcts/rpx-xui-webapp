@@ -195,9 +195,9 @@ exports.config = {
   teardown: async () => {
     if (!parallel) {
       await teardown()
+      exitWithStatus()
     }
-    console.log(`*************** executionResult: ${executionResult}  *************** `)
-    process.exit(executionResult === 'passed' ? 0 : 1)
+   
     
   },
   bootstrapAll: async () => {
@@ -209,14 +209,14 @@ exports.config = {
   teardownAll: async () => {  
     if (parallel) {
       await teardown()
+      exitWithStatus()
     }
-    console.log(`*************** executionResult: ${executionResult}  *************** `)
-    process.exit(executionResult === 'passed' ? 0 : 1)
+   
   }
 }
 
 
-async function exitWithStatus() {
+function exitWithStatus() {
   // const status = await mochawesomeGenerateReport()
   console.log(`*************** executionResult: ${executionResult}  *************** `)
   process.exit(executionResult === 'passed' ? 0 : 1)
@@ -242,6 +242,7 @@ async function teardown(){
   }
   statsReporter.run();
   await generateCucumberReport();
+
 
   // process.exit(1);
 }

@@ -38,7 +38,7 @@ describe('AdditionalSecurityAmendedConverter', () => {
       hearingRequestToCompare: {
         hearingRequestMainModel: {
           requestDetails: {
-            timeStamp: null,
+            timestamp: null,
             versionNumber: 1
           },
           hearingDetails: {
@@ -178,7 +178,7 @@ describe('AdditionalSecurityAmendedConverter', () => {
           requestDetails: {
             hearingRequestID: '1000000',
             status: 'LISTED',
-            timeStamp: '2021-11-30T09:00:00.000Z',
+            timestamp: '2021-11-30T09:00:00.000Z',
             versionNumber: 1,
             cancellationReasonCodes: ['withdraw', 'struck']
           },

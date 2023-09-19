@@ -5,7 +5,7 @@
     "node": ">=12.13.0"
   },
   "scripts": {
-    "build": "yarn build:prod && yarn build:node",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider; yarn build:prod && yarn build:node",
     "build:docker": "docker build -t xui .",
     "build:ng": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --prod build",
     "build:node": "cd api && yarn build",
@@ -85,7 +85,7 @@
     "@angular/platform-browser-dynamic": "^11.2.14",
     "@angular/router": "^11.2.14",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "6.18.0-restricted-case-access-v5",
+    "@hmcts/ccd-case-ui-toolkit": "6.19.4-sscs-joh-fixes",
     "@hmcts/ccpay-web-component": "5.2.8",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.9.5",

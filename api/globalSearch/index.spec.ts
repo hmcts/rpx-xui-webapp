@@ -14,13 +14,11 @@ chai.use(sinonChai);
 
 describe('Jurisdiction', () => {
   let sandbox: sinon.SinonSandbox;
+
   const jurisdictionList: Jurisdiction[] = [
-    { id: 'PROBATE', name: 'Manage probate application', description: null, caseTypes: null },
-    { id: 'IA', name: 'Immigration & Asylum', description: null, caseTypes: null },
-    { id: 'PUBLICLAW', name: 'Public Law', description: null, caseTypes: null },
-    { id: 'DIVORCE', name: 'Family Divorce', description: null, caseTypes: null },
-    { id: 'PRIVATELAW', name: 'PRIVATE LAW', description: null, caseTypes: null }
+    { id: 'GLOBAL_SEARCH_SERVICES', name: 'GLOBAL_SEARCH_SERVICES', description: null, caseTypes: null }
   ];
+
   const serviceList: GlobalSearchService[] = [
     { serviceId: 'GLOBAL_SEARCH_SERVICES', serviceName: 'GLOBAL_SEARCH_SERVICES' }
   ];

@@ -17,12 +17,12 @@ describe('getFormattedSupportedServicesCaseTypes', () => {
     sandbox.restore();
   });
 
-  it('should return null if the congif value is null', () => {
+  it('should return null if the config value is null', () => {
     const formattedServiceCasetypes = service.getFormattedSupportedServicesCaseTypes(null);
     expect(formattedServiceCasetypes).to.equal(null);
   });
 
-  it('should return null if the confing value is empty', () => {
+  it('should return null if the config value is empty', () => {
     const formattedServiceCasetypes = service.getFormattedSupportedServicesCaseTypes('');
     expect(formattedServiceCasetypes).to.equal(null);
   });

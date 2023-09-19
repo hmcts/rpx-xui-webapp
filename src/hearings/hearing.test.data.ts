@@ -1888,7 +1888,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
 
 export const hearingRequestMainModel: HearingRequestMainModel = {
   requestDetails: {
-    timeStamp: '2022-02-23T09:00:00.000Z',
+    timestamp: '2022-02-23T09:00:00.000Z',
     versionNumber: 1
   },
   hearingDetails: {
@@ -2269,7 +2269,7 @@ export const initialState = {
     hearingRequestToCompare: {
       hearingRequestMainModel: {
         requestDetails: {
-          timeStamp: null,
+          timestamp: null,
           versionNumber: 1
         },
         hearingDetails: {
@@ -2409,7 +2409,7 @@ export const initialState = {
         requestDetails: {
           hearingRequestID: '1000000',
           status: 'LISTED',
-          timeStamp: '2021-11-30T09:00:00.000Z',
+          timestamp: '2021-11-30T09:00:00.000Z',
           versionNumber: 1,
           cancellationReasonCodes: ['withdraw', 'struck']
         },
@@ -2922,7 +2922,7 @@ export const initialStateImmutable = {
     hearingRequestToCompare: {
       hearingRequestMainModel: {
         requestDetails: {
-          timeStamp: null,
+          timestamp: null,
           versionNumber: 1
         },
         hearingDetails: {
@@ -3062,7 +3062,7 @@ export const initialStateImmutable = {
         requestDetails: {
           hearingRequestID: '1000000',
           status: 'LISTED',
-          timeStamp: '2021-11-30T09:00:00.000Z',
+          timestamp: '2021-11-30T09:00:00.000Z',
           versionNumber: 1,
           cancellationReasonCodes: ['withdraw', 'struck']
         },

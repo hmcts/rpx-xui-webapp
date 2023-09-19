@@ -21,6 +21,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME: string = 'all-work-tasks-filter';
   @Input() public jurisdictions: string[] = [];
   @Input() public waSupportedJurisdictions: string[];
+  @Input() public serviceMappings: {serviceId: string, serviceName: string} [] = [];
   @Output() public selectionChanged: EventEmitter<any> = new EventEmitter<any>();
 
   public appStoreSub: Subscription;
@@ -64,10 +65,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
               private featureToggleService: FeatureToggleService,
               private readonly appStore: Store<fromAppStore.State>) {}
 
-  private static initServiceFilter(jurisdictions: string[]): FilterFieldConfig {
+  private static initServiceFilter(jurisdictions: string[], serviceMappings: {serviceId: string, serviceName: string} []): FilterFieldConfig {
     return {
       name: 'service',
-      options: jurisdictions.map((service) => ({ key: service, label: service })),
+      options: jurisdictions.map((service) => ({ key: service, label: this.getServiceName(service, serviceMappings) })),
       minSelected: 1,
       maxSelected: 1,
       minSelectedError: 'You must select a service',
@@ -76,6 +77,11 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       title: 'Service',
       type: 'select'
     };
+  }
+
+  private static getServiceName(service: string, serviceMappings: {serviceId: string, serviceName: string} []): string {
+    const serviceName = serviceMappings.find((serviceMap) => serviceMap.serviceId === service)?.serviceName;
+    return serviceName ? serviceName : service;
   }
 
   private static initLocationFilter(): FilterFieldConfig {
@@ -262,7 +268,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       }
     );
     this.fieldsConfig.fields = [
-      TaskManagerFilterComponent.initServiceFilter(this.jurisdictions),
+      TaskManagerFilterComponent.initServiceFilter(this.jurisdictions, this.serviceMappings),
       TaskManagerFilterComponent.initSelectLocationFilter(),
       TaskManagerFilterComponent.initLocationFilter(),
       // TaskManagerFilterComponent.initRoleTypeFilter(),

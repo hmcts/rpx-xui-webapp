@@ -10,4 +10,8 @@ export class WASupportedJurisdictionsService {
   public getWASupportedJurisdictions(): Observable<string[]> {
     return this.http.get<string[]>(WASupportedJurisdictionsService.jurisdictionUrl);
   }
+
+  public getServiceMappings(): Observable<{serviceId: string, serviceName: string} []> {
+    return this.http.get<any[]>('/api/wa-supported-jurisdiction/serviceNames');
+  }
 }

@@ -1,6 +1,6 @@
 import { NextFunction, Response, Router } from 'express';
 import { getConfigValue } from '../configuration';
-import { WA_SUPPORTED_JURISDICTIONS } from '../configuration/references';
+import { SERVICE_NAME_MAPPINGS, WA_SUPPORTED_JURISDICTIONS } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
 
 export async function getWASupportedJurisdictions(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
@@ -23,8 +23,19 @@ export function getWASupportedJurisdictionsList(): any {
   }
 }
 
+export async function getServiceNamesList(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
+  try {
+    const globalSearchServiceIds = getConfigValue(SERVICE_NAME_MAPPINGS);
+    res.send(globalSearchServiceIds).status(200);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export const router = Router({ mergeParams: true });
 
 router.get('/get', getWASupportedJurisdictions);
+
+router.get('/serviceNames', getServiceNamesList);
 
 export default router;

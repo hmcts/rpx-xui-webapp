@@ -25,6 +25,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   public locations: Location[];
   public waSupportedJurisdictions$: Observable<string[]>;
   public supportedJurisdictions: string[];
+  public serviceMappings: {serviceId: string, serviceName: string} [];
   public sortedBy: SortField = {
     fieldName: '',
     order: SortOrder.NONE
@@ -81,11 +82,12 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     ));
 
     const waJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
+    const serviceMappings$ = this.waSupportedJurisdictionsService.getServiceMappings();
     this.waSupportedJurisdictions$ = combineLatest(
-      [userRoles$,
-        waJurisdictions$]
+      [userRoles$, waJurisdictions$, serviceMappings$]
     ).pipe(map((jurisdictions) => {
       this.supportedJurisdictions = jurisdictions[1];
+      this.serviceMappings = jurisdictions[2];
       const result = jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
       return [...new Set(result)];
     }));

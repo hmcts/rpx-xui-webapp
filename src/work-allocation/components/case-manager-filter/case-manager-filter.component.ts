@@ -18,6 +18,7 @@ import * as fromAppStore from '../../../app/store';
 export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME: string = 'all-work-cases-filter';
   @Input() public jurisdictions: string[] = [];
+  @Input() public serviceMappings: {serviceId: string, serviceName: string} [] = [];
   @Output() public selectChanged: EventEmitter<any> = new EventEmitter<any>();
   public filterConfig: FilterConfig = {
     persistence: 'local',
@@ -52,10 +53,10 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   constructor(private readonly filterService: FilterService,
               private readonly appStore: Store<fromAppStore.State>) {}
 
-  private static initServiceFilter(jurisdictions: string[]): FilterFieldConfig {
+  private static initServiceFilter(jurisdictions: string[], serviceMappings: {serviceId: string, serviceName: string} []): FilterFieldConfig {
     return {
       name: 'jurisdiction',
-      options: jurisdictions.map((service) => ({ key: service, label: service })),
+      options: jurisdictions.map((service) => ({ key: service, label: this.getServiceName(service, serviceMappings) })),
       minSelected: 1,
       maxSelected: 1,
       minSelectedError: 'You must select a service',
@@ -64,6 +65,11 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       title: 'Service',
       type: 'select'
     };
+  }
+
+  private static getServiceName(service: string, serviceMappings: {serviceId: string, serviceName: string} []): string {
+    const serviceName = serviceMappings.find((serviceMap) => serviceMap.serviceId === service)?.serviceName;
+    return serviceName ? serviceName : service;
   }
 
   private static initLocationFilter(): FilterFieldConfig {
@@ -168,7 +174,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       }
     );
     this.filterConfig.fields = [
-      CaseManagerFilterComponent.initServiceFilter(this.jurisdictions),
+      CaseManagerFilterComponent.initServiceFilter(this.jurisdictions, this.serviceMappings),
       CaseManagerFilterComponent.initRoleTypeFilter(),
       CaseManagerFilterComponent.findPersonFilter(),
       CaseManagerFilterComponent.initSelectLocationFilter(),

@@ -5,6 +5,7 @@
     <exui-case-manager-filter
       [jurisdictions]="filterLists.jurisdictions"
       (selectChanged)="onSelectionChanged($event)"
+      [serviceMappings]="serviceMappings"
     ></exui-case-manager-filter>
     <div class="hmcts-filter-layout__content exui-task-list">
       <ng-container *ngIf="!isCasesFiltered; else showCases">

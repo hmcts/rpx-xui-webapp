@@ -50,6 +50,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   protected defaultLocation: string = 'all';
   private pCases: Case[];
   public selectedLocations: string[] = [];
+  public serviceMappings: {serviceId: string, serviceName: string} [];
 
   /**
    * Mock CaseServiceConfig.
@@ -170,11 +171,13 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
       userDetails.roleAssignmentInfo.filter((role) => role.roleName && role.roleName === 'task-supervisor').map((role) => role.jurisdiction || null)
     ));
     const waJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
+    const serviceMappings$ = this.waSupportedJurisdictionsService.getServiceMappings();
     this.waSupportedJurisdictions$ = combineLatest(
       [userRoles$,
-        waJurisdictions$]
+        waJurisdictions$, serviceMappings$]
     ).pipe(
       map((jurisdictions) => {
+        this.serviceMappings = jurisdictions[2];
         return jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
       }));
   }

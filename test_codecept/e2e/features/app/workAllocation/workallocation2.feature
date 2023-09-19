@@ -13,7 +13,7 @@ Feature: WA Release 2: : Work allocations My work, All work
             | My tasks        |
             | Available tasks |
         Then I see Task list table
-        When I navigate to My work sub navigation tab "Available tasks"
+        When I navigate to My work sub navigation tab "Available tasks dummy tab"
         Then I see Task list table
         
         Examples:

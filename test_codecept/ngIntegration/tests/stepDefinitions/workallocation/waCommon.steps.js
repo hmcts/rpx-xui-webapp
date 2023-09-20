@@ -44,7 +44,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
     await browser.get(baseUrl);
     await BrowserWaits.waitForElement(loginPage.emailAddress);
-    
+
     let preLoginUrl = await browser.getCurrentUrl();
     await BrowserWaits.retryWithActionCallback(async () => {
         await loginPage.loginWithCredentials(username, password);
@@ -102,52 +102,51 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
 
         await browser.get('http://localhost:3000/get-help');
+        let userDetails = null;
 
-        await idamLogin.do();
-      
         await BrowserWaits.retryWithActionCallback(async () => {
-            const userDetails = idamLogin.userDetailsResponse.details.data;
-            const sessionUserName = userDetails.userInfo ? userDetails.userInfo.sub : '';
+            await idamLogin.do();
+            userDetails = idamLogin.userDetailsResponse.details.data;
+            const sessionUserName = userDetails.userInfo ? userDetails.userInfo.email : '';
             if (sessionUserName !== 'lukesuperuserxui@mailnesia.com' ){
-                await idamLogin.do();
-                await browser.sleep(2)
                 throw new Error('session not updated with user, retrying');
             }
 
         })
-       
+
         await BrowserWaits.retryWithActionCallback(async () => {
             await browser.driver.manage().setCookies(idamLogin.xuiCallbackResponse.details.setCookies)
             await browser.get('http://localhost:3000/');
 
         })
 
-        const authCookies = await browser.driver.manage().getCookies()
+        const authCookies = idamLogin.xuiCallbackResponse.details.setCookies
         const authCookie = authCookies.find(cookie => cookie.name === '__auth__')
         await browser.sleep(10)
         await mockClient.updateAuthSessionWithRoles(authCookie.value, roles)
+        return await idamLogin.getUserDetails()
 
-        await browser.get('http://localhost:3000/');
+        // await browser.get('http://localhost:3000/');
     }
 
     Given('I set MOCK with {string} release user and roles', async function (releaseUer,datatableroles ) {
-      
+
         const datatablehashes = datatableroles.hashes();
         const roles = datatablehashes.map(roleHash => roleHash.ROLE);
-      
+
         await mockLoginWithRoles(roles)
 
     });
 
     Given('I set MOCK with {string} release user and roles {string}', async function (releaseUer, roles) {
-   
+
         roles = roles.split(",");
-      
+
         await  mockLoginWithRoles(roles)
 
 
     });
-    
+
     Given('I set MOCK locations for release {string}', async function(release,locationsDatatbale){
         const locations = locationsDatatbale.hashes();
         let apiUrl = "/";
@@ -186,7 +185,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         persons[0].idamId = testUser.idamId;
         persons[0].location.id = locationInputDetails.id;
         persons[0].location.locationName = locationInputDetails.locationName
-        MockApp.onGet(apiUrl, (req, res) => { 
+        MockApp.onGet(apiUrl, (req, res) => {
             res.send(persons);
         });
 
@@ -203,13 +202,47 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
     });
 
-    Given('I set MOCK with user {string} and roles {string} with reference {string}', async function (useridentifier, roles,mockUserRef) { 
-        await mockLoginWithRoles(roles.split(','))
-
+    Given('I set MOCK with user {string} and roles {string} with reference {string}', async function (useridentifier, roles,mockUserRef) {
+      const userDetails = await mockLoginWithRoles(roles.split(','))
+      global.scenarioData[mockUserRef] = userDetails;
+      const auth = await browser.driver.manage().getCookie('__auth__')
+      await mockClient.setUserApiData(auth,'', {status: 200, data: global.scenarioData[mockUserRef]});
     });
 
+
+    Given('I set MOCK with user {string} and userInfo with roles {string} with reference {string}', async function (useridentifier,roles ,mockUserRef, datatable) {
+        const userDetails = await mockLoginWithRoles(roles.split(','))
+        const rows = datatable.parse().hashes();
+        const properties = rows[0];
+        for (const key of Object.keys(properties)) {
+            userDetails.userInfo[key] = properties[key]
+        }
+        global.scenarioData[mockUserRef] = userDetails;
+        const auth = await browser.driver.manage().getCookie('__auth__')
+        await mockClient.updateAuthSessionWithUserInfo(auth.value, userDetails.userInfo);
+    });
+
+    Given('I set MOCK with user details', async function (datatable) {
+        CucumberReporter.reportDatatable(datatable)
+        const rowsHash = datatable.parse().rowsHash()
+        const userDetails = await mockLoginWithRoles(rowsHash.roles.split(','))
+        const properties = rowsHash;
+        for (const key of Object.keys(properties)) {
+            if(key === 'roles'){
+                userDetails.userInfo[key] = properties[key].split(',').map(v => v.trim())
+            }else{
+                userDetails.userInfo[key] = properties[key]
+            }
+            
+        }
+        const auth = await browser.driver.manage().getCookie('__auth__')
+        await mockClient.updateAuthSessionWithUserInfo(auth.value, userDetails.userInfo);
+    });
+
+
+
     Given('I add roleAssignmentInfo to MOCK user with reference {string}', async function(userDetailsRef, roleAssignments){
-        const boolAttributes = ['isCaseAllocator','bookable']; 
+        const boolAttributes = ['isCaseAllocator','bookable'];
         const userDetails = global.scenarioData[userDetailsRef];
         const roleAssignmentArr = [];
         for (let roleAssignment of roleAssignments.hashes()){
@@ -220,7 +253,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
                     roleAssignment[attr] = roleAssignment[attr] === "true";
                 }
             })
-            
+
             roleAssignmentArr.push(roleAssignment);
         }
         userDetails.roleAssignmentInfo.push(...roleAssignmentArr);
@@ -229,7 +262,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
     Given('I set Mock user with ref {string}, reset role assignments', async function (userDetailsRef){
         // const userDetails = global.scenarioData[userDetailsRef];
         // userDetails.roleAssignmentInfo =[];
- 
+
     });
 
     async function addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable){
@@ -245,7 +278,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
             const attributeProperties = ['jurisdiction', 'substantive', 'caseType', 'caseId', 'baseLocation', 'primaryLocation']
 
             for (const attr of roleKeys) {
-                const value = boolAttributes.includes(attr) ? roleAssignment[attr].includes('Y') : roleAttributes[attr];
+                const value = boolAttributes.includes(attr) ? roleAssignmentTemplate[attr].includes('Y') : roleAttributes[attr]; //correction may be needed
                 if (attributeProperties.includes(attr)) {
                     roleAssignmentTemplate.attributes[attr] = value;
                 } else {
@@ -264,15 +297,15 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         reportLogger.AddJson(sessionRoleAssignments.data);
         await browser.get('http://localhost:3000')
     }
-                             
+
 
     Given('I set Mock user with ref {string}, ORGANISATION roles for services {string}', async function (userDetailsRef, services, roleAttributesDataTable){
         if (services === ''){
             return;
         }
-        await addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable) 
+        await addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable)
     });
-    
+
     Given('I set Mock user with ref {string}, ORGANISATION roles for services {string} allow empty service', async function (userDetailsRef, services, roleAttributesDataTable) {
         await addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable)
     });
@@ -280,36 +313,45 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
     Given('I set MOCK user with reference {string} roleAssignmentInfo', async function (userDetailsRef, roleAssignments) {
         reportLogger.reportDatatable(roleAssignments)
-        const boolAttributes = ['isCaseAllocator'];
+        const boolAttributes = ['isCaseAllocator','contractType', 'bookable'];
         const roleAssignmentArr = [];
-        for (let roleAssignment of roleAssignments.parse().hashes()) {
+        for (const roleAssignment of roleAssignments.parse().hashes()) {
             const roleAssignmentTemplate = roleAssignmentMock.getRoleAssignmentTemplate();
             const roleKeys = Object.keys(roleAssignment);
 
-            const attributeProperties = ['jurisdiction', 'substantive', 'caseType', 'caseId','baseLocation', 'primaryLocation']
+            const attributeProperties = ['jurisdiction', 'substantive', 'caseType', 'caseId', 'baseLocation', 'primaryLocation','bookable']
 
             for(const attr of roleKeys){
-                const value = boolAttributes.includes(attr) ? roleAssignment[attr].includes('Y') : roleAssignment[attr];
-                if (attributeProperties.includes(attr)){
+                const value =  boolAttributes.includes(attr) ? roleAssignment[attr].includes('true') : roleAssignment[attr];
+                if (attributeProperties.includes(attr) && value !== ''){
                     roleAssignmentTemplate.attributes[attr] = value;
                 }else{
                     roleAssignmentTemplate[attr] = value;
 
                 }
             }
-            
+
             roleAssignmentArr.push(roleAssignmentTemplate);
         }
 
         const cookies = await browser.driver.manage().getCookies();
         const authCookie = cookies.find(cookie => cookie.name === '__auth__')
-        CucumberReporter.AddJson(nodeAppMock.userDetails);
-        const newRoleAssignmentsInSession = await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr)
-        CucumberReporter.AddJson(newRoleAssignmentsInSession.data);
+
+
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr)
+
+            const userDetails = await idamLogin.getUserDetails();
+            if (!userDetails.roleAssignmentInfo.length >= roleAssignmentArr.length) {
+                reportLogger.AddMessage(`Mock role assignments not updated in user session. Retrying user session update`);
+                throw new Error('Mock role assignments not updated');
+            }
+        })
+
+        const userDetails = await idamLogin.getUserDetails();
+        CucumberReporter.AddJson(userDetails.roleAssignmentInfo);
         await browser.get(await browser.getCurrentUrl());
 
-        const userSession = await mockClient.getSessionRolesAndRoleAssignments(authCookie.value);
-        console.log(userSession)
     });
 
     Given('I set MOCK with user identifer {string} role type {string} and role identifiers {string}', async function (useridentifier,roleType ,roleIdentifiers) {
@@ -320,7 +362,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         }
 
         const userIdamID = testUserIdamId.idamId;
-       
+
         const rolesIdentifiersArr = roleIdentifiers.split(",");
         const roleidentifersForRoleType = userRolesConfig[roleType.toLowerCase()];
         if (!roleidentifersForRoleType){
@@ -335,10 +377,10 @@ async function loginattemptCheckAndRelogin(username, password, world) {
             roles.push(...rolesForIdentifier);
         }
         const userDetails = nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
-        if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
-            workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
-        }
-        
+        // if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
+        //     workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
+        // }
+        await mockLoginWithRoles(roles)
 
     });
 
@@ -442,15 +484,15 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         const locationNamesHashes = locationNamesDatatable.parse().hashes();
         const locationNames = [];
         for (const locationNameHash of locationNamesHashes){
-            locationNames.push({ locationName: locationNameHash.locationName, id: locationNameHash.id}); 
-        } 
-        
+            locationNames.push({ locationName: locationNameHash.locationName, id: locationNameHash.id});
+        }
+
         const locationsArray = workallocationMockData.getLocationsWithNames(locationNames);
 
         let locationForThisService = { service: service, locations: [] }
         locationForThisService.locations.push(...locationsArray);
         workallocationMockData.locationsByServices.push(locationForThisService)
-    
+
     });
 
     Given('I set MOCK person with user {string} and roles {string}', async function(userIdentifier, roles, datatable){
@@ -458,8 +500,8 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.userIdentifier === userIdentifier)[0];
 
         const datatablehashes = datatable.parse().hashes();
-        const locationId = datatablehashes[0].locationId 
-        const locationName = datatablehashes[0].locationName 
+        const locationId = datatablehashes[0].locationId
+        const locationName = datatablehashes[0].locationName
 
         const roleCategory = userUtil.getUserRoleType(rolesArr);
         let person = null;

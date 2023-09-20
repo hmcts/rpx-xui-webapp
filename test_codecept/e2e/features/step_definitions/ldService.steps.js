@@ -46,17 +46,17 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I log LD feature toggle values', async function(datatable){
-        CucumberReportLogger.reportDatatable(datatable)
+        // CucumberReportLogger.reportDatatable(datatable)
 
-        const featureHashes = datatable.parse().hashes();
-        const allFeaturesinLD = global.scenarioData['featureToggles']; 
+        // const featureHashes = datatable.parse().hashes();
+        // const allFeaturesinLD = global.scenarioData['featureToggles']; 
         
-        const expectedfeatureValues = {};
-        for (const feature of featureHashes){
-            expectedfeatureValues[feature.name] = allFeaturesinLD[feature.name] ? allFeaturesinLD[feature.name] : 'NOT FOUND'; 
-        }
+        // const expectedfeatureValues = {};
+        // for (const feature of featureHashes){
+        //     expectedfeatureValues[feature.name] = allFeaturesinLD[feature.name] ? allFeaturesinLD[feature.name] : 'NOT FOUND'; 
+        // }
 
-        CucumberReportLogger.AddJson(expectedfeatureValues);
+        // CucumberReportLogger.AddJson(expectedfeatureValues);
     }); 
 
     Then('I Log to report launch darkly feature toggle values', async function (featureToggleValuesDataTable) {

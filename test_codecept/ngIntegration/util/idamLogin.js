@@ -17,6 +17,8 @@ class IdamLogin{
             idamClientId: 'xuiwebapp',
         }
 
+        this.authToken = '';
+
        
 
         this.xuiCookies = {}
@@ -51,6 +53,9 @@ class IdamLogin{
             await this.onXuiCallback()
             await this.getUserDetails()
 
+
+            this.authToken = this.userDetailsResponse.details.data.userInfo.token
+
         }catch(err){
             reportLogger.AddMessage('************* Login error *************')
             // reportLogger.AddMessage(
@@ -64,10 +69,6 @@ class IdamLogin{
             // );
             throw err
         }
-
-
-       
-
 
     }
 
@@ -137,6 +138,7 @@ class IdamLogin{
         reportLogger.AddMessage('API: XUI login call success')
 
     }
+
 
 
     async onIdamAuthorize() {
@@ -246,13 +248,26 @@ class IdamLogin{
 
 
     async getUserDetails(){
+
+        const cookies = await this.getCookieString(this.xuiCallbackResponse.details.setCookies)
         const response = await axiosInstance.get(`${this.conf.xuiBaseUrl}/api/user/details`, {
             headers: {
-                Cookie: this.getCookieString(this.xuiCallbackResponse.details.setCookies)
+                Cookie: cookies
             }
         })
         this.userDetailsResponse.status = this.getResponseStatus(response);
         this.userDetailsResponse.details = {data:response.data}
+        return response.data;
+    }
+
+    async getUserDetailsWithCookieString(cookieString) {
+        const response = await axiosInstance.get(`${this.conf.xuiBaseUrl}/api/user/details`, {
+            headers: {
+                Cookie: cookieString
+            }
+        })
+        this.userDetailsResponse.status = this.getResponseStatus(response);
+        this.userDetailsResponse.details = { data: response.data }
         return response.data;
     }
     
@@ -260,3 +275,5 @@ class IdamLogin{
 }
 
 module.exports = new IdamLogin();
+
+

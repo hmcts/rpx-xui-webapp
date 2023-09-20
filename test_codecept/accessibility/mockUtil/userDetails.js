@@ -6,33 +6,38 @@ const workAllocationDataModels = require('../../dataModels/workAllocation');
 const testUsers = require('../../e2e/config/appTestConfig');
 const MockApp = require('../../nodeMock/app');
 
+const {getAuthCookie} = require('../helpers/pa11yUtil')
+const backendMockClient = require('../../backendMock/client/index')
+
 class UserDetails{
 
 
-    withIACJudicialUser(forUserIndetifier) {
-        return this.mockUserDetailsWithIdentifierAndRoles(forUserIndetifier, ['caseworker', 'caseworker-ia','caseworker-ia-iacjudge']);
+    async withIACJudicialUser() {
+        return await this.mockUserDetailsWithIdentifierAndRoles( ['caseworker', 'caseworker-ia','caseworker-ia-iacjudge','case-allocator', 'task-supervisor']);
 
     }
 
-    withIACLegalOpsUser(forUserIndetifier) {
-       return this.mockUserDetailsWithIdentifierAndRoles(forUserIndetifier, ['caseworker', 'caseworker-ia','caseworker-ia-caseofficer']);
+    async withIACLegalOpsUser() {
+        return await this.mockUserDetailsWithIdentifierAndRoles(['caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer','case-allocator', 'task-supervisor']);
 
     }
 
-    mockUserDetailsWithIdentifierAndRoles(forUserIndetifier, roles) {
-        const userDetails = nodeAppDataModels.getUserDetails_oidc();
+   async  mockUserDetailsWithIdentifierAndRoles( roles) {
+        // const userDetails = nodeAppDataModels.getUserDetails_oidc();
 
-        const testUser = testUsers.users['aat'].filter(user => user.userIdentifier === forUserIndetifier);
-        if (testUser.length === 0) {
-            throw new Error(`User with idenifier ${forUserIndetifier} not found is test uers config`);
-        }
-        userDetails.userInfo.uid = testUser[0].idamId;
-        userDetails.roles = roles;
+        // const testUser = testUsers.users['aat'].filter(user => user.userIdentifier === forUserIndetifier);
+        // if (testUser.length === 0) {
+        //     throw new Error(`User with idenifier ${forUserIndetifier} not found is test uers config`);
+        // }
+        // userDetails.userInfo.uid = testUser[0].idamId;
+        // userDetails.roles = roles;
 
-        MockApp.onGet('/api/user/details', (req, res) => {
-            res.send(userDetails);
-        })
-        return userDetails;
+        await backendMockClient.updateAuthSessionWithRoles(getAuthCookie(),roles)
+
+        // MockApp.onGet('/api/user/details', (req, res) => {
+        //     res.send(userDetails);
+        // })
+        // return userDetails;
     }
 
 }

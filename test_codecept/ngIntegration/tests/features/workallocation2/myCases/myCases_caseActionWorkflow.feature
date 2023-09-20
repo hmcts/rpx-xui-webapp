@@ -1,7 +1,7 @@
 # Requirements
 # https://tools.hmcts.net/confluence/display/EUI/Work+Allocation-+Release+2#WorkAllocationRelease2-ManagelinklogicforTasksandCases
 
-@ng @wa2 @wa @ignore @codecept_enabled 
+@ng @wa2 @wa  
 Feature: WA Release 2: My cases - Manage links - Action work flow
 
     Background: Mock and browser setup
@@ -57,7 +57,7 @@ Feature: WA Release 2: My cases - Manage links - Action work flow
             | Allwork test scr | auto test category | London QA lab |
 
         Then I validate column "Person" value is set to "LEGAL_OPERATIONS 2" in case allocation check your changes page
-        When I click submit button "<submitBtnLabel>" in task check your changes page
+        When I click submit button "<submitBtnLabel>" in case allocate check your changes page
         Then I see navigation header tab page "My work"
         Then I validate notification message banner is displayed in "My work" page
         Then I validate notification banner messages displayed in "My work" page

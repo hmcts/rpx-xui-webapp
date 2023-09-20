@@ -18,6 +18,8 @@ const { LOG_LEVELS } = require('../../../e2e/support/constants');
 const { DataTableArgument } = require('codeceptjs');
 
 
+const serviceClientMock = require('../../../backendMock/client/serviceMock')
+
 
 Given('I set mock for existing bookings', async function (bookingdatatable) {
         const bookingsTestData = bookingdatatable.parse().hashes();
@@ -43,12 +45,17 @@ Given('I set mock for existing bookings', async function (bookingdatatable) {
         }
         CucumberReporter.AddJson(bookings, LOG_LEVELS.Debug); 
         bookingsMockData.setUpBookings(bookings);
+        await serviceClientMock.setBookings({ bookings: bookings }, 200);
+
+
     });
 
     Given('I set mock locations for bookings', async function (bookinglocations) {
         const locationsHashes = bookinglocations.parse().hashes();
       
-        bookingsMockData.setupLocations(locationsHashes);
+        // bookingsMockData.setupLocations(locationsHashes);
+        await serviceClientMock.setlocations({ court_venues: locationsHashes }, 200);
+
     });
 
 

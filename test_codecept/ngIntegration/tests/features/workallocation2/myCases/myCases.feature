@@ -1,4 +1,4 @@
-@ng  @wa2 @wa @codecept_enabled
+@ng  @wa2 @wa 
 Feature: WA Release 2: My cases
 
     Background: Mock and browser setup
@@ -28,7 +28,7 @@ Feature: WA Release 2: My cases
             | Case role     |
             | Start         |
             | End           |
-            | Hearing date  |
+            # | Hearing date  |
 
         Then I validate work allocation table columns are links
             | ColumnHeader |

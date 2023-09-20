@@ -49,6 +49,9 @@ class WorkAllocationDateUtil{
 
     getDateInDays(dateInDays){
         let dateObj = new Date();
+        dateObj.setHours(0)
+        dateObj.setMinutes(0)
+        dateObj.setSeconds(0)
         dateObj.setDate(dateObj.getDate() + parseInt(dateInDays.replace(' ', '')));
         return dateObj; 
     }

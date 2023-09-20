@@ -17,6 +17,12 @@ let executionResult = 'passed';
 let appWithMockBackend = null;
 const testType = process.env.TEST_TYPE
 
+if (process.env.TEST_URL &&
+  (process.env.TEST_URL.includes('pr-29751') || process.env.TEST_URL.includes('localhost'))) {
+    process.env.TEST_ENV = 'demo';
+    process.env.TEST_URL = 'https://manage-case-int1.demo.platform.hmcts.net/';
+}
+
 const debugMode = process.env.DEBUG && process.env.DEBUG.includes('true')
 
 const parallel = process.env.PARALLEL ? process.env.PARALLEL === "true" : false
@@ -24,8 +30,6 @@ const head = process.env.HEAD
 console.log(`testType : ${testType}`)
 console.log(`parallel : ${parallel}`)
 console.log(`headless : ${!head}`)
-
-
 
 let pipelineBranch = process.env.TEST_URL.includes('pr-') || process.env.TEST_URL.includes('manage-case.aat')  ? "preview" : "master"
 

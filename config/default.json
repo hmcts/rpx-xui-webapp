@@ -54,6 +54,10 @@
         "serviceApi": "http://et-hearings-api-prod.service.core-compute-prod.internal",
         "caseTypes": "ET_EnglandWales,ET_Scotland"
       },
+      "st_cic": {
+        "serviceApi": "http://sptribs-case-api-prod.service.core-compute-prod.internal",
+        "caseTypes": "CriminalInjuriesCompensation"
+      },
       "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
     },
     "documents": {

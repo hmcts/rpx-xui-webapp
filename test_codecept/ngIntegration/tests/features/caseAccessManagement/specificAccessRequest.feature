@@ -1,6 +1,6 @@
 
 @functional_enabled
-Feature: Case access request 
+Feature: Case specific access request 
 
 
     Scenario: Specific access required

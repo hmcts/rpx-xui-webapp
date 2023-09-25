@@ -122,7 +122,6 @@ async function loginattemptCheckAndRelogin(username, password, world) {
                 throw new Error('session not updated with user, retrying');
             }
             
-
         })
 
         await BrowserWaits.retryWithActionCallback(async () => {

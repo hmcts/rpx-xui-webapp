@@ -97,7 +97,7 @@ describe('HearingsService', () => {
   });
 
   describe('updateHearingRequest', () => {
-    const hearingRequest: HearingRequestMainModel = _.cloneDeep(initialState.hearings.hearingRequest);
+    const hearingRequest: HearingRequestMainModel = _.cloneDeep(initialState.hearings.hearingRequest.hearingRequestMainModel);
     const payload = {
       ...hearingRequest,
       requestDetails: {

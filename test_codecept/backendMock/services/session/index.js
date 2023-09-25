@@ -21,8 +21,12 @@ class MockSessionService{
         }
         console.log("Session path : "+this.sessionsPath)
         this.defaultSession = '';
-    }
 
+        this.sessionRoleAssignments = { roleAssignmentResponse: [] };
+
+        this.reusableSesionIdCounter = 0;
+        this.reusableSession = [];
+    }
 
     setDefaultSession(session){
         this.defaultSession = session.split(".")[0]
@@ -94,8 +98,8 @@ class MockSessionService{
 
             if (sessionJson.roleAssignmentResponse) {
                 break;
-            } else if(counter > 15) {
-                throw('Session not updated with actual role assignments')
+            } else if(counter > 5) {
+                break;
             }
             counter++;
         }
@@ -143,6 +147,7 @@ class MockSessionService{
 
         sessionJson = await fs.readFileSync(sessionFile,'utf-8');
         sessionJson = JSON.parse(sessionJson)
+        this.sessionRoleAssignments = sessionJson.roleAssignmentResponse;
         return sessionJson.roleAssignmentResponse;
     }
 

@@ -7,7 +7,7 @@ const router = express.Router({ mergeParams: true });
 const service = require('./index')
 
 const userApiData = require('../userApiData')
-
+const sessionService = require('../session/index')
 
 router.get('/actors/:actorId', (req, res) => {
     // res.send(service.getActorRoles(req.params.actorId))

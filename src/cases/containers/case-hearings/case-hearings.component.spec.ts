@@ -25,7 +25,7 @@ import { LovRefDataService } from '../../../hearings/services/lov-ref-data.servi
 import * as fromHearingStore from '../../../hearings/store';
 import { CaseHearingsComponent } from './case-hearings.component';
 import { UserService } from '../../../app/services/user/user.service';
-import { UserDetails } from '../../../app/models/user-details.model'
+import { UserDetails } from '../../../app/models/user-details.model';
 
 xdescribe('Test CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
@@ -416,7 +416,7 @@ xdescribe('Test CaseHearingsComponent', () => {
   const uDeets: UserDetails = USER_DETAILS;
   const uServe = {
     getUserDetails: () => of(uDeets)
- };
+  };
 
   beforeEach(() => {
     mockLovRefDataService = jasmine.createSpyObj('LovRefDataService', ['getListOfValues']);
@@ -648,7 +648,7 @@ xdescribe('Test CaseHearingsComponent', () => {
   });
 
   afterEach(() => {
-      fixture.destroy();
-//      TestBed.resetTestingModule();
+    fixture.destroy();
+    // TestBed.resetTestingModule();
   });
 });

@@ -1,8 +1,12 @@
 
+const path = require('path')
+const fs = require('fs')
 
 class UserApiData{
     constructor() {
-        this.sessionUsers = []
+        this.sessionUsers = [];
+
+        this.debugUserDataFile = path.resolve(__dirname,'../../../functional-output/mockUserData.json')
     }
 
 
@@ -15,8 +19,8 @@ class UserApiData{
             res.send(defaultResponseCallback())
         }
     }
-
-
+    
+    
     setUserData(token, apiMethod, response) {
         // apiMethod = apiMethod.toUpperCase();
         let userSession = this.sessionUsers.find(sess => sess.token === token)
@@ -38,6 +42,7 @@ class UserApiData{
             apiResponse.response = response
         }
        
+        // fs.writeFileSync(this.debugUserDataFile, JSON.stringify(userSession.apiData, null, 2))
     }
 
     getUserData(token, apiMethod){
@@ -73,9 +78,23 @@ class UserApiData{
 
     }
 
+    
     clearUserData(token){
-        this.sessionUsers = this.sessionUsers.filter(sess => sess.token !== token)
+        console.log('clear user data started')
+        let userSession = this.sessionUsers.find(sess => sess.token === token)
+        if (userSession) {
+            userSession = {
+                requests: [],
+                token: token,
+                apiData: []
+            };
+        }
+
+        // console.log('Cleared user session data : ' + JSON.stringify(userSession))
+
+        return userSession;
     }
+
 }
 
 module.exports = new UserApiData();

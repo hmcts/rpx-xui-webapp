@@ -7,7 +7,7 @@ const router = express.Router({ mergeParams: true });
 const service = require('./index')
 
 const userApiData = require('../userApiData')
-
+const sessionService = require('../session/index')
 
 router.get('/actors/:actorId', (req, res) => {
     // res.send(service.getActorRoles(req.params.actorId))
@@ -18,7 +18,8 @@ router.get('/actors/:actorId', (req, res) => {
     if (!args.standalone) {
         roleAssignmentsDefault = { roleAssignmentResponse :[]}
     }
-    userApiData.sendResponse(req, res, "OnUserRoleAssignments", () => { return roleAssignmentsDefault });
+    console.log("****** mock roles assignments response for actor " + JSON.stringify(sessionService.sessionRoleAssignments))
+    res.send(sessionService.sessionRoleAssignments);
 
 
 });

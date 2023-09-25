@@ -1,20 +1,28 @@
-
+const caseFileViewTabConfig = require('./caseFileViewTabConfig')
+const caseFlagsTabConfig = require('./caseFlagsTabConfig')
 class CaseDetailsData{
     constructor(){
         this.data = getTemplate();
         this.defaultCase = JSON.parse(JSON.stringify(this.data));
         this.hearingCase = JSON.parse(JSON.stringify(this.data));
         this.qmCase = JSON.parse(JSON.stringify(this.data));
+        this.caseFileViewCase = JSON.parse(JSON.stringify(this.data));
 
-        this.setupHearingCase()
+        this.caseFlagsCase = JSON.parse(JSON.stringify(this.data));
+        
+        // this.setupHearingCase()
         this.setupDefaultCase()
-        this.setupQMCase()
+        // this.setupQMCase()
+        // this.setupCaseFileViewCase();
+        // this.setupCaseFlagsCase()
     }
 
     setCaseId(data,id){
         data.case_id = id
        
     }
+
+  
 
     setupQMCase(){
         this.setCaseTypeProperties(this.qmCase, {
@@ -42,6 +50,26 @@ class CaseDetailsData{
             "jurisdiction.id": 'PRIVATELAW'
         })
       
+    }
+
+    setupCaseFileViewCase(){
+        this.setCaseTypeProperties(this.caseFileViewCase, {
+            id: 'PRLAPPS',
+            name: 'Immigration & Asylum',
+            "jurisdiction.id": 'PRIVATELAW'
+        })
+
+        this.caseFileViewCase.tabs.push(caseFileViewTabConfig);
+    }
+
+    setupCaseFlagsCase() {
+        this.setCaseTypeProperties(this.caseFlagsCase, {
+            id: 'PRLAPPS',
+            name: 'Immigration & Asylum',
+            "jurisdiction.id": 'PRIVATELAW'
+        })
+
+        this.caseFlagsCase.tabs.push(caseFlagsTabConfig);
     }
 
     setupDefaultCase(){
@@ -179,7 +207,7 @@ function getTemplate(){
             "description": "IA test casey",
             "jurisdiction": {
                 "id": "IA",
-                "name": "mmigration & Asylum",
+                "name": "Immigration & Asylum",
                 "description": "mmigration & Asylum"
             },
             "printEnabled": false

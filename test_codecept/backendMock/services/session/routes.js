@@ -53,6 +53,10 @@ router.post('/session/user/sessionData', async (req, res) => {
     res.send(userApiData.getUserSessionData(req.body.auth))
 })
 
+router.post('/session/user/sessionData/clear', async (req, res) => {
+    const sessionData  = userApiData.clearUserData(req.body.auth)
+    res.send(sessionData)
+})
 
 
 router.post('/session/logMessage', async (req, res) => {

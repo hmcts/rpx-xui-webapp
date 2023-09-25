@@ -36,6 +36,9 @@ const globalSearchRoutes = require('./services/globalSearch/routes')
 
 const idamOpenId = require('./services/idam/routes')
 const sessionRoutes = require('./services/session/routes')
+const caseCategoriesndDOcumentsRoutes = require('./services/caseFileView/routes')
+const evidenceManagementRoutes = require('./services/evidenceManagement/routes')
+const workFlowRouter = require('./services/workFlow/routes')
 
 const users = require('./services/users');
 const userApiData = require('./services/userApiData');
@@ -79,7 +82,7 @@ class MockApp {
         app.use(express.json({ type: '*/*'}));
 
         app.use((req,res,next) => {
-            // console.log(`${req.method} : ${req.url}`);
+            console.log(`${req.method} : ${req.url}`);
 
             res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate');
             const authToken = req.headers.authorization;
@@ -120,8 +123,9 @@ class MockApp {
         app.use('/', ccdRoutes )
 
         app.use('/refdata/commondata', prdCommondataroutes)
-
-
+        app.use('/categoriesAndDocuments', caseCategoriesndDOcumentsRoutes )
+        app.use('/cases/documents', evidenceManagementRoutes)
+        app.use('/workflow', workFlowRouter)
         // await this.stopServer();
         this.server = await app.listen(8080);
 

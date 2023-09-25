@@ -9,7 +9,8 @@ class MyWorkPage extends TaskList {
 
     constructor() {
         super();
-        this.pageHeader = $('exui-work-allocation-home exui-task-home h3.govuk-heading-xl');
+        this.pageHeader = element(by.xpath('/html/body/exui-root/exui-work-allocation-home/div/exui-task-home/main/h3'));
+       // this.pageHeader = $('exui-work-allocation-home exui-task-home h3.govuk-heading-xl');
         this.showHideWorkFilterBtn = element(by.xpath("//button[contains(text(),'work filter')]"));
         this.showHideFilterBadge = element(by.xpath("//button[contains(text(),'work filter')]/following-sibling::span[contains(text(),'Filtered view')]"));
         this.showHideFilterHint = element(by.xpath("//button[contains(text(),'work filter')]/following-sibling::span[contains(text(),'All of your work may not be visible.')]"));

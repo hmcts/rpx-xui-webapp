@@ -102,7 +102,7 @@ describe('HearingsService', () => {
       ...hearingRequest,
       requestDetails: {
         ...hearingRequest.requestDetails,
-        hearingRequestID: 'h100000'
+        hearingRequestID: '1000000'
       },
       ...hearingRequest,
       hearingDetails: {
@@ -112,12 +112,14 @@ describe('HearingsService', () => {
 
     it('should update hearing request', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
       service.updateHearingRequest(payload).subscribe((response) => {
+        console.log('RESPONSE', JSON.stringify(response));
+        console.log('PAYLOAD', JSON.stringify(payload));
         expect(response).toBeNull();
       });
       httpMock.expectOne((req: HttpRequest<any>) => {
         expect(req.url).toBe('api/hearings/updateHearingRequest');
         expect(req.method).toBe('PUT');
-        expect(req.params.get('hearingId')).toEqual('h100000');
+        expect(req.params.get('hearingId')).toEqual('1000000');
         return true;
       })
         .flush(null);

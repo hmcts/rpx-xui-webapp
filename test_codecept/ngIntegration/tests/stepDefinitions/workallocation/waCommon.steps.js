@@ -109,22 +109,14 @@ async function loginattemptCheckAndRelogin(username, password, world) {
             idamLogin.xuiCallbackResponse = JSON.parse(fs.readFileSync(debugSessionFile))
         }
         await BrowserWaits.retryWithActionCallback(async () => {
-            if (Object.keys(idamLogin.xuiCallbackResponse).length === 0){
-                await idamLogin.do();
-                fs.writeFileSync(debugSessionFile, JSON.stringify(idamLogin.xuiCallbackResponse, null,2))
-                userDetails = idamLogin.userDetailsResponse.details.data;
-                const sessionUserName = userDetails.userInfo ? userDetails.userInfo.email : '';
-                if (sessionUserName !== 'lukesuperuserxui@mailnesia.com' ){
-                    throw new Error('session not updated with user, retrying');
-                }
-            }else{
-                const authCookies = idamLogin.xuiCallbackResponse.details.setCookies
-                const authCookie = authCookies.find(cookie => cookie.name === '__auth__')
-                const response = await mockClient.clearUserSessionData(authCookie.value)
-                reportLogger.AddMessage(JSON.stringify(response.data, null,2))
+            await idamLogin.do();
+            fs.writeFileSync(debugSessionFile, JSON.stringify(idamLogin.xuiCallbackResponse, null, 2))
+            userDetails = idamLogin.userDetailsResponse.details.data;
+            const sessionUserName = userDetails.userInfo ? userDetails.userInfo.email : '';
+            if (sessionUserName !== 'lukesuperuserxui@mailnesia.com') {
+                throw new Error('session not updated with user, retrying');
             }
             
-
         })
 
         await BrowserWaits.retryWithActionCallback(async () => {

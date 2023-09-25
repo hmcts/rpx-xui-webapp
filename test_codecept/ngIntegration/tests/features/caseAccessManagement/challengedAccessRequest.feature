@@ -1,6 +1,6 @@
 
 @functional_enabled
-Feature: Case access request
+Feature: Case challeged access request
 
 Background: setup
 

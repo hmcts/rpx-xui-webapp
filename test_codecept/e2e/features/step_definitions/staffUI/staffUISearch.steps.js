@@ -68,7 +68,6 @@ Then('I validate advanced search in Staff UI', async function (tabLabel, boolStr
         "Skill":'',
         "Roles":['Case Allocator']
     }
-
     await staffSearchPage.performAdvancedSearch(inputs);
 });
 

@@ -100,7 +100,7 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
             })
             const field = getCaseDetailsMetadataField(caseDetails,'[JURISDICTION]');
             field.value = value;
-        } else if (property.toLowerCase().includes('casetype')) {
+        } else if (property.toLowerCase().includes('caseType')) {
             const field = getCaseDetailsMetadataField(caseDetails, '[CASE_TYPE]');
             field.value = value;
         }
@@ -212,6 +212,8 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
             "publish_as": null,
             "acls": null
         });
+
+        await serviceMock.updateCaseData(caseDetails, 200)
 
     });
 

@@ -1,4 +1,6 @@
 var { defineSupportCode } = require('cucumber');
+const fs = require('fs')
+const path = require('path')
 
 const mockClient = require('../../../../backendMock/client/index');
 const roleAssignmentMock = require('../../../../backendMock/services/roleAssignments/index');
@@ -7,7 +9,7 @@ const MockApp = require('../../../../nodeMock/app');
 const nodeAppMock = require('../../../mockData/nodeApp/mockData');
 
 const waMockData = require('../../../mockData/workAllocation/mockData');
-;
+
 const headerPage = require('../../../../e2e/features/pageObjects/headerPage');
 const SoftAssert = require('../../../util/softAssert');
 const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
@@ -111,7 +113,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
         await browser.get('http://localhost:3000/get-help');
         let userDetails = null;
-
+      
         await BrowserWaits.retryWithActionCallback(async () => {
             await idamLogin.do();
             userDetails = idamLogin.userDetailsResponse.details.data;
@@ -119,6 +121,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
             if (sessionUserName !== loginUser ){
                 throw new Error('session not updated with user, retrying');
             }
+            
 
         })
 
@@ -365,7 +368,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
 
         await BrowserWaits.retryWithActionCallback(async () => {
-            await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr)
+            await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr );
 
             const userDetails = await idamLogin.getUserDetails();
             if (!userDetails.roleAssignmentInfo.length >= roleAssignmentArr.length) {

@@ -190,7 +190,7 @@ const loadServicehearingValues = {
     "caseFlags": {
         "flags": []
     },
-    "screenFlow": [
+    "screenFlow_dummy": [
         {
             "navigation": [
                 {

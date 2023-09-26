@@ -23,7 +23,7 @@ class MyWorkPage extends TaskList {
         this.workFilterServicesHeader = $('.xui-generic-filter#services h3');
         this.workFilterServiceCheckboxeItems = $$('.xui-generic-filter#services .govuk-checkboxes__item');
         this.workFilterServiceErrorMessage = $('.xui-generic-filter#services #services-error');
-        //Locations filters
+        //Locations filterspworkallocation2.steps.js
         this.workFiltersLocationsContainer = $('.xui-generic-filter#locations');
         this.workFilterSearchLocationInput = $('.xui-generic-filter#locations exui-search-location input');
         this.workFilterLocationSearchResults = $$('.cdk-overlay-container .mat-autocomplete-panel mat-option span');

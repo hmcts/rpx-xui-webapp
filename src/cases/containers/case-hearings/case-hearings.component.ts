@@ -1,15 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { select, Store } from '@ngrx/store';
-import * as moment from 'moment';
-import { combineLatest, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { UserRole } from '../../../app/models';
-import * as fromAppStore from '../../../app/store';
-import { HearingConditions } from '../../../hearings/models/hearingConditions';
-import { HearingListModel } from '../../../hearings/models/hearingList.model';
-import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
+import {Component, OnDestroy, OnInit} from '@angular/core'
+import {ActivatedRoute, Router} from '@angular/router'
+import {LoadingService} from '@hmcts/ccd-case-ui-toolkit'
+import {select, Store} from '@ngrx/store'
+import * as moment from 'moment'
+import {combineLatest, Observable, Subscription} from 'rxjs'
+import {map} from 'rxjs/operators'
+import {UserRole} from '../../../app/models'
+import * as fromAppStore from '../../../app/store'
+import {HearingConditions} from '../../../hearings/models/hearingConditions'
+import {HearingListModel} from '../../../hearings/models/hearingList.model'
+import {HearingListViewModel} from '../../../hearings/models/hearingListView.model'
 import {
   Actions,
   EXUIDisplayStatusEnum,
@@ -17,10 +17,10 @@ import {
   HearingCategory,
   HearingSummaryEnum,
   Mode
-} from '../../../hearings/models/hearings.enum';
-import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
-import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
-import * as fromHearingStore from '../../../hearings/store';
+} from '../../../hearings/models/hearings.enum'
+import {LovRefDataModel} from '../../../hearings/models/lovRefData.model'
+import {LovRefDataService} from '../../../hearings/services/lov-ref-data.service'
+import * as fromHearingStore from '../../../hearings/store'
 
 @Component({
   selector: 'exui-case-hearings',
@@ -107,7 +107,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.pastAndCancelledHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.PAST_OR_CANCELLED);
     this.listedHearings$ = this.getHearingListByStatus(EXUIDisplayStatusEnum.LISTED);
 
-    this.userRolesSubscription = this.userRoles$.subscribe(
+    this.userRolesSubscription = this.userRoles$.subscribe (
       (roles) => {
         if (roles.includes(UserRole.HearingManager)) {
           this.hearingsActions = [Actions.READ, Actions.CREATE, Actions.UPDATE, Actions.DELETE];

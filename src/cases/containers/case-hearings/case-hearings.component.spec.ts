@@ -25,9 +25,8 @@ import { LovRefDataService } from '../../../hearings/services/lov-ref-data.servi
 import * as fromHearingStore from '../../../hearings/store';
 import { CaseHearingsComponent } from './case-hearings.component';
 import { UserService } from '../../../app/services/user/user.service';
-import { UserDetails } from '../../../app/models/user-details.model';
 
-xdescribe('Test CaseHearingsComponent', () => {
+describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
   let fixture: ComponentFixture<CaseHearingsComponent>;
   let mockStore: Store<fromHearingStore.State>;
@@ -397,25 +396,20 @@ xdescribe('Test CaseHearingsComponent', () => {
     navigate: jasmine.createSpy('navigate')
   };
 
-  const USER_DETAILS:UserDetails = {
+  const USER_DETAILS = {
     sessionTimeout: {
       idleModalDisplayTime: 666,
       totalIdleTime: 6666
     },
     canShareCases: true,
     userInfo: {
-      id: '999',
+      id: 999,
       forename: 'David',
       surname: 'St Hubbins',
       email: 'david.st.hubbins@tap.com',
       active: true,
       roles: ['caseworker-sscs', 'hearing-manager']
     }
-  };
-
-  const uDeets: UserDetails = USER_DETAILS;
-  const uServe = {
-    getUserDetails: () => of(uDeets)
   };
 
   beforeEach(() => {
@@ -448,14 +442,13 @@ xdescribe('Test CaseHearingsComponent', () => {
         {
           provide: LovRefDataService,
           useValue: mockLovRefDataService
+        },
+        {
+          provide: UserService,
+          useValue: {
+            getUserDetails: () => of(USER_DETAILS)
+          }
         }
-        // ,
-        // {
-        //   provide: UserService,
-        //   useValue: {
-        //     getUserDetails: () => of(USER_DETAILS)
-        //   }
-        // }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(CaseHearingsComponent);
@@ -494,7 +487,7 @@ xdescribe('Test CaseHearingsComponent', () => {
   });
 
   it('should set hearings actions', () => {
-    const USER_DETAILS: UserDetails = {
+    const USER_DETAILS = {
       sessionTimeout: {
         idleModalDisplayTime: 12,
         totalIdleTime: 10
@@ -505,7 +498,7 @@ xdescribe('Test CaseHearingsComponent', () => {
         forename: 'test',
         surname: 'test',
         email: 'test@test.com',
-        active: true,
+        active: 'true',
         roles: ['caseworker-sscs', 'hearing-manager']
       }
     };
@@ -520,7 +513,7 @@ xdescribe('Test CaseHearingsComponent', () => {
   });
 
   it('should set hearings actions on OGD/DWP user', () => {
-    const USER_DETAILS: UserDetails = {
+    const USER_DETAILS = {
       sessionTimeout: {
         idleModalDisplayTime: 12,
         totalIdleTime: 10
@@ -531,7 +524,7 @@ xdescribe('Test CaseHearingsComponent', () => {
         forename: 'test',
         surname: 'test',
         email: 'test@test.com',
-        active: true,
+        active: 'true',
         roles: ['caseworker-sscs', 'listed-hearing-viewer']
       }
     };
@@ -637,7 +630,7 @@ xdescribe('Test CaseHearingsComponent', () => {
     component.serverError = { id: '', message: 'server error' };
     fixture.detectChanges();
     const cancelledReasonElement: HTMLSelectElement = fixture.nativeElement.querySelector('#reload-hearing-tab');
-    cancelledReasonElement.dispatchEvent(new Event('click'));
+    cancelledReasonElement.click();
     expect(component.reloadHearings).toHaveBeenCalled();
   });
 
@@ -649,6 +642,6 @@ xdescribe('Test CaseHearingsComponent', () => {
 
   afterEach(() => {
     fixture.destroy();
-    // TestBed.resetTestingModule();
+    TestBed.resetTestingModule();
   });
 });

@@ -48,7 +48,7 @@ async function waitForElement(el) {
 
           const currentUrl = await browser.getCurrentUrl();
           if (!isEmailFieldDisplayed && currentUrl.includes("idam-web-public")){
-            errorMessage = errorMessage + ":" +testCounter+" Unknown IDAM service error occured. See attached screenshot ";
+            errorMessage = errorMessage + ":" +testCounter+" Unknown IDAM service error occured on " + currentUrl + " See attached screenshot ";
           }
           // console.log(testCounter +" : error message =>"+errorMessage+"<=");
           if (errorMessage !== ""){

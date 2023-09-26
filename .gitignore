@@ -93,4 +93,3 @@ ignore/
 !.yarn/versions
 
 /infrastructure/.terraform/
-src/coverage

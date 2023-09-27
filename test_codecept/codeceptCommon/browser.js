@@ -7,6 +7,9 @@ function getActor(){
 }
 
 class DriverManager{
+    constructor(){
+        this.sessionCookies = null
+    }
     deleteAllCookies(){
 
     }
@@ -20,6 +23,7 @@ class DriverManager{
             const nameValue = cookie.split("=")
             return { name: nameValue[0].trim(), value: nameValue[1].trim() }
         })
+        this.sessionCookies = cookies
         return cookies
     }
 
@@ -60,6 +64,10 @@ class Browser{
                 resolve(true)
             }, seconds*1000)
         })
+    }
+
+    async pause(){
+        await getActor().pause();
     }
 
     async get(url){

@@ -9,7 +9,7 @@ const taskForEventCompletionValidationPage = require('../../pageObjects/workAllo
 
 
     Then('I see task event validation error page', async function (datatable) {
-        const rowshash = datatable.rowsHash();
+        const rowshash = datatable.parse().rowsHash();
 
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(await taskForEventCompletionValidationPage.isPageDisplayed()).to.be.true

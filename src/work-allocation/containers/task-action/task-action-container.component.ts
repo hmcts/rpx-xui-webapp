@@ -135,7 +135,7 @@ export class TaskActionContainerComponent implements OnInit {
           }
         });
       } else {
-        this.taskService.performActionOnTask(this.tasks[0].id, action, hasNoAssigneeOnComplete, true).subscribe(() => {
+        this.taskService.performActionOnTask(this.tasks[0].id, action, hasNoAssigneeOnComplete).subscribe(() => {
           this.reportSuccessAndReturn();
         }, (error) => {
           const handledStatus = handleFatalErrors(error.status, this.router);

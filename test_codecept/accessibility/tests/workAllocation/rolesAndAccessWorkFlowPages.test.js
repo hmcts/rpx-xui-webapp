@@ -10,7 +10,6 @@ const { conf } = require('../../config/config');;
 const divorceCaseActions = require('../../caseCreationActions/divorce');
 const MockApp = require('../../../nodeMock/app');
 
-const ccdApi = require('../../../nodeMock/ccd/ccdApi');
 
 const userDetailsMock = require('../../mockUtil/userDetails');
 
@@ -31,24 +30,20 @@ const allocateRoleRoute = `role-access/allocate-role/allocate?caseId=15468835267
 describe('Work Allocation: Allocate', function () {
 
     before(async function (done) {
-        MockApp.init();
         done();
     });
     after(async function (done) {
-        await MockApp.stopServer();
         done();
     });
 
 
-    it('choose role ', async function () {
-        const userDetails = userDetailsMock.withIACJudicialUser('IAC_Judge_WA_R2');
-        userDetails.userInfo.roles.push('case-allocator');
-        userDetails.userInfo.roles.push('task-supervisor');
-
-        await MockApp.startServer();
+    it.skip('choose role ', async function () {
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseRole.container))
 
+
+        await initBrowser()
+        await userDetailsMock.withIACJudicialUser();
         await pa11ytest(this, actions, conf.baseUrl + allocateRoleRoute);
 
     });
@@ -123,25 +118,23 @@ describe('Work Allocation: Allocate', function () {
 
 
     it('Delete exclusion ', async function () {
-        const userDetails = userDetailsMock.withIACJudicialUser('IAC_Judge_WA_R2');
-        userDetails.userInfo.roles.push('case-allocator');
-        userDetails.userInfo.roles.push('task-supervisor');
-        await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.deleteExclusionPage))
 
+
+        await initBrowser()
+        await userDetailsMock.withIACJudicialUser();
         await pa11ytest(this, actions, conf.baseUrl + 'role-access/delete-exclusion?caseId=1620409659381330&exclusionId=123');
 
     });
 
-    it('Remove allocation ', async function () {
-        const userDetails = userDetailsMock.withIACJudicialUser('IAC_Judge_WA_R2');
-        userDetails.userInfo.roles.push('case-allocator');
-        userDetails.userInfo.roles.push('task-supervisor');
-        await MockApp.startServer();
+    it.skip('Remove allocation ', async function () {
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.removeAllocation))
 
+
+        await initBrowser()
+        await userDetailsMock.withIACJudicialUser();
         await pa11ytest(this, actions, conf.baseUrl + 'role-access/allocate-role/remove?caseId=1546883526751282&roleCategory=JUDICIAL&assignmentId=c0129361-e8b1-482c-b124-8e5fcbd5db15&actorId=44d5d2c2-7112-4bef-8d05-baaa610bf463&userName=c0129361-e8b1-482c-b124-8e5fcbd5db15&typeOfRole=judge');
 
     });

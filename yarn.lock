@@ -2022,11 +2022,11 @@ __metadata:
   linkType: hard
 
 "@babel/runtime@npm:^7.15.4":
-  version: 7.23.1
-  resolution: "@babel/runtime@npm:7.23.1"
+  version: 7.22.15
+  resolution: "@babel/runtime@npm:7.22.15"
   dependencies:
     regenerator-runtime: ^0.14.0
-  checksum: 0cd0d43e6e7dc7f9152fda8c8312b08321cda2f56ef53d6c22ebdd773abdc6f5d0a69008de90aa41908d00e2c1facb24715ff121274e689305c858355ff02c70
+  checksum: 793296df1e41599a935a3d77ec01eb6088410d3fd4dbe4e92f06c6b7bb2f8355024e6d78621a3a35f44e0e23b0b59107f23d585384df4f3123256a1e1492040e
   languageName: node
   linkType: hard
 
@@ -2559,12 +2559,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.3-qm-respond-event-completion":
-  version: 6.19.3-qm-respond-event-completion
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.3-qm-respond-event-completion"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.6":
+  version: 6.19.6
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.6"
   dependencies:
     tslib: ^2.0.0
-  checksum: b1cd8ee333d447dac96d7c722de447a4e9522102b6bbd90060442340cc58667ee7ef813f61eeda6d449254755fc3415475f4c18ca7f72ec429a53fd672170822
+  checksum: a45fc92dc54875eba33cbd0578154fde82a235caab1cb7d5680634110731bba53fff5a30c760c4efb8e6bfec15ae21cab68215edf0b58768b2b9291da781a08e
   languageName: node
   linkType: hard
 
@@ -4084,9 +4084,9 @@ __metadata:
   linkType: hard
 
 "@types/lodash@npm:^4.14.175":
-  version: 4.14.199
-  resolution: "@types/lodash@npm:4.14.199"
-  checksum: e68d1fcbbfce953ed87b296a628573f62939227bcda0c934954e862b421e8a34c5e71cad6fea27b9980567909e6a4698f09025692958e36d64ea9ed99ec6fb2e
+  version: 4.14.197
+  resolution: "@types/lodash@npm:4.14.197"
+  checksum: 53d7567d1704de76cf33266c78062e0fd722d4b846e5b1417d0b6ef0ee41c0d9c451b92bc34f73d5f1fcc45c7d36511e92f6f47a9279b48157ba60a92ddaa078
   languageName: node
   linkType: hard
 
@@ -19642,7 +19642,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.3-qm-respond-event-completion
+    "@hmcts/ccd-case-ui-toolkit": 6.19.6
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.5

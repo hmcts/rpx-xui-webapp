@@ -6,12 +6,20 @@ const axios = require('axios')
 const session = require('./sampleSession.json')
 
 class MockSessionService{
-    constructor(){
+    constructor(mode){
         this.http = axios.create({
             baseURL: "http://localhost:3000",
             timeout: 60000,
         })
-        this.sessionsPath = path.resolve(__dirname, '../../../../.sessions')
+
+        if(mode && mode === 'DEBUG'){
+            this.sessionsPath = path.resolve(__dirname, '../../../../api/.sessions')
+
+        }else{
+            this.sessionsPath = path.resolve(__dirname, '../../../../.sessions')
+
+        }
+        console.log("Session path : "+this.sessionsPath)
         this.defaultSession = '';
     }
 
@@ -77,25 +85,22 @@ class MockSessionService{
 
     async waitForSessionWithRoleAssignments(auth){
 
+        let counter = 0;
+        while (counter < 20){
+            await sleepForSeconds(2)
+            const sessionFile = await this.getSessionFileAuth(auth);
+            let sessionJson = await fs.readFileSync(sessionFile, 'utf8');
+            sessionJson = JSON.parse(sessionJson);
 
-        return new Promise((resolve,reject) => {
-            const interval = setInterval(async () => {
-                const sessionFile = await this.getSessionFileAuth(auth);
-                let sessionJson = await fs.readFileSync(sessionFile);
-                sessionJson = JSON.parse(sessionJson);
+            if (sessionJson.roleAssignmentResponse) {
+                break;
+            } else if(counter > 15) {
+                throw('Session not updated with actual role assignments')
+            }
+            counter++;
+        }
 
-                if(sessionJson.roleAssignmentResponse){
-                    clearInterval(interval);
-                    resolve(true)
-                }
-            }, 2000)
-
-            setTimeout(() => {
-                clearInterval(interval)
-                reject('Session not updated with actual role assignments')
-            },40000)
-            
-        })
+       
 
     }
 
@@ -107,6 +112,18 @@ class MockSessionService{
         sessionJson = JSON.parse(sessionJson)
 
         sessionJson.passport.user.userinfo.roles = roles;
+        await fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
+    }
+
+
+    async updateAuthSessionWithUserInfo(auth, userInfo) {
+        await this.waitForSessionWithRoleAssignments(auth)
+        const sessionFile = await this.getSessionFileAuth(auth);
+        let sessionJson = await fs.readFileSync(sessionFile);
+
+        sessionJson = JSON.parse(sessionJson)
+
+        sessionJson.passport.user.userinfo = userInfo;
         await fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
     }
 
@@ -124,7 +141,7 @@ class MockSessionService{
         
         await fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
 
-        sessionJson = await fs.readFileSync(sessionFile);
+        sessionJson = await fs.readFileSync(sessionFile,'utf-8');
         sessionJson = JSON.parse(sessionJson)
         return sessionJson.roleAssignmentResponse;
     }
@@ -140,6 +157,14 @@ class MockSessionService{
     }
 }
 
+const mode = process.env.DEBUG && process.env.DEBUG === "true" ? "DEBUG" : ""
+module.exports = new MockSessionService(mode);
 
-module.exports = new MockSessionService();
 
+async function sleepForSeconds(seconds){
+    return new Promise((resolve,reject) => {
+        setTimeout(() => {
+            resolve(true)
+        }, seconds*1000)
+    })
+}

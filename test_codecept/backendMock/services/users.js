@@ -6,16 +6,52 @@ const rdcaseworkers = require('./rdCaseworker/index')
 const roleAssignment = require('./roleAssignments/index');
 
 const caseworkersConf = [
-    { services: ['IA','CIVIL'], role: 'LEGAL_OPERATIONS', roleCategory: 'ORGANISATION', roleType: 'case-allocator', substantive:'Y',count: 10 },
-    { services: ['IA', 'CIVIL'], role: 'ADMIN', roleCategory: 'ORGANISATION', roleType: 'case-allocator', substantive: 'Y', count: 10 },
-    { services: ['IA', 'CIVIL'], role: 'CTSC', roleCategory: 'ORGANISATION', roleType: 'case-allocator', substantive: 'Y', count: 10 },
+    { services: ['IA','CIVIL'], roleCategory: 'LEGAL_OPERATIONS', roleType: 'ORGANISATION', roleName: 'case-allocator', substantive:'Y',count: 10 },
+    { services: ['IA', 'CIVIL'], roleCategory: 'ADMIN', roleType: 'ORGANISATION', roleName: 'case-allocator', substantive: 'Y', count: 10 },
+    { services: ['IA', 'CIVIL'], roleCategory: 'CTSC', roleType: 'ORGANISATION', roleName: 'case-allocator', substantive: 'Y', count: 10 },
 
 ]
 
+const testUsersConf = [
+    {
+        services: ['IA', 'CIVIL'], roleCategory: 'LEGAL_OPERATIONS', roleType: 'ORGANISATION', roleName: 'case-allocator', substantive:'Y',
+    id: "test_id", first_name: "test_first", last_name: "test_last", email_id: "test_user@testing.net",
+     bookings: [{"id":"test_booking_id", "userId":"test_id"}]}
+]
 
  const users = {
     caseworkers:[],
     judicial:[]
+}
+
+for (const conf of testUsersConf){
+    const cwTemplate = rdcaseworkers.getCaseworkerTemplate();
+    const bookingsTemplate = roleAssignment.getBookings();
+    bookingsTemplate.bookings = conf.bookings
+    cwTemplate.id = conf.id;
+    cwTemplate.first_name = conf.first_name
+    cwTemplate.last_name = conf.last_name
+    cwTemplate.email_id = conf.email_id
+    cwTemplate.roleCategory = conf.roleCategory
+    cwTemplate.base_location[0].location_id = '20001'
+    rdcaseworkers.caseworkers.push(cwTemplate)
+
+
+    for(const service of conf.services){
+        const roleAssignmentTemplate = roleAssignment.getRoleAssignmentTemplate();
+        roleAssignmentTemplate.actorId = conf.id;
+        roleAssignmentTemplate.attributes.jurisdiction = service;
+        roleAssignmentTemplate.roleCategory = conf.roleCategory;
+        roleAssignmentTemplate.roleType = conf.roleType;
+        roleAssignmentTemplate.roleName = conf.roleName;
+        roleAssignmentTemplate.attributes.substantive = conf.substantive,
+        roleAssignmentTemplate.attributes.primaryLocation = '20001';
+        roleAssignmentTemplate.attributes.workTypes = [];
+        roleAssignment.serviceUsersRoleAssignments.push(roleAssignmentTemplate)
+    }
+
+
+
 }
 
 for (const conf of caseworkersConf){
@@ -23,10 +59,9 @@ for (const conf of caseworkersConf){
     const role = conf.role;
     const roleType = conf.roleType;
     const roleName = conf.roleName;
-    
 
     for(let i = 0; i < conf.count ;i++){
-       
+
 
         conf.services.forEach(jurisdiction => {
             const cwTemplate = rdcaseworkers.getCaseworkerTemplate();
@@ -52,7 +87,7 @@ for (const conf of caseworkersConf){
 
             roleAssignment.serviceUsersRoleAssignments.push(roleAssignmentTemplate)
         })
-        
+
     }
 }
 

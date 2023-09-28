@@ -54,6 +54,10 @@
         "serviceApi": "http://et-hearings-api-prod.service.core-compute-prod.internal",
         "caseTypes": "ET_EnglandWales,ET_Scotland"
       },
+      "st_cic": {
+        "serviceApi": "http://sptribs-case-api-prod.service.core-compute-prod.internal",
+        "caseTypes": "CriminalInjuriesCompensation"
+      },
       "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
     },
     "documents": {
@@ -110,8 +114,8 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
-  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
+  "globalSearchServices": "GLOBAL_SEARCH_SERVICES",
+  "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
   "serviceRefDataMapping": [
     { "service": "IA", "serviceCodes": ["BFA1"] },
@@ -142,6 +146,10 @@
     "SSCS": {
        "caseTypes": "Benefit,SSCS_ExceptionRecord",
        "releaseVersion": "3.5"
+      },
+      "ST_CIC": {
+        "caseTypes": "CriminalInjuriesCompensation",
+        "releaseVersion": "4.0"
       },
     "EMPLOYMENT": {
       "caseTypes": "ET_EnglandWales,ET_EnglandWales_Listings,ET_EnglandWales_Multiple,ET_Scotland,ET_Scotland_Listings,ET_Scotland_Multiple",

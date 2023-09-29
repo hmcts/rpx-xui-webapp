@@ -19,12 +19,15 @@ describe('Jurisdiction', () => {
     { id: 'IA', name: 'Immigration & Asylum', description: null, caseTypes: null },
     { id: 'PUBLICLAW', name: 'Public Law', description: null, caseTypes: null },
     { id: 'DIVORCE', name: 'Family Divorce', description: null, caseTypes: null },
-    { id: 'PRIVATELAW', name: 'PRIVATE LAW', description: null, caseTypes: null },
-    { id: 'GLOBAL_SEARCH_SERVICES', name: 'GLOBAL_SEARCH_SERVICES', description: null, caseTypes: null }
+    { id: 'PRIVATELAW', name: 'PRIVATE LAW', description: null, caseTypes: null }
   ];
 
   const serviceList: GlobalSearchService[] = [
-    { serviceId: 'GLOBAL_SEARCH_SERVICES', serviceName: 'GLOBAL_SEARCH_SERVICES' }
+    { serviceId: 'IA', serviceName: 'Immigration & Asylum' },
+    { serviceId: 'CIVIL', serviceName: 'CIVIL' },
+    { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' },
+    { serviceId: 'PUBLICLAW', serviceName: 'Public Law' },
+    { serviceId: 'SCSS', serviceName: 'SCSS' },
   ];
 
   beforeEach(() => {
@@ -60,13 +63,13 @@ describe('Jurisdiction', () => {
 
   it('should return global search services', async() => {
     let services = globalSearchServices.generateServices(undefined);
-    expect(services.length).to.equal(1);
+    expect(services.length).to.equal(5);
 
     services = globalSearchServices.generateServices(null);
-    expect(services.length).to.equal(1);
+    expect(services.length).to.equal(5);
 
     services = globalSearchServices.generateServices([]);
-    expect(services.length).to.equal(1);
+    expect(services.length).to.equal(5);
   });
 
   it('should return global search services', async() => {

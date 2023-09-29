@@ -10,11 +10,11 @@ class CaseDetailsData{
 
         this.caseFlagsCase = JSON.parse(JSON.stringify(this.data));
         
-        // this.setupHearingCase()
+        this.setupHearingCase()
         this.setupDefaultCase()
-        // this.setupQMCase()
-        // this.setupCaseFileViewCase();
-        // this.setupCaseFlagsCase()
+        this.setupQMCase()
+        this.setupCaseFileViewCase();
+        this.setupCaseFlagsCase()
     }
 
     setCaseId(data,id){

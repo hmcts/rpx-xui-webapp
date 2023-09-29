@@ -114,8 +114,8 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "globalSearchServices": "GLOBAL_SEARCH_SERVICES",
-  "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",
+  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW,SCSS,ST_CIC",
+  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW,ST_CIC",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
   "serviceRefDataMapping": [
     { "service": "IA", "serviceCodes": ["BFA1"] },

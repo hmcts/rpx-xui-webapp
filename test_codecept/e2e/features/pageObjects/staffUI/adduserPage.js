@@ -41,13 +41,12 @@ class AddUserPage{
     }
 
     async getPageTitle(){
-        return this.headerTitle.getText();
+        return await this.headerTitle.getText()
     }
-
+    
     async isDisplayed(){
         return await this.container.isDisplayed();
     }
-
 
     async clickContinue(){
         await this.continue.click();

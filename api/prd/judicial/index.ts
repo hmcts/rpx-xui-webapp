@@ -10,8 +10,8 @@ import {
   transformToJudicialUserModel
 } from './models/judicialUser.model';
 
-const CONTENT_TYPE_V1 = 'application/json';
-const CONTENT_TYPE_V2 = 'application/vnd.jrd.api+json;Version=2.0';
+const HEADER_ACCEPT_V1 = 'application/json';
+const HEADER_ACCEPT_V2 = 'application/vnd.jrd.api+json;Version=2.0';
 const prdUrl: string = getConfigValue(SERVICES_PRD_JUDICIAL_API);
 
 /**
@@ -24,7 +24,10 @@ export async function searchJudicialUserByPersonalCodes(req: EnhancedRequest, re
   const markupPath: string = `${prdUrl}/refdata/judicial/users`;
   try {
     // Judicial User search API version to be used depends upon the config entry FEATURE_JRD_E_LINKS_V2_ENABLED's value
-    const headers = getHeadersBasedOnJudicialUserApiVersion(req);
+    req.headers.accept = showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED)
+      ? HEADER_ACCEPT_V2
+      : HEADER_ACCEPT_V1;
+    const headers = setHeaders(req);
     const { status, data }: { status: number, data: RawJudicialUserModel[] } = await http.post(markupPath, reqBody, { headers });
     const result = data.map(transformToJudicialUserModel);
     res.status(status).send(result);
@@ -43,23 +46,13 @@ export async function getJudicialUsersSearch(req: EnhancedRequest, res: Response
   const markupPath: string = `${prdUrl}/refdata/judicial/users/search`;
   try {
     // Judicial User search API version to be used depends upon the config entry FEATURE_JRD_E_LINKS_V2_ENABLED's value
-    const headers = getHeadersBasedOnJudicialUserApiVersion(req);
+    req.headers.accept = showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED)
+      ? HEADER_ACCEPT_V2
+      : HEADER_ACCEPT_V1;
+    const headers = setHeaders(req);
     const { status, data }: { status: number, data: JudicialUserModel[] } = await http.post(markupPath, reqBody, { headers });
     res.status(status).send(data);
   } catch (error) {
     next(error);
   }
-}
-
-function getHeadersBasedOnJudicialUserApiVersion(req: EnhancedRequest): any {
-  // Set the request headers accept property based on the API version enabled
-  req.headers.accept = showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED)
-    ? CONTENT_TYPE_V2
-    : CONTENT_TYPE_V1;
-  // Set the request headers content type property based on the API version enabled
-  const headers = showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED)
-    ? setHeaders(req, CONTENT_TYPE_V2)
-    : setHeaders(req, CONTENT_TYPE_V1);
-  // Return the updated request headers
-  return headers;
 }

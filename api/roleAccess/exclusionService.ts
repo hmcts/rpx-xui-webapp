@@ -14,8 +14,8 @@ import { RoleCategory } from './models/allocate-role.enum';
 import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
 
-const CONTENT_TYPE_V1 = 'application/json';
-const CONTENT_TYPE_V2 = 'application/vnd.jrd.api+json;Version=2.0';
+const HEADER_ACCEPT_V1 = 'application/json';
+const HEADER_ACCEPT_V2 = 'application/vnd.jrd.api+json;Version=2.0';
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 const JUDICIAL_REF_URL = getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH);
 
@@ -173,9 +173,10 @@ export function getCorrectRoleCategory(domain: string): RoleCategory {
 }
 
 export function getJudicialUsersFromApi(req: express.Request, ids: string[], serviceCode: string): Promise<AxiosResponse<JudicialUserDto[]>> {
-  // Judicial User search API version to be used depends on the config entry FEATURE_JRD_E_LINKS_V2_ENABLED's value
-  const headers = showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED)
-    ? setHeaders(req, CONTENT_TYPE_V2)
-    : setHeaders(req, CONTENT_TYPE_V1);
+  // Judicial User search API version to be used depends upon the config entry FEATURE_JRD_E_LINKS_V2_ENABLED's value
+  req.headers.accept = showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED)
+    ? HEADER_ACCEPT_V2
+    : HEADER_ACCEPT_V1;
+  const headers = setHeaders(req);
   return http.post(`${JUDICIAL_REF_URL}/refdata/judicial/users`, { sidam_ids: ids, serviceCode }, { headers });
 }

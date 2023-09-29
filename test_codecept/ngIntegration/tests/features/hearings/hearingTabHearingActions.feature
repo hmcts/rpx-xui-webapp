@@ -5,7 +5,7 @@ Feature: Hearings: Hearings tab Hearing action based on roles
 
     Scenario Outline: Hearigs: Hearing actions display for roles
         Given I set MOCK with user details
-            | roles | <role>,caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator |
+            | roles        | <role>,caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator |
             | roleCategory | LEGAL_OPERATIONS                                                             |
 
         # Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
@@ -14,11 +14,11 @@ Feature: Hearings: Hearings tab Hearing action based on roles
         # Given I set MOCK case details "WA_Case" property "jurisdiction.id" as "IA"
         # Given I set MOCK case details "WA_Case" property "case_type.id" as "Asylum"
         Given I set mock case hearings
-            | hmcStatus        | hearingType | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
-            | LISTED           | TEST_TYPE   | -3                     | 0                            | -3                                      | 2                                     |
-            # | COMPLETED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
-            # | CANCELLED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
-            # | AWAITING_ACTUALS | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
+            | hmcStatus | hearingType | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
+            | LISTED    | TEST_TYPE   | -3                     | 0                            | -3                                      | 2                                     |
+        # | COMPLETED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
+        # | CANCELLED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
+        # | AWAITING_ACTUALS | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
 
         Given I start MockApp
         Given I navigate to home page
@@ -45,8 +45,8 @@ Feature: Hearings: Hearings tab Hearing action based on roles
 
     Scenario: Hearing actions with status AWAITING_HEARING_DETAILS
         Given I set MOCK with user details
-            | roles | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
-            | roleCategory | LEGAL_OPERATIONS                                                             |
+            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
+            | roleCategory | LEGAL_OPERATIONS                                                                      |
 
         # Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
 
@@ -54,11 +54,11 @@ Feature: Hearings: Hearings tab Hearing action based on roles
         # Given I set MOCK case details "WA_Case" property "jurisdiction.id" as "IA"
         # Given I set MOCK case details "WA_Case" property "case_type.id" as "Asylum"
         Given I set mock case hearings
-            | hmcStatus        | hearingType | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
-            | LISTED           | TEST_TYPE   | -3                     | 0                            | -3                                      | 2                                     |
-            | COMPLETED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
-            | CANCELLED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
-            | AWAITING_ACTUALS | TEST_AWAITING_HEARING   | -5                     | -1                           | 2                                       | 4                                     |
+            | hmcStatus        | hearingType           | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
+            | LISTED           | TEST_TYPE             | -3                     | 0                            | -3                                      | 2                                     |
+            | COMPLETED        | TEST_TYPE             | -5                     | -1                           | 2                                       | 4                                     |
+            | CANCELLED        | TEST_TYPE             | -5                     | -1                           | 2                                       | 4                                     |
+            | AWAITING_ACTUALS | TEST_AWAITING_HEARING | -5                     | -1                           | 2                                       | 4                                     |
 
         Given I start MockApp
         Given I navigate to home page
@@ -74,8 +74,8 @@ Feature: Hearings: Hearings tab Hearing action based on roles
 
         Then I see hearing actuals page
         Then I see hearing actuals page with details
-            |field|value|
-            |Hearing date||
+            | field        | value |
+            | Hearing date |       |
 
         Then I see hearing actuals update link
         When I click hearing actuals update link
@@ -88,21 +88,21 @@ Feature: Hearings: Hearings tab Hearing action based on roles
 
         Then I see hearing actuals page
         Then I see hearing actuals page with details
-            | field        | value |
-            | Hearing stage | Breach 1 |
+            | field          | value     |
+            | Hearing stage  | Breach 1  |
             | Hearing result | COMPLETED |
 
         When In hearing actuals page, I click continue
         Then I am hearing actuals check your answers page
         Then I validate hearing actuals details in CYA
             | field          | value     |
-            | Paper hearing | Yes |
+            | Paper hearing  | Yes       |
             | Hearing stage  | Breach 1  |
             | Hearing result | COMPLETED |
 
         When I click Submit hearing details button in hearing actuals CYA
         Then I see hearing details success confirmation message "You have successfully submitted the hearing details."
-        # Then In hearings tab, I see hearing "TEST_TYPE" with values under "Current and upcoming"
-        #     | Hearing date | Status | Actions   |
-        #     | -3           | LISTED | <actions> |
+# Then In hearings tab, I see hearing "TEST_TYPE" with values under "Current and upcoming"
+#     | Hearing date | Status | Actions   |
+#     | -3           | LISTED | <actions> |
 

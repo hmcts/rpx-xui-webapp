@@ -27,7 +27,6 @@ describe('Jurisdiction', () => {
     { serviceId: 'CIVIL', serviceName: 'CIVIL' },
     { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' },
     { serviceId: 'PUBLICLAW', serviceName: 'Public Law' },
-    { serviceId: 'SCSS', serviceName: 'SCSS' },
   ];
 
   beforeEach(() => {

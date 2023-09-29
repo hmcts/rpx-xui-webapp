@@ -9,8 +9,8 @@ import { PERSON } from './constants/mock.data';
 import { PersonRole } from './interfaces/person';
 import { applySearchFilter } from './util';
 
-const CONTENT_TYPE_V1 = 'application/json';
-const CONTENT_TYPE_V2 = 'application/vnd.jrd.api+json;Version=2.0';
+const HEADER_ACCEPT_V1 = 'application/json';
+const HEADER_ACCEPT_V2 = 'application/vnd.jrd.api+json;Version=2.0';
 const JUDICIAL_REF_URL = getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH);
 
 // judicial person search
@@ -37,10 +37,11 @@ export async function postFindPersonSearch(req: EnhancedRequest, res: Response) 
   if (domain === PersonRole.JUDICIAL) {
     try {
       for (const serviceCode of serviceCodes) {
-        // Judicial User search API version to be used depends on the config entry FEATURE_JRD_E_LINKS_V2_ENABLED's value
-        const headers = showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED)
-          ? setHeaders(req, CONTENT_TYPE_V2)
-          : setHeaders(req, CONTENT_TYPE_V1);
+        // Judicial User search API version to be used depends upon the config entry FEATURE_JRD_E_LINKS_V2_ENABLED's value
+        req.headers.accept = showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED)
+          ? HEADER_ACCEPT_V2
+          : HEADER_ACCEPT_V1;
+        const headers = setHeaders(req);
         const body = { searchString, serviceCode };
         const response = await http.post(`${JUDICIAL_REF_URL}/refdata/judicial/users/search`, body, { headers });
         searchResult = response.data ? [...response.data, ...searchResult] : searchResult;

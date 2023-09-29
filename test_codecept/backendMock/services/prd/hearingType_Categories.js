@@ -2,6 +2,19 @@ module.exports = {
     list_of_values : [
         {
             "category_key": "HearingType",
+            "key": "ABA5-PRL",
+            "value_en": "Private law",
+            "value_cy": "Torri Amodau",
+            "hint_text_en": "",
+            "hint_text_cy": "",
+            "lov_order": 4,
+            "parent_category": "",
+            "parent_key": "",
+            "active_flag": "Y",
+            "child_nodes": null
+        },
+        {
+            "category_key": "HearingType",
             "key": "ABA5-BRE",
             "value_en": "Breach",
             "value_cy": "Torri Amodau",

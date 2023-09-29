@@ -43,6 +43,11 @@ router.post('/session/userApiData', async (req, res) => {
     res.send({ status: 'success' })
 })
 
+router.get('/session/userApiData', async (req, res) => {
+    await userApiData.setUserData(req.body.auth, req.body.apiMethod, req.body.apiResponse)
+    res.send(userApiData.sessionUsers)
+})
+
 
 router.post('/session/getUserRolesAndRoleAssignments', async (req, res) => {
     const data = await sessionService.getSessionRolesAndRoleAssignments(req.body.auth)

@@ -2,21 +2,16 @@ import axios, { AxiosInstance } from 'axios';
 import { config } from '../config/config';
 import { getSessionCookieString, updateSessionCookieString } from './authUtil';
 import { reporterMsg, reporterJson } from './helper';
-import { getConfigValue } from "../../../../api/configuration";
-import { MICROSERVICE, S2S_SECRET, SERVICE_S2S_PATH } from "../../../../api/configuration/references";
-import { s2s } from "@hmcts/rpx-xui-node-lib";
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
+axios.defaults.headers.common['Content-Type'] = 'application/json';
 const axiosOptions = {};
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = config.baseUrl;
-axios.defaults.headers.common['Content-Type'] = 'application/json';
 const http: AxiosInstance = axios.create(axiosOptions);
 
 const requestInterceptor = (request) => {
-  console.log(`Request here ------>>>> ${JSON.stringify(request)}`)
-  console.log(`Request headers here ------>>>> ${JSON.stringify(request.headers)}`)
   console.log(`${request.method.toUpperCase()} to ${request.url}`);
   return request;
 };

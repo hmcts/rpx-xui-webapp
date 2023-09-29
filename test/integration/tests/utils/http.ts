@@ -11,6 +11,7 @@ import {
 import * as log4jui from '../../../../api/lib/log4jui';
 import { shorten } from '../../../../api/lib/util';
 import { config } from '../config/config';
+import { getAuthToken } from './getToken';
 
 const s2sSecret = getConfigValue(S2S_SECRET).trim();
 const microservice = getConfigValue(MICROSERVICE);

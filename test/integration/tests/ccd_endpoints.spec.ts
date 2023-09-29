@@ -4,10 +4,6 @@ import { config } from './config/config';
 import { getXSRFToken } from './utils/authUtil';
 import { setTestContext } from './utils/helper';
 import Request from './utils/request';
-import {getConfigValue} from "../../../api/configuration";
-import {MICROSERVICE, S2S_SECRET, SERVICE_S2S_PATH} from "../../../api/configuration/references";
-import {s2s} from "@hmcts/rpx-xui-node-lib";
-import axios from "axios";
 
 describe('CCD Endpoints', () => {
   const userName = config.users[config.testEnv].solicitor.e;
@@ -21,27 +17,8 @@ describe('CCD Endpoints', () => {
   });
 
   it('Jurisdictions for user role', async function() {
-    const s2sSecret = getConfigValue(S2S_SECRET).trim();
-    const microservice = getConfigValue(MICROSERVICE);
-    const s2sEndpointUrl = `${getConfigValue(SERVICE_S2S_PATH)}/lease`;
-
-    s2s.configure({
-      microservice,
-      s2sEndpointUrl,
-      s2sSecret
-    });
-
-    const s2sToken = await s2s.serviceTokenGenerator();
-    // const authToken = await getAuthToken();
-    // axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
-    axios.defaults.headers.common['ServiceAuthorization'] = s2sToken;
-    console.log(`S2S TOKEN: ${s2sToken}`);
-
-    const headers = {
-      'ServiceAuthorization': s2sToken
-    }
     await Request.withSession(userName, password);
-    const response = await Request.get('aggregated/caseworkers/:uid/jurisdictions?access=read', headers, 200);
+    const response = await Request.get('aggregated/caseworkers/:uid/jurisdictions?access=read', null, 200);
     expect(response.data).to.be.an('array');
     expect(response.data.map((e) => e.name)).to.include.members(config.jurisdcitionNames[config.testEnv]);
   });

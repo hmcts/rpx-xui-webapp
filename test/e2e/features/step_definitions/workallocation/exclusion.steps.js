@@ -1,4 +1,4 @@
-var { defineSupportCode } = require('@cucumber/cucumber');
+var { defineSupportCode } = require('cucumber');
 const reportLogger = require('../../../support/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');

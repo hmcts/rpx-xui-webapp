@@ -1,7 +1,7 @@
 const headerPage = require('../pageObjects/headerPage');
 const browserWaits = require('../../support/customWaits');
 const cucumberReporter = require('../../support/reportLogger');
-var { defineSupportCode } = require('@cucumber/cucumber');
+var { defineSupportCode } = require('cucumber');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const constants = require('../../support/constants');
 const featureToggleUtil = require('../../../ngIntegration/util/featureToggleUtil');

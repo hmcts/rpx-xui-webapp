@@ -4,7 +4,7 @@ const taskAssignmentPage = require('../../pageObjects/workAllocation/taskAssignm
 const taskActionPage = require('../../pageObjects/workAllocation/taskActionPage');
 
 const taskmanagerPage = require('../../pageObjects/workAllocation/taskManagerPage');
-var { defineSupportCode } = require('@cucumber/cucumber');
+var { defineSupportCode } = require('cucumber');
 
 const reportLogger = require('../../../support/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');

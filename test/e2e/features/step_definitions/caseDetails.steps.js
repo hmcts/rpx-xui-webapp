@@ -1,7 +1,7 @@
 
 const CucumberReportLogger = require('../../support/reportLogger');
 
-var { defineSupportCode } = require('@cucumber/cucumber');
+var { defineSupportCode } = require('cucumber');
 const BrowserWaits = require('../../support/customWaits');
 const caseDetailsPage = require('../pageObjects/caseDetailsPage');
 

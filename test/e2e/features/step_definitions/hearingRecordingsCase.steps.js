@@ -3,7 +3,7 @@ var HearingRecordingsCase = require('../pageObjects/hearingRecordingsCase');
 const headerPage = require('../pageObjects/headerPage');
 const browserWaits = require('../../support/customWaits');
 const cucumberReporter = require('../../support/reportLogger');
-var { defineSupportCode } = require('@cucumber/cucumber');
+var { defineSupportCode } = require('cucumber');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
   let hearingRecordingsCase = new HearingRecordingsCase();

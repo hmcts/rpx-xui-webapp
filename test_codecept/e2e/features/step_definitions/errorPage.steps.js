@@ -1,6 +1,6 @@
 'use strict';
 
-var { defineSupportCode } = require('@cucumber/cucumber')
+var { defineSupportCode } = require('cucumber')
 
 const BrowserUtil = require('../../../ngIntegration/util/browserUtil');
 const errorPage = require('../pageObjects/common/errorPage');

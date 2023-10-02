@@ -5,7 +5,7 @@ const taskActionPage = require('../../pageObjects/workAllocation/taskActionPage'
 
 
 const taskmanagerPage = require('../../pageObjects/workAllocation/taskManagerPage');
-var { defineSupportCode } = require('@cucumber/cucumber');
+var { defineSupportCode } = require('cucumber');
 
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');

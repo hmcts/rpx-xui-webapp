@@ -1,5 +1,5 @@
 
-var { defineSupportCode } = require('@cucumber/cucumber');
+var { defineSupportCode } = require('cucumber');
 
 const headerPage = require('../../pageObjects/headerPage');
 const myWorkPage = require('../../pageObjects/workAllocation/myWorkPage');

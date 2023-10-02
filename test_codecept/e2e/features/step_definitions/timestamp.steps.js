@@ -1,6 +1,6 @@
 var CaseManager = require('../pageObjects/common/CaseManager');
 
-var { defineSupportCode } = require('cucumber');
+var { defineSupportCode } = require('@cucumber/cucumber');
 
 
 

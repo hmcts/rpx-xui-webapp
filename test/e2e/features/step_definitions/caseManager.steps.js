@@ -10,7 +10,7 @@ var BrowserWaits = require('../../support/customWaits');
 
 var CaseManager = require('../pageObjects/common/CaseManager');
 
-var { defineSupportCode } = require('cucumber');
+var { defineSupportCode } = require('@cucumber/cucumber');
 const CCDCaseDetails = require('../../../nodeMock/ccd/ccdCaseConfig/caseDetailsConfigGenerator');
 const caseDetailsPage = require('../pageObjects/caseDetailsPage');
 

@@ -2,7 +2,7 @@
 var ShareCaseCheckAndConfirmPage = require('../pageObjects/shareCaseCheckAndConfirmPage');
 const BrowserWaits = require('../../support/customWaits');
 
-var { defineSupportCode } = require('cucumber');
+var { defineSupportCode } = require('@cucumber/cucumber');
 const { browser } = require('protractor');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {

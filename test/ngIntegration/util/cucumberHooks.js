@@ -1,7 +1,7 @@
 'use strict';
-const Cucumber = require('cucumber');
-const { defineSupportCode } = require('cucumber');
-const { Given, When, Then } = require('cucumber');
+const Cucumber = require('@cucumber/cucumber');
+const { defineSupportCode } = require('@cucumber/cucumber');
+const { Given, When, Then } = require('@cucumber/cucumber');
 
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));

@@ -1,4 +1,4 @@
-var { defineSupportCode } = require('cucumber');
+var { defineSupportCode } = require('@cucumber/cucumber');
 
 const MockApp = require('../../../../nodeMock/app');
 const nodeAppMock = require('../../../../nodeMock/nodeApp/mockData');

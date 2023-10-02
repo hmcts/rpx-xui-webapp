@@ -4,7 +4,7 @@ const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 var CaseEditPage = require('../pageObjects/caseEditPage');
 
 
-var { defineSupportCode } = require('@cucumber/cucumber');
+var { defineSupportCode } = require('cucumber');
 
 
     let caseEditPage = new CaseEditPage();

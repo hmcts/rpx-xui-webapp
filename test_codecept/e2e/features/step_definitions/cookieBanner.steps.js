@@ -1,6 +1,6 @@
 var CookieBanner = require('../pageObjects/common/cookieBanner');
 
-var { defineSupportCode } = require('@cucumber/cucumber');
+var { defineSupportCode } = require('cucumber');
 
 
 

@@ -9,8 +9,8 @@ let ApplyForProbatePage = require('../pageObjects/applyForProbatePage.js');
 const headerPage = require('../pageObjects/headerPage');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 let TestData = require('../../utils/TestData.js');
-var { When } = require('@cucumber/cucumber');
-var { Then } = require('@cucumber/cucumber');
+var { When } = require('cucumber');
+var { Then } = require('cucumber');
 Dropdown = require('../pageObjects/webdriver-components/dropdown.js');
 TextField = require('../pageObjects/webdriver-components/textField.js');
 CustomError = require('../../utils/errors/custom-error.js');
@@ -19,7 +19,7 @@ var ProbateCase = require('../pageObjects/ProbateCase');
 
 var CaseManager = require('../pageObjects/common/CaseManager');
 
-var { defineSupportCode } = require('@cucumber/cucumber');
+var { defineSupportCode } = require('cucumber');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
   let createCaseStartPage = new CreateCaseStartPage();

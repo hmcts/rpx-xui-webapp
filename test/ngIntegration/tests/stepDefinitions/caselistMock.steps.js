@@ -1,8 +1,8 @@
-var { defineSupportCode } = require('@cucumber/cucumber');
+var { defineSupportCode } = require('cucumber');
 
 const CucumberReportLogger = require('../../../e2e/support/reportLogger');
 
-var { defineSupportCode } = require('@cucumber/cucumber');
+var { defineSupportCode } = require('cucumber');
 
 const MockApp = require('../../../nodeMock/app');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');

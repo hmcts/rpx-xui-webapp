@@ -1,6 +1,6 @@
 var CookieBanner = require('../pageObjects/common/cookieBanner');
 
-var { defineSupportCode } = require('@cucumber/cucumber');
+var { defineSupportCode } = require('cucumber');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
   When('I click \'Accept additional cookies\'', async function () {

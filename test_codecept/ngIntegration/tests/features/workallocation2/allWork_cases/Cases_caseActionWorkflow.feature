@@ -7,7 +7,6 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
     Background: Mock and browser setup
         Given I init MockApp
        
-@codecept_test
     Scenario:  Judge reaallocate case from all work cases
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator" with reference "userDetails"
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA" allow empty service

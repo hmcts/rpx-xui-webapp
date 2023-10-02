@@ -1,6 +1,6 @@
 var IacCase = require('../pageObjects/iacCase');
 
-var { defineSupportCode } = require('cucumber');
+var { defineSupportCode } = require('@cucumber/cucumber');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
   let iacCase = new IacCase();

@@ -4,7 +4,7 @@ var ShareCaseCheckAndConfirmPage = require("../pageObjects/shareCaseCheckAndConf
 
 const BrowserWaits = require("../../support/customWaits");
 
-var { defineSupportCode } = require('cucumber');
+var { defineSupportCode } = require('@cucumber/cucumber');
 const { browser } = require("protractor");
 
 

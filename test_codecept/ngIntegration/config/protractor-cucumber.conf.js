@@ -1,7 +1,7 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 
-var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
+const screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
 
 chai.use(chaiAsPromised);
 const minimist = require('minimist');

@@ -1,7 +1,7 @@
 
 const BrowserWaits = require('../../support/customWaits');
 const ArrayUtil = require('../../utils/ArrayUtil');
-var { defineSupportCode } = require('cucumber');
+var { defineSupportCode } = require('@cucumber/cucumber');
 const { browser } = require('protractor');
 const BrowserLogs = require('../../support/browserLogs');
 

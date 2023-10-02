@@ -1,6 +1,6 @@
 const RefundsPage = require('../pageObjects/refundsPage.js');
 const headerPage = require('../pageObjects/headerPage');
-const { defineSupportCode } = require('cucumber');
+const { defineSupportCode } = require('@cucumber/cucumber');
 
 defineSupportCode(function ({ Then, When }) {
   let refundsPage = new RefundsPage();

@@ -1,4 +1,4 @@
-var { defineSupportCode } = require('cucumber');
+var { defineSupportCode } = require('@cucumber/cucumber');
 
 const mockClient = require('../../../../backendMock/client/index');
 const roleAssignmentMock = require('../../../../backendMock/services/roleAssignments/index');

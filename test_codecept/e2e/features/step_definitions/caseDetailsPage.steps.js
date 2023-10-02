@@ -3,7 +3,7 @@ var CaseListPage = require("../pageObjects/CaseListPage");
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
 
-var { defineSupportCode } = require('cucumber');
+var { defineSupportCode } = require('@cucumber/cucumber');
 const { browser } = require("protractor");
 const BrowserWaits = require("../../support/customWaits");
 const caseDetailsPage = require('../../../ngIntegration/tests/pageObjects/caseDetailsPage');

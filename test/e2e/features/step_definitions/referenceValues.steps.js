@@ -2,7 +2,7 @@
 var CaseListPage = require('../pageObjects/CaseListPage');
 const CucumberReportLogger = require('../../support/reportLogger');
 
-var { defineSupportCode } = require('cucumber');
+var { defineSupportCode } = require('@cucumber/cucumber');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
   Given('I update object values in reference {string}', async function (objectReference, datatable){

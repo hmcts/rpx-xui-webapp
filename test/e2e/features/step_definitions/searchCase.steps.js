@@ -10,7 +10,7 @@ const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = requir
 const CucumberReporter = require('../../support/reportLogger');
 const BrowserWaits = require('../../support/customWaits');
 const browserUtil = require('../../../ngIntegration/util/browserUtil');
-var { defineSupportCode } = require('cucumber');
+var { defineSupportCode } = require('@cucumber/cucumber');
 const { browser } = require('protractor');
 const config = require('../../utils/config/config.js');
 

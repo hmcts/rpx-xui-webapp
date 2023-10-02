@@ -9,7 +9,7 @@ variable "location" {
 variable "env" {}
 
 variable "shared_product_name" {
-    default = "rpx"
+  default = "rpx"
 }
 
 variable "subscription" {}
@@ -19,7 +19,7 @@ variable "common_tags" {
 }
 
 variable "enable_ase" {
-    default = false
+  default = false
 }
 
 variable "application_type" {
@@ -28,9 +28,12 @@ variable "application_type" {
 }
 
 variable "redis_family" {
-  default     = "P"
+  default = "P"
 }
 
 variable "redis_capacity" {
-  default     = "2"
+  default = "2"
+}
+variable "sku_name" {
+  default = "Premium"
 }

@@ -9,7 +9,7 @@ const MEDIA_VIEWER = 'media-viewer-info';
 @Component({
   selector: 'exui-media-viewer',
   templateUrl: './media-viewer-wrapper.component.html',
-  // styleUrls: ['./media-viewer-wrapper.component.scss'],
+  styleUrls: ['./media-viewer-wrapper.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class MediaViewerWrapperComponent implements OnInit {

@@ -1,0 +1,1 @@
+sku_name = "Standard"

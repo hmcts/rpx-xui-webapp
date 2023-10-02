@@ -34,7 +34,8 @@ class SearchPage {
     this.noResultsNotification = $("ccd-search-result .notification");
     this.searchResultComponent = $('.search-block');
 
-    this.firstResultCaseLink = $("ccd-search-result>table>tbody>tr:nth-of-type(1)>td:nth-of-type(1)>a"); 
+    this.firstResultCaseLink = $("ccd-search-result>table>tbody>tr:nth-of-type(1)>td:nth-of-type(1)>a");
+    this.secondResultCaseLink = $("ccd-search-result>table>tbody>tr:nth-of-type(2)>td:nth-of-type(1)>a"); 
   }
 
 
@@ -97,15 +98,10 @@ class SearchPage {
     // await optionElement.click();
     CucumberReportLogger.LogTestDataInput(`Search  page case type : ${option}`);
 
-    RuntimeTestData.searchCasesInputs.casetype = option; 
 
   }
 
   async clickApplyButton() {
-    // await this._waitForSearchComponent();
-    await BrowserWaits.waitForElement(this.applyButton);
-    await BrowserWaits.waitForSpinnerToDissappear();
-    await BrowserWaits.waitForElementClickable(this.applyButton);
 
     // await browser.executeScript('arguments[0].scrollIntoView()',
       // this.applyButton); 
@@ -139,6 +135,20 @@ class SearchPage {
     });
    
 
+    await BrowserWaits.waitForPageNavigation(thisPageUrl);
+  }
+
+  async openSecondCaseInResults(){
+    
+    await this.searchResultsTopPagination.isPresent();
+    await BrowserWaits.waitForElement(this.secondResultCaseLink);
+    var thisPageUrl = await browser.getCurrentUrl();
+
+    await BrowserWaits.retryWithActionCallback(async () =>{
+      await BrowserWaits.waitForSpinnerToDissappear();
+      await this.secondResultCaseLink.click();
+    });
+   
     await BrowserWaits.waitForPageNavigation(thisPageUrl);
   }
 

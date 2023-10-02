@@ -1,4 +1,4 @@
-@fullfunctional @ignore @codecept_enabled
+@fullfunctional @functional_enabled
 Feature: Global search
 
 
@@ -27,7 +27,7 @@ Feature: Global search
             | 16-digit case reference | 1546883526751282 |
 
 
-@codecept_test
+
     Scenario: Search from menu 16-digit find control
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with test user identified as "IAC_CaseOfficer_R2"

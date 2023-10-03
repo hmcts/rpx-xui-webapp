@@ -15,7 +15,7 @@ import * as fromRoot from '../../store';
 @Component({
   selector: 'exui-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  // styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit, OnDestroy {

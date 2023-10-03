@@ -54,6 +54,7 @@ const { DataTableArgument } = require('codeceptjs');
 
     Then('I validate My work sub navigations displayed', async function(datatable){
         const tabshashes = datatable.parse().hashes();
+        console.log('tabshashes :', tabshashes);
         for(let i = 0; i < tabshashes.length;i++){
             expect(await myWorkPage.isSubNavigationTabPresent(tabshashes[i]['Tab'])).to.be.true
         }

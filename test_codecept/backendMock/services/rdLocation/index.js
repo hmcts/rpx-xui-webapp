@@ -97,9 +97,9 @@ class RDLocationService {
   }
 
   getServiceLocations(serviceCode){
-    const serviceWithCode = this.locationsConfig.find((service) => service.serviceCode.includes(serviceCode))
+    const serviceWithCode = this.locationsConfig.find((service) => service.serviceCode.includes(serviceCode));
 
-    assertNotNull(serviceWithCode, `Mock service config not found for service code ${serviceCode}`)
+    console.assert(serviceWithCode, `Mock service config not found for service code ${serviceCode}`);
 
     return {
       'service_code': serviceCode,

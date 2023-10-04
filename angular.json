@@ -85,6 +85,7 @@
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": false,
+              "buildOptimizer": false,
               "namedChunks": false,
               "aot": false,
               "extractLicenses": false,

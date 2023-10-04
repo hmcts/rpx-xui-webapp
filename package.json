@@ -5,10 +5,12 @@
     "node": ">=18.17.0"
   },
   "scripts": {
-    "build": "export NODE_OPTIONS=--openssl-legacy-provider; yarn build:prod && yarn build:node",
+    "build": "yarn build:prod && yarn build:node",
+    "build:dev": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --configuration=development && yarn build:node:dev",
     "build:docker": "docker build -t xui .",
     "build:ng": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --configuration production build",
     "build:node": "cd api && yarn build",
+    "build:node:dev": "cd api && yarn build:dev",
     "build:prod": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --configuration production",
     "fix_dependencies": "sed -i \"s|\\$colour: quote(\\$colour);|\\$colour: quote(\\\"#{\\$colour}\\\");|g\" ./node_modules/govuk-frontend/govuk/helpers/_colour.scss",
     "cve": "yarn audit --groups dependencies --json | grep auditAdvisory > yarn-audit-known-issues",
@@ -43,7 +45,7 @@
     "test:coverage:merge": "./node_modules/.bin/lcov-result-merger './reports/tests/coverage/*/lcov.info' > ./reports/tests/coverage/lcov.info",
     "test:coverage:node": "cd api && yarn coverage",
     "test:coverage:ng": "ng test --code-coverage --source-map",
-    "test:a11y": "node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=a11y PARALLEL=false   npx codeceptjs --config=./test_codecept/codeceptCommon/codeceptA11y.conf.ts run",
+    "test:a11y": "node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=a11y PARALLEL=false   npx codeceptjs run --config=./test_codecept/codeceptCommon/codeceptA11y.conf.ts",
     "test:a11y1": "echo disabled to fix tests",
     "test:a11y:needsfix": "yarn test:ngIntegrationMockEnv &&  webdriver-manager update --gecko=false --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/accessibility/config/pa11yProtractor.conf.js",
     "test:all": "yarn test:ng && yarn test:node && yarn test:smoke && yarn test:functional && yarn test:crossbrowser",
@@ -68,9 +70,9 @@
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
     "test:backendMock": "DEBUG=true nodemon test_codecept/backendMock/app --standalone",
     "test:codeceptE2EDebug": "TEST_TYPE=e2e  npx codeceptjs run  --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @functional_test",
-    "test:codeceptE2E": "PARALLEL=true TEST_TYPE=e2e  npx codeceptjs run-workers --suites 8 --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @functional_enabled ",
+    "test:codeceptE2E": "PARALLEL=true TEST_TYPE=e2e  npx codeceptjs run-workers --suites 6 --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @functional_enabled ",
     "test:xuiIntegrationDebug": "DEBUG=true NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration  npx codeceptjs run  -p pauseOnFail --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep '(?=.*@functional_debug)^(?!.*@ignore)' ",
-    "test:xuiIntegration": "yarn build && node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration PARALLEL=true  npx codeceptjs run-workers --suites 8  --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep '(?=.*@functional_enabled)^(?!.*@ignore)'  ",
+    "test:xuiIntegration": "yarn build && node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration PARALLEL=true  npx codeceptjs run-workers --suites 6  --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep '(?=.*@functional_enabled)^(?!.*@ignore)'  ",
     "parallel": "npm-run-all -l -p test:api test:xuiIntegration test:codeceptE2E"
   },
   "private": true,
@@ -109,7 +111,7 @@
     "axios": "^1.4.0",
     "axios-mock-adapter": "^1.21.5",
     "class-transformer": "^0.3.2",
-    "codeceptjs": "3.3.7",
+    "codeceptjs": "3.5.0",
     "compression": "^1.7.4",
     "config": "^3.2.5",
     "cookie-parser": "^1.4.4",
@@ -127,7 +129,7 @@
     "git-rev-sync": "^2.0.0",
     "global-agent": "^2.1.7",
     "govuk-elements-sass": "^3.1.3",
-    "govuk-frontend": "^3.12.0",
+    "govuk-frontend": "4.0.1",
     "govuk_frontend_toolkit": "^9.0.0",
     "helmet": "^3.21.3",
     "http-proxy-middleware": "1.1.x",
@@ -198,7 +200,7 @@
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.57.0",
     "base-64": "^0.1.0",
-    "chai": "^4.2.0",
+    "chai": "^4.3.8",
     "chai-as-promised": "7.1.1",
     "codeceptjs-cucumber-json-reporter": "^1.0.11",
     "codelyzer": "^5.1.2",
@@ -230,7 +232,7 @@
     "npm-run-all": "^4.1.5",
     "pa11y": "^5.3.0",
     "protractor": "~7.0.0",
-    "protractor-cucumber-framework": "6.1.1",
+    "protractor-cucumber-framework": "^9.7.0",
     "protractor-multiple-cucumber-html-reporter-plugin": "1.8.0",
     "sass": "^1.66.1",
     "sinon": "^7.3.2",
@@ -251,5 +253,5 @@
   "browser": {
     "crypto": false
   },
-  "packageManager": "yarn@3.5.0"
+  "packageManager": "yarn@3.6.3"
 }

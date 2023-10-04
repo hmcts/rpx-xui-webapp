@@ -2559,12 +2559,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.5-yes-no-bug-fix-v2":
-  version: 6.19.5-yes-no-bug-fix-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.5-yes-no-bug-fix-v2"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.5-yes-no-bug-fix-v3":
+  version: 6.19.5-yes-no-bug-fix-v3
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.5-yes-no-bug-fix-v3"
   dependencies:
     tslib: ^2.0.0
-  checksum: 7e2a92c803c49309e0e36d45af5fc2a4a38ed7a5e48be7f1b0e2017096862e5ba0d3db12e77dae984f0a743517baf04584cd49ad9c192f22fddcac467dd9b22b
+  checksum: 4a118fe14709e8d1c3e394a88b362e067edb2d549cd8e91ecec2ae4c4666de740e908b39a46e68aeca2037be970cba2fcdc6702dcc0d98bfd2799fd2aa7fd3ba
   languageName: node
   linkType: hard
 
@@ -19642,7 +19642,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.5-yes-no-bug-fix-v2
+    "@hmcts/ccd-case-ui-toolkit": 6.19.5-yes-no-bug-fix-v3
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.5

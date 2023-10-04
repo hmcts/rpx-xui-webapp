@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import mockResponse from '../../mocks/openid-well-known-configuration.mock';
 import { PactTestSetup } from '../settings/provider.mock';
 
-const pactSetUp = new PactTestSetup({ provider: 'Idam_api', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'idamApi_oidc', port: 8000 });
 
 describe('OpenId Connect API', () => {
   // Write Pact when all tests done

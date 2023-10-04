@@ -2485,10 +2485,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/frontend@npm:0.0.39-alpha":
-  version: 0.0.39-alpha
-  resolution: "@hmcts/frontend@npm:0.0.39-alpha"
-  checksum: abadc569f8079e74a32777c69f5d16d5b732c07bd104f501c27951d41b34c0d9c28e1e6b1a6b5ab8952b7a13bc47a6d5bde069748520d2688001748bf55f9032
+"@hmcts/frontend@npm:0.0.50-alpha":
+  version: 0.0.50-alpha
+  resolution: "@hmcts/frontend@npm:0.0.50-alpha"
+  checksum: 40121f8b72d9e4045f8f544458a5a48fd09dab61c75da7d719f5225a0a6019deb84cee08b03b3596fb409dc3518efaed264269257cc6b8e9f6abbdc48d25e4bf
   languageName: node
   linkType: hard
 
@@ -6564,15 +6564,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios-mock-adapter@npm:^1.21.5":
-  version: 1.21.5
-  resolution: "axios-mock-adapter@npm:1.21.5"
+"axios-mock-adapter@npm:^1.22.0":
+  version: 1.22.0
+  resolution: "axios-mock-adapter@npm:1.22.0"
   dependencies:
     fast-deep-equal: ^3.1.3
     is-buffer: ^2.0.5
   peerDependencies:
     axios: ">= 0.17.0"
-  checksum: e3c2ccf220a2ddd316ccdff36b65754ddaf9b7a8dc70a64e9ff94da335a0694aaba3d925e6d7d5f71dd4badfe9af581bd7e6dd2dc09414d9900298afe12a71a0
+  checksum: 3c0b1473a8263958f4409525fc4c9872cc1c055b69b0a9dba84084e8827e22e7b0d0241061b512a67c763f2116dee272761dd5907f235e5337df0d18ead00294
   languageName: node
   linkType: hard
 
@@ -18700,7 +18700,7 @@ __metadata:
     "@edium/fsm": ^2.1.2
     "@hmcts/ccd-case-ui-toolkit": 7.0.0-NodeAndNgUpgrades.1
     "@hmcts/ccpay-web-component": 6.0.0-beta01
-    "@hmcts/frontend": 0.0.39-alpha
+    "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.10.1-RC.1
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
@@ -18745,7 +18745,7 @@ __metadata:
     applicationinsights: 1.7.2
     applicationinsights-js: ^1.0.20
     axios: ^1.4.0
-    axios-mock-adapter: ^1.21.5
+    axios-mock-adapter: ^1.22.0
     base-64: ^0.1.0
     chai: ^4.3.10
     chai-as-promised: 7.1.1

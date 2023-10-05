@@ -71,6 +71,11 @@
       (backClicked)="showResponseForm()">
     </ccd-query-check-your-answers>
 
+    <ccd-query-confirmation
+      *ngIf="showConfirmation"
+      [queryCreateContext]="queryCreateContext">
+    </ccd-query-confirmation>
+
     <div>
       <ng-container [ngSwitch]="queryCreateContext">
         <a *ngSwitchCase="queryCreateContextEnum.NEW_QUERY"
@@ -79,7 +84,7 @@
             {{ 'Cancel and return to case' | rpxTranslate }}
         </a>
         <a *ngSwitchCase="queryCreateContextEnum.FOLLOWUP"
-          href="javascript:void(0)" (click)="goToQueryList()" 
+          href="javascript:void(0)" (click)="goToQueryList()"
           class="govuk-back-link govuk-!-margin-bottom-0">
           {{ 'Cancel and return to query list' | rpxTranslate }}
         </a>

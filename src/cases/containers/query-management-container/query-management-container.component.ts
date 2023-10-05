@@ -36,8 +36,9 @@ export class QueryManagementContainerComponent implements OnInit {
   public caseId: string;
   public queryCreateContext: QueryCreateContext;
   public queryItem: QueryListItem | undefined;
-  public showSummary: boolean = false;
-  public formGroup: FormGroup = new FormGroup({});
+  public showSummary = false;
+  public showConfirmation = true;
+  public formGroup = new FormGroup({});
   public submitted = false;
   public errorMessages: ErrorMessage[] = [];
   public queryCreateContextEnum = QueryCreateContext;
@@ -108,7 +109,7 @@ export class QueryManagementContainerComponent implements OnInit {
       this.submitted = true;
       this.validateForm();
       this.showSummary = this.errorMessages?.length === 0;
-
+      this.showConfirmation = true;
       // Reset hearing date if isHearingRelated
       if (!this.formGroup.get('isHearingRelated').value) {
         this.formGroup.get('hearingDate').setValue(null);

@@ -22,7 +22,7 @@ import {
 import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import * as fromHearingStore from '../../../hearings/store';
-
+import { SessionStorageService } from '../../../app/services'
 
 @Component({
   selector: 'exui-case-hearings',
@@ -41,7 +41,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
   public hearingState$: Observable<fromHearingStore.State>;
   public hearingsActions: Actions[];
-  public userRoles$: Observable<string[]>;
   public hearingListLastErrorState$: Observable<fromHearingStore.State>;
   public hearingValuesLastErrorState$: Observable<fromHearingStore.State>;
   public lastErrorSubscription: Subscription;
@@ -49,7 +48,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public caseId: string = '';
   public serverError: { id: string, message: string } = null;
   public isOgdRole: boolean;
-  public isOgdRole$: Observable<boolean>;
   public showSpinner$ : Observable<boolean>;
   public hearingStageOptions: LovRefDataModel[];
   public hearingValuesSubscription: Subscription;
@@ -62,26 +60,12 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
               private readonly activatedRoute: ActivatedRoute,
               private readonly router: Router,
               private readonly lovRefDataService: LovRefDataService,
-              private readonly loadingService: LoadingService) {
+              private readonly loadingService: LoadingService,
+              private readonly sessionSvc: SessionStorageService) {
     this.caseId = this.activatedRoute.snapshot.params.cid;
-    this.userRoles$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
-      map((userDetails) => userDetails.userInfo.roles)
-    );
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
     this.hearingListLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingListLastError));
     this.hearingValuesLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesLastError));
-    const detailsStr = sessionStorage.getItem('userDetails');
-    if (detailsStr) {
-      const details = JSON.parse(detailsStr) as Object
-      if (details && details.hasOwnProperty('roles')) {
-        this.userRoles = details['roles'] as string[];
-        console.log('Found roles '+ JSON.stringify(this.userRoles));
-      } else {
-        console.log("no roles property in userDetails " + JSON.stringify(details));
-      }
-    } else {
-      console.log("no details in session storage");
-    }
   }
 
   public reloadHearings() {
@@ -120,20 +104,26 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.upcomingHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
     this.pastAndCancelledHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.PAST_OR_CANCELLED);
     this.listedHearings$ = this.getHearingListByStatus(EXUIDisplayStatusEnum.LISTED);
-
+    this.userRoles = [];
+    const detailsStr = this.sessionSvc.getItem('userDetails');
+    if (detailsStr) {
+      const details = JSON.parse(detailsStr) as Object;
+      if (details && details.hasOwnProperty('roles')) {
+        this.userRoles = details['roles'] as string[];
+      }
+    }
+    this.isOgdRole = false;
+    console.log("Checking user roles " + JSON.stringify(this.userRoles))
     if (this.userRoles && this.userRoles.includes(UserRole.HearingManager)) {
       this.hearingsActions = [Actions.READ, Actions.CREATE, Actions.UPDATE, Actions.DELETE];
       this.hasRequestAction = true;
-      console.log("User has hearing-manager role");
     } else if (this.userRoles.includes(UserRole.HearingViewer)) {
       this.hearingsActions = [Actions.READ];
-      console.log("User has hearing-viewer role");
     } else if (this.userRoles.includes(UserRole.ListedHearingViewer)) {
       this.hearingsActions = [Actions.READ];
       this.isOgdRole = true;
-      console.log("User has listed-hearing-viewer");
     } else {
-      console.log("User has not hearings access");
+      this.hearingsActions = [];
     }
   }
 

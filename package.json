@@ -150,7 +150,6 @@
     "pegjs": "^0.10.0",
     "portfinder": "^1.0.28",
     "protractor-screenshot-utils": "^1.0.5",
-    "puppeteer": "^21.3.6",
     "rpx-xui-translation": "1.0.0-NodeAndNgUpgrades-02",
     "rx-polling": "1.1.0",
     "rxjs": "^7.8.1",

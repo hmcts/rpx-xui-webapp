@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
-import { UserDetails } from 'api/caseshare/models/user-details.model';
 import * as moment from 'moment';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -22,7 +21,7 @@ import {
 import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import * as fromHearingStore from '../../../hearings/store';
-import { SessionStorageService } from '../../../app/services'
+import { SessionStorageService } from '../../../app/services';
 
 @Component({
   selector: 'exui-case-hearings',
@@ -53,7 +52,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hearingValuesSubscription: Subscription;
   public refDataSubscription: Subscription;
   public showSpinner: boolean = true;
-  private userRoles: string[] = []
+  private userRoles: string[] = [];
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly hearingStore: Store<fromHearingStore.State>,
@@ -107,13 +106,12 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.userRoles = [];
     const detailsStr = this.sessionSvc.getItem('userDetails');
     if (detailsStr) {
-      const details = JSON.parse(detailsStr) as Object;
+      const details = JSON.parse(detailsStr) as object;
       if (details && details.hasOwnProperty('roles')) {
-        this.userRoles = details['roles'] as string[];
+        this.userRoles = details['roles'] as string[]; // eslint-disable-line dot-notation
       }
     }
     this.isOgdRole = false;
-    console.log("Checking user roles " + JSON.stringify(this.userRoles))
     if (this.userRoles && this.userRoles.includes(UserRole.HearingManager)) {
       this.hearingsActions = [Actions.READ, Actions.CREATE, Actions.UPDATE, Actions.DELETE];
       this.hasRequestAction = true;

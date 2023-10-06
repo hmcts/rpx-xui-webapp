@@ -411,7 +411,7 @@ describe('CaseHearingsComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         LoadingService,
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -656,7 +656,7 @@ describe('CaseHearingsComponent', () => {
 
   it('should call the reloadhearings when reload clicked', () => {
     spyOn(component, 'reloadHearings');
-    component.serverError = {id: '', message: 'server error'};
+    component.serverError = { id: '', message: 'server error' };
     fixture.detectChanges();
     const cancelledReasonElement: HTMLSelectElement = fixture.nativeElement.querySelector('#reload-hearing-tab');
     cancelledReasonElement.click();

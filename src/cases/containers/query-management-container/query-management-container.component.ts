@@ -37,7 +37,7 @@ export class QueryManagementContainerComponent implements OnInit {
   public queryCreateContext: QueryCreateContext;
   public queryItem: QueryListItem | undefined;
   public showSummary = false;
-  public showConfirmation = true;
+  public showConfirmation = false;
   public formGroup = new FormGroup({});
   public submitted = false;
   public errorMessages: ErrorMessage[] = [];
@@ -87,6 +87,11 @@ export class QueryManagementContainerComponent implements OnInit {
     this.showSummary = false;
   }
 
+  public showConfirmationForm(event: any): void {
+    this.showSummary = false;
+    this.showConfirmation = true;
+  }
+
   public submitForm(): void {
     if (this.queryCreateContext === QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS) {
       // Validate qualifying question selection
@@ -109,7 +114,6 @@ export class QueryManagementContainerComponent implements OnInit {
       this.submitted = true;
       this.validateForm();
       this.showSummary = this.errorMessages?.length === 0;
-      this.showConfirmation = true;
       // Reset hearing date if isHearingRelated
       if (!this.formGroup.get('isHearingRelated').value) {
         this.formGroup.get('hearingDate').setValue(null);

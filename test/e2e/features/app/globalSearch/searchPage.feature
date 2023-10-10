@@ -32,6 +32,6 @@ Feature: Global search
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with test user identified as "CASEWORKER_GLOBALSEARCH"
         When If env is "demo", I enter "1662020492250902" in  case ref in header 16 digit ref search
-        When If env is "aat", I enter "1662020492250902" in  case ref in header 16 digit ref search
+        When If env is "aat", I enter "1696932564343458" in  case ref in header 16 digit ref search
         When I click find in case ref in header 16 digit ref search
         Then I see case details page

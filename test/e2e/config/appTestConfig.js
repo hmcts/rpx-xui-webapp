@@ -104,7 +104,6 @@ const data = {
         release: 'general', userIdentifier: 'WA2_GLOBAL-SEARCH',
         key: 'Welcome01'
       },
-
       {
         idamId: '7381c1ae-9cc9-4251-b283-727feef94a3d',
         email: 'xui_bookingui_on@hmcts.net',

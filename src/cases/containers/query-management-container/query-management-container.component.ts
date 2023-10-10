@@ -64,7 +64,6 @@ export class QueryManagementContainerComponent implements OnInit {
     this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
 
     this.formGroup = new FormGroup({
-      name: new FormControl(null),
       subject: new FormControl(null),
       body: new FormControl(null, Validators.required),
       isHearingRelated: new FormControl(null),
@@ -79,15 +78,13 @@ export class QueryManagementContainerComponent implements OnInit {
       this.formGroup.get('subject')?.setValidators([Validators.required]);
       this.formGroup.get('isHearingRelated')?.setValidators([Validators.required]);
     }
-
-    this.setNameFromUserDetails();
   }
 
   public showResponseForm(): void {
     this.showSummary = false;
   }
 
-  public showConfirmationForm(event: any): void {
+  public showConfirmationForm(): void {
     this.showSummary = false;
     this.showConfirmation = true;
   }
@@ -220,11 +217,6 @@ export class QueryManagementContainerComponent implements OnInit {
         htmlElement.focus();
       }
     }
-  }
-
-  private async setNameFromUserDetails(): Promise<void> {
-    const userDetails = await this.store.pipe(select(fromRoot.getUserDetails), first()).toPromise();
-    this.formGroup.get('name').setValue(userDetails.userInfo.name);
   }
 
   private getQueryCreateContext(): QueryCreateContext {

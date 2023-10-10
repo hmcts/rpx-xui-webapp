@@ -87,22 +87,20 @@ const data = {
         key: 'Welcome01'
       },
       {
-        idamId: 'ba02568f-6a46-478d-9f1a-1ce4dea496aa',
-        email: 'test@mailnesia.com',
+        idamId: 'ae28c49a-ad0f-467a-a480-15fcaa66165d',
+        email: 'exuigsuser@mailinator.com',
         release: 'general', userIdentifier: 'CASEWORKER_GLOBALSEARCH',
         key: 'Welcome01'
       },
-
       {
-        idamId: '4beb7bbe-5cc9-4f92-9c4d-620bd705dc8a',
-        email: 'test@mailnesia.com',
+        idamId: 'ae28c49a-ad0f-467a-a480-15fcaa66165d',
+        email: 'exuigsuser@mailinator.com',
         release: 'general', userIdentifier: 'WA2',
         key: 'Welcome01'
       },
-
       {
-        idamId: '810b5601-4a8a-4c82-9294-34f087f2e67f',
-        email: 'test@mailnesia.com',
+        idamId: 'ae28c49a-ad0f-467a-a480-15fcaa66165d',
+        email: 'exuigsuser@mailinator.com',
         release: 'general', userIdentifier: 'WA2_GLOBAL-SEARCH',
         key: 'Welcome01'
       },

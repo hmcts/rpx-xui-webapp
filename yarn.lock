@@ -2559,12 +2559,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.7-qm-qualifying-questions-changes-v1":
-  version: 6.19.7-qm-qualifying-questions-changes-v1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.7-qm-qualifying-questions-changes-v1"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.7-qm-qualifying-questions-changes-v2":
+  version: 6.19.7-qm-qualifying-questions-changes-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.7-qm-qualifying-questions-changes-v2"
   dependencies:
     tslib: ^2.0.0
-  checksum: ca7526437c56035960c04e89c7509c7dec65af4a4a4d1ce878a4bd339d060879241589189ac142d8401225777fcc53eab45eabd351f8937e554a511eebd3c760
+  checksum: a6bf56661f8cddee90db3744eb8be0be84007b08f1d9e9958f70879220fdca595e65f4d4834b3b72d3be82a29d2a4db24dde221e0dbd96ba5e01eb410d83ae14
   languageName: node
   linkType: hard
 
@@ -19642,7 +19642,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.7-qm-qualifying-questions-changes-v1
+    "@hmcts/ccd-case-ui-toolkit": 6.19.7-qm-qualifying-questions-changes-v2
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.5

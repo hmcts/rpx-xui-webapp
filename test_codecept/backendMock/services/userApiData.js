@@ -9,7 +9,7 @@ class UserApiData{
     sendResponse(req,res, apiMethod, defaultResponseCallback){
         const response = this.getUserData(req.headers.authorization, apiMethod)
         if (response) {
-            res.send(response)
+            res.status(response.status).send(response.data)
            
         } else {
             res.send(defaultResponseCallback())
@@ -18,10 +18,11 @@ class UserApiData{
 
 
     setUserData(token, apiMethod, response) {
-        apiMethod = apiMethod.toUpperCase();
+        // apiMethod = apiMethod.toUpperCase();
         let userSession = this.sessionUsers.find(sess => sess.token === token)
         if (!userSession) {
             userSession = {
+                requests:[],
                 token: token,
                 apiData: []
             };
@@ -46,6 +47,30 @@ class UserApiData{
         }
         const apiResponse = userSession.apiData.find(methodData => methodData.method === apiMethod)
         return apiResponse ? apiResponse.response : null
+    }
+
+    getUserSessionData(token){
+        let userSession = this.sessionUsers.find(sess => sess.token === token.replace('Bearer ', ''))
+        return userSession
+    }
+
+    logSessionRequest(token, req){
+        let userSession = this.sessionUsers.find(sess => sess.token === token)
+        if (!userSession) {
+            userSession = {
+                requests: [],
+                token: token,
+                apiData: []
+            };
+            this.sessionUsers.push(userSession)
+        }
+        userSession.requests.push({
+            method: req.method,
+            url: req.url,
+            body:req.body ? req.body : null,
+            time:new Date()
+        })
+
     }
 
     clearUserData(token){

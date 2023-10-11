@@ -25,8 +25,8 @@ const data = {
         key: 'Monday01'
       },
       {
-        idamId: '12b6a360-7f19-4985-b065-94320a891eaa',
-        email: 'lukesuperuserxui@mailnesia.com',
+        idamId: '4801cdad-f612-4288-9e03-70a659cc7b36',
+        email: 'townley.winchester@mailnesia.com',
         release: 'general', userIdentifier: 'SOLICITOR',
         key: 'Monday01'
       },

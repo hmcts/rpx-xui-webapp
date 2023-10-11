@@ -84,7 +84,7 @@ export class QueryManagementContainerComponent implements OnInit {
     this.showSummary = false;
   }
 
-  public showConfirmationForm(): void {
+  public showConfirmationPage(): void {
     this.showSummary = false;
     this.showConfirmation = true;
   }

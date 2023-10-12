@@ -132,12 +132,12 @@ class caseEditPage {
 
     async seeCaseDetailsPageTabs() {
         let caseDetailsRes = await CcdApi.getCaseResultsResponse();
-        let thLable = $$(".mat-mdc-tab-list .mat-mdc-tab-labels .mat-mdc-tab");
-        await BrowserWaits.waitForElement($(".mat-mdc-tab-list .mat-mdc-tab-labels .mat-mdc-tab"));
+        let thLable = $$(".mat-tab-list .mat-tab-labels .mat-tab-label");
+        await BrowserWaits.waitForElement($(".mat-tab-list .mat-tab-labels .mat-tab-label"));
         let tabsCount = await thLable.count();
         if (caseDetailsRes) {
             for (let i = 0; i < tabsCount; i++) {
-                let thText = thLable.get(i).$(".mdc-tab__content");
+                let thText = thLable.get(i).$(".mat-tab-label-content");
                 let tabText = await thText.getText();
                 let tab = await caseDetailsRes.tabs.find(tab => tab.label == tabText);
                 let tabStatus = tab.label == tabText;

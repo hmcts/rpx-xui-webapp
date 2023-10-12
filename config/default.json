@@ -187,6 +187,7 @@
     "redisEnabled": false,
     "oidcEnabled": false,
     "workAllocationEnabled": false,
+    "jrdELinksV2Enabled": false,
     "roleEnabled": false,
     "caseworkerRefEnabled": false,
     "substantiveRoleEnabled": true,

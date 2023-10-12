@@ -94,7 +94,7 @@ class AddUserPage{
                 case "Primary location":
                     await this.primaryLocation.scrollIntoView()
                     await this.primaryLocation.sendKeys(inputVal)
-                    const searchResults = $$('.mdc-list-item__primary-text');
+                    const searchResults = $$('.mat-option-text');
 
                     let e = null;
                     await BrowserWaits.retryWithActionCallback(async () => {
@@ -110,7 +110,7 @@ class AddUserPage{
                 case "Additional locations":
                     inputVal.forEach(async(loc) => {
                         await this.additionalLocations.sendKeys(loc)
-                        const additionaLocationResults = $$('.mdc-list-item__primary-text');
+                        const additionaLocationResults = $$('.mat-option-text');
                         let ale = null;
                         await BrowserWaits.retryWithActionCallback(async () => {
                             await browser.sleep(2)

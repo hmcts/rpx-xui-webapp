@@ -117,6 +117,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.jurisdictionsBehaviourSubject$.pipe(takeUntil(this.unsubscribe$)).subscribe((jurisdictions) => {
       this.isVisible = jurisdictions.length > 0;
       this.jurisdictions = jurisdictions;
+
+      console.log("Jurisdictions: ", this.jurisdictions);
     });
 
     this.shareableJurisdictions$ = this.featureToggleService.getValue('shareable-jurisdictions', []);

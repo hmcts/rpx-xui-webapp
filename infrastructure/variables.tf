@@ -9,7 +9,7 @@ variable "location" {
 variable "env" {}
 
 variable "shared_product_name" {
-  default = "rpx"
+    default = "rpx"
 }
 
 variable "subscription" {}
@@ -19,7 +19,7 @@ variable "common_tags" {
 }
 
 variable "enable_ase" {
-  default = false
+    default = false
 }
 
 variable "application_type" {
@@ -28,13 +28,9 @@ variable "application_type" {
 }
 
 variable "redis_family" {
-  default = "C"
+  default     = "P"
 }
 
 variable "redis_capacity" {
-  default = "4"
-}
-variable "redis_sku_name" {
-  default     = "Basic"
-  description = "The SKU of Redis to use. Possible values are `Basic`, `Standard` and `Premium`."
+  default     = "2"
 }

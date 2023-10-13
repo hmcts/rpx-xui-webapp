@@ -2,7 +2,7 @@
 const baseUrl = 'http://localhost:4200/';
 
 const conf = {
-  headless: true,
+  headless: 'new',
   failTestOna11yIssues: false,
   reportPath: 'reports/tests/a11y/',
   appName: 'EXUI Manage Cases a11y Test Report',

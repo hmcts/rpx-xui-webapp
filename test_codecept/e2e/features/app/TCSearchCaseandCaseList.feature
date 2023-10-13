@@ -30,7 +30,7 @@ Feature: Test case type case list and find case workflow
     Scenario: Validate workbasket update on case type change
         When I click on Case list
         Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type from "Contested Financial Remedy" state "Any" in case list page and click apply
+        When I select search criteria jurisdiction "Family Divorce" case type "Contested Financial Remedy" state "Any" in case list page and click apply
         Then I wait to see case results displayed
         When I select search criteria jurisdiction "Family Divorce" case type "XUI Test Case type" state "Case created" in case list page and click apply
         Then I wait to see case results displayed

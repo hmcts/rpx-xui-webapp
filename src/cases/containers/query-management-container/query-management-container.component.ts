@@ -29,7 +29,7 @@ import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.e
 })
 export class QueryManagementContainerComponent implements OnInit {
   private readonly LD_QUALIFYING_QUESTIONS = 'qm-qualifying-questions';
-  private readonly RAISE_A_QUERY_NAME = 'Raise another query relating to this case';
+  private readonly RAISE_A_QUERY_NAME = 'Raise a new query';
   public static readonly RAISE_A_QUERY_QUESTION_OPTION = 'raiseAQuery';
 
   private queryItemId: string;

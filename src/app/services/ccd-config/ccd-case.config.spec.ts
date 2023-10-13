@@ -186,4 +186,8 @@ describe('AppConfiguration', () => {
   it('should have getCamRoleAssignmentsApiUrl return value', inject([AppConfig], (service: AppConfig) => {
     expect(service.getCamRoleAssignmentsApiUrl()).toBe('dummy');
   }));
+
+  it('should have getEventsToHide return value', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getEventsToHide()).toBe(['queryManagementRespondQuery']);
+  }));
 });

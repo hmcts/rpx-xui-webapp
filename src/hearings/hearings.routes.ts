@@ -498,8 +498,9 @@ export const ROUTES: Routes = [
           partyChannels: PartyChannelsResolverService,
           partySubChannels: PartySubChannelsResolverService,
           judgeTypes: JudgeTypesResolverService,
+          judicialUsers: JudicialUserSearchResolver,
           otherPanelRoles: PanelRolesResolverService,
-          courtLocation: CourtLocationsDataResolver
+          courtLocation: CourtLocationsDataResolver,
         },
         component: HearingCancelledSummaryComponent,
         data: {

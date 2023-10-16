@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -26,6 +26,13 @@ import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import * as fromHearingStore from '../../../hearings/store';
 import { CaseHearingsComponent } from './case-hearings.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
@@ -403,7 +410,7 @@ describe('CaseHearingsComponent', () => {
     mockLovRefDataService = jasmine.createSpyObj('LovRefDataService', ['getListOfValues']);
     mockLovRefDataService.getListOfValues.and.returnValue(of(HEARING_TYPES_REF_DATA));
     TestBed.configureTestingModule({
-      declarations: [CaseHearingsComponent],
+      declarations: [CaseHearingsComponent, RpxTranslateMockPipe],
       imports: [
         HttpClientTestingModule,
         RouterTestingModule

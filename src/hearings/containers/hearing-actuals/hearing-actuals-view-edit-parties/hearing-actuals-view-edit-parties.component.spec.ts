@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -10,10 +10,17 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
 import { initialState } from '../../../hearing.test.data';
-import { LovRefDataService } from '../../../services/lov-ref-data.service';
-import { HearingActualsViewEditPartiesComponent } from './hearing-actuals-view-edit-parties.component';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { CategoryType, HMCStatus } from '../../../models/hearings.enum';
+import { LovRefDataService } from '../../../services/lov-ref-data.service';
+import { HearingActualsViewEditPartiesComponent } from './hearing-actuals-view-edit-parties.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 const hearingRole = [
   {
@@ -186,7 +193,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsViewEditPartiesComponent],
+      declarations: [HearingActualsViewEditPartiesComponent, RpxTranslateMockPipe],
       imports: [
         RouterTestingModule,
         ReactiveFormsModule
@@ -355,7 +362,7 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsViewEditPartiesComponent],
+      declarations: [HearingActualsViewEditPartiesComponent, RpxTranslateMockPipe],
       imports: [
         RouterTestingModule,
         ReactiveFormsModule,
@@ -476,7 +483,7 @@ describe('HearingViewEditSummaryComponent participants check', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsViewEditPartiesComponent],
+      declarations: [HearingActualsViewEditPartiesComponent, RpxTranslateMockPipe],
       imports: [
         RouterTestingModule,
         ReactiveFormsModule,

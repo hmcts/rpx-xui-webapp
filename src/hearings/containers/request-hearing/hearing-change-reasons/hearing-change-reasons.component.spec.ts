@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -11,6 +11,13 @@ import { ACTION } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingChangeReasonsComponent } from './hearing-change-reasons.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('HearingChangeReasonsComponent', () => {
   let component: HearingChangeReasonsComponent;
@@ -61,7 +68,7 @@ describe('HearingChangeReasonsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
-      declarations: [HearingChangeReasonsComponent],
+      declarations: [HearingChangeReasonsComponent, RpxTranslateMockPipe],
       providers: [
         { provide: HearingsService, useValue: hearingsService },
         {

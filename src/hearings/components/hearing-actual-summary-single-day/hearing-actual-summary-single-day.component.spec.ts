@@ -1,3 +1,4 @@
+import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -5,6 +6,13 @@ import { of } from 'rxjs';
 import { hearingRoles, partyChannelsRefData, partySubChannelsRefData } from '../../hearing.test.data';
 import { ConvertToValuePipe } from '../../pipes/convert-to-value.pipe';
 import { HearingActualSummarySingleDayComponent } from './hearing-actual-summary-single-day.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('HearingActualSummarySingleDayComponent', () => {
   let component: HearingActualSummarySingleDayComponent;
@@ -15,7 +23,7 @@ describe('HearingActualSummarySingleDayComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [HearingActualSummarySingleDayComponent, ConvertToValuePipe],
+      declarations: [HearingActualSummarySingleDayComponent, ConvertToValuePipe, RpxTranslateMockPipe],
       providers: [
         {
           provide: ActivatedRoute,

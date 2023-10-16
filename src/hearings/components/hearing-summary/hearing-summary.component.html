@@ -2,12 +2,12 @@
 <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
   data-module="govuk-error-summary" *ngIf="validationErrors.length > 0">
   <h2 class="govuk-error-summary__title" id="error-summary-title">
-    There is a problem
+    {{ 'There is a problem' | rpxTranslate }}
   </h2>
   <div class="govuk-error-summary__body">
     <ul class="govuk-list govuk-error-summary__list">
       <li *ngFor="let error of validationErrors">
-        <span class="govuk-error-message">{{error.message}}</span>
+        <span class="govuk-error-message">{{error.message | rpxTranslate}}</span>
       </li>
     </ul>
   </div>
@@ -40,12 +40,12 @@
           </div>
           <div class="govuk-summary-list__actions">
             <strong *ngIf="answer.isAmendedSource === undefined ? false : (answer.isAmendedSource | isAmended:hearingState$ | async)"
-                    class="govuk-tag govuk-tag--green amended-flag">Amended</strong>
+                    class="govuk-tag govuk-tag--green amended-flag">{{ 'Amended' | rpxTranslate }}</strong>
             <a [id]="answer.id"
                *ngIf="answer.changeLink"
                class="change-link"
                href="javascript:void(0)"
-               (click)="changeAnswer($event, answer.id, answer.changeLink)">Change</a>
+               (click)="changeAnswer($event, answer.id, answer.changeLink)">{{ 'Change' | rpxTranslate }}</a>
           </div>
         </div>
       </ng-container>

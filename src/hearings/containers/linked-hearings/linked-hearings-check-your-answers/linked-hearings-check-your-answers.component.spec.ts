@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -8,8 +8,9 @@ import { HearingLinksStateData } from '../../../models/hearingLinksStateData.mod
 import {
   EXUIDisplayStatusEnum,
   EXUISectionStatusEnum,
-  GroupLinkType, HearingListingStatusEnum,
+  GroupLinkType,
   HMCStatus,
+  HearingListingStatusEnum,
   Mode
 } from '../../../models/hearings.enum';
 import {
@@ -22,6 +23,13 @@ import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { LinkedHearingsCheckYourAnswersComponent } from './linked-hearings-check-your-answers.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 const HEARING_STAGE_OPTIONS: LovRefDataModel[] = [
   {
@@ -129,7 +137,7 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CaseReferencePipe, LinkedHearingsCheckYourAnswersComponent, ConvertToValuePipe],
+      declarations: [CaseReferencePipe, LinkedHearingsCheckYourAnswersComponent, ConvertToValuePipe, RpxTranslateMockPipe],
       providers: [
         provideMockStore({ initialState }),
         { provide: ActivatedRoute, useValue: mockRoute },

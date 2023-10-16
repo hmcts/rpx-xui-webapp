@@ -1,4 +1,4 @@
-import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
+import { Component, Input, NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -13,6 +13,13 @@ import { ACTION, HearingStageEnum } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingStageComponent } from './hearing-stage.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -88,7 +95,7 @@ describe('HearingStageComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule],
-      declarations: [HearingStageComponent, MockHearingPartiesComponent],
+      declarations: [HearingStageComponent, MockHearingPartiesComponent, RpxTranslateMockPipe],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },

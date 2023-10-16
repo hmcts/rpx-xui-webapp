@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
@@ -9,6 +9,13 @@ import { ACTION } from '../../models/hearings.enum';
 import { HearingsService } from '../../services/hearings.service';
 import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 import { HearingActualsComponent } from './hearing-actuals.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('RequestHearingComponent', () => {
   let component: HearingActualsComponent;
@@ -23,7 +30,7 @@ describe('RequestHearingComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [HearingActualsComponent],
+      declarations: [HearingActualsComponent, RpxTranslateMockPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: AbstractPageFlow, useValue: mockPageFlow },

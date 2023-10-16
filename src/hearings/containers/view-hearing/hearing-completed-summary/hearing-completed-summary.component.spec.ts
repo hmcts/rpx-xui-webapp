@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -7,6 +7,13 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { initialState } from '../../../hearing.test.data';
 import { HearingCompletedSummaryComponent } from './hearing-completed-summary.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('HearingCompletedSummaryComponent', () => {
   let component: HearingCompletedSummaryComponent;
@@ -19,7 +26,7 @@ describe('HearingCompletedSummaryComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [HearingCompletedSummaryComponent],
+      declarations: [HearingCompletedSummaryComponent, RpxTranslateMockPipe],
       providers: [
         provideMockStore({ initialState }), LoadingService
       ],

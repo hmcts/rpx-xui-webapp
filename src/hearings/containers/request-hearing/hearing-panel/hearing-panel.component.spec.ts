@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -14,6 +14,13 @@ import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingPanelComponent } from './hearing-panel.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('HearingPanelComponent', () => {
   let component: HearingPanelComponent;
@@ -211,7 +218,7 @@ describe('HearingPanelComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
-      declarations: [HearingPanelComponent, HearingJudgeNamesListComponent],
+      declarations: [HearingPanelComponent, HearingJudgeNamesListComponent, RpxTranslateMockPipe],
       providers: [
         provideMockStore({ initialState: STATE }),
         { provide: HearingsService, useValue: hearingsService },

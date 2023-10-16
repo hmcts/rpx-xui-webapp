@@ -4,7 +4,8 @@
     {{subTitle}}
   </div>
   <span id="validation-error" class="govuk-error-message" *ngIf="personFormGroup.controls.selectedFormControl.errors">
-    <span class="govuk-visually-hidden">Error:</span>{{personFormGroup.controls.selectedFormControl.errors.error }}
+    <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+    {{ personFormGroup.controls.selectedFormControl.errors.error | rpxTranslate }}
   </span>
   <div class="exclude-person" [class.column-view]="isColumnView">
     <div class="person-input">

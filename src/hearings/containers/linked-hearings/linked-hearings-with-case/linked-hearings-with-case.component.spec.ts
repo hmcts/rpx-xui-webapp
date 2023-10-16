@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -21,6 +21,13 @@ import { HearingsPipesModule } from '../../../pipes/hearings.pipes.module';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { LinkedHearingsWithCaseComponent } from './linked-hearings-with-case.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('LinkedHearingsWithCaseComponent', () => {
   let component: LinkedHearingsWithCaseComponent;
@@ -182,7 +189,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [LinkedHearingsWithCaseComponent],
+      declarations: [LinkedHearingsWithCaseComponent, RpxTranslateMockPipe],
       imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([
         { path: 'hearings/link/4652724902696211/h000001/group-selection', redirectTo: '' }
       ]),

@@ -15,6 +15,13 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HearingActualsEditSummaryComponent } from './hearing-actuals-edit-summary.component';
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
+
 @Pipe({ name: 'transformAnswer' })
 export class MockHearingAnswersPipe implements PipeTransform {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -82,7 +89,7 @@ describe('HearingActualSummaryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe],
+      declarations: [HearingActualsEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe, RpxTranslateMockPipe],
       imports: [RouterTestingModule.withRoutes(
         [
           { path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent }

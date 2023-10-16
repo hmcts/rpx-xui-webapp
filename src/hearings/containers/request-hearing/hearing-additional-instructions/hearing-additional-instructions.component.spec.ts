@@ -1,4 +1,4 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -10,6 +10,13 @@ import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingAdditionalInstructionsComponent } from './hearing-additional-instructions.component';
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
+
 describe('HearingAdditionalInstructionsComponent', () => {
   let component: HearingAdditionalInstructionsComponent;
   let fixture: ComponentFixture<HearingAdditionalInstructionsComponent>;
@@ -20,7 +27,7 @@ describe('HearingAdditionalInstructionsComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule],
-      declarations: [HearingAdditionalInstructionsComponent],
+      declarations: [HearingAdditionalInstructionsComponent, RpxTranslateMockPipe],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },

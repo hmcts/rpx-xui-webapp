@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
+import { Component, Input, NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,6 +15,13 @@ import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.mo
 import { HearingsService } from '../../../services/hearings.service';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { HearingTimingComponent } from './hearing-timing.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -66,7 +73,7 @@ describe('HearingTimingComponent', () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule,
         HttpClientTestingModule],
-      declarations: [HearingTimingComponent, MockHearingPartiesComponent],
+      declarations: [HearingTimingComponent, MockHearingPartiesComponent, RpxTranslateMockPipe],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },

@@ -1,8 +1,15 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { JudicialUserModel } from '../../models/judicialUser.model';
 import { HearingJudgeNamesListComponent } from './hearing-judge-names-list.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('HearingJudgeNamesListComponent', () => {
   let component: HearingJudgeNamesListComponent;
@@ -26,7 +33,7 @@ describe('HearingJudgeNamesListComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      declarations: [HearingJudgeNamesListComponent],
+      declarations: [HearingJudgeNamesListComponent, RpxTranslateMockPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();

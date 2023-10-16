@@ -1,15 +1,22 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { provideMockStore } from '@ngrx/store/testing';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { caseFlagsRefData, initialState } from '../../hearing.test.data';
 import { EXUIDisplayStatusEnum } from '../../models/hearings.enum';
 import { HearingsPipesModule } from '../../pipes/hearings.pipes.module';
 import { ListingInformationSummaryComponent } from './listing-information-summary.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('ListingInformationSummaryComponent', () => {
   let component: ListingInformationSummaryComponent;
@@ -17,7 +24,7 @@ describe('ListingInformationSummaryComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ListingInformationSummaryComponent],
+      declarations: [ListingInformationSummaryComponent, RpxTranslateMockPipe],
       imports: [RouterTestingModule, HearingsPipesModule, HttpClientTestingModule],
       providers: [
         LoadingService,

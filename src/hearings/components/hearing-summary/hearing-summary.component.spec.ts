@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
@@ -13,6 +13,13 @@ import { HearingsPipesModule } from '../../pipes/hearings.pipes.module';
 import * as fromHearingStore from '../../store';
 import { HearingSummaryComponent } from './hearing-summary.component';
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
+
 describe('HearingSummaryComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', [
     'navigateByUrl'
@@ -23,7 +30,7 @@ describe('HearingSummaryComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [HearingSummaryComponent],
+      declarations: [HearingSummaryComponent, RpxTranslateMockPipe],
       imports: [
         HearingsPipesModule,
         HttpClientTestingModule

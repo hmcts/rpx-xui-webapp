@@ -14,6 +14,13 @@ import { HearingsService } from '../../../services/hearings.service';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { HearingActualsAddEditSummaryComponent } from './hearing-actuals-add-edit-summary.component';
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
+
 @Pipe({ name: 'transformAnswer' })
 export class MockHearingAnswersPipe implements PipeTransform {
   public transform(): string {
@@ -79,7 +86,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsAddEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe],
+      declarations: [HearingActualsAddEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe, RpxTranslateMockPipe],
       imports: [RouterTestingModule.withRoutes(
         [
           { path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent }

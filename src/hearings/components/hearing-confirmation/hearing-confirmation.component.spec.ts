@@ -1,6 +1,14 @@
+import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HearingConfirmationComponent } from './hearing-confirmation.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('HearingConfirmationComponent', () => {
   let component: HearingConfirmationComponent;
@@ -8,7 +16,7 @@ describe('HearingConfirmationComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [HearingConfirmationComponent],
+      declarations: [HearingConfirmationComponent, RpxTranslateMockPipe],
       imports: [RouterTestingModule]
     }).compileComponents();
 

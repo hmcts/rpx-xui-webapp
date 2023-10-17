@@ -1,4 +1,3 @@
-import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -7,6 +6,7 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearings/hearing.test.data';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, PartyType } from '../../../hearings/models/hearings.enum';
@@ -14,13 +14,6 @@ import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.module';
 import * as fromHearingStore from '../../../hearings/store';
 import { CaseHearingsListComponent } from './case-hearings-list.component';
-
-@Pipe({ name: 'rpxTranslate' })
-class RpxTranslateMockPipe implements PipeTransform {
-  public transform(value: string): string {
-    return value;
-  }
-}
 
 class MockRoleCategoryMappingService {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -638,7 +631,7 @@ describe('CaseHearingsListComponent', () => {
         RouterTestingModule.withRoutes([]),
         HearingsPipesModule
       ],
-      declarations: [CaseHearingsListComponent, RpxTranslateMockPipe],
+      declarations: [CaseHearingsListComponent, MockRpxTranslatePipe],
       providers: [
         provideMockStore({ initialState }),
         {

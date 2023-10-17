@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -10,6 +10,7 @@ import * as moment from 'moment';
 import { Observable, of } from 'rxjs';
 import { UserRole } from '../../../app/models';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingDayScheduleModel } from '../../../hearings/models/hearingDaySchedule.model';
 import { HearingListModel } from '../../../hearings/models/hearingList.model';
@@ -26,13 +27,6 @@ import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import * as fromHearingStore from '../../../hearings/store';
 import { CaseHearingsComponent } from './case-hearings.component';
-
-@Pipe({ name: 'rpxTranslate' })
-class RpxTranslateMockPipe implements PipeTransform {
-  public transform(value: string): string {
-    return value;
-  }
-}
 
 describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
@@ -410,7 +404,7 @@ describe('CaseHearingsComponent', () => {
     mockLovRefDataService = jasmine.createSpyObj('LovRefDataService', ['getListOfValues']);
     mockLovRefDataService.getListOfValues.and.returnValue(of(HEARING_TYPES_REF_DATA));
     TestBed.configureTestingModule({
-      declarations: [CaseHearingsComponent, RpxTranslateMockPipe],
+      declarations: [CaseHearingsComponent, MockRpxTranslatePipe],
       imports: [
         HttpClientTestingModule,
         RouterTestingModule

@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,18 +7,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { hearingActualsMainModel, initialState } from '../../hearing.test.data';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import { ConvertToValuePipe } from '../../pipes/convert-to-value.pipe';
 import { HearingAnswersPipe } from '../../pipes/hearing-answers.pipe';
 import { HearingActualSummaryComponent } from './hearing-actual-summary.component';
-
-@Pipe({ name: 'rpxTranslate' })
-class RpxTranslateMockPipe implements PipeTransform {
-  public transform(value: string): string {
-    return value;
-  }
-}
 
 describe('HearingActualSummaryComponent', () => {
   let component: HearingActualSummaryComponent;
@@ -404,7 +398,7 @@ describe('HearingActualSummaryComponent', () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingActualSummaryComponent,
-        HearingAnswersPipe, ConvertToValuePipe, RpxTranslateMockPipe
+        HearingAnswersPipe, ConvertToValuePipe, MockRpxTranslatePipe
       ],
       providers: [
         provideMockStore({ initialState }),

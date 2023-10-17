@@ -1,22 +1,16 @@
-import { Component, Input, Pipe, PipeTransform } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { ErrorMessage } from '../../../../app/models';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import { HearingWelshComponent } from './hearing-welsh.component';
-
-@Pipe({ name: 'rpxTranslate' })
-class RpxTranslateMockPipe implements PipeTransform {
-  public transform(value: string): string {
-    return value;
-  }
-}
 
 @Component({
   selector: 'exui-error-message',
@@ -48,7 +42,7 @@ describe('HearingWelshComponent', () => {
         HearingWelshComponent,
         MockTestComponent,
         MockHearingPartiesComponent,
-        RpxTranslateMockPipe
+        MockRpxTranslatePipe
       ],
       providers: [
         provideMockStore({ initialState }),

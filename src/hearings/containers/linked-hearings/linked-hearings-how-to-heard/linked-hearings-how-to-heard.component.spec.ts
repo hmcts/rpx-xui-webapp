@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import {
   EXUIDisplayStatusEnum,
@@ -20,13 +21,6 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsPipesModule } from '../../../pipes/hearings.pipes.module';
 import { HearingsService } from '../../../services/hearings.service';
 import { HowLinkedHearingsBeHeardComponent } from './linked-hearings-how-to-heard.component';
-
-@Pipe({ name: 'rpxTranslate' })
-class RpxTranslateMockPipe implements PipeTransform {
-  public transform(value: string): string {
-    return value;
-  }
-}
 
 const mockLinkedHearingGroup = {
   linkedHearingGroup: {
@@ -277,7 +271,7 @@ function ConfigureTestBedModule(hearingMockService: HearingsService, mockRouterS
   STATE.hearings.hearingLinks.linkedHearingGroup = mockLinkedHearingGroup.linkedHearingGroup;
 
   TestBed.configureTestingModule({
-    declarations: [HowLinkedHearingsBeHeardComponent, RpxTranslateMockPipe],
+    declarations: [HowLinkedHearingsBeHeardComponent, MockRpxTranslatePipe],
     imports: [ReactiveFormsModule, RouterTestingModule, HearingsPipesModule],
     providers: [
       provideMockStore({ initialState: STATE }),

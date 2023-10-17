@@ -1,19 +1,13 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearings/hearing.test.data';
 import * as fromHearingStore from '../../store';
 import { ErrorPageComponent } from './error-page.component';
-
-@Pipe({ name: 'rpxTranslate' })
-class RpxTranslateMockPipe implements PipeTransform {
-  public transform(value: string): string {
-    return value;
-  }
-}
 
 describe('ErrorPageComponent', () => {
   let component: ErrorPageComponent;
@@ -22,7 +16,7 @@ describe('ErrorPageComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ErrorPageComponent, RpxTranslateMockPipe],
+      declarations: [ErrorPageComponent, MockRpxTranslatePipe],
       imports: [RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [

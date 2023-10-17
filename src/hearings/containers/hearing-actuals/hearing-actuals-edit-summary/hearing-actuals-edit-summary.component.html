@@ -33,7 +33,7 @@
         </div>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">{{ 'Paper hearing' | rpxTranslate }}</dt>
-          <dd class="govuk-summary-list__value">{{isPaperHearing ? 'Yes' : 'No'}}</dd>
+          <dd class="govuk-summary-list__value">{{ 'Paper hearing' | rpxTranslate : null : isPaperHearing ? 'Yes' : 'No' }}</dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="!isPaperHearing">
           <dt class="govuk-summary-list__key">{{ 'Hearing methods' | rpxTranslate }}</dt>
@@ -49,7 +49,7 @@
       <h2 class="govuk-heading-m">{{ 'Hearing stage and result' | rpxTranslate }}</h2>
       <span class="govuk-body align-right">
         <a href="javascript:void(0)" class="govuk-link" [routerLink]="hearingActualAddEditUrl()"
-          fragment="hearingStageResult">Change</a>
+          fragment="hearingStageResult">{{ 'Change' | rpxTranslate }}</a>
       </span>
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
@@ -88,12 +88,12 @@
                   <dt class="govuk-summary-list__key ">{{ 'Was this hearing day required?' | rpxTranslate }}</dt>
                   <dd class="govuk-summary-list__value">
                     <div>
-                      {{actualHearingDay.notRequired ? 'No' : 'Yes'}}
+                      {{ 'Was this hearing day required?' | rpxTranslate : null :actualHearingDay.notRequired ? 'No' : 'Yes' }}
                     </div>
                   </dd>
                   <dd class="govuk-summary-list__actions">
                     <a href="javascript:void(0)" class="govuk-link" [routerLink]="hearingActualAddEditUrl()"
-                      fragment="hearingDate">Change</a>
+                      fragment="hearingDate">{{ 'Change' | rpxTranslate }}</a>
                   </dd>
                 </div>
                 <ng-container *ngIf="!actualHearingDay.notRequired">
@@ -107,7 +107,7 @@
                       <dd class="govuk-summary-list__value"></dd>
                       <dd class="govuk-summary-list__actions">
                         <a href="javascript:void(0)" class="govuk-link" [routerLink]="hearingActualAddEditUrl()"
-                          fragment="hearingDate">Change</a>
+                          fragment="hearingDate">{{ 'Change' | rpxTranslate }}</a>
                       </dd>
                     </div>
                     <div class="govuk-summary-list__row">
@@ -142,7 +142,7 @@
                       <dd class="govuk-summary-list__value"></dd>
                       <dd class="govuk-summary-list__actions">
                         <a href="javascript:void(0)" class="govuk-link" [routerLink]="hearingActualAddEditUrl()"
-                          fragment="hearingDate">Change</a>
+                          fragment="hearingDate">{{ 'Change' | rpxTranslate }}</a>
                       </dd>
                     </div>
                     <div class="govuk-summary-list__row">

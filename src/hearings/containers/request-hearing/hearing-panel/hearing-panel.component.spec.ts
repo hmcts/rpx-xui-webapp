@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
@@ -14,13 +15,6 @@ import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingPanelComponent } from './hearing-panel.component';
-
-@Pipe({ name: 'rpxTranslate' })
-class RpxTranslateMockPipe implements PipeTransform {
-  public transform(value: string): string {
-    return value;
-  }
-}
 
 describe('HearingPanelComponent', () => {
   let component: HearingPanelComponent;
@@ -218,7 +212,7 @@ describe('HearingPanelComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
-      declarations: [HearingPanelComponent, HearingJudgeNamesListComponent, RpxTranslateMockPipe],
+      declarations: [HearingPanelComponent, HearingJudgeNamesListComponent, MockRpxTranslatePipe],
       providers: [
         provideMockStore({ initialState: STATE }),
         { provide: HearingsService, useValue: hearingsService },

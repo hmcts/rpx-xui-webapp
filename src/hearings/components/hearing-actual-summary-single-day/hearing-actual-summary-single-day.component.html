@@ -2,7 +2,7 @@
   <dl class="govuk-summary-list">
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
       <dt class="govuk-summary-list__key">{{ 'Was this hearing day required?' | rpxTranslate }}</dt>
-      <dd class="govuk-summary-list__value">{{ actualHearingDay.notRequired ? 'No' : 'Yes' }}</dd>
+      <dd class="govuk-summary-list__value">{{ 'Was this hearing day required?' | rpxTranslate : null : actualHearingDay.notRequired ? 'No' : 'Yes' }}</dd>
     </div>
   </dl>
   <h1 class="govuk-heading-m" style="display: inline-block;">{{ 'Hearing timings' | rpxTranslate }}</h1>
@@ -10,7 +10,7 @@
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
       <dt class="govuk-summary-list__key">{{ 'Start time' | rpxTranslate }}</dt>
       <dd class="govuk-summary-list__value">
-        {{actualHearingDay?.hearingStartTime | date: dateFormat.DisplayTime}}
+        {{ actualHearingDay?.hearingStartTime | date: dateFormat.DisplayTime}}
       </dd>
     </div>
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">

@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, Pipe, PipeTransform } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractControl, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -9,18 +9,12 @@ import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit';
 import { LocationByEPIMMSModel, SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import { HearingVenueComponent } from './hearing-venue.component';
-
-@Pipe({ name: 'rpxTranslate' })
-class RpxTranslateMockPipe implements PipeTransform {
-  public transform(value: string): string {
-    return value;
-  }
-}
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -86,7 +80,7 @@ describe('HearingVenueComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
-      declarations: [HearingVenueComponent, MockLocationSearchContainerComponent, MockHearingPartiesComponent, RpxTranslateMockPipe],
+      declarations: [HearingVenueComponent, MockLocationSearchContainerComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },

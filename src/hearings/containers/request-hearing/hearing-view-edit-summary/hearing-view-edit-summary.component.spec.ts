@@ -1,19 +1,13 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingViewEditSummaryComponent } from './hearing-view-edit-summary.component';
-
-@Pipe({ name: 'rpxTranslate' })
-class RpxTranslateMockPipe implements PipeTransform {
-  public transform(value: string): string {
-    return value;
-  }
-}
 
 describe('HearingViewEditSummaryComponent', () => {
   let component: HearingViewEditSummaryComponent;
@@ -25,7 +19,7 @@ describe('HearingViewEditSummaryComponent', () => {
   describe('getHearingRequestToCompare and getHearingRequest are holding different state', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
-        declarations: [HearingViewEditSummaryComponent, RpxTranslateMockPipe],
+        declarations: [HearingViewEditSummaryComponent, MockRpxTranslatePipe],
         providers: [
           LoadingService,
           provideMockStore({ initialState }),
@@ -55,7 +49,7 @@ describe('HearingViewEditSummaryComponent', () => {
   describe('getHearingRequestToCompare and getHearingRequest state are same', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
-        declarations: [HearingViewEditSummaryComponent, RpxTranslateMockPipe],
+        declarations: [HearingViewEditSummaryComponent, MockRpxTranslatePipe],
         providers: [
           provideMockStore({ initialState: { hearings: {} } }),
           { provide: HearingsService, useValue: hearingsService }

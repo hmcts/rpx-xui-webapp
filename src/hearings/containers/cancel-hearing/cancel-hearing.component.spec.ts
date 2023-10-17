@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -8,17 +8,11 @@ import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of, throwError } from 'rxjs';
 import { LoggerService } from '../../../app/services/logger/logger.service';
+import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../hearing.test.data';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import { HearingsService } from '../../services/hearings.service';
 import { CancelHearingComponent } from './cancel-hearing.component';
-
-@Pipe({ name: 'rpxTranslate' })
-class RpxTranslateMockPipe implements PipeTransform {
-  public transform(value: string): string {
-    return value;
-  }
-}
 
 describe('CancelHearingComponent', () => {
   let component: CancelHearingComponent;
@@ -78,7 +72,7 @@ describe('CancelHearingComponent', () => {
       imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([
         { path: 'cases/case-details/1111222233334444/hearings', redirectTo: '' }
       ]), HttpClientTestingModule],
-      declarations: [CancelHearingComponent, RpxTranslateMockPipe],
+      declarations: [CancelHearingComponent, MockRpxTranslatePipe],
       providers: [
         LoadingService,
         { provide: HearingsService, useValue: hearingsService },

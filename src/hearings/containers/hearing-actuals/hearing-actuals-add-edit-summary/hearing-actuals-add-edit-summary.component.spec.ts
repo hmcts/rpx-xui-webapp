@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { hearingActualsMainModel, hearingStageRefData, initialState, partyChannelsRefData, partySubChannelsRefData } from '../../../hearing.test.data';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
 import { ACTION, HearingResult } from '../../../models/hearings.enum';
@@ -13,13 +14,6 @@ import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { HearingActualsAddEditSummaryComponent } from './hearing-actuals-add-edit-summary.component';
-
-@Pipe({ name: 'rpxTranslate' })
-class RpxTranslateMockPipe implements PipeTransform {
-  public transform(value: string): string {
-    return value;
-  }
-}
 
 @Pipe({ name: 'transformAnswer' })
 export class MockHearingAnswersPipe implements PipeTransform {
@@ -86,7 +80,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsAddEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe, RpxTranslateMockPipe],
+      declarations: [HearingActualsAddEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe, MockRpxTranslatePipe],
       imports: [RouterTestingModule.withRoutes(
         [
           { path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent }

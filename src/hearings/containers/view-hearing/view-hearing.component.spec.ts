@@ -1,14 +1,8 @@
 import { Location } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { ViewHearingComponent } from './view-hearing.component';
-
-@Pipe({ name: 'rpxTranslate' })
-class RpxTranslateMockPipe implements PipeTransform {
-  public transform(value: string): string {
-    return value;
-  }
-}
 
 describe('ViewHearingComponent', () => {
   let component: ViewHearingComponent;
@@ -17,7 +11,7 @@ describe('ViewHearingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ViewHearingComponent, RpxTranslateMockPipe],
+      declarations: [ViewHearingComponent, MockRpxTranslatePipe],
       providers: [
         {
           provide: Location,

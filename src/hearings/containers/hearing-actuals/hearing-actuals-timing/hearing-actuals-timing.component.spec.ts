@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
@@ -8,17 +8,11 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs/internal/observable/of';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { HearingsService } from '../../../services/hearings.service';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { HearingActualsTimingComponent } from './hearing-actuals-timing.component';
-
-@Pipe({ name: 'rpxTranslate' })
-class RpxTranslateMockPipe implements PipeTransform {
-  public transform(value: string): string {
-    return value;
-  }
-}
 
 @Component({ selector: 'exui-app-blank', template: '' })
 class BlankComponent {}
@@ -53,7 +47,7 @@ describe('HearingActualsTimingComponent', () => {
         ValidatorsUtils
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [HearingActualsTimingComponent, BlankComponent, RpxTranslateMockPipe]
+      declarations: [HearingActualsTimingComponent, BlankComponent, MockRpxTranslatePipe]
     })
       .compileComponents();
   }));
@@ -197,7 +191,7 @@ describe('HearingActualsTimingComponent', () => {
         ValidatorsUtils
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [HearingActualsTimingComponent, BlankComponent, RpxTranslateMockPipe]
+      declarations: [HearingActualsTimingComponent, BlankComponent, MockRpxTranslatePipe]
     })
       .compileComponents();
   }));

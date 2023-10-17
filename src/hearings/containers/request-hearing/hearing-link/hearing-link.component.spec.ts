@@ -1,10 +1,11 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
 import { LovRefDataByServiceModel } from '../../../models/lovRefData.model';
@@ -12,15 +13,7 @@ import { CaseReferencePipe } from '../../../pipes/case-reference.pipe';
 import { ConvertArrayToStringPipe } from '../../../pipes/convert-array-to-string.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingLinkComponent } from './hearing-link.component';
-
 import createSpyObj = jasmine.createSpyObj;
-
-@Pipe({ name: 'rpxTranslate' })
-class RpxTranslateMockPipe implements PipeTransform {
-  public transform(value: string): string {
-    return value;
-  }
-}
 
 const reasons: LovRefDataByServiceModel = {
   list_of_values: [
@@ -98,7 +91,7 @@ describe('HearingLinkComponent', () => {
         CaseReferencePipe,
         ConvertArrayToStringPipe,
         HearingLinkComponent,
-        RpxTranslateMockPipe
+        MockRpxTranslatePipe
       ],
       providers: [
         provideMockStore({ initialState }),

@@ -1,13 +1,7 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { HearingViewSummaryComponent } from './hearing-view-summary.component';
-
-@Pipe({ name: 'rpxTranslate' })
-class RpxTranslateMockPipe implements PipeTransform {
-  public transform(value: string): string {
-    return value;
-  }
-}
 
 describe('HearingViewSummaryComponent', () => {
   let component: HearingViewSummaryComponent;
@@ -15,7 +9,7 @@ describe('HearingViewSummaryComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingViewSummaryComponent, RpxTranslateMockPipe],
+      declarations: [HearingViewSummaryComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
 

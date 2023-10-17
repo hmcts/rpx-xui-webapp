@@ -71,6 +71,7 @@ import * as fromServices from './services';
 import { effects, reducers } from './store';
 import { RestrictedCaseAccessComponent } from './components/restricted-case-access/restricted-case-access.component';
 import { RestrictedCaseAccessContainerComponent } from './containers/restricted-case-access-container/restricted-case-access-container.component';
+import { RestrictedCaseAccessGuard } from './guards/restricted-case-access-guard';
 
 @NgModule({
   imports: [
@@ -101,7 +102,7 @@ import { RestrictedCaseAccessContainerComponent } from './containers/restricted-
     CaseViewerModule,
     PipesModule
   ],
-  declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives, RestrictedCaseAccessComponent, RestrictedCaseAccessContainerComponent],
+  declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
   providers: [
     PlaceholderService,
     CaseReferencePipe,
@@ -136,7 +137,8 @@ import { RestrictedCaseAccessContainerComponent } from './containers/restricted-
     IsCompoundPipe,
     CcdCYAPageLabelFilterPipe,
     CaseFileViewService,
-    JurisdictionService
+    JurisdictionService,
+    RestrictedCaseAccessGuard
   ]
 })
 /**

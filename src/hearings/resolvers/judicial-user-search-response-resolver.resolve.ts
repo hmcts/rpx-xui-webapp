@@ -29,21 +29,6 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
       );
   }
 
-  public getUsersByPanelRequirementsOld$(): Observable<string[]> {
-    return this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).pipe(
-      map((hearingRequest) => {
-        const hearingJudgeIds: string[] = [];
-        if (hearingRequest.hearingRequestMainModel?.hearingResponse?.hearingDaySchedule?.length) {
-          const hearingJudgeId = hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingJudgeId;
-          if (hearingJudgeId?.trim().length > 0) {
-            hearingJudgeIds.push(hearingJudgeId);
-          }
-        }
-        return hearingJudgeIds;
-      })
-    );
-  }
-
   public getUsersData$(judgePersonalCodesList: string[]): Observable<JudicialUserModel[]> {
     return this.judicialRefDataService.searchJudicialUserByPersonalCodes(judgePersonalCodesList).pipe(
       catchError(() => {

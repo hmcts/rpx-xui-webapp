@@ -6,6 +6,7 @@ import { catchError, map, switchMap, take } from 'rxjs/operators';
 import { JudicialUserModel } from '../models/judicialUser.model';
 import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import * as fromHearingStore from '../store';
+import {getHearingJudgeIds} from "../store/selectors/hearing-judges.selectors";
 
 @Injectable({
   providedIn: 'root'
@@ -29,18 +30,7 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
   }
 
   public getUsersByPanelRequirements$(): Observable<string[]> {
-    return this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).pipe(
-      map((hearingRequest) => {
-        const hearingJudgeIds: string[] = [];
-        if (hearingRequest.hearingRequestMainModel?.hearingResponse?.hearingDaySchedule?.length) {
-          const hearingJudgeId = hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingJudgeId;
-          if (hearingJudgeId?.trim().length > 0) {
-            hearingJudgeIds.push(hearingJudgeId);
-          }
-        }
-        return hearingJudgeIds;
-      })
-    );
+    return this.hearingStore.select(getHearingJudgeIds)
   }
 
   public getUsersData$(judgePersonalCodesList: string[]): Observable<JudicialUserModel[]> {

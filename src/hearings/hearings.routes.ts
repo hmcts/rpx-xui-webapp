@@ -498,7 +498,7 @@ export const ROUTES: Routes = [
           partyChannels: PartyChannelsResolverService,
           partySubChannels: PartySubChannelsResolverService,
           judgeTypes: JudgeTypesResolverService,
-          judicialUsers: JudicialUserSearchResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
           otherPanelRoles: PanelRolesResolverService,
           courtLocation: CourtLocationsDataResolver,
         },

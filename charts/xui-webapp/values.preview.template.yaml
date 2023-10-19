@@ -1,6 +1,10 @@
 nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
+  devmemoryRequests: 512Mi
+  devcpuRequests: 250m
+  devmemoryLimits: 2Gi
+  devcpuLimits: 2
   environment:
      NODE_TLS_REJECT_UNAUTHORIZED: 0
      SERVICES_IDAM_API_URL: https://idam-api.aat.platform.hmcts.net

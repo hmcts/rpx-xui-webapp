@@ -8,6 +8,7 @@ import { PanelPreferenceModel } from '../models/panelPreference.model';
 import { PanelRequirementsModel } from '../models/panelRequirements.model';
 import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import * as fromHearingStore from '../store';
+import { getHearingJudgeIds } from "../store/selectors/hearing-judges.selectors";
 
 @Injectable({
   providedIn: 'root'
@@ -17,14 +18,16 @@ export class JudicialUserSearchResolver implements Resolve<JudicialUserModel[]> 
     protected readonly judicialRefDataService: JudicialRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>
   ) {}
-
   public resolve(route?: ActivatedRouteSnapshot): Observable<JudicialUserModel[]> {
     return this.getUsersByPanelRequirements$()
       .pipe(
         switchMap((panelRequirements) => {
-          return of(
-            panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter((preferences) => this.checkMemberType(preferences, route)).map((preferences) => preferences.memberID)
-          );
+          if (panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.length > 0) {
+            return of(
+              panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter((preferences) => this.checkMemberType(preferences, route)).map((preferences) => preferences.memberID)
+            );
+          }
+          return this.hearingStore.select(getHearingJudgeIds);
         }), take(1),
         switchMap((personalCodes) => {
           return personalCodes && personalCodes.length ? this.getUsersData$(personalCodes) : of([]);

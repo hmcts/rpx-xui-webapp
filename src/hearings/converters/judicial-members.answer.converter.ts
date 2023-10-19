@@ -10,7 +10,7 @@ export class JudicialMembersAnswerConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) {}
 
   public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
-    const judicialUsersList: JudicialUserResponseModel[] = this.route.snapshot.data.judicialUsers || [];
+    const judicialUsersList: JudicialUserResponseModel[] = this.route.snapshot.data.judicialResponseUsers || [];
     return hearingState$.pipe(
       map((state) => {
         const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;

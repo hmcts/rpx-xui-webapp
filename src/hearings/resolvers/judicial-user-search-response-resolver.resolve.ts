@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Resolve } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
 import { JudicialUserModel } from '../models/judicialUser.model';
@@ -18,7 +18,7 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
   ) {}
 
   public resolve(): Observable<JudicialUserModel[]> {
-    return this.hearingStore.select(getHearingJudgeIds)
+    return this.getUsersByPanelRequirements$()
       .pipe(
         switchMap((judicialMemberIds) => {
           return of(judicialMemberIds);
@@ -27,6 +27,10 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
           return judicialMemberIds && judicialMemberIds.length ? this.getUsersData$(judicialMemberIds) : of([]);
         })
       );
+  }
+
+  public getUsersByPanelRequirements$(): Observable<string[]> {
+    return this.hearingStore.select(getHearingJudgeIds);
   }
 
   public getUsersData$(judgePersonalCodesList: string[]): Observable<JudicialUserModel[]> {

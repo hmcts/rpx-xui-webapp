@@ -6,7 +6,7 @@ import { catchError, map, switchMap, take } from 'rxjs/operators';
 import { JudicialUserModel } from '../models/judicialUser.model';
 import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import * as fromHearingStore from '../store';
-import {getHearingJudgeIds} from "../store/selectors/hearing-judges.selectors";
+import { getHearingJudgeIds } from '../store/selectors/hearing-judges.selectors';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +30,7 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
   }
 
   public getUsersByPanelRequirements$(): Observable<string[]> {
-    return this.hearingStore.select(getHearingJudgeIds)
+    return this.hearingStore.select(getHearingJudgeIds);
   }
 
   public getUsersData$(judgePersonalCodesList: string[]): Observable<JudicialUserModel[]> {

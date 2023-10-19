@@ -1,8 +1,8 @@
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { JudicialUserModel } from '../models/judicialUser.model';
 import { State } from '../store';
+import { JudicialUserResponseModel } from "../models/judicialUserReponse.model";
 import { HearingsUtils } from '../utils/hearings.utils';
 import { AnswerConverter } from './answer.converter';
 
@@ -10,7 +10,7 @@ export class JudicialMembersAnswerConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) {}
 
   public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
-    const judicialUsersList: JudicialUserModel[] = this.route.snapshot.data.judicialUsers || [];
+    const judicialUsersList: JudicialUserResponseModel[] = this.route.snapshot.data.judicialUsers || [];
     return hearingState$.pipe(
       map((state) => {
         const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;

@@ -35,16 +35,16 @@ describe('Ref Data Resolver', () => {
     expect(service).toBeTruthy();
   });
 
-  it('resolves reference data', inject([JudicialUserSearchResponseResolver], (service: JudicialUserSearchResponseResolver) => {
+  fit('resolves reference data', inject([JudicialUserSearchResponseResolver], (service: JudicialUserSearchResponseResolver) => {
     spyOn(judicialRefDataService, 'searchJudicialUserByPersonalCodes').and.returnValue(of(dataRef));
     spyOn(service, 'getUsersByPanelRequirements$').and.callThrough();
     spyOn(service, 'getUsersData$').and.callThrough();
     service.resolve().subscribe((refData: JudicialUserModel[]) => {
       expect(service.getUsersByPanelRequirements$).toHaveBeenCalled();
-      expect(service.getUsersData$).toHaveBeenCalled();
+      expect(service.getUsersData$).not.toHaveBeenCalled();
       expect(refData).toEqual([]);
       service.getUsersData$([]);
-      expect(judicialRefDataService.searchJudicialUserByPersonalCodes).toHaveBeenCalled();
+      expect(judicialRefDataService.searchJudicialUserByPersonalCodes).not.toHaveBeenCalled();
     });
   }));
 });

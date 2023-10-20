@@ -1,6 +1,6 @@
 <xuilib-loading-spinner *ngIf="showSpinner"></xuilib-loading-spinner>
 <a class="govuk-back-link" href="javascript:void(0)" (click)="onBack()">{{ 'Back' | rpxTranslate }}</a>
-<xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem'" *ngIf="error$ | async"></xuilib-hmcts-error-summary>
+<xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem' | rpxTranslate" *ngIf="error$ | async"></xuilib-hmcts-error-summary>
 <exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName" mode="mode"></exui-linked-hearings-case-title>
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
@@ -45,6 +45,6 @@
     <button *ngIf="isManageJourneyFinalPage && linkedCaseHearingsResults.length > 0" class="govuk-button primary" data-module="govuk-button" (click)="onManageLinkHearings()">{{ 'Link hearings' | rpxTranslate }}</button>
     <button *ngIf="isManageLink && !isManageJourneyFinalPage && linkedCaseHearingsResults.length > 0" class="govuk-button primary" data-module="govuk-button" (click)="onEdit()">{{ 'Edit' | rpxTranslate }}</button>
     <button *ngIf="isManageJourneyFinalPage && linkedCaseHearingsResults.length === 0" class="govuk-button primary" data-module="govuk-button" (click)="onUnlinkHearings()">{{ 'Unlink hearings' | rpxTranslate }}</button>
-    <a href="javascript:void(0)" class="link-cancel" (click)="onCancel()">{{cancelButtonText}}</a>
+    <a href="javascript:void(0)" class="link-cancel" (click)="onCancel()">{{cancelButtonText | rpxTranslate}}</a>
   </div>
 </div>

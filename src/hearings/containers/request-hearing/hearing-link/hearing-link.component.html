@@ -1,5 +1,5 @@
 <xuilib-loading-spinner *ngIf="showSpinner"></xuilib-loading-spinner>
-<xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'"></xuilib-hmcts-error-summary>
+<xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem' | rpxTranslate"></xuilib-hmcts-error-summary>
 <div class="govuk-grid-row" *ngIf="linkedCases">
   <div class="govuk-grid-column-full">
     <span class="govuk-caption-l">{{ 'Request a hearing for' | rpxTranslate }} {{caseName}} {{caseId}}</span>

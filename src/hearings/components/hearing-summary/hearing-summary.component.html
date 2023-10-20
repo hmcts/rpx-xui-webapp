@@ -25,7 +25,7 @@
         <exui-hearing-case-name></exui-hearing-case-name>
       </ng-container>
       <ng-container *ngSwitchDefault>
-        <div [innerHtml]="section.sectionHTMLTitle"></div>
+        <div [innerHtml]="section.sectionHTMLTitle | rpxTranslate"></div>
       </ng-container>
     </div>
     <div class="govuk-summary-list govuk-!-margin-bottom-9" *ngIf="!section.isHiddenMargin">
@@ -33,7 +33,7 @@
         <div *ngIf="answer.isHiddenSource === undefined ? true : !(answer.isHiddenSource | isHidden:hearingState$ | async)"
              class="govuk-summary-list__row">
           <div class="govuk-summary-list__key">
-            {{ answer.answerTitle }}
+            {{ answer.answerTitle | rpxTranslate }}
           </div>
           <div class="govuk-summary-list__value">
             <div [innerHtml]="answer.answerSource | transformAnswer:hearingState$ | async"></div>

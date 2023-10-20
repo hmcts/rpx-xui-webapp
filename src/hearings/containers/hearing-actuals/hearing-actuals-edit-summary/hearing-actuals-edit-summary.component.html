@@ -1,5 +1,5 @@
 <a class="govuk-back-link" href="javascript:history.back()">{{ 'Back' | rpxTranslate }}</a>
-<xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem'" *ngIf="errors$ | async">
+<xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem' | rpxTranslate" *ngIf="errors$ | async">
 </xuilib-hmcts-error-summary>
 
 <div class="govuk-grid-row" *ngIf="!!hearingActualsMainModel">
@@ -78,7 +78,7 @@
                 {{actualHearingDay.hearingDate | date: "dd MMMM yyyy"}}
               </div>
               <div class="govuk-tag" [class.govuk-tag--grey]="!isDetailsProvidedForDay(actualHearingDay)">
-                {{isDetailsProvidedForDay(actualHearingDay) ? 'DETAILS PROVIDED' : 'AWAITING CONFIRMATION'}}
+                {{isDetailsProvidedForDay(actualHearingDay) ? 'DETAILS PROVIDED' : 'AWAITING CONFIRMATION' | rpxTranslate}}
               </div>
             </summary>
 

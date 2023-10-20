@@ -1,4 +1,4 @@
-<xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'">
+<xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem' | rpxTranslate">
 </xuilib-hmcts-error-summary>
 
 <div class="govuk-grid-row">
@@ -75,11 +75,11 @@
         </fieldset>
       </div>
       <exui-hearing-judge-names-list #excludedJudge
-                                     [subTitle]="'Exclude a judge (optional)'"
+                                     [subTitle]="'Exclude a judge (optional)' | rpxTranslate"
                                      [judgeList]="excludedJudgeList"
                                      [serviceId]="serviceId"
                                      [placeholderContent]="'e.g. John Smith'"
-                                     [submitButtonName]="'Exclude judge'">
+                                     [submitButtonName]="'Exclude judge' | rpxTranslate">
       </exui-hearing-judge-names-list>
     </form>
   </div>

@@ -1,4 +1,4 @@
-<xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'"></xuilib-hmcts-error-summary>
+<xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem' | rpxTranslate"></xuilib-hmcts-error-summary>
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
@@ -102,7 +102,7 @@
           <div class="govuk-radios">
             <div class="govuk-radios__item" *ngFor="let priority of priorities">
               <input class="govuk-radios__input" id="{{priority.key}}" name="priority" type="radio" [value]="priority.key" formControlName="priority">
-              <label class="govuk-label govuk-radios__label" [for]="priority.key">{{priority.value_en}}</label>
+              <label class="govuk-label govuk-radios__label" [for]="priority.key">{{ priority.value_en | rpxTranslate }}</label>
             </div>
           </div>
         </fieldset>

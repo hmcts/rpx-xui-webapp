@@ -1,7 +1,7 @@
 <table class="govuk-table" *ngIf="hearingStageOptions">
   <thead class="govuk-table__head">
   <tr class="govuk-table__row">
-    <th class="govuk-table__header govuk-body-lead">{{ status }}</th>
+    <th class="govuk-table__header govuk-body-lead">{{ status | rpxTranslate }}</th>
     <th *ngIf="(hearingList$ | async)?.length" class="govuk-table__header">{{ 'Hearing date' | rpxTranslate }}</th>
     <th *ngIf="(hearingList$ | async)?.length" class="govuk-table__header">{{ 'Status' | rpxTranslate }}</th>
     <th *ngIf="(hearingList$ | async)?.length" class="govuk-table__header">{{ 'Actions' | rpxTranslate }}</th>
@@ -10,7 +10,7 @@
   <tbody class="govuk-table__body">
   <tr *ngIf="!(hearingList$ | async)?.length" class="govuk-table__row">
     <td colspan="4">
-      {{ 'No' + status.toLowerCase() + 'hearings found' | rpxTranslate }}
+      {{ 'No ' + status.toLowerCase() + ' hearings found' | rpxTranslate }}
     </td>
   </tr>
   <tr class="govuk-table__row" *ngFor="let hearing of hearingList$ | async">

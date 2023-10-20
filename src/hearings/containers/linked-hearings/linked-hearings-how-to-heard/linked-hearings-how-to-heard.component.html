@@ -1,7 +1,7 @@
 <a class="govuk-back-link" href="javascript:void(0)" (click)="onBack()">{{ 'Back' | rpxTranslate }}</a>
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-    <xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'">
+    <xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem' | rpxTranslate">
     </xuilib-hmcts-error-summary>
     <exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName" mode="mode">
     </exui-linked-hearings-case-title>
@@ -15,7 +15,7 @@
     <fieldset class="govuk-fieldset">
       <div class="govuk-radios" [ngClass]="{'govuk-form-group--error' : hasEmptyGroupSelection()}">
         <span *ngIf="hasEmptyGroupSelection()" class="govuk-error-message govuk-!-margin-top-2">
-          {{ validationErrors[0].message }}
+          {{ validationErrors[0].message | rpxTranslate}}
         </span>
         <div class="govuk-radios__item">
           <input class="govuk-radios__input" id="heardTogether" formControlName="hearingGroup" name="hearingGroup"
@@ -43,7 +43,7 @@
               <tr class="govuk-table__row">
                               <span *ngIf="validationErrors.length > 0"
                                     class="govuk-error-message govuk-!-margin-top-2">
-                    {{ validationErrors[0].message }}
+                    {{ validationErrors[0].message | rpxTranslate}}
                   </span>
               </tr>
               <tr class="govuk-table__row">

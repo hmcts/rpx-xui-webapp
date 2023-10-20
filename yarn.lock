@@ -2559,14 +2559,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.8":
-  version: 6.19.8
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.8"
+"@hmcts/ccd-case-ui-toolkit@portal:/Users/davidjayakumar/HMCTS/ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@hmcts/ccd-case-ui-toolkit@portal:/Users/davidjayakumar/HMCTS/ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A."
   dependencies:
     tslib: ^2.0.0
-  checksum: 29578f510b77c8af938024bad047a1f636d15869b82a702e9bbdb06c83815e8cfa85d1701124a5721fe885e4125edcc691da8de4306b31b0d67471e50f452fcf
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@hmcts/ccpay-web-component@npm:5.2.8":
   version: 5.2.8
@@ -2658,16 +2657,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:1.9.0-welsh-translation":
-  version: 1.9.0-welsh-translation
-  resolution: "@hmcts/rpx-xui-common-lib@npm:1.9.0-welsh-translation"
+"@hmcts/rpx-xui-common-lib@npm:1.9.0-yes-no-bug-fix-v3":
+  version: 1.9.0-yes-no-bug-fix-v3
+  resolution: "@hmcts/rpx-xui-common-lib@npm:1.9.0-yes-no-bug-fix-v3"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 5311fb348b925c1099bf8715a792f0b337f92313fe82a4fe7086cabc22bfad3eb404276add257efddad7205b93b727a30f96236b52b206d6ce9be1ea14ddae91
+  checksum: 6a467b3f2296b9cb1e79f072c3de2e1fe3950daf4ca5a1a026993a819fb3eb8c611a20ee8b2d1c72ccc5e4a2b936d7ec7ede8d69729e5f0f1166ef9fffe28cec
   languageName: node
   linkType: hard
 
@@ -19642,13 +19641,13 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.8
+    "@hmcts/ccd-case-ui-toolkit": 6.19.8-load-hearings-tab-with-translation
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.5
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 1.9.0-welsh-translation
+    "@hmcts/rpx-xui-common-lib": 1.9.0-yes-no-bug-fix-v3
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3

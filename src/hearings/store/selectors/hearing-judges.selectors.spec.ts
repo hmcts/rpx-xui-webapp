@@ -4,7 +4,7 @@ import { reducers } from '../index';
 import { State } from '../reducers';
 import { getHearingJudgeIds } from "./hearing-judges.selectors";
 
-describe('Hearing Judges selectors ', () => {
+describe('Hearing Judges selectors', () => {
   let store: Store<State>;
 
   beforeEach(() => {

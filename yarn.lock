@@ -2559,13 +2559,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@portal:/Users/davidjayakumar/HMCTS/ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@hmcts/ccd-case-ui-toolkit@portal:/Users/davidjayakumar/HMCTS/ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A."
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.8-load-hearings-tab-with-translation":
+  version: 6.19.8-load-hearings-tab-with-translation
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.8-load-hearings-tab-with-translation"
   dependencies:
     tslib: ^2.0.0
+  checksum: 5611c4bcd6db14fb7e24b667d910b2725fb83abaa5ea71f7e1fa0d3c9dd760fed4d83259e65ab14c365767484be15539048d4bff0388fcaf6f8f00b143a8e422
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "@hmcts/ccpay-web-component@npm:5.2.8":
   version: 5.2.8

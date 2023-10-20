@@ -35,7 +35,7 @@ describe('Ref Data Resolver', () => {
     expect(service).toBeTruthy();
   });
 
-  fit('resolves reference data', inject([JudicialUserSearchResponseResolver], (service: JudicialUserSearchResponseResolver) => {
+  it('resolves reference data', inject([JudicialUserSearchResponseResolver], (service: JudicialUserSearchResponseResolver) => {
     spyOn(judicialRefDataService, 'searchJudicialUserByPersonalCodes').and.returnValue(of(dataRef));
     spyOn(service, 'getUsersByPanelRequirements$').and.callThrough();
     spyOn(service, 'getUsersData$').and.callThrough();
@@ -44,7 +44,7 @@ describe('Ref Data Resolver', () => {
       expect(service.getUsersData$).not.toHaveBeenCalled();
       expect(refData).toEqual([]);
       service.getUsersData$([]);
-      expect(judicialRefDataService.searchJudicialUserByPersonalCodes).not.toHaveBeenCalled();
+      expect(judicialRefDataService.searchJudicialUserByPersonalCodes).toHaveBeenCalled();
     });
   }));
 });

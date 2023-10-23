@@ -257,8 +257,6 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     const dataSourceArray = this.formBuilder.array([]);
     if (dataSource && dataSource.length) {
       dataSource.forEach((otherPanelRoles) => {
-        // Fix the code below!!
-        /*
         dataSourceArray.push(this.patchValues({
           key: otherPanelRoles.key,
           value_en: otherPanelRoles.value_en,
@@ -273,7 +271,6 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
           child_nodes: otherPanelRoles.child_nodes,
           selected: !otherPanelRoles.selected ? false : true
         } as LovRefDataModel) as FormGroup);
-        */
       });
     }
     return dataSourceArray;

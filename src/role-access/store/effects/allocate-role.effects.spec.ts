@@ -33,7 +33,7 @@ describe('Allocate Role Effects', () => {
   });
 
   describe('confirmAllocation$', () => {
-    xit('should return SetSubmissionSuccessPending', () => {
+    it('should return SetSubmissionSuccessPending', () => {
       const STATE_DATA = {
         caseId: '111111',
         jurisdiction: 'IA',

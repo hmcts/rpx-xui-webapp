@@ -3,7 +3,9 @@ import * as fromFeature from '../reducers';
 export const getHearingJudgeIds = createSelector(
   fromFeature.getHearingsFeatureState,
   (state: fromFeature.State) => {
-    if (!state) {return []}
+    if (!state) {
+      return [];
+    }
     const caseHearings = state.hearingList && state.hearingList.hearingListMainModel && state.hearingList.hearingListMainModel.caseHearings || [];
     return caseHearings.reduce((acc, caseHearing) => {
       if (caseHearing.hearingDaySchedule) {

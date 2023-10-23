@@ -32,11 +32,8 @@ let pipelineBranch = process.env.TEST_URL.includes('pr-')   ? "preview" : "maste
 let features = ''
 if (testType === 'e2e' || testType === 'smoke'){  
   features = `../e2e/features/app/**/*.feature`
-} else if (testType === 'ngIntegration' && pipelineBranch === 'preview'){
+} else if (testType === 'ngIntegration'){
   features = `../ngIntegration/tests/features/**/*.feature`
-
-}else if (testType === 'ngIntegration' && pipelineBranch === 'master'){
-  features = `../ngIntegration/tests/features/**/notests.feature`
 
 } else{
   throw new Error(`Unrecognized test type ${testType}`);
@@ -47,7 +44,13 @@ const functional_output_dir = path.resolve(`${__dirname}/../../functional-output
 
 const cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/cucumber-codecept-${testType}`)
 
-const tags = process.env.DEBUG ? 'functional_debug' : 'fullFunctional'
+let bddTags = testType === 'ngIntegration' ? 'functional_enabled':'fullFunctional'
+
+if (pipelineBranch === 'master' && testType === 'ngIntegration'){
+  bddTags = 'AAT_only'
+}
+
+const tags = process.env.DEBUG ? 'functional_debug' : bddTags
 const grepTags = `(?=.*@${testType === 'smoke' ? 'smoke' : tags})^(?!.*@ignore)^(?!.*@${pipelineBranch === 'preview' ? 'AAT_only' : 'preview_only'})`
 console.log(grepTags)
 

@@ -2,6 +2,11 @@ import { getHearingJudgeIds } from './hearing-judges.selectors';
 
 describe('Hearing Judges selectors', () => {
   fdescribe('getHearingJudgeIds', () => {
+    it('should return an empty array if state is undefined', () => {
+      const state = undefined;
+      const result = getHearingJudgeIds.projector(state);
+      expect(result).toEqual([]);
+    });
     it('should return an empty array if hearingList is undefined', () => {
       const state = { hearingList: undefined };
       const result = getHearingJudgeIds.projector(state);

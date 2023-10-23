@@ -1,7 +1,7 @@
 
 const { fieldNameMapper } = require('../../../../api/lib/util');
 const caseFileViewPageObject = require('../pageObjects/caseFileViewPage');
-
+const browserWaits = require('../../support/customWaits')
 
 Then('In case file view tab, I see documents tree view', async function () {
     expect( await caseFileViewPageObject.docTreeContainer.isDisplayed()).to.be.true;
@@ -127,7 +127,10 @@ When('In case file view tab, I select file {string} under folder {string}', asyn
 });
 
 Then('In case file view tab, I see file {string} in media viewer', async function (fileName) {
-    const fileDisplayed = await caseFileViewPageObject.getFileDisplayedInMediaViewer();
-    expect(fileDisplayed).to.includes(fileName)
+    await browserWaits.retryWithActionCallback(async () => {
+        const fileDisplayed = await caseFileViewPageObject.getFileDisplayedInMediaViewer();
+        expect(fileDisplayed).to.includes(fileName)
+    })
+    
 
 });

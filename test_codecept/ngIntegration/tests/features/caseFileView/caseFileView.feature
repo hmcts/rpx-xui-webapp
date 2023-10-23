@@ -1,4 +1,4 @@
-@functional_debug
+@functional_debug @functional_enabled
 Feature: Case file view
 
 @preview_only

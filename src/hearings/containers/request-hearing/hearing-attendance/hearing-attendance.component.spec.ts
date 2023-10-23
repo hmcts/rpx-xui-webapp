@@ -170,6 +170,11 @@ describe('HearingAttendanceComponent', () => {
     expect(component.isFormValid()).toEqual(true);
   });
 
+  it('should return NA for preferredHearingChannel when paper hearings has set to Yes', () => {
+    component.attendanceFormGroup.controls.paperHearing.setValue(RadioOptions.YES);
+    expect(component.getIndividualParties()[0].individualDetails.preferredHearingChannel).toEqual('NA');
+  });
+
   it('should true when calling isFormValid with partyChannel', () => {
     component.attendanceFormGroup.controls.estimation.setValue(1);
     (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach((element: AbstractControl) => {

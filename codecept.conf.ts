@@ -71,7 +71,6 @@ setCommonPlugins();
 //   name: 'rpx-xui-webapp'
 // }
 
-
 /** @type {CodeceptJS.MainConfig} */
 exports.config = {
   timeout: 600,

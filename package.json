@@ -70,9 +70,9 @@
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
     "test:backendMock": "DEBUG=true nodemon test_codecept/backendMock/app --standalone",
     "test:codeceptE2EDebug": "TEST_TYPE=e2e npx codeceptjs run  --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts --features --grep @functional_test",
-    "test:codeceptE2E": "PARALLEL=true TEST_TYPE=e2e  npx codeceptjs run --verbose --plugins retryFailedStep --config ./test_codecept/codeceptCommon/codecept.conf.ts --features --grep @functional_enabled ",
+    "test:codeceptE2E": "PARALLEL=true TEST_TYPE=e2e  npx codeceptjs run-workers --verbose --suites 6 --plugins retryFailedStep --config ./test_codecept/codeceptCommon/codecept.conf.ts --features --grep @functional_enabled ",
     "test:xuiIntegrationDebug": "DEBUG=true NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration  npx codeceptjs run  -p pauseOnFail --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep '(?=.*@functional_debug)^(?!.*@ignore)'",
-    "test:xuiIntegration": "yarn build && node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration PARALLEL=true npx codeceptjs run --verbose --config ./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep '(?=.*@functional_enabled)^(?!.*@ignore)'",
+    "test:xuiIntegration": "yarn build && node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration PARALLEL=true npx codeceptjs run-workers --verbose --suites 6  --config ./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep '(?=.*@functional_enabled)^(?!.*@ignore)'",
     "parallel": "npm-run-all -l -p test:api test:xuiIntegration test:codeceptE2E"
   },
   "private": true,

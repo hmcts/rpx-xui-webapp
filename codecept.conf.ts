@@ -72,7 +72,8 @@ setCommonPlugins();
 // }
 
 
-export const config: CodeceptJS.MainConfig = {
+/** @type {CodeceptJS.MainConfig} */
+exports.config = {
   timeout: 600,
   "gherkin": {
     "features": features,

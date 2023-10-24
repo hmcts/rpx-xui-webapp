@@ -112,7 +112,7 @@ Then('In case file view tab, I dont see file upload stamp for files under folder
     for (let row of datatableHash) {
         const fileContainer = await folderContainer.getChildFileContainer(row.file);
         expect(await fileContainer.fileElement.isDisplayed()).to.be.true
-        expect(await fileContainer.fileUploadTimestamp.isDisplayed()).to.be.false
+        expect(await fileContainer.fileUploadTimestamp.getText()).to.equal('')
 
 
     }

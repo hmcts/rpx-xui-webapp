@@ -41,14 +41,14 @@ if (testType === 'e2e' || testType === 'smoke'){
 
 
 const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`)
-
 const cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/cucumber-codecept-${testType}`)
 
 let bddTags = testType === 'ngIntegration' ? 'functional_enabled':'fullFunctional'
 
 if (pipelineBranch === 'master' && testType === 'ngIntegration'){
   bddTags = 'AAT_only'
-}
+  process.env.LAUNCH_DARKLY_CLIENT_ID = '645baeea2787d812993d9d70'
+} 
 
 const tags = process.env.DEBUG ? 'functional_debug' : bddTags
 const grepTags = `(?=.*@${testType === 'smoke' ? 'smoke' : tags})^(?!.*@ignore)^(?!.*@${pipelineBranch === 'preview' ? 'AAT_only' : 'preview_only'})`

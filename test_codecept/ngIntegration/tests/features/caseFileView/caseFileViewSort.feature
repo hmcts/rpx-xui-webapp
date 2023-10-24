@@ -1,4 +1,4 @@
-@functional_debug @functional_enabled
+@functional_enabled
 Feature: Case file view sort documents
 
     @preview_only

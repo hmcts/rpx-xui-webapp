@@ -12,6 +12,14 @@ var spawn = require('child_process').spawn;
 const backendMockApp = require('../backendMock/app');
 const statsReporter = require('./statsReporter')
 
+import { setHeadlessWhen, setCommonPlugins } from '@codeceptjs/configure';
+// turn on headless mode when running with HEADLESS=true environment variable
+// export HEADLESS=true && npx codeceptjs run
+setHeadlessWhen(process.env.HEADLESS);
+
+// enable all common plugins https://github.com/codeceptjs/configure#setcommonplugins
+setCommonPlugins();
+
 let executionResult = 'passed';
 
 let appWithMockBackend = null;
@@ -47,14 +55,14 @@ const functional_output_dir = path.resolve(`${__dirname}/../../functional-output
 
 const cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/cucumber-codecept-${testType}`)
 
-exports.config = {
+export const config: CodeceptJS.MainConfig = {
   timeout: 600,
   "gherkin": {
     "features": features,
     "steps": "../**/*.steps.js"
   },
   output: functional_output_dir,
- 
+  tests: '../**/*.steps.js',
   helpers: {
     CustomHelper:{
       require:"./customHelper.js"
@@ -65,11 +73,10 @@ exports.config = {
     Puppeteer: {
       url: 'https://manage-case.aat.platform.hmcts.net/',
       show: true,
-      waitForNavigation: ['domcontentloaded'],
+      waitForNavigation: 'domcontentloaded',
       restart: true,
       keepCookies: false,
       keepBrowserState: false,
-      smartWait: 50000,
       waitForTimeout: 90000,
       chrome: {
         ignoreHTTPSErrors: true,

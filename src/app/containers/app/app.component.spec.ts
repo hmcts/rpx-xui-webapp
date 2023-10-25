@@ -36,7 +36,7 @@ describe('AppComponent', () => {
           queryParams: {},
           fragment: '',
           outlet: '',
-          component: '' as any,
+          component: '',
           routeConfig: {},
           root: null,
           parent: null,
@@ -53,7 +53,7 @@ describe('AppComponent', () => {
         queryParams: {},
         fragment: '',
         outlet: '',
-        component: '' as any,
+        component: '',
         routeConfig: {},
         root: null,
         parent: null,
@@ -164,7 +164,7 @@ describe('AppComponent', () => {
     expect(timeoutNotificationService.initialise).toHaveBeenCalled();
   });
 
-  xit('loadAndListenForUserDetails', () => {
+  it('loadAndListenForUserDetails', () => {
     appComponent.loadAndListenForUserDetails();
     environmentService.config$.and.returnValue(of({ launchDarklyClientId: '4452' }));
     const userDetails = {

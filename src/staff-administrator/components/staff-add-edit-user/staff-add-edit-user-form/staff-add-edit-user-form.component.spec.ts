@@ -125,12 +125,12 @@ describe('StaffAddEditUserFormComponent', () => {
       expect(component.errors).not.toBeFalsy();
       expect(component.submitted).toBe(false);
 
-      const validForm = new FormGroup({});
+      const validForm = new FormGroup<any>({});
       spyOn(validForm, 'markAllAsTouched');
       expect(validForm.markAllAsTouched).not.toHaveBeenCalled();
 
       validForm.setControl('services', new FormControl());
-      validForm.get('services').setValue('AAA7' as any as never);
+      validForm.get('services').setValue('AAA7');
       component.baseLocationsFormControl.patchValue([{ location_id: '123', location: 'Manchester', service_codes: ['BFA1'] }]);
       component.submitForm(validForm);
       expect(component.wrongLocationError).toEqual('There is a problem. Location Manchester is not valid for the services selected');
@@ -146,12 +146,12 @@ describe('StaffAddEditUserFormComponent', () => {
       expect(component.errors).not.toBeFalsy();
       expect(component.submitted).toBe(false);
 
-      const validForm = new FormGroup({});
+      const validForm = new FormGroup<any>({});
       spyOn(validForm, 'markAllAsTouched');
       expect(validForm.markAllAsTouched).not.toHaveBeenCalled();
 
       validForm.setControl('services', new FormControl());
-      validForm.get('services').setValue('AAA7' as any as never);
+      validForm.get('services').setValue('AAA7');
       component.baseLocationsFormControl.patchValue([{ location_id: '125', location: 'Cardiff', service_codes: ['ABA5'] }, { location_id: '126', location: 'Birmingham', service_codes: ['AAA7'] }]);
       component.submitForm(validForm);
       expect(component.wrongLocationError).toEqual('There is a problem. Location Cardiff is not valid for the services selected');

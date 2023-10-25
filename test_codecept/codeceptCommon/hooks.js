@@ -1,116 +1,76 @@
 const event = require('codeceptjs').event;
-const worker = require('codeceptjs').worker;
 const output = require('codeceptjs').output;
-const path = require('path')
+const path = require('path');
 const fs = require('fs');
-
-const browser = require('./browser')
 
 const codeceptMochawesomeLog = require('./reportLogger')
 const statsReporter = require('./statsReporter')
 
-const e2eTestDataManager = require('../e2e/utils/testDataManager/index');
-const mockClient = require('../backendMock/client/index')
+const mockClient = require('../backendMock/client/index');
 const idamLogin = require('../ngIntegration/util/idamLogin');
 
-const isIntegrationTestType = process.env.TEST_TYPE && process.env.TEST_TYPE === 'ngIntegration'
-
-const testType = process.env.TEST_TYPE
+const testType = process.env.TEST_TYPE;
 
 let featureLogFile = null;
 
-function overrideConsoleLogforWorkersThreads(){
-
+function overrideConsoleLogforWorkersThreads() {
     const consoleLogRef = console.log;
     const consoleErrorRef = console.error;
     global.console.log = function (message) {
         const folderName = path.resolve(__dirname, `../../functional-output/tests/featureLogs-${testType}`)
         if (!featureLogFile) {
-            featureLogFile = folderName + '/executionLogs.log'
+            featureLogFile = folderName + '/executionLogs.log';
         }
         if (!fs.existsSync(folderName)) {
             fs.mkdirSync(folderName);
         }
         const dateTime = new Date().toLocaleTimeString('en-GB');
-        consoleLogRef(message)
-        fs.appendFileSync(`${featureLogFile}`, `\n ${dateTime} : ${message}`)
-    }
+        consoleLogRef(message);
+        fs.appendFileSync(`${featureLogFile}`, `\n ${dateTime} : ${message}`);
+    };
 
 
     global.console.error = (error) => {
-        const folderName = path.resolve(__dirname, `../../functional-output/tests/featureLogs-${testType}`)
+        const folderName = path.resolve(__dirname, `../../functional-output/tests/featureLogs-${testType}`);
         if (!featureLogFile) {
-            featureLogFile = folderName + '/executionLogs.log'
+            featureLogFile = folderName + '/executionLogs.log';
         }
         if (!fs.existsSync(folderName)) {
             fs.mkdirSync(folderName);
         }
-        fs.appendFileSync(`${featureLogFile}`, "\n ERROR \n")
+        fs.appendFileSync(`${featureLogFile}`, "\n ERROR \n");
 
-        fs.appendFileSync(`${featureLogFile}`, '\n' + error)
-        consoleErrorRef(error)
+        fs.appendFileSync(`${featureLogFile}`, '\n' + error);
+        consoleErrorRef(error);
     }
-
 }
 
-
-
 function setFeatureLogFile(test){
-    const fileName = getFeatureFileName(test)
-    const folderName = `${__dirname}/../../functional-output/tests/featureLogs-${testType}`
-    featureLogFile = `${folderName}/${fileName}.txt`
+    const fileName = getFeatureFileName(test);
+    const folderName = `${__dirname}/../../functional-output/tests/featureLogs-${testType}`;
+    featureLogFile = `${folderName}/${fileName}.txt`;
     // if (!fs.existsSync(folderName)) {
     //     fs.mkdirSync(folderName);
     // }
     codeceptMochawesomeLog.featureLogFilePath = featureLogFile;
 }
 
-
 function getFeatureFileName(test){
-    const filePathSplit = test.file.split('/')
-    return filePathSplit[filePathSplit.length - 1]
-}
-
-function clearFeatureLogFile(test){
-    const fileName = getFeatureFileName(test)
-    const folderName = `${__dirname}/../../functional-output/tests/featureLogs-${testType}`
-    if (!fs.existsSync(folderName)) {
-        fs.mkdirSync(folderName);
-    }
-    fs.writeFileSync(`${folderName}/${fileName}.txt`, 'Test initialised')
-
-}
-
-function logsTestStats(status, completedTests, workerStats){
-    const folderName = `${__dirname}/../../functional-output/tests/featureStats-${testType}.log`
-    if (!fs.existsSync(folderName)) {
-        fs.mkdirSync(folderName);
-    }
-    console.log('Test status : ', status ? 'Passes' : 'Failed ');
-
-    // print stats
-
-    fs.appendFileSync(`${folderName}`, `Total tests : ${workerStats.tests}`);
-    fs.appendFileSync(`${folderName}`, `Passed tests : ${workerStats.passes}`);
-    fs.appendFileSync(`${folderName}`, `Failed test tests : ${workerStats.failures}`);
-
-    // If you don't want to listen for failed and passed test separately, use completedTests object
-    for (const test of Object.values(completedTests)) {
-        fs.appendFileSync(`${folderName}`, `Test status: ${test.err === null}, `, `Test : ${test.title}`);
-    }
+    const filePathSplit = test.file.split('/');
+    return filePathSplit[filePathSplit.length - 1];
 }
 
 function featureLogsMessage(test, message){
-    const fileName = getFeatureFileName(test)
-    const folderName = `${__dirname}/../../functional-output/tests/featureRunLogs-${testType}`
+    const fileName = getFeatureFileName(test);
+    const folderName = `${__dirname}/../../functional-output/tests/featureRunLogs-${testType}`;
     if (!fs.existsSync(folderName)) {
         fs.mkdirSync(folderName);
     }
-    fs.appendFileSync(`${folderName}/${fileName}.txt`, message)
+    fs.appendFileSync(`${folderName}/${fileName}.txt`, message);
 }
 
 module.exports = async function () {
-    event.dispatcher.on(event.suite.before, async function (test) {
+    event.dispatcher.on(event.suite.before, async function () {
         overrideConsoleLogforWorkersThreads();
     });
     event.dispatcher.on(event.test.before, async function (test) {
@@ -123,8 +83,7 @@ module.exports = async function () {
 
         featureLogsMessage(test, `\n${dateTime}| ************ Test started | ${test.title}`);
 
-        statsReporter.run()
-
+        statsReporter.run();
     });
 
     // event.dispatcher.on(event.all.result, (status, completedTests, workerStats) => {
@@ -135,7 +94,7 @@ module.exports = async function () {
 
     event.dispatcher.on(event.test.after, async function (test) {
         output.print(`Test ${test.state} : ${test.title}`)
-        await mockClient.logMessage(`************ Test status|${test.title}:${test.state }`)
+        await mockClient.logMessage(`************ Test status|${test.title}:${test.state }`);
 
         actor().flushLogsToReport();
 
@@ -150,16 +109,13 @@ module.exports = async function () {
         // featureLogsMessage(test, `\n cookies \n ${JSON.stringify(cookies, null, 2)}`);
         const dateTime = new Date().toLocaleTimeString('en-GB');
         featureLogsMessage(test, `\n${dateTime}| ************ Test status|${test.state}|${test.title}`);
-        statsReporter.run()
+        statsReporter.run();
         // await e2eTestDataManager.cleanupForTags(test.tags);
-
     });
 
 
-    event.dispatcher.on(event.test.passed,async function (test) {
-       
-        codeceptMochawesomeLog.AddMessage("************ Test passed")
-
+    event.dispatcher.on(event.test.passed, async function () {
+        codeceptMochawesomeLog.AddMessage("************ Test passed");
     });
 
     // event.dispatcher.on(event.test.failed, async function (test) {
@@ -179,9 +135,7 @@ module.exports = async function () {
     event.dispatcher.on(event.bddStep.before, function (bddStep) {
         // output.print(`STEP: ${bddStep.keyword} ${bddStep.text} `)
         const log = `=== BDD) ${bddStep.keyword} ${bddStep.text}`;
-        codeceptMochawesomeLog.AddMessage(log)
-
-
+        codeceptMochawesomeLog.AddMessage(log);
     });
 
 
@@ -204,22 +158,5 @@ module.exports = async function () {
     //         return attachBrowserLogs();
     //     }
     // });
-}
-
-async function attachBrowserLogs(){
-    const logs = await browser.getBrowserLogs();
-    for(const log of logs){
-        if (log._type !== 'error'){
-            continue;
-        }
-        codeceptMochawesomeLog.AddMessage(`Error: ${log._text}`);
-        for(const stacktraceLocation of log._stackTraceLocations){
-            if (stacktraceLocation.url.includes('.js')){
-                continue;
-            }
-            codeceptMochawesomeLog.AddMessage(`       ${stacktraceLocation.url}:${stacktraceLocation.lineNumber}`);
-        }
-    }
-
-}
+};
 

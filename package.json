@@ -5,10 +5,12 @@
     "node": ">=12.13.0"
   },
   "scripts": {
-    "build": "export NODE_OPTIONS=--openssl-legacy-provider; yarn build:prod && yarn build:node",
+    "build": "yarn build:prod && yarn build:node",
+    "build:dev": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --configuration=development && yarn build:node:dev",
     "build:docker": "docker build -t xui .",
     "build:ng": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --prod build",
     "build:node": "cd api && yarn build",
+    "build:node:dev": "cd api && yarn build:dev",
     "build:prod": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --prod",
     "cve": "yarn audit --groups dependencies --json | grep auditAdvisory > yarn-audit-known-issues",
     "clean": "rimraf node_modules",

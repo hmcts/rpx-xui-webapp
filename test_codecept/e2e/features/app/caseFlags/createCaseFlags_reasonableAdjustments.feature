@@ -1,6 +1,6 @@
 
 @fullfunctional @functional_enabled
-Feature: Case flags Add/Update Reasonable adjustment
+Feature: Case flags V1 Add/Update Reasonable adjustment
 
     Background: Setup case
         When I navigate to Expert UI Url

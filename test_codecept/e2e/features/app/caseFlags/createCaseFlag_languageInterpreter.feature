@@ -1,5 +1,5 @@
 @fullfunctional @functional_enabled
-Feature: Case flags Add/Update Language interpreter
+Feature: Case flags V1 Add/Update Language interpreter
 
     Background: Setup case
         When I navigate to Expert UI Url

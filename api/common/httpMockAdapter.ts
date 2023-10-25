@@ -10,6 +10,6 @@ export class HttpMockAdapter {
     return this.adapterInstance;
   }
 
-  private static adapterInstance?;
+  private static adapterInstance?: MockAdapter;
   private static mockInstance: AxiosInstance = HttpMock.getInstance();
 }

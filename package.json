@@ -5,10 +5,12 @@
     "node": ">=12.13.0"
   },
   "scripts": {
-    "build": "export NODE_OPTIONS=--openssl-legacy-provider; yarn build:prod && yarn build:node",
+    "build": "yarn build:prod && yarn build:node",
+    "build:dev": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --configuration=development && yarn build:node:dev",
     "build:docker": "docker build -t xui .",
     "build:ng": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --prod build",
     "build:node": "cd api && yarn build",
+    "build:node:dev": "cd api && yarn build:dev",
     "build:prod": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --prod",
     "cve": "yarn audit --groups dependencies --json | grep auditAdvisory > yarn-audit-known-issues",
     "clean": "rimraf node_modules",
@@ -66,10 +68,10 @@
     "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config api/test/pact/**/*.spec.ts dotenv_config_defaults=./api/.env.defaults",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
     "test:backendMock": "DEBUG=true nodemon test_codecept/backendMock/app --standalone",
-    "test:codeceptE2EDebug": "TEST_TYPE=e2e  npx codeceptjs run  --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @functional_test",
-    "test:codeceptE2E": "PARALLEL=true TEST_TYPE=e2e  npx codeceptjs run-workers --suites 8 --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @functional_enabled ",
+    "test:codeceptE2EDebug": "TEST_TYPE=e2e npx codeceptjs run  --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @functional_test",
+    "test:codeceptE2E": "PARALLEL=true TEST_TYPE=e2e  npx codeceptjs run-workers --suites 6 --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @functional_enabled ",
     "test:xuiIntegrationDebug": "DEBUG=true NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration  npx codeceptjs run  -p pauseOnFail --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep '(?=.*@functional_debug)^(?!.*@ignore)' ",
-    "test:xuiIntegration": "yarn build && node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration PARALLEL=true  npx codeceptjs run-workers --suites 8  --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep '(?=.*@functional_enabled)^(?!.*@ignore)'  ",
+    "test:xuiIntegration": "yarn build && node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration PARALLEL=true  npx codeceptjs run-workers --suites 6  --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep '(?=.*@functional_enabled)^(?!.*@ignore)'  ",
     "parallel": "npm-run-all -l -p test:api test:xuiIntegration test:codeceptE2E"
   },
   "private": true,

@@ -5,12 +5,12 @@ const marge = require('mochawesome-report-generator')
 const fs = require('fs')
 const path = require('path')
 
-const global = require('./globals')
-import applicationServer from '../localServer'
+const global = require('./test_codecept/codeceptCommon/globals');
+import applicationServer from "./test_codecept/localServer";
 
 var spawn = require('child_process').spawn;
-const backendMockApp = require('../backendMock/app');
-const statsReporter = require('./statsReporter')
+const backendMockApp = require('./test_codecept/backendMock/app');
+const statsReporter = require('./test_codecept/codeceptCommon/statsReporter');
 
 let executionResult = 'passed';
 
@@ -19,7 +19,7 @@ const testType = process.env.TEST_TYPE
 
 const debugMode = process.env.DEBUG && process.env.DEBUG.includes('true')
 
-const parallel = process.env.PARALLEL ? process.env.PARALLEL === "true" : false
+const parallel = process.env.PARALLEL ? process.env.PARALLEL === "true" : false;
 const head = process.env.HEAD
 console.log(`testType : ${testType}`)
 console.log(`parallel : ${parallel}`)
@@ -30,12 +30,12 @@ const pipelineBranch = testUrl.toLowerCase().includes('pr-') || testUrl.includes
 
 let features = ''
 if (testType === 'e2e' || testType === 'smoke'){  
-  features = `../e2e/features/app/**/*.feature`
+  features = `./test_codecept/codeceptCommon/e2e/features/app/**/*.feature`
 } else if (testType === 'ngIntegration' && pipelineBranch === 'preview'){
-  features = `../ngIntegration/tests/features/**/*.feature`
+  features = `./test_codecept/codeceptCommon/ngIntegration/tests/features/**/*.feature`
 
 }else if (testType === 'ngIntegration' && pipelineBranch === 'master'){
-  features = `../ngIntegration/tests/features/**/notests.feature`
+  features = `./test_codecept/codeceptCommon/ngIntegration/tests/features/**/notests.feature`
 
 } else{
   throw new Error(`Unrecognized test type ${testType}`);
@@ -43,21 +43,46 @@ if (testType === 'e2e' || testType === 'smoke'){
 
 
 
-const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`)
+const functional_output_dir = path.resolve(`${__dirname}/functional-output/tests/codecept-${testType}`)
 
-const cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/cucumber-codecept-${testType}`)
+const cucumber_functional_output_dir = path.resolve(`${__dirname}/functional-output/tests/cucumber-codecept-${testType}`)
 
+import { setHeadlessWhen, setCommonPlugins } from '@codeceptjs/configure';
+// turn on headless mode when running with HEADLESS=true environment variable
+// export HEADLESS=true && npx codeceptjs run
+setHeadlessWhen(process.env.HEADLESS);
+
+// enable all common plugins https://github.com/codeceptjs/configure#setcommonplugins
+setCommonPlugins();
+
+// export const config: CodeceptJS.MainConfig = {
+//   tests: './test_codecept/**/*.steps.ts',
+//   output: './output',
+//   helpers: {
+//     Puppeteer: {
+//       url: 'http://localhost:3000',
+//       show: false,
+//       windowSize: '1200x900'
+//     }
+//   },
+//   include: {
+//     I: './steps_file'
+//   },
+//   name: 'rpx-xui-webapp'
+// }
+
+/** @type {CodeceptJS.MainConfig} */
 exports.config = {
   timeout: 600,
   "gherkin": {
     "features": features,
-    "steps": "../**/*.steps.js"
+    "steps": "./test_codecept/**/*.steps.js"
   },
   output: functional_output_dir,
- 
+  tests: './test_codecept/**/*.steps.js',
   helpers: {
     CustomHelper:{
-      require:"./customHelper.js"
+      require: "./test_codecept/codeceptCommon/customHelper.js"
     },
     "Mochawesome": {
       "uniqueScreenshotNames": "true"
@@ -65,11 +90,10 @@ exports.config = {
     Puppeteer: {
       url: 'https://manage-case.aat.platform.hmcts.net/',
       show: true,
-      waitForNavigation: ['domcontentloaded'],
+      waitForNavigation: 'domcontentloaded',
       restart: true,
       keepCookies: false,
       keepBrowserState: false,
-      smartWait: 50000,
       waitForTimeout: 90000,
       chrome: {
         ignoreHTTPSErrors: true,
@@ -160,7 +184,7 @@ exports.config = {
     },
    
     "myPlugin": {
-      "require": "./hooks",
+      "require": "./test_codecept/codeceptCommon/hooks",
       "enabled": true
     },
     retryFailedStep: {

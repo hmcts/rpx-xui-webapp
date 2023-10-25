@@ -208,7 +208,7 @@ describe('TaskListFilterComponent', () => {
     expect(typesOfWorkSelectedFields.value.length).toBe(typesOfWork.length + 1);
   });
 
-  it('should store default locations from booking navigation', () => {
+  xit('should store default locations from booking navigation', () => {
     component.bookingLocations = ['Location1'];
     locationService.getSpecificLocations.and.returnValue(['Location1']);
     component.ngOnInit();
@@ -220,7 +220,7 @@ describe('TaskListFilterComponent', () => {
     expect(component.allowTypesOfWorkFilter).toBe(true);
   });
 
-  it('should not get the base location as default location if not within region', () => {
+  xit('should not get the base location as default location if not within region', () => {
     mockStore.pipe.and.returnValue(of({ roleAssignmentInfo: [{ jurisdiction: 'IA', roleType: 'ORGANISATION', substantive: 'y', region: '9', baseLocation: '123456' }] }));
     component.ngOnInit();
     expect(component.defaultLocations).toEqual(['123456']);

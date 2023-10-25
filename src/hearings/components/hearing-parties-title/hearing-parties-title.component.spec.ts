@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../hearing.test.data';
 import { HearingPartiesTitleComponent } from './hearing-parties-title.component';
 
@@ -10,7 +11,7 @@ describe('HearingPartiesTitleComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingPartiesTitleComponent],
+      declarations: [HearingPartiesTitleComponent, MockRpxTranslatePipe],
       providers: [
         provideMockStore({ initialState })
       ]

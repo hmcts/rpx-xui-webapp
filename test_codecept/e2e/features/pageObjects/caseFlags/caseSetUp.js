@@ -16,7 +16,7 @@ class CaseFlagsCaseSetup{
     }
 
     async createCase(version, inputs) {
-        await browser.get(`${process.env.TEST_URL}cases/case-create/DIVORCE/xuiCaseFlagsV1/createCase/createCasetestDataSetup`)
+        await browser.get(`${process.env.TEST_URL}/cases/case-create/DIVORCE/xuiCaseFlagsV1/createCase/createCasetestDataSetup`)
         await browserWaits.waitForElement($('ccd-case-edit-page'))
         
         for(const field of inputs){

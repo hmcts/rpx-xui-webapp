@@ -46,17 +46,4 @@ describe('CCD Endpoints', () => {
     const response = await Request.get('data/internal/profile', headers, 200);
     expect(response.status).to.equal(200);
   });
-
-  function getSolicitorCreateUrl(caseType: string, event: string) {
-    return `data/internal/case-types/${caseType}/event-triggers/${event}?ignore-warning=false`;
-  }
-
-  async function getCasesForCaseType(jurisdiction: string, casetype: string) {
-    const xsrfToken = await getXSRFToken(userName, password);
-    const headers = {
-      'X-XSRF-TOKEN': xsrfToken
-    };
-    const casesResponse = await Request.get(`data/internal/searchCases?ctid=${casetype}&use_case=WORKBASKET&view=WORKBASKET&state=Any`, headers, 200);
-    return casesResponse;
-  }
 });

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { CaseFlagsComponent } from './case-flags.component';
 
 describe('CaseFlagsComponent', () => {
@@ -7,7 +8,7 @@ describe('CaseFlagsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [CaseFlagsComponent]
+      declarations: [CaseFlagsComponent, MockRpxTranslatePipe]
     })
       .compileComponents();
     fixture = TestBed.createComponent(CaseFlagsComponent);

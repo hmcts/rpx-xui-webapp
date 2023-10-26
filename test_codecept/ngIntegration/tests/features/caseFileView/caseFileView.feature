@@ -81,8 +81,8 @@ Feature: Case file view
         Then In case file view tab, I see documents media view
         Then In case file view tab, I see documents tree view header with text "Documents (17)"
 
-        When In case file view tab, I select file "Blank_Order_Directions_C21" under folder "Orders.Orders Submitted with Application"
-        Then In case file view tab, I see file "Blank_Order_Directions_C21" in media viewer
+        When In case file view tab, I select file "Blank_Order_Directions_C21" under folder "Orders.Orders Submitted with Application", I see file in media viewer
+        # Then In case file view tab, I see file "Blank_Order_Directions_C21" in media viewer
 
         When In case file view tab, I select file "Draft_C100_application" under folder "Orders.Orders Submitted with Application", I see file in media viewer
         # Then In case file view tab, I see file "Draft_C100_application" in media viewer

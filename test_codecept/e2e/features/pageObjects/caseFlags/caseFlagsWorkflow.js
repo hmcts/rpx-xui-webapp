@@ -7,7 +7,12 @@ const AddCommentsPage = require('./addCommentsPage')
 const ManageCaseFlagsPage = require('./manageCaseFlagsPage')
 const UpdateFlagPage = require('./updateFlagPage')
 const SearchLanguageInterpreterPage = require('./searchLanguageInterpreterPage')
-
+const SelectSupportLocationPage = require('./selectSupportLocationPage')
+const SelectSupportTypePage = require('./selectSupportTypePage')
+const ManageSupportRequestPage = require('./manageSupportRequestPage')
+const AddSupportCommentsPage = require('./addSupportCommentsPage')
+const ManageSupportCommentPage = require('./manageSupportCommentPage')
+const ConfirmFlagStatusPage = require('./confirmFlagStatusPage')
 class CaseFlagsWorkflow{
 
     constructor(){
@@ -17,7 +22,13 @@ class CaseFlagsWorkflow{
             "Select flag type" : new SelectFlagTypePage(),
             "Add comments for this flag" : new AddCommentsPage(),
             "Manage case flags" : new ManageCaseFlagsPage(),
-            "Language Interpreter": new SearchLanguageInterpreterPage()
+            "Language Interpreter": new SearchLanguageInterpreterPage(),
+            "Who is the support for?": new SelectSupportLocationPage(),
+            "Select support type": new SelectSupportTypePage(),
+            "Which support is no longer needed?" : new ManageSupportRequestPage(),
+            "Tell us more about the request": new AddSupportCommentsPage(),
+            "Tell us why the support is no longer needed": new ManageSupportCommentPage(),
+            "Confirm the status of the flag": new ConfirmFlagStatusPage()
 
         }
     }

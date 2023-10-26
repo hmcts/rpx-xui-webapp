@@ -61,6 +61,7 @@ Feature: Case file view
             | Blank_Order_Directions_C21.pdf | 
 
 
+@functional_debug
     Scenario: PDF Media file display
         Given I set MOCK with user details
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |
@@ -83,6 +84,6 @@ Feature: Case file view
         When In case file view tab, I select file "Blank_Order_Directions_C21" under folder "Orders.Orders Submitted with Application"
         Then In case file view tab, I see file "Blank_Order_Directions_C21" in media viewer
 
-        When In case file view tab, I select file "Draft_C100_application" under folder "Orders.Orders Submitted with Application"
-        Then In case file view tab, I see file "Draft_C100_application" in media viewer
+        When In case file view tab, I select file "Draft_C100_application" under folder "Orders.Orders Submitted with Application", I see file in media viewer
+        # Then In case file view tab, I see file "Draft_C100_application" in media viewer
         

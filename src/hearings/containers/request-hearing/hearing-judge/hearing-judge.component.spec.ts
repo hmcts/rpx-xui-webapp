@@ -125,16 +125,18 @@ describe('HearingJudgeComponent', () => {
 
   it('should check RadioButton selection', () => {
     const judgeInfo: JudicialUserModel = {
-      emailId: 'jacky.collins@judicial.com',
+      title: 'Mr',
+      knownAs: 'Hearing Judge',
+      surname: 'Jacky',
       fullName: 'Jacky Collins',
+      emailId: 'jacky.collins@judicial.com',
       idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+      initials: 'JC',
+      postNominals: 'JP',
+      personalCode: 'P100001',
       isJudge: '',
       isMagistrate: '',
-      isPanelMember: '',
-      knownAs: 'Hearing Judge',
-      personalCode: 'P100001',
-      surname: 'Jacky',
-      title: 'Mr'
+      isPanelMember: ''
     };
     component.showSpecificJudge(RadioOptions.YES);
     expect(component.specificJudgeSelection).toBe(RadioOptions.YES);
@@ -156,16 +158,18 @@ describe('HearingJudgeComponent', () => {
 
   it('should check prepareHearingRequestData', () => {
     const judgeInfo: JudicialUserModel = {
-      emailId: 'jacky.collins@judicial.com',
+      title: 'Mr',
+      knownAs: 'Hearing Judge',
+      surname: 'Jacky',
       fullName: 'Jacky Collins',
+      emailId: 'jacky.collins@judicial.com',
       idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+      initials: 'JC',
+      postNominals: 'JP',
+      personalCode: 'P100001',
       isJudge: '',
       isMagistrate: '',
-      isPanelMember: '',
-      knownAs: 'Hearing Judge',
-      personalCode: 'P100001',
-      surname: 'Jacky',
-      title: 'Mr'
+      isPanelMember: ''
     };
 
     component.hearingJudgeForm.controls.specificJudge.setValue(RadioOptions.YES);
@@ -205,28 +209,32 @@ describe('HearingJudgeComponent', () => {
     component.setFormData();
     expect(component.excludedJudgeList.length).toBe(0);
     const personalCodeJudgeList: JudicialUserModel[] = [{
-      emailId: 'jacky.collins@judicial.com',
+      title: 'Mr',
+      knownAs: 'Jacky Collins',
+      surname: 'Jacky Collins',
       fullName: 'Jacky Collins',
+      emailId: 'jacky.collins@judicial.com',
       idamId: '1102839232',
+      initials: 'JC',
+      postNominals: 'JP',
+      personalCode: 'P100001',
       isJudge: '',
       isMagistrate: '',
-      isPanelMember: '',
-      knownAs: 'Jacky Collins',
-      personalCode: 'P100001',
-      surname: 'Jacky Collins',
-      title: 'Mr'
+      isPanelMember: ''
     },
     {
-      emailId: 'jammie.williams@judicial.com',
+      title: 'Mr',
+      knownAs: 'Jammie Williams',
+      surname: 'Jammie Williams',
       fullName: 'Jammie Williams',
+      emailId: 'jammie.williams@judicial.com',
       idamId: '1102839233',
+      initials: 'JW',
+      postNominals: 'JP',
+      personalCode: 'P0000002',
       isJudge: '',
       isMagistrate: '',
-      isPanelMember: '',
-      knownAs: 'Jammie Williams',
-      personalCode: 'P0000002',
-      surname: 'Jammie Williams',
-      title: 'Mr'
+      isPanelMember: ''
     }];
     component.specificJudgeSelection = RadioOptions.YES;
     component.hearingJudgeFormInfo.includedJudges = ['P0000001'];

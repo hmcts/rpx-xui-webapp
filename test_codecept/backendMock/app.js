@@ -123,6 +123,7 @@ class MockApp {
         app.use('/refdata/commondata', prdCommondataroutes)
         app.use('/categoriesAndDocuments', caseCategoriesndDOcumentsRoutes)
         app.use('/cases/documents', evidenceManagementRoutes)
+        app.use('/documentsv2', evidenceManagementRoutes)
 
 
         // await this.stopServer();

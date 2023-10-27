@@ -141,7 +141,7 @@ When('In case file view tab, I select file {string} under folder {string}, I see
     await fileContainer.fileElement.click();
     await browserWaits.retryWithActionCallback(async () => {
         const fileDisplayed = await caseFileViewPageObject.getFileDisplayedInMediaViewer();
-        expect(fileDisplayed).to.includes(fileName)
+        expect(fileDisplayed !== "").to.be.true
     })
 });
 

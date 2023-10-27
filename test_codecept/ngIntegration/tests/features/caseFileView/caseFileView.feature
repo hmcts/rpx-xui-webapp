@@ -1,4 +1,4 @@
- @functional_enabled
+@functional_enabled 
 Feature: Case file view
 
 @preview_only
@@ -61,7 +61,7 @@ Feature: Case file view
             | Blank_Order_Directions_C21.pdf | 
 
 
-@functional_debug
+@functional_debug @functional_test
     Scenario: PDF Media file display
         Given I set MOCK with user details
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |

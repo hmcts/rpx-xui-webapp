@@ -102,6 +102,8 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
 
         await browser.get('http://localhost:3000/get-help');
+  
+
         let userDetails = null;
 
         await BrowserWaits.retryWithActionCallback(async () => {

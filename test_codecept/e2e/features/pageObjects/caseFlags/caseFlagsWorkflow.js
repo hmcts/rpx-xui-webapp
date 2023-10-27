@@ -13,6 +13,7 @@ const ManageSupportRequestPage = require('./manageSupportRequestPage')
 const AddSupportCommentsPage = require('./addSupportCommentsPage')
 const ManageSupportCommentPage = require('./manageSupportCommentPage')
 const ConfirmFlagStatusPage = require('./confirmFlagStatusPage')
+const UpdateFlagAddTranslationPage = require('./updateFlagAddTranslationPage')
 class CaseFlagsWorkflow{
 
     constructor(){
@@ -28,7 +29,8 @@ class CaseFlagsWorkflow{
             "Which support is no longer needed?" : new ManageSupportRequestPage(),
             "Tell us more about the request": new AddSupportCommentsPage(),
             "Tell us why the support is no longer needed": new ManageSupportCommentPage(),
-            "Confirm the status of the flag": new ConfirmFlagStatusPage()
+            "Confirm the status of the flag": new ConfirmFlagStatusPage(),
+            "Add translations to flag" : new UpdateFlagAddTranslationPage()
 
         }
     }

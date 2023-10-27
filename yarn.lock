@@ -2559,12 +2559,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.6-case-file-view-document-upload-date-v2":
-  version: 6.19.6-case-file-view-document-upload-date-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.6-case-file-view-document-upload-date-v2"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.6-case-file-view-feature-toggle-v1.1":
+  version: 6.19.6-case-file-view-feature-toggle-v1.1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.6-case-file-view-feature-toggle-v1.1"
   dependencies:
     tslib: ^2.0.0
-  checksum: 4c2bd7deb7a330d1a658911ffb3883b8499e5adb1ba32952413af44fa8ff0e0cdf812266d8cffcb11391800d897499ae1ccb54d937a9fee3252e84bea3ded762
+  checksum: 71c3d4c6acdee406be67dc13b929f6b1c74f9ce1cf2fe567fea89e0c8be9ad4cdbde16fe52cc09120a6106ed24dcf744ec5f513c84e809d5750e2c4afe0abde7
   languageName: node
   linkType: hard
 
@@ -19642,7 +19642,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.6-case-file-view-document-upload-date-v2
+    "@hmcts/ccd-case-ui-toolkit": 6.19.6-case-file-view-feature-toggle-v1.1
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.5

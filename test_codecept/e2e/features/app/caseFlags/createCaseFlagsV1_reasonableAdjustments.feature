@@ -1,5 +1,5 @@
 
-@fullfunctional @functional_enabled 
+@fullfunctional @functional_enabled @functional_test
 Feature: Case flags V1 Add/Update Reasonable adjustment
 
     Background: Setup case
@@ -137,4 +137,4 @@ Feature: Case flags V1 Add/Update Reasonable adjustment
         Then I validate case flags table for "Respondent" has 0 flags
         Then I validate case flags tab table data for "Applicant"
             | Party level flags        | Comments          | Creation date | Last modified | Flag status |
-            | Support filling in forms | Test auto comment | today         | today         | ACTIVE      |
+            | Support filling in forms | Test auto comment | today         | today         | INACTIVE      |

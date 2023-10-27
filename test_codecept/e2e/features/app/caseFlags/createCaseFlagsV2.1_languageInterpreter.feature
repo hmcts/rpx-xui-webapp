@@ -1,4 +1,4 @@
-@fullfunctional @functional_enabled
+@fullfunctional @functional_enabled @functional_test    
 Feature: Case flags V2.1 Add/Update Language interpreter
 
     Background: Setup case
@@ -88,6 +88,14 @@ Feature: Case flags V2.1 Add/Update Language interpreter
 
         Then I see case details page and I see case flags banner with message "There is 1 active flag on this case"
 
+        When I click tab with label "Case flags" in case details page, to see element with css selector "ccd-read-case-flag-field #read-case-flag-title"
+        Then I validate case flags table for "Applicant" has 1 flags
+        Then I validate case flags table for "Respondent" has 0 flags
+        Then I validate case flags tab table data for "Applicant"
+            | Party level flags              | Comments          | Creation date | Last modified | Flag status |
+            | Language Interpreter | Test auto comment | today         |          | ACTIVE    |
+
+
         When I start case next step "Manage case flags"
         Then I am on manage case flags page "Manage case flags"
         Then In create case flag page "Manage case flags", I validate fields displayed
@@ -104,12 +112,16 @@ Feature: Case flags V2.1 Add/Update Language interpreter
 
         Then In manage case flag page "Update flag \"Language Interpreter, Bengali\"", I validate fields displayed
             | field       |
-            | Flag status |
+            | Update flag "Language Interpreter, Bengali" comments |
+            | Update flag "Language Interpreter, Bengali" status |
+            | I need to add a translation |
 
         When In manage case flag page "Update flag \"Language Interpreter, Bengali\"", I input values
             | field                                                | value             |
             | Update flag "Language Interpreter, Bengali" comments | Test auto comment |
-            | Flag status                                          | inactive          |
+            | Update flag "Language Interpreter, Bengali" status | Inactive |
+            | Describe reason for status change |Test auto reason|
+
 
 
         When In manage case flag workflow, I click Next
@@ -120,8 +132,17 @@ Feature: Case flags V2.1 Add/Update Language interpreter
             | Update flag for | Applicant                      | true                  |
             | Flag type       | Language Interpreter - Bengali | true                  |
             | Comments        | Test auto comment              | true                  |
-            | Status          | Active                       | false                 |
+            | Status          | Inactive                       | true                 |
 
         When In manage case flag workflow, I click submit
 
-        Then I see case details page and I see case flags banner with message "There is 1 active flag on this case"
+        Then I see case details page and I dont see case flags banner
+
+
+        # Flags tab validation
+        When I click tab with label "Case flags" in case details page, to see element with css selector "ccd-read-case-flag-field #read-case-flag-title"
+        Then I validate case flags table for "Applicant" has 1 flags
+        Then I validate case flags table for "Respondent" has 0 flags
+        Then I validate case flags tab table data for "Applicant"
+            | Party level flags        | Comments          | Creation date | Last modified | Flag status |
+            | Language Interpreter | Test auto comment | today | today | INACTIVE |

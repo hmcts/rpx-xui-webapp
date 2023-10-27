@@ -23,6 +23,12 @@ class FlagTableFor {
         this.tableHeaders = element.all(by.xpath(`${this.tableLocator}//thead/tr/th`))
 
         this.tableRows = element.all(by.xpath(`${this.tableLocator}//tbody/tr`))
+
+        this.tableDataNone = element(by.xpath(`${this.tableLocator}//tbody/tr/td[contains(text(),'None')]`))
+    }
+
+    async isTableDataNone(){
+        return await this.tableDataNone.isDisplayed();
     }
 
     async getTableData(){

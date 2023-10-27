@@ -2559,12 +2559,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.9-case-flags-v2-1-manage-case-flags-missing-header":
-  version: 6.19.9-case-flags-v2-1-manage-case-flags-missing-header
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.9-case-flags-v2-1-manage-case-flags-missing-header"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.9-case-flags-exui-848-fix":
+  version: 6.19.9-case-flags-exui-848-fix
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.9-case-flags-exui-848-fix"
   dependencies:
     tslib: ^2.0.0
-  checksum: 1a5838076b74b6bd7c4af972f7dd5b80d1e3719032ce2f7196f35fc8c37ecc263d564af8edabb69ef744e230ecb7dfb9e46a72b113c5e0db657f19e924d19495
+  checksum: 1c69d8441ef6e6b5305fa485794dd414bda763c8787b39353c180aa23249a85d8e66d2ac8064fac98da6192d688cf94610fa75c77a8b10dac9c7c8f21c3c05ff
   languageName: node
   linkType: hard
 
@@ -19642,7 +19642,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.9-case-flags-v2-1-manage-case-flags-missing-header
+    "@hmcts/ccd-case-ui-toolkit": 6.19.9-case-flags-exui-848-fix
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.5

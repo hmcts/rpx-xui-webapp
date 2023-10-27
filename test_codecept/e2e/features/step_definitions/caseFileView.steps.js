@@ -138,10 +138,8 @@ Then('In case file view tab, I see file {string} in media viewer', async functio
 When('In case file view tab, I select file {string} under folder {string}, I see file in media viewer', async function (fileName, folderPath) {
     const folderContainer = await caseFileViewPageObject.getFolderContainer(folderPath);
     const fileContainer = await folderContainer.getChildFileContainer(fileName);
-   
+    await fileContainer.fileElement.click();
     await browserWaits.retryWithActionCallback(async () => {
-        await fileContainer.fileElement.click();
-        await browserWaits.waitForSeconds(1)
         const fileDisplayed = await caseFileViewPageObject.getFileDisplayedInMediaViewer();
         expect(fileDisplayed).to.includes(fileName)
     })

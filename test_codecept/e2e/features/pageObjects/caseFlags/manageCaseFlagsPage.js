@@ -6,6 +6,7 @@ class ManageCaseFlagsPage {
 
         this.fieldMapping = {
             'Manage case flags': element(by.xpath(`//ccd-manage-case-flags//h1[contains(text(),'Manage case flags')]`)),
+            'Manage case flags1': element(by.xpath(`//ccd-manage-case-flags//h1`)),
         }
     }
 

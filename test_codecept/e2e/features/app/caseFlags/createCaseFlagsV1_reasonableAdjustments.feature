@@ -1,5 +1,5 @@
 
-@fullfunctional @functional_enabled
+@fullfunctional @functional_enabled 
 Feature: Case flags V1 Add/Update Reasonable adjustment
 
     Background: Setup case
@@ -82,14 +82,24 @@ Feature: Case flags V1 Add/Update Reasonable adjustment
 
         Then I see case details page and I see case flags banner with message "There is 1 active flag on this case"
 
+
+        # Flags tab validation
+        When I click tab with label "Case flags" in case details page, to see element with css selector "ccd-read-case-flag-field #read-case-flag-title"
+        Then I validate case flags table for "Applicant" has 1 flags
+        Then I validate case flags table for "Respondent" has 0 flags
+        Then I validate case flags tab table data for "Applicant"
+            | Party level flags        | Comments          | Creation date | Last modified | Flag status |
+            | Support filling in forms | Test auto comment | today         |               | ACTIVE      |
+
+
         When I start case next step "Manage case flags"
         Then I am on manage case flags page "Manage case flags"
         Then In create case flag page "Manage case flags", I validate fields displayed
-            | field                      |
+            | field             |
             | Manage case flags |
 
         When In manage case flag page "Manage case flags", I input values
-            | field                      | value             |
+            | field            | value                                                        |
             | Manage case flag | Applicant -  Reasonable adjustment, Support filling in forms |
 
         When In manage case flag workflow, I click Next
@@ -97,25 +107,34 @@ Feature: Case flags V1 Add/Update Reasonable adjustment
         Then I am on manage case update flag page "Update flag \"Support filling in forms\""
 
         Then In manage case flag page "Update flag \"Support filling in forms\"", I validate fields displayed
-            | field             |
-            |Flag status|
+            | field       |
+            | Flag status |
 
         When In manage case flag page "Update flag \"Support filling in forms\"", I input values
-            | field                                                        | value             |
+            | field                                           | value             |
             | Update flag "Support filling in forms" comments | Test auto comment |
-            |Flag status|inactive|
+            | Flag status                                     | inactive          |
 
 
         When In manage case flag workflow, I click Next
 
         Then In manage case flag workflow, I am on Review details page
         Then In manage case flag workflow, I validate Review details displayed
-            | field       | value                    | isChangeLinkDisplayed |
+            | field           | value                    | isChangeLinkDisplayed |
             | Update flag for | Applicant                | true                  |
-            | Flag type   | Support filling in forms | true                  |
-            | Comments    | Test auto comment        | true                  |
-            | Status | Inactive | false |
+            | Flag type       | Support filling in forms | true                  |
+            | Comments        | Test auto comment        | true                  |
+            | Status          | Inactive                 | false                 |
 
         When In manage case flag workflow, I click submit
 
         Then I see case details page and I dont see case flags banner
+
+
+        # Flags tab validation
+        When I click tab with label "Case flags" in case details page, to see element with css selector "ccd-read-case-flag-field #read-case-flag-title"
+        Then I validate case flags table for "Applicant" has 1 flags
+        Then I validate case flags table for "Respondent" has 0 flags
+        Then I validate case flags tab table data for "Applicant"
+            | Party level flags        | Comments          | Creation date | Last modified | Flag status |
+            | Support filling in forms | Test auto comment | today         | today         | ACTIVE      |

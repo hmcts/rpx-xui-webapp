@@ -1,5 +1,5 @@
 
-@fullfunctional @functional_enabled 
+@fullfunctional @functional_enabled @functional_test
 Feature: Case flags V2.1 Add/Update Reasonable adjustment
 
     Background: Setup case
@@ -94,6 +94,16 @@ Feature: Case flags V2.1 Add/Update Reasonable adjustment
         When In create case flag workflow, I click submit
 
         Then I see case details page and I see case flags banner with message "There is 1 active flag on this case"
+
+# Case flags tab
+        When I click tab with label "Case flags" in case details page, to see element with css selector "ccd-read-case-flag-field #read-case-flag-title"
+        Then I validate case flags table for "Applicant" has 1 flags
+        Then I validate case flags table for "Respondent" has 0 flags
+        Then I validate case flags tab table data for "Applicant"
+            | Party level flags    | Comments          | Creation date | Last modified | Flag status |
+            | Support filling in forms | Test auto comment | today |  | ACTIVE |
+
+
 
         When I start case next step "Manage case flags"
         Then I am on manage case flags page "Manage case flags"
@@ -198,3 +208,13 @@ Feature: Case flags V2.1 Add/Update Reasonable adjustment
         When In manage case flag workflow, I click submit
 
         Then I see case details page and I see case flags banner with message "There is 1 active flag on this case"
+
+        # Case flags tab
+        When I click tab with label "Case flags" in case details page, to see element with css selector "ccd-read-case-flag-field #read-case-flag-title"
+        Then I validate case flags table for "Applicant" has 1 flags
+        Then I validate case flags table for "Respondent" has 0 flags
+        Then I validate case flags tab table data for "Applicant"
+            | Party level flags        | Comments          | Creation date | Last modified | Flag status |
+            | Support filling in forms | Test Flag comments | today | today | ACTIVE |
+
+

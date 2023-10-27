@@ -1,4 +1,5 @@
 const browser = require("../../../codeceptCommon/browser")
+const moment = require('moment')
 const browserWaits = require('../../support/customWaits')
 const reportLogger = require('../../../codeceptCommon/reportLogger')
 const workflow = require('../pageObjects/caseFlags/caseFlagsWorkflow')
@@ -220,8 +221,17 @@ Then('I am on manage case update flag page {string}', async function (page) {
 
 Then('I validate case flags table for {string} has {int} flags', async function(tableFor, flagsCount){
     const caseFlagsTablePage = caseFlagsTabPage.getFlagTableFor(tableFor)
-    const tableData = await caseFlagsTablePage.getTableData();
-    expect(tableData.length,`Flags count for ${tableFor} does not match expected`).to.equal(flagsCount)
+    if (flagsCount === 0){
+        const tableDataNone = await caseFlagsTablePage.isTableDataNone();
+        expect(tableDataNone, `Flags count for ${tableFor} does not match expected`).to.be.true
+    }else{
+        const tableData = await caseFlagsTablePage.getTableData();
+
+        reportLogger.AddMessage(`Case flags displayed for ${tableFor} : ${JSON.stringify(tableData, null, 2)}`)
+        expect(tableData.length, `Flags count for ${tableFor} does not match expected`).to.equal(flagsCount)
+
+    }
+   
 })
 
 Then('I validate case flags tab table data for {string}', async function(tableFor, datatable){
@@ -229,7 +239,11 @@ Then('I validate case flags tab table data for {string}', async function(tableFo
     const isCaseFlagPresent = (expectedCaseFlag, caseFlags) => {
         const expectedkeys = Object.keys(expectedCaseFlag)
         for(const actualFlag of caseFlags){
-            const matchingFields = expectedkeys.filter(key => actualFlag[key].includes(expectedCaseFlag[key]))
+            
+            const matchingFields = expectedkeys.filter(key => { 
+                reportLogger.AddMessage(`${expectedCaseFlag[key]} === ${actualFlag[key] }`)
+                return actualFlag[key].includes(expectedCaseFlag[key])
+            })
             if (matchingFields.length === expectedkeys.length){
                 return true;
             }
@@ -245,8 +259,8 @@ Then('I validate case flags tab table data for {string}', async function(tableFo
         if (expected['Creation date'] === 'today'){
             expected['Creation date'] = moment().format('DD MMM YYYY')
         }
-        if (expected['Last modified	'] === 'today') {
-            expected['Last modified	'] = moment().format('DD MMM YYYY')
+        if (expected['Last modified'] === 'today') {
+            expected['Last modified'] = moment().format('DD MMM YYYY')
         }
 
         expect(isCaseFlagPresent(expected, tableData),`Case flag not displayed ${JSON.stringify(expected, null,2)}`).to.be.true

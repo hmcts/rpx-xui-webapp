@@ -1,6 +1,4 @@
 
-@functional_test
-
 Feature: Case flags tab
 
     Background: Setup case

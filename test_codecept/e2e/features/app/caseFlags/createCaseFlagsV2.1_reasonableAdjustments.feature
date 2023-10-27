@@ -1,5 +1,5 @@
 
-@fullfunctional @functional_enabled @functional_test
+@fullfunctional @functional_enabled 
 Feature: Case flags V2.1 Add/Update Reasonable adjustment
 
     Background: Setup case
@@ -72,14 +72,14 @@ Feature: Case flags V2.1 Add/Update Reasonable adjustment
 
         Then I am on create case flags page "Confirm the status of the flag"
         Then In create case flag page "Confirm the status of the flag", I validate fields displayed
-            | field                      |
+            | field                          |
             | Confirm the status of the flag |
-            | Describe reason for status |
+            | Describe reason for status     |
 
         When In create case flag page "Confirm the status of the flag", I input values
-            | field                      | value             |
-            | Confirm the status of the flag | Active |
-            | Describe reason for status | test reason |
+            | field                          | value       |
+            | Confirm the status of the flag | Active      |
+            | Describe reason for status     | test reason |
 
         When In create case flag workflow, I click Next
 
@@ -89,7 +89,7 @@ Feature: Case flags V2.1 Add/Update Reasonable adjustment
             | Add flag to | Applicant                | true                  |
             | Flag type   | Support filling in forms | true                  |
             | Comments    | Test auto comment        | true                  |
-            | Status      | Active                   | true                 |
+            | Status      | Active                   | true                  |
 
         When In create case flag workflow, I click submit
 
@@ -98,11 +98,11 @@ Feature: Case flags V2.1 Add/Update Reasonable adjustment
         When I start case next step "Manage case flags"
         Then I am on manage case flags page "Manage case flags"
         Then In create case flag page "Manage case flags", I validate fields displayed
-            | field                      |
+            | field             |
             | Manage case flags |
 
         When In manage case flag page "Manage case flags", I input values
-            | field                      | value             |
+            | field            | value                                                        |
             | Manage case flag | Applicant -  Reasonable adjustment, Support filling in forms |
 
         When In manage case flag workflow, I click Next
@@ -110,25 +110,91 @@ Feature: Case flags V2.1 Add/Update Reasonable adjustment
         Then I am on manage case update flag page "Update flag \"Support filling in forms\""
 
         Then In manage case flag page "Update flag \"Support filling in forms\"", I validate fields displayed
-            | field             |
-            |Flag status|
+            | field       |
+            | Flag status |
 
         When In manage case flag page "Update flag \"Support filling in forms\"", I input values
-            | field                                                        | value             |
+            | field                                           | value             |
             | Update flag "Support filling in forms" comments | Test auto comment |
-            |Flag status|inactive|
+            | Update flag "Support filling in forms" status   | Active            |
+            | Describe reason for status change               | Test auto reason  |
 
 
         When In manage case flag workflow, I click Next
 
         Then In manage case flag workflow, I am on Review details page
         Then In manage case flag workflow, I validate Review details displayed
-            | field       | value                    | isChangeLinkDisplayed |
+            | field           | value                    | isChangeLinkDisplayed |
             | Update flag for | Applicant                | true                  |
-            | Flag type   | Support filling in forms | true                  |
-            | Comments    | Test auto comment        | true                  |
-            | Status | Inactive | false |
+            | Flag type       | Support filling in forms | true                  |
+            | Comments        | Test auto comment        | true                  |
+            | Status          | Active                   | true                  |
 
         When In manage case flag workflow, I click submit
 
-        Then I see case details page and I dont see case flags banner
+        Then I see case details page and I see case flags banner with message "There is 1 active flag on this case"
+
+
+        When I start case next step "Manage case flags"
+        Then I am on manage case flags page "Manage case flags"
+        Then In create case flag page "Manage case flags", I validate fields displayed
+            | field             |
+            | Manage case flags |
+
+        When In manage case flag page "Manage case flags", I input values
+            | field            | value                                                        |
+            | Manage case flag | Applicant -  Reasonable adjustment, Support filling in forms |
+
+        When In manage case flag workflow, I click Next
+
+        Then I am on manage case update flag page "Update flag \"Support filling in forms\""
+
+        Then In manage case flag page "Update flag \"Support filling in forms\"", I validate fields displayed
+            | field       |
+            | Flag status |
+
+        When In manage case flag page "Update flag \"Support filling in forms\"", I input values
+            | field                                           | value             |
+            | Update flag "Support filling in forms" comments | Test auto comment |
+            | Update flag "Support filling in forms" status   | Active            |
+            | Describe reason for status change               | Test auto reason  |
+            | I need to add a translation                     | true              |
+
+
+        When In manage case flag workflow, I click Next
+
+
+
+        Then I am on manage case flags page "Add translations to flag"
+
+        Then In manage case flag page "Add translations to flag", I validate fields displayed
+            | field                     |
+            | Other description         |
+            | Other description (Welsh) |
+            | Flag comments             |
+            | Flag comments (Welsh)     |
+
+        When In manage case flag page "Add translations to flag", I input values
+            | field                     | value                          |
+            | Other description         | Test Other description         |
+            | Other description (Welsh) | Test Other description (Welsh) |
+            | Flag comments             | Test Flag comments             |
+            | Flag comments (Welsh)     | Test Flag comments (Welsh)     |
+
+
+        When In manage case flag workflow, I click Next
+
+
+        Then In manage case flag workflow, I am on Review details page
+        Then In manage case flag workflow, I validate Review details displayed
+            | field                     | value                          | isChangeLinkDisplayed |
+            | Update flag for           | Applicant                      | true                  |
+            | Flag type                 | Support filling in forms       | true                  |
+            | Other description (Welsh) | Test Other description (Welsh) | true                  |
+            | Comments                  | Test Flag comments             | true                  |
+            | Comments (Welsh)          | Test Flag comments (Welsh)     | true                  |
+            | Status                    | Active                         | true                  |
+
+        When In manage case flag workflow, I click submit
+
+        Then I see case details page and I see case flags banner with message "There is 1 active flag on this case"

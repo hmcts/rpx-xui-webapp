@@ -5,6 +5,7 @@ const workflow = require('../pageObjects/caseFlags/caseFlagsWorkflow')
 const caseSetup = require('../pageObjects/caseFlags/caseSetUp')
 
 const reviewDetailsPage = require('../pageObjects/caseFlags/reviewDetailsPage')
+const caseFlagsTabPage = require('../pageObjects/caseFlags/caseFlagsTabPage')
 
 function getPageObject(page) {
     const pageObj = workflow.pages[page];
@@ -215,6 +216,44 @@ Then('I am on manage case update flag page {string}', async function (page) {
     const pageObj = getPageObject(page);
     await browserWaits.waitForElement(pageObj.container)
     expect(await pageObj.container.isDisplayed(), `${page} not displayed`).to.be.true
+})
+
+Then('I validate case flags table for {string} has {int} flags', async function(tableFor, flagsCount){
+    const caseFlagsTablePage = caseFlagsTabPage.getFlagTableFor(tableFor)
+    const tableData = await caseFlagsTablePage.getTableData();
+    expect(tableData.length,`Flags count for ${tableFor} does not match expected`).to.equal(flagsCount)
+})
+
+Then('I validate case flags tab table data for {string}', async function(tableFor, datatable){
+
+    const isCaseFlagPresent = (expectedCaseFlag, caseFlags) => {
+        const expectedkeys = Object.keys(expectedCaseFlag)
+        for(const actualFlag of caseFlags){
+            const matchingFields = expectedkeys.filter(key => actualFlag[key].includes(expectedCaseFlag[key]))
+            if (matchingFields.length === expectedkeys.length){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    const expectedTableData = datatable.parse().hashes();
+    const caseFlagsTablePage = caseFlagsTabPage.getFlagTableFor(tableFor)
+    const tableData = await caseFlagsTablePage.getTableData();
+    reportLogger.AddMessage(`Case flags displayed for ${tableFor} : ${JSON.stringify(tableData,null,2)}`)
+    for (const expected of expectedTableData){
+        if (expected['Creation date'] === 'today'){
+            expected['Creation date'] = moment().format('DD MMM YYYY')
+        }
+        if (expected['Last modified	'] === 'today') {
+            expected['Last modified	'] = moment().format('DD MMM YYYY')
+        }
+
+        expect(isCaseFlagPresent(expected, tableData),`Case flag not displayed ${JSON.stringify(expected, null,2)}`).to.be.true
+        
+    }
+    reportLogger.AddMessage(`Table data : ${JSON.stringify(tableData, null,2)}`)
+
 })
 
 

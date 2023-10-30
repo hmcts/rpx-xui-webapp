@@ -72,7 +72,7 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
     });
 
     Given('I set MOCK case details with reference {string}', async function(caseDetailsReference){
-      const caseDetails = ccdMockData.caseDetailsResponse;
+        const caseDetails = ccdMockData.getDetailsMockData();
          global.scenarioData[caseDetailsReference] = caseDetails;
 
         await serviceMock.updateCaseData(global.scenarioData[caseDetailsReference], 200)

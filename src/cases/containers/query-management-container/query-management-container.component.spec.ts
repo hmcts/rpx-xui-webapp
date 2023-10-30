@@ -289,7 +289,7 @@ describe('QueryManagementContainerComponent', () => {
     it('should navigate to raise a new query page after qualifying question is selected', () => {
       spyOn(component, 'validateForm');
       component.qualifyingQuestion = {
-        name: 'Raise another query relating to this case',
+        name: 'Raise a new query',
         markdown: '',
         url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}}`
       };
@@ -314,7 +314,7 @@ describe('QueryManagementContainerComponent', () => {
 
       describe('qualifyingQuestionsControl is valid', () => {
         const qualifyingQuestion = {
-          name: 'Raise another query relating to this case',
+          name: 'Raise a new query',
           markdown: '<p>Test markdown</p>',
           url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`
         };
@@ -337,7 +337,7 @@ describe('QueryManagementContainerComponent', () => {
 
       describe('qualifyingQuestionsControl is valid with empty markdown', () => {
         const qualifyingQuestion = {
-          name: 'Raise another query relating to this case',
+          name: 'Raise a new query',
           markdown: '',
           url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`
         };
@@ -417,7 +417,7 @@ describe('QueryManagementContainerComponent', () => {
   describe('validateQualifyingQuestion', () => {
     it('should return true with no error message', () => {
       const qualifyingQuestion = {
-        name: 'Raise another query relating to this case',
+        name: 'Raise a new query',
         markdown: '',
         url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`
       };

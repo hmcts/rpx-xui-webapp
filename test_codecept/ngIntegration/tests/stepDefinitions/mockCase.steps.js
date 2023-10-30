@@ -89,7 +89,7 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
 
     Given('I set MOCK case details {string} values', async function (caseDetailsReference, caseDetailsDatatable) {
         const caseDetails = global.scenarioData[caseDetailsReference];
-
+        await serviceMock.updateCaseData(caseDetails, 200)
     });
 
     Given('I set MOCK case details {string} property {string} as {string}', async function(caseDetailsRef, property, value){
@@ -212,6 +212,7 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
             "publish_as": null,
             "acls": null
         });
+        await serviceMock.updateCaseData(caseDetails, 200)
 
     });
 

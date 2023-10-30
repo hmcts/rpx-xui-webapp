@@ -1,5 +1,5 @@
 
-@ng
+@ng 
 Feature: Case access management: Approve specific access request
 
     Background:setup
@@ -31,6 +31,7 @@ Feature: Case access management: Approve specific access request
         Given I set MOCK with user details
             | roles | <roles>,task-supervisor,case-allocator |
             | roleCategory | LEGAL_OPERATIONS                        |
+        Given I start MockApp
 
         
         Given I set MOCK case tasks with userDetails from reference "userDetails"

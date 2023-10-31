@@ -59,6 +59,10 @@
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_ET",
         "caseTypes": "SERVICES_HEARINGS_CASETYPES_ET"
       },
+      "st_cic": {
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_ST_CIC",
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_ST_CIC"
+      },
       "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API"
     },
     "documents": {

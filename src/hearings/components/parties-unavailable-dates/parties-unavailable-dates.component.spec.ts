@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { PartiesUnavailableDatesComponent } from './parties-unavailable-dates.component';
 
 describe('PartiesUnavailableDatesComponent', () => {
@@ -8,7 +7,7 @@ describe('PartiesUnavailableDatesComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [PartiesUnavailableDatesComponent, MockRpxTranslatePipe]
+      declarations: [PartiesUnavailableDatesComponent]
     })
       .compileComponents();
     fixture = TestBed.createComponent(PartiesUnavailableDatesComponent);

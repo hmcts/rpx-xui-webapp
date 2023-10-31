@@ -6,7 +6,6 @@ import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
-import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { LovRefDataModel } from '../../../../hearings/models/lovRefData.model';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, HearingChannelEnum, RadioOptions } from '../../../models/hearings.enum';
@@ -66,7 +65,7 @@ describe('HearingAttendanceComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      declarations: [HearingAttendanceComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
+      declarations: [HearingAttendanceComponent, MockHearingPartiesComponent],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
@@ -229,7 +228,7 @@ describe('HearingAttendanceComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      declarations: [HearingAttendanceComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
+      declarations: [HearingAttendanceComponent, MockHearingPartiesComponent],
       providers: [
         provideMockStore({ initialState: updatedInitialState }),
         { provide: HearingsService, useValue: hearingsService },

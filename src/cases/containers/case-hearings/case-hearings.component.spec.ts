@@ -10,7 +10,6 @@ import * as moment from 'moment';
 import { Observable, of } from 'rxjs';
 import { UserRole } from '../../../app/models';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
-import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingDayScheduleModel } from '../../../hearings/models/hearingDaySchedule.model';
 import { HearingListModel } from '../../../hearings/models/hearingList.model';
@@ -404,7 +403,7 @@ describe('CaseHearingsComponent', () => {
     mockLovRefDataService = jasmine.createSpyObj('LovRefDataService', ['getListOfValues']);
     mockLovRefDataService.getListOfValues.and.returnValue(of(HEARING_TYPES_REF_DATA));
     TestBed.configureTestingModule({
-      declarations: [CaseHearingsComponent, MockRpxTranslatePipe],
+      declarations: [CaseHearingsComponent],
       imports: [
         HttpClientTestingModule,
         RouterTestingModule

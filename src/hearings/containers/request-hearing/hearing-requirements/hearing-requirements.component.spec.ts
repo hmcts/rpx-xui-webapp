@@ -4,8 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { LoggerService } from '../../../../app/services/logger/logger.service';
-import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import {
@@ -22,6 +20,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingRequirementsComponent } from './hearing-requirements.component';
+import { LoggerService } from '../../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -2201,7 +2200,7 @@ describe('HearingRequirementsComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingRequirementsComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
+      declarations: [HearingRequirementsComponent, MockHearingPartiesComponent],
       providers: [
         provideMockStore({ initialState: initialStateImmutable }),
         { provide: HearingsService, useValue: hearingsService },

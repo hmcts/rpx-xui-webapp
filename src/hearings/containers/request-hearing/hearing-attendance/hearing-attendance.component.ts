@@ -115,9 +115,9 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
 
   public getIndividualParties(): PartyDetailsModel[] {
     const individualParties: PartyDetailsModel[] = [];
-    const onPaperHearing = this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES;
+    const onPeperHearing = this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES;
     (this.attendanceFormGroup.controls.parties as FormArray).controls.forEach((control) => {
-      if (onPaperHearing) {
+      if (onPeperHearing) {
         control.value.individualDetails.preferredHearingChannel = 'NA';
       }
       const partyDetail: PartyDetailsModel = {

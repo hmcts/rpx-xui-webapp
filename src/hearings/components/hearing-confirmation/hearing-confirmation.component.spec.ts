@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { HearingConfirmationComponent } from './hearing-confirmation.component';
 
 describe('HearingConfirmationComponent', () => {
@@ -9,7 +8,7 @@ describe('HearingConfirmationComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [HearingConfirmationComponent, MockRpxTranslatePipe],
+      declarations: [HearingConfirmationComponent],
       imports: [RouterTestingModule]
     }).compileComponents();
 

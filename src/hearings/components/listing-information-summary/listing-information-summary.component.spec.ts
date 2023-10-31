@@ -3,10 +3,9 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockStore } from '@ngrx/store/testing';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
-import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { caseFlagsRefData, initialState } from '../../hearing.test.data';
 import { EXUIDisplayStatusEnum } from '../../models/hearings.enum';
 import { HearingsPipesModule } from '../../pipes/hearings.pipes.module';
@@ -18,7 +17,7 @@ describe('ListingInformationSummaryComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ListingInformationSummaryComponent, MockRpxTranslatePipe],
+      declarations: [ListingInformationSummaryComponent],
       imports: [RouterTestingModule, HearingsPipesModule, HttpClientTestingModule],
       providers: [
         LoadingService,

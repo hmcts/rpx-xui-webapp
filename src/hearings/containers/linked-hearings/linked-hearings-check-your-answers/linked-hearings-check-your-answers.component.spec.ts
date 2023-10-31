@@ -3,15 +3,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
-import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
 import {
   EXUIDisplayStatusEnum,
   EXUISectionStatusEnum,
-  GroupLinkType,
+  GroupLinkType, HearingListingStatusEnum,
   HMCStatus,
-  HearingListingStatusEnum,
   Mode
 } from '../../../models/hearings.enum';
 import {
@@ -131,7 +129,7 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CaseReferencePipe, LinkedHearingsCheckYourAnswersComponent, ConvertToValuePipe, MockRpxTranslatePipe],
+      declarations: [CaseReferencePipe, LinkedHearingsCheckYourAnswersComponent, ConvertToValuePipe],
       providers: [
         provideMockStore({ initialState }),
         { provide: ActivatedRoute, useValue: mockRoute },

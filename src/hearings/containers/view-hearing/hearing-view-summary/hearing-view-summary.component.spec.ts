@@ -1,6 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { HearingViewSummaryComponent } from './hearing-view-summary.component';
 
 describe('HearingViewSummaryComponent', () => {
@@ -9,7 +8,7 @@ describe('HearingViewSummaryComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingViewSummaryComponent, MockRpxTranslatePipe],
+      declarations: [HearingViewSummaryComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
 

@@ -1,4 +1,4 @@
-@fullfunctional @codecept_enabled @codecept_enabled 
+@fullfunctional @test @functional_enabled
 Feature: Test case type case list and find case workflow
 
   Background:
@@ -30,7 +30,7 @@ Feature: Test case type case list and find case workflow
     Scenario: Validate workbasket update on case type change
         When I click on Case list
         Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "Financial Remedy Consented" state "Any" in case list page and click apply
+        When I select search criteria jurisdiction "Family Divorce" case type "Contested Financial Remedy" state "Any" in case list page and click apply
         Then I wait to see case results displayed
         When I select search criteria jurisdiction "Family Divorce" case type "XUI Test Case type" state "Case created" in case list page and click apply
         Then I wait to see case results displayed
@@ -60,4 +60,15 @@ Feature: Test case type case list and find case workflow
         Then I see results returned
         When I open first case in search results
         Then I see case details page
+
+    Scenario: Search filters being retained
+        When I click on search button
+        Then Search page should be displayed
+        When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type dev"
+        When I click apply to perform case search
+        Then I see results returned
+        When I open first case in search results
+        Then I see case details page
+        When I click on search button
+        Then I verify search filters have jurisdiction "Family Divorce" and case type "XUI Test Case type dev"
 

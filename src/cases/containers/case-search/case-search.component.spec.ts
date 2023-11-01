@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
@@ -9,6 +9,13 @@ import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromCaseSearchStore from '../../store';
 import { CaseSearchComponent } from './case-search.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslationMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('CaseSearchComponent', () => {
   let fixture: ComponentFixture<CaseSearchComponent>;
@@ -35,7 +42,8 @@ describe('CaseSearchComponent', () => {
         CUSTOM_ELEMENTS_SCHEMA
       ],
       declarations: [
-        CaseSearchComponent
+        CaseSearchComponent,
+        RpxTranslationMockPipe
       ],
       providers: [
         { provide: AppConfig, useValue: appConfigMock },

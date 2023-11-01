@@ -31,7 +31,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "node_modules/@hmcts/media-viewer/assets",
+                "input": "node_modules/@hmcts/media-viewer/assets/",
+                "ignore": ["**/*.sass"],
                 "output": "/assets"
               },
               "src/favicon.ico",
@@ -51,7 +52,14 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": true
+              },
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,

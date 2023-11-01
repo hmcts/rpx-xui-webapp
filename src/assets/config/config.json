@@ -20,6 +20,10 @@
     "activity_batch_collection_delay_ms": 1,
     "activity_next_poll_request_ms": 30000,
     "activity_retry": 30,
+    "timeouts_case_retrieval": [
+      18, 17
+    ],
+    "timeouts_case_retrieval_artificial_delay": 0,
     "activity_url": "/activity",
     "activity_max_request_per_batch": 25,
     "print_service_url": "/print",

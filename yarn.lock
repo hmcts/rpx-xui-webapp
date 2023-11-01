@@ -7836,6 +7836,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"corepack@npm:^0.17.2":
+  version: 0.17.2
+  resolution: "corepack@npm:0.17.2"
+  bin:
+    corepack: ./dist/corepack.js
+    pnpm: ./dist/pnpm.js
+    pnpx: ./dist/pnpx.js
+    yarn: ./dist/yarn.js
+    yarnpkg: ./dist/yarnpkg.js
+  checksum: 488f16e1d8fae3e1766d8f7c498bc36a2d2aea06f230129e2b4810c3269a8c51c8828d5e0df80a6425ea35cf86c22db6d1bf8f6f041a0a85015bfd5d56c2b1fd
+  languageName: node
+  linkType: hard
+
 "cors@npm:~2.8.5":
   version: 2.8.5
   resolution: "cors@npm:2.8.5"
@@ -19701,6 +19714,7 @@ __metadata:
     config: ^3.2.5
     cookie-parser: ^1.4.4
     core-js: ^3.19.3
+    corepack: ^0.17.2
     crypto-js: ^3.1.9-1
     csurf: ^1.11.0
     cucumber: 5.1.0

@@ -119,6 +119,18 @@ const data = {
                 email: "xui_caseofficer@justice.gov.uk",
                 release: "general", userIdentifier: "STAFF_ADMIN",
                 key: "Welcome01"
+            },
+            {
+                idamId: "978dd13c-112a-4920-a7b9-8b8b83a0a243",
+                email: "xui_restricted_case_access_on@mailinator.com",
+                release: "restricted-case-access-on", userIdentifier: "RESTRICTED_CASE_ACCESS_ON",
+                key: "Welcome01"
+            },
+            {
+                idamId: "2dacadcc-1c6a-4251-87f8-8c0ef4d68ba7",
+                email: "xui_restricted_case_access_off@mailinator.com",
+                release: "restricted-case-access-off", userIdentifier: "RESTRICTED_CASE_ACCESS_OFF",
+                key: "Welcome01"
             }
 
 

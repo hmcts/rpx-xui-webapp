@@ -76,6 +76,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       this.initializeHearingRequestFromHearingValues();
     }
     this.caseTypes = CaseTypesUtils.getCaseCategoryDisplayModels(this.caseTypeRefData, this.serviceHearingValuesModel.caseCategories);
+
+    console.log('propertiesUpdatedOnPageVisit in child component', this.hearingsService.propertiesUpdatedOnPageVisit);
   }
 
   /**

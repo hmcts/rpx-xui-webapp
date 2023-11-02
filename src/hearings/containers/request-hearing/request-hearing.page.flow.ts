@@ -65,12 +65,8 @@ export abstract class RequestHearingPageFlow {
   }
 
   public unsubscribe(): void {
-    if (this.navigationSub) {
-      this.navigationSub.unsubscribe();
-    }
-    if (this.hearingStateSub) {
-      this.hearingStateSub.unsubscribe();
-    }
+    this.navigationSub?.unsubscribe();
+    this.hearingStateSub?.unsubscribe();
   }
 
   protected abstract executeAction(action: ACTION): void;

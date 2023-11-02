@@ -200,6 +200,7 @@
     "chai": "^4.2.0",
     "chai-as-promised": "7.1.1",
     "codeceptjs-cucumber-json-reporter": "^1.0.11",
+    "codeceptjs-cucumber-json-reporter": "^1.0.14",
     "codelyzer": "^5.1.2",
     "cucumber": "5.1.0",
     "cucumber-html-report": "0.6.5",

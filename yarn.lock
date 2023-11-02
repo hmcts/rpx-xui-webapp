@@ -7195,13 +7195,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codeceptjs-cucumber-json-reporter@npm:^1.0.11":
-  version: 1.0.12
-  resolution: "codeceptjs-cucumber-json-reporter@npm:1.0.12"
+"codeceptjs-cucumber-json-reporter@npm:^1.0.14":
+  version: 1.0.14
+  resolution: "codeceptjs-cucumber-json-reporter@npm:1.0.14"
   dependencies:
     btoa: ^1.2.1
     lodash: ^4.17.21
-  checksum: 989e840f6f9beebdda5a756e706ec8c32c00b39f6951cd5aecdeb879ff27850c264a9fed2d45fc9ab037a738602a6d95894d5027a24337f0cafcd3e9773a6bbd
+  checksum: cbce6e88fb8f14760f208b823af7c2c934da808a708cf41a922404e637feb5633e4d4ba72b0fd5f1b7853957e7ee658045561436278fe130d712613b4ededc80
   languageName: node
   linkType: hard
 

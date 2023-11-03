@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { Observable, Subscription, combineLatest } from 'rxjs';
@@ -9,7 +10,6 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HEARING_VIEW_EDIT_SUMMARY_TEMPLATE } from '../../../templates/hearing-view-edit-summary.template';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'exui-hearing-view-edit-summary',
@@ -26,13 +26,11 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
   private readonly notUpdatedMessage = 'The request has not been updated';
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService,
-              protected readonly route: ActivatedRoute) {
-    super(hearingStore, hearingsService, route);
+              protected readonly hearingsService: HearingsService) {
+    super(hearingStore, hearingsService);
   }
 
   public ngOnInit(): void {
-    console.log('SERVICE HEARING VALUES 1', this.serviceHearingValuesModel);
     this.caseId = this.hearingRequestMainModel.caseDetails?.caseRef;
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     this.setPropertiesUpdatedOnPageVisit();
@@ -68,14 +66,12 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
 
   private setPropertiesUpdatedOnPageVisit(): void {
     this.hearingValuesSubscription = this.hearingStore.select(fromHearingStore.getHearingValues).pipe(take(1)).subscribe((hearingValues) => {
-      console.log('SERVICE HEARING VALUES 2', this.serviceHearingValuesModel);
       const serviceHearingValues = hearingValues.serviceHearingValuesModel;
       this.hearingsService.propertiesUpdatedOnPageVisit = {
         caseFlags: serviceHearingValues.caseFlags,
         facilitiesRequired: serviceHearingValues.facilitiesRequired,
         parties: serviceHearingValues.parties
       };
-      console.log('propertiesUpdatedOnPageVisit', this.hearingsService.propertiesUpdatedOnPageVisit);
     });
   }
 }

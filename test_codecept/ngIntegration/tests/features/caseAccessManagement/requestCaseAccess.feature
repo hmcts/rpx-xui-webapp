@@ -49,7 +49,7 @@ Feature: Case access management - Request access
         When I click request access button in case basic view page
         Then I see case details challenged access request page
 
-@functional_debug
+
     Scenario: Case search results view validations Specific access
         Given I set MOCK case details with reference "caseDetailsSpecific"
         Given I set MOCK case details "caseDetailsSpecific" property "Jurisdiction" as "Civil"

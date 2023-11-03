@@ -5,6 +5,8 @@ const axios = require('axios')
 
 const session = require('./sampleSession.json')
 
+const roleAssignmentsService = require('../roleAssignments/index')
+
 class MockSessionService{
     constructor(mode){
         this.http = axios.create({
@@ -132,6 +134,8 @@ class MockSessionService{
 
         const sessionFile = await this.getSessionFileAuth(auth);
         let sessionJson = await fs.readFileSync(sessionFile);
+
+        roleAssignmentsService.serviceUsersRoleAssignments.push(...roleAssignments)
         sessionJson = JSON.parse(sessionJson)
         if (sessionJson.roleAssignmentResponse){
             sessionJson.roleAssignmentResponse.push(...roleAssignments)

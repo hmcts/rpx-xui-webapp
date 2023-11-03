@@ -22,7 +22,6 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   public hearingFactilitiesForm: FormGroup;
   public additionSecurityError: string;
   public validationErrors: { id: string, message: string }[] = [];
-  public caseAdditionalSecurityFlag: boolean;
   public additionalFacilities: LovRefDataModel[];
   public additionSecurityRequiredValid: boolean = true;
 
@@ -38,11 +37,6 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
       ? this.hearingsService.propertiesUpdatedOnPageVisit?.caseFlags?.flags
       : this.serviceHearingValuesModel?.caseFlags?.flags;
 
-    this.caseAdditionalSecurityFlag = this.hearingCondition.mode === Mode.VIEW &&
-      this.hearingsService.propertiesUpdatedOnPageVisit.hasOwnProperty('caseAdditionalSecurityFlag')
-      ? this.hearingsService.propertiesUpdatedOnPageVisit.caseAdditionalSecurityFlag
-      : this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag;
-
     if (caseFlags) {
       this.nonReasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(caseFlags, this.caseFlagsRefData, this.caseFlagType);
     }
@@ -54,7 +48,11 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
       'addition-securities': this.additionalFacilities ? this.getHearingFacilitiesFormArray : []
     });
 
-    this.hearingFactilitiesForm.controls['addition-security-required'].setValue(this.caseAdditionalSecurityFlag ? 'Yes' : 'No');
+    if (this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag) {
+      this.hearingFactilitiesForm.controls['addition-security-required'].setValue('Yes');
+    } else {
+      this.hearingFactilitiesForm.controls['addition-security-required'].setValue('No');
+    }
   }
 
   public ngAfterViewInit(): void {

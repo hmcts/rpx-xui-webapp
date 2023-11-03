@@ -25,8 +25,9 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   templateUrl: './hearing-requirements.component.html'
 })
 export class HearingRequirementsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
+  public readonly caseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
+
   public caseFlagsRefData: CaseFlagReferenceModel[];
-  public caseFlagType: CaseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
   public reasonableAdjustmentFlags: CaseFlagGroup[] = [];
   public lostFocus: boolean = false;
   public referenceId: string;
@@ -60,8 +61,14 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     super(hearingStore, hearingsService, route);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
     this.caseTypeRefData = this.route.snapshot.data.caseType;
-    if (this.serviceHearingValuesModel?.caseFlags?.flags) {
-      this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel.caseFlags.flags, this.caseFlagsRefData, this.caseFlagType);
+
+    // When viewing a hearing to edit, the latest data provided by the integrated service must be used
+    const caseFlags = this.hearingCondition.mode === Mode.VIEW && this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlgs')
+      ? this.hearingsService.propertiesUpdatedOnPageVisit?.caseFlags?.flags
+      : this.serviceHearingValuesModel?.caseFlags?.flags;
+
+    if (caseFlags) {
+      this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(caseFlags, this.caseFlagsRefData, this.caseFlagType);
     }
   }
 
@@ -162,7 +169,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   }
 
   public initializeHearingCondition(): void {
-    if (this.serviceHearingValuesModel && this.serviceHearingValuesModel.hearingLocations) {
+    if (this.serviceHearingValuesModel?.hearingLocations) {
       const strLocationIds = this.serviceHearingValuesModel.hearingLocations.map((location) => location.locationId).join(',');
       this.locationsDataService.getLocationById(strLocationIds).toPromise()
         .then((locations) => {
@@ -178,6 +185,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   }
 
   protected executeAction(action: ACTION): void {
+    // this.hearingRequestMainModel.requestDetails.
     super.navigateAction(action);
   }
 

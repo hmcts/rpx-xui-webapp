@@ -14,4 +14,5 @@ export interface PropertiesUpdatedOnPageVisit {
     flags: PartyFlagsModel[],
     flagAmendURL: string,
   };
+  facilitiesRequired: string[]
 }

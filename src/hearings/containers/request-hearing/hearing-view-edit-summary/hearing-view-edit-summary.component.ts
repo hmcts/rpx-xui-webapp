@@ -70,7 +70,8 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
     this.hearingValuesSubscription = this.hearingStore.select(fromHearingStore.getHearingValues).pipe(take(1)).subscribe((hearingValues) => {
       console.log('SERVICE HEARING VALUES 2', this.serviceHearingValuesModel);
       this.hearingsService.propertiesUpdatedOnPageVisit = {
-        caseFlags: hearingValues.serviceHearingValuesModel.caseFlags
+        caseFlags: hearingValues.serviceHearingValuesModel.caseFlags,
+        facilitiesRequired: hearingValues.serviceHearingValuesModel.facilitiesRequired
       };
       console.log('propertiesUpdatedOnPageVisit', this.hearingsService.propertiesUpdatedOnPageVisit);
     });

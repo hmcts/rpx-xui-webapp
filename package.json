@@ -44,7 +44,7 @@
     "test:coverage:merge": "./node_modules/.bin/lcov-result-merger './reports/tests/coverage/*/lcov.info' > ./reports/tests/coverage/lcov.info",
     "test:coverage:node": "cd api && yarn coverage",
     "test:coverage:ng": "ng test --code-coverage --source-map",
-    "test:a11y": "node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=a11y PARALLEL=false npx codeceptjs run --config ./test_codecept/codeceptCommon/codeceptA11y.conf.ts run",
+    "test:a11y": "node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=a11y PARALLEL=false npx codeceptjs run --config ./test_codecept/codeceptCommon/codeceptA11y.conf.ts",
     "test:a11y1": "echo disabled to fix tests",
     "test:a11y:needsfix": "yarn test:ngIntegrationMockEnv &&  webdriver-manager update --gecko=false --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/accessibility/config/pa11yProtractor.conf.js",
     "test:all": "yarn test:ng && yarn test:node && yarn test:smoke && yarn test:functional && yarn test:crossbrowser",
@@ -69,7 +69,7 @@
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
     "test:backendMock": "DEBUG=true nodemon test_codecept/backendMock/app --standalone",
     "test:codeceptE2EDebug": "TEST_TYPE=e2e npx codeceptjs run --plugins retryFailedStep --plugins cucumberJsonReporter --config ./test_codecept/codeceptCommon/codecept.conf.ts --features --grep @functional_test",
-    "test:codeceptE2E": "PARALLEL=true TEST_TYPE=e2e npx codeceptjs run-workers --suites 6 --plugins cucumberJsonReporter --plugins retryFailedStep --config ./test_codecept/codeceptCommon/codecept.conf.ts --features --grep @functional_enabled ",
+    "test:codeceptE2E": "PARALLEL=true TEST_TYPE=e2e npx codeceptjs run-workers --suites 6 --plugins cucumberJsonReporter --plugins retryFailedStep --config ./test_codecept/codeceptCommon/codecept.conf.ts --features --grep @functional_enabled",
     "test:xuiIntegrationDebug": "DEBUG=true NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration npx codeceptjs run -p pauseOnFail --config ./test_codecept/codeceptCommon/codecept.conf.ts --features --grep '(?=.*@functional_debug)^(?!.*@ignore)' ",
     "test:xuiIntegration": "yarn build && node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration PARALLEL=true npx codeceptjs run-workers --suites 6  --config ./test_codecept/codeceptCommon/codecept.conf.ts --features --grep '(?=.*@functional_enabled)^(?!.*@ignore)'  ",
     "parallel": "npm-run-all -l -p test:api test:xuiIntegration test:codeceptE2E"

@@ -69,9 +69,11 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
   private setPropertiesUpdatedOnPageVisit(): void {
     this.hearingValuesSubscription = this.hearingStore.select(fromHearingStore.getHearingValues).pipe(take(1)).subscribe((hearingValues) => {
       console.log('SERVICE HEARING VALUES 2', this.serviceHearingValuesModel);
+      const serviceHearingValues = hearingValues.serviceHearingValuesModel;
       this.hearingsService.propertiesUpdatedOnPageVisit = {
-        caseFlags: hearingValues.serviceHearingValuesModel.caseFlags,
-        facilitiesRequired: hearingValues.serviceHearingValuesModel.facilitiesRequired
+        caseFlags: serviceHearingValues.caseFlags,
+        facilitiesRequired: serviceHearingValues.facilitiesRequired,
+        parties: serviceHearingValues.parties
       };
       console.log('propertiesUpdatedOnPageVisit', this.hearingsService.propertiesUpdatedOnPageVisit);
     });

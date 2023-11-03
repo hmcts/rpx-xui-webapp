@@ -62,8 +62,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
     this.caseTypeRefData = this.route.snapshot.data.caseType;
 
-    // When viewing a hearing to edit, the latest data provided by the integrated service must be used
-    const caseFlags = this.hearingCondition.mode === Mode.VIEW && this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlgs')
+    const caseFlags = this.hearingCondition.mode === Mode.VIEW && this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags')
       ? this.hearingsService.propertiesUpdatedOnPageVisit?.caseFlags?.flags
       : this.serviceHearingValuesModel?.caseFlags?.flags;
 

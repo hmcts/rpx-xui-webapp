@@ -1,3 +1,4 @@
+import { PartyDetailsModel } from './partyDetails.model';
 import { PartyFlagsModel } from './partyFlags.model';
 
 export enum HearingUpdateMode {
@@ -14,5 +15,6 @@ export interface PropertiesUpdatedOnPageVisit {
     flags: PartyFlagsModel[],
     flagAmendURL: string,
   };
-  facilitiesRequired: string[]
+  facilitiesRequired: string[],
+  parties: PartyDetailsModel[]
 }

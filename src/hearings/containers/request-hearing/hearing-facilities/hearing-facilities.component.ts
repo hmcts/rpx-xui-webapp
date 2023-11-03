@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { CaseFlagGroup } from '../../../models/caseFlagGroup.model';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
-import { ACTION, CaseFlagType, HearingFacilitiesEnum } from '../../../models/hearings.enum';
+import { ACTION, CaseFlagType, HearingFacilitiesEnum, Mode } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -22,6 +22,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   public hearingFactilitiesForm: FormGroup;
   public additionSecurityError: string;
   public validationErrors: { id: string, message: string }[] = [];
+  public caseAdditionalSecurityFlag: boolean;
   public additionalFacilities: LovRefDataModel[];
   public additionSecurityRequiredValid: boolean = true;
 
@@ -32,8 +33,18 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     super(hearingStore, hearingsService, route);
     this.additionalFacilities = this.route.snapshot.data.additionFacilitiesOptions;
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
-    if (this.serviceHearingValuesModel?.caseFlags?.flags) {
-      this.nonReasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel.caseFlags.flags, this.caseFlagsRefData, this.caseFlagType);
+
+    const caseFlags = this.hearingCondition.mode === Mode.VIEW && this.hearingsService.propertiesUpdatedOnPageVisit.hasOwnProperty('caseFlags')
+      ? this.hearingsService.propertiesUpdatedOnPageVisit?.caseFlags?.flags
+      : this.serviceHearingValuesModel?.caseFlags?.flags;
+
+    this.caseAdditionalSecurityFlag = this.hearingCondition.mode === Mode.VIEW &&
+      this.hearingsService.propertiesUpdatedOnPageVisit.hasOwnProperty('caseAdditionalSecurityFlag')
+      ? this.hearingsService.propertiesUpdatedOnPageVisit.caseAdditionalSecurityFlag
+      : this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag;
+
+    if (caseFlags) {
+      this.nonReasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(caseFlags, this.caseFlagsRefData, this.caseFlagType);
     }
   }
 
@@ -43,11 +54,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
       'addition-securities': this.additionalFacilities ? this.getHearingFacilitiesFormArray : []
     });
 
-    if (this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag) {
-      this.hearingFactilitiesForm.controls['addition-security-required'].setValue('Yes');
-    } else {
-      this.hearingFactilitiesForm.controls['addition-security-required'].setValue('No');
-    }
+    this.hearingFactilitiesForm.controls['addition-security-required'].setValue(this.caseAdditionalSecurityFlag ? 'Yes' : 'No');
   }
 
   public ngAfterViewInit(): void {
@@ -55,9 +62,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   }
 
   public get getHearingFacilitiesFormArray(): FormArray {
-    if (this.hearingRequestMainModel.hearingDetails &&
-      this.hearingRequestMainModel.hearingDetails.facilitiesRequired &&
-      this.hearingRequestMainModel.hearingDetails.facilitiesRequired.length) {
+    if (this.hearingRequestMainModel.hearingDetails?.facilitiesRequired?.length) {
       const additionalFacilitiesValuated = this.additionalFacilities.filter((additionalFacility) =>
         this.hearingRequestMainModel.hearingDetails.facilitiesRequired.includes(additionalFacility.key));
       additionalFacilitiesValuated.forEach((facailyValuated) => facailyValuated.selected = true);

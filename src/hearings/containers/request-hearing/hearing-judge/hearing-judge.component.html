@@ -17,7 +17,7 @@
               <input class="govuk-radios__input" id="specificJudgeName" name="specificJudge"
                 (change)="showSpecificJudge('Yes');" formControlName="specificJudge" type="radio" value="Yes"
                 data-aria-controls="conditional-judge">
-              <label class="govuk-label govuk-radios__label" for="specificJudgeName">{{ 'Yes' | rpxTranslate }}</label>
+              <label class="govuk-label govuk-radios__label" for="specificJudgeName">{{ 'Do you want a specific judge?' | rpxTranslate : null : 'Yes' }}</label>
             </div>
             <div class="govuk-radios__conditional"
               [ngClass]="{'govuk-radios__conditional--hidden': specificJudgeSelection !=='Yes'}">
@@ -43,7 +43,7 @@
               <input class="govuk-radios__input" id="noSpecificJudge" name="specificJudge"
                 (change)="showSpecificJudge('No');" formControlName="specificJudge" type="radio" value="No"
                 data-aria-controls="conditional-judge-type">
-              <label class="govuk-label govuk-radios__label" for="noSpecificJudge">{{ 'No' | rpxTranslate }}</label>
+              <label class="govuk-label govuk-radios__label" for="noSpecificJudge">{{ 'Do you want a specific judge?' | rpxTranslate : null : 'No' }}</label>
             </div>
             <div class="govuk-radios__conditional"
               [ngClass]="{'govuk-radios__conditional--hidden': specificJudgeSelection !=='No'}">
@@ -75,11 +75,11 @@
         </fieldset>
       </div>
       <exui-hearing-judge-names-list #excludedJudge
-                                     [subTitle]="'Exclude a judge (optional)' | rpxTranslate"
+                                     [subTitle]="'Exclude a judge (optional)'"
                                      [judgeList]="excludedJudgeList"
                                      [serviceId]="serviceId"
                                      [placeholderContent]="'e.g. John Smith'"
-                                     [submitButtonName]="'Exclude judge' | rpxTranslate">
+                                     [submitButtonName]="'Exclude judge'">
       </exui-hearing-judge-names-list>
     </form>
   </div>

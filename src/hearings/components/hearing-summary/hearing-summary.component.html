@@ -15,7 +15,7 @@
 <div id="hearing-summary" *ngFor="let section of template">
   <div *ngIf="section.isHiddenSource === undefined ? true : !(section.isHiddenSource | isHidden:hearingState$ | async)">
     <div *ngIf="section.insetInfo" class="govuk-inset-text">
-      {{ section.insetInfo }}
+      {{ section.insetInfo | rpxTranslate }}
     </div>
     <div [ngSwitch]="section.sectionHTMLTitle">
       <ng-container *ngSwitchCase="listingTemplate">

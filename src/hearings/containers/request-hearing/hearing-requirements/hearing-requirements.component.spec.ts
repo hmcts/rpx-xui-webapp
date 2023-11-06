@@ -15,6 +15,7 @@ import {
   UnavailabilityType
 } from '../../../models/hearings.enum';
 import { LocationByEPIMMSModel } from '../../../models/location.model';
+import { PartyFlagsModel } from '../../../models/partyFlags.model';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
@@ -2166,6 +2167,33 @@ describe('HearingRequirementsComponent', () => {
     }
   ];
 
+  const caseFlagsFromLatestSHV: PartyFlagsModel[] = [
+    {
+      partyID: 'P1',
+      partyName: 'Jane Smith',
+      flagParentId: 'RA0008',
+      flagId: 'RA0042',
+      flagDescription: 'Sign language interpreter required',
+      flagStatus: 'ACTIVE'
+    },
+    {
+      partyID: 'P2',
+      partyName: 'Jane Smith vs DWP',
+      flagParentId: 'CF0001',
+      flagId: 'CF0006',
+      flagDescription: 'Potential fraud',
+      flagStatus: 'ACTIVE'
+    },
+    {
+      partyID: 'P3',
+      partyName: 'Jane Smith vs DWP',
+      flagParentId: 'CF0001',
+      flagId: 'CF0007',
+      flagDescription: 'Urgent flag',
+      flagStatus: 'ACTIVE'
+    }
+  ];
+
   const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
     epimms_id: '196538',
     site_name: 'Liverpool Social Security and Child Support Tribunal',
@@ -2253,6 +2281,32 @@ describe('HearingRequirementsComponent', () => {
     spyOn(component.hearingStateSub, 'unsubscribe');
     component.ngOnDestroy();
     expect(component.hearingStateSub.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should not consider the case flags from in-memory object for create new hearing request journey', () => {
+    component.hearingCondition = {
+      mode: 'create'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      facilitiesRequired: null,
+      parties: null
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentFlags.length).toEqual(2);
+  });
+
+  it('should set the case flags from in-memory object when viewing or editing existing hearing request', () => {
+    component.hearingCondition = {
+      mode: 'view'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      facilitiesRequired: null,
+      parties: null
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentFlags.length).toEqual(1);
   });
 
   it('should initialize hearing request from hearing values', () => {

@@ -32,17 +32,11 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     super(hearingStore, hearingsService, route);
     this.additionalFacilities = this.route.snapshot.data.additionFacilitiesOptions;
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
-
-    const caseFlags = this.hearingCondition.mode === Mode.VIEW && this.hearingsService.propertiesUpdatedOnPageVisit.hasOwnProperty('caseFlags')
-      ? this.hearingsService.propertiesUpdatedOnPageVisit?.caseFlags?.flags
-      : this.serviceHearingValuesModel?.caseFlags?.flags;
-
-    if (caseFlags) {
-      this.nonReasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(caseFlags, this.caseFlagsRefData, this.caseFlagType);
-    }
   }
 
   public ngOnInit(): void {
+    this.setNonReasonableAdjustmentFlags();
+
     this.hearingFactilitiesForm = this.fb.group({
       'addition-security-required': ['', Validators.required],
       'addition-securities': this.additionalFacilities ? this.getHearingFacilitiesFormArray : []
@@ -129,5 +123,15 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
 
   public ngOnDestroy(): void {
     super.unsubscribe();
+  }
+
+  private setNonReasonableAdjustmentFlags(): void {
+    const caseFlags = this.hearingCondition.mode === Mode.VIEW && this.hearingsService.propertiesUpdatedOnPageVisit.hasOwnProperty('caseFlags')
+      ? this.hearingsService.propertiesUpdatedOnPageVisit?.caseFlags?.flags
+      : this.serviceHearingValuesModel?.caseFlags?.flags;
+
+    if (caseFlags) {
+      this.nonReasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(caseFlags, this.caseFlagsRefData, this.caseFlagType);
+    }
   }
 }

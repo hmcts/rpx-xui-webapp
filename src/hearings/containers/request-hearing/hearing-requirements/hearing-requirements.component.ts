@@ -61,17 +61,10 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     super(hearingStore, hearingsService, route);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
     this.caseTypeRefData = this.route.snapshot.data.caseType;
-
-    const caseFlags = this.hearingCondition.mode === Mode.VIEW && this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags')
-      ? this.hearingsService.propertiesUpdatedOnPageVisit?.caseFlags?.flags
-      : this.serviceHearingValuesModel?.caseFlags?.flags;
-
-    if (caseFlags) {
-      this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(caseFlags, this.caseFlagsRefData, this.caseFlagType);
-    }
   }
 
   public ngOnInit(): void {
+    this.setReasonableAdjustmentFlags();
     if (this.hearingListMainModel) {
       this.referenceId = this.hearingListMainModel.caseRef;
     }
@@ -191,5 +184,15 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   public ngOnDestroy() {
     super.unsubscribe();
+  }
+
+  private setReasonableAdjustmentFlags(): void {
+    const caseFlags = this.hearingCondition.mode === Mode.VIEW && this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags')
+      ? this.hearingsService.propertiesUpdatedOnPageVisit?.caseFlags?.flags
+      : this.serviceHearingValuesModel?.caseFlags?.flags;
+
+    if (caseFlags) {
+      this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(caseFlags, this.caseFlagsRefData, this.caseFlagType);
+    }
   }
 }

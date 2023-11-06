@@ -8,7 +8,8 @@ import * as _ from 'lodash';
 import { of } from 'rxjs';
 import { LovRefDataModel } from '../../../../hearings/models/lovRefData.model';
 import { initialState } from '../../../hearing.test.data';
-import { ACTION, HearingChannelEnum, RadioOptions } from '../../../models/hearings.enum';
+import { ACTION, HearingChannelEnum, PartyType, RadioOptions, UnavailabilityType } from '../../../models/hearings.enum';
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
@@ -46,6 +47,81 @@ const refData: LovRefDataModel[] = [
   }
 ];
 
+const partyDetailsFromLatestSHV: PartyDetailsModel[] = [
+  {
+    partyID: 'P1',
+    partyName: 'Jane and Smiths',
+    partyType: PartyType.IND,
+    partyRole: 'appellant',
+    individualDetails: {
+      title: 'Miss',
+      firstName: 'Jane',
+      lastName: 'Smiths',
+      reasonableAdjustments: [
+        'RA0042',
+        'RA0053',
+        'RA0013',
+        'RA0016',
+        'RA0042',
+        'RA0009'
+      ],
+      interpreterLanguage: 'PF0015',
+      preferredHearingChannel: 'byVideo'
+    },
+    unavailabilityRanges: [
+      {
+        unavailableFromDate: '2021-12-10T09:00:00.000Z',
+        unavailableToDate: '2021-12-31T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY
+      }
+    ]
+  },
+  {
+    partyID: 'P2',
+    partyName: 'DWP Org',
+    partyType: PartyType.ORG,
+    partyRole: 'claimant',
+    organisationDetails: {
+      name: 'DWP Org',
+      organisationType: 'GOV',
+      cftOrganisationID: 'O100000'
+    },
+    unavailabilityDOW: null,
+    unavailabilityRanges: [
+      {
+        unavailableFromDate: '2021-12-20T09:00:00.000Z',
+        unavailableToDate: '2021-12-31T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY
+      }
+    ]
+  },
+  {
+    partyID: 'P3',
+    partyName: 'Mark and Boysons',
+    partyType: PartyType.IND,
+    partyRole: 'appellant',
+    individualDetails: {
+      title: 'Mr',
+      firstName: 'Mark',
+      lastName: 'Boysons',
+      reasonableAdjustments: [
+        'RA0042',
+        'RA0053',
+        'RA0013'
+      ],
+      interpreterLanguage: 'PF0015',
+      preferredHearingChannel: 'byVideo'
+    },
+    unavailabilityRanges: [
+      {
+        unavailableFromDate: '2021-12-10T09:00:00.000Z',
+        unavailableToDate: '2021-12-31T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY
+      }
+    ]
+  }
+];
+
 @Component({
   selector: 'exui-hearing-parties-title',
   template: ''
@@ -54,7 +130,7 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-fdescribe('HearingAttendanceComponent', () => {
+describe('HearingAttendanceComponent', () => {
   let component: HearingAttendanceComponent;
   let fixture: ComponentFixture<HearingAttendanceComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -207,16 +283,33 @@ fdescribe('HearingAttendanceComponent', () => {
     expect((component.attendanceFormGroup.controls.parties as FormArray).length).toBeGreaterThan(0);
   });
 
-  fit('should set the party details from in-memory object', () => {
+  it('should not consider the party details from in-memory object for create new hearing request journey', () => {
+    component.hearingCondition = {
+      mode: 'create'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: null,
+      facilitiesRequired: null,
+      parties: partyDetailsFromLatestSHV
+    };
+    component.ngOnInit();
+    expect(component.initialiseFromHearingValues).not.toHaveBeenCalled();
+    expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(2);
+  });
+
+  it('should set the party details from in-memory object when viewing or editing existing hearing request', () => {
+    component.attendanceFormGroup.controls.parties = new FormArray([]);
     component.hearingCondition = {
       mode: 'view'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: null,
       facilitiesRequired: null,
-      parties: null
+      parties: partyDetailsFromLatestSHV
     };
-    console.log('PARTIES', component.serviceHearingValuesModel.parties);
+    component.ngOnInit();
+    expect(component.initialiseFromHearingValues).toHaveBeenCalled();
+    expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(3);
   });
 
   afterEach(() => {
@@ -224,7 +317,7 @@ fdescribe('HearingAttendanceComponent', () => {
   });
 });
 
-fdescribe('HearingAttendanceComponent', () => {
+describe('HearingAttendanceComponent', () => {
   let component: HearingAttendanceComponent;
   let fixture: ComponentFixture<HearingAttendanceComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);

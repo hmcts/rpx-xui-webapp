@@ -1,3 +1,4 @@
+import { PUI_CASE_MANAGER } from 'src/app/app.constants';
 import { CaseRole, CaseRoleDetails, RoleCategory, RoleExclusion } from '../../role-access/models';
 import { FeatureVariation } from '../models/feature-variation.model';
 
@@ -61,7 +62,7 @@ export class Utils {
     if (featureVariation.jurisdiction === jurisdictionId && featureVariation.caseType === caseType) {
       if (userRoles) {
         return featureVariation.roles ? userRoles.some((userRole) =>
-          featureVariation.roles.some((role) => role === userRole)) : false;
+          featureVariation.roles.some((role) => role === userRole)) && !userRoles.includes(PUI_CASE_MANAGER) : false;
       }
     }
     return false;

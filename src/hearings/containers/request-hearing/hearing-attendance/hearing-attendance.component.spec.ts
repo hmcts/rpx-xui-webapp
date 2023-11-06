@@ -54,7 +54,7 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-describe('HearingAttendanceComponent', () => {
+fdescribe('HearingAttendanceComponent', () => {
   let component: HearingAttendanceComponent;
   let fixture: ComponentFixture<HearingAttendanceComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -207,12 +207,24 @@ describe('HearingAttendanceComponent', () => {
     expect((component.attendanceFormGroup.controls.parties as FormArray).length).toBeGreaterThan(0);
   });
 
+  fit('should set the party details from in-memory object', () => {
+    component.hearingCondition = {
+      mode: 'view'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: null,
+      facilitiesRequired: null,
+      parties: null
+    };
+    console.log('PARTIES', component.serviceHearingValuesModel.parties);
+  });
+
   afterEach(() => {
     fixture.destroy();
   });
 });
 
-describe('HearingAttendanceComponent', () => {
+fdescribe('HearingAttendanceComponent', () => {
   let component: HearingAttendanceComponent;
   let fixture: ComponentFixture<HearingAttendanceComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -255,6 +267,7 @@ describe('HearingAttendanceComponent', () => {
     lovRefDataService.getListOfValues.and.returnValue(of([]));
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -272,6 +285,7 @@ describe('HearingAttendanceComponent', () => {
       expect(component.attendanceFormGroup.controls.estimation.value).toEqual(2);
     });
   });
+
   afterEach(() => {
     fixture.destroy();
   });

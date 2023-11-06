@@ -29,7 +29,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   public caseFlagsRefData: CaseFlagReferenceModel[];
   public reasonableAdjustmentFlags: CaseFlagGroup[] = [];
-  public lostFocus: boolean = false;
+  public lostFocus = false;
   public referenceId: string;
   public strRegions: string;
   public caseTypeRefData: LovRefDataModel[];
@@ -82,8 +82,6 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       this.initializeHearingRequestFromHearingValues();
     }
     this.caseTypes = CaseTypesUtils.getCaseCategoryDisplayModels(this.caseTypeRefData, this.serviceHearingValuesModel.caseCategories);
-
-    console.log('propertiesUpdatedOnPageVisit in child component', this.hearingsService.propertiesUpdatedOnPageVisit);
   }
 
   /**
@@ -184,7 +182,6 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   }
 
   protected executeAction(action: ACTION): void {
-    // this.hearingRequestMainModel.requestDetails.
     super.navigateAction(action);
   }
 

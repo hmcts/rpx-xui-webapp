@@ -15,7 +15,7 @@
     "ccdActivityApi": "http://ccd-case-activity-api-prod.service.core-compute-prod.internal/health",
     "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",
     "documentsApi": "http://dm-store-prod.service.core-compute-prod.internal/health",
-    "documentsApiV2": "http://ccd-case-document-am-api-prod.service.core-compute-prod.internal/v2/health",
+    "documentsApiV2": "http://ccd-case-document-am-api-prod.service.core-compute-prod.internal/health",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal/health",
     "em_docassembly_api": "http://dg-docassembly-prod.service.core-compute-prod.internal/health",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health",

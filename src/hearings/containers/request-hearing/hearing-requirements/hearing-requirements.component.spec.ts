@@ -4,11 +4,11 @@ import { ActivatedRoute } from '@angular/router';
 import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { LoggerService } from '../../../../app/services/logger/logger.service';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import {
   ACTION,
-  CaseFlagType,
   CategoryType, EXUIDisplayStatusEnum, EXUISectionStatusEnum, GroupLinkType, HearingListingStatusEnum, HearingResult,
   HMCLocationType, HMCStatus, LaCaseStatus, ListingStatus, MemberType,
   PartyType, RequirementType,
@@ -20,7 +20,6 @@ import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingRequirementsComponent } from './hearing-requirements.component';
-import { LoggerService } from '../../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -2224,7 +2223,6 @@ describe('HearingRequirementsComponent', () => {
       .compileComponents();
     fixture = TestBed.createComponent(HearingRequirementsComponent);
     component = fixture.componentInstance;
-    component.caseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
     spyOn(locationsDataService, 'getLocationById').and.returnValue(of(FOUND_LOCATIONS));
     fixture.detectChanges();
   });

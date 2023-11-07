@@ -20,7 +20,10 @@ router.post('/users', (req, res) => {
     // throw new Error('judicial ref data  /refdata/judicial/users/search not implemented')
     // res.send(locations)
     console.log('')
-    userApiData.sendResponse(req, res, service.methods.OnFindperson, () => service.findPerson(req.body))
+    const persons = service.persons.filter((person) => {
+        return req.body.sidam_ids.includes(person.sidam_id)
+    })
+    userApiData.sendResponse(req, res, service.methods.OnFindperson, () => persons)
 
 });
 

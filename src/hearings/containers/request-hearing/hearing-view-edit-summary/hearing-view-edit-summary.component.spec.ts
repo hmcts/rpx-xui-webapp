@@ -1,13 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingViewEditSummaryComponent } from './hearing-view-edit-summary.component';
-import { initialState } from '@hmcts/media-viewer';
 
 describe('HearingViewEditSummaryComponent', () => {
   let component: HearingViewEditSummaryComponent;
@@ -47,17 +46,10 @@ describe('HearingViewEditSummaryComponent', () => {
   });
 
   describe('getHearingRequestToCompare and getHearingRequest state are same', () => {
-    const hearingRequestToCompare = initialState.hearings.hearingRequest;
-    initialState.hearings = {
-      ...initialState.hearings,
-      hearingRequest: null,
-      hearingRequestToCompare: null
-    };
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [HearingViewEditSummaryComponent],
         providers: [
-          // provideMockStore({ initialState }),
           provideMockStore({ initialState: { hearings: {} } }),
           { provide: HearingsService, useValue: hearingsService }
         ],
@@ -69,9 +61,7 @@ describe('HearingViewEditSummaryComponent', () => {
       fixture.detectChanges();
     });
 
-    fit('should have a validation errors mapped when nothing has changed summary page', () => {
-      console.log('HEARING REQUEST MODEL', JSON.stringify(component.hearingRequestMainModel));
-      component.hearingRequestMainModel.caseDetails.caseRef = '1234123412341234';
+    it('should have a validation errors mapped when nothing has changed summary page', () => {
       component.ngOnInit();
       component.executeAction(ACTION.VIEW_EDIT_REASON);
       expect(component.validationErrors.length).toEqual(1);

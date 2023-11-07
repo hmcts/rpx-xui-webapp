@@ -2289,7 +2289,6 @@ describe('HearingRequirementsComponent', () => {
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
-      facilitiesRequired: null,
       parties: null
     };
     component.ngOnInit();
@@ -2298,11 +2297,10 @@ describe('HearingRequirementsComponent', () => {
 
   it('should set the case flags from in-memory object when viewing or editing existing hearing request', () => {
     component.hearingCondition = {
-      mode: 'view'
+      mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
-      facilitiesRequired: null,
       parties: null
     };
     component.ngOnInit();

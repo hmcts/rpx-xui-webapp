@@ -61,7 +61,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public ngOnInit(): void {
-    if (!this.hearingRequestMainModel.partyDetails.length || (this.hearingCondition.mode === Mode.VIEW &&
+    if (!this.hearingRequestMainModel.partyDetails.length || (this.hearingCondition.mode === Mode.VIEW_EDIT &&
       this.hearingsService.propertiesUpdatedOnPageVisit.hasOwnProperty('parties'))) {
       this.initialiseFromHearingValues();
     } else {
@@ -85,7 +85,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public initialiseFromHearingValues() {
-    const parties = this.hearingCondition.mode === Mode.VIEW &&
+    const parties = this.hearingCondition.mode === Mode.VIEW_EDIT &&
       this.hearingsService.propertiesUpdatedOnPageVisit.hasOwnProperty('parties')
       ? this.hearingsService.propertiesUpdatedOnPageVisit.parties
       : this.serviceHearingValuesModel.parties;
@@ -93,7 +93,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     parties.forEach((partyDetailsModel: PartyDetailsModel) => {
       (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyDetailsModel) as FormGroup);
     });
-    this.attendanceFormGroup.controls.estimation.setValue(this.serviceHearingValuesModel.numberOfPhysicalAttendees);
+    this.attendanceFormGroup.controls.estimation.setValue(this.serviceHearingValuesModel.numberOfPhysicalAttendees || 0);
   }
 
   public executeAction(action: ACTION): void {

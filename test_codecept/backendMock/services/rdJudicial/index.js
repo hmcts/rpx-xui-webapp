@@ -11,9 +11,11 @@ class RDJudicialService{
       }
 
       this.persons = []
+      let sidamId = 123456781234
       for(let i = 0 ; i< 10;i++){
+        sidamId += 1
         const personTemplate = this.getPersonTemplate();
-        personTemplate.sidam_id = v4();
+        personTemplate.sidam_id = sidamId.toString()
         
           personTemplate.full_name = `auto test ${i} judge ${i}`
         personTemplate.fullName = personTemplate.full_name

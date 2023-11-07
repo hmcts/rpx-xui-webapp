@@ -7,8 +7,27 @@ class RoleAssignments{
     constructor(){
        this.serviceUsersRoleAssignments = []
 
+       this.sessiononRolesAssignments = [];
 
     }   
+
+    addRoleAssigmemntsToSession(auth, roleAssignments){
+        const sessionObj = this.sessiononRolesAssignments.find((forSession) => forSession.auth === auth)
+        if (!sessionObj){
+            this.sessiononRolesAssignments.push({
+                auth: auth,
+                roleAssignments: roleAssignments
+            })
+        }else{
+            sessionObj.roleAssignments.push(...roleAssignments)
+        }
+    }
+
+    getRolesAssignmentsForSession(auth){
+        const sessionObj = this.sessiononRolesAssignments.find((forSession) => forSession.auth === auth)
+        return sessionObj ? sessionObj.roleAssignments : [];
+    }
+
 
 
     getActorRoles(actorID){
@@ -31,11 +50,57 @@ class RoleAssignments{
         return { roleAssignmentResponse: roles }
     }
 
-    getServiceUsersRolesAssignments(reqBody){
-        return this.serviceUsersRoleAssignments.filter(roleAssignment => {
-            return reqBody.attributes.jurisdiction.includes(roleAssignment.attributes.jurisdiction)
-        })
+    getServiceUsersRolesAssignments(auth){
+        return this.getRolesAssignmentsForSession(auth);
     }
+
+
+    getRequestedRoleAssignments(auth,reqBody) {
+        const consolidatedRoleAssignments = [...this.serviceUsersRoleAssignments ,...this.getRolesAssignmentsForSession(auth)]
+        const filteredRolesAssignments = consolidatedRoleAssignments.filter(roleAssignment => {
+            const keys = Object.keys(reqBody)
+            for (const key of keys) {
+                if (key === 'attributes') {
+                    if (!this.doRoleAssigmentAttributesMatch(roleAssignment, reqBody.attributes)) {
+
+                        return false;
+                    }
+                } else if (key === 'roleName' || key === 'roleType' || key === 'roleCategory' || key === 'grantType') {
+                    if (!reqBody[key].includes(roleAssignment[key])) {
+                        return false;
+                    }
+                }  else {
+                    throw new Error(`role assigment req ${key} not configured for filter in MOCK`)
+                }
+            }
+            return true;
+        })
+
+        return filteredRolesAssignments;
+    }
+
+    doRoleAssigmentAttributesMatch(roleAssignment, attributes) {
+        const roleAssignmentAttribs = roleAssignment.attributes
+        const attribKeys = Object.keys(attributes)
+
+
+
+        for (const key of attribKeys) {
+            if (roleAssignmentAttribs === undefined || !roleAssignmentAttribs[key] || !attributes[key].includes(roleAssignmentAttribs[key])) {
+                // console.log(`${key} : attribute no matched ${roleAssignmentAttribs[key]}`)
+                return false;
+            }
+        }
+        return true;
+    }
+
+    pushNewRoleAssignmentRequests(auth, roleRequests) {
+        console.log(roleRequests)
+
+        this.getRolesAssignmentsForSession(auth).push(...roleRequests.requestedRoles)
+        return roleRequests.requestedRoles;
+    }
+
 
     getQueryResults(queryRequests){
         const roleAssignments = []

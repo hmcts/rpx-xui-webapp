@@ -34,3 +34,7 @@ const { getTestJurisdiction } = require('../../mockData/ccdCaseMock');
         
     });
 
+
+    When('I navigate to url {string}', async function(url){
+        await browser.get(url)
+    })

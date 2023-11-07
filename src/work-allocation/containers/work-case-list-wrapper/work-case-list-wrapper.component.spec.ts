@@ -165,7 +165,7 @@ describe('WorkCaseListWrapperComponent', () => {
         jr.next(['Public Law', 'Immigration', 'Public Law']);
       });
 
-      component.waSupportedJurisdictions$.subscribe(rst => {
+      component.waSupportedJurisdictions$.subscribe((rst) => {
         jurisdictionValue = [...new Set(rst)];
       });
 

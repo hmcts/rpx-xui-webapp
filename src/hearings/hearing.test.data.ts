@@ -2311,7 +2311,7 @@ export const initialState = {
         },
         caseDetails: {
           hmctsServiceCode: null,
-          caseRef: null,
+          caseRef: '1234123412341234',
           requestTimeStamp: null,
           hearingID: null,
           externalCaseReference: null,
@@ -2495,7 +2495,7 @@ export const initialState = {
         },
         caseDetails: {
           hmctsServiceCode: null,
-          caseRef: null,
+          caseRef: '1234123412341234',
           requestTimeStamp: null,
           hearingID: null,
           externalCaseReference: null,
@@ -2993,7 +2993,7 @@ export const initialStateImmutable = {
         },
         caseDetails: {
           hmctsServiceCode: null,
-          caseRef: null,
+          caseRef: '1234123412341234',
           requestTimeStamp: null,
           hearingID: null,
           externalCaseReference: null,
@@ -3177,7 +3177,7 @@ export const initialStateImmutable = {
         },
         caseDetails: {
           hmctsServiceCode: null,
-          caseRef: null,
+          caseRef: '1234123412341234',
           requestTimeStamp: null,
           hearingID: null,
           externalCaseReference: null,

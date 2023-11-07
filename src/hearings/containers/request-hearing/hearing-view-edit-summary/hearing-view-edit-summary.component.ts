@@ -63,7 +63,7 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
     this.hearingValuesSubscription?.unsubscribe();
   }
 
-  private setPropertiesUpdatedOnPageVisit(): void {
+  public setPropertiesUpdatedOnPageVisit(): void {
     this.hearingValuesSubscription = this.hearingStore.select(fromHearingStore.getHearingValues).pipe(take(1)).subscribe((hearingValues) => {
       const serviceHearingValues = hearingValues?.serviceHearingValuesModel;
       if (serviceHearingValues) {

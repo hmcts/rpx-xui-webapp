@@ -69,7 +69,6 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
       if (serviceHearingValues) {
         this.hearingsService.propertiesUpdatedOnPageVisit = {
           caseFlags: serviceHearingValues.caseFlags,
-          facilitiesRequired: serviceHearingValues.facilitiesRequired,
           parties: serviceHearingValues.parties
         };
       }

@@ -111,6 +111,9 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
             const field = getCaseDetailsMetadataField(caseDetails, '[JURISDICTION]');
             field.value = value;
         }
+        else if (property.toLowerCase().includes('case_id')) {
+            caseDetails.case_id = value;
+        }
         else {
             throw Error(` metada field ${property} is not recognised or not implemented in test`);
         }

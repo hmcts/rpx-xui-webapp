@@ -2,6 +2,8 @@
 const path = require('path')
 const fs = require('fs')
 
+const roleAssignmentsService = require('./roleAssignments/index')
+
 class UserApiData{
     constructor() {
         this.sessionUsers = [];
@@ -23,6 +25,10 @@ class UserApiData{
     
     setUserData(token, apiMethod, response) {
         // apiMethod = apiMethod.toUpperCase();
+        if (apiMethod === 'AddMockRoleAssignments'){
+            roleAssignmentsService.addRoleAssigmemntsToSession(token,response.data)
+            return;
+        }
         let userSession = this.sessionUsers.find(sess => sess.token === token)
         if (!userSession) {
             userSession = {

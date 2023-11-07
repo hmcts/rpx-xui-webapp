@@ -289,7 +289,6 @@ describe('HearingAttendanceComponent', () => {
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: null,
-      facilitiesRequired: null,
       parties: partyDetailsFromLatestSHV
     };
     component.ngOnInit();
@@ -300,11 +299,10 @@ describe('HearingAttendanceComponent', () => {
   it('should set the party details from in-memory object when viewing or editing existing hearing request', () => {
     component.attendanceFormGroup.controls.parties = new FormArray([]);
     component.hearingCondition = {
-      mode: 'view'
+      mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: null,
-      facilitiesRequired: null,
       parties: partyDetailsFromLatestSHV
     };
     component.ngOnInit();

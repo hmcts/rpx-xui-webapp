@@ -58,7 +58,6 @@ describe('HearingViewEditSummaryComponent', () => {
       component.setPropertiesUpdatedOnPageVisit();
       const expectedResult = {
         caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
-        facilitiesRequired: initialState.hearings.hearingValues.serviceHearingValuesModel.facilitiesRequired,
         parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties
       };
       expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);

@@ -1,9 +1,9 @@
 @functional_enabled 
 Feature: Case file view
 
-@preview_only
-    Scenario: Display of case file view
-        Given I set MOCK with user details
+
+    Scenario: Display of case file view V1.1
+        Given I set MOCK with user details with user identifier "RESTRICTED_CASE_FILE_VIEW_V1.1_ON"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                                            |
 
@@ -36,9 +36,8 @@ Feature: Case file view
             | file | uploadDate |
             | Blank_Order_Directions_C21.pdf | 20 Oct 2023 |
 
-@AAT_only
-    Scenario: Display of case file view
-        Given I set MOCK with user details
+    Scenario: Display of case file view V1
+        Given I set MOCK with user details with user identifier "RESTRICTED_CASE_FILE_VIEW_V1.1_OFF"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                                            |
 
@@ -61,9 +60,9 @@ Feature: Case file view
             | Blank_Order_Directions_C21.pdf | 
 
 
-@functional_debug @functional_test
+@functional_debug
     Scenario: PDF Media file display
-        Given I set MOCK with user details
+        Given I set MOCK with user details with user identifier "RESTRICTED_CASE_FILE_VIEW_V1.1_ON"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                                            |
 

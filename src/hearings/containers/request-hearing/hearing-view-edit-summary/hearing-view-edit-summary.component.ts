@@ -31,6 +31,7 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
   }
 
   public ngOnInit(): void {
+    console.log('CASE DETAILS', this.hearingRequestMainModel);
     this.caseId = this.hearingRequestMainModel.caseDetails?.caseRef;
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     this.setPropertiesUpdatedOnPageVisit();
@@ -48,6 +49,8 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
       this.initialAndCurrentStates$ = this.getInitialAndCurrentState();
       this.initialAndCurrentStatesSubscription = this.initialAndCurrentStates$.pipe(take(1)).subscribe((state) => {
         const stateChanged = !_.isEqual(state[0], state[1]);
+        console.log('STATE 0', JSON.stringify(state[0]));
+        console.log('STATE 1', JSON.stringify(state[1]));
         console.log('STATE CHANGED', stateChanged);
         if (stateChanged) {
           super.navigateAction(action);

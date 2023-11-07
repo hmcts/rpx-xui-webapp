@@ -7,6 +7,7 @@ import { initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingViewEditSummaryComponent } from './hearing-view-edit-summary.component';
+import { initialState } from '@hmcts/media-viewer';
 
 describe('HearingViewEditSummaryComponent', () => {
   let component: HearingViewEditSummaryComponent;
@@ -45,26 +46,19 @@ describe('HearingViewEditSummaryComponent', () => {
     });
   });
 
-  xdescribe('getHearingRequestToCompare and getHearingRequest state are same', () => {
+  describe('getHearingRequestToCompare and getHearingRequest state are same', () => {
+    const hearingRequestToCompare = initialState.hearings.hearingRequest;
+    initialState.hearings = {
+      ...initialState.hearings,
+      hearingRequest: null,
+      hearingRequestToCompare: null
+    };
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [HearingViewEditSummaryComponent],
         providers: [
+          // provideMockStore({ initialState }),
           provideMockStore({ initialState: { hearings: {} } }),
-          // provideMockStore({ initialState: {
-          //   hearings: {
-          //     hearingRequest: {
-          //       hearingRequestMainModel: {
-          //         caseDetails: {}
-          //       }
-          //     },
-          //     hearingRequestToCompare: {
-          //       hearingRequestMainModel: {
-          //         caseDetails: {}
-          //       }
-          //     }
-          //   }
-          // } }),
           { provide: HearingsService, useValue: hearingsService }
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -75,8 +69,10 @@ describe('HearingViewEditSummaryComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should have a validation errors mapped when nothing has changed summary page', () => {
-      component.hearingRequestMainModel = initialState.hearings.hearingRequest.hearingRequestMainModel;
+    fit('should have a validation errors mapped when nothing has changed summary page', () => {
+      console.log('HEARING REQUEST MODEL', JSON.stringify(component.hearingRequestMainModel));
+      component.hearingRequestMainModel.caseDetails.caseRef = '1234123412341234';
+      component.ngOnInit();
       component.executeAction(ACTION.VIEW_EDIT_REASON);
       expect(component.validationErrors.length).toEqual(1);
     });

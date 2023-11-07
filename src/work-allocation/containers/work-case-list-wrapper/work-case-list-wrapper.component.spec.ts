@@ -158,21 +158,20 @@ describe('WorkCaseListWrapperComponent', () => {
       expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('remove'), { state: { backUrl: null } });
     }));
 
-    it('should filter out duplicates values', (() => {
+    it('should filter out duplicates values', () => {
       const loadSpy = spyOn(component, 'loadSupportedJurisdictions');
       let jurisdictionValue = [];
       component.waSupportedJurisdictions$ = new Observable((jr) => {
-        jr.next(['Public Law', 'Immigration', 'Public Law'])
+        jr.next(['Public Law', 'Immigration', 'Public Law']);
       });
 
       component.waSupportedJurisdictions$.subscribe(rst => {
         jurisdictionValue = [...new Set(rst)];
-      })
+      });
 
       component.ngOnInit();
       expect(loadSpy).toHaveBeenCalled();
       expect(jurisdictionValue.length).toEqual(2);
-    }));
-
+    });
   });
 });

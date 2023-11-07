@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore } from '@ngrx/store/testing';
-import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../hearing.test.data';
 import { HearingAmendWarningMsgComponent } from './hearing-amend-warning-msg.component';
 
@@ -10,7 +9,7 @@ describe('HearingAmendWarningMsgComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingAmendWarningMsgComponent, MockRpxTranslatePipe],
+      declarations: [HearingAmendWarningMsgComponent],
       providers: [
         provideMockStore({ initialState })
       ]

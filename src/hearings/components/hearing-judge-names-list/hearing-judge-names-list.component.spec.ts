@@ -1,7 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { JudicialUserModel } from '../../models/judicialUser.model';
 import { HearingJudgeNamesListComponent } from './hearing-judge-names-list.component';
 
@@ -27,7 +26,7 @@ describe('HearingJudgeNamesListComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      declarations: [HearingJudgeNamesListComponent, MockRpxTranslatePipe],
+      declarations: [HearingJudgeNamesListComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();

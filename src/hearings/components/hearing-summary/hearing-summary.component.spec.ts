@@ -6,7 +6,6 @@ import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { caseFlagsRefData, initialState } from '../../hearing.test.data';
 import { HearingConditions } from '../../models/hearingConditions';
 import { Mode } from '../../models/hearings.enum';
@@ -24,7 +23,7 @@ describe('HearingSummaryComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [HearingSummaryComponent, MockRpxTranslatePipe],
+      declarations: [HearingSummaryComponent],
       imports: [
         HearingsPipesModule,
         HttpClientTestingModule

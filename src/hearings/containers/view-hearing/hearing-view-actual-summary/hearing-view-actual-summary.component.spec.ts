@@ -5,7 +5,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
-import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { HearingViewActualSummaryComponent } from './hearing-view-actual-summary.component';
 
@@ -20,7 +19,7 @@ describe('HearingViewActualSummaryComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [HearingViewActualSummaryComponent, MockRpxTranslatePipe],
+      declarations: [HearingViewActualSummaryComponent],
       providers: [
         provideMockStore({ initialState }), LoadingService
       ],

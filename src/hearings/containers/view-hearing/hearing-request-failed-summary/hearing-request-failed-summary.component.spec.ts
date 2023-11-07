@@ -1,7 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { HearingSummaryEnum } from '../../../models/hearings.enum';
 import { HearingRequestFailedSummaryComponent } from './hearing-request-failed-summary.component';
 
@@ -11,7 +10,7 @@ describe('HearingRequestFailedSummaryComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingRequestFailedSummaryComponent, MockRpxTranslatePipe],
+      declarations: [HearingRequestFailedSummaryComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
 

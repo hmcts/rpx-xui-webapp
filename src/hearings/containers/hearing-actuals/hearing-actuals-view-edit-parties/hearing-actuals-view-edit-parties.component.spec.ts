@@ -9,12 +9,11 @@ import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
-import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
-import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
-import { CategoryType, HMCStatus } from '../../../models/hearings.enum';
 import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import { HearingActualsViewEditPartiesComponent } from './hearing-actuals-view-edit-parties.component';
+import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
+import { CategoryType, HMCStatus } from '../../../models/hearings.enum';
 
 const hearingRole = [
   {
@@ -187,7 +186,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsViewEditPartiesComponent, MockRpxTranslatePipe],
+      declarations: [HearingActualsViewEditPartiesComponent],
       imports: [
         RouterTestingModule,
         ReactiveFormsModule
@@ -356,7 +355,7 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsViewEditPartiesComponent, MockRpxTranslatePipe],
+      declarations: [HearingActualsViewEditPartiesComponent],
       imports: [
         RouterTestingModule,
         ReactiveFormsModule,
@@ -477,7 +476,7 @@ describe('HearingViewEditSummaryComponent participants check', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsViewEditPartiesComponent, MockRpxTranslatePipe],
+      declarations: [HearingActualsViewEditPartiesComponent],
       imports: [
         RouterTestingModule,
         ReactiveFormsModule,

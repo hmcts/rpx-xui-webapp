@@ -5,7 +5,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { ErrorMessage } from '../../../../app/models';
-import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
@@ -41,8 +40,7 @@ describe('HearingWelshComponent', () => {
       declarations: [
         HearingWelshComponent,
         MockTestComponent,
-        MockHearingPartiesComponent,
-        MockRpxTranslatePipe
+        MockHearingPartiesComponent
       ],
       providers: [
         provideMockStore({ initialState }),

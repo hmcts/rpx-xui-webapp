@@ -21,7 +21,13 @@ router.post('/users', (req, res) => {
     // res.send(locations)
     console.log('')
     const persons = service.persons.filter((person) => {
-        return req.body.sidam_ids.includes(person.sidam_id)
+        const reqKeys = Object.keys(req.body)
+        if (reqKeys.includes('sidam_ids')){
+            return req.body.sidam_ids.includes(person.sidam_id)
+        } else if (reqKeys.includes('personal_code')){
+            return req.body.personal_code.includes(person.personal_code)
+        }
+        
     })
     userApiData.sendResponse(req, res, service.methods.OnFindperson, () => persons)
 

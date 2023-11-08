@@ -34,7 +34,12 @@ class ServiceMock{
         await this.updateMockServer('OnCaseHearings', { status: status ? status : 200, data: data })
     }
     
+    async addRoleAssignments(data) {
+        await this.updateMockServer('AddMockRoleAssignments', { status: 200, data: data })
+    }
 
+
+    
 }
 
 module.exports =  new ServiceMock()

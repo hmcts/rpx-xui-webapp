@@ -1,13 +1,17 @@
 var { defineSupportCode } = require('cucumber');
-
+const fs = require('fs')
+const path = require('path')
+const moment = require('moment');
 const mockClient = require('../../../../backendMock/client/index');
+const mockService = require('../../../../backendMock/client/serviceMock');
+
 const roleAssignmentMock = require('../../../../backendMock/services/roleAssignments/index');
 
 const MockApp = require('../../../../nodeMock/app');
 const nodeAppMock = require('../../../mockData/nodeApp/mockData');
 
 const waMockData = require('../../../mockData/workAllocation/mockData');
-;
+
 const headerPage = require('../../../../e2e/features/pageObjects/headerPage');
 const SoftAssert = require('../../../util/softAssert');
 const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
@@ -111,15 +115,18 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
         await browser.get('http://localhost:3000/get-help');
         let userDetails = null;
-
+        if (process.env.DEBUG === "true" && fs.existsSync(debugSessionFile)){
+            idamLogin.xuiCallbackResponse = JSON.parse(fs.readFileSync(debugSessionFile))
+        }
         await BrowserWaits.retryWithActionCallback(async () => {
             await idamLogin.do();
+            fs.writeFileSync(debugSessionFile, JSON.stringify(idamLogin.xuiCallbackResponse, null, 2))
             userDetails = idamLogin.userDetailsResponse.details.data;
             const sessionUserName = userDetails.userInfo ? userDetails.userInfo.email : '';
             if (sessionUserName !== loginUser ){
                 throw new Error('session not updated with user, retrying');
             }
-
+            
         })
 
         await BrowserWaits.retryWithActionCallback(async () => {
@@ -365,7 +372,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
 
         await BrowserWaits.retryWithActionCallback(async () => {
-            await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr)
+            await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr );
 
             const userDetails = await idamLogin.getUserDetails();
             if (!userDetails.roleAssignmentInfo.length >= roleAssignmentArr.length) {
@@ -377,6 +384,38 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         const userDetails = await idamLogin.getUserDetails();
         CucumberReporter.AddJson(userDetails.roleAssignmentInfo);
         await browser.get(await browser.getCurrentUrl());
+
+    });
+
+
+
+    Given('I set MOCK roleAssignments', async function (roleAssignments) {
+        reportLogger.reportDatatable(roleAssignments)
+        const boolAttributes = ['isCaseAllocator','contractType', 'bookable'];
+        const roleAssignmentArr = [];
+        for (const roleAssignment of roleAssignments.parse().hashes()) {
+            const roleAssignmentTemplate = roleAssignmentMock.getRoleAssignmentTemplate();
+            const roleKeys = Object.keys(roleAssignment);
+
+            const attributeProperties = ['jurisdiction', 'substantive', 'caseType', 'caseId', 'baseLocation', 'primaryLocation', 'bookable','notes']
+
+            for(const attr of roleKeys){
+                const value =  boolAttributes.includes(attr) ? roleAssignment[attr].includes('true') : roleAssignment[attr];
+                if (attributeProperties.includes(attr) && value !== ''){
+                    roleAssignmentTemplate.attributes[attr] = value;
+                } else if (attr.includes('beginTime') || attr.includes('endTime') || attr.includes('created')) {
+                    const valInt = parseInt(value)
+                    roleAssignmentTemplate[attr] = valInt >= 0 ? moment().add(valInt, 'days').valueOf() : moment().subtract(valInt*-1, 'days').valueOf()
+                } else{
+                    roleAssignmentTemplate[attr] = value;
+
+                }
+            }
+
+            roleAssignmentArr.push(roleAssignmentTemplate);
+        }
+
+        await mockService.addRoleAssignments(roleAssignmentArr);
 
     });
 

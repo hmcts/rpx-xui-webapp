@@ -1,6 +1,8 @@
 
-const createHearingWorkflow = require('../../pageObjects/hearings/createhearingWorkflow')
+const createHearingWorkflow = require('../../pageObjects/hearings/createHearingWorkflow/createhearingWorkflow')
 const reportLogger = require('../../../../codeceptCommon/reportLogger')
+
+const browserWaits = require('../../../support/customWaits')
 
 function getPageObject(page){
     const pageObj = createHearingWorkflow.pages[page];
@@ -15,8 +17,9 @@ When('I click continue in create hearing workflow', async function(){
 })
 
 Then('I am on create hearing page {string}', async function(page){
-    
-    expect(await getPageObject(page).isDisplayed(),`${page} not displayed`).to.be.true
+    await browserWaits.retryWithActionCallback(async () => {
+        expect(await getPageObject(page).isDisplayed(), `${page} not displayed`).to.be.true
+    })
 })
 
 Then('In create hearing page {string}, I validate fields displayed', async function(page, datatable){

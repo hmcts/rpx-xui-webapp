@@ -21,7 +21,8 @@ import {
 import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from './exclusionService';
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
-import { getSubstantiveRoles } from './roleAssignmentService';
+import { Role } from './models/roleType';
+import { getAllRoles, getSubstantiveRoles } from './roleAssignmentService';
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 const SUPPORTED_ROLE_CATEGORIES = ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN'];
@@ -85,6 +86,16 @@ export async function getAccessRolesByCaseId(req: EnhancedRequest, res: Response
       req.body.assignmentId,
       req
     );
+    if (finalRoles) {
+      const rolesResponse = await getAllRoles(req);
+      const roles = (rolesResponse.data as Role[]);
+      finalRoles?.forEach((finalRole) => {
+        const role = roles?.find((role) => role.name === finalRole.roleName);
+        if (role) {
+          finalRole.roleName = role.label;
+        }
+      });
+    }
     return res.status(response.status).send(finalRoles);
   } catch (error) {
     next(error);

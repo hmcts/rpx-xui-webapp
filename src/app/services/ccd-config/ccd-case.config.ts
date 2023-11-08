@@ -61,6 +61,13 @@ export class AppConfig extends AbstractAppConfig {
         enable_restricted_case_access: val
       }
     });
+
+    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1, false).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        enable_case_file_view_version_1_1: val
+      }
+    });
   }
 
   public load(): Promise<void> {
@@ -245,5 +252,9 @@ export class AppConfig extends AbstractAppConfig {
 
   public getEnableRestrictedCaseAccessConfig(): boolean {
     return this.config.enable_restricted_case_access;
+  }
+
+  public getEnableCaseFileViewVersion1_1(): boolean {
+    return this.config.enable_case_file_view_version_1_1;
   }
 }

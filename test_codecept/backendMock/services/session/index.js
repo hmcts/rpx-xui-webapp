@@ -36,13 +36,13 @@ class MockSessionService{
     }
 
     getSessionFiles(){
-        
+
         console.log(this.sessionsPath)
         return fs.readdirSync(this.sessionsPath)
     }
 
     async updateSessionFile(filename){
-       
+
     }
 
     async getSessionCookies(){
@@ -72,12 +72,16 @@ class MockSessionService{
         for(const file of files){
             const sessionFile = `${this.sessionsPath}/${file}`
             let sessionJson = await fs.readFileSync(sessionFile);
-            sessionJson = JSON.parse(sessionJson)
-            // console.log(sessionJson.passport?.user?.tokenset?.accessToken);
-            // console.log(auth);
-            if (sessionJson.passport?.user?.tokenset?.accessToken === auth){
+            try {
+              sessionJson = JSON.parse(sessionJson)
+              // console.log(sessionJson.passport?.user?.tokenset?.accessToken);
+              // console.log(auth);
+              if (sessionJson.passport?.user?.tokenset?.accessToken === auth) {
                 authSessionFile = sessionFile;
                 break;
+              }
+            } catch (err) {
+              console.error ('Error reading session JSON file: ' + sessionFile + ' sessionJson: ' + sessionJson, err);
             }
         }
         return authSessionFile;
@@ -100,7 +104,7 @@ class MockSessionService{
             counter++;
         }
 
-       
+
 
     }
 
@@ -138,7 +142,7 @@ class MockSessionService{
         }else{
             sessionJson.roleAssignmentResponse = roleAssignments;
         }
-        
+
         await fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
 
         sessionJson = await fs.readFileSync(sessionFile,'utf-8');

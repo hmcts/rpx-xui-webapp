@@ -118,6 +118,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
       
         await BrowserWaits.retryWithActionCallback(async () => {
             await idamLogin.do();
+            fs.writeFileSync(debugSessionFile, JSON.stringify(idamLogin.xuiCallbackResponse, null, 2))
             userDetails = idamLogin.userDetailsResponse.details.data;
             const sessionUserName = userDetails.userInfo ? userDetails.userInfo.email : '';
             if (sessionUserName !== loginUser ){

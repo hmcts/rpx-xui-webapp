@@ -287,7 +287,7 @@ Feature: Create hearings workflow
         Then I am on create hearing page "Hearing request submitted"
 
 
-    Scenario: Create hearing , input combo 3
+    Scenario: Create hearing , input combo 3 - Welsh hearing location
 
         Given I set MOCK with user details
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |
@@ -352,9 +352,15 @@ Feature: Create hearings workflow
         Then I am on create hearing page "What are the hearing venue details?"
         When In create hearing page "What are the hearing venue details?", I input values
             | field                         | value                 |
-            | Search for a location by name | cen,IA Court Center 1 |
+            | Search for a location by name | Wal,IA Court Center Wales |
         When I click continue in create hearing workflow
 
+
+        Then I am on create hearing page "Does this hearing need to be in Welsh?"
+        When In create hearing page "Does this hearing need to be in Welsh?", I input values
+            | field                         | value                     |
+            | Does this hearing need to be in Welsh? | Yes |
+        When I click continue in create hearing workflow
 
         # Do you want a specific judge?
         Then I am on create hearing page "Do you want a specific judge?"

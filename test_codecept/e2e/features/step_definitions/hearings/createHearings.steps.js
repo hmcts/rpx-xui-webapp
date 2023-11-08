@@ -32,6 +32,9 @@ Then('I am on create hearing page {string}', async function(page){
 
 Then('I am on hearing page {string}', async function (page) {
     await verifyOnHearingPage(page)
+    await browserWaits.retryWithActionCallback(async () => {
+        expect(await getPageObject(page).isDisplayed(), `${page} not displayed`).to.be.true
+    })
 })
 
 Then('In create hearing page {string}, I validate fields displayed', async function(page, datatable){

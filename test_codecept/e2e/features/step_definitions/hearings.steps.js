@@ -9,7 +9,7 @@ const { DataTableArgument } = require('codeceptjs');
 
 
 const hearingTabPage = require('../pageObjects/hearings/hearingsTabPage')
-const createHearingWorkflow = require('../pageObjects/hearings/createhearingWorkflow')
+const createHearingWorkflow = require('../pageObjects/hearings/createHearingWorkflow/createhearingWorkflow')
 
 Then('I see hearings tab displayed', async function () {
     await BrowserWaits.retryWithActionCallback(async () => {

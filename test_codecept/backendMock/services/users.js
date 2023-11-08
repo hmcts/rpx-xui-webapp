@@ -69,10 +69,10 @@ for (const conf of caseworkersConf) {
         conf.services.forEach(jurisdiction => {
             idamIdCounter += 1;
             const cwTemplate = rdcaseworkers.getCaseworkerTemplate();
-            cwTemplate.id = idamIdCounter+"";
-            cwTemplate.idamId = idamIdCounter+"";
+            cwTemplate.id = idamIdCounter + "";
+            cwTemplate.idamId = idamIdCounter + "";
 
-            cwTemplate.first_name = `${roleName} ${i + 1}_${idamIdCounter+1}`
+            cwTemplate.first_name = `${roleName} ${i + 1}_${idamIdCounter + 1}`
             cwTemplate.last_name = `${service}`
             cwTemplate.email_id = `${service}_${roleName}_${i + 1}_${idamIdCounter + 1}@justice.gov.uk`.toLowerCase()
             cwTemplate.roleCategory = role

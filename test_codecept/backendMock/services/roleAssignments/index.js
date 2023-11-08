@@ -28,6 +28,7 @@ class RoleAssignments {
         return sessionObj ? sessionObj.roleAssignments : [];
     }
 
+       this.sessiononRolesAssignments = [];
 
 
     getActorRoles(actorID) {

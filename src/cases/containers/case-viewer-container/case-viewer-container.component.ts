@@ -96,16 +96,13 @@ export class CaseViewerContainerComponent implements OnInit {
   }
 
   private appendedCaseViewTabs(): Observable<CaseTab[]> {
-    return combineLatest([
-      this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []),
-      this.userRoles$
-    ]).pipe(
-      // @ts-ignore
-      map(([featureVariations, userRoles]: [FeatureVariation[], string[]]) => {
+    return this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []).pipe(
+      map((featureVariations: FeatureVariation[]) => {
         const jurisdictionId = this.caseDetails.case_type.jurisdiction.id;
         const caseTypeId = this.caseDetails.case_type.id;
         const hasMatchedPermissions = featureVariations.some((featureVariation) =>
-          Utils.hasMatchedPermissions(featureVariation, jurisdictionId, caseTypeId, userRoles));
+          Utils.hasMatchedPermissions(featureVariation, jurisdictionId, caseTypeId)
+        );
         return hasMatchedPermissions ? this.appendedTabs : [];
       })
     );

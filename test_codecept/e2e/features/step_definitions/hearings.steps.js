@@ -17,6 +17,14 @@ Then('I see hearings tab displayed', async function () {
     })
 });
 
+Then('I see Request a hearing button in hearings tab page', async function () {
+    expect(await hearingTabPage.requesthearingBtn.isDisplayed()).to.be.true
+});
+
+Then('I do not see Request a hearing button in hearings tab page', async function () {
+    expect(await hearingTabPage.requesthearingBtn.isDisplayed()).to.be.false
+});
+
 When('I click Request a hearing button', async function(){
     await hearingTabPage.clickRequestHearingButton()
 });

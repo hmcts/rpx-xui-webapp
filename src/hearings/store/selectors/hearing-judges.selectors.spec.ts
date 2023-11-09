@@ -3,7 +3,7 @@ import { select, Store, StoreModule } from '@ngrx/store';
 import { reducers, State } from '../reducers';
 import { TestBed } from '@angular/core/testing';
 
-fdescribe('Hearing Judges selectors', () => {
+describe('Hearing Judges selectors', () => {
   let store: Store<State>;
   beforeEach(() => {
     TestBed.configureTestingModule({

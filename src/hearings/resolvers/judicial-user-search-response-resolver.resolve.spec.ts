@@ -9,7 +9,7 @@ import { JudicialUserModel } from '../models/judicialUser.model';
 import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import { JudicialUserSearchResponseResolver } from './judicial-user-search-response-resolver.resolve';
 
-fdescribe('Ref Data Resolver', () => {
+describe('Ref Data Resolver', () => {
   let judicialRefDataService: JudicialRefDataService;
   const testJudge1 = {
     title: 'Mr',

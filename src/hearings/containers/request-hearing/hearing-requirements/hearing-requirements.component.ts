@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { ValidatorsUtils } from 'src/hearings/utils/validators.utils';
 import { LoggerService } from '../../../../app/services/logger/logger.service';
 import * as fromHearingStore from '../../../../hearings/store';
+import { ValidatorsUtils } from '../../../../hearings/utils/validators.utils';
 import { CaseCategoryDisplayModel } from '../../../models/caseCategory.model';
 import { CaseFlagGroup } from '../../../models/caseFlagGroup.model';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';

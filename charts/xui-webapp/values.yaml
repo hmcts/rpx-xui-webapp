@@ -50,7 +50,7 @@ nodejs:
     # Services CCD Endpoints
     SERVICES_CCD_COMPONENT_API: https://gateway-ccd.{{ .Values.global.environment }}.platform.hmcts.net
     SERVICES_CCD_ACTIVITY_API: http://ccd-case-activity-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    SERVICES_CCD_DATA_STORE_API: http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_CCD_DATA_STORE_API: https://ccd-data-store-api-pr-2313.preview.platform.hmcts.net/
     SERVICES_CCD_CASE_ASSIGNMENT_API: http://aac-manage-case-assignment-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     SERVICES_LOCATION_API: http://rd-location-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Hearings endpoints

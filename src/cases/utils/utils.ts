@@ -62,8 +62,6 @@ export class Utils {
       if ((featureVariation?.caseType === caseType) ||
         (featureVariation.includeCaseTypes?.length > 0 && featureVariation.includeCaseTypes.includes(caseType))) {
         return true;
-      } else {
-        return false;
       }
     }
     return false;

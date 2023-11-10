@@ -113,7 +113,8 @@ describe('Utils', () => {
         caseType: 'CARESUPERVISION_EPO',
         roles: ['ignore1', 'ignore2']
       }
-    ]
+    ];
+
     let jurisdictionId = 'SSCS';
     let caseTypeId = 'Benefit';
     expect(Utils.hasMatchedJurisdictionAndCaseType(featureVariations[0], jurisdictionId, caseTypeId)).toEqual(true);
@@ -121,5 +122,4 @@ describe('Utils', () => {
     caseTypeId = 'CARESUPERVISION_EPO';
     expect(Utils.hasMatchedJurisdictionAndCaseType(featureVariations[1], jurisdictionId, caseTypeId)).toEqual(true);
   });
-
 });

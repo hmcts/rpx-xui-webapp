@@ -276,53 +276,53 @@ describe('HearingViewEditSummaryComponent', () => {
           ]
         },
         {
-          partyID: "P2",
-          partyName: "DWP",
+          partyID: 'P2',
+          partyName: 'DWP',
           partyType: PartyType.ORG,
-          partyRole: "claimant",
+          partyRole: 'claimant',
           individualDetails: {
-            preferredHearingChannel: "byVideo",
+            preferredHearingChannel: 'byVideo',
             reasonableAdjustments: [
-              "RA0005"
+              'RA0005'
             ],
             interpreterLanguage: null
           },
           organisationDetails: {
-            name: "DWP",
-            organisationType: "GOV",
-            cftOrganisationID: "O100000"
+            name: 'DWP',
+            organisationType: 'GOV',
+            cftOrganisationID: 'O100000'
           },
           unavailabilityDOW: null,
           unavailabilityRanges: [
             {
-              unavailableFromDate: "2021-12-20T09:00:00.000Z",
-              unavailableToDate: "2021-12-31T09:00:00.000Z",
+              unavailableFromDate: '2021-12-20T09:00:00.000Z',
+              unavailableToDate: '2021-12-31T09:00:00.000Z',
               unavailabilityType: UnavailabilityType.ALL_DAY
             }
           ]
         },
         {
-          partyID: "P2",
-          partyName: "DWP",
+          partyID: 'P2',
+          partyName: 'DWP',
           partyType: PartyType.ORG,
-          partyRole: "claimant",
+          partyRole: 'claimant',
           individualDetails: {
-            preferredHearingChannel: "byVideo",
+            preferredHearingChannel: 'byVideo',
             reasonableAdjustments: [
-              "RA0005"
+              'RA0005'
             ],
             interpreterLanguage: null
           },
           organisationDetails: {
-            name: "DWP",
-            organisationType: "GOV",
-            cftOrganisationID: "O100000"
+            name: 'DWP',
+            organisationType: 'GOV',
+            cftOrganisationID: 'O100000'
           },
           unavailabilityDOW: null,
           unavailabilityRanges: [
             {
-              unavailableFromDate: "2021-12-20T09:00:00.000Z",
-              unavailableToDate: "2021-12-31T09:00:00.000Z",
+              unavailableFromDate: '2021-12-20T09:00:00.000Z',
+              unavailableToDate: '2021-12-31T09:00:00.000Z',
               unavailabilityType: UnavailabilityType.ALL_DAY
             }
           ]

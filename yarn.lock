@@ -2591,12 +2591,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.8-load-hearings-tab-with-translation":
-  version: 6.19.8-load-hearings-tab-with-translation
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.8-load-hearings-tab-with-translation"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.13-load-hearings-tab-v2":
+  version: 6.19.13-load-hearings-tab-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.13-load-hearings-tab-v2"
   dependencies:
     tslib: ^2.0.0
-  checksum: 5611c4bcd6db14fb7e24b667d910b2725fb83abaa5ea71f7e1fa0d3c9dd760fed4d83259e65ab14c365767484be15539048d4bff0388fcaf6f8f00b143a8e422
+  checksum: 7f2873e3d1b479e239563046c6a43540b79db8435d31d351641d51b5fee4589d2514c474f4f1a56444cd06d49c109df3201907412cad46754647841d41ed2415
   languageName: node
   linkType: hard
 
@@ -19225,7 +19225,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.8-load-hearings-tab-with-translation
+    "@hmcts/ccd-case-ui-toolkit": 6.19.13-load-hearings-tab-v2
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.9.5

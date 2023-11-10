@@ -24,7 +24,7 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
           return of(judicialMemberIds);
         }), take(1),
         switchMap((judicialMemberIds) => {
-          return judicialMemberIds && judicialMemberIds.length ? this.getUsersData$(judicialMemberIds) : of([]);
+          return judicialMemberIds && judicialMemberIds.length && judicialMemberIds[0] ? this.getUsersData$(judicialMemberIds) : of([]);
         })
       );
   }

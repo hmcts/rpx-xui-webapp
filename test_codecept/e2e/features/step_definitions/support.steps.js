@@ -46,6 +46,17 @@ const cucumberReporter = require('../../../codeceptCommon/reportLogger');
         cucumberReporter.AddMessage(`********** ${behaviour} ***********`);
         cucumberReporter.AddMessage(`${border}`);
     });
+       Then('debug sleep minutes {int}', async function(minutes){
+        await new Promise((resolve,reject) => {
+            setTimeout(() => {
+                resolve(true)
+            }, minutes*60*1000)
+        })
+    });
+
+
+
+    
 
 
      Then('I wait for seconds for {int}', async function(waitSeconds){

@@ -4,7 +4,7 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     <exui-hearing-parties-title></exui-hearing-parties-title>
-    <h1 class="govuk-heading-l">{{ specificJudgeQuestion | rpxTranslate }}</h1>
+    <h1 class="govuk-heading-l">{{ 'Do you want a specific judge?' | rpxTranslate }}</h1>
     <form class="form" [formGroup]="hearingJudgeForm">
       <div class="govuk-form-group govuk-!-margin-top-5"
         [ngClass]="{'govuk-form-group--error': !!specificJudgeSelectionError}">
@@ -17,7 +17,7 @@
               <input class="govuk-radios__input" id="specificJudgeName" name="specificJudge"
                 (change)="showSpecificJudge('Yes');" formControlName="specificJudge" type="radio" value="Yes"
                 data-aria-controls="conditional-judge">
-              <label class="govuk-label govuk-radios__label" for="specificJudgeName">{{ specificJudgeQuestion | rpxTranslate : null : 'Yes' }}</label>
+              <label class="govuk-label govuk-radios__label" for="specificJudgeName">{{ 'Do you want a specific judge?' | rpxTranslate : null : 'Yes' }}</label>
             </div>
             <div class="govuk-radios__conditional"
               [ngClass]="{'govuk-radios__conditional--hidden': specificJudgeSelection !=='Yes'}">
@@ -43,7 +43,7 @@
               <input class="govuk-radios__input" id="noSpecificJudge" name="specificJudge"
                 (change)="showSpecificJudge('No');" formControlName="specificJudge" type="radio" value="No"
                 data-aria-controls="conditional-judge-type">
-              <label class="govuk-label govuk-radios__label" for="noSpecificJudge">{{ specificJudgeQuestion | rpxTranslate : null : 'No' }}</label>
+              <label class="govuk-label govuk-radios__label" for="noSpecificJudge">{{ 'Do you want a specific judge?' | rpxTranslate : null : 'No' }}</label>
             </div>
             <div class="govuk-radios__conditional"
               [ngClass]="{'govuk-radios__conditional--hidden': specificJudgeSelection !=='No'}">

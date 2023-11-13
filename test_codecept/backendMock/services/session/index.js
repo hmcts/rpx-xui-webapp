@@ -6,8 +6,6 @@ const axios = require('axios')
 const session = require('./sampleSession.json')
 const roleAssignmentsService = require('../roleAssignments/index')
 
-const roleAssignmentsService = require('../roleAssignments/index')
-
 class MockSessionService{
     constructor(mode){
         this.http = axios.create({

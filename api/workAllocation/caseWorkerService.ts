@@ -94,7 +94,7 @@ export async function handlePostCaseWorkersRefData(path: string, userIdsByJurisd
       const userListByService = { jurisdiction: userIdList.jurisdiction, data: response.data };
       data.push(userListByService);
     } else {
-      console.warn ("Jurisdiction " + userIdList.jurisdiction + " user list is empty");
+      console.warn('Jurisdiction ' + userIdList.jurisdiction + ' user list is empty');
     }
   }
   return data;

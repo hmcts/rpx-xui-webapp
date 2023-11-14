@@ -2591,12 +2591,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.13-case-flags-v2-1-consolidation-final-fixes-4":
-  version: 6.19.13-case-flags-v2-1-consolidation-final-fixes-4
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.13-case-flags-v2-1-consolidation-final-fixes-4"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.13-case-flags-v2-1-consolidation-final-fixes-5":
+  version: 6.19.13-case-flags-v2-1-consolidation-final-fixes-5
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.13-case-flags-v2-1-consolidation-final-fixes-5"
   dependencies:
     tslib: ^2.0.0
-  checksum: 2cc7edac67f13b5e18c91ee595164c42c02f4ca902f50ba07c9d24ecdf2ca5ca169a38f75a18306d6a445bb0bddb3b1f3ad087e6af812fa01dc39ebc84e0b515
+  checksum: a84c5f7aa8db1ad15c88678cdefef4e84956064c6351cc6d3b2273e4f1267eea3882c291b42fdeec5b76243c6881f7ec90e8cbceb998ec48d303e7da32f593c6
   languageName: node
   linkType: hard
 
@@ -19225,7 +19225,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.13-case-flags-v2-1-consolidation-final-fixes-4
+    "@hmcts/ccd-case-ui-toolkit": 6.19.13-case-flags-v2-1-consolidation-final-fixes-5
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.9.5

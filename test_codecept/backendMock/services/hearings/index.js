@@ -15,7 +15,8 @@ class HearingsApi{
         this.serviceLinkedcases = []
 
         // this.addHearing()
-        // this.addHearing({ hmcStatus: "COMPLETED" })
+        this.addHearing({ hmcStatus: "COMPLETED" })
+        this.addHearing({ hmcStatus: "AWAITING_ACTUALS" })
 
     }
 
@@ -38,7 +39,7 @@ class HearingsApi{
         return {
             hearingRequestDateTime: props.hearingRequestDateTime ? props.hearingRequestDateTime : "2023-07-13T10:58:40.419815",
             hearingType: props.hearingType ? props.hearingType : "ABA5-FOF",
-            hmcStatus: props.hmcStatus ? props.hmcStatus : "AWAITING_ACTUALS",
+            hmcStatus: props.hmcStatus ? props.hmcStatus : "LISTED",
             lastResponseReceivedDateTime: props.lastResponseReceivedDateTime ? props.lastResponseReceivedDateTime : "2023-07-13T16:12:15",
             requestVersion: 1,
             hearingListingStatus: props.hearingListingStatus ? props.hearingListingStatus : "FIXED",
@@ -86,7 +87,11 @@ class HearingsApi{
             hearingChannels: props.hearingChannels ? props.hearingChannels.split(",") : [
                 "INTER",
             ],
-            hearingID: 2000006167,
+            hearingID: Date.now(),
+            hearingResponse:{
+                laCaseStatus: 'LISTED'
+            }
+            
         }
     }
 

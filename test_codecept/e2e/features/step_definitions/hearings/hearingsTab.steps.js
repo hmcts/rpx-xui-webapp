@@ -40,3 +40,11 @@ Then('In hearings tab, I see hearing {string} with values under {string}', async
         }
     }
 });
+
+
+
+When('In hearings tab, I click action {string} for hearing {string} under table {string}', async function (action,hearingType, hearingsTable) {
+    const hearingTableObj = hearingsTabPage.getTableObject(hearingsTable)
+    await hearingTableObj.clickActionLinkForHearing(hearingType, action)
+});
+

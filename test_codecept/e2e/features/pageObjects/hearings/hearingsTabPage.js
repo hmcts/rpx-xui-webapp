@@ -87,6 +87,25 @@ class HearingsTable {
 
     }
 
+    async clickActionLinkForHearing(hearing, action){
+        const elements = this.getHearingTypeColumnElement(hearing, "Actions")
+
+        let actionLinkEle = null
+
+        const actionsCount = await elements.count();
+        const actionNames = []
+        for (let i = 0; i < actionsCount; i++) {
+            const e = await elements.get(i)
+            
+            const name = await e.getText()
+            if (name === action){
+                actionLinkEle = e;
+                break;
+            }
+        }
+        await actionLinkEle.click()
+    }
+
     async isHearingDisplayed(hearingType) {
         const tdXpath = `//exui-case-hearings-list//th[contains(text(),'${this.tableName}')]/../../..//tbody/tr/td[contains(text(),'${hearingType}')]`
         const ele = element(by.xpath(tdXpath))

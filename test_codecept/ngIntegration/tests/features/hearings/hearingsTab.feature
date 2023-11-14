@@ -1,8 +1,8 @@
 
-@ng @functional_enabled
-Feature: Hearings
+@ng @functional_enabled  
+Feature:  Hearings: Hearings tab
 
-    Scenario: Hearings: Hearings tab
+    Scenario:  Hearings tab
         Given I set MOCK with user details
             | roles | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                         |

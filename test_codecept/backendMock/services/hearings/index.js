@@ -23,6 +23,10 @@ class HearingsApi{
     addHearing(props){
         this.hearings.push(this.gethearingTemplate(props))
     }
+
+    getHearingWithProps(props){
+        return this.gethearingTemplate(props);
+    }
     
 
     getCaseHearings(){

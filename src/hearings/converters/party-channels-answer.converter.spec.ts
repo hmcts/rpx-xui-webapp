@@ -11,7 +11,7 @@ import { PartyDetailsModel } from '../models/partyDetails.model';
 import { State } from '../store';
 import { PartyChannelsAnswerConverter } from './party-channels-answer.converter';
 
-fdescribe('PartyChannelsAnswerConverter', () => {
+describe('PartyChannelsAnswerConverter', () => {
   let converter: PartyChannelsAnswerConverter;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;

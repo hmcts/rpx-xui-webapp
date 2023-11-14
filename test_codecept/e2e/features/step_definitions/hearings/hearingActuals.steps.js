@@ -4,7 +4,9 @@ const hearingActualsPage = require('.././../pageObjects/hearings/hearingActualsP
 const browserWaits = require('../../../support/customWaits')
 
 Then('I see hearing actuals page', async function () {
-    expect(await hearingActualsPage.container.isDisplayed()).to.be.true
+    await browserWaits.retryWithActionCallback(async () => {
+        expect(await hearingActualsPage.container.isDisplayed()).to.be.true
+    })
 })
 
 

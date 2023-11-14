@@ -1,11 +1,11 @@
 
-@ng @functional_enabled
+@ng @functional_enabled  
 Feature: Hearings: Hearings tab Hearing action based on roles
 
 
-    Scenario Outline: Hearing actions display for roles
+    Scenario Outline: Hearigs: Hearing actions display for roles
         Given I set MOCK with user details
-            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,<role> |
+            | roles | <role>,caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator |
             | roleCategory | LEGAL_OPERATIONS                                                             |
 
         # Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
@@ -16,9 +16,9 @@ Feature: Hearings: Hearings tab Hearing action based on roles
         Given I set mock case hearings
             | hmcStatus        | hearingType | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
             | LISTED           | TEST_TYPE   | -3                     | 0                            | -3                                      | 2                                     |
-            | COMPLETED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
-            | CANCELLED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
-            | AWAITING_ACTUALS | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
+            # | COMPLETED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
+            # | CANCELLED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
+            # | AWAITING_ACTUALS | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
 
         Given I start MockApp
         Given I navigate to home page
@@ -34,7 +34,7 @@ Feature: Hearings: Hearings tab Hearing action based on roles
         Then In hearings tab, I see hearing "TEST_TYPE" with values under "Current and upcoming"
             | Hearing date | Status | Actions   |
             | -3           | LISTED | <actions> |
-        Then debug sleep minutes 20
+        # Then debug sleep minutes 20
 
         Examples:
             | role                  | actions             |

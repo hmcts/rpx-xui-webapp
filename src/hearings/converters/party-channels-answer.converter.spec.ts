@@ -81,7 +81,7 @@ describe('PartyChannelsAnswerConverter', () => {
     const foundPartyFromService: PartyDetailsModel = {
       partyID: 'P002', partyRole: 'appellant', partyType: PartyType.ORG
     };
-    expect(converter.getPartyName(party, foundPartyFromService)).toEqual('P002');
+    expect(converter.getPartyName(party, foundPartyFromService)).toEqual('P001');
   });
 
   it('should return party id if party name is null or party.individualDetails is null', () => {

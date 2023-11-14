@@ -121,6 +121,9 @@ class MockApp {
 
         app.use('/refdata/commondata', prdCommondataroutes)
 
+        app.get('/activity/cases/:caseId/activity', (req,res) => {
+            res.send({})
+        })
 
         // await this.stopServer();
         this.server = await app.listen(8080);

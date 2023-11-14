@@ -2,7 +2,7 @@
 @ng @functional_enabled
 Feature: Hearings: Hearings tab display controls
 
-    Scenario: Request hearing button display with correct roles
+    Scenario: Hearigs: Request hearing button display with correct roles
         Given I set MOCK with user details
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                      |

@@ -31,15 +31,20 @@ const cancelledhearing = require('../../../backendMock/services/hearings/mockDat
     Given('I set mock case hearings', async function (hearingsDatatable) {
 
         const rows = hearingsDatatable.parse().hashes();
-
+        const hearingsList = []
         for(const hearing of rows){
             for(const key of Object.keys(hearing)){
                 updateObjectValues(hearing, key, hearing[key])
             }
-            hearingsMock.addHearing(hearing)
+            hearingsList.push(hearingsMock.getHearingWithProps(hearing))
+            
         }
-        const hearingsList = hearingsMock.getCaseHearings();
-        mockClient.setCaseHearings(hearingsList, 200)
+        const res = {
+            "caseRef": "1690807693531270",
+            "caseHearings": hearingsList,
+            "hmctsServiceCode": null
+        }
+        mockClient.setCaseHearings(res, 200)
 
     });
 

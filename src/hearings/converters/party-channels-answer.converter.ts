@@ -41,20 +41,20 @@ export class PartyChannelsAnswerConverter implements AnswerConverter {
   public getPartyName(party: PartyDetailsModel, foundPartyFromService: PartyDetailsModel): string {
     if (party) {
       return this.getFullName(party);
-    } else {
-      if (foundPartyFromService) {
-        return this.getFullName(foundPartyFromService);
-      }
+    }
+
+    if (foundPartyFromService) {
+      return this.getFullName(foundPartyFromService);
     }
   }
 
   getFullName(pdm: PartyDetailsModel) {
-    if (pdm.partyName)
+    if (pdm.partyName) {
       return pdm.partyName;
-    else if (pdm.individualDetails) {
+    } else if (pdm.individualDetails) {
       return this.getVal(pdm.individualDetails.firstName) + ' ' + this.getVal(pdm.individualDetails.lastName);
     }
-    return pdm.partyID
+    return pdm.partyID;
   }
 
   getVal(item: string) {

@@ -97,7 +97,7 @@ describe('PartyChannelsAnswerConverter', () => {
   it('should return party name if party name from party is not null', () => {
     const party: PartyDetailsModel = {
       partyID: 'P001', partyRole: 'appellant', partyType: PartyType.IND, partyName: 'Smith',
-      individualDetails: {firstName: 'John', lastName: 'Smith'}
+      individualDetails: { firstName: 'John', lastName: 'Smith' }
     };
     const foundPartyFromService: PartyDetailsModel = {
       partyID: 'P002', partyRole: 'appellant', partyType: PartyType.ORG, partyName: 'Jack'
@@ -108,11 +108,11 @@ describe('PartyChannelsAnswerConverter', () => {
   it('should return party firstname and lastname if party name from party is null', () => {
     const party: PartyDetailsModel = {
       partyID: 'P001', partyRole: 'appellant', partyType: PartyType.IND,
-      individualDetails: {firstName: 'John', lastName: 'Smith'}
+      individualDetails: { firstName: 'John', lastName: 'Smith' }
     };
     const foundPartyFromService: PartyDetailsModel = {
       partyID: 'P002', partyRole: 'appellant', partyType: PartyType.ORG, partyName: 'Jack',
-      individualDetails: {firstName: 'John', lastName: 'Smith'}
+      individualDetails: { firstName: 'John', lastName: 'Smith' }
     };
     expect(converter.getPartyName(party, foundPartyFromService)).toEqual('John Smith');
   });
@@ -133,7 +133,7 @@ describe('PartyChannelsAnswerConverter', () => {
     };
     const foundPartyFromService: PartyDetailsModel = {
       partyID: 'P002', partyRole: 'appellant', partyType: PartyType.ORG,
-      individualDetails: {firstName: 'Jack', lastName: 'Smith'}
+      individualDetails: { firstName: 'Jack', lastName: 'Smith' }
     };
     expect(converter.getPartyName(null, foundPartyFromService)).toEqual('Jack Smith');
   });

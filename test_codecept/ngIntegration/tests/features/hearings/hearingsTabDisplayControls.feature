@@ -1,6 +1,6 @@
 
-@ng @functional_enabled 
-Feature: Hearings tab display controls
+@ng @functional_enabled
+Feature: Hearings: Hearings tab display controls
 
     Scenario: Request hearing button display with correct roles
         Given I set MOCK with user details

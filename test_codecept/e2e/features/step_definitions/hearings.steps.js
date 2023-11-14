@@ -34,3 +34,8 @@ Then('I see create hearing workflow container', async function () {
         expect(await createHearingWorkflow.isCreateHearingWorkflowDIsplayed()).to.be.true
     })
 });
+
+Then('I see hearing details success confirmation message {string}', async function(message){
+    const ele = $('.govuk-panel--confirmation')
+    expect(await ele.getText()).to.includes(message)
+})

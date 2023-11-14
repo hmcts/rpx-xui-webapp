@@ -10,6 +10,13 @@ const { DataTableArgument } = require('codeceptjs');
 const hearingsMock = require('../../../backendMock/services/hearings/index')
 const mockClient = require('../../../backendMock/client/serviceMock')
 
+const listedHearing = require('../../../backendMock/services/hearings/mockData/listedHearing.data')
+const awaitinghearingsDetails = require('../../../backendMock/services/hearings/mockData/awaitingHearingDetails.data')
+const completedHearing = require('../../../backendMock/services/hearings/mockData/completedHearing.data')
+const cancelledhearing = require('../../../backendMock/services/hearings/mockData/cancelledHearing.data')
+
+
+
     function updateObjectValues(object, key, value){
         const dateField = ['hearingRequestDateTime', 'lastResponseReceivedDateTime', 'hearingDaySchedule.hearingStartDateTime', 'hearingDaySchedule.hearingEndDateTime']
     
@@ -34,5 +41,29 @@ const mockClient = require('../../../backendMock/client/serviceMock')
         const hearingsList = hearingsMock.getCaseHearings();
         mockClient.setCaseHearings(hearingsList, 200)
 
+    });
+
+    Given('I set mock get hearing with with status {string}', async function (hearingStatus) {
+
+        let hearingResponse = null;
+        switch (hearingStatus){
+            case "LISTED":
+                hearingResponse = listedHearing;
+                break;
+            case "COMPLETED":
+                hearingResponse = completedHearing;
+                break;
+            case "CANCELLED":
+                hearingResponse = cancelledhearing;
+                break;
+            case "AWAITING_ACTUALS":
+                hearingResponse = awaitinghearingsDetails;
+                break;
+            default:
+                throw new Error(`no mock data setup for hearing ${hearingStatus}`)
+        }
+
+        
+        mockClient.setOnGetHearing(hearingResponse, 200)
 
     });

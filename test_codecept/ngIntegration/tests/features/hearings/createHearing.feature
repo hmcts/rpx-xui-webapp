@@ -1,5 +1,5 @@
 
-@ng 
+@ng @functional_enabled
 Feature: Hearings
 
     Scenario: Hearings tab

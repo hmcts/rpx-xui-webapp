@@ -3412,7 +3412,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pact-foundation/pact-node@npm:^10.17.2, @pact-foundation/pact-node@npm:^10.9.7":
+"@pact-foundation/pact-node@npm:^10.17.2":
   version: 10.17.6
   resolution: "@pact-foundation/pact-node@npm:10.17.6"
   dependencies:
@@ -3444,6 +3444,42 @@ __metadata:
     pact-provider-verifier: bin/pact-provider-verifier.js
     pact-stub-service: bin/pact-stub-service.js
   checksum: 74b1fb423bfe762f488267451239f9b4b806a59e0b6eb59022a39383022f754e4d6b4ed3abe3407609b4b6fa9a8a154be589ea12dc3c911c2eb1352c9d99c295
+  conditions: (os=darwin | os=linux | os=win32) & (cpu=x64 | cpu=ia32 | cpu=arm64)
+  languageName: node
+  linkType: hard
+
+"@pact-foundation/pact-node@npm:^10.17.7":
+  version: 10.17.7
+  resolution: "@pact-foundation/pact-node@npm:10.17.7"
+  dependencies:
+    "@types/needle": ^2.5.1
+    "@types/pino": ^6.3.5
+    "@types/q": 1.0.7
+    "@types/request": 2.48.2
+    chalk: 2.3.1
+    check-types: 7.3.0
+    cross-spawn: ^7.0.1
+    libnpmconfig: ^1.2.1
+    mkdirp: 1.0.0
+    needle: ^2.6.0
+    pino: ^6.11.0
+    pino-pretty: ^4.1.0
+    q: 1.5.1
+    rimraf: 2.6.2
+    sumchecker: ^2.0.2
+    tar: ^6.1.11
+    underscore: 1.12.1
+    unixify: 1.0.0
+    unzipper: ^0.10.10
+    url-join: ^4.0.0
+  bin:
+    pact: bin/pact.js
+    pact-broker: bin/pact-broker.js
+    pact-message: bin/pact-message.js
+    pact-mock-service: bin/pact-mock-service.js
+    pact-provider-verifier: bin/pact-provider-verifier.js
+    pact-stub-service: bin/pact-stub-service.js
+  checksum: e56b12230da1b069f69cb5c43d3ff60fce8bc00ebb1432f1c20b8f27a00d573eebc655c1cebe7fbc5892bf2cb70a5b48b95a393ae084c1938c4527f83cbc2558
   conditions: (os=darwin | os=linux | os=win32) & (cpu=x64 | cpu=ia32 | cpu=arm64)
   languageName: node
   linkType: hard
@@ -19243,7 +19279,7 @@ __metadata:
     "@nguniversal/express-engine": ^7.1.1
     "@nicky-lenaers/ngx-scroll-to": ^1.1.1
     "@pact-foundation/pact": ^9.11.1
-    "@pact-foundation/pact-node": ^10.9.7
+    "@pact-foundation/pact-node": ^10.17.7
     "@stryker-mutator/api": ^3.0.1
     "@stryker-mutator/core": ^3.0.1
     "@stryker-mutator/html-reporter": ^3.0.1

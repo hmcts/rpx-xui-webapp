@@ -12,7 +12,7 @@ const pactSetUp = new PactTestSetup({ provider: 'referenceData_caseworkerRefUser
 
 const MockApp = require('../../../../../test/nodeMock/app');
 
-xdescribe('Caseworker ref data api, get all caseworkers', () => {
+describe('Caseworker ref data api, get all caseworkers', () => {
   const REQUEST_BODY = {
     userIds: [somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'), somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe')]
   };
@@ -88,7 +88,7 @@ xdescribe('Caseworker ref data api, get all caseworkers', () => {
       configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
 
       // @ts-ignore
-      configValues.waSupportedJurisdictions = ['IA'];
+      configValues.waSupportedJurisdictions = 'IA';
       sandbox.stub(config, 'get').callsFake((prop) => {
         return configValues[prop];
       });

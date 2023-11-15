@@ -1,21 +1,22 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, Pipe, PipeTransform, ViewChild } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
+
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { TaskActionConstants } from '../../components/constants';
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskActionType } from '../../enums';
 import { Task } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
@@ -36,7 +37,15 @@ class WrapperComponent {
   template: `
     <div>Nothing</div>`
 })
-class NothingComponent { }
+class NothingComponent {
+}
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('TaskAssignmentContainerComponent2', () => {
   let component: TaskAssignmentContainerComponent;
@@ -66,26 +75,27 @@ describe('TaskAssignmentContainerComponent2', () => {
   };
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
 
-  beforeEach(async () => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         TaskAssignmentContainerComponent,
         WrapperComponent,
         TaskListComponent,
         ErrorMessageComponent,
-        NothingComponent
+        NothingComponent,
+        RpxTranslateMockPipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
-        WorkAllocationComponentsModule,
         ReactiveFormsModule,
         CdkTableModule,
         FormsModule,
         MatAutocompleteModule,
         HttpClientTestingModule,
         EffectsModule.forRoot([]),
-        ExuiCommonLibModule,
         PaginationModule,
         StoreModule.forRoot({}),
         RouterTestingModule.withRoutes(
@@ -118,7 +128,8 @@ describe('TaskAssignmentContainerComponent2', () => {
           }
         },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-        { provide: Router, useValue: mockRouter }
+        { provide: Router, useValue: mockRouter },
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -129,7 +140,7 @@ describe('TaskAssignmentContainerComponent2', () => {
 
     // Deliberately defer fixture.detectChanges() call to each test, to allow overriding the ActivatedRoute snapshot
     // data with a different verb ("Assign")
-  });
+  }));
 
   afterEach(() => {
     fixture.destroy();

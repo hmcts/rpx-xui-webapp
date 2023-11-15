@@ -94,6 +94,25 @@ describe('Utils', () => {
     expect(Utils.hasMatchedPermissions(featureVariation, jurisdictionId, caseTypeId, userRoles)).toEqual(true);
   });
 
+  it('should check for matched permissions return true', () => {
+    const featureVariation = {
+      jurisdiction: 'SSCS',
+      caseType: 'Benefit',
+      roles: [
+        'caseworker-sscs',
+        'caseworker-sscs-judge'
+      ]
+    };
+    const jurisdictionId = 'SSCS';
+    const caseTypeId = 'Benefit';
+    const userRoles = [
+      'caseworker-sscs',
+      'caseworker-sscs-judge',
+      'pui-case-manager'
+    ];
+    expect(Utils.hasMatchedPermissions(featureVariation, jurisdictionId, caseTypeId, userRoles)).toEqual(false);
+  });
+
   it('should check for matched permissions return false', () => {
     const featureVariation = {
       jurisdiction: 'SSCS',

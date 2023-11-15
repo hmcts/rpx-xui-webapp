@@ -65,6 +65,13 @@ export function getJudicialRefDataAPIOverrides(judicialRefApiUrl) {
   };
 }
 
+export function getHearingsAPIOverrides(hearingsRefApiUrl: string) {
+  return {
+    'services.hearings.hmcApi': hearingsRefApiUrl,
+    ...defaultConfig
+  };
+}
+
 export function getRdCommonDataAPIOverrides(rdCommonDataApiUrl) {
   return {
     'services.prd.commondataApi': rdCommonDataApiUrl,

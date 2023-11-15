@@ -65,6 +65,13 @@ export function getJudicialRefDataAPIOverrides(judicialRefApiUrl) {
   };
 }
 
+export function getCcdDataAPIOverrides(ccdDataApiUrl) {
+  return {
+    'services.ccd.dataApi': ccdDataApiUrl,
+    ...defaultConfig
+  };
+}
+
 export function getNocAPIOverrides(nocAPiUrl) {
   return {
     'services.ccd.caseAssignmentApi': nocAPiUrl,

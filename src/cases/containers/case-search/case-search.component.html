@@ -1,30 +1,31 @@
-<exui-page-wrapper [title]="'Search'">
+<exui-page-wrapper [title]="'Search' | rpxTranslate">
   <div class="hmcts-action-bar">
     <div class="hmcts-action-bar__filter">
       <button class="govuk-button hmcts-button--secondary" (click) = "toggleFilter()" type="button"  aria-haspopup="true" aria-expanded="false">
-        {{toggleButtonName}}
+        {{toggleButtonName | rpxTranslate }}
       </button>
     </div>
   </div>
-    <div class="search-block">
-      <div class="hmcts-filter-layout__filter" [hidden]="!showFilter" >
-        <div class="form-group">
-          <div class="container-fluid">  
-            <exui-ccd-connector
+
+  <div class="search-block">
+    <div class="hmcts-filter-layout__filter" [hidden]="!showFilter" >
+      <div class="form-group">
+        <div class="container-fluid">
+          <exui-ccd-connector
               [eventsBindings]="caseSearchFilterEventsBindings"
               [store]="store"
               [fromFeatureStore]="fromCasesFeature">
               <ccd-search-filters-wrapper #ccdComponent
-                (onApply)="applyFilter($event)"  
+                (onApply)="applyFilter($event)"
               >
               </ccd-search-filters-wrapper>
-            </exui-ccd-connector>
-          </div>
+          </exui-ccd-connector>
         </div>
       </div>
+    </div>
 
-      <div class="hmcts-filter-layout__content">
-         <ccd-search-result
+    <div class="hmcts-filter-layout__content">
+      <ccd-search-result
           *ngIf="resultViewIsReady"
           id="search-result"
           [jurisdiction]="jurisdiction"
@@ -40,7 +41,7 @@
           [consumerSortingEnabled]="elasticSearchFlag"
           (sortHandler)="sort($event)"
         >
-        </ccd-search-result>
-      </div>
+      </ccd-search-result>
     </div>
+  </div>
 </exui-page-wrapper>

@@ -3,9 +3,10 @@ import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { ExuiCommonLibModule, FeatureToggleService, FilterService, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { TaskListComponent } from '..';
@@ -54,6 +55,8 @@ describe('TaskListWrapperComponent', () => {
       unsubscribe: () => null
     }
   };
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
 
   beforeEach((() => {
     storeMock = jasmine.createSpyObj('Store', ['dispatch']);
@@ -62,8 +65,7 @@ describe('TaskListWrapperComponent', () => {
         WorkAllocationComponentsModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        CdkTableModule,
-        PaginationModule
+        CdkTableModule
       ],
       declarations: [TaskListComponent, TaskListWrapperComponent],
       providers: [
@@ -80,6 +82,7 @@ describe('TaskListWrapperComponent', () => {
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: Store, useValue: storeMock },
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
         { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService }
       ]
     }).compileComponents();
@@ -157,15 +160,43 @@ describe('TaskListWrapperComponent', () => {
     });
 
     it('User should be Judicial', () => {
-      mockSessionStorageService.getItem.and.returnValue('{"sub":"juser8@mailinator.com","uid":"44d5d2c2-7112-4bef-8d05-baaa610bf463","roles":["caseworker","caseworker-ia-iacjudge"],"name":"XUI test Judge","given_name":"XUI test","family_name":"Judge","token":""}');
+      component.userRoleCategory = RoleCategory.JUDICIAL;
       const isJudicial = component.isCurrentUserJudicial();
       expect(isJudicial).toBeTruthy();
     });
 
     it('User should not be Judicial', () => {
-      mockSessionStorageService.getItem.and.returnValue('{"sub":"juser8@mailinator.com","uid":"44d5d2c2-7112-4bef-8d05-baaa610bf463","roles":["caseworker","caseworker-ia"],"name":"XUI test Judge","given_name":"XUI test","family_name":"Judge","token":""}');
+      component.userRoleCategory = RoleCategory.CASEWORKER;
       const isJudicial = component.isCurrentUserJudicial();
       expect(isJudicial).toBeFalsy();
+    });
+
+    it('Judicial role category should be received', () => {
+      const userDetails = {
+        id: 'id123',
+        forename: 'John',
+        surname: 'Smith',
+        email: 'john.smith@email.com',
+        roles: ['caseworker-ia-iacjudge'],
+        roleCategory: RoleCategory.JUDICIAL
+      };
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
+      const roleCategory = component.getCurrentUserRoleCategory();
+      expect(roleCategory).toBe(RoleCategory.JUDICIAL);
+    });
+
+    it('Non-judicial role category should be received', () => {
+      const userDetails = {
+        id: 'id123',
+        forename: 'John',
+        surname: 'Smith',
+        email: 'john.smith@email.com',
+        roles: ['caseworker-ia-iacjudge'],
+        roleCategory: RoleCategory.CASEWORKER
+      };
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
+      const roleCategory = component.getCurrentUserRoleCategory();
+      expect(roleCategory).not.toBe(RoleCategory.JUDICIAL);
     });
   });
 

@@ -47,19 +47,21 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   ) {}
 
   private static getStartTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
+    const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex].plannedStartTime;
     let actualStartTime: string;
     if (actualIndex >= 0) {
       actualStartTime = hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingStartTime;
     }
-    return actualStartTime ? HearingActualsTimingComponent.getTime(actualStartTime) : actualStartTime;
+    return actualStartTime ? HearingActualsTimingComponent.getTime(actualStartTime) : HearingActualsTimingComponent.getTime(plannedTime);
   }
 
   private static getEndTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
+    const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex].plannedEndTime;
     let actualEndTime: string;
     if (actualIndex >= 0) {
       actualEndTime = hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingEndTime;
     }
-    return actualEndTime ? HearingActualsTimingComponent.getTime(actualEndTime) : actualEndTime;
+    return actualEndTime ? HearingActualsTimingComponent.getTime(actualEndTime) : HearingActualsTimingComponent.getTime(plannedTime);
   }
 
   private static getPauseStartTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null {
@@ -184,8 +186,8 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   }
 
   private getHearingTime(value:string, actualIndex: number, plannedIndex: number, time: 'startTime' | 'endTime'): string {
-    const hearingDate = this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingDate;
-
+    const hearingDate = this.hearingActuals.hearingActuals?.actualHearingDays.length > 0 ?
+      this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingDate : this.hearingDate;
     return value ? HearingActualsTimingComponent.replaceTime(hearingDate, moment(value, 'HH:mm')) : null;
   }
 

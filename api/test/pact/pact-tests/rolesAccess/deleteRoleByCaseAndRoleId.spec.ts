@@ -1,3 +1,4 @@
+import { somethingLike } from '@pact-foundation/pact/src/dsl/matchers';
 import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
@@ -6,12 +7,16 @@ import { PactTestSetup } from '../settings/provider.mock';
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
-const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_deleteAssignment', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_deleteRoleByCaseAndRoleId', port: 8000 });
 
-const exclusionId = '704c8b1c-e89b-436a-90f6-953b1dc40157';
+const assignmentId = '704c8b1c-e89b-436a-90f6-953b1dc40157';
 
-describe('access management service, delete exclusion', () => {
-  describe('delete /am/role-assignments/{exclusionId}', () => {
+const REQUEST_BODY = {
+  'assignmentId': assignmentId
+};
+
+describe('access management service, delete role by case and role id', () => {
+  describe('delete /am/role-assignments/{assignmentId}', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
     let next;
 
@@ -23,14 +28,17 @@ describe('access management service, delete exclusion', () => {
       await pactSetUp.provider.setup();
       const interaction = {
         state: 'An actor with provided id is available in role assignment service',
-        uponReceiving: 'delete role assignment for exclusion',
+        uponReceiving: 'delete role by case and role id',
         withRequest: {
           method: 'DELETE',
-          path: `/am/role-assignments/${exclusionId}`,
+          path: `/am/role-assignments/${assignmentId}`,
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
             'content-type': 'application/json'
+          },
+          body: {
+            'assignmentId': somethingLike(assignmentId)
           }
         },
         willRespondWith: {
@@ -38,8 +46,31 @@ describe('access management service, delete exclusion', () => {
         }
       };
 
+      const refreshRoleAssignmentInteraction = {
+        state: 'An actor with provided id is available in role assignment service',
+        uponReceiving: 'refresh role assignment for user',
+        withRequest: {
+          method: 'GET',
+          path: '/am/role-assignments/actors/123',
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          }
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+          },
+          body: {}
+        }
+      };
+
       // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
+      // @ts-ignore
+      pactSetUp.provider.addInteraction(refreshRoleAssignmentInteraction);
     });
 
     afterEach(() => {
@@ -53,19 +84,17 @@ describe('access management service, delete exclusion', () => {
         return configValues[prop];
       });
 
-      const { deleteUserExclusion } = requireReloaded('../../../../roleAccess/exclusionService');
+      const { deleteRoleByCaseAndRoleId } = requireReloaded('../../../../roleAccess/index');
       const req = mockReq({
         headers: {
           'Authorization': 'Bearer someAuthorizationToken',
           'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
           'content-type': 'application/json'
         },
-        body: {
-          roleExclusion: {
-            id: exclusionId
-          }
-        }
+        session: { passport: { user: { userinfo: { id: '123' } } } },
+        body: REQUEST_BODY
       });
+
       let returnedResponse = null;
       const response = mockRes();
       response.send = (ret) => {
@@ -73,7 +102,7 @@ describe('access management service, delete exclusion', () => {
       };
 
       try {
-        await deleteUserExclusion(req, response, next);
+        await deleteRoleByCaseAndRoleId(req, response, next);
         assertResponses(returnedResponse);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
@@ -87,5 +116,6 @@ describe('access management service, delete exclusion', () => {
 });
 
 function assertResponses(dto: any) {
-  expect(dto.id).to.be.equal(exclusionId);
+  // The API does not send any response back
+  expect(dto).to.be.equal(undefined);
 }

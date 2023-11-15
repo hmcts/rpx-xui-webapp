@@ -65,6 +65,13 @@ export function getJudicialRefDataAPIOverrides(judicialRefApiUrl) {
   };
 }
 
+export function getRdCommonDataAPIOverrides(rdCommonDataApiUrl) {
+  return {
+    'services.prd.commondataApi': rdCommonDataApiUrl,
+    ...defaultConfig
+  };
+}
+
 export function getAccessManagementRoleMappingServiceAPIOverrides(accessManagementRoleMappingAPI) {
   return {
     'services.role_assignment.roleMappingApi': accessManagementRoleMappingAPI,

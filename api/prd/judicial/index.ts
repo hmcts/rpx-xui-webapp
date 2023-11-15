@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express';
 import { getConfigValue, showFeature } from '../../configuration';
-import { FEATURE_JRD_E_LINKS_V2_ENABLED, SERVICES_PRD_JUDICIAL_API } from '../../configuration/references';
+import { FEATURE_JRD_E_LINKS_V2_ENABLED, SERVICES_CASE_JUDICIAL_REF_PATH } from '../../configuration/references';
 import { http } from '../../lib/http';
 import { EnhancedRequest } from '../../lib/models';
 import { setHeaders } from '../../lib/proxy';
@@ -10,9 +10,9 @@ import {
   transformToJudicialUserModel
 } from './models/judicialUser.model';
 
+const JUDICIAL_REF_URL = getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH);
 const HEADER_ACCEPT_V1 = 'application/json';
 const HEADER_ACCEPT_V2 = 'application/vnd.jrd.api+json;Version=2.0';
-const prdUrl: string = getConfigValue(SERVICES_PRD_JUDICIAL_API);
 
 /**
  * @overview searchJudicialUserByPersonalCodes from personalCodes, i.e. ['p1000000','p1000001']
@@ -21,7 +21,7 @@ const prdUrl: string = getConfigValue(SERVICES_PRD_JUDICIAL_API);
  */
 export async function searchJudicialUserByPersonalCodes(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
-  const markupPath: string = `${prdUrl}/refdata/judicial/users`;
+  const markupPath: string = `${JUDICIAL_REF_URL}/refdata/judicial/users`;
   try {
     // Judicial User search API version to be used depends upon the config entry FEATURE_JRD_E_LINKS_V2_ENABLED's value
     req.headers.accept = showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED)
@@ -43,7 +43,7 @@ export async function searchJudicialUserByPersonalCodes(req: EnhancedRequest, re
  */
 export async function getJudicialUsersSearch(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
-  const markupPath: string = `${prdUrl}/refdata/judicial/users/search`;
+  const markupPath: string = `${JUDICIAL_REF_URL}/refdata/judicial/users/search`;
   try {
     // Judicial User search API version to be used depends upon the config entry FEATURE_JRD_E_LINKS_V2_ENABLED's value
     req.headers.accept = showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED)

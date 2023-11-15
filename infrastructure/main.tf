@@ -1,23 +1,23 @@
 locals {
-    app_full_name = "xui-${var.component}"
-    ase_name = "core-compute-${var.env}"
-    local_env = (var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "aat" : "saat" : var.env
-    shared_vault_name = "${var.shared_product_name}-${local.local_env}"
+  app_full_name     = "xui-${var.component}"
+  ase_name          = "core-compute-${var.env}"
+  local_env         = (var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "aat" : "saat" : var.env
+  shared_vault_name = "${var.shared_product_name}-${local.local_env}"
 }
 
 data "azurerm_key_vault" "key_vault" {
-    name = local.shared_vault_name
-    resource_group_name = local.shared_vault_name
+  name                = local.shared_vault_name
+  resource_group_name = local.shared_vault_name
 }
 
 data "azurerm_key_vault_secret" "s2s_secret" {
-    name = "mc-s2s-client-secret"
-    key_vault_id = data.azurerm_key_vault.key_vault.id
+  name         = "mc-s2s-client-secret"
+  key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
 data "azurerm_key_vault_secret" "oauth2_secret" {
-    name = "mc-idam-client-secret"
-    key_vault_id = data.azurerm_key_vault.key_vault.id
+  name         = "mc-idam-client-secret"
+  key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
 data "azurerm_subnet" "core_infra_redis_subnet" {
@@ -26,19 +26,26 @@ data "azurerm_subnet" "core_infra_redis_subnet" {
   resource_group_name  = "core-infra-${var.env}"
 }
 
-resource "azurerm_key_vault_secret" "redis_connection_string" {
-  name = "${var.component}-redis-connection-string"
-  value = "redis://${urlencode(module.redis-cache.access_key)}@${module.redis-cache.host_name}:${module.redis-cache.redis_port}?tls=true"
+resource "azurerm_key_vault_secret" "redis6_connection_string" {
+  name         = "${var.component}-redis6-connection-string"
+  value        = "redis://${urlencode(module.redis6-cache.access_key)}@${module.redis6-cache.host_name}:${module.redis6-cache.redis_port}?tls=true"
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
-module "redis-cache" {
-  source      = "git@github.com:hmcts/cnp-module-redis?ref=master"
-  product     = "${var.shared_product_name}-mc-redis"
-  location    = var.location
-  env         = var.env
-  subnetid    = data.azurerm_subnet.core_infra_redis_subnet.id
-  common_tags = var.common_tags
+module "redis6-cache" {
+  source        = "git@github.com:hmcts/cnp-module-redis?ref=master"
+  product       = "${var.shared_product_name}-mc-redis6"
+  name          = "${var.product}-${var.component}-${var.env}"
+  location      = var.location
+  env           = var.env
+  subnetid      = data.azurerm_subnet.core_infra_redis_subnet.id
+  common_tags   = var.common_tags
+  redis_version = "6"
+  business_area = "cft"
+  private_endpoint_enabled = true
+  public_network_access_enabled = false
+  family        = "${var.redis_family}"
+  capacity      = "${var.redis_capacity}"
 }
 
 resource "azurerm_application_insights" "appinsights" {

@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs/internal/observable/of';
 import { CaseManagerFilterComponent } from '..';
 import * as fromStore from '../../../app/store';
@@ -43,10 +44,12 @@ describe('CaseManagerFilterComponent', () => {
       imports: [
         CdkTableModule,
         HttpClientTestingModule,
-        RouterTestingModule
+        RouterTestingModule,
+        RpxTranslationModule.forChild()
       ],
       declarations: [CaseManagerFilterComponent, MockGenericFilterComponent],
       providers: [
+        RpxTranslationService, RpxTranslationConfig,
         provideMockStore(),
         { provide: WorkAllocationCaseService, useValue: mockCaseService },
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },

@@ -3,7 +3,11 @@ import { handleDelete, handleGet, handlePost, handlePut, sendPut } from '../comm
 import { getConfigValue } from '../configuration';
 import { SERVICES_HMC_HEARINGS_COMPONENT_API } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
-import { HearingActualsMainModel, HearingActualsModel } from './models/hearingActualsMainModel';
+import {
+  HearingActualsCompletionResponseModel,
+  HearingActualsMainModel,
+  HearingActualsModel
+} from './models/hearingActualsMainModel';
 import { HearingListMainModel } from './models/hearingListMain.model';
 import { HearingRequestMainModel } from './models/hearingRequestMain.model';
 import { hearingStatusMappings } from './models/hearingStatusMappings';
@@ -116,6 +120,7 @@ export async function updateHearingActuals(req: EnhancedRequest, res: Response, 
   const reqBody = req.body;
   const hearingId = req.query.hearingId;
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
+
   try {
     const { status, data }: { status: number, data: HearingActualsModel } = await sendPut(markupPath, reqBody, req);
     res.status(status).send(data);
@@ -130,9 +135,10 @@ export async function updateHearingActuals(req: EnhancedRequest, res: Response, 
 export async function submitHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction) {
   const hearingId = req.params.hearingId;
   const markupPath = `${hmcHearingsUrl}/hearingActualsCompletion/${hearingId}`;
+
   try {
-    const { status }: { status: number } = await handlePost(markupPath, null, req, next);
-    res.status(status).send(null);
+    const { status, data }: { status: number, data: HearingActualsCompletionResponseModel } = await handlePost(markupPath, null, req, next);
+    res.status(status).send(data);
   } catch (error) {
     next(error);
   }

@@ -24,6 +24,12 @@ router.post('/session/user/roles',async (req,res) => {
     res.send({status: 'success'})
 })
 
+router.post('/session/user/info',  async (req,res) => {
+    await sessionService.updateAuthSessionWithUserInfo(req.body.auth, req.body.userInfo)
+    res.send({status: 'success'})
+});
+
+
 
 
 router.post('/session/user/roleAssignments', async (req, res) => {
@@ -41,6 +47,17 @@ router.post('/session/userApiData', async (req, res) => {
 router.post('/session/getUserRolesAndRoleAssignments', async (req, res) => {
     const data = await sessionService.getSessionRolesAndRoleAssignments(req.body.auth)
     res.send(data)
+})
+
+router.post('/session/user/sessionData', async (req, res) => {
+    res.send(userApiData.getUserSessionData(req.body.auth))
+})
+
+
+
+router.post('/session/logMessage', async (req, res) => {
+    console.log(req.body.message)
+    res.send({})
 })
 
 

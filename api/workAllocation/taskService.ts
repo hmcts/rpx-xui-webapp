@@ -45,6 +45,13 @@ export async function handleTaskPost(path: string, payload: any, req: EnhancedRe
   return await handlePost(path, payload, req);
 }
 
+export async function handlePostSearch(path: string, payload: string | any, req: EnhancedRequest): Promise<any> {
+  logger.info('post search', payload);
+  const headers = setHeaders(req);
+  const response: AxiosResponse = await http.post(path, payload, { headers });
+  return response;
+}
+
 export async function handleGetTasksByCaseId(path: string, req: EnhancedRequest): Promise<any> {
   logger.info('getting tasks for', path);
   const headers = setHeaders(req);

@@ -44,6 +44,13 @@ export function getLocationsRefDataAPIOverrides(locationRefApiUrl) {
   };
 }
 
+export function getPrdLocationsRefDataAPIOverrides(prdLocationRefApiUrl) {
+  return {
+    'services.prd.locationApi': prdLocationRefApiUrl,
+    ...defaultConfig
+  };
+}
+
 export function getAccessManagementServiceAPIOverrides(accessManagementAPI) {
   return {
     'services.role_assignment.roleApi': accessManagementAPI,
@@ -61,6 +68,27 @@ export function getJudicialRefDataAPIOverrides(judicialRefApiUrl) {
 export function getHearingsAPIOverrides(hearingsRefApiUrl: string) {
   return {
     'services.hearings.hmcApi': hearingsRefApiUrl,
+    ...defaultConfig
+  };
+}
+
+export function getRdCommonDataAPIOverrides(rdCommonDataApiUrl) {
+  return {
+    'services.prd.commondataApi': rdCommonDataApiUrl,
+    ...defaultConfig
+  };
+}
+
+export function getAccessManagementRoleMappingServiceAPIOverrides(accessManagementRoleMappingAPI) {
+  return {
+    'services.role_assignment.roleMappingApi': accessManagementRoleMappingAPI,
+    ...defaultConfig
+  };
+}
+
+export function getJudicialBookingAPIOverrides(judicialBookingApiUrl) {
+  return {
+    'services.judicialBookingApi': judicialBookingApiUrl,
     ...defaultConfig
   };
 }

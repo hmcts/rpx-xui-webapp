@@ -11,7 +11,7 @@ export class DateRequestSubmittedAnswerConverter implements AnswerConverter {
       map((state) => {
         if (state.hearingRequest.hearingRequestMainModel && state.hearingRequest.hearingRequestMainModel.requestDetails) {
           const requestDetails = state.hearingRequest.hearingRequestMainModel.requestDetails;
-          return moment(requestDetails.timeStamp).format(HearingDateEnum.DisplayMonth);
+          return moment(requestDetails.timestamp).format(HearingDateEnum.DisplayMonth);
         }
         return '';
       })

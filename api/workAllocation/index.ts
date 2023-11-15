@@ -16,7 +16,6 @@ import { getAllRoles } from '../roleAccess/roleAssignmentService';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
-import * as caseServiceMock from './caseService.mock';
 import {
   getUserIdsFromJurisdictionRoleResponse,
   getUserIdsFromRoleApiResponse,
@@ -24,9 +23,10 @@ import {
   handleCaseWorkerForLocationAndService,
   handleCaseWorkerForService,
   handleCaseWorkersForServicesPost,
+  handlePostCaseWorkerSearch,
   handlePostCaseWorkersRefData,
-  handlePostRoleAssignments,
-  handlePostSearch
+  handlePostCaseWorkersRefDataAll,
+  handlePostRoleAssignments
 } from './caseWorkerService';
 import { ViewType } from './constants/actions';
 import { CaseList } from './interfaces/case';
@@ -36,7 +36,7 @@ import { CaseDataType, Caseworker, CaseworkersByService } from './interfaces/com
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
-import { handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } from './taskService';
+import { handlePostSearch, handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } from './taskService';
 import {
   assignActionsToCases,
   assignActionsToUpdatedTasks,
@@ -69,8 +69,8 @@ import {
   prepareTaskSearchForCompletable,
   searchCasesById
 } from './util';
+import { trackTrace } from '../lib/appInsights';
 
-caseServiceMock.init();
 roleServiceMock.init();
 
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
@@ -87,6 +87,8 @@ const logger: JUILogger = log4jui.getLogger('workallocation');
 export async function getTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
+    // Adding log in app insights for task completion journey
+    trackTrace(`get task Id: ${req.params.taskId}`, { functionCall: 'getTask' });
     const jsonResponse = await handleTaskGet(getTaskPath, req);
     if (jsonResponse && jsonResponse.task && jsonResponse.task.due_date) {
       jsonResponse.task.dueDate = jsonResponse.task.due_date;
@@ -217,6 +219,8 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
   try {
     const payload = { case_id: caseId, event_id: eventId, case_jurisdiction: jurisdiction, case_type: caseType };
     const jurisdictions = getWASupportedJurisdictionsList();
+    // Adding log in app insights for task completion journey
+    trackTrace(`Search for completable task of eventId and caseId: ${eventId} ${caseId}`, { functionCall: 'getTasksByCaseIdAndEventId' });
     const { status, data } = jurisdictions.includes(jurisdiction)
       ? await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req)
       : { status: 200, data: [] };
@@ -242,6 +246,8 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
       delete req.body.hasNoAssigneeOnComplete;
     }
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
+
+    trackTrace(`${req.params.action} of task Id: ${req.params.taskId} ${req.params.action}`, { functionCall: 'postTaskAction' });
     const { status, data } = await handleTaskPost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);
@@ -309,7 +315,7 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest): Promise<Case
   const { data } = await handlePostRoleAssignments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);
   const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
-  const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
+  const userResponse = await handlePostCaseWorkersRefDataAll(userUrl, userIds, req);
   const caseWorkerReferenceData = mapCaseworkerData(userResponse.data, data.roleAssignmentResponse);
   req.session.caseworkers = caseWorkerReferenceData;
   return caseWorkerReferenceData;
@@ -389,7 +395,7 @@ export async function getCaseWorkersForService(req: EnhancedRequest, res: Respon
  */
 export async function getCaseWorkersForLocationAndService(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const getCaseWorkerPath: string = prepareCaseWorkerForLocationAndService(baseUrl, req.params.locationId, req.params.serviceId);
+    const getCaseWorkerPath: string = prepareCaseWorkerForLocationAndService(baseCaseWorkerRefUrl, req.params.locationId, req.params.serviceId);
     const jsonResponse = await handleCaseWorkerForLocationAndService(getCaseWorkerPath, req);
     res.status(200);
     res.send(jsonResponse);
@@ -403,8 +409,8 @@ export async function getCaseWorkersForLocationAndService(req: EnhancedRequest, 
  */
 export async function searchCaseWorker(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const postTaskPath: string = prepareCaseWorkerSearchUrl(baseUrl);
-    const { status, data } = await handlePostSearch(postTaskPath, req.body, req);
+    const postCaseWorkerPath: string = prepareCaseWorkerSearchUrl(baseCaseWorkerRefUrl);
+    const { status, data } = await handlePostCaseWorkerSearch(postCaseWorkerPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {

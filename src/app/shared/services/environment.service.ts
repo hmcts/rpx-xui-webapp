@@ -21,4 +21,12 @@ export class EnvironmentService {
   public get<K extends keyof EnvironmentConfig>(key: K): EnvironmentConfig[K] {
     return this.data[key];
   }
+
+  public isProd(): boolean {
+    let isProd = true;
+    if (this.data?.ccdGatewayUrl) {
+      isProd = this.data.ccdGatewayUrl === 'https://gateway.ccd.platform.hmcts.net';
+    }
+    return isProd;
+  }
 }

@@ -1,5 +1,4 @@
-
- <h1 class="govuk-heading-l">
+<h1 class="govuk-heading-l">
   <span class="govuk-caption-l">{{caption}}</span>
   {{title}}
 </h1>
@@ -28,11 +27,43 @@
       <div id="conditional-specific-access-3"
         [ngClass]="anotherPeriod ? 'govuk-radios__conditional' : 'govuk-radios__conditional govuk-radios__conditional--hidden'">
         <div class="govuk-form-group">
-          <xuilib-gov-uk-date
-            [formGroup]="formGroup"
-            [config]="configStart"
-            [errorMessage]="startDateErrorMessage">
-          </xuilib-gov-uk-date>
+          <legend class="govuk-fieldset__legend govuk-label--m"> Access Starts </legend>
+            <div class="govuk-date-input__item date-month-year">
+              <div class="govuk-form-group">
+                <label class="govuk-date-input__label govuk-label" for="endDate-day">
+                  <span >Day</span>
+                </label>
+                <div>
+                  <label class="govuk-date-input__label govuk-label">
+                    <span>{{ today.getDate() }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="govuk-date-input__item date-month-year">
+              <div class="govuk-form-group">
+                <label class="govuk-date-input__label govuk-label" for="endDate-day">
+                  <span >Month</span>
+                </label>
+                <div>
+                  <label class="govuk-date-input__label govuk-label">
+                    <span>{{ today.getMonth()+1 }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="govuk-date-input__item date-month-year">
+              <div class="govuk-form-group">
+                <label class="govuk-date-input__label govuk-label" for="endDate-day">
+                  <span >Year</span>
+                </label>
+                <div>
+                  <label class="govuk-date-input__label govuk-label">
+                    <span>{{ today.getFullYear() }}</span>
+                  </label>
+                </div>
+              </div>
+          </div>
           <xuilib-gov-uk-date
             [formGroup]="formGroup"
             [config]="configEnd"

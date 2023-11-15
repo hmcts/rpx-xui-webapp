@@ -65,6 +65,14 @@ export function getJudicialRefDataAPIOverrides(judicialRefApiUrl) {
   };
 }
 
+export function getNocAPIOverrides(nocAPiUrl) {
+  return {
+    'services.ccd.caseAssignmentApi': nocAPiUrl,
+    'waSupportedJurisdictions': 'IA',
+    ...defaultConfig
+  };
+}
+
 export function getHearingsAPIOverrides(hearingsRefApiUrl: string) {
   return {
     'services.hearings.hmcApi': hearingsRefApiUrl,

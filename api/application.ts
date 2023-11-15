@@ -3,11 +3,13 @@ import * as cookieParser from 'cookie-parser';
 import * as csrf from 'csurf';
 import * as express from 'express';
 import * as helmet from 'helmet';
+import * as compression from 'compression';
 import amRoutes from './accessManagement/routes';
 import { getXuiNodeMiddleware } from './auth';
 import { getConfigValue, showFeature } from './configuration';
 import {
   FEATURE_HELMET_ENABLED,
+  FEATURE_COMPRESSION_ENABLED,
   HELMET,
   PROTOCOL,
   SESSION_SECRET
@@ -39,7 +41,9 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         '*.gov.uk',
         'dc.services.visualstudio.com',
         '*.launchdarkly.com',
-        'www.google-analytics.com',
+        'https://*.google-analytics.com',
+        'https://*.googletagmanager.com',
+        'https://*.analytics.google.com',
         '*.hmcts.net'
       ],
       defaultSrc: ['\'self\''],
@@ -50,8 +54,8 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
       imgSrc: [
         '\'self\'',
         'data:',
-        'https://www.google-analytics.com',
-        'https://www.googletagmanager.com',
+        'https://*.google-analytics.com',
+        'https://*.googletagmanager.com',
         'https://raw.githubusercontent.com/hmcts/',
         'http://stats.g.doubleclick.net/',
         'http://ssl.gstatic.com/',
@@ -63,8 +67,8 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         '\'self\'',
         '\'unsafe-inline\'',
         '\'unsafe-eval\'',
-        'www.google-analytics.com',
-        'www.googletagmanager.com',
+        'https://*.google-analytics.com',
+        'https://*.googletagmanager.com',
         'az416426.vo.msecnd.net'
       ],
       styleSrc: [
@@ -94,6 +98,10 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
 }
 
 app.use(cookieParser(getConfigValue(SESSION_SECRET)));
+
+if (showFeature(FEATURE_COMPRESSION_ENABLED)) {
+  app.use(compression());
+}
 
 // TODO: remove tunnel and configurations
 tunnel.init();

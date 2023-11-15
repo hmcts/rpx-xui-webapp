@@ -9,16 +9,18 @@ describe('HearingJudgeNamesListComponent', () => {
   let fixture: ComponentFixture<HearingJudgeNamesListComponent>;
 
   const judgeDetails: JudicialUserModel = {
-    emailId: 'jacky.collins@judicial.com',
-    fullName: 'Jacky Collins',
-    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-    isJudge: '',
-    isMagistrate: '',
-    isPanelMember: '',
+    title: '',
     knownAs: 'Hearing Judge',
-    personalCode: 'P100001',
     surname: 'Jacky',
-    title: ''
+    fullName: 'Jacky Collins',
+    emailId: 'jacky.collins@judicial.com',
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+    initials: 'JC',
+    postNominals: 'JP',
+    isJudge: '',
+    personalCode: 'P100001',
+    isMagistrate: '',
+    isPanelMember: ''
   };
 
   beforeEach(waitForAsync(() => {

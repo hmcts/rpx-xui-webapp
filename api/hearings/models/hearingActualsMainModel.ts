@@ -77,3 +77,9 @@ export interface HearingActualsMainModel {
   hmcStatus: HMCStatus;
   caseDetails: CaseDetailsModel;
 }
+
+export interface HearingActualsCompletionResponseModel {
+  body: { [x:string]: any };
+  statusCode: string;
+  statusCodeValue: number;
+}

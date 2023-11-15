@@ -26,3 +26,11 @@ variable "application_type" {
   default     = "web"
   description = "Type of Application Insights (Web/Other)"
 }
+
+variable "redis_family" {
+  default     = "P"
+}
+
+variable "redis_capacity" {
+  default     = "2"
+}

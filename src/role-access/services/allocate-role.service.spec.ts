@@ -102,7 +102,7 @@ describe('AllocateRoleService', () => {
       });
       const req = httpMock.expectOne('/api/role-access/allocate-role/delete');
       expect(req.request.method).toEqual('POST');
-      expect(req.request.body).toEqual({ assigmentId: '111111' });
+      expect(req.request.body).toEqual({ assignmentId: '111111' });
       req.flush(null);
     }));
 

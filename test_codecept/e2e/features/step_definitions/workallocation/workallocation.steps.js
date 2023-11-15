@@ -101,7 +101,7 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I validate task actions in manage link for task at row {int}', async function (taskRow, actionsTable){
-        const taskRowsWithActions = actionsTable.hashes();
+        const taskRowsWithActions = actionsTable.parse().hashes();
         if (taskRowsWithActions.length === 0){
             expect(await taskListPage.isManageLinkPresent(taskRow)).to.be.false
 

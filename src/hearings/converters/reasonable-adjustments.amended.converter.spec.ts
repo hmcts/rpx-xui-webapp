@@ -26,7 +26,12 @@ fdescribe('ReasonableAdjustmentsAmendedConverter', () => {
       spyOn(reasonableAdjustmentsAmendedConverter, 'checkReasonableAdjustments').and.callThrough();
 
       // Act
-      reasonableAdjustmentsAmendedConverter.transformIsAmended(mockHearingState$);
+      reasonableAdjustmentsAmendedConverter['transformIsAmended'](mockHearingState$);
+
+      // const result = reasonableAdjustmentsAmendedConverter['checkReasonableAdjustments'](
+      //   STATE.hearingRequest.hearingRequestMainModel.partyDetails,
+      //   STATE.hearingRequestToCompare.hearingRequestMainModel.partyDetails
+      // );
 
       // Assert
       expect(reasonableAdjustmentsAmendedConverter.checkReasonableAdjustments).toHaveBeenCalledWith(

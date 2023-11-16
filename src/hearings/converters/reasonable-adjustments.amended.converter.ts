@@ -13,17 +13,12 @@ export class ReasonableAdjustmentsAmendedConverter implements IsAmendedConverter
         state.hearingRequestToCompare.hearingRequestMainModel.partyDetails);
     }));
   }
-
-  // Check with Andy - do we also need to check party.individualDetails?.otherReasonableAdjustmentDetails
-  private checkReasonableAdjustments(originalPartyDetails: PartyDetailsModel[], partyDetailsToCompare: PartyDetailsModel[]) {
+  public checkReasonableAdjustments(originalPartyDetails: PartyDetailsModel[], partyDetailsToCompare: PartyDetailsModel[]) {
     return partyDetailsToCompare.some(party => {
       if (party.partyType === PartyType.IND) {
         let originalParty = originalPartyDetails.find(op => op.partyID === party.partyID);
         if (originalParty) {
           return !_.isEqual(originalParty.individualDetails?.reasonableAdjustments, party.individualDetails?.reasonableAdjustments);
-        }
-        if (party.individualDetails?.reasonableAdjustments){
-          return true
         }
       }
       return false;

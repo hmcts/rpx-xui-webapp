@@ -1,3 +1,4 @@
+import { InteractionObject } from '@pact-foundation/pact/src/dsl/interaction';
 import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
@@ -5,7 +6,6 @@ import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactTestSetup } from '../settings/provider.mock';
 import { getHearingsAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
-import { InteractionObject } from '@pact-foundation/pact/src/dsl/interaction';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;

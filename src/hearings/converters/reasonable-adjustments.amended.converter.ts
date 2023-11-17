@@ -13,10 +13,11 @@ export class ReasonableAdjustmentsAmendedConverter implements IsAmendedConverter
         state.hearingRequestToCompare.hearingRequestMainModel.partyDetails);
     }));
   }
+
   public checkReasonableAdjustments(originalPartyDetails: PartyDetailsModel[], partyDetailsToCompare: PartyDetailsModel[]) {
-    return partyDetailsToCompare.some(party => {
+    return partyDetailsToCompare.some((party) => {
       if (party.partyType === PartyType.IND) {
-        let originalParty = originalPartyDetails.find(op => op.partyID === party.partyID);
+        const originalParty = originalPartyDetails.find((op) => op.partyID === party.partyID);
         if (originalParty) {
           return !_.isEqual(originalParty.individualDetails?.reasonableAdjustments, party.individualDetails?.reasonableAdjustments);
         }

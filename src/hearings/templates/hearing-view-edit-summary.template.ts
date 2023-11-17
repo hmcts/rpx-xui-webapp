@@ -55,7 +55,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'Reasonable adjustments',
         answerSource: AnswerSource.CASE_FLAGS,
         changeLink: '/hearings/request/hearing-requirements#linkAmendFlags',
-        isAmendedSource: AnswerSource.CASE_FLAGS
+        isAmendedSource: AnswerSource.REASONABLE_ADJUSTMENTS
       }
     ]
   },

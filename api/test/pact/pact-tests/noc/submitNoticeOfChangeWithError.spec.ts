@@ -1,13 +1,13 @@
-import { PactTestSetup } from '../settings/provider.mock';
+import { expect } from 'chai';
+import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
+import { NocAnswer } from '../../../../../src/noc/models';
+import { PactTestSetup } from '../settings/provider.mock';
+import { getNocAPIOverrides } from '../utils/configOverride';
+import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-import { getNocAPIOverrides } from '../utils/configOverride';
-import * as config from 'config';
-import { requireReloaded } from '../utils/moduleUtil';
-import { expect } from 'chai';
-import { NocAnswer } from '../../../../../src/noc/models';
 
 const pactSetUp = new PactTestSetup({ provider: 'acc_manageCaseAssignment_Noc', port: 8000 });
 

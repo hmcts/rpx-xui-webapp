@@ -38,7 +38,7 @@
       "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },
     "hearings": {
-      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL,IA",
+      "hearingsJurisdictions": "HEARINGS_JURISDICTIONS",
       "sscs": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_SSCS",
         "caseTypes": "SERVICES_HEARINGS_CASETYPES_SSCS"
@@ -164,19 +164,23 @@
     },
     "oidcEnabled": {
       "__name": "FEATURE_OIDC_ENABLED",
-      "__format":"json"
+      "__format": "json"
     },
     "workAllocationEnabled": {
       "__name": "FEATURE_WORKALLOCATION_ENABLED",
-      "__format":"json"
+      "__format": "json"
+    },
+    "jrdELinksV2Enabled": {
+      "__name": "FEATURE_JRD_E_LINKS_V2_ENABLED",
+      "__format": "json"
     },
     "substantiveRoleEnabled": {
       "__name": "FEATURE_SUBSTANTIVE_ROLE_ENABLED",
-      "__format":"json"
+      "__format": "json"
     },
     "accessManagementEnabled": {
       "__name": "FEATURE_ACCESS_MANAGEMENT_ENABLED",
-      "__format":"json"
+      "__format": "json"
     },
     "compressionEnabled": {
       "__name": "FEATURE_COMPRESSION_ENABLED",

@@ -15,7 +15,7 @@ class HearingsApi{
         this.serviceLinkedcases = []
 
         // this.addHearing()
-        this.addHearing({ hmcStatus: "COMPLETED" })
+        this.addHearing({ hmcStatus: "LISTED" })
         this.addHearing({ hmcStatus: "AWAITING_ACTUALS" })
 
     }

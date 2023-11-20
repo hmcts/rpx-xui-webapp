@@ -93,14 +93,14 @@ Feature: Hearings: Hearings tab Hearing action based on roles
             | Hearing stage | Breach 1 |
             | Hearing result | COMPLETED |
 
-        Then I see hearing actuals page
-        Then I see hearing actuals page with details
-            | field        | value |
-            | Hearing stage |   Breach 1    |
-            | Hearing result | COMPLETED |
-
         When In hearing actuals page, I click continue
         Then I am hearing actuals check your answers page
+        Then I validate hearing actuals details in CYA
+            | field          | value     |
+            | Paper hearing | Yes |
+            | Hearing stage  | Breach 1  |
+            | Hearing result | COMPLETED |
+
         When I click Submit hearing details button in hearing actuals CYA
         Then I see hearing details success confirmation message "You have successfully submitted the hearing details."
         # Then In hearings tab, I see hearing "TEST_TYPE" with values under "Current and upcoming"

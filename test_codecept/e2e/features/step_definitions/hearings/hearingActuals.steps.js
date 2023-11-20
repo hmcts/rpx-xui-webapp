@@ -29,6 +29,25 @@ Then('I see hearing actuals page with details', async function (datatable) {
     }
 })
 
+Then('I validate hearing actuals details in CYA', async function (datatable){
+    const details = datatable.parse().hashes();
+    for (const row of details) {
+        const expectedField = row.field;
+        const expectedValue = row.value
+
+        const expectedFieldEle = element(by.xpath(hearingActualsPage.getTableKeyElementXpath(expectedField)))
+        const expectedValueEle = element(by.xpath(hearingActualsPage.getTableValueElementXpath(expectedField)))
+
+        await browserWaits.retryWithActionCallback(async () => {
+            expect(await expectedFieldEle.isDisplayed()).to.be.true
+            expect(await expectedValueEle.getText()).to.includes(expectedValue)
+
+        })
+
+
+    }
+})
+
 
 
 Then('I see hearing actuals update link', async function () {

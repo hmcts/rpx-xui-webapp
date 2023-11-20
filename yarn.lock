@@ -2591,12 +2591,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.5-yes-no-bug-fix-v7":
-  version: 6.19.5-yes-no-bug-fix-v7
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.5-yes-no-bug-fix-v7"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.13-load-hearings-tab-v2":
+  version: 6.19.13-load-hearings-tab-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.13-load-hearings-tab-v2"
   dependencies:
     tslib: ^2.0.0
-  checksum: 2d4cacab11c3bd11242e63dbc416acf16d191ad035beb3e036f88a5e3bb98bf12652567c7e066d4acece739a3af6ea697eb3a7bccd7e1e995379b13b84ffd07e
+  checksum: 7f2873e3d1b479e239563046c6a43540b79db8435d31d351641d51b5fee4589d2514c474f4f1a56444cd06d49c109df3201907412cad46754647841d41ed2415
   languageName: node
   linkType: hard
 
@@ -19225,7 +19225,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.5-yes-no-bug-fix-v7
+    "@hmcts/ccd-case-ui-toolkit": 6.19.13-load-hearings-tab-v2
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.9.5

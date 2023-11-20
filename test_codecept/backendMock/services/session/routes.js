@@ -5,6 +5,7 @@ const express = require('express')
 const router = express.Router({ mergeParams: true });
 const sessionService = require('./index')
 const userApiData = require('../userApiData')
+const mockApiData = require('../mockApiData')
 
 router.get('/session/files', (req, res) => {
     res.send(sessionService.getSessionFiles())
@@ -42,6 +43,13 @@ router.post('/session/userApiData', async (req, res) => {
     await userApiData.setUserData(req.body.auth, req.body.apiMethod, req.body.apiResponse)
     res.send({ status: 'success' })
 })
+
+router.post('/session/mockApiData/:apiMethod', async (req, res) => {
+    const status = mockApiData.setApiData(req.params.apiMethod, req.body)
+    res.send({ status: status})
+
+})
+
 
 
 router.post('/session/getUserRolesAndRoleAssignments', async (req, res) => {

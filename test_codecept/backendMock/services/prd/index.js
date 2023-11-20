@@ -93,11 +93,11 @@ class PRDApi{
     setUpCaseFlags(){
             this.addServiceCaseFlag({
                 name: "A",
-                childFlags: [{ name: 'A.A', path: "B" }]
+                childFlags: [{ name: 'A.A', path: "Reasonable adjustment" }]
             })
             this.addServiceCaseFlag({
                 name: "B",
-                childFlags: [{ name: 'B.A', path: "B" }]
+                childFlags: [{ name: 'B.A', path: "Language interpreter", flagCode: 'PF0015'}]
             })
         }
 
@@ -110,7 +110,7 @@ class PRDApi{
                     "flagComment": serviceFlag.flagComment ? serviceFlag.flagComment : false,
                     "defaultStatus": serviceFlag.defaultStatus ? serviceFlag.defaultStatus : "Active",
                     "externallyAvailable": serviceFlag.externallyAvailable ? serviceFlag.externallyAvailable : false,
-                    "flagCode": serviceFlag.flagCode ? serviceFlag.flagCode : "CATGRY",
+                    "flagCode": serviceFlag.flagCode ? serviceFlag.flagCode : "RA001",
                     "childFlags": [
                     ],
                     "isParent": serviceFlag.childFlags && serviceFlag.childFlags.length > 0 ? true : false,

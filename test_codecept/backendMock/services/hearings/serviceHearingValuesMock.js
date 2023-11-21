@@ -39,10 +39,10 @@ class ServiceHearingValues{
                 "partyName": party.partyName ? party.partyName : "First Applicant FN First Applicant LN updateeeeed",
                 "partyRole": party.partyRole ? party.partyRole : "APPL",
                 "individualDetails": {
-                    "firstName": party.individualDetails.firstName ? party.individualDetails.firstName : "First Applicant FN updated",
-                    "lastName": party.individualDetails.lastName ? party.individualDetails.lastName : "First Applicant LN updated",
-                    "interpreterLanguage": party.individualDetails.interpreterLanguage ? party.individualDetails.interpreterLanguage : "",
-                    "reasonableAdjustments": party.individualDetails.reasonableAdjustments ? party.individualDetails.reasonableAdjustments.split(',') : [
+                    "firstName": party.individualDetails?.firstName ? party.individualDetails.firstName : "First Applicant FN updated",
+                    "lastName": party.individualDetails?.lastName ? party.individualDetails.lastName : "First Applicant LN updated",
+                    "interpreterLanguage": party.individualDetails?.interpreterLanguage ? party.individualDetails.interpreterLanguage : "",
+                    "reasonableAdjustments": party.individualDetails?.reasonableAdjustments ? party.individualDetails.reasonableAdjustments.split(',') : [
                         'RA0042',
                         'RA0053',
                         'RA0013',

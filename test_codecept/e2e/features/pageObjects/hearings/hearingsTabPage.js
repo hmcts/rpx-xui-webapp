@@ -1,3 +1,4 @@
+const reportLogger = require("../../../../codeceptCommon/reportLogger");
 
 
 class HearingsTab{
@@ -93,11 +94,15 @@ class HearingsTable {
         let actionLinkEle = null
 
         const actionsCount = await elements.count();
+        if (actionsCount === 0){
+            reportLogger.AddMessage(`no actions forund for ${JSON.stringify(elements.selector)}`)
+        }
         const actionNames = []
         for (let i = 0; i < actionsCount; i++) {
             const e = await elements.get(i)
             
             const name = await e.getText()
+            reportLogger.AddMessage(`action "${name}", to click "${action}"`)
             if (name === action){
                 actionLinkEle = e;
                 break;

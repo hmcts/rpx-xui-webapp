@@ -15,6 +15,7 @@ const awaitinghearingsDetails = require('../../../backendMock/services/hearings/
 const completedHearing = require('../../../backendMock/services/hearings/mockData/completedHearing.data')
 const cancelledhearing = require('../../../backendMock/services/hearings/mockData/cancelledHearing.data')
 
+const mockServiceHearingValues = require('../../../backendMock/services/hearings/serviceHearingValuesMock')
 
 
     function updateObjectValues(object, key, value){
@@ -72,3 +73,23 @@ const cancelledhearing = require('../../../backendMock/services/hearings/mockDat
         mockClient.setOnGetHearing(hearingResponse, 200)
 
     });
+
+
+Given('I set mock hearings service hearing values with ref {string}', async function (ref) {
+    const serviceHearingValue = mockServiceHearingValues.getServiceHearingValuesTemplate()
+    global.scenarioData[ref] = serviceHearingValue
+    mockClient.setHearingServiceHearingValues(serviceHearingValue, 200)
+})
+
+Given('I update mock hearings service hearing values with ref {string} for field {string}', async function (ref, field, datatable) {
+
+    const serviceHearingValue = global.scenarioData[ref]
+
+    const dataTableObjects = datatable.parse().hashes()
+    if (field === 'caseFlags'){
+        mockServiceHearingValues.setCaseFlags(dataTableObjects, serviceHearingValue);
+    } else if (field === 'parties'){
+        mockServiceHearingValues.setParties(dataTableObjects, serviceHearingValue);
+    }
+    mockClient.setHearingServiceHearingValues(serviceHearingValue, 200)
+})

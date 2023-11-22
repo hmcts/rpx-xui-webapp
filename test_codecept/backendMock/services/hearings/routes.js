@@ -49,7 +49,7 @@ router.post('/hearing', (req,res) => {
 
 
 router.get('/hearingActuals/:hearingId', (req, res) => {
-    res.send(loadServicehearingValues)
+    res.send(serviceHearingValuesMock.serviceHearingValues)
 })
 
 router.put('/hearingActuals/:hearingId', (req, res) => {

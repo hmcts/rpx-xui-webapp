@@ -67,7 +67,8 @@ const hearing = {
     },
     "partyDetails": [
         {
-            "partyID": "04c01933-3fbb-4c8f-bd42-da09064a36d4",
+            "partyID": "209334d6-97e3-44ef-a206-58468f6bc43a",
+            "partyName":"mock party",
             "partyType": "IND",
             "partyRole": "APPL",
             "individualDetails": {
@@ -76,7 +77,9 @@ const hearing = {
                 "lastName": "applastname",
                 "preferredHearingChannel": null,
                 "interpreterLanguage": "",
-                "reasonableAdjustments": [],
+                "reasonableAdjustments": [
+                    "RA001"
+                ],
                 "vulnerableFlag": null,
                 "vulnerabilityDetails": "",
                 "hearingChannelEmail": [],

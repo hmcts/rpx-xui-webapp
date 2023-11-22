@@ -50,7 +50,7 @@ const loadServicehearingValues = {
         {
             "partyID": "209334d6-97e3-44ef-a206-58468f6bc43a",
             "partyType": "IND",
-            "partyName": "First Applicant FN First Applicant LN updateeeeed",
+            "partyName": "mock party",
             "partyRole": "APPL",
             "individualDetails": {
                 "firstName": "First Applicant FN updated",
@@ -159,6 +159,28 @@ const loadServicehearingValues = {
     ],
     "caseFlags": {
         "flags": [
+            {
+                "partyID": "P1",
+                "partyName": "Jane Smith",
+                "flagParentId": "PARENT_0",
+                "flagId": "RA001",
+                "flagDescription": "Sreasonable adjustment flags",
+                "flagStatus": "ACTIVE"
+            }, {
+                "partyID": "P1",
+                "partyName": "Jane Smith 2",
+                "flagParentId": "PARENT_0",
+                "flagId": "PF0015",
+                "flagDescription": "language interpreter",
+                "flagStatus": "ACTIVE"
+            }, {
+                "partyID": "P1",
+                "partyName": "Jane Smith 2",
+                "flagParentId": "PARENT_0",
+                "flagId": "OT001",
+                "flagDescription": "others",
+                "flagStatus": "ACTIVE"
+            }
         ],
         "flagAmendURL": '/'
     },

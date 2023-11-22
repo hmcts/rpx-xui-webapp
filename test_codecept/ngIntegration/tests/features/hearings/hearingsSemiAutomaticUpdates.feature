@@ -40,4 +40,14 @@ Feature: Hearings: Semi automatic updates
 
         When In hearings tab, I click action "View or edit" for hearing "TEST_TYPE" under table "Current and upcoming"
 
+        Then I validate view or edit hearing page displayed
+        Then I validate fields displayed in view or edit hearing page
+        |field|value|changeLinkDisplay|amendedFlagDisplay|
+        |||||
+
+        When In view or edit hearing page, I click change link for field "Reasonable adjustments"
+        Then I am on hearings workflow page "Hearing requirements"
+        Then In hearings requirements page, I see case flags displayed for parties
+        |partyName|
+        ||
         

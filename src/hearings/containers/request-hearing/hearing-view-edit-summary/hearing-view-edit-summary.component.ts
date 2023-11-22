@@ -31,8 +31,10 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
 
   public ngOnInit(): void {
     this.caseId = this.hearingRequestMainModel?.caseDetails?.caseRef;
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
-    this.setPropertiesUpdatedOnPageVisit();
+    if (!this.hearingsService.propertiesUpdatedOnPageVisit) {
+      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
+      this.setPropertiesUpdatedOnPageVisit();
+    }
   }
 
   private getInitialAndCurrentState(): Observable<[HearingRequestStateData, HearingRequestStateData]> {
@@ -64,7 +66,7 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
   }
 
   public setPropertiesUpdatedOnPageVisit(): void {
-    this.hearingValuesSubscription = this.hearingStore.select(fromHearingStore.getHearingValues).pipe(take(1)).subscribe((hearingValues) => {
+    this.hearingValuesSubscription = this.hearingStore.select(fromHearingStore.getHearingValues).subscribe((hearingValues) => {
       const serviceHearingValues = hearingValues?.serviceHearingValuesModel;
       if (serviceHearingValues) {
         this.hearingsService.propertiesUpdatedOnPageVisit = {

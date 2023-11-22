@@ -47,10 +47,22 @@ describe('HearingViewEditSummaryComponent', () => {
     it('should set case id from hearing request and call setPropertiesUpdatedOnPageVisit method', () => {
       const storeDispatchSpy = spyOn(store, 'dispatch');
       spyOn(component, 'setPropertiesUpdatedOnPageVisit');
+      hearingsService.propertiesUpdatedOnPageVisit = undefined;
       component.ngOnInit();
       expect(component.caseId).toEqual('1234123412341234');
       expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues(component.caseId));
       expect(component.setPropertiesUpdatedOnPageVisit).toHaveBeenCalled();
+    });
+
+    it('should not load hearing values after navigating back from the child page', () => {
+      const storeDispatchSpy = spyOn(store, 'dispatch');
+      spyOn(component, 'setPropertiesUpdatedOnPageVisit');
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+        parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties
+      };
+      expect(storeDispatchSpy).not.toHaveBeenCalled();
+      expect(component.setPropertiesUpdatedOnPageVisit).not.toHaveBeenCalled();
     });
 
     it('should set propertiesUpdatedOnPageVisit', () => {

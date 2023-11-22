@@ -101,7 +101,9 @@ const hearing = {
                 "lastName": "reslastname",
                 "preferredHearingChannel": null,
                 "interpreterLanguage": "",
-                "reasonableAdjustments": [],
+                "reasonableAdjustments": [
+                  "RA001"
+                ],
                 "vulnerableFlag": null,
                 "vulnerabilityDetails": "",
                 "hearingChannelEmail": [],

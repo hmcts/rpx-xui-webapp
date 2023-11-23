@@ -32,7 +32,7 @@ class WorkAllocationModels {
             "role" : "case role",
             "role_category" : "role-categpry",
             "hasAccess":true
-            
+
         };
     }
 
@@ -40,7 +40,7 @@ class WorkAllocationModels {
         const tasks = [];
         for(let i =0 ;i <25; i++){
             tasks.push(this.getRelease2Task());
-        } 
+        }
         return {
             tasks: tasks,
             total_records:100
@@ -118,7 +118,7 @@ class WorkAllocationModels {
         }
 
         let allowedActions = {};
-        for (let i = 0; i < permissions.length; i++) {
+    /*    for (let i = 0; i < permissions.length; i++) {
             if (actionsView[permissions[i]] === undefined) {
                 throw new Error(`Permission ${permissions[i]} is not modeled in Mock data model. test requires update ${JSON.stringify(actionsView)}`);
             }
@@ -126,8 +126,8 @@ class WorkAllocationModels {
 
             for (let i = 0; i < permissionActions.length; i++) {
                 allowedActions[permissionActions[i].id] = permissionActions[i];
-            }
-        }
+            } //remove from old mock framework
+        }*/
 
         return Object.values(allowedActions);
     }
@@ -231,7 +231,7 @@ class WorkAllocationModels {
 
     getRefDataJudge(firstName,surname,email){
         const fn = firstName ? `${firstName} ${surname}` : 'fntest';
-        const ln = surname ? surname : "snjudge"; 
+        const ln = surname ? surname : "snjudge";
         return {
             "sidam_id": v4(),
             "object_id": "018a0310-f122-4377-9504-f635301f39ed-test2",

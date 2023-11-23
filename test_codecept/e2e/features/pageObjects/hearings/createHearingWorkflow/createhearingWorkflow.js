@@ -38,7 +38,7 @@ class CreateHearingWorkflow{
             "Check your answers before sending your request": new HearingCreateEditSummaryPage(),
             "Hearing request submitted": new HearingSubmitConfirmationPage(),
             "Does this hearing need to be in Welsh?" : new HearingWelshPage(),
-            "exui-hearing-change-reasons": new HearingChangeReasonsPage()
+            "Provide a reason for changing this hearing": new HearingChangeReasonsPage()
         }
       
     }

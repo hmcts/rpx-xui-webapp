@@ -44,3 +44,8 @@ const { getTestJurisdiction } = require('../../mockData/ccdCaseMock');
           })
         
     });
+
+    Given('I captured {string} request body from mock', async function(apiMethod){
+        const requestObj = await serviceMock.getRequestBodyForApiMethod(apiMethod)
+        global.scenarioData[apiMethod] = requestObj.data
+    })

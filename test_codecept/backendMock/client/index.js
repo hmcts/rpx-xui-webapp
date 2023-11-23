@@ -43,7 +43,7 @@ class BackendMockClient{
     }
 
     async getRequestBody(auth, apiMethod) {
-        return await axiosInstance.post(`${this.baseUrl}session/userApiData/get/capturedRequest`, {
+        return await axiosInstance.post(`${this.baseUrl}session/get/capturedRequest`, {
             auth: auth,
             apiMethod: apiMethod
         })

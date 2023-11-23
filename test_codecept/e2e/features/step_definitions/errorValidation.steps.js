@@ -29,6 +29,12 @@ const headerPage = require("../pageObjects/headerPage");
             } else if (errorTypePage.includes('message')){
                 expect(await exuiErrorMessage.isDisplayed()).to.be.true;
                 expect(await exuiErrorMessage.isMessageDisplayedInSummary(errorMessage),'Message diaplayed does noyt include expected').to.be.true
+
+            } else if (errorTypePage.includes('validation')) {
+                const validationError = $(`.validation-error`);
+                await BrowserWaits.waitForElement(validationError);
+                const validationMessage = await validationError.getText();
+                expect(validationMessage).to.include(errorMessage);    
                 
             } else {
                 throw new Error(`${errorType} is not recognised or not implemented in step definition of tests`);

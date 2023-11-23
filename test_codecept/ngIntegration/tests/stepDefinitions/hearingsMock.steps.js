@@ -6,6 +6,7 @@ const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 const serviceMock = require('../../../backendMock/client/serviceMock')
 
 const { DataTableArgument } = require('codeceptjs');
+const reportLogger = require('../../../codeceptCommon/reportLogger')
 
 const hearingsMock = require('../../../backendMock/services/hearings/index')
 const mockClient = require('../../../backendMock/client/serviceMock')
@@ -93,3 +94,11 @@ Given('I update mock hearings service hearing values with ref {string} for field
     }
     mockClient.setHearingServiceHearingValues(serviceHearingValue, 200)
 })
+
+
+Then('I validate hearings request body {string}', async function (apiMethod) {
+    reportLogger.AddJson(global.scenarioData[apiMethod])
+})
+
+
+

@@ -62,18 +62,32 @@ Feature: Hearings: Semi automatic updates
             | partyName   |
             | Party1 name |
             | Party2 name |
-        
+
         When In hearing page "Participant attendance", I input values
-            | field                                                    | value                                                      |
-            | Will this be a paper hearing?                            | No                                                         |
-            | What will be the methods of attendance for this hearing? | Hearing channel 1,Hearing channel 2                        |
-            | How will each participant attend the hearing?            | Party1 name,Hearing channel 1    |
-            | How will each participant attend the hearing?            | Party2 name,Hearing channel 1 |
-            | How many people will attend the hearing in person?       | 2                                                         |
+            | field                                                    | value                               |
+            | Will this be a paper hearing?                            | No                                  |
+            | What will be the methods of attendance for this hearing? | Hearing channel 1,Hearing channel 2 |
+            | How will each participant attend the hearing?            | Party1 name,Hearing channel 1       |
+            | How will each participant attend the hearing?            | Party2 name,Hearing channel 1       |
+            | How many people will attend the hearing in person?       | 2                                   |
         When I click continue in hearing workflow
         Then I validate view or edit hearing page displayed
         When I click button with label "Submit updated request"
 
+        Then I am on hearings workflow page "Provide a reason for changing this hearing"
+        When In hearing page "Provide a reason for changing this hearing", I input values
+            | field                                      | value                |
+            | Provide a reason for changing this hearing | Change reason code 1 |
+
+        When I click button with label "Submit change request"
+        Then I am on hearing page "Hearing request submitted"
+        Given I captured "OnPutHearing" request body from mock
+        Then I validate hearings request body "OnPutHearing"
+
+        Then I validate request body json "OnPutHearing", jsonpaths
+            | jsonpath                     | value     |
+            | $.requestDetails.status      | COMPLETED1 |
+            | $.hearingDetails.hearingType | ABA5-DIR  |
 
 
     Scenario: Hearing semi automatic updates to Case flags in Reasonable adjustments
@@ -112,27 +126,27 @@ Feature: Hearings: Semi automatic updates
             | Test updated part name |
 
         Given I update mock hearings service hearing values with ref "partiesUpdated" for field "caseFlags"
-            | partyID | partyName | flagParentId | flagId | flagDescription | flagStatus |
-            | party_1 | Party1 name | PARENT_0 | RA001 |Party1 comment|ACTIVE|
-            | party_2 | Party2 name | PARENT_0 | RA001 | Party2 comment | ACTIVE |
+            | partyID | partyName   | flagParentId | flagId | flagDescription | flagStatus |
+            | party_1 | Party1 name | PARENT_0     | RA001  | Party1 comment  | ACTIVE     |
+            | party_2 | Party2 name | PARENT_0     | RA001  | Party2 comment  | ACTIVE     |
 
         When In hearings tab, I click action "View or edit" for hearing "TEST_TYPE" under table "Current and upcoming"
 
         Then I validate view or edit hearing page displayed
         Then I validate fields displayed in view or edit hearing page
-            | field  | value     | changeLinkDisplay | amendedFlagDisplay |
-            | Status | COMPLETED | false             | false              |
-            | Will additional security be required? | No | true | false |
+            | field                                 | value     | changeLinkDisplay | amendedFlagDisplay |
+            | Status                                | COMPLETED | false             | false              |
+            | Will additional security be required? | No        | true              | false              |
 
 
         When In view or edit hearing page, I click change link for field "Reasonable adjustments"
         Then I am on hearings workflow page "Hearing requirements"
         Then In hearings requirements page, I see case flags displayed for parties
-            | partyName |
+            | partyName     |
             | Party1 name 1 |
             | Party2 name 1 |
 
-        # Then debug sleep minutes 30
+    # Then debug sleep minutes 30
 
 
     Scenario: Hearing semi automatic updates to Case flags in Additional facilities
@@ -172,8 +186,8 @@ Feature: Hearings: Semi automatic updates
 
         Given I update mock hearings service hearing values with ref "partiesUpdated" for field "caseFlags"
             | partyID | partyName   | flagParentId | flagId | flagDescription | flagStatus |
-            | party_1 | Party1 name | PARENT_0 | OT001 | Party1 comment | ACTIVE |
-            | party_2 | Party2 name | PARENT_0 | OT001 | Party2 comment | ACTIVE |
+            | party_1 | Party1 name | PARENT_0     | OT001  | Party1 comment  | ACTIVE     |
+            | party_2 | Party2 name | PARENT_0     | OT001  | Party2 comment  | ACTIVE     |
 
         When In hearings tab, I click action "View or edit" for hearing "TEST_TYPE" under table "Current and upcoming"
 
@@ -187,7 +201,7 @@ Feature: Hearings: Semi automatic updates
         When In view or edit hearing page, I click change link for field "Select any additional facilities required"
         Then I am on hearings workflow page "Do you require any additional facilities?"
         Then In additional facilities page, I see case flags displayed for parties
-            | partyName   |
+            | partyName     |
             | Party1 name 1 |
             | Party2 name 1 |
 

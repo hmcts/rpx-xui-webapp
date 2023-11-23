@@ -20,7 +20,8 @@
       </div>
     </div>
 
-    <ng-container *ngIf="!showSummary" [formGroup]="formGroup">
+    <!-- Query management workflow pages -->
+    <ng-container *ngIf="!showSummary && !showConfirmation" [formGroup]="formGroup">
       <ng-container [ngSwitch]="queryCreateContext">
         <div class="query-form-container">
           <ccd-qualifying-question-options *ngSwitchCase="queryCreateContextEnum.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS"
@@ -63,15 +64,24 @@
       </div>
     </ng-container>
 
+    <!-- Check your answers page -->
     <ccd-query-check-your-answers
       *ngIf="showSummary"
       [queryItem]="queryItem"
       [formGroup]="formGroup"
       [queryCreateContext]="queryCreateContext"
-      (backClicked)="showResponseForm()">
+      (backClicked)="showResponseForm()"
+      (querySubmitted)="showConfirmationPage()">
     </ccd-query-check-your-answers>
 
-    <div>
+    <!-- Query submission confirmation page -->
+    <ccd-query-confirmation
+      *ngIf="showConfirmation"
+      [queryCreateContext]="queryCreateContext">
+    </ccd-query-confirmation>
+
+    <!-- Do not show the cancel link on query submittion confirmation page -->
+    <div *ngIf="!showConfirmation">
       <ng-container [ngSwitch]="queryCreateContext">
         <a *ngSwitchCase="queryCreateContextEnum.NEW_QUERY"
           href="javascript:void(0)" (click)="navigateToCaseOverviewTab()"
@@ -79,7 +89,7 @@
             {{ 'Cancel and return to case' | rpxTranslate }}
         </a>
         <a *ngSwitchCase="queryCreateContextEnum.FOLLOWUP"
-          href="javascript:void(0)" (click)="goToQueryList()" 
+          href="javascript:void(0)" (click)="goToQueryList()"
           class="govuk-back-link govuk-!-margin-bottom-0">
           {{ 'Cancel and return to query list' | rpxTranslate }}
         </a>

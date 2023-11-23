@@ -36,8 +36,9 @@ export class QueryManagementContainerComponent implements OnInit {
   public caseId: string;
   public queryCreateContext: QueryCreateContext;
   public queryItem: QueryListItem | undefined;
-  public showSummary: boolean = false;
-  public formGroup: FormGroup = new FormGroup({});
+  public showSummary = false;
+  public showConfirmation = false;
+  public formGroup = new FormGroup({});
   public submitted = false;
   public errorMessages: ErrorMessage[] = [];
   public queryCreateContextEnum = QueryCreateContext;
@@ -63,7 +64,6 @@ export class QueryManagementContainerComponent implements OnInit {
     this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
 
     this.formGroup = new FormGroup({
-      name: new FormControl(null),
       subject: new FormControl(null),
       body: new FormControl(null, Validators.required),
       isHearingRelated: new FormControl(null),
@@ -78,12 +78,15 @@ export class QueryManagementContainerComponent implements OnInit {
       this.formGroup.get('subject')?.setValidators([Validators.required]);
       this.formGroup.get('isHearingRelated')?.setValidators([Validators.required]);
     }
-
-    this.setNameFromUserDetails();
   }
 
   public showResponseForm(): void {
     this.showSummary = false;
+  }
+
+  public showConfirmationPage(): void {
+    this.showSummary = false;
+    this.showConfirmation = true;
   }
 
   public submitForm(): void {
@@ -108,7 +111,6 @@ export class QueryManagementContainerComponent implements OnInit {
       this.submitted = true;
       this.validateForm();
       this.showSummary = this.errorMessages?.length === 0;
-
       // Reset hearing date if isHearingRelated
       if (!this.formGroup.get('isHearingRelated').value) {
         this.formGroup.get('hearingDate').setValue(null);
@@ -215,11 +217,6 @@ export class QueryManagementContainerComponent implements OnInit {
         htmlElement.focus();
       }
     }
-  }
-
-  private async setNameFromUserDetails(): Promise<void> {
-    const userDetails = await this.store.pipe(select(fromRoot.getUserDetails), first()).toPromise();
-    this.formGroup.get('name').setValue(userDetails.userInfo.name);
   }
 
   private getQueryCreateContext(): QueryCreateContext {

@@ -117,6 +117,12 @@ describe('QueryManagementContainerComponent', () => {
     expect(component.showSummary).toBeFalsy();
   });
 
+  it('showConfirmationPage - should show confirmation page', () => {
+    component.showConfirmationPage();
+    expect(component.showSummary).toEqual(false);
+    expect(component.showConfirmation).toEqual(true);
+  });
+
   it('should navigate to previous page', () => {
     component.previous();
     expect(locationMock.back).toHaveBeenCalled();
@@ -434,29 +440,19 @@ describe('QueryManagementContainerComponent', () => {
     });
   });
 
-  describe('setNameFromUserDetails', () => {
-    it('should set the name from user details', async () => {
-      // @ts-expect-error - private method
-      await component.setNameFromUserDetails();
-      expect(component.formGroup.get('name').value).toEqual('Test User');
+  describe('cancel navigation', () => {
+    it('should navigate to case overview tab', () => {
+      component.navigateToCaseOverviewTab();
+      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', component.caseId],
+        { fragment: 'Overview' }
+      );
     });
 
-    describe('navigateToCaseOverviewTab', () => {
-      it('should navigate to case overview tab', () => {
-        component.navigateToCaseOverviewTab();
-        expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', component.caseId],
-          { fragment: 'Overview' }
-        );
-      });
-    });
-
-    describe('navigateToCaseTaskTab', () => {
-      it('should navigate to case tasks tab', () => {
-        component.navigateToCaseTaskTab();
-        expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', component.caseId],
-          { fragment: 'tasks' }
-        );
-      });
+    it('should navigate to case tasks tab', () => {
+      component.navigateToCaseTaskTab();
+      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', component.caseId],
+        { fragment: 'tasks' }
+      );
     });
   });
 

@@ -41,4 +41,8 @@ When('In view or edit hearing page, I click change link for field {string}', asy
     await viewOrEditHearingPage.clickChangeLinkForField(field)
 })
 
+When('In view or edit hearing page, I click Submit updated request', async function (field) {
+    await viewOrEditHearingPage.clickChangeLinkForField(field)
+})
+
 

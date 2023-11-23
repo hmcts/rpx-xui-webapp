@@ -8,6 +8,8 @@ class ViewOrEditHearingPage{
         this.headerElement = $('exui-hearing-view-edit-summary exui-hearing-summary h1')
 
         this.summaryTable = new SummaryTable('exui-hearing-view-edit-summary')
+
+        
     }
 
     async getHeader(){
@@ -31,7 +33,7 @@ class ViewOrEditHearingPage{
     }
 
     async isAmendedFlagDisplayedForKeyField(field) {
-        return await this.summaryTable.isAmendedFlagDisplayedFoeField(field)
+        return await this.summaryTable.isAmendedFlagDisplayedForField(field)
     }
 
 }

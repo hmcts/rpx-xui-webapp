@@ -22,9 +22,37 @@ Then('I am on hearings workflow page {string}', async function (page) {
 
 
 Then('In hearings requirements page, I see case flags displayed for parties', async function (partiesDatatable) {
+    const expectedPartyNames = partiesDatatable.parse().hashes();
     const hearingRequirementPage = getPageObject("Hearing requirements");
-    const parties = hearingRequirementPage.getPartiesWithCaseFlagsDisplayed()
+    const parties = await hearingRequirementPage.getPartiesWithCaseFlagsDisplayed()
 
     reportLogger.AddMessage(`Parties with case flags ${JSON.stringify(parties)}`)
+    for (const party of expectedPartyNames){
+        expect(parties).to.includes(party.partyName)
+    }
+
+})
+
+Then('In hearings Participant attendance page, I see parties', async function (partiesDatatable){
+    const expectedPartyNames = partiesDatatable.parse().hashes();
+    const participantsPage = getPageObject("Participant attendance");
+    const parties = await participantsPage.getPartiesDisplayed()
+
+    reportLogger.AddMessage(`Parties  ${JSON.stringify(parties)}`)
+    for (const party of expectedPartyNames) {
+        expect(parties).to.includes(party.partyName)
+    }
+
+})
+
+Then('In additional facilities page, I see case flags displayed for parties', async function (partiesDatatable){
+    const expectedPartyNames = partiesDatatable.parse().hashes();
+    const additionalFacilitiesPage = getPageObject("Do you require any additional facilities?");
+    const parties = await additionalFacilitiesPage.getPartiesWithCaseFlagsDisplayed()
+
+    reportLogger.AddMessage(`Parties with case flags ${JSON.stringify(parties)}`)
+    for (const party of expectedPartyNames) {
+        expect(parties).to.includes(party.partyName)
+    }
 })
 

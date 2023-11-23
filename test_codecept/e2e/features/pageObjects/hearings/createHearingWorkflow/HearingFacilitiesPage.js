@@ -1,5 +1,5 @@
 
-
+const GovUKTable = require('../../common/govUkTable')
 class HearingFacilitiesPage {
     constructor() {
         this.pageContainer = $('exui-hearing-facilities')
@@ -49,6 +49,17 @@ class HearingFacilitiesPage {
     async clickAdditionalFacilityCheckbox(facility) {
         const ele = element(by.xpath(`//div[@id='checkbox-addition-facility']//label[contains(text(),'${facility}')]/../input`))
         await ele.click()
+    }
+
+    async getPartiesWithCaseFlagsDisplayed(){
+        const partiesElements = element.all(by.xpath(`//table[contains(@class,'govuk-table')]//th[contains(@class,'govuk-table__header_name')]`))
+        const count = await partiesElements.count()
+        const partNames = [];
+        for (let i = 0; i < count; i++) {
+            const e = await partiesElements.get(i)
+            partNames.push(await e.getText())
+        }
+        return partNames;
     }
 }
 

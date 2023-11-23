@@ -45,9 +45,9 @@ class SummaryTable{
         await e.click();
     }
 
-    async isAmendedFlagDisplayedFoeField(){
+    async isAmendedFlagDisplayedForField(forKey){
         const e = element(by.xpath(this.getTableAmendedElementXpath(forKey)))
-        await e.isDisplayed();
+        return await e.isDisplayed();
     }
 
 }

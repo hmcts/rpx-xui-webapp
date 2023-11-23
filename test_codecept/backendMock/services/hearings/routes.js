@@ -46,6 +46,15 @@ router.post('/hearing', (req,res) => {
     })
 })
 
+router.put('/hearing/:hearingId', (req, res) => {
+    userApiData.captureRequestDetails("OnPutHearing", req)
+    res.send({
+        "hearingRequestID": 2000006340,
+        "status": "HEARING_REQUESTED",
+        "timeStamp": "2023-08-07T09:30:52.213698",
+        "versionNumber": 1
+    })
+})
 
 
 router.get('/hearingActuals/:hearingId', (req, res) => {

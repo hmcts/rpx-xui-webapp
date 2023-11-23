@@ -51,6 +51,10 @@ class PRDApi{
             ActualCancellationReasonCodes: {
                 inputs: [{ value_en: 'Actual cancellation reason code 1' }, { value_en: 'Actual cancellation reason code 1' }],
                 value: []
+            },
+            ChangeReasons: {
+                inputs: [{ value_en: 'Change reason code 1' }, { value_en: 'Chnage reason code 1' }],
+                value: []
             }
         }
 

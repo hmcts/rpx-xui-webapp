@@ -81,6 +81,22 @@ class ParticipantAttendancePage {
         await ele.select(method);
     }
 
+    async getPartiesDisplayed(){
+        const elements = element.all(by.xpath(`//div[contains(@class,'party-row')]//strong`))
+        const parties = []
+        const count = await elements.count();
+        for(let i = 0 ; i< count; i++){
+            const e = await elements.get(i)
+            parties.push(await e.getText())
+        }
+        return parties;
+    }
+
+    async isPartyWithNameDisplayed(partyname){
+        const ele = element(by.xpath(`//div[contains(@class,'party-row')]//strong[contains(text(),'${partyname}')]`))
+        await ele.isDisplayed();
+    }
+
     async enterAttendanceNumber(count) {
         await this.attendanceNumber.sendKeys(count);
     }

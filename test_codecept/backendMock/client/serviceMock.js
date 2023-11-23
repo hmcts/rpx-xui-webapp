@@ -14,6 +14,11 @@ class ServiceMock{
         return await client.setUserApiData(authToken, apiMethod, response)
     }
 
+    async getRequestBodyForApiMethod(apiMethod){
+        const authToken = await this.getAuthToken()
+        return await client.getRequestBody(authToken, apiMethod)
+    }
+
     async updateCaseData(data, status){
         await this.updateMockServer('OnCaseDetails', { status: status ? status:200, data: data });
     }

@@ -100,7 +100,7 @@ export class CaseHearingsListComponent implements OnInit {
       mode: Mode.VIEW
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-    this.LoadHearingRequestAndRedirect(hearingID, '/hearings/request/hearing-view-edit-summary');
+    this.LoadHearingRequestServiceHearingValuesAndRedirect(hearingID, '/hearings/request/hearing-view-edit-summary');
   }
 
   public viewDetails(hearing: HearingListViewModel): void {
@@ -135,6 +135,11 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public LoadHearingRequestAndRedirect(hearingID: string, targetURL: string) {
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID, targetURL }));
+  }
+
+  public LoadHearingRequestServiceHearingValuesAndRedirect(hearingID: string, targetURL: string) {
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID, targetURL }));
   }
 }

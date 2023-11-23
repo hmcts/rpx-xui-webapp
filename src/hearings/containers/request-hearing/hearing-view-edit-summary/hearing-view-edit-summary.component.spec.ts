@@ -7,7 +7,6 @@ import { of } from 'rxjs';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
-import * as fromHearingStore from '../../../store';
 import { HearingViewEditSummaryComponent } from './hearing-view-edit-summary.component';
 
 describe('HearingViewEditSummaryComponent', () => {
@@ -45,12 +44,10 @@ describe('HearingViewEditSummaryComponent', () => {
     });
 
     it('should set case id from hearing request and call setPropertiesUpdatedOnPageVisit method', () => {
-      const storeDispatchSpy = spyOn(store, 'dispatch');
       spyOn(component, 'setPropertiesUpdatedOnPageVisit');
       hearingsService.propertiesUpdatedOnPageVisit = undefined;
       component.ngOnInit();
       expect(component.caseId).toEqual('1234123412341234');
-      expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues(component.caseId));
       expect(component.setPropertiesUpdatedOnPageVisit).toHaveBeenCalled();
     });
 

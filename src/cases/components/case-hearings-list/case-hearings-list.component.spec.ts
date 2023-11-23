@@ -854,11 +854,17 @@ describe('CaseHearingsListComponent', () => {
   it('should viewAndEdit', () => {
     const dispatchSpy = spyOn(mockStore, 'dispatch');
     spyOn(mockStore, 'select').and.returnValue(of(null));
-    const loadHearingRequestAndRedirect = spyOn(component, 'LoadHearingRequestAndRedirect');
+    const loadHearingRequestServiceHearingValuesAndRedirect = spyOn(component, 'LoadHearingRequestServiceHearingValuesAndRedirect');
     component.status = EXUISectionStatusEnum.UPCOMING;
     component.viewAndEdit('h100000');
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view' })));
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/request/hearing-view-edit-summary');
+    expect(loadHearingRequestServiceHearingValuesAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/request/hearing-view-edit-summary');
+  });
+
+  it('should dispatch load hearing request and service hearing values actions', () => {
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+    component.LoadHearingRequestServiceHearingValuesAndRedirect('h100000', '/hearings/request/hearing-view-edit-summary');
+    expect(dispatchSpy).toHaveBeenCalledTimes(2);
   });
 
   it('should cancelHearing', () => {

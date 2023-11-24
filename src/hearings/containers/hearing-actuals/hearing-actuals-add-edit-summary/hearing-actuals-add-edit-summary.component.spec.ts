@@ -352,7 +352,6 @@ describe('HearingActualsAddEditSummaryComponent', () => {
       const actual = component.getPauseDateTime(actualHearingDays, 'start');
       expect(actual).toEqual(null);
     });
-
   });
 
   describe('hearingIsInFuture', () => {

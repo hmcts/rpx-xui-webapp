@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
+import * as fromHearingStore from '../../../../hearings/store';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, CategoryType, PartyType, UnavailabilityType } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';

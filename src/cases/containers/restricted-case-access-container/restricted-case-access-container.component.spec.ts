@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable, of } from 'rxjs';
 import { CASEWORKERS } from '../../../../api/test/pact/constants/work-allocation/caseworkers.spec';
 import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
@@ -22,6 +23,7 @@ describe('RestrictedCaseAccessContainerComponent', () => {
   const mockAllocateService = jasmine.createSpyObj('AllocateRoleService', ['getCaseAccessRolesByCaseId']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   const mockCaseworkerDataService = jasmine.createSpyObj('CaseworkerDataService', ['getCaseworkersForServices']);
+  const mockLoadingService = jasmine.createSpyObj('LoadingService', ['register', 'unregister']);
   const mockActivatedRoute = {
     snapshot: {
       params: {
@@ -45,6 +47,7 @@ describe('RestrictedCaseAccessContainerComponent', () => {
         { provide: AllocateRoleService, useValue: mockAllocateService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
+        { provide: LoadingService, useValue: mockLoadingService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter }
       ]
@@ -53,6 +56,8 @@ describe('RestrictedCaseAccessContainerComponent', () => {
     mockAllocateService.getCaseAccessRolesByCaseId.and.returnValue(of(CASEROLES));
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
     mockCaseworkerDataService.getCaseworkersForServices.and.returnValue(of([CASEWORKERS.JANE_DOE, CASEWORKERS.JOHN_SMITH]));
+    mockLoadingService.register.and.callThrough();
+    mockLoadingService.unregister.and.callThrough();
     fixture = TestBed.createComponent(RestrictedCaseAccessContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -60,9 +65,11 @@ describe('RestrictedCaseAccessContainerComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(mockLoadingService.register).toHaveBeenCalled();
     expect(mockAllocateService.getCaseAccessRolesByCaseId).toHaveBeenCalled();
     expect(mockWASupportedJurisdictionsService.getWASupportedJurisdictions).toHaveBeenCalled();
     expect(mockCaseworkerDataService.getCaseworkersForServices).toHaveBeenCalled();
+    expect(mockLoadingService.unregister).toHaveBeenCalled();
   });
 
   it('should unsubscribe', () => {

@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription, of } from 'rxjs';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { Observable, Subscription, of } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { CaseRole } from '../../../role-access/models/case-role.interface';
 import { AllocateRoleService } from '../../../role-access/services/allocate-role.service';
@@ -20,14 +21,18 @@ export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy
   public idamIds: string[];
   public restrictedCases: RestrictedCase[];
   public allocateServiceSubscription: Subscription;
+  public showSpinner$: Observable<boolean>;
 
   constructor(private readonly route: ActivatedRoute,
               private readonly allocateService: AllocateRoleService,
               private readonly caseworkerDataService: CaseworkerDataService,
-              private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService) {
+              private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
+              private readonly loadingService: LoadingService) {
   }
 
   public ngOnInit(): void {
+    this.showSpinner$ = this.loadingService.isLoading as any;
+    const loadingToken = this.loadingService.register();
     this.caseId = this.route.snapshot.params.cid;
     this.allocateServiceSubscription = this.allocateService.getCaseAccessRolesByCaseId(this.caseId).pipe(
       switchMap((caseRoles) => {
@@ -40,14 +45,17 @@ export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy
       take(1),
       switchMap((caseworkers) => of(this.getRestrictedCases(caseworkers)))
     ).subscribe(
-      (restrictedCases) => this.restrictedCases = restrictedCases
+      (restrictedCases) => {
+        this.restrictedCases = restrictedCases;
+        this.loadingService.unregister(loadingToken);
+      }, () => {
+        this.loadingService.unregister(loadingToken);
+      }
     );
   }
 
   public ngOnDestroy(): void {
-    if (this.allocateServiceSubscription) {
-      this.allocateServiceSubscription.unsubscribe();
-    }
+    this.allocateServiceSubscription?.unsubscribe();
   }
 
   private getUniqueIdamIds(): string[] {

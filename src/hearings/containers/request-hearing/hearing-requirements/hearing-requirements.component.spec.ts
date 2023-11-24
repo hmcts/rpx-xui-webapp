@@ -4,23 +4,23 @@ import { ActivatedRoute } from '@angular/router';
 import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { LoggerService } from '../../../../app/services/logger/logger.service';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import {
   ACTION,
-  CaseFlagType,
   CategoryType, EXUIDisplayStatusEnum, EXUISectionStatusEnum, GroupLinkType, HearingListingStatusEnum, HearingResult,
   HMCLocationType, HMCStatus, LaCaseStatus, ListingStatus, MemberType,
   PartyType, RequirementType,
   UnavailabilityType
 } from '../../../models/hearings.enum';
 import { LocationByEPIMMSModel } from '../../../models/location.model';
+import { PartyFlagsModel } from '../../../models/partyFlags.model';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingRequirementsComponent } from './hearing-requirements.component';
-import { LoggerService } from '../../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -2167,6 +2167,33 @@ describe('HearingRequirementsComponent', () => {
     }
   ];
 
+  const caseFlagsFromLatestSHV: PartyFlagsModel[] = [
+    {
+      partyID: 'P1',
+      partyName: 'Jane Smith',
+      flagParentId: 'RA0008',
+      flagId: 'RA0042',
+      flagDescription: 'Sign language interpreter required',
+      flagStatus: 'ACTIVE'
+    },
+    {
+      partyID: 'P2',
+      partyName: 'Jane Smith vs DWP',
+      flagParentId: 'CF0001',
+      flagId: 'CF0006',
+      flagDescription: 'Potential fraud',
+      flagStatus: 'ACTIVE'
+    },
+    {
+      partyID: 'P3',
+      partyName: 'Jane Smith vs DWP',
+      flagParentId: 'CF0001',
+      flagId: 'CF0007',
+      flagDescription: 'Urgent flag',
+      flagStatus: 'ACTIVE'
+    }
+  ];
+
   const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
     epimms_id: '196538',
     site_name: 'Liverpool Social Security and Child Support Tribunal',
@@ -2224,7 +2251,6 @@ describe('HearingRequirementsComponent', () => {
       .compileComponents();
     fixture = TestBed.createComponent(HearingRequirementsComponent);
     component = fixture.componentInstance;
-    component.caseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
     spyOn(locationsDataService, 'getLocationById').and.returnValue(of(FOUND_LOCATIONS));
     fixture.detectChanges();
   });
@@ -2255,6 +2281,30 @@ describe('HearingRequirementsComponent', () => {
     spyOn(component.hearingStateSub, 'unsubscribe');
     component.ngOnDestroy();
     expect(component.hearingStateSub.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should not consider the case flags from in-memory object for create new hearing request journey', () => {
+    component.hearingCondition = {
+      mode: 'create'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentFlags.length).toEqual(2);
+  });
+
+  it('should set the case flags from in-memory object when viewing or editing existing hearing request', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentFlags.length).toEqual(1);
   });
 
   it('should initialize hearing request from hearing values', () => {

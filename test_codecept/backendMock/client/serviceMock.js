@@ -14,6 +14,11 @@ class ServiceMock{
         return await client.setUserApiData(authToken, apiMethod, response)
     }
 
+    async getRequestBodyForApiMethod(apiMethod){
+        const authToken = await this.getAuthToken()
+        return await client.getRequestBody(authToken, apiMethod)
+    }
+
     async updateCaseData(data, status){
         await this.updateMockServer('OnCaseDetails', { status: status ? status:200, data: data });
     }
@@ -32,6 +37,14 @@ class ServiceMock{
 
     async setCaseHearings(data, status) {
         await this.updateMockServer('OnCaseHearings', { status: status ? status : 200, data: data })
+    }
+
+    async setOnGetHearing(data, status) {
+        await this.updateMockServer('OnGetHearing', { status: status ? status : 200, data: data })
+    }
+
+    async setHearingServiceHearingValues(data, status){
+        await this.updateMockServer('OnServiceHearingValues', { status: status ? status : 200, data: data })
     }
     
 

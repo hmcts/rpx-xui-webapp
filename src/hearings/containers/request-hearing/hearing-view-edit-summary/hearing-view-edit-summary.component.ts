@@ -66,7 +66,7 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
   }
 
   public setPropertiesUpdatedOnPageVisit(): void {
-    this.hearingValuesSubscription = this.hearingStore.select(fromHearingStore.getHearingValues).pipe(take(1)).subscribe((hearingValues) => {
+    this.hearingValuesSubscription = this.hearingStore.select(fromHearingStore.getHearingValues).subscribe((hearingValues) => {
       const serviceHearingValues = hearingValues?.serviceHearingValuesModel;
       if (serviceHearingValues) {
         this.hearingsService.propertiesUpdatedOnPageVisit = {

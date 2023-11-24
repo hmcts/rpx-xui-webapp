@@ -6,9 +6,18 @@ const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 const serviceMock = require('../../../backendMock/client/serviceMock')
 
 const { DataTableArgument } = require('codeceptjs');
+const reportLogger = require('../../../codeceptCommon/reportLogger')
 
 const hearingsMock = require('../../../backendMock/services/hearings/index')
 const mockClient = require('../../../backendMock/client/serviceMock')
+
+const listedHearing = require('../../../backendMock/services/hearings/mockData/listedHearing.data')
+const awaitinghearingsDetails = require('../../../backendMock/services/hearings/mockData/awaitingHearingDetails.data')
+const completedHearing = require('../../../backendMock/services/hearings/mockData/completedHearing.data')
+const cancelledhearing = require('../../../backendMock/services/hearings/mockData/cancelledHearing.data')
+
+const mockServiceHearingValues = require('../../../backendMock/services/hearings/serviceHearingValuesMock')
+
 
     function updateObjectValues(object, key, value){
         const dateField = ['hearingRequestDateTime', 'lastResponseReceivedDateTime', 'hearingDaySchedule.hearingStartDateTime', 'hearingDaySchedule.hearingEndDateTime']
@@ -24,15 +33,72 @@ const mockClient = require('../../../backendMock/client/serviceMock')
     Given('I set mock case hearings', async function (hearingsDatatable) {
 
         const rows = hearingsDatatable.parse().hashes();
-
+        const hearingsList = []
         for(const hearing of rows){
             for(const key of Object.keys(hearing)){
                 updateObjectValues(hearing, key, hearing[key])
             }
-            hearingsMock.addHearing(hearing)
+            hearingsList.push(hearingsMock.getHearingWithProps(hearing))
+            
         }
-        const hearingsList = hearingsMock.getCaseHearings();
-        mockClient.setCaseHearings(hearingsList, 200)
-
+        const res = {
+            "caseRef": "1690807693531270",
+            "caseHearings": hearingsList,
+            "hmctsServiceCode": null
+        }
+        mockClient.setCaseHearings(res, 200)
 
     });
+
+    Given('I set mock get hearing with with status {string}', async function (hearingStatus) {
+
+        let hearingResponse = null;
+        switch (hearingStatus){
+            case "LISTED":
+                hearingResponse = listedHearing;
+                break;
+            case "COMPLETED":
+                hearingResponse = completedHearing;
+                break;
+            case "CANCELLED":
+                hearingResponse = cancelledhearing;
+                break;
+            case "AWAITING_ACTUALS":
+                hearingResponse = awaitinghearingsDetails;
+                break;
+            default:
+                throw new Error(`no mock data setup for hearing ${hearingStatus}`)
+        }
+
+        
+        mockClient.setOnGetHearing(hearingResponse, 200)
+
+    });
+
+
+Given('I set mock hearings service hearing values with ref {string}', async function (ref) {
+    const serviceHearingValue = mockServiceHearingValues.getServiceHearingValuesTemplate()
+    global.scenarioData[ref] = serviceHearingValue
+    mockClient.setHearingServiceHearingValues(serviceHearingValue, 200)
+})
+
+Given('I update mock hearings service hearing values with ref {string} for field {string}', async function (ref, field, datatable) {
+
+    const serviceHearingValue = global.scenarioData[ref]
+
+    const dataTableObjects = datatable.parse().hashes()
+    if (field === 'caseFlags'){
+        mockServiceHearingValues.setCaseFlags(dataTableObjects, serviceHearingValue);
+    } else if (field === 'parties'){
+        mockServiceHearingValues.setParties(dataTableObjects, serviceHearingValue);
+    }
+    mockClient.setHearingServiceHearingValues(serviceHearingValue, 200)
+})
+
+
+Then('I validate hearings request body {string}', async function (apiMethod) {
+    reportLogger.AddJson(global.scenarioData[apiMethod])
+})
+
+
+

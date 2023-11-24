@@ -39,6 +39,22 @@ class PRDApi{
             HearingSubChannel:{
                 inputs: [{ value_en: 'Hearing sub channel code 1' }, { value_en: 'Hearing sub channel code 2' }],
                 value: []
+            },
+            EntityRoleCode: {
+                inputs: [{ value_en: 'Entity role code 1' }, { value_en: 'Entity role code 1' }],
+                value: []
+            },
+            ActualPartHeardReasonCodes:{
+                inputs: [{ value_en: 'Actual part hearing reason code 1' }, { value_en: 'Actual part hearing reason code 1' }],
+                value: []
+            },
+            ActualCancellationReasonCodes: {
+                inputs: [{ value_en: 'Actual cancellation reason code 1' }, { value_en: 'Actual cancellation reason code 1' }],
+                value: []
+            },
+            ChangeReasons: {
+                inputs: [{ value_en: 'Change reason code 1' }, { value_en: 'Chnage reason code 1' }],
+                value: []
             }
         }
 
@@ -69,7 +85,7 @@ class PRDApi{
                 "parent_category": type.parent_category ? type.parent_category : "",
                 "parent_key": type.parent_key ? type.parent_key : "",
                 "active_flag": type.active_flag ? type.active_flag : "Y",
-                "child_nodes": type.child_nodes ? type.child_nodes : null
+                "child_nodes": type.child_nodes ? type.child_nodes : []
 
             }
         }
@@ -80,13 +96,18 @@ class PRDApi{
 
     setUpCaseFlags(){
             this.addServiceCaseFlag({
-                name: "A",
-                childFlags: [{ name: 'A.A', path: "B" }]
+                name: "A", path: ["Reasonable adjustment"],
+                childFlags: [{ name: 'A.A', path: ["Reasonable adjustment","RA L1"] }]
             })
             this.addServiceCaseFlag({
-                name: "B",
-                childFlags: [{ name: 'B.A', path: "B" }]
+                name: "B", path: ["Language interpreter"],
+                childFlags: [{ name: 'B.A', path: ["Language interpreter","LI L1"], flagCode: 'PF0015'}]
             })
+
+        this.addServiceCaseFlag({
+            name: "B", path: ["Party"],
+            childFlags: [{ name: 'B.A', path: ["Party", "Others L1"], flagCode: 'OT001' }]
+        })
         }
 
         addServiceCaseFlag(flagDetails){
@@ -98,13 +119,11 @@ class PRDApi{
                     "flagComment": serviceFlag.flagComment ? serviceFlag.flagComment : false,
                     "defaultStatus": serviceFlag.defaultStatus ? serviceFlag.defaultStatus : "Active",
                     "externallyAvailable": serviceFlag.externallyAvailable ? serviceFlag.externallyAvailable : false,
-                    "flagCode": serviceFlag.flagCode ? serviceFlag.flagCode : "CATGRY",
+                    "flagCode": serviceFlag.flagCode ? serviceFlag.flagCode : "RA001",
                     "childFlags": [
                     ],
                     "isParent": serviceFlag.childFlags && serviceFlag.childFlags.length > 0 ? true : false,
-                    "Path": [
-                        serviceFlag.path ? serviceFlag.path : ""
-                    ]
+                    "Path": serviceFlag.path
 
                     
                 }

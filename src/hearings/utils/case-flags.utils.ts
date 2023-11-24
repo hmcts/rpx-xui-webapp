@@ -90,7 +90,7 @@ export class CaseFlagsUtils {
     partyDetails.forEach((party) => {
       const foundPartyFromService = partiesFromServiceValue.find((pt) => pt.partyID === party.partyID);
       const partyName = party.partyName ? party.partyName : (foundPartyFromService ? foundPartyFromService.partyName : '');
-      const reasonableAdjustments: string[] = party.individualDetails && party.individualDetails.reasonableAdjustments ? party.individualDetails.reasonableAdjustments : [];
+      const reasonableAdjustments: string[] = party.individualDetails?.reasonableAdjustments ? party.individualDetails.reasonableAdjustments : [];
       const allFlagsId: string[] = reasonableAdjustments.slice();
       if (party.individualDetails && party.individualDetails.interpreterLanguage) {
         allFlagsId.push(party.individualDetails.interpreterLanguage);

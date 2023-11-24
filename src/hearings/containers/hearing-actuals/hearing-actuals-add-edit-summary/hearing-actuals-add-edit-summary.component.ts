@@ -104,6 +104,6 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   }
 
   public hearingIsInFuture(comparisonDateString: string): boolean {
-    return (new Date(comparisonDateString) > new Date() );
+    return (new Date(comparisonDateString) > new Date());
   }
 }

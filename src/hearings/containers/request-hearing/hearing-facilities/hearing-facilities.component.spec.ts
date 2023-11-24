@@ -6,6 +6,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
+import { PartyFlagsModel } from '../../../models/partyFlags.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingFacilitiesComponent } from './hearing-facilities.component';
 
@@ -99,6 +100,33 @@ describe('HearingFacilitiesComponent', () => {
     }
   ];
 
+  const caseFlagsFromLatestSHV: PartyFlagsModel[] = [
+    {
+      partyID: 'P1',
+      partyName: 'Jane Smith',
+      flagParentId: 'RA0008',
+      flagId: 'RA0042',
+      flagDescription: 'Sign language interpreter required',
+      flagStatus: 'ACTIVE'
+    },
+    {
+      partyID: 'P2',
+      partyName: 'Jane Smith vs DWP',
+      flagParentId: 'CF0001',
+      flagId: 'CF0006',
+      flagDescription: 'Potential fraud',
+      flagStatus: 'ACTIVE'
+    },
+    {
+      partyID: 'P3',
+      partyName: 'Jane Smith vs DWP',
+      flagParentId: 'CF0001',
+      flagId: 'CF0007',
+      flagDescription: 'Urgent flag',
+      flagStatus: 'ACTIVE'
+    }
+  ];
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
@@ -169,6 +197,30 @@ describe('HearingFacilitiesComponent', () => {
 
     expect(component.hearingFactilitiesForm.controls['addition-security-required'].value).toEqual('Yes');
     component.hearingRequestMainModel.hearingDetails.facilitiesRequired = swapValue;
+  });
+
+  it('should not consider the case flags from in-memory object for create new hearing request journey', () => {
+    component.hearingCondition = {
+      mode: 'create'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null
+    };
+    component.ngOnInit();
+    expect(component.nonReasonableAdjustmentFlags.length).toEqual(3);
+  });
+
+  it('should set the case flags from in-memory object when viewing or editing existing hearing request', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null
+    };
+    component.ngOnInit();
+    expect(component.nonReasonableAdjustmentFlags.length).toEqual(1);
   });
 
   afterEach(() => {

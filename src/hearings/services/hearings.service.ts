@@ -5,6 +5,7 @@ import { HearingActualsMainModel, HearingActualsModel } from '../models/hearingA
 import { HearingListMainModel } from '../models/hearingListMain.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { ACTION } from '../models/hearings.enum';
+import { PropertiesUpdatedOnPageVisit } from '../models/hearingsUpdateMode.enum';
 import {
   LinkedHearingGroupMainModel,
   LinkedHearingGroupResponseModel,
@@ -20,6 +21,8 @@ export class HearingsService {
   public actionSubject = new Subject<ACTION>();
 
   public navigateAction$: Observable<ACTION> = this.actionSubject.asObservable();
+
+  public propertiesUpdatedOnPageVisit: PropertiesUpdatedOnPageVisit;
 
   constructor(private readonly http: HttpClient) {}
 

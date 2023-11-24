@@ -1,8 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
@@ -11,11 +12,12 @@ import { HearingViewEditSummaryComponent } from './hearing-view-edit-summary.com
 describe('HearingViewEditSummaryComponent', () => {
   let component: HearingViewEditSummaryComponent;
   let fixture: ComponentFixture<HearingViewEditSummaryComponent>;
+  let store: any;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
-  describe('getHearingRequestToCompare and getHearingRequest are holding different state', () => {
+  describe('getHearingRequestToCompare and getHearingRequest are holding different state, and other tests', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [HearingViewEditSummaryComponent],
@@ -27,6 +29,7 @@ describe('HearingViewEditSummaryComponent', () => {
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       }).compileComponents();
       fixture = TestBed.createComponent(HearingViewEditSummaryComponent);
+      store = TestBed.inject(Store);
       component = fixture.componentInstance;
       fixture.detectChanges();
     });
@@ -38,6 +41,35 @@ describe('HearingViewEditSummaryComponent', () => {
     it('should call navigateAction when executeAction is called with a valid form', () => {
       component.executeAction(ACTION.VIEW_EDIT_REASON);
       expect(component.validationErrors.length).toEqual(0);
+    });
+
+    it('should set case id from hearing request and call setPropertiesUpdatedOnPageVisit method', () => {
+      spyOn(component, 'setPropertiesUpdatedOnPageVisit');
+      hearingsService.propertiesUpdatedOnPageVisit = undefined;
+      component.ngOnInit();
+      expect(component.caseId).toEqual('1234123412341234');
+      expect(component.setPropertiesUpdatedOnPageVisit).toHaveBeenCalled();
+    });
+
+    it('should not load hearing values after navigating back from the child page', () => {
+      const storeDispatchSpy = spyOn(store, 'dispatch');
+      spyOn(component, 'setPropertiesUpdatedOnPageVisit');
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+        parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties
+      };
+      expect(storeDispatchSpy).not.toHaveBeenCalled();
+      expect(component.setPropertiesUpdatedOnPageVisit).not.toHaveBeenCalled();
+    });
+
+    it('should set propertiesUpdatedOnPageVisit', () => {
+      spyOn(store, 'select').and.returnValue(of(initialState.hearings.hearingValues));
+      component.setPropertiesUpdatedOnPageVisit();
+      const expectedResult = {
+        caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+        parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties
+      };
+      expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
     });
 
     afterEach(() => {
@@ -62,6 +94,7 @@ describe('HearingViewEditSummaryComponent', () => {
     });
 
     it('should have a validation errors mapped when nothing has changed summary page', () => {
+      component.ngOnInit();
       component.executeAction(ACTION.VIEW_EDIT_REASON);
       expect(component.validationErrors.length).toEqual(1);
     });

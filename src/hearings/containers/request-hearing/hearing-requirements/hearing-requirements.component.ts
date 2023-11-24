@@ -25,10 +25,11 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   templateUrl: './hearing-requirements.component.html'
 })
 export class HearingRequirementsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
+  public readonly caseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
+
   public caseFlagsRefData: CaseFlagReferenceModel[];
-  public caseFlagType: CaseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
   public reasonableAdjustmentFlags: CaseFlagGroup[] = [];
-  public lostFocus: boolean = false;
+  public lostFocus = false;
   public referenceId: string;
   public strRegions: string;
   public caseTypeRefData: LovRefDataModel[];
@@ -60,12 +61,10 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     super(hearingStore, hearingsService, route);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
     this.caseTypeRefData = this.route.snapshot.data.caseType;
-    if (this.serviceHearingValuesModel?.caseFlags?.flags) {
-      this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel.caseFlags.flags, this.caseFlagsRefData, this.caseFlagType);
-    }
   }
 
   public ngOnInit(): void {
+    this.setReasonableAdjustmentFlags();
     if (this.hearingListMainModel) {
       this.referenceId = this.hearingListMainModel.caseRef;
     }
@@ -160,7 +159,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   }
 
   public initializeHearingCondition(): void {
-    if (this.serviceHearingValuesModel && this.serviceHearingValuesModel.hearingLocations) {
+    if (this.serviceHearingValuesModel?.hearingLocations) {
       const strLocationIds = this.serviceHearingValuesModel.hearingLocations.map((location) => location.locationId).join(',');
       this.locationsDataService.getLocationById(strLocationIds).toPromise()
         .then((locations) => {
@@ -185,5 +184,15 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   public ngOnDestroy() {
     super.unsubscribe();
+  }
+
+  private setReasonableAdjustmentFlags(): void {
+    const caseFlags = this.hearingCondition.mode === Mode.VIEW_EDIT && this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags')
+      ? this.hearingsService.propertiesUpdatedOnPageVisit?.caseFlags?.flags
+      : this.serviceHearingValuesModel?.caseFlags?.flags;
+
+    if (caseFlags) {
+      this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(caseFlags, this.caseFlagsRefData, this.caseFlagType);
+    }
   }
 }

@@ -1,4 +1,4 @@
-@functional_enabled 
+@functional_enabled
 Feature: Case file view
 
 
@@ -56,11 +56,9 @@ Feature: Case file view
         Then In case file view tab, I see documents tree view header with text "Documents (17)"
 
         Then In case file view tab, I dont see file upload stamp for files under folder "Orders"
-            | file                           | 
-            | Blank_Order_Directions_C21.pdf | 
+            | file                           |
+            | Blank_Order_Directions_C21.pdf |
 
-
-@functional_debug
     Scenario: PDF Media file display
         Given I set MOCK with user details with user identifier "RESTRICTED_CASE_FILE_VIEW_V1.1_ON"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |
@@ -85,4 +83,3 @@ Feature: Case file view
 
         When In case file view tab, I select file "Draft_C100_application" under folder "Orders.Orders Submitted with Application", I see file in media viewer
         # Then In case file view tab, I see file "Draft_C100_application" in media viewer
-        

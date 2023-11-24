@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { ACTION, HearingChannelEnum, PartyType, RadioOptions } from '../../../models/hearings.enum';
+import { ACTION, HearingChannelEnum, Mode, PartyType, RadioOptions } from '../../../models/hearings.enum';
 import { IndividualDetailsModel } from '../../../models/individualDetails.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -41,7 +41,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       estimation: [null, [Validators.pattern(/^\d+$/)]],
       parties: fb.array([]),
       hearingLevelChannels: this.getHearingLevelChannels,
-      paperHearing: [this.hearingRequestMainModel.hearingDetails.hearingChannels && this.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR) ? RadioOptions.YES : RadioOptions.NO]
+      paperHearing: [this.hearingRequestMainModel.hearingDetails.hearingChannels?.includes(HearingChannelEnum.ONPPR) ? RadioOptions.YES : RadioOptions.NO]
     });
     this.partiesFormArray = fb.array([]);
   }
@@ -56,12 +56,13 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       hint_text_cy: [val.hint_text_cy],
       lov_order: [val.lov_order],
       parent_key: [val.parent_key],
-      selected: [!!val.selected || (hearingLevelParticipantChannels && hearingLevelParticipantChannels.includes(val.key))]
+      selected: [!!val.selected || (hearingLevelParticipantChannels?.includes(val.key))]
     })), [this.validatorsUtils.formArraySelectedValidator()]);
   }
 
   public ngOnInit(): void {
-    if (!this.hearingRequestMainModel.partyDetails.length) {
+    if (!this.hearingRequestMainModel.partyDetails.length || (this.hearingCondition.mode === Mode.VIEW_EDIT &&
+      this.hearingsService.propertiesUpdatedOnPageVisit.hasOwnProperty('parties'))) {
       this.initialiseFromHearingValues();
     } else {
       this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND)
@@ -84,10 +85,15 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public initialiseFromHearingValues() {
-    this.serviceHearingValuesModel.parties.forEach((partyDetailsModel: PartyDetailsModel) => {
+    const parties = this.hearingCondition.mode === Mode.VIEW_EDIT &&
+      this.hearingsService.propertiesUpdatedOnPageVisit.hasOwnProperty('parties')
+      ? this.hearingsService.propertiesUpdatedOnPageVisit.parties
+      : this.serviceHearingValuesModel.parties;
+
+    parties.forEach((partyDetailsModel: PartyDetailsModel) => {
       (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyDetailsModel) as FormGroup);
     });
-    this.attendanceFormGroup.controls.estimation.setValue(this.serviceHearingValuesModel.numberOfPhysicalAttendees);
+    this.attendanceFormGroup.controls.estimation.setValue(this.serviceHearingValuesModel.numberOfPhysicalAttendees || 0);
   }
 
   public executeAction(action: ACTION): void {

@@ -1,9 +1,9 @@
 
 @ng @functional_enabled
-Feature: Hearings: Semi automatic updates
+Feature: Hearings: Automatic updates
 
-
-    Scenario: Hearing semi automatic updates display of Case flags and parties
+    @functional_debug
+    Scenario: Hearing automatic updates
         Given I set MOCK with user details
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                      |
@@ -35,15 +35,25 @@ Feature: Hearings: Semi automatic updates
         Then I see hearings table for "Current and upcoming" in hearings tab page
 
         Given I update mock hearings service hearing values with ref "partiesUpdated" for field "parties"
-            | partyName   |
-            | Party1 name |
-            | Party2 name |
+            |type| partyName   |
+            |IND| Party1 name |
+            |IND| Party2 name |
+            |ORG| party3 org name|
+
         Given I update mock hearings service hearing values with ref "partiesUpdated" for field "caseFlags"
             | partyID | partyName   | flagParentId | flagId | flagDescription | flagStatus |
             | party_1 | Party1 name | PARENT_0     | RA001  | Party1 comment  | ACTIVE     |
             | party_2 | Party2 name | PARENT_0     | RA001  | Party2 comment  | ACTIVE     |
-            | party_1 | Party1 name | PARENT_0 | OT001 | Party1 comment | ACTIVE |
-            | party_2 | Party2 name | PARENT_0 | OT001 | Party2 comment | ACTIVE |
+            | party_1 | Party1 name | PARENT_0     | OT001  | Party1 comment  | ACTIVE     |
+            | party_2 | Party2 name | PARENT_0     | OT001  | Party2 comment  | ACTIVE     |
+
+        Given I update mock hearings service hearing values with ref "partiesUpdated" at jsonpaths
+            | jsonpath                     | value       |
+            | $.caseManagementLocationCode | 10001 |
+            | $.parties[0].partyRole | APPL_UPDATED |
+            | $.partyDetails[1].individualDetails.relatedParties[0].partyName | Party2 name |
+            | $.partyDetails[1].individualDetails.relatedParties[0].partyName | Party2 name |
+            
 
         When In hearings tab, I click action "View or edit" for hearing "TEST_TYPE" under table "Current and upcoming"
 
@@ -52,26 +62,6 @@ Feature: Hearings: Semi automatic updates
             | field                                 | value     | changeLinkDisplay | amendedFlagDisplay |
             | Status                                | COMPLETED | false             | false              |
             | Will additional security be required? | No        | true              | false              |
-
-
-        When In view or edit hearing page, I click change link for field "Reasonable adjustments"
-        Then I am on hearings workflow page "Hearing requirements"
-        Then In hearings requirements page, I see case flags displayed for parties
-            | partyName     |
-            | Party1 name|
-            | Party2 name|
-        When I click continue in hearing workflow
-        Then I validate view or edit hearing page displayed
-
-        When In view or edit hearing page, I click change link for field "Select any additional facilities required"
-        Then I am on hearings workflow page "Do you require any additional facilities?"
-        Then In additional facilities page, I see case flags displayed for parties
-            | partyName     |
-            | Party1 name|
-            | Party2 name|
-        When I click continue in hearing workflow
-        Then I validate view or edit hearing page displayed
-
 
         When In view or edit hearing page, I click change link for field "Will this be a paper hearing?"
         Then I am on hearings workflow page "Participant attendance"
@@ -107,9 +97,7 @@ Feature: Hearings: Semi automatic updates
 
         Then I validate request body json "OnPutHearing", jsonpaths
             | jsonpath                     | value       |
-            | $.requestDetails.status      | COMPLETED   |
-            | $.hearingDetails.hearingType | ABA5-DIR    |
-            | $.partyDetails[0].partyName  | Party1 name |
-            | $.partyDetails[1].partyName  | Party2 name |
+            | $.caseDetails.caseManagementLocationCode | 10001        |
+            | $.partyDetails[0].partyRole              | APPL_UPDATED |
 
 

@@ -7,7 +7,7 @@ const serviceMock = require('../../../backendMock/client/serviceMock')
 
 const { DataTableArgument } = require('codeceptjs');
 const reportLogger = require('../../../codeceptCommon/reportLogger')
-
+const jsonpath = require('jsonpath')
 const hearingsMock = require('../../../backendMock/services/hearings/index')
 const mockClient = require('../../../backendMock/client/serviceMock')
 
@@ -96,8 +96,19 @@ Given('I update mock hearings service hearing values with ref {string} for field
 })
 
 
-Then('I validate hearings request body {string}', async function (apiMethod) {
-    reportLogger.AddJson(global.scenarioData[apiMethod])
+
+Given('I update mock hearings service hearing values with ref {string} at jsonpaths', async function (ref, datatable) {
+
+    const serviceHearingValue = global.scenarioData[ref]
+
+    const dataTableObjects = datatable.parse().hashes()
+    for (const row of dataTableObjects){
+        const updatedValue = jsonpath.value(serviceHearingValue, row.jsonpath, row.value)
+        reportLogger.AddMessage(`Updated ${row.jsonpath} => ${updatedValue}`)
+    }
+
+    reportLogger.AddJson(serviceHearingValue)
+    mockClient.setHearingServiceHearingValues(serviceHearingValue, 200)
 })
 
 

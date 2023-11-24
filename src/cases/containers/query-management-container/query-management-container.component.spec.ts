@@ -427,7 +427,7 @@ describe('QueryManagementContainerComponent', () => {
         title: '',
         description: RaiseQueryErrorMessage.QUERY_HEARING_RELATED,
         fieldId: 'isHearingRelated-yes'
-      }
+      };
       expect(component.errorMessages).toContain(error);
     });
 
@@ -439,7 +439,7 @@ describe('QueryManagementContainerComponent', () => {
         title: '',
         description: RaiseQueryErrorMessage.QUERY_HEARING_DATE,
         fieldId: 'hearingDate-day'
-      }
+      };
       expect(component.errorMessages).toContain(error);
     });
   });

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { Observable, Subscription, combineLatest } from 'rxjs';
-import { take, takeLast } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { HearingRequestStateData } from '../../../models/hearingRequestStateData.model';
 import { ACTION, Mode } from '../../../models/hearings.enum';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -78,7 +78,7 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
   }
 
   public setPropertiesUpdatedAutomatically(): void {
-    this.hearingValuesSubscription = this.hearingStore.select(fromHearingStore.getHearingValues).pipe(takeLast(1)).subscribe((hearingValues) => {
+    this.hearingValuesSubscription = this.hearingStore.select(fromHearingStore.getHearingValues).subscribe((hearingValues) => {
       if (hearingValues) {
         this.hearingRequestMainModel = {
           ...this.hearingRequestMainModel,

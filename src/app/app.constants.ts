@@ -7,7 +7,6 @@ const featureNames = {
   waLandingPageRoles: 'wa-landing-page-roles',
   waAccess: 'wa-access',
   currentWAFeature: 'mc-work-allocation-active-feature',
-  updatedTaskPermissionsFeature: 'updated-task-permission',
   workAllocation: 'MC_Work_Allocation',
   noticeOfChange: 'MC_Notice_of_Change',
   waMvpPaginationFeature: 'mc-mvp-wa-pagination',
@@ -96,7 +95,7 @@ const helpContactDetails: ContactDetailsDataModel[] = [
     title: 'Employment Tribunal',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'etreform@justice.gov.uk',
-    phone: 'England and Wales: 0330 123 1024, Scotland: 0300 790 6234',
+    phone: 'England and Wales: 0300 123 1024, Scotland: 0300 790 6234',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
   },
   {
@@ -184,9 +183,9 @@ export class AppConstants {
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';
 export const LD_FLAG_MC_APPLICATION_THEMES: string = 'mc-application-themes';
-export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer', 'caseworker-ia', 'caseworker-ia-admofficer', 'task-supervisor', 'caseworker-civil', 'caseworker-privatelaw'];
-export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge', 'caseworker-privatelaw-judge', 'judge'];
-export const ADMIN_ROLE_LIST: string[] = ['admin'];
-export const CTSC_ROLE_LIST: string[] = ['ctsc'];
+export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer', 'caseworker-ia', 'caseworker-ia-admofficer', 'task-supervisor', 'caseworker-civil', 'caseworker-privatelaw', 'hmcts-legal-operations'];
+export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge', 'caseworker-privatelaw-judge', 'judge', 'hmcts-judiciary', 'judiciary', 'panelmember'];
+export const ADMIN_ROLE_LIST: string[] = ['hmcts-admin'];
+export const CTSC_ROLE_LIST: string[] = ['hmcts-ctsc'];
 export const SERVICE_OPTIONS_LIST = [{ key: 'IA', label: 'Immigration and Asylum' }, { key: 'SSCS', label: 'Social security and child support' }];
 export const PUI_CASE_MANAGER = 'pui-case-manager';

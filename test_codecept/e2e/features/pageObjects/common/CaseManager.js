@@ -147,14 +147,35 @@ class CaseManager {
         this.caseEditPage.caseEventApiResponse = null;
     }
 
+    async createCaseWithInvalidDate(caseData, isAccessibilityTest, tcTypeStatus) {
+        this.caseData = caseData;
+    
+        let page = tcTypeStatus ? 0 : "null";
+    
+        for(let i=0; i<2; i++) {
+            page = tcTypeStatus ? i : "null";
+    
+            await BrowserWaits.retryWithActionCallback(async () => {
+                let isNextPageDisplayed = await this._formFillPage(page);
+                if (!isNextPageDisplayed) {
+                    return;
+                }
+            });
+    
+            await BrowserWaits.waitForSeconds(2);
+        }
+    
+        this.caseEditPage.caseEventApiResponse = null;
+    }     
+
     async submitCase(isAccessibilityTest){
         var checkYouranswers = $(".check-your-answers");
         var isCheckYourAnswersPage = await checkYouranswers.isPresent();
         if (isCheckYourAnswersPage) {
             var submit = element(by.xpath('//button[@type= "submit"]'));
             await BrowserWaits.waitForElement(submit);
-            await browser.executeScript('arguments[0].scrollIntoView()',
-                submit.getWebElement());
+            // await browser.executeScript('arguments[0].scrollIntoView()',
+            //     submit.getWebElement());
 
             var thisPageUrl = await browser.getCurrentUrl();
 
@@ -175,11 +196,11 @@ class CaseManager {
         var nextStepSelect = element(by.xpath("//*[@id='next-step']"));
         var nextStepSelectoption = null;
         if (stepName){
-            nextStepSelect.select(stepName)
+            await nextStepSelect.select(stepName)
         }else{
             nextStepSelectoption = element(by.xpath("//*[@id='next-step']//option[2]"));
             const someStepEventName = await nextStepSelectoption.getText();
-            nextStepSelect.select(someStepEventName)
+            await nextStepSelect.select(someStepEventName)
 
         }
       
@@ -490,24 +511,20 @@ class CaseManager {
             case "ccd-write-collection-field":
                 cucumberReporter.AddMessage(fieldName + " : complex write collection values", LOG_LEVELS.Debug);
                 var addNewBtn = await ccdField.$(".panel button");
+                for(let i = 0 ; i < 3;i++){
+                    await addNewBtn.click();
+                    var writeFields = await ccdField.$$(".panel > .form-group > .form-group>ccd-field-write");
+                    var writeFieldsCount = await writeFields.count();
 
-                // let arrval = this._fieldValue(fieldName);
-                // if (!(arrval instanceof Array)){
-                //     break;
-                // }
-                // await browser.executeScript('arguments[0].scrollIntoView()',
-                //     addNewBtn.getWebElement());
-                await addNewBtn.click();
-                var writeFields = await ccdField.$$(".panel > .form-group > .form-group>ccd-field-write");
-                var writeFieldsCount = await writeFields.count();
+                    for (var count = 0; count < writeFieldsCount; count++) {
+                        var ccdSubField = await (await writeFields.get(count)).element(by.xpath("./div/*"));
+                        var subFieldText = await ccdSubField.getText();
+                        await this._writeToField(ccdSubField, `${fieldName}[0]`)
+                    }
 
-                for (var count = 0; count < writeFieldsCount; count++) {
-                    var ccdSubField = await ( await writeFields.get(count)).element(by.xpath("./div/*"));
-                    var subFieldText = await ccdSubField.getText();
-                    await this._writeToField(ccdSubField, `${fieldName}[0]`)
+                    cucumberReporter.AddMessage(fieldName + " : complex write collection values", LOG_LEVELS.Debug);
                 }
-
-                cucumberReporter.AddMessage(fieldName + " : complex write collection values", LOG_LEVELS.Debug);
+                
                 break;
             default:
                 console.log("Unknown field type : " + ccdFileTagName);

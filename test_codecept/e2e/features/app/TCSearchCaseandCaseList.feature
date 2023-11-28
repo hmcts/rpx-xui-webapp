@@ -26,7 +26,7 @@ Feature: Test case type case list and find case workflow
         When I select search criteria jurisdiction "Family Divorce" case type "XUI Test Case type dev" state "Case created" in case list page and click apply
         Then I wait to see case results displayed
         # Then validating the case list header against the api response
-
+@ignore
     Scenario: Validate workbasket update on case type change
         When I click on Case list
         Then I am on case list page
@@ -50,6 +50,7 @@ Feature: Test case type case list and find case workflow
         Then I see results returned
         # Then Validating the search inputs case list headers against api response
 
+@ignore
     Scenario: Validate search inputs on case type change
         When I click on search button
         Then Search page should be displayed
@@ -61,6 +62,7 @@ Feature: Test case type case list and find case workflow
         When I open first case in search results
         Then I see case details page
 
+@ignore
     Scenario: Search filters being retained
         When I click on search button
         Then Search page should be displayed

@@ -33,7 +33,8 @@ let features = ''
 if (testType === 'e2e' || testType === 'smoke'){
   features = `../e2e/features/app/**/*.feature`
 } else if (testType === 'ngIntegration'){
-  features = `../ngIntegration/tests/features/**/*.feature`
+  
+  features = pipelineBranch === 'master' ? `../ngIntegration/tests/features/**/notests.feature` : `../ngIntegration/tests/features/**/*.feature`
 
 } else{
   throw new Error(`Unrecognized test type ${testType}`);
@@ -51,7 +52,7 @@ if (pipelineBranch === 'master' && testType === 'ngIntegration'){
 } 
 
 const tags = process.env.DEBUG ? 'functional_debug' : bddTags
-const grepTags = `(?=.*@${testType === 'smoke' ? 'smoke' : tags})^(?!.*@ignore)^(?!.*@${pipelineBranch === 'preview' ? 'AAT_only' : 'preview_only'})`
+const grepTags = `(?=.*@${testType === 'smoke' ? 'smoke' : tags})^(?!.*@ignore)`
 console.log(grepTags)
 
 exports.config = {

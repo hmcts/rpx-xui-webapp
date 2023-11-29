@@ -39,6 +39,18 @@ class PRDApi{
             HearingSubChannel:{
                 inputs: [{ value_en: 'Hearing sub channel code 1' }, { value_en: 'Hearing sub channel code 2' }],
                 value: []
+            },
+            EntityRoleCode: {
+                inputs: [{ value_en: 'Entity role code 1' }, { value_en: 'Entity role code 1' }],
+                value: []
+            },
+            ActualPartHeardReasonCodes:{
+                inputs: [{ value_en: 'Actual part hearing reason code 1' }, { value_en: 'Actual part hearing reason code 1' }],
+                value: []
+            },
+            ActualCancellationReasonCodes: {
+                inputs: [{ value_en: 'Actual cancellation reason code 1' }, { value_en: 'Actual cancellation reason code 1' }],
+                value: []
             }
         }
 
@@ -69,7 +81,7 @@ class PRDApi{
                 "parent_category": type.parent_category ? type.parent_category : "",
                 "parent_key": type.parent_key ? type.parent_key : "",
                 "active_flag": type.active_flag ? type.active_flag : "Y",
-                "child_nodes": type.child_nodes ? type.child_nodes : null
+                "child_nodes": type.child_nodes ? type.child_nodes : []
 
             }
         }

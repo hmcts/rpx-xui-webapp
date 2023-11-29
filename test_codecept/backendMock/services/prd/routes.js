@@ -9,8 +9,13 @@ const userApiData = require('../userApiData')
 
 
 router.get('/lov/categories/:categoryid', (req, res) => {
- 
     res.send({ list_of_values: service.categoryTypes[req.params.categoryid].value })
+
+    // const rand = Math.random() * (10000 - 2000) + 2000
+    // setTimeout(() => {
+    //     console.log(`lovref data request for ${req.params.categoryid}`)
+    //     res.send({ list_of_values: service.categoryTypes[req.params.categoryid].value })
+    // }, 1000)
 });
 
 router.get('/caseflags/:service-id=ABA5', (req,res) => {

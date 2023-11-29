@@ -102,8 +102,4 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
     this.successBanner = true;
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }
-
-  public hearingIsInFuture(comparisonDateString: string): boolean {
-    return (new Date(comparisonDateString) > new Date());
-  }
 }

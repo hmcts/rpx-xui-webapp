@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
@@ -617,6 +618,7 @@ describe('CaseHearingsListComponent', () => {
   let fixture: ComponentFixture<CaseHearingsListComponent>;
   const mockFeatureService = new MockRoleCategoryMappingService();
   let mockStore: Store<fromHearingStore.State>;
+  const featureToggleServiceMock = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
 
   const mockRouter = {
     navigate: jasmine.createSpy('navigate'),
@@ -646,6 +648,10 @@ describe('CaseHearingsListComponent', () => {
         {
           provide: Router,
           useValue: mockRouter
+        },
+        {
+          provide: FeatureToggleService,
+          useValue: featureToggleServiceMock
         }
       ]
     }).compileComponents();
@@ -656,6 +662,7 @@ describe('CaseHearingsListComponent', () => {
     component.hearingList$ = of(UPCOMING_HEARING_LIST);
     component.hearingStageOptions = HEARING_TYPES_REF_DATA;
     component.actions = [Actions.DELETE];
+    featureToggleServiceMock.getValue.and.returnValue(of(false));
     fixture.detectChanges();
   });
 
@@ -843,6 +850,24 @@ describe('CaseHearingsListComponent', () => {
     expect(viewDetails12.textContent).toBe('View details');
     const addOrEdit12 = fixture.debugElement.query(By.css('#link-add-or-edit-h100012'));
     expect(addOrEdit12).toBeNull();
+  });
+
+  it('should show view details actioins if feature toggle is on', () => {
+    featureToggleServiceMock.getValue.and.returnValue(of(true));
+    component.status = EXUISectionStatusEnum.UPCOMING;
+    component.actions = [Actions.CREATE, Actions.DELETE, Actions.UPDATE, Actions.READ];
+    component.ngOnInit();
+    fixture.detectChanges();
+    const viewOrEdit1 = fixture.debugElement.query(By.css('#link-view-or-edit-h100001')).nativeElement;
+    expect(viewOrEdit1.textContent).toBe('View details');
+
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+    spyOn(mockStore, 'select').and.returnValue(of(null));
+    const loadHearingRequestServiceHearingValuesAndRedirect = spyOn(component, 'loadHearingRequestServiceHearingValuesAndRedirect');
+    component.viewAndEdit('h100000');
+    fixture.detectChanges();
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view' })));
+    expect(loadHearingRequestServiceHearingValuesAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/request/hearing-view-summary');
   });
 
   it('should return the right flag depends on hearingGroupRequestId', () => {

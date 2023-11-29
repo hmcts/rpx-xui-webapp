@@ -1,7 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { AppConstants } from '../../../app/app.constants';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode } from '../../../hearings/models/hearings.enum';
@@ -31,10 +33,12 @@ export class CaseHearingsListComponent implements OnInit {
   public hasUpdateAction: boolean = false;
   public hasDeleteAction: boolean = false;
   public hasReadOnlyAction: boolean = false;
+  public isHearingAmendmentsEnabled: boolean;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly router: Router) {
+    private readonly router: Router,
+    private readonly featureToggleService: FeatureToggleService) {
     this.caseId = this.activatedRoute.snapshot.params.cid;
   }
 
@@ -53,6 +57,10 @@ export class CaseHearingsListComponent implements OnInit {
         this.hasReadOnlyAction = true;
       }
     }
+
+    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.enableHearingAmendments, false).subscribe((enabled) => {
+      this.isHearingAmendmentsEnabled = enabled;
+    });
   }
 
   public isAwaitingActual(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {
@@ -100,7 +108,8 @@ export class CaseHearingsListComponent implements OnInit {
       mode: Mode.VIEW
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-    this.loadHearingRequestServiceHearingValuesAndRedirect(hearingID, '/hearings/request/hearing-view-edit-summary');
+    const url = this.isHearingAmendmentsEnabled ? '/hearings/request/hearing-view-summary' : '/hearings/request/hearing-view-edit-summary';
+    this.loadHearingRequestServiceHearingValuesAndRedirect(hearingID, url);
   }
 
   public viewDetails(hearing: HearingListViewModel): void {

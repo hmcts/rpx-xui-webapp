@@ -14,7 +14,8 @@ const featureNames = {
   booking: 'mc-booking-active',
   mcHearingsFeature: 'mc-hearings-jurisdictions',
   excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
-  enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1'
+  enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1',
+  enableHearingAmendments: 'mc-enable-hearing-amendments'
 };
 
 const footerDataNavigation = {

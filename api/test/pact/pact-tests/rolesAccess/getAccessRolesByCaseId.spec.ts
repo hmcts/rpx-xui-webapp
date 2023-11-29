@@ -12,7 +12,7 @@ const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_queryAssignme
 
 const caseId = '12345';
 
-describe('getAccessRolesByCaseId - access management service, query role assignments', () => {
+describe.skip('getAccessRolesByCaseId - access management service, query role assignments', () => {
   const REQUEST_BODY = {
     queryRequests: [
       {

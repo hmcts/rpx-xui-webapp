@@ -1,0 +1,90 @@
+{
+  "now": false,
+  "protocol": "http",
+  "stub": false,
+  "health": {
+    "ccdComponentApi": "https://gateway-ccd.${env}.platform.hmcts.net/health",
+    "ccdDataApi": "http://ccd-data-store-api-${env}.service.core-compute-${env}.internal/health",
+    "documentsApi": "http://dm-store-${env}.service.core-compute-${env}.internal/health",
+    "em_anno_api": "http://em-anno-${env}.service.core-compute-${env}.internal",
+    "termsAndConditions": "http://xui-terms-and-conditions-${env}.service.core-compute-${env}.internal/health",
+    "ccdActivityApi": "http://ccd-case-activity-api-${env}.service.core-compute-${env}.internal/health"
+  },
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,CIVIL,PRIVATELAW,EMPLOYMENT,ST_CIC",
+  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
+  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
+  "services": {
+    "ccd": {
+      "componentApi": "https://gateway-ccd.aat.platform.hmcts.net",
+      "dataApi": "http://ccd-data-store-api-${env}.service.core-compute-${env}.internal",
+      "caseAssignmentApi": "http://aac-manage-case-assignment-${env}.service.core-compute-${env}.internal",
+      "activityApi": "http://ccd-case-activity-api-pr-276.service.core-compute-preview.internal"
+    },
+    "hearings": {
+      "componentApi": "https://hearings.aat.service.core-compute-${env}.internal"
+    },
+    "documents": {
+      "api": "http://dm-store-${env}.service.core-compute-${env}.internal"
+    },
+    "documentsv2": {
+      "api": "http://ccd-case-document-am-api-${env}.service.core-compute-${env}.internal"
+    },
+    "prd": {
+      "api": "http://rd-professional-api-${env}.service.core-compute-${env}.internal",
+      "locationApi": "http://rd-location-ref-api-${env}.service.core-compute-demo.internal",
+      "judicialApi": "http://rd-judicial-api-${env}.service.core-compute-${env}.internal",
+      "commondataApi": "http://rd-commondata-api-${env}.service.core-compute-${env}.internal"
+    },
+    "em_anno_api": "http://em-anno-${env}.service.core-compute-${env}.internal",
+    "idam": {
+      "idamApiUrl": "https://idam-api.aat.platform.hmcts.net",
+      "idamClientID": "xuiwebapp",
+      "idamLoginUrl": "https://idam-web-public.aat.platform.hmcts.net",
+      "indexUrl": "/",
+      "oauthCallbackUrl": "/oauth2/callback",
+      "iss": "https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts"
+    },
+    "location_api": "http://rd-location-ref-api-${env}.service.core-compute-${env}.internal",
+    "locationref": {
+      "api": "http://rd-location-ref-api-${env}.service.core-compute-${env}.internal"
+    },
+    "work_allocation": {
+      "taskApi": "http://wa-task-management-api-${env}.service.core-compute-${env}.internal"
+    },
+    "role_assignment": {
+      "roleApi": "http://am-role-assignment-service-${env}.service.core-compute-${env}.internal"
+    },
+    "case": {
+      "caseworkerApi": "http://rd-caseworker-ref-api-${env}.service.core-compute-${env}.internal",
+      "judicialworkerApi": "http://rd-judicialworker-ref-api-${env}.service.core-compute-${env}.internal",
+      "judicialApi": "http://rd-judicial-api-${env}.service.core-compute-${env}.internal"
+    },
+    "s2s": "http://rpe-service-auth-provider-${env}.service.core-compute-${env}.internal",
+    "termsAndConditions": "http://xui-terms-and-conditions-${env}.service.core-compute-${env}.internal",
+    "payments": "http://payment-api-${env}.service.core-compute-${env}.internal"
+  },
+  "secrets": {
+    "rpx": {
+      "launch-darkly-client-id": "dummy",
+      "appinsights-instrumentationkey-mc": "dummy",
+      "mc-s2s-client-secret": "dummy",
+      "mc-idam-client-secret": "dummy",
+      "webapp-redis-connection-string": "redis://localhost:6379",
+      "system-user-name": "dummy",
+      "system-user-password": "dummy"
+    }
+  },
+  "feature": {
+    "appInsightsEnabled": false,
+    "proxyEnabled": false,
+    "secureCookieEnabled": false,
+    "helmetEnabled": true,
+    "redisEnabled": false,
+    "oidcEnabled": false,
+    "workAllocationEnabled": true
+  },
+  "redis": {
+    "prefix": "MC-activity:",
+    "ttl": 86400
+  }
+}

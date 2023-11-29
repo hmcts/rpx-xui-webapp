@@ -19,16 +19,16 @@ const data = {
     users: {
         aat: [
             {
-                idamId: "12b6a360-7f19-4985-b065-94320a891eaa",
-                email: "lukesuperuserxui@mailnesia.com",
+                idamId: "2d8727c0-44f7-4c2b-99b3-e3d53f90cded",
+                email: "xui_auto_test_user_solicitor@mailinator.com",
                 release: "general", userIdentifier: "PROD_LIKE",
                 key:"Monday01"
             },
             {
-              idamId: '4801cdad-f612-4288-9e03-70a659cc7b36',
-              email: 'townley.winchester@mailnesia.com',
-              release: 'general', userIdentifier: 'SOLICITOR',
-              key: 'Monday01'
+                idamId: "2d8727c0-44f7-4c2b-99b3-e3d53f90cded",
+                email: "xui_auto_test_user_solicitor@mailinator.com",
+                release: "general", userIdentifier: "SOLICITOR",
+                key: "Monday01"
             },
             {
                 idamId: "12b6a360-7f19-4985-b065-94320a891eaa",

@@ -8,24 +8,24 @@ class PRDApi{
             searchTasks: "ON_SEARCH_TASKS"
         }
         this.categoryTypes = {
-            HearingType:{ 
-                inputs: [{ value_en: 'Breach 1' }, { value_en: 'Breach 2'}], 
+            HearingType:{
+                inputs: [{ value_en: 'Breach 1' }, { value_en: 'Breach 2'}],
                 value:[]
             },
             Facilities: {
-                inputs: [{ value_en: 'Facility 1' }, { value_en: 'Facility 2'}], 
+                inputs: [{ value_en: 'Facility 1' }, { value_en: 'Facility 2'}],
                 value: []
             },
             HearingChannel: {
-                inputs: [{ value_en: 'Hearing channel 1' }, { value_en: 'Hearing channel 2'}], 
+                inputs: [{ value_en: 'Hearing channel 1' }, { value_en: 'Hearing channel 2'}],
                 value: []
             },
             JudgeType: {
-                inputs: [{ value_en: 'Judge type 1' }, { value_en: 'Judge type 2'}], 
+                inputs: [{ value_en: 'Judge type 1' }, { value_en: 'Judge type 2'}],
                 value: []
             },
             HearingPriority: {
-                inputs: [{ value_en: 'Hearing priority 1' }, { value_en: 'Hearing priority 2'}], 
+                inputs: [{ value_en: 'Hearing priority 1' }, { value_en: 'Hearing priority 2'}],
                 value: []
             },
             caseType:{
@@ -58,20 +58,20 @@ class PRDApi{
             }
         }
 
-        this.caseFlags = { 
+        this.caseFlags = {
             flags:[
                  { FlagDetails: [] }
             ],
-            
+
         }
         this.setUpCaseFlags()
 
         for (const category of Object.keys(this.categoryTypes)){
             this.setUpcategories(category)
         }
-       
+
     }
-        
+
     setUpcategories(categoryType){
         const getCategory = (categoryType, type) => {
             return {
@@ -125,7 +125,7 @@ class PRDApi{
                     "isParent": serviceFlag.childFlags && serviceFlag.childFlags.length > 0 ? true : false,
                     "Path": serviceFlag.path
 
-                    
+
                 }
                 if (!serviceFlag.childFlags){
                     return temp;

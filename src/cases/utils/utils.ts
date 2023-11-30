@@ -63,7 +63,6 @@ export class Utils {
         (featureVariation.includeCaseTypes?.length > 0 && featureVariation.includeCaseTypes.includes(caseType))) {
         return true;
       }
-      return true;
     }
     return false;
   }

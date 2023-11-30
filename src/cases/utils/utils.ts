@@ -57,7 +57,6 @@ export class Utils {
     });
   }
 
-
   public static hasMatchedJurisdictionAndCaseType(featureVariation: FeatureVariation, jurisdictionId: string, caseType: string): boolean {
     if (featureVariation.jurisdiction === jurisdictionId) {
       if ((featureVariation?.caseType === caseType) ||

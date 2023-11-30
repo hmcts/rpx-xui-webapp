@@ -1,8 +1,8 @@
 
-@ng 
-Feature: Hearings
+@ng
+Feature: Hearigs: Create hearing
 
-    Scenario: Hearings tab
+    Scenario: Create
 
 
         Given I set MOCK with user details

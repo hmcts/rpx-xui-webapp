@@ -46,7 +46,7 @@ class ServiceMock{
     async setHearingServiceHearingValues(data, status){
         await this.updateMockServer('OnServiceHearingValues', { status: status ? status : 200, data: data })
     }
-    
+
 
 }
 

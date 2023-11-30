@@ -100,7 +100,7 @@ class HearingsTable {
         const actionNames = []
         for (let i = 0; i < actionsCount; i++) {
             const e = await elements.get(i)
-            
+
             const name = await e.getText()
             reportLogger.AddMessage(`action "${name}", to click "${action}"`)
             if (name === action){

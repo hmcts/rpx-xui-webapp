@@ -100,7 +100,8 @@ export class CaseHearingsListComponent implements OnInit {
       mode: Mode.VIEW
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-    this.loadHearingRequestServiceHearingValuesAndRedirect(hearingID, '/hearings/request/hearing-view-edit-summary');
+    // this.loadHearingRequestServiceHearingValuesAndRedirect(hearingID, '/hearings/request/hearing-view-edit-summary');
+    this.loadHearingRequestServiceHearingValuesAndRedirect(hearingID, '/hearings/edit-hearing');
   }
 
   public viewDetails(hearing: HearingListViewModel): void {

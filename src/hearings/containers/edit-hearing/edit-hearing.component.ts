@@ -1,21 +1,43 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { Observable } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import { HearingSummaryEnum } from '../../models/hearings.enum';
+import * as fromHearingStore from '../../store';
 
 @Component({
   selector: 'exui-edit-hearing',
   templateUrl: './edit-hearing.component.html'
 })
-export class EditHearingComponent implements OnInit {
+export class EditHearingComponent implements OnInit, OnDestroy {
+  public hearingState$: Observable<fromHearingStore.State>;
+  public hearingStateSub: Subscription;
   public showSpinner$: Observable<boolean>;
   public validationErrors: { id: string, message: string }[] = [];
 
-  constructor(private readonly loadingService: LoadingService) {
+  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly loadingService: LoadingService) {
+    this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
   }
 
   public ngOnInit(): void {
-    this.showSpinner$ = this.loadingService.isLoading as any;
-    const loadingToken = this.loadingService.register();
-    this.loadingService.unregister(loadingToken);
+    // this.showSpinner$ = this.loadingService.isLoading as any;
+    // const loadingToken = this.loadingService.register();
+    this.hearingStateSub = this.hearingState$.subscribe((state) => {
+      if (state.hearingRequest.lastError) {
+        this.validationErrors = [];
+        this.validationErrors.push({
+          id: '', message: HearingSummaryEnum.BackendError
+        });
+        window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+      }
+    //   this.loadingService.unregister(loadingToken);
+    }, () => {
+    //   this.loadingService.unregister(loadingToken);
+    });
+  }
+
+  public ngOnDestroy(): void {
+    this.hearingStateSub?.unsubscribe();
   }
 }

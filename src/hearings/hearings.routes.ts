@@ -62,6 +62,7 @@ import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.serv
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { PartySubChannelsResolverService } from './resolvers/party-subchannels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
+import { EditHearingComponent } from './containers/edit-hearing/edit-hearing.component';
 
 export const ROUTES: Routes = [
   {
@@ -427,6 +428,14 @@ export const ROUTES: Routes = [
         }
       }
     ]
+  },
+  {
+    path: 'edit-hearing',
+    component: EditHearingComponent,
+    canActivate: [HearingsEditGuard],
+    data: {
+      title: 'HMCTS Hearings | Amend Hearing'
+    }
   },
   {
     path: 'view',

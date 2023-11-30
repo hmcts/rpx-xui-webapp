@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
+import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
 import { HearingSummaryEnum } from '../../models/hearings.enum';
 import * as fromHearingStore from '../../store';
 
@@ -12,6 +13,7 @@ import * as fromHearingStore from '../../store';
 export class EditHearingComponent implements OnInit, OnDestroy {
   public hearingState$: Observable<fromHearingStore.State>;
   public hearingStateSub: Subscription;
+  public hearingRequestMainModel: HearingRequestMainModel;
   public showSpinner$: Observable<boolean>;
   public validationErrors: { id: string, message: string }[] = [];
 
@@ -24,6 +26,7 @@ export class EditHearingComponent implements OnInit, OnDestroy {
     // this.showSpinner$ = this.loadingService.isLoading as any;
     // const loadingToken = this.loadingService.register();
     this.hearingStateSub = this.hearingState$.subscribe((state) => {
+      this.hearingRequestMainModel = state.hearingRequest.hearingRequestMainModel;
       if (state.hearingRequest.lastError) {
         this.validationErrors = [];
         this.validationErrors.push({

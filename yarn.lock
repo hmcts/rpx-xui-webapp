@@ -2591,12 +2591,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.13-prerelease-service-id-params":
-  version: 6.19.13-prerelease-service-id-params
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.13-prerelease-service-id-params"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.15-prerelease-service-id-params":
+  version: 6.19.15-prerelease-service-id-params
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.15-prerelease-service-id-params"
   dependencies:
     tslib: ^2.0.0
-  checksum: f6db2bcef24586ea732b12f958b76a1d287ae9f57f05c819a700afabbb0980879ba159416d4919505ca93fe416498763885ed0f7a780ede5884b3f962d462c6b
+  checksum: 2f1465ac15cac0984839dba172a20efea19024a116d6d246e2f5cd16ff3649c14583a50ddedb809b93d81510a311bc3398c65ab25500871550618769a9c8ab9e
   languageName: node
   linkType: hard
 
@@ -19249,7 +19249,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.13-prerelease-service-id-params
+    "@hmcts/ccd-case-ui-toolkit": 6.19.15-prerelease-service-id-params
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.9.5

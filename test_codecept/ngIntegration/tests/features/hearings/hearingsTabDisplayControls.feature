@@ -25,7 +25,7 @@ Feature: Hearings: Hearings tab display controls
 
     Scenario: Request hearing button not displayed with missing roles
         Given I set MOCK with user details
-            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator |
+            | roles | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-viewer |
             | roleCategory | LEGAL_OPERATIONS                                                      |
 
         # Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
@@ -45,9 +45,9 @@ Feature: Hearings: Hearings tab display controls
         Then I do not see Request a hearing button in hearings tab page
 
 
-    Scenario Outline: hearing tab not displayed jurisdiction <jurisdiction>, case type <caseType> not feature toggled on
+    Scenario Outline: hearing tab not displayed jurisdiction <jurisdiction>, case type <caseType> and roles not feature toggled on
         Given I set MOCK with user details
-            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
+            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,<role> |
             | roleCategory | LEGAL_OPERATIONS                                                                      |
 
         # Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
@@ -65,8 +65,9 @@ Feature: Hearings: Hearings tab display controls
         # Then debug sleep minutes 20
         Then I see case details tab label "Hearings" is displayed is "false"
         Examples:
-            | jurisdiction | caseType | 
-            | dummy  | dummy  | 
-            | PRIVATELAW | dummy |
-            | dummy | PRLAPPS |
+            |role| jurisdiction | caseType |
+            | hearing-manager | dummy | dummy |
+            | hearing-viewer| PRIVATELAW | dummy |
+            | hearing-manager | dummy | PRLAPPS |
+            | dummy | PRIVATELAW | PRLAPPS |
 

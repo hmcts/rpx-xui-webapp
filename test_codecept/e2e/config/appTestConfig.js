@@ -19,14 +19,14 @@ const data = {
     users: {
         aat: [
             {
-                idamId: "12b6a360-7f19-4985-b065-94320a891eaa",
-                email: "lukesuperuserxui@mailnesia.com",
+                idamId: "2d8727c0-44f7-4c2b-99b3-e3d53f90cded",
+                email: "xui_auto_test_user_solicitor@mailinator.com",
                 release: "general", userIdentifier: "PROD_LIKE",
                 key:"Monday01"
             },
             {
-                idamId: "12b6a360-7f19-4985-b065-94320a891eaa",
-                email: "lukesuperuserxui@mailnesia.com",
+                idamId: "2d8727c0-44f7-4c2b-99b3-e3d53f90cded",
+                email: "xui_auto_test_user_solicitor@mailinator.com",
                 release: "general", userIdentifier: "SOLICITOR",
                 key: "Monday01"
             },

@@ -5,7 +5,7 @@
       Will this be a paper hearing?
     </div>
     <div class="govuk-summary-list__value">
-
+      {{isPaperHearing}}
     </div>
     <div class="govuk-summary-list__actions">
       <a class="change-link" href="javascript:void(0)">Change</a>
@@ -16,7 +16,11 @@
       What will be the methods of attendance for this hearing?
     </div>
     <div class="govuk-summary-list__value">
-
+      <ul>
+        <li *ngIf="let participantChannel of participantChannels">
+          {{participantChannel}}
+        </li>
+      </ul>
     </div>
     <div class="govuk-summary-list__actions">
       <a class="change-link" href="javascript:void(0)">Change</a>
@@ -27,7 +31,11 @@
       How will each participant attend the hearing?
     </div>
     <div class="govuk-summary-list__value">
-
+      <ul>
+        <li *ngIf="let participantAttendanceMode of participantAttendanceModes">
+          {{participantAttendanceMode}}
+        </li>
+      </ul>
     </div>
     <div class="govuk-summary-list__actions">
       <a class="change-link" href="javascript:void(0)">Change</a>
@@ -38,18 +46,7 @@
       How many people will attend the hearing in person?
     </div>
     <div class="govuk-summary-list__value">
-
-    </div>
-    <div class="govuk-summary-list__actions">
-      <a class="change-link" href="javascript:void(0)">Change</a>
-    </div>
-  </div>
-  <div class="govuk-summary-list__row">
-    <div class="govuk-summary-list__key">
-      What are the hearing venue details?
-    </div>
-    <div class="govuk-summary-list__value">
-
+      {{numberOfPhysicalAttendees}}
     </div>
     <div class="govuk-summary-list__actions">
       <a class="change-link" href="javascript:void(0)">Change</a>

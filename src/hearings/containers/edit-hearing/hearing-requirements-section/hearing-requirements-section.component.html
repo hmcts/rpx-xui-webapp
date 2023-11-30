@@ -8,7 +8,16 @@
       Reasonable adjustments
     </div>
     <div class="govuk-summary-list__value">
-
+      <div *ngFor="let partyWithFlag of partyWithFlags">
+        <div *ngIf="partyWithFlag.value?.length > 0">
+          <strong class="bold">{{partyWithFlag.key}}</strong>
+          <ul>
+            <li *ngFor="let flag of partyWithFlag.value">
+              {{flag?.name || ''}}
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
     <div class="govuk-summary-list__actions">
       <a class="change-link" href="javascript:void(0)">Change</a>

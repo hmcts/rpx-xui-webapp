@@ -5,7 +5,11 @@
       What are the hearing venue details?
     </div>
     <div class="govuk-summary-list__value">
-
+      <ul>
+        <li *ngFor="let location of locations$ | async">
+          {{location}}
+        </li>
+      </ul>
     </div>
     <div class="govuk-summary-list__actions">
       <a class="change-link" href="javascript:void(0)">Change</a>

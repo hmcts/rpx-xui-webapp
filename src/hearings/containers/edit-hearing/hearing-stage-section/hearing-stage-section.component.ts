@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { HearingDetailsModel } from '../../../models/hearingDetails.model';
 
 @Component({
   selector: 'exui-hearing-stage-section',
@@ -8,19 +8,14 @@ import { HearingDetailsModel } from '../../../models/hearingDetails.model';
 })
 export class HearingStageSectionComponent implements OnInit {
   @Input() public hearingStageOptionsRefData: LovRefDataModel[];
-  @Input() public hearingDetails: HearingDetailsModel;
+  @Input() public hearingRequestMainModel: HearingRequestMainModel;
+  public hearingStage: string;
 
   public ngOnInit(): void {
-
-    this.hearingDetails.hear
-
-    state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType;
-
-        return StageAnswerConverter.getHearingTypeDisplayValue(hearingStageOptions, selection);
-  }
-
-  private getHearingTypeDisplayValue(hearingStageOptions: LovRefDataModel[], key: string): string {
-    const lovData: LovRefDataModel = hearingStageOptions.find((stage) => stage.key === key);
-    return lovData ? lovData.value_en : '';
+    const hearingType = this.hearingRequestMainModel.hearingDetails.hearingType;
+    const hearingStageFromRefData = this.hearingStageOptionsRefData.find((stage) => stage.key === hearingType);
+    this.hearingStage = hearingStageFromRefData
+      ? hearingStageFromRefData.value_en
+      : '';
   }
 }

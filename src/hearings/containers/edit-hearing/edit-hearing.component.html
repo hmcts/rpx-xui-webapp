@@ -3,12 +3,12 @@
 <h1 class="govuk-heading-l">Edit hearing</h1>
 <exui-hearing-requirements-section></exui-hearing-requirements-section>
 <exui-additional-facilities-section [hearingRequestMainModel]="hearingRequestMainModel"></exui-additional-facilities-section>
-<exui-hearing-stage-section></exui-hearing-stage-section>
+<exui-hearing-stage-section [hearingRequestMainModel]="hearingRequestMainModel"></exui-hearing-stage-section>
 <exui-participant-attendance-section></exui-participant-attendance-section>
-<exui-hearing-venue-section></exui-hearing-venue-section>
-<exui-language-requirements-section></exui-language-requirements-section>
-<exui-judge-details-section></exui-judge-details-section>
-<exui-panel-details-section></exui-panel-details-section>
-<exui-hearing-timing-section></exui-hearing-timing-section>
-<exui-linked-hearing-section></exui-linked-hearing-section>
-<exui-additional-instructions-section></exui-additional-instructions-section>
+<exui-hearing-venue-section [hearingLocations]="hearingLocations"></exui-hearing-venue-section>
+<exui-language-requirements-section [hearingInWelshFlag]="hearingInWelshFlag"></exui-language-requirements-section>
+<exui-judge-details-section [panelRequirements]="panelRequirements"></exui-judge-details-section>
+<exui-panel-details-section [panelRequirements]="panelRequirements"></exui-panel-details-section>
+<exui-hearing-timing-section [hearingDetails]="hearingDetails"></exui-hearing-timing-section>
+<exui-linked-hearing-section [hearingIsLinkedFlag]="hearingIsLinkedFlag"></exui-linked-hearing-section>
+<exui-additional-instructions-section [listingComments]="listingComments"></exui-additional-instructions-section>

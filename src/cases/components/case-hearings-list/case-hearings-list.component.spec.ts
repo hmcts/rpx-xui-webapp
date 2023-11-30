@@ -618,7 +618,7 @@ describe('CaseHearingsListComponent', () => {
   let fixture: ComponentFixture<CaseHearingsListComponent>;
   const mockFeatureService = new MockRoleCategoryMappingService();
   let mockStore: Store<fromHearingStore.State>;
-  const featureToggleServiceMock = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
+  const featureToggleServiceMock = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
 
   const mockRouter = {
     navigate: jasmine.createSpy('navigate'),
@@ -662,7 +662,7 @@ describe('CaseHearingsListComponent', () => {
     component.hearingList$ = of(UPCOMING_HEARING_LIST);
     component.hearingStageOptions = HEARING_TYPES_REF_DATA;
     component.actions = [Actions.DELETE];
-    featureToggleServiceMock.getValue.and.returnValue(of(false));
+    featureToggleServiceMock.isEnabled.and.returnValue(of(false));
     fixture.detectChanges();
   });
 
@@ -853,12 +853,12 @@ describe('CaseHearingsListComponent', () => {
   });
 
   it('should show view details actioins if feature toggle is on', () => {
-    featureToggleServiceMock.getValue.and.returnValue(of(true));
+    featureToggleServiceMock.isEnabled.and.returnValue(of(true));
     component.status = EXUISectionStatusEnum.UPCOMING;
     component.actions = [Actions.CREATE, Actions.DELETE, Actions.UPDATE, Actions.READ];
     component.ngOnInit();
     fixture.detectChanges();
-    const viewOrEdit1 = fixture.debugElement.query(By.css('#link-view-or-edit-h100001')).nativeElement;
+    const viewOrEdit1 = fixture.debugElement.query(By.css('#link-view-details-h100001')).nativeElement;
     expect(viewOrEdit1.textContent).toBe('View details');
 
     const dispatchSpy = spyOn(mockStore, 'dispatch');

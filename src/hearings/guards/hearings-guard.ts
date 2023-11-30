@@ -40,7 +40,7 @@ export class HearingsGuard {
         if (!jurisdiction || !caseType) {
           return false;
         }
-        return featureVariations.some((featureVariation) => Utils.hasMatchedPermissions(featureVariation, jurisdiction, caseType));
+        return featureVariations.some((featureVariation) => Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdiction, caseType));
       })
     );
   }

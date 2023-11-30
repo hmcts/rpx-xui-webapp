@@ -4,7 +4,7 @@ const userApiData = require('../userApiData')
 
 
 class HearingsApi{
-    
+
 
     constructor(){
 
@@ -16,6 +16,7 @@ class HearingsApi{
 
         // this.addHearing()
         this.addHearing({ hmcStatus: "LISTED" })
+        this.addHearing({ hmcStatus: "COMPLETED" })
         this.addHearing({ hmcStatus: "AWAITING_ACTUALS" })
 
     }
@@ -27,7 +28,7 @@ class HearingsApi{
     getHearingWithProps(props){
         return this.gethearingTemplate(props);
     }
-    
+
 
     getCaseHearings(){
             return {
@@ -95,7 +96,7 @@ class HearingsApi{
             hearingResponse:{
                 laCaseStatus: 'LISTED'
             }
-            
+
         }
     }
 

@@ -21,7 +21,7 @@ const mockServiceHearingValues = require('../../../backendMock/services/hearings
 
     function updateObjectValues(object, key, value){
         const dateField = ['hearingRequestDateTime', 'lastResponseReceivedDateTime', 'hearingDaySchedule.hearingStartDateTime', 'hearingDaySchedule.hearingEndDateTime']
-    
+
         if (dateField.includes(key)){
             const byDays = parseInt(value)
             object[key] = moment().add(byDays, 'days').format('YYYY-MM-DDTHH:mm:ss.sssss')
@@ -39,7 +39,7 @@ const mockServiceHearingValues = require('../../../backendMock/services/hearings
                 updateObjectValues(hearing, key, hearing[key])
             }
             hearingsList.push(hearingsMock.getHearingWithProps(hearing))
-            
+
         }
         const res = {
             "caseRef": "1690807693531270",
@@ -70,7 +70,32 @@ const mockServiceHearingValues = require('../../../backendMock/services/hearings
                 throw new Error(`no mock data setup for hearing ${hearingStatus}`)
         }
 
-        
+
+        mockClient.setOnGetHearing(hearingResponse, 200)
+
+    });
+
+    Given('I set mock get hearing with with status {string}', async function (hearingStatus) {
+
+        let hearingResponse = null;
+        switch (hearingStatus){
+            case "LISTED":
+                hearingResponse = listedHearing;
+                break;
+            case "COMPLETED":
+                hearingResponse = completedHearing;
+                break;
+            case "CANCELLED":
+                hearingResponse = cancelledhearing;
+                break;
+            case "AWAITING_ACTUALS":
+                hearingResponse = awaitinghearingsDetails;
+                break;
+            default:
+                throw new Error(`no mock data setup for hearing ${hearingStatus}`)
+        }
+
+
         mockClient.setOnGetHearing(hearingResponse, 200)
 
     });

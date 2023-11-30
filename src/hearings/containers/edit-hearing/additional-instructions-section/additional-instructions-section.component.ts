@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import * as fromHearingStore from '../../../store';
@@ -7,7 +7,7 @@ import * as fromHearingStore from '../../../store';
   selector: 'exui-additional-instructions-section',
   templateUrl: './additional-instructions-section.component.html'
 })
-export class AdditionalInstructionsSectionComponent implements OnInit {
+export class AdditionalInstructionsSectionComponent implements OnInit, OnDestroy {
   public additionalInstructions: string;
   public hearingState$: Observable<fromHearingStore.State>;
   public hearingStateSubscription: Subscription;
@@ -24,5 +24,9 @@ export class AdditionalInstructionsSectionComponent implements OnInit {
       }
       this.additionalInstructions = additionalInstructions.replace(/(?:\r\n|\r|\n)/g, '<br>');
     });
+  }
+
+  public ngOnDestroy(): void {
+    this.hearingStateSubscription?.unsubscribe();
   }
 }

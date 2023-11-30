@@ -5,7 +5,7 @@
       Will additional security be required?
     </div>
     <div class="govuk-summary-list__value">
-
+      {{additionalFacilitiesRequiredText}}
     </div>
     <div class="govuk-summary-list__actions">
       <a class="change-link" href="javascript:void(0)">Change</a>
@@ -16,7 +16,11 @@
       Select any additional facilities required
     </div>
     <div class="govuk-summary-list__value">
-
+      <ul>
+        <li *ngFor="let additionalFacility of additionalFacilities">
+          {{additionalFacility}}
+        </li>
+      </ul>
     </div>
     <div class="govuk-summary-list__actions">
       <a class="change-link" href="javascript:void(0)">Change</a>

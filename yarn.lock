@@ -2591,12 +2591,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.13-load-hearings-tab-v2":
-  version: 6.19.13-load-hearings-tab-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.13-load-hearings-tab-v2"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.13-welsh-translation-FirstErrorPipe-fix":
+  version: 6.19.13-welsh-translation-FirstErrorPipe-fix
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.13-welsh-translation-FirstErrorPipe-fix"
   dependencies:
     tslib: ^2.0.0
-  checksum: 7f2873e3d1b479e239563046c6a43540b79db8435d31d351641d51b5fee4589d2514c474f4f1a56444cd06d49c109df3201907412cad46754647841d41ed2415
+  checksum: cbcf33edae1bb7aa90047586c81d734472bb328f7b7c9f47da00580b1077c95ad17004f4cf66cfc5b101aae4ea01233a5c5d625929c8446828fb802091bfd377
   languageName: node
   linkType: hard
 
@@ -19249,7 +19249,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.13-load-hearings-tab-v2
+    "@hmcts/ccd-case-ui-toolkit": 6.19.13-welsh-translation-FirstErrorPipe-fix
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.9.5

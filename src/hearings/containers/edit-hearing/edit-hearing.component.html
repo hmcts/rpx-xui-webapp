@@ -1,10 +1,16 @@
 <a class="govuk-back-link" href="javascript:history.back()">Back</a>
 <!-- <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner> -->
 <h1 class="govuk-heading-l">Edit hearing</h1>
-<exui-hearing-requirements-section></exui-hearing-requirements-section>
+<exui-hearing-requirements-section
+  [hearingRequestMainModel]="hearingRequestMainModel"
+  [serviceHearingValuesModel]="serviceHearingValuesModel"
+></exui-hearing-requirements-section>
 <exui-additional-facilities-section [hearingRequestMainModel]="hearingRequestMainModel"></exui-additional-facilities-section>
 <exui-hearing-stage-section [hearingRequestMainModel]="hearingRequestMainModel"></exui-hearing-stage-section>
-<exui-participant-attendance-section></exui-participant-attendance-section>
+<exui-participant-attendance-section
+  [hearingRequestMainModel]="hearingRequestMainModel"
+  [serviceHearingValuesModel]="serviceHearingValuesModel"
+></exui-participant-attendance-section>
 <exui-hearing-venue-section [hearingLocations]="hearingLocations"></exui-hearing-venue-section>
 <exui-language-requirements-section [hearingInWelshFlag]="hearingInWelshFlag"></exui-language-requirements-section>
 <exui-judge-details-section [panelRequirements]="panelRequirements"></exui-judge-details-section>

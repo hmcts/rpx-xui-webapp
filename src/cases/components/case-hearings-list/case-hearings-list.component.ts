@@ -33,7 +33,7 @@ export class CaseHearingsListComponent implements OnInit {
   public hasUpdateAction: boolean = false;
   public hasDeleteAction: boolean = false;
   public hasReadOnlyAction: boolean = false;
-  public isHearingAmendmentsEnabled: boolean;
+  public isHearingAmendmentsEnabled$: Observable<boolean>;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly activatedRoute: ActivatedRoute,
@@ -58,9 +58,7 @@ export class CaseHearingsListComponent implements OnInit {
       }
     }
 
-    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.enableHearingAmendments, false).subscribe((enabled) => {
-      this.isHearingAmendmentsEnabled = enabled;
-    });
+    this.isHearingAmendmentsEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments);
   }
 
   public isAwaitingActual(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {
@@ -108,8 +106,10 @@ export class CaseHearingsListComponent implements OnInit {
       mode: Mode.VIEW
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-    const url = this.isHearingAmendmentsEnabled ? '/hearings/request/hearing-view-summary' : '/hearings/request/hearing-view-edit-summary';
-    this.loadHearingRequestServiceHearingValuesAndRedirect(hearingID, url);
+    this.isHearingAmendmentsEnabled$.subscribe((enabled) => {
+      const url = enabled ? '/hearings/request/hearing-view-summary' : '/hearings/request/hearing-view-edit-summary';
+      this.loadHearingRequestServiceHearingValuesAndRedirect(hearingID, url);
+    });
   }
 
   public viewDetails(hearing: HearingListViewModel): void {

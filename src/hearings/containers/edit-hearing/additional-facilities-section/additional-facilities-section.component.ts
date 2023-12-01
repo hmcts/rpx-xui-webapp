@@ -7,7 +7,7 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
   templateUrl: './additional-facilities-section.component.html'
 })
 export class AdditionalFacilitiesSectionComponent implements OnInit {
-  @Input() public facilitiesRefData: LovRefDataModel[];
+  @Input() public additionalFacilitiesRefData: LovRefDataModel[];
   @Input() public hearingRequestMainModel: HearingRequestMainModel;
   public additionalFacilitiesRequiredText: string;
   public additionalFacilities: string[] = [];
@@ -18,7 +18,7 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
       : 'No';
 
     this.hearingRequestMainModel.hearingDetails?.facilitiesRequired?.forEach((facility) => {
-      const facilityFromRefData = this.facilitiesRefData.find((facilityRefData) => facilityRefData.key === facility);
+      const facilityFromRefData = this.additionalFacilitiesRefData.find((facilityRefData) => facilityRefData.key === facility);
       if (facilityFromRefData) {
         this.additionalFacilities.push(facilityFromRefData.value_en);
       }

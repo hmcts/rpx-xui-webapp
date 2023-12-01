@@ -40,7 +40,7 @@ export class PanelDetailsSectionComponent implements OnInit {
     ).map((preference) => preference.memberID);
 
     const includedPanelMemberNames: string[] = [];
-    this.panelMembers.forEach((panelMemberInfo) => {
+    this.panelMembers?.forEach((panelMemberInfo) => {
       if (includedPanelMembers.includes(panelMemberInfo.personalCode)) {
         includedPanelMemberNames.push(panelMemberInfo.fullName);
       }
@@ -54,7 +54,7 @@ export class PanelDetailsSectionComponent implements OnInit {
     ).map((preference) => preference.memberID);
 
     const excludedJudgeNames: string[] = [];
-    this.panelMembers.forEach((panelMemberInfo) => {
+    this.panelMembers?.forEach((panelMemberInfo) => {
       if (excludedJudges.includes(panelMemberInfo.personalCode)) {
         excludedJudgeNames.push(panelMemberInfo.fullName);
       }

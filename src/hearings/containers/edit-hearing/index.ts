@@ -1,5 +1,6 @@
 import { AdditionalFacilitiesSectionComponent } from './additional-facilities-section/additional-facilities-section.component';
 import { AdditionalInstructionsSectionComponent } from './additional-instructions-section/additional-instructions-section.component';
+import { CaseDetailsSectionComponent } from './case-details-section/case-details-section.component';
 import { EditHearingComponent } from './edit-hearing.component';
 import { HearingRequirementsSectionComponent } from './hearing-requirements-section/hearing-requirements-section.component';
 import { HearingStageSectionComponent } from './hearing-stage-section/hearing-stage-section.component';
@@ -12,9 +13,10 @@ import { PanelDetailsSectionComponent } from './panel-details-section/panel-deta
 import { ParticipantAttendanceSectionComponent } from './participant-attendance-section/participant-attendance-section.component';
 
 export const containers: any[] = [
-  EditHearingComponent,
   AdditionalFacilitiesSectionComponent,
   AdditionalInstructionsSectionComponent,
+  CaseDetailsSectionComponent,
+  EditHearingComponent,
   HearingRequirementsSectionComponent,
   HearingStageSectionComponent,
   HearingTimingSectionComponent,

@@ -78,7 +78,7 @@ export class HearingTimingSectionComponent implements OnInit {
   }
 
   private getHearingPriority(): string {
-    const hearingPriorityFromRefData = this.hearingPrioritiesRefData.find((priority) => priority.key === this.hearingDetails.hearingPriorityType)
+    const hearingPriorityFromRefData = this.hearingPrioritiesRefData.find((priority) => priority.key === this.hearingDetails.hearingPriorityType);
     return (hearingPriorityFromRefData?.value_en || '');
   }
 }

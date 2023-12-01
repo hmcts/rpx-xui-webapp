@@ -430,6 +430,21 @@ export const ROUTES: Routes = [
   },
   {
     path: 'edit-hearing',
+    resolve: {
+      additionFacilitiesOptions: AdditionalFacilitiesResolver,
+      caseFlags: CaseFlagsResolver,
+      caseType: CaseTypesResolver,
+      courtLocation: CourtLocationsDataResolver,
+      hearingPriorities: RefDataResolver,
+      hearingStageOptions: HearingStageResolver,
+      judgeTypes: JudgeTypesResolverService,
+      judicialResponseUsers: JudicialUserSearchResponseResolver,
+      judicialUsers: JudicialUserSearchResolver,
+      otherPanelRoles: PanelRolesResolverService,
+      panelMemberResponseUsers: PanelMemberSearchResponseResolver,
+      partyChannels: PartyChannelsResolverService,
+      partySubChannels: PartySubChannelsResolverService
+    },
     component: EditHearingComponent,
     canActivate: [HearingsEditGuard],
     data: {

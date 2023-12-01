@@ -125,6 +125,9 @@ class MockApp {
         app.use('/cases/documents', evidenceManagementRoutes)
         app.use('/documentsv2', evidenceManagementRoutes)
 
+        app.get('/activity/cases/:caseId/activity', (req,res) => {
+            res.send({})
+        })
 
         // await this.stopServer();
         this.server = await app.listen(8080);

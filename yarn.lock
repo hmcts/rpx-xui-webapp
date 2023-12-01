@@ -12874,7 +12874,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"istanbul-lib-source-maps@npm:^4.0.0":
+"istanbul-lib-source-maps@npm:^4.0.0, istanbul-lib-source-maps@npm:^4.0.1":
   version: 4.0.1
   resolution: "istanbul-lib-source-maps@npm:4.0.1"
   dependencies:
@@ -12891,6 +12891,16 @@ __metadata:
   dependencies:
     html-escaper: ^2.0.0
   checksum: 138604c86fe4a386c4ba23c103aa64f3d867548cb1ac9961cafe912004bde601180d7ece918a76e2e0078b94e503b77aa696d6e6f68a0d8698abbf0923d78285
+  languageName: node
+  linkType: hard
+
+"istanbul-reports@npm:^3.0.5":
+  version: 3.1.6
+  resolution: "istanbul-reports@npm:3.1.6"
+  dependencies:
+    html-escaper: ^2.0.0
+    istanbul-lib-report: ^3.0.0
+  checksum: 44c4c0582f287f02341e9720997f9e82c071627e1e862895745d5f52ec72c9b9f38e1d12370015d2a71dcead794f34c7732aaef3fab80a24bc617a21c3d911d6
   languageName: node
   linkType: hard
 
@@ -13864,6 +13874,20 @@ __metadata:
     istanbul-api: ^2.1.6
     minimatch: ^3.0.4
   checksum: 8c5c299e83a46125de175cff89fb7355f2aec6cde85ef8e22efb1fa482672aca34c22dbdaf0eccb314d437d3ae0f3215d8438e3bbc39edbdec717677f5b7be13
+  languageName: node
+  linkType: hard
+
+"karma-coverage@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "karma-coverage@npm:2.2.1"
+  dependencies:
+    istanbul-lib-coverage: ^3.2.0
+    istanbul-lib-instrument: ^5.1.0
+    istanbul-lib-report: ^3.0.0
+    istanbul-lib-source-maps: ^4.0.1
+    istanbul-reports: ^3.0.5
+    minimatch: ^3.0.4
+  checksum: 72ba4363507a0fee7e5b67d9293f54d64d33f25ad20d39c63a14098a7f67890fbada67433743bedf71e0ccbf6a074013867410e542f7438149a9576eb36ee1f8
   languageName: node
   linkType: hard
 
@@ -19315,6 +19339,7 @@ __metadata:
     jsonwebtoken: ^8.5.1
     karma: ~6.0.0
     karma-chrome-launcher: 3.1.1
+    karma-coverage: ^2.2.1
     karma-coverage-istanbul-reporter: ~2.0.1
     karma-jasmine: 5.0.1
     karma-jasmine-html-reporter: ^1.4.0

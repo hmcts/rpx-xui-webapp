@@ -2,15 +2,7 @@
 <!-- <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner> -->
 <h1 class="govuk-heading-l">Edit hearing</h1>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
-  <div class="govuk-summary-list__row">
-    <div class="govuk-summary-list__key">
-      Case name
-    </div>
-    <div class="govuk-summary-list__value">
-      {{hearingRequestMainModel.caseDetails.hmctsInternalCaseName}}
-    </div>
-  </div>
-  <div class="govuk-summary-list__row">
+  <div class="govuk-summary-list__row" *ngIf="!isHearingListed">
     <div class="govuk-summary-list__key">
       Case number
     </div>
@@ -23,7 +15,7 @@
       Status
     </div>
     <div class="govuk-summary-list__value">
-      {{caseStatus}}
+      {{status}}
     </div>
   </div>
   <div class="govuk-summary-list__row">
@@ -34,7 +26,7 @@
       {{requestSubmittedDate}}
     </div>
   </div>
-  <div class="govuk-summary-list__row">
+  <div class="govuk-summary-list__row" *ngIf="isHearingListed">
     <div class="govuk-summary-list__key">
       Date response received
     </div>
@@ -48,57 +40,57 @@
   [caseTypeRefData]="caseTypeRefData"
 ></exui-case-details-section>
 <!-- Hearing requirements -->
-<!-- <exui-hearing-requirements-section
+<exui-hearing-requirements-section
   [hearingRequestMainModel]="hearingRequestMainModel"
   [serviceHearingValuesModel]="serviceHearingValuesModel"
   [caseFlagsRefData]="caseFlagsRefData"
-></exui-hearing-requirements-section> -->
+></exui-hearing-requirements-section>
 <!-- Additional facilities -->
-<!-- <exui-additional-facilities-section
+<exui-additional-facilities-section
   [hearingRequestMainModel]="hearingRequestMainModel"
   [additionalFacilitiesRefData]="additionalFacilitiesRefData"
-></exui-additional-facilities-section> -->
+></exui-additional-facilities-section>
 <!-- Hearing stage -->
-<!-- <exui-hearing-stage-section
+<exui-hearing-stage-section
   [hearingRequestMainModel]="hearingRequestMainModel"
   [hearingStageOptionsRefData]="hearingStageOptionsRefData"
-></exui-hearing-stage-section> -->
+></exui-hearing-stage-section>
 <!-- Participant attendance -->
-<!-- <exui-participant-attendance-section
+<exui-participant-attendance-section
   [hearingRequestMainModel]="hearingRequestMainModel"
   [serviceHearingValuesModel]="serviceHearingValuesModel"
   [partyChannelsRefData]="partyChannelsRefData"
   [partySubChannelsRefData]="partySubChannelsRefData"
-></exui-participant-attendance-section> -->
+></exui-participant-attendance-section>
 <!-- Hearing venue -->
-<!-- <exui-hearing-venue-section
+<exui-hearing-venue-section
   [hearingLocations]="hearingRequestMainModel.hearingDetails.hearingLocations"
-></exui-hearing-venue-section> -->
+></exui-hearing-venue-section>
 <!-- Language requirements -->
-<!-- <exui-language-requirements-section
+<exui-language-requirements-section *ngIf="showLanguageRequirementsSection$ | async"
   [hearingInWelshFlag]="hearingRequestMainModel.hearingDetails.hearingInWelshFlag"
-></exui-language-requirements-section> -->
+></exui-language-requirements-section>
 <!-- Judge details -->
-<!-- <exui-judge-details-section
+<exui-judge-details-section
   [panelRequirements]="hearingRequestMainModel.hearingDetails.panelRequirements"
   [judgeTypesRefData]="judgeTypesRefData"
   [judicialUsers]="judicialUsers"
-></exui-judge-details-section> -->
+></exui-judge-details-section>
 <!-- Panel member details -->
-<!-- <exui-panel-details-section
+<exui-panel-details-section *ngIf="showPanelDetailsSection"
   [panelRequirements]="hearingRequestMainModel.hearingDetails.panelRequirements"
   [panelRolesRefData]="panelRolesRefData"
-></exui-panel-details-section> -->
+></exui-panel-details-section>
 <!-- Hearing length, date and priority -->
-<!-- <exui-hearing-timing-section
+<exui-hearing-timing-section
   [hearingDetails]="hearingRequestMainModel.hearingDetails"
   [hearingPrioritiesRefData]="hearingPrioritiesRefData"
-></exui-hearing-timing-section> -->
+></exui-hearing-timing-section>
 <!-- Linked hearing -->
-<!-- <exui-linked-hearing-section
+<exui-linked-hearing-section
   [hearingIsLinkedFlag]="hearingRequestMainModel.hearingDetails.hearingIsLinkedFlag"
-></exui-linked-hearing-section> -->
+></exui-linked-hearing-section>
 <!-- Additional instructions -->
-<!-- <exui-additional-instructions-section
+<exui-additional-instructions-section
   [listingComments]="hearingRequestMainModel.hearingDetails.listingComments"
-></exui-additional-instructions-section> -->
+></exui-additional-instructions-section>

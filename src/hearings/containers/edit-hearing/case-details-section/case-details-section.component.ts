@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { CaseCategoryDisplayModel } from '../../../models/caseCategory.model';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { CaseCategoryDisplayModel } from '../../../models/caseCategory.model';
 import { CaseTypesUtils } from '../../../utils/case-types.utils';
 
 @Component({
@@ -15,6 +15,6 @@ export class CaseDetailsSectionComponent implements OnInit {
   public caseTypes: CaseCategoryDisplayModel[];
 
   public ngOnInit(): void {
-    this.caseTypes = CaseTypesUtils.getCaseCategoryDisplayModels(this.caseTypeRefData, this.hearingRequestMainModel.caseDetails.caseCategories);
+    this.caseTypes = CaseTypesUtils.getCaseCategoryDisplayModels(this.caseTypeRefData, this.hearingRequestMainModel.caseDetails?.caseCategories);
   }
 }

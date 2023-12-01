@@ -4,17 +4,17 @@ import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
-import { CaseCategoryDisplayModel } from '../../models/caseCategory.model';
 import { CaseFlagReferenceModel } from '../../models/caseFlagReference.model';
 import { HearingListMainModel } from '../../models/hearingListMain.model';
 import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
 import { hearingStatusMappings } from '../../models/hearingStatusMappings';
-import { HearingDateEnum, HearingSummaryEnum } from '../../models/hearings.enum';
+import { HearingDateEnum, HearingSummaryEnum, LaCaseStatus } from '../../models/hearings.enum';
 import { JudicialUserModel } from '../../models/judicialUser.model';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
+import { LocationsDataService } from '../../services/locations-data.service';
 import * as fromHearingStore from '../../store';
-import { CaseTypesUtils } from '../../utils/case-types.utils';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'exui-edit-hearing',
@@ -27,9 +27,13 @@ export class EditHearingComponent implements OnInit, OnDestroy {
   public hearingRequestMainModel: HearingRequestMainModel;
   public hearingListMainModel: HearingListMainModel;
   public caseReference: string;
-  public caseStatus: string;
+  public status: string;
   public requestSubmittedDate: string;
   public responseReceivedDate: string;
+  public caseStatus: string;
+  public isHearingListed: boolean;
+  public showPanelDetailsSection: boolean;
+  public showLanguageRequirementsSection$: Observable<boolean>;
   public showSpinner$: Observable<boolean>;
   public validationErrors: { id: string, message: string }[] = [];
   public additionalFacilitiesRefData: LovRefDataModel[];
@@ -45,9 +49,9 @@ export class EditHearingComponent implements OnInit, OnDestroy {
 
   constructor(private readonly route: ActivatedRoute,
     private readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly locationsDataService: LocationsDataService,
     private readonly loadingService: LoadingService) {
     this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
-    console.log('DATA', this.route.snapshot.data);
     this.additionalFacilitiesRefData = this.route.snapshot.data.additionFacilitiesOptions;
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
     this.caseTypeRefData = this.route.snapshot.data.caseType;
@@ -65,11 +69,22 @@ export class EditHearingComponent implements OnInit, OnDestroy {
     // const loadingToken = this.loadingService.register();
     this.hearingStateSub = this.hearingState$.subscribe((state) => {
       this.hearingRequestMainModel = state.hearingRequest.hearingRequestMainModel;
+      this.serviceHearingValuesModel = state.hearingValues.serviceHearingValuesModel;
 
       this.caseReference = String(this.hearingRequestMainModel.caseDetails.caseRef).replace(/(\d{4})(\d{4})(\d{4})(\d{4})/, '$1-$2-$3-$4');
-      this.caseStatus = hearingStatusMappings.find((mapping) => mapping.hmcStatus === this.hearingRequestMainModel.requestDetails?.status)?.exuiDisplayStatus || '';
+      this.status = hearingStatusMappings.find((mapping) => mapping.hmcStatus === this.hearingRequestMainModel.requestDetails?.status)?.exuiDisplayStatus || '';
       this.requestSubmittedDate = moment(this.hearingRequestMainModel?.requestDetails?.timestamp)?.format(HearingDateEnum.DisplayMonth) || '';
       this.responseReceivedDate = moment(this.hearingRequestMainModel.hearingResponse?.receivedDateTime).format(HearingDateEnum.DisplayMonth) || '';
+      this.caseStatus = this.hearingRequestMainModel.hearingResponse?.laCaseStatus || '';
+      this.isHearingListed = this.caseStatus === LaCaseStatus.LISTED;
+      this.showPanelDetailsSection = state.hearingValues?.serviceHearingValuesModel?.screenFlow?.findIndex((screen) => screen.screenName === 'hearing-panel') > -1 ? false : true;
+
+      const locationIds = this.hearingRequestMainModel.hearingDetails.hearingLocations?.map((location) => location.locationId).join(',');
+      this.showLanguageRequirementsSection$ = this.locationsDataService.getLocationById(locationIds).pipe(
+        map((locations) => {
+          return !locations.some((location) => location.region_id === '7');
+        })
+      );
 
       if (state.hearingRequest.lastError) {
         this.validationErrors = [];

@@ -431,24 +431,25 @@ export const ROUTES: Routes = [
   {
     path: 'edit-hearing',
     resolve: {
-      additionFacilitiesOptions: AdditionalFacilitiesResolver,
-      caseFlags: CaseFlagsResolver,
-      caseType: CaseTypesResolver,
-      courtLocation: CourtLocationsDataResolver,
       hearingPriorities: RefDataResolver,
+      caseType: CaseTypesResolver,
+      caseFlags: CaseFlagsResolver,
       hearingStageOptions: HearingStageResolver,
-      judgeTypes: JudgeTypesResolverService,
-      judicialResponseUsers: JudicialUserSearchResponseResolver,
-      judicialUsers: JudicialUserSearchResolver,
-      otherPanelRoles: PanelRolesResolverService,
-      panelMemberResponseUsers: PanelMemberSearchResponseResolver,
+      additionFacilitiesOptions: AdditionalFacilitiesResolver,
       partyChannels: PartyChannelsResolverService,
-      partySubChannels: PartySubChannelsResolverService
+      partySubChannels: PartySubChannelsResolverService,
+      judgeTypes: JudgeTypesResolverService,
+      judicialUsers: JudicialUserSearchResolver,
+      judicialResponseUsers: JudicialUserSearchResponseResolver,
+      panelMemberResponseUsers: PanelMemberSearchResponseResolver,
+      otherPanelRoles: PanelRolesResolverService,
+      courtLocation: CourtLocationsDataResolver
     },
     component: EditHearingComponent,
     canActivate: [HearingsEditGuard],
     data: {
-      title: 'HMCTS Hearings | Amend Hearing'
+      title: 'HMCTS Hearings | Amend Hearing',
+      isChildRequired: [HearingCategory.PanelMemberType, HearingCategory.CaseType]
     }
   },
   {

@@ -2591,12 +2591,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.13-case-flags-v2-manage-case-flags-value-caching-fix":
-  version: 6.19.13-case-flags-v2-manage-case-flags-value-caching-fix
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.13-case-flags-v2-manage-case-flags-value-caching-fix"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.15-case-flags-v2-manage-case-flags-flag-update-comments-fix":
+  version: 6.19.15-case-flags-v2-manage-case-flags-flag-update-comments-fix
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.15-case-flags-v2-manage-case-flags-flag-update-comments-fix"
   dependencies:
     tslib: ^2.0.0
-  checksum: 44dc0ead15df0ef8dc02935dc4f694685179e984c5d28b636fa923046120de4bf0cccb8d6952d2c5754b9edf7009dc91700997aa67af02a6bf7449c839acf403
+  checksum: b0ece3cfb9299a923472e850be361090eaa6a11bccef59cb0a1c4a14f53a64fc55318ad1fc51c02758139285cbd1fc19ca425ad5366b57abfbcea09d0ba6fc50
   languageName: node
   linkType: hard
 
@@ -19225,7 +19225,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.13-case-flags-v2-manage-case-flags-value-caching-fix
+    "@hmcts/ccd-case-ui-toolkit": 6.19.15-case-flags-v2-manage-case-flags-flag-update-comments-fix
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.9.5

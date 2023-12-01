@@ -78,7 +78,7 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
   }
 
   public setPropertiesUpdatedAutomatically(): void {
-    this.hearingValuesSubscription = this.hearingStore.select(fromHearingStore.getHearingValues).subscribe((hearingValues) => {    
+    this.hearingValuesSubscription = this.hearingStore.select(fromHearingStore.getHearingValues).subscribe((hearingValues) => {
       if (hearingValues) {
         this.hearingRequestMainModel = {
           ...this.hearingRequestMainModel,

@@ -295,14 +295,20 @@ describe('HearingViewEditSummaryComponent', () => {
             reasonableAdjustments: [
               'RA0005'
             ],
-            interpreterLanguage: null
+            interpreterLanguage: null,
+            relatedParties: undefined,
+            custodyStatus: undefined,
+            vulnerableFlag: undefined,
+            vulnerabilityDetails: undefined,
+            hearingChannelEmail: undefined,
+            hearingChannelPhone: undefined
           },
           organisationDetails: {
             name: 'DWP',
             organisationType: 'GOV',
             cftOrganisationID: 'O100000'
           },
-          unavailabilityDOW: null,
+          unavailabilityDOW: undefined,
           unavailabilityRanges: [
             {
               unavailableFromDate: '2021-12-20T09:00:00.000Z',
@@ -321,14 +327,20 @@ describe('HearingViewEditSummaryComponent', () => {
             reasonableAdjustments: [
               'RA0005'
             ],
-            interpreterLanguage: null
+            interpreterLanguage: null,
+            relatedParties: undefined,
+            custodyStatus: undefined,
+            vulnerableFlag: undefined,
+            vulnerabilityDetails: undefined,
+            hearingChannelEmail: undefined,
+            hearingChannelPhone: undefined
           },
           organisationDetails: {
             name: 'DWP',
             organisationType: 'GOV',
             cftOrganisationID: 'O100000'
           },
-          unavailabilityDOW: null,
+          unavailabilityDOW: undefined,
           unavailabilityRanges: [
             {
               unavailableFromDate: '2021-12-20T09:00:00.000Z',

@@ -103,8 +103,10 @@ Given('I update mock hearings service hearing values with ref {string} at jsonpa
 
     const dataTableObjects = datatable.parse().hashes()
     for (const row of dataTableObjects){
+        const actualVal = jsonpath.query(serviceHearingValue, row.jsonpath)
         const updatedValue = jsonpath.value(serviceHearingValue, row.jsonpath, row.value)
-        reportLogger.AddMessage(`Updated ${row.jsonpath} => ${updatedValue}`)
+
+        reportLogger.AddMessage(`Updated ${row.jsonpath} =>${actualVal} to  ${updatedValue}`)
     }
 
     reportLogger.AddJson(serviceHearingValue)

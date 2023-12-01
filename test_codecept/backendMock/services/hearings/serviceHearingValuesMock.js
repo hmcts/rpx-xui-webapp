@@ -1,6 +1,8 @@
 
 const loadServicehearingValues = require('./mockData/serviceHearingValues')
 
+const { v4 } = require('uuid');
+
 class ServiceHearingValues{
 
     constructor(){
@@ -35,15 +37,15 @@ class ServiceHearingValues{
         for (const party of parties) {
 
             const partyObj = {
-                "partyID": party.partyID ? party.partyID : "209334d6-97e3-44ef-a206-58468f6bc43a",
-                "partyType": party.partyType ? party.partyType : "IND",
+                "partyID": party.partyID ? party.partyID : v4(),
+                "partyType": party.type ? party.type : "IND",
                 "partyName": party.partyName ? party.partyName : "First Applicant FN First Applicant LN updateeeeed",
                 "partyRole": party.partyRole ? party.partyRole : "APPL",
             }
 
             const relatedParty = {
                 "relationshipType":"mock relationship",
-                "relatedPartyID": party.partyID ? party.partyID : "209334d6-97e3-44ef-a206-58468f6bc43a",
+                "relatedPartyID": party.partyID ? party.partyID : v4(),
                 "relatedPartyType": party.partyType ? party.partyType : "IND",
                 "relatedPartyName": party.partyName ? `Related ${party.partyName}` : "Related party 1 name",
                 "relatedPartyRole": party.partyRole ? party.partyRole : "APPL",
@@ -77,7 +79,7 @@ class ServiceHearingValues{
                 "relatedParties": [relatedParty]
             }
 
-            const partyOrgDetails = {
+            const partyOrgDetails =  {
                 "name": party.partyName ? `${party.partyName}` : "Related party 1 name",
                 "organisationType": "ORG",
                 "cftOrganisationID": "ECKZ4BE"

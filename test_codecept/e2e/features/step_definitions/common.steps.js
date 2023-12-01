@@ -15,6 +15,7 @@ When('I click button with label {string}', async function(label){
 Then('I validate request body json {string}, jsonpaths', function(objRef, jsonpathDatatable){
     const jsonPathsValidationData = jsonpathDatatable.parse().hashes()
     const jsonData = global.scenarioData[objRef];
+    reportLogger.AddJson(jsonData)
     for (const row of jsonPathsValidationData){
         const jsonpathExpression = row.jsonpath;
         const expectedValue = row.value
@@ -26,8 +27,6 @@ Then('I validate request body json {string}, jsonpaths', function(objRef, jsonpa
 
         reportLogger.AddMessage(`Updated ${actualVal} to ${updated}`)
     }
-
-    reportLogger.AddJson(jsonData)
 
      
 })

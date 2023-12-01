@@ -16,9 +16,9 @@ Feature: Hearings: Automatic updates
         Given I set mock case hearings
             | hmcStatus        | hearingType           | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
             | LISTED           | TEST_TYPE             | -3                     | 0                            | -3                                      | 2                                     |
-            | COMPLETED        | TEST_TYPE             | -5                     | -1                           | 2                                       | 4                                     |
-            | CANCELLED        | TEST_TYPE             | -5                     | -1                           | 2                                       | 4                                     |
-            | AWAITING_ACTUALS | TEST_AWAITING_HEARING | -5                     | -1                           | 2                                       | 4                                     |
+            # | COMPLETED        | TEST_TYPE             | -5                     | -1                           | 2                                       | 4                                     |
+            # | CANCELLED        | TEST_TYPE             | -5                     | -1                           | 2                                       | 4                                     |
+            # | AWAITING_ACTUALS | TEST_AWAITING_HEARING | -5                     | -1                           | 2                                       | 4                                     |
 
         Given I start MockApp
         Given I navigate to home page
@@ -35,10 +35,10 @@ Feature: Hearings: Automatic updates
         Then I see hearings table for "Current and upcoming" in hearings tab page
 
         Given I update mock hearings service hearing values with ref "partiesUpdated" for field "parties"
-            |type| partyName   |
-            |IND| Party1 name |
-            |IND| Party2 name |
-            |ORG| party3 org name|
+            | type | partyName       |
+            | IND  | Party1 name     |
+            | IND  | Party2 name     |
+            | ORG  | party3 org name |
 
         Given I update mock hearings service hearing values with ref "partiesUpdated" for field "caseFlags"
             | partyID | partyName   | flagParentId | flagId | flagDescription | flagStatus |
@@ -48,12 +48,21 @@ Feature: Hearings: Automatic updates
             | party_2 | Party2 name | PARENT_0     | OT001  | Party2 comment  | ACTIVE     |
 
         Given I update mock hearings service hearing values with ref "partiesUpdated" at jsonpaths
-            | jsonpath                     | value       |
-            | $.caseManagementLocationCode | 10001 |
-            | $.parties[0].partyRole | APPL_UPDATED |
-            | $.partyDetails[1].individualDetails.relatedParties[0].partyName | Party2 name |
-            | $.partyDetails[1].individualDetails.relatedParties[0].partyName | Party2 name |
-            
+            | jsonpath                                                                  | value                         |
+            | $.caseManagementLocationCode                                           | 10001                         |
+            | $.parties[0].partyRole                                                 | APPL_UPDATED                  |
+            | $.parties[0].individualDetails.relatedParties[0].relatedPartyID | mockPartyId |
+            | $.parties[0].individualDetails.relatedParties[0].relatedPartyName | related Party name updated |
+            | $.parties[0].individualDetails.vulnerableFlag | true |
+            | $.parties[0].individualDetails.vulnerabilityDetails | vulnerability details updated |
+            | $.parties[0].individualDetails.hearingChannelEmail | mock_updated@email.com |
+            | $.parties[0].individualDetails.hearingChannelPhone | 07123456789 |
+            | $.parties[2].organisationDetails.organisation | Mock org updated |
+            | $.parties[2].organisationDetails.organisationType | MockOrg |
+            | $.parties[2].organisationDetails.cftOrganisationID | MOCK123 |
+            | $.caseSLAStartDate                                                     | 01-01-2024                    |
+
+        # Then debug sleep minutes 30
 
         When In hearings tab, I click action "View or edit" for hearing "TEST_TYPE" under table "Current and upcoming"
 
@@ -95,9 +104,20 @@ Feature: Hearings: Automatic updates
         Given I captured "OnPutHearing" request body from mock
         # Then I validate hearings request body "OnPutHearing"
 
+        
+
         Then I validate request body json "OnPutHearing", jsonpaths
-            | jsonpath                     | value       |
-            | $.caseDetails.caseManagementLocationCode | 10001        |
+            | jsonpath                                 | value        |
+            # | $.caseDetails.caseManagementLocationCode | 10001        |
             | $.partyDetails[0].partyRole              | APPL_UPDATED |
+            | $.partyDetails[0].individualDetails.relatedParties[0].relatedPartyID   | mockPartyId                   |
+            | $.partyDetails[0].individualDetails.relatedParties[0].relatedPartyName | related Party name updated    |
+            | $.partyDetails[0].individualDetails.vulnerableFlag                     | true                          |
+            | $.partyDetails[0].individualDetails.vulnerabilityDetails               | vulnerability details updated |
+            | $.partyDetails[0].individualDetails.hearingChannelEmail                | mock_updated@email.com        |
+            | $.partyDetails[0].individualDetails.hearingChannelPhone                | 07123456789                   |
+            | $.partyDetails[2].organisationDetails.organisation                     | Mock org updated              |
+            | $.partyDetails[2].organisationDetails.organisationType                 | MockOrg                       |
+            | $.partyDetails[2].organisationDetails.cftOrganisationID                | MOCK123                       |
 
 

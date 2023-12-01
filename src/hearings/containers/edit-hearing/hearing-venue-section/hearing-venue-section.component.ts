@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { HearingLocationModel } from '../../../models/hearingLocation.model';
-import { LocationsDataService } from '../../../services/locations-data.service';
-import { LocationByEPIMMSModel } from '../../../models/location.model';
 import { Observable } from 'rxjs';
+import { HearingLocationModel } from '../../../models/hearingLocation.model';
+import { LocationByEPIMMSModel } from '../../../models/location.model';
+import { LocationsDataService } from '../../../services/locations-data.service';
 
 @Component({
   selector: 'exui-hearing-venue-section',

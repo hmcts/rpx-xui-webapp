@@ -78,7 +78,7 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
   }
 
   public setPropertiesUpdatedAutomatically(): void {
-    this.hearingValuesSubscription = this.hearingStore.select(fromHearingStore.getHearingValues).subscribe((hearingValues) => {
+    this.hearingValuesSubscription = this.hearingStore.select(fromHearingStore.getHearingValues).subscribe((hearingValues) => {    
       if (hearingValues) {
         this.hearingRequestMainModel = {
           ...this.hearingRequestMainModel,
@@ -124,21 +124,21 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
             partyRole: this.compareAndUpdateServiceHearingValues(party.partyRole, serviceParty.partyRole),
             individualDetails: {
               ...party.individualDetails,
-              relatedParties: this.compareAndUpdateServiceHearingValues(party.individualDetails.relatedParties, serviceParty.individualDetails.relatedParties),
-              custodyStatus: this.compareAndUpdateServiceHearingValues(party.individualDetails.custodyStatus, serviceParty.individualDetails.custodyStatus),
-              vulnerableFlag: this.compareAndUpdateServiceHearingValues(party.individualDetails.vulnerableFlag, serviceParty.individualDetails.vulnerableFlag),
-              vulnerabilityDetails: this.compareAndUpdateServiceHearingValues(party.individualDetails.vulnerabilityDetails, serviceParty.individualDetails.vulnerabilityDetails),
-              hearingChannelEmail: this.compareAndUpdateServiceHearingValues(party.individualDetails.hearingChannelEmail, serviceParty.individualDetails.hearingChannelEmail),
-              hearingChannelPhone: this.compareAndUpdateServiceHearingValues(party.individualDetails.hearingChannelPhone, serviceParty.individualDetails.hearingChannelPhone)
+              relatedParties: this.compareAndUpdateServiceHearingValues(party.individualDetails?.relatedParties, serviceParty.individualDetails?.relatedParties),
+              custodyStatus: this.compareAndUpdateServiceHearingValues(party.individualDetails?.custodyStatus, serviceParty.individualDetails?.custodyStatus),
+              vulnerableFlag: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerableFlag, serviceParty.individualDetails?.vulnerableFlag),
+              vulnerabilityDetails: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerabilityDetails, serviceParty.individualDetails?.vulnerabilityDetails),
+              hearingChannelEmail: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelEmail, serviceParty.individualDetails?.hearingChannelEmail),
+              hearingChannelPhone: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelPhone, serviceParty.individualDetails?.hearingChannelPhone)
             },
             organisationDetails: {
               ...party.organisationDetails,
-              name: this.compareAndUpdateServiceHearingValues(party.organisationDetails.name, serviceParty.organisationDetails?.name),
-              organisationType: this.compareAndUpdateServiceHearingValues(party.organisationDetails.organisationType, serviceParty.organisationDetails?.organisationType),
-              cftOrganisationID: this.compareAndUpdateServiceHearingValues(party.organisationDetails.cftOrganisationID, serviceParty.organisationDetails?.cftOrganisationID)
+              name: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.name, serviceParty.organisationDetails?.name),
+              organisationType: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.organisationType, serviceParty.organisationDetails?.organisationType),
+              cftOrganisationID: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.cftOrganisationID, serviceParty.organisationDetails?.cftOrganisationID)
             },
-            unavailabilityDOW: serviceParty.unavailabilityDOW,
-            unavailabilityRanges: serviceParty.unavailabilityRanges
+            unavailabilityDOW: serviceParty?.unavailabilityDOW,
+            unavailabilityRanges: serviceParty?.unavailabilityRanges
           });
         } else {
           newParty.push(party);

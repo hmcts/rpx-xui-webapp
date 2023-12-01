@@ -2591,12 +2591,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.15-restricted-case-access":
-  version: 6.19.15-restricted-case-access
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.15-restricted-case-access"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.15-welsh-translation-FirstErrorPipe-fix":
+  version: 6.19.15-welsh-translation-FirstErrorPipe-fix
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.15-welsh-translation-FirstErrorPipe-fix"
   dependencies:
     tslib: ^2.0.0
-  checksum: ecafb4a68a46ff22a9ecdb3edcc43fb1f27edb6ad19ece09afd7c0b8ec419c9826294608c0ddf1dcf8308495ad3461da419bbb4e1e8833787246a97d16b9cab6
+  checksum: c8692a6837663d6f71c593074658bbeefa21662c2e01aafe51f29f7599a0516b1d1880c2f3d22c0dc3a3b99e37253553454ddbc6a9f64b06197f03c27dee7ad6
   languageName: node
   linkType: hard
 
@@ -19249,7 +19249,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.15-restricted-case-access
+    "@hmcts/ccd-case-ui-toolkit": 6.19.15-welsh-translation-FirstErrorPipe-fix
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.9.5

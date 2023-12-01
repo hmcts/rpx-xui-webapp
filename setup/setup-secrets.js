@@ -2,12 +2,9 @@ const { platform } = require("os");
 const { execSync } = require("child_process");
 const { readFileSync, writeFileSync } = require("fs");
 
-const env = process.env.REMOTE_ENV;
+const env = "aat";
 const configEnv = process.env.NODE_CONFIG_ENV;
 const configFile = `local-${configEnv}`;
-if (!env) {
-  throw new Error("Environment variable REMOTE_ENV is required");
-}
 
 function getSecret(targetEnv, secret) {
   let cmd = `az keyvault secret show --vault-name "rpx-${targetEnv}" -o tsv --query value --name ${secret}`;
@@ -17,9 +14,6 @@ function getSecret(targetEnv, secret) {
 
   return execSync(cmd).toString().trim();
 }
-
-// the secret 'local-development' is a skeleton for the config file
-// const template = getSecret('aat', 'local-development')
 
 // open a file called skeleton.json and read the contents as a string
 const currentDir = __dirname;

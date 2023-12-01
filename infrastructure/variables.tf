@@ -28,9 +28,13 @@ variable "application_type" {
 }
 
 variable "redis_family" {
-  default     = "P"
+  default     = "C"
 }
 
 variable "redis_capacity" {
-  default     = "2"
+  default     = "4"
+}
+variable "redis_sku_name" {
+  default     = "Basic"
+  description = "The SKU of Redis to use. Possible values are `Basic`, `Standard` and `Premium`."
 }

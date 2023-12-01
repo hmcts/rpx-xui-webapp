@@ -93,14 +93,12 @@
                     {{ 'Was this hearing day required?' | rpxTranslate :  null : actualHearingDay.notRequired ? 'No' : 'Yes' }}
                   </div>
                 </dd>
-                  </a>
+                <dd class="govuk-summary-list__actions">
+                  <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
+                    <a href="javascript:void(0)" id="hearing-stage-result-change-link" class="govuk-link"
+                      (click)="changeWasThisHearingDayRequired(actualHearingDay)">{{ 'Change' | rpxTranslate }}</a>
+                  </ng-container>
                 </dd>
-                  <dd class="govuk-summary-list__actions">
-                    <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
-                      <a href="javascript:void(0)" id="hearing-stage-result-change-link" class="govuk-link"
-                        (click)="changeWasThisHearingDayRequired(actualHearingDay)">{{ 'Change' | rpxTranslate }}</a>
-                    </ng-container>
-                  </dd>
               </div>
               <ng-container *ngIf="!actualHearingDay.notRequired">
                 <br>

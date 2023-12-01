@@ -2690,16 +2690,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:1.9.1-prerelese-accessibility-updates":
-  version: 1.9.1-prerelese-accessibility-updates
-  resolution: "@hmcts/rpx-xui-common-lib@npm:1.9.1-prerelese-accessibility-updates"
+"@hmcts/rpx-xui-common-lib@npm:1.9.9-pre-release-accessibility-updated-version":
+  version: 1.9.9-pre-release-accessibility-updated-version
+  resolution: "@hmcts/rpx-xui-common-lib@npm:1.9.9-pre-release-accessibility-updated-version"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 21a51c695e98d1a880d4f05c2d42a9c8bdd30db86a6754d57181b30f27d16e758d065035506d6f461a7078e3838aee794e9c7870efb822413153de01f7028720
+  checksum: 6de5f9fda092f730c79cf022fd341db1e5448414a06f1056095387a53eb250a28c9e29841aa63ca86f7bb4797e60750f9cccbc81c17cdd651bc7f7c7e8bf0cd1
   languageName: node
   linkType: hard
 
@@ -19231,7 +19231,7 @@ __metadata:
     "@hmcts/media-viewer": 2.9.5
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 1.9.1-prerelese-accessibility-updates
+    "@hmcts/rpx-xui-common-lib": 1.9.9-pre-release-accessibility-updated-version
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3

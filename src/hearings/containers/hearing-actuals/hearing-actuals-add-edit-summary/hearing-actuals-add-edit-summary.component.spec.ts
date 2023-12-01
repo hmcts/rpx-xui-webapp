@@ -355,6 +355,26 @@ describe('HearingActualsAddEditSummaryComponent', () => {
     });
   });
 
+  describe('hearingIsInFuture', () => {
+    it('should return true if hearing date is in the future', () => {
+      const hearingDate = '2050-01-01';
+      const result = component.hearingIsInFuture(hearingDate);
+      expect(result).toEqual(true);
+    });
+
+    it('should return false if hearing date is in the past', () => {
+      const hearingDate = '2021-01-01';
+      const result = component.hearingIsInFuture(hearingDate);
+      expect(result).toEqual(false);
+    });
+
+    it('should return false if the hearing date is the current date', () => {
+      const currentDate = new Date().toLocaleDateString();
+      const result = component.hearingIsInFuture(currentDate);
+      expect(result).toBe(false);
+    });
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

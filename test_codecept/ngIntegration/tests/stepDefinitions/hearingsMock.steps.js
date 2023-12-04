@@ -18,6 +18,12 @@ const cancelledhearing = require('../../../backendMock/services/hearings/mockDat
 
 const mockServiceHearingValues = require('../../../backendMock/services/hearings/serviceHearingValuesMock')
 
+const hearingDataForStates = {
+    listedHearing: listedHearing,
+    awaitingHearingDetails: awaitinghearingsDetails,
+    completedHearing: completedHearing,
+    cancelledHearing: cancelledhearing
+}
 
     function updateObjectValues(object, key, value){
         const dateField = ['hearingRequestDateTime', 'lastResponseReceivedDateTime', 'hearingDaySchedule.hearingStartDateTime', 'hearingDaySchedule.hearingEndDateTime']
@@ -107,17 +113,36 @@ Given('I set mock hearings service hearing values with ref {string}', async func
     mockClient.setHearingServiceHearingValues(serviceHearingValue, 200)
 })
 
+Given('I set mock hearing data for state {string}', async function (hearingState) {
+    global.scenarioData[hearingState] = JSON.parse(JSON.stringify(hearingDataForStates[hearingState]));
+    mockClient.setOnGetHearing(global.scenarioData[hearingState], 200)
+})
+
+Given('I set parties in mock hearing data for state {string}', async function (hearingState, partiesDatatable) {
+    global.scenarioData[hearingState] = JSON.parse(JSON.stringify(hearingDataForStates[hearingState]));
+
+    const parties = partiesDatatable.parse().hashes()
+    const mockParties = mockServiceHearingValues.getMockParties(parties);
+
+    const hearingData = global.scenarioData[hearingState];
+    hearingData.partyDetails = mockParties
+    mockClient.setOnGetHearing(hearingData, 200)
+})
+
+
+
 Given('I update mock hearings service hearing values with ref {string} for field {string}', async function (ref, field, datatable) {
 
     const serviceHearingValue = global.scenarioData[ref]
 
     const dataTableObjects = datatable.parse().hashes()
+    let updatedShv = null;
     if (field === 'caseFlags'){
-        mockServiceHearingValues.setCaseFlags(dataTableObjects, serviceHearingValue);
+        updatedShv = mockServiceHearingValues.setCaseFlags(dataTableObjects, serviceHearingValue);
     } else if (field === 'parties'){
-        mockServiceHearingValues.setParties(dataTableObjects, serviceHearingValue);
+        updatedShv = mockServiceHearingValues.setParties(dataTableObjects, serviceHearingValue);
     }
-    mockClient.setHearingServiceHearingValues(serviceHearingValue, 200)
+    mockClient.setHearingServiceHearingValues(updatedShv, 200)
 })
 
 

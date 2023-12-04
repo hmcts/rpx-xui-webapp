@@ -31,8 +31,7 @@ class ServiceHearingValues{
         return shvToUpdate;
     }
 
-    setParties(parties, serviceHearingValues){
-        const shvToUpdate = serviceHearingValues ? serviceHearingValues : this.serviceHearingValues
+    getMockParties(parties){
         const newParties = [];
         for (const party of parties) {
 
@@ -44,7 +43,7 @@ class ServiceHearingValues{
             }
 
             const relatedParty = {
-                "relationshipType":"mock relationship",
+                "relationshipType": "mock relationship",
                 "relatedPartyID": party.partyID ? party.partyID : v4(),
                 "relatedPartyType": party.partyType ? party.partyType : "IND",
                 "relatedPartyName": party.partyName ? `Related ${party.partyName}` : "Related party 1 name",
@@ -56,11 +55,11 @@ class ServiceHearingValues{
                 }
             };
 
-            const partyIndividualDetails ={
-                "firstName": party.individualDetails?.firstName ?party.individualDetails.firstName: "First Applicant FN updated",
-                "lastName": party.individualDetails?.lastName ?party.individualDetails.lastName: "First Applicant LN updated",
-                "interpreterLanguage": party.individualDetails?.interpreterLanguage ?party.individualDetails.interpreterLanguage: "",
-                "reasonableAdjustments": party.individualDetails?.reasonableAdjustments ?party.individualDetails.reasonableAdjustments.split(',') : [
+            const partyIndividualDetails = {
+                "firstName": party.individualDetails?.firstName ? party.individualDetails.firstName : "First Applicant FN updated",
+                "lastName": party.individualDetails?.lastName ? party.individualDetails.lastName : "First Applicant LN updated",
+                "interpreterLanguage": party.individualDetails?.interpreterLanguage ? party.individualDetails.interpreterLanguage : "",
+                "reasonableAdjustments": party.individualDetails?.reasonableAdjustments ? party.individualDetails.reasonableAdjustments.split(',') : [
                     'RA0042',
                     'RA0053',
                     'RA0013',
@@ -79,21 +78,28 @@ class ServiceHearingValues{
                 "relatedParties": [relatedParty]
             }
 
-            const partyOrgDetails =  {
+            const partyOrgDetails = {
                 "name": party.partyName ? `${party.partyName}` : "Related party 1 name",
                 "organisationType": "ORG",
                 "cftOrganisationID": "ECKZ4BE"
             }
 
-            if(party.type === 'ORG'){
+            if (party.type === 'ORG') {
                 partyObj['organisationDetails'] = partyOrgDetails
-            }else{
-                partyObj['individualDetails'] = partyIndividualDetails 
+            } else {
+                partyObj['individualDetails'] = partyIndividualDetails
             }
-                
+
 
             newParties.push(partyObj)
         }
+        return newParties;
+    }
+
+
+    setParties(parties, serviceHearingValues){
+        const shvToUpdate = serviceHearingValues ? serviceHearingValues : this.serviceHearingValues
+        const newParties = this.getMockParties(parties)
 
         shvToUpdate.parties = newParties
         return shvToUpdate;

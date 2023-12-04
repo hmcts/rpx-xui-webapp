@@ -14,7 +14,7 @@
         (click)="onChange('hearingPanel')">Change</a>
     </div>
   </div>
-  <div class="govuk-summary-list__row">
+  <div class="govuk-summary-list__row" *ngIf="includedPanelMembers?.length > 0">
     <div class="govuk-summary-list__key">
       Include specific panel members
     </div>
@@ -28,7 +28,7 @@
         (click)="onChange('panelInclusion')">Change</a>
     </div>
   </div>
-  <div class="govuk-summary-list__row">
+  <div class="govuk-summary-list__row" *ngIf="excludedPanelMembers?.length > 0">
     <div class="govuk-summary-list__key">
       Exclude specific panel members
     </div>
@@ -42,7 +42,7 @@
         (click)="onChange('panelExclusion')">Change</a>
     </div>
   </div>
-  <div class="govuk-summary-list__row">
+  <div class="govuk-summary-list__row" *ngIf="panelRoles?.length > 0">
     <div class="govuk-summary-list__key">
       Select any other panel roles required
     </div>

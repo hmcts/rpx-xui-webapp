@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
+import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
-import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 
 @Component({
   selector: 'exui-hearing-requirements-section',
@@ -13,7 +13,7 @@ export class HearingRequirementsSectionComponent implements OnInit {
   @Input() public caseFlagsRefData: CaseFlagReferenceModel[];
   @Input() public hearingRequestMainModel: HearingRequestMainModel;
   @Input() public serviceHearingValuesModel: ServiceHearingValuesModel;
-  @Output() public changeEditHearing = new EventEmitter<string>();
+  @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
   public partyWithFlags: Map<string, CaseFlagReferenceModel[]>;
 
@@ -22,12 +22,7 @@ export class HearingRequirementsSectionComponent implements OnInit {
   }
 
   public onChange(fragmentId: string): void {
-    let changeLink = '';
-    if (fragmentId === 'additionalSecurityRequired') {
-      changeLink = '/hearings/request/hearing-facilities#additionalSecurityYes';
-    } else {
-      changeLink = '/hearings/request/hearing-facilities#immigrationDetentionCentre';
-    }
+    const changeLink = '/hearings/request/hearing-requirements#linkAmendFlags';
     this.changeEditHearing.emit({ fragmentId, changeLink });
   }
 }

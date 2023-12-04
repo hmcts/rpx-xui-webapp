@@ -8,7 +8,10 @@
       {{hearingLength}}
     </div>
     <div class="govuk-summary-list__actions">
-      <a class="change-link" href="javascript:void(0)">Change</a>
+      <a id="hearingLength"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('hearingLength')">Change</a>
     </div>
   </div>
   <div class="govuk-summary-list__row">
@@ -19,7 +22,10 @@
       {{specificDate}}
     </div>
     <div class="govuk-summary-list__actions">
-      <a class="change-link" href="javascript:void(0)">Change</a>
+      <a id="hearingSpecificDate"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('hearingSpecificDate')">Change</a>
     </div>
   </div>
   <div class="govuk-summary-list__row">
@@ -30,7 +36,10 @@
       {{hearingPriority}}
     </div>
     <div class="govuk-summary-list__actions">
-      <a class="change-link" href="javascript:void(0)" (click)="onChange()">Change</a>
+      <a id="hearingPriority"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('hearingPriority')">Change</a>
     </div>
   </div>
 </div>

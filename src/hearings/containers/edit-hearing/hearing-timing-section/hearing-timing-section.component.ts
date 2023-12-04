@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import { HearingDetailsModel } from '../../../models/hearingDetails.model';
 import { HearingDateEnum, RadioOptions } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
+import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 
 @Component({
   selector: 'exui-hearing-timing-section',
@@ -12,7 +12,7 @@ import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig
 export class HearingTimingSectionComponent implements OnInit {
   @Input() public hearingPrioritiesRefData: LovRefDataModel[];
   @Input() public hearingDetails: HearingDetailsModel;
-  @Output() public changeEditHearing = new EventEmitter<string>();
+  @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
   public hearingLength: string;
   public specificDate: string;
@@ -26,10 +26,16 @@ export class HearingTimingSectionComponent implements OnInit {
 
   public onChange(fragmentId: string): void {
     let changeLink = '';
-    if (fragmentId === 'additionalSecurityRequired') {
-      changeLink = '/hearings/request/hearing-facilities#additionalSecurityYes';
-    } else {
-      changeLink = '/hearings/request/hearing-facilities#immigrationDetentionCentre';
+    switch (fragmentId) {
+      case 'hearingLength':
+        changeLink = '/hearings/request/hearing-timing#durationdays';
+        break;
+      case 'hearingSpecificDate':
+        changeLink = '/hearings/request/hearing-timing#noSpecificDate';
+        break;
+      case 'hearingPriority':
+        changeLink = '/hearings/request/hearing-timing#urgent';
+        break;
     }
     this.changeEditHearing.emit({ fragmentId, changeLink });
   }

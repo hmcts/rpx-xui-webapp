@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { HearingLocationModel } from '../../../models/hearingLocation.model';
 import { LocationByEPIMMSModel } from '../../../models/location.model';
 import { LocationsDataService } from '../../../services/locations-data.service';
-import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
+import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 
 @Component({
   selector: 'exui-hearing-venue-section',
@@ -11,7 +11,7 @@ import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig
 })
 export class HearingVenueSectionComponent implements OnInit {
   @Input() public hearingLocations: HearingLocationModel[];
-  @Output() public changeEditHearing = new EventEmitter<string>();
+  @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
   public locations$: Observable<LocationByEPIMMSModel[]>;
 
@@ -24,12 +24,7 @@ export class HearingVenueSectionComponent implements OnInit {
   }
 
   public onChange(fragmentId: string): void {
-    let changeLink = '';
-    if (fragmentId === 'additionalSecurityRequired') {
-      changeLink = '/hearings/request/hearing-facilities#additionalSecurityYes';
-    } else {
-      changeLink = '/hearings/request/hearing-facilities#immigrationDetentionCentre';
-    }
+    const changeLink = '/hearings/request/hearing-venue#inputLocationSearch';
     this.changeEditHearing.emit({ fragmentId, changeLink });
   }
 }

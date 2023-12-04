@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
-import { Router } from 'express';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { EditHearingChangeConfig } from 'src/hearings/models/editHearingChangeConfig.model';
 import { CaseFlagReferenceModel } from '../../models/caseFlagReference.model';
 import { HearingConditions } from '../../models/hearingConditions';
 import { HearingListMainModel } from '../../models/hearingListMain.model';
@@ -102,15 +102,13 @@ export class EditHearingComponent implements OnInit, OnDestroy {
     });
   }
 
-  public changeAnswer(event: MouseEvent, id: string, changeLink: string): void {
-    event.preventDefault();
-
+  public onChange(event: EditHearingChangeConfig): void {
     const hearingCondition: HearingConditions = {
-      fragmentId: id,
+      fragmentId: event.fragmentId,
       mode: Mode.VIEW_EDIT
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-    this.router.navigateByUrl(changeLink);
+    this.router.navigateByUrl(event.changeLink);
   }
 
   public ngOnDestroy(): void {

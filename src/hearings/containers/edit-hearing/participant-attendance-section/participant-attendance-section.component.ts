@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { PartyDetailsModel } from 'src/hearings/models/partyDetails.model';
+import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import { HearingChannelEnum, PartyType } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
-import { PartyDetailsModel } from 'src/hearings/models/partyDetails.model';
-import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 
 @Component({
   selector: 'exui-participant-attendance-section',
@@ -15,7 +15,7 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   @Input() public partySubChannelsRefData: LovRefDataModel[];
   @Input() public hearingRequestMainModel: HearingRequestMainModel;
   @Input() public serviceHearingValuesModel: ServiceHearingValuesModel;
-  @Output() public changeEditHearing = new EventEmitter<string>();
+  @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
   public partyChannelsRefDataCombined: LovRefDataModel[] = [];
   public isPaperHearing : string;
@@ -33,10 +33,19 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
 
   public onChange(fragmentId: string): void {
     let changeLink = '';
-    if (fragmentId === 'additionalSecurityRequired') {
-      changeLink = '/hearings/request/hearing-facilities#additionalSecurityYes';
-    } else {
-      changeLink = '/hearings/request/hearing-facilities#immigrationDetentionCentre';
+    switch (fragmentId) {
+      case 'paperHearing':
+        changeLink = '/hearings/request/hearing-attendance#paperHearingYes';
+        break;
+      case 'howParticipantsAttendant':
+        changeLink = '/hearings/request/hearing-attendance#hearingLevelChannelList';
+        break;
+      case 'howAttendant':
+        changeLink = '/hearings/request/hearing-attendance#partyChannel0';
+        break;
+      case 'attendantPersonAmount':
+        changeLink = '/hearings/request/hearing-attendance#attendance-number';
+        break;
     }
     this.changeEditHearing.emit({ fragmentId, changeLink });
   }

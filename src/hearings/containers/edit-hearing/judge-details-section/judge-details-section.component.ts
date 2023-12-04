@@ -3,7 +3,7 @@ import { MemberType, RadioOptions, RequirementType } from 'src/hearings/models/h
 import { JudicialUserModel } from 'src/hearings/models/judicialUser.model';
 import { LovRefDataModel } from 'src/hearings/models/lovRefData.model';
 import { PanelRequirementsModel } from 'src/hearings/models/panelRequirements.model';
-import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
+import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 
 @Component({
   selector: 'exui-judge-details-section',
@@ -13,7 +13,7 @@ export class JudgeDetailsSectionComponent implements OnInit {
   @Input() public judgeTypesRefData: LovRefDataModel[];
   @Input() public judicialUsers: JudicialUserModel[];
   @Input() public panelRequirements: PanelRequirementsModel;
-  @Output() public changeEditHearing = new EventEmitter<string>();
+  @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
   public needJudge: string;
   public judgeName: string;
@@ -29,10 +29,19 @@ export class JudgeDetailsSectionComponent implements OnInit {
 
   public onChange(fragmentId: string): void {
     let changeLink = '';
-    if (fragmentId === 'additionalSecurityRequired') {
-      changeLink = '/hearings/request/hearing-facilities#additionalSecurityYes';
-    } else {
-      changeLink = '/hearings/request/hearing-facilities#immigrationDetentionCentre';
+    switch (fragmentId) {
+      case 'needJudge':
+        changeLink = '/hearings/request/hearing-judge#specificJudgeName';
+        break;
+      case 'judgeName':
+        changeLink = '/hearings/request/hearing-judge#inputSelectPerson';
+        break;
+      case 'judgeTypes':
+        changeLink = '/hearings/request/hearing-judge#judgeTypes';
+        break;
+      case 'judgeExclusion':
+        changeLink = '/hearings/request/hearing-judge#inputSelectPersonExclude';
+        break;
     }
     this.changeEditHearing.emit({ fragmentId, changeLink });
   }

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
+import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 
 @Component({
   selector: 'exui-additional-instructions-section',
@@ -7,7 +7,7 @@ import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig
 })
 export class AdditionalInstructionsSectionComponent implements OnInit {
   @Input() public listingComments: string;
-  @Output() public changeEditHearing = new EventEmitter<editHearingChangeConfig>();
+  @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
   public additionalInstructions: string;
 
@@ -16,12 +16,7 @@ export class AdditionalInstructionsSectionComponent implements OnInit {
   }
 
   public onChange(fragmentId: string): void {
-    let changeLink = '';
-    if (fragmentId === 'additionalSecurityRequired') {
-      changeLink = '/hearings/request/hearing-facilities#additionalSecurityYes';
-    } else {
-      changeLink = '/hearings/request/hearing-facilities#immigrationDetentionCentre';
-    }
+    const changeLink = '/hearings/request/hearing-additional-instructions#additionalInstructionsTextarea';
     this.changeEditHearing.emit({ fragmentId, changeLink });
   }
 }

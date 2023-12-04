@@ -8,7 +8,10 @@
       {{hearingPanel}}
     </div>
     <div class="govuk-summary-list__actions">
-      <a class="change-link" href="javascript:void(0)">Change</a>
+      <a id="hearingPanel"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('hearingPanel')">Change</a>
     </div>
   </div>
   <div class="govuk-summary-list__row">
@@ -19,7 +22,10 @@
       {{includedPanelMembers}}
     </div>
     <div class="govuk-summary-list__actions">
-      <a class="change-link" href="javascript:void(0)">Change</a>
+      <a id="panelInclusion"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('panelInclusion')">Change</a>
     </div>
   </div>
   <div class="govuk-summary-list__row">
@@ -30,7 +36,10 @@
       {{excludedPanelMembers}}
     </div>
     <div class="govuk-summary-list__actions">
-      <a class="change-link" href="javascript:void(0)">Change</a>
+      <a id="panelExclusion"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('panelExclusion')">Change</a>
     </div>
   </div>
   <div class="govuk-summary-list__row">
@@ -41,7 +50,10 @@
       {{panelRoles}}
     </div>
     <div class="govuk-summary-list__actions">
-      <a class="change-link" href="javascript:void(0)" (click)="onChange()">Change</a>
+      <a id="panelRoles"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('panelRoles')">Change</a>
     </div>
   </div>
 </div>

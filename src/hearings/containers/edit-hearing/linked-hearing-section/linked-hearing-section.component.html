@@ -8,7 +8,10 @@
       {{ hearingIsLinkedFlag ? 'Yes' : 'No' }}
     </div>
     <div class="govuk-summary-list__actions">
-      <a class="change-link" href="javascript:void(0)" (click)="onChange()">Change</a>
+      <a id="linkedHearings"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('linkedHearings')">Change</a>
     </div>
   </div>
 </div>

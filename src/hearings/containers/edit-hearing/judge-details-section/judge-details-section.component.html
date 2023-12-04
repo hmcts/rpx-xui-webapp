@@ -8,7 +8,10 @@
       {{needJudge}}
     </div>
     <div class="govuk-summary-list__actions">
-      <a class="change-link" href="javascript:void(0)">Change</a>
+      <a id="needJudge"
+        class="change-link"
+        href="javascript:void(0)"
+        (click)="onChange('needJudge')">Change</a>
     </div>
   </div>
   <div class="govuk-summary-list__row">
@@ -19,7 +22,10 @@
       {{judgeName}}
     </div>
     <div class="govuk-summary-list__actions">
-      <a class="change-link" href="javascript:void(0)">Change</a>
+      <a id="judgeName"
+        class="change-link"
+        href="javascript:void(0)"
+        (click)="onChange('judgeName')">Change</a>
     </div>
   </div>
   <div class="govuk-summary-list__row">
@@ -30,7 +36,10 @@
       {{judgeTypes}}
     </div>
     <div class="govuk-summary-list__actions">
-      <a class="change-link" href="javascript:void(0)">Change</a>
+      <a id="judgeTypes"
+        class="change-link"
+        href="javascript:void(0)"
+        (click)="onChange('judgeTypes')">Change</a>
     </div>
   </div>
   <div class="govuk-summary-list__row">
@@ -41,7 +50,10 @@
       {{excludedJudgeNames}}
     </div>
     <div class="govuk-summary-list__actions">
-      <a class="change-link" href="javascript:void(0)" (click)="onChange()">Change</a>
+      <a id="judgeExclusion"
+        class="change-link"
+        href="javascript:void(0)"
+        (click)="onChange('judgeExclusion')">Change</a>
     </div>
   </div>
 </div>

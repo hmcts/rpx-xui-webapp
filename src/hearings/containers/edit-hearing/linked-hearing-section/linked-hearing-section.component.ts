@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
+import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 
 @Component({
   selector: 'exui-linked-hearing-section',
@@ -7,15 +7,10 @@ import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig
 })
 export class LinkedHearingSectionComponent {
   @Input() public hearingIsLinkedFlag: boolean;
-  @Output() public changeEditHearing = new EventEmitter<string>();
+  @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
   public onChange(fragmentId: string): void {
-    let changeLink = '';
-    if (fragmentId === 'additionalSecurityRequired') {
-      changeLink = '/hearings/request/hearing-facilities#additionalSecurityYes';
-    } else {
-      changeLink = '/hearings/request/hearing-facilities#immigrationDetentionCentre';
-    }
+    const changeLink = '/hearings/request/hearing-link#yes';
     this.changeEditHearing.emit({ fragmentId, changeLink });
   }
 }

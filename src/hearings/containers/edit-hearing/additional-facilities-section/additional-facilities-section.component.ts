@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
+import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 
@@ -10,7 +10,7 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
 export class AdditionalFacilitiesSectionComponent implements OnInit {
   @Input() public additionalFacilitiesRefData: LovRefDataModel[];
   @Input() public hearingRequestMainModel: HearingRequestMainModel;
-  @Output() public changeEditHearing = new EventEmitter<editHearingChangeConfig>();
+  @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
   public additionalFacilitiesRequiredText: string;
   public additionalFacilities: string[] = [];

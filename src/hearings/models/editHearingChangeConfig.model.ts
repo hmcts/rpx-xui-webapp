@@ -1,4 +1,4 @@
-export interface editHearingChangeConfig {
+export interface EditHearingChangeConfig {
   fragmentId: string;
   changeLink: string;
 }

@@ -8,7 +8,10 @@
       {{isPaperHearing}}
     </div>
     <div class="govuk-summary-list__actions">
-      <a class="change-link" href="javascript:void(0)">Change</a>
+      <a id="paperHearing"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('paperHearing')">Change</a>
     </div>
   </div>
   <div class="govuk-summary-list__row">
@@ -23,7 +26,10 @@
       </ul>
     </div>
     <div class="govuk-summary-list__actions">
-      <a class="change-link" href="javascript:void(0)">Change</a>
+      <a id="howParticipantsAttendant"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('howParticipantsAttendant')">Change</a>
     </div>
   </div>
   <div class="govuk-summary-list__row">
@@ -38,7 +44,10 @@
       </ul>
     </div>
     <div class="govuk-summary-list__actions">
-      <a class="change-link" href="javascript:void(0)">Change</a>
+      <a id="howAttendant"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('howAttendant')">Change</a>
     </div>
   </div>
   <div class="govuk-summary-list__row">
@@ -49,7 +58,10 @@
       {{numberOfPhysicalAttendees}}
     </div>
     <div class="govuk-summary-list__actions">
-      <a class="change-link" href="javascript:void(0)" (click)="onChange()">Change</a>
+      <a id="attendantPersonAmount"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('attendantPersonAmount')">Change</a>
     </div>
   </div>
 </div>

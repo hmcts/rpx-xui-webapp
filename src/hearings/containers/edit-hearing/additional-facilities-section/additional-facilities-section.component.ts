@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 
@@ -9,6 +10,8 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
 export class AdditionalFacilitiesSectionComponent implements OnInit {
   @Input() public additionalFacilitiesRefData: LovRefDataModel[];
   @Input() public hearingRequestMainModel: HearingRequestMainModel;
+  @Output() public changeEditHearing = new EventEmitter<editHearingChangeConfig>();
+
   public additionalFacilitiesRequiredText: string;
   public additionalFacilities: string[] = [];
 
@@ -23,5 +26,15 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
         this.additionalFacilities.push(facilityFromRefData.value_en);
       }
     });
+  }
+
+  public onChange(fragmentId: string): void {
+    let changeLink = '';
+    if (fragmentId === 'additionalSecurityRequired') {
+      changeLink = '/hearings/request/hearing-facilities#additionalSecurityYes';
+    } else {
+      changeLink = '/hearings/request/hearing-facilities#immigrationDetentionCentre';
+    }
+    this.changeEditHearing.emit({ fragmentId, changeLink });
   }
 }

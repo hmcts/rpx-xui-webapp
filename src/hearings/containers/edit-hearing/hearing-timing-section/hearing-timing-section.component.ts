@@ -1,8 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as moment from 'moment';
 import { HearingDetailsModel } from '../../../models/hearingDetails.model';
 import { HearingDateEnum, RadioOptions } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 
 @Component({
   selector: 'exui-hearing-timing-section',
@@ -11,6 +12,7 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
 export class HearingTimingSectionComponent implements OnInit {
   @Input() public hearingPrioritiesRefData: LovRefDataModel[];
   @Input() public hearingDetails: HearingDetailsModel;
+  @Output() public changeEditHearing = new EventEmitter<string>();
 
   public hearingLength: string;
   public specificDate: string;
@@ -20,6 +22,16 @@ export class HearingTimingSectionComponent implements OnInit {
     this.hearingLength = this.getHearingLength();
     this.specificDate = this.getSpecificDate();
     this.hearingPriority = this.getHearingPriority();
+  }
+
+  public onChange(fragmentId: string): void {
+    let changeLink = '';
+    if (fragmentId === 'additionalSecurityRequired') {
+      changeLink = '/hearings/request/hearing-facilities#additionalSecurityYes';
+    } else {
+      changeLink = '/hearings/request/hearing-facilities#immigrationDetentionCentre';
+    }
+    this.changeEditHearing.emit({ fragmentId, changeLink });
   }
 
   private getHearingLength(): string {

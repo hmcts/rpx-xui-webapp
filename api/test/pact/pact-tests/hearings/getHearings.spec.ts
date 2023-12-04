@@ -9,7 +9,7 @@ import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'hmc_hearings', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'hmcHearingServiceProvider', port: 8000 });
 
 const caseId = '1667564306557767';
 

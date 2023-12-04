@@ -1,8 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MemberType, RadioOptions, RequirementType } from 'src/hearings/models/hearings.enum';
 import { JudicialUserModel } from 'src/hearings/models/judicialUser.model';
 import { LovRefDataModel } from 'src/hearings/models/lovRefData.model';
 import { PanelRequirementsModel } from 'src/hearings/models/panelRequirements.model';
+import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 
 @Component({
   selector: 'exui-judge-details-section',
@@ -12,6 +13,7 @@ export class JudgeDetailsSectionComponent implements OnInit {
   @Input() public judgeTypesRefData: LovRefDataModel[];
   @Input() public judicialUsers: JudicialUserModel[];
   @Input() public panelRequirements: PanelRequirementsModel;
+  @Output() public changeEditHearing = new EventEmitter<string>();
 
   public needJudge: string;
   public judgeName: string;
@@ -23,6 +25,16 @@ export class JudgeDetailsSectionComponent implements OnInit {
     this.judgeName = this.getJudgeName();
     this.judgeTypes = this.getJudgeTypes();
     this.excludedJudgeNames = this.getExcludedJudgeNames();
+  }
+
+  public onChange(fragmentId: string): void {
+    let changeLink = '';
+    if (fragmentId === 'additionalSecurityRequired') {
+      changeLink = '/hearings/request/hearing-facilities#additionalSecurityYes';
+    } else {
+      changeLink = '/hearings/request/hearing-facilities#immigrationDetentionCentre';
+    }
+    this.changeEditHearing.emit({ fragmentId, changeLink });
   }
 
   private getNeedJudge(): string {

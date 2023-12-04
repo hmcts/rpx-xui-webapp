@@ -2,19 +2,21 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
+import { Router } from 'express';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { CaseFlagReferenceModel } from '../../models/caseFlagReference.model';
+import { HearingConditions } from '../../models/hearingConditions';
 import { HearingListMainModel } from '../../models/hearingListMain.model';
 import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
 import { hearingStatusMappings } from '../../models/hearingStatusMappings';
-import { HearingDateEnum, HearingSummaryEnum, LaCaseStatus } from '../../models/hearings.enum';
+import { HearingDateEnum, HearingSummaryEnum, LaCaseStatus, Mode } from '../../models/hearings.enum';
 import { JudicialUserModel } from '../../models/judicialUser.model';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 import { LocationsDataService } from '../../services/locations-data.service';
 import * as fromHearingStore from '../../store';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'exui-edit-hearing',
@@ -48,6 +50,7 @@ export class EditHearingComponent implements OnInit, OnDestroy {
   public panelRolesRefData: LovRefDataModel[];
 
   constructor(private readonly route: ActivatedRoute,
+    private readonly router: Router,
     private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly locationsDataService: LocationsDataService,
     private readonly loadingService: LoadingService) {
@@ -97,6 +100,17 @@ export class EditHearingComponent implements OnInit, OnDestroy {
     }, () => {
     //   this.loadingService.unregister(loadingToken);
     });
+  }
+
+  public changeAnswer(event: MouseEvent, id: string, changeLink: string): void {
+    event.preventDefault();
+
+    const hearingCondition: HearingConditions = {
+      fragmentId: id,
+      mode: Mode.VIEW_EDIT
+    };
+    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
+    this.router.navigateByUrl(changeLink);
   }
 
   public ngOnDestroy(): void {

@@ -1,9 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import { HearingChannelEnum, PartyType } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 import { PartyDetailsModel } from 'src/hearings/models/partyDetails.model';
+import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 
 @Component({
   selector: 'exui-participant-attendance-section',
@@ -14,6 +15,7 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   @Input() public partySubChannelsRefData: LovRefDataModel[];
   @Input() public hearingRequestMainModel: HearingRequestMainModel;
   @Input() public serviceHearingValuesModel: ServiceHearingValuesModel;
+  @Output() public changeEditHearing = new EventEmitter<string>();
 
   public partyChannelsRefDataCombined: LovRefDataModel[] = [];
   public isPaperHearing : string;
@@ -27,6 +29,16 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
     this.participantChannels = this.getParticipantChannels();
     this.participantAttendanceModes = this.getParticipantAttendanceModes();
     this.numberOfPhysicalAttendees = this.getNumberOfPhysicalAttendees();
+  }
+
+  public onChange(fragmentId: string): void {
+    let changeLink = '';
+    if (fragmentId === 'additionalSecurityRequired') {
+      changeLink = '/hearings/request/hearing-facilities#additionalSecurityYes';
+    } else {
+      changeLink = '/hearings/request/hearing-facilities#immigrationDetentionCentre';
+    }
+    this.changeEditHearing.emit({ fragmentId, changeLink });
   }
 
   private getIsPaperHearing(): string {

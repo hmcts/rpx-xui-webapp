@@ -1,8 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
+import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 
 @Component({
   selector: 'exui-hearing-requirements-section',
@@ -12,10 +13,21 @@ export class HearingRequirementsSectionComponent implements OnInit {
   @Input() public caseFlagsRefData: CaseFlagReferenceModel[];
   @Input() public hearingRequestMainModel: HearingRequestMainModel;
   @Input() public serviceHearingValuesModel: ServiceHearingValuesModel;
+  @Output() public changeEditHearing = new EventEmitter<string>();
 
   public partyWithFlags: Map<string, CaseFlagReferenceModel[]>;
 
   public ngOnInit(): void {
     this.partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(this.caseFlagsRefData, this.hearingRequestMainModel.partyDetails, this.serviceHearingValuesModel.parties);
+  }
+
+  public onChange(fragmentId: string): void {
+    let changeLink = '';
+    if (fragmentId === 'additionalSecurityRequired') {
+      changeLink = '/hearings/request/hearing-facilities#additionalSecurityYes';
+    } else {
+      changeLink = '/hearings/request/hearing-facilities#immigrationDetentionCentre';
+    }
+    this.changeEditHearing.emit({ fragmentId, changeLink });
   }
 }

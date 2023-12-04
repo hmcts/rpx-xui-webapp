@@ -1,8 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
 import { PanelRequirementsModel } from '../../../models/panelRequirements.model';
 import { JudicialUserModel } from 'src/hearings/models/judicialUser.model';
 import { LovRefDataModel } from 'src/hearings/models/lovRefData.model';
+import { editHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 
 @Component({
   selector: 'exui-panel-details-section',
@@ -12,6 +13,7 @@ export class PanelDetailsSectionComponent implements OnInit {
   @Input() public panelRolesRefData: LovRefDataModel[];
   @Input() public panelRequirements: PanelRequirementsModel;
   @Input() public panelMembers: JudicialUserModel[];
+  @Output() public changeEditHearing = new EventEmitter<string>();
 
   public hearingPanel: string;
   public includedPanelMembers: string;
@@ -23,6 +25,16 @@ export class PanelDetailsSectionComponent implements OnInit {
     this.includedPanelMembers = this.getIncludedPanelMembers();
     this.excludedPanelMembers = this.getExcludedPanelMembers();
     this.panelRoles = this.getPanelRoles();
+  }
+
+  public onChange(fragmentId: string): void {
+    let changeLink = '';
+    if (fragmentId === 'additionalSecurityRequired') {
+      changeLink = '/hearings/request/hearing-facilities#additionalSecurityYes';
+    } else {
+      changeLink = '/hearings/request/hearing-facilities#immigrationDetentionCentre';
+    }
+    this.changeEditHearing.emit({ fragmentId, changeLink });
   }
 
   private getHearingPanel(): string {

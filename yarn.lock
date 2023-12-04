@@ -2591,12 +2591,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.15-restricted-case-access":
-  version: 6.19.15-restricted-case-access
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.15-restricted-case-access"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.15-prerelease-update-gearing-requirements":
+  version: 6.19.15-prerelease-update-gearing-requirements
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.15-prerelease-update-gearing-requirements"
   dependencies:
     tslib: ^2.0.0
-  checksum: ecafb4a68a46ff22a9ecdb3edcc43fb1f27edb6ad19ece09afd7c0b8ec419c9826294608c0ddf1dcf8308495ad3461da419bbb4e1e8833787246a97d16b9cab6
+  checksum: a1debb2dc078e3b7d34b337431d4d2da34e2c7ad66200b473ea49670392bfbeac283f5e4b9b9855d9427e076cd024af12f81687bce3044e66246ef9c629d035d
   languageName: node
   linkType: hard
 
@@ -19249,7 +19249,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.15-restricted-case-access
+    "@hmcts/ccd-case-ui-toolkit": 6.19.15-prerelease-update-gearing-requirements
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.9.5

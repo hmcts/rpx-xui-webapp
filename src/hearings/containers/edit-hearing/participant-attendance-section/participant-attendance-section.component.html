@@ -14,7 +14,7 @@
         (click)="onChange('paperHearing')">Change</a>
     </div>
   </div>
-  <div class="govuk-summary-list__row">
+  <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
     <div class="govuk-summary-list__key">
       What will be the methods of attendance for this hearing?
     </div>
@@ -32,7 +32,7 @@
         (click)="onChange('howParticipantsAttendant')">Change</a>
     </div>
   </div>
-  <div class="govuk-summary-list__row">
+  <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
     <div class="govuk-summary-list__key">
       How will each participant attend the hearing?
     </div>
@@ -50,7 +50,7 @@
         (click)="onChange('howAttendant')">Change</a>
     </div>
   </div>
-  <div class="govuk-summary-list__row">
+  <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
     <div class="govuk-summary-list__key">
       How many people will attend the hearing in person?
     </div>

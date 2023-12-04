@@ -1,5 +1,5 @@
 <a class="govuk-back-link" href="javascript:history.back()">Back</a>
-<!-- <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner> -->
+<xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
 <h1 class="govuk-heading-l">Edit hearing</h1>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row" *ngIf="!isHearingListed">
@@ -39,6 +39,11 @@
   [hearingRequestMainModel]="hearingRequestMainModel"
   [caseTypeRefData]="caseTypeRefData"
 ></exui-case-details-section>
+<!-- Listing information summary -->
+<div *ngIf="isHearingListed">
+  <h2 class="govuk-heading-m">{{hearingTemplate.LISTING_INFORMATION}}</h2>
+  <exui-listing-information-summary></exui-listing-information-summary>
+</div>
 <!-- Hearing requirements -->
 <exui-hearing-requirements-section
   [hearingRequestMainModel]="hearingRequestMainModel"

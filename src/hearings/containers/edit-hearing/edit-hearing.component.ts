@@ -11,7 +11,7 @@ import { HearingConditions } from '../../models/hearingConditions';
 import { HearingListMainModel } from '../../models/hearingListMain.model';
 import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
 import { hearingStatusMappings } from '../../models/hearingStatusMappings';
-import { HearingDateEnum, HearingSummaryEnum, LaCaseStatus, Mode } from '../../models/hearings.enum';
+import { HearingDateEnum, HearingSummaryEnum, HearingTemplate, LaCaseStatus, Mode } from '../../models/hearings.enum';
 import { JudicialUserModel } from '../../models/judicialUser.model';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
@@ -23,6 +23,7 @@ import * as fromHearingStore from '../../store';
   templateUrl: './edit-hearing.component.html'
 })
 export class EditHearingComponent implements OnInit, OnDestroy {
+  public readonly REGION_ID = '7';
   public hearingState$: Observable<fromHearingStore.State>;
   public hearingStateSub: Subscription;
   public serviceHearingValuesModel: ServiceHearingValuesModel;
@@ -48,6 +49,7 @@ export class EditHearingComponent implements OnInit, OnDestroy {
   public partyChannelsRefData: LovRefDataModel[];
   public partySubChannelsRefData: LovRefDataModel[];
   public panelRolesRefData: LovRefDataModel[];
+  public hearingTemplate = HearingTemplate;
 
   constructor(private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -68,8 +70,8 @@ export class EditHearingComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    // this.showSpinner$ = this.loadingService.isLoading as any;
-    // const loadingToken = this.loadingService.register();
+    this.showSpinner$ = this.loadingService.isLoading as any;
+    const loadingToken = this.loadingService.register();
     this.hearingStateSub = this.hearingState$.subscribe((state) => {
       this.hearingRequestMainModel = state.hearingRequest.hearingRequestMainModel;
       this.serviceHearingValuesModel = state.hearingValues.serviceHearingValuesModel;
@@ -80,12 +82,12 @@ export class EditHearingComponent implements OnInit, OnDestroy {
       this.responseReceivedDate = moment(this.hearingRequestMainModel.hearingResponse?.receivedDateTime).format(HearingDateEnum.DisplayMonth) || '';
       this.caseStatus = this.hearingRequestMainModel.hearingResponse?.laCaseStatus || '';
       this.isHearingListed = this.caseStatus === LaCaseStatus.LISTED;
-      this.showPanelDetailsSection = state.hearingValues?.serviceHearingValuesModel?.screenFlow?.findIndex((screen) => screen.screenName === 'hearing-panel') > -1 ? false : true;
+      this.showPanelDetailsSection = state.hearingValues?.serviceHearingValuesModel?.screenFlow?.findIndex((screen) => screen.screenName === 'hearing-panel') > -1;
 
       const locationIds = this.hearingRequestMainModel.hearingDetails.hearingLocations?.map((location) => location.locationId).join(',');
       this.showLanguageRequirementsSection$ = this.locationsDataService.getLocationById(locationIds).pipe(
         map((locations) => {
-          return !locations.some((location) => location.region_id === '7');
+          return !locations.some((location) => location.region_id === this.REGION_ID);
         })
       );
 
@@ -96,9 +98,9 @@ export class EditHearingComponent implements OnInit, OnDestroy {
         });
         window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
       }
-    //   this.loadingService.unregister(loadingToken);
+      this.loadingService.unregister(loadingToken);
     }, () => {
-    //   this.loadingService.unregister(loadingToken);
+      this.loadingService.unregister(loadingToken);
     });
   }
 

@@ -43,6 +43,12 @@ export async function handleCaseWorkerDetails(path: string, req: EnhancedRequest
   return response.data;
 }
 
+export async function handlePostSearch(path: string, payload: string | any, req: EnhancedRequest): Promise<any> {
+  logger.info('post search', payload);
+  const headers = setHeaders(req);
+  return await http.post(path, payload, { headers });
+}
+
 export async function handlePostRoleAssignments(path: string, payload: any, req: EnhancedRequest): Promise<any> {
   const headers = setHeaders(req);
   headers.pageNumber = 0;

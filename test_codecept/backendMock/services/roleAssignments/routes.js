@@ -33,7 +33,7 @@ router.get('/roles', (req, res) => {
 
 router.post('/query', (req, res) => {
     let roleAssignments = [];
-    console.log(`Role assignments req: ${JSON.stringify(req.body, null, 2)}`)
+    // console.log(`Role assignments req: ${JSON.stringify(req.body, null, 2)}`)
     const reqProps = Object.keys(req.body);
     if (reqProps.includes('queryRequests')) {
         for (const queryReq of req.body.queryRequests) {

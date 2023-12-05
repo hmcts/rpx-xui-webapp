@@ -1,27 +1,27 @@
-<h2 class="govuk-heading-m">Additional facilities</h2>
+<h2 class="govuk-heading-m">{{ 'Additional facilities' | rpxTranslate }}</h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      Will additional security be required?
+      {{ 'Will additional security be required?' | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__value">
-      {{additionalFacilitiesRequiredText}}
+      {{ additionalFacilitiesRequiredText }}
     </div>
     <div class="govuk-summary-list__actions">
       <a id="additionalSecurityRequired"
         class="govuk-link"
         href="javascript:void(0)"
-        (change)="onChange('additionalSecurityRequired')">Change</a>
+        (change)="onChange('additionalSecurityRequired')">{{ 'Change' | rpxTranslate }}</a>
     </div>
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      Select any additional facilities required
+      {{ 'Select any additional facilities required' | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__value">
       <ul>
         <li *ngFor="let additionalFacility of additionalFacilities">
-          {{additionalFacility}}
+          {{ additionalFacility }}
         </li>
       </ul>
     </div>
@@ -29,7 +29,7 @@
       <a id="additionalFacilitiesRequired"
         class="govuk-link"
         href="javascript:void(0)"
-        (click)="onChange('additionalFacilitiesRequired')">Change</a>
+        (click)="onChange('additionalFacilitiesRequired')">{{ 'Change' | rpxTranslate }}</a>
     </div>
   </div>
 </div>

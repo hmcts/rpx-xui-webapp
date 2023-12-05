@@ -1,27 +1,27 @@
-<h2 class="govuk-heading-m">Participant attendance</h2>
+<h2 class="govuk-heading-m">{{ 'Participant attendance' | rpxTranslate }}</h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      Will this be a paper hearing?
+      {{ 'Will this be a paper hearing?' | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__value">
-      {{isPaperHearing}}
+      {{ isPaperHearing | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__actions">
       <a id="paperHearing"
         class="govuk-link"
         href="javascript:void(0)"
-        (click)="onChange('paperHearing')">Change</a>
+        (click)="onChange('paperHearing')">{{ 'Change' | rpxTranslate }}</a>
     </div>
   </div>
   <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
     <div class="govuk-summary-list__key">
-      What will be the methods of attendance for this hearing?
+      {{ 'What will be the methods of attendance for this hearing?' | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__value">
       <ul>
         <li *ngFor="let participantChannel of participantChannels">
-          {{participantChannel}}
+          {{ participantChannel | rpxTranslate }}
         </li>
       </ul>
     </div>
@@ -29,17 +29,17 @@
       <a id="howParticipantsAttendant"
         class="govuk-link"
         href="javascript:void(0)"
-        (click)="onChange('howParticipantsAttendant')">Change</a>
+        (click)="onChange('howParticipantsAttendant')">{{ 'Change' | rpxTranslate }}</a>
     </div>
   </div>
   <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
     <div class="govuk-summary-list__key">
-      How will each participant attend the hearing?
+      {{ 'How will each participant attend the hearing?' | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__value">
       <ul>
         <li *ngFor="let participantAttendanceMode of participantAttendanceModes">
-          {{participantAttendanceMode}}
+          {{ participantAttendanceMode | rpxTranslate }}
         </li>
       </ul>
     </div>
@@ -47,21 +47,21 @@
       <a id="howAttendant"
         class="govuk-link"
         href="javascript:void(0)"
-        (click)="onChange('howAttendant')">Change</a>
+        (click)="onChange('howAttendant')">{{ 'Change' | rpxTranslate }}</a>
     </div>
   </div>
   <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
     <div class="govuk-summary-list__key">
-      How many people will attend the hearing in person?
+      {{ 'How many people will attend the hearing in person?' | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__value">
-      {{numberOfPhysicalAttendees}}
+      {{ numberOfPhysicalAttendees }}
     </div>
     <div class="govuk-summary-list__actions">
       <a id="attendantPersonAmount"
         class="govuk-link"
         href="javascript:void(0)"
-        (click)="onChange('attendantPersonAmount')">Change</a>
+        (click)="onChange('attendantPersonAmount')">{{ 'Change' | rpxTranslate }}</a>
     </div>
   </div>
 </div>

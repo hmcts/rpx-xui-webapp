@@ -1,37 +1,37 @@
 <a class="govuk-back-link" href="javascript:history.back()">Back</a>
 <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
-<h1 class="govuk-heading-l">Edit hearing</h1>
+<h1 class="govuk-heading-l">{{ 'Edit hearing' | rpxTranslate }}</h1>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row" *ngIf="!isHearingListed">
     <div class="govuk-summary-list__key">
-      Case number
+      {{ 'Case number' | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__value">
-      {{caseReference}}
+      {{ caseReference }}
     </div>
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      Status
+      {{ 'Status' | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__value">
-      {{status}}
+      {{ status }}
     </div>
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      Date request submitted
+      {{ 'Date request submitted' | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__value">
-      {{requestSubmittedDate}}
+      {{ requestSubmittedDate }}
     </div>
   </div>
   <div class="govuk-summary-list__row" *ngIf="isHearingListed">
     <div class="govuk-summary-list__key">
-      Date response received
+      {{ 'Date response received' | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__value">
-      {{responseReceivedDate}}
+      {{ responseReceivedDate }}
     </div>
   </div>
 </div>
@@ -41,7 +41,7 @@
 ></exui-case-details-section>
 <!-- Listing information summary -->
 <div *ngIf="isHearingListed">
-  <h2 class="govuk-heading-m">{{hearingTemplate.LISTING_INFORMATION}}</h2>
+  <h2 class="govuk-heading-m">{{ hearingTemplate.LISTING_INFORMATION | rpxTranslate }}</h2>
   <exui-listing-information-summary></exui-listing-information-summary>
 </div>
 <!-- Hearing requirements -->

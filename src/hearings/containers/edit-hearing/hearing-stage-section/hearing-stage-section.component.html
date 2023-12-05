@@ -1,17 +1,17 @@
-<h2 class="govuk-heading-m">Stage</h2>
+<h2 class="govuk-heading-m">{{ 'Stage' | rpxTranslate }}</h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      What stage is this hearing at?
+      {{ 'What stage is this hearing at?' | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__value">
-      {{hearingStage}}
+      {{ hearingStage }}
     </div>
     <div class="govuk-summary-list__actions">
       <a id="stage"
         class="change-link"
         href="javascript:void(0)"
-        (click)="onChange('stage')">Change</a>
+        (click)="onChange('stage')">{{ 'Change' | rpxTranslate }}</a>
     </div>
   </div>
 </div>

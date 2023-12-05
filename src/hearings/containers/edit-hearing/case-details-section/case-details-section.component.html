@@ -1,30 +1,30 @@
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      Case internal name
+      {{ 'Case internal name' | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__value">
-      {{hearingRequestMainModel.caseDetails.hmctsInternalCaseName}}
+      {{ hearingRequestMainModel.caseDetails.hmctsInternalCaseName }}
     </div>
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      Case public name
+      {{ 'Case public name' | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__value">
-      {{hearingRequestMainModel.caseDetails.publicCaseName}}
+      {{ hearingRequestMainModel.caseDetails.publicCaseName }}
     </div>
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      Case Type
+      {{ 'Case Type' | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__value">
       <div *ngFor="let caseCategory of caseTypes">
-        {{caseCategory.categoryDisplayValue}}
+        {{ caseCategory.categoryDisplayValue }}
         <ul>
           <li *ngFor="let childNode of caseCategory.childNodes">
-            - {{childNode.categoryDisplayValue}}
+            - {{ childNode.categoryDisplayValue }}
           </li>
         </ul>
       </div>
@@ -32,18 +32,18 @@
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      Private hearing required
+      {{ 'Private hearing required' | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__value">
-      {{hearingRequestMainModel.hearingDetails.privateHearingRequiredFlag ? 'Yes' : 'No'}}
+      {{ hearingRequestMainModel.hearingDetails.privateHearingRequiredFlag ? 'Yes' : 'No' | rpxTranslate }}
     </div>
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      Case restriction
+      {{ 'Case restriction' | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__value">
-      {{hearingRequestMainModel.caseDetails?.caserestrictedFlag ? 'Yes' : 'No'}}
+      {{ hearingRequestMainModel.caseDetails?.caserestrictedFlag ? 'Yes' : 'No' | rpxTranslate }}
     </div>
   </div>
 </div>

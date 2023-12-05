@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
@@ -22,7 +22,7 @@ import * as fromHearingStore from '../../store';
   selector: 'exui-edit-hearing',
   templateUrl: './edit-hearing.component.html'
 })
-export class EditHearingComponent implements OnInit, OnDestroy {
+export class EditHearingComponent implements OnInit, AfterViewInit, OnDestroy {
   public readonly REGION_ID = '7';
   public hearingState$: Observable<fromHearingStore.State>;
   public hearingStateSub: Subscription;
@@ -104,6 +104,14 @@ export class EditHearingComponent implements OnInit, OnDestroy {
     });
   }
 
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
+  }
+
+  public ngOnDestroy(): void {
+    this.hearingStateSub?.unsubscribe();
+  }
+
   public onChange(event: EditHearingChangeConfig): void {
     const hearingCondition: HearingConditions = {
       fragmentId: event.fragmentId,
@@ -113,7 +121,13 @@ export class EditHearingComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl(event.changeLink);
   }
 
-  public ngOnDestroy(): void {
-    this.hearingStateSub?.unsubscribe();
+  public fragmentFocus(): void {
+    this.route.fragment.subscribe((frag) => {
+      const element = document.getElementById(frag);
+      if (element) {
+        element.scrollIntoView();
+        element.focus();
+      }
+    });
   }
 }

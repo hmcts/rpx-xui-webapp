@@ -1,17 +1,17 @@
-<h2 class="govuk-heading-m">Additional instructions</h2>
+<h2 class="govuk-heading-m">{{ 'Additional instructions' | rpxTranslate }}</h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      Enter any additional instructions for the hearing
+      {{ 'Enter any additional instructions for the hearing' | rpxTranslate }}
     </div>
     <div class="govuk-summary-list__value">
-      {{additionalInstructions}}
+      {{ additionalInstructions }}
     </div>
     <div class="govuk-summary-list__actions">
       <a id="additionalInstruction"
         class="govuk-link"
         href="javascript:void(0)"
-        (click)="onChange('additionalInstruction')">Change</a>
+        (click)="onChange('additionalInstruction')">{{ 'Change' | rpxTranslate }}</a>
     </div>
   </div>
 </div>

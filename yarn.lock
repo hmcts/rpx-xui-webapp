@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.0-rc8":
-  version: 7.0.0-rc8
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.0-rc8"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.0":
+  version: 7.0.0
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.0"
   dependencies:
     tslib: ^2.3.0
-  checksum: f3662072513db6c67091005b1571872e1ea0427771fd82a3c2bcbce40e7307c205701ae9ea349afeb37e3a3ecb31f661e6d7c722135d7c69bba594e40d386af4
+  checksum: 7aa26de1e45744b79f3998c17ce1ed2701e6f6b5178148fb2dda206c91db31831418994b6efeed917e0da0fe6a05910805757e9528e08c23594b353bea2d74a8
   languageName: node
   linkType: hard
 
@@ -2703,16 +2703,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.0-NodeAndNgUpgrades-03":
-  version: 2.0.0-NodeAndNgUpgrades-03
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.0-NodeAndNgUpgrades-03"
+"@hmcts/rpx-xui-common-lib@npm:2.0.1":
+  version: 2.0.1
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.1"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 1b5af81404bd1819ae4ee7454c8b69caa6eb934bb55baca2f488f95d772fb9eefffd7976125f50aa7b9660bcc2cf2b13baf1166c608c505e3fbb739b0f8c1013
+  checksum: d077e9fc16eedb6786effcdafb378d39e7f547a15636a4514f7d36453407beb2e02ca8c2bbd74322b3cd63e10e0c471be557f6d645d4f83f15b2694e380297b7
   languageName: node
   linkType: hard
 
@@ -19013,13 +19013,13 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.0-rc8
+    "@hmcts/ccd-case-ui-toolkit": 7.0.0
     "@hmcts/ccpay-web-component": 6.0.2
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.10.1-RC.1
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 2.0.0-NodeAndNgUpgrades-03
+    "@hmcts/rpx-xui-common-lib": 2.0.1
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3
@@ -19138,7 +19138,7 @@ __metadata:
     protractor-multiple-cucumber-html-reporter-plugin: 1.8.0
     protractor-screenshot-utils: ^1.0.5
     puppeteer: ^21.3.8
-    rpx-xui-translation: 1.0.0-NodeAndNgUpgrades-02
+    rpx-xui-translation: 1.0.2
     rx-polling-hmcts: 1.1.1
     rxjs: ^7.8.1
     rxjs-compat: ^6.6.7
@@ -19170,17 +19170,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.0.0-NodeAndNgUpgrades-02":
-  version: 1.0.0-NodeAndNgUpgrades-02
-  resolution: "rpx-xui-translation@npm:1.0.0-NodeAndNgUpgrades-02"
+"rpx-xui-translation@npm:1.0.2":
+  version: 1.0.2
+  resolution: "rpx-xui-translation@npm:1.0.2"
   dependencies:
     dexie: ^3.2.2
     luxon: ^2.4.0
     tslib: ^2.0.0
   peerDependencies:
-    "@angular/common": ^9.1.13
-    "@angular/core": ^9.1.13
-  checksum: 8d9bc8272ef8dc13a04a2edbee11e9805036978449ddeb087acbd7b792dd35582344941a521ca8bde986671b1267624dfaf70fcc89abbef926b93b06e2bf6621
+    "@angular/common": ^15.2.9
+    "@angular/core": ^15.2.9
+  checksum: 305f4ae1d935de2f4d0874637a61863c1b5478872d335653f6986776fc274de9ebfe3728c04c8a386ff8b4d36fa1de8e444d000ad42f2a914bab3fb5989f28bc
   languageName: node
   linkType: hard
 

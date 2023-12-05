@@ -1,5 +1,5 @@
 const caseFileViewTabConfig = require('./caseFileViewTabConfig')
-
+const caseFlagsTabConfig = require('./caseFlagsTabConfig')
 class CaseDetailsData{
     constructor(){
         this.data = getTemplate();
@@ -59,6 +59,17 @@ class CaseDetailsData{
         })
 
         this.caseFileViewCase.tabs.push(caseFileViewTabConfig);
+    }
+
+
+    setupCaseFlagsCase() {
+        this.setCaseTypeProperties(this.caseFlagsCase, {
+            id: 'PRLAPPS',
+            name: 'Immigration & Asylum',
+            "jurisdiction.id": 'PRIVATELAW'
+        })
+
+        this.caseFlagsCase.tabs.push(caseFlagsTabConfig);
     }
 
 

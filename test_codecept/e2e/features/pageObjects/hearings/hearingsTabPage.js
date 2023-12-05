@@ -134,88 +134,88 @@ class HearingsTable {
     }
 }
 
-class HearingsTable{
+// class HearingsTable{
 
-    constructor(tableName){
-        this.tableName = tableName
-    }
+//     constructor(tableName){
+//         this.tableName = tableName
+//     }
 
-    async isDisplayed(){
-        const tableEle = element(by.xpath(`//exui-case-hearings-list//th[contains(text(),'${this.tableName}')]`))
-        return tableEle.isDisplayed();
-    }
+//     async isDisplayed(){
+//         const tableEle = element(by.xpath(`//exui-case-hearings-list//th[contains(text(),'${this.tableName}')]`))
+//         return tableEle.isDisplayed();
+//     }
 
-    async getTableHeaders(){
-        const headers = element.all(by.xpath(`//exui-case-hearings-list//th[contains(text(),'${this.tableName}')]/../th`))
-        const count = headers.count();
+//     async getTableHeaders(){
+//         const headers = element.all(by.xpath(`//exui-case-hearings-list//th[contains(text(),'${this.tableName}')]/../th`))
+//         const count = headers.count();
 
-        const headerNames = []
-        for(let i = 0 ;i < count; i++){
-            const headerEle = await headers.get(i)
-            headerNames.push(await headerEle.getText())
-        }
-        return headerNames;
-    }
+//         const headerNames = []
+//         for(let i = 0 ;i < count; i++){
+//             const headerEle = await headers.get(i)
+//             headerNames.push(await headerEle.getText())
+//         }
+//         return headerNames;
+//     }
 
-    getColNumberForheaderName(headerName){
-        let colNum = -1
-        switch (headerName){
-            case "Hearing date":
-                colNum = 2
-                break;
-            case "Status":
-                colNum = 3
-                break;
-            case "Actions":
-                colNum = 4
-                break;
-            default:
-                colNum = -1
-        }
-        return colNum;
-    }
+//     getColNumberForheaderName(headerName){
+//         let colNum = -1
+//         switch (headerName){
+//             case "Hearing date":
+//                 colNum = 2
+//                 break;
+//             case "Status":
+//                 colNum = 3
+//                 break;
+//             case "Actions":
+//                 colNum = 4
+//                 break;
+//             default:
+//                 colNum = -1
+//         }
+//         return colNum;
+//     }
 
-    getHearingTypeColumnElement(hearingType,valueForHeader){
+//     getHearingTypeColumnElement(hearingType,valueForHeader){
 
-        const colNum = this.getColNumberForheaderName(valueForHeader);
-        const tdXpath = `//exui-case-hearings-list//th[contains(text(),'${this.tableName}')]/../../..//tbody/tr/td[contains(text(),'${hearingType}')]/../td[position()=${colNum}]`
-        if (valueForHeader === "Hearing date"){
-            const xPath = tdXpath
-            return element(by.xpath(xPath))
-        } else if (valueForHeader === "Status"){
-            const xPath = `${tdXpath}/strong`
-            return element(by.xpath(xPath))
-        }
-        else if (valueForHeader === "Actions") {
-            const xPath = `${tdXpath}/div[contains(@class,'div-action')]/a`;
-            return element.all(by.xpath(xPath))
-        }else{
-            throw new Error(`Unknown column ${valueForHeader}`)
-        }
+//         const colNum = this.getColNumberForheaderName(valueForHeader);
+//         const tdXpath = `//exui-case-hearings-list//th[contains(text(),'${this.tableName}')]/../../..//tbody/tr/td[contains(text(),'${hearingType}')]/../td[position()=${colNum}]`
+//         if (valueForHeader === "Hearing date"){
+//             const xPath = tdXpath
+//             return element(by.xpath(xPath))
+//         } else if (valueForHeader === "Status"){
+//             const xPath = `${tdXpath}/strong`
+//             return element(by.xpath(xPath))
+//         }
+//         else if (valueForHeader === "Actions") {
+//             const xPath = `${tdXpath}/div[contains(@class,'div-action')]/a`;
+//             return element.all(by.xpath(xPath))
+//         }else{
+//             throw new Error(`Unknown column ${valueForHeader}`)
+//         }
      
-    }
+//     }
 
-    async isHearingDisplayed(hearingType){
-        const tdXpath = `//exui-case-hearings-list//th[contains(text(),'${this.tableName}')]/../../..//tbody/tr/td[contains(text(),'${hearingType}')]`
-        const ele = element(by.xpath(tdXpath))
-        return ele.isDisplayed()
-    }
+//     async isHearingDisplayed(hearingType){
+//         const tdXpath = `//exui-case-hearings-list//th[contains(text(),'${this.tableName}')]/../../..//tbody/tr/td[contains(text(),'${hearingType}')]`
+//         const ele = element(by.xpath(tdXpath))
+//         return ele.isDisplayed()
+//     }
 
-    async getHearingTypeColumnValue(hearingType, valueForHeader){
-        const elements = this.getHearingTypeColumnElement(hearingType, valueForHeader)
-        if (valueForHeader === 'Actions'){
-            const actionsCount = await elements.count();
-            const actionNames = []
-            for (let i = 0; i < actionsCount; i++){
-                const e = await elements.get(i)
-                actionNames.push(await e.getText())
-            }
-            return actionNames;
-        }else{
-            return elements.getText();
-        }
+//     async getHearingTypeColumnValue(hearingType, valueForHeader){
+//         const elements = this.getHearingTypeColumnElement(hearingType, valueForHeader)
+//         if (valueForHeader === 'Actions'){
+//             const actionsCount = await elements.count();
+//             const actionNames = []
+//             for (let i = 0; i < actionsCount; i++){
+//                 const e = await elements.get(i)
+//                 actionNames.push(await e.getText())
+//             }
+//             return actionNames;
+//         }else{
+//             return elements.getText();
+//         }
         
-    }
-}
+//     }
+// }
 
-module.exports = new HearingsTabPage();
+// module.exports = new HearingsTabPage();

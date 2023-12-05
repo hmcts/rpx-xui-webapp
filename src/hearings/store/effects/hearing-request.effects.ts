@@ -2,9 +2,10 @@ import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Action, select, Store } from '@ngrx/store';
-import { from, Observable, of } from 'rxjs';
+import { Action, Store, select } from '@ngrx/store';
+import { Observable, from, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import * as fromAppReducers from '../../../app/store/reducers';
 import { HttpError } from '../../../models/httpError.model';
@@ -17,7 +18,6 @@ import * as fromHearingSelectors from '../../store/selectors';
 import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 import * as hearingRequestToCompareActions from '../actions/hearing-request-to-compare.action';
 import * as hearingRequestActions from '../actions/hearing-request.action';
-import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Injectable()
 export class HearingRequestEffects {
@@ -69,6 +69,10 @@ export class HearingRequestEffects {
   public continueNavigation$ = this.actions$.pipe(
       ofType(hearingRequestActions.UPDATE_HEARING_REQUEST),
       tap(() => {
+        if (this.mode === Mode.VIEW) {
+          return this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: this.fragmentId })
+            .catch((err) => this.loggerService.error(`Error navigating to hearings/request/hearing-view-edit-summary#${this.fragmentId} `, err));
+        }
         const nextPage = this.pageFlow.getNextPage(this.screenNavigations$);
         switch (this.mode) {
           case Mode.CREATE:

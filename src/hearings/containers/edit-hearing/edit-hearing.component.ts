@@ -121,6 +121,10 @@ export class EditHearingComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigateByUrl(event.changeLink);
   }
 
+  public onSubmit(): void {
+    // TO DO: Will be implemented in one of the ticktes of CR-84
+  }
+
   public fragmentFocus(): void {
     this.route.fragment.subscribe((frag) => {
       const element = document.getElementById(frag);

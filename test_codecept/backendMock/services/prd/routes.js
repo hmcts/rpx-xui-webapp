@@ -25,6 +25,7 @@ router.get('/lov/categories/:category', (req, res) => {
 
     // } else if (req.params.category === 'HearingSubChannel') {
     //     res.send({ list_of_values: [] })
+});
 
 router.get('/lov/categories/:categoryid', (req, res) => {
     res.send({ list_of_values: service.categoryTypes[req.params.categoryid].value })

@@ -1,4 +1,4 @@
-<a class="govuk-back-link" href="javascript:history.back()">Back</a>
+<a class="govuk-back-link" href="javascript:history.back()">{{ 'Back' | rpxTranslate }}</a>
 <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
 <h1 class="govuk-heading-l">{{ 'Edit hearing' | rpxTranslate }}</h1>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
@@ -110,3 +110,11 @@
   [listingComments]="hearingRequestMainModel.hearingDetails.listingComments"
   (changeEditHearing)="onChange($event)"
 ></exui-additional-instructions-section>
+<div class="govuk-inset-text">
+  <exui-hearing-amend-warning-msg
+    [warningMsg]="'The details for the hearing have changed. Please review and submit the added updates.' | rpxTranslate">
+  </exui-hearing-amend-warning-msg>
+</div>
+<button class="govuk-button" data-module="govuk-button" (click)="onSubmit()">
+  {{ 'Submit all added updates' | rpxTranslate }}
+</button>

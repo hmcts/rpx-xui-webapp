@@ -44,18 +44,10 @@ router.post('/session/userApiData', async (req, res) => {
     res.send({ status: 'success' })
 })
 
-router.post('/session/get/capturedRequest', async (req, res) => {
-    const requestData = await userApiData.getCapturedRequestData(req.body.auth, req.body.apiMethod)
-    res.send(requestData)
+router.get('/session/userApiData', async (req, res) => {
+    await userApiData.setUserData(req.body.auth, req.body.apiMethod, req.body.apiResponse)
+    res.send(userApiData.sessionUsers)
 })
-
-
-router.post('/session/mockApiData/:apiMethod', async (req, res) => {
-    const status = mockApiData.setApiData(req.params.apiMethod, req.body)
-    res.send({ status: status})
-
-})
-
 
 
 router.post('/session/getUserRolesAndRoleAssignments', async (req, res) => {

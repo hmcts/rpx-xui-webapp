@@ -2,7 +2,6 @@
 @ng @functional_enabled
 Feature: Hearings: Automatic updates
 
-    @functional_debug
     Scenario: Hearing automatic updates
         Given I set MOCK with user details
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |

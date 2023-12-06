@@ -1,7 +1,10 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
+import { AppConstants } from '../app/app.constants';
 import { ErrorPageComponent } from './components';
 import { CancelHearingComponent } from './containers/cancel-hearing/cancel-hearing.component';
+import { EditHearingComponent } from './containers/edit-hearing/edit-hearing.component';
 import { HearingActualsAddEditSummaryComponent } from './containers/hearing-actuals/hearing-actuals-add-edit-summary/hearing-actuals-add-edit-summary.component';
 import { HearingActualsEditSummaryComponent } from './containers/hearing-actuals/hearing-actuals-edit-summary/hearing-actuals-edit-summary.component';
 import { HearingActualsFinalConfirmationComponent } from './containers/hearing-actuals/hearing-actuals-final-confirmation/hearing-actuals-final-confirmation.component';
@@ -62,7 +65,6 @@ import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.serv
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { PartySubChannelsResolverService } from './resolvers/party-subchannels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
-import { EditHearingComponent } from './containers/edit-hearing/edit-hearing.component';
 
 export const ROUTES: Routes = [
   {
@@ -446,9 +448,10 @@ export const ROUTES: Routes = [
       courtLocation: CourtLocationsDataResolver
     },
     component: EditHearingComponent,
-    canActivate: [HearingsEditGuard],
+    canActivate: [HearingsEditGuard, FeatureToggleGuard],
     data: {
       title: 'HMCTS Hearings | Amend Hearing',
+      needsFeaturesEnabled: [AppConstants.FEATURE_NAMES.enableHearingAmendments],
       isChildRequired: [HearingCategory.PanelMemberType, HearingCategory.CaseType]
     }
   },

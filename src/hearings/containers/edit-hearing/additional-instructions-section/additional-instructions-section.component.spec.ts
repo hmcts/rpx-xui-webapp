@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AdditionalInstructionsSectionComponent } from './additional-instructions-section.component';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 
 describe('AdditionalInstructionsSectionComponent', () => {
   let component: AdditionalInstructionsSectionComponent;
@@ -8,7 +9,10 @@ describe('AdditionalInstructionsSectionComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      declarations: [AdditionalInstructionsSectionComponent],
+      declarations: [
+        AdditionalInstructionsSectionComponent,
+        MockRpxTranslatePipe
+      ],
       providers: []
     }).compileComponents();
 
@@ -19,5 +23,19 @@ describe('AdditionalInstructionsSectionComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should set additional instructions', () => {
+    component.listingComments = 'This is a test comment.';
+    component.ngOnInit();
+    expect(component.additionalInstructions).toEqual('This is a test comment.');
+  });
+
+  it('should verify onChange', () => {
+    spyOn(component.changeEditHearing, 'emit');
+    component.onChange('additionalInstruction');
+    expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
+      fragmentId: 'additionalInstruction', changeLink: '/hearings/request/hearing-additional-instructions#additionalInstructionsTextarea'
+    });
   });
 });

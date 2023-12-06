@@ -1,5 +1,5 @@
 
-@ng @functional_enabled
+@ng @functional_enabled @functional_debug
 Feature:  Hearings: Hearings tab
 
     Scenario:  Hearings tab
@@ -14,9 +14,20 @@ Feature:  Hearings: Hearings tab
         # Given I set MOCK case details "WA_Case" property "case_type.id" as "Asylum"
 
         Given I set mock case hearings
-            | hmcStatus        | hearingType | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
-            | AWAITING_LISTING | Test hearing 1  | -3                     | 0                            | -3                                      | 2                                     |
-            | COMPLETED | Test hearing 2 | -5 | -1 | 2 | 4 |
+            | hmcStatus              | hearingType                 | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
+            | AWAITING_LISTING       | TEST_AWAITING_LISTING       | -3                     | 0                            | -3                                      | 2                                     |
+            | LISTED                 | TEST_LISTED                 | -3                     | 0                            | -3                                      | 2                                     |
+            | UPDATE_REQUESTED       | TEST_UPDATE_REQUESTED       | -3                     | 0                            | -3                                      | 2                                     |
+            | UPDATE_SUBMITTED       | TEST_UPDATE_SUBMITTED       | -3                     | 0                            | -3                                      | 2                                     |
+            | CANCELLATION_REQUESTED | TEST_CANCELLATION_REQUESTED | -5                     | -1                           | 2                                       | 4                                     |
+            | CANCELLATION_SUBMITTED | TEST_CANCELLATION_SUBMITTED | -5                     | -1                           | 2                                       | 4                                     |
+            | CANCELLED              | TEST_CANCELLED              | -5                     | -1                           | 2                                       | 4                                     |
+            | REQUEST_FAILURE        | TEST_REQUEST_FAILURE        | -5                     | -1                           | 2                                       | 4                                     |
+            | VACATED                | TEST_VACATED                | -5                     | -1                           | 2                                       | 4                                     |
+            | AWAITING_ACTUALS       | TEST_AWAITING_ACTUALS       | -5                     | -1                           | 2                                       | 4                                     |
+            | ADJOURNED              | TEST_ADJOURNED              | -5                     | -1                           | 2                                       | 4                                     |
+            | EXCEPTION              | TEST_EXCEPTION              | -5                     | -1                           | 2                                       | 4                                     |
+            | COMPLETED              | TEST_COMPLETED              | -5                     | -1                           | 2                                       | 4                                     |
 
         Given I start MockApp
         Given I navigate to home page
@@ -30,16 +41,16 @@ Feature:  Hearings: Hearings tab
         Then I see hearings table for "Current and upcoming" in hearings tab page
         Then I see hearings table for "Past or cancelled" in hearings tab page
 
-        Then I see hearing "TEST_TYPE" in hearings "Current and upcoming" in hearings tab page
-        Then I see hearing "TEST_TYPE" in hearings "Past or cancelled" in hearings tab page
+        Then I see hearing "TEST_TYPE_1" in hearings "Current and upcoming" in hearings tab page
+        Then I see hearing "TEST_TYPE_2" in hearings "Past or cancelled" in hearings tab page
 
-        Then In hearings tab, I see hearing "Test hearing 1" with values under "Current and upcoming"
+        Then In hearings tab, I see hearing "TEST_TYPE_1" with values under "Current and upcoming"
             | Hearing date | Status               | Actions             |
             | -3           | WAITING TO BE LISTED | View or edit,Cancel |
 
-        Then In hearings tab, I see hearing "Test hearing 2" with values under "Past or cancelled"
+        Then In hearings tab, I see hearing "TEST_TYPE_2" with values under "Past or cancelled"
             | Hearing date | Status    | Actions      |
             | 2            | COMPLETED | View details |
-        # Then debug sleep minutes 30
+# Then debug sleep minutes 30
 # Then I see hearings tab displayed
 

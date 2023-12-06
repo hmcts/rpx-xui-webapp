@@ -63,7 +63,7 @@ export class JudgeDetailsSectionComponent implements OnInit {
         && panelPreference.requirementType === RequirementType.MUSTINC
     ).map((panelPreference) => panelPreference.memberID);
 
-    const includedJudge = this.judicialUsers.find((judgeInfo) => includedJudgeMemberIds.includes(judgeInfo.personalCode));
+    const includedJudge = this.judicialUsers?.find((judgeInfo) => includedJudgeMemberIds?.includes(judgeInfo.personalCode));
     return includedJudge?.fullName || '';
   }
 
@@ -86,7 +86,7 @@ export class JudgeDetailsSectionComponent implements OnInit {
 
     const excludedJudgeNames: string[] = [];
     this.judicialUsers.forEach((judgeInfo) => {
-      if (excludedJudges.includes(judgeInfo.personalCode)) {
+      if (excludedJudges?.includes(judgeInfo.personalCode)) {
         excludedJudgeNames.push(judgeInfo.fullName);
       }
     });

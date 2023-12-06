@@ -107,7 +107,7 @@ export class CaseHearingsListComponent implements OnInit {
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
     this.isHearingAmendmentsEnabled$.subscribe((enabled) => {
-      const url = enabled ? '/hearings/request/hearing-view-summary' : '/hearings/request/hearing-view-edit-summary';
+      const url = enabled ? '/hearings/view/hearing-view-summary' : '/hearings/request/hearing-view-edit-summary';
       this.loadHearingRequestServiceHearingValuesAndRedirect(hearingID, url);
     });
   }

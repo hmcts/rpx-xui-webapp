@@ -3,7 +3,7 @@
 Feature: Hearings: Automatic updates
 
     Scenario: Hearing automatic updates
-        Given I set MOCK with user details
+        Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_OFF"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                      |
 

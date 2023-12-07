@@ -4,7 +4,7 @@ Feature: Hearings: Hearings tab Hearing action based on roles
 
 
     Scenario Outline: Hearigs: Hearing actions display for roles
-        Given I set MOCK with user details
+        Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_OFF"
             | roles        | <role>,caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator |
             | roleCategory | LEGAL_OPERATIONS                                                             |
 
@@ -43,7 +43,7 @@ Feature: Hearings: Hearings tab Hearing action based on roles
             | listed-hearing-viewer | View details        |
 
     Scenario: Hearing actions with status AWAITING_HEARING_DETAILS
-        Given I set MOCK with user details
+        Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_OFF"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                      |
 

@@ -4,7 +4,6 @@ import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
 import { AppConstants } from '../app/app.constants';
 import { ErrorPageComponent } from './components';
 import { CancelHearingComponent } from './containers/cancel-hearing/cancel-hearing.component';
-import { EditHearingComponent } from './containers/edit-hearing/edit-hearing.component';
 import { HearingActualsAddEditSummaryComponent } from './containers/hearing-actuals/hearing-actuals-add-edit-summary/hearing-actuals-add-edit-summary.component';
 import { HearingActualsEditSummaryComponent } from './containers/hearing-actuals/hearing-actuals-edit-summary/hearing-actuals-edit-summary.component';
 import { HearingActualsFinalConfirmationComponent } from './containers/hearing-actuals/hearing-actuals-final-confirmation/hearing-actuals-final-confirmation.component';
@@ -21,6 +20,7 @@ import { HearingAdditionalInstructionsComponent } from './containers/request-hea
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
 import { HearingChangeReasonsComponent } from './containers/request-hearing/hearing-change-reasons/hearing-change-reasons.component';
 import { HearingCreateEditSummaryComponent } from './containers/request-hearing/hearing-create-edit-summary/hearing-create-edit-summary.component';
+import { HearingEditSummaryComponent } from './containers/request-hearing/hearing-edit-summary/hearing-edit-summary.component';
 import { HearingFacilitiesComponent } from './containers/request-hearing/hearing-facilities/hearing-facilities.component';
 import { HearingFinalConfirmationComponent } from './containers/request-hearing/hearing-final-confirmation/hearing-final-confirmation.component';
 import { HearingJudgeComponent } from './containers/request-hearing/hearing-judge/hearing-judge.component';
@@ -411,6 +411,31 @@ export const ROUTES: Routes = [
         }
       },
       {
+        path: 'hearing-edit-summary',
+        resolve: {
+          hearingPriorities: RefDataResolver,
+          caseType: CaseTypesResolver,
+          caseFlags: CaseFlagsResolver,
+          hearingStageOptions: HearingStageResolver,
+          additionFacilitiesOptions: AdditionalFacilitiesResolver,
+          partyChannels: PartyChannelsResolverService,
+          partySubChannels: PartySubChannelsResolverService,
+          judgeTypes: JudgeTypesResolverService,
+          judicialUsers: JudicialUserSearchResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
+          panelMemberResponseUsers: PanelMemberSearchResponseResolver,
+          otherPanelRoles: PanelRolesResolverService,
+          courtLocation: CourtLocationsDataResolver
+        },
+        component: HearingEditSummaryComponent,
+        canActivate: [HearingsEditGuard, FeatureToggleGuard],
+        data: {
+          title: 'HMCTS Hearings | Amend Hearing',
+          needsFeaturesEnabled: [AppConstants.FEATURE_NAMES.enableHearingAmendments],
+          isChildRequired: [HearingCategory.PanelMemberType, HearingCategory.CaseType]
+        }
+      },
+      {
         path: 'hearing-change-reason',
         resolve: {
           hearingTypes: RefDataResolver,
@@ -429,31 +454,6 @@ export const ROUTES: Routes = [
         }
       }
     ]
-  },
-  {
-    path: 'edit-hearing',
-    resolve: {
-      hearingPriorities: RefDataResolver,
-      caseType: CaseTypesResolver,
-      caseFlags: CaseFlagsResolver,
-      hearingStageOptions: HearingStageResolver,
-      additionFacilitiesOptions: AdditionalFacilitiesResolver,
-      partyChannels: PartyChannelsResolverService,
-      partySubChannels: PartySubChannelsResolverService,
-      judgeTypes: JudgeTypesResolverService,
-      judicialUsers: JudicialUserSearchResolver,
-      judicialResponseUsers: JudicialUserSearchResponseResolver,
-      panelMemberResponseUsers: PanelMemberSearchResponseResolver,
-      otherPanelRoles: PanelRolesResolverService,
-      courtLocation: CourtLocationsDataResolver
-    },
-    component: EditHearingComponent,
-    canActivate: [HearingsEditGuard, FeatureToggleGuard],
-    data: {
-      title: 'HMCTS Hearings | Amend Hearing',
-      needsFeaturesEnabled: [AppConstants.FEATURE_NAMES.enableHearingAmendments],
-      isChildRequired: [HearingCategory.PanelMemberType, HearingCategory.CaseType]
-    }
   },
   {
     path: 'view',

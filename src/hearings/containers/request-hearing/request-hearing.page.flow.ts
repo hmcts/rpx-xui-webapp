@@ -1,6 +1,8 @@
 import { ActivatedRoute } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { AppConstants } from 'src/app/app.constants';
 import { HearingConditions } from '../../models/hearingConditions';
 import { HearingListMainModel } from '../../models/hearingListMain.model';
 import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
@@ -16,9 +18,11 @@ export abstract class RequestHearingPageFlow {
   public serviceHearingValuesModel: ServiceHearingValuesModel;
   public hearingRequestMainModel: HearingRequestMainModel;
   public hearingCondition: HearingConditions;
+  public isHearingAmendmentsEnabled$: Observable<boolean>;
 
   public constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
                      protected readonly hearingsService: HearingsService,
+                     protected readonly featureToggleService: FeatureToggleService,
                      protected readonly route?: ActivatedRoute) {
     this.navigationSub = this.hearingsService.navigateAction$.subscribe(
       (action: ACTION) => this.executeAction(action)
@@ -30,6 +34,8 @@ export abstract class RequestHearingPageFlow {
         this.hearingRequestMainModel = hearingState.hearingRequest.hearingRequestMainModel;
         this.hearingCondition = hearingState.hearingConditions;
       });
+
+    this.isHearingAmendmentsEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments);
   }
 
   public fragmentFocus(): void {

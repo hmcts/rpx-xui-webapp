@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import { ACTION, HearingJudgeSelectionEnum, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
@@ -31,13 +32,14 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   public serviceId: string;
   @ViewChild('excludedJudge', { static: false }) public excludedJudge: HearingJudgeNamesListComponent;
 
-  constructor(protected readonly route: ActivatedRoute,
-              private readonly formBuilder: FormBuilder,
+  constructor(private readonly formBuilder: FormBuilder,
+              private readonly validatorsUtils: ValidatorsUtils,
               protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
               protected readonly judicialRefDataService: JudicialRefDataService,
-              private readonly validatorsUtils: ValidatorsUtils) {
-    super(hearingStore, hearingsService, route);
+              protected readonly featureToggleService: FeatureToggleService,
+              protected readonly route: ActivatedRoute) {
+    super(hearingStore, hearingsService, featureToggleService, route);
     this.hearingJudgeTypes = this.route.snapshot.data.hearingStages;
     this.personalCodejudgeList = this.route.snapshot.data.judicialUsers;
   }

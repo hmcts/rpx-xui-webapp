@@ -53,8 +53,8 @@ const loadServicehearingValues = {
             "partyName": "mock party",
             "partyRole": "APPL",
             "individualDetails": {
-                "firstName": "First Applicant FN updated",
-                "lastName": "First Applicant LN updated",
+                "firstName": "First Applicant FN",
+                "lastName": "First Applicant LN",
                 "interpreterLanguage": "",
                 "reasonableAdjustments": [
                     'RA0042',

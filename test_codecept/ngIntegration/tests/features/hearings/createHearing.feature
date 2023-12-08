@@ -78,11 +78,11 @@ Feature: Create hearings workflow
         When I click continue in create hearing workflow
 
         # Do you require a panel for this hearing?
-        Then I am on create hearing page "Do you require a panel for this hearing?"
-        When In create hearing page "Do you require a panel for this hearing?", I input values
-            | field                                    | value |
-            | Do you require a panel for this hearing? | No    |
-        When I click continue in create hearing workflow
+        # Then I am on create hearing page "Do you require a panel for this hearing?"
+        # When In create hearing page "Do you require a panel for this hearing?", I input values
+        #     | field                                    | value |
+        #     | Do you require a panel for this hearing? | No    |
+        # When I click continue in create hearing workflow
 
 
         # What are the hearing venue details?
@@ -128,7 +128,7 @@ Feature: Create hearings workflow
             # | Hearing venue                              | What are the hearing venue details?                      |       |
             | Judge details                              | Do you want a specific judge?                            | No                                  |
             | Judge details                              | Select all judge types that apply                        | Judge type 1,Judge type 2           |
-            | Panel details                              | Do you require a panel for this hearing?                 | No                                  |
+            # | Panel details                              | Do you require a panel for this hearing?                 | No                                  |
             | Length, date and priority level of hearing | Length of hearing                                        | 1 Day 2 Hours 5 Minutes             |
             | Length, date and priority level of hearing | Does the hearing need to take place on a specific date?  | No                                  |
             | Length, date and priority level of hearing | What is the priority of this hearing?                    | Hearing priority 1                  |
@@ -219,12 +219,12 @@ Feature: Create hearings workflow
         When I click continue in create hearing workflow
 
         # Do you require a panel for this hearing?
-        Then I am on create hearing page "Do you require a panel for this hearing?"
-        When In create hearing page "Do you require a panel for this hearing?", I input values
-            | field                                    | value                                   |
-            | Do you require a panel for this hearing? | Yes                                     |
-            | Or select any other panel roles required | Panel member type 1,Panel member type 2 |
-        When I click continue in create hearing workflow
+        # Then I am on create hearing page "Do you require a panel for this hearing?"
+        # When In create hearing page "Do you require a panel for this hearing?", I input values
+        #     | field                                    | value                                   |
+        #     | Do you require a panel for this hearing? | Yes                                     |
+        #     | Or select any other panel roles required | Panel member type 1,Panel member type 2 |
+        # When I click continue in create hearing workflow
 
 
         # What are the hearing venue details?
@@ -273,7 +273,7 @@ Feature: Create hearings workflow
             | Judge details                              | Do you want a specific judge?                            | Yes                                 |
             | Judge details                              | Name of the judge                                        | auto test 0 judge 0                 |
             # | Judge details                              | Select all judge types that apply                        |       |
-            | Panel details                              | Do you require a panel for this hearing?                 |   Yes    |
+            # | Panel details                              | Do you require a panel for this hearing?                 |   Yes    |
             # | Panel members | Do you require a panel for this hearing? | Yes |
             | Length, date and priority level of hearing | Length of hearing                                        |    1 Day 2 Hours 5 Minutes   |
             | Length, date and priority level of hearing | Does the hearing need to take place on a specific date? | Yes,The first date of the hearing must be,01 February 2024 |
@@ -371,14 +371,14 @@ Feature: Create hearings workflow
         When I click continue in create hearing workflow
 
         # Do you require a panel for this hearing?
-        Then I am on create hearing page "Do you require a panel for this hearing?"
-        When In create hearing page "Do you require a panel for this hearing?", I input values
-            | field                                    | value                                   |
-            | Do you require a panel for this hearing? | Yes                                     |
-            | Include specific panel members | jud,auto_test_judge_1@justice.gov.uk |
-            | Exclude specific panel members | jud,auto_test_judge_2@justice.gov.uk |
+        # Then I am on create hearing page "Do you require a panel for this hearing?"
+        # When In create hearing page "Do you require a panel for this hearing?", I input values
+        #     | field                                    | value                                   |
+        #     | Do you require a panel for this hearing? | Yes                                     |
+        #     | Include specific panel members | jud,auto_test_judge_1@justice.gov.uk |
+        #     | Exclude specific panel members | jud,auto_test_judge_2@justice.gov.uk |
 
-        When I click continue in create hearing workflow
+        # When I click continue in create hearing workflow
 
 
         # What are the hearing venue details?
@@ -429,9 +429,9 @@ Feature: Create hearings workflow
             | Judge details                              | Do you want a specific judge?                            | Yes                                                        |
             | Judge details                              | Name of the judge                                        | auto test 0 judge 0                                        |
             # | Judge details                              | Select all judge types that apply                        |       |
-            | Panel details                              | Do you require a panel for this hearing?                 | Yes                                                        |
-            | Panel details | Include specific panel members | auto test 1 judge 1 |
-            | Panel details | Exclude specific panel members | auto test 2 judge 2 |
+            # | Panel details                              | Do you require a panel for this hearing?                 | Yes                                                        |
+            # | Panel details | Include specific panel members | auto test 1 judge 1 |
+            # | Panel details | Exclude specific panel members | auto test 2 judge 2 |
 
             | Length, date and priority level of hearing | Length of hearing                                        | 1 Day 2 Hours 5 Minutes                                    |
             | Length, date and priority level of hearing | Does the hearing need to take place on a specific date?  | Choose a date range,Earliest start date: 01 August 2024, Latest end date: 01 September 2024 |

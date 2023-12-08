@@ -67,6 +67,20 @@ router.post('/session/logMessage', async (req, res) => {
 })
 
 
+router.post('/session/get/capturedRequest', async (req, res) => {
+    const requestData = await userApiData.getCapturedRequestData(req.body.auth, req.body.apiMethod)
+    res.send(requestData)
+})
+
+
+router.post('/session/mockApiData/:apiMethod', async (req, res) => {
+    const status = mockApiData.setApiData(req.params.apiMethod, req.body)
+    res.send({ status: status })
+
+})
+
+
+
 
 
 

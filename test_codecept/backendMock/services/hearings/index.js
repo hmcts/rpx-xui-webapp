@@ -19,6 +19,19 @@ class HearingsApi{
         this.addHearing({ hmcStatus: "COMPLETED" })
         this.addHearing({ hmcStatus: "AWAITING_ACTUALS" })
 
+
+        this.addHearing({ hmcStatus: "AWAITING_LISTING" })
+        this.addHearing({ hmcStatus: "UPDATE_REQUESTED" })
+        this.addHearing({ hmcStatus: "UPDATE_SUBMITTED" })
+        this.addHearing({ hmcStatus: "EXCEPTION" })
+        this.addHearing({ hmcStatus: "CANCELLATION_REQUESTED" })
+        this.addHearing({ hmcStatus: "CANCELLATION_SUBMITTED" })
+        this.addHearing({ hmcStatus: "VACATED" })
+        this.addHearing({ hmcStatus: "CANCELLED" })
+        this.addHearing({ hmcStatus: "ADJOURNED" })
+
+        
+
     }
 
     addHearing(props){
@@ -43,7 +56,7 @@ class HearingsApi{
         props = props ? props : {}
         return {
             hearingRequestDateTime: props.hearingRequestDateTime ? props.hearingRequestDateTime : "2023-07-13T10:58:40.419815",
-            hearingType: props.hearingType ? props.hearingType : "ABA5-FOF",
+            hearingType: props.hearingType ? props.hearingType : `MOCK_${props.hmcStatus}`,
             hmcStatus: props.hmcStatus ? props.hmcStatus : "LISTED",
             lastResponseReceivedDateTime: props.lastResponseReceivedDateTime ? props.lastResponseReceivedDateTime : "2023-07-13T16:12:15",
             requestVersion: 1,

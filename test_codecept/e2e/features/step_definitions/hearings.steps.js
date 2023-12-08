@@ -26,7 +26,7 @@ Then('I do not see Request a hearing button in hearings tab page', async functio
 });
 
 When('I click Request a hearing button', async function(){
-    await hearingTabPage.clickRequestHearingButton()
+    await hearingTabPage.requesthearingBtn.click()
 });
 
 Then('I see create hearing workflow container', async function () {

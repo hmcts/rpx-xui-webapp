@@ -71,6 +71,9 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import * as fromServices from './services';
 import { effects, reducers } from './store';
+import { RestrictedCaseAccessComponent } from './components/restricted-case-access/restricted-case-access.component';
+import { RestrictedCaseAccessContainerComponent } from './containers/restricted-case-access-container/restricted-case-access-container.component';
+import { RestrictedCaseAccessGuard } from './guards/restricted-case-access-guard';
 
 @NgModule({
   imports: [
@@ -138,7 +141,8 @@ import { effects, reducers } from './store';
     IsCompoundPipe,
     CcdCYAPageLabelFilterPipe,
     CaseFileViewService,
-    JurisdictionService
+    JurisdictionService,
+    RestrictedCaseAccessGuard
   ]
 })
 /**

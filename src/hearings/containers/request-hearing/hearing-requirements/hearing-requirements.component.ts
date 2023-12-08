@@ -55,7 +55,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   constructor(private readonly loggerService: LoggerService,
               private readonly validatorsUtils: ValidatorsUtils,
-              protected readonly hearingStore: Store<fromHearingStore.State>,
+              public readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
               protected readonly locationsDataService: LocationsDataService,
               protected readonly featureToggleService: FeatureToggleService,

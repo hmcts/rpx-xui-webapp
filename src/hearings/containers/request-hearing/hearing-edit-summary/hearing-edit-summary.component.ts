@@ -83,16 +83,12 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       })
     );
 
-    console.log('LOCATION IDs', locationIds);
-
     // Enable hearings manual amendments journey only if the feature is toggled on
     this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
       if (enabled) {
         this.setPropertiesUpdatedAutomatically();
       }
     });
-
-    console.log('REACHED THIS POINT');
   }
 
   public ngAfterViewInit(): void {
@@ -122,13 +118,13 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   public fragmentFocus(): void {
-    // this.route.fragment.subscribe((frag) => {
-    //   const element = document.getElementById(frag);
-    //   if (element) {
-    //     element.scrollIntoView();
-    //     element.focus();
-    //   }
-    // });
+    this.route.fragment.subscribe((frag) => {
+      const element = document.getElementById(frag);
+      if (element) {
+        element.scrollIntoView();
+        element.focus();
+      }
+    });
   }
 
   private setPropertiesUpdatedAutomatically(): void {

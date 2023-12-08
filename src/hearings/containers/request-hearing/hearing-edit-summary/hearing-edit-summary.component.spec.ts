@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
@@ -16,12 +17,12 @@ import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingEditSummaryComponent } from './hearing-edit-summary.component';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 describe('HearingEditSummaryComponent', () => {
   let component: HearingEditSummaryComponent;
   let fixture: ComponentFixture<HearingEditSummaryComponent>;
   let store: any;
+  let hearingValues: any;
   const routeMock = {
     snapshot: {
       data: {
@@ -98,7 +99,9 @@ describe('HearingEditSummaryComponent', () => {
       .compileComponents();
 
     store = TestBed.inject(Store);
+    mockFeatureToggleService.isEnabled.and.returnValue(of(true));
     spyOn(locationsDataService, 'getLocationById').and.returnValue(of(locations));
+    hearingValues = _.cloneDeep(initialState.hearings.hearingValues);
     fixture = TestBed.createComponent(HearingEditSummaryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -136,8 +139,7 @@ describe('HearingEditSummaryComponent', () => {
     expect(routerMock.navigateByUrl).toHaveBeenCalledWith('hearing/request/venue');
   });
 
-  fit('should set propertiesUpdatedOnPageVisit', () => {
-    mockFeatureToggleService.isEnabled.and.returnValue(of(true));
+  it('should set propertiesUpdatedOnPageVisit', () => {
     spyOn(store, 'select').and.returnValue(of(initialState.hearings.hearingValues));
     component.serviceHearingValuesModel = initialState.hearings.hearingValues.serviceHearingValuesModel;
     component.ngOnInit();
@@ -148,270 +150,227 @@ describe('HearingEditSummaryComponent', () => {
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
   });
 
-  afterEach(() => {
-    fixture.destroy();
+  it('should update the case details properties automatically setPropertiesUpdatedAutomatically', () => {
+    hearingValues.serviceHearingValuesModel.hmctsInternalCaseName = 'New hmcts case name from service hearings';
+    hearingValues.serviceHearingValuesModel.publicCaseName = 'New public case name from service hearings';
+    hearingValues.serviceHearingValuesModel.caseManagementLocationCode = 'New location code';
+    hearingValues.serviceHearingValuesModel.caserestrictedFlag = true;
+    const categories = [
+      {
+        categoryType: CategoryType.CaseType,
+        categoryValue: 'BBA3-003'
+      }, {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'BBA3-002CC',
+        categoryParent: 'BBA3-003'
+      }, {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'BBA3-002GC',
+        categoryParent: 'BBA3-003'
+      }, {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'BBA3-002RC',
+        categoryParent: 'BBA3-003'
+      }];
+    hearingValues.serviceHearingValuesModel.caseCategories = [...categories];
+    const selectSpy = spyOn(store, 'select').and.returnValue(of(hearingValues));
+    const storeDispatchSpy = spyOn(store, 'dispatch');
+    component.ngOnInit();
+    const expectedResult = { ...component.hearingRequestMainModel.caseDetails };
+    expectedResult.hmctsInternalCaseName = 'New hmcts case name from service hearings';
+    expectedResult.publicCaseName = 'New public case name from service hearings';
+    expectedResult.caseManagementLocationCode = 'New location code';
+    expectedResult.caserestrictedFlag = true;
+    expectedResult.caseCategories = [...categories];
+    expect(component.hearingRequestMainModel.caseDetails).toEqual(expectedResult);
+    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(component.hearingRequestMainModel, component.hearingCondition));
+
+    selectSpy.calls.reset();
+    storeDispatchSpy.calls.reset();
   });
 
-  describe('hearing manual amendments', () => {
-    let hearingValues: any;
-    beforeEach(() => {
-      TestBed.configureTestingModule({
-        declarations: [HearingEditSummaryComponent],
-        providers: [
-          LoadingService,
-          provideMockStore({ initialState }),
-          { provide: HearingsService, useValue: hearingsService },
+  it('should update the hearing details properties automatically setPropertiesUpdatedAutomatically', () => {
+    hearingValues.serviceHearingValuesModel.privateHearingRequiredFlag = true;
+    hearingValues.serviceHearingValuesModel.hearingInWelshFlag = true;
+    const selectSpy = spyOn(store, 'select').and.returnValue(of(hearingValues));
+    const storeDispatchSpy = spyOn(store, 'dispatch');
+    component.ngOnInit();
+    const expectedResult = { ...component.hearingRequestMainModel.hearingDetails };
+    expectedResult.privateHearingRequiredFlag = true;
+    expectedResult.hearingInWelshFlag = true;
+    expect(component.hearingRequestMainModel.hearingDetails).toEqual(expectedResult);
+    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(component.hearingRequestMainModel, component.hearingCondition));
+
+    selectSpy.calls.reset();
+    storeDispatchSpy.calls.reset();
+  });
+
+  it('should update the party details properties automatically setPropertiesUpdatedAutomatically', () => {
+    hearingValues.serviceHearingValuesModel.parties = [
+      {
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
+        partyType: PartyType.IND,
+        partyRole: 'New appellant',
+        individualDetails: {
+          title: 'Miss',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          reasonableAdjustments: [
+            'RA0042',
+            'RA0053',
+            'RA0013',
+            'RA0016',
+            'RA0042',
+            'RA0009'
+          ],
+          interpreterLanguage: 'PF0015',
+          preferredHearingChannel: 'byVideo',
+          relatedParties: [{
+            relatedPartyID: 'New party Id',
+            relationshipType: 'new releationship type'
+          }],
+          custodyStatus: 'New custody status',
+          vulnerableFlag: true,
+          vulnerabilityDetails: 'New vulnerability details',
+          hearingChannelEmail: ['New email'],
+          hearingChannelPhone: ['New Phone']
+        },
+        organisationDetails: {
+          name: 'New organisation name',
+          organisationType: 'New organisation type',
+          cftOrganisationID: 'New organisation Id'
+        },
+        unavailabilityDOW: null,
+        unavailabilityRanges: [
           {
-            provide: FeatureToggleService,
-            useValue: mockFeatureToggleService
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY
           }
-        ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA]
-      }).compileComponents();
-      fixture = TestBed.createComponent(HearingEditSummaryComponent);
-      store = TestBed.inject(Store);
-      component = fixture.componentInstance;
-      fixture.detectChanges();
-      hearingValues = _.cloneDeep(initialState.hearings.hearingValues);
-    });
+        ]
+      }
+    ];
+    hearingValues.serviceHearingValuesModel.hearingInWelshFlag = true;
+    const selectSpy = spyOn(store, 'select').and.returnValue(of(hearingValues));
+    const storeDispatchSpy = spyOn(store, 'dispatch');
+    component.ngOnInit();
+    const expectedResult = [
+      {
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
+        partyType: PartyType.IND,
+        partyRole: 'New appellant',
+        individualDetails: {
+          title: 'Miss',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          reasonableAdjustments: [
+            'RA0042',
+            'RA0053',
+            'RA0013',
+            'RA0016',
+            'RA0042'
+          ],
+          interpreterLanguage: 'PF0015',
+          preferredHearingChannel: 'inPerson',
+          relatedParties: [{
+            relatedPartyID: 'New party Id',
+            relationshipType: 'new releationship type'
+          }],
+          custodyStatus: 'New custody status',
+          vulnerableFlag: true,
+          vulnerabilityDetails: 'New vulnerability details',
+          hearingChannelEmail: ['New email'],
+          hearingChannelPhone: ['New Phone']
+        },
+        organisationDetails: {
+          name: 'New organisation name',
+          organisationType: 'New organisation type',
+          cftOrganisationID: 'New organisation Id'
+        },
+        unavailabilityDOW: null,
+        unavailabilityRanges: [
+          {
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      },
+      {
+        partyID: 'P2',
+        partyName: 'DWP',
+        partyType: PartyType.ORG,
+        partyRole: 'claimant',
+        individualDetails: {
+          preferredHearingChannel: 'byVideo',
+          reasonableAdjustments: [
+            'RA0005'
+          ],
+          interpreterLanguage: null,
+          relatedParties: undefined,
+          custodyStatus: undefined,
+          vulnerableFlag: undefined,
+          vulnerabilityDetails: undefined,
+          hearingChannelEmail: undefined,
+          hearingChannelPhone: undefined
+        },
+        organisationDetails: {
+          name: 'DWP',
+          organisationType: 'GOV',
+          cftOrganisationID: 'O100000'
+        },
+        unavailabilityDOW: undefined,
+        unavailabilityRanges: [
+          {
+            unavailableFromDate: '2021-12-20T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      },
+      {
+        partyID: 'P2',
+        partyName: 'DWP',
+        partyType: PartyType.ORG,
+        partyRole: 'claimant',
+        individualDetails: {
+          preferredHearingChannel: 'byVideo',
+          reasonableAdjustments: [
+            'RA0005'
+          ],
+          interpreterLanguage: null,
+          relatedParties: undefined,
+          custodyStatus: undefined,
+          vulnerableFlag: undefined,
+          vulnerabilityDetails: undefined,
+          hearingChannelEmail: undefined,
+          hearingChannelPhone: undefined
+        },
+        organisationDetails: {
+          name: 'DWP',
+          organisationType: 'GOV',
+          cftOrganisationID: 'O100000'
+        },
+        unavailabilityDOW: undefined,
+        unavailabilityRanges: [
+          {
+            unavailableFromDate: '2021-12-20T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      }
+    ];
+    expect(component.hearingRequestMainModel.partyDetails).toEqual(expectedResult);
+    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(component.hearingRequestMainModel, component.hearingCondition));
 
-    fit('should set propertiesUpdatedOnPageVisit', () => {
-      mockFeatureToggleService.isEnabled.and.returnValue(of(true));
-      spyOn(store, 'select').and.returnValue(of(initialState.hearings.hearingValues));
-      component.serviceHearingValuesModel = initialState.hearings.hearingValues.serviceHearingValuesModel;
-      component.ngOnInit();
-      const expectedResult = {
-        caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
-        parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties
-      };
-      expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
-    });
+    selectSpy.calls.reset();
+    storeDispatchSpy.calls.reset();
+  });
 
-    it('should update the case details properties automatically setPropertiesUpdatedAutomatically', () => {
-      hearingValues.serviceHearingValuesModel.hmctsInternalCaseName = 'New hmcts case name from service hearings';
-      hearingValues.serviceHearingValuesModel.publicCaseName = 'New public case name from service hearings';
-      hearingValues.serviceHearingValuesModel.caseManagementLocationCode = 'New location code';
-      hearingValues.serviceHearingValuesModel.caserestrictedFlag = true;
-      const categories = [
-        {
-          categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-003'
-        }, {
-          categoryType: CategoryType.CaseSubType,
-          categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-003'
-        }, {
-          categoryType: CategoryType.CaseSubType,
-          categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-003'
-        }, {
-          categoryType: CategoryType.CaseSubType,
-          categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-003'
-        }];
-      hearingValues.serviceHearingValuesModel.caseCategories = [...categories];
-      mockFeatureToggleService.isEnabled.and.returnValue(of(true));
-      const selectSpy = spyOn(store, 'select').and.returnValue(of(hearingValues));
-      const storeDispatchSpy = spyOn(store, 'dispatch');
-      component.ngOnInit();
-      const expectedResult = { ...component.hearingRequestMainModel.caseDetails };
-      expectedResult.hmctsInternalCaseName = 'New hmcts case name from service hearings';
-      expectedResult.publicCaseName = 'New public case name from service hearings';
-      expectedResult.caseManagementLocationCode = 'New location code';
-      expectedResult.caserestrictedFlag = true;
-      expectedResult.caseCategories = [...categories];
-      expect(component.hearingRequestMainModel.caseDetails).toEqual(expectedResult);
-      expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(component.hearingRequestMainModel, component.hearingCondition));
-
-      selectSpy.calls.reset();
-      storeDispatchSpy.calls.reset();
-    });
-
-    // it('should update the hearing details properties automatically setPropertiesUpdatedAutomatically', () => {
-    //   hearingValues.serviceHearingValuesModel.privateHearingRequiredFlag = true;
-    //   hearingValues.serviceHearingValuesModel.hearingInWelshFlag = true;
-    //   const selectSpy = spyOn(store, 'select').and.returnValue(of(hearingValues));
-    //   const storeDispatchSpy = spyOn(store, 'dispatch');
-    //   fixture.detectChanges();
-    //   component.setPropertiesUpdatedAutomatically();
-    //   const expectedResult = { ...component.hearingRequestMainModel.hearingDetails };
-    //   expectedResult.privateHearingRequiredFlag = true;
-    //   expectedResult.hearingInWelshFlag = true;
-    //   expect(component.hearingRequestMainModel.hearingDetails).toEqual(expectedResult);
-    //   expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(component.hearingRequestMainModel, component.hearingCondition));
-
-    //   selectSpy.calls.reset();
-    //   storeDispatchSpy.calls.reset();
-    // });
-
-    // it('should update the party details properties automatically setPropertiesUpdatedAutomatically', () => {
-    //   hearingValues.serviceHearingValuesModel.parties = [
-    //     {
-    //       partyID: 'P1',
-    //       partyName: 'Jane and Smith',
-    //       partyType: PartyType.IND,
-    //       partyRole: 'New appellant',
-    //       individualDetails: {
-    //         title: 'Miss',
-    //         firstName: 'Jane',
-    //         lastName: 'Smith',
-    //         reasonableAdjustments: [
-    //           'RA0042',
-    //           'RA0053',
-    //           'RA0013',
-    //           'RA0016',
-    //           'RA0042',
-    //           'RA0009'
-    //         ],
-    //         interpreterLanguage: 'PF0015',
-    //         preferredHearingChannel: 'byVideo',
-    //         relatedParties: [{
-    //           relatedPartyID: 'New party Id',
-    //           relationshipType: 'new releationship type'
-    //         }],
-    //         custodyStatus: 'New custody status',
-    //         vulnerableFlag: true,
-    //         vulnerabilityDetails: 'New vulnerability details',
-    //         hearingChannelEmail: ['New email'],
-    //         hearingChannelPhone: ['New Phone']
-    //       },
-    //       organisationDetails: {
-    //         name: 'New organisation name',
-    //         organisationType: 'New organisation type',
-    //         cftOrganisationID: 'New organisation Id'
-    //       },
-    //       unavailabilityDOW: null,
-    //       unavailabilityRanges: [
-    //         {
-    //           unavailableFromDate: '2021-12-10T09:00:00.000Z',
-    //           unavailableToDate: '2021-12-31T09:00:00.000Z',
-    //           unavailabilityType: UnavailabilityType.ALL_DAY
-    //         }
-    //       ]
-    //     }
-    //   ];
-    //   hearingValues.serviceHearingValuesModel.hearingInWelshFlag = true;
-    //   const selectSpy = spyOn(store, 'select').and.returnValue(of(hearingValues));
-    //   const storeDispatchSpy = spyOn(store, 'dispatch');
-    //   fixture.detectChanges();
-    //   component.setPropertiesUpdatedAutomatically();
-    //   const expectedResult = [
-    //     {
-    //       partyID: 'P1',
-    //       partyName: 'Jane and Smith',
-    //       partyType: PartyType.IND,
-    //       partyRole: 'New appellant',
-    //       individualDetails: {
-    //         title: 'Miss',
-    //         firstName: 'Jane',
-    //         lastName: 'Smith',
-    //         reasonableAdjustments: [
-    //           'RA0042',
-    //           'RA0053',
-    //           'RA0013',
-    //           'RA0016',
-    //           'RA0042'
-    //         ],
-    //         interpreterLanguage: 'PF0015',
-    //         preferredHearingChannel: 'inPerson',
-    //         relatedParties: [{
-    //           relatedPartyID: 'New party Id',
-    //           relationshipType: 'new releationship type'
-    //         }],
-    //         custodyStatus: 'New custody status',
-    //         vulnerableFlag: true,
-    //         vulnerabilityDetails: 'New vulnerability details',
-    //         hearingChannelEmail: ['New email'],
-    //         hearingChannelPhone: ['New Phone']
-    //       },
-    //       organisationDetails: {
-    //         name: 'New organisation name',
-    //         organisationType: 'New organisation type',
-    //         cftOrganisationID: 'New organisation Id'
-    //       },
-    //       unavailabilityDOW: null,
-    //       unavailabilityRanges: [
-    //         {
-    //           unavailableFromDate: '2021-12-10T09:00:00.000Z',
-    //           unavailableToDate: '2021-12-31T09:00:00.000Z',
-    //           unavailabilityType: UnavailabilityType.ALL_DAY
-    //         }
-    //       ]
-    //     },
-    //     {
-    //       partyID: 'P2',
-    //       partyName: 'DWP',
-    //       partyType: PartyType.ORG,
-    //       partyRole: 'claimant',
-    //       individualDetails: {
-    //         preferredHearingChannel: 'byVideo',
-    //         reasonableAdjustments: [
-    //           'RA0005'
-    //         ],
-    //         interpreterLanguage: null,
-    //         relatedParties: undefined,
-    //         custodyStatus: undefined,
-    //         vulnerableFlag: undefined,
-    //         vulnerabilityDetails: undefined,
-    //         hearingChannelEmail: undefined,
-    //         hearingChannelPhone: undefined
-    //       },
-    //       organisationDetails: {
-    //         name: 'DWP',
-    //         organisationType: 'GOV',
-    //         cftOrganisationID: 'O100000'
-    //       },
-    //       unavailabilityDOW: undefined,
-    //       unavailabilityRanges: [
-    //         {
-    //           unavailableFromDate: '2021-12-20T09:00:00.000Z',
-    //           unavailableToDate: '2021-12-31T09:00:00.000Z',
-    //           unavailabilityType: UnavailabilityType.ALL_DAY
-    //         }
-    //       ]
-    //     },
-    //     {
-    //       partyID: 'P2',
-    //       partyName: 'DWP',
-    //       partyType: PartyType.ORG,
-    //       partyRole: 'claimant',
-    //       individualDetails: {
-    //         preferredHearingChannel: 'byVideo',
-    //         reasonableAdjustments: [
-    //           'RA0005'
-    //         ],
-    //         interpreterLanguage: null,
-    //         relatedParties: undefined,
-    //         custodyStatus: undefined,
-    //         vulnerableFlag: undefined,
-    //         vulnerabilityDetails: undefined,
-    //         hearingChannelEmail: undefined,
-    //         hearingChannelPhone: undefined
-    //       },
-    //       organisationDetails: {
-    //         name: 'DWP',
-    //         organisationType: 'GOV',
-    //         cftOrganisationID: 'O100000'
-    //       },
-    //       unavailabilityDOW: undefined,
-    //       unavailabilityRanges: [
-    //         {
-    //           unavailableFromDate: '2021-12-20T09:00:00.000Z',
-    //           unavailableToDate: '2021-12-31T09:00:00.000Z',
-    //           unavailabilityType: UnavailabilityType.ALL_DAY
-    //         }
-    //       ]
-    //     }
-    //   ];
-    //   expect(component.hearingRequestMainModel.partyDetails).toEqual(expectedResult);
-    //   expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(component.hearingRequestMainModel, component.hearingCondition));
-
-    //   selectSpy.calls.reset();
-    //   storeDispatchSpy.calls.reset();
-    // });
-
-    afterEach(() => {
-      fixture.destroy();
-    });
+  afterEach(() => {
+    fixture.destroy();
   });
 });

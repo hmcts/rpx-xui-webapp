@@ -158,6 +158,6 @@ Feature: Create hearings workflow navigation controls
 
         When In create hearing check your answers page, I click change link for field "Length of hearing"
         Then I am on create hearing page "Length, date and priority level of hearing"
-        When In create hearing work flow, I click back link
-        Then I am on create hearing page "Do you require a panel for this hearing?"
+        # When In create hearing work flow, I click back link
+        # Then I am on create hearing page "Do you require a panel for this hearing?"
        

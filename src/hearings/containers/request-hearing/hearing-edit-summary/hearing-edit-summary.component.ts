@@ -35,6 +35,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public showPanelDetailsSection: boolean;
   public showLanguageRequirementsSection$: Observable<boolean>;
   private hearingValuesSubscription: Subscription;
+  private featureToggleServiceSubscription: Subscription;
   public validationErrors: { id: string, message: string }[] = [];
   public additionalFacilitiesRefData: LovRefDataModel[];
   public caseFlagsRefData: CaseFlagReferenceModel[];
@@ -84,7 +85,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     );
 
     // Enable hearings manual amendments journey only if the feature is toggled on
-    this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
+    this.featureToggleServiceSubscription = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
       if (enabled) {
         this.setPropertiesUpdatedAutomatically();
       }
@@ -98,6 +99,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public ngOnDestroy(): void {
     super.unsubscribe();
     this.hearingValuesSubscription?.unsubscribe();
+    this.featureToggleServiceSubscription?.unsubscribe();
   }
 
   public executeAction(action: ACTION): void {

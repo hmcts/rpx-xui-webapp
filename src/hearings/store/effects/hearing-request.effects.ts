@@ -70,7 +70,7 @@ export class HearingRequestEffects {
       ofType(hearingRequestActions.UPDATE_HEARING_REQUEST),
       tap(() => {
         if (this.mode === Mode.VIEW) {
-          this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: this.fragmentId })
+          this.router.navigate(['hearings', 'request', 'hearing-edit-summary'], { fragment: this.fragmentId })
             .catch((err) => this.loggerService.error(`Error navigating to hearings/request/hearing-view-edit-summary#${this.fragmentId} `, err));
         } else {
           const nextPage = this.pageFlow.getNextPage(this.screenNavigations$);

@@ -1,6 +1,6 @@
 import { ActivatedRoute } from '@angular/router';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { of } from 'rxjs/internal/observable/of';
+import { of } from 'rxjs';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 import { RolesAndAccessContainerComponent } from './roles-and-access-container.component';
 

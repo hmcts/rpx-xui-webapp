@@ -96,10 +96,11 @@ describe('HearingEditSummaryComponent', () => {
       ]
     })
       .compileComponents();
-    fixture = TestBed.createComponent(HearingEditSummaryComponent);
+
     store = TestBed.inject(Store);
-    component = fixture.componentInstance;
     spyOn(locationsDataService, 'getLocationById').and.returnValue(of(locations));
+    fixture = TestBed.createComponent(HearingEditSummaryComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
@@ -135,6 +136,18 @@ describe('HearingEditSummaryComponent', () => {
     expect(routerMock.navigateByUrl).toHaveBeenCalledWith('hearing/request/venue');
   });
 
+  fit('should set propertiesUpdatedOnPageVisit', () => {
+    mockFeatureToggleService.isEnabled.and.returnValue(of(true));
+    spyOn(store, 'select').and.returnValue(of(initialState.hearings.hearingValues));
+    component.serviceHearingValuesModel = initialState.hearings.hearingValues.serviceHearingValuesModel;
+    component.ngOnInit();
+    const expectedResult = {
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties
+    };
+    expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
+  });
+
   afterEach(() => {
     fixture.destroy();
   });
@@ -147,7 +160,11 @@ describe('HearingEditSummaryComponent', () => {
         providers: [
           LoadingService,
           provideMockStore({ initialState }),
-          { provide: HearingsService, useValue: hearingsService }
+          { provide: HearingsService, useValue: hearingsService },
+          {
+            provide: FeatureToggleService,
+            useValue: mockFeatureToggleService
+          }
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       }).compileComponents();
@@ -159,7 +176,7 @@ describe('HearingEditSummaryComponent', () => {
     });
 
     fit('should set propertiesUpdatedOnPageVisit', () => {
-      spyOnProperty(component.isHearingAmendmentsEnabled$, 'subscribe').and.returnValue(true);
+      mockFeatureToggleService.isEnabled.and.returnValue(of(true));
       spyOn(store, 'select').and.returnValue(of(initialState.hearings.hearingValues));
       component.serviceHearingValuesModel = initialState.hearings.hearingValues.serviceHearingValuesModel;
       component.ngOnInit();
@@ -170,54 +187,45 @@ describe('HearingEditSummaryComponent', () => {
       expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
     });
 
-    // it('should set case id from hearing request and call setPropertiesUpdatedAutomatically method', () => {
-    //   const storeDispatchSpy = spyOn(store, 'dispatch');
-    //   spyOn(component, 'setPropertiesUpdatedAutomatically');
-    //   component.ngOnInit();
-    //   expect(component.caseReference).toEqual('1234123412341234');
-    //   expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues(component.caseReference));
-    //   expect(component.setPropertiesUpdatedAutomatically).toHaveBeenCalled();
-    // });
+    it('should update the case details properties automatically setPropertiesUpdatedAutomatically', () => {
+      hearingValues.serviceHearingValuesModel.hmctsInternalCaseName = 'New hmcts case name from service hearings';
+      hearingValues.serviceHearingValuesModel.publicCaseName = 'New public case name from service hearings';
+      hearingValues.serviceHearingValuesModel.caseManagementLocationCode = 'New location code';
+      hearingValues.serviceHearingValuesModel.caserestrictedFlag = true;
+      const categories = [
+        {
+          categoryType: CategoryType.CaseType,
+          categoryValue: 'BBA3-003'
+        }, {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-003'
+        }, {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-003'
+        }, {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-003'
+        }];
+      hearingValues.serviceHearingValuesModel.caseCategories = [...categories];
+      mockFeatureToggleService.isEnabled.and.returnValue(of(true));
+      const selectSpy = spyOn(store, 'select').and.returnValue(of(hearingValues));
+      const storeDispatchSpy = spyOn(store, 'dispatch');
+      component.ngOnInit();
+      const expectedResult = { ...component.hearingRequestMainModel.caseDetails };
+      expectedResult.hmctsInternalCaseName = 'New hmcts case name from service hearings';
+      expectedResult.publicCaseName = 'New public case name from service hearings';
+      expectedResult.caseManagementLocationCode = 'New location code';
+      expectedResult.caserestrictedFlag = true;
+      expectedResult.caseCategories = [...categories];
+      expect(component.hearingRequestMainModel.caseDetails).toEqual(expectedResult);
+      expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(component.hearingRequestMainModel, component.hearingCondition));
 
-    // it('should update the case details properties automatically setPropertiesUpdatedAutomatically', () => {
-    //   hearingValues.serviceHearingValuesModel.hmctsInternalCaseName = 'New hmcts case name from service hearings';
-    //   hearingValues.serviceHearingValuesModel.publicCaseName = 'New public case name from service hearings';
-    //   hearingValues.serviceHearingValuesModel.caseManagementLocationCode = 'New location code';
-    //   hearingValues.serviceHearingValuesModel.caserestrictedFlag = true;
-    //   const categories = [
-    //     {
-    //       categoryType: CategoryType.CaseType,
-    //       categoryValue: 'BBA3-003'
-    //     }, {
-    //       categoryType: CategoryType.CaseSubType,
-    //       categoryValue: 'BBA3-002CC',
-    //       categoryParent: 'BBA3-003'
-    //     }, {
-    //       categoryType: CategoryType.CaseSubType,
-    //       categoryValue: 'BBA3-002GC',
-    //       categoryParent: 'BBA3-003'
-    //     }, {
-    //       categoryType: CategoryType.CaseSubType,
-    //       categoryValue: 'BBA3-002RC',
-    //       categoryParent: 'BBA3-003'
-    //     }];
-    //   hearingValues.serviceHearingValuesModel.caseCategories = [...categories];
-    //   const selectSpy = spyOn(store, 'select').and.returnValue(of(hearingValues));
-    //   const storeDispatchSpy = spyOn(store, 'dispatch');
-    //   fixture.detectChanges();
-    //   component.setPropertiesUpdatedAutomatically();
-    //   const expectedResult = { ...component.hearingRequestMainModel.caseDetails };
-    //   expectedResult.hmctsInternalCaseName = 'New hmcts case name from service hearings';
-    //   expectedResult.publicCaseName = 'New public case name from service hearings';
-    //   expectedResult.caseManagementLocationCode = 'New location code';
-    //   expectedResult.caserestrictedFlag = true;
-    //   expectedResult.caseCategories = [...categories];
-    //   expect(component.hearingRequestMainModel.caseDetails).toEqual(expectedResult);
-    //   expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(component.hearingRequestMainModel, component.hearingCondition));
-
-    //   selectSpy.calls.reset();
-    //   storeDispatchSpy.calls.reset();
-    // });
+      selectSpy.calls.reset();
+      storeDispatchSpy.calls.reset();
+    });
 
     // it('should update the hearing details properties automatically setPropertiesUpdatedAutomatically', () => {
     //   hearingValues.serviceHearingValuesModel.privateHearingRequiredFlag = true;

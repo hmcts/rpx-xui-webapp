@@ -4,7 +4,7 @@ Feature: Hearings: Semi automatic updates
 
 
     Scenario: Hearing semi automatic updates display of Case flags and parties
-        Given I set MOCK with user details
+        Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_OFF"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                      |
 

@@ -134,6 +134,8 @@ class HearingsTable {
     }
 }
 
+module.exports = new HearingsTabPage();
+
 // class HearingsTable{
 
 //     constructor(tableName){
@@ -218,4 +220,3 @@ class HearingsTable {
 //     }
 // }
 
-// module.exports = new HearingsTabPage();

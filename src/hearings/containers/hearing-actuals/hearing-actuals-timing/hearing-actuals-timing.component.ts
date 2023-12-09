@@ -132,7 +132,6 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
       return;
     }
     this.submitted = false;
-    const plannedIndex = ActualHearingsUtils.getPlannedDayIndexFromHearingDate(this.hearingActuals, this.hearingDate);
     const actualIndex = ActualHearingsUtils.getActualDayIndexFromHearingDate(this.hearingActuals, this.hearingDate);
     const pauseStartTime = actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes.length
       && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0] && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0].pauseStartTime;
@@ -167,8 +166,8 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     }
 
     const updatedTimings = {
-      hearingStartTime: this.getHearingTime(value.hearingStartTime, actualIndex, plannedIndex, 'startTime'),
-      hearingEndTime: this.getHearingTime(value.hearingEndTime, actualIndex, plannedIndex, 'endTime'),
+      hearingStartTime: this.getHearingTime(value.hearingStartTime, actualIndex),
+      hearingEndTime: this.getHearingTime(value.hearingEndTime, actualIndex),
       pauseDateTimes
     };
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(this.hearingActuals, this.hearingDate, { ...updatedTimings } as ActualHearingDayModel);
@@ -185,7 +184,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getHearingTime(value:string, actualIndex: number, plannedIndex: number, time: 'startTime' | 'endTime'): string {
+  private getHearingTime(value:string, actualIndex: number): string {
     const hearingDate = this.hearingActuals.hearingActuals?.actualHearingDays.length > 0 ?
       this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingDate : this.hearingDate;
     return value ? HearingActualsTimingComponent.replaceTime(hearingDate, moment(value, 'HH:mm')) : null;

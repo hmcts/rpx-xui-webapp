@@ -1,3 +1,4 @@
+import { of } from 'rxjs';
 import { LoggerService } from './logger.service';
 
 describe('Logger service', () => {
@@ -81,6 +82,19 @@ describe('Logger service', () => {
     expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
     expect(returnedMessage).not.toBeNull();
     expect(returnedMessage.slice(0, -2)).toBe(expectedMessage);
+  });
+
+  it('should log the correct environment type to the console', () => {
+    mockEnvironmentService.config$ = of(true);
+    mockEnvironmentService.isProd.and.returnValue(true);
+    spyOn(console, 'info');
+    new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
+      mockedCryptoWrapper, mockEnvironmentService);
+    expect(console.info).toHaveBeenCalledWith('Environment is prod.');
+    mockEnvironmentService.isProd.and.returnValue(false);
+    new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
+      mockedCryptoWrapper, mockEnvironmentService);
+    expect(console.info).toHaveBeenCalledWith('Environment is non-prod.');
   });
 
   describe('enableCookies()', () => {

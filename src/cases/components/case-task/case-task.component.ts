@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { firstValueFrom } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
@@ -112,11 +113,14 @@ export class CaseTaskComponent implements OnInit {
 
   public onActionHandler(task: Task, option: any): void {
     if (option.id === 'claim') {
-      this.taskService.claimTask(task.id).subscribe(() => {
-        this.alertService.success({ phrase: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS });
-        this.taskRefreshRequired.emit();
-      }, (error) => {
-        this.claimTaskErrors(error.status);
+      this.taskService.claimTask(task.id).subscribe({
+        next: () => {
+          this.alertService.success({ phrase: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS });
+          this.taskRefreshRequired.emit();
+        },
+        error: (error) => {
+          this.claimTaskErrors(error.status);
+        }
       });
       return;
     }
@@ -165,10 +169,9 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public async setReleaseVersion(): Promise<void> {
-    const featureConfigurations = await this.featureToggleService
+    const featureConfigurations = await firstValueFrom(this.featureToggleService
       .getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null)
-      .pipe(first())
-      .toPromise();
+      .pipe(first()));
     const jurisdictionConfiguration = featureConfigurations.configurations
       .find((serviceConfig) => serviceConfig.serviceName === this.task.jurisdiction);
     this.isRelease4 = jurisdictionConfiguration?.releaseVersion === '4';

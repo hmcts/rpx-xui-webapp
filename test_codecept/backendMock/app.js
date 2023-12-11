@@ -36,6 +36,8 @@ const globalSearchRoutes = require('./services/globalSearch/routes')
 
 const idamOpenId = require('./services/idam/routes')
 const sessionRoutes = require('./services/session/routes')
+const caseCategoriesndDOcumentsRoutes = require('./services/caseFileView/routes')
+const evidenceManagementRoutes = require('./services/evidenceManagement/routes')
 
 const users = require('./services/users');
 const userApiData = require('./services/userApiData');
@@ -118,9 +120,14 @@ class MockApp {
 
 
         app.use('/', ccdRoutes )
-
         app.use('/refdata/commondata', prdCommondataroutes)
+        app.use('/categoriesAndDocuments', caseCategoriesndDOcumentsRoutes)
+        app.use('/cases/documents', evidenceManagementRoutes)
+        app.use('/documentsv2', evidenceManagementRoutes)
 
+        app.get('/activity/cases/:caseId/activity', (req,res) => {
+            res.send({})
+        })
 
         // await this.stopServer();
         this.server = await app.listen(8080);

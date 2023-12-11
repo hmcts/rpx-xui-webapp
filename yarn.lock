@@ -2591,12 +2591,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.19.16-rc1":
-  version: 6.19.16-rc1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.16-rc1"
+"@hmcts/ccd-case-ui-toolkit@npm:6.19.16-rc2":
+  version: 6.19.16-rc2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.19.16-rc2"
   dependencies:
     tslib: ^2.0.0
-  checksum: 2ba92e0a2bc0b75cdeffe8b225011d86a508ac4d1f7511a5dfdfa2b7359e38780cf2a1420f888933e909a7cee15903d1a5c61b066e3b50e4beb4285f95e91f57
+  checksum: ca92baa7d0ab698e9b44c814662dac95894d0d9e1cbb6e679b27b3488bc5ebd06070c91cce5f5724f8fc0454c5ce50967275db70a40751a648104b3682efcda9
   languageName: node
   linkType: hard
 
@@ -19249,7 +19249,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.19.16-rc1
+    "@hmcts/ccd-case-ui-toolkit": 6.19.16-rc2
     "@hmcts/ccpay-web-component": 5.2.8
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.9.5

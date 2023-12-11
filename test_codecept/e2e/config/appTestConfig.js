@@ -19,14 +19,14 @@ const data = {
     users: {
         aat: [
             {
-                idamId: "12b6a360-7f19-4985-b065-94320a891eaa",
-                email: "lukesuperuserxui@mailnesia.com",
+                idamId: "2d8727c0-44f7-4c2b-99b3-e3d53f90cded",
+                email: "xui_auto_test_user_solicitor@mailinator.com",
                 release: "general", userIdentifier: "PROD_LIKE",
                 key:"Monday01"
             },
             {
-                idamId: "12b6a360-7f19-4985-b065-94320a891eaa",
-                email: "lukesuperuserxui@mailnesia.com",
+                idamId: "2d8727c0-44f7-4c2b-99b3-e3d53f90cded",
+                email: "xui_auto_test_user_solicitor@mailinator.com",
                 release: "general", userIdentifier: "SOLICITOR",
                 key: "Monday01"
             },
@@ -118,6 +118,30 @@ const data = {
                 idamId: "12b6a360-7f19-4985-b065-94320a891eaa",
                 email: "xui_caseofficer@justice.gov.uk",
                 release: "general", userIdentifier: "STAFF_ADMIN",
+                key: "Welcome01"
+            },
+            {
+                idamId: "978dd13c-112a-4920-a7b9-8b8b83a0a243",
+                email: "xui_restricted_case_access_on@mailinator.com",
+                release: "restricted-case-access-on", userIdentifier: "RESTRICTED_CASE_ACCESS_ON",
+                key: "Welcome01"
+            },
+            {
+                idamId: "2dacadcc-1c6a-4251-87f8-8c0ef4d68ba7",
+                email: "xui_restricted_case_access_off@mailinator.com",
+                release: "restricted-case-access-off", userIdentifier: "RESTRICTED_CASE_ACCESS_OFF",
+                key: "Welcome01"
+            },
+            {
+                idamId: "80004966-1d94-456b-8e09-05730a1d9f5e",
+                email: "xui_casefileview_v11_on@mailinator.com",
+                release: "restricted-case-file-view-v1.1-on", userIdentifier: "RESTRICTED_CASE_FILE_VIEW_V1.1_ON",
+                key: "Welcome01"
+            },
+            {
+                idamId: "6bd95a7f-9065-42a0-af4b-c0b6ed84e960",
+                email: "xui_casefileview_v11_off@mailinator.com",
+                release: "restricted-case-file-view-v1.1-off", userIdentifier: "RESTRICTED_CASE_FILE_VIEW_V1.1_OFF",
                 key: "Welcome01"
             }
 

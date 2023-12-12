@@ -75,7 +75,7 @@ describe('Task management api, tasks by jurisdiction', () => {
           // 'content-Type': 'application/json',
         },
         body: {
-          service: 'ABA5'
+          service: 'wa'
         }
       });
       let returnedResponse = null;

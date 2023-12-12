@@ -106,7 +106,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         let loginUser = '';
         if (userIdentifier){
             idamLogin.withCredentials(testUser.email, testUser.key)
-            loginUser = testUser.email
+            loginUser = testUser.email1
         }else{
             idamLogin.withCredentials('lukesuperuserxui@mailnesia.com', 'Monday01')
             loginUser = 'lukesuperuserxui@mailnesia.com'
@@ -115,12 +115,9 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
         await browser.get('http://localhost:3000/get-help');
         let userDetails = null;
-        if (process.env.DEBUG === "true" && fs.existsSync(debugSessionFile)){
-            idamLogin.xuiCallbackResponse = JSON.parse(fs.readFileSync(debugSessionFile))
-        }
+      
         await BrowserWaits.retryWithActionCallback(async () => {
             await idamLogin.do();
-            fs.writeFileSync(debugSessionFile, JSON.stringify(idamLogin.xuiCallbackResponse, null, 2))
             userDetails = idamLogin.userDetailsResponse.details.data;
             const sessionUserName = userDetails.userInfo ? userDetails.userInfo.email : '';
             if (sessionUserName !== loginUser ){

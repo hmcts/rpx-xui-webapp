@@ -11,6 +11,7 @@ export enum AutoUpdateMode {
   PARTY,
   PAGELESS,
   WITHIN_PAGE,
+  AFTER_PAGE_VISIT
 }
 
 export enum PagelessPropertiesEnum {
@@ -35,6 +36,12 @@ export enum WithinPagePropertiesEnum {
   CASE_CATEGORIES = 'caseCategories',
   CASE_RESTRICTED_FLAG = 'caseRestrictedFlag',
   PRIVATE_HEARING_REQUIRED_FLAG = 'privateHearingRequiredFlag',
+  PARTIES = 'parties'
+}
+
+export enum AfterPageVisitPropertiesEnum {
+  REASONABLE_ADJUSTMENTS = 'reasonableAdjustments',
+  NON_REASONABLE_ADJUSTMENTS = 'nonReasonableAdjustments',
   PARTIES = 'parties'
 }
 
@@ -63,6 +70,12 @@ export interface WithinPageProperties {
   parties?: boolean
 }
 
+export interface AfterPageVisitProperties {
+  reasonableAdjustmentChangesConfirmed?: boolean;
+  nonReasonableAdjustmentChangesConfirmed?: boolean;
+  partyDetailsChangesConfirmed?: boolean;
+}
+
 export interface PropertiesUpdatedAutomatically {
   pageless?: PagelessProperties,
   withinPage?: WithinPageProperties
@@ -73,5 +86,6 @@ export interface PropertiesUpdatedOnPageVisit {
     flags: PartyFlagsModel[],
     flagAmendURL: string,
   };
-  parties: PartyDetailsModel[]
+  parties: PartyDetailsModel[],
+  afterPageVisit?: AfterPageVisitProperties
 }

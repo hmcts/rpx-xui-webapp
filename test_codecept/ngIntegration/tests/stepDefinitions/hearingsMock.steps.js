@@ -16,6 +16,9 @@ const awaitinghearingsDetails = require('../../../backendMock/services/hearings/
 const completedHearing = require('../../../backendMock/services/hearings/mockData/completedHearing.data')
 const cancelledhearing = require('../../../backendMock/services/hearings/mockData/cancelledHearing.data')
 
+const updateRequestedHearing = require('../../../backendMock/services/hearings/mockData/updateRequestedhearing.data')
+
+
 const mockServiceHearingValues = require('../../../backendMock/services/hearings/serviceHearingValuesMock')
 
 const hearingDataForStates = {
@@ -72,31 +75,13 @@ const hearingDataForStates = {
             case "AWAITING_ACTUALS":
                 hearingResponse = awaitinghearingsDetails;
                 break;
-            default:
-                throw new Error(`no mock data setup for hearing ${hearingStatus}`)
-        }
-
-
-        mockClient.setOnGetHearing(hearingResponse, 200)
-
-    });
-
-    Given('I set mock get hearing with with status {string}', async function (hearingStatus) {
-
-        let hearingResponse = null;
-        switch (hearingStatus){
-            case "LISTED":
-                hearingResponse = listedHearing;
-                break;
-            case "COMPLETED":
-                hearingResponse = completedHearing;
-                break;
-            case "CANCELLED":
-                hearingResponse = cancelledhearing;
-                break;
-            case "AWAITING_ACTUALS":
+            case "AWAITING_LISTING":
                 hearingResponse = awaitinghearingsDetails;
                 break;
+            case "UPDATE_REQUESTED":
+                hearingResponse = updateRequestedHearing;
+                break;
+           
             default:
                 throw new Error(`no mock data setup for hearing ${hearingStatus}`)
         }
@@ -105,6 +90,31 @@ const hearingDataForStates = {
         mockClient.setOnGetHearing(hearingResponse, 200)
 
     });
+
+    // Given('I set mock get hearing with with status {string}', async function (hearingStatus) {
+
+    //     let hearingResponse = null;
+    //     switch (hearingStatus){
+    //         case "LISTED":
+    //             hearingResponse = listedHearing;
+    //             break;
+    //         case "COMPLETED":
+    //             hearingResponse = completedHearing;
+    //             break;
+    //         case "CANCELLED":
+    //             hearingResponse = cancelledhearing;
+    //             break;
+    //         case "AWAITING_ACTUALS":
+    //             hearingResponse = awaitinghearingsDetails;
+    //             break;
+    //         default:
+    //             throw new Error(`no mock data setup for hearing ${hearingStatus}`)
+    //     }
+
+
+    //     mockClient.setOnGetHearing(hearingResponse, 200)
+
+    // });
 
 
 Given('I set mock hearings service hearing values with ref {string}', async function (ref) {

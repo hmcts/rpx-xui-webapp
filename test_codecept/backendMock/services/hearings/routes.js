@@ -13,6 +13,8 @@ const completedHearing = require('./mockData/completedHearing.data')
 
 const serviceHearingValuesMock = require('./serviceHearingValuesMock')
 
+const hearingActualsData = require('./mockData/hearingActuals')
+
 router.get('/hearings/:caseId', (req, res) => {
 
     userApiData.sendResponse(req, res, "OnCaseHearings", () => service.getCaseHearings())
@@ -57,7 +59,7 @@ router.put('/hearing/:hearingId', (req, res) => {
 
 
 router.get('/hearingActuals/:hearingId', (req, res) => {
-    res.send(serviceHearingValuesMock.serviceHearingValues)
+    res.send(hearingActualsData)
 })
 
 router.put('/hearingActuals/:hearingId', (req, res) => {

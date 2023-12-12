@@ -4,7 +4,6 @@ const path = require('path')
 const axios = require('axios')
 
 const session = require('./sampleSession.json')
-const roleAssignmentsService = require('../roleAssignments/index')
 
 const roleAssignmentsService = require('../roleAssignments/index')
 

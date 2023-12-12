@@ -40,6 +40,7 @@ class MockSessionService {
 
     getSessionFiles() {
 
+
         console.log(this.sessionsPath)
         return fs.readdirSync(this.sessionsPath)
     }
@@ -75,12 +76,16 @@ class MockSessionService {
         for (const file of files) {
             const sessionFile = `${this.sessionsPath}/${file}`
             let sessionJson = await fs.readFileSync(sessionFile);
-            sessionJson = JSON.parse(sessionJson)
-            // console.log(sessionJson.passport?.user?.tokenset?.accessToken);
-            // console.log(auth);
-            if (sessionJson.passport?.user?.tokenset?.accessToken === auth) {
+            try {
+              sessionJson = JSON.parse(sessionJson)
+              // console.log(sessionJson.passport?.user?.tokenset?.accessToken);
+              // console.log(auth);
+              if (sessionJson.passport?.user?.tokenset?.accessToken === auth) {
                 authSessionFile = sessionFile;
                 break;
+              }
+            } catch (err) {
+              console.error ('Error reading session JSON file: ' + sessionFile + ' sessionJson: ' + sessionJson, err);
             }
         }
         return authSessionFile;

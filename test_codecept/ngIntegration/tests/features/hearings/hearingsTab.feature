@@ -1,13 +1,13 @@
 
-@ng @functional_debug
-Feature: Hearings tab
 
-    Scenario: Hearings tab
+@ng @functional_enabled  
+Feature:  Hearings: Hearings tab
 
-
+    Scenario:  Hearings tab
         Given I set MOCK with user details
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator, hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                       |
+
 
         # Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
 

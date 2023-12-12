@@ -13,9 +13,9 @@ const caseEventMockData = require('./caseEvent_data')
 
 router.get('/data/internal/cases/:caseId', (req, res) => {
     const caseId = req.params['caseId'];
-   
-    userApiData.sendResponse(req, res, "OnCaseDetails", () => ccdMockData.caseDetailsResponse.caseFileViewCase)
 
+    userApiData.sendResponse(req, res, "OnCaseDetails", () => ccdMockData.caseDetailsResponse.hearingCase)
+    // res.status(403).send({})
 });
 
 // router.get('/data/internal/cases/:caseid', (req,res) => {

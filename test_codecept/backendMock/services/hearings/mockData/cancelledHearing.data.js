@@ -1,64 +1,57 @@
 const hearing = {
     "requestDetails": {
         "status": "CANCELLED",
-        "timestamp": "2022-12-19T15:21:01.095486",
-        "versionNumber": 3,
+        "timestamp": "2022-12-19T12:07:15.636435",
+        "versionNumber": 2,
         "cancellationReasonCodes": [
+            "listerr",
             "settled",
-            "notpaid"
+            "notpaid",
+            "jodir",
+            "withdraw",
+            "unable",
+            "other"
         ],
-        "hearingRequestID": "2000004515"
+        "hearingRequestID": "2000004493"
     },
     "hearingDetails": {
         "listingAutoChangeReasonCode": "user-added-comments",
-        "hearingType": "ABA5-FHR",
-        "hearingWindow": {
-            "firstDateTimeMustBe": "2022-12-23T00:00:00"
-        },
-        "duration": 180,
+        "hearingType": "ABA5-CMH",
+        "hearingWindow": {},
+        "duration": 660,
         "hearingPriorityType": "Standard",
-        "numberOfPhysicalAttendees": 18,
+        "numberOfPhysicalAttendees": 0,
         "hearingInWelshFlag": false,
         "hearingLocations": [
             {
                 "locationType": "court",
-                "locationId": "20262"
+                "locationId": "36791"
             }
         ],
-        "facilitiesRequired": [
-            "9",
-            "14",
-            "11"
-        ],
-        "listingComments": "TEST UPDATE REQUESTED SIT 557",
+        "listingComments": "test",
         "privateHearingRequiredFlag": false,
         "panelRequirements": {
-            "roleType": [],
+            "roleType": [
+                "45"
+            ],
             "authorisationTypes": [],
             "authorisationSubType": [],
-            "panelPreferences": [
-                {
-                    "memberID": "4925295",
-                    "memberType": "JUDGE",
-                    "requirementType": "MUSTINC"
-                }
-            ],
+            "panelPreferences": [],
             "panelSpecialisms": []
         },
-        "hearingIsLinkedFlag": true,
+        "hearingIsLinkedFlag": false,
         "hearingChannels": [
-            "INTER",
-            "TEL"
+            "ONPPRS"
         ],
         "autolistFlag": false
     },
     "caseDetails": {
         "hmctsServiceCode": "ABA5",
-        "caseRef": "1671135228065835",
-        "caseDeepLink": "https://manage-case-hearings-int.demo.platform.hmcts.net/cases/case-details/1671135228065835",
-        "hmctsInternalCaseName": "1671135228065835_1 Test Case DA 21612",
-        "publicCaseName": "Applicant Lastname_Respondent Lastname",
-        "caseAdditionalSecurityFlag": true,
+        "caseRef": "1670864127030167",
+        "caseDeepLink": "https://manage-case-hearings-int.demo.platform.hmcts.net/cases/case-details/1670864127030167",
+        "hmctsInternalCaseName": "1670864127030167_1 Test Case C100 21212",
+        "publicCaseName": "Re-Minor",
+        "caseAdditionalSecurityFlag": false,
         "caseInterpreterRequiredFlag": false,
         "caseCategories": [
             {
@@ -71,20 +64,20 @@ const hearing = {
                 "categoryParent": "ABA5-PRL"
             }
         ],
-        "caseManagementLocationCode": "20262",
+        "caseManagementLocationCode": "36791",
         "caserestrictedFlag": false,
-        "caseSLAStartDate": "2022-12-16"
+        "caseSLAStartDate": "2022-12-12"
     },
     "partyDetails": [
         {
-            "partyID": "99abcdeb-1378-4bcb-893f-4981986b3487",
+            "partyID": "d452e869-dace-4e6b-89ef-ee7e0519b11f",
             "partyType": "IND",
-            "partyRole": "APPL",
+            "partyRole": "RESP",
             "individualDetails": {
                 "title": null,
-                "firstName": "Applicant Firstname",
-                "lastName": "Applicant Lastname",
-                "preferredHearingChannel": "INTER",
+                "firstName": "Respondent Firstname",
+                "lastName": "Respondent Lastname",
+                "preferredHearingChannel": null,
                 "interpreterLanguage": null,
                 "reasonableAdjustments": [],
                 "vulnerableFlag": null,
@@ -97,14 +90,14 @@ const hearing = {
             }
         },
         {
-            "partyID": "7811cee7-ac52-4f88-b254-e449f5e3985e",
+            "partyID": "1e848fde-00fe-42dd-a2c4-880aa8176a81",
             "partyType": "IND",
-            "partyRole": "RESP",
+            "partyRole": "APPL",
             "individualDetails": {
                 "title": null,
-                "firstName": "Respondent Firstname",
-                "lastName": "Respondent Lastname",
-                "preferredHearingChannel": "TEL",
+                "firstName": "Applicant Firstname",
+                "lastName": "Applicant Lastname",
+                "preferredHearingChannel": null,
                 "interpreterLanguage": null,
                 "reasonableAdjustments": [],
                 "vulnerableFlag": null,
@@ -120,30 +113,21 @@ const hearing = {
     "hearingResponse": {
         "hearingDaySchedule": [
             {
-                "hearingStartDateTime": "2022-12-23T10:00:00",
-                "hearingEndDateTime": "2022-12-23T13:00:00",
-                "hearingVenueId": "20262",
-                "hearingRoomId": "RCJ  Chambers 51",
+                "hearingStartDateTime": null,
+                "hearingEndDateTime": null,
+                "hearingVenueId": null,
+                "hearingRoomId": null,
                 "hearingJudgeId": null,
                 "panelMemberIds": null,
-                "attendees": [
-                    {
-                        "hearingSubChannel": "PERSON",
-                        "partyID": "99abcdeb-1378-4bcb-893f-4981986b3487"
-                    },
-                    {
-                        "hearingSubChannel": "TELTEMP",
-                        "partyID": "7811cee7-ac52-4f88-b254-e449f5e3985e"
-                    }
-                ],
+                "attendees": [],
                 "listAssistSessionID": null
             }
         ],
         "laCaseStatus": "CLOSED",
-        "listingStatus": "CNCL",
-        "receivedDateTime": "2022-12-19T15:23:00",
-        "hearingCancellationReason": "Cancel",
-        "requestVersion": 2
+        "receivedDateTime": "2022-12-19T12:08:00",
+        "requestVersion": 1
     }
 }
+
+
 module.exports = hearing;

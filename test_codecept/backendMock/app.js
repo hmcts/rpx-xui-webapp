@@ -137,7 +137,7 @@ class MockApp {
             const resposne = { translations:{}}
             for(const phrase of reqBody.phrases){
                 fs.appendFileSync(savePhrasesPath, `\n${phrase}`)
-                resposne.translations[phrase] = { translation: `WELSH-${phrase}`}
+                resposne.translations[phrase] = { translation: `WELSH[${phrase}]`}
             }
 
             res.send(resposne)

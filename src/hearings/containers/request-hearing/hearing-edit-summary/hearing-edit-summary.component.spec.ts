@@ -370,6 +370,27 @@ describe('HearingEditSummaryComponent', () => {
     storeDispatchSpy.calls.reset();
   });
 
+  fit('should display banner message', () => {
+    console.log('HEARING VALUES PRIVATE HEARING REQUIRED FLAG BEFORE', hearingValues.serviceHearingValuesModel.privateHearingRequiredFlag);
+    console.log('HEARING IN WELSH FLAG BEFORE', hearingValues.serviceHearingValuesModel.hearingInWelshFlag);
+
+    hearingValues.serviceHearingValuesModel.privateHearingRequiredFlag = true;
+    hearingValues.serviceHearingValuesModel.hearingInWelshFlag = true;
+    const selectSpy = spyOn(store, 'select').and.returnValue(of(hearingValues));
+    const storeDispatchSpy = spyOn(store, 'dispatch');
+    component.ngOnInit();
+
+    console.log('HEARING VALUES PRIVATE HEARING REQUIRED FLAG AFTER', hearingValues.serviceHearingValuesModel.privateHearingRequiredFlag);
+    console.log('HEARING IN WELSH FLAG AFTER', hearingValues.serviceHearingValuesModel.hearingInWelshFlag);
+
+    console.log('IS PAGELESS ATTRIBUTE CHANGED', component.isPagelessAttributeChanged);
+
+    console.log('DISPLAY BANNNER', component.displayBanner);
+
+    selectSpy.calls.reset();
+    storeDispatchSpy.calls.reset();
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

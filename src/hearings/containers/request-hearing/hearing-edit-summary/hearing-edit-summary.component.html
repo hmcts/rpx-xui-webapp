@@ -1,4 +1,6 @@
-<exui-warning-and-error-section *ngIf="isHearingAmmendmentEnabled" [isPagelessAttributeChanged]="isPagelessAttributeChanged"></exui-warning-and-error-section>
+<exui-warning-and-error-section *ngIf="displayBanner"
+  [isPagelessAttributeChanged]="isPagelessAttributeChanged"
+></exui-warning-and-error-section>
 <h1 class="govuk-heading-l">{{ 'Edit hearing' | rpxTranslate }}</h1>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row" *ngIf="!isHearingListed">
@@ -109,4 +111,6 @@
   [listingComments]="hearingRequestMainModel.hearingDetails.listingComments"
   (changeEditHearing)="onChange($event)"
 ></exui-additional-instructions-section>
-<exui-warning-and-error-section *ngIf="isHearingAmmendmentEnabled" [isPagelessAttributeChanged]="isPagelessAttributeChanged"></exui-warning-and-error-section>
+<exui-warning-and-error-section *ngIf="displayBanner"
+  [isPagelessAttributeChanged]="isPagelessAttributeChanged"
+></exui-warning-and-error-section>

@@ -11,7 +11,7 @@ import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model'
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
 import { hearingStatusMappings } from '../../../models/hearingStatusMappings';
-import { ACTION, HearingDateEnum, HearingTemplate, LaCaseStatus, Mode } from '../../../models/hearings.enum';
+import { ACTION, HearingDateEnum, HearingTemplate, LaCaseStatus, Mode, PartyType } from '../../../models/hearings.enum';
 import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -27,6 +27,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 })
 export class HearingEditSummaryComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public readonly REGION_ID = '7';
+  public readonly LANGUAGE_INTERPRETER_FLAG_ID = 'PF0015';
   public caseReference: string;
   public status: string;
   public requestSubmittedDate: string;
@@ -49,9 +50,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public partySubChannelsRefData: LovRefDataModel[];
   public panelRolesRefData: LovRefDataModel[];
   public hearingTemplate = HearingTemplate;
-  public isHearingAmmendmentEnabled: boolean = false;
   public isPagelessAttributeChanged: boolean = false;
-  public pageVisitChangeExists: boolean = false;
+  public displayBanner: boolean = false;
 
   constructor(private readonly router: Router,
     private readonly locationsDataService: LocationsDataService,
@@ -90,7 +90,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     // Enable hearings manual amendments journey only if the feature is toggled on
     this.featureToggleServiceSubscription = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
-      this.isHearingAmmendmentEnabled = enabled;
       if (enabled) {
         this.setPropertiesUpdatedAutomatically();
       }
@@ -236,9 +235,58 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   private setBanner(): void {
     // check pageless automatic update
     this.isPagelessAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.pageless).some((prop) => prop);
+    // check for changes after page visit
+    const afterPageVisitChangeExists = this.isAfterPageVisitCaseFlagsChanged() && this.isAfterPageVisitPartiesChanged();
+    // Display banner
+    this.displayBanner = this.isPagelessAttributeChanged && !afterPageVisitChangeExists;
+  }
 
-    // To do: to display label and banner
-    // check for changes on page visit
-    this.pageVisitChangeExists = false;
+  private isAfterPageVisitCaseFlagsChanged(): boolean {
+    const caseFlagsSHV = this.serviceHearingValuesModel.caseFlags.flags;
+    const individualParties = this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND);
+
+    console.log('CASE FLAGS SHV', JSON.stringify(caseFlagsSHV));
+    console.log('INDIVIDUAL PARTIES', individualParties);
+
+    // HMC stores only reasonable adjustment flag ids and language interpreter flag ids under parties
+    // Get only the reasonable adjustment and language interpreter flag ids from SHV
+    const flagIdsSHV = caseFlagsSHV.map((flag) => flag.flagId)?.filter((flagId) => flagId.startsWith('RA') || flagId === this.LANGUAGE_INTERPRETER_FLAG_ID)?.sort();
+    const partyFlagIds = individualParties.map((party) => party.individualDetails?.reasonableAdjustments)?.join(',').split(',').sort();
+
+    console.log('FLAG IDS SHV', flagIdsSHV?.join());
+    console.log('PARTY FLAG IDS', partyFlagIds?.join());
+
+    // Return true if there are changes in reasonable adjustments and/or language interpreter flags
+    if (flagIdsSHV.join() !== partyFlagIds.join()) {
+      return true;
+    }
+    // There are no changes for reasonable adjustments and language interpreter flags when compared SHV with HMC
+    return false;
+  }
+
+  private isAfterPageVisitPartiesChanged(): boolean {
+    const partiesSHV = this.serviceHearingValuesModel.parties;
+    const partiesHMC = this.hearingRequestMainModel.partyDetails;
+    // Return true if the number of parties in SHV and HMC are different
+    if (partiesSHV.length !== partiesHMC.length) {
+      return true;
+    }
+    // Number of parties are the same in both SHV and HMC
+    // Loop through the parties in SHV, locate the corresponding party in HMC
+    // and return true if there are any changes in the party name of party type
+    partiesSHV.forEach((partySHV) => {
+      const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
+      if (party.partyName !== partySHV.partyName) {
+        return true;
+      }
+      if ((party.individualDetails?.title !== partySHV.individualDetails?.title) ||
+          (party.individualDetails?.firstName !== partySHV.individualDetails?.firstName) ||
+          (party.individualDetails?.lastName !== partySHV.individualDetails?.lastName) ||
+          (party.partyType !== partySHV.partyType)) {
+        return true;
+      }
+    });
+    // There are no changes for parties when compared SHV with HMC
+    return false;
   }
 }

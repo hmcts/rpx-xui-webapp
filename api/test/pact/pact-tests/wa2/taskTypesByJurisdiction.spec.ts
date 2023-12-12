@@ -14,9 +14,9 @@ describe('Task management api, tasks by jurisdiction', () => {
   const RESPONSE_BODY = {
     task_types: [
       {
-        "task_type": {
-          "task_type_id": somethingLike("someTaskTypeId"),
-          "task_type_name": somethingLike("Some task type name")
+        'task_type': {
+          'task_type_id': somethingLike('someTaskTypeId'),
+          'task_type_name': somethingLike('Some task type name')
         }
       }
     ]

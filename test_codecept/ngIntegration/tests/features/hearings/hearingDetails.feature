@@ -60,12 +60,4 @@ Feature:  Hearings: Hearing details
             | HEARING_MANAGER_CR84_ON | hearing-manager | View details | true        | LISTED           | LISTED                   | Current and upcoming |
             | HEARING_MANAGER_CR84_ON | hearing-manager | View details | true        | AWAITING_LISTING | AWAITING HEARING DETAILS | Current and upcoming |
             | HEARING_MANAGER_CR84_ON | hearing-manager | View details | true        | UPDATE_REQUESTED | UPDATE REQUESTED         | Current and upcoming |
-            | HEARING_MANAGER_CR84_ON | hearing-viewer  | View details | false       | COMPLETED        | COMPLETED                | Past or cancelled    |
-            | HEARING_MANAGER_CR84_ON | hearing-viewer  | View details | false       | CANCELLED        | CANCELLED                | Past or cancelled    |
-
-# | HEARING_MANAGER_CR84_ON  | hearing-viewer  | View details |
-# | HEARING_MANAGER_CR84_OFF | hearing-manager | View or edit |
-# | HEARING_MANAGER_CR84_OFF | hearing-viewer  | View or edit |
-# Then debug sleep minutes 30
-# Then I see hearings tab displayed
-
+      

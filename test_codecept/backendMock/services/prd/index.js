@@ -7,7 +7,7 @@ class PRDApi{
         this.method = {
             searchTasks: "ON_SEARCH_TASKS"
         }
-        this.categoryTypes = {
+        this.   categoryTypes = {
             HearingType:{ 
                 inputs: [{ value_en: 'Breach 1', key: 'ABA1-BRE' }, { value_en: 'Breach 2', key: 'ABA2-BRE' }], 
                 value:[]
@@ -54,6 +54,10 @@ class PRDApi{
             },
             ChangeReasons: {
                 inputs: [{ value_en: 'Change reason code 1' }, { value_en: 'Chnage reason code 1' }],
+                value: []
+            },
+            CaseManagementCancellationReasons: {
+                inputs: [{ value_en: 'CM Cancellation reason 1' }, { value_en: 'CM Cancellation reason 2' }],
                 value: []
             }
 

@@ -867,7 +867,7 @@ describe('CaseHearingsListComponent', () => {
     component.viewAndEdit('h100000');
     fixture.detectChanges();
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view' })));
-    expect(loadHearingRequestServiceHearingValuesAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/request/hearing-view-summary');
+    expect(loadHearingRequestServiceHearingValuesAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/view/hearing-view-summary');
   });
 
   it('should return the right flag depends on hearingGroupRequestId', () => {

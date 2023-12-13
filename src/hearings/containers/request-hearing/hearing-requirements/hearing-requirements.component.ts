@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { ValidatorsUtils } from 'src/hearings/utils/validators.utils';
 import { LoggerService } from '../../../../app/services/logger/logger.service';
@@ -52,13 +53,14 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     this.lostFocus = true;
   }
 
-  constructor(protected readonly route: ActivatedRoute,
+  constructor(private readonly loggerService: LoggerService,
+              private readonly validatorsUtils: ValidatorsUtils,
               public readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
-              public readonly locationsDataService: LocationsDataService,
-              private readonly loggerService: LoggerService,
-              private readonly validatorsUtils: ValidatorsUtils) {
-    super(hearingStore, hearingsService, route);
+              protected readonly locationsDataService: LocationsDataService,
+              protected readonly featureToggleService: FeatureToggleService,
+              protected readonly route: ActivatedRoute) {
+    super(hearingStore, hearingsService, featureToggleService, route);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
     this.caseTypeRefData = this.route.snapshot.data.caseType;
   }

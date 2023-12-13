@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { ACTION, HearingChangeReasonMessages, HearingSummaryEnum } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
@@ -22,12 +23,13 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
   public lastErrorSubscription: Subscription;
   public hearingChangeReasonMessages = HearingChangeReasonMessages;
 
-  constructor(protected readonly route: ActivatedRoute,
+  constructor(private readonly formBuilder: FormBuilder,
               protected readonly router: Router,
-              private readonly formBuilder: FormBuilder,
               protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService) {
-    super(hearingStore, hearingsService);
+              protected readonly hearingsService: HearingsService,
+              protected readonly featureToggleService: FeatureToggleService,
+              protected readonly route: ActivatedRoute) {
+    super(hearingStore, hearingsService, featureToggleService, route);
     this.hearingRequestLastError$ = this.hearingStore.pipe(select(fromHearingStore.getHearingRequestLastError));
   }
 

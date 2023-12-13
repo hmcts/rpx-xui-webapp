@@ -452,7 +452,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.elasticSearchFlagSubsription.unsubscribe();
     }
 
-    this.unsubscribe$.next();
+    this.unsubscribe$.next(null);
     this.unsubscribe$.complete();
   }
 

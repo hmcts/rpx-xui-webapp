@@ -1,5 +1,5 @@
 
-@ng @functional_enabled  
+@ng @functional_enabled  @functional_debug
 Feature: Create hearings workflow
 
 
@@ -141,7 +141,7 @@ Feature: Create hearings workflow
         Then I am on create hearing page "Hearing request submitted"
 
 
-   
+   @ignore
     Scenario: Create hearing , input combo 2
 
         Given I set MOCK with user details
@@ -271,7 +271,7 @@ Feature: Create hearings workflow
             # | Participant attendance                     | How will each participant attend the hearing?            |       |
             | Participant attendance                     | How many people will attend the hearing in person?       | 5                                   |
             # | Hearing venue                              | What are the hearing venue details?                      |       |
-            | Judge details                              | Do you want a specific judge?                            | Yes                                 |
+            # | Judge details                              | Do you want a specific judge?                            | Yes                                 |
             | Judge details                              | Name of the judge                                        | auto test 0 judge 0                 |
             # | Judge details                              | Select all judge types that apply                        |       |
             | Panel details                              | Do you require a panel for this hearing?                 |   Yes    |

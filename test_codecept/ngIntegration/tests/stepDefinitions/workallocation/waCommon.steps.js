@@ -106,7 +106,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         let loginUser = '';
         if (userIdentifier){
             idamLogin.withCredentials(testUser.email, testUser.key)
-            loginUser = testUser.email1
+            loginUser = testUser.email
         }else{
             idamLogin.withCredentials('lukesuperuserxui@mailnesia.com', 'Monday01')
             loginUser = 'lukesuperuserxui@mailnesia.com'

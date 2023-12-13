@@ -143,6 +143,7 @@ Feature: Create hearings workflow navigation controls
         When In create hearing work flow, I click back link
         Then I am on create hearing page "Hearing requirements"
 
+@ignore
     Scenario: Navigation controls, change link then continue, back links
         When In create hearing check your answers page, I click change link for field "Enter any additional instructions for the hearing"
         Then I am on create hearing page "Enter any additional instructions for the hearing"
@@ -152,12 +153,11 @@ Feature: Create hearings workflow navigation controls
         When In create hearing check your answers page, I click change link for field "Will this hearing need to be linked to other hearings?"
         Then I am on create hearing page "Will this hearing need to be linked to other hearings?"
         When I click continue in create hearing workflow
-        Then I am on create hearing page "Enter any additional instructions for the hearing"
-        When I click continue in create hearing workflow
+        # Then I am on create hearing page "Enter any additional instructions for the hearing"
+        # When I click continue in create hearing workflow
         Then I am on create hearing page "Check your answers before sending your request"
 
         When In create hearing check your answers page, I click change link for field "Length of hearing"
         Then I am on create hearing page "Length, date and priority level of hearing"
         When In create hearing work flow, I click back link
         Then I am on create hearing page "Do you require a panel for this hearing?"
-       

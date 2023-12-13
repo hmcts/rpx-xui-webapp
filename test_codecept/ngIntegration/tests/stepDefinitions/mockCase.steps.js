@@ -72,7 +72,7 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
     });
 
     Given('I set MOCK case details with reference {string}', async function(caseDetailsReference){
-      const caseDetails = ccdMockData.caseDetailsResponse;
+        const caseDetails = JSON.parse(JSON.stringify(ccdMockData.caseDetailsResponse));
          global.scenarioData[caseDetailsReference] = caseDetails;
 
         await serviceMock.updateCaseData(global.scenarioData[caseDetailsReference], 200)
@@ -80,7 +80,7 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
     });
 
     Given('I set MOCK case {string} details with reference {string}', async function (caseType, caseDetailsReference) {
-        const caseDetails = caseDetailsMock[caseType];
+        const caseDetails = JSON.parse(JSON.stringify(caseDetailsMock[caseType]));
         global.scenarioData[caseDetailsReference] = caseDetails;
         await serviceMock.updateCaseData(global.scenarioData[caseDetailsReference], 200)
 

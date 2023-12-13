@@ -32,8 +32,8 @@ Feature:  Hearings: Hearings tab
         Then I see hearings table for "Current and upcoming" in hearings tab page
         Then I see hearings table for "Past or cancelled" in hearings tab page
 
-        Then I see hearing "TEST_TYPE" in hearings "Current and upcoming" in hearings tab page
-        Then I see hearing "TEST_TYPE" in hearings "Past or cancelled" in hearings tab page
+        Then I see hearing "Test hearing 1" in hearings "Current and upcoming" in hearings tab page
+        Then I see hearing "Test hearing 2" in hearings "Past or cancelled" in hearings tab page
 
         Then In hearings tab, I see hearing "Test hearing 1" with values under "Current and upcoming"
             | Hearing date | Status               | Actions             |

@@ -102,11 +102,12 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public viewAndEdit(hearingID: string): void {
-    const hearingCondition: HearingConditions = {
-      mode: Mode.VIEW
-    };
-    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
     this.isHearingAmendmentsEnabled$.subscribe((enabled) => {
+      const hearingCondition: HearingConditions = {
+        mode: Mode.VIEW_EDIT,
+        isHearingAmendmentsEnabled: enabled
+      };
+      this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
       const url = enabled ? '/hearings/view/hearing-view-summary' : '/hearings/request/hearing-view-edit-summary';
       this.loadHearingRequestServiceHearingValuesAndRedirect(hearingID, url);
     });

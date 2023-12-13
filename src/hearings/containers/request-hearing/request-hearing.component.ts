@@ -13,6 +13,7 @@ import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 export class RequestHearingComponent implements OnDestroy {
   private static readonly HEARING_CREATE_EDIT_SUMMARY = 'hearing-create-edit-summary';
   private static readonly HEARING_VIEW_EDIT_SUMMARY = 'hearing-view-edit-summary';
+  private static readonly HEARING_EDIT_SUMMARY = 'hearing-edit-summary';
   private static readonly HEARING_CHANGE_REASON = 'hearing-change-reason';
   private static readonly HEARING_CONFIRMATION = 'hearing-confirmation';
 
@@ -52,12 +53,24 @@ export class RequestHearingComponent implements OnDestroy {
     return this.pageFlow.getCurrentPage() === RequestHearingComponent.HEARING_VIEW_EDIT_SUMMARY;
   }
 
+  public get isEditSummary(): boolean {
+    return this.pageFlow.getCurrentPage() === RequestHearingComponent.HEARING_EDIT_SUMMARY;
+  }
+
   public get isViewEditReason(): boolean {
     return this.pageFlow.getCurrentPage() === RequestHearingComponent.HEARING_CHANGE_REASON;
   }
 
   public get isConfirmationPage(): boolean {
     return this.pageFlow.getCurrentPage() === RequestHearingComponent.HEARING_CONFIRMATION;
+  }
+
+  public get isChildPage(): boolean {
+    return !this.isCreateEditSummary &&
+      !this.isViewEditSummary &&
+      !this.isEditSummary &&
+      !this.isViewEditReason &&
+      !this.isConfirmationPage;
   }
 
   public ngOnDestroy(): void {

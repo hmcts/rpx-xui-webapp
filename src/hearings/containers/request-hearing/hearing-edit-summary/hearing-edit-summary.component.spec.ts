@@ -128,7 +128,8 @@ describe('HearingEditSummaryComponent', () => {
     const storeDispatchSpy = spyOn(store, 'dispatch');
     const hearingCondition: HearingConditions = {
       fragmentId: 'point-to-me',
-      mode: Mode.VIEW_EDIT
+      mode: Mode.VIEW_EDIT,
+      isHearingAmendmentsEnabled: true
     };
     const editHearingChangeConfig: EditHearingChangeConfig = {
       fragmentId: 'point-to-me',

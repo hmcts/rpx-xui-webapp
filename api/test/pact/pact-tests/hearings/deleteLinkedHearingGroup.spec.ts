@@ -1,17 +1,22 @@
+import { InteractionObject } from '@pact-foundation/pact/src/dsl/interaction';
 import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactTestSetup } from '../settings/provider.mock';
-import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
+import { getHearingsAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
-const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_deleteAssignment', port: 8000 });
+const { Matchers } = require('@pact-foundation/pact');
+const { somethingLike } = Matchers;
+const pactSetUp = new PactTestSetup({ provider: 'hmc_hearingGroup', port: 8000 });
 
-const exclusionId = '704c8b1c-e89b-436a-90f6-953b1dc40157';
+const groupId = '123456789';
 
-describe('access management service, delete exclusion', () => {
-  describe('delete /am/role-assignments/{exclusionId}', () => {
+const RESPONSE_BODY = somethingLike({});
+
+describe('Hearings, delete single hearing linked group by a given groupId', () => {
+  describe('DELEETE /linkedHearingGroup/{groupId}', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
     let next;
 
@@ -21,12 +26,12 @@ describe('access management service, delete exclusion', () => {
 
     before(async () => {
       await pactSetUp.provider.setup();
-      const interaction = {
-        state: 'An actor with provided id is available in role assignment service',
-        uponReceiving: 'delete role assignment for exclusion',
+      const interaction: InteractionObject = {
+        state: 'delete single hearing linked group for given groupId',
+        uponReceiving: 'delete single hearing linked group for given groupId',
         withRequest: {
           method: 'DELETE',
-          path: `/am/role-assignments/${exclusionId}`,
+          path: `/linkedHearingGroup/${groupId}`,
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
@@ -34,11 +39,14 @@ describe('access management service, delete exclusion', () => {
           }
         },
         willRespondWith: {
-          status: 204
+          status: 200,
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: RESPONSE_BODY
         }
       };
 
-      // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
     });
 
@@ -48,22 +56,21 @@ describe('access management service, delete exclusion', () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getAccessManagementServiceAPIOverrides(pactSetUp.provider.mockService.baseUrl);
+      const configValues = getHearingsAPIOverrides(pactSetUp.provider.mockService.baseUrl);
       sandbox.stub(config, 'get').callsFake((prop) => {
         return configValues[prop];
       });
 
-      const { deleteUserExclusion } = requireReloaded('../../../../roleAccess/exclusionService');
+      const { deleteLinkedHearingGroup } = requireReloaded('../../../../hearings/hmc.index.ts');
+
       const req = mockReq({
         headers: {
           'Authorization': 'Bearer someAuthorizationToken',
           'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
           'content-type': 'application/json'
         },
-        body: {
-          roleExclusion: {
-            id: exclusionId
-          }
+        query: {
+          hearingGroupId: groupId
         }
       });
       let returnedResponse = null;
@@ -73,19 +80,18 @@ describe('access management service, delete exclusion', () => {
       };
 
       try {
-        await deleteUserExclusion(req, response, next);
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
+        await deleteLinkedHearingGroup(req, response, next);
       } catch (err) {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
         throw new Error(err);
       }
+
+      assertResponses(returnedResponse);
+      pactSetUp.provider.verify();
+      pactSetUp.provider.finalize();
     });
   });
 });
 
 function assertResponses(dto: any) {
-  expect(dto.id).to.be.equal(exclusionId);
+  expect(dto).to.be.eql({});
 }

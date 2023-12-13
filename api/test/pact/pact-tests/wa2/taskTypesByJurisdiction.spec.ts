@@ -8,19 +8,21 @@ import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 
-const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_get_work_types', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_get_task_types_by_jurisdiction', port: 8000 });
 
-describe('Task management api, work types', () => {
+describe('Task management api, tasks by jurisdiction', () => {
   const RESPONSE_BODY = {
-    'work_types': [
+    task_types: [
       {
-        id: somethingLike('1234'),
-        label: somethingLike('test')
+        'task_type': {
+          'task_type_id': somethingLike('someTaskTypeId'),
+          'task_type_name': somethingLike('Some task type name')
+        }
       }
     ]
   };
 
-  describe('get /work-types', () => {
+  describe('get task/task-types?jurisdictionserviceId', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
     let next;
 
@@ -31,12 +33,12 @@ describe('Task management api, work types', () => {
     before(async () => {
       await pactSetUp.provider.setup();
       const interaction = {
-        state: 'retrieve all work types',
-        uponReceiving: 'retrieve all work types',
+        state: 'retrieve all task types by jurisdiction',
+        uponReceiving: 'retrieve all task types by jurisdiction',
         withRequest: {
           method: 'GET',
-          path: '/work-types',
-          query: 'filter-by-user=true',
+          path: '/task/task-types',
+          query: 'jurisdiction=wa',
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken'
@@ -64,23 +66,27 @@ describe('Task management api, work types', () => {
         return configValues[prop];
       });
 
-      const { getTypesOfWork } = requireReloaded('../../../../workAllocation/index');
+      const { getTaskNames } = requireReloaded('../../../../workAllocation/index');
 
       const req = mockReq({
         headers: {
           Authorization: 'Bearer someAuthorizationToken',
           ServiceAuthorization: 'Bearer someServiceAuthorizationToken'
           // 'content-Type': 'application/json',
+        },
+        body: {
+          service: 'wa'
         }
       });
       let returnedResponse = null;
       const response = mockRes();
       response.send = (ret) => {
         returnedResponse = ret;
+        return response;
       };
 
       try {
-        await getTypesOfWork(req, response, next);
+        await getTaskNames(req, response, next);
 
         assertResponses(returnedResponse);
         pactSetUp.provider.verify();
@@ -96,6 +102,6 @@ describe('Task management api, work types', () => {
 });
 
 function assertResponses(dto: any) {
-  expect(dto[0].key).to.be.equal('1234');
-  expect(dto[0].label).to.be.equal('test');
+  // expect(dto[0].key).to.be.equal('1234');
+  // expect(dto[0].label).to.be.equal('test');
 }

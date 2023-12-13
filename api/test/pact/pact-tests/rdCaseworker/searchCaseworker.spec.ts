@@ -12,9 +12,9 @@ const pactSetUp = new PactTestSetup({ provider: 'referenceData_caseworkerRefUser
 
 const MockApp = require('../../../../../test_codecept/nodeMock/app');
 
-xdescribe('Caseworker ref data api, get all caseworkers', () => {
+xdescribe('Caseworker ref data api, search caseworker', () => {
   const REQUEST_BODY = {
-    userIds: [somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'), somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe')]
+    userId: { 'userId': '004b7164-0943-41b5-95fc-39794af4a9fe' }
   };
 
   const baseLocations = [
@@ -30,7 +30,7 @@ xdescribe('Caseworker ref data api, get all caseworkers', () => {
     }
   ];
 
-  describe('get /caseworker', () => {
+  describe('post /caseworker/search', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
     let next;
 
@@ -42,10 +42,10 @@ xdescribe('Caseworker ref data api, get all caseworkers', () => {
       await pactSetUp.provider.setup();
       const interaction = {
         state: 'A list of users for CRD request',
-        uponReceiving: 'get list of caseworkers',
+        uponReceiving: 'get specific caseworker',
         withRequest: {
           method: 'POST',
-          path: '/refdata/case-worker/users/fetchUsersById',
+          path: '/caseworker/search',
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
@@ -72,20 +72,19 @@ xdescribe('Caseworker ref data api, get all caseworkers', () => {
     });
 
     it('returns the correct response', async () => {
-      MockApp.setServerPort(9000);
+      MockApp.setServerPort(8080);
       MockApp.init();
 
       MockApp.onPost('/am/role-assignments/query', (req, res) => {
         res.send({
           roleAssignmentResponse: [
-            { actorId: '004b7164-0943-41b5-95fc-39794af4a9fe', roleCategory: 'case-worker' },
             { actorId: '004b7164-0943-41b5-95fc-39794af4a9fe', roleCategory: 'case-worker' }
           ]
         });
       });
       await MockApp.startServer();
       const configValues = getCaseworkerRefDataAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      configValues['services.role_assignment.roleApi'] = 'http://localhost:9000';
+      configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
 
       // @ts-ignore
       configValues.waSupportedJurisdictions = 'IA';
@@ -93,15 +92,15 @@ xdescribe('Caseworker ref data api, get all caseworkers', () => {
         return configValues[prop];
       });
 
-      const { getAllCaseWorkers } = requireReloaded('../../../../workAllocation/index');
+      const { searchCaseWorker } = requireReloaded('../../../../workAllocation/index');
 
       const req = mockReq({
         headers: {
           'Authorization': 'Bearer someAuthorizationToken',
           'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
           'content-type': 'application/json'
-        }
-
+        },
+        body: { 'userId': '004b7164-0943-41b5-95fc-39794af4a9fe' }
       });
       let returnedResponse = null;
       const response = mockRes();
@@ -110,7 +109,7 @@ xdescribe('Caseworker ref data api, get all caseworkers', () => {
       };
 
       try {
-        await getAllCaseWorkers(req, response, next);
+        await searchCaseWorker(req, response, next);
 
         assertResponses(returnedResponse);
         pactSetUp.provider.verify();
@@ -127,11 +126,11 @@ xdescribe('Caseworker ref data api, get all caseworkers', () => {
 
 function assertResponses(dto: any) {
   console.log(JSON.stringify(dto));
-  expect(dto[0].email).to.be.equal('test_person@test.gov.uk');
-  expect(dto[0].firstName).to.be.equal('testfn');
-  expect(dto[0].lastName).to.be.equal('testln');
-  expect(dto[0].roleCategory).to.be.equal('case-worker');
-  expect(dto[0].idamId).to.be.equal('004b7164-0943-41b5-95fc-39794af4a9fe');
-  expect(dto[0].location.id).to.be.equal(1);
-  expect(dto[0].location.locationName).to.be.equal('National');
+  expect(dto[0].email_id).to.be.equal('test_person@test.gov.uk');
+  expect(dto[0].first_name).to.be.equal('testfn');
+  expect(dto[0].last_name).to.be.equal('testln');
+  expect(dto[0].id).to.be.equal('004b7164-0943-41b5-95fc-39794af4a9fe');
+  expect(dto[0].base_location[0].location_id).to.be.equal(1);
+  expect(dto[0].base_location[0].location).to.be.equal('National');
+  expect(dto[0].base_location[0].is_primary).to.be.equal(true);
 }

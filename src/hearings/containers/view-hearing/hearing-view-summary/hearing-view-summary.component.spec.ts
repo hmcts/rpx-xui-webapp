@@ -1,5 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
@@ -14,6 +16,7 @@ describe('HearingViewSummaryComponent', () => {
   let fixture: ComponentFixture<HearingViewSummaryComponent>;
   let storeMock: jasmine.SpyObj<Store<fromAppStore.State>>;
   let featureToggleServiceMock: any;
+  let routerMock: any;
 
   const USER: UserDetails = {
     canShareCases: true,
@@ -37,13 +40,19 @@ describe('HearingViewSummaryComponent', () => {
   beforeEach(() => {
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
     featureToggleServiceMock = jasmine.createSpyObj('featureToggleService', ['isEnabled']);
+    routerMock = jasmine.createSpyObj('Router', ['navigateByUrl']);
     TestBed.configureTestingModule({
       declarations: [HearingViewSummaryComponent],
+      imports: [RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: Store,
           useValue: storeMock
+        },
+        {
+          provide: Router,
+          useValue: routerMock
         },
         {
           provide: FeatureToggleService,
@@ -74,6 +83,11 @@ describe('HearingViewSummaryComponent', () => {
     fixture.detectChanges();
     component.ngOnInit();
     expect(component.template).toBe(HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE);
+  });
+
+  it('should navigate to edit hearing page', () => {
+    component.onEdit();
+    expect(routerMock.navigateByUrl).toHaveBeenCalled();
   });
 
   afterEach(() => {

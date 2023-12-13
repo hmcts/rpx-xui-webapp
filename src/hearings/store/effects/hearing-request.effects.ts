@@ -103,11 +103,6 @@ export class HearingRequestEffects {
             }
             break;
 
-          case Mode.VIEW:
-            this.router.navigate(['hearings', 'request', 'hearing-edit-summary'], { fragment: this.fragmentId })
-              .catch((err) => this.loggerService.error(`Error navigating to hearings/request/hearing-view-edit-summary#${this.fragmentId} `, err));
-            break;
-
           default:
             this.router.navigate(['cases', 'case-details', this.caseId, 'hearings'])
               .catch((err) => this.loggerService.error('Error navigating to cases/case-details/caseId/hearings ', err));

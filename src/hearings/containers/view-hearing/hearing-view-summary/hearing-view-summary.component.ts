@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Observable, combineLatest } from 'rxjs';
@@ -22,6 +23,7 @@ export class HearingViewSummaryComponent implements OnInit {
   public isHearingManager$: Observable<boolean>;
 
   constructor(protected readonly appStore: Store<fromAppStore.State>,
+    private readonly router: Router,
     private readonly featureToggleService: FeatureToggleService) { }
 
   public ngOnInit(): void {
@@ -37,5 +39,9 @@ export class HearingViewSummaryComponent implements OnInit {
           this.template = HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE;
         }
       });
+  }
+
+  public onEdit(): void {
+    this.router.navigateByUrl('/hearings/request/hearing-edit-summary');
   }
 }

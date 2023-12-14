@@ -8,7 +8,7 @@ import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 
-const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_work_types', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_get_work_types', port: 8000 });
 
 describe('Task management api, work types', () => {
   const RESPONSE_BODY = {

@@ -157,7 +157,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     const allRAFs: PartyFlagsDisplayModel[] = this.reasonableAdjustmentFlags.reduce((previousValue, currentValue) =>
       [...previousValue, ...currentValue.partyFlags], []
     );
-    return allRAFs.filter((flag) => flag.partyID === partyID).map((filterFlag) => filterFlag.flagId);
+    return allRAFs.filter((flag) => flag.partyId === partyID).map((filterFlag) => filterFlag.flagId);
   }
 
   public initializeHearingCondition(): void {

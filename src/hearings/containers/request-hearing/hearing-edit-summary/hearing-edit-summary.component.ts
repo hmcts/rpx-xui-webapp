@@ -134,7 +134,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private setPropertiesUpdatedAutomatically(): void {
-
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       caseDetails: {
@@ -157,7 +156,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     // Set properties updated on page visit
     this.setPropertiesUpdatedOnPageVisit(this.serviceHearingValuesModel);
-
 
     // Set banner
     this.setBanner();

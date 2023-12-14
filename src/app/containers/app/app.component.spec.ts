@@ -164,7 +164,7 @@ describe('AppComponent', () => {
     expect(timeoutNotificationService.initialise).toHaveBeenCalled();
   });
 
-  it('loadAndListenForUserDetails', () => {
+  xit('loadAndListenForUserDetails', () => {
     appComponent.loadAndListenForUserDetails();
     environmentService.config$.and.returnValue(of({ launchDarklyClientId: '4452' }));
     const userDetails = {

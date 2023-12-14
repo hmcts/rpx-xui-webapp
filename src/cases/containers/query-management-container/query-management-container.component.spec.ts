@@ -33,7 +33,6 @@ describe('QueryManagementContainerComponent', () => {
     navigate: jasmine.createSpy('navigate'),
     navigateByUrl: jasmine.createSpy('navigateByUrl')
   };
-  let featureToggleServiceSpy: jasmine.SpyObj<FeatureToggleService>;
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['getValue']);
   let router: Router;
 

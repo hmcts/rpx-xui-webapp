@@ -88,7 +88,7 @@ describe('CaseCreateComponent', () => {
           useClass: MockSortService
         },
         ScrollToService
-      ]
+      ], teardown: { destroyAfterEach: false }
     })
       .compileComponents();
   }));

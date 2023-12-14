@@ -124,7 +124,6 @@ const CASE_VIEW: CaseView = {
 };
 
 describe('RolesContainerComponent', () => {
-  const featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   let component: RolesAndAccessContainerComponent;
   let fixture: ComponentFixture<RolesAndAccessContainerComponent>;
   const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseRoles', 'getCaseRolesUserDetails']);

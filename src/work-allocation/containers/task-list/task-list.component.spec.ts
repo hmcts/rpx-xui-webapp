@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, Input, NO_ERRORS_SCHEMA, Pipe, PipeTransform, ViewChild } from '@angular/core';
+import { Component, Input, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
@@ -70,20 +70,6 @@ function getTaskService(): TaskServiceConfig {
     defaultSortFieldName: 'dueDate',
     fields: getFields()
   };
-}
-
-@Pipe({ name: 'rpxTranslate' })
-class MockRpxTranslatePipe implements PipeTransform {
-  transform(value: string): string {
-    return value;
-  }
-}
-
-@Pipe({ name: 'paginate' })
-class MockPaginatePipe implements PipeTransform {
-  transform(value: string): string {
-    return value;
-  }
 }
 
 describe('TaskListComponent', () => {

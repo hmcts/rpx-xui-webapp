@@ -39,7 +39,7 @@ export class LoggerService implements ILoggerService {
   }
 
   private setupSwitcherForConsoleLogs() {
-    this.environmentService.config$.subscribe((config) => {
+    this.environmentService.config$.subscribe(() => {
       console.info(`Environment is ${this.environmentService.isProd() ? 'prod' : 'non-prod'}.`);
       LoggerService.switchConsoleLogs({ switchOffAll: false });
     });

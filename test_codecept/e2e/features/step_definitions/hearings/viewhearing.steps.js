@@ -44,12 +44,9 @@ Then('I validate fields displayed in view hearing page', async function (datatab
     }
 })
 
-When('In view hearing page, I click change link for field {string}', async function (field) {
-    await viewHearingPage.clickChangeLinkForField(field)
+When('In view hearing page, I click Edit hearing button', async function () {
+    await viewHearingPage.editHearingBtn.click()
 })
 
-When('In view hearing page, I click Submit updated request', async function (field) {
-    await viewHearingPage.clickChangeLinkForField(field)
-})
 
 

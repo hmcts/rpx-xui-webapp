@@ -18,8 +18,7 @@
     <div class="govuk-summary-list__key">
       {{ 'Does the hearing need to take place on a specific date?' | rpxTranslate }}
     </div>
-    <div class="govuk-summary-list__value">
-      {{ specificDate }}
+    <div class="govuk-summary-list__value" [innerHTML]="specificDate">
     </div>
     <div class="govuk-summary-list__actions">
       <a id="hearingSpecificDate"

@@ -4,7 +4,7 @@ Feature: Hearings: Semi automatic updates
 
 
     Scenario: Hearing semi automatic updates display of Case flags and parties
-        Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_OFF"
+        Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_ON"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                      |
 
@@ -45,9 +45,14 @@ Feature: Hearings: Semi automatic updates
             | party_1 | Party1 name | PARENT_0 | OT001 | Party1 comment | ACTIVE |
             | party_2 | Party2 name | PARENT_0 | OT001 | Party2 comment | ACTIVE |
 
-        When In hearings tab, I click action "View or edit" for hearing "TEST_TYPE" under table "Current and upcoming"
+        When In hearings tab, I click action "View details" for hearing "TEST_TYPE" under table "Current and upcoming"
 
         Then I validate view or edit hearing page displayed
+        Then I validate view hearing page Edit hearing button displayed is "true"
+        When In view hearing page, I click Edit hearing button
+        Then I validate Edit hearing page displayed
+
+        
         Then I validate fields displayed in view or edit hearing page
             | field                                 | value     | changeLinkDisplay | amendedFlagDisplay |
             | Status                                | COMPLETED | false             | false              |

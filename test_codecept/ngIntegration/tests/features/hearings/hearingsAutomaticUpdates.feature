@@ -3,7 +3,7 @@
 Feature: Hearings: Automatic updates
 
     Scenario: Hearing automatic updates
-        Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_OFF"
+        Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_ON"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                      |
 
@@ -57,9 +57,15 @@ Feature: Hearings: Automatic updates
             | $.caseSLAStartDate                                                | 01-01-2024                    |
 
       
-        When In hearings tab, I click action "View or edit" for hearing "TEST_TYPE" under table "Current and upcoming"
+        When In hearings tab, I click action "View details" for hearing "TEST_TYPE" under table "Current and upcoming"
 
         Then I validate view or edit hearing page displayed
+        Then I validate view hearing page Edit hearing button displayed is "true"
+        When In view hearing page, I click Edit hearing button
+        Then I validate Edit hearing page displayed
+      
+
+
         Then I validate fields displayed in view or edit hearing page
             | field                                 | value  | changeLinkDisplay | amendedFlagDisplay |
             | Status                                | LISTED | false             | false              |

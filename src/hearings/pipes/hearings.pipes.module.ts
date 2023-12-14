@@ -6,6 +6,7 @@ import { HearingAnswersPipe } from './hearing-answers.pipe';
 import { HearingsBadgePipe } from './hearings-badge.pipe';
 import { IsAmendedPipe } from './is-amended.pipe';
 import { ShowHidePipe } from './show-hide.pipe';
+import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { ShowHidePipe } from './show-hide.pipe';
     ShowHidePipe,
     ConvertToValuePipe,
     CaseReferencePipe,
-    ConvertArrayToStringPipe
+    ConvertArrayToStringPipe,
+    DatePipe,
   ],
   exports: [
     HearingsBadgePipe,
@@ -24,7 +26,8 @@ import { ShowHidePipe } from './show-hide.pipe';
     IsAmendedPipe,
     ShowHidePipe,
     CaseReferencePipe,
-    ConvertArrayToStringPipe
+    ConvertArrayToStringPipe,
+    DatePipe
   ]
 })
 export class HearingsPipesModule {}

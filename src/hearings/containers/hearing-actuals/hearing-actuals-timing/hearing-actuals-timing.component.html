@@ -51,6 +51,7 @@
                     [ngClass]="{'govuk-input--error': formGroup.get('hearingStartTime').hasError('invalidTime') || (submitted && (formGroup.get('hearingStartTime').errors || (formGroup.hasError('invalidTimeRange') && formGroup.getError('invalidTimeRange').hearingStartTime)))}"
                     type="text"
                     formControlName="hearingStartTime"
+                    [value]="formGroup.get('hearingEndTime').value | ccdDate: 'local'"
             >
           </div>
 
@@ -78,6 +79,7 @@
                     [ngClass]="{'govuk-input--error': formGroup.get('hearingEndTime').hasError('invalidTime') || (submitted && (formGroup.get('hearingEndTime').errors || (formGroup.hasError('invalidTimeRange') && formGroup.getError('invalidTimeRange').hearingStartTime)))}"
                     type="text"
                     formControlName="hearingEndTime"
+                    [value]="formGroup.get('hearingEndTime').value | ccdDate: 'local'"
             >
           </div>
         </div>

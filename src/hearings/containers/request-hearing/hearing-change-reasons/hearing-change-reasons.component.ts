@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
+import { AppConstants } from '../../../../app/app.constants';
 import { ACTION, HearingChangeReasonMessages, HearingSummaryEnum } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
@@ -21,7 +22,9 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
   public selectionValid: boolean = true;
   public hearingRequestLastError$: Observable<fromHearingStore.State>;
   public lastErrorSubscription: Subscription;
+  public featureToggleServiceSubscription: Subscription;
   public hearingChangeReasonMessages = HearingChangeReasonMessages;
+  public isHearingAmendmentsEnabled: boolean;
 
   constructor(private readonly formBuilder: FormBuilder,
               protected readonly router: Router,
@@ -34,6 +37,9 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
   }
 
   public ngOnInit(): void {
+    this.featureToggleServiceSubscription = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
+      this.isHearingAmendmentsEnabled = enabled;
+    });
     this.lastErrorSubscription = this.hearingRequestLastError$.subscribe((lastError) => {
       if (lastError) {
         this.errors = [{
@@ -111,10 +117,17 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
     return chosenReasons;
   }
 
-  public ngOnDestroy(): void {
-    if (this.lastErrorSubscription) {
-      this.lastErrorSubscription.unsubscribe();
+  public onBackToSummaryPage(): void {
+    if (this.isHearingAmendmentsEnabled) {
+      this.router.navigateByUrl('/hearings/request/hearing-edit-summary');
+    } else {
+      this.router.navigateByUrl('/hearings/request/hearing-view-edit-summary');
     }
+  }
+
+  public ngOnDestroy(): void {
+    this.lastErrorSubscription?.unsubscribe();
+    this.featureToggleServiceSubscription?.unsubscribe();
     super.unsubscribe();
   }
 }

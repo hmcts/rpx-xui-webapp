@@ -10,7 +10,7 @@ import * as fromAppStoreActions from '../../../app/store/actions';
 import * as fromAppReducers from '../../../app/store/reducers';
 import { HttpError } from '../../../models/httpError.model';
 import { KEY_FRAGMENT_ID, KEY_IS_HEARING_AMENDMENTS_ENABLED, KEY_MODE } from '../../models/hearingConditions';
-import { Mode } from '../../models/hearings.enum';
+import { HearingRequestPageRouteNames, Mode } from '../../models/hearings.enum';
 import { ScreenNavigationModel } from '../../models/screenNavigation.model';
 import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingReducers from '../../store/reducers';
@@ -71,7 +71,9 @@ export class HearingRequestEffects {
   public continueNavigation$ = this.actions$.pipe(
       ofType(hearingRequestActions.UPDATE_HEARING_REQUEST),
       tap(() => {
-        const nextPage = this.pageFlow.getNextPage(this.screenNavigations$);
+        const nextPage = this.isHearingAmendmentsEnabled
+          ? ''
+          : this.pageFlow.getNextPage(this.screenNavigations$);
         switch (this.mode) {
           case Mode.CREATE:
             if (nextPage) {
@@ -96,10 +98,12 @@ export class HearingRequestEffects {
             if (nextPage === HearingRequestEffects.WELSH_PAGE) {
               this.router.navigate(['hearings', 'request', nextPage])
                 .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${nextPage} `, err));
-              break;
             } else {
-              this.router.navigate(['hearings', 'request', this.isHearingAmendmentsEnabled ? 'hearing-edit-summary' : 'hearing-view-edit-summary'], { fragment: this.fragmentId })
-                .catch((err) => this.loggerService.error(`Error navigating to hearings/request/hearing-view-edit-summary#${this.fragmentId} `, err));
+              const pageRouteName = this.isHearingAmendmentsEnabled
+                ? HearingRequestPageRouteNames.HEARING_EDIT_SUMMARY
+                : HearingRequestPageRouteNames.HEARING_VIEW_EDIT_SUMMARY;
+              this.router.navigate(['hearings', 'request', pageRouteName], { fragment: this.fragmentId })
+                .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${pageRouteName}#${this.fragmentId} `, err));
             }
             break;
 
@@ -108,7 +112,6 @@ export class HearingRequestEffects {
               .catch((err) => this.loggerService.error('Error navigating to cases/case-details/caseId/hearings ', err));
             break;
         }
-        // }
       })
     );
 

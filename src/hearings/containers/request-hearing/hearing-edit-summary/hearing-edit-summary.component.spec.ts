@@ -5,9 +5,9 @@ import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
-import * as _ from 'lodash';
 import { of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
+import { PartyFlagsModel } from '../../../../hearings/models/partyFlags.model';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
@@ -22,7 +22,7 @@ describe('HearingEditSummaryComponent', () => {
   let component: HearingEditSummaryComponent;
   let fixture: ComponentFixture<HearingEditSummaryComponent>;
   let store: any;
-  let hearingValues: any;
+  
   const routeMock = {
     snapshot: {
       data: {
@@ -63,6 +63,49 @@ describe('HearingEditSummaryComponent', () => {
     is_hearing_location: 'Y'
   }];
 
+  const caseFlags: PartyFlagsModel[] = [
+    {
+      partyID: 'P1',
+      partyName: 'Jane Smith',
+      flagParentId: 'RA0008',
+      flagId: 'RA0013',
+      flagDescription: 'Sign language interpreter required',
+      flagStatus: 'ACTIVE'
+    },
+    {
+      partyID: 'P2',
+      partyName: 'Jane Smith vs DWP',
+      flagParentId: 'CF0001',
+      flagId: 'RA0016',
+      flagDescription: 'Potential fraud',
+      flagStatus: 'ACTIVE'
+    },
+    {
+      partyID: 'P3',
+      partyName: 'Jane Smith vs DWP',
+      flagParentId: 'CF0001',
+      flagId: 'RA0042',
+      flagDescription: 'Urgent flag',
+      flagStatus: 'ACTIVE'
+    },
+    {
+      partyID: 'P4',
+      partyName: 'Jane Smith vs DWP',
+      flagParentId: 'CF0001',
+      flagId: 'RA0042',
+      flagDescription: 'Urgent flag',
+      flagStatus: 'ACTIVE'
+    },
+    {
+      partyID: 'P5',
+      partyName: 'Jane Smith vs DWP',
+      flagParentId: 'CF0001',
+      flagId: 'RA0053',
+      flagDescription: 'Urgent flag',
+      flagStatus: 'ACTIVE'
+    }
+  ];
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
@@ -101,7 +144,7 @@ describe('HearingEditSummaryComponent', () => {
     store = TestBed.inject(Store);
     mockFeatureToggleService.isEnabled.and.returnValue(of(true));
     spyOn(locationsDataService, 'getLocationById').and.returnValue(of(locations));
-    hearingValues = _.cloneDeep(initialState.hearings.hearingValues);
+    
     fixture = TestBed.createComponent(HearingEditSummaryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -151,10 +194,10 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should update the case details properties automatically setPropertiesUpdatedAutomatically', () => {
-    hearingValues.serviceHearingValuesModel.hmctsInternalCaseName = 'New hmcts case name from service hearings';
-    hearingValues.serviceHearingValuesModel.publicCaseName = 'New public case name from service hearings';
-    hearingValues.serviceHearingValuesModel.caseManagementLocationCode = 'New location code';
-    hearingValues.serviceHearingValuesModel.caserestrictedFlag = true;
+    component.serviceHearingValuesModel.hmctsInternalCaseName = 'New hmcts case name from service hearings';
+    component.serviceHearingValuesModel.publicCaseName = 'New public case name from service hearings';
+    component.serviceHearingValuesModel.caseManagementLocationCode = 'New location code';
+    component.serviceHearingValuesModel.caserestrictedFlag = true;
     const categories = [
       {
         categoryType: CategoryType.CaseType,
@@ -172,8 +215,7 @@ describe('HearingEditSummaryComponent', () => {
         categoryValue: 'BBA3-002RC',
         categoryParent: 'BBA3-003'
       }];
-    hearingValues.serviceHearingValuesModel.caseCategories = [...categories];
-    const selectSpy = spyOn(store, 'select').and.returnValue(of(hearingValues));
+    component.serviceHearingValuesModel.caseCategories = JSON.parse(JSON.stringify(categories));    
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.ngOnInit();
     const expectedResult = { ...component.hearingRequestMainModel.caseDetails };
@@ -184,15 +226,13 @@ describe('HearingEditSummaryComponent', () => {
     expectedResult.caseCategories = [...categories];
     expect(component.hearingRequestMainModel.caseDetails).toEqual(expectedResult);
     expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(component.hearingRequestMainModel, component.hearingCondition));
-
-    selectSpy.calls.reset();
     storeDispatchSpy.calls.reset();
   });
 
   it('should update the hearing details properties automatically setPropertiesUpdatedAutomatically', () => {
-    hearingValues.serviceHearingValuesModel.privateHearingRequiredFlag = true;
-    hearingValues.serviceHearingValuesModel.hearingInWelshFlag = true;
-    const selectSpy = spyOn(store, 'select').and.returnValue(of(hearingValues));
+    component.serviceHearingValuesModel.privateHearingRequiredFlag = true;
+    component.serviceHearingValuesModel.hearingInWelshFlag = true;
+    
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.ngOnInit();
     const expectedResult = { ...component.hearingRequestMainModel.hearingDetails };
@@ -201,15 +241,14 @@ describe('HearingEditSummaryComponent', () => {
     expect(component.hearingRequestMainModel.hearingDetails).toEqual(expectedResult);
     expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(component.hearingRequestMainModel, component.hearingCondition));
 
-    selectSpy.calls.reset();
     storeDispatchSpy.calls.reset();
   });
 
   it('should update the party details properties automatically setPropertiesUpdatedAutomatically', () => {
-    hearingValues.serviceHearingValuesModel.parties = [
+    component.serviceHearingValuesModel.parties = [
       {
         partyID: 'P1',
-        partyName: 'Jane and Smith',
+        partyName: 'Jane Smith',
         partyType: PartyType.IND,
         partyRole: 'New appellant',
         individualDetails: {
@@ -251,8 +290,8 @@ describe('HearingEditSummaryComponent', () => {
         ]
       }
     ];
-    hearingValues.serviceHearingValuesModel.hearingInWelshFlag = true;
-    const selectSpy = spyOn(store, 'select').and.returnValue(of(hearingValues));
+    component.serviceHearingValuesModel.hearingInWelshFlag = true;
+   
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.ngOnInit();
     const expectedResult = [
@@ -366,28 +405,27 @@ describe('HearingEditSummaryComponent', () => {
     expect(component.hearingRequestMainModel.partyDetails).toEqual(expectedResult);
     expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(component.hearingRequestMainModel, component.hearingCondition));
 
-    selectSpy.calls.reset();
     storeDispatchSpy.calls.reset();
   });
 
-  fit('should display banner message', () => {
-    console.log('HEARING VALUES PRIVATE HEARING REQUIRED FLAG BEFORE', hearingValues.serviceHearingValuesModel.privateHearingRequiredFlag);
-    console.log('HEARING IN WELSH FLAG BEFORE', hearingValues.serviceHearingValuesModel.hearingInWelshFlag);
+  it('should not display banner message', () => {
+    component.serviceHearingValuesModel.privateHearingRequiredFlag = true;
+    component.serviceHearingValuesModel.hearingInWelshFlag = true;
+    
+    component.ngOnInit();
+    expect(component.displayBanner).toEqual(false);
+    
+  });
 
-    hearingValues.serviceHearingValuesModel.privateHearingRequiredFlag = true;
-    hearingValues.serviceHearingValuesModel.hearingInWelshFlag = true;
-    const selectSpy = spyOn(store, 'select').and.returnValue(of(hearingValues));
+  it('should display banner message', () => {
+    component.serviceHearingValuesModel.caseFlags = { flags: caseFlags, flagAmendURL: '/' };
+    component.serviceHearingValuesModel.privateHearingRequiredFlag = true;
+    component.serviceHearingValuesModel.hearingInWelshFlag = true;
+
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.ngOnInit();
+    expect(component.displayBanner).toEqual(true);
 
-    console.log('HEARING VALUES PRIVATE HEARING REQUIRED FLAG AFTER', hearingValues.serviceHearingValuesModel.privateHearingRequiredFlag);
-    console.log('HEARING IN WELSH FLAG AFTER', hearingValues.serviceHearingValuesModel.hearingInWelshFlag);
-
-    console.log('IS PAGELESS ATTRIBUTE CHANGED', component.isPagelessAttributeChanged);
-
-    console.log('DISPLAY BANNNER', component.displayBanner);
-
-    selectSpy.calls.reset();
     storeDispatchSpy.calls.reset();
   });
 

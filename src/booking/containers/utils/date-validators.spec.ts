@@ -52,10 +52,10 @@ describe('DateValidators', () => {
     });
     formGroup.get('startDate_day').setValue('11');
     formGroup.get('startDate_month').setValue('12');
-    formGroup.get('startDate_year').setValue('' + Number(moment().format('YYYY')) + 1);
+    formGroup.get('startDate_year').setValue('' + (Number(moment().format('YYYY')) + 1));
     formGroup.get('endDate_year').setValue('10');
     formGroup.get('endDate_month').setValue('12');
-    formGroup.get('endDate_day').setValue('' + Number(moment().format('YYYY')) + 1);
+    formGroup.get('endDate_day').setValue('' + (Number(moment().format('YYYY')) + 1));
     formGroup.get('dateOption').setValue(BookingDateOption.DATERANGE);
     const dateComparisonValidator = DateValidators.bookingDateValidator();
     expect(dateComparisonValidator(formGroup)).toEqual({

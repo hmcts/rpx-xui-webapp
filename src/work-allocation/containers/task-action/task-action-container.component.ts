@@ -25,7 +25,7 @@ import { getAssigneeName, handleFatalErrors } from '../../utils';
   templateUrl: 'task-action-container.component.html'
 })
 export class TaskActionContainerComponent implements OnInit {
-  public tasks: any [];
+  public tasks: any[];
   public sortedBy: any;
   public routeData: RouteData;
   protected userDetailsKey: string = 'userDetails';
@@ -38,7 +38,7 @@ export class TaskActionContainerComponent implements OnInit {
     private readonly sessionStorageService: SessionStorageService,
     private readonly roleService: AllocateRoleService,
     private readonly featureToggleService: FeatureToggleService
-  ) {}
+  ) { }
 
   public get fields(): FieldConfig[] {
     return this.isJudicial ? ConfigConstants.TaskActionsWithAssigneeForJudicial : ConfigConstants.TaskActionsWithAssigneeForLegalOps;

@@ -51,10 +51,10 @@ export class CaseViewerContainerComponent implements OnInit {
   ];
 
   constructor(private readonly route: ActivatedRoute,
-              private readonly store: Store<fromRoot.State>,
-              private readonly featureToggleService: FeatureToggleService,
-              private readonly allocateRoleService: AllocateRoleService,
-              private readonly waService: WASupportedJurisdictionsService) {
+    private readonly store: Store<fromRoot.State>,
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly allocateRoleService: AllocateRoleService,
+    private readonly waService: WASupportedJurisdictionsService) {
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
       map((userDetails) => userDetails.userInfo.roles)
     );

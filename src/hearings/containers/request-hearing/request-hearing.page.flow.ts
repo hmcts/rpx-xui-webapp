@@ -8,6 +8,7 @@ import { ACTION } from '../../models/hearings.enum';
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
+import * as _ from 'lodash';
 
 export abstract class RequestHearingPageFlow {
   public navigationSub: Subscription;
@@ -28,6 +29,11 @@ export abstract class RequestHearingPageFlow {
         this.hearingListMainModel = hearingState.hearingList.hearingListMainModel;
         this.serviceHearingValuesModel = hearingState.hearingValues.serviceHearingValuesModel;
         this.hearingRequestMainModel = hearingState.hearingRequest.hearingRequestMainModel;
+        if (!this.hearingRequestMainModel.hearingDetails.hearingWindow && hearingState.hearingValues.serviceHearingValuesModel.hearingWindow) {
+          let updatedHearingRequest = _.cloneDeep(this.hearingRequestMainModel);
+          updatedHearingRequest.hearingDetails.hearingWindow = hearingState.hearingValues.serviceHearingValuesModel.hearingWindow;
+          this.hearingRequestMainModel = updatedHearingRequest;
+        }
         this.hearingCondition = hearingState.hearingConditions;
       });
   }

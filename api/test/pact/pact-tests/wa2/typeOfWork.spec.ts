@@ -79,7 +79,7 @@ describe('Task management api, work types', () => {
     before(async () => {
       await pactSetUp.provider.setup();
       const interaction = {
-        state: 'retrieve all work types',
+        state: 'retrieve work types by userId',
         uponReceiving: 'retrieve all work types',
         withRequest: {
           method: 'GET',

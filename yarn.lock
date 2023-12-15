@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.1":
-  version: 7.0.1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.1"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.2":
+  version: 7.0.2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.2"
   dependencies:
     tslib: ^2.3.0
-  checksum: 364e708db912dea47d3b0fe1e0ff6dc47a560356e6e77a43555548d389c6f6be8b648613e5c669d3bb951c4eacf8afd2be8f2dd1531a59a14ebc9f803886436f
+  checksum: f2b7265ed82a867c4481bffbf970acf7d2737c59616b0c9ae1661bbbb9e78438a7ec6166cac4c486a9b687bcfcc1c0512b163dbaeb8b216f5444f0239112f6cb
   languageName: node
   linkType: hard
 
@@ -2703,16 +2703,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.1":
-  version: 2.0.1
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.1"
+"@hmcts/rpx-xui-common-lib@npm:2.0.3-pre-release-accessibility-page-amended":
+  version: 2.0.3-pre-release-accessibility-page-amended
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.3-pre-release-accessibility-page-amended"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: d077e9fc16eedb6786effcdafb378d39e7f547a15636a4514f7d36453407beb2e02ca8c2bbd74322b3cd63e10e0c471be557f6d645d4f83f15b2694e380297b7
+  checksum: d8bebc84ed5b68d35d8a5b69ef69f4d8e285ef6aea9e78ee776ae0afa6ed8e8ef446117f9e43d2ac0ef4e0c48e2762d67678af734fe7b1c5aaa871dc6bba1f9c
   languageName: node
   linkType: hard
 
@@ -19013,13 +19013,13 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.1
+    "@hmcts/ccd-case-ui-toolkit": 7.0.2
     "@hmcts/ccpay-web-component": 6.0.2
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.10.1-RC.1
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 2.0.1
+    "@hmcts/rpx-xui-common-lib": 2.0.3-pre-release-accessibility-page-amended
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3

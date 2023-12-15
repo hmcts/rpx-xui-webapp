@@ -98,4 +98,3 @@ describe('get /am/role-mapping/judicial/refresh', () => {
 function assertResponses(dto: any) {
   expect(dto.Message).to.includes('Role assignments have been refreshed successfully');
 }
-

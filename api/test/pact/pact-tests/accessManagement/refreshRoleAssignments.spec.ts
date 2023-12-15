@@ -23,8 +23,8 @@ describe('get /am/role-mapping/judicial/refresh', () => {
   before(async () => {
     await pactSetUp.provider.setup();
     const interaction = {
-      state: 'An actor with provided id is available in role assignment service',
-      uponReceiving: 'get roles assignments for actorId',
+      state: 'A refresh request is received with a valid userId passed',
+      uponReceiving: 'a refresh request is received with a valid userId passed',
       withRequest: {
         method: 'POST',
         path: '/am/role-mapping/judicial/refresh',

@@ -29,11 +29,6 @@ export abstract class RequestHearingPageFlow {
         this.hearingListMainModel = hearingState.hearingList.hearingListMainModel;
         this.serviceHearingValuesModel = hearingState.hearingValues.serviceHearingValuesModel;
         this.hearingRequestMainModel = hearingState.hearingRequest.hearingRequestMainModel;
-        if (!this.hearingRequestMainModel.hearingDetails.hearingWindow && hearingState.hearingValues.serviceHearingValuesModel.hearingWindow) {
-          const updatedHearingRequest = _.cloneDeep(this.hearingRequestMainModel);
-          updatedHearingRequest.hearingDetails.hearingWindow = hearingState.hearingValues.serviceHearingValuesModel.hearingWindow;
-          this.hearingRequestMainModel = updatedHearingRequest;
-        }
         this.hearingCondition = hearingState.hearingConditions;
       });
   }

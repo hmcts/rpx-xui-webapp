@@ -4,6 +4,7 @@ import { EditHearingChangeConfig } from '../../../../models/editHearingChangeCon
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 import { ServiceHearingValuesModel } from '../../../../models/serviceHearingValues.model';
 import { CaseFlagsUtils } from '../../../../utils/case-flags.utils';
+import { PartyType } from 'src/hearings/models/hearings.enum';
 
 @Component({
   selector: 'exui-hearing-requirements-section',
@@ -19,6 +20,11 @@ export class HearingRequirementsSectionComponent implements OnInit {
 
   public ngOnInit(): void {
     this.partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(this.caseFlagsRefData, this.hearingRequestMainModel.partyDetails, this.serviceHearingValuesModel.parties);
+
+    console.log('CASE FLAGS REF DATA', this.caseFlagsRefData);
+    console.log('SHV REF DATA', this.serviceHearingValuesModel.caseFlags.flags);
+    console.log('PARTIES', this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND)?.map((detail) => detail.individualDetails));
+    console.log('PARTY WITH FLAGS', this.partyWithFlags);
   }
 
   public onChange(fragmentId: string): void {

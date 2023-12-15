@@ -256,5 +256,8 @@
   "browser": {
     "crypto": false
   },
+  "resolutions": {
+    "lodash": "^4.17.21"
+  },
   "packageManager": "yarn@3.6.3"
 }

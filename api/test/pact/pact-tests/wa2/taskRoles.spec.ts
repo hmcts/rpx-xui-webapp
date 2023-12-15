@@ -50,7 +50,7 @@ describe('Task management api, task roles', () => {
     before(async () => {
       await pactSetUp.provider.setup();
       const interaction = {
-        state: 'retrieve task roles by taskId',
+        state: 'get task role information using taskId',
         uponReceiving: 'get task roles by taskId',
         withRequest: {
           method: 'GET',

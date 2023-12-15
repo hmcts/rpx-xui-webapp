@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Subscription, combineLatest } from 'rxjs';
@@ -10,7 +10,7 @@ import * as fromHearingStore from '../../store';
   selector: 'exui-hearing-parties-title',
   templateUrl: './hearing-parties-title.component.html'
 })
-export class HearingPartiesTitleComponent implements OnInit {
+export class HearingPartiesTitleComponent implements OnInit, OnDestroy {
   public caseTitle: string;
   public serviceValueSub: Subscription;
 

@@ -1548,7 +1548,7 @@ export const caseFlagsRefData = [
 
 export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   hmctsServiceID: 'BBA3',
-  hmctsInternalCaseName: 'Jane vs DWP',
+  hmctsInternalCaseName: 'Jane vs DWP Internal',
   publicCaseName: 'Jane vs DWP',
   autoListFlag: false,
   hearingType: 'Final',

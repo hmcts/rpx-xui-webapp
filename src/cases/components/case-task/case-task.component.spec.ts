@@ -1,4 +1,4 @@
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { RoleCategory } from '../../../role-access/models';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { Task } from '../../../work-allocation/models/tasks';
@@ -6,40 +6,49 @@ import { getMockTasks } from '../../../work-allocation/tests/utils.spec';
 import { CaseTaskComponent } from './case-task.component';
 
 describe('CaseTaskComponent', () => {
-  const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'warning']);
-  const mockSessionStorage = jasmine.createSpyObj('mockSessionStorage', ['getItem']);
-  const mockRouter = jasmine.createSpyObj('router', ['navigate', 'url']);
-  const mockTaskService = jasmine.createSpyObj('taskService', ['claimTask']);
-  const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
-  mockRouter.url = '/case-details/123243430403904/tasks';
-  const component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService, mockFeatureToggleService);
-  mockFeatureToggleService.getValue.and.returnValue(of({
-    configurations: [
-      {
-        caseTypes: [
-          'Asylum'
-        ],
-        releaseVersion: '3.5',
-        serviceName: 'IA'
-      },
-      {
-        caseTypes: [
-          'PRIVATELAW',
-          'PRLAPPS'
-        ],
-        releaseVersion: '2.1',
-        serviceName: 'PRIVATELAW'
-      },
-      {
-        caseTypes: [
-          'CIVIL',
-          'GENERALAPPLICATION'
-        ],
-        releaseVersion: '2.1',
-        serviceName: 'CIVIL'
-      }
-    ]
-  }));
+  let mockAlertService: any;
+  let mockSessionStorage: any;
+  let mockRouter: any;
+  let mockTaskService: any;
+  let mockFeatureToggleService: any;
+  let component: CaseTaskComponent;
+
+  beforeEach(() => {
+    mockAlertService = jasmine.createSpyObj('alertService', ['success', 'warning']);
+    mockSessionStorage = jasmine.createSpyObj('mockSessionStorage', ['getItem']);
+    mockRouter = jasmine.createSpyObj('router', ['navigate', 'url']);
+    mockTaskService = jasmine.createSpyObj('taskService', ['claimTask']);
+    mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
+    mockRouter.url = '/case-details/123243430403904/tasks';
+    component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService, mockFeatureToggleService);
+    mockFeatureToggleService.getValue.and.returnValue(of({
+      configurations: [
+        {
+          caseTypes: [
+            'Asylum'
+          ],
+          releaseVersion: '3.5',
+          serviceName: 'IA'
+        },
+        {
+          caseTypes: [
+            'PRIVATELAW',
+            'PRLAPPS'
+          ],
+          releaseVersion: '2.1',
+          serviceName: 'PRIVATELAW'
+        },
+        {
+          caseTypes: [
+            'CIVIL',
+            'GENERALAPPLICATION'
+          ],
+          releaseVersion: '2.1',
+          serviceName: 'CIVIL'
+        }
+      ]
+    }));
+  });
 
   it('ngOnInit', () => {
     component.task = {} as Task;
@@ -183,8 +192,22 @@ describe('CaseTaskComponent', () => {
       // need to check that navigate has not been called
       component.onActionHandler(exampleTask, firstOption);
       expect(mockRouter.navigate).not.toHaveBeenCalled();
+      expect(mockTaskService.claimTask).toHaveBeenCalledWith(exampleTask.id);
       expect(refreshTasksSpy).toHaveBeenCalled();
       expect(mockAlertService.success).toHaveBeenCalled();
+    });
+
+    it('should handle a claim action failure', () => {
+      mockTaskService.claimTask.and.returnValue(throwError(() => new Error('Error')));
+      const refreshTasksSpy = spyOn(component.taskRefreshRequired, 'emit');
+      spyOn(component, 'claimTaskErrors');
+      // need to check that navigate has not been called
+      component.onActionHandler(exampleTask, firstOption);
+      expect(mockRouter.navigate).not.toHaveBeenCalled();
+      expect(mockTaskService.claimTask).toHaveBeenCalledWith(exampleTask.id);
+      expect(refreshTasksSpy).not.toHaveBeenCalled();
+      expect(mockAlertService.success).not.toHaveBeenCalled();
+      expect(component.claimTaskErrors).toHaveBeenCalled();
     });
 
     it('should handle an action that redirects', () => {

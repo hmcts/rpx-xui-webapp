@@ -5,36 +5,11 @@ import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactTestSetup } from '../settings/provider.mock';
 import { getAccessManagementRoleMappingServiceAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
-
+const { Matchers } = require('@pact-foundation/pact');
+const { somethingLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'am_orgRoleMapping_refresh', port: 8000 });
 
 const actorId = '004b7164-0943-41b5-95fc-39794af4a9fe';
-const RESPONSE_BODY = {
-  roleAssignmentResponse: [
-    {
-      'substantive': 'N',
-      'primaryLocation': '231596',
-      'jurisdiction': 'PRIVATELAW',
-      'isCaseAllocator': false,
-      'roleType': 'ORGANISATION',
-      'roleName': 'hearing-viewer',
-      'roleCategory': 'JUDICIAL',
-      'beginTime': '2017-04-01T00:00:00Z'
-    },
-    {
-      'substantive': 'Y',
-      'contractType': 'Salaried',
-      'primaryLocation': '231596',
-      'jurisdiction': 'PRIVATELAW',
-      'region': '2',
-      'workTypes': 'hearing_work,decision_making_work,applications',
-      'isCaseAllocator': false,
-      'roleType': 'ORGANISATION',
-      'roleName': 'judge',
-      'roleCategory': 'JUDICIAL',
-      'beginTime': '2017-04-01T00:00:00Z'
-    }]
-};
 
 describe('get /am/role-mapping/judicial/refresh', () => {
   const sandbox: sinon.SinonSandbox = sinon.createSandbox();
@@ -48,8 +23,8 @@ describe('get /am/role-mapping/judicial/refresh', () => {
   before(async () => {
     await pactSetUp.provider.setup();
     const interaction = {
-      state: 'An actor with provided id is available in role assignment service',
-      uponReceiving: 'get roles assignments for actorId',
+      state: 'A refresh request is received with a valid userId passed',
+      uponReceiving: 'a refresh request is received with a valid userId passed',
       withRequest: {
         method: 'POST',
         path: '/am/role-mapping/judicial/refresh',
@@ -58,14 +33,16 @@ describe('get /am/role-mapping/judicial/refresh', () => {
           'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
           'content-type': 'application/json'
         },
-        body: { refreshRequest: { userIds: ['004b7164-0943-41b5-95fc-39794af4a9fe'] } }
+        body: { refreshRequest: { userIds: ['5629957f-4dcd-40b8-a0b2-e64ff5898b28'] } }
       },
       willRespondWith: {
         status: 200,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/vnd.uk.gov.hmcts.am-org-role-mapping-service.map-judicial-assignments+json;charset=UTF-8;version=1.0'
         },
-        body: RESPONSE_BODY
+        body: {
+          'Message': somethingLike('Role assignments have been refreshed successfully')
+        }
       }
     };
     // @ts-ignore
@@ -93,7 +70,7 @@ describe('get /am/role-mapping/judicial/refresh', () => {
         'content-type': 'application/json'
       },
       body: {
-        userId: actorId
+        userId: '5629957f-4dcd-40b8-a0b2-e64ff5898b28'
       }
     });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -119,14 +96,5 @@ describe('get /am/role-mapping/judicial/refresh', () => {
 });
 
 function assertResponses(dto: any) {
-  const roleAssignmentResponse = dto.roleAssignmentResponse;
-  expect(roleAssignmentResponse[0].substantive).to.be.equal('N');
-  expect(roleAssignmentResponse[0].primaryLocation).to.be.equal('231596');
-  expect(roleAssignmentResponse[0].jurisdiction).to.be.equal('PRIVATELAW');
-  expect(roleAssignmentResponse[0].isCaseAllocator).to.be.equal(false);
-  expect(roleAssignmentResponse[0].roleType).to.be.equal('ORGANISATION');
-  expect(roleAssignmentResponse[0].roleName).to.be.equal('hearing-viewer');
-  expect(roleAssignmentResponse[0].roleCategory).to.be.equal('JUDICIAL');
-  expect(roleAssignmentResponse[0].beginTime).to.be.equal('2017-04-01T00:00:00Z');
+  expect(dto.Message).to.includes('Role assignments have been refreshed successfully');
 }
-

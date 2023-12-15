@@ -8,7 +8,6 @@ import { ACTION } from '../../models/hearings.enum';
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
-import * as _ from 'lodash';
 
 export abstract class RequestHearingPageFlow {
   public navigationSub: Subscription;

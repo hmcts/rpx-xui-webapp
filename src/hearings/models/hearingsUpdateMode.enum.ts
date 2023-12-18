@@ -1,3 +1,4 @@
+import { HearingWindowModel } from './hearingWindow.model';
 import { PartyDetailsModel } from './partyDetails.model';
 import { PartyFlagsModel } from './partyFlags.model';
 
@@ -46,39 +47,40 @@ export enum AfterPageVisitPropertiesEnum {
 }
 
 export interface PagelessProperties {
-  caseManagementLocationCode?: boolean,
-  partyRole?: boolean,
-  relatedPartyID?: boolean,
-  relationshipType?: boolean,
-  custodyStatus?: boolean,
-  vulnerableFlag?: boolean,
-  vulnerabilityDetails?: boolean,
-  hearingInWelshFlag?: boolean,
-  organisation?: boolean,
-  organisationType?: boolean,
-  cftOrganisationID?: boolean,
-  hearingChannelEmail?: boolean,
-  hearingChannelPhone?: boolean
+  caseManagementLocationCode?: boolean;
+  partyRole?: boolean;
+  relatedPartyID?: boolean;
+  relationshipType?: boolean;
+  custodyStatus?: boolean;
+  vulnerableFlag?: boolean;
+  vulnerabilityDetails?: boolean;
+  hearingInWelshFlag?: boolean;
+  organisation?: boolean;
+  organisationType?: boolean;
+  cftOrganisationID?: boolean;
+  hearingChannelEmail?: boolean;
+  hearingChannelPhone?: boolean;
 }
 
 export interface WithinPageProperties {
-  hmctsInternalCaseName?: boolean,
-  publicCaseName?: boolean,
-  caseCategories?: string[],
-  caseRestrictedFlag?: boolean,
-  privateHearingRequiredFlag?: boolean,
-  parties?: boolean
+  hmctsInternalCaseName?: boolean;
+  publicCaseName?: boolean;
+  caseCategories?: string[];
+  caseRestrictedFlag?: boolean;
+  privateHearingRequiredFlag?: boolean;
+  parties?: boolean;
 }
 
 export interface AfterPageVisitProperties {
   reasonableAdjustmentChangesConfirmed?: boolean;
   nonReasonableAdjustmentChangesConfirmed?: boolean;
   partyDetailsChangesConfirmed?: boolean;
+  hearingWindowFirstDateMustBeChangesConfirmed?: boolean;
 }
 
 export interface PropertiesUpdatedAutomatically {
-  pageless?: PagelessProperties,
-  withinPage?: WithinPageProperties
+  pageless?: PagelessProperties;
+  withinPage?: WithinPageProperties;
 }
 
 export interface PropertiesUpdatedOnPageVisit {
@@ -86,8 +88,9 @@ export interface PropertiesUpdatedOnPageVisit {
     flags: PartyFlagsModel[],
     flagAmendURL: string,
   };
-  parties: PartyDetailsModel[],
-  afterPageVisit?: AfterPageVisitProperties
+  parties: PartyDetailsModel[];
+  hearingWindow: HearingWindowModel;
+  afterPageVisit?: AfterPageVisitProperties;
 }
 
 export enum AmendmentLabelStatus {

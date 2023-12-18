@@ -169,6 +169,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       this.hearingsService.propertiesUpdatedOnPageVisit = {
         caseFlags: serviceHearingValues.caseFlags,
         parties: serviceHearingValues.parties,
+        hearingWindow: serviceHearingValues.hearingWindow,
         afterPageVisit: {}
       };
     }
@@ -180,7 +181,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       if (!_.isEqual(value, serviceHearingValue[i])) {
         this.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories.push(value.categoryValue);
       }
-    })
+    });
 
     return serviceHearingValue;
   }
@@ -245,7 +246,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // check pageless automatic update
     this.isPagelessAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.pageless).some((prop) => prop);
     // check for changes on page visit
-    const pageVisitChangeExists = this.pageVisitCaseFlagsChangeExists() && this.pageVisitPartiesChangeExists();
+    const pageVisitChangeExists = this.pageVisitCaseFlagsChangeExists() &&
+      this.pageVisitPartiesChangeExists() &&
+      this.pageVisitHearingWindowChangeExists();
     // Display banner
     this.displayBanner = this.isPagelessAttributeChanged && !pageVisitChangeExists;
   }
@@ -290,6 +293,18 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       }
     });
     // There are no changes for parties when compared SHV with HMC
+    return false;
+  }
+
+  private pageVisitHearingWindowChangeExists(): boolean {
+    const hearingWindowSHV = this.serviceHearingValuesModel.hearingWindow;
+    const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
+    // Return true if the first date time must be value in SHV and HMC are different
+    if (hearingWindowSHV?.firstDateTimeMustBe !== hearingWindowHMC.firstDateTimeMustBe) {
+      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowFirstDateMustBeChangesConfirmed = true;
+      return true;
+    }
+    // There is no change in first date time must be when compared SHV with HMC
     return false;
   }
 }

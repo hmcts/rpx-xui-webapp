@@ -2,9 +2,11 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 import { HearingChannelEnum, PartyType } from '../../../../models/hearings.enum';
+import { AmendmentLabelStatus } from '../../../../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../../../../models/serviceHearingValues.model';
+import { HearingsService } from '../../../../services/hearings.service';
 
 @Component({
   selector: 'exui-participant-attendance-section',
@@ -22,8 +24,13 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   public participantChannels: string[] = [];
   public participantAttendanceModes: string[] = [];
   public numberOfPhysicalAttendees: number;
+  public partyDetailsChangesConfirmed: boolean;
+  public amendmentLabelEnum = AmendmentLabelStatus;
+
+  constructor(private readonly hearingsService: HearingsService) {}
 
   public ngOnInit(): void {
+    this.partyDetailsChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed;
     this.partyChannelsRefDataCombined = [...this.partyChannelsRefData, ...this.partySubChannelsRefData];
     this.isPaperHearing = this.getIsPaperHearing();
     this.participantChannels = this.getParticipantChannels();

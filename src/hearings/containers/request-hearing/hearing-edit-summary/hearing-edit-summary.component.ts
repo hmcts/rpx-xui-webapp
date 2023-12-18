@@ -55,7 +55,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public hearingTemplate = HearingTemplate;
   public isPagelessAttributeChanged: boolean = false;
   public displayBanner: boolean = false;
-  public reasonableAdjustmentChangesConfirmed: boolean;
 
   constructor(private readonly router: Router,
     private readonly locationsDataService: LocationsDataService,
@@ -262,7 +261,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // Return true if there are changes in reasonable adjustments and/or language interpreter flags
     if (flagIdsSHV.join() !== partyFlagIds.join()) {
       this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesConfirmed = true;
-      this.reasonableAdjustmentChangesConfirmed = true;
       return true;
     }
     // There are no changes for reasonable adjustments and language interpreter flags when compared SHV with HMC
@@ -274,6 +272,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const partiesHMC = this.hearingRequestMainModel.partyDetails;
     // Return true if the number of parties in SHV and HMC are different
     if (partiesSHV.length !== partiesHMC.length) {
+      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed = true;
       return true;
     }
     // Number of parties are the same in both SHV and HMC
@@ -281,14 +280,12 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // and return true if there are any changes in the party name of party type
     partiesSHV.forEach((partySHV) => {
       const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
-      if (party.partyName !== partySHV.partyName) {
+      if ((party.partyName !== partySHV.partyName) ||
+          (party.individualDetails?.title !== partySHV.individualDetails?.title) ||
+          (party.individualDetails?.firstName !== partySHV.individualDetails?.firstName) ||
+          (party.individualDetails?.lastName !== partySHV.individualDetails?.lastName) ||
+          (party.partyType !== partySHV.partyType)) {
         this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed = true;
-        return true;
-      }
-      if ((party.individualDetails?.title !== partySHV.individualDetails?.title) ||
-        (party.individualDetails?.firstName !== partySHV.individualDetails?.firstName) ||
-        (party.individualDetails?.lastName !== partySHV.individualDetails?.lastName) ||
-        (party.partyType !== partySHV.partyType)) {
         return true;
       }
     });

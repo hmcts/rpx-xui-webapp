@@ -6,15 +6,16 @@ import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConstants } from '../../../../app/app.constants';
+import { AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../../hearings/models/hearingsUpdateMode.enum';
+import { ServiceHearingValuesModel } from '../../../../hearings/models/serviceHearingValues.model';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
 import { hearingStatusMappings } from '../../../models/hearingStatusMappings';
-import { ACTION, HearingDateEnum, HearingTemplate, LaCaseStatus, Mode } from '../../../models/hearings.enum';
+import { ACTION, HearingDateEnum, HearingTemplate, LaCaseStatus, Mode, PartyType } from '../../../models/hearings.enum';
 import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
-import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
@@ -26,6 +27,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 })
 export class HearingEditSummaryComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public readonly REGION_ID = '7';
+  public readonly LANGUAGE_INTERPRETER_FLAG_ID = 'PF0015';
   public caseReference: string;
   public status: string;
   public requestSubmittedDate: string;
@@ -49,6 +51,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public panelRolesRefData: LovRefDataModel[];
   public isHearingAmendmentsEnabled: boolean;
   public hearingTemplate = HearingTemplate;
+  public isPagelessAttributeChanged: boolean = false;
+  public displayBanner: boolean = false;
 
   constructor(private readonly router: Router,
     private readonly locationsDataService: LocationsDataService,
@@ -129,32 +133,32 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private setPropertiesUpdatedAutomatically(): void {
-    this.hearingValuesSubscription = this.hearingStore.select(fromHearingStore.getHearingValues).subscribe((hearingValues) => {
-      if (hearingValues) {
-        this.hearingRequestMainModel = {
-          ...this.hearingRequestMainModel,
-          caseDetails: {
-            ...this.hearingRequestMainModel?.caseDetails,
-            caseManagementLocationCode: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caseManagementLocationCode, hearingValues.serviceHearingValuesModel.caseManagementLocationCode),
-            hmctsInternalCaseName: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.hmctsInternalCaseName, hearingValues.serviceHearingValuesModel.hmctsInternalCaseName),
-            publicCaseName: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.publicCaseName, hearingValues.serviceHearingValuesModel.publicCaseName),
-            caserestrictedFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caserestrictedFlag, hearingValues.serviceHearingValuesModel.caserestrictedFlag),
-            caseCategories: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caseCategories, hearingValues.serviceHearingValuesModel.caseCategories)
-          },
-          hearingDetails: {
-            ...this.hearingRequestMainModel.hearingDetails,
-            privateHearingRequiredFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel.hearingDetails.privateHearingRequiredFlag, hearingValues.serviceHearingValuesModel.privateHearingRequiredFlag),
-            hearingInWelshFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel.hearingDetails.hearingInWelshFlag, hearingValues.serviceHearingValuesModel.hearingInWelshFlag)
-          },
-          partyDetails: [
-            ...this.updatePartyDetails(hearingValues.serviceHearingValuesModel.parties)
-          ]
-        };
-      }
+    this.hearingRequestMainModel = {
+      ...this.hearingRequestMainModel,
+      caseDetails: {
+        ...this.hearingRequestMainModel?.caseDetails,
+        caseManagementLocationCode: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caseManagementLocationCode, this.serviceHearingValuesModel.caseManagementLocationCode, AutoUpdateMode.PAGELESS, PagelessPropertiesEnum.CASE_MANAGEMENT_LOCATIONCODE),
+        hmctsInternalCaseName: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.hmctsInternalCaseName, this.serviceHearingValuesModel.hmctsInternalCaseName, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.HMCTS_INTERNAL_CASENAME),
+        publicCaseName: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.publicCaseName, this.serviceHearingValuesModel.publicCaseName, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PUBLIC_CASE_NAME),
+        caserestrictedFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caserestrictedFlag, this.serviceHearingValuesModel.caserestrictedFlag, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.CASE_RESTRICTED_FLAG),
+        caseCategories: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caseCategories, this.serviceHearingValuesModel.caseCategories, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.CASE_CATEGORIES)
+      },
+      hearingDetails: {
+        ...this.hearingRequestMainModel.hearingDetails,
+        privateHearingRequiredFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel.hearingDetails.privateHearingRequiredFlag, this.serviceHearingValuesModel.privateHearingRequiredFlag, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PRIVATE_HEARING_REQUIRED_FLAG),
+        hearingInWelshFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel.hearingDetails.hearingInWelshFlag, this.serviceHearingValuesModel.hearingInWelshFlag, AutoUpdateMode.PAGELESS, PagelessPropertiesEnum.HEARING_IN_WELSH_FLAG)
+      },
+      partyDetails: [
+        ...this.updatePartyDetails(this.serviceHearingValuesModel.parties)
+      ]
+    };
 
-      // Set properties updated on page visit
-      this.setPropertiesUpdatedOnPageVisit(hearingValues.serviceHearingValuesModel);
-    });
+    // Set properties updated on page visit
+    this.setPropertiesUpdatedOnPageVisit(this.serviceHearingValuesModel);
+
+    // Set banner
+    this.setBanner();
+
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingRequest(this.hearingRequestMainModel, this.hearingCondition));
   }
 
@@ -168,10 +172,22 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   // To do: EUI- 8905
-  private compareAndUpdateServiceHearingValues(currentValue, serviceHearingValue) {
+  private compareAndUpdateServiceHearingValues(currentValue, serviceHearingValue, pageMode: AutoUpdateMode = null, property: string = null) {
     if (currentValue !== serviceHearingValue) {
       // Store ammended properties to dispay it in UI
-
+      if (pageMode && property) {
+        switch (pageMode) {
+          case AutoUpdateMode.WITHIN_PAGE:
+            this.hearingsService.propertiesUpdatedAutomatically.withinPage[property] = true;
+            break;
+          case AutoUpdateMode.PAGELESS:
+            this.hearingsService.propertiesUpdatedAutomatically.pageless[property] = true;
+            break;
+          case AutoUpdateMode.PARTY:
+            this.hearingsService.propertiesUpdatedAutomatically.withinPage[WithinPagePropertiesEnum.PARTIES] = true;
+            break;
+        }
+      }
     }
     return serviceHearingValue;
   }
@@ -184,24 +200,24 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         if (serviceParty) {
           newParty.push({
             ...party,
-            partyRole: this.compareAndUpdateServiceHearingValues(party.partyRole, serviceParty.partyRole),
+            partyRole: this.compareAndUpdateServiceHearingValues(party.partyRole, serviceParty.partyRole, AutoUpdateMode.PARTY),
             individualDetails: {
               ...party.individualDetails,
-              relatedParties: this.compareAndUpdateServiceHearingValues(party.individualDetails?.relatedParties, serviceParty.individualDetails?.relatedParties),
-              custodyStatus: this.compareAndUpdateServiceHearingValues(party.individualDetails?.custodyStatus, serviceParty.individualDetails?.custodyStatus),
-              vulnerableFlag: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerableFlag, serviceParty.individualDetails?.vulnerableFlag),
-              vulnerabilityDetails: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerabilityDetails, serviceParty.individualDetails?.vulnerabilityDetails),
-              hearingChannelEmail: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelEmail, serviceParty.individualDetails?.hearingChannelEmail),
-              hearingChannelPhone: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelPhone, serviceParty.individualDetails?.hearingChannelPhone)
+              relatedParties: this.compareAndUpdateServiceHearingValues(party.individualDetails?.relatedParties, serviceParty.individualDetails?.relatedParties, AutoUpdateMode.PARTY),
+              custodyStatus: this.compareAndUpdateServiceHearingValues(party.individualDetails?.custodyStatus, serviceParty.individualDetails?.custodyStatus, AutoUpdateMode.PARTY),
+              vulnerableFlag: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerableFlag, serviceParty.individualDetails?.vulnerableFlag, AutoUpdateMode.PARTY),
+              vulnerabilityDetails: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerabilityDetails, serviceParty.individualDetails?.vulnerabilityDetails, AutoUpdateMode.PARTY),
+              hearingChannelEmail: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelEmail, serviceParty.individualDetails?.hearingChannelEmail, AutoUpdateMode.PARTY),
+              hearingChannelPhone: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelPhone, serviceParty.individualDetails?.hearingChannelPhone, AutoUpdateMode.PARTY)
             },
             organisationDetails: {
               ...party.organisationDetails,
               name: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.name, serviceParty.organisationDetails?.name),
-              organisationType: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.organisationType, serviceParty.organisationDetails?.organisationType),
-              cftOrganisationID: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.cftOrganisationID, serviceParty.organisationDetails?.cftOrganisationID)
+              organisationType: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.organisationType, serviceParty.organisationDetails?.organisationType, AutoUpdateMode.PARTY),
+              cftOrganisationID: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.cftOrganisationID, serviceParty.organisationDetails?.cftOrganisationID, AutoUpdateMode.PARTY)
             },
-            unavailabilityDOW: serviceParty?.unavailabilityDOW,
-            unavailabilityRanges: serviceParty?.unavailabilityRanges
+            unavailabilityDOW: this.compareAndUpdateServiceHearingValues(party?.unavailabilityDOW, serviceParty?.unavailabilityDOW, AutoUpdateMode.PARTY),
+            unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges, AutoUpdateMode.PARTY)
           });
         } else {
           newParty.push(party);
@@ -209,5 +225,56 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       });
     }
     return newParty;
+  }
+
+  private setBanner(): void {
+    // check pageless automatic update
+    this.isPagelessAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.pageless).some((prop) => prop);
+    // check for changes on page visit
+    const pageVisitChangeExists = this.pageVisitCaseFlagsChangeExists() && this.pageVisitPartiesChangeExists();
+    // Display banner
+    this.displayBanner = this.isPagelessAttributeChanged && !pageVisitChangeExists;
+  }
+
+  private pageVisitCaseFlagsChangeExists(): boolean {
+    const caseFlagsSHV = this.serviceHearingValuesModel.caseFlags.flags;
+    const individualParties = this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND);
+    // HMC stores only reasonable adjustment flag ids and language interpreter flag ids under parties
+    // Get only the reasonable adjustment and language interpreter flag ids from SHV
+    const flagIdsSHV = caseFlagsSHV.map((flag) => flag.flagId)?.filter((flagId) => flagId.startsWith('RA') || flagId === this.LANGUAGE_INTERPRETER_FLAG_ID)?.sort();
+    const partyFlagIds = individualParties.map((party) => party.individualDetails?.reasonableAdjustments)?.join(',').split(',').sort();
+
+    // Return true if there are changes in reasonable adjustments and/or language interpreter flags
+    if (flagIdsSHV.join() !== partyFlagIds.join()) {
+      return true;
+    }
+    // There are no changes for reasonable adjustments and language interpreter flags when compared SHV with HMC
+    return false;
+  }
+
+  private pageVisitPartiesChangeExists(): boolean {
+    const partiesSHV = this.serviceHearingValuesModel.parties;
+    const partiesHMC = this.hearingRequestMainModel.partyDetails;
+    // Return true if the number of parties in SHV and HMC are different
+    if (partiesSHV.length !== partiesHMC.length) {
+      return true;
+    }
+    // Number of parties are the same in both SHV and HMC
+    // Loop through the parties in SHV, locate the corresponding party in HMC
+    // and return true if there are any changes in the party name of party type
+    partiesSHV.forEach((partySHV) => {
+      const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
+      if (party.partyName !== partySHV.partyName) {
+        return true;
+      }
+      if ((party.individualDetails?.title !== partySHV.individualDetails?.title) ||
+        (party.individualDetails?.firstName !== partySHV.individualDetails?.firstName) ||
+        (party.individualDetails?.lastName !== partySHV.individualDetails?.lastName) ||
+        (party.partyType !== partySHV.partyType)) {
+        return true;
+      }
+    });
+    // There are no changes for parties when compared SHV with HMC
+    return false;
   }
 }

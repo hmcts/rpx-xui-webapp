@@ -6,7 +6,6 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { PartyFlagsModel } from '../../../../hearings/models/partyFlags.model';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
@@ -65,7 +64,7 @@ describe('HearingEditSummaryComponent', () => {
 
   const caseFlags: PartyFlagsModel[] = [
     {
-      partyID: 'P1',
+      partyId: 'P1',
       partyName: 'Jane Smith',
       flagParentId: 'RA0008',
       flagId: 'RA0013',
@@ -73,7 +72,7 @@ describe('HearingEditSummaryComponent', () => {
       flagStatus: 'ACTIVE'
     },
     {
-      partyID: 'P2',
+      partyId: 'P2',
       partyName: 'Jane Smith vs DWP',
       flagParentId: 'CF0001',
       flagId: 'RA0016',
@@ -81,7 +80,7 @@ describe('HearingEditSummaryComponent', () => {
       flagStatus: 'ACTIVE'
     },
     {
-      partyID: 'P3',
+      partyId: 'P3',
       partyName: 'Jane Smith vs DWP',
       flagParentId: 'CF0001',
       flagId: 'RA0042',
@@ -89,7 +88,7 @@ describe('HearingEditSummaryComponent', () => {
       flagStatus: 'ACTIVE'
     },
     {
-      partyID: 'P4',
+      partyId: 'P4',
       partyName: 'Jane Smith vs DWP',
       flagParentId: 'CF0001',
       flagId: 'RA0042',
@@ -97,7 +96,7 @@ describe('HearingEditSummaryComponent', () => {
       flagStatus: 'ACTIVE'
     },
     {
-      partyID: 'P5',
+      partyId: 'P5',
       partyName: 'Jane Smith vs DWP',
       flagParentId: 'CF0001',
       flagId: 'RA0053',
@@ -110,8 +109,7 @@ describe('HearingEditSummaryComponent', () => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [
-        HearingEditSummaryComponent,
-        MockRpxTranslatePipe
+        HearingEditSummaryComponent
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [

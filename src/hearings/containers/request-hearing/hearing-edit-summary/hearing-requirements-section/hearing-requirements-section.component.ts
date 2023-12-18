@@ -14,6 +14,7 @@ export class HearingRequirementsSectionComponent implements OnInit {
   @Input() public caseFlagsRefData: CaseFlagReferenceModel[];
   @Input() public hearingRequestMainModel: HearingRequestMainModel;
   @Input() public serviceHearingValuesModel: ServiceHearingValuesModel;
+  @Input() public reasonableAdjustmentChangesConfirmed: boolean;
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
   public partyWithFlags: Map<string, CaseFlagReferenceModel[]>;

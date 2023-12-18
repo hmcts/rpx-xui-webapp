@@ -3,7 +3,8 @@
 </div>
 <h2 class="govuk-heading-m">
   Hearing requirements
-  <strong class="govuk-tag govuk-tag--red govuk-!-margin-left-1">Action needed</strong>
+  <strong *ngIf="reasonableAdjustmentChangesConfirmed"
+    class="govuk-tag govuk-tag--red govuk-!-margin-left-1">Action needed</strong>
 </h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">

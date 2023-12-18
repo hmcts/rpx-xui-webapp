@@ -28,7 +28,7 @@ export abstract class RequestHearingPageFlow {
     this.hearingStateSub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       (hearingState) => {
         this.hearingListMainModel = hearingState.hearingList.hearingListMainModel;
-        this.serviceHearingValuesModel = hearingState.hearingValues.serviceHearingValuesModel;
+        this.serviceHearingValuesModel = { ...hearingState.hearingValues.serviceHearingValuesModel };
         this.hearingRequestMainModel = hearingState.hearingRequest.hearingRequestMainModel;
         this.hearingCondition = hearingState.hearingConditions;
       });

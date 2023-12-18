@@ -53,6 +53,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public hearingTemplate = HearingTemplate;
   public isPagelessAttributeChanged: boolean = false;
   public displayBanner: boolean = false;
+  public reasonableAdjustmentChangesConfirmed: boolean;
 
   constructor(private readonly router: Router,
     private readonly locationsDataService: LocationsDataService,
@@ -166,7 +167,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     if (serviceHearingValues) {
       this.hearingsService.propertiesUpdatedOnPageVisit = {
         caseFlags: serviceHearingValues.caseFlags,
-        parties: serviceHearingValues.parties
+        parties: serviceHearingValues.parties,
+        afterPageVisit: {}
       };
     }
   }
@@ -246,6 +248,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     // Return true if there are changes in reasonable adjustments and/or language interpreter flags
     if (flagIdsSHV.join() !== partyFlagIds.join()) {
+      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesConfirmed = true;
+      this.reasonableAdjustmentChangesConfirmed = true;
       return true;
     }
     // There are no changes for reasonable adjustments and language interpreter flags when compared SHV with HMC
@@ -265,6 +269,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     partiesSHV.forEach((partySHV) => {
       const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
       if (party.partyName !== partySHV.partyName) {
+        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed = true;
         return true;
       }
       if ((party.individualDetails?.title !== partySHV.individualDetails?.title) ||

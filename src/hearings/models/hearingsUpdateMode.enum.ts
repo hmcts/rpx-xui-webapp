@@ -89,3 +89,8 @@ export interface PropertiesUpdatedOnPageVisit {
   parties: PartyDetailsModel[],
   afterPageVisit?: AfterPageVisitProperties
 }
+
+export enum AmendmentLabelStatus {
+  ACTION_NEEDED = 'ACTION NEEDED',
+  AMENDED = 'AMENDED'
+}

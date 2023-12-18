@@ -2,7 +2,6 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -178,7 +177,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   private compareAndUpdateCaseCategories(currentValue: CaseCategoryModel[], serviceHearingValue: CaseCategoryModel[]): CaseCategoryModel[] {
     this.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories = [];
     currentValue.forEach((value: CaseCategoryModel, i) => {
-      if (!_.isEqual(value, serviceHearingValue[i])) {
+      const valueFound = serviceHearingValue.find((svh) => svh.categoryValue === value.categoryValue
+        && svh.categoryType === value.categoryType
+        && (svh.categoryParent === null || svh.categoryParent === value.categoryParent))
+
+      if (valueFound) {
         this.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories.push(value.categoryValue);
       }
     });

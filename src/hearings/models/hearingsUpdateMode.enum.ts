@@ -64,7 +64,7 @@ export interface PagelessProperties {
 export interface WithinPageProperties {
   hmctsInternalCaseName?: boolean,
   publicCaseName?: boolean,
-  caseCategories?: boolean,
+  caseCategories?: string[],
   caseRestrictedFlag?: boolean,
   privateHearingRequiredFlag?: boolean,
   parties?: boolean

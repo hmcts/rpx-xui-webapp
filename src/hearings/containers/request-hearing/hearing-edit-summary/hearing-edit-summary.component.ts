@@ -2,9 +2,11 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CaseCategoryModel } from 'src/hearings/models/caseCategory.model';
 import { AppConstants } from '../../../../app/app.constants';
 import { AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../../hearings/models/hearingsUpdateMode.enum';
 import { ServiceHearingValuesModel } from '../../../../hearings/models/serviceHearingValues.model';
@@ -142,7 +144,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         hmctsInternalCaseName: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.hmctsInternalCaseName, this.serviceHearingValuesModel.hmctsInternalCaseName, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.HMCTS_INTERNAL_CASENAME),
         publicCaseName: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.publicCaseName, this.serviceHearingValuesModel.publicCaseName, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PUBLIC_CASE_NAME),
         caserestrictedFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caserestrictedFlag, this.serviceHearingValuesModel.caserestrictedFlag, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.CASE_RESTRICTED_FLAG),
-        caseCategories: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caseCategories, this.serviceHearingValuesModel.caseCategories, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.CASE_CATEGORIES)
+        caseCategories: this.compareAndUpdateCaseCategories(this.hearingRequestMainModel?.caseDetails.caseCategories, this.serviceHearingValuesModel.caseCategories)
       },
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
@@ -171,6 +173,17 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         afterPageVisit: {}
       };
     }
+  }
+
+  private compareAndUpdateCaseCategories(currentValue: CaseCategoryModel[], serviceHearingValue: CaseCategoryModel[]): CaseCategoryModel[] {
+    this.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories = [];
+    currentValue.forEach((value: CaseCategoryModel, i) => {
+      if (!_.isEqual(value, serviceHearingValue[i])) {
+        this.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories.push(value.categoryValue);
+      }
+    })
+
+    return serviceHearingValue;
   }
 
   // To do: EUI- 8905

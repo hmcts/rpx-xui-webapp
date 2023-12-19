@@ -368,7 +368,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const hearingWindowSHV = this.serviceHearingValuesModel.hearingWindow;
     const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
     // Return true if the first date time must be value in SHV and HMC are different
-    if (hearingWindowSHV?.firstDateTimeMustBe !== hearingWindowHMC.firstDateTimeMustBe) {
+    if (hearingWindowSHV?.firstDateTimeMustBe !== hearingWindowHMC?.firstDateTimeMustBe) {
       this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowFirstDateMustBeChangesConfirmed = true;
       return true;
     }

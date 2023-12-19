@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 import { HearingChannelEnum, PartyType } from '../../../../models/hearings.enum';
-import { AmendmentLabelStatus } from '../../../../models/hearingsUpdateMode.enum';
+import { AmendmentLabelStatus, ParticipantAttendanceMode } from '../../../../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../../../../models/serviceHearingValues.model';
@@ -22,7 +22,7 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   public partyChannelsRefDataCombined: LovRefDataModel[] = [];
   public isPaperHearing : string;
   public participantChannels: string[] = [];
-  public participantAttendanceModes: string[] = [];
+  public participantAttendanceModes: ParticipantAttendanceMode[] = [];
   public numberOfPhysicalAttendees: number;
   public partyDetailsChangesConfirmed: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
@@ -74,15 +74,17 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
     return participantChannels;
   }
 
-  private getParticipantAttendanceModes(): string[] {
-    const participantAttendanceModes: string[] = [];
+  private getParticipantAttendanceModes(): ParticipantAttendanceMode[] {
+    const participantAttendanceModes: ParticipantAttendanceMode[] = [];
     const individualPartiesFromRequest = this.hearingRequestMainModel.partyDetails?.filter((partyFromRequest) => partyFromRequest.partyType === PartyType.IND);
-    const partiesFromServiceValue = this.serviceHearingValuesModel.parties;
+    const partiesFromServiceValue = this.serviceHearingValuesModel.parties?.filter((partiesFromService) => partiesFromService.partyType === PartyType.IND);
     individualPartiesFromRequest.forEach((individualParty: PartyDetailsModel) => {
       const foundPartyFromService = partiesFromServiceValue.find((partyFromService) => partyFromService.partyID === individualParty.partyID);
-      const name = this.getPartyName(individualParty, foundPartyFromService);
-      const value = this.getPartyChannelValue(individualParty);
-      participantAttendanceModes.push(`${name} - ${value}`);
+      participantAttendanceModes.push({
+        partyName: this.getPartyName(individualParty, foundPartyFromService),
+        channel: this.getPartyChannelValue(individualParty),
+        partyNameChanged: individualParty.partyName !== foundPartyFromService.partyName
+      });
     });
     return participantAttendanceModes;
   }

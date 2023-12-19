@@ -6,4 +6,5 @@ export interface CaseFlagReferenceModel {
   isParent: boolean;
   Path: string[];
   childFlags: CaseFlagReferenceModel[];
+  partyNameChanged?: boolean;
 }

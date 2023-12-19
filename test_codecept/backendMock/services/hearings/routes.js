@@ -39,6 +39,7 @@ router.post('/serviceLinkedCases', (req, res) => {
 })
 
 router.post('/hearing', (req,res) => {
+    userApiData.captureRequestDetails("OnPostHearing", req)
     res.send({
         "hearingRequestID": 2000006340,
         "status": "HEARING_REQUESTED",

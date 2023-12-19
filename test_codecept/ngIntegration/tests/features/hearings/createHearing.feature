@@ -1,8 +1,8 @@
 
-@ng @functional_enabled  
+@ng @functional_enabled
 Feature: Create hearings workflow
 
-
+    @functional_debug
     Scenario: Create hearing , input combo 1
         Given I set MOCK with user details
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |
@@ -24,7 +24,23 @@ Feature: Create hearings workflow
         When I open first case in case list page
         Then I see case details page
         Then I see case details tab label "Hearings" is displayed is "true"
+
+        Given I set mock hearings service hearing values with ref "partiesUpdated"
+        Given I update mock hearings service hearing values with ref "partiesUpdated" for field "parties"
+            | partyName   |partyID|
+            | Party1 name | party_1 |
+            | Party2 name | party_2 |
+
+        Given I update mock hearings service hearing values with ref "partiesUpdated" for field "caseFlags"
+            | partyId | partyName   | flagParentId | flagId | flagDescription | flagStatus |
+            | party_1 | Party1 name | PARENT_0 | RA0042 | Party1 comment | ACTIVE |
+            | party_2 | Party2 name | PARENT_0 | RA0042 | Party2 comment | ACTIVE |
+            | party_1 | Party1 name | PARENT_0 | RA0053 | Party1 comment | ACTIVE |
+            | party_2 | Party2 name | PARENT_0 | RA0053 | Party2 comment | ACTIVE |
+
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+
+
         When I click Request a hearing button
         Then I see create hearing workflow container
 
@@ -50,15 +66,15 @@ Feature: Create hearings workflow
         # Participant attendance
         Then I am on create hearing page "Participant attendance"
         When In create hearing page "Participant attendance", I input values
-            | field                                                    | value                                                      |
-            | Will this be a paper hearing?                            | No                                                         |
-            | What will be the methods of attendance for this hearing? | Hearing channel 1,Hearing channel 2                        |
-            | How will each participant attend the hearing?            | First Applicant FN First Applicant LN,Hearing channel 1    |
-            | How will each participant attend the hearing?            | Solicitor First Name Solicitor Last Name,Hearing channel 1 |
-            | How will each participant attend the hearing?            | Mary Richards,Hearing channel 1                            |
-            | How will each participant attend the hearing?            | Elise Lynn,Hearing channel 1                               |
-            | How will each participant attend the hearing?            | David Carman,Hearing channel 1                             |
-            | How many people will attend the hearing in person?       | 5                                                          |
+            | field                                                    | value                                            |
+            | Will this be a paper hearing?                            | No                                               |
+            | What will be the methods of attendance for this hearing? | Hearing channel 1,Hearing channel 2              |
+            | How will each participant attend the hearing?            | Party1 name FN Party1 name LN,Hearing channel 1 |
+            | How will each participant attend the hearing?            | Party2 name FN Party2 name LN,Hearing channel 1  |
+            # | How will each participant attend the hearing?            | Mary Richards,Hearing channel 1                            |
+            # | How will each participant attend the hearing?            | Elise Lynn,Hearing channel 1                               |
+            # | How will each participant attend the hearing?            | David Carman,Hearing channel 1                             |
+            | How many people will attend the hearing in person?       | 2                                                |
         When I click continue in create hearing workflow
 
         # What are the hearing venue details?
@@ -124,7 +140,7 @@ Feature: Create hearings workflow
             | Participant attendance                     | Will this be a paper hearing?                            | No                                  |
             | Participant attendance                     | What will be the methods of attendance for this hearing? | Hearing channel 1,Hearing channel 2 |
             # | Participant attendance                     | How will each participant attend the hearing?            |       |
-            | Participant attendance                     | How many people will attend the hearing in person?       | 5                                   |
+            | Participant attendance                     | How many people will attend the hearing in person?       | 2                                   |
             # | Hearing venue                              | What are the hearing venue details?                      |       |
             | Judge details                              | Do you want a specific judge?                            | No                                  |
             | Judge details                              | Select all judge types that apply                        | Judge type 1,Judge type 2           |
@@ -137,10 +153,18 @@ Feature: Create hearings workflow
 
 
         When In create hearing work flow, I click submit request
+
         Then I am on create hearing page "Hearing request submitted"
 
+        Given I captured "OnPostHearing" request body from mock
+        # Then I validate hearings request body "OnPutHearing"
 
-   
+        # Then debug sleep minutes 30
+
+        Then I validate request body json "OnPostHearing", jsonpaths
+            | jsonpath                                                     | value  |
+            | $.partyDetails[0].individualDetails.reasonableAdjustments[0] | RA0042 |
+
     Scenario: Create hearing , input combo 2
 
         Given I set MOCK with user details
@@ -257,30 +281,30 @@ Feature: Create hearings workflow
 
 
         Then In create hearing workflow, I validate check yoor answers displayed
-            | section                                    | field                                                    | value                               |
-            |                                            | Case name                                                | 1690                                |
-            |                                            | Case number                                              | 1690-                               |
+            | section                                    | field                                                    | value                                                      |
+            |                                            | Case name                                                | 1690                                                       |
+            |                                            | Case number                                              | 1690-                                                      |
             # |                                            | Type                                                     |                                     |
-            | Hearing requirements                       | Reasonable adjustments                                   |                                     |
-            | Additional facilities                      | Will additional security be required?                    | No                                  |
-            | Additional facilities                      | Select any additional facilities required                | Facility 1,Facility 2               |
-            | Stage                                      | What stage is this hearing at?                           | Breach 1                            |
-            | Participant attendance                     | Will this be a paper hearing?                            | No                                  |
-            | Participant attendance                     | What will be the methods of attendance for this hearing? | Hearing channel 1,Hearing channel 2 |
+            | Hearing requirements                       | Reasonable adjustments                                   |                                                            |
+            | Additional facilities                      | Will additional security be required?                    | No                                                         |
+            | Additional facilities                      | Select any additional facilities required                | Facility 1,Facility 2                                      |
+            | Stage                                      | What stage is this hearing at?                           | Breach 1                                                   |
+            | Participant attendance                     | Will this be a paper hearing?                            | No                                                         |
+            | Participant attendance                     | What will be the methods of attendance for this hearing? | Hearing channel 1,Hearing channel 2                        |
             # | Participant attendance                     | How will each participant attend the hearing?            |       |
-            | Participant attendance                     | How many people will attend the hearing in person?       | 5                                   |
+            | Participant attendance                     | How many people will attend the hearing in person?       | 5                                                          |
             # | Hearing venue                              | What are the hearing venue details?                      |       |
-            | Judge details                              | Do you want a specific judge?                            | Yes                                 |
-            | Judge details                              | Name of the judge                                        | auto test 0 judge 0                 |
+            | Judge details                              | Do you want a specific judge?                            | Yes                                                        |
+            | Judge details                              | Name of the judge                                        | auto test 0 judge 0                                        |
             # | Judge details                              | Select all judge types that apply                        |       |
             # | Panel details                              | Do you require a panel for this hearing?                 |   Yes    |
             # | Panel members | Do you require a panel for this hearing? | Yes |
-            | Length, date and priority level of hearing | Length of hearing                                        |    1 Day 2 Hours 5 Minutes   |
-            | Length, date and priority level of hearing | Does the hearing need to take place on a specific date? | Yes,The first date of the hearing must be,01 February 2024 |
+            | Length, date and priority level of hearing | Length of hearing                                        | 1 Day 2 Hours 5 Minutes                                    |
+            | Length, date and priority level of hearing | Does the hearing need to take place on a specific date?  | Yes,The first date of the hearing must be,01 February 2024 |
 
-            | Length, date and priority level of hearing | What is the priority of this hearing?                    | Hearing priority 1                  |
-            | Linked hearings                            | Will this hearing need to be linked to other hearings?   | Yes                                 |
-            | Additional instructions                    | Enter any additional instructions for the hearing        | test instructions             |
+            | Length, date and priority level of hearing | What is the priority of this hearing?                  | Hearing priority 1 |
+            | Linked hearings                            | Will this hearing need to be linked to other hearings? | Yes                |
+            | Additional instructions                    | Enter any additional instructions for the hearing      | test instructions  |
 
 
         When In create hearing work flow, I click submit request
@@ -351,15 +375,15 @@ Feature: Create hearings workflow
         # What are the hearing venue details?
         Then I am on create hearing page "What are the hearing venue details?"
         When In create hearing page "What are the hearing venue details?", I input values
-            | field                         | value                 |
+            | field                         | value                     |
             | Search for a location by name | Wal,IA Court Center Wales |
         When I click continue in create hearing workflow
 
 
         Then I am on create hearing page "Does this hearing need to be in Welsh?"
         When In create hearing page "Does this hearing need to be in Welsh?", I input values
-            | field                         | value                     |
-            | Does this hearing need to be in Welsh? | Yes |
+            | field                                  | value |
+            | Does this hearing need to be in Welsh? | Yes   |
         When I click continue in create hearing workflow
 
         # Do you want a specific judge?
@@ -384,13 +408,13 @@ Feature: Create hearings workflow
         # What are the hearing venue details?
         Then I am on create hearing page "Length, date and priority level of hearing"
         When In create hearing page "Length, date and priority level of hearing", I input values
-            | field                                                   | value              |
-            | Length of hearing                                       | 1,2,5              |
+            | field                                                   | value               |
+            | Length of hearing                                       | 1,2,5               |
             | Does the hearing need to take place on a specific date? | Choose a date range |
-            | Earliest start date | 1,8,2024 |
-            | Latest end date | 1,9,2024 |
+            | Earliest start date                                     | 1,8,2024            |
+            | Latest end date                                         | 1,9,2024            |
 
-            | What is the priority of this hearing?                   | Hearing priority 1 |
+            | What is the priority of this hearing? | Hearing priority 1 |
         When I click continue in create hearing workflow
 
         # Length, date and priority level of hearing
@@ -413,28 +437,28 @@ Feature: Create hearings workflow
 
 
         Then In create hearing workflow, I validate check yoor answers displayed
-            | section                                    | field                                                    | value                                                      |
-            |                                            | Case name                                                | 1690                                                       |
-            |                                            | Case number                                              | 1690-                                                      |
+            | section                | field                                                    | value                               |
+            |                        | Case name                                                | 1690                                |
+            |                        | Case number                                              | 1690-                               |
             # |                                            | Type                                                     |                                     |
-            | Hearing requirements                       | Reasonable adjustments                                   |                                                            |
-            | Additional facilities                      | Will additional security be required?                    | No                                                         |
-            | Additional facilities                      | Select any additional facilities required                | Facility 1,Facility 2                                      |
-            | Stage                                      | What stage is this hearing at?                           | Breach 1                                                   |
-            | Participant attendance                     | Will this be a paper hearing?                            | No                                                         |
-            | Participant attendance                     | What will be the methods of attendance for this hearing? | Hearing channel 1,Hearing channel 2                        |
+            | Hearing requirements   | Reasonable adjustments                                   |                                     |
+            | Additional facilities  | Will additional security be required?                    | No                                  |
+            | Additional facilities  | Select any additional facilities required                | Facility 1,Facility 2               |
+            | Stage                  | What stage is this hearing at?                           | Breach 1                            |
+            | Participant attendance | Will this be a paper hearing?                            | No                                  |
+            | Participant attendance | What will be the methods of attendance for this hearing? | Hearing channel 1,Hearing channel 2 |
             # | Participant attendance                     | How will each participant attend the hearing?            |       |
-            | Participant attendance                     | How many people will attend the hearing in person?       | 5                                                          |
+            | Participant attendance | How many people will attend the hearing in person?       | 5                                   |
             # | Hearing venue                              | What are the hearing venue details?                      |       |
-            | Judge details                              | Do you want a specific judge?                            | Yes                                                        |
-            | Judge details                              | Name of the judge                                        | auto test 0 judge 0                                        |
+            | Judge details          | Do you want a specific judge?                            | Yes                                 |
+            | Judge details          | Name of the judge                                        | auto test 0 judge 0                 |
             # | Judge details                              | Select all judge types that apply                        |       |
             # | Panel details                              | Do you require a panel for this hearing?                 | Yes                                                        |
             # | Panel details | Include specific panel members | auto test 1 judge 1 |
             # | Panel details | Exclude specific panel members | auto test 2 judge 2 |
 
-            | Length, date and priority level of hearing | Length of hearing                                        | 1 Day 2 Hours 5 Minutes                                    |
-            | Length, date and priority level of hearing | Does the hearing need to take place on a specific date?  | Choose a date range,Earliest start date: 01 August 2024, Latest end date: 01 September 2024 |
+            | Length, date and priority level of hearing | Length of hearing                                       | 1 Day 2 Hours 5 Minutes                                                                     |
+            | Length, date and priority level of hearing | Does the hearing need to take place on a specific date? | Choose a date range,Earliest start date: 01 August 2024, Latest end date: 01 September 2024 |
 
             | Length, date and priority level of hearing | What is the priority of this hearing?                  | Hearing priority 1 |
             | Linked hearings                            | Will this hearing need to be linked to other hearings? | Yes                |

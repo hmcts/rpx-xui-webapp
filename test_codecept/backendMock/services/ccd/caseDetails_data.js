@@ -22,6 +22,8 @@ class CaseDetailsData{
        
     }
 
+  
+
     setupQMCase(){
         this.setCaseTypeProperties(this.qmCase, {
             id: 'Asylum',
@@ -61,6 +63,15 @@ class CaseDetailsData{
         this.caseFileViewCase.tabs.push(caseFileViewTabConfig);
     }
 
+    setupCaseFlagsCase() {
+        this.setCaseTypeProperties(this.caseFlagsCase, {
+            id: 'PRLAPPS',
+            name: 'Immigration & Asylum',
+            "jurisdiction.id": 'PRIVATELAW'
+        })
+
+        this.caseFlagsCase.tabs.push(caseFlagsTabConfig);
+    }
 
     setupCaseFlagsCase() {
         this.setCaseTypeProperties(this.caseFlagsCase, {
@@ -208,7 +219,7 @@ function getTemplate(){
             "description": "IA test casey",
             "jurisdiction": {
                 "id": "IA",
-                "name": "mmigration & Asylum",
+                "name": "Immigration & Asylum",
                 "description": "mmigration & Asylum"
             },
             "printEnabled": false

@@ -178,7 +178,7 @@ describe('HearingRequirementsComponent', () => {
     caseFlags: {
       flags: [
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'RA0008',
           flagId: 'RA0042',
@@ -186,7 +186,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'RA0032',
           flagId: 'RA0053',
@@ -194,7 +194,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'RA0002',
           flagId: 'RA0013',
@@ -202,7 +202,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'RA0003',
           flagId: 'RA0016',
@@ -210,7 +210,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'RA0008',
           flagId: 'RA0042',
@@ -218,7 +218,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'PF0001',
           flagId: 'PF0015',
@@ -226,7 +226,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'PF0001',
           flagId: 'PF0002',
@@ -234,7 +234,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P2',
+          partyId: 'P2',
           partyName: 'DWP',
           flagParentId: 'RA0001',
           flagId: 'RA0005',
@@ -242,7 +242,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P2',
+          partyId: 'P2',
           partyName: 'DWP',
           flagParentId: 'PF0001',
           flagId: 'PF0011',
@@ -250,7 +250,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P2',
+          partyId: 'P2',
           partyName: 'Jane Smith vs DWP',
           flagParentId: 'CF0001',
           flagId: 'CF0002',
@@ -258,7 +258,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P2',
+          partyId: 'P2',
           partyName: 'Jane Smith vs DWP',
           flagParentId: 'CF0001',
           flagId: 'CF0006',
@@ -266,7 +266,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P2',
+          partyId: 'P2',
           partyName: 'Jane Smith vs DWP',
           flagParentId: 'CF0001',
           flagId: 'CF0007',
@@ -2169,7 +2169,7 @@ describe('HearingRequirementsComponent', () => {
 
   const caseFlagsFromLatestSHV: PartyFlagsModel[] = [
     {
-      partyID: 'P1',
+      partyId: 'P1',
       partyName: 'Jane Smith',
       flagParentId: 'RA0008',
       flagId: 'RA0042',
@@ -2177,7 +2177,7 @@ describe('HearingRequirementsComponent', () => {
       flagStatus: 'ACTIVE'
     },
     {
-      partyID: 'P2',
+      partyId: 'P2',
       partyName: 'Jane Smith vs DWP',
       flagParentId: 'CF0001',
       flagId: 'CF0006',
@@ -2185,7 +2185,7 @@ describe('HearingRequirementsComponent', () => {
       flagStatus: 'ACTIVE'
     },
     {
-      partyID: 'P3',
+      partyId: 'P3',
       partyName: 'Jane Smith vs DWP',
       flagParentId: 'CF0001',
       flagId: 'CF0007',

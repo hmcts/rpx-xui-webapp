@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { ACTION, HearingChannelEnum, Mode, PartyType, RadioOptions } from '../../../models/hearings.enum';
 import { IndividualDetailsModel } from '../../../models/individualDetails.model';
@@ -28,13 +29,13 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   public selectionValid: boolean = true;
   public isAttendanceSelected: boolean = true;
 
-  constructor(
+  constructor(private readonly validatorsUtils: ValidatorsUtils,
+    private readonly fb: FormBuilder,
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
-    private readonly validatorsUtils: ValidatorsUtils,
-    private readonly fb: FormBuilder,
+    protected readonly featureToggleService: FeatureToggleService,
     protected readonly route: ActivatedRoute) {
-    super(hearingStore, hearingsService, route);
+    super(hearingStore, hearingsService, featureToggleService, route);
     this.hearingLevelChannels = this.route.snapshot.data.hearingChannels.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR && channel.key !== HearingChannelEnum.NotAttending);
     this.partyChannels = this.route.snapshot.data.hearingChannels.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR);
     this.attendanceFormGroup = fb.group({
@@ -62,7 +63,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
 
   public ngOnInit(): void {
     if (!this.hearingRequestMainModel.partyDetails.length || (this.hearingCondition.mode === Mode.VIEW_EDIT &&
-      this.hearingsService.propertiesUpdatedOnPageVisit.hasOwnProperty('parties'))) {
+      this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('parties'))) {
       this.initialiseFromHearingValues();
     } else {
       this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND)
@@ -86,7 +87,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
 
   public initialiseFromHearingValues() {
     const parties = this.hearingCondition.mode === Mode.VIEW_EDIT &&
-      this.hearingsService.propertiesUpdatedOnPageVisit.hasOwnProperty('parties')
+      this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('parties')
       ? this.hearingsService.propertiesUpdatedOnPageVisit.parties
       : this.serviceHearingValuesModel.parties;
 
@@ -121,9 +122,9 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
 
   public getIndividualParties(): PartyDetailsModel[] {
     const individualParties: PartyDetailsModel[] = [];
-    const onPeperHearing = this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES;
+    const onPaperHearing = this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES;
     (this.attendanceFormGroup.controls.parties as FormArray).controls.forEach((control) => {
-      if (onPeperHearing) {
+      if (onPaperHearing) {
         control.value.individualDetails.preferredHearingChannel = 'NA';
       }
       const partyDetail: PartyDetailsModel = {

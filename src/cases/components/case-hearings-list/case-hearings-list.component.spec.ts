@@ -852,7 +852,7 @@ describe('CaseHearingsListComponent', () => {
     expect(addOrEdit12).toBeNull();
   });
 
-  it('should show view details actioins if feature toggle is on', () => {
+  it('should show view details actions if feature toggle is on', () => {
     featureToggleServiceMock.isEnabled.and.returnValue(of(true));
     component.status = EXUISectionStatusEnum.UPCOMING;
     component.actions = [Actions.CREATE, Actions.DELETE, Actions.UPDATE, Actions.READ];
@@ -863,11 +863,11 @@ describe('CaseHearingsListComponent', () => {
 
     const dispatchSpy = spyOn(mockStore, 'dispatch');
     spyOn(mockStore, 'select').and.returnValue(of(null));
-    const loadHearingRequestServiceHearingValuesAndRedirect = spyOn(component, 'loadHearingRequestServiceHearingValuesAndRedirect');
+    const loadHearingRequestAndRedirect = spyOn(component, 'loadHearingRequestAndRedirect');
     component.viewAndEdit('h100000');
     fixture.detectChanges();
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view' })));
-    expect(loadHearingRequestServiceHearingValuesAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/view/hearing-view-summary');
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view-edit', isHearingAmendmentsEnabled: true })));
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/view/hearing-view-summary');
   });
 
   it('should return the right flag depends on hearingGroupRequestId', () => {
@@ -879,17 +879,11 @@ describe('CaseHearingsListComponent', () => {
   it('should viewAndEdit', () => {
     const dispatchSpy = spyOn(mockStore, 'dispatch');
     spyOn(mockStore, 'select').and.returnValue(of(null));
-    const loadHearingRequestServiceHearingValuesAndRedirect = spyOn(component, 'loadHearingRequestServiceHearingValuesAndRedirect');
+    const loadHearingRequestAndRedirect = spyOn(component, 'loadHearingRequestAndRedirect');
     component.status = EXUISectionStatusEnum.UPCOMING;
     component.viewAndEdit('h100000');
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view' })));
-    expect(loadHearingRequestServiceHearingValuesAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/request/hearing-view-edit-summary');
-  });
-
-  it('should dispatch load hearing request and service hearing values actions', () => {
-    const dispatchSpy = spyOn(mockStore, 'dispatch');
-    component.loadHearingRequestServiceHearingValuesAndRedirect('h100000', '/hearings/request/hearing-view-edit-summary');
-    expect(dispatchSpy).toHaveBeenCalledTimes(2);
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view-edit', isHearingAmendmentsEnabled: false })));
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/request/hearing-view-edit-summary');
   });
 
   it('should cancelHearing', () => {
@@ -901,7 +895,7 @@ describe('CaseHearingsListComponent', () => {
    *  and had to comment it out due to business priority in releasing
    *  the feature. This test should be looked at later.
    */
-  xit('should addAndEdit', () => {
+  it('should addAndEdit', () => {
     component.addAndEdit('h100000');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'actuals', 'h100000', 'hearing-actual-add-edit-summary']);
   });

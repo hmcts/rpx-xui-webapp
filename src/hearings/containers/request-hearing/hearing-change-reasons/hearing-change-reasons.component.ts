@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
+import { AppConstants } from '../../../../app/app.constants';
 import { ACTION, HearingChangeReasonMessages, HearingSummaryEnum } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
@@ -20,18 +22,24 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
   public selectionValid: boolean = true;
   public hearingRequestLastError$: Observable<fromHearingStore.State>;
   public lastErrorSubscription: Subscription;
+  public featureToggleServiceSubscription: Subscription;
   public hearingChangeReasonMessages = HearingChangeReasonMessages;
+  public isHearingAmendmentsEnabled: boolean;
 
-  constructor(protected readonly route: ActivatedRoute,
+  constructor(private readonly formBuilder: FormBuilder,
               protected readonly router: Router,
-              private readonly formBuilder: FormBuilder,
               protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService) {
-    super(hearingStore, hearingsService);
+              protected readonly hearingsService: HearingsService,
+              protected readonly featureToggleService: FeatureToggleService,
+              protected readonly route: ActivatedRoute) {
+    super(hearingStore, hearingsService, featureToggleService, route);
     this.hearingRequestLastError$ = this.hearingStore.pipe(select(fromHearingStore.getHearingRequestLastError));
   }
 
   public ngOnInit(): void {
+    this.featureToggleServiceSubscription = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
+      this.isHearingAmendmentsEnabled = enabled;
+    });
     this.lastErrorSubscription = this.hearingRequestLastError$.subscribe((lastError) => {
       if (lastError) {
         this.errors = [{
@@ -109,10 +117,17 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
     return chosenReasons;
   }
 
-  public ngOnDestroy(): void {
-    if (this.lastErrorSubscription) {
-      this.lastErrorSubscription.unsubscribe();
+  public onBackToSummaryPage(): void {
+    if (this.isHearingAmendmentsEnabled) {
+      this.router.navigateByUrl('/hearings/request/hearing-edit-summary');
+    } else {
+      this.router.navigateByUrl('/hearings/request/hearing-view-edit-summary');
     }
+  }
+
+  public ngOnDestroy(): void {
+    this.lastErrorSubscription?.unsubscribe();
+    this.featureToggleServiceSubscription?.unsubscribe();
     super.unsubscribe();
   }
 }

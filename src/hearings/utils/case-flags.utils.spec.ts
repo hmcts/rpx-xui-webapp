@@ -5,7 +5,7 @@ import { CASE_FLAG_REFERENCE_VALUES } from '../../../api/prd/caseFlag/data/caseF
 import { CaseFlagReferenceModel } from '../models/caseFlagReference.model';
 import { PartyType } from '../../../api/hearings/models/hearings.enum';
 
-fdescribe('CaseFlagsUtils', () => {
+describe('CaseFlagsUtils', () => {
   const caseFlagReferenceModels: CaseFlagReferenceModel[] = CASE_FLAG_REFERENCE_VALUES;
   const partyDetails = [
     {

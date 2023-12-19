@@ -12,32 +12,16 @@ const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_task_rol
 const taskId = '4d4b6fgh-c91f-433f-92ac-e456ae34f72a';
 
 describe('Task management api, task roles', () => {
-  const RESPONSE_BODY = { roles: [] };
-
-  const roles = [
-    { roleName: 'case-worker', roleCategory: 'LEGAL_OPERATIONS' }
-    // { roleName: 'lead-judge', roleCategory: 'JUDICIAL' },
-    // { roleName: 'hearing-judge', roleCategory: 'JUDICIAL' }
-  ];
-
-  for (const role of roles) {
-    const testRole = {
-      role_category: somethingLike(role.roleCategory),
-      role_name: somethingLike(role.roleName),
-      permissions: [
-        somethingLike('OWN'),
-        somethingLike('EXECUTE'),
-        somethingLike('READ'),
-        somethingLike('MANAGE'),
-        somethingLike('CANCEL')
-      ],
-      authorisations: [
-        somethingLike('IAC'),
-        somethingLike('SSCS')
-      ]
-    };
-    RESPONSE_BODY.roles.push(testRole);
+  const RESPONSE_BODY = { roles: eachLike({
+    role_category: somethingLike('test-role-cat'),
+    role_name: somethingLike('test-role-name'),
+    permissions: eachLike('READ'),
+    authorisations: eachLike('IAC')
   }
+  ) };
+
+
+
 
   describe('get /work-types', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();

@@ -13,7 +13,7 @@ describe('S2S Auth API', () => {
       microservice: 'xui-webapp', oneTimePassword: 'exPassword'
     };
 
-    const mockResponse = somethingLike('ABCDEF123');
+    const mockResponse = somethingLike('sometoken');
 
     before(async () => {
       await pactSetUp.provider.setup();
@@ -31,7 +31,7 @@ describe('S2S Auth API', () => {
         },
         willRespondWith: {
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'text/plain'
           },
           status: 200,
           body: mockResponse
@@ -58,5 +58,5 @@ describe('S2S Auth API', () => {
 });
 
 function assertResponse(dto: S2SResponse) {
-  expect(dto).to.be.equal('ABCDEF123');
+  expect(dto).to.be.equal('sometoken');
 }

@@ -20,9 +20,6 @@ describe('Task management api, task roles', () => {
   }
   ) };
 
-
-
-
   describe('get /work-types', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
     let next;

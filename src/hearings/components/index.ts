@@ -32,7 +32,7 @@ export const components: any[] = [
   HearingActualSummaryComponent,
   LinkedHearingsCaseTitleComponent,
   HearingActualSummarySingleDayComponent,
-  WarningAndErrorSectionComponent, 
+  WarningAndErrorSectionComponent,
   AmendmentLabelComponent
 ];
 

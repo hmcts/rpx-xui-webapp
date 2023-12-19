@@ -1,10 +1,10 @@
 
-@ng @functional_enabled
-Feature: Hearings: Semi automatic updates
+@ng @functional_enabled 
+Feature: Hearings CR84 OFF: View or edit action
 
 
-    Scenario: Hearing semi automatic updates display of Case flags and parties
-        Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_ON"
+    Scenario: Hearing View or edit action
+        Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_OFF"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                      |
 
@@ -19,6 +19,12 @@ Feature: Hearings: Semi automatic updates
             | COMPLETED        | TEST_TYPE             | -5                     | -1                           | 2                                       | 4                                     |
             | CANCELLED        | TEST_TYPE             | -5                     | -1                           | 2                                       | 4                                     |
             | AWAITING_ACTUALS | TEST_AWAITING_HEARING | -5                     | -1                           | 2                                       | 4                                     |
+
+        Given I set mock get hearing with with status "LISTED" and values at jsonpath
+            | jsonpath                            | value                 |
+            | $.caseDetails.hmctsInternalCaseName | 1234567812345678      |
+            | $.caseDetails.publicCaseName        | Mock case public name |
+            | $.hearingDetails.hearingType        | ABA5-ABC              |
 
         Given I start MockApp
         Given I navigate to home page
@@ -42,38 +48,35 @@ Feature: Hearings: Semi automatic updates
             | partyID | partyName   | flagParentId | flagId | flagDescription | flagStatus |
             | party_1 | Party1 name | PARENT_0     | RA001  | Party1 comment  | ACTIVE     |
             | party_2 | Party2 name | PARENT_0     | RA001  | Party2 comment  | ACTIVE     |
-            | party_1 | Party1 name | PARENT_0 | OT001 | Party1 comment | ACTIVE |
-            | party_2 | Party2 name | PARENT_0 | OT001 | Party2 comment | ACTIVE |
+            | party_1 | Party1 name | PARENT_0     | OT001  | Party1 comment  | ACTIVE     |
+            | party_2 | Party2 name | PARENT_0     | OT001  | Party2 comment  | ACTIVE     |
 
-        When In hearings tab, I click action "View details" for hearing "TEST_TYPE" under table "Current and upcoming"
+        When In hearings tab, I click action "View or edit" for hearing "TEST_TYPE" under table "Current and upcoming"
 
         Then I validate view or edit hearing page displayed
-        Then I validate view hearing page Edit hearing button displayed is "true"
-        When In view hearing page, I click Edit hearing button
-        Then I validate Edit hearing page displayed
 
-        
+
         Then I validate fields displayed in view or edit hearing page
-            | field                                 | value     | changeLinkDisplay | amendedFlagDisplay |
-            | Status                                | COMPLETED | false             | false              |
-            | Will additional security be required? | No        | true              | false              |
+            | field                                 | value  | changeLinkDisplay | amendedFlagDisplay |
+            | Status                                | LISTED | false             | false              |
+            | Will additional security be required? | No     | true              | false              |
 
 
         When In view or edit hearing page, I click change link for field "Reasonable adjustments"
         Then I am on hearings workflow page "Hearing requirements"
         Then In hearings requirements page, I see case flags displayed for parties
-            | partyName     |
-            | Party1 name|
-            | Party2 name|
+            | partyName   |
+            | Jane Smith |
+
         When I click continue in hearing workflow
         Then I validate view or edit hearing page displayed
 
         When In view or edit hearing page, I click change link for field "Select any additional facilities required"
         Then I am on hearings workflow page "Do you require any additional facilities?"
         Then In additional facilities page, I see case flags displayed for parties
-            | partyName     |
-            | Party1 name|
-            | Party2 name|
+            | partyName   |
+            | Jane Smith 2 |
+
         When I click continue in hearing workflow
         Then I validate view or edit hearing page displayed
 
@@ -85,15 +88,18 @@ Feature: Hearings: Semi automatic updates
             | Will this be a paper hearing? | No    |
         Then In hearings Participant attendance page, I see parties
             | partyName   |
-            | Party1 name |
-            | Party2 name |
+            | ApplC10001Fn ApplC10001Ln |
+            | TestC10001RepFn TestC10001RepLn |
+            | TestC10001RespFn TestC10001RespLn |
+
 
         When In hearing page "Participant attendance", I input values
             | field                                                    | value                               |
             | Will this be a paper hearing?                            | No                                  |
             | What will be the methods of attendance for this hearing? | Hearing channel 1,Hearing channel 2 |
-            | How will each participant attend the hearing?            | Party1 name,Hearing channel 1       |
-            | How will each participant attend the hearing?            | Party2 name,Hearing channel 1       |
+            | How will each participant attend the hearing? | ApplC10001Fn ApplC10001Ln,Hearing channel 1 |
+            | How will each participant attend the hearing? | TestC10001RepFn TestC10001RepLn,Hearing channel 1 |
+            | How will each participant attend the hearing? | TestC10001RespFn TestC10001RespLn,Hearing channel 1 |
             | How many people will attend the hearing in person?       | 2                                   |
         When I click continue in hearing workflow
         Then I validate view or edit hearing page displayed
@@ -112,9 +118,8 @@ Feature: Hearings: Semi automatic updates
 
         Then I validate request body json "OnPutHearing", jsonpaths
             | jsonpath                     | value       |
-            | $.requestDetails.status      | COMPLETED   |
-            | $.hearingDetails.hearingType | ABA5-DIR    |
-            | $.partyDetails[0].partyName  | Party1 name |
-            | $.partyDetails[1].partyName  | Party2 name |
+            | $.requestDetails.status      | LISTED      |
+            | $.hearingDetails.hearingType | ABA5-ABC    |
+            | $.partyDetails[0].partyName | ApplC10001Fn ApplC10001Ln |
 
 

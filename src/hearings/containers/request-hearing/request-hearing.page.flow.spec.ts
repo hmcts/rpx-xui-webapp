@@ -56,10 +56,11 @@ describe('RequestHearingPageFlow', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
+  const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
 
   beforeEach(() => {
     mockStore.pipe.and.returnValue(of(hearingState));
-    requestHearingPageFlow = new RequestHearingPageFlowSpec(mockStore, hearingsService);
+    requestHearingPageFlow = new RequestHearingPageFlowSpec(mockStore, hearingsService, mockFeatureToggleService);
   });
 
   it('should navigate continue', () => {

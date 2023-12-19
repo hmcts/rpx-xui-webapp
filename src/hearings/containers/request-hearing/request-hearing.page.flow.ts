@@ -1,4 +1,5 @@
 import { ActivatedRoute } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { HearingConditions } from '../../models/hearingConditions';
@@ -19,6 +20,7 @@ export abstract class RequestHearingPageFlow {
 
   public constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
                      protected readonly hearingsService: HearingsService,
+                     protected readonly featureToggleService: FeatureToggleService,
                      protected readonly route?: ActivatedRoute) {
     this.navigationSub = this.hearingsService.navigateAction$.subscribe(
       (action: ACTION) => this.executeAction(action)

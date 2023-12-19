@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -28,13 +28,14 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   public selectedLocations: LocationByEPIMMSModel[];
   public validationErrors: { id: string, message: string }[] = [];
 
-  constructor(public readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly fb: FormBuilder,
+  constructor(private readonly fb: FormBuilder,
+              protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
               protected readonly locationsDataService: LocationsDataService,
+              protected readonly featureToggleService: FeatureToggleService,
               protected readonly route: ActivatedRoute) {
-    super(hearingStore, hearingsService, route);
-    this.findLocationFormGroup = fb.group({
+    super(hearingStore, hearingsService, featureToggleService, route);
+    this.findLocationFormGroup = this.fb.group({
       locationSelectedFormControl: [null, Validators.required]
     });
 

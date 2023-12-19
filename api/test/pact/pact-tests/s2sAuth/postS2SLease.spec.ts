@@ -13,14 +13,12 @@ describe('S2S Auth API', () => {
       microservice: 'xui-webapp', oneTimePassword: 'exPassword'
     };
 
-    const mockResponse = {
-      token: somethingLike('ABCDEF123')
-    };
+    const mockResponse = somethingLike('ABCDEF123');
 
     before(async () => {
       await pactSetUp.provider.setup();
       const interaction = {
-        state: 'Generate S2S token',
+        state: 'microservice with valid credentials',
         uponReceiving: 'The url, the password and microservice',
         withRequest: {
           method: 'POST',
@@ -60,5 +58,5 @@ describe('S2S Auth API', () => {
 });
 
 function assertResponse(dto: S2SResponse) {
-  expect(dto.token).to.be.equal('ABCDEF123');
+  expect(dto).to.be.equal('ABCDEF123');
 }

@@ -5,6 +5,7 @@ import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactTestSetup } from '../settings/provider.mock';
 import { getWorkAllocationAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
+import { eachLike } from '@pact-foundation/pact/src/dsl/matchers';
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 
@@ -94,7 +95,12 @@ describe('Task management api, work types', () => {
         willRespondWith: {
           status: 200,
           headers: {},
-          body: RESPONSE_BODY
+          body: {
+            work_types: eachLike({
+              id: somethingLike('worktype-id'),
+              label: somethingLike('worktype-label')
+            })
+          }
         }
       };
       // @ts-ignore
@@ -144,5 +150,5 @@ describe('Task management api, work types', () => {
 });
 
 function assertResponses(dto: any) {
-  expect(dto[0].key).to.be.equal('hearing_work');
+  expect(dto[0].key).to.be.equal('worktype-id');
 }

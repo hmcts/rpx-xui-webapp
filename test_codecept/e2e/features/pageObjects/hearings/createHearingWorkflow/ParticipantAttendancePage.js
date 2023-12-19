@@ -42,7 +42,7 @@ class ParticipantAttendancePage {
             case "How many people will attend the hearing in person?":
                 await this.enterAttendanceNumber(value)
                 break;
-          
+
             default:
                 throw new Error(`${field} is not recognised`)
         }

@@ -48,6 +48,12 @@ class ServiceMock{
     }
 
 
+    async addRoleAssignments(data) {
+        await this.updateMockServer('AddMockRoleAssignments', { status: 200, data: data })
+    }
+
+
+
 }
 
 module.exports =  new ServiceMock()

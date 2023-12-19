@@ -15,7 +15,7 @@ describe('Task management api, task roles', () => {
   const RESPONSE_BODY = { roles: [] };
 
   const roles = [
-    { roleName: 'case-worker', roleCategory: 'LEGAL_OPERATIONS' },
+    { roleName: 'case-worker', roleCategory: 'LEGAL_OPERATIONS' }
     // { roleName: 'lead-judge', roleCategory: 'JUDICIAL' },
     // { roleName: 'hearing-judge', roleCategory: 'JUDICIAL' }
   ];
@@ -64,14 +64,7 @@ describe('Task management api, task roles', () => {
         willRespondWith: {
           status: 200,
           headers: {},
-          body: {
-            roles: eachLike({
-              role_category: somethingLike('role-cat'),
-              role_name: somethingLike('role-name'),
-              permissions: eachLike('Read'),
-              authorisations: eachLike('IAC')
-            })
-          }
+          body: RESPONSE_BODY
         }
       };
       // @ts-ignore

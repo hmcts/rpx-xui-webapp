@@ -1,10 +1,21 @@
 const browserWaits = require('../../../support/customWaits')
 const viewOrEditHearingPage = require('../../pageObjects/hearings/viewOrEditHearingPage')
+const editHearingPage = require('../../pageObjects/hearings/editHearingPage')
+
 const reportLogger = require('../../../../codeceptCommon/reportLogger')
 
 Then('I validate view or edit hearing page displayed', async function(){
     await browserWaits.retryWithActionCallback(async () => {
         expect(await viewOrEditHearingPage.container.isDisplayed()).to.be.true
+        expect(await viewOrEditHearingPage.headerElement.getText()).to.include('View or edit hearing')
+    })
+})
+
+Then('I validate Edit hearing page displayed', async function () {
+    await browserWaits.retryWithActionCallback(async () => {
+        expect(await editHearingPage.container.isDisplayed()).to.be.true
+        expect(await editHearingPage.headerElement.getText()).to.include('Edit hearing')
+
     })
 })
 

@@ -1,9 +1,9 @@
 
-@ng @functional_enabled
-Feature: Hearings: Automatic updates
+@ng @functional_enabled 
+Feature: Hearings CR84: Automatic updates
 
     Scenario: Hearing automatic updates
-        Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_OFF"
+        Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_ON"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                      |
 
@@ -12,7 +12,16 @@ Feature: Hearings: Automatic updates
         Given I set mock case hearings
             | hmcStatus | hearingType | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
             | LISTED    | TEST_TYPE   | -3                     | 0                            | -3                                      | 2                                     |
-      
+
+
+
+        Given I set mock get hearing with with status "LISTED" and values at jsonpath
+            | jsonpath                            | value                 |
+            | $.caseDetails.hmctsInternalCaseName | 1234567812345678      |
+            | $.caseDetails.publicCaseName        | Mock case public name |
+            | $.hearingDetails.hearingType        | ABA5-ABC              |
+
+
         Given I start MockApp
         Given I navigate to home page
         When I click on primary navigation header tab "Case list", I see selected tab page displayed
@@ -57,9 +66,15 @@ Feature: Hearings: Automatic updates
             | $.caseSLAStartDate                                                | 01-01-2024                    |
 
       
-        When In hearings tab, I click action "View or edit" for hearing "TEST_TYPE" under table "Current and upcoming"
+        When In hearings tab, I click action "View details" for hearing "TEST_TYPE" under table "Current and upcoming"
 
-        Then I validate view or edit hearing page displayed
+        Then I validate view hearing page displayed
+        Then I validate view hearing page Edit hearing button displayed is "true"
+        When In view hearing page, I click Edit hearing button
+        Then I validate Edit hearing page displayed
+      
+
+
         Then I validate fields displayed in view or edit hearing page
             | field                                 | value  | changeLinkDisplay | amendedFlagDisplay |
             | Status                                | LISTED | false             | false              |
@@ -83,7 +98,7 @@ Feature: Hearings: Automatic updates
             | How will each participant attend the hearing?            | Party2 name,Hearing channel 1       |
             | How many people will attend the hearing in person?       | 2                                   |
         When I click continue in hearing workflow
-        Then I validate view or edit hearing page displayed
+        Then I validate Edit hearing page displayed
 
         When I click button with label "Submit updated request"
 

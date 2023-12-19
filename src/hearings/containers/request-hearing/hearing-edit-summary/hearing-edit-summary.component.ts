@@ -49,6 +49,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public partyChannelsRefData: LovRefDataModel[];
   public partySubChannelsRefData: LovRefDataModel[];
   public panelRolesRefData: LovRefDataModel[];
+  public isHearingAmendmentsEnabled: boolean;
   public hearingTemplate = HearingTemplate;
   public isPagelessAttributeChanged: boolean = false;
   public displayBanner: boolean = false;
@@ -90,6 +91,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     // Enable hearings manual amendments journey only if the feature is toggled on
     this.featureToggleServiceSubscription = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
+      this.isHearingAmendmentsEnabled = enabled;
       if (enabled) {
         this.setPropertiesUpdatedAutomatically();
       }
@@ -113,14 +115,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public onChange(event: EditHearingChangeConfig): void {
     const hearingCondition: HearingConditions = {
       fragmentId: event.fragmentId,
-      mode: Mode.VIEW_EDIT
+      mode: Mode.VIEW_EDIT,
+      isHearingAmendmentsEnabled: this.isHearingAmendmentsEnabled
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
     this.router.navigateByUrl(event.changeLink);
-  }
-
-  public onSubmit(): void {
-    // TO DO: Will be implemented in one of the ticktes of CR-84
   }
 
   public fragmentFocus(): void {

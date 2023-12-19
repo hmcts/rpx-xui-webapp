@@ -95,7 +95,7 @@ describe('Hearing Request Effects', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: 'venue' });
     });
 
-    it('should navigate to create edit page if on VIEW_EDIT mode', () => {
+    it('should navigate to view edit summary page if on VIEW_EDIT mode', () => {
       effects.mode = Mode.VIEW_EDIT;
       const action = new hearingRequestActions.UpdateHearingRequest(null, hearingConditions);
       actions$ = cold('-a', { a: action });
@@ -103,6 +103,17 @@ describe('Hearing Request Effects', () => {
       const expected = cold('-b', { b: navigateAction });
       expect(effects.continueNavigation$).toBeObservable(expected);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: 'venue' });
+    });
+
+    it('should navigate to edit summary page if on VIEW_EDIT mode', () => {
+      effects.mode = Mode.VIEW_EDIT;
+      effects.isHearingAmendmentsEnabled = true;
+      const action = new hearingRequestActions.UpdateHearingRequest(null, hearingConditions);
+      actions$ = cold('-a', { a: action });
+      const navigateAction = new hearingRequestActions.UpdateHearingRequest(null, hearingConditions);
+      const expected = cold('-b', { b: navigateAction });
+      expect(effects.continueNavigation$).toBeObservable(expected);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-edit-summary'], { fragment: 'venue' });
     });
   });
 

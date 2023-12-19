@@ -79,3 +79,9 @@ export enum AmendmentLabelStatus {
   ACTION_NEEDED = 'ACTION NEEDED',
   AMENDED = 'AMENDED'
 }
+
+export interface ParticipantAttendanceMode {
+  partyName: string;
+  channel: string;
+  partyNameChanged: boolean;
+}

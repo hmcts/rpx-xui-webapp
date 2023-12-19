@@ -15,12 +15,13 @@
     <div class="govuk-summary-list__value">
       <div *ngFor="let partyWithFlag of partyWithFlags | keyvalue">
         <div *ngIf="partyWithFlag.value?.length > 0">
-          <exui-amendment-label [displayLabel]="amendmentLabelEnum.AMENDED">
+          <exui-amendment-label *ngIf="partyWithFlag.value[0].partyNameChanged"
+            [displayLabel]="amendmentLabelEnum.AMENDED">
           </exui-amendment-label>
           <strong class="bold">{{ partyWithFlag.key }}</strong>
           <ul>
             <li *ngFor="let flag of partyWithFlag.value">
-              {{ flag?.name || '' }}
+              {{ flag.name }}
             </li>
           </ul>
         </div>

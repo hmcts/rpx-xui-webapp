@@ -4,9 +4,9 @@
     <main id="content" role="main">
       <a *ngIf="!isConfirmationPage" href="javascript:void(0)" (click)="onBack()" class="govuk-back-link">Back</a>
       <router-outlet></router-outlet>
-      <button *ngIf="!isSummary && !isConfirmationPage && !isViewEditReason" class="govuk-button" data-module="govuk-button" (click)="onContinue()">Continue</button>
+      <button *ngIf="isChildPage" class="govuk-button" data-module="govuk-button" (click)="onContinue()">Continue</button>
       <button *ngIf="isCreateEditSummary" class="govuk-button" data-module="govuk-button" (click)="submitNewRequest()">Submit request</button>
-      <button *ngIf="isViewEditSummary" class="govuk-button" data-module="govuk-button" (click)="submitUpdatedRequest()">Submit updated request</button>
+      <button *ngIf="isViewEditSummary || isEditSummary" class="govuk-button" data-module="govuk-button" (click)="submitUpdatedRequest()">Submit updated request</button>
       <button *ngIf="isViewEditReason" class="govuk-button" data-module="govuk-button" (click)="submitChangeRequest()">Submit change request</button>
     </main>
   </div>

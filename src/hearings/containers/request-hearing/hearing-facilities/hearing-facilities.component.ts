@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { CaseFlagGroup } from '../../../models/caseFlagGroup.model';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
@@ -25,11 +26,12 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   public additionalFacilities: LovRefDataModel[];
   public additionSecurityRequiredValid: boolean = true;
 
-  constructor(protected readonly route: ActivatedRoute,
+  constructor(private fb: FormBuilder,
               protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
-              protected fb: FormBuilder) {
-    super(hearingStore, hearingsService, route);
+              protected readonly featureToggleService: FeatureToggleService,
+              protected readonly route: ActivatedRoute) {
+    super(hearingStore, hearingsService, featureToggleService, route);
     this.additionalFacilities = this.route.snapshot.data.additionFacilitiesOptions;
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
   }
@@ -126,7 +128,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   }
 
   private setNonReasonableAdjustmentFlags(): void {
-    const caseFlags = this.hearingCondition.mode === Mode.VIEW_EDIT && this.hearingsService.propertiesUpdatedOnPageVisit.hasOwnProperty('caseFlags')
+    const caseFlags = this.hearingCondition.mode === Mode.VIEW_EDIT && this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags')
       ? this.hearingsService.propertiesUpdatedOnPageVisit?.caseFlags?.flags
       : this.serviceHearingValuesModel?.caseFlags?.flags;
 

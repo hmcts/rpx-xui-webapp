@@ -1,0 +1,17 @@
+<h2 class="govuk-heading-m">{{ 'Language requirements' | rpxTranslate }}</h2>
+<div class="govuk-summary-list govuk-!-margin-bottom-9">
+  <div class="govuk-summary-list__row">
+    <div class="govuk-summary-list__key">
+      {{ 'Does this hearing need to be in Welsh?' | rpxTranslate }}
+    </div>
+    <div class="govuk-summary-list__value">
+      {{ hearingInWelshFlag ? 'Yes' : 'No' | rpxTranslate }}
+    </div>
+    <div class="govuk-summary-list__actions">
+      <a id="needWelsh"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('needWelsh')">{{ 'Change' | rpxTranslate }}</a>
+    </div>
+  </div>
+</div>

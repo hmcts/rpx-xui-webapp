@@ -40,7 +40,7 @@ class CreateHearingWorkflow{
             "Does this hearing need to be in Welsh?" : new HearingWelshPage(),
             "Provide a reason for changing this hearing": new HearingChangeReasonsPage()
         }
-      
+
     }
 
     async isCreateHearingWorkflowDIsplayed(){

@@ -102,7 +102,7 @@ describe('HearingFacilitiesComponent', () => {
 
   const caseFlagsFromLatestSHV: PartyFlagsModel[] = [
     {
-      partyID: 'P1',
+      partyId: 'P1',
       partyName: 'Jane Smith',
       flagParentId: 'RA0008',
       flagId: 'RA0042',
@@ -110,7 +110,7 @@ describe('HearingFacilitiesComponent', () => {
       flagStatus: 'ACTIVE'
     },
     {
-      partyID: 'P2',
+      partyId: 'P2',
       partyName: 'Jane Smith vs DWP',
       flagParentId: 'CF0001',
       flagId: 'CF0006',
@@ -118,7 +118,7 @@ describe('HearingFacilitiesComponent', () => {
       flagStatus: 'ACTIVE'
     },
     {
-      partyID: 'P3',
+      partyId: 'P3',
       partyName: 'Jane Smith vs DWP',
       flagParentId: 'CF0001',
       flagId: 'CF0007',

@@ -1,0 +1,29 @@
+<div class="govuk-inset-text">
+  {{ 'To update this request, select change in the relevant section on this page then resubmit the request.' | rpxTranslate }}
+</div>
+<h2 class="govuk-heading-m">{{ 'Hearing requirements' | rpxTranslate }}</h2>
+<div class="govuk-summary-list govuk-!-margin-bottom-9">
+  <div class="govuk-summary-list__row">
+    <div class="govuk-summary-list__key">
+      {{ 'Reasonable adjustments' | rpxTranslate }}
+    </div>
+    <div class="govuk-summary-list__value">
+      <div *ngFor="let partyWithFlag of partyWithFlags | keyvalue">
+        <div *ngIf="partyWithFlag.value?.length > 0">
+          <strong class="bold">{{ partyWithFlag.key }}</strong>
+          <ul>
+            <li *ngFor="let flag of partyWithFlag.value">
+              {{ flag?.name || '' }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="govuk-summary-list__actions">
+      <a id="caseFlags"
+        class="change-link"
+        href="javascript:void(0)"
+        (click)="onChange('caseFlags')">{{ 'Change' | rpxTranslate }}</a>
+    </div>
+  </div>
+</div>

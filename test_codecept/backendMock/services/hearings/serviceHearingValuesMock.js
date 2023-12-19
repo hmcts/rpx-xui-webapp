@@ -18,7 +18,7 @@ class ServiceHearingValues{
         const newFlags = [];
         for (const caseFlag of caseFlags){
             newFlags.push({
-                partyID: caseFlag.partyId ? caseFlag.partyId: 'P1',
+                partyId: caseFlag.partyId ? caseFlag.partyId: 'P1',
                 partyName: caseFlag.partyName ? caseFlag.partyName: 'Jane Smith',
                 flagParentId: caseFlag.flagParentId ? caseFlag.flagParentId : 'PARENT_0',
                 flagId: caseFlag.flagId ? caseFlag.flagId : 'RA001',
@@ -56,8 +56,8 @@ class ServiceHearingValues{
             };
 
             const partyIndividualDetails = {
-                "firstName": party.individualDetails?.firstName ? party.individualDetails.firstName : "First Applicant FN updated",
-                "lastName": party.individualDetails?.lastName ? party.individualDetails.lastName : "First Applicant LN updated",
+                "firstName": party.individualDetails?.firstName ? party.individualDetails.firstName : `${party.partyName ? party.partyName +' FN' : 'First app FN'}`,
+                "lastName": party.individualDetails?.lastName ? party.individualDetails.lastName : `${party.partyName ? party.partyName + ' LN' : 'First app LN'}`,
                 "interpreterLanguage": party.individualDetails?.interpreterLanguage ? party.individualDetails.interpreterLanguage : "",
                 "reasonableAdjustments": party.individualDetails?.reasonableAdjustments ? party.individualDetails.reasonableAdjustments.split(',') : [
                     'RA0042',

@@ -1,6 +1,6 @@
 
-@ng @functional_enabled @functional_debug
-Feature:  Hearings: Hearing details
+@ng @functional_enabled 
+Feature:  Hearings CR84: Hearing View details
 
     Scenario Outline:  Hearings tab for "<UserIdentifier>" role "<UserRole>"
         Given I set MOCK with user details with user identifier "<UserIdentifier>"
@@ -41,7 +41,11 @@ Feature:  Hearings: Hearing details
         Then I see hearings table for "Past or cancelled" in hearings tab page
 
 
-        Given I set mock get hearing with with status "<HearingType>"
+        # Given I set mock get hearing with with status "<HearingType>"
+        Given I set mock get hearing with with status "<HearingType>" and values at jsonpath
+            | jsonpath                            | value                 |
+            | $.caseDetails.hmctsInternalCaseName | 1234567812345678      |
+            | $.caseDetails.publicCaseName        | Mock case public name |
 
         When In hearings tab, I click action "View details" for hearing "<HearingType>" under table "<Table>"
 
@@ -49,9 +53,11 @@ Feature:  Hearings: Hearing details
         Then I validate view hearing page Edit hearing button displayed is "TEST_<EditHearing>"
 
         Then I validate fields displayed in view hearing page
-            | field                                 | value           | changeLinkDisplay | amendedFlagDisplay |
-            | Status                                | <HearingStatus> | false             | false              |
-            | Will additional security be required? | No              | false             | false              |
+            | field                                 | value                 | changeLinkDisplay | amendedFlagDisplay |
+            | Status                                | <HearingStatus>       | false             | false              |
+            | Will additional security be required? | No                    | false             | false              |
+            | Case internal name                    | 1234567812345678      | false             | false              |
+            | Case public name                      | Mock case public name | false             | false              |
 
 
 
@@ -60,4 +66,4 @@ Feature:  Hearings: Hearing details
             | HEARING_MANAGER_CR84_ON | hearing-manager | View details | true        | LISTED           | LISTED                   | Current and upcoming |
             | HEARING_MANAGER_CR84_ON | hearing-manager | View details | true        | AWAITING_LISTING | AWAITING HEARING DETAILS | Current and upcoming |
             | HEARING_MANAGER_CR84_ON | hearing-manager | View details | true        | UPDATE_REQUESTED | UPDATE REQUESTED         | Current and upcoming |
-      
+

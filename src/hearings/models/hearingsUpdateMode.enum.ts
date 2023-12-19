@@ -9,26 +9,9 @@ export enum HearingUpdateMode {
 
 export enum AutoUpdateMode {
   NO_UPDATE,
-  PARTY,
   PAGELESS,
   WITHIN_PAGE,
   AFTER_PAGE_VISIT
-}
-
-export enum PagelessPropertiesEnum {
-  CASE_MANAGEMENT_LOCATIONCODE = 'caseManagementLocationCode',
-  PARTY_ROLE = 'partyRole',
-  RELATED_PARTY_ID = 'relatedPartyID',
-  RELATIONSHIP_TYPE = 'relationshipType',
-  CUSTODY_STATUS = 'custodyStatus',
-  VULNERABLE_FLAG = 'vulnerableFlag',
-  VULNERABILITY_DETAILS = 'vulnerabilityDetails',
-  HEARING_IN_WELSH_FLAG = 'hearingInWelshFlag',
-  ORGANISATION = 'organisation',
-  ORGANISATION_TYPE = 'organisationType',
-  CFTORGANISATION_ID = 'cftOrganisationID',
-  HEARING_CHANNEL_EMAIL = 'hearingChannelEmail',
-  HEARING_CHANNEL_PHONE = 'hearingChannelPhone'
 }
 
 export enum WithinPagePropertiesEnum {
@@ -36,8 +19,7 @@ export enum WithinPagePropertiesEnum {
   PUBLIC_CASE_NAME = 'publicCaseName',
   CASE_CATEGORIES = 'caseCategories',
   CASE_RESTRICTED_FLAG = 'caseRestrictedFlag',
-  PRIVATE_HEARING_REQUIRED_FLAG = 'privateHearingRequiredFlag',
-  PARTIES = 'parties'
+  PRIVATE_HEARING_REQUIRED_FLAG = 'privateHearingRequiredFlag'
 }
 
 export enum AfterPageVisitPropertiesEnum {

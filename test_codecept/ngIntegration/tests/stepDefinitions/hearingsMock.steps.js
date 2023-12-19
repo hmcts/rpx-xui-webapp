@@ -1,177 +1,168 @@
-const moment = require('moment')
+/* eslint-disable no-undef */
+const moment = require('moment');
 const browserUtil = require('../../util/browserUtil');
 // const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 
-const serviceMock = require('../../../backendMock/client/serviceMock')
+const serviceMock = require('../../../backendMock/client/serviceMock');
 
 const { DataTableArgument } = require('codeceptjs');
-const reportLogger = require('../../../codeceptCommon/reportLogger')
-const jsonpath = require('jsonpath')
-const hearingsMock = require('../../../backendMock/services/hearings/index')
-const mockClient = require('../../../backendMock/client/serviceMock')
+const reportLogger = require('../../../codeceptCommon/reportLogger');
+const jsonpath = require('jsonpath');
+const hearingsMock = require('../../../backendMock/services/hearings/index');
+const mockClient = require('../../../backendMock/client/serviceMock');
 
-const listedHearing = require('../../../backendMock/services/hearings/mockData/listedHearing.data')
-const awaitinghearingsDetails = require('../../../backendMock/services/hearings/mockData/awaitingHearingDetails.data')
-const completedHearing = require('../../../backendMock/services/hearings/mockData/completedHearing.data')
-const cancelledhearing = require('../../../backendMock/services/hearings/mockData/cancelledHearing.data')
+const listedHearing = require('../../../backendMock/services/hearings/mockData/listedHearing.data');
+const awaitinghearingsDetails = require('../../../backendMock/services/hearings/mockData/awaitingHearingDetails.data');
+const completedHearing = require('../../../backendMock/services/hearings/mockData/completedHearing.data');
+const cancelledhearing = require('../../../backendMock/services/hearings/mockData/cancelledHearing.data');
 
-const updateRequestedHearing = require('../../../backendMock/services/hearings/mockData/updateRequestedhearing.data')
+const updateRequestedHearing = require('../../../backendMock/services/hearings/mockData/updateRequestedhearing.data');
 
 
-const mockServiceHearingValues = require('../../../backendMock/services/hearings/serviceHearingValuesMock')
+const mockServiceHearingValues = require('../../../backendMock/services/hearings/serviceHearingValuesMock');
 
 const hearingDataForStates = {
-    listedHearing: listedHearing,
-    awaitingHearingDetails: awaitinghearingsDetails,
-    completedHearing: completedHearing,
-    cancelledHearing: cancelledhearing
+  listedHearing: listedHearing,
+  awaitingHearingDetails: awaitinghearingsDetails,
+  completedHearing: completedHearing,
+  cancelledHearing: cancelledhearing
+};
+
+function updateObjectValues(object, key, value){
+  const dateField = ['hearingRequestDateTime', 'lastResponseReceivedDateTime', 'hearingDaySchedule.hearingStartDateTime', 'hearingDaySchedule.hearingEndDateTime'];
+
+  if (dateField.includes(key)){
+    const byDays = parseInt(value);
+    object[key] = moment().add(byDays, 'days').format('YYYY-MM-DDTHH:mm:ss.sssss');
+  }else{
+    object[key] = value;
+  }
 }
 
-    function updateObjectValues(object, key, value){
-        const dateField = ['hearingRequestDateTime', 'lastResponseReceivedDateTime', 'hearingDaySchedule.hearingStartDateTime', 'hearingDaySchedule.hearingEndDateTime']
+Given('I set mock case hearings', async function (hearingsDatatable) {
 
-        if (dateField.includes(key)){
-            const byDays = parseInt(value)
-            object[key] = moment().add(byDays, 'days').format('YYYY-MM-DDTHH:mm:ss.sssss')
-        }else{
-            object[key] = value;
-        }
+  const rows = hearingsDatatable.parse().hashes();
+  const hearingsList = [];
+  for(const hearing of rows){
+    for(const key of Object.keys(hearing)){
+      updateObjectValues(hearing, key, hearing[key]);
     }
+    hearingsList.push(hearingsMock.getHearingWithProps(hearing));
 
-    Given('I set mock case hearings', async function (hearingsDatatable) {
+  }
+  const res = {
+    "caseRef": "1690807693531270",
+    "caseHearings": hearingsList,
+    "hmctsServiceCode": null
+  };
+  mockClient.setCaseHearings(res, 200);
 
-        const rows = hearingsDatatable.parse().hashes();
-        const hearingsList = []
-        for(const hearing of rows){
-            for(const key of Object.keys(hearing)){
-                updateObjectValues(hearing, key, hearing[key])
-            }
-            hearingsList.push(hearingsMock.getHearingWithProps(hearing))
+});
 
-        }
-        const res = {
-            "caseRef": "1690807693531270",
-            "caseHearings": hearingsList,
-            "hmctsServiceCode": null
-        }
-        mockClient.setCaseHearings(res, 200)
+function getMockHearingWithStatus(hearingStatus){
+  let hearingResponse = null;
+  switch (hearingStatus) {
+    case "LISTED":
+      hearingResponse = listedHearing;
+      break;
+    case "COMPLETED":
+      hearingResponse = completedHearing;
+      break;
+    case "CANCELLED":
+      hearingResponse = cancelledhearing;
+      break;
+    case "AWAITING_ACTUALS":
+      hearingResponse = awaitinghearingsDetails;
+      break;
+    case "AWAITING_LISTING":
+      hearingResponse = awaitinghearingsDetails;
+      break;
+    case "UPDATE_REQUESTED":
+      hearingResponse = updateRequestedHearing;
+      break;
 
-    });
+    default:
+      throw new Error(`no mock data setup for hearing ${hearingStatus}`);
+  }
+  return hearingResponse;
+}
 
-    Given('I set mock get hearing with with status {string}', async function (hearingStatus) {
+Given('I set mock get hearing with with status {string}', async function (hearingStatus) {
+  let hearingResponse = getMockHearingWithStatus(hearingStatus);
+  mockClient.setOnGetHearing(hearingResponse, 200);
+});
 
-        let hearingResponse = null;
-        switch (hearingStatus){
-            case "LISTED":
-                hearingResponse = listedHearing;
-                break;
-            case "COMPLETED":
-                hearingResponse = completedHearing;
-                break;
-            case "CANCELLED":
-                hearingResponse = cancelledhearing;
-                break;
-            case "AWAITING_ACTUALS":
-                hearingResponse = awaitinghearingsDetails;
-                break;
-            case "AWAITING_LISTING":
-                hearingResponse = awaitinghearingsDetails;
-                break;
-            case "UPDATE_REQUESTED":
-                hearingResponse = updateRequestedHearing;
-                break;
-           
-            default:
-                throw new Error(`no mock data setup for hearing ${hearingStatus}`)
-        }
+Given('I set mock get hearing with with status {string} and values at jsonpath', async function (hearingStatus, valuesDatatable) {
+  const hearingResponse = getMockHearingWithStatus(hearingStatus);
 
+  const dataTableObjects = valuesDatatable.parse().hashes();
+  for (const row of dataTableObjects) {
+    const actualVal = jsonpath.query(hearingResponse, row.jsonpath);
+    const updatedValue = jsonpath.value(hearingResponse, row.jsonpath, row.value);
 
-        mockClient.setOnGetHearing(hearingResponse, 200)
+    reportLogger.AddMessage(`Updated ${row.jsonpath} =>${actualVal} to  ${updatedValue}`);
+  }
 
-    });
-
-    // Given('I set mock get hearing with with status {string}', async function (hearingStatus) {
-
-    //     let hearingResponse = null;
-    //     switch (hearingStatus){
-    //         case "LISTED":
-    //             hearingResponse = listedHearing;
-    //             break;
-    //         case "COMPLETED":
-    //             hearingResponse = completedHearing;
-    //             break;
-    //         case "CANCELLED":
-    //             hearingResponse = cancelledhearing;
-    //             break;
-    //         case "AWAITING_ACTUALS":
-    //             hearingResponse = awaitinghearingsDetails;
-    //             break;
-    //         default:
-    //             throw new Error(`no mock data setup for hearing ${hearingStatus}`)
-    //     }
-
-
-    //     mockClient.setOnGetHearing(hearingResponse, 200)
-
-    // });
+  mockClient.setOnGetHearing(hearingResponse, 200);
+});
 
 
 Given('I set mock hearings service hearing values with ref {string}', async function (ref) {
-    const serviceHearingValue = mockServiceHearingValues.getServiceHearingValuesTemplate()
-    global.scenarioData[ref] = serviceHearingValue
-    mockClient.setHearingServiceHearingValues(serviceHearingValue, 200)
-})
+  const serviceHearingValue = mockServiceHearingValues.getServiceHearingValuesTemplate();
+  global.scenarioData[ref] = serviceHearingValue;
+  mockClient.setHearingServiceHearingValues(serviceHearingValue, 200);
+});
 
 Given('I set mock hearing data for state {string}', async function (hearingState) {
-    global.scenarioData[hearingState] = JSON.parse(JSON.stringify(hearingDataForStates[hearingState]));
-    mockClient.setOnGetHearing(global.scenarioData[hearingState], 200)
-})
+  global.scenarioData[hearingState] = JSON.parse(JSON.stringify(hearingDataForStates[hearingState]));
+  mockClient.setOnGetHearing(global.scenarioData[hearingState], 200);
+});
 
 Given('I set parties in mock hearing data for state {string}', async function (hearingState, partiesDatatable) {
-    global.scenarioData[hearingState] = JSON.parse(JSON.stringify(hearingDataForStates[hearingState]));
+  global.scenarioData[hearingState] = JSON.parse(JSON.stringify(hearingDataForStates[hearingState]));
 
-    const parties = partiesDatatable.parse().hashes()
-    const mockParties = mockServiceHearingValues.getMockParties(parties);
+  const parties = partiesDatatable.parse().hashes();
+  const mockParties = mockServiceHearingValues.getMockParties(parties);
 
-    const hearingData = global.scenarioData[hearingState];
-    hearingData.partyDetails = mockParties
-    mockClient.setOnGetHearing(hearingData, 200)
-})
+  const hearingData = global.scenarioData[hearingState];
+  hearingData.partyDetails = mockParties;
+  mockClient.setOnGetHearing(hearingData, 200);
+});
 
 
 
 Given('I update mock hearings service hearing values with ref {string} for field {string}', async function (ref, field, datatable) {
 
-    const serviceHearingValue = global.scenarioData[ref]
+  const serviceHearingValue = global.scenarioData[ref];
 
-    const dataTableObjects = datatable.parse().hashes()
-    let updatedShv = null;
-    if (field === 'caseFlags'){
-        updatedShv = mockServiceHearingValues.setCaseFlags(dataTableObjects, serviceHearingValue);
-    } else if (field === 'parties'){
-        updatedShv = mockServiceHearingValues.setParties(dataTableObjects, serviceHearingValue);
-    }
-    mockClient.setHearingServiceHearingValues(updatedShv, 200)
-})
+  const dataTableObjects = datatable.parse().hashes();
+  let updatedShv = null;
+  if (field === 'caseFlags'){
+    updatedShv = mockServiceHearingValues.setCaseFlags(dataTableObjects, serviceHearingValue);
+  } else if (field === 'parties'){
+    updatedShv = mockServiceHearingValues.setParties(dataTableObjects, serviceHearingValue);
+  }
+  mockClient.setHearingServiceHearingValues(updatedShv, 200);
+});
 
 
 
 Given('I update mock hearings service hearing values with ref {string} at jsonpaths', async function (ref, datatable) {
 
-    const serviceHearingValue = global.scenarioData[ref]
+  const serviceHearingValue = global.scenarioData[ref];
 
-    const dataTableObjects = datatable.parse().hashes()
-    for (const row of dataTableObjects){
-        const actualVal = jsonpath.query(serviceHearingValue, row.jsonpath)
-        const updatedValue = jsonpath.value(serviceHearingValue, row.jsonpath, row.value)
+  const dataTableObjects = datatable.parse().hashes();
+  for (const row of dataTableObjects){
+    const actualVal = jsonpath.query(serviceHearingValue, row.jsonpath);
+    const updatedValue = jsonpath.value(serviceHearingValue, row.jsonpath, row.value);
 
-        reportLogger.AddMessage(`Updated ${row.jsonpath} =>${actualVal} to  ${updatedValue}`)
-    }
+    reportLogger.AddMessage(`Updated ${row.jsonpath} =>${actualVal} to  ${updatedValue}`);
+  }
 
-    reportLogger.AddJson(serviceHearingValue)
-    mockClient.setHearingServiceHearingValues(serviceHearingValue, 200)
-})
+  reportLogger.AddJson(serviceHearingValue);
+  mockClient.setHearingServiceHearingValues(serviceHearingValue, 200);
+});
 
 
 

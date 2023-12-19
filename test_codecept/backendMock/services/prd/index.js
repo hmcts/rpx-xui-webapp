@@ -103,54 +103,63 @@ class PRDApi{
     }
 
     setUpCaseFlags(){
-            this.addServiceCaseFlag({
+        const mockFlags = [
+            {
                 name: "A", path: ["Reasonable adjustment"],
-                childFlags: [{ name: 'A.A', path: ["Reasonable adjustment","RA L1"] }]
-            })
-            this.addServiceCaseFlag({
+                childFlags: [{ name: 'A.A', path: ["Reasonable adjustment", "RA L1"] }]
+            },
+            {
                 name: "B", path: ["Language interpreter"],
-                childFlags: [{ name: 'B.A', path: ["Language interpreter","LI L1"], flagCode: 'PF0015'}]
-            })
+                childFlags: [{ name: 'B.A', path: ["Language interpreter", "LI L1"], flagCode: 'PF0015' }]
+            },
+            {
+                name: "B", path: ["Party"],
+                childFlags: [{ name: 'B.A', path: ["Party", "Others L1"], flagCode: 'OT001' }]
+            },
+            {
+                name: "B", path: ["Reasonable adjustment"], flagCode: 'RA0042',
+                childFlags: [{ name: 'B.C', path: ["Party", "Others L2"], flagCode: 'RA0042' }]
+            },
+            {
+                name: "B", path: ["Reasonable adjustment"], flagCode: 'RA0053',
+                childFlags: [{ name: 'B.D', path: ["Party", "Others L3"], flagCode: 'RA0053' }]
+            }
+        ]
+    
+        const getFlag = (serviceFlag) => {
+            const temp = {
+                "name": serviceFlag.name ? serviceFlag.name : "Case",
+                "hearingRelevant": serviceFlag.hearingRelevant ? serviceFlag.hearingRelevant : false,
+                "flagComment": serviceFlag.flagComment ? serviceFlag.flagComment : false,
+                "defaultStatus": serviceFlag.defaultStatus ? serviceFlag.defaultStatus : "Active",
+                "externallyAvailable": serviceFlag.externallyAvailable ? serviceFlag.externallyAvailable : false,
+                "flagCode": serviceFlag.flagCode ? serviceFlag.flagCode : "RA001",
+                "childFlags": [
+                ],
+                "isParent": serviceFlag.childFlags && serviceFlag.childFlags.length > 0 ? true : false,
+                "Path": serviceFlag.path
 
-        this.addServiceCaseFlag({
-            name: "B", path: ["Party"],
-            childFlags: [{ name: 'B.A', path: ["Party", "Others L1"], flagCode: 'OT001' }]
-        })
-        }
 
-        addServiceCaseFlag(flagDetails){
-
-            const getFlag = (serviceFlag) => {
-                const temp = {
-                    "name": serviceFlag.name ? serviceFlag.name : "Case",
-                    "hearingRelevant": serviceFlag.hearingRelevant ? serviceFlag.hearingRelevant : false,
-                    "flagComment": serviceFlag.flagComment ? serviceFlag.flagComment : false,
-                    "defaultStatus": serviceFlag.defaultStatus ? serviceFlag.defaultStatus : "Active",
-                    "externallyAvailable": serviceFlag.externallyAvailable ? serviceFlag.externallyAvailable : false,
-                    "flagCode": serviceFlag.flagCode ? serviceFlag.flagCode : "RA001",
-                    "childFlags": [
-                    ],
-                    "isParent": serviceFlag.childFlags && serviceFlag.childFlags.length > 0 ? true : false,
-                    "Path": serviceFlag.path
-
-
-                }
-                if (!serviceFlag.childFlags){
-                    return temp;
-                }
-                for (const child of serviceFlag.childFlags) {
-                    const childFlag = getFlag(child)
-                    temp.childFlags.push(childFlag)
-                }
+            }
+            if (!serviceFlag.childFlags) {
                 return temp;
             }
+            for (const child of serviceFlag.childFlags) {
+                const childFlag = getFlag(child)
+                temp.childFlags.push(childFlag)
+            }
+            return temp;
+        }
 
-            const flag = getFlag(flagDetails)
+
+        for(const mockFlag of mockFlags){
+            const flag = getFlag(mockFlag)
             this.caseFlags.flags[0].FlagDetails.push(flag)
         }
 
+      
     }
-
+}
 
 module.exports = new PRDApi();
 

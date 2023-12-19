@@ -22,10 +22,6 @@ Then('I validate request body json {string}, jsonpaths', function(objRef, jsonpa
 
         const actualVal = jsonpath.query(jsonData.body, jsonpathExpression)
         expect(actualVal, `at ${jsonpathExpression}, actual "${actualVal}" not matching expected "${expectedValue}"`).includes(expectedValue)
-
-        const updated = jsonpath.value(jsonData.body, jsonpathExpression, `${actualVal} UPDATED`)
-
-        reportLogger.AddMessage(`Updated ${actualVal} to ${updated}`)
     }
 
      

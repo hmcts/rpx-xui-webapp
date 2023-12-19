@@ -14,8 +14,8 @@ const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_get_work
 describe('Task management api, work types', () => {
   const RESPONSE_BODY = {
     work_types: eachLike({
-      id: somethingLike('worktype-id'),
-      label: somethingLike('worktype-label')
+      id: somethingLike('applications'),
+      label: somethingLike('Applications')
     })
   };
 

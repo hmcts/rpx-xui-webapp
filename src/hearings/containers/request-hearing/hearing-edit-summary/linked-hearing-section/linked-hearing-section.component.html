@@ -1,0 +1,17 @@
+<h2 class="govuk-heading-m">{{ 'Linked hearings' | rpxTranslate }}</h2>
+<div class="govuk-summary-list govuk-!-margin-bottom-9">
+  <div class="govuk-summary-list__row">
+    <div class="govuk-summary-list__key">
+      {{ 'Will this hearing need to be linked to other hearings?' | rpxTranslate }}
+    </div>
+    <div class="govuk-summary-list__value">
+      {{ hearingIsLinkedFlag ? 'Yes' : 'No' | rpxTranslate }}
+    </div>
+    <div class="govuk-summary-list__actions">
+      <a id="linkedHearings"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('linkedHearings')">{{ 'Change' | rpxTranslate }}</a>
+    </div>
+  </div>
+</div>

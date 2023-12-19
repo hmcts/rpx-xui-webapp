@@ -1691,7 +1691,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   caseFlags: {
     flags: [
       {
-        partyID: 'P1',
+        partyId: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0008',
         flagId: 'RA0042',
@@ -1699,7 +1699,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P1',
+        partyId: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0032',
         flagId: 'RA0053',
@@ -1707,7 +1707,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P1',
+        partyId: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0002',
         flagId: 'RA0013',
@@ -1715,7 +1715,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P1',
+        partyId: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0003',
         flagId: 'RA0016',
@@ -1723,7 +1723,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P1',
+        partyId: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0008',
         flagId: 'RA0042',
@@ -1731,7 +1731,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P1',
+        partyId: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'PF0001',
         flagId: 'PF0015',
@@ -1739,7 +1739,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P1',
+        partyId: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'PF0001',
         flagId: 'PF0002',
@@ -1747,7 +1747,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P2',
+        partyId: 'P2',
         partyName: 'DWP',
         flagParentId: 'RA0001',
         flagId: 'RA0005',
@@ -1755,7 +1755,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P2',
+        partyId: 'P2',
         partyName: 'DWP',
         flagParentId: 'PF0001',
         flagId: 'PF0011',
@@ -1763,7 +1763,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P2',
+        partyId: 'P2',
         partyName: 'Jane Smith vs DWP',
         flagParentId: 'CF0001',
         flagId: 'CF0002',
@@ -1771,7 +1771,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P2',
+        partyId: 'P2',
         partyName: 'Jane Smith vs DWP',
         flagParentId: 'CF0001',
         flagId: 'CF0006',
@@ -1779,7 +1779,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P2',
+        partyId: 'P2',
         partyName: 'Jane Smith vs DWP',
         flagParentId: 'CF0001',
         flagId: 'CF0007',

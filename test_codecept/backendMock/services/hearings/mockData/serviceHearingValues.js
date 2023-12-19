@@ -57,12 +57,6 @@ const loadServicehearingValues = {
                 "lastName": "First Applicant LN",
                 "interpreterLanguage": "",
                 "reasonableAdjustments": [
-                    'RA0042',
-                    'RA0053',
-                    'RA0013',
-                    'RA0016',
-                    'RA0042',
-                    'RA0009'
                 ],
                 "vulnerableFlag": false,
                 "vulnerabilityDetails": "",
@@ -160,21 +154,21 @@ const loadServicehearingValues = {
     "caseFlags": {
         "flags": [
             {
-                "partyID": "P1",
+                "partyId": "P1",
                 "partyName": "Jane Smith",
                 "flagParentId": "PARENT_0",
                 "flagId": "RA001",
                 "flagDescription": "Sreasonable adjustment flags",
                 "flagStatus": "ACTIVE"
             }, {
-                "partyID": "P1",
+                "partyId": "P1",
                 "partyName": "Jane Smith 2",
                 "flagParentId": "PARENT_0",
                 "flagId": "PF0015",
                 "flagDescription": "language interpreter",
                 "flagStatus": "ACTIVE"
             }, {
-                "partyID": "P1",
+                "partyId": "P1",
                 "partyName": "Jane Smith 2",
                 "flagParentId": "PARENT_0",
                 "flagId": "OT001",

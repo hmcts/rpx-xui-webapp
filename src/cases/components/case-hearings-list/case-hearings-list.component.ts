@@ -102,13 +102,21 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public viewAndEdit(hearingID: string): void {
-    const hearingCondition: HearingConditions = {
-      mode: Mode.VIEW
-    };
-    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
     this.isHearingAmendmentsEnabled$.subscribe((enabled) => {
+      const hearingCondition: HearingConditions = {
+        mode: Mode.VIEW_EDIT,
+        isHearingAmendmentsEnabled: enabled
+      };
+      // Save hearing conditions
+      this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
+      // If hearing amendments enabled in Launch Darkly, then load the Service Hearing Values to get the latest
+      if (enabled) {
+        this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
+      }
+      // Set the navigation url based on the hearing amendments enabled Launch Darkly setting
       const url = enabled ? '/hearings/view/hearing-view-summary' : '/hearings/request/hearing-view-edit-summary';
-      this.loadHearingRequestServiceHearingValuesAndRedirect(hearingID, url);
+      // Load hearing request and navigate
+      this.loadHearingRequestAndRedirect(hearingID, url);
     });
   }
 
@@ -144,11 +152,6 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public loadHearingRequestAndRedirect(hearingID: string, targetURL: string) {
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID, targetURL }));
-  }
-
-  public loadHearingRequestServiceHearingValuesAndRedirect(hearingID: string, targetURL: string) {
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID, targetURL }));
   }
 }

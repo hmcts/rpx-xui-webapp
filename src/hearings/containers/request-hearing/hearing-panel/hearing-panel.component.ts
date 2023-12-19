@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { HearingJudgeNamesListComponent } from '../../../components';
@@ -41,11 +42,12 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   @ViewChild('excludedJudge', { static: false }) public excludedJudge: HearingJudgeNamesListComponent;
 
   constructor(
+    private readonly formBuilder: FormBuilder,
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
-    protected readonly route: ActivatedRoute,
-    private readonly formBuilder: FormBuilder) {
-    super(hearingStore, hearingsService);
+    protected readonly featureToggleService: FeatureToggleService,
+    protected readonly route: ActivatedRoute) {
+    super(hearingStore, hearingsService, featureToggleService, route);
     this.multiLevelSelections = this.route.snapshot.data.otherPanelRoles;
     this.personalCodejudgeList = this.route.snapshot.data.judicialUsers;
     this.setExtraChildNode();

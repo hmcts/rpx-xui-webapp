@@ -19,7 +19,7 @@ describe('S2S Auth API', () => {
       await pactSetUp.provider.setup();
       const interaction = {
         state: 'microservice with valid credentials',
-        uponReceiving: 'The url, the password and microservice',
+        uponReceiving: 'a request for a token',
         withRequest: {
           method: 'POST',
           headers: {

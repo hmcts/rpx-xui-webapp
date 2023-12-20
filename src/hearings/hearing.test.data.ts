@@ -1579,7 +1579,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   hearingWindow: {
     dateRangeStart: '2022-11-23T09:00:00.000Z',
     dateRangeEnd: '2022-11-30T09:00:00.000Z',
-    firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
+    firstDateTimeMustBe: '2022-12-21T09:00:00.000Z'
   },
   duration: 45,
   hearingPriorityType: 'standard',

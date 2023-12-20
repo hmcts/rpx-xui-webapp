@@ -68,6 +68,32 @@ describe('HearingTimingSectionComponent', () => {
     expect(component.hearingPriority).toEqual('Standard');
   });
 
+  it('should display label', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        hearingWindowFirstDateMustBeChangesConfirmed: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.hearingWindowChangesConfirmed).toEqual(true);
+  });
+
+  it('should not display label', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        hearingWindowFirstDateMustBeChangesConfirmed: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.hearingWindowChangesConfirmed).toEqual(false);
+  });
+
   it('should verify onChange', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('hearingLength');

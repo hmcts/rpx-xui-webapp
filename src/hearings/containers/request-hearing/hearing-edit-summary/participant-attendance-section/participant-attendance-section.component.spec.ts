@@ -94,6 +94,32 @@ describe('ParticipantAttendanceSectionComponent', () => {
     expect(component.numberOfPhysicalAttendees).toEqual(3);
   });
 
+  it('should display label', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        partyDetailsChangesConfirmed: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.partyDetailsChangesConfirmed).toEqual(true);
+  });
+
+  it('should not display label', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        partyDetailsChangesConfirmed: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.partyDetailsChangesConfirmed).toEqual(false);
+  });
+
   it('should verify onChange', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('paperHearing');

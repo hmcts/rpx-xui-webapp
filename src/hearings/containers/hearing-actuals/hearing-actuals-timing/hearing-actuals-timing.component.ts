@@ -68,7 +68,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     return this.ccdDatePipe.transform(endTime, 'local');
   }
 
-  private static getPauseStartTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null {
+  private getPauseStartTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null {
     let actualPauseStartTime: string;
     if (actualIndex >= 0) {
       actualPauseStartTime = (hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays
@@ -78,10 +78,11 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0].pauseStartTime;
     }
 
-    return actualPauseStartTime ? HearingActualsTimingComponent.getTime(actualPauseStartTime) : null;
+    actualPauseStartTime = actualPauseStartTime ? HearingActualsTimingComponent.getTime(actualPauseStartTime) : null;
+    return this.ccdDatePipe.transform(actualPauseStartTime, 'local');
   }
 
-  private static getPauseEndTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null {
+  private getPauseEndTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null {
     let actualPauseEndTime: string;
 
     if (actualIndex >= 0) {
@@ -91,8 +92,8 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0])
         && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0].pauseEndTime;
     }
-
-    return actualPauseEndTime ? HearingActualsTimingComponent.getTime(actualPauseEndTime) : null;
+    actualPauseEndTime =  actualPauseEndTime ? HearingActualsTimingComponent.getTime(actualPauseEndTime) : null;
+    return this.ccdDatePipe.transform(actualPauseEndTime, 'local');
   }
 
   private static replaceTime(dateTime: string, time: moment.Moment): string {
@@ -212,14 +213,14 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         this.defaultHearingEndTimeValidators
       ],
       recordTimes: [
-        !HearingActualsTimingComponent.getPauseStartTime(hearingActuals, actualIndex)
-        && !HearingActualsTimingComponent.getPauseEndTime(hearingActuals, actualIndex)
+        !this.getPauseStartTime(hearingActuals, actualIndex)
+        && !this.getPauseEndTime(hearingActuals, actualIndex)
           ? null : RadioOptionType.YES,
         [this.validatorsUtils.mandatory('Select if you need to record times the hearing was paused')]
       ],
-      pauseStartTime: [HearingActualsTimingComponent.getPauseStartTime(hearingActuals, actualIndex), [
+      pauseStartTime: [this.getPauseStartTime(hearingActuals, actualIndex), [
         this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]],
-      pauseEndTime: [HearingActualsTimingComponent.getPauseEndTime(hearingActuals, actualIndex), [
+      pauseEndTime: [this.getPauseEndTime(hearingActuals, actualIndex), [
         this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]]
     }, {
       updateOn: 'blur',

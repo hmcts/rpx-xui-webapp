@@ -12,11 +12,14 @@ import { HearingActualsTimingErrorMessages, RadioOptionType } from '../../../mod
 import * as fromHearingStore from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
+import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
+
 @Component({
   selector: 'exui-hearing-actuals-timing',
-  templateUrl: './hearing-actuals-timing.component.html'
+  templateUrl: './hearing-actuals-timing.component.html',
 })
 export class HearingActualsTimingComponent implements OnInit, OnDestroy {
+  public datePipe: DatePipe;
   public formGroup: FormGroup;
   public caseTitle: string;
   public submitted: boolean = false;
@@ -26,7 +29,6 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   private sub2$: Subscription;
   private id: string;
   private hearingDate: string;
-
   private readonly defaultHearingStartTimeValidators = [
     Validators.required,
     this.validatorsUtils.mandatory('Enter hearing start time'),
@@ -44,24 +46,26 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
                      private readonly route: ActivatedRoute,
                      private readonly ngZone: NgZone,
                      private readonly validatorsUtils: ValidatorsUtils,
+                     private ccdDatePipe: DatePipe
   ) {}
-
-  private static getStartTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
+  private getStartTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
     const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex].plannedStartTime;
     let actualStartTime: string;
     if (actualIndex >= 0) {
       actualStartTime = hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingStartTime;
     }
-    return actualStartTime ? HearingActualsTimingComponent.getTime(actualStartTime) : HearingActualsTimingComponent.getTime(plannedTime);
+    const startTime = actualStartTime ? HearingActualsTimingComponent.getTime(actualStartTime) : HearingActualsTimingComponent.getTime(plannedTime);
+    return this.ccdDatePipe.transform(startTime, 'local');
   }
 
-  private static getEndTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
+  private getEndTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
     const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex].plannedEndTime;
     let actualEndTime: string;
     if (actualIndex >= 0) {
       actualEndTime = hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingEndTime;
     }
-    return actualEndTime ? HearingActualsTimingComponent.getTime(actualEndTime) : HearingActualsTimingComponent.getTime(plannedTime);
+    const endTime = actualEndTime ? HearingActualsTimingComponent.getTime(actualEndTime) : HearingActualsTimingComponent.getTime(plannedTime);
+    return this.ccdDatePipe.transform(endTime, 'local');
   }
 
   private static getPauseStartTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null {
@@ -201,10 +205,10 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     const actualIndex = ActualHearingsUtils.getActualDayIndexFromHearingDate(hearingActuals, this.hearingDate);
 
     return this.fb.group({
-      hearingStartTime: [HearingActualsTimingComponent.getStartTime(hearingActuals, plannedIndex, actualIndex),
+      hearingStartTime: [this.getStartTime(hearingActuals, plannedIndex, actualIndex),
         this.defaultHearingStartTimeValidators
       ],
-      hearingEndTime: [HearingActualsTimingComponent.getEndTime(hearingActuals, plannedIndex, actualIndex),
+      hearingEndTime: [this.getEndTime(hearingActuals, plannedIndex, actualIndex),
         this.defaultHearingEndTimeValidators
       ],
       recordTimes: [

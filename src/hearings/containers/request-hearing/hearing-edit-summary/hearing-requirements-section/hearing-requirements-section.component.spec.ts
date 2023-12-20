@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MockRpxTranslatePipe } from '../../../../../app/shared/test/mock-rpx-translate.pipe';
 import { caseFlagsRefData, initialState } from '../../../../hearing.test.data';
-import { PartyFlagsModel } from '../../../../models/partyFlags.model';
 import { HearingsService } from '../../../../services/hearings.service';
 import { HearingRequirementsSectionComponent } from './hearing-requirements-section.component';
 
@@ -10,33 +9,6 @@ describe('HearingRequirementsSectionComponent', () => {
   let fixture: ComponentFixture<HearingRequirementsSectionComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post', 'delete']);
   const hearingsService = new HearingsService(mockedHttpClient);
-
-  const caseFlagsFromLatestSHV: PartyFlagsModel[] = [
-    {
-      partyId: 'P1',
-      partyName: 'Jane Smith',
-      flagParentId: 'RA0008',
-      flagId: 'RA0042',
-      flagDescription: 'Sign language interpreter required',
-      flagStatus: 'ACTIVE'
-    },
-    {
-      partyId: 'P2',
-      partyName: 'Jane Smith vs DWP',
-      flagParentId: 'CF0001',
-      flagId: 'CF0006',
-      flagDescription: 'Potential fraud',
-      flagStatus: 'ACTIVE'
-    },
-    {
-      partyId: 'P3',
-      partyName: 'Jane Smith vs DWP',
-      flagParentId: 'CF0001',
-      flagId: 'CF0007',
-      flagDescription: 'Urgent flag',
-      flagStatus: 'ACTIVE'
-    }
-  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -63,19 +35,29 @@ describe('HearingRequirementsSectionComponent', () => {
   });
 
   it('should display label', () => {
-    hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesConfirmed = true;
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        reasonableAdjustmentChangesConfirmed: true
+      }
+    };
     component.ngOnInit();
     expect(component.reasonableAdjustmentChangesConfirmed).toEqual(true);
   });
 
   it('should not display label', () => {
-    hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesConfirmed = false;
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        reasonableAdjustmentChangesConfirmed: false
+      }
+    };
     component.ngOnInit();
     expect(component.reasonableAdjustmentChangesConfirmed).toEqual(false);
-  });
-
-  xit('should return parties with flags', () => {
-    component.ngOnInit();
   });
 
   it('should verify onChange', () => {

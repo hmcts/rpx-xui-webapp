@@ -271,81 +271,13 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private pageVisitPartiesChangeExists(): boolean {
-    let partiesSHV: PartyDetailsModel[] = this.serviceHearingValuesModel.parties;
+    const partiesSHV = this.serviceHearingValuesModel.parties;
     const partiesHMC = this.hearingRequestMainModel.partyDetails;
-
-    // const party0 = partiesSHV[0];
-    // party0.individualDetails.firstName = 'Temp';
-    // const otherParties = partiesSHV.filter((x) => x.partyName !== '')
-
-    // partiesSHV = [ ...partiesSHV]
-
-    // partiesSHV[0].individualDetails.firstName = 'Temp';
-
-    const anotherParty: PartyDetailsModel = {
-      partyID: '123456-123456-0987-0987',
-      partyType: PartyType.IND,
-      partyName: 'New Party',
-      partyRole: 'APPL',
-      individualDetails: {
-        firstName: 'New',
-        lastName: 'Party',
-        interpreterLanguage: '',
-        reasonableAdjustments: [
-          'RA0042'
-        ],
-        vulnerableFlag: false,
-        vulnerabilityDetails: '',
-        hearingChannelEmail: [
-          'newparty@gmail.com'
-        ],
-        hearingChannelPhone: [
-          '44856895462'
-        ],
-        relatedParties: []
-      }
-    };
-
-    // const newParty: PartyDetailsModel[] = [];
-    // newParty.push([...partiesSHV, ...anotherParty]);
-
-    partiesSHV = [
-      ...partiesSHV,
-      anotherParty
-    ];
-
-    const tempFlag =
-      {
-        partyId: '123456-123456-0987-0987',
-        partyName: 'New Party',
-        flagParentId: '',
-        flagId: 'RA0042',
-        flagDescription: 'Added with BSL to see what the comments look like in the flags screen',
-        flagStatus: 'Active'
-      };
-
-    // this.serviceHearingValuesModel.caseFlags.flags = [
-    //   ...this.serviceHearingValuesModel.caseFlags.flags,
-    //   tempFlag
-    // ];
-
-    this.serviceHearingValuesModel = {
-      ...this.serviceHearingValuesModel,
-      caseFlags: {
-        flags: [
-          ...this.serviceHearingValuesModel.caseFlags.flags,
-          tempFlag
-        ],
-        flagAmendURL: '/'
-      }
-    };
-
     // Return true if the number of parties in SHV and HMC are different
     if (partiesSHV.length !== partiesHMC.length) {
       this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed = true;
       return true;
     }
-
     // Number of parties are the same in both SHV and HMC
     // Loop through the parties in SHV, locate the corresponding party in HMC
     // and return true if there are any changes in the party name of party type

@@ -12,6 +12,7 @@ import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
 import { CategoryType, Mode, PartyType, UnavailabilityType } from '../../../models/hearings.enum';
+import { PropertiesUpdatedOnPageVisit } from '../../../models/hearingsUpdateMode.enum';
 import { LocationByEPIMMSModel } from '../../../models/location.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
@@ -186,10 +187,15 @@ describe('HearingEditSummaryComponent', () => {
     spyOn(store, 'select').and.returnValue(of(initialState.hearings.hearingValues));
     component.serviceHearingValuesModel = initialState.hearings.hearingValues.serviceHearingValuesModel;
     component.ngOnInit();
-    const expectedResult = {
+    const expectedResult: PropertiesUpdatedOnPageVisit = {
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
-      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        reasonableAdjustmentChangesConfirmed: true,
+        partyDetailsChangesConfirmed: true,
+        hearingWindowFirstDateMustBeChangesConfirmed: true
+      }
     };
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
   });

@@ -25,7 +25,7 @@
     </div>
     <div class="govuk-summary-list__value">
       <div *ngFor="let caseCategory of caseTypes">
-        <exui-amendment-label *ngIf="withinPage.caseCategories.includes(caseCategory.categoryValue)" [displayLabel]="amendmentLabelEnum.AMENDED">
+        <exui-amendment-label *ngIf="withinPage.caseCategories?.includes(caseCategory.categoryValue)" [displayLabel]="amendmentLabelEnum.AMENDED">
         </exui-amendment-label>
         {{ caseCategory.categoryDisplayValue }}
         <ul>

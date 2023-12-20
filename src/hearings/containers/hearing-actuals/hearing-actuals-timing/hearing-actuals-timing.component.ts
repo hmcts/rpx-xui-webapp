@@ -19,7 +19,6 @@ import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
   templateUrl: './hearing-actuals-timing.component.html',
 })
 export class HearingActualsTimingComponent implements OnInit, OnDestroy {
-  public datePipe: DatePipe;
   public formGroup: FormGroup;
   public caseTitle: string;
   public submitted: boolean = false;
@@ -46,7 +45,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
                      private readonly route: ActivatedRoute,
                      private readonly ngZone: NgZone,
                      private readonly validatorsUtils: ValidatorsUtils,
-                     private ccdDatePipe: DatePipe
+                     public ccdDatePipe: DatePipe
   ) {}
   private getStartTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
     const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex].plannedStartTime;
@@ -54,8 +53,8 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     if (actualIndex >= 0) {
       actualStartTime = hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingStartTime;
     }
-    const startTime = actualStartTime ? HearingActualsTimingComponent.getTime(actualStartTime) : HearingActualsTimingComponent.getTime(plannedTime);
-    return this.ccdDatePipe.transform(startTime, 'local');
+    return actualStartTime ? HearingActualsTimingComponent.getTime(this.ccdDatePipe.transform(actualStartTime, 'local')) :
+      HearingActualsTimingComponent.getTime(this.ccdDatePipe.transform(plannedTime, 'local'));
   }
 
   private getEndTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
@@ -64,8 +63,8 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     if (actualIndex >= 0) {
       actualEndTime = hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingEndTime;
     }
-    const endTime = actualEndTime ? HearingActualsTimingComponent.getTime(actualEndTime) : HearingActualsTimingComponent.getTime(plannedTime);
-    return this.ccdDatePipe.transform(endTime, 'local');
+    return actualEndTime ? HearingActualsTimingComponent.getTime(this.ccdDatePipe.transform(actualEndTime, 'local')) :
+      HearingActualsTimingComponent.getTime(this.ccdDatePipe.transform(plannedTime, 'local'));
   }
 
   private getPauseStartTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null {
@@ -77,9 +76,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0])
         && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0].pauseStartTime;
     }
-
-    actualPauseStartTime = actualPauseStartTime ? HearingActualsTimingComponent.getTime(actualPauseStartTime) : null;
-    return this.ccdDatePipe.transform(actualPauseStartTime, 'local');
+    return actualPauseStartTime ? HearingActualsTimingComponent.getTime(actualPauseStartTime) : null;
   }
 
   private getPauseEndTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null {
@@ -92,8 +89,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0])
         && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0].pauseEndTime;
     }
-    actualPauseEndTime =  actualPauseEndTime ? HearingActualsTimingComponent.getTime(actualPauseEndTime) : null;
-    return this.ccdDatePipe.transform(actualPauseEndTime, 'local');
+    return actualPauseEndTime ? HearingActualsTimingComponent.getTime(actualPauseEndTime) : null;
   }
 
   private static replaceTime(dateTime: string, time: moment.Moment): string {

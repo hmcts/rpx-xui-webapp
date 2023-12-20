@@ -9,17 +9,17 @@ const hearing = {
         "listingAutoChangeReasonCode": "user-added-comments",
         "hearingType": "ABA5-ALL",
         "hearingWindow": {
-            "dateRangeStart": "2023-03-22",
-            "dateRangeEnd": "2023-05-22"
+            "dateRangeStart": "2024-11-22",
+            "dateRangeEnd": "2024-11-30"
         },
-        "duration": 10995,
+        "duration": 120,
         "hearingPriorityType": "Standard",
         "numberOfPhysicalAttendees": 0,
         "hearingInWelshFlag": false,
         "hearingLocations": [
             {
                 "locationType": "court",
-                "locationId": "898213"
+                "locationId": "20001"
             }
         ],
         "facilitiesRequired": [
@@ -38,7 +38,7 @@ const hearing = {
         },
         "hearingIsLinkedFlag": true,
         "hearingChannels": [
-            "ONPPRS"
+            "ABA1-HRC"
         ],
         "autolistFlag": false
     },

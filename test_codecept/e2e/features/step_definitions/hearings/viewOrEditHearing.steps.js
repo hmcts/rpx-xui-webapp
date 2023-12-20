@@ -4,6 +4,18 @@ const editHearingPage = require('../../pageObjects/hearings/editHearingPage')
 
 const reportLogger = require('../../../../codeceptCommon/reportLogger')
 
+const createHearingWorkflow = require('../../pageObjects/hearings/createHearingWorkflow/createhearingWorkflow')
+
+
+function getPageObject(page) {
+    const pageObj = createHearingWorkflow.pages[page];
+    if (pageObj === null || pageObj === undefined) {
+        throw Error(`page object for page not configured or miss spelled: ${page} ${Object.keys(createHearingWorkflow.pages)}`)
+    }
+    return pageObj;
+}
+
+
 Then('I validate view or edit hearing page displayed', async function(){
     await browserWaits.retryWithActionCallback(async () => {
         expect(await viewOrEditHearingPage.container.isDisplayed()).to.be.true
@@ -54,6 +66,29 @@ When('In view or edit hearing page, I click change link for field {string}', asy
 
 When('In view or edit hearing page, I click Submit updated request', async function (field) {
     await viewOrEditHearingPage.clickChangeLinkForField(field)
+})
+
+
+Then('I validate edit heating change links and navigation', async function(datatable){
+    const validationPages = datatable.parse().hashes()
+    for (const validationPage of validationPages){
+        const changeLinkFor = validationPage.changeLinkFor
+        const navigationPage = validationPage.navigationPage
+        const pageHeader = validationPage.pageHeader
+
+        reportLogger.AddMessage(`Validation of ${changeLinkFor}, ${navigationPage}`)
+        await viewOrEditHearingPage.clickChangeLinkForField(changeLinkFor)
+
+        const navigationPageObject = getPageObject(navigationPage);
+        await browserWaits.retryWithActionCallback(async () => {
+            expect(await navigationPageObject.isDisplayed(), `For change link ${changeLinkFor}, ${navigationPage} not displayed`).to.be.true
+        });
+
+        const actualheaderCaption = await $('span.govuk-caption-l').getText()
+        reportLogger.AddMessage(`page header expected ${pageHeader}, actual ${actualheaderCaption}`)
+        expect(actualheaderCaption).to.includes(pageHeader)
+        await createHearingWorkflow.continueBtn.click();
+    }
 })
 
 

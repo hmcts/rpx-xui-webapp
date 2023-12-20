@@ -22,6 +22,8 @@ const updateRequestedHearing = require('../../../backendMock/services/hearings/m
 
 const mockServiceHearingValues = require('../../../backendMock/services/hearings/serviceHearingValuesMock');
 
+const jsonUtil = require('../.././../e2e/utils/jsonUtil')
+
 const hearingDataForStates = {
   listedHearing: listedHearing,
   awaitingHearingDetails: awaitinghearingsDetails,
@@ -97,13 +99,8 @@ Given('I set mock get hearing with with status {string} and values at jsonpath',
   const hearingResponse = getMockHearingWithStatus(hearingStatus);
 
   const dataTableObjects = valuesDatatable.parse().hashes();
-  for (const row of dataTableObjects) {
-    const actualVal = jsonpath.query(hearingResponse, row.jsonpath);
-    const updatedValue = jsonpath.value(hearingResponse, row.jsonpath, row.value);
 
-    reportLogger.AddMessage(`Updated ${row.jsonpath} =>${actualVal} to  ${updatedValue}`);
-  }
-
+  jsonUtil.updateJsonWithJsonPath(dataTableObjects, hearingResponse)
   mockClient.setOnGetHearing(hearingResponse, 200);
 });
 
@@ -153,13 +150,8 @@ Given('I update mock hearings service hearing values with ref {string} at jsonpa
   const serviceHearingValue = global.scenarioData[ref];
 
   const dataTableObjects = datatable.parse().hashes();
-  for (const row of dataTableObjects){
-    const actualVal = jsonpath.query(serviceHearingValue, row.jsonpath);
-    const updatedValue = jsonpath.value(serviceHearingValue, row.jsonpath, row.value);
 
-    reportLogger.AddMessage(`Updated ${row.jsonpath} =>${actualVal} to  ${updatedValue}`);
-  }
-
+  jsonUtil.updateJsonWithJsonPath(dataTableObjects, serviceHearingValue)
   reportLogger.AddJson(serviceHearingValue);
   mockClient.setHearingServiceHearingValues(serviceHearingValue, 200);
 });

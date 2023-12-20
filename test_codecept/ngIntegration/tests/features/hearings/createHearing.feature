@@ -2,7 +2,6 @@
 @ng @functional_enabled
 Feature: Create hearings workflow
 
-    @functional_debug
     Scenario: Create hearing , input combo 1
         Given I set MOCK with user details
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |

@@ -1654,7 +1654,10 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         title: 'Mrs',
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson'
+        preferredHearingChannel: 'inPerson',
+        reasonableAdjustments: [
+          'RA0042'
+        ]
       },
       unavailabilityRanges: [
         {

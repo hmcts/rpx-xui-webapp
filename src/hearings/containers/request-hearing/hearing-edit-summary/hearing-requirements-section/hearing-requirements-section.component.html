@@ -13,14 +13,14 @@
       Reasonable adjustments
     </div>
     <div class="govuk-summary-list__value">
-      <div *ngFor="let partyWithFlag of partyWithFlags | keyvalue">
-        <div *ngIf="partyWithFlag.value?.length > 0">
-          <exui-amendment-label *ngIf="partyWithFlag.value[0].partyNameChanged"
+      <div *ngFor="let partiesWithFlags of partyWithFlags | keyvalue">
+        <div *ngIf="partyFlags.value?.length > 0">
+          <exui-amendment-label *ngIf="partyFlags.value[0].partyNameChanged"
             [displayLabel]="amendmentLabelEnum.AMENDED">
           </exui-amendment-label>
-          <strong class="bold">{{ partyWithFlag.key }}</strong>
+          <strong class="bold">{{ partyFlags.key }}</strong>
           <ul>
-            <li *ngFor="let flag of partyWithFlag.value">
+            <li *ngFor="let flag of partyFlags.value">
               {{ flag.name }}
             </li>
           </ul>

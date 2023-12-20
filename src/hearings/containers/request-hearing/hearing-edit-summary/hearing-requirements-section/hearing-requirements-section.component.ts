@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { PartyType } from 'src/hearings/models/hearings.enum';
 import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
 import { CaseFlagReferenceModel } from '../../../../models/caseFlagReference.model';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
@@ -6,8 +7,6 @@ import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.m
 import { ServiceHearingValuesModel } from '../../../../models/serviceHearingValues.model';
 import { HearingsService } from '../../../../services/hearings.service';
 import { CaseFlagsUtils } from '../../../../utils/case-flags.utils';
-import { PartyDetailsModel } from 'src/hearings/models/partyDetails.model';
-import { PartyType } from 'src/hearings/models/hearings.enum';
 
 @Component({
   selector: 'exui-hearing-requirements-section',
@@ -21,17 +20,17 @@ export class HearingRequirementsSectionComponent implements OnInit {
 
   public reasonableAdjustmentChangesConfirmed: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
-  public partyWithFlags: Map<string, CaseFlagReferenceModel[]>;
+  public partiesWithFlags: Map<string, CaseFlagReferenceModel[]>;
 
   constructor(private readonly hearingsService: HearingsService) {}
 
   public ngOnInit(): void {
     this.reasonableAdjustmentChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed;
-    this.partyWithFlags = this.getPartiesWithFlagData();
+    this.partiesWithFlags = this.getPartiesWithFlagData();
   }
 
   private getPartiesWithFlagData(): Map<string, CaseFlagReferenceModel[]> {
-    const partyWithFlags: Map<string, CaseFlagReferenceModel[]> = new Map();
+    const partiesWithFlags: Map<string, CaseFlagReferenceModel[]> = new Map();
     const individualParties = this.serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND);
     individualParties.forEach((party) => {
       const flagIds = party.individualDetails?.reasonableAdjustments;
@@ -44,9 +43,10 @@ export class HearingRequirementsSectionComponent implements OnInit {
       if ((party?.partyName !== partyFoundInHMC?.partyName) && flags?.length > 0) {
         flags[0].partyNameChanged = true;
       }
-      partyWithFlags.set(party.partyName || '', flags);
+      partiesWithFlags.set(party.partyName || '', flags);
     });
-    return partyWithFlags;
+    console.log('PARTIES WITH FLAGS', JSON.stringify(partiesWithFlags));
+    return partiesWithFlags;
   }
 
   public onChange(fragmentId: string): void {

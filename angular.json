@@ -16,6 +16,7 @@
             "aot": true,
             "buildOptimizer": true,
             "outputPath": "dist/rpx-exui",
+            "sourceMap": true,
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",

@@ -2,11 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MockRpxTranslatePipe } from '../../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState, partySubChannelsRefData } from '../../../../hearing.test.data';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
+import { HearingsService } from '../../../../services/hearings.service';
 import { ParticipantAttendanceSectionComponent } from './participant-attendance-section.component';
 
 describe('ParticipantAttendanceSectionComponent', () => {
   let component: ParticipantAttendanceSectionComponent;
   let fixture: ComponentFixture<ParticipantAttendanceSectionComponent>;
+  const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post', 'delete']);
+  const hearingsService = new HearingsService(mockedHttpClient);
 
   const partyChannels: LovRefDataModel[] = [
     {
@@ -66,7 +69,9 @@ describe('ParticipantAttendanceSectionComponent', () => {
         ParticipantAttendanceSectionComponent,
         MockRpxTranslatePipe
       ],
-      providers: []
+      providers: [
+        { provide: HearingsService, useValue: hearingsService }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ParticipantAttendanceSectionComponent);

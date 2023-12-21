@@ -89,6 +89,22 @@ Then('I validate edit heating change links and navigation', async function(datat
         expect(actualheaderCaption).to.includes(pageHeader)
         await createHearingWorkflow.continueBtn.click();
     }
+
+    
+})
+
+
+Then('In edit hearing page warning message banner isDisplayed {string}', async function (boolVal) {
+    if (boolVal.toLowerCase().includes('true')) {
+        expect(await editHearingPage.isWarningTextBannerDisplayed()).to.be.true
+    } else {
+        expect(await editHearingPage.isWarningTextBannerDisplayed()).to.be.false
+    }
+
+})
+
+Then('In edit hearing page warning message banner contains {string}', async function (warning) {
+    expect(await editHearingPage.getWarningBanerText()).to.includes(warning)
 })
 
 

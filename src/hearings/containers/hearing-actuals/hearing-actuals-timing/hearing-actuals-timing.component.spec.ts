@@ -191,7 +191,9 @@ describe('HearingActualsTimingComponent', () => {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute
         },
-        ValidatorsUtils
+        ValidatorsUtils,
+        DatePipe,
+        FormatTranslatorService
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [HearingActualsTimingComponent, BlankComponent]

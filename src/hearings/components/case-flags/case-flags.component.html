@@ -5,7 +5,15 @@
   <table *ngFor="let caseFlags of caseFlagsGroup" class="govuk-table">
     <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-      <th scope="col" class="govuk-table__header govuk-table__header_name">{{ caseFlags.name }}</th>
+      <th scope="col" class="govuk-table__header govuk-table__header_name">
+        {{ caseFlags.name }}
+        <exui-amendment-label *ngIf="reasonableAdjustmentChangesConfirmed"
+          [displayLabel]="amendmentLabelEnum.AMENDED">
+        </exui-amendment-label>
+        <exui-amendment-label *ngIf="reasonableAdjustmentChangesConfirmed"
+          [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
+        </exui-amendment-label>
+      </th>
       <th scope="col" class="govuk-table__header govuk-table__header_comments">Comments</th>
       <th scope="col" class="govuk-table__header govuk-table__header_flag-status">Flag status</th>
     </tr>

@@ -257,13 +257,17 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const caseFlagsSHV = this.serviceHearingValuesModel.caseFlags.flags;
     const individualParties = this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND);
     // HMC stores only reasonable adjustment flag ids and language interpreter flag ids under parties
-    // Get only the reasonable adjustment and language interpreter flag ids from SHV
+    // Get only the reasonable adjustment and language interpreter flag ids from SHV and sort them for easy comparison
     const flagIdsSHV = caseFlagsSHV.map((flag) => flag.flagId)?.filter((flagId) => flagId.startsWith('RA') || flagId === this.LANGUAGE_INTERPRETER_FLAG_ID)?.sort();
+    // Get individual parties reasonable adjustment flags and sort the result
     const partyFlagIds = individualParties.map((party) => party.individualDetails?.reasonableAdjustments)?.join(',').split(',').sort();
+    // Convert to string for easy comparison as the partyFlagIds can be an array of empty strings;
+    const partyFlagIdsString = partyFlagIds?.length > 0
+      ? partyFlagIds?.filter((flagId) => flagId !== '').join()
+      : '';
 
     // Return true if there are changes in reasonable adjustments and/or language interpreter flags
-    if (flagIdsSHV.join() !== partyFlagIds.join()) {
-      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesConfirmed = true;
+    if (flagIdsSHV.join() !== partyFlagIdsString) {
       return true;
     }
     // There are no changes for reasonable adjustments and language interpreter flags when compared SHV with HMC

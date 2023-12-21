@@ -1,8 +1,8 @@
-<h2 class="govuk-heading-m">{{ 'Panel details' | rpxTranslate }}</h2>
+<h2 class="govuk-heading-m">Panel details</h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      {{ 'Do you require a panel for this hearing?' | rpxTranslate }}
+      Do you require a panel for this hearing?
     </div>
     <div class="govuk-summary-list__value">
       {{ hearingPanel }}
@@ -11,12 +11,12 @@
       <a id="hearingPanel"
         class="govuk-link"
         href="javascript:void(0)"
-        (click)="onChange('hearingPanel')">{{ 'Change' | rpxTranslate }}</a>
+        (click)="onChange('hearingPanel')">Change</a>
     </div>
   </div>
   <div class="govuk-summary-list__row" *ngIf="includedPanelMembers?.length > 0">
     <div class="govuk-summary-list__key">
-      {{ 'Include specific panel members' | rpxTranslate }}
+      Include specific panel members
     </div>
     <div class="govuk-summary-list__value">
       {{ includedPanelMembers }}
@@ -25,12 +25,12 @@
       <a id="panelInclusion"
         class="govuk-link"
         href="javascript:void(0)"
-        (click)="onChange('panelInclusion')">{{ 'Change' | rpxTranslate }}</a>
+        (click)="onChange('panelInclusion')">Change</a>
     </div>
   </div>
   <div class="govuk-summary-list__row" *ngIf="excludedPanelMembers?.length > 0">
     <div class="govuk-summary-list__key">
-      {{ 'Exclude specific panel members' | rpxTranslate }}
+      Exclude specific panel members
     </div>
     <div class="govuk-summary-list__value">
       {{ excludedPanelMembers }}
@@ -39,12 +39,12 @@
       <a id="panelExclusion"
         class="govuk-link"
         href="javascript:void(0)"
-        (click)="onChange('panelExclusion')">{{ 'Change' | rpxTranslate }}</a>
+        (click)="onChange('panelExclusion')">Change</a>
     </div>
   </div>
   <div class="govuk-summary-list__row" *ngIf="panelRoles?.length > 0">
     <div class="govuk-summary-list__key">
-      {{ 'Select any other panel roles required' | rpxTranslate }}
+      Select any other panel roles required
     </div>
     <div class="govuk-summary-list__value">
       {{ panelRoles }}
@@ -53,7 +53,7 @@
       <a id="panelRoles"
         class="govuk-link"
         href="javascript:void(0)"
-        (click)="onChange('panelRoles')">{{ 'Change' | rpxTranslate }}</a>
+        (click)="onChange('panelRoles')">Change</a>
     </div>
   </div>
 </div>

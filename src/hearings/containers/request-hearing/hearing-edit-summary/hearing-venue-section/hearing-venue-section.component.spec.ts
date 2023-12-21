@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { MockRpxTranslatePipe } from '../../../../../app/shared/test/mock-rpx-translate.pipe';
 import { HearingLocationModel } from '../../../../models/hearingLocation.model';
 import { HMCLocationType } from '../../../../models/hearings.enum';
 import { LocationByEPIMMSModel } from '../../../../models/location.model';
@@ -75,8 +74,7 @@ describe('HearingVenueSectionComponent', () => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [
-        HearingVenueSectionComponent,
-        MockRpxTranslatePipe
+        HearingVenueSectionComponent
       ],
       providers: [
         {

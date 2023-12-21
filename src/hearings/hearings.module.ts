@@ -21,6 +21,7 @@ import { HearingsService } from './services/hearings.service';
 import { effects, reducers } from './store';
 import { AbstractPageFlow } from './utils/abstract-page-flow';
 import { PageFlow } from './utils/page-flow';
+import { WarningAndErrorSectionComponent } from './containers/request-hearing/hearing-edit-summary/warning-and-error-section/warning-and-error-section.component';
 
 @NgModule({
   imports: [
@@ -35,7 +36,7 @@ import { PageFlow } from './utils/page-flow';
     ExuiCommonLibModule,
     HearingsPipesModule
   ],
-  declarations: [...fromComponents.components, ...fromContainers.containers],
+  declarations: [...fromComponents.components, ...fromContainers.containers, WarningAndErrorSectionComponent],
   entryComponents: [],
   providers: [
     PageFlow,

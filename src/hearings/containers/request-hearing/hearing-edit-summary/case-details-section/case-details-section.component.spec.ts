@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MockRpxTranslatePipe } from '../../../../../app/shared/test/mock-rpx-translate.pipe';
 import { caseTypeRefData, initialState } from '../../../../hearing.test.data';
 import { CaseCategoryDisplayModel } from '../../../../models/caseCategory.model';
 import { CategoryType } from '../../../../models/hearings.enum';
@@ -16,8 +15,7 @@ describe('CaseDetailsSectionComponent', () => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [
-        CaseDetailsSectionComponent,
-        MockRpxTranslatePipe
+        CaseDetailsSectionComponent
       ],
       providers: [
         { provide: HearingsService, useValue: hearingsService }

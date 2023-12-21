@@ -2,12 +2,12 @@
     <ng-container *ngIf="(validationErrors$ | async)?.message">
       <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
         <h2 class="govuk-error-summary__title" id="error-summary-title">
-          There is a problem
+          {{'There is a problem' | rpxTranslate}}
         </h2>
         <div class="govuk-error-summary__body">
           <ul class="govuk-list govuk-error-summary__list">
             <li>
-              <a href="noc#caseRef">{{(validationErrors$ | async)?.message}}</a>
+              <a href="noc#caseRef">{{(validationErrors$ | async)?.message | rpxTranslate}}</a>
             </li>
           </ul>
         </div>
@@ -16,14 +16,14 @@
 
     <div class="hmcts-page-heading">
             <div class="hmcts-page-heading__title">
-                <h1 class="govuk-heading-l">Notice of change</h1>
+                <h1 class="govuk-heading-l">{{'Notice of change' | rpxTranslate}}</h1>
             </div>
     </div>
 
-    <p>You can use this notice of change (sometimes called a 'notice of acting') to get access to the digital case file in place of:</p>
+    <p>{{"You can use this notice of change (sometimes called a 'notice of acting') to get access to the digital case file in place of:" | rpxTranslate}}</p>
     <ul class="govuk-list govuk-list--bullet">
-        <li>a client acting in person</li>
-        <li>a legal representative previously acting on your client's behalf</li>
+        <li>{{'a client acting in person' | rpxTranslate}}</li>
+        <li>{{"a legal representative previously acting on your client's behalf" | rpxTranslate}}</li>
     </ul>
 
     <div

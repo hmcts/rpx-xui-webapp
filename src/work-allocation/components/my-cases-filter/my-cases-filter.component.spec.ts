@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs/internal/observable/of';
 import { LocationDataService } from '../../services';
 import { ALL_LOCATIONS } from '../constants/locations';
@@ -42,10 +43,12 @@ describe('MyCasesFilterComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        ExuiCommonLibModule
+        ExuiCommonLibModule,
+        RpxTranslationModule
       ],
       declarations: [MyCasesFilterComponent, WrapperComponent],
       providers: [
+        RpxTranslationService, RpxTranslationConfig,
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         {
           provide: FilterService, useValue: mockFilterService

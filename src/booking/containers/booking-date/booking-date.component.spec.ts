@@ -1,7 +1,12 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import {
+  GovUkErrorMessageComponent,
+  GovUkFieldsetComponent,
+  GovUkLabelComponent
+} from '@hmcts/rpx-xui-common-lib';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { BookingDateFormErrorMessage, BookingDateOption, BookingDatePageText, BookingProcess, DateFormControl } from '../../models';
 import { BookingDateComponent } from './booking-date.component';
 
@@ -9,6 +14,8 @@ describe('BookingDateComponent', () => {
   let component: BookingDateComponent;
   let fixture: ComponentFixture<BookingDateComponent>;
   window.onbeforeunload = jasmine.createSpy();
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {} });
 
   const dateInterval = [
     { date: BookingDateOption.TODAY, checked: false },
@@ -32,9 +39,20 @@ describe('BookingDateComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, ExuiCommonLibModule, FormsModule],
-      declarations: [BookingDateComponent],
-      providers: [FormBuilder]
+      imports: [ReactiveFormsModule, FormsModule],
+      declarations: [
+        BookingDateComponent,
+        GovUkFieldsetComponent,
+        GovUkErrorMessageComponent,
+        GovUkLabelComponent
+      ],
+      providers: [
+        FormBuilder,
+        {
+          provide: RpxTranslationService,
+          useFactory: rpxTranslationServiceStub
+        }
+      ]
     })
       .compileComponents();
     fixture = TestBed.createComponent(BookingDateComponent);

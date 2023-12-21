@@ -23,6 +23,7 @@ export class MediaViewerWrapperComponent implements OnInit {
 
   public icpJurisdictions$: Observable<string[]>;
   public icpEnabled$: Observable<boolean>;
+  public enableRedactSearch$: Observable<boolean>;
 
   public constructor(
         private readonly windowService: WindowService,
@@ -60,6 +61,7 @@ export class MediaViewerWrapperComponent implements OnInit {
 
     this.icpJurisdictions$ = this.featureToggleService.getValue('icp-jurisdictions', []);
     this.icpEnabled$ = this.featureToggleService.isEnabled('icp-enabled');
+    this.enableRedactSearch$ = this.featureToggleService.isEnabled('enable-redact-search');
   }
 
   /**

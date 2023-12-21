@@ -1,13 +1,16 @@
-@ng @codecept_enabled
+@ng @functional_enabled
 Feature: WA Release 2: My work - My tasks - Manage links
 
     Background: Mock and browser setup
         Given I init MockApp
-       
-    
-            
+
+
+
     Scenario Outline:  My Tasks, colums and column links for "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        
+        Given I set MOCK with user details
+            | roles        | <Roles>,task-supervisor,case-allocator |
+            | roleCategory | <roleCategory>                         |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation |
             | IA           | Y           | ORGANISATION | 20001        |
@@ -15,6 +18,14 @@ Feature: WA Release 2: My work - My tasks - Manage links
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
+
+
+        Given I set MOCK case "defaultCase" details with reference "WA_Case"
+        Given I set MOCK case details "WA_Case" property "case_type.id" as "Asylum"
+
+        Given I set MOCK case details "WA_Case" property "jurisdiction.id" as "IA"
+        Given I set MOCK case details "WA_Case" trigger id "text" trigger name "Test event"
+
 
         Given I set MOCK tasks with permissions for view "My tasks" and assigned state ""
             | Permissions | Count |
@@ -52,7 +63,7 @@ Feature: WA Release 2: My work - My tasks - Manage links
         Then I see case details tab label "Tasks" is selected is "true"
 
         Examples:
-            | UserIdentifier     | UserType   | Roles                                              |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            | UserIdentifier | UserType | Roles | roleCategory |
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |LEGAL_OPERATIONS|
+            # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |JUDICIAL|
 

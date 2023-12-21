@@ -4,8 +4,9 @@ const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 var { defineSupportCode } = require('cucumber');
 const BrowserWaits = require("../../support/customWaits");
 const caseDetailsPage = require("../pageObjects/caseDetailsPage");
-
+const mediaViewerPage = require("../pageObjects/mediaViewerPage");
 const caseDetailsBasicViewPage = require('../pageObjects/caseAccessManagement/caseDetailsBasicView');
+const { I } = inject();
 
 
    
@@ -56,6 +57,19 @@ const caseDetailsBasicViewPage = require('../pageObjects/caseAccessManagement/ca
         });
     });
 
+    When('I click tab with label {string} in case details page, to see element with css selector {string}', async function (tabLabel, cssSelector) {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await caseDetailsPage.clickTabWithLabel(tabLabel) 
+            await BrowserWaits.waitForSeconds(2)
+            await caseDetailsPage.clickTabWithLabel(tabLabel) 
+
+            await BrowserWaits.waitForElement($(cssSelector))
+            expect(await $(cssSelector).isDisplayed()).to.be.true
+        });
+
+    });
+
+
     Then('I see case details page displayed with tab {string} selected', async function(tabLabel){
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(await caseDetailsPage.amOnPage(), 'Not on case details page').to.be.true;
@@ -72,23 +86,28 @@ const caseDetailsBasicViewPage = require('../pageObjects/caseAccessManagement/ca
         
     });
 
-    Then('I see case details basic view and request access page', async () =>{
-        await BrowserWaits.waitForElement(caseDetailsBasicViewPage.container)
+    When('I open linked document', async () => {
+        await caseDetailsPage.openLinkedDocument()
     })
 
-    Then('I see case details basic view displays banner with message {string}', async (message) => {
-        await BrowserWaits.waitForElement(caseDetailsBasicViewPage.bannerMessageContainer)
-        const bannerMessage = await caseDetailsBasicViewPage.bannerMessageContainer.getText()
-        expect(bannerMessage).to.contains(message);
+    When('I open dummy document', async () => {
+        await caseDetailsPage.openDummyFile()
     })
 
-    Then('I see case details basic view displays case property {string} with values {string}', async (attribute, value) => {
-        await BrowserWaits.waitForElement(caseDetailsBasicViewPage.bannerMessageContainer)
-        expect(await caseDetailsBasicViewPage.isRowDisplayedWithAttribute(attribute), 'Attribute not displayed').to.be.true
-        expect(await caseDetailsBasicViewPage.getAttributeValues(attribute)).to.contains(value)
-    })
+    Then('I verify that text redaction is working', async function() {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await mediaViewerPage.verifyRedactionWorking()).to.be.true;
+        });
+    });
 
-    When('I click request access button in case basic view page', async () => {
-        await caseDetailsBasicViewPage.requestAccessButton.click() 
-    })
+    Then('I verify that bookmark feature is working', async function() {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await mediaViewerPage.verifyBookmarkWorking()).to.be.true;
+        });
+    });
 
+    Then('I verify that comment feature is working', async function() {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await mediaViewerPage.verifyCommentWorking(I)).to.be.true;
+        });
+    });

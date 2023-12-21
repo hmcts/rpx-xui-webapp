@@ -8,6 +8,7 @@ import * as fromFeature from '../../store';
 import { NocCaseRefComponent } from '../noc-case-ref/noc-case-ref.component';
 import { NocCheckAndSubmitComponent } from '../noc-check-and-submit/noc-check-and-submit.component';
 import { NocQAndAComponent } from '../noc-q-and-a/noc-q-and-a.component';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-noc-home',
@@ -38,7 +39,8 @@ export class NocHomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly store: Store<fromFeature.State>,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly loggerService: LoggerService,
   ) {}
 
   public ngOnInit() {
@@ -63,8 +65,8 @@ export class NocHomeComponent implements OnInit, OnDestroy {
         switch (this.nocNavigationCurrentState) {
           case NocState.START:
           case NocState.CASE_REF_VALIDATION_FAILURE:
-            this.router.navigateByUrl('').then(() => {
-              return;
+            this.router.navigateByUrl('').catch((err) => {
+              this.loggerService.error('Error navigating to \'\' ', err);
             });
             break;
           case NocState.QUESTION:

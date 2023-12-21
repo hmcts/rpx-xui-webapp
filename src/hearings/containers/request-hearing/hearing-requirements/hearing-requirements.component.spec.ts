@@ -20,6 +20,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingRequirementsComponent } from './hearing-requirements.component';
+import { LoggerService } from '../../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -533,7 +534,7 @@ describe('HearingRequirementsComponent', () => {
       hearingRequestToCompare: {
         hearingRequestMainModel: {
           requestDetails: {
-            timeStamp: null,
+            timestamp: null,
             versionNumber: 1
           },
           hearingDetails: {
@@ -671,7 +672,7 @@ describe('HearingRequirementsComponent', () => {
           requestDetails: {
             hearingRequestID: '1000000',
             status: 'LISTED',
-            timeStamp: '2021-11-30T09:00:00.000Z',
+            timestamp: '2021-11-30T09:00:00.000Z',
             versionNumber: 1,
             cancellationReasonCodes: ['withdraw', 'struck']
           },
@@ -736,9 +737,9 @@ describe('HearingRequirementsComponent', () => {
             ],
             hearingIsLinkedFlag: false,
             hearingWindow: {
-              dateRangeStart: '2022-12-12T09:00:00.000Z',
-              dateRangeEnd: '2022-12-12T09:00:00.000Z',
-              firstDateTimeMustBe: ''
+              dateRangeStart: '2022-11-23T09:00:00.000Z',
+              dateRangeEnd: '2022-11-30T09:00:00.000Z',
+              firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
             },
             privateHearingRequiredFlag: false,
             panelRequirements: null,
@@ -2195,6 +2196,7 @@ describe('HearingRequirementsComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   const locationsDataService = new LocationsDataService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -2203,6 +2205,7 @@ describe('HearingRequirementsComponent', () => {
         provideMockStore({ initialState: initialStateImmutable }),
         { provide: HearingsService, useValue: hearingsService },
         { provide: LocationsDataService, useValue: locationsDataService },
+        { provide: LoggerService, useValue: loggerServiceMock },
         {
           provide: ActivatedRoute,
           useValue: {

@@ -5,10 +5,10 @@ class BookingsDataModels{
         return {
             "appointmentId": "1011",
             "base_location_id": "765324",
-            "beginTime": "2022-03-01T00:00:00.000Z",
+            "beginTime": new Date(),
             "contract_type_id": "102",
-            "created": "2022-01-23T06:37:58.000Z",
-            "endTime": "2022-12-24T00:00:00.000Z",
+            "created": new Date(),
+            "endTime": new Date(),
             "region_id": "104",
             "roleId": "caseworker",
             "userId": "21334a2b-79ce-44eb-9168-2d49a744be9c"

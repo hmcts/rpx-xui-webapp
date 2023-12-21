@@ -63,6 +63,7 @@ local-only-tools
 /test/reports/
 reports/
 functional-output/
+mochawesome-report/
 
 /local-only-tools
 
@@ -90,3 +91,6 @@ ignore/
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+/infrastructure/.terraform/
+install-state.gz

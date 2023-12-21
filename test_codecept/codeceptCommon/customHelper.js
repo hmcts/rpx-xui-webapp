@@ -45,6 +45,7 @@ class CustomHelper extends Helper {
            this.attachBrowserLog(log)
         //    await getActor().saveScreenshot()
        }
+   
     }
 
     async flushLogsToReport(){
@@ -90,6 +91,11 @@ class CustomHelper extends Helper {
     _getHelper(){
         const { WebDriver, Puppeteer } = this.helpers;
         return Puppeteer;
+    }
+
+
+    getPuppeteer() {
+        return this._getHelper();
     }
 
     getPuppeteerPage(){

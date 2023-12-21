@@ -156,6 +156,13 @@
        
        <div class="a11yResult" ng-class="{show: test.show, hide:!test.show}">
             <!-- {{test.a11yResult}} -->
+            <div>
+                <h3>Test Steps</h3>
+                <div ng-if="test.a11yResult.steps !== null" ng-repeat="step in test.a11yResult.steps">
+                    <code>{{step}}</code>
+            
+                </div>
+            </div>
             <table class="resultTable">
                 <tr>
                     <th>Document title:</th>

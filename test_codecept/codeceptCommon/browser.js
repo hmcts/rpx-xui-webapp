@@ -7,6 +7,9 @@ function getActor(){
 }
 
 class DriverManager{
+    constructor(){
+        this.sessionCookies = null
+    }
     deleteAllCookies(){
 
     }
@@ -20,6 +23,7 @@ class DriverManager{
             const nameValue = cookie.split("=")
             return { name: nameValue[0].trim(), value: nameValue[1].trim() }
         })
+        this.sessionCookies = cookies
         return cookies
     }
 
@@ -62,6 +66,10 @@ class Browser{
         })
     }
 
+    async pause(){
+        await getActor().pause();
+    }
+
     async get(url){
         await getActor().amOnPage(url);
     }
@@ -69,7 +77,7 @@ class Browser{
     async getCurrentUrl(){
         return await getActor().grabCurrentUrl()
     }
-   
+
     async refresh(){
         const url = await this.getCurrentUrl();
         await this.get(url);
@@ -82,15 +90,18 @@ class Browser{
         }catch(err){
 
         }
-        
+
     }
 
     async executeScript(fn, element){
-        return getActor().executeScript(fn, element.selector);  
+      if (element)
+        return getActor().executeScript(fn, element.selector);
+      else
+        return undefined;
     }
 
     async getBrowserLogs(){
-        return await getActor().grabBrowserLogs();  
+        return await getActor().grabBrowserLogs();
     }
 
     async captureBrowserLogs(){
@@ -105,7 +116,7 @@ class Browser{
     async getSessionStorage(key) {
         return await getActor().executeScript((key) => {
             return window.sessionStorage[key]
-        },key); 
+        },key);
     }
 
     async getLocalStorage(key) {

@@ -3,170 +3,173 @@
   <main class="govuk-main-wrapper govuk-main-wrapper--l" id="content" role="main">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-
-        <h1 class="govuk-heading-xl" id="cookies">Cookies</h1>
-
-        <p class="govuk-body">A cookie is a small piece of data that’s stored on your computer, tablet, or phone when
-          you visit a website. Most websites need cookies to work properly.</p>
-        <p>This service uses them to:</p>
-
-        <ul class="govuk-list govuk-list--bullet">
-          <li>measure how you use the service so it can be improved</li>
-          <li>remember the notifications you’ve seen so that you’re not shown them again</li>
-          <li>temporarily store the answers you give</li>
-        </ul>
-
-        <p class="govuk-body">Find out more about <a target="_blank" href="http://www.aboutcookies.org/">how to manage
-          cookies</a>.</p>
-        <h2 class="govuk-heading-l" id="how-cookies-are-used-in-this-service">How cookies are used in this service</h2>
-        <ng-container *ngIf="countCookies(GOOGLE)">
-          <h3 class="govuk-heading-m" id="1-to-measure-website-usage">To measure website usage</h3>
-          <p class="govuk-body">We use Google Analytics software to collect information about how you use this service.
-            We do this to help make sure the service is meeting the needs of its users and to help us make improvements,
-            for example improving site search.</p>
-          <p class="govuk-body">Google Analytics stores information about:</p>
-
-          <ul class="govuk-list govuk-list--bullet">
-            <li>the pages you visit</li>
-            <li>how long you spend on each page</li>
-            <li>how you got to the service</li>
-            <li>what you click on while you’re visiting the service</li>
-          </ul>
-
-          <p class="govuk-body">We allow Google to use or share our analytics data. You can find out more about how
-            Google use this information in their <a target="_blank"
-                                                    href="https://www.google.com/policies/privacy/partners/">privacy
-              policy</a>.</p>
-          <p class="govuk-body">You can <a target="_blank" href="https://tools.google.com/dlpage/gaoptout">opt out of
-            Google Analytics</a> if you do not want Google to have access to your information.</p>
-          <p class="govuk-body">Google Analytics sets the following cookies:</p>
-          <table class="govuk-table">
-            <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header" scope="col">Name</th>
-              <th class="govuk-table__header" scope="col">Purpose</th>
-              <th class="govuk-table__header" scope="col">Expires</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="govuk-table__row" scope="col" *ngFor="let cookie of cookiesByCat(GOOGLE)">
-              <td class="govuk-table__cell">{{cookie.name}}</td>
-              <td class="govuk-table__cell">{{cookie.purpose}}</td>
-              <td class="govuk-table__cell">{{cookie.cat}}</td>
-            </tr>
-            </tbody>
-          </table>
-        </ng-container>
-        <ng-container *ngIf="countCookies(USAGE)">
-          <p class="govuk-body">We also use other third party services to perform visitor analytics</p>
-
-          <table class="govuk-table">
-            <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header" scope="col">Name</th>
-              <th class="govuk-table__header" scope="col">Purpose</th>
-              <th class="govuk-table__header" scope="col">Expires</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="govuk-table__row" scope="col" *ngFor="let cookie of cookiesByCat(USAGE)">
-              <td class="govuk-table__cell">{{cookie.name}}</td>
-              <td class="govuk-table__cell">{{cookie.purpose}}</td>
-              <td class="govuk-table__cell">{{cookie.cat}}</td>
-            </tr>
-            </tbody>
-          </table>
-        </ng-container>
-        <ng-container *ngIf="countCookies(INTRO)">
-          <h3 class="govuk-heading-m" id="2-to-turn-our-introductory-message-off">To turn our introductory message
-            off</h3>
-          <p>You may see a pop-up welcome message when you first visit the service. We’ll store a cookie so that your
-            computer knows you’ve seen it and knows not to show it again.</p>
-          <table class="govuk-table">
-            <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header">Name</th>
-              <th class="govuk-table__header">Purpose</th>
-              <th class="govuk-table__header">Expires</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="govuk-table__row" *ngFor="let cookie of cookiesByCat(INTRO)">
-              <td class="govuk-table__cell">{{cookie.name}}</td>
-              <td class="govuk-table__cell">{{cookie.purpose}}</td>
-              <td class="govuk-table__cell">{{cookie.expires}}</td>
-            </tr>
-            </tbody>
-          </table>
-        </ng-container>
-        <ng-container *ngIf="countCookies(SESSION)">
-          <h3 class="govuk-heading-m" id="3-to-store-the-answers-you-ve-given-during-your-visit-known-as-a-session-">To
-            store the answers you’ve given during your visit (known as a ‘session’)</h3>
-          <p>Session cookies are stored on your computer as you travel through a website, and let the website know what
-            you’ve seen and done so far. These are temporary cookies and are automatically deleted a short while after
-            you leave the website.</p>
-          <table class="govuk-table">
-            <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header">Name</th>
-              <th class="govuk-table__header">Purpose</th>
-              <th class="govuk-table__header">Expires</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="govuk-table__row" *ngFor="let cookie of cookiesByCat(SESSION)">
-              <td class="govuk-table__cell">{{cookie.name}}</td>
-              <td class="govuk-table__cell">{{cookie.purpose}}</td>
-              <td class="govuk-table__cell">{{cookie.expires}}</td>
-            </tr>
-            </tbody>
-          </table>
-        </ng-container>
-        <ng-container *ngIf="countCookies(IDENTIFY)">
-          <h3 class="govuk-heading-m" id="4-to-identify-you-when-you-come-back-to-the-service">To identify you when
-            you come back to the service</h3>
-          <p>We use authentication cookies to identify you when you return to the service.</p>
-          <table class="govuk-table">
-            <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header">Name</th>
-              <th class="govuk-table__header">Purpose</th>
-              <th class="govuk-table__header">Expires</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="govuk-table__row" *ngFor="let cookie of cookiesByCat(IDENTIFY)">
-              <td class="govuk-table__cell">{{cookie.name}}</td>
-              <td class="govuk-table__cell">{{cookie.purpose}}</td>
-              <td class="govuk-table__cell">{{cookie.expires}}</td>
-            </tr>
-            </tbody>
-          </table>
-        </ng-container>
-        <ng-container *ngIf="SECURITY">
-          <h3 class="govuk-heading-m" id="5-to-make-the-service-more-secure">To make the service more secure</h3>
-          <p>We set cookies which prevent attackers from modifying the contents of our pages and which prevent
-            unauthorised access to the service. This
-            makes the service more secure and protects your personal information.</p>
-          <table class="govuk-table">
-            <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header">Name</th>
-              <th class="govuk-table__header">Purpose</th>
-              <th class="govuk-table__header">Expires</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="govuk-table__row" *ngFor="let cookie of cookiesByCat(SECURITY)">
-              <td class="govuk-table__cell">{{cookie.name}}</td>
-              <td class="govuk-table__cell">{{cookie.purpose}}</td>
-              <td class="govuk-table__cell">{{cookie.expires}}</td>
-            </tr>
-            </tbody>
-          </table>
-        </ng-container>
+        <ng-container
+        *ngIf="showWelshTranslation; then welshTranslation; else englishTranslation">
+      </ng-container>
       </div>
     </div>
   </main>
 </div>
 <exui-app-footer></exui-app-footer>
+
+<ng-template #englishTranslation>
+  <h1 class="govuk-heading-xl" id="cookies">Cookies</h1>
+
+  <p class="govuk-body">A cookie is a small piece of data that’s stored on your computer, tablet, or phone when you visit a website. Most websites need cookies to work properly.</p>
+  <p>This service uses them to:</p>
+
+  <ul class="govuk-list govuk-list--bullet">
+    <li>measure how you use the service so it can be improved</li>
+    <li>remember the notifications you’ve seen so that you’re not shown them again</li>
+    <li>temporarily store the answers you give</li>
+  </ul>
+
+  <p class="govuk-body">Find out more about <a target="_blank" href="http://www.aboutcookies.org/">how to manage
+    cookies</a>.</p>
+  <h2 class="govuk-heading-l" id="how-cookies-are-used-in-this-service">How cookies are used in this service</h2>
+
+  <ng-container *ngIf="countCookies(USAGE)">
+    <p class="govuk-body">We use third party services to perform visitor analytics</p>
+
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col">Name</th>
+        <th class="govuk-table__header" scope="col">Purpose</th>
+        <th class="govuk-table__header" scope="col">Expires</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="govuk-table__row" scope="col" *ngFor="let cookie of cookiesByCat(USAGE)">
+        <td class="govuk-table__cell">{{cookie.name}}</td>
+        <td class="govuk-table__cell">{{cookie.purpose}}</td>
+        <td class="govuk-table__cell">{{cookie.cat}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-container *ngIf="countCookies(IDENTIFY)">
+    <h3 class="govuk-heading-m" id="4-to-identify-you-when-you-come-back-to-the-service">
+      To identify you when you come back to the service
+    </h3>
+    <p>We use authentication cookies to identify you when you return to the service.</p>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header">Name</th>
+        <th class="govuk-table__header">Purpose</th>
+        <th class="govuk-table__header">Expires</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="govuk-table__row" *ngFor="let cookie of cookiesByCat(IDENTIFY)">
+        <td class="govuk-table__cell">{{cookie.name}}</td>
+        <td class="govuk-table__cell">{{cookie.purpose}}</td>
+        <td class="govuk-table__cell">{{cookie.expires}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-container *ngIf="SECURITY">
+    <h3 class="govuk-heading-m" id="5-to-make-the-service-more-secure">To make the service more secure</h3>
+    <p>We set cookies which prevent attackers from modifying the contents of our pages and which prevent unauthorised access to the service. This makes the service more secure and protects your personal information.</p>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header">Name</th>
+        <th class="govuk-table__header">Purpose</th>
+        <th class="govuk-table__header">Expires</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="govuk-table__row" *ngFor="let cookie of cookiesByCat(SECURITY)">
+        <td class="govuk-table__cell">{{cookie.name}}</td>
+        <td class="govuk-table__cell">{{cookie.purpose}}</td>
+        <td class="govuk-table__cell">{{cookie.expires}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </ng-container>
+
+</ng-template>
+
+<ng-template #welshTranslation>
+  <h1 class="govuk-heading-xl" id="cookies">Cwcis</h1>
+
+  <p class="govuk-body">Darn bach o ddata sy'n cael ei storio ar eich cyfrifiadur, eich tabled neu eich ffôn symudol pan fyddwch yn ymweld â gwefan yw cwci. Mae angen cwcis ar y rhan fwyaf o wefannau i weithio'n iawn.</p>
+  <p>Mae’r gwasanaeth hwn yn eu defnyddio i:</p>
+
+  <ul class="govuk-list govuk-list--bullet">
+    <li>fesur sut ydych yn defnyddio’r gwasanaeth fel y gallwn ei wella</li>
+    <li>cofio'r hysbysiadau rydych wedi'u gweld fel na fyddwch yn eu gweld eto
+</li>
+    <li>storio’r atebion a roddwch dros dro</li>
+  </ul>
+
+  <p class="govuk-body">Darganfyddwch fwy am <a target="_blank" href="http://www.aboutcookies.org/">sut i reoli cwcis</a>.</p>
+  <h2 class="govuk-heading-l" id="how-cookies-are-used-in-this-service">I fesur faint o bobl sy’n defnyddio ein gwefan</h2>
+
+  <ng-container *ngIf="countCookies(USAGE)">
+    <p class="govuk-body">Rydym yn defnyddio gwasanaethau trydydd parti i ddadansoddi ymweliadau â’r wefan</p>
+
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col">Enw</th>
+        <th class="govuk-table__header" scope="col">Pwrpas</th>
+        <th class="govuk-table__header" scope="col">Dyddiad dod i ben</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="govuk-table__row" scope="col" *ngFor="let cookie of cookiesByCat(USAGE)">
+        <td class="govuk-table__cell">{{cookie.name}}</td>
+        <td class="govuk-table__cell">{{cookie.purpose}}</td>
+        <td class="govuk-table__cell">{{cookie.cat}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-container *ngIf="countCookies(IDENTIFY)">
+    <h3 class="govuk-heading-m" id="4-to-identify-you-when-you-come-back-to-the-service">
+      Eich adnabod pan fyddwch yn dod yn ôl at y gwasanaeth
+    </h3>
+    <p>Rydym yn defnyddio cwcis dilysu i’ch adnabod pan fyddwch yn dod yn ôl i’r gwasanaeth.</p>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col">Enw</th>
+        <th class="govuk-table__header" scope="col">Pwrpas</th>
+        <th class="govuk-table__header" scope="col">Dyddiad dod i ben</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="govuk-table__row" *ngFor="let cookie of cookiesByCat(IDENTIFY)">
+        <td class="govuk-table__cell">{{cookie.name}}</td>
+        <td class="govuk-table__cell">{{cookie.purpose}}</td>
+        <td class="govuk-table__cell">{{cookie.expires}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-container *ngIf="SECURITY">
+    <h3 class="govuk-heading-m" id="5-to-make-the-service-more-secure">Gwneud y gwasanaeth yn fwy diogel</h3>
+    <p>Rydym yn gosod cwcis sy’n rhwystro’r rhai sy’n ymosod rhag addasu cynnwys ein tudalennau ac sy’n rhwystro mynediad heb awdurdod at y gwasanaeth. Mae hyn yn gwneud y gwasanaeth yn fwy diogel ac yn diogelu eich gwybodaeth bersonol.</p>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col">Enw</th>
+        <th class="govuk-table__header" scope="col">Pwrpas</th>
+        <th class="govuk-table__header" scope="col">Dyddiad dod i ben</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="govuk-table__row" *ngFor="let cookie of cookiesByCat(SECURITY)">
+        <td class="govuk-table__cell">{{cookie.name}}</td>
+        <td class="govuk-table__cell">{{cookie.purpose}}</td>
+        <td class="govuk-table__cell">{{cookie.expires}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </ng-container>
+
+</ng-template>

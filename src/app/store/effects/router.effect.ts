@@ -6,8 +6,9 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import * as RouterActions from '../actions/router.action';
 
 import { Store } from '@ngrx/store';
-import { map, tap } from 'rxjs/operators';
+import { map, mergeMap, tap } from 'rxjs/operators';
 import * as fromCases from '../../../cases/store/index';
+import { from } from 'rxjs';
 
 @Injectable()
 export class RouterEffects {
@@ -22,23 +23,26 @@ export class RouterEffects {
   public navigate$ = this.actions$.pipe(
       ofType(RouterActions.GO),
       map((action: RouterActions.Go) => action.payload),
-      tap(({ path, query: queryParams, extras, callback, errorHandler }) => {
-        return this.router.navigate(path, { queryParams, ...extras })
-          .then(() => callback ? callback() : false)
-          .catch((error) => errorHandler ? errorHandler(error) : false);
-      })
+      mergeMap(({ path, query: queryParams, extras, callback, errorHandler }) =>
+        from(
+          this.router.navigate(path, { queryParams, ...extras })
+            .then(() => callback ? callback() : false)
+            .catch((error) => errorHandler ? errorHandler(error) : false)
+        )
+      )
     );
 
   @Effect({ dispatch: false })
   public navigateNewCase$ = this.actions$.pipe(
       ofType(RouterActions.CREATE_CASE_GO),
       map((action: RouterActions.CreateCaseGo) => action.payload),
-      tap(({ path, query: queryParams, extras, caseId }) => {
-        const thatCaseId = caseId;
-        return this.router.navigate(path, { queryParams, ...extras }).then(() => {
-          this.store.dispatch(new fromCases.CreateCaseLoaded(thatCaseId));
-        });
-      })
+      mergeMap(({ path, query: queryParams, extras, caseId }) =>
+        from(
+          this.router.navigate(path, { queryParams, ...extras }).then(() => {
+            this.store.dispatch(new fromCases.CreateCaseLoaded(caseId));
+          })
+        )
+      )
     );
 
   @Effect({ dispatch: false })

@@ -1,11 +1,23 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, Pipe, PipeTransform, ViewChild } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { RouterTestingModule } from '@angular/router/testing';
+import { CaseReferencePipe } from '@hmcts/ccd-case-ui-toolkit';
+import { DueDateComponent } from '@hmcts/rpx-xui-common-lib';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { FieldType, TaskView } from '../../enums';
 import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
-import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
+import { DaysFromTodayPipe, IntegerPipe, TwoDPPipe, YesNoPipe } from '../../pipes';
+import { AccessViewFieldComponent } from '../access-view-field/access-view-field.component';
+import { CaseNameFieldComponent } from '../case-name-field/case-name-field.component';
+import { CaseReferenceFieldComponent } from '../case-reference-field/case-reference-field.component';
+import { DerivedIconFieldComponent } from '../derived-icon-field/derived-icon-field.component';
+import { ImageFieldComponent } from '../image-field/image-field.component';
+import { PriorityFieldComponent } from '../priority-field/priority-field.component';
+import { TaskNameFieldComponent } from '../task-name-field/task-name-field.component';
+import { UrlFieldComponent } from '../url-field/url-field.component';
+import { WorkFieldComponent } from '../work-field/work-field.component';
 import { TaskFieldComponent } from './task-field.component';
 
 @Component({
@@ -17,11 +29,20 @@ class WrapperComponent {
   @Input() public task: Task;
 }
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
+
 describe('WorkAllocation', () => {
   describe('TaskFieldComponent', () => {
     let component: TaskFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
 
     function getConfig(name: string, type: FieldType): FieldConfig {
       return {
@@ -34,8 +55,30 @@ describe('WorkAllocation', () => {
 
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [WrapperComponent],
-        imports: [WorkAllocationComponentsModule, RouterTestingModule]
+        declarations: [
+          WrapperComponent,
+          AccessViewFieldComponent,
+          CaseNameFieldComponent,
+          CaseReferenceFieldComponent,
+          DerivedIconFieldComponent,
+          ImageFieldComponent,
+          TaskFieldComponent,
+          TaskNameFieldComponent,
+          UrlFieldComponent,
+          WorkFieldComponent,
+          PriorityFieldComponent,
+          DueDateComponent,
+          CaseReferencePipe,
+          IntegerPipe,
+          TwoDPPipe,
+          YesNoPipe,
+          DaysFromTodayPipe,
+          RpxTranslateMockPipe
+        ],
+        imports: [RouterTestingModule],
+        providers: [
+          { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
+        ]
       })
         .compileComponents();
 

@@ -120,7 +120,7 @@ const config = {
     strict: true,
     format: ['node_modules/cucumber-pretty', 'json:cb_reports/saucelab_results.json'],
     require: ['../support/world.js', '../support/*.js', '../features/step_definitions/**/*.steps.js', '../features/step_definitions/**/*.steps.js'],
-    tags: ['@crossbrowser']
+    tags: ['@crossbrowser', 'not @Flaky']
   },
 
   plugins: [

@@ -24,13 +24,14 @@ const { DataTableArgument } = require('codeceptjs');
     Then('I validate case details task tab page is displayed', async function(){
         await BrowserWaits.retryWithActionCallback(async () => {
             try{
-                expect(await caseDetailsTaskTabPage.container.isPresent(), 'Task details ta page display ').be.true
+                expect(await caseDetailsTaskTabPage.container.isPresent(), 'Task details tab page display ').be.true
 
             }catch(err){
                 reportLogger.AddMessage("Error occured "+err);
-                await caseDetailsPage.clickTabWithLabel("Roles and access");
-                await caseRolesAndAccessPage.waitForPage();
-                await caseDetailsPage.clickTabWithLabel("Tasks");
+                await browser.refresh()
+                // await caseDetailsPage.clickTabWithLabel("Roles and access");
+                // await caseRolesAndAccessPage.waitForPage();
+                // await caseDetailsPage.clickTabWithLabel("Tasks");
                 throw new Error(err); 
             }
 

@@ -7,7 +7,7 @@ import * as fromActions from '../actions';
 export const initialHearingRequestState: HearingRequestStateData = {
   hearingRequestMainModel: {
     requestDetails: {
-      timeStamp: null,
+      timestamp: null,
       versionNumber: 0
     },
     hearingDetails: {

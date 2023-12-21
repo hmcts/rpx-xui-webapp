@@ -8,6 +8,7 @@ import { Observable } from 'rxjs/Observable';
 import { catchError, map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
+import { UserRole } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { WAFeatureConfig } from '../../../work-allocation/models/common/service-config.model';
@@ -73,10 +74,12 @@ export class CaseViewerContainerComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    console.info('ngOnInit started - CaseViewerContainerComponent');
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.allocateRoleService.manageLabellingRoleAssignment(this.caseDetails.case_id).subscribe();
     this.prependedTabs$ = this.prependedCaseViewTabs();
     this.appendedTabs$ = this.appendedCaseViewTabs();
+    console.info('ngOnInit finished - CaseViewerContainerComponent');
   }
 
   private prependedCaseViewTabs(): Observable<CaseTab[]> {
@@ -98,13 +101,16 @@ export class CaseViewerContainerComponent implements OnInit {
       this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []),
       this.userRoles$
     ]).pipe(
-      // @ts-ignore
-      map(([featureVariations, userRoles]: [FeatureVariation[], string[]]) => {
+      map(([featureVariations, userRoles]) => {
         const jurisdictionId = this.caseDetails.case_type.jurisdiction.id;
         const caseTypeId = this.caseDetails.case_type.id;
         const hasMatchedPermissions = featureVariations.some((featureVariation) =>
-          Utils.hasMatchedPermissions(featureVariation, jurisdictionId, caseTypeId, userRoles));
-        return hasMatchedPermissions ? this.appendedTabs : [];
+          Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdictionId, caseTypeId)
+        );
+        const hasHearingRole = userRoles.includes(UserRole.HearingViewer) ||
+          userRoles.includes(UserRole.ListedHearingViewer) ||
+          userRoles.includes(UserRole.HearingManager);
+        return (hasMatchedPermissions && hasHearingRole) ? this.appendedTabs : [];
       })
     );
   }

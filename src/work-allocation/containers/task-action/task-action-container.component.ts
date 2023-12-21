@@ -33,8 +33,6 @@ export class TaskActionContainerComponent implements OnInit {
   public routeData: RouteData;
   protected userDetailsKey: string = 'userDetails';
   public isJudicial: boolean;
-  public isUpdatedTaskPermissions$: Observable<boolean>;
-  public updatedTaskPermission: boolean;
   constructor(
     private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
@@ -89,11 +87,6 @@ export class TaskActionContainerComponent implements OnInit {
         });
       }
     }
-
-    this.isUpdatedTaskPermissions$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
-    this.isUpdatedTaskPermissions$.pipe(filter((v) => !!v)).subscribe((value) => {
-      this.updatedTaskPermission = value;
-    });
   }
 
   public isCurrentUserJudicial(): boolean {
@@ -116,15 +109,13 @@ export class TaskActionContainerComponent implements OnInit {
         break;
       case TaskActionType.Unassign:
         action = ACTION.UNCLAIM;
-        if (this.updatedTaskPermission) {
-          const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
-          let userId: string;
-          if (userInfoStr) {
-            const userInfo: UserInfo = JSON.parse(userInfoStr);
-            userId = userInfo.id ? userInfo.id : userInfo.uid;
-            if (this.tasks[0].assignee !== userId) {
-              action = ACTION.UNASSIGN;
-            }
+        const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+        let userId: string;
+        if (userInfoStr) {
+          const userInfo: UserInfo = JSON.parse(userInfoStr);
+          userId = userInfo.id ? userInfo.id : userInfo.uid;
+          if (this.tasks[0].assignee !== userId) {
+            action = ACTION.UNASSIGN;
           }
         }
         break;

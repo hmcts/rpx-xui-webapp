@@ -886,12 +886,6 @@ describe('CaseHearingsListComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '1111222233334444', 'g1000000', 'h100001']);
   });
 
-  it('should check cya', () => {
-    component.caseId = '1111222233334444';
-    component.cya('h100001');
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/hearings/actuals/h100001/hearing-actual-edit-summary');
-  });
-
   it('should check viewDetails', () => {
     const loadHearingRequestAndRedirect = spyOn(component, 'LoadHearingRequestAndRedirect');
     // AWAITING_LISTING

@@ -20,7 +20,7 @@ import * as fromFeature from '../../../store';
 })
 export class SpecificAccessDurationComponent implements OnInit {
   // static properties
-  public static anotherPeriodDesc = 'You’ll need to provide both a start and end date for access to the case.';
+  public static anotherPeriodDesc = 'Access will start today, you’ll need to provide an end date.';
   public static indefiniteDesc = 'Access starts from today and lasts while the case is open.';
   public static sevenDaysDesc = 'Starts from today and ends at midnight 7 days from now.';
 
@@ -33,6 +33,7 @@ export class SpecificAccessDurationComponent implements OnInit {
   public caption = 'Approve specific access request';
   public configStart: GovUiConfigModel;
   public configEnd: GovUiConfigModel;
+  public today = new Date();
   public durations: DurationTypeDescription[];
   public endDateErrorMessage: ErrorMessagesModel;
   public selectedDuration: DurationType;
@@ -42,12 +43,11 @@ export class SpecificAccessDurationComponent implements OnInit {
 
   // form group and controls
   public formGroup: FormGroup;
-  public startDateDayCtrl: FormControl;
-  public startDateMonthCtrl: FormControl;
-  public startDateYearCtrl: FormControl;
   public endDateDayCtrl: FormControl;
   public endDateMonthCtrl: FormControl;
   public endDateYearCtrl: FormControl;
+
+  public readonly = true;
 
   constructor(
     private readonly durationHelper: DurationHelperService,
@@ -59,12 +59,6 @@ export class SpecificAccessDurationComponent implements OnInit {
       { id: '2', duration: DurationType.INDEFINITE, description: SpecificAccessDurationComponent.indefiniteDesc, checked: false },
       { id: '3', duration: DurationType.ANOTHER_PERIOD, description: SpecificAccessDurationComponent.anotherPeriodDesc, checked: false }
     ];
-    this.configStart = {
-      id: 'startDate',
-      name: 'startDate',
-      hint: 'For example, 01 03 2022',
-      label: 'Access Starts'
-    };
     this.configEnd = {
       id: 'endDate',
       name: 'endDate',
@@ -76,9 +70,6 @@ export class SpecificAccessDurationComponent implements OnInit {
   public ngOnInit(): void {
     this.formGroup = this.fb.group({
       dateOption: new FormControl(null, Validators.required),
-      startDate_day: new FormControl(null, null),
-      startDate_month: new FormControl(null, null),
-      startDate_year: new FormControl(null, null),
       endDate_day: new FormControl(null, null),
       endDate_month: new FormControl(null, null),
       endDate_year: new FormControl(null, null)
@@ -91,9 +82,6 @@ export class SpecificAccessDurationComponent implements OnInit {
   }
 
   public setFormControlRefs(): void {
-    this.startDateDayCtrl = this.formGroup.get('startDate_day') as FormControl;
-    this.startDateMonthCtrl = this.formGroup.get('startDate_month') as FormControl;
-    this.startDateYearCtrl = this.formGroup.get('startDate_year') as FormControl;
     this.endDateDayCtrl = this.formGroup.get('endDate_day') as FormControl;
     this.endDateMonthCtrl = this.formGroup.get('endDate_month') as FormControl;
     this.endDateYearCtrl = this.formGroup.get('endDate_year') as FormControl;
@@ -107,9 +95,6 @@ export class SpecificAccessDurationComponent implements OnInit {
       this.selectedDuration = specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedOption;
       if (this.selectedDuration === DurationType.ANOTHER_PERIOD) {
         this.anotherPeriod = true;
-        this.startDateDayCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.startDate.day);
-        this.startDateMonthCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.startDate.month);
-        this.startDateYearCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.startDate.year);
         this.endDateDayCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.endDate.day);
         this.endDateMonthCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.endDate.month);
         this.endDateYearCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.endDate.year);
@@ -141,9 +126,8 @@ export class SpecificAccessDurationComponent implements OnInit {
   }
 
   public getRawData(): any {
-    const startDate = this.durationHelper.getRawFromControlsValues(this.startDateDayCtrl, this.startDateMonthCtrl, this.startDateYearCtrl);
     const endDate = this.durationHelper.getRawFromControlsValues(this.endDateDayCtrl, this.endDateMonthCtrl, this.endDateYearCtrl);
-    return { startDate, endDate };
+    return { endDate };
   }
 
   public getPeriod(duration: DurationType): Period {
@@ -162,7 +146,7 @@ export class SpecificAccessDurationComponent implements OnInit {
       }
       case DurationType.ANOTHER_PERIOD: {
         // get start and end dates
-        let startDate = this.durationHelper.getDateFromControls(this.startDateDayCtrl, this.startDateMonthCtrl, this.startDateYearCtrl);
+        let startDate = this.durationHelper.getTodaysDate();
         let endDate = this.durationHelper.getDateFromControls(this.endDateDayCtrl, this.endDateMonthCtrl, this.endDateYearCtrl);
 
         startDate = this.durationHelper.setStartTimeOfDay(startDate);
@@ -170,19 +154,15 @@ export class SpecificAccessDurationComponent implements OnInit {
 
         // check that both the start and end dates are valid looking dates
         const dateCheck = this.durationHelper.checkDates(
-          this.durationHelper.convertDateControlsToString(this.startDateDayCtrl, this.startDateMonthCtrl, this.startDateYearCtrl),
           this.durationHelper.convertDateControlsToString(this.endDateDayCtrl, this.endDateMonthCtrl, this.endDateYearCtrl)
         );
-        const datesValid = dateCheck.isStartDateValid && dateCheck.isEndDateValid;
+        const datesValid = dateCheck.isEndDateValid;
 
-        // check if start date is not in past
-        const startDateNotInPast = this.durationHelper.startDateNotInPast(startDate);
-
-        // check if start date is before the end date
+        // check end date is after today
         const startDateBeforeEndDate = this.durationHelper.startDateBeforeEndDate(startDate, endDate);
 
         // if all checks pass return object with startDate and endDate
-        if (datesValid && startDateNotInPast && startDateBeforeEndDate) {
+        if (datesValid && startDateBeforeEndDate) {
           return {
             startDate,
             endDate
@@ -191,16 +171,10 @@ export class SpecificAccessDurationComponent implements OnInit {
 
         // display the errors in the UI
         if (!datesValid) {
-          if (!dateCheck.isStartDateValid) {
-            this.startDateErrorMessage = { isInvalid: true, messages: ['Invalid Start date'] };
-          }
           if (!dateCheck.isEndDateValid) {
             this.endDateErrorMessage = { isInvalid: true, messages: ['Invalid End date'] };
           }
         } else {
-          if (!startDateNotInPast) {
-            this.startDateErrorMessage = { isInvalid: true, messages: ['The access start date must not be in the past'] };
-          }
           if (!startDateBeforeEndDate) {
             this.endDateErrorMessage = { isInvalid: true, messages: ['The access end date must be after the access start date'] };
           }

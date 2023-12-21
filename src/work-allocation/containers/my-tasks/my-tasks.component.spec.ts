@@ -127,7 +127,6 @@ xdescribe('MyTasksComponent', () => {
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockFeatureToggleService.getValue.and.returnValue(of(true));
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
-    component.isUpdatedTaskPermissions$ = of(true);
     fixture.detectChanges();
   }));
 

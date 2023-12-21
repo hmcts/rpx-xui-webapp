@@ -69,6 +69,7 @@ import {
   prepareTaskSearchForCompletable,
   searchCasesById
 } from './util';
+import { trackTrace } from '../lib/appInsights';
 
 roleServiceMock.init();
 
@@ -86,6 +87,8 @@ const logger: JUILogger = log4jui.getLogger('workallocation');
 export async function getTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
+    // Adding log in app insights for task completion journey
+    trackTrace(`get task Id: ${req.params.taskId}`, { functionCall: 'getTask' });
     const jsonResponse = await handleTaskGet(getTaskPath, req);
     if (jsonResponse && jsonResponse.task && jsonResponse.task.due_date) {
       jsonResponse.task.dueDate = jsonResponse.task.due_date;
@@ -216,6 +219,8 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
   try {
     const payload = { case_id: caseId, event_id: eventId, case_jurisdiction: jurisdiction, case_type: caseType };
     const jurisdictions = getWASupportedJurisdictionsList();
+    // Adding log in app insights for task completion journey
+    trackTrace(`Search for completable task of eventId and caseId: ${eventId} ${caseId}`, { functionCall: 'getTasksByCaseIdAndEventId' });
     const { status, data } = jurisdictions.includes(jurisdiction)
       ? await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req)
       : { status: 200, data: [] };
@@ -241,6 +246,8 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
       delete req.body.hasNoAssigneeOnComplete;
     }
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
+
+    trackTrace(`${req.params.action} of task Id: ${req.params.taskId} ${req.params.action}`, { functionCall: 'postTaskAction' });
     const { status, data } = await handleTaskPost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);

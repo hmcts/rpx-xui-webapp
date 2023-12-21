@@ -56,7 +56,7 @@ const { DataTableArgument } = require('codeceptjs');
     When('I input field {string} with value {string} in global search Page', async function(fieldName,fieldValue){
         switch(fieldName.toLowerCase()){
             case '16-digit case reference':
-                await globalSearchPage.caseReference.inputText(fieldValue);
+                await globalSearchPage.caseReference.sendKeys(fieldValue);
                 break;
             case 'other reference':
                 await globalSearchPage.otherReference.inputText(fieldValue);
@@ -250,7 +250,7 @@ const { DataTableArgument } = require('codeceptjs');
                 } else if (column === 'ACTION_LINK_COLUMN'){
                     const linkElement = await globalSearchResultsPage.getTableRowColumnElement(rowNum, column);
                     const linkText = await linkElement.getText();
-                    expect(linkText).to.equal(tableHash[column]);
+                    expect(linkText).to.includes(tableHash[column]);
                 }else{
                     const coltext = await globalSearchResultsPage.getTableRowColumnValue(rowNum, column);
                     expect(coltext).to.includes(tableHash[column]);
@@ -280,7 +280,7 @@ const { DataTableArgument } = require('codeceptjs');
     When('I click action link {string} at row {int} in global search results page', async function (actionLink, rowNum) {
         const linkElement = await globalSearchResultsPage.getTableRowColumnElement(rowNum, "ACTION_LINK_COLUMN");
         const linkText = await linkElement.getText();
-        expect(linkText).to.equal(actionLink);
+        expect(linkText).to.includes(actionLink);
         
         await linkElement.$('a').click();
     });

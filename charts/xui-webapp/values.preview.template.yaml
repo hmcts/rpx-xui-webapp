@@ -22,7 +22,10 @@ nodejs:
      FEATURE_WORKALLOCATION_ENABLED: true
      SERVICES_CASE_JUDICIAL_API: http://rd-judicial-api-aat.service.core-compute-aat.internal
      SERVICES_LOCATION_REF_API_URL: http://rd-location-ref-api-aat.service.core-compute-aat.internal
-     FEATURE_ACCESS_MANAGEMENT_ENABLED: false
+     FEATURE_ACCESS_MANAGEMENT_ENABLED: true
+     JURISDICTIONS: DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,CIVIL,PRIVATELAW,EMPLOYMENT,ST_CIC
+     PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-${CHANGE_ID}
+     FEATURE_JRD_E_LINKS_V2_ENABLED: true
   keyVaults:
     rpx:
       secrets:

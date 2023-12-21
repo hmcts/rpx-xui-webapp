@@ -95,7 +95,6 @@ describe('MediaViewerWrapperComponent', () => {
 
   describe('isIcpEnabled', () => {
     it('should return true when icp-enabled is true and jurisdiction is empty', () => {
-      component.caseJurisdiction = 'dummy';
       expect(component.isIcpEnabled(true, [])).toBeTruthy();
     });
 

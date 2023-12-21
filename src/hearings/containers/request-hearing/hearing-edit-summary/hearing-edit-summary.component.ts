@@ -267,7 +267,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // Number of parties are the same in both SHV and HMC
     // Loop through the parties in SHV, locate the corresponding party in HMC
     // and return true if there are any changes in the party name of party type
-    for (let partySHV of partiesSHV) {
+    for (const partySHV of partiesSHV) {
       const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
       if (party.partyName !== partySHV.partyName) {
         return true;
@@ -276,7 +276,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         (party.individualDetails?.firstName !== partySHV.individualDetails?.firstName) ||
         (party.individualDetails?.lastName !== partySHV.individualDetails?.lastName) ||
         (party.partyType !== partySHV.partyType)) {
-          return true;
+        return true;
       }
     }
 

@@ -231,7 +231,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // check pageless automatic update
     this.isPagelessAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.pageless).some((prop) => prop);
     // check for changes on page visit
-    const pageVisitChangeExists = this.pageVisitCaseFlagsChangeExists() && this.pageVisitPartiesChangeExists();
+    const pageVisitChangeExists = this.pageVisitCaseFlagsChangeExists() || this.pageVisitPartiesChangeExists();
     // Display banner
     this.displayBanner = this.isPagelessAttributeChanged && !pageVisitChangeExists;
   }
@@ -267,7 +267,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // Number of parties are the same in both SHV and HMC
     // Loop through the parties in SHV, locate the corresponding party in HMC
     // and return true if there are any changes in the party name of party type
-    partiesSHV.forEach((partySHV) => {
+    for (let partySHV of partiesSHV) {
       const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
       if (party.partyName !== partySHV.partyName) {
         return true;
@@ -276,9 +276,10 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         (party.individualDetails?.firstName !== partySHV.individualDetails?.firstName) ||
         (party.individualDetails?.lastName !== partySHV.individualDetails?.lastName) ||
         (party.partyType !== partySHV.partyType)) {
-        return true;
+          return true;
       }
-    });
+    }
+
     // There are no changes for parties when compared SHV with HMC
     return false;
   }

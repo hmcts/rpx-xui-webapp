@@ -13,6 +13,7 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { HearingActualsTimingComponent } from './hearing-actuals-timing.component';
 
 import * as _ from 'lodash';
+import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({ selector: 'exui-app-blank', template: '' })
 class BlankComponent {}
@@ -44,7 +45,9 @@ describe('HearingActualsTimingComponent', () => {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute
         },
-        ValidatorsUtils
+        ValidatorsUtils,
+        DatePipe,
+        FormatTranslatorService
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [HearingActualsTimingComponent, BlankComponent]

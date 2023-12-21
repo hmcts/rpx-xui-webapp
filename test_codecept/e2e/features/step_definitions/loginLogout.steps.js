@@ -180,6 +180,9 @@ async function waitForElement(el) {
       await expect(loginPage.signOutlink.isDisplayed()).to.eventually.be.true;
       await BrowserWaits.waitForElementClickable(loginPage.signOutlink);
       await loginPage.signOutlink.click();
+
+      await BrowserWaits.waitForElement(loginPage.signinTitle)
+      expect(await loginPage.signinTitle.isDisplayed()).to.be.true;
     });
 
   });
@@ -354,8 +357,8 @@ async function waitForElement(el) {
     CucumberReportLogger.AddMessage(`Login user ${testUserIdentifier} is ${userEmail}`)
     await loginPage.givenIAmLoggedIn(userEmail, key);
 
-    // loginAttempts++;
-    // await loginattemptCheckAndRelogin(userEmail, key, this);
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(userEmail, key, this);
     // await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
     //   world.attach("Login success page load load attempt : " + message)
     // });

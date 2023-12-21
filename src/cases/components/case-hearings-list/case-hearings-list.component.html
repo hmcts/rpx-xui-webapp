@@ -37,9 +37,6 @@
           <a id="link-add-or-edit-{{hearing.hearingID}}"
              href="javascript:void(0)"
              (click)="addAndEdit(hearing.hearingID)">Add or edit</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <a id="link-cya-{{hearing.hearingID}}"
-             href="javascript:void(0)"
-             (click)="cya(hearing.hearingID)">CYA</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </ng-container>
       </div>
       <div *ngIf="hasDeleteAction && !isNonCancellable(hearing.exuiDisplayStatus) && !isAwaitingActual(hearing.exuiDisplayStatus)" class="div-action">

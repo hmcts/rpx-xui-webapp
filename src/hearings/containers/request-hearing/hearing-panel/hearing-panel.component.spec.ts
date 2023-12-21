@@ -268,16 +268,18 @@ describe('HearingPanelComponent', () => {
 
   it('should check getPannelMemberList', () => {
     component.personalCodejudgeList = [{
-      emailId: 'jacky.collins@judicial.com',
+      title: 'Mr',
+      knownAs: 'Hearing Judge',
+      surname: 'Jacky Collins',
       fullName: 'Jacky Collins',
+      emailId: 'jacky.collins@judicial.com',
       idamId: '1102839232',
+      initials: 'JC',
+      postNominals: 'JP',
+      personalCode: 'P0000001',
       isJudge: '',
       isMagistrate: '',
-      isPanelMember: '',
-      knownAs: 'Hearing Judge',
-      personalCode: 'P0000001',
-      surname: 'Jacky Collins',
-      title: 'Mr'
+      isPanelMember: ''
     }];
     component.initForm();
     expect(component.includedJudgeList.length).toBe(1);
@@ -288,16 +290,18 @@ describe('HearingPanelComponent', () => {
 
   it('should check prepareData', () => {
     const judgeInfo: JudicialUserModel = {
-      emailId: 'jacky.collins@judicial.com',
+      title: 'Mr',
+      knownAs: 'Hearing Judge',
+      surname: 'Jacky',
       fullName: 'Jacky Collins',
+      emailId: 'jacky.collins@judicial.com',
       idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+      initials: 'JC',
+      postNominals: 'JP',
+      personalCode: 'P0000001',
       isJudge: '',
       isMagistrate: '',
-      isPanelMember: '',
-      knownAs: 'Hearing Judge',
-      personalCode: 'P0000001',
-      surname: 'Jacky',
-      title: 'Mr'
+      isPanelMember: ''
     };
 
     component.includedJudge.judgeList = [judgeInfo];

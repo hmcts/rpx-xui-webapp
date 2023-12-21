@@ -9,6 +9,7 @@ class BackendMockClient{
 
     constructor(){
         this.baseUrl = 'http://localhost:8080/client/'
+        this.activeSession = null;
 ;    }
 
     async updateAuthSessionWithRoles(auth, roles){
@@ -18,7 +19,16 @@ class BackendMockClient{
         })
     }
 
+
+    async updateAuthSessionWithUserInfo(auth, userInfo) {
+        return await axiosInstance.post(`${this.baseUrl}session/user/info`, {
+            auth: auth,
+            userInfo: userInfo
+        })
+    }
+
     async updateAuthSessionWithRoleAssignments(auth, roleAssignments) {
+        await this.setUserApiData(auth, "OnUserRoleAssignments", roleAssignments )
         return await axiosInstance.post(`${this.baseUrl}session/user/roleAssignments`, {
             auth: auth,
             roleAssignments: roleAssignments
@@ -40,6 +50,35 @@ class BackendMockClient{
         })
     }
 
+    async getUserSesionData(auth) {
+        return await axiosInstance.post(`${this.baseUrl}session/user/sessionData`, {
+            auth: auth
+        })
+    }
+
+    async clearUserSessionData(auth){
+        return await axiosInstance.post(`${this.baseUrl}session/user/sessionData/clear`, {
+            auth: auth
+        })
+    }
+
+
+    async logMessage(mesage){
+        if (process.env.TEST_TYPE !== 'e2e') {
+            return await axiosInstance.post(`${this.baseUrl}session/logMessage`, {
+                message: mesage
+            })
+        }
+       
+    }
+
+    async addReusableSession(xuiCallbackResponse){
+        return await axiosInstance.post(`${this.baseUrl}session/add`, {
+            data: xuiCallbackResponse
+        })
+    }
+
+  
 }
 
 

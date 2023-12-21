@@ -18,7 +18,7 @@ const nodeAppMockData = require('../mockData/nodeApp/mockData');
 class BrowserUtil{
 
     async gotoHomePage(){
-        const baseUrl =  'http://localhost:3000/';
+        const baseUrl =  process.env.TEST_TYPE === 'e2e' ? process.env.TEST_URL :  'http://localhost:3000/';
         await browser.get(baseUrl);
     }
 

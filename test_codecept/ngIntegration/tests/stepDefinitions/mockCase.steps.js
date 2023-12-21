@@ -9,7 +9,10 @@ const browserUtil = require('../../util/browserUtil');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 const dummyCaseDetails = require('../../mockData/ccd/caseDetails_data');
 const ccdMockData = require('../../mockData/ccd/ccdApi');
+const caseDetailsMock = require('../../../backendMock/services/ccd/caseDetails_data')
 
+const mockClient = require('../../../backendMock/client/index.js');
+const serviceMock = require('../../../backendMock/client/serviceMock')
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const workAlloctionMockData = require('../../mockData/workAllocation/mockData');
 
@@ -17,20 +20,21 @@ const { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getMockJurisd
 const getEventConfig = require('../../mockData/ccdMockEventConfigs');
 
 const { DataTableArgument } = require('codeceptjs');
+const {postTaskAction, getTask} = require("../../../../api/workAllocation");
 
 
 
     Given('I set mock case create config {string}', async function (configReference) {
         // const caseConfig = getTestJurisdiction();
         // global.scenarioData[configReference] = caseConfig;
-        // MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => { 
+        // MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
         //     res.send(caseConfig.getCase());
         // });
-      
+
     });
 
     Given('I set MOCK event {string} props', async function(caseConfigReference, dataTable){
-        const caseConfig = global.scenarioData[caseConfigReference]; 
+        const caseConfig = global.scenarioData[caseConfigReference];
         const eventprops = convertDatatablePropsToccdObj(dataTable);
         caseConfig.updateEventProps(eventprops);
     });
@@ -63,47 +67,77 @@ const { DataTableArgument } = require('codeceptjs');
 
     Given('I set MOCK event config {string} field {string} properties', async function(eventConfigRef, fieldId, datatable){
         const eventConfig = global.scenarioData[eventConfigRef];
-        const fieldProps = convertDatatablePropsToccdObj(datatable); 
-        eventConfig.updateFieldProps(fieldId, fieldProps); 
+        const fieldProps = convertDatatablePropsToccdObj(datatable);
+        eventConfig.updateFieldProps(fieldId, fieldProps);
     });
 
     Given('I set MOCK case details with reference {string}', async function(caseDetailsReference){
-        // const caseDetails = ccdMockData.caseDetailsResponse;
-        // global.scenarioData[caseDetailsReference] = caseDetails;
-        // MockApp.onGet('/data/internal/cases/:caseid', (req, res) => {
-        //     res.send(caseDetails);
-        // });
+        const caseDetails = JSON.parse(JSON.stringify(ccdMockData.caseDetailsResponse));
+         global.scenarioData[caseDetailsReference] = caseDetails;
+
+        await serviceMock.updateCaseData(global.scenarioData[caseDetailsReference], 200)
+       
+    });
+
+    Given('I set MOCK case {string} details with reference {string}', async function (caseType, caseDetailsReference) {
+        const caseDetails = JSON.parse(JSON.stringify(caseDetailsMock[caseType]));
+        global.scenarioData[caseDetailsReference] = caseDetails;
+        await serviceMock.updateCaseData(global.scenarioData[caseDetailsReference], 200)
+
     });
 
     Given('I set MOCK case details {string} values', async function (caseDetailsReference, caseDetailsDatatable) {
         const caseDetails = global.scenarioData[caseDetailsReference];
-        
+
     });
 
     Given('I set MOCK case details {string} property {string} as {string}', async function(caseDetailsRef, property, value){
         const caseDetails = global.scenarioData[caseDetailsRef];
-
         if(property.toLowerCase().includes('jurisdiction')) {
+            caseDetailsMock.setCaseTypeProperties(caseDetails,{
+                "jurisdiction.id": value
+            })
             const field = getCaseDetailsMetadataField(caseDetails,'[JURISDICTION]');
             field.value = value;
-        } else if (property.toLowerCase().includes('casetype')) {
+        } else if (property.toLowerCase().includes('caseType')) {
             const field = getCaseDetailsMetadataField(caseDetails, '[CASE_TYPE]');
             field.value = value;
+        }
+
+        else if (property.toLowerCase().includes('case_type')) {
+            caseDetailsMock.setCaseTypeProperties(caseDetails, {
+                "case_type.id": value
+            })
+            const field = getCaseDetailsMetadataField(caseDetails, '[JURISDICTION]');
+            field.value = value;
+        }
+        else if (property.toLowerCase().includes('case_id')) {
+            caseDetails.case_id = value;
         }
         else {
             throw Error(` metada field ${property} is not recognised or not implemented in test`);
         }
+
+        await serviceMock.updateCaseData(caseDetails, 200)
     });
 
     Given('I set MOCK case details {string} service name as {string}', async function (caseDetailsRef, serviceName) {
         const caseDetails = global.scenarioData[caseDetailsRef];
 
         caseDetails.case_type.jurisdiction.name = serviceName;
+        global.scenarioData[caseDetailsRef] = caseDetails;
+
+
+        await serviceMock.updateCaseData(caseDetails, 200)
+
     });
 
     Given('I set MOCK case details {string} state as {string}', async function (caseDetailsRef, name) {
         const caseDetails = global.scenarioData[caseDetailsRef];
         caseDetails.state.name = name;
+
+        await serviceMock.updateCaseData(caseDetails, 200)
+
     });
 
     Given('I set MOCK case details {string} access process {string} and access granted {string}', async function (caseDetailsRef, accessProcess,accessGranted) {
@@ -180,7 +214,9 @@ const { DataTableArgument } = require('codeceptjs');
             "publish_as": null,
             "acls": null
         });
-       
+
+        await serviceMock.updateCaseData(caseDetails, 200)
+
     });
 
     Given('I set MOCK case details {string} trigger id {string} trigger name {string}', async function (caseDetailsRef, eventId, eventName) {
@@ -189,6 +225,9 @@ const { DataTableArgument } = require('codeceptjs');
         testTrigger.id = eventId;
         testTrigger.name = eventName;
         caseDetails.triggers.push(testTrigger);
+            
+        await serviceMock.updateCaseData(caseDetails, 200)
+
     });
 
     Given('I set MOCK case roles', async function(caseRolesDatatable){
@@ -202,13 +241,13 @@ const { DataTableArgument } = require('codeceptjs');
                 }
 
                 if(key === 'role-name'){
-                    hash[key] = hash[key].toLowerCase().split(" ").join("-"); 
+                    hash[key] = hash[key].toLowerCase().split(" ").join("-");
                 }
             }
         }
         workAlloctionMockData.caseRoles = workAlloctionMockData.getCaseRoles(dateTableHashes);
-        
-    }); 
+
+    });
 
     Given('I set MOCK case role exclusions', async function (caseRoleExclusionsDatatable) {
         const dateTableHashes = caseRoleExclusionsdatatable.parse().hashes();
@@ -226,35 +265,42 @@ const { DataTableArgument } = require('codeceptjs');
 
     Given('I set MOCK case tasks with userDetails from reference {string}', async function (userDetailsRef, caseTasksDatatable) {
         const userDetails = global.scenarioData[userDetailsRef];
+        const authCookie = await browser.driver.manage().getCookie('__auth__');
 
-        const dateTableHashes = caseTasksdatatable.parse().hashes();
-        workAlloctionMockData.caseTasks = workAlloctionMockData.getCaseTasks(dateTableHashes, userDetails);
-        
+        const dateTableHashes = caseTasksDatatable.parse().hashes();
+        workAlloctionMockData.caseTasks = await workAlloctionMockData.getCaseTasks(dateTableHashes, userDetails);
+        await mockClient.setUserApiData(authCookie.value, 'OnCaseTasks', {
+          status: 200,
+          data: {
+            tasks: workAlloctionMockData.caseTasks,
+            'total_records': workAlloctionMockData.caseTasks.length
+          }
+        })
     });
 
     Given('I set MOCK case list values', async function(caseListAttributesDatatable){
         // const cases = ccdMockData.caseList.results;
         // const inputDatatableHashes = caseListAttributesdatatable.parse().hashes();
-        
+
         // for (let i = 0; i < inputDatatableHashes.length; i++){
         //     const caseItem = cases[i];
         //     const inputHash = inputDatatableHashes[i];
-            
+
         //     const keys = Object.keys(inputHash);
         //     for(const caseAttrib of keys){
         //         if (caseAttrib.startsWith('case_fields.')){
-        //             const caseFieldAttrib = caseAttrib.replace('case_fields.',''); 
-        //             caseItem['case_fields'][caseFieldAttrib] = inputHash[caseAttrib];  
+        //             const caseFieldAttrib = caseAttrib.replace('case_fields.','');
+        //             caseItem['case_fields'][caseFieldAttrib] = inputHash[caseAttrib];
         //         } else if (caseAttrib.startsWith('case_fields_formatted.')){
         //             const caseFieldAttrib = caseAttrib.replace('case_fields_formatted.', '');
-        //             caseItem['case_fields_formatted'][caseFieldAttrib] = inputHash[caseAttrib];  
+        //             caseItem['case_fields_formatted'][caseFieldAttrib] = inputHash[caseAttrib];
         //         }else{
-        //             caseItem[caseAttrib] = inputHash[caseAttrib]; 
+        //             caseItem[caseAttrib] = inputHash[caseAttrib];
         //         }
-        //     } 
+        //     }
 
         // }
-        
+
     });
 
 
@@ -275,10 +321,10 @@ function convertDatatablePropsToccdObj(datatable){
     for (const key in tableRowshash){
 
         if (tableRowshash[key].toUpperCase() === "YES"){
-            tableRowshash[key] = true; 
+            tableRowshash[key] = true;
         } else if (tableRowshash[key].toUpperCase() === "NO"){
-            tableRowshash[key] = false; 
+            tableRowshash[key] = false;
         }
-    } 
+    }
     return tableRowshash;
 }

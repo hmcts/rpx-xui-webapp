@@ -7,14 +7,15 @@ const featureNames = {
   waLandingPageRoles: 'wa-landing-page-roles',
   waAccess: 'wa-access',
   currentWAFeature: 'mc-work-allocation-active-feature',
-  updatedTaskPermissionsFeature: 'updated-task-permission',
   workAllocation: 'MC_Work_Allocation',
   noticeOfChange: 'MC_Notice_of_Change',
   waMvpPaginationFeature: 'mc-mvp-wa-pagination',
   userTypeRoles: 'mc-user-type-roles',
   booking: 'mc-booking-active',
   mcHearingsFeature: 'mc-hearings-jurisdictions',
-  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs'
+  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
+  enableRestrictedCaseAccess: 'enable-restricted-case-access',
+  enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1'
 };
 
 const footerDataNavigation = {
@@ -83,10 +84,10 @@ const helpContactDetails: ContactDetailsDataModel[] = [
     badgeColour: BadgeColour.BADGE_RED,
     email: 'contactia@justice.gov.uk',
     phone: '0300 123 1711',
-    openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
+    openingTimes: 'Monday to Friday, 8:30am to 5pm (excluding public holidays)'
   },
   {
-    title: 'Family Public Law and Adoption',
+    title: 'Family Public Law',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'contactfpl@justice.gov.uk',
     phone: '0330 808 4424',
@@ -96,8 +97,41 @@ const helpContactDetails: ContactDetailsDataModel[] = [
     title: 'Employment Tribunal',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'etreform@justice.gov.uk',
-    phone: 'England and Wales: 0330 123 1024, Scotland: 0300 790 6234',
+    phone: 'England and Wales: 0300 123 1024, Scotland: 0300 790 6234',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
+  },
+  {
+    title: 'SSCS (England and Wales)',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'contactsscs@justice.gov.uk',
+    phone: '0300 123 1142',
+    openingTimes: 'Monday to Friday, 8am to 5pm'
+  },
+  {
+    title: 'SSCS (Scotland)',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'SSCSA-Glasgow@justice.gov.uk',
+    phone: '0300 790 6234',
+    openingTimes: 'Monday to Friday, 8:30am to 5pm'
+  },
+  {
+    title: 'For damages general enquires is:',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'DamagesClaims@justice.gov.uk',
+    phone: '0300 123 1372',
+    openingTimes: 'Monday to Friday, 8:30am to 5pm'
+  },
+  {
+    title: 'For damages tech support:',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'DCPTechSupport@justice.gov.uk'
+  },
+  {
+    title: 'OCMC',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'contactocmc@justice.gov.uk',
+    phone: '0300 123 7050',
+    openingTimes: 'Monday to Friday, 8:30am to 5pm'
   }
 ];
 
@@ -151,9 +185,9 @@ export class AppConstants {
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';
 export const LD_FLAG_MC_APPLICATION_THEMES: string = 'mc-application-themes';
-export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer', 'caseworker-ia', 'caseworker-ia-admofficer', 'task-supervisor', 'caseworker-civil', 'caseworker-privatelaw'];
-export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge', 'caseworker-privatelaw-judge', 'judge'];
-export const ADMIN_ROLE_LIST: string[] = ['admin'];
-export const CTSC_ROLE_LIST: string[] = ['ctsc'];
+export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer', 'caseworker-ia', 'caseworker-ia-admofficer', 'task-supervisor', 'caseworker-civil', 'caseworker-privatelaw', 'hmcts-legal-operations'];
+export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge', 'caseworker-privatelaw-judge', 'judge', 'hmcts-judiciary', 'judiciary', 'panelmember'];
+export const ADMIN_ROLE_LIST: string[] = ['hmcts-admin'];
+export const CTSC_ROLE_LIST: string[] = ['hmcts-ctsc'];
 export const SERVICE_OPTIONS_LIST = [{ key: 'IA', label: 'Immigration and Asylum' }, { key: 'SSCS', label: 'Social security and child support' }];
 export const PUI_CASE_MANAGER = 'pui-case-manager';

@@ -10,8 +10,11 @@ const userApiData = require('../userApiData')
 
 router.post('/query', (req, res) => {
 
-    res.send(service.getBookings(req.body))
+    userApiData.sendResponse(req, res, "OnBookings", () => service.getBookings(req.body))
+
 
 });
+
+
 
 module.exports = router;

@@ -42,7 +42,8 @@ import {
   RouterHelperService,
   SearchFiltersModule,
   SearchResultModule,
-  WorkbasketFiltersModule
+  WorkbasketFiltersModule,
+  RetryUtil
 } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
@@ -68,6 +69,9 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
 // from services
 import * as fromServices from './services';
 import { effects, reducers } from './store';
+import { RestrictedCaseAccessComponent } from './components/restricted-case-access/restricted-case-access.component';
+import { RestrictedCaseAccessContainerComponent } from './containers/restricted-case-access-container/restricted-case-access-container.component';
+import { RestrictedCaseAccessGuard } from './guards/restricted-case-access-guard';
 
 @NgModule({
   imports: [
@@ -106,6 +110,7 @@ import { effects, reducers } from './store';
     ErrorNotifierService,
     NavigationNotifierService,
     CasesService,
+    RetryUtil,
     CCDAuthService,
     HttpService,
     HttpErrorService,
@@ -132,7 +137,8 @@ import { effects, reducers } from './store';
     IsCompoundPipe,
     CcdCYAPageLabelFilterPipe,
     CaseFileViewService,
-    JurisdictionService
+    JurisdictionService,
+    RestrictedCaseAccessGuard
   ]
 })
 /**

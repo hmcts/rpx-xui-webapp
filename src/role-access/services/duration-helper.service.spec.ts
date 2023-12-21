@@ -53,26 +53,22 @@ describe('DurationHelperService', () => {
 
   describe('checkDates', () => {
     it('should return true for both object properties', () => {
-      const dateCheck = durationHelperService.checkDates('2022-07-07', '2202-07-07');
-      expect(dateCheck.isStartDateValid).toBe(true);
+      const dateCheck = durationHelperService.checkDates('2202-07-07');
       expect(dateCheck.isEndDateValid).toBe(true);
     });
 
     it('should return false for both object properties if no date strings are provided', () => {
-      const dateCheck = durationHelperService.checkDates('', '');
-      expect(dateCheck.isStartDateValid).toBe(false);
+      const dateCheck = durationHelperService.checkDates('');
       expect(dateCheck.isEndDateValid).toBe(false);
     });
 
     it('should return false for both object properties if invalid date strings are provided', () => {
-      const dateCheck = durationHelperService.checkDates('2022-99-07', '2022-07-99');
-      expect(dateCheck.isStartDateValid).toBe(false);
+      const dateCheck = durationHelperService.checkDates('2022-07-99');
       expect(dateCheck.isEndDateValid).toBe(false);
     });
 
     it('should return true for the isStartDateValid property ', () => {
-      const dateCheck = durationHelperService.checkDates('2022-07-07', '2022-07-99');
-      expect(dateCheck.isStartDateValid).toBe(true);
+      const dateCheck = durationHelperService.checkDates('2022-07-99');
       expect(dateCheck.isEndDateValid).toBe(false);
     });
   });

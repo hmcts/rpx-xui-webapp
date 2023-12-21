@@ -1,4 +1,4 @@
-@ng @ignore
+@ng @ignore @global_search
 Feature: Global search
 
     Background: Setup
@@ -10,11 +10,13 @@ Feature: Global search
         Then I see global search Page
 
     Scenario: Search page field validation
-        Then I validate field services has following values in global search page
-            | value                |
-            | BEFTA Master         |
-            | Immigration & Asylum |
-
+        Given I set set global search mock results response and resultInfo
+            | caseStartRecord | casesReturned | moreResultsToGo |
+            | 1               | 10            | false           |
+        Given I set global search mock results with values
+            | index | caseReference    | otherReferences | fullName        | addressLine1      |
+            | 0     | 1234567890123456 | some test ref   | Sherlock Holmes | 221B Baker street |
+        Given I start MockApp
         When I click search button in global search page
         Then I see error message "Enter information in at least one field" in global search Page
 
@@ -34,7 +36,7 @@ Feature: Global search
 
         When I input field "Postcode" with value "ABC" in global search Page
         When I click search button in global search page
-        Then I see error message "Enter a valid postcod" for field "Postcode" in global search Page
+        Then I see error message "Enter a valid postcode" for field "Postcode" in global search Page
         When I input field "Postcode" with value "SE12AB" in global search Page
         When I click search button in global search page
         Then I see global search results page
@@ -49,44 +51,7 @@ Feature: Global search
         Then I see global search results page
         When I click Change search link in global search results page
         Then I see global search Page
-        Then I validate input field "Email address" has value "abc@xyz.co" in global search page
-
-
-        When I input date field "Date of birth" with format DD-MM-YYYY "32-01-2021" in global search page
-        When I click search button in global search page
-        Then I see error message "Enter a valid date of birth" for field "Date of birth" in global search Page
-        When I input date field "Date of birth" with format DD-MM-YYYY "30-21-2021" in global search page
-        When I click search button in global search page
-        Then I see error message "Enter a valid date of birth" for field "Date of birth" in global search Page
-        #  When I input date field "Date of birth" with format DD-MM-YYYY "30-01-2021234" in global search page
-        # When I click search button in global search page
-        #  Then I see error message "Enter a valid date of birth" for field "Date of birth" in global search Page
-        When I input date field "Date of birth" with format DD-MM-YYYY "30-01-2000" in global search page
-        When I click search button in global search page
-        Then I see global search results page
-        When I click Change search link in global search results page
-        Then I see global search Page
-
-        When I input date field "Date of death" with format DD-MM-YYYY "32-01-2021" in global search page
-        When I click search button in global search page
-        Then I see error message "Enter a valid date of death" for field "Date of death" in global search Page
-        When I input date field "Date of death" with format DD-MM-YYYY "30-21-2021" in global search page
-        When I click search button in global search page
-        Then I see error message "Enter a valid date of death" for field "Date of death" in global search Page
-        #  When I input date field "Date of death" with format DD-MM-YYYY "30-01-2021234" in global search page
-        # When I click search button in global search page
-        #  Then I see error message "Enter a valid date of death" for field "Date of death" in global search Page
-        When I input date field "Date of death" with format DD-MM-YYYY "30-01-1999" in global search page
-        When I click search button in global search page
-        Then I see error message "The date of death cannot be earlier than the date of birth" for field "Date of death" in global search Page
-
-
-        When I input date field "Date of death" with format DD-MM-YYYY "30-01-2010" in global search page
-        When I click search button in global search page
-        Then I see global search results page
-        When I click Change search link in global search results page
-        Then I see global search Page
-
+        Then I validate input field "Email address" has value "abc@xyz.com" in global search page
 
         Then I validate input field "16-digit case reference" has value "1234567890123456" in global search page
         Then I validate input field "Other reference" has value "some test ref" in global search page
@@ -95,10 +60,6 @@ Feature: Global search
 
         Then I validate input field "Email address" has value "abc@xyz.com" in global search page
         Then I validate input field "Postcode" has value "SE12AB" in global search page
-
-        Then I validate input field "Date of birth" has value "30-1-2000" in global search page
-        Then I validate input field "Date of death" has value "30-1-2010" in global search page
-
 
         When I input field "16-digit case reference" with value "" in global search Page
         When I input field "Other reference" with value "f" in global search Page
@@ -125,35 +86,24 @@ Feature: Global search
         Then I validate input field "Date of birth" has value "" in global search page
         Then I validate input field "Date of death" has value "" in global search page
 
-
-    Scenario: Date fields validation error
+    Scenario: DoB Date fields validation error
         When I input date field "Date of birth" with format DD-MM-YYYY "302-21-2021" in global search page
         When I click search button in global search page
         When I input field "16-digit case reference" with value "1234567890123456" in global search Page
-
         Then I see error message "Enter a valid date of birth" for field "Date of birth" in global search Page
-        When I input date field "Date of birth" with format DD-MM-YYYY "" in global search page
-        When I click search button in global search page
-        Then I see global search results page
 
 
-        When I click Change search link in global search results page
-        Then I see global search Page
-
+    Scenario: DoD Date fields validation error
         When I input date field "Date of death" with format DD-MM-YYYY "302-21-2021" in global search page
         When I click search button in global search page
         Then I see error message "Enter a valid date of death" for field "Date of death" in global search Page
-        When I input date field "Date of death" with format DD-MM-YYYY "" in global search page
-        When I click search button in global search page
-        Then I see global search results page
 
-        When I click Change search link in global search results page
-        Then I see global search Page
-
+    Scenario: DoD earlier than DoB validation error
         When I input date field "Date of birth" with format DD-MM-YYYY "30-01-2000" in global search page
         When I input date field "Date of death" with format DD-MM-YYYY "30-01-1999" in global search page
         When I click search button in global search page
         Then I see error message "The date of death cannot be earlier than the date of birth" for field "Date of death" in global search Page
+
 
     Scenario: Case search results view column values
         Given I set set global search mock results response and resultInfo

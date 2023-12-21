@@ -17,6 +17,8 @@ import * as fromContainers from '../../add-exclusion';
 import { SpecificAccessDurationComponent } from '../specific-access-duration/specific-access-duration.component';
 import { SpecificAccessReviewComponent } from '../specific-access-review/specific-access-review.component';
 import { SpecificAccessHomeComponent } from './specific-access-home.component';
+import { LoggerService } from '../../../../app/services/logger/logger.service';
+import { beforeEach } from 'mocha';
 
 describe('SpecificAccessHomeComponent', () => {
   let component: SpecificAccessHomeComponent;
@@ -26,9 +28,11 @@ describe('SpecificAccessHomeComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', [
     'navigateByUrl'
   ]);
+  (routerMock.navigateByUrl as jasmine.Spy).and.returnValue(Promise.resolve(true));
   const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseRolesUserDetails']);
   const mockCaseworkerDataService = jasmine.createSpyObj('CaseworkerDataService', ['getCaseworkersForServices']);
   const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   let mockStore: any;
   let mockFormBuilder: FormBuilder;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -70,6 +74,10 @@ describe('SpecificAccessHomeComponent', () => {
           useValue: routerMock
         },
         {
+          provide: LoggerService,
+          useValue: loggerServiceMock
+        },
+        {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
@@ -109,6 +117,11 @@ describe('SpecificAccessHomeComponent', () => {
     const returnToMyTasksNavEvent = SpecificAccessNavigationEvent.RETURNTOMYTASKS;
     const returnTasksTab = SpecificAccessNavigationEvent.RETURNTOTASKSTAB;
     const cancelNavEvent = SpecificAccessNavigationEvent.CANCEL;
+
+    beforeEach(() => {
+      routerMock.navigateByUrl.calls.reset();
+      loggerServiceMock.error.calls.reset();
+    });
 
     it('should correctly navigate to the specific access review page on navigating back', () => {
       component.navigationCurrentState = SpecificAccessState.SPECIFIC_ACCESS_DURATION;
@@ -153,6 +166,43 @@ describe('SpecificAccessHomeComponent', () => {
       component.caseId = caseId;
       component.navigationHandler(cancelNavEvent);
       expect(routerMock.navigateByUrl).toHaveBeenCalledWith(`/cases/case-details/${caseId}/tasks`);
+    });
+
+    it('should log an error if navigating to /work/my-work/list fails for RETURNTOMYTASKS event', (done) => {
+      const routerError = new Error('Navigation Error');
+      routerMock.navigateByUrl.and.returnValue(Promise.reject(routerError));
+
+      component.navigationHandler(returnToMyTasksNavEvent);
+
+      expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/work/my-work/list');
+      loggerServiceMock.error.and.callFake(() => {
+        expect(loggerServiceMock.error).toHaveBeenCalledWith('Error navigating to /work/my-work/list ', routerError);
+        done();
+      });
+    });
+
+    it('should log an error if navigating to /cases/case-details/caseId/tasks fails for RETURNTOTASKSTAB event', (done) => {
+      const routerError = new Error('Navigation Error');
+      routerMock.navigateByUrl.and.returnValue(Promise.reject(routerError));
+
+      component.navigationHandler(returnTasksTab);
+
+      loggerServiceMock.error.and.callFake(() => {
+        expect(loggerServiceMock.error).toHaveBeenCalledWith('Error navigating to /cases/case-details/caseId/tasks ', routerError);
+        done();
+      });
+    });
+
+    it('should log an error if navigating to /work/my-work/list fails for CANCEL event', (done) => {
+      const routerError = new Error('Navigation Error');
+      routerMock.navigateByUrl.and.returnValue(Promise.reject(routerError));
+
+      component.navigationHandler(cancelNavEvent);
+
+      loggerServiceMock.error.and.callFake(() => {
+        expect(loggerServiceMock.error).toHaveBeenCalledWith('Error navigating to /cases/case-details/caseId/tasks ', routerError);
+        done();
+      });
     });
   });
 });

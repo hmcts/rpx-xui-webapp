@@ -6,6 +6,7 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { StaffUsersFilterResult } from '../../../models/staff-users-filter-result.model';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
@@ -28,9 +29,12 @@ describe('StaffUserListComponent', () => {
         CdkTableModule,
         RouterTestingModule,
         NgxPaginationModule,
-        ExuiCommonLibModule
+        ExuiCommonLibModule,
+        RpxTranslationModule.forChild()
       ],
       providers: [
+        RpxTranslationService,
+        RpxTranslationConfig,
         { provide: StaffDataFilterService, useValue: mockStaffDataFilterService }
       ],
       schemas: [NO_ERRORS_SCHEMA]

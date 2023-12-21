@@ -19,8 +19,19 @@ describe('WorkAllocation', () => {
       const service = new WorkAllocationFeatureService(
         mockFeatureToggleService
       );
-      mockFeatureToggleService.getValue.and.returnValue(of('WAFeature1'));
-      service.getActiveUpdatedTaskPermissionsFeature().subscribe((activeWAFeature) => expect(typeof activeWAFeature).toEqual('string'));
+      mockFeatureToggleService.getValue.and.returnValue(of({
+        configurations: [
+          {
+            caseTypes: [
+              'TestAddressBookCase'
+            ],
+            releaseVersion: '3.5',
+            serviceName: 'TEST'
+          }
+        ]
+      }
+      ));
+      service.getActiveWAFeature('TEST', 'TestAddressBookCase').subscribe((activeWAFeature) => expect(activeWAFeature).toBeDefined());
     });
   });
 });

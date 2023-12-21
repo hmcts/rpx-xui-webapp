@@ -19,10 +19,10 @@ describe('AppComponent', () => {
   beforeEach(() => {
     store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
     googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
-    timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
+    timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise', 'close']);
     featureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue', 'initialize']);
     cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch']);
-    loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies']);
+    loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies', 'log']);
     environmentService = jasmine.createSpyObj('environmentService', ['config$']);
     sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['setItem']);
     testRoute = new RoutesRecognized(1, 'test', 'test', {
@@ -77,6 +77,13 @@ describe('AppComponent', () => {
   it('signOutHandler', () => {
     appComponent.signOutHandler();
     expect(store.dispatch).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not initialise timeoutNotificationsService if already initialised', () => {
+    spyOn<any>(appComponent, 'timeoutNotificationServiceInitialised').and.returnValue(true);
+    const setupTimeoutNotificationServiceSpy = spyOn<any>(appComponent, 'setupTimeoutNotificationService');
+    appComponent.initTimeoutNotificationService(1, 1);
+    expect(setupTimeoutNotificationServiceSpy).not.toHaveBeenCalled();
   });
 
   it('timeoutNotificationEventHandler throw Error for Invalidtype', () => {

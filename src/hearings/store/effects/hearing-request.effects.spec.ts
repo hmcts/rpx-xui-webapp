@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
-import { Go } from '../../../app/store/actions';
+import { Go } from '../../../app/store';
 import { hearingRequestMainModel, initialState } from '../../hearing.test.data';
 import { Mode } from '../../models/hearings.enum';
 import { HearingsService } from '../../services/hearings.service';
@@ -15,6 +15,8 @@ import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 import * as hearingRequestToCompareActions from '../actions/hearing-request-to-compare.action';
 import * as hearingRequestActions from '../actions/hearing-request.action';
 import { HearingRequestEffects } from './hearing-request.effects';
+import { LoggerService } from '../../../app/services/logger/logger.service';
+import { beforeEach } from 'mocha';
 
 describe('Hearing Request Effects', () => {
   let actions$;
@@ -28,6 +30,7 @@ describe('Hearing Request Effects', () => {
   ]);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
   const mockLocation = jasmine.createSpyObj('Location', ['back']);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const hearingConditions = {
     isInit: false,
     region: 'Wales'
@@ -53,6 +56,10 @@ describe('Hearing Request Effects', () => {
           provide: Location,
           useValue: mockLocation
         },
+        {
+          provide: LoggerService,
+          useValue: loggerServiceMock
+        },
         HearingRequestEffects,
         provideMockActions(() => actions$)
       ]
@@ -62,6 +69,11 @@ describe('Hearing Request Effects', () => {
   });
 
   describe('continueNavigation$', () => {
+    beforeEach(() => {
+      mockRouter.navigate.calls.reset();
+      mockRouter.navigate.and.returnValue(Promise.resolve(true));
+    });
+
     it('should navigate to next page if continue on CREATE mode', () => {
       effects.mode = Mode.CREATE;
       pageflowMock.getNextPage.and.returnValue('next');
@@ -94,14 +106,94 @@ describe('Hearing Request Effects', () => {
     });
   });
 
+  describe('continueNavigation$ - Catch scenarios', () => {
+    beforeEach(() => {
+      mockRouter.navigate.calls.reset();
+      loggerServiceMock.error.calls.reset();
+      mockRouter.navigate.and.returnValue(Promise.reject(new Error('Navigation error')));
+    });
+
+    it('should catch navigation error in case of Mode.CREATE', async () => {
+      pageflowMock.getNextPage.and.returnValue('next-page');
+      effects.mode = Mode.CREATE;
+
+      actions$ = of({ type: hearingRequestActions.UPDATE_HEARING_REQUEST });
+
+      await effects.continueNavigation$.toPromise();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'next-page']);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error navigating to hearings/request/next-page ', jasmine.any(Error));
+    });
+
+    it('should catch navigation error in case of Mode.CREATE_EDIT and nextPage is a welsh page', async () => {
+      pageflowMock.getNextPage.and.returnValue('hearing-welsh');
+      effects.mode = Mode.CREATE_EDIT;
+
+      actions$ = of({ type: hearingRequestActions.UPDATE_HEARING_REQUEST });
+
+      await effects.continueNavigation$.toPromise();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-welsh']);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error navigating to hearings/request/hearing-welsh ', jasmine.any(Error));
+    });
+
+    it('should catch navigation error in case of Mode.CREATE_EDIT and nextPage is not a welsh page', async () => {
+      pageflowMock.getNextPage.and.returnValue('not-welsh-page');
+      effects.mode = Mode.CREATE_EDIT;
+      effects.fragmentId = 'test-fragment-id';
+
+      actions$ = of({ type: hearingRequestActions.UPDATE_HEARING_REQUEST });
+
+      await effects.continueNavigation$.toPromise();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: 'test-fragment-id' });
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error navigating to hearings/request/hearing-create-edit-summary#test-fragment-id ', jasmine.any(Error));
+    });
+
+    it('should catch navigation error in case of Mode.VIEW_EDIT and nextPage is a welsh page', async () => {
+      pageflowMock.getNextPage.and.returnValue('hearing-welsh');
+      effects.mode = Mode.VIEW_EDIT;
+
+      actions$ = of({ type: hearingRequestActions.UPDATE_HEARING_REQUEST });
+
+      await effects.continueNavigation$.toPromise();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-welsh']);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error navigating to hearings/request/hearing-welsh ', jasmine.any(Error));
+    });
+
+    it('should catch navigation error in case of Mode.VIEW_EDIT and nextPage is not a welsh page', async () => {
+      pageflowMock.getNextPage.and.returnValue('not-welsh-page');
+      effects.mode = Mode.VIEW_EDIT;
+      effects.fragmentId = 'test-fragment-id';
+
+      actions$ = of({ type: hearingRequestActions.UPDATE_HEARING_REQUEST });
+
+      await effects.continueNavigation$.toPromise();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: 'test-fragment-id' });
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error navigating to hearings/request/hearing-view-edit-summary#test-fragment-id ', jasmine.any(Error));
+    });
+
+    it('should catch navigation error in case of a blank mode', async () => {
+      effects.mode = null;
+
+      actions$ = of({ type: hearingRequestActions.UPDATE_HEARING_REQUEST });
+
+      await effects.continueNavigation$.toPromise();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['cases', 'case-details', '1111222233334444', 'hearings']);
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error navigating to cases/case-details/caseId/hearings ', jasmine.any(Error));
+    });
+  });
+
   describe('backNavigation$', () => {
     it('should navigate to last page if going back on CREATE mode', () => {
       effects.mode = Mode.CREATE;
       pageflowMock.getLastPage.and.returnValue('last');
       const action = new hearingRequestActions.NavigateBackHearingRequest();
       actions$ = cold('-a', { a: action });
-      const navigateAction = new hearingRequestActions.NavigateBackHearingRequest();
-      const expected = cold('-b', { b: navigateAction });
+      const expected = cold('-b', { b: null });
       expect(effects.backNavigation$).toBeObservable(expected);
       expect(mockLocation.back).toHaveBeenCalled();
     });
@@ -110,8 +202,7 @@ describe('Hearing Request Effects', () => {
       effects.mode = Mode.CREATE_EDIT;
       const action = new hearingRequestActions.NavigateBackHearingRequest();
       actions$ = cold('-a', { a: action });
-      const navigateAction = new hearingRequestActions.NavigateBackHearingRequest();
-      const expected = cold('-b', { b: navigateAction });
+      const expected = cold('-b', { b: null });
       expect(effects.backNavigation$).toBeObservable(expected);
       expect(mockLocation.back).toHaveBeenCalled();
     });
@@ -120,8 +211,7 @@ describe('Hearing Request Effects', () => {
       effects.mode = Mode.VIEW;
       const action = new hearingRequestActions.NavigateBackHearingRequest();
       actions$ = cold('-a', { a: action });
-      const navigateAction = new hearingRequestActions.NavigateBackHearingRequest();
-      const expected = cold('-b', { b: navigateAction });
+      const expected = cold('-b', { b: null });
       expect(effects.backNavigation$).toBeObservable(expected);
       expect(mockLocation.back).toHaveBeenCalled();
     });
@@ -130,14 +220,18 @@ describe('Hearing Request Effects', () => {
       effects.mode = Mode.VIEW_EDIT;
       const action = new hearingRequestActions.NavigateBackHearingRequest();
       actions$ = cold('-a', { a: action });
-      const navigateAction = new hearingRequestActions.NavigateBackHearingRequest();
-      const expected = cold('-b', { b: navigateAction });
+      const expected = cold('-b', { b: null });
       expect(effects.backNavigation$).toBeObservable(expected);
       expect(mockLocation.back).toHaveBeenCalled();
     });
   });
 
   describe('loadHearingRequest$', () => {
+    beforeEach(() => {
+      mockRouter.navigateByUrl.calls.reset();
+      mockRouter.navigateByUrl.and.returnValue(Promise.resolve(true));
+    });
+
     it('should load hearing requests', () => {
       const dispatchSpy = spyOn(store, 'dispatch');
       hearingsServiceMock.loadHearingRequest.and.returnValue(of(hearingRequestMainModel));
@@ -153,6 +247,11 @@ describe('Hearing Request Effects', () => {
   });
 
   describe('submitHearingReason$', () => {
+    beforeEach(() => {
+      mockRouter.navigate.calls.reset();
+      mockRouter.navigate.and.returnValue(Promise.resolve(true));
+    });
+
     it('should submit hearing reason', () => {
       const action = new hearingRequestActions.ViewEditSubmitHearingReason(hearingRequestMainModel);
       actions$ = cold('-a', { a: action });
@@ -164,6 +263,11 @@ describe('Hearing Request Effects', () => {
   });
 
   describe('submitHearingRequest$', () => {
+    beforeEach(() => {
+      mockRouter.navigate.calls.reset();
+      mockRouter.navigate.and.returnValue(Promise.resolve(true));
+    });
+
     it('should submit hearing request', () => {
       const dispatchSpy = spyOn(store, 'dispatch');
       hearingsServiceMock.submitHearingRequest.and.returnValue(of(hearingRequestMainModel));
@@ -197,6 +301,11 @@ describe('Hearing Request Effects', () => {
   });
 
   describe('ViewEditSubmitHearingRequest$', () => {
+    beforeEach(() => {
+      mockRouter.navigate.calls.reset();
+      mockRouter.navigate.and.returnValue(Promise.resolve(true));
+    });
+
     it('should update hearing request', () => {
       hearingsServiceMock.updateHearingRequest.and.returnValue(of(hearingRequestMainModel));
       const action = new hearingRequestActions.ViewEditSubmitHearingRequest(hearingRequestMainModel);

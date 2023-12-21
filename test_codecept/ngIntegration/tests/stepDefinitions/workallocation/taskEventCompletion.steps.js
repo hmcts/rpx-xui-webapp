@@ -22,12 +22,17 @@ const { DataTableArgument } = require('codeceptjs');
     const waCasesTable = new WACasesTable();
 
 
+
+    const taskApiMockService = require('../../../../backendMock/services/task-management-api/index')
+
+
     Given('I set MOCK task required for event as {string}', async function (isTaskRequired) {
-        waMockData.setTaskRequiredForEventAs(isTaskRequired.includes("true"));
+
+        taskApiMockService.setTaskRequiredForEventAs(isTaskRequired.includes("true"));
     });
 
     Given('I set MOCK tasks required for event', async function (tasksDatatable) {
-        waMockData.setTaskRequiredForEventTasks(tasksdatatable.parse().hashes());
+        await taskApiMockService.setTaskRequiredForEventTasks(tasksDatatable.parse().hashes());
     });
 
     When('I complete and submit test event {string}', async function(eventId){

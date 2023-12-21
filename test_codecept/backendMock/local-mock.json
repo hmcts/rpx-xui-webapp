@@ -27,10 +27,13 @@
         },
         "waWorkflowApi": "http://localhost:8080",
         "documentsv2": {
-            "api": "http://localhost:8080/cases/documents"
+            "api": "http://localhost:8080/"
         },
         "prd": {
-            "api": "http://localhost:8080"
+            "api": "http://localhost:8080",
+            "commondataApi": "http://localhost:8080",
+            "locationApi": "http://localhost:8080",
+            "judicialApi": "http://localhost:8080"
         },
         "em_anno_api": "http://localhost:8080",
         "idam": {
@@ -53,6 +56,22 @@
             "caseworkerApi": "http://localhost:8080",
             "judicialworkerApi": "http://localhost:8080",
             "judicialApi": "http://localhost:8080"
+        },
+        "hearings": {
+            "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL",
+            "sscs": {
+                "serviceApi": "http://localhost:8080",
+                "caseTypes": "Benefit"
+            },
+            "privatelaw": {
+                "serviceApi": "http://localhost:8080",
+                "caseTypes": "PRLAPPS"
+            },
+            "civil": {
+                "serviceApi": "http://localhost:8080",
+                "caseTypes": "CIVIL"
+            },
+            "hmcApi": "http://localhost:8080"
         },
         "s2s": "http://localhost:8080",
         "termsAndConditions": "http://localhost:8080",
@@ -85,5 +104,38 @@
         "prefix": "MC-activity:",
         "ttl": 86400
     },
-    "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW"
+    "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW",
+    "serviceRefDataMapping": [
+        {
+            "service": "IA",
+            "serviceCodes": [
+                "BFA1"
+            ]
+        },
+        {
+            "service": "CIVIL",
+            "serviceCodes": [
+                "AAA6",
+                "AAA7"
+            ]
+        },
+        {
+            "service": "PRIVATELAW",
+            "serviceCodes": [
+                "ABA5"
+            ]
+        },
+        {
+            "service": "PUBLICLAW",
+            "serviceCodes": [
+                "ABA3"
+            ]
+        },
+        {
+            "service": "SSCS",
+            "serviceCodes": [
+                "SSCS1"
+            ]
+        }
+    ]
 }

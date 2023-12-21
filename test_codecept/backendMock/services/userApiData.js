@@ -1,27 +1,38 @@
 
+const path = require('path')
+const fs = require('fs')
+
+const roleAssignmentsService = require('./roleAssignments/index')
 
 class UserApiData{
     constructor() {
-        this.sessionUsers = []
+        this.sessionUsers = [];
+
+        this.debugUserDataFile = path.resolve(__dirname,'../../../functional-output/mockUserData.json')
     }
 
 
     sendResponse(req,res, apiMethod, defaultResponseCallback){
         const response = this.getUserData(req.headers.authorization, apiMethod)
         if (response) {
-            res.send(response)
+            res.status(response.status).send(response.data)
            
         } else {
             res.send(defaultResponseCallback())
         }
     }
-
-
+    
+    
     setUserData(token, apiMethod, response) {
-        apiMethod = apiMethod.toUpperCase();
+        // apiMethod = apiMethod.toUpperCase();
+        if (apiMethod === 'AddMockRoleAssignments'){
+            roleAssignmentsService.addRoleAssigmemntsToSession(token,response.data)
+            return;
+        }
         let userSession = this.sessionUsers.find(sess => sess.token === token)
         if (!userSession) {
             userSession = {
+                requests:[],
                 token: token,
                 apiData: []
             };
@@ -37,6 +48,7 @@ class UserApiData{
             apiResponse.response = response
         }
        
+        // fs.writeFileSync(this.debugUserDataFile, JSON.stringify(userSession.apiData, null, 2))
     }
 
     getUserData(token, apiMethod){
@@ -48,9 +60,47 @@ class UserApiData{
         return apiResponse ? apiResponse.response : null
     }
 
-    clearUserData(token){
-        this.sessionUsers = this.sessionUsers.filter(sess => sess.token !== token)
+    getUserSessionData(token){
+        let userSession = this.sessionUsers.find(sess => sess.token === token.replace('Bearer ', ''))
+        return userSession
     }
+
+    logSessionRequest(token, req){
+        let userSession = this.sessionUsers.find(sess => sess.token === token)
+        if (!userSession) {
+            userSession = {
+                requests: [],
+                token: token,
+                apiData: []
+            };
+            this.sessionUsers.push(userSession)
+        }
+        userSession.requests.push({
+            method: req.method,
+            url: req.url,
+            body:req.body ? req.body : null,
+            time:new Date()
+        })
+
+    }
+
+    
+    clearUserData(token){
+        console.log('clear user data started')
+        let userSession = this.sessionUsers.find(sess => sess.token === token)
+        if (userSession) {
+            userSession = {
+                requests: [],
+                token: token,
+                apiData: []
+            };
+        }
+
+        // console.log('Cleared user session data : ' + JSON.stringify(userSession))
+
+        return userSession;
+    }
+
 }
 
 module.exports = new UserApiData();

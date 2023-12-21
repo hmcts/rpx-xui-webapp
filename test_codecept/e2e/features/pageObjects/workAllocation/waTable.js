@@ -50,7 +50,7 @@ class WAListTable {
         await BrowserWaits.waitForConditionAsync(async () => {
             let tableRowsCount = await this.tableRows.count();
             let isTableFooterDispayed = await this.tableFooter.isDisplayed();
-            cucumberReporter.AddMessage(`Waiting for WA list table condition : row count is ${tableRowsCount} or table foorter displayed ${isTableFooterDispayed}`, LOG_LEVELS.Info);
+            // cucumberReporter.AddMessage(`Waiting for WA list table condition : row count is ${tableRowsCount} or table foorter displayed ${isTableFooterDispayed}`, LOG_LEVELS.Info);
             return tableRowsCount > 0 || isTableFooterDispayed;
         }, BrowserWaits.waitTime);
     }
@@ -109,23 +109,21 @@ class WAListTable {
     }
 
     async getColumnHeaderNames() {
-        return await BrowserWaits.retryWithActionCallback(async () => {
-            await this.waitForTable();
-            const headers = element.all(by.xpath(`//${ this.baseCssLocator }//table//thead//th`));
-            const headerElementsCount = await headers.count();
-            const names = [];
+        await this.waitForTable();
+        const headers = element.all(by.xpath(`//${this.baseCssLocator}//table//thead//th`));
+        const headerElementsCount = await headers.count();
+        const names = [];
 
 
-            for (let i = 0; i < headerElementsCount; i++) {
-                const headerElement = await headers.get(i);
-                const headerLabel = await headerElement.getText();
-                if (headerLabel.trim() !== ""){
-                    names.push(headerLabel.trim());
-                }
+        for (let i = 0; i < headerElementsCount; i++) {
+            const headerElement = await headers.get(i);
+            const headerLabel = await headerElement.getText();
+            if (headerLabel.trim() !== "") {
+                names.push(headerLabel.trim());
             }
-           
-            return names;
-        });
+        }
+
+        return names;
 
     }
 

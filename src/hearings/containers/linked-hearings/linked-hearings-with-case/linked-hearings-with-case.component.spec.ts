@@ -11,8 +11,8 @@ import {
   ACTION,
   EXUIDisplayStatusEnum,
   EXUISectionStatusEnum,
-  HMCStatus,
   HearingListingStatusEnum,
+  HMCStatus,
   Mode
 } from '../../../models/hearings.enum';
 import { ServiceLinkedCasesWithHearingsModel } from '../../../models/linkHearings.model';
@@ -330,6 +330,11 @@ describe('LinkedHearingsWithCaseComponent', () => {
     component.linkedCases = linkedCasesWithHearings;
     component.getHearingsAvailable();
     expect(component.isHearingsAvailable).toEqual(true);
+  });
+
+  it('should check update linked cases when hearing position is mentioned', () => {
+    component.updateLinkedCase(0, 0);
+    expect(component.getHearingsFormValue(0, 0).controls[0].get('isSelected').value).toBe(true);
   });
 
   afterEach(() => {

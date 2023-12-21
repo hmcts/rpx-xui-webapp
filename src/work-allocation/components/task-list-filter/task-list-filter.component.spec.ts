@@ -7,13 +7,14 @@ import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs/internal/observable/of';
 import * as fromAppStore from '../../../app/store';
 import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
 import { TaskListFilterComponent } from './task-list-filter.component';
+import { servicesMap } from '../../utils';
 
 @Component({
   template: `
@@ -83,6 +84,7 @@ describe('TaskListFilterComponent', () => {
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
+  const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['getValue']);
   mockTaskService.getUsersAssignedTasks.and.returnValue(of([]));
   locationService.getSpecificLocations.and.returnValue(of([]));
   mockTaskService.currentTasks$.and.returnValue(of([null]));
@@ -164,7 +166,8 @@ describe('TaskListFilterComponent', () => {
         { provide: TaskTypesService, useValue: { getTypesOfWork: () => of(typesOfWork) } },
         { provide: FilterService, useValue: mockFilterService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
-        { provide: SessionStorageService, useValue: mockSessionStorageService }
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -172,6 +175,7 @@ describe('TaskListFilterComponent', () => {
     component = wrapper.appComponentRef;
     component.persistence = 'local';
     mockFilterService.get.and.returnValue(null);
+    mockFeatureToggleService.getValue.and.returnValue(of(servicesMap));
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify([{ regionId: '1', locations: ['219164'] }, { regionId: '9', locations: ['123456'] }]));
     fixture.detectChanges();
   });

@@ -5,9 +5,9 @@ import { CookieService, FeatureToggleService, FeatureUser, GoogleTagManagerServi
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Subscription } from 'rxjs';
 import { propsExist } from '../../../../api/lib/objectUtilities';
-import { SessionStorageService } from '../../../app/services';
+import { SessionStorageService } from '../../services';
 import { environment as config } from '../../../environments/environment';
-import { UserDetails, UserInfo } from '../../models/user-details.model';
+import { UserDetails, UserInfo } from '../../models';
 import { LoggerService } from '../../services/logger/logger.service';
 import { EnvironmentService } from '../../shared/services/environment.service';
 import * as fromRoot from '../../store';
@@ -228,9 +228,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
       case 'sign-out': {
         this.updateTimeoutModal('0 seconds', false);
-
-        this.store.dispatch(new fromRoot.StopIdleSessionTimeout());
-        this.store.dispatch(new fromRoot.IdleUserLogOut());
+        this.signOutHandler();
         return;
       }
       case 'keep-alive': {
@@ -260,16 +258,17 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   public staySignedInHandler() {
     this.updateTimeoutModal(undefined, false);
-    this.setupTimeoutNotificationService();
+    this.timeoutNotificationsService.reset();
   }
 
   public signOutHandler() {
+    this.timeoutNotificationsService.close();
     this.store.dispatch(new fromRoot.StopIdleSessionTimeout());
     this.store.dispatch(new fromRoot.Logout());
   }
 
   /**
-   * Initialise Timeout Notficiation Service
+   * Initialise Timeout Notification Service
    *
    * We initialise the Idle Notification Service which is part of the common lib.
    *
@@ -316,6 +315,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.timeoutNotificationsService.notificationOnChange().subscribe((event) => {
       this.timeoutNotificationEventHandler(event);
     });
+    this.loggerService.log('Initialising TimeoutNotificationService');
     this.timeoutNotificationsService.initialise(timeoutNotificationConfig);
     this.timeoutNotificationServiceInitialised = true;
   }

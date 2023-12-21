@@ -7,7 +7,7 @@ import * as fromApp from './store';
  *  Responsible for storing and dispatching initial features data / event
  *  When it does resolves into true and starts application
  */
-export function initApplication(store: Store<fromApp.State>): VoidFunction {
+export function initApplication(store: Store<fromApp.State>): () => Promise<boolean> {
   return () => new Promise((resolve) => {
     store.dispatch(new fromApp.StartAppInitilizer());
     store.dispatch(new fromApp.LoadConfig());

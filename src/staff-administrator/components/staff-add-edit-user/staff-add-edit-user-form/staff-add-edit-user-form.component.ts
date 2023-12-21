@@ -7,7 +7,7 @@ import { map, take, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffAddEditFormService } from '../../../services/staff-add-edit-form/staff-add-edit-form.service';
-import { getFormValidationErrorMessages, groupItemsByGroupSize } from '../../../utils/form/staff-form.utils';
+import { getFormValidationErrorMessages, groupItemsByGroupSize, setLocationErrorMessages } from '../../../utils/form/staff-form.utils';
 import { StaffAddEditUserFormValidationMessages } from './staff-add-edit-user-form-validation-messages.enum';
 
 @Component({
@@ -31,6 +31,8 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
   public VALIDATION_ERROR_MESSAGES = StaffAddEditUserFormValidationMessages;
   public skillOptionGroups$: Observable<GroupOptions[]>;
   public groupItemsByGroupSize = groupItemsByGroupSize;
+  public wrongLocationError;
+  private selectedServiceCodes = [];
 
   constructor(
     public readonly activatedRoute: ActivatedRoute,
@@ -55,6 +57,7 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
 
     this.skillOptionGroups$ = this.staffAddEditFormService.selectedServiceCodes$.pipe(
       tap((selectedServiceCodes) => {
+        this.selectedServiceCodes = selectedServiceCodes;
         const skillsControl = this.form.get('skills') as FormGroup;
         const allSkillGroups = Object.keys(skillsControl?.controls);
 
@@ -74,18 +77,42 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
     this.fragmentFocus();
   }
 
+  private locationsIncorrectForServices(): string[] {
+    const selectedLocationList = this.baseLocationsFormControl.value[0] === null ? [] : this.baseLocationsFormControl.value;
+    const primaryLocation = selectedLocationList.find((location) => location.is_primary);
+    if (primaryLocation) {
+      // if there is a primary location we know there should not be an error
+      this.baseLocationsFormControl.setErrors(null);
+    }
+    const serviceList = this.selectedServiceCodes;
+    const incorrectLocationList = [];
+    selectedLocationList.forEach((location) => {
+      const uneligibleLocation = location && location.service_codes ? location.service_codes.filter((serviceCode) => serviceList.includes(serviceCode)).length === 0 : true;
+      if (uneligibleLocation) {
+        incorrectLocationList.push(location.location);
+      }
+    });
+    return incorrectLocationList;
+  }
+
   public submitForm(form: FormGroup): void {
     this.errors = false;
     this.submitted = true;
     form.markAllAsTouched();
-    if (form.valid) {
+    this.wrongLocationError = null;
+    const incorrectLocations = this.locationsIncorrectForServices();
+    if (form.valid && incorrectLocations.length === 0) {
       this.router.navigate(['check-your-answers'], { relativeTo: this.activatedRoute });
     } else {
+      if (incorrectLocations.length > 0) {
+        this.wrongLocationError = setLocationErrorMessages(incorrectLocations);
+        this.baseLocationsFormControl.setErrors({ 'incorrect': true });
+      }
       this.errors = {
         title: 'There is a problem',
         description: 'Check the form for errors and try again.',
         multiple: true,
-        errors: getFormValidationErrorMessages(form)
+        errors: getFormValidationErrorMessages(form, incorrectLocations)
       };
       window.scrollTo(0, 0);
     }

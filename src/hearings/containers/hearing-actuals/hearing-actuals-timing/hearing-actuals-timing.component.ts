@@ -54,8 +54,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     if (actualIndex >= 0) {
       actualStartTime = hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingStartTime;
     }
-    return actualStartTime ? this.getTime(actualStartTime) :
-      this.getTime(plannedTime);
+    return actualStartTime ? this.getTime(actualStartTime) : this.getTime(plannedTime);
   }
 
   private getEndTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
@@ -64,8 +63,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     if (actualIndex >= 0) {
       actualEndTime = hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingEndTime;
     }
-    return actualEndTime ? this.getTime(actualEndTime) :
-      this.getTime(plannedTime);
+    return actualEndTime ? this.getTime(actualEndTime) : this.getTime(plannedTime);
   }
 
   private getPauseStartTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null {

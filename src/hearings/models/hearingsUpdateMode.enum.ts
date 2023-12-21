@@ -9,17 +9,25 @@ export enum HearingUpdateMode {
 
 export enum AutoUpdateMode {
   NO_UPDATE,
+  PARTY,
   PAGELESS,
   WITHIN_PAGE,
   AFTER_PAGE_VISIT
+}
+
+export enum PagelessPropertiesEnum {
+  CASE_MANAGEMENT_LOCATIONCODE = 'caseManagementLocationCode',
+  HEARING_IN_WELSH_FLAG = 'hearingInWelshFlag',
+  PARTIES = 'parties'
 }
 
 export enum WithinPagePropertiesEnum {
   HMCTS_INTERNAL_CASENAME = 'hmctsInternalCaseName',
   PUBLIC_CASE_NAME = 'publicCaseName',
   CASE_CATEGORIES = 'caseCategories',
-  CASE_RESTRICTED_FLAG = 'caseRestrictedFlag',
-  PRIVATE_HEARING_REQUIRED_FLAG = 'privateHearingRequiredFlag'
+  CASE_RESTRICTED_FLAG = 'caserestrictedFlag',
+  PRIVATE_HEARING_REQUIRED_FLAG = 'privateHearingRequiredFlag',
+  PARTIES = 'parties'
 }
 
 export enum AfterPageVisitPropertiesEnum {
@@ -30,25 +38,15 @@ export enum AfterPageVisitPropertiesEnum {
 
 export interface PagelessProperties {
   caseManagementLocationCode?: boolean;
-  partyRole?: boolean;
-  relatedPartyID?: boolean;
-  relationshipType?: boolean;
-  custodyStatus?: boolean;
-  vulnerableFlag?: boolean;
-  vulnerabilityDetails?: boolean;
   hearingInWelshFlag?: boolean;
-  organisation?: boolean;
-  organisationType?: boolean;
-  cftOrganisationID?: boolean;
-  hearingChannelEmail?: boolean;
-  hearingChannelPhone?: boolean;
+  parties?: boolean;
 }
 
 export interface WithinPageProperties {
   hmctsInternalCaseName?: boolean;
   publicCaseName?: boolean;
   caseCategories?: string[];
-  caseRestrictedFlag?: boolean;
+  caserestrictedFlag?: boolean;
   privateHearingRequiredFlag?: boolean;
   parties?: boolean;
 }

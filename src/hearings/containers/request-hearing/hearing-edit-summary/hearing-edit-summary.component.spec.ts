@@ -478,9 +478,8 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should set auto updated case type id in array, if existing case type is changed', () => {
-    const existingCategory = [...categories];
-    existingCategory[0].categoryValue = 'BBA3-002';
-    component.serviceHearingValuesModel.caseCategories = existingCategory;
+    categories[0].categoryValue = 'BBA3-002';
+    component.serviceHearingValuesModel.caseCategories = categories;
     component.ngOnInit();
     // @ts-ignore
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories).toEqual(['BBA3-002']);

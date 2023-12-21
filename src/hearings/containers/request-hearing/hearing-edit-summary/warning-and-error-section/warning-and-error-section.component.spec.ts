@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { WarningAndErrorSectionComponent } from './warning-and-error-section.component';
 
 describe('WarningAndErrorSectionComponent', () => {

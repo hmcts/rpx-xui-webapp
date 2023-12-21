@@ -1,7 +1,7 @@
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      {{ 'Case internal name' | rpxTranslate }}
+      Case internal name
     </div>
     <div class="govuk-summary-list__value">
       {{ hearingRequestMainModel.caseDetails.hmctsInternalCaseName }}
@@ -9,7 +9,7 @@
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      {{ 'Case public name' | rpxTranslate }}
+      Case public name
     </div>
     <div class="govuk-summary-list__value">
       {{ hearingRequestMainModel.caseDetails.publicCaseName }}
@@ -17,7 +17,7 @@
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      {{ 'Case Type' | rpxTranslate }}
+      Case Type
     </div>
     <div class="govuk-summary-list__value">
       <div *ngFor="let caseCategory of caseTypes">
@@ -32,18 +32,18 @@
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      {{ 'Private hearing required' | rpxTranslate }}
+      Private hearing required
     </div>
     <div class="govuk-summary-list__value">
-      {{ hearingRequestMainModel.hearingDetails.privateHearingRequiredFlag ? 'Yes' : 'No' | rpxTranslate }}
+      {{ hearingRequestMainModel.hearingDetails.privateHearingRequiredFlag ? 'Yes' : 'No' }}
     </div>
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      {{ 'Case restriction' | rpxTranslate }}
+      Case restriction
     </div>
     <div class="govuk-summary-list__value">
-      {{ hearingRequestMainModel.caseDetails?.caserestrictedFlag ? 'Yes' : 'No' | rpxTranslate }}
+      {{ hearingRequestMainModel.caseDetails?.caserestrictedFlag ? 'Yes' : 'No' }}
     </div>
   </div>
 </div>

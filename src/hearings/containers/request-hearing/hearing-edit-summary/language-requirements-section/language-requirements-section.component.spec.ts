@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MockRpxTranslatePipe } from '../../../../../app/shared/test/mock-rpx-translate.pipe';
 import { LanguageRequirementsSectionComponent } from './language-requirements-section.component';
 
 describe('LanguageRequirementsSectionComponent', () => {
@@ -10,8 +9,7 @@ describe('LanguageRequirementsSectionComponent', () => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [
-        LanguageRequirementsSectionComponent,
-        MockRpxTranslatePipe
+        LanguageRequirementsSectionComponent
       ],
       providers: []
     }).compileComponents();

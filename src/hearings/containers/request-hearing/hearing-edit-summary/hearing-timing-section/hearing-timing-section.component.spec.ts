@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MockRpxTranslatePipe } from '../../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../../hearing.test.data';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { HearingTimingSectionComponent } from './hearing-timing-section.component';
@@ -39,8 +38,7 @@ describe('HearingTimingSectionComponent', () => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [
-        HearingTimingSectionComponent,
-        MockRpxTranslatePipe
+        HearingTimingSectionComponent
       ],
       providers: []
     }).compileComponents();

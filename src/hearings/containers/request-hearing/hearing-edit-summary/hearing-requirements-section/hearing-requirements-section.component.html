@@ -1,11 +1,11 @@
 <div class="govuk-inset-text">
-  {{ 'To update this request, select change in the relevant section on this page then resubmit the request.' | rpxTranslate }}
+  To update this request, select change in the relevant section on this page then resubmit the request.
 </div>
-<h2 class="govuk-heading-m">{{ 'Hearing requirements' | rpxTranslate }}</h2>
+<h2 class="govuk-heading-m">Hearing requirements</h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      {{ 'Reasonable adjustments' | rpxTranslate }}
+      Reasonable adjustments
     </div>
     <div class="govuk-summary-list__value">
       <div *ngFor="let partyWithFlag of partyWithFlags | keyvalue">
@@ -23,7 +23,7 @@
       <a id="caseFlags"
         class="change-link"
         href="javascript:void(0)"
-        (click)="onChange('caseFlags')">{{ 'Change' | rpxTranslate }}</a>
+        (click)="onChange('caseFlags')">Change</a>
     </div>
   </div>
 </div>

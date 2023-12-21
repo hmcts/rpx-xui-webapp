@@ -410,7 +410,9 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should display banner message', () => {
-    component.serviceHearingValuesModel.caseFlags = { flags: caseFlags, flagAmendURL: '/' };
+    component.serviceHearingValuesModel.caseFlags = { flags: [], flagAmendURL: '/' };    
+    component.serviceHearingValuesModel.parties = [];
+    component.hearingRequestMainModel.partyDetails = [];
     component.serviceHearingValuesModel.privateHearingRequiredFlag = true;
     component.serviceHearingValuesModel.hearingInWelshFlag = true;
     const storeDispatchSpy = spyOn(store, 'dispatch');

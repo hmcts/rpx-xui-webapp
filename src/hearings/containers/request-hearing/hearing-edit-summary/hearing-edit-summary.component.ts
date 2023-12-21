@@ -245,7 +245,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const partyFlagIds = individualParties.map((party) => party.individualDetails?.reasonableAdjustments)?.join(',').split(',').sort();
 
     // Return true if there are changes in reasonable adjustments and/or language interpreter flags
-    if (flagIdsSHV.join() !== partyFlagIds.join()) {
+    if (flagIdsSHV.join() !== partyFlagIds?.filter((flagId) => flagId !== '').join()) {
       return true;
     }
     // There are no changes for reasonable adjustments and language interpreter flags when compared SHV with HMC

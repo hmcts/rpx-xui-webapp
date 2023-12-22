@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { PartyType } from 'src/hearings/models/hearings.enum';
+import { PartyType } from '../../../../../hearings/models/hearings.enum';
 import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
 import { CaseFlagReferenceModel } from '../../../../models/caseFlagReference.model';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';

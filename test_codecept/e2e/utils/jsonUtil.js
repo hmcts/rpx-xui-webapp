@@ -10,7 +10,8 @@ class JSONUtil{
 
       let val = row.value;
       if (val.startsWith('[') && val.endsWith(']')) {
-        val = val.replace('[', '').replace(']', '').split(',')
+        val = val.replace('[', '').replace(']', '')
+        val = val !== "" ? val.split(','): []
       }
       const updatedValue = jsonpath.value(updateJson, row.jsonpath, val);
 

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { AmendmentLabelStatus } from 'src/hearings/models/hearingsUpdateMode.enum';
+import { AmendmentLabelStatus } from '../../../../hearings/models/hearingsUpdateMode.enum';
 
 @Component({
   selector: 'exui-amendment-label',

@@ -10,6 +10,10 @@ export class CaseFlagsUtils {
   public static LANGUAGE_INTERPRETER_FLAG_ID = 'PF0015';
   public static PARTY_NAME = 'partyName';
 
+  public static getAllReasonableAdjustmentFlags(caseFlagsRefData: CaseFlagReferenceModel[], partyFlags: PartyFlagsModel[], ) {
+
+  }
+
   /**
    * @overview Generic component display caseFlags with RAF(Reasonable Adjustment Flags) and NonRAF(Non Reasonable Adjustment Flags)
    * @description on hearing requirement page it shows RAF + PF0015

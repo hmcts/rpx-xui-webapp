@@ -2,6 +2,7 @@ import * as _ from 'underscore';
 import { CaseFlagGroup } from '../models/caseFlagGroup.model';
 import { CaseFlagReferenceModel } from '../models/caseFlagReference.model';
 import { CaseFlagType } from '../models/hearings.enum';
+import { AmendmentLabelStatus } from '../models/hearingsUpdateMode.enum';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { PartyFlagsDisplayModel, PartyFlagsModel } from '../models/partyFlags.model';
 
@@ -10,8 +11,17 @@ export class CaseFlagsUtils {
   public static LANGUAGE_INTERPRETER_FLAG_ID = 'PF0015';
   public static PARTY_NAME = 'partyName';
 
-  public static getAllReasonableAdjustmentFlags(caseFlagsRefData: CaseFlagReferenceModel[], partyFlags: PartyFlagsModel[], ) {
+  public static getReasonableAdjustmentFlags(caseFlagsRefData: CaseFlagReferenceModel[], caseFlags: PartyFlagsModel[], individualParties: PartyDetailsModel[], serviceHearingValueParties: PartyDetailsModel[]) {
+    const activeFlags = this.getAllActiveDisplayFlags(caseFlags, caseFlagsRefData);
+    const reasonableAdjustmentFlags = activeFlags.filter((caseFlag) =>
+      (caseFlag.displayPath.includes(CaseFlagType.REASONABLE_ADJUSTMENT) || caseFlag.flagId === CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID)
+    );
+    const caseFlagGroups = this.getAllRAFsWithGroup(reasonableAdjustmentFlags);
+  }
 
+  private static getReasonableAdjustmentFlagsGroup(flags: PartyFlagsDisplayModel[]): CaseFlagGroup[] {
+    const allRAFsWithGroup = _.groupBy(flags, CaseFlagsUtils.PARTY_NAME);
+    return this.convertMapToArray(allRAFsWithGroup);
   }
 
   /**
@@ -119,5 +129,27 @@ export class CaseFlagsUtils {
       }
     }
     return caseFlagGroups;
+  }
+
+  private static convertMapToArray1(caseFlags: Record<string, PartyFlagsDisplayModel[]>, parties: PartyDetailsModel[]): CaseFlagGroup[] {
+    const caseFlagGroups = [];
+    for (const caseFlag in caseFlags) {
+      if (caseFlags.hasOwnProperty(caseFlag)) {
+        caseFlagGroups.push(
+          {
+            name: caseFlag,
+            partyFlags: caseFlags[caseFlag],
+            amendmentLabelStatus: this.getAmendedLabelStatus(caseFlags[caseFlag], parties)
+          } as CaseFlagGroup);
+      }
+    }
+    return caseFlagGroups;
+  }
+
+  private static getAmendedLabelStatus(caseFlags: PartyFlagsDisplayModel[], parties: PartyDetailsModel[]): AmendmentLabelStatus {
+    const party = parties.find((party) => party.partyID === caseFlags[0].partyId);
+    this.ser
+
+    return AmendmentLabelStatus.ACTION_NEEDED;
   }
 }

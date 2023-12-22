@@ -1,5 +1,5 @@
 
-@ng @functional_enabled
+@ng @functional_enabled @functional_debug
 Feature: Hearings CR84: Automatic pageless updates
 
 
@@ -31,27 +31,18 @@ Feature: Hearings CR84: Automatic pageless updates
 
         Given I set mock hearing data for state "listedHearing"
         Given I set parties in mock hearing data for state "listedHearing"
-            | type | partyName       | partyId                  |
+            | type | partyName       | partyID                  |
             | IND  | Party1 name     | 1234-uytr-7654-asdf-0001 |
             | IND  | Party2 name     | 1234-uytr-7654-asdf-0002 |
             | ORG  | party3 org name | 1234-uytr-7654-asdf-0003 |
 
-        Given I set mock get hearing with with status "LISTED" and values at jsonpath
-            | jsonpath                                          | value                              |
-            | $.caseDetails.hmctsInternalCaseName               | Mock case hmcts internal case name |
-            | $.caseDetails.publicCaseName                      | Mock case public name              |
-            | $.hearingDetails.hearingType                      | ABA5-ABC                           |
-            | $.hearingDetails.hearingChannels                  | [ABA1-HRC,ABA2-HRC]                |
-            | $.hearingDetails.hearingLocations[0].locationType | court                              |
-            | $.hearingDetails.hearingLocations[0].locationId   | 20001                              |
-            | $.hearingDetails.panelRequirements.roleType       | [ABA1-JDT,ABA2-JDT]                |
-
+      
         Given I set mock hearings service hearing values with ref "partiesUpdated"
         Given I update mock hearings service hearing values with ref "partiesUpdated" at jsonpaths
             | jsonpath                     | value |
             | $.caseFlags.flags            | []    |
         Given I update mock hearings service hearing values with ref "partiesUpdated" for field "parties"
-            | type | partyName       | partyId                  |
+            | type | partyName       | partyID                  |
             | IND  | Party1 name     | 1234-uytr-7654-asdf-0001 |
             | IND  | Party2 name     | 1234-uytr-7654-asdf-0002 |
             | ORG  | party3 org name | 1234-uytr-7654-asdf-0003 |
@@ -154,7 +145,7 @@ Feature: Hearings CR84: Automatic pageless updates
 
         Given I set mock hearing data for state "listedHearing"
         Given I set parties in mock hearing data for state "listedHearing"
-            | type | partyName       | partyId                  |
+            | type | partyName       | partyID                  |
             | IND  | Party1 name     | 1234-uytr-7654-asdf-0001 |
             | IND  | Party2 name     | 1234-uytr-7654-asdf-0002 |
             | ORG  | party3 org name | 1234-uytr-7654-asdf-0003 |
@@ -174,7 +165,7 @@ Feature: Hearings CR84: Automatic pageless updates
             | jsonpath          | value |
             | $.caseFlags.flags | []    |
         Given I update mock hearings service hearing values with ref "partiesUpdated" for field "parties"
-            | type | partyName       | partyId                  |
+            | type | partyName       | partyID                  |
             | IND  | Party1 name     | 1234-uytr-7654-asdf-0001 |
             | IND  | Party2 name     | 1234-uytr-7654-asdf-0002 |
             | ORG  | party3 org name | 1234-uytr-7654-asdf-0003 |
@@ -199,7 +190,7 @@ Feature: Hearings CR84: Automatic pageless updates
 
 
 
-@functional_debug
+
     Scenario: Hearing automatic updates CAT1 and CAT2
         Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_ON"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
@@ -269,6 +260,5 @@ Feature: Hearings CR84: Automatic pageless updates
         Then I validate view hearing page Edit hearing button displayed is "true"
         When In view hearing page, I click Edit hearing button
         Then I validate Edit hearing page displayed
-        Then debug sleep minutes 30
         Then In edit hearing page warning message banner isDisplayed "false"
 

@@ -290,6 +290,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     // Return true if there are changes in reasonable adjustments and/or language interpreter flags
     if (flagIdsSHV.join() !== partyFlagIdsString) {
+      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesConfirmed = true;
       return true;
     }
     // There are no changes for reasonable adjustments and language interpreter flags when compared SHV with HMC

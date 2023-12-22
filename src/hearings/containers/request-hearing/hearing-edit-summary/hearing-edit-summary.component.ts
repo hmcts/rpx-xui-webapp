@@ -263,9 +263,14 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // check pageless automatic update
     this.isPagelessAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.pageless).some((prop) => prop);
     // check for changes on page visit
-    const pageVisitChangeExists = this.pageVisitCaseFlagsChangeExists() ||
-      this.pageVisitPartiesChangeExists() ||
-      this.pageVisitHearingWindowChangeExists();
+    const isPageVisitCaseFlagsChangeExists = this.pageVisitCaseFlagsChangeExists();
+    const isPageVisitPartiesChangeExists = this.pageVisitPartiesChangeExists();
+    const isPageVisitHearingWindowChangeExists = this.pageVisitHearingWindowChangeExists();
+
+    const pageVisitChangeExists = isPageVisitCaseFlagsChangeExists ||
+      isPageVisitPartiesChangeExists ||
+      isPageVisitHearingWindowChangeExists;
+
     // Display banner
     this.displayBanner = this.isPagelessAttributeChanged && !pageVisitChangeExists;
   }

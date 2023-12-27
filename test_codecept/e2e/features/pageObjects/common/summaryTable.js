@@ -22,7 +22,7 @@ class SummaryTable{
 
     getTableAmendedElementXpath(forKey) {
         const keyElement = this.getTableKeyElementXpath(forKey)
-        return `${keyElement}/../*[contains(@class,'govuk-summary-list__actions')]//strong[contains(@class,'amended-flag')]`
+        return `${keyElement}/..//exui-amendment-label//strong`;
     }
 
     async isFieldDisplayed(forKey) {

@@ -1,5 +1,5 @@
 
-@ng @functional_enabled 
+@ng @functional_enabled
 Feature: Hearings CR84: Automatic updates
 
     Scenario: Hearing automatic updates
@@ -12,8 +12,6 @@ Feature: Hearings CR84: Automatic updates
         Given I set mock case hearings
             | hmcStatus | hearingType | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
             | LISTED    | TEST_TYPE   | -3                     | 0                            | -3                                      | 2                                     |
-
-
 
         Given I set mock get hearing with with status "LISTED" and values at jsonpath
             | jsonpath                            | value                 |
@@ -72,8 +70,8 @@ Feature: Hearings CR84: Automatic updates
         Then I validate view hearing page Edit hearing button displayed is "true"
         When In view hearing page, I click Edit hearing button
         Then I validate Edit hearing page displayed
-      
 
+        Then debug sleep minutes 30
 
         Then I validate fields displayed in view or edit hearing page
             | field                                 | value  | changeLinkDisplay | amendedFlagDisplay |

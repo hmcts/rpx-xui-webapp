@@ -13,7 +13,7 @@
       Reasonable adjustments
     </div>
     <div class="govuk-summary-list__value">
-      <div *ngFor="let partiesWithFlags of partiesWithFlags | keyvalue">
+      <div *ngFor="let partyFlags of partiesWithFlags | keyvalue">
         <div *ngIf="partyFlags?.value?.length > 0">
           <exui-amendment-label *ngIf="partyFlags.value[0].partyNameChanged"
             [displayLabel]="amendmentLabelEnum.AMENDED">

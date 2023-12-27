@@ -35,6 +35,17 @@ class SummaryTable{
         return await e.getText();
     }
 
+    async getValuesForField(forKey) {
+        const values = []
+        const elements = element.all(by.xpath(this.getTableValueElementXpath(forKey)+'/div'))
+        const count = await elements.count();
+        for(let i = 0; i < count; i++){
+            const e = await elements.get(i)
+            values.push(await e.getText())
+        }
+        return values;
+    }
+
     async isChangeLinkDisplayedForField(forKey) {
         const e = element(by.xpath(this.getTableChangeLinkElementXpath(forKey)))
         return await e.isDisplayed();

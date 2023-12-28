@@ -1,7 +1,7 @@
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      {{ 'Case internal name' | rpxTranslate }}
+      Case internal name
     </div>
     <div class="govuk-summary-list__value">
       <exui-amendment-label *ngIf="withinPage.hmctsInternalCaseName" [displayLabel]="amendmentLabelEnum.AMENDED">
@@ -11,7 +11,7 @@
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      {{ 'Case public name' | rpxTranslate }}
+      Case public name
     </div>
     <div class="govuk-summary-list__value">
       <exui-amendment-label *ngIf="withinPage.publicCaseName" [displayLabel]="amendmentLabelEnum.AMENDED">
@@ -21,7 +21,7 @@
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      {{ 'Case Type' | rpxTranslate }}
+      Case Type
     </div>
     <div class="govuk-summary-list__value">
       <div *ngFor="let caseCategory of caseTypes">
@@ -38,22 +38,22 @@
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      {{ 'Private hearing required' | rpxTranslate }}
+      Private hearing required
     </div>
     <div class="govuk-summary-list__value">
       <exui-amendment-label *ngIf="withinPage.privateHearingRequiredFlag" [displayLabel]="amendmentLabelEnum.AMENDED">
       </exui-amendment-label>
-      {{ hearingRequestMainModel.hearingDetails.privateHearingRequiredFlag ? 'Yes' : 'No' | rpxTranslate }}
+      {{ hearingRequestMainModel.hearingDetails.privateHearingRequiredFlag ? 'Yes' : 'No' }}
     </div>
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      {{ 'Case restriction' | rpxTranslate }}
+      Case restriction
     </div>
     <div class="govuk-summary-list__value">
-      <exui-amendment-label *ngIf="withinPage.caseRestrictedFlag" [displayLabel]="amendmentLabelEnum.AMENDED">
+      <exui-amendment-label *ngIf="withinPage.caserestrictedFlag" [displayLabel]="amendmentLabelEnum.AMENDED">
       </exui-amendment-label>
-      {{ hearingRequestMainModel.caseDetails?.caserestrictedFlag ? 'Yes' : 'No' | rpxTranslate }}
+      {{ hearingRequestMainModel.caseDetails?.caserestrictedFlag ? 'Yes' : 'No' }}
     </div>
   </div>
 </div>

@@ -9,6 +9,7 @@ class ViewOrEditHearingPage {
 
         this.summaryTable = new SummaryTable('exui-hearing-edit-summary')
 
+        this.warningMessage = $('exui-warning-and-error-section .govuk-warning-text__text')
 
     }
 
@@ -34,6 +35,14 @@ class ViewOrEditHearingPage {
 
     async isAmendedFlagDisplayedForKeyField(field) {
         return await this.summaryTable.isAmendedFlagDisplayedForField(field)
+    }
+
+    async isWarningTextBannerDisplayed(){
+        return await this.warningMessage.isDisplayed();
+    }
+
+    async getWarningBanerText(){
+        return await this.warningMessage.getText();
     }
 
 }

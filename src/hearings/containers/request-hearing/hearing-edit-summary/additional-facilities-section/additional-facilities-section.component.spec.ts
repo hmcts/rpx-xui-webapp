@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import * as _ from 'lodash';
-import { MockRpxTranslatePipe } from '../../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../../hearing.test.data';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { AdditionalFacilitiesSectionComponent } from './additional-facilities-section.component';
@@ -124,8 +123,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [
-        AdditionalFacilitiesSectionComponent,
-        MockRpxTranslatePipe
+        AdditionalFacilitiesSectionComponent
       ],
       providers: []
     }).compileComponents();

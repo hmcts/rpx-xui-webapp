@@ -1,4 +1,5 @@
 const serviceHearingValuesMock = require('./hearings/serviceHearingValuesMock')
+const hearingValuesMock = require('./hearings/index')
 
 class MockAPIData{
 
@@ -9,6 +10,11 @@ class MockAPIData{
             case "OnServiceHearingValues":
                 serviceHearingValuesMock.serviceHearingValues = responseData
                 break;
+
+            case "OnGetHearing":
+              hearingValuesMock.hearingResponse = responseData
+              break;
+
             default:
                 status = `${req.params.apiMethod} is not setup`
         }

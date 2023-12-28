@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MockRpxTranslatePipe } from '../../../../../app/shared/test/mock-rpx-translate.pipe';
 import { hearingStageRefData, initialState } from '../../../../hearing.test.data';
 import { HearingStageSectionComponent } from './hearing-stage-section.component';
 
@@ -11,8 +10,7 @@ describe('HearingStageSectionComponent', () => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [
-        HearingStageSectionComponent,
-        MockRpxTranslatePipe
+        HearingStageSectionComponent
       ],
       providers: []
     }).compileComponents();

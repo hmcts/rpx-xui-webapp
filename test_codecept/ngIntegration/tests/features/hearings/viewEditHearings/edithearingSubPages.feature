@@ -1,5 +1,5 @@
 
-@ng @functional_enabled     @functional_debug
+@ng @functional_enabled 
 Feature: Hearings : Edit hearing sub pages
 
     Scenario: Edit hearing navigation sub pages -  CR84 OFF

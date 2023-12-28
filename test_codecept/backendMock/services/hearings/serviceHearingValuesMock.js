@@ -59,14 +59,7 @@ class ServiceHearingValues{
                 "firstName": party.individualDetails?.firstName ? party.individualDetails.firstName : `${party.partyName ? party.partyName +' FN' : 'First app FN'}`,
                 "lastName": party.individualDetails?.lastName ? party.individualDetails.lastName : `${party.partyName ? party.partyName + ' LN' : 'First app LN'}`,
                 "interpreterLanguage": party.individualDetails?.interpreterLanguage ? party.individualDetails.interpreterLanguage : "",
-                "reasonableAdjustments": party.individualDetails?.reasonableAdjustments ? party.individualDetails.reasonableAdjustments.split(',') : [
-                    'RA0042',
-                    'RA0053',
-                    'RA0013',
-                    'RA0016',
-                    'RA0042',
-                    'RA0009'
-                ],
+                "reasonableAdjustments": party.individualDetails?.reasonableAdjustments ? party.individualDetails.reasonableAdjustments.split(',') : [],
                 "vulnerableFlag": false,
                 "vulnerabilityDetails": "",
                 "hearingChannelEmail": [

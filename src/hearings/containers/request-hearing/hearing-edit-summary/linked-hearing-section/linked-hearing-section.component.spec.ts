@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MockRpxTranslatePipe } from '../../../../../app/shared/test/mock-rpx-translate.pipe';
 import { LinkedHearingSectionComponent } from './linked-hearing-section.component';
 
 describe('LinkedHearingSectionComponent', () => {
@@ -10,8 +9,7 @@ describe('LinkedHearingSectionComponent', () => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [
-        LinkedHearingSectionComponent,
-        MockRpxTranslatePipe
+        LinkedHearingSectionComponent
       ],
       providers: []
     }).compileComponents();

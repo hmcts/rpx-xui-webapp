@@ -9,6 +9,10 @@ class ViewOrEditHearingPage{
 
         this.summaryTable = new SummaryTable('exui-hearing-view-edit-summary')
 
+        this.multiValueFields = [
+            'Reasonable adjustments',
+            'Does the hearing need to take place on a specific date?'
+        ]
         
     }
 
@@ -21,7 +25,14 @@ class ViewOrEditHearingPage{
     }
 
     async getKeyFieldValue(field) {
-        return await this.summaryTable.getValueForField(field)
+        let values = [];
+
+        if (this.multiValueFields.includes(field)){
+            values = await this.summaryTable.getValuesForField(field)
+        }else{
+            values.push(await this.summaryTable.getValueForField(field))
+        }
+        return values;
     }
 
     async isChangeLinkDisplayedForKeyField(field){
@@ -32,8 +43,14 @@ class ViewOrEditHearingPage{
         return await this.summaryTable.clickChangeLinkForField(field)
     }
 
-    async isAmendedFlagDisplayedForKeyField(field) {
+    async isAmendedFlagDisplayedForKeyField(field, value) {
         return await this.summaryTable.isAmendedFlagDisplayedForField(field)
+    }
+
+    async getSectionHeadingLabel(heading){
+        const e = element(by.xpath(`//h2[contains(text(),'${heading}')]//exui-amendment-label`))
+        const isDisplayed = await e.isDisplayed();
+        return isDisplayed ? await e.getText() : null;
     }
 
 }

@@ -1,11 +1,11 @@
 <exui-warning-and-error-section *ngIf="displayBanner"
   [isPagelessAttributeChanged]="isPagelessAttributeChanged"
 ></exui-warning-and-error-section>
-<h1 class="govuk-heading-l">{{ 'Edit hearing' | rpxTranslate }}</h1>
+<h1 class="govuk-heading-l">Edit hearing</h1>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row" *ngIf="!isHearingListed">
     <div class="govuk-summary-list__key">
-      {{ 'Case number' | rpxTranslate }}
+      Case number
     </div>
     <div class="govuk-summary-list__value">
       {{ caseReference }}
@@ -13,7 +13,7 @@
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      {{ 'Status' | rpxTranslate }}
+      Status
     </div>
     <div class="govuk-summary-list__value">
       {{ status }}
@@ -21,7 +21,7 @@
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
-      {{ 'Date request submitted' | rpxTranslate }}
+      Date request submitted
     </div>
     <div class="govuk-summary-list__value">
       {{ requestSubmittedDate }}
@@ -29,7 +29,7 @@
   </div>
   <div class="govuk-summary-list__row" *ngIf="isHearingListed">
     <div class="govuk-summary-list__key">
-      {{ 'Date response received' | rpxTranslate }}
+      Date response received
     </div>
     <div class="govuk-summary-list__value">
       {{ responseReceivedDate }}
@@ -42,7 +42,7 @@
 ></exui-case-details-section>
 <!-- Listing information summary -->
 <div *ngIf="isHearingListed">
-  <h2 class="govuk-heading-m">{{ hearingTemplate.LISTING_INFORMATION | rpxTranslate }}</h2>
+  <h2 class="govuk-heading-m">{{ hearingTemplate.LISTING_INFORMATION}}</h2>
   <exui-listing-information-summary></exui-listing-information-summary>
 </div>
 <!-- Hearing requirements -->

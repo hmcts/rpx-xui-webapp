@@ -2,18 +2,19 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CaseCategoryModel } from 'src/hearings/models/caseCategory.model';
 import { AppConstants } from '../../../../app/app.constants';
-import { AutoUpdateMode, WithinPagePropertiesEnum } from '../../../../hearings/models/hearingsUpdateMode.enum';
+import { CaseCategoryModel } from '../../../../hearings/models/caseCategory.model';
+import { AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../../hearings/models/hearingsUpdateMode.enum';
 import { ServiceHearingValuesModel } from '../../../../hearings/models/serviceHearingValues.model';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
 import { hearingStatusMappings } from '../../../models/hearingStatusMappings';
-import { ACTION, HearingDateEnum, HearingTemplate, LaCaseStatus, Mode, PartyType } from '../../../models/hearings.enum';
+import { ACTION, CategoryType, HearingDateEnum, HearingTemplate, LaCaseStatus, Mode, PartyType } from '../../../models/hearings.enum';
 import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -138,7 +139,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       ...this.hearingRequestMainModel,
       caseDetails: {
         ...this.hearingRequestMainModel?.caseDetails,
-        caseManagementLocationCode: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caseManagementLocationCode, this.serviceHearingValuesModel.caseManagementLocationCode, AutoUpdateMode.PAGELESS),
+        caseManagementLocationCode: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caseManagementLocationCode, this.serviceHearingValuesModel.caseManagementLocationCode, AutoUpdateMode.PAGELESS, PagelessPropertiesEnum.CASE_MANAGEMENT_LOCATIONCODE),
         hmctsInternalCaseName: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.hmctsInternalCaseName, this.serviceHearingValuesModel.hmctsInternalCaseName, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.HMCTS_INTERNAL_CASENAME),
         publicCaseName: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.publicCaseName, this.serviceHearingValuesModel.publicCaseName, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PUBLIC_CASE_NAME),
         caserestrictedFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caserestrictedFlag, this.serviceHearingValuesModel.caserestrictedFlag, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.CASE_RESTRICTED_FLAG),
@@ -147,7 +148,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
         privateHearingRequiredFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel.hearingDetails.privateHearingRequiredFlag, this.serviceHearingValuesModel.privateHearingRequiredFlag, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PRIVATE_HEARING_REQUIRED_FLAG),
-        hearingInWelshFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel.hearingDetails.hearingInWelshFlag, this.serviceHearingValuesModel.hearingInWelshFlag, AutoUpdateMode.PAGELESS)
+        hearingInWelshFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel.hearingDetails.hearingInWelshFlag, this.serviceHearingValuesModel.hearingInWelshFlag, AutoUpdateMode.PAGELESS, PagelessPropertiesEnum.HEARING_IN_WELSH_FLAG)
       },
       partyDetails: [
         ...this.updatePartyDetails(this.serviceHearingValuesModel.parties)
@@ -174,32 +175,48 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     }
   }
 
-  private compareAndUpdateCaseCategories(currentValue: CaseCategoryModel[], serviceHearingValue: CaseCategoryModel[]): CaseCategoryModel[] {
+  private compareAndUpdateCaseCategories(hmcCaseCategories: CaseCategoryModel[], shvCaseCategories: CaseCategoryModel[]): CaseCategoryModel[] {
     this.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories = [];
-    currentValue.forEach((value: CaseCategoryModel) => {
-      const valueFound = serviceHearingValue.find((svh) => svh.categoryValue === value.categoryValue
-        && svh.categoryType === value.categoryType
-        && (svh.categoryParent === null || svh.categoryParent === value.categoryParent));
 
-      if (valueFound) {
-        this.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories.push(value.categoryValue);
+    // Get case types
+    const hmcCategoryValues = hmcCaseCategories.filter((caseCategories) => caseCategories.categoryType === CategoryType.CaseType).map((c) => c.categoryValue);
+    const shvCategoryValues = shvCaseCategories.filter((caseCategories) => caseCategories.categoryType === CategoryType.CaseType).map((c) => c.categoryValue);
+
+    const newCaseTypes = _.difference(shvCategoryValues, hmcCategoryValues);
+
+    if (newCaseTypes.length > 0) {
+      // Assign the new case types
+      this.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories = newCaseTypes;
+    }
+
+    hmcCategoryValues.forEach((hmcCategoryValue: string) => {
+      // Check if subtype has changed
+      const hmcSubTypes = hmcCaseCategories.filter((hmcCaseCategory) => hmcCaseCategory.categoryParent === hmcCategoryValue);
+      const svhSubTypes = shvCaseCategories.filter((shvCaseCategory) => shvCaseCategory.categoryParent === hmcCategoryValue);
+
+      if (!_.isEqual(hmcSubTypes, svhSubTypes)) {
+        // Insert the existing category value for which the sub type has changed
+        this.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories.push(hmcCategoryValue);
       }
     });
 
-    return serviceHearingValue;
+    return shvCaseCategories;
   }
 
   // To do: EUI- 8905
   private compareAndUpdateServiceHearingValues(currentValue, serviceHearingValue, pageMode: AutoUpdateMode = null, property: string = null) {
     if (currentValue !== serviceHearingValue) {
       // Store ammended properties to dispay it in UI
-      if (pageMode && property) {
+      if (pageMode && (property || pageMode === AutoUpdateMode.PARTY)) {
         switch (pageMode) {
           case AutoUpdateMode.WITHIN_PAGE:
             this.hearingsService.propertiesUpdatedAutomatically.withinPage[property] = true;
             break;
           case AutoUpdateMode.PAGELESS:
             this.hearingsService.propertiesUpdatedAutomatically.pageless[property] = true;
+            break;
+          case AutoUpdateMode.PARTY:
+            this.hearingsService.propertiesUpdatedAutomatically.pageless[PagelessPropertiesEnum.PARTIES] = true;
             break;
         }
       }
@@ -215,24 +232,24 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         if (serviceParty) {
           newParty.push({
             ...party,
-            partyRole: serviceParty.partyRole,
+            partyRole: this.compareAndUpdateServiceHearingValues(party.partyRole, serviceParty.partyRole, AutoUpdateMode.PARTY),
             individualDetails: {
               ...party.individualDetails,
-              relatedParties: serviceParty.individualDetails?.relatedParties,
-              custodyStatus: serviceParty.individualDetails?.custodyStatus,
-              vulnerableFlag: serviceParty.individualDetails?.vulnerableFlag,
-              vulnerabilityDetails: serviceParty.individualDetails?.vulnerabilityDetails,
-              hearingChannelEmail: serviceParty.individualDetails?.hearingChannelEmail,
-              hearingChannelPhone: serviceParty.individualDetails?.hearingChannelPhone
+              relatedParties: this.compareAndUpdateServiceHearingValues(party.individualDetails?.relatedParties, serviceParty.individualDetails?.relatedParties, AutoUpdateMode.PARTY),
+              custodyStatus: this.compareAndUpdateServiceHearingValues(party.individualDetails?.custodyStatus, serviceParty.individualDetails?.custodyStatus, AutoUpdateMode.PARTY),
+              vulnerableFlag: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerableFlag, serviceParty.individualDetails?.vulnerableFlag, AutoUpdateMode.PARTY),
+              vulnerabilityDetails: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerabilityDetails, serviceParty.individualDetails?.vulnerabilityDetails, AutoUpdateMode.PARTY),
+              hearingChannelEmail: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelEmail, serviceParty.individualDetails?.hearingChannelEmail, AutoUpdateMode.PARTY),
+              hearingChannelPhone: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelPhone, serviceParty.individualDetails?.hearingChannelPhone, AutoUpdateMode.PARTY)
             },
             organisationDetails: {
               ...party.organisationDetails,
-              name: serviceParty.organisationDetails?.name,
-              organisationType: serviceParty.organisationDetails?.organisationType,
-              cftOrganisationID: serviceParty.organisationDetails?.cftOrganisationID
+              name: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.name, serviceParty.organisationDetails?.name),
+              organisationType: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.organisationType, serviceParty.organisationDetails?.organisationType, AutoUpdateMode.PARTY),
+              cftOrganisationID: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.cftOrganisationID, serviceParty.organisationDetails?.cftOrganisationID, AutoUpdateMode.PARTY)
             },
-            unavailabilityDOW: serviceParty?.unavailabilityDOW,
-            unavailabilityRanges: serviceParty?.unavailabilityRanges
+            unavailabilityDOW: this.compareAndUpdateServiceHearingValues(party?.unavailabilityDOW, serviceParty?.unavailabilityDOW, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES),
+            unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES)
           });
         } else {
           newParty.push(party);
@@ -246,9 +263,14 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // check pageless automatic update
     this.isPagelessAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.pageless).some((prop) => prop);
     // check for changes on page visit
-    const pageVisitChangeExists = this.pageVisitCaseFlagsChangeExists() &&
-      this.pageVisitPartiesChangeExists() &&
-      this.pageVisitHearingWindowChangeExists();
+    const isPageVisitCaseFlagsChangeExists = this.pageVisitCaseFlagsChangeExists();
+    const isPageVisitPartiesChangeExists = this.pageVisitPartiesChangeExists();
+    const isPageVisitHearingWindowChangeExists = this.pageVisitHearingWindowChangeExists();
+
+    const pageVisitChangeExists = isPageVisitCaseFlagsChangeExists ||
+      isPageVisitPartiesChangeExists ||
+      isPageVisitHearingWindowChangeExists;
+
     // Display banner
     this.displayBanner = this.isPagelessAttributeChanged && !pageVisitChangeExists;
   }
@@ -268,6 +290,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     // Return true if there are changes in reasonable adjustments and/or language interpreter flags
     if (flagIdsSHV.join() !== partyFlagIdsString) {
+      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesConfirmed = true;
       return true;
     }
     // There are no changes for reasonable adjustments and language interpreter flags when compared SHV with HMC
@@ -285,7 +308,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // Number of parties are the same in both SHV and HMC
     // Loop through the parties in SHV, locate the corresponding party in HMC
     // and return true if there are any changes in the party name of party type
-    partiesSHV.forEach((partySHV) => {
+    for (const partySHV of partiesSHV) {
       const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
       if ((party.partyName !== partySHV.partyName) ||
           (party.individualDetails?.title !== partySHV.individualDetails?.title) ||
@@ -295,7 +318,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed = true;
         return true;
       }
-    });
+    }
+
     // There are no changes for parties when compared SHV with HMC
     return false;
   }

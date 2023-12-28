@@ -24,13 +24,6 @@ const mockServiceHearingValues = require('../../../backendMock/services/hearings
 
 const jsonUtil = require('../.././../e2e/utils/jsonUtil')
 
-const hearingDataForStates = {
-  listedHearing: listedHearing,
-  awaitingHearingDetails: awaitinghearingsDetails,
-  completedHearing: completedHearing,
-  cancelledHearing: cancelledhearing
-};
-
 function updateObjectValues(object, key, value){
   const dateField = ['hearingRequestDateTime', 'lastResponseReceivedDateTime', 'hearingDaySchedule.hearingStartDateTime', 'hearingDaySchedule.hearingEndDateTime'];
 
@@ -87,16 +80,18 @@ function getMockHearingWithStatus(hearingStatus){
     default:
       throw new Error(`no mock data setup for hearing ${hearingStatus}`);
   }
-  return hearingResponse;
+  return JSON.parse(JSON.stringify(hearingResponse));
 }
 
 Given('I set mock get hearing with with status {string}', async function (hearingStatus) {
   let hearingResponse = getMockHearingWithStatus(hearingStatus);
+  global.scenarioData[hearingStatus] = hearingResponse;
+
   mockClient.setOnGetHearing(hearingResponse, 200);
 });
 
 Given('I set mock get hearing with with status {string} and values at jsonpath', async function (hearingStatus, valuesDatatable) {
-  const hearingResponse = getMockHearingWithStatus(hearingStatus);
+  const hearingResponse = global.scenarioData[hearingStatus]
 
   const dataTableObjects = valuesDatatable.parse().hashes();
 
@@ -112,12 +107,12 @@ Given('I set mock hearings service hearing values with ref {string}', async func
 });
 
 Given('I set mock hearing data for state {string}', async function (hearingState) {
-  global.scenarioData[hearingState] = JSON.parse(JSON.stringify(hearingDataForStates[hearingState]));
+  global.scenarioData[hearingState] = getMockHearingWithStatus(hearingState)
   mockClient.setOnGetHearing(global.scenarioData[hearingState], 200);
 });
 
 Given('I set parties in mock hearing data for state {string}', async function (hearingState, partiesDatatable) {
-  global.scenarioData[hearingState] = JSON.parse(JSON.stringify(hearingDataForStates[hearingState]));
+  // global.scenarioData[hearingState] = JSON.parse(JSON.stringify(hearingDataForStates[hearingState]));
 
   const parties = partiesDatatable.parse().hashes();
   const mockParties = mockServiceHearingValues.getMockParties(parties);

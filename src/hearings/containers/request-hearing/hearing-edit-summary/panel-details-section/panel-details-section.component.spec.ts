@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MockRpxTranslatePipe } from '../../../../../app/shared/test/mock-rpx-translate.pipe';
 import { MemberType, RequirementType } from '../../../../models/hearings.enum';
 import { JudicialUserModel } from '../../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
@@ -236,8 +235,7 @@ describe('PanelDetailsSectionComponent', () => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [
-        PanelDetailsSectionComponent,
-        MockRpxTranslatePipe
+        PanelDetailsSectionComponent
       ],
       providers: []
     }).compileComponents();

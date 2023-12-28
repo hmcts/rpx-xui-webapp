@@ -24,7 +24,7 @@ router.get('/hearings/:caseId', (req, res) => {
 
 router.get('/hearing/:hearingId', (req, res) => {
     // userApiData.sendResponse(req, res, "OnGetHearing", () => service.gethearingTemplate({}))
-    userApiData.sendResponse(req, res, "OnGetHearing", () => completedHearing)
+    userApiData.sendResponse(req, res, "OnGetHearing", () => service.hearingResponse)
 
 
 });

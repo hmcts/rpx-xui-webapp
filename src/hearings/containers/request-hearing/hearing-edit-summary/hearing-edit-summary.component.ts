@@ -54,7 +54,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public isHearingAmendmentsEnabled: boolean;
   public hearingTemplate = HearingTemplate;
   public isPagelessAttributeChanged: boolean = false;
-  public displayBanner: boolean = false;
+  public pageVisitChangeExists: boolean = false;
 
   constructor(private readonly router: Router,
     private readonly locationsDataService: LocationsDataService,
@@ -203,7 +203,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     return shvCaseCategories;
   }
 
-  // To do: EUI- 8905
   private compareAndUpdateServiceHearingValues(currentValue, serviceHearingValue, pageMode: AutoUpdateMode = null, property: string = null) {
     if (currentValue !== serviceHearingValue) {
       // Store ammended properties to dispay it in UI
@@ -267,12 +266,13 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const isPageVisitPartiesChangeExists = this.pageVisitPartiesChangeExists();
     const isPageVisitHearingWindowChangeExists = this.pageVisitHearingWindowChangeExists();
 
-    const pageVisitChangeExists = isPageVisitCaseFlagsChangeExists ||
+    this.pageVisitChangeExists = isPageVisitCaseFlagsChangeExists ||
       isPageVisitPartiesChangeExists ||
       isPageVisitHearingWindowChangeExists;
 
-    // Display banner
-    this.displayBanner = this.isPagelessAttributeChanged && !pageVisitChangeExists;
+    // Display Validation
+    this.hearingsService.displayValidationError = true;
+    this.hearingsService.submitUpdatedRequestClicked = false;
   }
 
   private pageVisitCaseFlagsChangeExists(): boolean {

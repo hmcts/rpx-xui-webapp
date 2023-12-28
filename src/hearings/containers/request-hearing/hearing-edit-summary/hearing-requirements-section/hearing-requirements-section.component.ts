@@ -40,12 +40,13 @@ export class HearingRequirementsSectionComponent implements OnInit {
       const flags = flagIds?.map((flagId) => CaseFlagsUtils.findFlagByFlagId(this.caseFlagsRefData, flagId));
       // Display AMENDED label against the party if the name differs between SHV and HMC
       const partyFoundInHMC = this.hearingRequestMainModel.partyDetails?.find((partyHMC) => partyHMC.partyID === party.partyID);
-      if ((party?.partyName !== partyFoundInHMC?.partyName) && flags?.length > 0) {
-        flags[0].partyNameChanged = true;
+      if (partyFoundInHMC) {
+        if ((party.partyName !== partyFoundInHMC?.partyName) && flags?.length > 0) {
+          flags[0].partyNameChanged = true;
+        }
+        partiesWithFlags.set(party.partyName || '', flags);
       }
-      partiesWithFlags.set(party.partyName || '', flags);
     });
-    console.log('PARTIES WITH FLAGS', JSON.stringify(partiesWithFlags));
     return partiesWithFlags;
   }
 

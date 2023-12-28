@@ -20,12 +20,14 @@ export class HearingRequirementsSectionComponent implements OnInit {
 
   public reasonableAdjustmentChangesConfirmed: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
+  public partiesInHMC: string[];
   public partiesWithFlags: Map<string, CaseFlagReferenceModel[]>;
 
   constructor(private readonly hearingsService: HearingsService) {}
 
   public ngOnInit(): void {
     this.reasonableAdjustmentChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed;
+    this.partiesInHMC = this.hearingRequestMainModel.partyDetails.map(((party) => party.partyName));
     this.partiesWithFlags = this.getPartiesWithFlagData();
   }
 
@@ -38,13 +40,8 @@ export class HearingRequirementsSectionComponent implements OnInit {
         flagIds.push(party.individualDetails.interpreterLanguage);
       }
       const flags = flagIds?.map((flagId) => CaseFlagsUtils.findFlagByFlagId(this.caseFlagsRefData, flagId));
-      // Display AMENDED label against the party if the name differs between SHV and HMC
-      const partyFoundInHMC = this.hearingRequestMainModel.partyDetails?.find((partyHMC) => partyHMC.partyID === party.partyID);
-      if (partyFoundInHMC) {
-        if ((party.partyName !== partyFoundInHMC?.partyName) && flags?.length > 0) {
-          flags[0].partyNameChanged = true;
-        }
-        partiesWithFlags.set(party.partyName || '', flags);
+      if (party.partyName && flags?.length > 0) {
+        partiesWithFlags.set(party.partyName, flags);
       }
     });
     return partiesWithFlags;

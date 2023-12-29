@@ -43,19 +43,38 @@ Then('I validate fields displayed in view or edit hearing page', async function 
 
         reportLogger.AddMessage(`Validating: ${JSON.stringify(row)}`)
         expect(await viewOrEditHearingPage.isKeyFieldDisplayed(field)).to.be.true
-        expect(await viewOrEditHearingPage.getKeyFieldValue(field)).to.includes(expectedVal)
-        if (expectedChangeLinkDisplayed.includes('true')){
+        if (expectedChangeLinkDisplayed.includes('true')) {
             expect(await viewOrEditHearingPage.isChangeLinkDisplayedForKeyField(field)).to.be.true
-        }else{
+        } else {
             expect(await viewOrEditHearingPage.isChangeLinkDisplayedForKeyField(field)).to.be.false
         }
 
+        const values = await viewOrEditHearingPage.getKeyFieldValue(field);
+        const isValueDisplayed = values.filter(v => v.includes(expectedVal))
+        const isAmendedLabelDisplayed = values.filter(v => v.includes(expectedVal) && v.includes('AMENDED'))
         if (expectedAmendFlagDisplayed.includes('true')) {
-            expect(await viewOrEditHearingPage.isAmendedFlagDisplayedForKeyField(field)).to.be.true
+            expect(isAmendedLabelDisplayed.length > 0, `Field:${field} to include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.be.true
         } else {
-            expect(await viewOrEditHearingPage.isAmendedFlagDisplayedForKeyField(field)).to.be.false
+            expect(isAmendedLabelDisplayed.length === 0, `Field:${field} to not include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.be.true
         }
 
+        expect(isValueDisplayed.length > 0, `Field:${field} to include value ${expectedVal} actual ${values}`).to.be.true
+
+    }
+})
+
+Then('I validate edit hearing section heating labels', async function (datatable){
+    const fields = datatable.parse().hashes()
+    for(const row of fields){
+        const heading = row.Heading
+        const expectedLabel = row.Label
+        const actualLabel = await viewOrEditHearingPage.getSectionHeadingLabel(heading)
+        if (expectedLabel === ''){
+            expect(actualLabel === null, `${heading} expected no label, actual displayed ${actualLabel}`).to.be.true
+        }else{
+            expect(actualLabel, `${heading} expected label did not match`).to.includes(expectedLabel)
+        }
+       
 
     }
 })

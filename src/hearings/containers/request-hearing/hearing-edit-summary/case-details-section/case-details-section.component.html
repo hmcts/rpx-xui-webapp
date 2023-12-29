@@ -4,6 +4,8 @@
       Case internal name
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="withinPage.hmctsInternalCaseName" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       {{ hearingRequestMainModel.caseDetails.hmctsInternalCaseName }}
     </div>
   </div>
@@ -12,6 +14,8 @@
       Case public name
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="withinPage.publicCaseName" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       {{ hearingRequestMainModel.caseDetails.publicCaseName }}
     </div>
   </div>
@@ -21,6 +25,8 @@
     </div>
     <div class="govuk-summary-list__value">
       <div *ngFor="let caseCategory of caseTypes">
+        <exui-amendment-label *ngIf="withinPage.caseCategories?.includes(caseCategory.categoryValue)" [displayLabel]="amendmentLabelEnum.AMENDED">
+        </exui-amendment-label>
         {{ caseCategory.categoryDisplayValue }}
         <ul>
           <li *ngFor="let childNode of caseCategory.childNodes">
@@ -35,6 +41,8 @@
       Private hearing required
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="withinPage.privateHearingRequiredFlag" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       {{ hearingRequestMainModel.hearingDetails.privateHearingRequiredFlag ? 'Yes' : 'No' }}
     </div>
   </div>
@@ -43,6 +51,8 @@
       Case restriction
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="withinPage.caserestrictedFlag" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       {{ hearingRequestMainModel.caseDetails?.caserestrictedFlag ? 'Yes' : 'No' }}
     </div>
   </div>

@@ -9,9 +9,12 @@ class JSONUtil{
       const actualVal = jsonpath.query(updateJson, row.jsonpath);
 
       let val = row.value;
+
       if (val.startsWith('[') && val.endsWith(']')) {
         val = val.replace('[', '').replace(']', '')
         val = val !== "" ? val.split(','): []
+      } else if (val.includes('true') || val.includes('false')){
+        val = val.includes('true');
       }
       const updatedValue = jsonpath.value(updateJson, row.jsonpath, val);
 

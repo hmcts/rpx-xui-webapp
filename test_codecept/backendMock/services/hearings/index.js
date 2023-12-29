@@ -2,6 +2,7 @@
 const { v4 } = require('uuid');
 const userApiData = require('../userApiData')
 
+const completedHearing = require('./mockData/completedHearing.data')
 
 class HearingsApi{
 
@@ -30,7 +31,7 @@ class HearingsApi{
         this.addHearing({ hmcStatus: "CANCELLED" })
         this.addHearing({ hmcStatus: "ADJOURNED" })
 
-        
+        this.hearingResponse = completedHearing
 
     }
 
@@ -50,6 +51,7 @@ class HearingsApi{
                 "hmctsServiceCode": null
         }
     }
+
 
 
     gethearingTemplate(props){

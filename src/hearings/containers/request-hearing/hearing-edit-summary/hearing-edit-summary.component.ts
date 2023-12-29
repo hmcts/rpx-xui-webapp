@@ -2,17 +2,19 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConstants } from '../../../../app/app.constants';
+import { CaseCategoryModel } from '../../../../hearings/models/caseCategory.model';
 import { AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../../hearings/models/hearingsUpdateMode.enum';
 import { ServiceHearingValuesModel } from '../../../../hearings/models/serviceHearingValues.model';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
 import { hearingStatusMappings } from '../../../models/hearingStatusMappings';
-import { ACTION, HearingDateEnum, HearingTemplate, LaCaseStatus, Mode, PartyType } from '../../../models/hearings.enum';
+import { ACTION, CategoryType, HearingDateEnum, HearingTemplate, LaCaseStatus, Mode, PartyType } from '../../../models/hearings.enum';
 import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -141,7 +143,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         hmctsInternalCaseName: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.hmctsInternalCaseName, this.serviceHearingValuesModel.hmctsInternalCaseName, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.HMCTS_INTERNAL_CASENAME),
         publicCaseName: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.publicCaseName, this.serviceHearingValuesModel.publicCaseName, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PUBLIC_CASE_NAME),
         caserestrictedFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caserestrictedFlag, this.serviceHearingValuesModel.caserestrictedFlag, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.CASE_RESTRICTED_FLAG),
-        caseCategories: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caseCategories, this.serviceHearingValuesModel.caseCategories, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.CASE_CATEGORIES)
+        caseCategories: this.compareAndUpdateCaseCategories(this.hearingRequestMainModel?.caseDetails.caseCategories, this.serviceHearingValuesModel.caseCategories)
       },
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
@@ -166,16 +168,46 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     if (serviceHearingValues) {
       this.hearingsService.propertiesUpdatedOnPageVisit = {
         caseFlags: serviceHearingValues.caseFlags,
-        parties: serviceHearingValues.parties
+        parties: serviceHearingValues.parties,
+        hearingWindow: serviceHearingValues.hearingWindow,
+        afterPageVisit: {}
       };
     }
+  }
+
+  private compareAndUpdateCaseCategories(hmcCaseCategories: CaseCategoryModel[], shvCaseCategories: CaseCategoryModel[]): CaseCategoryModel[] {
+    this.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories = [];
+
+    // Get case types
+    const hmcCategoryValues = hmcCaseCategories.filter((caseCategories) => caseCategories.categoryType === CategoryType.CaseType).map((c) => c.categoryValue);
+    const shvCategoryValues = shvCaseCategories.filter((caseCategories) => caseCategories.categoryType === CategoryType.CaseType).map((c) => c.categoryValue);
+
+    const newCaseTypes = _.difference(shvCategoryValues, hmcCategoryValues);
+
+    if (newCaseTypes.length > 0) {
+      // Assign the new case types
+      this.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories = newCaseTypes;
+    }
+
+    hmcCategoryValues.forEach((hmcCategoryValue: string) => {
+      // Check if subtype has changed
+      const hmcSubTypes = hmcCaseCategories.filter((hmcCaseCategory) => hmcCaseCategory.categoryParent === hmcCategoryValue);
+      const svhSubTypes = shvCaseCategories.filter((shvCaseCategory) => shvCaseCategory.categoryParent === hmcCategoryValue);
+
+      if (!_.isEqual(hmcSubTypes, svhSubTypes)) {
+        // Insert the existing category value for which the sub type has changed
+        this.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories.push(hmcCategoryValue);
+      }
+    });
+
+    return shvCaseCategories;
   }
 
   // To do: EUI- 8905
   private compareAndUpdateServiceHearingValues(currentValue, serviceHearingValue, pageMode: AutoUpdateMode = null, property: string = null) {
     if (currentValue !== serviceHearingValue) {
       // Store ammended properties to dispay it in UI
-      if (pageMode && property) {
+      if (pageMode && (property || pageMode === AutoUpdateMode.PARTY)) {
         switch (pageMode) {
           case AutoUpdateMode.WITHIN_PAGE:
             this.hearingsService.propertiesUpdatedAutomatically.withinPage[property] = true;
@@ -184,7 +216,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
             this.hearingsService.propertiesUpdatedAutomatically.pageless[property] = true;
             break;
           case AutoUpdateMode.PARTY:
-            this.hearingsService.propertiesUpdatedAutomatically.withinPage[WithinPagePropertiesEnum.PARTIES] = true;
+            this.hearingsService.propertiesUpdatedAutomatically.pageless[PagelessPropertiesEnum.PARTIES] = true;
             break;
         }
       }
@@ -216,8 +248,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
               organisationType: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.organisationType, serviceParty.organisationDetails?.organisationType, AutoUpdateMode.PARTY),
               cftOrganisationID: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.cftOrganisationID, serviceParty.organisationDetails?.cftOrganisationID, AutoUpdateMode.PARTY)
             },
-            unavailabilityDOW: this.compareAndUpdateServiceHearingValues(party?.unavailabilityDOW, serviceParty?.unavailabilityDOW, AutoUpdateMode.PARTY),
-            unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges, AutoUpdateMode.PARTY)
+            unavailabilityDOW: this.compareAndUpdateServiceHearingValues(party?.unavailabilityDOW, serviceParty?.unavailabilityDOW, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES),
+            unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES)
           });
         } else {
           newParty.push(party);
@@ -231,7 +263,14 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // check pageless automatic update
     this.isPagelessAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.pageless).some((prop) => prop);
     // check for changes on page visit
-    const pageVisitChangeExists = this.pageVisitCaseFlagsChangeExists() || this.pageVisitPartiesChangeExists();
+    const isPageVisitCaseFlagsChangeExists = this.pageVisitCaseFlagsChangeExists();
+    const isPageVisitPartiesChangeExists = this.pageVisitPartiesChangeExists();
+    const isPageVisitHearingWindowChangeExists = this.pageVisitHearingWindowChangeExists();
+
+    const pageVisitChangeExists = isPageVisitCaseFlagsChangeExists ||
+      isPageVisitPartiesChangeExists ||
+      isPageVisitHearingWindowChangeExists;
+
     // Display banner
     this.displayBanner = this.isPagelessAttributeChanged && !pageVisitChangeExists;
   }
@@ -251,6 +290,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     // Return true if there are changes in reasonable adjustments and/or language interpreter flags
     if (flagIdsSHV.join() !== partyFlagIdsString) {
+      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesConfirmed = true;
       return true;
     }
     // There are no changes for reasonable adjustments and language interpreter flags when compared SHV with HMC
@@ -262,6 +302,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const partiesHMC = this.hearingRequestMainModel.partyDetails;
     // Return true if the number of parties in SHV and HMC are different
     if (partiesSHV.length !== partiesHMC.length) {
+      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed = true;
       return true;
     }
     // Number of parties are the same in both SHV and HMC
@@ -269,18 +310,29 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // and return true if there are any changes in the party name of party type
     for (const partySHV of partiesSHV) {
       const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
-      if (party.partyName !== partySHV.partyName) {
-        return true;
-      }
-      if ((party.individualDetails?.title !== partySHV.individualDetails?.title) ||
-        (party.individualDetails?.firstName !== partySHV.individualDetails?.firstName) ||
-        (party.individualDetails?.lastName !== partySHV.individualDetails?.lastName) ||
-        (party.partyType !== partySHV.partyType)) {
+      if ((party.partyName !== partySHV.partyName) ||
+          (party.individualDetails?.title !== partySHV.individualDetails?.title) ||
+          (party.individualDetails?.firstName !== partySHV.individualDetails?.firstName) ||
+          (party.individualDetails?.lastName !== partySHV.individualDetails?.lastName) ||
+          (party.partyType !== partySHV.partyType)) {
+        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed = true;
         return true;
       }
     }
 
     // There are no changes for parties when compared SHV with HMC
+    return false;
+  }
+
+  private pageVisitHearingWindowChangeExists(): boolean {
+    const hearingWindowSHV = this.serviceHearingValuesModel.hearingWindow;
+    const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
+    // Return true if the first date time must be value in SHV and HMC are different
+    if (hearingWindowSHV?.firstDateTimeMustBe !== hearingWindowHMC?.firstDateTimeMustBe) {
+      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowFirstDateMustBeChangesConfirmed = true;
+      return true;
+    }
+    // There is no change in first date time must be when compared SHV with HMC
     return false;
   }
 }

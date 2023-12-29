@@ -13,7 +13,8 @@ class UserApiData{
 
 
     sendResponse(req,res, apiMethod, defaultResponseCallback){
-        const response = this.getUserData(req.headers.authorization, apiMethod)
+        let auth = req.headers.authorization ? req.headers.authorization : req.headers.serviceauthorization
+        const response = this.getUserData(auth, apiMethod)
         if (response) {
             res.status(response.status).send(response.data)
            

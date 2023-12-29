@@ -1,5 +1,5 @@
 
-@ng @functional_enabled 
+@ng @functional_enabled
 Feature: Hearings CR84: Semi automatic updates
 
 
@@ -26,6 +26,19 @@ Feature: Hearings CR84: Semi automatic updates
             | $.caseDetails.publicCaseName        | Mock case public name |
             | $.hearingDetails.hearingType | ABA5-ABC |
 
+
+        Given I set mock hearings service hearing values with ref "partiesUpdated"
+        Given I update mock hearings service hearing values with ref "partiesUpdated" for field "parties"
+            | partyName   |partyID|
+            | Party1 name | party_1 |
+            | Party2 name | party_2 |
+        Given I update mock hearings service hearing values with ref "partiesUpdated" for field "caseFlags"
+            | partyID | partyName   | flagParentId | flagId | flagDescription | flagStatus |
+            | party_1 | Party1 name | PARENT_0     | RA001  | Party1 comment  | ACTIVE     |
+            | party_2 | Party2 name | PARENT_0     | RA001  | Party2 comment  | ACTIVE     |
+            | party_1 | Party1 name | PARENT_0     | OT001  | Party1 comment  | ACTIVE     |
+            | party_2 | Party2 name | PARENT_0     | OT001  | Party2 comment  | ACTIVE     |
+
         Given I start MockApp
         Given I navigate to home page
         When I click on primary navigation header tab "Case list", I see selected tab page displayed
@@ -34,24 +47,22 @@ Feature: Hearings CR84: Semi automatic updates
         Then I see case details page
         Then I see case details tab label "Hearings" is displayed is "true"
 
-        Given I set mock hearings service hearing values with ref "partiesUpdated"
 
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
         Then I am on hearings tab page
         Then I see hearings table for "Current and upcoming" in hearings tab page
 
-        Given I update mock hearings service hearing values with ref "partiesUpdated" for field "parties"
-            | partyName   |
-            | Party1 name |
-            | Party2 name |
         Given I update mock hearings service hearing values with ref "partiesUpdated" for field "caseFlags"
             | partyID | partyName   | flagParentId | flagId | flagDescription | flagStatus |
             | party_1 | Party1 name | PARENT_0     | RA001  | Party1 comment  | ACTIVE     |
             | party_2 | Party2 name | PARENT_0     | RA001  | Party2 comment  | ACTIVE     |
-            | party_1 | Party1 name | PARENT_0 | OT001 | Party1 comment | ACTIVE |
-            | party_2 | Party2 name | PARENT_0 | OT001 | Party2 comment | ACTIVE |
+            | party_1 | Party1 name | PARENT_0     | OT001  | Party1 comment  | ACTIVE     |
+            | party_2 | Party2 name | PARENT_0     | OT001  | Party2 comment  | ACTIVE     |
+            | party_1 | Party1 name | PARENT_0 | RA0042 | Party1 comment | ACTIVE |
 
+           
         When In hearings tab, I click action "View details" for hearing "TEST_TYPE" under table "Current and upcoming"
+
 
         Then I validate view hearing page displayed
         Then I validate view hearing page Edit hearing button displayed is "true"

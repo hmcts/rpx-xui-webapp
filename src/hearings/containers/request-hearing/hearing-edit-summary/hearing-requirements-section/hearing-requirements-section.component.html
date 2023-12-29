@@ -1,29 +1,34 @@
 <div class="govuk-inset-text">
   To update this request, select change in the relevant section on this page then resubmit the request.
 </div>
-<h2 class="govuk-heading-m">Hearing requirements</h2>
+<h2 class="govuk-heading-m">
+  Hearing requirements
+  <exui-amendment-label *ngIf="reasonableAdjustmentChangesConfirmed"
+    [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
+  </exui-amendment-label>
+</h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
       Reasonable adjustments
     </div>
     <div class="govuk-summary-list__value">
-      <div *ngFor="let partyWithFlag of partyWithFlags | keyvalue">
-        <div *ngIf="partyWithFlag.value?.length > 0">
-          <strong class="bold">{{ partyWithFlag.key }}</strong>
+      <div *ngFor="let partyFlags of partiesWithFlags | keyvalue">
+        <div *ngIf="partyFlags?.value?.length > 0">
+          <exui-amendment-label *ngIf="!partiesInHMC.includes(partyFlags.key)"
+            [displayLabel]="amendmentLabelEnum.AMENDED">
+          </exui-amendment-label>
+          <strong class="bold">{{ partyFlags.key }}</strong>
           <ul>
-            <li *ngFor="let flag of partyWithFlag.value">
-              {{ flag?.name || '' }}
+            <li *ngFor="let flag of partyFlags.value">
+              {{ flag.name }}
             </li>
           </ul>
         </div>
       </div>
     </div>
     <div class="govuk-summary-list__actions">
-      <a id="caseFlags"
-        class="change-link"
-        href="javascript:void(0)"
-        (click)="onChange('caseFlags')">Change</a>
+      <a id="caseFlags" class="change-link" href="javascript:void(0)" (click)="onChange('caseFlags')">Change</a>
     </div>
   </div>
 </div>

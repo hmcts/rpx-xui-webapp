@@ -11,6 +11,7 @@ import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
 import { CategoryType, Mode, PartyType, UnavailabilityType } from '../../../models/hearings.enum';
+import { PropertiesUpdatedOnPageVisit } from '../../../models/hearingsUpdateMode.enum';
 import { LocationByEPIMMSModel } from '../../../models/location.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
@@ -105,6 +106,24 @@ describe('HearingEditSummaryComponent', () => {
     }
   ];
 
+  const categories = [
+    {
+      categoryType: CategoryType.CaseType,
+      categoryValue: 'BBA3-003'
+    }, {
+      categoryType: CategoryType.CaseSubType,
+      categoryValue: 'BBA3-002CC',
+      categoryParent: 'BBA3-003'
+    }, {
+      categoryType: CategoryType.CaseSubType,
+      categoryValue: 'BBA3-002GC',
+      categoryParent: 'BBA3-003'
+    }, {
+      categoryType: CategoryType.CaseSubType,
+      categoryValue: 'BBA3-002RC',
+      categoryParent: 'BBA3-003'
+    }];
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
@@ -184,9 +203,15 @@ describe('HearingEditSummaryComponent', () => {
     spyOn(store, 'select').and.returnValue(of(initialState.hearings.hearingValues));
     component.serviceHearingValuesModel = initialState.hearings.hearingValues.serviceHearingValuesModel;
     component.ngOnInit();
-    const expectedResult = {
+    const expectedResult: PropertiesUpdatedOnPageVisit = {
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
-      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        reasonableAdjustmentChangesConfirmed: true,
+        partyDetailsChangesConfirmed: true,
+        hearingWindowFirstDateMustBeChangesConfirmed: true
+      }
     };
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
   });
@@ -196,23 +221,6 @@ describe('HearingEditSummaryComponent', () => {
     component.serviceHearingValuesModel.publicCaseName = 'New public case name from service hearings';
     component.serviceHearingValuesModel.caseManagementLocationCode = 'New location code';
     component.serviceHearingValuesModel.caserestrictedFlag = true;
-    const categories = [
-      {
-        categoryType: CategoryType.CaseType,
-        categoryValue: 'BBA3-003'
-      }, {
-        categoryType: CategoryType.CaseSubType,
-        categoryValue: 'BBA3-002CC',
-        categoryParent: 'BBA3-003'
-      }, {
-        categoryType: CategoryType.CaseSubType,
-        categoryValue: 'BBA3-002GC',
-        categoryParent: 'BBA3-003'
-      }, {
-        categoryType: CategoryType.CaseSubType,
-        categoryValue: 'BBA3-002RC',
-        categoryParent: 'BBA3-003'
-      }];
     component.serviceHearingValuesModel.caseCategories = categories;
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.ngOnInit();
@@ -413,12 +421,70 @@ describe('HearingEditSummaryComponent', () => {
     component.serviceHearingValuesModel.caseFlags = { flags: [], flagAmendURL: '/' };
     component.serviceHearingValuesModel.parties = [];
     component.hearingRequestMainModel.partyDetails = [];
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = {};
+    component.serviceHearingValuesModel.hearingWindow = {};
     component.serviceHearingValuesModel.privateHearingRequiredFlag = true;
     component.serviceHearingValuesModel.hearingInWelshFlag = true;
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.ngOnInit();
     expect(component.displayBanner).toEqual(true);
     storeDispatchSpy.calls.reset();
+  });
+
+  it('should set auto updated properties withing page to true', () => {
+    component.serviceHearingValuesModel.hmctsInternalCaseName = 'New hmcts case name from service hearings';
+    component.serviceHearingValuesModel.publicCaseName = 'New public case name from service hearings';
+    component.serviceHearingValuesModel.privateHearingRequiredFlag = true;
+    component.serviceHearingValuesModel.caserestrictedFlag = true;
+    component.serviceHearingValuesModel.parties[0].unavailabilityRanges = [
+      {
+        unavailableFromDate: '2022-12-10T09:00:00.000Z',
+        unavailableToDate: '2021-12-31T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY
+      }
+    ];
+
+    component.ngOnInit();
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.hmctsInternalCaseName).toEqual(true);
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.publicCaseName).toEqual(true);
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.privateHearingRequiredFlag).toEqual(true);
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caserestrictedFlag).toEqual(true);
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.parties).toEqual(true);
+  });
+
+  it('should set auto updated pageless properties to true', () => {
+    component.serviceHearingValuesModel.caseManagementLocationCode = 'New case management code';
+    component.serviceHearingValuesModel.hearingInWelshFlag = true;
+    component.serviceHearingValuesModel.parties[0].partyRole = 'New party role';
+    component.serviceHearingValuesModel.parties[0].individualDetails.relatedParties = [];
+    component.ngOnInit();
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.pageless.caseManagementLocationCode).toEqual(true);
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.pageless.hearingInWelshFlag).toEqual(true);
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.pageless.parties).toEqual(true);
+  });
+
+  it('should set auto updated case type id in array, if new case type is added', () => {
+    console.log('categories', JSON.stringify(categories));
+    component.serviceHearingValuesModel.caseCategories = categories;
+    component.ngOnInit();
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories).toEqual(['BBA3-003', 'BBA3-002']);
+  });
+
+  it('should set auto updated case type id in array, if existing case type is changed', () => {
+    categories[0].categoryValue = 'BBA3-002';
+    component.serviceHearingValuesModel.caseCategories = categories;
+    component.ngOnInit();
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories).toEqual(['BBA3-002']);
   });
 
   afterEach(() => {

@@ -1,11 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { initialState, partySubChannelsRefData } from '../../../../hearing.test.data';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
+import { HearingsService } from '../../../../services/hearings.service';
 import { ParticipantAttendanceSectionComponent } from './participant-attendance-section.component';
 
 describe('ParticipantAttendanceSectionComponent', () => {
   let component: ParticipantAttendanceSectionComponent;
   let fixture: ComponentFixture<ParticipantAttendanceSectionComponent>;
+  const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post', 'delete']);
+  const hearingsService = new HearingsService(mockedHttpClient);
 
   const partyChannels: LovRefDataModel[] = [
     {
@@ -64,7 +67,9 @@ describe('ParticipantAttendanceSectionComponent', () => {
       declarations: [
         ParticipantAttendanceSectionComponent
       ],
-      providers: []
+      providers: [
+        { provide: HearingsService, useValue: hearingsService }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ParticipantAttendanceSectionComponent);
@@ -83,8 +88,34 @@ describe('ParticipantAttendanceSectionComponent', () => {
   it('should set participant attendance details', () => {
     expect(component.isPaperHearing).toEqual('No');
     expect(component.participantChannels).toEqual(['By phone']);
-    expect(component.participantAttendanceModes).toEqual(['Jane and Smith - In person']);
+    expect(component.participantAttendanceModes).toEqual([{ partyName: 'Jane and Smith', channel: 'In person', partyNameChanged: true }]);
     expect(component.numberOfPhysicalAttendees).toEqual(3);
+  });
+
+  it('should display label', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        partyDetailsChangesConfirmed: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.partyDetailsChangesConfirmed).toEqual(true);
+  });
+
+  it('should not display label', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        partyDetailsChangesConfirmed: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.partyDetailsChangesConfirmed).toEqual(false);
   });
 
   it('should verify onChange', () => {

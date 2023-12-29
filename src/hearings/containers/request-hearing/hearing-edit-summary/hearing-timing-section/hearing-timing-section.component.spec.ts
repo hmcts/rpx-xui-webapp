@@ -1,11 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { initialState } from '../../../../hearing.test.data';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
+import { HearingsService } from '../../../../services/hearings.service';
 import { HearingTimingSectionComponent } from './hearing-timing-section.component';
 
 describe('HearingTimingSectionComponent', () => {
   let component: HearingTimingSectionComponent;
   let fixture: ComponentFixture<HearingTimingSectionComponent>;
+  const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post', 'delete']);
+  const hearingsService = new HearingsService(mockedHttpClient);
 
   const hearingPrioritiesRefData: LovRefDataModel[] = [
     {
@@ -40,7 +43,9 @@ describe('HearingTimingSectionComponent', () => {
       declarations: [
         HearingTimingSectionComponent
       ],
-      providers: []
+      providers: [
+        { provide: HearingsService, useValue: hearingsService }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingTimingSectionComponent);
@@ -59,6 +64,32 @@ describe('HearingTimingSectionComponent', () => {
     expect(component.hearingLength).toEqual('1 Hour');
     expect(component.specificDate).toEqual('Choose a date range<br>Earliest start date: 12 December 2022<br>Latest end date: 12 December 2022');
     expect(component.hearingPriority).toEqual('Standard');
+  });
+
+  it('should display label', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        hearingWindowFirstDateMustBeChangesConfirmed: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.hearingWindowChangesConfirmed).toEqual(true);
+  });
+
+  it('should not display label', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        hearingWindowFirstDateMustBeChangesConfirmed: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.hearingWindowChangesConfirmed).toEqual(false);
   });
 
   it('should verify onChange', () => {

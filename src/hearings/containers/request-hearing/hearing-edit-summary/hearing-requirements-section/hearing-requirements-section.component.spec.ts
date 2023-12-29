@@ -1,10 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { caseFlagsRefData, initialState } from '../../../../hearing.test.data';
+import { HearingsService } from '../../../../services/hearings.service';
 import { HearingRequirementsSectionComponent } from './hearing-requirements-section.component';
 
 describe('HearingRequirementsSectionComponent', () => {
   let component: HearingRequirementsSectionComponent;
   let fixture: ComponentFixture<HearingRequirementsSectionComponent>;
+  const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post', 'delete']);
+  const hearingsService = new HearingsService(mockedHttpClient);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -12,7 +15,9 @@ describe('HearingRequirementsSectionComponent', () => {
       declarations: [
         HearingRequirementsSectionComponent
       ],
-      providers: []
+      providers: [
+        { provide: HearingsService, useValue: hearingsService }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingRequirementsSectionComponent);
@@ -25,6 +30,32 @@ describe('HearingRequirementsSectionComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should display label', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        reasonableAdjustmentChangesConfirmed: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentChangesConfirmed).toEqual(true);
+  });
+
+  it('should not display label', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        reasonableAdjustmentChangesConfirmed: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentChangesConfirmed).toEqual(false);
   });
 
   it('should verify onChange', () => {

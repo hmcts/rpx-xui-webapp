@@ -2,11 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { caseTypeRefData, initialState } from '../../../../hearing.test.data';
 import { CaseCategoryDisplayModel } from '../../../../models/caseCategory.model';
 import { CategoryType } from '../../../../models/hearings.enum';
+import { HearingsService } from '../../../../services/hearings.service';
 import { CaseDetailsSectionComponent } from './case-details-section.component';
 
 describe('CaseDetailsSectionComponent', () => {
   let component: CaseDetailsSectionComponent;
   let fixture: ComponentFixture<CaseDetailsSectionComponent>;
+  const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post', 'delete']);
+  const hearingsService = new HearingsService(mockedHttpClient);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -14,7 +17,9 @@ describe('CaseDetailsSectionComponent', () => {
       declarations: [
         CaseDetailsSectionComponent
       ],
-      providers: []
+      providers: [
+        { provide: HearingsService, useValue: hearingsService }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CaseDetailsSectionComponent);

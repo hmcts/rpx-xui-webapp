@@ -1,4 +1,9 @@
-<h2 class="govuk-heading-m">Length, date and priority level of hearing</h2>
+<h2 class="govuk-heading-m">
+  Length, date and priority level of hearing
+  <exui-amendment-label *ngIf="hearingWindowChangesConfirmed"
+    [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
+  </exui-amendment-label>
+</h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">

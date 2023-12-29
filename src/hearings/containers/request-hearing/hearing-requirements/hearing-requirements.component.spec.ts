@@ -2289,7 +2289,8 @@ describe('HearingRequirementsComponent', () => {
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
-      parties: null
+      parties: null,
+      hearingWindow: null
     };
     component.ngOnInit();
     expect(component.reasonableAdjustmentFlags.length).toEqual(2);
@@ -2301,7 +2302,8 @@ describe('HearingRequirementsComponent', () => {
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
-      parties: null
+      parties: null,
+      hearingWindow: null
     };
     component.ngOnInit();
     expect(component.reasonableAdjustmentFlags.length).toEqual(1);

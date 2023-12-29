@@ -3,7 +3,9 @@ import * as moment from 'moment';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingDetailsModel } from '../../../../models/hearingDetails.model';
 import { HearingDateEnum, RadioOptions } from '../../../../models/hearings.enum';
+import { AmendmentLabelStatus } from '../../../../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
+import { HearingsService } from '../../../../services/hearings.service';
 
 @Component({
   selector: 'exui-hearing-timing-section',
@@ -14,11 +16,16 @@ export class HearingTimingSectionComponent implements OnInit {
   @Input() public hearingDetails: HearingDetailsModel;
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
+  constructor(private readonly hearingsService: HearingsService) {}
+
   public hearingLength: string;
   public specificDate: string;
   public hearingPriority: string;
+  public hearingWindowChangesConfirmed: boolean;
+  public amendmentLabelEnum = AmendmentLabelStatus;
 
   public ngOnInit(): void {
+    this.hearingWindowChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowFirstDateMustBeChangesConfirmed;
     this.hearingLength = this.getHearingLength();
     this.specificDate = this.getSpecificDate();
     this.hearingPriority = this.getHearingPriority();

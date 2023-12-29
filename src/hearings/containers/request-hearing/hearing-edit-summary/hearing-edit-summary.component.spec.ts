@@ -491,6 +491,62 @@ describe('HearingEditSummaryComponent', () => {
     });
   });
 
+  it('should set auto updated properties withing page to true', () => {
+    component.serviceHearingValuesModel.hmctsInternalCaseName = 'New hmcts case name from service hearings';
+    component.serviceHearingValuesModel.publicCaseName = 'New public case name from service hearings';
+    component.serviceHearingValuesModel.privateHearingRequiredFlag = true;
+    component.serviceHearingValuesModel.caserestrictedFlag = true;
+    component.serviceHearingValuesModel.parties[0].unavailabilityRanges = [
+      {
+        unavailableFromDate: '2022-12-10T09:00:00.000Z',
+        unavailableToDate: '2021-12-31T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY
+      }
+    ];
+
+    component.ngOnInit();
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.hmctsInternalCaseName).toEqual(true);
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.publicCaseName).toEqual(true);
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.privateHearingRequiredFlag).toEqual(true);
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caserestrictedFlag).toEqual(true);
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.parties).toEqual(true);
+  });
+
+  it('should set auto updated pageless properties to true', () => {
+    component.serviceHearingValuesModel.caseManagementLocationCode = 'New case management code';
+    component.serviceHearingValuesModel.hearingInWelshFlag = true;
+    component.serviceHearingValuesModel.parties[0].partyRole = 'New party role';
+    component.serviceHearingValuesModel.parties[0].individualDetails.relatedParties = [];
+    component.ngOnInit();
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.pageless.caseManagementLocationCode).toEqual(true);
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.pageless.hearingInWelshFlag).toEqual(true);
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.pageless.parties).toEqual(true);
+  });
+
+  it('should set auto updated case type id in array, if new case type is added', () => {
+    console.log('categories', JSON.stringify(categories));
+    component.serviceHearingValuesModel.caseCategories = categories;
+    component.ngOnInit();
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories).toEqual(['BBA3-003', 'BBA3-002']);
+  });
+
+  it('should set auto updated case type id in array, if existing case type is changed', () => {
+    categories[0].categoryValue = 'BBA3-002';
+    component.serviceHearingValuesModel.caseCategories = categories;
+    component.ngOnInit();
+    // @ts-ignore
+    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories).toEqual(['BBA3-002']);
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

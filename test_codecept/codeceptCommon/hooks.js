@@ -19,6 +19,8 @@ const testType = process.env.TEST_TYPE
 
 let featureLogFile = null;
 
+global.scenarioData = {}
+
 function overrideConsoleLogforWorkersThreads(){
 
     const consoleLogRef = console.log;
@@ -115,7 +117,6 @@ module.exports = async function () {
     });
     event.dispatcher.on(event.test.before, async function (test) {
         setFeatureLogFile(test)
-        global.scenarioData = {}
         output.print(`Test started : ${test.title}`)
         codeceptMochawesomeLog.AddMessage(`************ Test started : ${test.title}`)
         await mockClient.logMessage(`************ Test started : ${test.title}`)

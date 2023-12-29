@@ -91,6 +91,8 @@ Feature: Hearings: Hearings tab Hearing action based on roles
             | Hearing stage  | Breach 1  |
             | Hearing result | COMPLETED |
 
+    
+
         When In hearing actuals page, I click continue
         Then I am hearing actuals check your answers page
         Then I validate hearing actuals details in CYA

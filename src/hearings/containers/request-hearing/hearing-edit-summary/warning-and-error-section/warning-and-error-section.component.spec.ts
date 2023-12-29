@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HearingsService } from 'src/hearings/services/hearings.service';
+import { HearingsService } from '../../../../../hearings/services/hearings.service';
 import { WarningAndErrorSectionComponent } from './warning-and-error-section.component';
 
 describe('WarningAndErrorSectionComponent', () => {

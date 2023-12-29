@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { HearingsService } from 'src/hearings/services/hearings.service';
+import { HearingsService } from '../../../../../hearings/services/hearings.service';
 
 @Component({
   selector: 'exui-warning-and-error-section',

@@ -1,5 +1,5 @@
 <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error' : displayValidationError()}">
-  <div class="govuk-warning-text" *ngIf="!displayValidationError() && (pageVisitChangeExists || isPagelessAttributeChanged)">
+  <div class="govuk-warning-text" *ngIf="!displayValidationError() && (pageVisitChangeExists || isPagelessAttributeChanged || isWithinPageAttributeChanged)">
     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
     <strong class="govuk-warning-text__text">
       <span class="govuk-warning-text__assistive">Warning</span>

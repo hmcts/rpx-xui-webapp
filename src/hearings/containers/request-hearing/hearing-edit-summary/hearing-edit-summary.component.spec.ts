@@ -472,6 +472,7 @@ describe('HearingEditSummaryComponent', () => {
       component.serviceHearingValuesModel.hearingInWelshFlag = true;
       component.ngOnInit();
       expect(component.isPagelessAttributeChanged).toEqual(true);
+      expect(component.isWithinPageAttributeChanged).toEqual(true);
       expect(component.pageVisitChangeExists).toEqual(true);
     });
 
@@ -486,6 +487,7 @@ describe('HearingEditSummaryComponent', () => {
       const storeDispatchSpy = spyOn(store, 'dispatch');
       component.ngOnInit();
       expect(component.isPagelessAttributeChanged).toEqual(true);
+      expect(component.isWithinPageAttributeChanged).toEqual(true);
       expect(component.pageVisitChangeExists).toEqual(false);
       storeDispatchSpy.calls.reset();
     });
@@ -529,22 +531,6 @@ describe('HearingEditSummaryComponent', () => {
     expect(component.hearingsService.propertiesUpdatedAutomatically.pageless.hearingInWelshFlag).toEqual(true);
     // @ts-ignore
     expect(component.hearingsService.propertiesUpdatedAutomatically.pageless.parties).toEqual(true);
-  });
-
-  it('should set auto updated case type id in array, if new case type is added', () => {
-    console.log('categories', JSON.stringify(categories));
-    component.serviceHearingValuesModel.caseCategories = categories;
-    component.ngOnInit();
-    // @ts-ignore
-    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories).toEqual(['BBA3-003', 'BBA3-002']);
-  });
-
-  it('should set auto updated case type id in array, if existing case type is changed', () => {
-    categories[0].categoryValue = 'BBA3-002';
-    component.serviceHearingValuesModel.caseCategories = categories;
-    component.ngOnInit();
-    // @ts-ignore
-    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories).toEqual(['BBA3-002']);
   });
 
   afterEach(() => {

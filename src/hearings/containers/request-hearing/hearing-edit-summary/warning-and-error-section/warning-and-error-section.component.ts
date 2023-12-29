@@ -7,6 +7,7 @@ import { HearingsService } from '../../../../../hearings/services/hearings.servi
 })
 export class WarningAndErrorSectionComponent {
   @Input() public isPagelessAttributeChanged: boolean;
+  @Input() public isWithinPageAttributeChanged: boolean;
   @Input() public pageVisitChangeExists: boolean;
 
   constructor(protected readonly hearingsService: HearingsService) {

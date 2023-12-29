@@ -54,6 +54,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public isHearingAmendmentsEnabled: boolean;
   public hearingTemplate = HearingTemplate;
   public isPagelessAttributeChanged: boolean = false;
+  public isWithinPageAttributeChanged: boolean = false;
   public pageVisitChangeExists: boolean = false;
 
   constructor(private readonly router: Router,
@@ -261,6 +262,10 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   private setBanner(): void {
     // check pageless automatic update
     this.isPagelessAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.pageless).some((prop) => prop);
+
+    // check automatic update within page
+    this.isWithinPageAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.withinPage).some((prop) => prop);
+
     // check for changes on page visit
     const isPageVisitCaseFlagsChangeExists = this.pageVisitCaseFlagsChangeExists();
     const isPageVisitPartiesChangeExists = this.pageVisitPartiesChangeExists();
@@ -271,7 +276,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       isPageVisitHearingWindowChangeExists;
 
     // Display Validation
-    this.hearingsService.displayValidationError = true;
+    this.hearingsService.displayValidationError = this.pageVisitChangeExists;
     this.hearingsService.submitUpdatedRequestClicked = false;
   }
 

@@ -1,5 +1,5 @@
 
-@ng @functional_enabled @functional_debug
+@ng @functional_enabled
 Feature: Hearings : Linked hearing
 
     Scenario: Link hearings
@@ -43,5 +43,5 @@ Feature: Hearings : Linked hearing
         When In link hearing workflow I click continue button
         Then I am on linked hearing page "Check your answers"
         When In link hearing workflow I click Link hearings button
-        Then I see link hearings confirmatin page with message "2 hearing is now linked"
+        Then I see link hearings confirmatin page with message "2 hearings are now linked"
 # Then debug sleep minutes 20

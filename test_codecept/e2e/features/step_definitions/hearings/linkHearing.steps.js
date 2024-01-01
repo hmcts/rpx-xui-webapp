@@ -1,8 +1,8 @@
 
 const linkHearingWorkflowPage = require('../../pageObjects/hearings/linkHearingWorkflowPage')
 
-Then('I am on link hearing page {string}', async function(page){
-    expect( await linkHearingWorkflowPage[page].isDisplayed()).to.be.true
+Then('I am on linked hearing page {string}', async function(page){
+    expect( await linkHearingWorkflowPage.pages[page].isDisplayed()).to.be.true
 })
 
 When('In link hearing page I select case hearings', async function(datatable){

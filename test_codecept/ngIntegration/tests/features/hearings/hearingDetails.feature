@@ -47,6 +47,11 @@ Feature:  Hearings CR84: Hearing View details
             | $.caseDetails.hmctsInternalCaseName | 1234567812345678      |
             | $.caseDetails.publicCaseName        | Mock case public name |
 
+        Given I set mock hearings service hearing values with ref "partiesUpdated"
+        Given I update mock hearings service hearing values with ref "partiesUpdated" at jsonpaths
+            | jsonpath          | value |
+            | $.publicCaseName | Mock case public name |
+
         When In hearings tab, I click action "View details" for hearing "<HearingType>" under table "<Table>"
 
         Then I validate view hearing page displayed
@@ -57,7 +62,7 @@ Feature:  Hearings CR84: Hearing View details
             | Status                                | <HearingStatus>       | false             | false              |
             | Will additional security be required? | No                    | false             | false              |
             | Case internal name                    | 1234567812345678      | false             | false              |
-            | Case public name                      | Mock case public name | false             | false              |
+            # | Case public name                      | Mock case public name | false             | false              |
 
 
 

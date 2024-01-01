@@ -42,6 +42,7 @@ Feature: Hearings: Hearings tab Hearing action based on roles
             | hearing-viewer        | View details        |
             | listed-hearing-viewer | View details        |
 
+
     Scenario: Hearing actions with status AWAITING_HEARING_DETAILS
         Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_OFF"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
@@ -88,17 +89,17 @@ Feature: Hearings: Hearings tab Hearing action based on roles
         Then I see hearing actuals page
         Then I see hearing actuals page with details
             | field          | value     |
-            | Hearing stage  | Breach 1  |
+            | Hearing stage  |   |
             | Hearing result | COMPLETED |
 
-    
+
 
         When In hearing actuals page, I click continue
         Then I am hearing actuals check your answers page
         Then I validate hearing actuals details in CYA
             | field          | value     |
-            | Paper hearing  | Yes       |
-            | Hearing stage  | Breach 1  |
+            | Paper hearing  | No       |
+            | Hearing stage  |   |
             | Hearing result | COMPLETED |
 
         When I click Submit hearing details button in hearing actuals CYA

@@ -1,4 +1,3 @@
-const { element } = require("protractor/built");
 
 
 class HearingActualsPage{
@@ -56,15 +55,15 @@ class ActualHearingDate{
     }
 
     async clickHearingSummary(){
-        await element(by.xpath(this.hearingDateDetailsSummary)).click()
+        await await element(by.xpath(this.hearingDateDetailsSummary)).click()
     }
 
     async isDisplayed(){
-        return element(by.xpath(this.hearingDateDetailsSummary)).isDisplayed()
+        return await element(by.xpath(this.hearingDateDetailsSummary)).isDisplayed()
     }
 
     async getSummaryText(){
-        return element(by.xpath(this.hearingDateDetailsSummary)).getText()
+        return await element(by.xpath(this.hearingDateDetailsSummary)).getText()
     }
 
     async getValue(field){
@@ -76,7 +75,7 @@ class ActualHearingDate{
             `${fieldEleXpath}/../../dd[contains(@class,'govuk-summary-list__value')]` :
             `${fieldEleXpath}/../dd[contains(@class,'govuk-summary-list__value')]`;
         
-        expect(await element(by.xpath(fieldEleXpath)).isDisplayed()).to.be.true
+        expect(await element(by.xpath(fieldEleXpath)).isDisplayed(),`${field} not displayed`).to.be.true
         return await element(by.xpath(valueEleXpath)).getText();
     }
 

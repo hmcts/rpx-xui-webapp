@@ -18,7 +18,7 @@ Then('I validate request body json {string}, jsonpaths', function(objRef, jsonpa
     reportLogger.AddJson(jsonData)
     for (const row of jsonPathsValidationData){
         const jsonpathExpression = row.jsonpath;
-        const expectedValue = row.value
+        const expectedValue = row.value.includes('true') || row.value.includes('false') ? row.value.includes('true') : row.value
 
         const actualVal = jsonpath.query(jsonData.body, jsonpathExpression)
         expect(actualVal, `at ${jsonpathExpression}, actual "${actualVal}" not matching expected "${expectedValue}"`).includes(expectedValue)

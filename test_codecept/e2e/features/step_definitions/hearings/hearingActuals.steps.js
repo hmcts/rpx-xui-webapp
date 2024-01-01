@@ -101,17 +101,17 @@ Then('In hearing actuals, hearing date {string} displayed with values and action
         const value = row.value;
         const actions = row.actions.split(',')
 
-        const actualValue = hearingDateObj.getValue(field)
+        let actualValue = await hearingDateObj.getValue(field)
         if(value === ''){
-            expect(actualValue, `Expected value ${value} did not match actual ${actualValue}`).to.equal('')
+            expect(actualValue, ` ${field} Expected value ${value} did not match actual ${actualValue}`).to.equal('')
         }else{
-            expect(actualValue, `Expected value ${value} did not match actual ${actualValue}`).to.includes(value)
+            expect(actualValue, `${field} Expected value ${value} did not match actual ${actualValue}`).to.includes(value)
         }
 
-        const actualValue = hearingDateObj.getActions(field)
+        const actualActions = await hearingDateObj.getActions(field)
 
         for (const action of actions){
-            expect(actualValue`Expected action ${action} not present in actual actions ${actualValue}`).to.includes(action)
+            expect(actualActions, `Expected action ${action} not present in actual actions ${actualActions}`).to.includes(action)
         }
         
     }

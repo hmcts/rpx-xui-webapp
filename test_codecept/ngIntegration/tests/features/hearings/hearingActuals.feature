@@ -1,5 +1,5 @@
 
-@ng @functional_enabled @functional_debug
+@ng @functional_enabled 
 Feature: Hearings : Actuals update
 
     Scenario: Add or edit action
@@ -67,13 +67,13 @@ Feature: Hearings : Actuals update
             | Finish time                       | 16:00           |                |
             | Pause time                        |                 |                |
             | Resume time                       |                 |                |
-            | Participants                      | Yes             | Confirm,Update |
+            | Participants                      |              | Confirm,Update |
             | Names                             | Applicant1 data |                |
-            | NaHow participants will attendmes | Applicant1 data |                |
+            | How participants will attend | Applicant1 data |                |
 
         When In hearing actual for date "06 December 2023", I click action link "Update" for field "Hearing timings"
         Then In hearing actuals, I see hearing start and finsih times page
-        When In hearing actuals start finish times page, I select radio option "yes" for Do you need to record times the hearing was paused?
+        When In hearing actuals start finish times page, I select radio option "Yes" for Do you need to record times the hearing was paused?
         When In hearing actuals start and finish times page I input values
             | field       | value |
             | Start time  | 10:00 |
@@ -92,9 +92,9 @@ Feature: Hearings : Actuals update
             | Finish time                       | 17:00           |                |
             | Pause time                        | 13:00           |                |
             | Resume time                       | 14:00           |                |
-            | Participants                      | Yes             | Confirm,Update |
+            | Participants                      |              | Confirm,Update |
             | Names                             | Applicant1 data |                |
-            | NaHow participants will attendmes | Applicant1 data |                |
+            | How participants will attend | Applicant1 data |                |
         # Then debug sleep minutes 20
 
 # Then I validate view or edit hearing page displayed

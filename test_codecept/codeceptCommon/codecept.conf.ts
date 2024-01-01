@@ -28,13 +28,13 @@ console.log(`headless : ${!head}`)
 
 
 let pipelineBranch = process.env.TEST_URL.includes('pr-')   ? "preview" : "master"
-
+let local = process.env.LOCAL.includes('true')
 let features = ''
 if (testType === 'e2e' || testType === 'smoke'){
   features = `../e2e/features/app/**/*.feature`
 } else if (testType === 'ngIntegration'){
   
-  features = pipelineBranch === 'master' ? `../ngIntegration/tests/features/**/notests.feature` : `../ngIntegration/tests/features/**/*.feature`
+  features = pipelineBranch === 'master' && !local ? `../ngIntegration/tests/features/**/notests.feature` : `../ngIntegration/tests/features/**/*.feature`
 
 } else{
   throw new Error(`Unrecognized test type ${testType}`);

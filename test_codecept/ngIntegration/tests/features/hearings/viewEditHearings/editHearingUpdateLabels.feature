@@ -1,5 +1,5 @@
 
-@ng @functional_enabled  @functional_debug
+@ng @functional_enabled  
 Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
     https://tools.hmcts.net/jira/browse/EUI-8905
     All scenarios from JIRA
@@ -300,7 +300,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Reasonable adjustments   | Party1 name updated                        | true              | true               |
             | Reasonable adjustments   | Party2 name                                | true              | false              |
 
-    @functional_debug
+
     Scenario: No chnages and no labels (Conditions (3) & (6)) and Scenario 6
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
         Then I am on hearings tab page

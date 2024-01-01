@@ -13,6 +13,9 @@ Feature: Hearings CR84: Automatic updates
             | hmcStatus | hearingType | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
             | LISTED    | TEST_TYPE   | -3                     | 0                            | -3                                      | 2                                     |
 
+        Given I set mock hearing data for state "LISTED"
+
+
         Given I set mock get hearing with with status "LISTED" and values at jsonpath
             | jsonpath                            | value                 |
             | $.caseDetails.hmctsInternalCaseName | 1234567812345678      |
@@ -28,8 +31,8 @@ Feature: Hearings CR84: Automatic updates
         Then I see case details page
         Then I see case details tab label "Hearings" is displayed is "true"
 
-        Given I set mock hearing data for state "listedHearing"
-        Given I set parties in mock hearing data for state "listedHearing"
+        
+        Given I set parties in mock hearing data for state "LISTED"
             | type | partyName       | partyId                  |
             | IND  | Party1 name     | 1234-uytr-7654-asdf-0001 |
             | IND  | Party2 name     | 1234-uytr-7654-asdf-0002 |

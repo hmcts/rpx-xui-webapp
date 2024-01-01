@@ -91,7 +91,10 @@ Given('I set mock get hearing with with status {string}', async function (hearin
 });
 
 Given('I set mock get hearing with with status {string} and values at jsonpath', async function (hearingStatus, valuesDatatable) {
-  const hearingResponse = global.scenarioData[hearingStatus]
+  let hearingResponse = global.scenarioData[hearingStatus]
+  if (hearingResponse === null || hearingResponse === undefined){
+    hearingResponse = getMockHearingWithStatus(hearingStatus);
+  }
 
   const dataTableObjects = valuesDatatable.parse().hashes();
 
@@ -135,6 +138,7 @@ Given('I update mock hearings service hearing values with ref {string} for field
   } else if (field === 'parties'){
     updatedShv = mockServiceHearingValues.setParties(dataTableObjects, serviceHearingValue);
   }
+  reportLogger.AddJson(updatedShv)
   mockClient.setHearingServiceHearingValues(updatedShv, 200);
 });
 

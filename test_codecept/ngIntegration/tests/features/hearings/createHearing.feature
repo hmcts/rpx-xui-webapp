@@ -84,7 +84,7 @@ Feature: Create hearings workflow
         When I click continue in create hearing workflow
 
 
-        Do you want a specific judge?
+        # Do you want a specific judge?
         Then I am on create hearing page "Do you want a specific judge?"
         When In create hearing page "Do you want a specific judge?", I input values
             | field                             | value                     |

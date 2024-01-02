@@ -107,7 +107,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       },
       caseDetails: {
         hmctsServiceCode: this.serviceHearingValuesModel.hmctsServiceID || null,
-        caseRef: this.hearingListMainModel && this.hearingListMainModel.caseRef || null,
+        caseRef: this.hearingListMainModel?.caseRef || null,
         requestTimeStamp: null,
         hearingID: null,
         caseDeepLink: this.serviceHearingValuesModel.caseDeepLink,
@@ -189,12 +189,15 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   }
 
   private setReasonableAdjustmentFlags(): void {
-    const caseFlags = this.hearingCondition.mode === Mode.VIEW_EDIT && this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags')
-      ? this.hearingsService.propertiesUpdatedOnPageVisit?.caseFlags?.flags
-      : this.serviceHearingValuesModel?.caseFlags?.flags;
-
-    if (caseFlags) {
-      this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(caseFlags, this.caseFlagsRefData, this.caseFlagType);
+    if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
+        this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
+        this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed) {
+      // Hearings manual amendment journey is enabled and there are changes to reasonable adjustment flags detected
+      this.reasonableAdjustmentFlags = CaseFlagsUtils.getReasonableAdjustmentFlags(this.caseFlagsRefData,
+        this.hearingsService.propertiesUpdatedOnPageVisit?.caseFlags?.flags, this.hearingRequestMainModel.partyDetails, this.serviceHearingValuesModel.parties);
+    } else {
+      // Hearings manual amendment journey is NOT enabled
+      this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel?.caseFlags?.flags, this.caseFlagsRefData, this.caseFlagType);
     }
   }
 }

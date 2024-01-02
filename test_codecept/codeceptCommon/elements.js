@@ -150,6 +150,8 @@ class Element {
 
     async getText(){
         await this.wait();
+        reportLogger.AddMessage(`getText: ${JSON.stringify(this.selector)}`)
+
         return await getActor().grabTextFrom(this.selector) 
     }
 
@@ -166,6 +168,8 @@ class Element {
 
     async click(){
         await this.wait();
+        reportLogger.AddMessage(`click: ${JSON.stringify(this.selector)}`)
+
         await getActor().click(this.selector)  
     }
 
@@ -232,6 +236,7 @@ class Element {
     }
 
     async isDisplayed(){
+        reportLogger.AddMessage(`isDisplayed: ${JSON.stringify(this.selector)}`)
         return await getActor().isVisible(this.selector)
     }
 

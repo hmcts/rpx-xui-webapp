@@ -94,18 +94,20 @@ Then('I validate edit heating change links and navigation', async function(datat
         const changeLinkFor = validationPage.changeLinkFor
         const navigationPage = validationPage.navigationPage
         const pageHeader = validationPage.pageHeader
-
-        reportLogger.AddMessage(`Validation of ${changeLinkFor}, ${navigationPage}`)
-        await viewOrEditHearingPage.clickChangeLinkForField(changeLinkFor)
-
-        const navigationPageObject = getPageObject(navigationPage);
         await browserWaits.retryWithActionCallback(async () => {
-            expect(await navigationPageObject.isDisplayed(), `For change link ${changeLinkFor}, ${navigationPage} not displayed`).to.be.true
-        });
+            reportLogger.AddMessage(`Validation of ${changeLinkFor}, ${navigationPage}`)
+            await viewOrEditHearingPage.clickChangeLinkForField(changeLinkFor)
 
-        const actualheaderCaption = await $('span.govuk-caption-l').getText()
-        reportLogger.AddMessage(`page header expected ${pageHeader}, actual ${actualheaderCaption}`)
-        expect(actualheaderCaption).to.includes(pageHeader)
+            const navigationPageObject = getPageObject(navigationPage);
+            await browserWaits.retryWithActionCallback(async () => {
+                expect(await navigationPageObject.isDisplayed(), `For change link ${changeLinkFor}, ${navigationPage} not displayed`).to.be.true
+            });
+
+            const actualheaderCaption = await $('span.govuk-caption-l').getText()
+            reportLogger.AddMessage(`page header expected ${pageHeader}, actual ${actualheaderCaption}`)
+            expect(actualheaderCaption).to.includes(pageHeader)
+        })
+        
         await createHearingWorkflow.continueBtn.click();
     }
 

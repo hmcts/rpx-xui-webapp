@@ -15,7 +15,7 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { HearingActualsTimingComponent } from './hearing-actuals-timing.component';
 
 @Component({ selector: 'exui-app-blank', template: '' })
-class BlankComponent {}
+class BlankComponent { }
 
 const mockActivatedRoute = {
   paramMap: of(convertToParamMap({

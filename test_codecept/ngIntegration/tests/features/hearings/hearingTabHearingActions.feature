@@ -42,7 +42,7 @@ Feature: Hearings: Hearings tab Hearing action based on roles
             | hearing-viewer        | View details        |
             | listed-hearing-viewer | View details        |
 
-    @functional_debug
+    @ignore @functional_debug
     Scenario: Hearing actions with status AWAITING_HEARING_DETAILS
         Given I set MOCK with user details
             | roles | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |

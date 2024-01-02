@@ -249,7 +249,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
           isPlannedParty: false,
           role: null,
           attendanceType:
-          null,
+            null,
           organisation: null
         }));
   });

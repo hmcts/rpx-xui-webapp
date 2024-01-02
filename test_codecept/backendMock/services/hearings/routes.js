@@ -17,7 +17,7 @@ const hearingActualsData = require('./mockData/hearingActuals')
 
 router.get('/hearings/:caseId', (req, res) => {
 
-    userApiData.sendResponse(req, res, "OnCaseHearings", () => service.getCaseHearings())
+    userApiData.sendResponse(req, res, "OnCaseHearings", () => service.getCaseHearings(req.params.caseId))
 
 
 });
@@ -35,7 +35,7 @@ router.post('/serviceHearingValues', (req,res) => {
 })
 
 router.post('/serviceLinkedCases', (req, res) => {
-    res.send(service.serviceLinkedcases)
+    res.send(service.getLinkedCasesWithCaseRef(req.body.caseReference))
 })
 
 router.post('/hearing', (req,res) => {
@@ -80,6 +80,10 @@ router.put('/hearingActuals/:hearingId', (req, res) => {
 
 
 router.post('/hearingActualsCompletion/:hearingId', (req, res) => {
+    res.send({})
+})
+
+router.post('/linkedHearingGroup', (req,res) => {
     res.send({})
 })
 

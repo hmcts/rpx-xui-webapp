@@ -53,12 +53,12 @@ Then('I validate fields displayed in view or edit hearing page', async function 
         const isValueDisplayed = values.filter(v => v.includes(expectedVal))
         const isAmendedLabelDisplayed = values.filter(v => v.includes(expectedVal) && v.includes('AMENDED'))
         if (expectedAmendFlagDisplayed.includes('true')) {
-            expect(isAmendedLabelDisplayed.length > 0, values).to.be.true
+            expect(isAmendedLabelDisplayed.length > 0, `Field:${field} to include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.be.true
         } else {
-            expect(isAmendedLabelDisplayed.length === 0, values).to.be.false
+            expect(isAmendedLabelDisplayed.length === 0, `Field:${field} to not include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.be.true
         }
 
-        expect(isValueDisplayed.length > 0, values).to.be.true
+        expect(isValueDisplayed.length > 0, `Field:${field} to include value ${expectedVal} actual ${values}`).to.be.true
 
     }
 })
@@ -70,11 +70,11 @@ Then('I validate edit hearing section heating labels', async function (datatable
         const expectedLabel = row.Label
         const actualLabel = await viewOrEditHearingPage.getSectionHeadingLabel(heading)
         if (expectedLabel === ''){
-            expect(actualLabel === null, actualLabel).to.be.true
+            expect(actualLabel === null, `${heading} expected no label, actual displayed ${actualLabel}`).to.be.true
         }else{
-            expect(actualLabel, actualLabel).to.includes(expectedLabel)
+            expect(actualLabel, `${heading} expected label did not match`).to.includes(expectedLabel)
         }
-       
+
 
     }
 })
@@ -94,22 +94,24 @@ Then('I validate edit heating change links and navigation', async function(datat
         const changeLinkFor = validationPage.changeLinkFor
         const navigationPage = validationPage.navigationPage
         const pageHeader = validationPage.pageHeader
-
-        reportLogger.AddMessage(`Validation of ${changeLinkFor}, ${navigationPage}`)
-        await viewOrEditHearingPage.clickChangeLinkForField(changeLinkFor)
-
-        const navigationPageObject = getPageObject(navigationPage);
         await browserWaits.retryWithActionCallback(async () => {
-            expect(await navigationPageObject.isDisplayed(), `For change link ${changeLinkFor}, ${navigationPage} not displayed`).to.be.true
-        });
+            reportLogger.AddMessage(`Validation of ${changeLinkFor}, ${navigationPage}`)
+            await viewOrEditHearingPage.clickChangeLinkForField(changeLinkFor)
 
-        const actualheaderCaption = await $('span.govuk-caption-l').getText()
-        reportLogger.AddMessage(`page header expected ${pageHeader}, actual ${actualheaderCaption}`)
-        expect(actualheaderCaption).to.includes(pageHeader)
+            const navigationPageObject = getPageObject(navigationPage);
+            await browserWaits.retryWithActionCallback(async () => {
+                expect(await navigationPageObject.isDisplayed(), `For change link ${changeLinkFor}, ${navigationPage} not displayed`).to.be.true
+            });
+
+            const actualheaderCaption = await $('span.govuk-caption-l').getText()
+            reportLogger.AddMessage(`page header expected ${pageHeader}, actual ${actualheaderCaption}`)
+            expect(actualheaderCaption).to.includes(pageHeader)
+        })
+
         await createHearingWorkflow.continueBtn.click();
     }
 
-    
+
 })
 
 

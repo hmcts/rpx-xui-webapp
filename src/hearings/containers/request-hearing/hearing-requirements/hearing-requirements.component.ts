@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { lastValueFrom } from 'rxjs';
 import { LoggerService } from '../../../../app/services/logger/logger.service';
 import * as fromHearingStore from '../../../../hearings/store';
 import { ValidatorsUtils } from '../../../../hearings/utils/validators.utils';
@@ -159,10 +160,10 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     return allRAFs.filter((flag) => flag.partyID === partyID).map((filterFlag) => filterFlag.flagId);
   }
 
-  public initializeHearingCondition(): void {
+  public async initializeHearingCondition(): Promise<void> {
     if (this.serviceHearingValuesModel && this.serviceHearingValuesModel.hearingLocations) {
       const strLocationIds = this.serviceHearingValuesModel.hearingLocations.map((location) => location.locationId).join(',');
-      this.locationsDataService.getLocationById(strLocationIds).toPromise()
+      await lastValueFrom(this.locationsDataService.getLocationById(strLocationIds))
         .then((locations) => {
           this.strRegions = locations.map((location) => location.region_id).join(',');
         }).then(() => {

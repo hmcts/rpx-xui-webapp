@@ -7,11 +7,8 @@
     <tr class="govuk-table__row">
       <th scope="col" class="govuk-table__header govuk-table__header_name">
         {{ caseFlags.name }}
-        <exui-amendment-label *ngIf="reasonableAdjustmentChangesConfirmed"
-          [displayLabel]="amendmentLabelEnum.AMENDED">
-        </exui-amendment-label>
-        <exui-amendment-label *ngIf="reasonableAdjustmentChangesConfirmed"
-          [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
+        <exui-amendment-label *ngIf="caseFlags.amendmentLabelStatus && caseFlags.amendmentLabelStatus !== amendmentLabelEnum.NONE"
+          [displayLabel]="caseFlags.amendmentLabelStatus">
         </exui-amendment-label>
       </th>
       <th scope="col" class="govuk-table__header govuk-table__header_comments">Comments</th>

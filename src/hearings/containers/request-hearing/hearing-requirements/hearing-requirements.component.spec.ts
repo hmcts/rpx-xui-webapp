@@ -2303,7 +2303,10 @@ describe('HearingRequirementsComponent', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
-      hearingWindow: null
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesConfirmed: true
+      }
     };
     component.ngOnInit();
     expect(component.reasonableAdjustmentFlags.length).toEqual(1);

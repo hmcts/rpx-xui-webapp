@@ -7,7 +7,7 @@
     <tr class="govuk-table__row">
       <th scope="col" class="govuk-table__header govuk-table__header_name">
         {{ caseFlags.name }}
-        <exui-amendment-label *ngIf="caseFlags.amendmentLabelStatus && caseFlags.amendmentLabelStatus !== amendmentLabelEnum.NONE"
+        <exui-amendment-label *ngIf="caseFlags.amendmentLabelStatus && caseFlags.amendmentLabelStatus !== 'NONE'"
           [displayLabel]="caseFlags.amendmentLabelStatus">
         </exui-amendment-label>
       </th>

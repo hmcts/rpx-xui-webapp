@@ -16,23 +16,51 @@ class HearingsApi{
         this.serviceLinkedcases = []
 
         // this.addHearing()
-        this.addHearing({ hmcStatus: "LISTED" })
-        this.addHearing({ hmcStatus: "COMPLETED" })
-        this.addHearing({ hmcStatus: "AWAITING_ACTUALS" })
+        this.addHearing({ hmcStatus: "LISTED", hearingID:'12345678123456781' })
+        this.addHearing({ hmcStatus: "COMPLETED",hearingID: '12345678123456782' })
+        this.addHearing({ hmcStatus: "AWAITING_ACTUALS", hearingID: '12345678123456783' })
 
 
-        this.addHearing({ hmcStatus: "AWAITING_LISTING" })
-        this.addHearing({ hmcStatus: "UPDATE_REQUESTED" })
-        this.addHearing({ hmcStatus: "UPDATE_SUBMITTED" })
-        this.addHearing({ hmcStatus: "EXCEPTION" })
-        this.addHearing({ hmcStatus: "CANCELLATION_REQUESTED" })
-        this.addHearing({ hmcStatus: "CANCELLATION_SUBMITTED" })
-        this.addHearing({ hmcStatus: "VACATED" })
-        this.addHearing({ hmcStatus: "CANCELLED" })
-        this.addHearing({ hmcStatus: "ADJOURNED" })
+        this.addHearing({ hmcStatus: "AWAITING_LISTING", hearingID: '12345678123456784' })
+        this.addHearing({ hmcStatus: "UPDATE_REQUESTED", hearingID: '12345678123456785' })
+        this.addHearing({ hmcStatus: "UPDATE_SUBMITTED", hearingID: '12345678123456786' })
+        this.addHearing({ hmcStatus: "EXCEPTION", hearingID: '12345678123456787' })
+        this.addHearing({ hmcStatus: "CANCELLATION_REQUESTED", hearingID: '12345678123456788' })
+        this.addHearing({ hmcStatus: "CANCELLATION_SUBMITTED", hearingID: '12345678123456790' })
+        this.addHearing({ hmcStatus: "VACATED", hearingID: '12345678123456791' })
+        this.addHearing({ hmcStatus: "CANCELLED", hearingID: '12345678123456792' })
+        this.addHearing({ hmcStatus: "ADJOURNED", hearingID: '12345678123456793' })
+        this.addHearing({ hmcStatus: "VACATED", hearingID: '12345678123456793' })
 
         this.hearingResponse = completedHearing
+    }
 
+    getLinkedCasesWithCaseRef(caseRef){
+        const serviceLinkedcases = []
+        for (let i = 0; i < 2; i++) {
+            serviceLinkedcases.push(
+                {
+                    caseReference: '123456788765432' + i,
+                    caseName: 'Mock case linked ' + i,
+                    reasonsForLink: ['mock case link']
+                }
+            )
+        }
+        // this.serviceLinkedcases.push(
+        //     {
+        //         caseReference: caseRef,
+        //         caseName: 'Mock case linked test1',
+        //         reasonsForLink: ['mock case link']
+        //     }
+        // )
+        // this.serviceLinkedcases.push(
+        //     {
+        //         caseReference: caseRef,
+        //         caseName: 'Mock case linked test2',
+        //         reasonsForLink: ['mock case link']
+        //     }
+        // )
+        return serviceLinkedcases;
     }
 
     addHearing(props){
@@ -44,9 +72,9 @@ class HearingsApi{
     }
 
 
-    getCaseHearings(){
+    getCaseHearings(caseId){
             return {
-                "caseRef": "1690807693531270",
+                "caseRef": caseId,
                 "caseHearings": this.hearings,
                 "hmctsServiceCode": null
         }
@@ -103,11 +131,11 @@ class HearingsApi{
                 },
             ],
             hearingGroupRequestId: null,
-            hearingIsLinkedFlag: false,
+            hearingIsLinkedFlag: true,
             hearingChannels: props.hearingChannels ? props.hearingChannels.split(",") : [
                 "INTER",
             ],
-            hearingID: Date.now(),
+            hearingID: props.hearingID ? props.hearingID : Date.now(),
             hearingResponse:{
                 laCaseStatus: 'LISTED'
             }

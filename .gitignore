@@ -94,3 +94,4 @@ ignore/
 
 /infrastructure/.terraform/
 install-state.gz
+/.angular

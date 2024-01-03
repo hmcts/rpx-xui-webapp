@@ -280,9 +280,13 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const individualParties = this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND);
     // HMC stores only reasonable adjustment flag ids and language interpreter flag ids under parties
     // Get only the reasonable adjustment and language interpreter flag ids from SHV and sort them for easy comparison
-    const flagIdsSHV = caseFlagsSHV.map((flag) => flag.flagId)?.filter((flagId) => flagId.startsWith('RA') || flagId === this.LANGUAGE_INTERPRETER_FLAG_ID)?.sort();
+    const flagIdsSHV = caseFlagsSHV.map((flag) => flag.flagId)?.filter((flagId) => flagId.startsWith('RA') || flagId === this.LANGUAGE_INTERPRETER_FLAG_ID)?.sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
     // Get individual parties reasonable adjustment flags and sort the result
-    const partyFlagIds = individualParties.map((party) => party.individualDetails?.reasonableAdjustments)?.join(',').split(',').sort();
+    const partyFlagIds = individualParties.map((party) => party.individualDetails?.reasonableAdjustments)?.join(',').split(',').sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
     // Convert to string for easy comparison as the partyFlagIds can be an array of empty strings;
     const partyFlagIdsString = partyFlagIds?.length > 0
       ? partyFlagIds?.filter((flagId) => flagId !== '').join()

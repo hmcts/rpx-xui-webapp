@@ -177,6 +177,12 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   }
 
   protected executeAction(action: ACTION): void {
+    if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
+      this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
+      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed) {
+      // Hearings manual amendment journey is enabled and there are changes to reasonable adjustment flags detected
+      this.prepareHearingRequestData();
+    }
     super.navigateAction(action);
   }
 
@@ -186,6 +192,14 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   public ngOnDestroy() {
     super.unsubscribe();
+  }
+
+  private prepareHearingRequestData() {
+    const combinedParties: PartyDetailsModel[] = this.combinePartiesWithIndOrOrg(this.serviceHearingValuesModel.parties);
+    this.hearingRequestMainModel = {
+      ...this.hearingRequestMainModel,
+      partyDetails: combinedParties
+    };
   }
 
   private setReasonableAdjustmentFlags(): void {

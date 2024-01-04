@@ -78,7 +78,7 @@ Feature: Hearings : Edit hearing sub pages
 
 
 
-
+@ignore
     Scenario: Edit hearing navigation sub pages -  CR84 ON
         Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_ON"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |

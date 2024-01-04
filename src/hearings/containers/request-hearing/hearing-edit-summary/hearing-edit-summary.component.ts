@@ -135,6 +135,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private setPropertiesUpdatedAutomatically(): void {
+    debugger;
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       caseDetails: {

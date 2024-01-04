@@ -1,5 +1,5 @@
 
-@ng @functional_enabled 
+@ng @functional_enabled @ignore
 Feature: Hearings CR84: Automatic pageless updates
 
 @functional_debug

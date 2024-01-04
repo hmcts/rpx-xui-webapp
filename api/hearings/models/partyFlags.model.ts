@@ -5,4 +5,6 @@ export interface PartyFlagsModel {
   flagId: string;
   flagDescription: string;
   flagStatus: string;
+  dateTimeCreated?: string;
+  dateTimeModified?: string;
 }

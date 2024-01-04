@@ -162,7 +162,7 @@ export class CaseFlagsUtils {
         reasonableAdjustmentFlagGroups.push(
           {
             name: reasonableAdjustmentFlag,
-            partyFlags: this.getReasonableAdjustmentFlagsWithAmendedLabelStatus(groupedReasonableAdjustmentFlags[reasonableAdjustmentFlag], partiesInHMC, partiesInSHV),
+            partyFlags: this.getReasonableAdjustmentFlagsWithAmendedLabelStatus(groupedReasonableAdjustmentFlags[reasonableAdjustmentFlag], partiesInHMC),
             partyAmendmentLabelStatus: this.getPartyAmendmentLabelStatus(groupedReasonableAdjustmentFlags[reasonableAdjustmentFlag], partiesInHMC, partiesInSHV)
           } as CaseFlagGroup);
       }
@@ -171,7 +171,7 @@ export class CaseFlagsUtils {
   }
 
   private static getReasonableAdjustmentFlagsWithAmendedLabelStatus(reasonableAdjustmentFlags: PartyFlagsDisplayModel[],
-    partiesInHMC: PartyDetailsModel[], partiesInSHV: PartyDetailsModel[]): PartyFlagsDisplayModel[] {
+    partiesInHMC: PartyDetailsModel[]): PartyFlagsDisplayModel[] {
     // Find the party from hearing request main model
     const partyInHMC = partiesInHMC.find((party) => party.partyID === reasonableAdjustmentFlags[0].partyId);
     // Loop through the case flags in service hearing values model and check if the flags ids
@@ -179,9 +179,8 @@ export class CaseFlagsUtils {
     // and if they are not present it implies that new case flag has been added to the case after
     // the hearing request was created and the label against the flag should be displayed as ACTION NEEDED
     for (const reasonableAdjustmentFlag of reasonableAdjustmentFlags) {
-      if (!partyInHMC?.individualDetails?.reasonableAdjustments?.includes(reasonableAdjustmentFlag.flagId)) {
-        const partyInSHV = partiesInSHV.find((party) => party.partyID === reasonableAdjustmentFlags[0].partyId);
-        if (partyInHMC && partyInHMC.partyName === partyInSHV.partyName) {
+      if (partyInHMC) {
+        if (!partyInHMC.individualDetails?.reasonableAdjustments?.includes(reasonableAdjustmentFlag.flagId)) {
           reasonableAdjustmentFlag.flagAmendmentLabelStatus = AmendmentLabelStatus.ACTION_NEEDED;
         }
       }

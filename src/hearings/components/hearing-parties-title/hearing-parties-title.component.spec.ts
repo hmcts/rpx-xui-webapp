@@ -40,13 +40,13 @@ describe('HearingPartiesTitleComponent', () => {
   it('should return internal case name for title', () => {
     featureToggleServiceMock.isEnabled.and.returnValue(of(true));
     component.ngOnInit();
-    expect(component.caseTitle).toBe('Jane vs DWP Internal');
+    expect(component.caseTitle).toBe('Jane Smith vs DWP');
   });
 
   it('should return public case name for title', () => {
     featureToggleServiceMock.isEnabled.and.returnValue(of(false));
     component.ngOnInit();
-    expect(component.caseTitle).toBe('Jane vs DWP');
+    expect(component.caseTitle).toBe('Jane Smith vs DWP');
   });
 
   it('should destroy subscription', () => {

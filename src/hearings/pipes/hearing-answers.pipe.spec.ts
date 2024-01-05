@@ -63,6 +63,7 @@ describe('HearingAnswersPipe', () => {
     is_case_management_location: '',
     is_hearing_location: ''
   }];
+  initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingInWelshFlag = true;
   const STATE: State = _.cloneDeep(initialState.hearings);
   let hearingAnswersPipe: HearingAnswersPipe;
   let router: any;
@@ -105,7 +106,7 @@ describe('HearingAnswersPipe', () => {
 
   it('should transform case name', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_NAME, of(STATE), 0);
-    const caseName = 'Jane vs DWP';
+    const caseName = 'Jane Smith vs DWP';
     const expected = cold('(b|)', { b: caseName });
     expect(result$).toBeObservable(expected);
   });

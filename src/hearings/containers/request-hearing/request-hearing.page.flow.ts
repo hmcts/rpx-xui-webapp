@@ -29,7 +29,7 @@ export abstract class RequestHearingPageFlow {
       (hearingState) => {
         this.hearingListMainModel = hearingState.hearingList.hearingListMainModel;
         this.serviceHearingValuesModel = { ...hearingState.hearingValues.serviceHearingValuesModel };
-        this.hearingRequestMainModel = hearingState.hearingRequest.hearingRequestMainModel;
+        this.hearingRequestMainModel = { ...hearingState.hearingRequest.hearingRequestMainModel };
         this.hearingCondition = hearingState.hearingConditions;
       });
   }

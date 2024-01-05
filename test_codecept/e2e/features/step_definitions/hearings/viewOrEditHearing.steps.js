@@ -107,7 +107,6 @@ Then('I validate edit heating change links and navigation', async function(datat
             reportLogger.AddMessage(`page header expected ${pageHeader}, actual ${actualheaderCaption}`)
             expect(actualheaderCaption).to.includes(pageHeader)
         })
-
         await createHearingWorkflow.continueBtn.click();
     }
 

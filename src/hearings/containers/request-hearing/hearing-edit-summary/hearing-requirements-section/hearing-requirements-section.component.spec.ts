@@ -32,6 +32,12 @@ describe('HearingRequirementsSectionComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should set the HMC parties', () => {
+    component.ngOnInit();
+    expect(component.partyIdsInHMC).toEqual(['P1', 'P2', 'P2']);
+    expect(component.partyNamesInHMC).toEqual(['Jane and Smith', 'DWP', 'DWP']);
+  });
+
   it('should display label', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,

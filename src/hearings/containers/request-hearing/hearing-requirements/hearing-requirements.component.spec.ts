@@ -2296,17 +2296,72 @@ describe('HearingRequirementsComponent', () => {
     expect(component.reasonableAdjustmentFlags.length).toEqual(2);
   });
 
-  it('should set the case flags from in-memory object when viewing or editing existing hearing request', () => {
+  it('should set the case flags from in-memory object when there are changes to case flags but not party name', () => {
     component.hearingCondition = {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
-      hearingWindow: null
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesConfirmed: true,
+        partyDetailsChangesConfirmed: false
+      }
     };
     component.ngOnInit();
     expect(component.reasonableAdjustmentFlags.length).toEqual(1);
+  });
+
+  it('should set the case flags from in-memory object when there are changes to case flags and party name', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesConfirmed: true,
+        partyDetailsChangesConfirmed: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentFlags.length).toEqual(1);
+  });
+
+  it('should set the case flags from in-memory object when there are changes to party names', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesConfirmed: false,
+        partyDetailsChangesConfirmed: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentFlags.length).toEqual(1);
+  });
+
+  it('should set the case flags from in-memory object when there are changes to party names', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesConfirmed: false,
+        partyDetailsChangesConfirmed: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentFlags.length).toEqual(0);
   });
 
   it('should initialize hearing request from hearing values', () => {

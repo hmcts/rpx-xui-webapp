@@ -205,7 +205,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private compareAndUpdateServiceHearingValues(currentValue, serviceHearingValue, pageMode: AutoUpdateMode = null, property: string = null) {
-    if (currentValue !== serviceHearingValue) {
+    if (!_.isEqual(currentValue, serviceHearingValue)) {
       // Store ammended properties to dispay it in UI
       if (pageMode && (property || pageMode === AutoUpdateMode.PARTY)) {
         switch (pageMode) {

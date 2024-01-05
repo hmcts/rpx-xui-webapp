@@ -92,9 +92,9 @@ Given('I set mock get hearing with with status {string}', async function (hearin
 
 Given('I set mock get hearing with with status {string} and values at jsonpath', async function (hearingStatus, valuesDatatable) {
   let hearingResponse = global.scenarioData[hearingStatus]
-  if (hearingResponse === null || hearingResponse === undefined){
+  if (hearingResponse === null || hearingResponse === undefined) {
     hearingResponse = getMockHearingWithStatus(hearingStatus);
-    global.scenarioData[hearingStatus] = hearingResponse
+    global.scenarioData[hearingStatus] = hearingResponse;
   }
 
   const dataTableObjects = valuesDatatable.parse().hashes();

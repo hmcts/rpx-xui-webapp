@@ -75,7 +75,8 @@ export interface PropertiesUpdatedOnPageVisit {
 
 export enum AmendmentLabelStatus {
   ACTION_NEEDED = 'ACTION NEEDED',
-  AMENDED = 'AMENDED'
+  AMENDED = 'AMENDED',
+  NONE = 'NONE'
 }
 
 export interface ParticipantAttendanceMode {

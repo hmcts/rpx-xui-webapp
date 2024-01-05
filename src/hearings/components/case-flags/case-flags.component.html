@@ -5,7 +5,12 @@
   <table *ngFor="let caseFlags of caseFlagsGroup" class="govuk-table">
     <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-      <th scope="col" class="govuk-table__header govuk-table__header_name">{{ caseFlags.name }}</th>
+      <th scope="col" class="govuk-table__header govuk-table__header_name">
+        {{ caseFlags.name }}
+        <exui-amendment-label *ngIf="caseFlags.partyAmendmentLabelStatus && caseFlags.partyAmendmentLabelStatus !== amendmentLabelStatus.NONE"
+          [displayLabel]="caseFlags.partyAmendmentLabelStatus">
+        </exui-amendment-label>
+      </th>
       <th scope="col" class="govuk-table__header govuk-table__header_comments">Comments</th>
       <th scope="col" class="govuk-table__header govuk-table__header_flag-status">Flag status</th>
     </tr>
@@ -15,6 +20,9 @@
       <td class="govuk-table__cell">
         <label>
           {{ partyFlag.displayName }}
+          <exui-amendment-label *ngIf="partyFlag.flagAmendmentLabelStatus"
+            [displayLabel]="partyFlag.flagAmendmentLabelStatus">
+          </exui-amendment-label>
         </label>
       </td>
       <td class="govuk-table__cell">

@@ -74,7 +74,7 @@ Then('I validate edit hearing section heating labels', async function (datatable
         }else{
             expect(actualLabel, `${heading} expected label did not match`).to.includes(expectedLabel)
         }
-       
+
 
     }
 })
@@ -107,11 +107,10 @@ Then('I validate edit heating change links and navigation', async function(datat
             reportLogger.AddMessage(`page header expected ${pageHeader}, actual ${actualheaderCaption}`)
             expect(actualheaderCaption).to.includes(pageHeader)
         })
-        
         await createHearingWorkflow.continueBtn.click();
     }
 
-    
+
 })
 
 

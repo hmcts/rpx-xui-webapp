@@ -1,3 +1,5 @@
+import { AmendmentLabelStatus } from './hearingsUpdateMode.enum';
+
 export interface PartyFlagsModel {
   partyId: string;
   partyName: string;
@@ -16,4 +18,5 @@ export interface PartyFlagsDisplayModel {
   flagStatus: string;
   displayName: string;
   displayPath: string[];
+  flagAmendmentLabelStatus?: AmendmentLabelStatus;
 }

@@ -20,14 +20,16 @@ export class HearingRequirementsSectionComponent implements OnInit {
 
   public reasonableAdjustmentChangesConfirmed: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
-  public partiesInHMC: string[];
+  public partyIdsInHMC: string[];
+  public partyNamesInHMC: string[];
   public partiesWithFlags: Map<string, CaseFlagReferenceModel[]>;
 
   constructor(private readonly hearingsService: HearingsService) {}
 
   public ngOnInit(): void {
     this.reasonableAdjustmentChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed;
-    this.partiesInHMC = this.hearingRequestMainModel.partyDetails.map(((party) => party.partyName));
+    this.partyIdsInHMC = this.hearingRequestMainModel.partyDetails.map(((party) => party.partyID));
+    this.partyNamesInHMC = this.hearingRequestMainModel.partyDetails.map(((party) => party.partyName));
     this.partiesWithFlags = this.getPartiesWithFlagData();
   }
 
@@ -35,13 +37,15 @@ export class HearingRequirementsSectionComponent implements OnInit {
     const partiesWithFlags: Map<string, CaseFlagReferenceModel[]> = new Map();
     const individualParties = this.serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND);
     individualParties.forEach((party) => {
-      const flagIds = party.individualDetails?.reasonableAdjustments;
-      if (party.individualDetails?.interpreterLanguage) {
-        flagIds.push(party.individualDetails.interpreterLanguage);
-      }
-      const flags = flagIds?.map((flagId) => CaseFlagsUtils.findFlagByFlagId(this.caseFlagsRefData, flagId));
-      if (party.partyName && flags?.length > 0) {
-        partiesWithFlags.set(party.partyName, flags);
+      if (this.partyIdsInHMC.includes(party.partyID)) {
+        const flagIds = party.individualDetails?.reasonableAdjustments;
+        if (party.individualDetails?.interpreterLanguage) {
+          flagIds.push(party.individualDetails.interpreterLanguage);
+        }
+        const flags = flagIds?.map((flagId) => CaseFlagsUtils.findFlagByFlagId(this.caseFlagsRefData, flagId));
+        if (party.partyName && flags?.length > 0) {
+          partiesWithFlags.set(party.partyName, flags);
+        }
       }
     });
     return partiesWithFlags;

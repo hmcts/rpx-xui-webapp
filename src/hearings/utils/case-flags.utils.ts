@@ -129,7 +129,7 @@ export class CaseFlagsUtils {
 
   private static getActiveReasonableAdjustmentFlags(caseFlags: PartyFlagsModel[],
     caseFlagsRefData: CaseFlagReferenceModel[], partiesInSHV: PartyDetailsModel[]): PartyFlagsDisplayModel[] {
-    const flags: PartyFlagsDisplayModel[] = caseFlags.map((flag) => {
+    const flags: PartyFlagsDisplayModel[] = caseFlags?.map((flag) => {
       const flagPath = this.findFlagByFlagId(caseFlagsRefData, flag.flagId);
       const partyInSHV = partiesInSHV.find((party) => party.partyID === flag.partyId);
       if (flagPath) {

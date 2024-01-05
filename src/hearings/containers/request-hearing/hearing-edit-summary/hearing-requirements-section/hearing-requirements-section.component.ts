@@ -14,8 +14,9 @@ import { CaseFlagsUtils } from '../../../../utils/case-flags.utils';
 })
 export class HearingRequirementsSectionComponent implements OnInit {
   @Input() public caseFlagsRefData: CaseFlagReferenceModel[];
-  @Input() public hearingRequestMainModel: HearingRequestMainModel;
   @Input() public serviceHearingValuesModel: ServiceHearingValuesModel;
+  @Input() public hearingRequestMainModel: HearingRequestMainModel;
+  @Input() public hearingRequestToCompareMainModel: HearingRequestMainModel;
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
   public reasonableAdjustmentChangesConfirmed: boolean;

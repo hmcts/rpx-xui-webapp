@@ -8,7 +8,7 @@ import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConstants } from '../../../../app/app.constants';
 import { CaseCategoryModel } from '../../../../hearings/models/caseCategory.model';
-import { AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../../hearings/models/hearingsUpdateMode.enum';
+import { AfterPageVisitProperties, AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../../hearings/models/hearingsUpdateMode.enum';
 import { ServiceHearingValuesModel } from '../../../../hearings/models/serviceHearingValues.model';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
@@ -55,6 +55,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public hearingTemplate = HearingTemplate;
   public isPagelessAttributeChanged: boolean = false;
   public displayBanner: boolean = false;
+  public afterPageVisit: AfterPageVisitProperties;
 
   constructor(private readonly router: Router,
     private readonly locationsDataService: LocationsDataService,
@@ -165,14 +166,26 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private setPropertiesUpdatedOnPageVisit(serviceHearingValues: ServiceHearingValuesModel): void {
-    if (serviceHearingValues) {
+    const afterPageVisitProperties = this.getAfterPageVisitProperties();
+    if (serviceHearingValues &&
+        (afterPageVisitProperties.reasonableAdjustmentChangesConfirmed ||
+         afterPageVisitProperties.partyDetailsChangesConfirmed ||
+         afterPageVisitProperties.hearingWindowFirstDateMustBeChangesConfirmed)) {
       this.hearingsService.propertiesUpdatedOnPageVisit = {
         caseFlags: serviceHearingValues.caseFlags,
         parties: serviceHearingValues.parties,
         hearingWindow: serviceHearingValues.hearingWindow,
-        afterPageVisit: {}
+        afterPageVisit: afterPageVisitProperties
       };
     }
+  }
+
+  private getAfterPageVisitProperties(): AfterPageVisitProperties {
+    return {
+      reasonableAdjustmentChangesConfirmed: this.pageVisitCaseFlagsChangeExists(),
+      partyDetailsChangesConfirmed: this.pageVisitPartiesChangeExists(),
+      hearingWindowFirstDateMustBeChangesConfirmed: this.pageVisitHearingWindowChangeExists()
+    };
   }
 
   private compareAndUpdateCaseCategories(hmcCaseCategories: CaseCategoryModel[], shvCaseCategories: CaseCategoryModel[]): CaseCategoryModel[] {
@@ -262,17 +275,19 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   private setBanner(): void {
     // check pageless automatic update
     this.isPagelessAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.pageless).some((prop) => prop);
+    // Display banner
+    this.displayBanner = this.isPagelessAttributeChanged && !this.pageVisitChangeExists();
+  }
+
+  private pageVisitChangeExists(): boolean {
     // check for changes on page visit
     const isPageVisitCaseFlagsChangeExists = this.pageVisitCaseFlagsChangeExists();
     const isPageVisitPartiesChangeExists = this.pageVisitPartiesChangeExists();
     const isPageVisitHearingWindowChangeExists = this.pageVisitHearingWindowChangeExists();
 
-    const pageVisitChangeExists = isPageVisitCaseFlagsChangeExists ||
+    return isPageVisitCaseFlagsChangeExists ||
       isPageVisitPartiesChangeExists ||
       isPageVisitHearingWindowChangeExists;
-
-    // Display banner
-    this.displayBanner = this.isPagelessAttributeChanged && !pageVisitChangeExists;
   }
 
   private pageVisitCaseFlagsChangeExists(): boolean {
@@ -294,7 +309,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     // Return true if there are changes in reasonable adjustments and/or language interpreter flags
     if (flagIdsSHV.join() !== partyFlagIdsString) {
-      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesConfirmed = true;
       return true;
     }
     // There are no changes for reasonable adjustments and language interpreter flags when compared SHV with HMC
@@ -306,7 +320,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const partiesHMC = this.hearingRequestMainModel.partyDetails;
     // Return true if the number of parties in SHV and HMC are different
     if (partiesSHV.length !== partiesHMC.length) {
-      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed = true;
       return true;
     }
     // Number of parties are the same in both SHV and HMC
@@ -319,7 +332,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
           (party.individualDetails?.firstName !== partySHV.individualDetails?.firstName) ||
           (party.individualDetails?.lastName !== partySHV.individualDetails?.lastName) ||
           (party.partyType !== partySHV.partyType)) {
-        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed = true;
         return true;
       }
     }
@@ -333,7 +345,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
     // Return true if the first date time must be value in SHV and HMC are different
     if (hearingWindowSHV?.firstDateTimeMustBe !== hearingWindowHMC?.firstDateTimeMustBe) {
-      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowFirstDateMustBeChangesConfirmed = true;
       return true;
     }
     // There is no change in first date time must be when compared SHV with HMC

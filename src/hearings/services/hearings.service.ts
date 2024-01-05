@@ -24,6 +24,7 @@ export class HearingsService {
 
   public propertiesUpdatedOnPageVisit: PropertiesUpdatedOnPageVisit;
   public propertiesUpdatedAutomatically: PropertiesUpdatedAutomatically = { pageless: {}, withinPage: {} };
+  public hearingRequirementsConfirmedByUser: boolean;
 
   constructor(private readonly http: HttpClient) { }
 

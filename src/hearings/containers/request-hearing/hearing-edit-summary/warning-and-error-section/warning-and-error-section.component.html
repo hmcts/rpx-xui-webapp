@@ -1,5 +1,5 @@
-<div class="govuk-form-group" [ngClass]="{'govuk-form-group--error' : displayValildationMessage}">
-  <div class="govuk-warning-text">
+<div class="govuk-form-group" [ngClass]="{'govuk-form-group--error' : displayValidationError()}">
+  <div class="govuk-warning-text" *ngIf="!displayValidationError() && (pageVisitChangeExists || isPagelessAttributeChanged || isWithinPageAttributeChanged)">
     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
     <strong class="govuk-warning-text__text">
       <span class="govuk-warning-text__assistive">Warning</span>
@@ -8,7 +8,7 @@
        'Please submit the hearing request amendment for the details to be included in the hearing request'}}
     </strong>
   </div>
-  <div class="govuk-body govuk-error-message" *ngIf="displayValildationMessage">
+  <div class="govuk-body govuk-error-message" *ngIf="displayValidationError()">
     {{ 'You have not added all the updates. Click the \'Change\' link under any sections labelled ' + 
     '\'Action needed\' and then click the continue button at the end of the page to add the changes to ' +
     'the hearing summary. You will not be able to submit the request until this is done.'}}

@@ -54,8 +54,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public isHearingAmendmentsEnabled: boolean;
   public hearingTemplate = HearingTemplate;
   public isPagelessAttributeChanged: boolean = false;
-  public displayBanner: boolean = false;
   public afterPageVisit: AfterPageVisitProperties;
+  public isWithinPageAttributeChanged: boolean = false;
 
   constructor(private readonly router: Router,
     private readonly locationsDataService: LocationsDataService,
@@ -220,9 +220,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     return shvCaseCategories;
   }
 
-  // To do: EUI- 8905
   private compareAndUpdateServiceHearingValues(currentValue, serviceHearingValue, pageMode: AutoUpdateMode = null, property: string = null) {
-    if (currentValue !== serviceHearingValue) {
+    if (!_.isEqual(currentValue, serviceHearingValue)) {
       // Store ammended properties to dispay it in UI
       if (pageMode && (property || pageMode === AutoUpdateMode.PARTY)) {
         switch (pageMode) {
@@ -279,8 +278,13 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   private setBanner(): void {
     // check pageless automatic update
     this.isPagelessAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.pageless).some((prop) => prop);
-    // Display banner
-    this.displayBanner = this.isPagelessAttributeChanged && !this.pageVisitChangeExists();
+
+    // check automatic update within page
+    this.isWithinPageAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.withinPage).some((prop) => prop);
+
+    // Display Validation
+    this.hearingsService.displayValidationError = this.pageVisitChangeExists();
+    this.hearingsService.submitUpdatedRequestClicked = false;
   }
 
   private pageVisitChangeExists(): boolean {

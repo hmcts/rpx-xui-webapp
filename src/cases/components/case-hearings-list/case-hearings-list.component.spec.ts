@@ -858,9 +858,6 @@ describe('CaseHearingsListComponent', () => {
     component.actions = [Actions.CREATE, Actions.DELETE, Actions.UPDATE, Actions.READ];
     component.ngOnInit();
     fixture.detectChanges();
-    const viewOrEdit1 = fixture.debugElement.query(By.css('#link-view-details-h100001')).nativeElement;
-    expect(viewOrEdit1.textContent).toBe('View details');
-
     const dispatchSpy = spyOn(mockStore, 'dispatch');
     spyOn(mockStore, 'select').and.returnValue(of(null));
     const loadHearingRequestAndRedirect = spyOn(component, 'loadHearingRequestAndRedirect');

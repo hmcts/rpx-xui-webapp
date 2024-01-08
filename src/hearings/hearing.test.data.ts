@@ -1548,8 +1548,8 @@ export const caseFlagsRefData = [
 
 export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   hmctsServiceID: 'BBA3',
-  hmctsInternalCaseName: 'Jane vs DWP Internal',
-  publicCaseName: 'Jane vs DWP',
+  hmctsInternalCaseName: 'Jane Smith vs DWP',
+  publicCaseName: 'Jane Smith vs DWP',
   autoListFlag: false,
   hearingType: 'Final',
   hearingChannels: [],
@@ -1955,7 +1955,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
         categoryValue: 'BBA3-002RC',
         categoryParent: 'BBA3-002'
       }],
-    caseManagementLocationCode: null,
+    caseManagementLocationCode: '196538',
     caserestrictedFlag: false,
     caseSLAStartDate: '2021-11-23T09:00:00.000Z'
   },
@@ -2301,7 +2301,7 @@ export const initialState = {
           nonStandardHearingDurationReasons: [],
           hearingPriorityType: 'standard',
           numberOfPhysicalAttendees: 3,
-          hearingInWelshFlag: true,
+          hearingInWelshFlag: false,
           facilitiesRequired: [
             'immigrationDetentionCentre',
             'inCameraCourt'
@@ -2485,7 +2485,7 @@ export const initialState = {
           nonStandardHearingDurationReasons: [],
           hearingPriorityType: 'standard',
           numberOfPhysicalAttendees: 3,
-          hearingInWelshFlag: true,
+          hearingInWelshFlag: false,
           facilitiesRequired: [
             'immigrationDetentionCentre',
             'inCameraCourt'
@@ -2503,8 +2503,8 @@ export const initialState = {
           hearingID: null,
           externalCaseReference: null,
           caseDeepLink: null,
-          hmctsInternalCaseName: 'Jane vs DWP',
-          publicCaseName: 'Jane vs DWP',
+          hmctsInternalCaseName: 'Jane Smith vs DWP',
+          publicCaseName: 'Jane Smith vs DWP',
           caseAdditionalSecurityFlag: false,
           caseInterpreterRequiredFlag: false,
           caseCategories: [
@@ -2524,7 +2524,7 @@ export const initialState = {
               categoryValue: 'BBA3-002RC',
               categoryParent: 'BBA3-002'
             }],
-          caseManagementLocationCode: null,
+          caseManagementLocationCode: '196538',
           caserestrictedFlag: false,
           caseSLAStartDate: null
         },
@@ -2983,7 +2983,7 @@ export const initialStateImmutable = {
           nonStandardHearingDurationReasons: [],
           hearingPriorityType: 'standard',
           numberOfPhysicalAttendees: 3,
-          hearingInWelshFlag: true,
+          hearingInWelshFlag: false,
           facilitiesRequired: [
             'immigrationDetentionCentre',
             'inCameraCourt'
@@ -3167,7 +3167,7 @@ export const initialStateImmutable = {
           nonStandardHearingDurationReasons: [],
           hearingPriorityType: 'standard',
           numberOfPhysicalAttendees: 3,
-          hearingInWelshFlag: true,
+          hearingInWelshFlag: false,
           facilitiesRequired: [
             'immigrationDetentionCentre',
             'inCameraCourt'
@@ -3185,8 +3185,8 @@ export const initialStateImmutable = {
           hearingID: null,
           externalCaseReference: null,
           caseDeepLink: null,
-          hmctsInternalCaseName: 'Jane vs DWP',
-          publicCaseName: 'Jane vs DWP',
+          hmctsInternalCaseName: 'Jane Smith vs DWP',
+          publicCaseName: 'Jane Smith vs DWP',
           caseAdditionalSecurityFlag: false,
           caseInterpreterRequiredFlag: false,
           caseCategories: [

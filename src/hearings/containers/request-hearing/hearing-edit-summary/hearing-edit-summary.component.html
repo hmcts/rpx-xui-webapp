@@ -1,4 +1,5 @@
-<exui-warning-and-error-section *ngIf="displayBanner"
+<exui-warning-and-error-section
+  [pageVisitChangeExists]="pageVisitChangeExists"
   [isPagelessAttributeChanged]="isPagelessAttributeChanged"
 ></exui-warning-and-error-section>
 <h1 class="govuk-heading-l">Edit hearing</h1>
@@ -112,6 +113,7 @@
   [listingComments]="hearingRequestMainModel.hearingDetails.listingComments"
   (changeEditHearing)="onChange($event)"
 ></exui-additional-instructions-section>
-<exui-warning-and-error-section *ngIf="displayBanner"
+<exui-warning-and-error-section
+  [pageVisitChangeExists]="pageVisitChangeExists"
   [isPagelessAttributeChanged]="isPagelessAttributeChanged"
 ></exui-warning-and-error-section>

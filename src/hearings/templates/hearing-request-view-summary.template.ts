@@ -65,10 +65,6 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
     isHiddenMargin: true
   },
   {
-    sectionHTMLTitle: '<h2 class="govuk-heading-m">Requirements and facilities</h2>',
-    answers: []
-  },
-  {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing requirements</h2>',
     answers: [
       {

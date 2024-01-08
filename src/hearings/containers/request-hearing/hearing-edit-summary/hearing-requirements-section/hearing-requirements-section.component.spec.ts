@@ -32,17 +32,23 @@ describe('HearingRequirementsSectionComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should set the HMC parties', () => {
+    component.ngOnInit();
+    expect(component.partyIdsInHMC).toEqual(['P1', 'P2', 'P2']);
+    expect(component.partyNamesInHMC).toEqual(['Jane and Smith', 'DWP', 'DWP']);
+  });
+
   it('should display label', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {
-        reasonableAdjustmentChangesConfirmed: true
+        reasonableAdjustmentChangesRequired: true
       }
     };
     component.ngOnInit();
-    expect(component.reasonableAdjustmentChangesConfirmed).toEqual(true);
+    expect(component.reasonableAdjustmentChangesRequired).toEqual(true);
   });
 
   it('should not display label', () => {
@@ -51,11 +57,11 @@ describe('HearingRequirementsSectionComponent', () => {
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {
-        reasonableAdjustmentChangesConfirmed: false
+        reasonableAdjustmentChangesRequired: false
       }
     };
     component.ngOnInit();
-    expect(component.reasonableAdjustmentChangesConfirmed).toEqual(false);
+    expect(component.reasonableAdjustmentChangesRequired).toEqual(false);
   });
 
   it('should verify onChange', () => {

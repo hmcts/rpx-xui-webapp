@@ -14,20 +14,27 @@ import { CaseFlagsUtils } from '../../../../utils/case-flags.utils';
 })
 export class HearingRequirementsSectionComponent implements OnInit {
   @Input() public caseFlagsRefData: CaseFlagReferenceModel[];
-  @Input() public hearingRequestMainModel: HearingRequestMainModel;
   @Input() public serviceHearingValuesModel: ServiceHearingValuesModel;
+  @Input() public hearingRequestMainModel: HearingRequestMainModel;
+  @Input() public hearingRequestToCompareMainModel: HearingRequestMainModel;
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
+  public reasonableAdjustmentChangesRequired: boolean;
   public reasonableAdjustmentChangesConfirmed: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
-  public partiesInHMC: string[];
+  public partyIdsInHMC: string[];
+  public partyNamesInHMC: string[];
+  public partyNamesInHMCRequestToCompare: string[];
   public partiesWithFlags: Map<string, CaseFlagReferenceModel[]>;
 
   constructor(private readonly hearingsService: HearingsService) {}
 
   public ngOnInit(): void {
+    this.reasonableAdjustmentChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesRequired;
     this.reasonableAdjustmentChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed;
-    this.partiesInHMC = this.hearingRequestMainModel.partyDetails.map(((party) => party.partyName));
+    this.partyIdsInHMC = this.hearingRequestMainModel.partyDetails.map(((party) => party.partyID));
+    this.partyNamesInHMC = this.hearingRequestMainModel.partyDetails.map(((party) => party.partyName));
+    this.partyNamesInHMCRequestToCompare = this.hearingRequestToCompareMainModel.partyDetails.map(((party) => party.partyName));
     this.partiesWithFlags = this.getPartiesWithFlagData();
   }
 
@@ -35,13 +42,15 @@ export class HearingRequirementsSectionComponent implements OnInit {
     const partiesWithFlags: Map<string, CaseFlagReferenceModel[]> = new Map();
     const individualParties = this.serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND);
     individualParties.forEach((party) => {
-      const flagIds = party.individualDetails?.reasonableAdjustments;
-      if (party.individualDetails?.interpreterLanguage) {
-        flagIds.push(party.individualDetails.interpreterLanguage);
-      }
-      const flags = flagIds?.map((flagId) => CaseFlagsUtils.findFlagByFlagId(this.caseFlagsRefData, flagId));
-      if (party.partyName && flags?.length > 0) {
-        partiesWithFlags.set(party.partyName, flags);
+      if (this.partyIdsInHMC.includes(party.partyID)) {
+        const flagIds = party.individualDetails?.reasonableAdjustments;
+        if (party.individualDetails?.interpreterLanguage) {
+          flagIds.push(party.individualDetails.interpreterLanguage);
+        }
+        const flags = flagIds?.map((flagId) => CaseFlagsUtils.findFlagByFlagId(this.caseFlagsRefData, flagId));
+        if (party.partyName && flags?.length > 0) {
+          partiesWithFlags.set(party.partyName, flags);
+        }
       }
     });
     return partiesWithFlags;

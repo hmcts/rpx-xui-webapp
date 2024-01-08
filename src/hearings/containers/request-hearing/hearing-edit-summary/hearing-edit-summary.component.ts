@@ -166,25 +166,29 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private setPropertiesUpdatedOnPageVisit(serviceHearingValues: ServiceHearingValuesModel): void {
-    const afterPageVisitProperties = this.getAfterPageVisitProperties();
-    if (serviceHearingValues &&
-        (afterPageVisitProperties.reasonableAdjustmentChangesConfirmed ||
-         afterPageVisitProperties.partyDetailsChangesConfirmed ||
-         afterPageVisitProperties.hearingWindowFirstDateMustBeChangesConfirmed)) {
-      this.hearingsService.propertiesUpdatedOnPageVisit = {
-        caseFlags: serviceHearingValues.caseFlags,
-        parties: serviceHearingValues.parties,
-        hearingWindow: serviceHearingValues.hearingWindow,
-        afterPageVisit: afterPageVisitProperties
-      };
+    if (serviceHearingValues) {
+      const afterPageVisitProperties = this.getAfterPageVisitProperties();
+      if (afterPageVisitProperties.reasonableAdjustmentChangesRequired ||
+          afterPageVisitProperties.partyDetailsChangesRequired ||
+          afterPageVisitProperties.hearingWindowFirstDateMustBeChangesRequired) {
+        this.hearingsService.propertiesUpdatedOnPageVisit = {
+          caseFlags: serviceHearingValues.caseFlags,
+          parties: serviceHearingValues.parties,
+          hearingWindow: serviceHearingValues.hearingWindow,
+          afterPageVisit: afterPageVisitProperties
+        };
+      }
     }
   }
 
   private getAfterPageVisitProperties(): AfterPageVisitProperties {
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit) {
+      return this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit;
+    }
     return {
-      reasonableAdjustmentChangesConfirmed: this.pageVisitCaseFlagsChangeExists(),
-      partyDetailsChangesConfirmed: this.pageVisitPartiesChangeExists(),
-      hearingWindowFirstDateMustBeChangesConfirmed: this.pageVisitHearingWindowChangeExists()
+      reasonableAdjustmentChangesRequired: this.pageVisitCaseFlagsChangeExists(),
+      partyDetailsChangesRequired: this.pageVisitPartiesChangeExists(),
+      hearingWindowFirstDateMustBeChangesRequired: this.pageVisitHearingWindowChangeExists()
     };
   }
 

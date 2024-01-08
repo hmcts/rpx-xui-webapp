@@ -208,7 +208,7 @@ describe('HearingEditSummaryComponent', () => {
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {
-        reasonableAdjustmentChangesConfirmed: true,
+        reasonableAdjustmentChangesRequired: true,
         partyDetailsChangesConfirmed: true,
         hearingWindowFirstDateMustBeChangesConfirmed: true
       }

@@ -52,9 +52,13 @@ export interface WithinPageProperties {
 }
 
 export interface AfterPageVisitProperties {
+  reasonableAdjustmentChangesRequired: boolean;
   reasonableAdjustmentChangesConfirmed?: boolean;
+  nonReasonableAdjustmentChangesRequired?: boolean;
   nonReasonableAdjustmentChangesConfirmed?: boolean;
+  partyDetailsChangesRequired: boolean;
   partyDetailsChangesConfirmed?: boolean;
+  hearingWindowFirstDateMustBeChangesRequired: boolean;
   hearingWindowFirstDateMustBeChangesConfirmed?: boolean;
 }
 
@@ -70,12 +74,13 @@ export interface PropertiesUpdatedOnPageVisit {
   };
   parties: PartyDetailsModel[];
   hearingWindow: HearingWindowModel;
-  afterPageVisit?: AfterPageVisitProperties;
+  afterPageVisit: AfterPageVisitProperties;
 }
 
 export enum AmendmentLabelStatus {
   ACTION_NEEDED = 'ACTION NEEDED',
-  AMENDED = 'AMENDED'
+  AMENDED = 'AMENDED',
+  NONE = 'NONE'
 }
 
 export interface ParticipantAttendanceMode {

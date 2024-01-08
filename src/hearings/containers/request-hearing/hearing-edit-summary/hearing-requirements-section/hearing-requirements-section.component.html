@@ -4,6 +4,9 @@
 <h2 class="govuk-heading-m">
   Hearing requirements
   <exui-amendment-label *ngIf="reasonableAdjustmentChangesConfirmed"
+    [displayLabel]="amendmentLabelEnum.AMENDED">
+  </exui-amendment-label>
+  <exui-amendment-label *ngIf="reasonableAdjustmentChangesRequired && !reasonableAdjustmentChangesConfirmed"
     [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
   </exui-amendment-label>
 </h2>
@@ -15,7 +18,7 @@
     <div class="govuk-summary-list__value">
       <div *ngFor="let partyFlags of partiesWithFlags | keyvalue">
         <div *ngIf="partyFlags?.value?.length > 0">
-          <exui-amendment-label *ngIf="!partiesInHMC.includes(partyFlags.key)"
+          <exui-amendment-label *ngIf="!partyNamesInHMCRequestToCompare.includes(partyFlags.key)"
             [displayLabel]="amendmentLabelEnum.AMENDED">
           </exui-amendment-label>
           <strong class="bold">{{ partyFlags.key }}</strong>

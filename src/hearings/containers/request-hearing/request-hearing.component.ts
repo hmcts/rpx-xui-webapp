@@ -28,7 +28,11 @@ export class RequestHearingComponent implements OnDestroy {
   }
 
   public submitUpdatedRequest(): void {
-    this.hearingsService.navigateAction(ACTION.VIEW_EDIT_REASON);
+    this.hearingsService.submitUpdatedRequestClicked = true;
+    // Check if validation error exists
+    if (!this.hearingsService.displayValidationError) {
+      this.hearingsService.navigateAction(ACTION.VIEW_EDIT_REASON);
+    }
   }
 
   public submitChangeRequest(): void {

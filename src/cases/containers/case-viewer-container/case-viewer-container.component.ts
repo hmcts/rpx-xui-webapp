@@ -27,66 +27,66 @@ export class CaseViewerContainerComponent implements OnInit {
   public appendedTabs$: Observable<CaseTab[]>;
   public userRoles$: Observable<string[]>;
   private waDefaultServiceConfig: any = {
-    "configurations": [
+    'configurations': [
       {
-        "caseTypes": [
-          ""
+        'caseTypes': [
+          ''
         ],
-        "releaseVersion": "4",
-        "serviceName": ""
+        'releaseVersion': '4',
+        'serviceName': ''
       },
       {
-        "caseTypes": [
-          "Asylum"
+        'caseTypes': [
+          'Asylum'
         ],
-        "releaseVersion": "4",
-        "serviceName": "IA"
+        'releaseVersion': '4',
+        'serviceName': 'IA'
       },
       {
-        "caseTypes": [
-          "CIVIL",
-          "GENERALAPPLICATION"
+        'caseTypes': [
+          'CIVIL',
+          'GENERALAPPLICATION'
         ],
-        "releaseVersion": "4",
-        "serviceName": "CIVIL"
+        'releaseVersion': '4',
+        'serviceName': 'CIVIL'
       },
       {
-        "caseTypes": [
-          "PRIVATELAW",
-          "PRLAPPS"
+        'caseTypes': [
+          'PRIVATELAW',
+          'PRLAPPS'
         ],
-        "releaseVersion": "4",
-        "serviceName": "PRIVATELAW"
+        'releaseVersion': '4',
+        'serviceName': 'PRIVATELAW'
       },
       {
-        "caseTypes": [
-          "CriminalInjuriesCompensation"
+        'caseTypes': [
+          'CriminalInjuriesCompensation'
         ],
-        "releaseVersion": "4",
-        "serviceName": "ST_CIC"
+        'releaseVersion': '4',
+        'serviceName': 'ST_CIC'
       },
       {
-        "caseTypes": [
-          "ET_EnglandWales",
-          "ET_Scotland"
+        'caseTypes': [
+          'ET_EnglandWales',
+          'ET_Scotland'
         ],
-        "releaseVersion": "4",
-        "serviceName": "EMPLOYMENT"
+        'releaseVersion': '4',
+        'serviceName': 'EMPLOYMENT'
       },
       {
-        "caseTypes": [
-          "Benefit",
-          "SSCS_ExceptionRecord"
+        'caseTypes': [
+          'Benefit',
+          'SSCS_ExceptionRecord'
         ],
-        "releaseVersion": "4",
-        "serviceName": "SSCS"
+        'releaseVersion': '4',
+        'serviceName': 'SSCS'
       },
       {
-        "caseTypes": [
-          "CARE_SUPERVISION_EPO"
+        'caseTypes': [
+          'CARE_SUPERVISION_EPO'
         ],
-        "releaseVersion": "4",
-        "serviceName": "PUBLICLAW"
+        'releaseVersion': '4',
+        'serviceName': 'PUBLICLAW'
       }
     ]
   };

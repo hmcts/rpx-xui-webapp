@@ -19,18 +19,22 @@ export class HearingRequirementsSectionComponent implements OnInit {
   @Input() public hearingRequestToCompareMainModel: HearingRequestMainModel;
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
+  public reasonableAdjustmentChangesRequired: boolean;
   public reasonableAdjustmentChangesConfirmed: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
   public partyIdsInHMC: string[];
   public partyNamesInHMC: string[];
+  public partyNamesInHMCRequestToCompare: string[];
   public partiesWithFlags: Map<string, CaseFlagReferenceModel[]>;
 
   constructor(private readonly hearingsService: HearingsService) {}
 
   public ngOnInit(): void {
+    this.reasonableAdjustmentChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesRequired;
     this.reasonableAdjustmentChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed;
     this.partyIdsInHMC = this.hearingRequestMainModel.partyDetails.map(((party) => party.partyID));
     this.partyNamesInHMC = this.hearingRequestMainModel.partyDetails.map(((party) => party.partyName));
+    this.partyNamesInHMCRequestToCompare = this.hearingRequestToCompareMainModel.partyDetails.map(((party) => party.partyName));
     this.partiesWithFlags = this.getPartiesWithFlagData();
   }
 

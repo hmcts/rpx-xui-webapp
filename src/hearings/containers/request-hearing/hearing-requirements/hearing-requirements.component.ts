@@ -180,7 +180,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
     if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
         propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
-        (propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed || propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed)) {
+        (propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed)) {
       // Hearings manual amendment journey is enabled and there are changes to reasonable adjustment flags detected
       this.prepareHearingRequestData();
     }
@@ -201,13 +201,14 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       ...this.hearingRequestMainModel,
       partyDetails: combinedParties
     };
+    this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesConfirmed = true;
   }
 
   private setReasonableAdjustmentFlags(): void {
     const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
     if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
         propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
-        (propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed || propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed)) {
+        (propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed)) {
       // Hearings manual amendment journey is enabled and there are changes to reasonable adjustment flags detected
       this.reasonableAdjustmentFlags = CaseFlagsUtils.getReasonableAdjustmentFlags(this.caseFlagsRefData,
         this.hearingsService.propertiesUpdatedOnPageVisit?.caseFlags?.flags, this.hearingRequestMainModel.partyDetails, this.serviceHearingValuesModel.parties);

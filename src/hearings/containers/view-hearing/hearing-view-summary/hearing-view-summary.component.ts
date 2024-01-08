@@ -9,6 +9,7 @@ import { UserRole } from '../../../../app/models';
 import * as fromAppStore from '../../../../app/store';
 import { HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE } from '../../../../hearings/templates/hearing-request-view-summary.template';
 import { Mode } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
 import { HEARING_VIEW_ONLY_SUMMARY_TEMPLATE } from '../../../templates/hearing-view-only-summary.template';
 
 @Component({
@@ -24,7 +25,9 @@ export class HearingViewSummaryComponent implements OnInit {
 
   constructor(protected readonly appStore: Store<fromAppStore.State>,
     private readonly router: Router,
-    private readonly featureToggleService: FeatureToggleService) { }
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly hearingsService: HearingsService,
+  ) { }
 
   public ngOnInit(): void {
     this.isHearingAmendmentsEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments);
@@ -36,6 +39,8 @@ export class HearingViewSummaryComponent implements OnInit {
     combineLatest([this.isHearingAmendmentsEnabled$, this.isHearingManager$])
       .subscribe(([isHearingAmendmentsEnabled, isHearingManager]) => {
         if (isHearingAmendmentsEnabled && isHearingManager) {
+          this.hearingsService.propertiesUpdatedAutomatically = { pageless: {}, withinPage: {} };
+          this.hearingsService.propertiesUpdatedOnPageVisit = null;
           this.template = HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE;
         }
       });

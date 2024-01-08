@@ -2305,7 +2305,7 @@ describe('HearingRequirementsComponent', () => {
       parties: null,
       hearingWindow: null,
       afterPageVisit: {
-        reasonableAdjustmentChangesConfirmed: true,
+        reasonableAdjustmentChangesRequired: true,
         partyDetailsChangesConfirmed: false
       }
     };
@@ -2322,7 +2322,7 @@ describe('HearingRequirementsComponent', () => {
       parties: null,
       hearingWindow: null,
       afterPageVisit: {
-        reasonableAdjustmentChangesConfirmed: true,
+        reasonableAdjustmentChangesRequired: true,
         partyDetailsChangesConfirmed: true
       }
     };
@@ -2339,7 +2339,7 @@ describe('HearingRequirementsComponent', () => {
       parties: null,
       hearingWindow: null,
       afterPageVisit: {
-        reasonableAdjustmentChangesConfirmed: false,
+        reasonableAdjustmentChangesRequired: false,
         partyDetailsChangesConfirmed: true
       }
     };
@@ -2356,7 +2356,7 @@ describe('HearingRequirementsComponent', () => {
       parties: null,
       hearingWindow: null,
       afterPageVisit: {
-        reasonableAdjustmentChangesConfirmed: false,
+        reasonableAdjustmentChangesRequired: false,
         partyDetailsChangesConfirmed: true
       }
     };

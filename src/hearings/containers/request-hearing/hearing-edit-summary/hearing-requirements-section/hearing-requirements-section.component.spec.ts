@@ -24,6 +24,7 @@ describe('HearingRequirementsSectionComponent', () => {
     component = fixture.componentInstance;
     component.caseFlagsRefData = caseFlagsRefData;
     component.hearingRequestMainModel = initialState.hearings.hearingRequest.hearingRequestMainModel;
+    component.hearingRequestToCompareMainModel = initialState.hearings.hearingRequestToCompare.hearingRequestMainModel;
     component.serviceHearingValuesModel = initialState.hearings.hearingValues.serviceHearingValuesModel;
     fixture.detectChanges();
   });
@@ -44,7 +45,9 @@ describe('HearingRequirementsSectionComponent', () => {
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {
-        reasonableAdjustmentChangesRequired: true
+        reasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: true,
+        hearingWindowFirstDateMustBeChangesRequired: true
       }
     };
     component.ngOnInit();
@@ -57,7 +60,9 @@ describe('HearingRequirementsSectionComponent', () => {
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {
-        reasonableAdjustmentChangesRequired: false
+        reasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowFirstDateMustBeChangesRequired: true
       }
     };
     component.ngOnInit();

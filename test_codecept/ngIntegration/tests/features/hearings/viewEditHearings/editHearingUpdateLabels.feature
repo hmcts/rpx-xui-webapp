@@ -29,6 +29,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | IND  | Party1 name     | 1234-uytr-7654-asdf-0001 |
             | IND  | Party2 name     | 1234-uytr-7654-asdf-0002 |
             | ORG  | party3 org name | 1234-uytr-7654-asdf-0003 |
+
         Given I set mock get hearing with with status "LISTED" and values at jsonpath
             | jsonpath                                                  | value                 |
             | $.partyDetails[0].individualDetails.reasonableAdjustments | [RA001]               |
@@ -39,7 +40,6 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | $.hearingDetails.hearingWindow.firstDateTimeMustBe        | 2024-12-14T00:00:00   |
             | $.hearingDetails.privateHearingRequiredFlag               | false                 |
 
-
         Given I set mock hearings service hearing values with ref "partiesUpdated"
         Given I update mock hearings service hearing values with ref "partiesUpdated" at jsonpaths
             | jsonpath          | value |
@@ -49,6 +49,32 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | IND  | Party1 name     | 1234-uytr-7654-asdf-0001 |
             | IND  | Party2 name     | 1234-uytr-7654-asdf-0002 |
             | ORG  | party3 org name | 1234-uytr-7654-asdf-0003 |
+        Given I update mock hearings service hearing values with ref "partiesUpdated" for field "caseFlags"
+            | partyID | partyName   | flagParentId | flagId | flagDescription | flagStatus |
+            | party_1 | Party1 name | PARENT_0     | RA001  | Party1 comment  | ACTIVE     |
+            | party_2 | Party2 name | PARENT_0     | RA001  | Party2 comment  | ACTIVE     |
+            | party_1 | Party1 name | PARENT_0     | OT001  | Party1 comment  | ACTIVE     |
+            | party_2 | Party2 name | PARENT_0     | OT001  | Party2 comment  | ACTIVE     |
+        Given I update mock hearings service hearing values with ref "partiesUpdated" at jsonpaths
+            | jsonpath                                             | value                 |
+            | $.parties[0].individualDetails.reasonableAdjustments | [RA001]               |
+            | $.parties[1].individualDetails.reasonableAdjustments | [RA001]               |
+            | $.hmctsInternalCaseName                              | 1234567812345678      |
+            | $.publicCaseName                                     | Mock case public name |
+            | $.caserestrictedFlag                                 | false                 |
+            | $.privateHearingRequiredFlag                         | false                 |
+            | $.parties[0].partyName                               | Party1 name           |
+            | $.hearingWindow.firstDateTimeMustBe                  | 2024-12-14T00:00:00   |
+
+
+
+    Scenario: CAT1 and CAT 2 ,Ameded and ACTION NEEDED labels  (Conditions (1) & (4))
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        Then I am on hearings tab page
+        Then I see hearings table for "Current and upcoming" in hearings tab page
+
+        # CAT 1 chnages
+
         Given I update mock hearings service hearing values with ref "partiesUpdated" for field "caseFlags"
             | partyID | partyName   | flagParentId | flagId | flagDescription | flagStatus |
             | party_1 | Party1 name | PARENT_0     | RA001  | Party1 comment  | ACTIVE     |
@@ -101,7 +127,6 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
         Then I validate view hearing page Edit hearing button displayed is "true"
         When In view hearing page, I click Edit hearing button
         Then I validate Edit hearing page displayed
-
 
         Then I validate edit hearing section heating labels
             | Heading                                    | Label         |

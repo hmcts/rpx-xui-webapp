@@ -41,15 +41,17 @@ export class HearingRequirementsSectionComponent implements OnInit {
   private getPartiesWithFlagData(): Map<string, CaseFlagReferenceModel[]> {
     const partiesWithFlags: Map<string, CaseFlagReferenceModel[]> = new Map();
     const individualParties = this.serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND);
-    individualParties.forEach((party) => {
-      if (this.partyIdsInHMC.includes(party.partyID)) {
-        const flagIds = party.individualDetails?.reasonableAdjustments;
-        if (party.individualDetails?.interpreterLanguage) {
-          flagIds.push(party.individualDetails.interpreterLanguage);
+    individualParties.forEach((partyInSHV) => {
+      if (this.partyIdsInHMC.includes(partyInSHV.partyID)) {
+        const flagIds = this.reasonableAdjustmentChangesRequired && !this.reasonableAdjustmentChangesConfirmed
+          ? this.hearingRequestMainModel.partyDetails.find((partyInHMC) => partyInHMC.partyID === partyInSHV.partyID)?.individualDetails?.reasonableAdjustments
+          : partyInSHV.individualDetails?.reasonableAdjustments;
+        if (partyInSHV.individualDetails?.interpreterLanguage) {
+          flagIds.push(partyInSHV.individualDetails.interpreterLanguage);
         }
         const flags = flagIds?.map((flagId) => CaseFlagsUtils.findFlagByFlagId(this.caseFlagsRefData, flagId));
-        if (party.partyName && flags?.length > 0) {
-          partiesWithFlags.set(party.partyName, flags);
+        if (partyInSHV.partyName && flags?.length > 0) {
+          partiesWithFlags.set(partyInSHV.partyName, flags);
         }
       }
     });

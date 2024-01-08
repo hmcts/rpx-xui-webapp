@@ -21,11 +21,11 @@ export class HearingTimingSectionComponent implements OnInit {
   public hearingLength: string;
   public specificDate: string;
   public hearingPriority: string;
-  public hearingWindowChangesConfirmed: boolean;
+  public hearingWindowChangesRequired: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
 
   public ngOnInit(): void {
-    this.hearingWindowChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowFirstDateMustBeChangesConfirmed;
+    this.hearingWindowChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowFirstDateMustBeChangesRequired;
     this.hearingLength = this.getHearingLength();
     this.specificDate = this.getSpecificDate();
     this.hearingPriority = this.getHearingPriority();

@@ -290,7 +290,12 @@ describe('HearingAttendanceComponent', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: null,
       parties: partyDetailsFromLatestSHV,
-      hearingWindow: null
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: true,
+        hearingWindowFirstDateMustBeChangesRequired: true
+      }
     };
     component.ngOnInit();
     expect(component.initialiseFromHearingValues).not.toHaveBeenCalled();
@@ -305,7 +310,12 @@ describe('HearingAttendanceComponent', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: null,
       parties: partyDetailsFromLatestSHV,
-      hearingWindow: null
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: true,
+        hearingWindowFirstDateMustBeChangesRequired: true
+      }
     };
     component.ngOnInit();
     expect(component.initialiseFromHearingValues).toHaveBeenCalled();

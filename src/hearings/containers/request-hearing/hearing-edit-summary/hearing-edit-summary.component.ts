@@ -287,7 +287,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     this.hearingsService.submitUpdatedRequestClicked = false;
   }
 
-  private pageVisitChangeExists(): boolean {
+  public pageVisitChangeExists(): boolean {
     // check for changes on page visit
     const isPageVisitCaseFlagsChangeExists = this.pageVisitCaseFlagsChangeExists();
     const isPageVisitPartiesChangeExists = this.pageVisitPartiesChangeExists();

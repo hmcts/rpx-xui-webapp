@@ -209,8 +209,8 @@ describe('HearingEditSummaryComponent', () => {
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesConfirmed: true,
-        hearingWindowFirstDateMustBeChangesConfirmed: true
+        partyDetailsChangesRequired: true,
+        hearingWindowFirstDateMustBeChangesRequired: true
       }
     };
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);

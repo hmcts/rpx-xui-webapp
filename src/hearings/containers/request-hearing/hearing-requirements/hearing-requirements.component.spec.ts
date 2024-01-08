@@ -2290,7 +2290,12 @@ describe('HearingRequirementsComponent', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
-      hearingWindow: null
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: false,
+        hearingWindowFirstDateMustBeChangesRequired: false
+      }
     };
     component.ngOnInit();
     expect(component.reasonableAdjustmentFlags.length).toEqual(2);
@@ -2306,7 +2311,8 @@ describe('HearingRequirementsComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesConfirmed: false
+        partyDetailsChangesRequired: false,
+        hearingWindowFirstDateMustBeChangesRequired: true
       }
     };
     component.ngOnInit();
@@ -2323,7 +2329,8 @@ describe('HearingRequirementsComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesConfirmed: true
+        partyDetailsChangesRequired: true,
+        hearingWindowFirstDateMustBeChangesRequired: true
       }
     };
     component.ngOnInit();
@@ -2340,7 +2347,8 @@ describe('HearingRequirementsComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesConfirmed: true
+        partyDetailsChangesRequired: true,
+        hearingWindowFirstDateMustBeChangesRequired: true
       }
     };
     component.ngOnInit();
@@ -2357,7 +2365,8 @@ describe('HearingRequirementsComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesConfirmed: true
+        partyDetailsChangesRequired: true,
+        hearingWindowFirstDateMustBeChangesRequired: true
       }
     };
     component.ngOnInit();

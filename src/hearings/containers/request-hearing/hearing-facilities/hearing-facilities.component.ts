@@ -128,12 +128,15 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   }
 
   private setNonReasonableAdjustmentFlags(): void {
-    const caseFlags = this.hearingCondition.mode === Mode.VIEW_EDIT && this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags')
-      ? this.hearingsService.propertiesUpdatedOnPageVisit?.caseFlags?.flags
-      : this.serviceHearingValuesModel?.caseFlags?.flags;
-
-    if (caseFlags) {
-      this.nonReasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(caseFlags, this.caseFlagsRefData, this.caseFlagType);
+    const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
+    if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
+        propertiesUpdatedOnPageVisit.hasOwnProperty('caseFlags') &&
+        (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired)) {
+      this.nonReasonableAdjustmentFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlags(this.caseFlagsRefData,
+        propertiesUpdatedOnPageVisit.caseFlags?.flags, this.hearingRequestMainModel.partyDetails, this.serviceHearingValuesModel.parties);
+    } else {
+      this.nonReasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel?.caseFlags?.flags,
+        this.caseFlagsRefData, this.caseFlagType, this.serviceHearingValuesModel?.parties);
     }
   }
 }

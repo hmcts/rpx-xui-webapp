@@ -26,7 +26,6 @@ export class CaseFlagsUtils {
     // Get all active non-reasonable adjustment and language interpreter flags
     const activeFlags = this.getAllActiveDisplayFlags(caseFlags, caseFlagsRefData, partiesInSHV);
     const nonReasonableAdjustmentPartyFlags = activeFlags.filter((nonRAF) => nonRAF.displayPath.includes(CaseFlagType.PARTY_FLAGS));
-    // const groupedNonReasonableAdjustmentPartyFlags = _.groupBy(nonReasonableAdjustmentPartyFlags, CaseFlagsUtils.PARTY_NAME);
     const activeCaseFlags = activeFlags.filter((nonRAF) => nonRAF.displayPath.includes(CaseFlagType.CASE_FLAG));
     const flags = [...nonReasonableAdjustmentPartyFlags, ...activeCaseFlags];
     const groupedFlags = _.groupBy(flags, CaseFlagsUtils.PARTY_NAME);

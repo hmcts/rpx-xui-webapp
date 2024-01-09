@@ -99,6 +99,24 @@ export async function handlePostCaseWorkersRefData(path: string, userIdsByJurisd
   return data;
 }
 
+export async function handlePostCaseWorkersRefDataAll(path: string, userId: any, req: EnhancedRequest): Promise<any> {
+  const payload = {
+    userIds: userId
+  };
+  const headers = setHeaders(req);
+  const response: AxiosResponse = await http.post(path, payload, { headers });
+  return response;
+}
+
+export async function handlePostCaseWorkerSearch(path: string, userId: any, req: EnhancedRequest): Promise<any> {
+  const payload = {
+    userId
+  };
+  const headers = setHeaders(req);
+  const response: AxiosResponse = await http.post(path, payload, { headers });
+  return response;
+}
+
 export async function handlePostJudicialWorkersRefData(path: string, userIds: any, req: EnhancedRequest): Promise<any> {
   const payload = {
     userIds

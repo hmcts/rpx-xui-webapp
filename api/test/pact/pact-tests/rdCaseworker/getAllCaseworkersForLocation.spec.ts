@@ -10,9 +10,9 @@ const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_caseworkerRefUsers', port: 8000 });
 
-const MockApp = require('../../../../../test_codecept/nodeMock/app');
+const MockApp = require('../../../../../test/nodeMock/app');
 
-xdescribe('Caseworker ref data api, get all caseworkers for a specific location', () => {
+describe('Caseworker ref data api, get all caseworkers for a specific location', () => {
   const baseLocations = [
     { location_id: somethingLike(1), location: somethingLike('National'), is_primary: somethingLike(true) }
   ];

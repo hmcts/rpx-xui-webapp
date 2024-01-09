@@ -1,6 +1,9 @@
 <h2 class="govuk-heading-m">
   Additional facilities
-  <exui-amendment-label *ngIf="reasonableAdjustmentChangesConfirmed"
+  <exui-amendment-label *ngIf="nonReasonableAdjustmentChangesConfirmed"
+    [displayLabel]="amendmentLabelEnum.AMENDED">
+  </exui-amendment-label>
+  <exui-amendment-label *ngIf="nonReasonableAdjustmentChangesRequired && !nonReasonableAdjustmentChangesConfirmed"
     [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
   </exui-amendment-label>
 </h2>

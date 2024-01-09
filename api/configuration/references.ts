@@ -120,6 +120,8 @@ export const FEATURE_COMPRESSION_ENABLED = 'compressionEnabled';
 
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';
 
+export const FEATURE_JRD_E_LINKS_V2_ENABLED = 'jrdELinksV2Enabled';
+
 export const HELMET = 'helmet';
 
 export const REDIS_KEY_PREFIX = 'redis.prefix';

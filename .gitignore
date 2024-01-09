@@ -93,3 +93,4 @@ ignore/
 !.yarn/versions
 
 /infrastructure/.terraform/
+install-state.gz

@@ -8,7 +8,6 @@ redis:
     enabled: false
 
 nodejs:
-  aadIdentityName: xui
   applicationPort: 3000
   cpuRequests: 250m
   cpuLimits: 2000m
@@ -58,6 +57,7 @@ nodejs:
     SERVICES_HEARINGS_COMPONENT_API_SSCS: http://sscs-hearings-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     SERVICES_HEARINGS_COMPONENT_API_PRIVATELAW: http://fis-hmc-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     SERVICES_HMC_HEARINGS_COMPONENT_API: http://hmc-cft-hearing-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_HEARINGS_COMPONENT_API_CIVIL: http://civil-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services work allocation endpoints
     SERVICES_WORK_ALLOCATION_TASK_API: http://wa-task-management-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services role  endpoints
@@ -128,6 +128,7 @@ nodejs:
     FEATURE_OIDC_ENABLED: false
     FEATURE_UPDATED_TASK_PERMISSIONS_ENABLED: true
     FEATURE_WORKALLOCATION_ENABLED: false
+    FEATURE_JRD_E_LINKS_V2_ENABLED: false
     FEATURE_SUBSTANTIVE_ROLE_ENABLED: true
     FEATURE_ACCESS_MANAGEMENT_ENABLED: false
 

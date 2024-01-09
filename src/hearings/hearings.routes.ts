@@ -198,7 +198,6 @@ export const ROUTES: Routes = [
       {
         path: 'hearing-actual-edit-summary',
         resolve: {
-          caseType: CaseTypesResolver,
           hearingTypes: RefDataResolver,
           actualPartHeardReasonCodes: AdjournHearingActualReasonResolver,
           cancelHearingActualReasons: CancelHearingActualReasonResolver
@@ -498,6 +497,7 @@ export const ROUTES: Routes = [
           partyChannels: PartyChannelsResolverService,
           partySubChannels: PartySubChannelsResolverService,
           judgeTypes: JudgeTypesResolverService,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
           otherPanelRoles: PanelRolesResolverService,
           courtLocation: CourtLocationsDataResolver
         },

@@ -21,36 +21,34 @@ let featureLogFile = null;
 
 function overrideConsoleLogforWorkersThreads(){
 
-    if (process.env.PARALLEL === "true") {
-        const consoleLogRef = console.log;
-        const consoleErrorRef = console.error;
-        global.console.log = function (message) {
-            const folderName = path.resolve(__dirname, `../../functional-output/tests/featureLogs-${testType}`)
-            if (!featureLogFile) {
-                featureLogFile = folderName + '/executionLogs.log'
-            }
-            if (!fs.existsSync(folderName)) {
-                fs.mkdirSync(folderName);
-            }
-            const dateTime = new Date().toLocaleTimeString('en-GB');
-            consoleLogRef(message)
-            fs.appendFileSync(`${featureLogFile}`, `\n ${dateTime} : ${message}`)
+    const consoleLogRef = console.log;
+    const consoleErrorRef = console.error;
+    global.console.log = function (message) {
+        const folderName = path.resolve(__dirname, `../../functional-output/tests/featureLogs-${testType}`)
+        if (!featureLogFile) {
+            featureLogFile = folderName + '/executionLogs.log'
         }
-
-
-        global.console.error = (error) => {
-            const folderName = path.resolve(__dirname, `../../functional-output/tests/featureLogs-${testType}`)
-            if (!featureLogFile) {
-                featureLogFile = folderName + '/executionLogs.log'
-            }
-            if (!fs.existsSync(folderName)) {
-                fs.mkdirSync(folderName);
-            }
-            fs.appendFileSync(`${featureLogFile}`, "\n ERROR \n")
-
-            fs.appendFileSync(`${featureLogFile}`, '\n' + error)
-            consoleErrorRef(error)
+        if (!fs.existsSync(folderName)) {
+            fs.mkdirSync(folderName);
         }
+        const dateTime = new Date().toLocaleTimeString('en-GB');
+        consoleLogRef(message)
+        fs.appendFileSync(`${featureLogFile}`, `\n ${dateTime} : ${message}`)
+    }
+
+
+    global.console.error = (error) => {
+        const folderName = path.resolve(__dirname, `../../functional-output/tests/featureLogs-${testType}`)
+        if (!featureLogFile) {
+            featureLogFile = folderName + '/executionLogs.log'
+        }
+        if (!fs.existsSync(folderName)) {
+            fs.mkdirSync(folderName);
+        }
+        fs.appendFileSync(`${featureLogFile}`, "\n ERROR \n")
+
+        fs.appendFileSync(`${featureLogFile}`, '\n' + error)
+        consoleErrorRef(error)
     }
 
 }
@@ -178,11 +176,18 @@ module.exports = async function () {
     // });
 
 
-    event.dispatcher.on(event.bddStep.before, function (bddStep) {
+    event.dispatcher.on(event.bddStep.before, async function (bddStep) {
         // output.print(`STEP: ${bddStep.keyword} ${bddStep.text} `)
         const log = `=== BDD) ${bddStep.keyword} ${bddStep.text}`;
         codeceptMochawesomeLog.AddMessage(log)
 
+        if (bddStep.text.trim() === 'I see case details tab label "Hearings" is displayed is "true"'){
+            await new Promise((resolve,reject) => {
+                setTimeout(() => {
+                    resolve(true)
+                }, 300*60)
+            }) 
+        }
 
     });
 

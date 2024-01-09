@@ -169,8 +169,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     if (serviceHearingValues) {
       const afterPageVisitProperties = this.getAfterPageVisitProperties();
       if (afterPageVisitProperties.reasonableAdjustmentChangesRequired ||
-          afterPageVisitProperties.partyDetailsChangesRequired ||
-          afterPageVisitProperties.hearingWindowFirstDateMustBeChangesRequired) {
+        afterPageVisitProperties.nonReasonableAdjustmentChangesRequired ||
+        afterPageVisitProperties.partyDetailsChangesRequired ||
+        afterPageVisitProperties.hearingWindowFirstDateMustBeChangesRequired) {
         this.hearingsService.propertiesUpdatedOnPageVisit = {
           caseFlags: serviceHearingValues.caseFlags,
           parties: serviceHearingValues.parties,
@@ -187,6 +188,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     }
     return {
       reasonableAdjustmentChangesRequired: this.pageVisitCaseFlagsChangeExists(),
+      nonReasonableAdjustmentChangesRequired: this.pageVisitNonReasonalbleChangeExists(),
       partyDetailsChangesRequired: this.pageVisitPartiesChangeExists(),
       hearingWindowFirstDateMustBeChangesRequired: this.pageVisitHearingWindowChangeExists()
     };
@@ -290,10 +292,12 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public pageVisitChangeExists(): boolean {
     // check for changes on page visit
     const isPageVisitCaseFlagsChangeExists = this.pageVisitCaseFlagsChangeExists();
+    const isPageVisitNonReasonalbleChangeExists = this.pageVisitNonReasonalbleChangeExists();
     const isPageVisitPartiesChangeExists = this.pageVisitPartiesChangeExists();
     const isPageVisitHearingWindowChangeExists = this.pageVisitHearingWindowChangeExists();
 
     return isPageVisitCaseFlagsChangeExists ||
+      isPageVisitNonReasonalbleChangeExists ||
       isPageVisitPartiesChangeExists ||
       isPageVisitHearingWindowChangeExists;
   }
@@ -323,6 +327,17 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     return false;
   }
 
+  private pageVisitNonReasonalbleChangeExists(): boolean {
+    const caseFlagsModifiedDate = this.serviceHearingValuesModel.caseFlags.flags.map((flags) => flags.dateTimeModified);
+    const caseFlagsWithModifiedDate = caseFlagsModifiedDate.filter((date) => date !== null).filter((date) => date !== undefined);
+
+    if (caseFlagsWithModifiedDate.length > 0) {
+      // Check for the caseflags timestamp with HMC timestamp
+      return caseFlagsWithModifiedDate.some((date) => new Date(date) > new Date(this.hearingRequestMainModel.requestDetails?.timestamp));
+    }
+    return false;
+  }
+
   private pageVisitPartiesChangeExists(): boolean {
     const partiesSHV = this.serviceHearingValuesModel.parties;
     const partiesHMC = this.hearingRequestMainModel.partyDetails;
@@ -336,10 +351,10 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     for (const partySHV of partiesSHV) {
       const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
       if ((party.partyName !== partySHV.partyName) ||
-          (party.individualDetails?.title !== partySHV.individualDetails?.title) ||
-          (party.individualDetails?.firstName !== partySHV.individualDetails?.firstName) ||
-          (party.individualDetails?.lastName !== partySHV.individualDetails?.lastName) ||
-          (party.partyType !== partySHV.partyType)) {
+        (party.individualDetails?.title !== partySHV.individualDetails?.title) ||
+        (party.individualDetails?.firstName !== partySHV.individualDetails?.firstName) ||
+        (party.individualDetails?.lastName !== partySHV.individualDetails?.lastName) ||
+        (party.partyType !== partySHV.partyType)) {
         return true;
       }
     }

@@ -18,6 +18,8 @@ export interface PartyFlagsDisplayModel {
   flagId: string;
   flagDescription: string;
   flagStatus: string;
+  dateTimeCreated?: string;
+  dateTimeModified?: string;
   displayName: string;
   displayPath: string[];
   flagAmendmentLabelStatus?: AmendmentLabelStatus;

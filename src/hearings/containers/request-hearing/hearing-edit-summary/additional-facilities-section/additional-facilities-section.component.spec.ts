@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import * as _ from 'lodash';
+import { HearingsService } from '../../../../../hearings/services/hearings.service';
 import { initialState } from '../../../../hearing.test.data';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { AdditionalFacilitiesSectionComponent } from './additional-facilities-section.component';
@@ -7,6 +8,8 @@ import { AdditionalFacilitiesSectionComponent } from './additional-facilities-se
 describe('AdditionalFacilitiesSectionComponent', () => {
   let component: AdditionalFacilitiesSectionComponent;
   let fixture: ComponentFixture<AdditionalFacilitiesSectionComponent>;
+  const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post', 'delete']);
+  const hearingsService = new HearingsService(mockedHttpClient);
 
   const additionalFacilitiesRefData: LovRefDataModel[] = [
     {
@@ -125,7 +128,9 @@ describe('AdditionalFacilitiesSectionComponent', () => {
       declarations: [
         AdditionalFacilitiesSectionComponent
       ],
-      providers: []
+      providers: [
+        { provide: HearingsService, useValue: hearingsService }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdditionalFacilitiesSectionComponent);

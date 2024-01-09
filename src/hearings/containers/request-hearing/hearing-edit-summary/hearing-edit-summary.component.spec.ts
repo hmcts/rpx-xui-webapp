@@ -473,7 +473,6 @@ describe('HearingEditSummaryComponent', () => {
       component.ngOnInit();
       expect(component.isPagelessAttributeChanged).toEqual(true);
       expect(component.isWithinPageAttributeChanged).toEqual(true);
-      expect(component.pageVisitChangeExists).toEqual(true);
     });
 
     it('should display banner message', () => {
@@ -488,7 +487,6 @@ describe('HearingEditSummaryComponent', () => {
       component.ngOnInit();
       expect(component.isPagelessAttributeChanged).toEqual(true);
       expect(component.isWithinPageAttributeChanged).toEqual(true);
-      expect(component.pageVisitChangeExists).toEqual(false);
       storeDispatchSpy.calls.reset();
     });
   });

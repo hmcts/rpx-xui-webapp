@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
+import { HearingsService } from '../../../../../hearings/services/hearings.service';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
@@ -14,6 +16,11 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
 
   public additionalFacilitiesRequiredText: string;
   public additionalFacilities: string[] = [];
+  public amendmentLabelEnum = AmendmentLabelStatus;
+  public nonReasonableAdjustmentChangesRequired: boolean;
+  public nonReasonableAdjustmentChangesConfirmed: boolean;
+
+  constructor(private readonly hearingsService: HearingsService) {}
 
   public ngOnInit(): void {
     this.additionalFacilitiesRequiredText = this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag
@@ -26,6 +33,9 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
         this.additionalFacilities.push(facilityFromRefData.value_en);
       }
     });
+
+    this.nonReasonableAdjustmentChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesRequired;
+    this.nonReasonableAdjustmentChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed;
   }
 
   public onChange(fragmentId: string): void {

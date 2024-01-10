@@ -5,7 +5,8 @@ import { ActivatedRoute } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
-import { ACTION } from '../../../models/hearings.enum';
+import { ACTION, PartyType } from '../../../models/hearings.enum';
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { PartyFlagsModel } from '../../../models/partyFlags.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingFacilitiesComponent } from './hearing-facilities.component';
@@ -102,7 +103,7 @@ describe('HearingFacilitiesComponent', () => {
 
   const caseFlagsFromLatestSHV: PartyFlagsModel[] = [
     {
-      partyId: 'P1',
+      partyId: '1234-uytr-7654-asdf-0001',
       partyName: 'Jane Smith',
       flagParentId: 'RA0008',
       flagId: 'RA0042',
@@ -110,7 +111,7 @@ describe('HearingFacilitiesComponent', () => {
       flagStatus: 'ACTIVE'
     },
     {
-      partyId: 'P2',
+      partyId: '1234-uytr-7654-asdf-0001',
       partyName: 'Jane Smith vs DWP',
       flagParentId: 'CF0001',
       flagId: 'CF0006',
@@ -118,12 +119,74 @@ describe('HearingFacilitiesComponent', () => {
       flagStatus: 'ACTIVE'
     },
     {
-      partyId: 'P3',
+      partyId: '1234-uytr-7654-asdf-0002',
       partyName: 'Jane Smith vs DWP',
       flagParentId: 'CF0001',
       flagId: 'CF0007',
       flagDescription: 'Urgent flag',
       flagStatus: 'ACTIVE'
+    }
+  ];
+
+  const partiesInSHV: PartyDetailsModel[] = [
+    {
+      partyID: '1234-uytr-7654-asdf-0001',
+      partyType: PartyType.IND,
+      partyName: 'Party1 name',
+      partyRole: 'APPL',
+      individualDetails: {
+        firstName: 'Party1 name FN',
+        lastName: 'Party1 name LN',
+        interpreterLanguage: '',
+        reasonableAdjustments: [
+          'RA001'
+        ]
+      }
+    },
+    {
+      partyID: '1234-uytr-7654-asdf-0002',
+      partyType: PartyType.IND,
+      partyName: 'Party2 name',
+      partyRole: 'APPL',
+      individualDetails: {
+        firstName: 'Party2 name FN',
+        lastName: 'Party2 name LN',
+        interpreterLanguage: '',
+        reasonableAdjustments: [
+          'RA001'
+        ]
+      }
+    }
+  ];
+
+  const partiesInHMC: PartyDetailsModel[] = [
+    {
+      partyID: '1234-uytr-7654-asdf-0001',
+      partyType: PartyType.IND,
+      partyName: 'Party1 name',
+      partyRole: 'APPL',
+      individualDetails: {
+        firstName: 'Party1 name FN',
+        lastName: 'Party1 name LN',
+        interpreterLanguage: '',
+        reasonableAdjustments: [
+          'RA001'
+        ]
+      }
+    },
+    {
+      partyID: '1234-uytr-7654-asdf-0002',
+      partyType: PartyType.IND,
+      partyName: 'Party2 name',
+      partyRole: 'APPL',
+      individualDetails: {
+        firstName: 'Party2 name FN',
+        lastName: 'Party2 name LN',
+        interpreterLanguage: '',
+        reasonableAdjustments: [
+          'RA001'
+        ]
+      }
     }
   ];
 
@@ -208,9 +271,10 @@ describe('HearingFacilitiesComponent', () => {
       parties: null,
       hearingWindow: null,
       afterPageVisit: {
-        reasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: true,
-        hearingWindowFirstDateMustBeChangesRequired: true
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowFirstDateMustBeChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -226,13 +290,22 @@ describe('HearingFacilitiesComponent', () => {
       parties: null,
       hearingWindow: null,
       afterPageVisit: {
-        reasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: true,
-        hearingWindowFirstDateMustBeChangesRequired: true
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: false,
+        hearingWindowFirstDateMustBeChangesRequired: false
       }
     };
+    component.hearingRequestMainModel = {
+      ...component.hearingRequestMainModel,
+      partyDetails: partiesInHMC
+    };
+    component.serviceHearingValuesModel = {
+      ...component.serviceHearingValuesModel,
+      parties: partiesInSHV
+    };
     component.ngOnInit();
-    expect(component.nonReasonableAdjustmentFlags.length).toEqual(1);
+    expect(component.nonReasonableAdjustmentFlags.length).toEqual(2);
   });
 
   afterEach(() => {

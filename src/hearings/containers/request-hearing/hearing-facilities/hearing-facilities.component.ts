@@ -136,7 +136,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
         propertiesUpdatedOnPageVisit.caseFlags?.flags, this.hearingRequestMainModel.partyDetails, this.serviceHearingValuesModel.parties, this.hearingRequestMainModel.requestDetails);
     } else {
       this.nonReasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel?.caseFlags?.flags,
-        this.caseFlagsRefData, this.caseFlagType, this.serviceHearingValuesModel?.parties);
+        this.caseFlagsRefData, this.caseFlagType);
     }
   }
 }

@@ -48,6 +48,25 @@ describe('RequestHearingPageFlow', () => {
         partyDetails: []
       }
     },
+    hearingRequestToCompare: {
+      hearingRequestMainModel: {
+        requestDetails: null,
+        hearingDetails: {
+          duration: 1,
+          hearingType: '',
+          hearingLocations: [],
+          hearingWindow: null,
+          panelRequirements: null,
+          autolistFlag: false,
+          hearingPriorityType: '',
+          hearingInWelshFlag: true,
+          amendReasonCodes: null,
+          hearingChannels: [],
+          listingAutoChangeReasonCode: null
+        },
+        partyDetails: []
+      }
+    },
     hearingConditions: null
   };
   let requestHearingPageFlow;

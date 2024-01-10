@@ -208,9 +208,10 @@ describe('HearingEditSummaryComponent', () => {
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {
-        reasonableAdjustmentChangesConfirmed: true,
-        partyDetailsChangesConfirmed: true,
-        hearingWindowFirstDateMustBeChangesConfirmed: true
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: true,
+        hearingWindowFirstDateMustBeChangesRequired: true
       }
     };
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
@@ -473,7 +474,6 @@ describe('HearingEditSummaryComponent', () => {
       component.ngOnInit();
       expect(component.isPagelessAttributeChanged).toEqual(true);
       expect(component.isWithinPageAttributeChanged).toEqual(true);
-      expect(component.pageVisitChangeExists).toEqual(true);
     });
 
     it('should display banner message', () => {
@@ -488,7 +488,6 @@ describe('HearingEditSummaryComponent', () => {
       component.ngOnInit();
       expect(component.isPagelessAttributeChanged).toEqual(true);
       expect(component.isWithinPageAttributeChanged).toEqual(true);
-      expect(component.pageVisitChangeExists).toEqual(false);
       storeDispatchSpy.calls.reset();
     });
   });

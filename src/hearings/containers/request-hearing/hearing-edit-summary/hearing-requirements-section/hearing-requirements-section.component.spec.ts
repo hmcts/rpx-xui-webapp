@@ -24,6 +24,7 @@ describe('HearingRequirementsSectionComponent', () => {
     component = fixture.componentInstance;
     component.caseFlagsRefData = caseFlagsRefData;
     component.hearingRequestMainModel = initialState.hearings.hearingRequest.hearingRequestMainModel;
+    component.hearingRequestToCompareMainModel = initialState.hearings.hearingRequestToCompare.hearingRequestMainModel;
     component.serviceHearingValuesModel = initialState.hearings.hearingValues.serviceHearingValuesModel;
     fixture.detectChanges();
   });
@@ -44,11 +45,13 @@ describe('HearingRequirementsSectionComponent', () => {
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {
-        reasonableAdjustmentChangesConfirmed: true
+        reasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: true,
+        hearingWindowFirstDateMustBeChangesRequired: true
       }
     };
     component.ngOnInit();
-    expect(component.reasonableAdjustmentChangesConfirmed).toEqual(true);
+    expect(component.reasonableAdjustmentChangesRequired).toEqual(true);
   });
 
   it('should not display label', () => {
@@ -57,11 +60,13 @@ describe('HearingRequirementsSectionComponent', () => {
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {
-        reasonableAdjustmentChangesConfirmed: false
+        reasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowFirstDateMustBeChangesRequired: true
       }
     };
     component.ngOnInit();
-    expect(component.reasonableAdjustmentChangesConfirmed).toEqual(false);
+    expect(component.reasonableAdjustmentChangesRequired).toEqual(false);
   });
 
   it('should verify onChange', () => {

@@ -2290,7 +2290,12 @@ describe('HearingRequirementsComponent', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
-      hearingWindow: null
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: false,
+        hearingWindowFirstDateMustBeChangesRequired: false
+      }
     };
     component.ngOnInit();
     expect(component.reasonableAdjustmentFlags.length).toEqual(2);
@@ -2305,8 +2310,9 @@ describe('HearingRequirementsComponent', () => {
       parties: null,
       hearingWindow: null,
       afterPageVisit: {
-        reasonableAdjustmentChangesConfirmed: true,
-        partyDetailsChangesConfirmed: false
+        reasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: false,
+        hearingWindowFirstDateMustBeChangesRequired: true
       }
     };
     component.ngOnInit();
@@ -2322,8 +2328,9 @@ describe('HearingRequirementsComponent', () => {
       parties: null,
       hearingWindow: null,
       afterPageVisit: {
-        reasonableAdjustmentChangesConfirmed: true,
-        partyDetailsChangesConfirmed: true
+        reasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: true,
+        hearingWindowFirstDateMustBeChangesRequired: true
       }
     };
     component.ngOnInit();
@@ -2339,8 +2346,9 @@ describe('HearingRequirementsComponent', () => {
       parties: null,
       hearingWindow: null,
       afterPageVisit: {
-        reasonableAdjustmentChangesConfirmed: false,
-        partyDetailsChangesConfirmed: true
+        reasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowFirstDateMustBeChangesRequired: true
       }
     };
     component.ngOnInit();
@@ -2356,8 +2364,9 @@ describe('HearingRequirementsComponent', () => {
       parties: null,
       hearingWindow: null,
       afterPageVisit: {
-        reasonableAdjustmentChangesConfirmed: false,
-        partyDetailsChangesConfirmed: true
+        reasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowFirstDateMustBeChangesRequired: true
       }
     };
     component.ngOnInit();

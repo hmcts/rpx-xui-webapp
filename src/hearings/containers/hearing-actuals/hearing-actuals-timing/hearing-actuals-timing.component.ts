@@ -98,9 +98,9 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     }).format('YYYY-MM-DDTHH:mm:ss');
   }
 
-  // Convert UTC date/time to specified time zone using ccdDatePipe and return time only - defaults to 'local'
-  private getTime(time: string, zone: string = 'local'): string {
-    return time ? moment(this.ccdDatePipe.transform(time, zone)).format('HH:mm') : null;
+  // Convert UTC date/time string to a time string in the specified time zone and format using ccdDatePipe
+  private getTime(time: string, zone: string = 'local', format: string = 'HH:mm'): string {
+    return time ? moment(this.ccdDatePipe.transform(time, zone)).format(format) : null;
   }
 
   public ngOnInit() {

@@ -7,7 +7,7 @@ import {
   AbstractAppConfig,
   DatePipe,
   FormatTranslatorService,
-  LoadingService
+  LoadingService, PaletteUtilsModule
 } from '@hmcts/ccd-case-ui-toolkit';
 import {
   ExuiCommonLibModule
@@ -38,7 +38,8 @@ import { PageFlow } from './utils/page-flow';
     FormsModule,
     ReactiveFormsModule,
     ExuiCommonLibModule,
-    HearingsPipesModule
+    HearingsPipesModule,
+    PaletteUtilsModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers],
   entryComponents: [],

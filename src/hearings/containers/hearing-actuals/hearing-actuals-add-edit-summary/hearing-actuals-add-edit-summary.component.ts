@@ -2,16 +2,18 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
-import { HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
+import { HearingActualAddEditSummaryEnum, HearingDateEnum, HearingResult } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { HearingActualsSummaryBaseComponent } from '../hearing-actuals-summary-base/hearing-actuals-summary-base.component';
+import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   selector: 'exui-hearing-actuals-add-edit-summary',
   templateUrl: './hearing-actuals-add-edit-summary.component.html',
-  styleUrls: ['./hearing-actuals-add-edit-summary.component.scss']
+  styleUrls: ['./hearing-actuals-add-edit-summary.component.scss'],
+  providers: [DatePipe]
 })
 export class HearingActualsAddEditSummaryComponent extends HearingActualsSummaryBaseComponent {
   public successBanner = false;
@@ -19,9 +21,10 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   constructor(public readonly hearingStore: Store<fromHearingStore.State>,
     public readonly hearingsService: HearingsService,
     public readonly route: ActivatedRoute,
-    public readonly router: Router
+    public readonly router: Router,
+              public readonly ccdDatePipe: DatePipe
   ) {
-    super(hearingStore, hearingsService, route, router);
+    super(hearingStore, hearingsService, route, router, ccdDatePipe);
     this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
   }
 

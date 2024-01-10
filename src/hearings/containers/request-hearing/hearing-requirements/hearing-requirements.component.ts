@@ -219,7 +219,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     } else {
       // Hearings manual amendment journey is NOT enabled
       this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel?.caseFlags?.flags,
-        this.caseFlagsRefData, this.caseFlagType, this.serviceHearingValuesModel?.parties);
+        this.caseFlagsRefData, this.caseFlagType);
     }
   }
 }

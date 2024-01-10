@@ -1,5 +1,5 @@
 <exui-warning-and-error-section
-  [pageVisitChangeExists]="pageVisitChangeExists"
+  [pageVisitChangeExists]="pageVisitChangeExists()"
   [isPagelessAttributeChanged]="isPagelessAttributeChanged"
 ></exui-warning-and-error-section>
 <h1 class="govuk-heading-l">Edit hearing</h1>
@@ -48,8 +48,9 @@
 </div>
 <!-- Hearing requirements -->
 <exui-hearing-requirements-section
-  [hearingRequestMainModel]="hearingRequestMainModel"
   [serviceHearingValuesModel]="serviceHearingValuesModel"
+  [hearingRequestMainModel]="hearingRequestMainModel"
+  [hearingRequestToCompareMainModel]="hearingRequestToCompareMainModel"
   [caseFlagsRefData]="caseFlagsRefData"
   (changeEditHearing)="onChange($event)"
 ></exui-hearing-requirements-section>
@@ -113,6 +114,6 @@
   (changeEditHearing)="onChange($event)"
 ></exui-additional-instructions-section>
 <exui-warning-and-error-section
-  [pageVisitChangeExists]="pageVisitChangeExists"
+  [pageVisitChangeExists]="pageVisitChangeExists()"
   [isPagelessAttributeChanged]="isPagelessAttributeChanged"
 ></exui-warning-and-error-section>

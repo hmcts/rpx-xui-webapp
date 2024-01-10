@@ -9,6 +9,7 @@ import { UserDetails } from '../../../../app/models';
 import * as fromAppStore from '../../../../app/store';
 import { HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE } from '../../../../hearings/templates/hearing-request-view-summary.template';
 import { HEARING_VIEW_ONLY_SUMMARY_TEMPLATE } from '../../../../hearings/templates/hearing-view-only-summary.template';
+import { HearingsService } from '../../../services/hearings.service';
 import { HearingViewSummaryComponent } from './hearing-view-summary.component';
 
 describe('HearingViewSummaryComponent', () => {
@@ -37,6 +38,9 @@ describe('HearingViewSummaryComponent', () => {
     }
   };
 
+  const httpClientMock = jasmine.createSpyObj('HttpClient', ['get', 'post', 'delete']);
+  const hearingsService = new HearingsService(httpClientMock);
+
   beforeEach(() => {
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
     featureToggleServiceMock = jasmine.createSpyObj('featureToggleService', ['isEnabled']);
@@ -57,6 +61,10 @@ describe('HearingViewSummaryComponent', () => {
         {
           provide: FeatureToggleService,
           useValue: featureToggleServiceMock
+        },
+        {
+          provide: HearingsService,
+          useValue: hearingsService
         }
       ]
     }).compileComponents();

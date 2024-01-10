@@ -8,7 +8,7 @@ import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConstants } from '../../../../app/app.constants';
 import { CaseCategoryModel } from '../../../../hearings/models/caseCategory.model';
-import { AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../../hearings/models/hearingsUpdateMode.enum';
+import { AfterPageVisitProperties, AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../../hearings/models/hearingsUpdateMode.enum';
 import { ServiceHearingValuesModel } from '../../../../hearings/models/serviceHearingValues.model';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
@@ -54,8 +54,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public isHearingAmendmentsEnabled: boolean;
   public hearingTemplate = HearingTemplate;
   public isPagelessAttributeChanged: boolean = false;
+  public afterPageVisit: AfterPageVisitProperties;
   public isWithinPageAttributeChanged: boolean = false;
-  public pageVisitChangeExists: boolean = false;
 
   constructor(private readonly router: Router,
     private readonly locationsDataService: LocationsDataService,
@@ -167,13 +167,31 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
   private setPropertiesUpdatedOnPageVisit(serviceHearingValues: ServiceHearingValuesModel): void {
     if (serviceHearingValues) {
-      this.hearingsService.propertiesUpdatedOnPageVisit = {
-        caseFlags: serviceHearingValues.caseFlags,
-        parties: serviceHearingValues.parties,
-        hearingWindow: serviceHearingValues.hearingWindow,
-        afterPageVisit: {}
-      };
+      const afterPageVisitProperties = this.getAfterPageVisitProperties();
+      if (afterPageVisitProperties.reasonableAdjustmentChangesRequired ||
+        afterPageVisitProperties.nonReasonableAdjustmentChangesRequired ||
+        afterPageVisitProperties.partyDetailsChangesRequired ||
+        afterPageVisitProperties.hearingWindowFirstDateMustBeChangesRequired) {
+        this.hearingsService.propertiesUpdatedOnPageVisit = {
+          caseFlags: serviceHearingValues.caseFlags,
+          parties: serviceHearingValues.parties,
+          hearingWindow: serviceHearingValues.hearingWindow,
+          afterPageVisit: afterPageVisitProperties
+        };
+      }
     }
+  }
+
+  private getAfterPageVisitProperties(): AfterPageVisitProperties {
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit) {
+      return this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit;
+    }
+    return {
+      reasonableAdjustmentChangesRequired: this.pageVisitCaseFlagsChangeExists(),
+      nonReasonableAdjustmentChangesRequired: this.pageVisitNonReasonalbleChangeExists(),
+      partyDetailsChangesRequired: this.pageVisitPartiesChangeExists(),
+      hearingWindowFirstDateMustBeChangesRequired: this.pageVisitHearingWindowChangeExists()
+    };
   }
 
   private compareAndUpdateCaseCategories(hmcCaseCategories: CaseCategoryModel[], shvCaseCategories: CaseCategoryModel[]): CaseCategoryModel[] {
@@ -266,18 +284,22 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // check automatic update within page
     this.isWithinPageAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.withinPage).some((prop) => prop);
 
+    // Display Validation
+    this.hearingsService.displayValidationError = this.pageVisitChangeExists();
+    this.hearingsService.submitUpdatedRequestClicked = false;
+  }
+
+  public pageVisitChangeExists(): boolean {
     // check for changes on page visit
     const isPageVisitCaseFlagsChangeExists = this.pageVisitCaseFlagsChangeExists();
+    const isPageVisitNonReasonalbleChangeExists = this.pageVisitNonReasonalbleChangeExists();
     const isPageVisitPartiesChangeExists = this.pageVisitPartiesChangeExists();
     const isPageVisitHearingWindowChangeExists = this.pageVisitHearingWindowChangeExists();
 
-    this.pageVisitChangeExists = isPageVisitCaseFlagsChangeExists ||
+    return isPageVisitCaseFlagsChangeExists ||
+      isPageVisitNonReasonalbleChangeExists ||
       isPageVisitPartiesChangeExists ||
       isPageVisitHearingWindowChangeExists;
-
-    // Display Validation
-    this.hearingsService.displayValidationError = this.pageVisitChangeExists;
-    this.hearingsService.submitUpdatedRequestClicked = false;
   }
 
   private pageVisitCaseFlagsChangeExists(): boolean {
@@ -299,10 +321,23 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     // Return true if there are changes in reasonable adjustments and/or language interpreter flags
     if (flagIdsSHV.join() !== partyFlagIdsString) {
-      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesConfirmed = true;
       return true;
     }
     // There are no changes for reasonable adjustments and language interpreter flags when compared SHV with HMC
+    return false;
+  }
+
+  private pageVisitNonReasonalbleChangeExists(): boolean {
+    const caseFlagsModifiedDate = this.serviceHearingValuesModel.caseFlags.flags.map((flags) => flags.dateTimeModified);
+    const caseFlagsCreatedDate = this.serviceHearingValuesModel.caseFlags.flags.map((flags) => flags.dateTimeCreated);
+    const caseFlagsWithModifiedDate = caseFlagsModifiedDate.filter((date) => date !== null).filter((date) => date !== undefined);
+    const caseFlagsWithCreatedDate = caseFlagsCreatedDate.filter((date) => date !== null).filter((date) => date !== undefined);
+
+    if (caseFlagsWithModifiedDate.length > 0 || caseFlagsWithCreatedDate.length > 0) {
+      // Check for the caseflags timestamp with HMC timestamp
+      return caseFlagsWithModifiedDate.some((date) => new Date(date) > new Date(this.hearingRequestMainModel.requestDetails?.timestamp)) ||
+        caseFlagsWithCreatedDate.some((date) => new Date(date) > new Date(this.hearingRequestMainModel.requestDetails?.timestamp));
+    }
     return false;
   }
 
@@ -311,7 +346,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const partiesHMC = this.hearingRequestMainModel.partyDetails;
     // Return true if the number of parties in SHV and HMC are different
     if (partiesSHV.length !== partiesHMC.length) {
-      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed = true;
       return true;
     }
     // Number of parties are the same in both SHV and HMC
@@ -320,11 +354,10 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     for (const partySHV of partiesSHV) {
       const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
       if ((party.partyName !== partySHV.partyName) ||
-          (party.individualDetails?.title !== partySHV.individualDetails?.title) ||
-          (party.individualDetails?.firstName !== partySHV.individualDetails?.firstName) ||
-          (party.individualDetails?.lastName !== partySHV.individualDetails?.lastName) ||
-          (party.partyType !== partySHV.partyType)) {
-        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed = true;
+        (party.individualDetails?.title !== partySHV.individualDetails?.title) ||
+        (party.individualDetails?.firstName !== partySHV.individualDetails?.firstName) ||
+        (party.individualDetails?.lastName !== partySHV.individualDetails?.lastName) ||
+        (party.partyType !== partySHV.partyType)) {
         return true;
       }
     }
@@ -338,7 +371,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
     // Return true if the first date time must be value in SHV and HMC are different
     if (hearingWindowSHV?.firstDateTimeMustBe !== hearingWindowHMC?.firstDateTimeMustBe) {
-      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowFirstDateMustBeChangesConfirmed = true;
       return true;
     }
     // There is no change in first date time must be when compared SHV with HMC

@@ -1699,7 +1699,9 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagParentId: 'RA0008',
         flagId: 'RA0042',
         flagDescription: 'Sign language interpreter required',
-        flagStatus: 'ACTIVE'
+        flagStatus: 'ACTIVE',
+        dateTimeCreated: '2023-11-07T09:00:00.000Z',
+        dateTimeModified: '2023-11-07T09:00:00.000Z'
       },
       {
         partyId: 'P1',

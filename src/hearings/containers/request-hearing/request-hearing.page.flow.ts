@@ -16,6 +16,7 @@ export abstract class RequestHearingPageFlow {
   public hearingListMainModel: HearingListMainModel;
   public serviceHearingValuesModel: ServiceHearingValuesModel;
   public hearingRequestMainModel: HearingRequestMainModel;
+  public hearingRequestToCompareMainModel: HearingRequestMainModel;
   public hearingCondition: HearingConditions;
 
   public constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -30,6 +31,7 @@ export abstract class RequestHearingPageFlow {
         this.hearingListMainModel = hearingState.hearingList.hearingListMainModel;
         this.serviceHearingValuesModel = { ...hearingState.hearingValues.serviceHearingValuesModel };
         this.hearingRequestMainModel = { ...hearingState.hearingRequest.hearingRequestMainModel };
+        this.hearingRequestToCompareMainModel = { ...hearingState.hearingRequestToCompare.hearingRequestMainModel };
         this.hearingCondition = hearingState.hearingConditions;
       });
   }

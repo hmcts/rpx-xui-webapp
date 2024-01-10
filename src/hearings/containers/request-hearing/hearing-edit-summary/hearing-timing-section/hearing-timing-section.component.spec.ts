@@ -72,11 +72,13 @@ describe('HearingTimingSectionComponent', () => {
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {
-        hearingWindowFirstDateMustBeChangesConfirmed: true
+        reasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowFirstDateMustBeChangesRequired: true
       }
     };
     component.ngOnInit();
-    expect(component.hearingWindowChangesConfirmed).toEqual(true);
+    expect(component.hearingWindowChangesRequired).toEqual(true);
   });
 
   it('should not display label', () => {
@@ -85,11 +87,13 @@ describe('HearingTimingSectionComponent', () => {
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {
-        hearingWindowFirstDateMustBeChangesConfirmed: false
+        reasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: true,
+        hearingWindowFirstDateMustBeChangesRequired: false
       }
     };
     component.ngOnInit();
-    expect(component.hearingWindowChangesConfirmed).toEqual(false);
+    expect(component.hearingWindowChangesRequired).toEqual(false);
   });
 
   it('should verify onChange', () => {

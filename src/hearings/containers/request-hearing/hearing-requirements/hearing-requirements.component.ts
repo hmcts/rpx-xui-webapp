@@ -177,12 +177,14 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   }
 
   protected executeAction(action: ACTION): void {
-    const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
-    if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
-        propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
-        (propertiesUpdatedOnPageVisit?.afterPageVisit.reasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesRequired)) {
-      // Hearings manual amendment journey is enabled and there are changes to reasonable adjustment flags detected
-      this.prepareHearingRequestData();
+    if (action === ACTION.CONTINUE) {
+      const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
+      if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
+          propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
+          (propertiesUpdatedOnPageVisit?.afterPageVisit.reasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesRequired)) {
+        // Hearings manual amendment journey is enabled and there are changes to reasonable adjustment flags detected
+        this.prepareHearingRequestData();
+      }
     }
     super.navigateAction(action);
   }

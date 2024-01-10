@@ -329,11 +329,14 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
   private pageVisitNonReasonalbleChangeExists(): boolean {
     const caseFlagsModifiedDate = this.serviceHearingValuesModel.caseFlags.flags.map((flags) => flags.dateTimeModified);
+    const caseFlagsCreatedDate = this.serviceHearingValuesModel.caseFlags.flags.map((flags) => flags.dateTimeCreated);
     const caseFlagsWithModifiedDate = caseFlagsModifiedDate.filter((date) => date !== null).filter((date) => date !== undefined);
+    const caseFlagsWithCreatedDate = caseFlagsCreatedDate.filter((date) => date !== null).filter((date) => date !== undefined);
 
-    if (caseFlagsWithModifiedDate.length > 0) {
+    if (caseFlagsWithModifiedDate.length > 0 || caseFlagsWithCreatedDate.length > 0) {
       // Check for the caseflags timestamp with HMC timestamp
-      return caseFlagsWithModifiedDate.some((date) => new Date(date) > new Date(this.hearingRequestMainModel.requestDetails?.timestamp));
+      return caseFlagsWithModifiedDate.some((date) => new Date(date) > new Date(this.hearingRequestMainModel.requestDetails?.timestamp)) ||
+        caseFlagsWithCreatedDate.some((date) => new Date(date) > new Date(this.hearingRequestMainModel.requestDetails?.timestamp));
     }
     return false;
   }

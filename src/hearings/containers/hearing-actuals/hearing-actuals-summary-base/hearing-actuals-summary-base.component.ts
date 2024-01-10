@@ -156,7 +156,7 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
   }
 
   // Convert UTC date/time string to a time string in the specified time zone and format using ccdDatePipe
-  private getTime(time: string, zone: string = 'local', format: string = 'HH:mm'): string {
+  public getTime(time: string, zone: string = 'local', format: string = 'HH:mm'): string {
     return time ? moment(this.ccdDatePipe.transform(time, zone)).format(format) : null;
   }
 

@@ -165,6 +165,24 @@ describe('HearingActualsTimingComponent', () => {
     expect(component.formGroup.hasError('invalidPauseStartTimeRange')).toBeTruthy();
     expect(component.formGroup.hasError('invalidPauseEndTimeRange')).toBeTruthy();
   });
+
+  it('should format time with default parameters', () => {
+    const time = '2021-03-12T09:20:00.000Z';
+    const formattedTime = component.getTime(time);
+    expect(formattedTime).toBe('09:20');
+  });
+
+  it('should format time with custom format', () => {
+    const time = '2021-03-12T09:20:00.000Z';
+    const formattedTime = component.getTime(time, 'local', 'h:mm A');
+    expect(formattedTime).toBe('9:20 AM');
+  });
+
+  it('should format time to BST', () => {
+    const time = '2021-08-12T10:00:00.000Z';
+    const formattedTime = component.getTime(time, 'local');
+    expect(formattedTime).toBe('11:00');
+  });
 });
 
 describe('HearingActualsTimingComponent', () => {
@@ -211,4 +229,5 @@ describe('HearingActualsTimingComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
 });

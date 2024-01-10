@@ -227,8 +227,8 @@ export class ActualHearingsUtils {
     return day.pauseDateTimes && day.pauseDateTimes.length && day.pauseDateTimes[0] && day.pauseDateTimes[0].pauseStartTime
       ? day.pauseDateTimes[0][pauseTimeState] : null;
   }
-  public static formatTime(time: string, format: string = "HH:mm"): string {
+
+  public static formatTime(time: string, format: string = 'HH:mm'): string {
     return moment(time).format(format);
   }
-
 }

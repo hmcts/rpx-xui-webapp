@@ -229,5 +229,4 @@ describe('HearingActualsTimingComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
 });

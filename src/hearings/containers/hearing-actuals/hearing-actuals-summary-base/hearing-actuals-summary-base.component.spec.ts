@@ -257,9 +257,9 @@ describe('HearingActualsSummaryBaseComponent', () => {
     });
 
     it('should format time to local time', () => {
-      const time = '2021-08-12T10:00:00.000Z';
+      const time = '2021-03-12T09:20:00.000Z';
       const formattedTime = component.getTime(time, 'local');
-      expect(formattedTime).toBe('10:00');
+      expect(formattedTime).toBe('09:20');
     });
   });
 

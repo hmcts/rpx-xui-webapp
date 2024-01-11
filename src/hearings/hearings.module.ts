@@ -15,6 +15,7 @@ import * as fromComponents from './components';
 import * as fromContainers from './containers';
 import { HearingsEditGuard } from './guards/hearings-edit-guard';
 import { HearingsViewGuard } from './guards/hearings-view-guard';
+import { HearingAmendmentsGuard } from './guards/hearing-amendments-guard';
 import { hearingsRouting } from './hearings.routes';
 import { HearingsPipesModule } from './pipes/hearings.pipes.module';
 import { HearingsService } from './services/hearings.service';
@@ -51,7 +52,8 @@ import { WarningAndErrorSectionComponent } from './containers/request-hearing/he
     HearingsService,
     HearingsEditGuard,
     HearingsViewGuard,
-    LoadingService
+    LoadingService,
+    HearingAmendmentsGuard
   ]
 })
 /**

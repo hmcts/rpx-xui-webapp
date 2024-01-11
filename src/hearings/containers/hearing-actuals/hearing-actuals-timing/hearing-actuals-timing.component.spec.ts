@@ -178,7 +178,7 @@ describe('HearingActualsTimingComponent', () => {
     expect(formattedTime).toBe('9:20 AM');
   });
 
-  it('should format time to BST', () => {
+  it('should format time to local time', () => {
     const time = '2021-08-12T10:00:00.000Z';
     const formattedTime = component.getTime(time, 'local');
     expect(formattedTime).toBe('10:00');

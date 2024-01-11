@@ -107,7 +107,10 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
         facilitiesRequired
       }
     };
-    if (this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesRequired) {
+    const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
+    if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
+      propertiesUpdatedOnPageVisit.hasOwnProperty('caseFlags') &&
+      (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired)) {
       this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed = true;
     }
   }

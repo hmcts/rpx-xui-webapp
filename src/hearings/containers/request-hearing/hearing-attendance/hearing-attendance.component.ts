@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { ACTION, HearingChannelEnum, Mode, PartyType, RadioOptions } from '../../../models/hearings.enum';
+import { AmendmentLabelStatus } from '../../../models/hearingsUpdateMode.enum';
 import { IndividualDetailsModel } from '../../../models/individualDetails.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -28,6 +29,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   public hearingLevelChannels: LovRefDataModel[];
   public selectionValid: boolean = true;
   public isAttendanceSelected: boolean = true;
+  public partyDetailsChangesRequired: boolean;
+  public partyDetailsChangesConfirmed: boolean;
 
   constructor(private readonly validatorsUtils: ValidatorsUtils,
     private readonly fb: FormBuilder,
@@ -38,6 +41,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     super(hearingStore, hearingsService, featureToggleService, route);
     this.hearingLevelChannels = this.route.snapshot.data.hearingChannels.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR && channel.key !== HearingChannelEnum.NotAttending);
     this.partyChannels = this.route.snapshot.data.hearingChannels.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR);
+    this.partyDetailsChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesRequired;
+    this.partyDetailsChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed;
     this.attendanceFormGroup = fb.group({
       estimation: [null, [Validators.pattern(/^\d+$/)]],
       parties: fb.array([]),
@@ -62,8 +67,11 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public ngOnInit(): void {
-    if (!this.hearingRequestMainModel.partyDetails.length || (this.hearingCondition.mode === Mode.VIEW_EDIT &&
-      this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('parties'))) {
+    if ((this.hearingCondition.mode === Mode.VIEW_EDIT &&
+      this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('parties') &&
+      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired)) {
+      this.initialiseFromHearingValuesForAmendments();
+    } else if (!this.hearingRequestMainModel.partyDetails.length) {
       this.initialiseFromHearingValues();
     } else {
       this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND)
@@ -86,15 +94,32 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public initialiseFromHearingValues() {
-    const parties = this.hearingCondition.mode === Mode.VIEW_EDIT &&
-      this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('parties')
-      ? this.hearingsService.propertiesUpdatedOnPageVisit.parties
-      : this.serviceHearingValuesModel.parties;
-
-    parties.forEach((partyDetailsModel: PartyDetailsModel) => {
+    this.serviceHearingValuesModel.parties.forEach((partyDetailsModel: PartyDetailsModel) => {
       (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyDetailsModel) as FormGroup);
     });
-    this.attendanceFormGroup.controls.estimation.setValue(this.serviceHearingValuesModel.numberOfPhysicalAttendees || 0);
+    this.attendanceFormGroup.controls.estimation.setValue(this.serviceHearingValuesModel.numberOfPhysicalAttendees);
+  }
+
+  public initialiseFromHearingValuesForAmendments() {
+    const partyIdsInHMC = this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND).map((party) => party.partyID);
+    this.serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND).forEach((partyDetailsModel: PartyDetailsModel) => {
+      if (!partyIdsInHMC.includes(partyDetailsModel.partyID)) {
+        partyDetailsModel = {
+          ...partyDetailsModel,
+          partyAmendmentStatus: AmendmentLabelStatus.ACTION_NEEDED
+        };
+      } else {
+        const partyInHMC = this.hearingRequestMainModel.partyDetails.find((party) => party.partyID === partyDetailsModel.partyID);
+        if (partyInHMC.partyName !== partyDetailsModel.partyName) {
+          partyDetailsModel = {
+            ...partyDetailsModel,
+            partyAmendmentStatus: AmendmentLabelStatus.AMENDED
+          };
+        }
+      }
+      (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyDetailsModel) as FormGroup);
+    });
+    this.attendanceFormGroup.controls.estimation.setValue(this.serviceHearingValuesModel.numberOfPhysicalAttendees);
   }
 
   public executeAction(action: ACTION): void {
@@ -189,7 +214,15 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     return formValid;
   }
 
-  public patchValues(party: PartyDetailsModel): FormGroup {
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
+  }
+
+  public ngOnDestroy(): void {
+    super.unsubscribe();
+  }
+
+  private patchValues(party: PartyDetailsModel): FormGroup {
     const individualDetails = party.individualDetails && this.initIndividualDetailsFormGroup(party.individualDetails);
     const organisationDetails = party.organisationDetails;
     return this.fb.group({
@@ -200,16 +233,9 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       ...individualDetails && ({ individualDetails }),
       ...organisationDetails && ({ organisationDetails }),
       unavailabilityDOW: [party.unavailabilityDOW],
-      unavailabilityRanges: [party.unavailabilityRanges]
+      unavailabilityRanges: [party.unavailabilityRanges],
+      partyAmendmentStatus: [party.partyAmendmentStatus]
     });
-  }
-
-  public ngAfterViewInit(): void {
-    this.fragmentFocus();
-  }
-
-  public ngOnDestroy(): void {
-    super.unsubscribe();
   }
 
   private initIndividualDetailsFormGroup(individualDetails: IndividualDetailsModel): FormGroup {

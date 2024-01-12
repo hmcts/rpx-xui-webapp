@@ -1,5 +1,7 @@
 
 const { v4 } = require('uuid');
+const hearingChannel_Categories = require('./hearingChannel_Categories');
+const hearingSubChannel_Categories = require('./hearingSubChannel_Categories');
 
 class PRDApi{
 
@@ -7,17 +9,17 @@ class PRDApi{
         this.method = {
             searchTasks: "ON_SEARCH_TASKS"
         }
-        this.   categoryTypes = {
-            HearingType:{
+        this.categoryTypes = {
+            HearingType: {
                 inputs: [{ value_en: 'Breach 1', key: 'ABA1-BRE' }, { value_en: 'Breach 2', key: 'ABA2-BRE' }],
-                value:[]
+                value: []
             },
             Facilities: {
                 inputs: [{ value_en: 'Facility 1', key: 'ABA1-FAC' }, { value_en: 'Facility 2', key: 'ABA2-FAC' }],
                 value: []
             },
             HearingChannel: {
-                inputs: [{ value_en: 'Hearing channel 1', key: 'ABA1-HRC' }, { value_en: 'Hearing channel 2', key: 'ABA2-HRC' }],
+                inputs: hearingChannel_Categories.list_of_values,
                 value: []
             },
             JudgeType: {
@@ -28,16 +30,16 @@ class PRDApi{
                 inputs: [{ value_en: 'Hearing priority 1', key: 'ABA1-HPR' }, { value_en: 'Hearing priority 2', key: 'ABA2-HPR' }],
                 value: []
             },
-            caseType:{
+            caseType: {
                 inputs: [{ value_en: 'Case type 1' }, { value_en: 'Case type 2' }],
                 value: []
             },
-            CaseLinkingReasonCode:{
+            CaseLinkingReasonCode: {
                 inputs: [{ value_en: 'Case linking code 1' }, { value_en: 'Case linking code 2' }],
                 value: []
             },
-            HearingSubChannel:{
-                inputs: [{ value_en: 'Hearing sub channel code 1' }, { value_en: 'Hearing sub channel code 2' }],
+            HearingSubChannel: {
+                inputs: hearingSubChannel_Categories.list_of_values,
                 value: []
             },
             PanelMemberType: {
@@ -69,7 +71,7 @@ class PRDApi{
 
         this.panelMembers = [];
         this.caseFlags = {
-            flags:[
+            flags: [
                  { FlagDetails: [] }
             ],
 

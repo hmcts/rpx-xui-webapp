@@ -93,17 +93,18 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     this.partiesFormArray = this.attendanceFormGroup.controls.parties as FormArray;
   }
 
-  public initialiseFromHearingValues() {
+  public initialiseFromHearingValues(): void {
     this.serviceHearingValuesModel.parties.forEach((partyDetailsModel: PartyDetailsModel) => {
       (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyDetailsModel) as FormGroup);
     });
     this.attendanceFormGroup.controls.estimation.setValue(this.serviceHearingValuesModel.numberOfPhysicalAttendees);
   }
 
-  public initialiseFromHearingValuesForAmendments() {
-    const partyIdsInHMC = this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND).map((party) => party.partyID);
-    this.serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND).forEach((partyDetailsModel: PartyDetailsModel) => {
-      if (!partyIdsInHMC.includes(partyDetailsModel.partyID)) {
+  public initialiseFromHearingValuesForAmendments(): void {
+    const individualPartyIdsInHMC = this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND)?.map((party) => party.partyID);
+    const individualPartiesInSHV = this.serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND);
+    individualPartiesInSHV?.forEach((partyDetailsModel: PartyDetailsModel) => {
+      if (!individualPartyIdsInHMC.includes(partyDetailsModel.partyID)) {
         partyDetailsModel = {
           ...partyDetailsModel,
           partyAmendmentStatus: AmendmentLabelStatus.ACTION_NEEDED

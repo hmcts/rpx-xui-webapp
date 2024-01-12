@@ -14,6 +14,7 @@ import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.module';
 import * as fromHearingStore from '../../../hearings/store';
 import { CaseHearingsListComponent } from './case-hearings-list.component';
+import { HearingsFeatureService } from '../../../hearings/services/hearings-feature.service';
 
 class MockRoleCategoryMappingService {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -619,6 +620,7 @@ describe('CaseHearingsListComponent', () => {
   const mockFeatureService = new MockRoleCategoryMappingService();
   let mockStore: Store<fromHearingStore.State>;
   const featureToggleServiceMock = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
+  const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled']);
 
   const mockRouter = {
     navigate: jasmine.createSpy('navigate'),
@@ -652,6 +654,10 @@ describe('CaseHearingsListComponent', () => {
         {
           provide: FeatureToggleService,
           useValue: featureToggleServiceMock
+        },
+        {
+          provide: HearingsFeatureService,
+          useValue: hearingsFeatureServiceMock
         }
       ]
     }).compileComponents();
@@ -663,6 +669,7 @@ describe('CaseHearingsListComponent', () => {
     component.hearingStageOptions = HEARING_TYPES_REF_DATA;
     component.actions = [Actions.DELETE];
     featureToggleServiceMock.isEnabled.and.returnValue(of(false));
+    hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(false));
     fixture.detectChanges();
   });
 
@@ -854,6 +861,7 @@ describe('CaseHearingsListComponent', () => {
 
   it('should show view details actions if feature toggle is on', () => {
     featureToggleServiceMock.isEnabled.and.returnValue(of(true));
+    hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
     component.status = EXUISectionStatusEnum.UPCOMING;
     component.actions = [Actions.CREATE, Actions.DELETE, Actions.UPDATE, Actions.READ];
     component.ngOnInit();

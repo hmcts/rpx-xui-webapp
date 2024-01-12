@@ -11,6 +11,7 @@ import { initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
+import { HearingsFeatureService } from '../../../services/hearings-feature.service';
 import { HearingChangeReasonsComponent } from './hearing-change-reasons.component';
 
 describe('HearingChangeReasonsComponent', () => {
@@ -21,6 +22,7 @@ describe('HearingChangeReasonsComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   const mockRouter = jasmine.createSpyObj('router', ['navigateByUrl']);
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
+  const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled']);
 
   const reasons: LovRefDataModel[] = [
     {
@@ -93,6 +95,10 @@ describe('HearingChangeReasonsComponent', () => {
           provide: HearingsService,
           useValue: hearingsService
         },
+        {
+          provide: HearingsFeatureService,
+          useValue: hearingsFeatureServiceMock
+        },
         FormBuilder
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -110,6 +116,7 @@ describe('HearingChangeReasonsComponent', () => {
     mockStore = jasmine.createSpyObj('mockStore', ['unsubscribe', 'dispatch', 'pipe']);
     mockStore.pipe.and.returnValue(of(initialState.hearings.hearingList));
     mockFeatureToggleService.isEnabled.and.returnValue(of(true));
+    hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
     fixture.detectChanges();
   });
 

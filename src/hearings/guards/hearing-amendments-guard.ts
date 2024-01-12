@@ -16,7 +16,7 @@ export class HearingAmendmentsGuard extends HearingsGuard implements CanActivate
     super(appStore, sessionStorageService, featureToggleService);
 
     // featureName initialization should be called after the super
-    this.featureName = AppConstants.FEATURE_NAMES.mcHearingsFeature;
+    this.featureName = AppConstants.FEATURE_NAMES.enableHearingAmendments;
   }
 
   canActivate(): Observable<boolean> {

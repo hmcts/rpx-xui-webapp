@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppConstants } from '../../../app/app.constants';
@@ -9,6 +8,7 @@ import { HearingListViewModel } from '../../../hearings/models/hearingListView.m
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode } from '../../../hearings/models/hearings.enum';
 import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import * as fromHearingStore from '../../../hearings/store';
+import { HearingsFeatureService } from '../../../hearings/services/hearings-feature.service';
 
 @Component({
   selector: 'exui-case-hearings-list',
@@ -38,7 +38,7 @@ export class CaseHearingsListComponent implements OnInit {
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
-    private readonly featureToggleService: FeatureToggleService) {
+    private readonly hearingsFeatureService: HearingsFeatureService) {
     this.caseId = this.activatedRoute.snapshot.params.cid;
   }
 
@@ -58,7 +58,7 @@ export class CaseHearingsListComponent implements OnInit {
       }
     }
 
-    this.isHearingAmendmentsEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments);
+    this.isHearingAmendmentsEnabled$ = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.mcHearingsFeature);
   }
 
   public isAwaitingActual(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {

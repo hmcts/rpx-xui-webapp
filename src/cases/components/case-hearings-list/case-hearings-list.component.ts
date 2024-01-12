@@ -58,7 +58,7 @@ export class CaseHearingsListComponent implements OnInit {
       }
     }
 
-    this.isHearingAmendmentsEnabled$ = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.mcHearingsFeature);
+    this.isHearingAmendmentsEnabled$ = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments);
   }
 
   public isAwaitingActual(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {

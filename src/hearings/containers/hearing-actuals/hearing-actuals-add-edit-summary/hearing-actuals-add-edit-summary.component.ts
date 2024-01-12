@@ -22,7 +22,7 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
     public readonly hearingsService: HearingsService,
     public readonly route: ActivatedRoute,
     public readonly router: Router,
-              public readonly ccdDatePipe: DatePipe
+    public readonly ccdDatePipe: DatePipe
   ) {
     super(hearingStore, hearingsService, route, router, ccdDatePipe);
     this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];

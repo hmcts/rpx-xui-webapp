@@ -111,7 +111,7 @@
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
   "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
-  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
+  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW,SSCS",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
   "serviceRefDataMapping": [
     { "service": "IA", "serviceCodes": ["BFA1"] },

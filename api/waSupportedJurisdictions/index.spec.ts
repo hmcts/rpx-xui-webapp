@@ -31,6 +31,6 @@ describe('WA Supported Jurisdictions', () => {
 
   it('should get only the list of supported jurisdictions', async() => {
     const jurisdictionList = waSupportedJurisdictions.getWASupportedJurisdictionsList();
-    expect(jurisdictionList).to.deep.equal(['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW']);
+    expect(jurisdictionList).to.deep.equal(['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'ET']);
   });
 });

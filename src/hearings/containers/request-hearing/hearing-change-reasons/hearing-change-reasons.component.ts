@@ -10,7 +10,6 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
-import { HearingsFeatureService } from '../../../services/hearings-feature.service';
 
 @Component({
   selector: 'exui-hearing-change-reasons',
@@ -32,14 +31,13 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
               protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
               protected readonly featureToggleService: FeatureToggleService,
-              protected readonly hearingsFeatureService: HearingsFeatureService,
               protected readonly route: ActivatedRoute) {
     super(hearingStore, hearingsService, featureToggleService, route);
     this.hearingRequestLastError$ = this.hearingStore.pipe(select(fromHearingStore.getHearingRequestLastError));
   }
 
   public ngOnInit(): void {
-    this.featureToggleServiceSubscription = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
+    this.featureToggleServiceSubscription = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
       this.isHearingAmendmentsEnabled = enabled;
     });
     this.lastErrorSubscription = this.hearingRequestLastError$.subscribe((lastError) => {

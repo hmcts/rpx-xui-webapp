@@ -6,18 +6,15 @@ import { of } from 'rxjs';
 import * as fromHearingStore from '../../../hearings/store';
 import { initialState } from '../../hearing.test.data';
 import { HearingPartiesTitleComponent } from './hearing-parties-title.component';
-import { HearingsFeatureService } from '../../../hearings/services/hearings-feature.service';
 
 describe('HearingPartiesTitleComponent', () => {
   let component: HearingPartiesTitleComponent;
   let fixture: ComponentFixture<HearingPartiesTitleComponent>;
   let storeMock: Store<fromHearingStore.State>;
   let featureToggleServiceMock: any;
-  let hearingsFeatureServiceMock;
 
   beforeEach(() => {
     featureToggleServiceMock = jasmine.createSpyObj('featureToggleService', ['isEnabled']);
-    hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled']);
     TestBed.configureTestingModule({
       declarations: [HearingPartiesTitleComponent],
       providers: [
@@ -25,10 +22,6 @@ describe('HearingPartiesTitleComponent', () => {
         {
           provide: FeatureToggleService,
           useValue: featureToggleServiceMock
-        },
-        {
-          provide: HearingsFeatureService,
-          useValue: hearingsFeatureServiceMock
         }
       ]
     })
@@ -45,14 +38,12 @@ describe('HearingPartiesTitleComponent', () => {
   });
 
   it('should return internal case name for title', () => {
-    hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
     featureToggleServiceMock.isEnabled.and.returnValue(of(true));
     component.ngOnInit();
     expect(component.caseTitle).toBe('Jane Smith vs DWP');
   });
 
   it('should return public case name for title', () => {
-    hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
     featureToggleServiceMock.isEnabled.and.returnValue(of(false));
     component.ngOnInit();
     expect(component.caseTitle).toBe('Jane Smith vs DWP');

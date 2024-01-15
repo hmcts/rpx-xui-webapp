@@ -129,7 +129,7 @@ describe('Evidence Manager Endpoints', () => {
         const bookmarksgetResponse = await Request.get(`em-anno/${config.em[config.testEnv].docId}/bookmarks`, null, 200);
         let bookMarkIdToDelete = '';
         if (bookmarksgetResponse.data.length <= 1 ) {
-            const createBookmarkResponse = await Request.put(`em-anno/bookmarks`, await getNewBookmarkIdObject('test123', config.em[config.testEnv].docId, 0, null), headers, 200);
+            const createBookmarkResponse = await Request.put(`em-anno/bookmarks`, await getNewBookmarkIdObject('test123', config.em[config.testEnv].docId, 0, null), headers, 204);
             bookMarkIdToDelete = createBookmarkResponse.data.id;
         } else {
             bookMarkIdToDelete = bookmarksgetResponse.data[0].id;

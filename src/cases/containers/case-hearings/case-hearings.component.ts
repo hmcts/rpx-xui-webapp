@@ -51,7 +51,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hearingStageOptions: LovRefDataModel[];
   public hearingValuesSubscription: Subscription;
   public refDataSubscription: Subscription;
-  public showLoadSpinner: boolean = true;
   private userRoles: string[] = [];
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
@@ -96,7 +95,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         // Reset the error context if there is no error on subsequent requests
         this.serverError = null;
       }
-      this.loadingService.unregister(loadingToken);
     }, () => {
       this.loadingService.unregister(loadingToken);
     });
@@ -123,7 +121,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     } else {
       this.hearingsActions = [];
     }
-   
+    this.loadingService.unregister(loadingToken);
   }
 
   public getHearingListByStatus(status: EXUISectionStatusEnum | EXUIDisplayStatusEnum): Observable<HearingListViewModel[]> {
@@ -142,7 +140,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
             );
           }
           const caseHearingViewModels: HearingListViewModel[] = this.calculateEarliestHearingDate(caseHearingModels);
-          this.showLoadSpinner = false;
           return this.sortHearingsByHearingAndRequestDate(caseHearingViewModels);
         }
 

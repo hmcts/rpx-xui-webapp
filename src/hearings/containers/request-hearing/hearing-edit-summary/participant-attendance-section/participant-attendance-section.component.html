@@ -1,7 +1,10 @@
 <h2 class="govuk-heading-m">
   Participant attendance
-  <exui-amendment-label *ngIf="partyDetailsChangesRequired"
+  <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired"
     [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
+  </exui-amendment-label>
+  <exui-amendment-label *ngIf="partyDetailsChangesConfirmed && partyDetailsChangesRequired"
+    [displayLabel]="amendmentLabelEnum.AMENDED">
   </exui-amendment-label>
 </h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">

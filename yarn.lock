@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.2":
-  version: 7.0.2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.5":
+  version: 7.0.5
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.5"
   dependencies:
     tslib: ^2.3.0
-  checksum: f2b7265ed82a867c4481bffbf970acf7d2737c59616b0c9ae1661bbbb9e78438a7ec6166cac4c486a9b687bcfcc1c0512b163dbaeb8b216f5444f0239112f6cb
+  checksum: 7eacc0b941979312da23f00761bb5e680d10b2caf24015bff76972fd70b7e17dcbe2365c30471074eb31ec180e1959f28f2038c9745363752252f31163009485
   languageName: node
   linkType: hard
 
@@ -5062,7 +5062,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/http-proxy@npm:^1.17.5, @types/http-proxy@npm:^1.17.8, @types/http-proxy@npm:^1.17.9":
+"@types/http-proxy@npm:^1.17.8, @types/http-proxy@npm:^1.17.9":
   version: 1.17.11
   resolution: "@types/http-proxy@npm:1.17.11"
   dependencies:
@@ -12288,20 +12288,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-proxy-middleware@npm:1.1.x":
-  version: 1.1.2
-  resolution: "http-proxy-middleware@npm:1.1.2"
-  dependencies:
-    "@types/http-proxy": ^1.17.5
-    http-proxy: ^1.18.1
-    is-glob: ^4.0.1
-    is-plain-obj: ^3.0.0
-    micromatch: ^4.0.2
-  checksum: 919de2881ae94353fbc06dab219fd413e6ecd9d52a6ecad0d4aa2855f0c0691dd3d14c0c1ca5f558d3eabfa6168911e5093d480eeffe52b1cdb2259ded962c78
-  languageName: node
-  linkType: hard
-
-"http-proxy-middleware@npm:^2.0.3":
+"http-proxy-middleware@npm:^2.0.3, http-proxy-middleware@npm:^2.0.6":
   version: 2.0.6
   resolution: "http-proxy-middleware@npm:2.0.6"
   dependencies:
@@ -19013,7 +19000,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.2
+    "@hmcts/ccd-case-ui-toolkit": 7.0.5
     "@hmcts/ccpay-web-component": 6.0.2
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.10.1-RC.1
@@ -19094,7 +19081,7 @@ __metadata:
     govuk-frontend: ^3.12.0
     govuk_frontend_toolkit: ^9.0.0
     helmet: ^3.21.3
-    http-proxy-middleware: 1.1.x
+    http-proxy-middleware: ^2.0.6
     isomorphic-fetch: ^3.0.0
     jasmine-core: ~3.4.0
     jasmine-marbles: ^0.9.1

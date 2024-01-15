@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -9,7 +10,6 @@ import * as fromAppStore from '../../../../app/store';
 import { HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE } from '../../../../hearings/templates/hearing-request-view-summary.template';
 import { Mode } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
-import { HearingsFeatureService } from '../../../services/hearings-feature.service';
 import { HEARING_VIEW_ONLY_SUMMARY_TEMPLATE } from '../../../templates/hearing-view-only-summary.template';
 
 @Component({
@@ -25,12 +25,12 @@ export class HearingViewSummaryComponent implements OnInit {
 
   constructor(protected readonly appStore: Store<fromAppStore.State>,
     private readonly router: Router,
-    private readonly hearingsFeatureService: HearingsFeatureService,
+    private readonly featureToggleService: FeatureToggleService,
     private readonly hearingsService: HearingsService,
   ) { }
 
   public ngOnInit(): void {
-    this.isHearingAmendmentsEnabled$ = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments);
+    this.isHearingAmendmentsEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments);
 
     this.isHearingManager$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
       map((userDetails) => userDetails.userInfo.roles.includes(UserRole.HearingManager))

@@ -16,7 +16,7 @@ const featureNames = {
   excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
 
   enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1',
-  enableHearingAmendments: 'mc-enable-hearings-amendments-service',
+  enableHearingAmendments: 'mc-enable-hearing-amendments',
   enableRestrictedCaseAccess: 'enable-restricted-case-access'
 
 };

@@ -98,6 +98,7 @@ Within the file we have one line of characters which is the secret.
 
 ####MAC OS - Post Catalina 
 
+
 1. Create a Mount point on your local machine within the Volumes folder<br/>
 Create the folder: `/Volumes/mnt/secrets/rpx`
 2. In this folder we create a file per secret.

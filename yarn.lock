@@ -2712,7 +2712,7 @@ __metadata:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: d8bebc84ed5b68d35d8a5b69ef69f4d8e285ef6aea9e78ee776ae0afa6ed8e8ef446117f9e43d2ac0ef4e0c48e2762d67678af734fe7b1c5aaa871dc6bba1f9c
+  checksum: aae1f874bf3dae9d0ba56935f120fd732ce9665bfb7b0cf48df77e715fd8f557e31974c30d9e4dc74d2eae17bc38672862bd665f66929d736552eceafa98d309
   languageName: node
   linkType: hard
 
@@ -19019,7 +19019,7 @@ __metadata:
     "@hmcts/media-viewer": 2.10.1-RC.1
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 2.0.3-pre-release-accessibility-page-amended
+    "@hmcts/rpx-xui-common-lib": 2.0.5
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3

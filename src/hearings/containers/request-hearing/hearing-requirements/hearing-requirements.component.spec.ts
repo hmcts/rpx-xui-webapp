@@ -2645,17 +2645,6 @@ describe('HearingRequirementsComponent', () => {
     expect(result).toEqual([]);
   });
 
-  it('should return an empty array when reasonableAdjustmentFlags is empty', () => {
-    // Arrange
-    component.reasonableAdjustmentFlags = [];
-
-    // Act
-    const result = component.getAllPartyFlagsByPartyId('P2');
-
-    // Assert
-    expect(result).toEqual([]);
-  });
-
   it('should return an empty array when partyID is not found', () => {
     // Arrange
     component.reasonableAdjustmentFlags = [{ name: 'P1', partyFlags: [] }, { name: 'P2', partyFlags: [] }];

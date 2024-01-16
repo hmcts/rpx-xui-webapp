@@ -153,7 +153,7 @@ const data = {
             },
             {
                 idamId: "12b6a360-7f19-4985-b065-94320a891eaa",
-                email: "lukesuperuserxui@mailnesia.com",
+                email: "lukesuperuserxui_new@mailnesia.com",
                 release: "general", userIdentifier: "SOLICITOR"
             },
             {

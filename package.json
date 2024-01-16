@@ -38,7 +38,7 @@
     "test:node": "cd api && yarn coverage",
     "start:ng": "ng serve --port 3000 --host 0.0.0.0 --proxy-config proxy.config.json",
     "test": "cd api && yarn coverage",
-    "test:api": "mocha -r ts-node/register --config ./test/integration/tests/mocha.json --reporter mochawesome --reporter-options reportDir=functional-output/tests/api_functional,reportFilename=mochawesome",
+    "test:api": "mocha -r ts-node/register --config ./test_codecept/integration/tests/mocha.json --reporter mochawesome --reporter-options reportDir=functional-output/tests/api_functional,reportFilename=mochawesome",
     "test:apiGateway": "echo 'not implemented'",
     "test:coverage": "yarn test:coverage:ng",
     "test:coverage:all": "yarn test:coverage:ng && yarn test:coverage:node",

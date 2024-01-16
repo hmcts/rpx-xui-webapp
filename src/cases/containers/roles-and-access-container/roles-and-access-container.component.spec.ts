@@ -164,7 +164,7 @@ describe('RolesContainerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule, HttpClientModule],
+      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule],
       providers: [
         CasesService, HttpErrorService, HttpErrorService, AuthService, AbstractAppConfig, AlertService,
         { provide: CaseNotifier, useValue: mockNotifierService },

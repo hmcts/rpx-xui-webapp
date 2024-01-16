@@ -108,8 +108,8 @@ async function loginattemptCheckAndRelogin(username, password, world) {
             idamLogin.withCredentials(testUser.email, testUser.key)
             loginUser = testUser.email
         }else{
-            idamLogin.withCredentials('lukesuperuserxui@mailnesia.com', 'Monday01')
-            loginUser = 'lukesuperuserxui@mailnesia.com'
+            idamLogin.withCredentials('lukesuperuserxui_new@mailnesia.com', 'Monday01')
+            loginUser = 'lukesuperuserxui_new@mailnesia.com'
         }
         
 

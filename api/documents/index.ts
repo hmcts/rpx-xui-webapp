@@ -2,11 +2,11 @@
 const INITIAL_TIMEOUT_PERIOD = 5000; // 5 seconds
 const MAX_TIMEOUT_PERIOD = 180000; // 180 seconds
 
-let isRequestRateLimited = false;
-
 // Handle requests being sent to the target server
 export function handleRequest(req, res, proxyRes) {
   const defaultTimeoutPeriod = INITIAL_TIMEOUT_PERIOD;
+
+  res.session.isRequestRateLimited = false;
 
   // Try to retrieve the next timeout period from the session
   const nextTimeout = res.session.nextTimeout;
@@ -19,7 +19,7 @@ export function handleRequest(req, res, proxyRes) {
   const elapsedTime = Date.now() - lastUploadTime;
 
   if (elapsedTime < timeoutPeriod) {
-    isRequestRateLimited = true;
+    res.session.isRequestRateLimited = true;
     proxyRes.status(429).send({ message: 'Too many requests' });
 
     return false;
@@ -34,7 +34,7 @@ export function handleResponse(req, res, proxyRes, json) {
   res.session.lastUploadTime = Date.now();
 
   // Double the timeout period up to the maximum, if not rate-limited
-  if (!isRequestRateLimited) {
+  if (res.session.isRequestRateLimited) {
     const nextTimeout = (res.session.nextTimeout || INITIAL_TIMEOUT_PERIOD) * 2;
     res.session.nextTimeout = Math.min(nextTimeout, MAX_TIMEOUT_PERIOD);
   } else {
@@ -43,5 +43,4 @@ export function handleResponse(req, res, proxyRes, json) {
 
   return json;
 }
-
 

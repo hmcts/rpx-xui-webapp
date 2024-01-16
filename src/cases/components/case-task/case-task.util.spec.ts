@@ -90,4 +90,9 @@ describe('CaseTaskUtil', () => {
     const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(taskToCheck);
     expect(appendedTaskDescription).toEqual('Review orders on the orders tab');
   });
+
+  it('should return blank if null being passed as task', () => {
+    const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(null);
+    expect(appendedTaskDescription).toEqual('');
+  });
 });

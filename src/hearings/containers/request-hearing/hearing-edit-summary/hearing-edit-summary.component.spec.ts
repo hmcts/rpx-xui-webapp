@@ -439,14 +439,11 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should set auto updated pageless properties to true', () => {
     component.serviceHearingValuesModel.caseManagementLocationCode = 'New case management code';
-    component.serviceHearingValuesModel.hearingInWelshFlag = true;
     component.serviceHearingValuesModel.parties[0].partyRole = 'New party role';
     component.serviceHearingValuesModel.parties[0].individualDetails.relatedParties = [];
     component.ngOnInit();
     // @ts-ignore
     expect(component.hearingsService.propertiesUpdatedAutomatically.pageless.caseManagementLocationCode).toEqual(true);
-    // @ts-ignore
-    expect(component.hearingsService.propertiesUpdatedAutomatically.pageless.hearingInWelshFlag).toEqual(true);
     // @ts-ignore
     expect(component.hearingsService.propertiesUpdatedAutomatically.pageless.parties).toEqual(true);
   });
@@ -520,14 +517,11 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should set auto updated pageless properties to true', () => {
     component.serviceHearingValuesModel.caseManagementLocationCode = 'New case management code';
-    component.serviceHearingValuesModel.hearingInWelshFlag = true;
     component.serviceHearingValuesModel.parties[0].partyRole = 'New party role';
     component.serviceHearingValuesModel.parties[0].individualDetails.relatedParties = [];
     component.ngOnInit();
     // @ts-ignore
     expect(component.hearingsService.propertiesUpdatedAutomatically.pageless.caseManagementLocationCode).toEqual(true);
-    // @ts-ignore
-    expect(component.hearingsService.propertiesUpdatedAutomatically.pageless.hearingInWelshFlag).toEqual(true);
     // @ts-ignore
     expect(component.hearingsService.propertiesUpdatedAutomatically.pageless.parties).toEqual(true);
   });

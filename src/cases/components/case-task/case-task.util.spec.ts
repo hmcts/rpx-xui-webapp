@@ -83,4 +83,11 @@ describe('CaseTaskUtil', () => {
     const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(taskToCheck);
     expect(appendedTaskDescription).toEqual('[Review the Referral](/cases/case-details/${[CASE_REFERENCE]}?tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6#Referrals)');
   });
+
+  it('should return fragment appended to url after taskId', () => {
+    const taskToCheck = task;
+    taskToCheck.description = 'Review orders on the orders tab';
+    const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(taskToCheck);
+    expect(appendedTaskDescription).toEqual('Review orders on the orders tab');
+  });
 });

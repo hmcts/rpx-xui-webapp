@@ -84,7 +84,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     });
     this.excludedJudgeList = this.getPanelMemberList(RequirementType.EXCLUDE);
     this.includedJudgeList = this.getPanelMemberList(RequirementType.MUSTINC);
-    this.multiLevelSelections = this.multiLevelSelections.filter((mls: { key: string; }) => mls && mls.key && mls.key!= "");
+    this.multiLevelSelections = this.multiLevelSelections.filter((mls: { key: string; }) => mls && mls.key && mls.key!== '');
     this.loadHearingPanels();
     this.panelJudgeForm.controls.multiLevelSelect = this.convertRefDataModelToArray(this.multiLevelSelections);
     this.serviceId = this.serviceHearingValuesModel.hmctsServiceID;

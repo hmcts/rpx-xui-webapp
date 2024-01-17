@@ -5,7 +5,6 @@ import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
-import * as _ from 'lodash';
 import { of } from 'rxjs';
 import { PartyFlagsModel } from '../../../../hearings/models/partyFlags.model';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
@@ -219,49 +218,17 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should set the hearingWindowFirstDateMustBeChangesRequired to true', () => {
-    component.hearingRequestMainModel = {
-      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      hearingDetails: {
-        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        hearingWindow: {
-          ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow,
-          firstDateTimeMustBe: '2024-02-13T10:00:00'
-        }
-      }
-    };
-    component.serviceHearingValuesModel = {
-      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
-      hearingWindow: {
-        ...initialState.hearings.hearingValues.serviceHearingValuesModel,
-        firstDateTimeMustBe: '2024-02-14T10:00:00'
-      }
-    };
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '2024-02-13T10:00:00';
+    component.serviceHearingValuesModel.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowFirstDateMustBeChangesRequired).toEqual(true);
   });
 
-  fit('should set the hearingWindowFirstDateMustBeChangesRequired to false', () => {
-    // component.hearingRequestMainModel = {
-    //   ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-    //   hearingDetails: {
-    //     ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-    //     hearingWindow: {
-    //       ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow,
-    //       firstDateTimeMustBe: '2024-02-14T10:00:00'
-    //     }
-    //   }
-    // };
-    component.hearingRequestMainModel = _.cloneDeep(initialState.hearings.hearingRequest.hearingRequestMainModel);
-    component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
+  it('should set the hearingWindowFirstDateMustBeChangesRequired to false', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = null;
     component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
     component.serviceHearingValuesModel.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
-    // component.serviceHearingValuesModel = {
-    //   ...initialState.hearings.hearingValues.serviceHearingValuesModel,
-    //   hearingWindow: {
-    //     ...initialState.hearings.hearingValues.serviceHearingValuesModel,
-    //     firstDateTimeMustBe: '2024-02-14T10:00:00'
-    //   }
-    // };
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowFirstDateMustBeChangesRequired).toEqual(false);
   });

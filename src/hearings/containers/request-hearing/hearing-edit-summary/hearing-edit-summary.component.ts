@@ -360,14 +360,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
     // Return true if the first date time must be value in SHV and HMC are different
     if (hearingWindowSHV?.firstDateTimeMustBe) {
-      console.log('SHV', hearingWindowSHV?.firstDateTimeMustBe);
-      console.log('HMC', hearingWindowHMC?.firstDateTimeMustBe);
-      console.log('DIFF',
-        new Date(hearingWindowSHV.firstDateTimeMustBe),
-        new Date(hearingWindowHMC.firstDateTimeMustBe),
-        new Date(hearingWindowSHV.firstDateTimeMustBe) !== new Date(hearingWindowHMC.firstDateTimeMustBe),
-        _.isEqual(new Date(hearingWindowSHV.firstDateTimeMustBe), new Date(hearingWindowHMC.firstDateTimeMustBe))
-      );
       if (!hearingWindowHMC?.firstDateTimeMustBe) {
         return true;
       }

@@ -58,8 +58,8 @@ export interface AfterPageVisitProperties {
   nonReasonableAdjustmentChangesConfirmed?: boolean;
   partyDetailsChangesRequired: boolean;
   partyDetailsChangesConfirmed?: boolean;
-  hearingWindowFirstDateMustBeChangesRequired: boolean;
-  hearingWindowFirstDateMustBeChangesConfirmed?: boolean;
+  hearingWindowChangesRequired: boolean;
+  hearingWindowChangesConfirmed?: boolean;
 }
 
 export interface PropertiesUpdatedAutomatically {

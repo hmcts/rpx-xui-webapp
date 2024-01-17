@@ -294,7 +294,7 @@ describe('HearingAttendanceComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowFirstDateMustBeChangesRequired: true
+        hearingWindowChangesRequired: true
       }
     };
     component.ngOnInit();
@@ -314,7 +314,7 @@ describe('HearingAttendanceComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowFirstDateMustBeChangesRequired: true
+        hearingWindowChangesRequired: true
       }
     };
     component.ngOnInit();

@@ -266,7 +266,7 @@ describe('HearingPanelComponent', () => {
     expect(component.isFormValid()).toBeTruthy();
   });
 
-  it('should check getPannelMemberList', () => {
+  it('should check getPanelMemberList', () => {
     component.personalCodejudgeList = [{
       title: 'Mr',
       knownAs: 'Hearing Judge',

@@ -82,14 +82,14 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       specificPanel: ['', Validators.required],
       multiLevelSelect: this.formBuilder.array([])
     });
-    this.excludedJudgeList = this.getPannelMemberList(RequirementType.EXCLUDE);
-    this.includedJudgeList = this.getPannelMemberList(RequirementType.MUSTINC);
+    this.excludedJudgeList = this.getPanelMemberList(RequirementType.EXCLUDE);
+    this.includedJudgeList = this.getPanelMemberList(RequirementType.MUSTINC);
     this.loadHearingPanels();
     this.panelJudgeForm.controls.multiLevelSelect = this.convertRefDataModelToArray(this.multiLevelSelections);
     this.serviceId = this.serviceHearingValuesModel.hmctsServiceID;
   }
 
-  public getPannelMemberList(panelRequirementType: string): JudicialUserModel[] {
+  public getPanelMemberList(panelRequirementType: string): JudicialUserModel[] {
     const selectedPanelList: JudicialUserModel[] = [];
     const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
     const panelMemberIDs = panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === panelRequirementType).map((preferences) => preferences.memberID);
@@ -141,7 +141,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
         let skipRoleSelection = false;
         if (this.multiLevelSelections && this.multiLevelSelections.length) {
           this.multiLevelSelections.forEach((role) => {
-            if (role.key.toLowerCase().trim() === selectedPanelRole.toLocaleLowerCase().trim() && !skipRoleSelection && !role.selected) {
+            if (role.key && selectedPanelRole && role.key.toLowerCase().trim() === selectedPanelRole.toLocaleLowerCase().trim() && !skipRoleSelection && !role.selected) {
               role.selected = true;
               skipRoleSelection = true;
             }

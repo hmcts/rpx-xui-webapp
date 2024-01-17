@@ -283,9 +283,9 @@ describe('HearingPanelComponent', () => {
     }];
     component.initForm();
     expect(component.includedJudgeList.length).toBe(1);
-    expect(component.getPannelMemberList(RequirementType.MUSTINC).length).toBe(1);
+    expect(component.getPanelMemberList(RequirementType.MUSTINC).length).toBe(1);
     expect(component.panelSelection).toBe(RadioOptions.YES);
-    expect(component.getPannelMemberList(RequirementType.EXCLUDE).length).toBe(0);
+    expect(component.getPanelMemberList(RequirementType.EXCLUDE).length).toBe(0);
   });
 
   it('should check prepareData', () => {

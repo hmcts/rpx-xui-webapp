@@ -74,7 +74,7 @@ describe('HearingTimingSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: false,
-        hearingWindowFirstDateMustBeChangesRequired: true
+        hearingWindowChangesRequired: true
       }
     };
     component.ngOnInit();
@@ -89,7 +89,7 @@ describe('HearingTimingSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowFirstDateMustBeChangesRequired: false
+        hearingWindowChangesRequired: false
       }
     };
     component.ngOnInit();

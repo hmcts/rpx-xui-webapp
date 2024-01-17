@@ -84,6 +84,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     });
     this.excludedJudgeList = this.getPanelMemberList(RequirementType.EXCLUDE);
     this.includedJudgeList = this.getPanelMemberList(RequirementType.MUSTINC);
+    this.multiLevelSelections = this.multiLevelSelections.filter((mls: { key: string; }) => mls && mls.key && mls.key!= "");
     this.loadHearingPanels();
     this.panelJudgeForm.controls.multiLevelSelect = this.convertRefDataModelToArray(this.multiLevelSelections);
     this.serviceId = this.serviceHearingValuesModel.hmctsServiceID;
@@ -141,7 +142,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
         let skipRoleSelection = false;
         if (this.multiLevelSelections && this.multiLevelSelections.length) {
           this.multiLevelSelections.forEach((role) => {
-            if (role.key && selectedPanelRole && role.key.toLowerCase().trim() === selectedPanelRole.toLocaleLowerCase().trim() && !skipRoleSelection && !role.selected) {
+            if (role.key?.toLowerCase().trim() === selectedPanelRole?.toLocaleLowerCase().trim() && !skipRoleSelection && !role.selected) {
               role.selected = true;
               skipRoleSelection = true;
             }
@@ -149,6 +150,8 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
         }
       });
       const panelSpecialisms = this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms || [];
+      console.log(panelSpecialisms);
+      console.log(this.multiLevelSelections);
       this.setPanelSpecialisms(panelSpecialisms);
     }
     if (selectedPanelRoles && selectedPanelRoles.length || this.excludedJudgeList.length || this.includedJudgeList.length) {

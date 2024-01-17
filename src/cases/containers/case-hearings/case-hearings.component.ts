@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
 import * as moment from 'moment';
-import { Observable, Subscription, combineLatest } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserRole } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
@@ -52,6 +52,9 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hearingValuesSubscription: Subscription;
   public refDataSubscription: Subscription;
   private userRoles: string[] = [];
+  public showLoadSpinner$ = new BehaviorSubject<boolean>(true);
+  public unloadSpinnerSubscription: Subscription;
+  public displaySpinner: boolean = true;
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly hearingStore: Store<fromHearingStore.State>,
@@ -94,6 +97,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       } else {
         // Reset the error context if there is no error on subsequent requests
         this.serverError = null;
+        this.loadingService.unregister(loadingToken);
       }
     }, () => {
       this.loadingService.unregister(loadingToken);
@@ -121,7 +125,15 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     } else {
       this.hearingsActions = [];
     }
-    this.loadingService.unregister(loadingToken);
+    
+    this.unloadSpinnerSubscription = combineLatest([
+      this.showSpinner$,
+      this.showLoadSpinner$
+    ]).subscribe(([showSpiner, showLoadSpiner])  => {
+      if(!showSpiner && !showLoadSpiner){
+        this.displaySpinner = false;
+      }
+    });
   }
 
   public getHearingListByStatus(status: EXUISectionStatusEnum | EXUIDisplayStatusEnum): Observable<HearingListViewModel[]> {
@@ -139,6 +151,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
               hearing.exuiDisplayStatus === status
             );
           }
+          this.showLoadSpinner$.next(false);
           const caseHearingViewModels: HearingListViewModel[] = this.calculateEarliestHearingDate(caseHearingModels);
           return this.sortHearingsByHearingAndRequestDate(caseHearingViewModels);
         }
@@ -199,6 +212,9 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     }
     if (this.refDataSubscription) {
       this.refDataSubscription.unsubscribe();
+    }
+    if (this.unloadSpinnerSubscription) {
+      this.unloadSpinnerSubscription.unsubscribe();
     }
   }
 }

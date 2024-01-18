@@ -100,12 +100,12 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | Search for a location |
         When I select filter item "Location radios" select or radio option "Search for a location" in all work page
         Then I see location search input is enabled in all work filters
-        Then I enter location search "Taylor" in all work filter
+        Then I enter location search "IA Court Center 1" in all work filter
         Then I see location search results in all work filter
             | location          |
-            | Taylor House Tribunal Hearing Centre |
-        Then I select location search result "Taylor House Tribunal Hearing Centre" in all work filter
-        Then I see location "Taylor House Tribunal Hearing Centre" selected in all work filter
+            | IA Court Center 1 |
+        Then I select location search result "IA Court Center 1" in all work filter
+        Then I see location "IA Court Center 1" selected in all work filter
 
         When I select filter item "Tasks" select or radio option "<Task_Category>" in all work page
         When I select filter item "Tasks by role type" select or radio option "<Person_Role_Type>" in all work page
@@ -208,12 +208,12 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | Search for a location |
         When I select filter item "Location radios" select or radio option "Search for a location" in all work page
         Then I see location search input is enabled in all work filters
-        Then I enter location search "Taylor" in all work filter
+        Then I enter location search "IA Court Center 1" in all work filter
         Then I see location search results in all work filter
             | location          |
-            | Taylor House Tribunal Hearing Centre |
-        Then I select location search result "Taylor House Tribunal Hearing Centre" in all work filter
-        Then I see location "Taylor House Tribunal Hearing Centre" selected in all work filter
+            | IA Court Center 1 |
+        Then I select location search result "IA Court Center 1" in all work filter
+        Then I see location "IA Court Center 1" selected in all work filter
 
 
         When I select filter item "Tasks" select or radio option "<Task_Category>" in all work page

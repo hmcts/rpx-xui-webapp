@@ -56,6 +56,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public isPagelessAttributeChanged: boolean = false;
   public afterPageVisit: AfterPageVisitProperties;
   public isWithinPageAttributeChanged: boolean = false;
+  private readonly notUpdatedMessage = 'The request has not been updated';
 
   constructor(private readonly router: Router,
     private readonly locationsDataService: LocationsDataService,
@@ -112,7 +113,16 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   public executeAction(action: ACTION): void {
-    super.navigateAction(action);
+    this.hearingsService.submitUpdatedRequestClicked = true;
+    const objA = JSON.parse(JSON.stringify(this.hearingRequestMainModel));
+    const objB = JSON.parse(JSON.stringify(this.hearingRequestToCompareMainModel));
+    if (_.isEqual(objA, objB)) {
+      this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
+    } else if (this.hearingsService.displayValidationError) {
+      return;
+    } else {
+      super.navigateAction(action);
+    }
   }
 
   public onChange(event: EditHearingChangeConfig): void {
@@ -219,6 +229,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       }
     });
 
+    // Remove attribute with null to ignore change in CR-84 auto update
+    shvCaseCategories.forEach((s) => {
+      Object.keys(s).forEach((k) => s[k] == null && delete s[k])
+    });
+
     return shvCaseCategories;
   }
 
@@ -248,24 +263,26 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       this.hearingRequestMainModel.partyDetails.forEach((party) => {
         const serviceParty = parties.find((serviceParty) => serviceParty.partyID === party.partyID);
         if (serviceParty) {
+          const individualDetails = {
+            ...party.individualDetails,
+            relatedParties: this.compareAndUpdateServiceHearingValues(party.individualDetails?.relatedParties, serviceParty.individualDetails?.relatedParties, AutoUpdateMode.PARTY),
+            custodyStatus: this.compareAndUpdateServiceHearingValues(party.individualDetails?.custodyStatus, serviceParty.individualDetails?.custodyStatus, AutoUpdateMode.PARTY),
+            vulnerableFlag: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerableFlag, serviceParty.individualDetails?.vulnerableFlag, AutoUpdateMode.PARTY),
+            vulnerabilityDetails: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerabilityDetails, serviceParty.individualDetails?.vulnerabilityDetails, AutoUpdateMode.PARTY),
+            hearingChannelEmail: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelEmail, serviceParty.individualDetails?.hearingChannelEmail, AutoUpdateMode.PARTY),
+            hearingChannelPhone: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelPhone, serviceParty.individualDetails?.hearingChannelPhone, AutoUpdateMode.PARTY)
+          };
+          const organisationDetails = {
+            ...party.organisationDetails,
+            name: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.name, serviceParty.organisationDetails?.name),
+            organisationType: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.organisationType, serviceParty.organisationDetails?.organisationType, AutoUpdateMode.PARTY),
+            cftOrganisationID: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.cftOrganisationID, serviceParty.organisationDetails?.cftOrganisationID, AutoUpdateMode.PARTY)
+          };
           newParty.push({
             ...party,
             partyRole: this.compareAndUpdateServiceHearingValues(party.partyRole, serviceParty.partyRole, AutoUpdateMode.PARTY),
-            individualDetails: {
-              ...party.individualDetails,
-              relatedParties: this.compareAndUpdateServiceHearingValues(party.individualDetails?.relatedParties, serviceParty.individualDetails?.relatedParties, AutoUpdateMode.PARTY),
-              custodyStatus: this.compareAndUpdateServiceHearingValues(party.individualDetails?.custodyStatus, serviceParty.individualDetails?.custodyStatus, AutoUpdateMode.PARTY),
-              vulnerableFlag: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerableFlag, serviceParty.individualDetails?.vulnerableFlag, AutoUpdateMode.PARTY),
-              vulnerabilityDetails: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerabilityDetails, serviceParty.individualDetails?.vulnerabilityDetails, AutoUpdateMode.PARTY),
-              hearingChannelEmail: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelEmail, serviceParty.individualDetails?.hearingChannelEmail, AutoUpdateMode.PARTY),
-              hearingChannelPhone: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelPhone, serviceParty.individualDetails?.hearingChannelPhone, AutoUpdateMode.PARTY)
-            },
-            organisationDetails: {
-              ...party.organisationDetails,
-              name: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.name, serviceParty.organisationDetails?.name),
-              organisationType: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.organisationType, serviceParty.organisationDetails?.organisationType, AutoUpdateMode.PARTY),
-              cftOrganisationID: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.cftOrganisationID, serviceParty.organisationDetails?.cftOrganisationID, AutoUpdateMode.PARTY)
-            },
+            ...party.individualDetails && ({ individualDetails }),
+            ...party.organisationDetails && ({ organisationDetails }),
             unavailabilityDOW: this.compareAndUpdateServiceHearingValues(party?.unavailabilityDOW, serviceParty?.unavailabilityDOW, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES),
             unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES)
           });

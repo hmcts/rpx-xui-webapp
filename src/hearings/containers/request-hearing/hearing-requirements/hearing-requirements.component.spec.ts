@@ -21,6 +21,7 @@ import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingRequirementsComponent } from './hearing-requirements.component';
 import { LoggerService } from '../../../../app/services/logger/logger.service';
+import { HearingWindowModel } from '../../../models/hearingWindow.model';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -2391,6 +2392,154 @@ describe('HearingRequirementsComponent', () => {
     component.initializeHearingRequestFromHearingValues();
     fixture.detectChanges();
     expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.InitializeHearingRequest(expectedHearingRequestMainModel));
+  });
+
+  it('should set hearingWindow from serviceHearingValuesModel if it is null in hearingRequestMainModel', () => {
+    // Arrange
+    component.serviceHearingValuesModel = serviceHearingValuesModel;
+
+    // Act
+    component.initializeHearingRequestFromHearingValues();
+
+    // Assert
+    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow).toEqual(serviceHearingValuesModel.hearingWindow);
+  });
+
+  it('should set hearingWindow from hearingRequestMainModel if it is not null', () => {
+    // Arrange
+    const mockHearingWindow: HearingWindowModel = { dateRangeStart: '2023-12-15T09:00:00.000Z' };
+    const expectedHearingRequestMainModel: HearingRequestMainModel = {
+      hearingDetails: {
+        duration: 45,
+        hearingType: 'Final',
+        hearingChannels: [],
+        hearingLocations: [
+          {
+            locationId: '196538',
+            locationType: HMCLocationType.COURT
+          },
+          {
+            locationId: '234850',
+            locationType: HMCLocationType.COURT
+          }
+        ],
+        hearingIsLinkedFlag: false,
+        hearingWindow: mockHearingWindow,
+        privateHearingRequiredFlag: false,
+        panelRequirements: {
+          roleType: [
+            'tj',
+            'dtj',
+            'rtj'
+          ],
+          panelPreferences: [],
+          panelSpecialisms: [
+            'BBA3-DQPM',
+            'BBA3-MQPM2-003',
+            'BBA3-MQPM2-004',
+            'BBA3-FQPM',
+            'BBA3-RMM'
+          ]
+        },
+        autolistFlag: false,
+        hearingPriorityType: 'standard',
+        numberOfPhysicalAttendees: 2,
+        hearingInWelshFlag: false,
+        facilitiesRequired: [],
+        listingComments: '',
+        hearingRequester: '',
+        leadJudgeContractType: '',
+        amendReasonCodes: null,
+        listingAutoChangeReasonCode: null
+      },
+      caseDetails: {
+        hmctsServiceCode: 'BBA3',
+        caseRef: '1111222233334444',
+        requestTimeStamp: null,
+        hearingID: null,
+        caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
+        hmctsInternalCaseName: 'Jane vs DWP',
+        publicCaseName: 'Jane vs DWP',
+        caseAdditionalSecurityFlag: false,
+        caseInterpreterRequiredFlag: false,
+        caseCategories: [
+          {
+            categoryType: CategoryType.CaseType,
+            categoryValue: 'BBA3-002'
+          }, {
+            categoryType: CategoryType.CaseSubType,
+            categoryValue: 'BBA3-002CC',
+            categoryParent: 'BBA3-002'
+          }, {
+            categoryType: CategoryType.CaseSubType,
+            categoryValue: 'BBA3-002GC',
+            categoryParent: 'BBA3-002'
+          }, {
+            categoryType: CategoryType.CaseSubType,
+            categoryValue: 'BBA3-002RC',
+            categoryParent: 'BBA3-002'
+          }
+        ],
+        caseManagementLocationCode: '196538',
+        caserestrictedFlag: false,
+        caseSLAStartDate: '2021-05-05T09:00:00.000Z',
+        externalCaseReference: ''
+      },
+      partyDetails: [{
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        unavailabilityRanges: [{
+          unavailableFromDate: '2021-12-10T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        }],
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: [
+            'RA0042',
+            'RA0053',
+            'RA0013',
+            'RA0016',
+            'RA0042'],
+          interpreterLanguage: 'POR'
+        }
+      }, {
+        partyID: 'P2',
+        partyType: PartyType.ORG,
+        partyRole: 'claimant',
+        partyName: 'DWP',
+        unavailabilityRanges: [{
+          unavailableFromDate: '2021-12-20T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        }],
+        individualDetails: {
+          title: null,
+          firstName: 'DWP',
+          lastName: null,
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: ['RA0005'],
+          interpreterLanguage: null
+        },
+        organisationDetails: {
+          name: 'DWP',
+          organisationType: 'GOV',
+          cftOrganisationID: 'O100000'
+        }
+      }]
+    };
+    component.hearingRequestMainModel = expectedHearingRequestMainModel;
+
+    // Act
+    component.initializeHearingRequestFromHearingValues();
+
+    // Assert
+    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow).toEqual(expectedHearingRequestMainModel.hearingDetails.hearingWindow);
   });
 
   afterEach(() => {

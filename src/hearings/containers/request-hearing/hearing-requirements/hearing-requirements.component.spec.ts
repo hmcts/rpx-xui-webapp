@@ -22,6 +22,10 @@ import * as fromHearingStore from '../../../store';
 import { HearingRequirementsComponent } from './hearing-requirements.component';
 import { LoggerService } from '../../../../app/services/logger/logger.service';
 import { HearingWindowModel } from '../../../models/hearingWindow.model';
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
+import * as _ from 'lodash';
+import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
+import { PartyFlagsDisplayModel } from '../../../models/partyFlags.model';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -2540,6 +2544,162 @@ describe('HearingRequirementsComponent', () => {
 
     // Assert
     expect(component.hearingRequestMainModel.hearingDetails.hearingWindow).toEqual(expectedHearingRequestMainModel.hearingDetails.hearingWindow);
+  });
+
+  it('should return an empty array when partyDetails is empty', () => {
+    // Arrange
+    const partyDetails: PartyDetailsModel[] = [];
+
+    // Act
+    const result = component.combinePartiesWithIndOrOrg(partyDetails);
+
+    // Assert
+    expect(result).toEqual([]);
+  });
+
+  it('should remove language interpreter flag from reasonable adjustments', () => {
+    // Arrange
+    const partyDetails: PartyDetailsModel[] = [{
+      partyID: 'P1',
+      partyType: PartyType.IND,
+      partyRole: 'appellant',
+      partyName: 'Jane Smith',
+      unavailabilityRanges: [{
+        unavailableFromDate: '2021-12-10T09:00:00.000Z',
+        unavailableToDate: '2021-12-31T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY
+      }],
+      individualDetails: {
+        title: 'Mrs',
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
+        reasonableAdjustments: [
+          'RA0042',
+          'RA0053',
+          CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID,
+          'RA0013',
+          'RA0016',
+          'RA0042'
+        ],
+        interpreterLanguage: 'POR'
+      }
+    }, {
+      partyID: 'P2',
+      partyType: PartyType.ORG,
+      partyRole: 'claimant',
+      partyName: 'DWP',
+      unavailabilityRanges: [{
+        unavailableFromDate: '2021-12-20T09:00:00.000Z',
+        unavailableToDate: '2021-12-31T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY
+      }],
+      individualDetails: {
+        title: null,
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'inPerson',
+        reasonableAdjustments: ['RA0005', CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID],
+        interpreterLanguage: null
+      },
+      organisationDetails: {
+        name: 'DWP',
+        organisationType: 'GOV',
+        cftOrganisationID: 'O100000'
+      }
+    }];
+
+    // Act
+    const result = component.combinePartiesWithIndOrOrg(partyDetails);
+
+    // Assert
+    expect(result.length).toEqual(2);
+    const transformedPartyDetails = _.cloneDeep(partyDetails);
+    transformedPartyDetails[0].individualDetails.reasonableAdjustments = [
+      'RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'
+    ];
+    transformedPartyDetails[1].individualDetails.reasonableAdjustments = ['RA0005'];
+    expect(result).toEqual(transformedPartyDetails);
+    console.log(result);
+  });
+
+  it('should dispatch InitializeHearingRequest action', () => {
+    // Arrange
+    spyOn(component.hearingStore, 'dispatch');
+
+    // Act
+    component.initializeHearingRequestFromHearingValues();
+
+    // Assert
+    expect(component.hearingStore.dispatch).toHaveBeenCalled();
+  });
+
+  it('should return an empty array when reasonableAdjustmentFlags is empty', () => {
+    // Arrange
+    component.reasonableAdjustmentFlags = [];
+
+    // Act
+    const result = component.getAllPartyFlagsByPartyId('P2');
+
+    // Assert
+    expect(result).toEqual([]);
+  });
+
+  it('should return an empty array when partyID is not found', () => {
+    // Arrange
+    component.reasonableAdjustmentFlags = [{ name: 'P1', partyFlags: [] }, { name: 'P2', partyFlags: [] }];
+
+    // Act
+    const result = component.getAllPartyFlagsByPartyId('P3');
+
+    // Assert
+    expect(result).toEqual([]);
+  });
+
+  it('should return an array of flagIds for the specified partyID', () => {
+    // Arrange
+    const P1Flag1 = {
+      partyID: 'P1',
+      partyName: 'Jane Smith',
+      flagParentId: 'RA0003',
+      flagId: 'RA0016',
+      flagDescription: 'Reading documents for customer',
+      flagStatus: 'ACTIVE'
+    } as PartyFlagsDisplayModel;
+    const P1Flag2 = {
+      partyID: 'P1',
+      partyName: 'Jane Smith',
+      flagParentId: 'RA0008',
+      flagId: 'RA0042',
+      flagDescription: 'Sign Language Interpreter',
+      flagStatus: 'ACTIVE'
+    } as PartyFlagsDisplayModel;
+    const P2Flag1 = {
+      partyID: 'P2',
+      partyName: 'DWP',
+      flagParentId: 'RA0001',
+      flagId: 'RA0005',
+      flagDescription: 'Physical access and facilities',
+      flagStatus: 'ACTIVE'
+    } as PartyFlagsDisplayModel;
+    const P2Flag2 = {
+      partyID: 'P2',
+      partyName: 'DWP',
+      flagParentId: 'PF0001',
+      flagId: 'PF0011',
+      flagDescription: 'Banning order',
+      flagStatus: 'ACTIVE'
+    } as PartyFlagsDisplayModel;
+    component.reasonableAdjustmentFlags = [
+      { name: 'P1', partyFlags: [P1Flag1, P1Flag2] },
+      { name: 'P2', partyFlags: [P2Flag1, P2Flag2] }
+    ];
+
+    // Act
+    const result = component.getAllPartyFlagsByPartyId('P2');
+
+    // Assert
+    expect(result).toEqual(['RA0005', 'PF0011']);
   });
 
   afterEach(() => {

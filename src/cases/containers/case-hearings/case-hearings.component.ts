@@ -47,7 +47,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public caseId: string = '';
   public serverError: { id: string, message: string } = null;
   public isOgdRole: boolean;
-  public showSpinner$ : Observable<boolean>;
+  public showSpinner$: Observable<boolean>;
   public hearingStageOptions: LovRefDataModel[];
   public hearingValuesSubscription: Subscription;
   public refDataSubscription: Subscription;
@@ -57,12 +57,12 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public displaySpinner: boolean = true;
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
-              private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly activatedRoute: ActivatedRoute,
-              private readonly router: Router,
-              private readonly lovRefDataService: LovRefDataService,
-              private readonly loadingService: LoadingService,
-              private readonly sessionSvc: SessionStorageService) {
+    private readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly router: Router,
+    private readonly lovRefDataService: LovRefDataService,
+    private readonly loadingService: LoadingService,
+    private readonly sessionSvc: SessionStorageService) {
     this.caseId = this.activatedRoute.snapshot.params.cid;
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
     this.hearingListLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingListLastError));
@@ -125,12 +125,12 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     } else {
       this.hearingsActions = [];
     }
-    
+
     this.unloadSpinnerSubscription = combineLatest([
       this.showSpinner$,
       this.showLoadSpinner$
-    ]).subscribe(([showSpiner, showLoadSpiner])  => {
-      if(!showSpiner && !showLoadSpiner){
+    ]).subscribe(([showSpinner, showLoadSpinner]) => {
+      if (!showSpinner && !showLoadSpinner) {
         this.displaySpinner = false;
       }
     });

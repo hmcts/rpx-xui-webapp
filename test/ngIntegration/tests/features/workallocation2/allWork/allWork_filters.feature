@@ -149,7 +149,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | Search for a location |
         When I select filter item "Location radios" select or radio option "Search for a location" in all work page
         Then I see location search input is enabled in all work filters
-        Then I enter location search "Taylor House Tribunal Hearing Centre" in all work filter
+        Then I enter location search "Taylor" in all work filter
         Then I see location search results in all work filter
             | location              |
             | Taylor House Tribunal Hearing Centre |
@@ -257,7 +257,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | Search for a location |
         When I select filter item "Location radios" select or radio option "Search for a location" in all work page
         Then I see location search input is enabled in all work filters
-        Then I enter location search "Taylor House Tribunal Hearing Centre" in all work filter
+        Then I enter location search "Taylor" in all work filter
         Then I see location search results in all work filter
             | location              |
             | Taylor House Tribunal Hearing Centre |
@@ -378,7 +378,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
     #         | Search for a location |
     #     When I select filter item "Location radios" select or radio option "Search for a location" in all work page
     #     Then I see location search input is enabled in all work filters
-    #     Then I enter location search "Taylor House Tribunal Hearing Centre" in all work filter
+    #     Then I enter location search "Taylor" in all work filter
     #     Then I see location search results in all work filter
     #         | location              |
     #         | Taylor House Tribunal Hearing Centre |
@@ -439,7 +439,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
     #         | Search for a location |
     #     When I select filter item "Location radios" select or radio option "Search for a location" in all work page
     #     Then I see location search input is enabled in all work filters
-    #     Then I enter location search "Taylor House Tribunal Hearing Centre" in all work filter
+    #     Then I enter location search "Taylor" in all work filter
     #     Then I see location search results in all work filter
     #         | location              |
     #         | Taylor House Tribunal Hearing Centre |

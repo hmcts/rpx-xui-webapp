@@ -71,7 +71,7 @@
                 <div class="govuk-!-margin-right-1 first-hearing-date">
                   <xuilib-gov-uk-date [config]="firstHearingDate" [formGroup]="firstHearingFormGroup" [errorMessage]="firstDateOfHearingError"></xuilib-gov-uk-date>
                 </div>
-                <exui-amendment-label *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired"
+                <exui-amendment-label id="first-date-amendment-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired"
                   [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
                 </exui-amendment-label>
               </div>

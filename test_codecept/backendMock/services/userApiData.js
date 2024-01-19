@@ -92,12 +92,20 @@ class UserApiData{
     }
 
     getCapturedRequestData(token, apiMethod) {
-        let userSession = this.sessionUsers.find(sess => sess.token === token.replace('Bearer ', ''))
-        if (!userSession) {
-            return null;
+        if(token === ''){
+            const allSessionsRequests = this.sessionUsers.map(userSession =>{
+                return userSession.apiData.find(methodData => methodData.method === apiMethod)
+            })
+            return allSessionsRequests;
+        }else{
+            let userSession = this.sessionUsers.find(sess => sess.token === token.replace('Bearer ', ''))
+            if (!userSession) {
+                return null;
+            }
+            const apiResponse = userSession.apiData.find(methodData => methodData.method === apiMethod)
+            return apiResponse ? apiResponse.request : null
         }
-        const apiResponse = userSession.apiData.find(methodData => methodData.method === apiMethod)
-        return apiResponse ? apiResponse.request : null
+        
     }
 
    

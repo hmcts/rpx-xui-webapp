@@ -14,41 +14,41 @@ class CustomHelper extends Helper {
 
     // before/after hooks
     _before() {
-       this.browserErrorLogs = [];
-        
-       this.pageOnListener = false;
-       
+        this.browserErrorLogs = [];
+
+        this.pageOnListener = false;
+
     }
 
-    _beforeStep(){
-        const page = this.getPuppeteerPage();
+    _beforeStep() {
+        // const page = this.getPuppeteerPage();
 
-        if (!this.pageOnListener && page){
-           
-            page.on('console', (msg) => {
-                const type = msg.type();
-                if (type === 'error') {
-                    // console.log(msg);
-                    // this.attachBrowserLog(msg)
-                    this.browserErrorLogs.push(msg)
-                }
-            });
-            this.pageOnListener = true;
-        }
+        // if (!this.pageOnListener && page){
+
+        //     page.on('console', (msg) => {
+        //         const type = msg.type();
+        //         if (type === 'error') {
+        //             // console.log(msg);
+        //             // this.attachBrowserLog(msg)
+        //             this.browserErrorLogs.push(msg)
+        //         }
+        //     });
+        //     this.pageOnListener = true;
+        // }
     }
 
 
-    async _failed(){
+    async _failed() {
         codeceptMochawesomeLog.AddMessage('---------------------- TEST FAILED ----------------------');
+        await getActor().saveScreenshot()
+        for (const log of this.browserErrorLogs) {
+            this.attachBrowserLog(log)
+              
+        }
 
-       for(const log of this.browserErrorLogs){
-           this.attachBrowserLog(log)
-        //    await getActor().saveScreenshot()
-       }
-   
     }
 
-    async flushLogsToReport(){
+    async flushLogsToReport() {
         codeceptMochawesomeLog.AddMessage('---------------------- BROWSER CONSOLE ERROR ----------------------');
         for (const log of this.browserErrorLogs) {
             this.attachBrowserLog(log)
@@ -58,26 +58,26 @@ class CustomHelper extends Helper {
 
     }
 
-    async  attachBrowserLog(log) {
-        if (log._type !== 'error' ) {
+    async attachBrowserLog(log) {
+        if (log._type !== 'error') {
             return;
         }
-        if (browserErrorLogsExclusions.filter(exclusion => log._text.includes(exclusion)).length > 0){
+        if (browserErrorLogsExclusions.filter(exclusion => log._text.includes(exclusion)).length > 0) {
             return;
         }
-        
+
         codeceptMochawesomeLog.AddMessage(`Error: ${log._text}`);
         for (const stacktraceLocation of log._stackTraceLocations) {
-            if (stacktraceLocation.url.endsWith('.js')){
+            if (stacktraceLocation.url.endsWith('.js')) {
                 continue;
             }
             codeceptMochawesomeLog.AddMessage(`       ${stacktraceLocation.url}:${stacktraceLocation.lineNumber}`);
         }
-       
+
     }
-    
-    async getCookies(){
-        const cookiesString = await actor().executeScript(function() {
+
+    async getCookies() {
+        const cookiesString = await actor().executeScript(function () {
             return document.cookie;
         })
 
@@ -87,10 +87,10 @@ class CustomHelper extends Helper {
         })
         return cookies;
     }
-    
-    _getHelper(){
-        const { WebDriver, Puppeteer } = this.helpers;
-        return Puppeteer;
+
+    _getHelper() {
+        const { WebDriver, Puppeteer, Playwright } = this.helpers;
+        return Playwright;
     }
 
 
@@ -98,8 +98,12 @@ class CustomHelper extends Helper {
         return this._getHelper();
     }
 
-    getPuppeteerPage(){
-        return this._getHelper().page;
+    getPlaywrightPage() {
+        return this.helpers.Playwright.page
+    }
+
+    getPuppeteerPage() {
+        return this.helpers.Puppeteer.page;
     }
 
     async isVisible(selector) {
@@ -117,7 +121,7 @@ class CustomHelper extends Helper {
 
 
 
-   
+
 
 }
 

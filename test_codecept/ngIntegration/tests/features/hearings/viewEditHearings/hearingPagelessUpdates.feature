@@ -2,7 +2,6 @@
 @ng @functional_enabled @ignore
 Feature: Hearings CR84: Automatic pageless updates
 
-@functional_debug
     Scenario: Hearing automatic updates CAT1 only
         Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_ON"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |

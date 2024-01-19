@@ -50,27 +50,32 @@ Then('I validate fields displayed in view or edit hearing page', async function 
         }
 
         const values = await viewOrEditHearingPage.getKeyFieldValue(field);
-        const isValueDisplayed = values.filter(v => v.includes(expectedVal))
-        const isAmendedLabelDisplayed = values.filter(v => v.includes(expectedVal) && v.includes('AMENDED'))
-        if (expectedAmendFlagDisplayed.includes('true')) {
-            expect(isAmendedLabelDisplayed.length > 0, `Field:${field} to include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.be.true
+        const isValueDisplayed = values.find(v => v.includes(expectedVal))
+        const actualValue = values.find(v => v.includes(expectedVal) )
+        expect(actualValue, `Field:${field} no displayed ${expectedAmendFlagDisplayed}`).to.not.equal(undefined)
+
+        if (expectedAmendFlagDisplayed !== '') {
+
+            expect(actualValue, `Field:${field} to include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.includes(expectedAmendFlagDisplayed)
         } else {
-            expect(isAmendedLabelDisplayed.length === 0, `Field:${field} to not include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.be.true
+            expect(actualValue, `Field:${field} to not include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.not.includes('AMENDED')
+            expect(actualValue, `Field:${field} to not include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.not.includes('ACTION NEEDED')
         }
 
-        expect(isValueDisplayed.length > 0, `Field:${field} to include value ${expectedVal} actual ${values}`).to.be.true
+        expect(isValueDisplayed !== undefined, `Field:${field} to include value ${expectedVal} not found`).to.be.true
+        expect(isValueDisplayed, `Field:${field} to include value ${expectedVal} actual ${values}`).to.include(expectedVal)
 
     }
 })
 
-Then('I validate edit hearing section heating labels', async function (datatable){
+Then('I validate edit hearing section heading labels', async function (datatable){
     const fields = datatable.parse().hashes()
     for(const row of fields){
         const heading = row.Heading
         const expectedLabel = row.Label
         const actualLabel = await viewOrEditHearingPage.getSectionHeadingLabel(heading)
         if (expectedLabel === ''){
-            expect(actualLabel === null, `${heading} expected no label, actual displayed ${actualLabel}`).to.be.true
+            expect(actualLabel, `${heading} expected no label, actual displayed ${actualLabel}`).to.equal('')
         }else{
             expect(actualLabel, `${heading} expected label did not match`).to.includes(expectedLabel)
         }

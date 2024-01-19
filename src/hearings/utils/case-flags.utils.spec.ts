@@ -152,4 +152,155 @@ describe('CaseFlagsUtils', () => {
       expect(flagsGroup[2].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
     });
   });
+
+  describe('Non-reasonable adjustments', () => {
+    const partiesInHMC: PartyDetailsModel[] = [
+      {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyName: 'Jane Smith',
+        partyRole: 'APPL',
+        individualDetails: {
+          firstName: 'Jane',
+          lastName: 'Smith',
+          reasonableAdjustments: [
+            'RA0002'
+          ]
+        }
+      },
+      {
+        partyID: 'P2',
+        partyType: PartyType.IND,
+        partyName: 'Jack Ryan',
+        partyRole: 'APPL',
+        individualDetails: {
+          firstName: 'Jack',
+          lastName: 'Ryan'
+        }
+      },
+      {
+        partyID: 'P3',
+        partyType: PartyType.IND,
+        partyName: 'Rob Kennedy',
+        partyRole: 'APPL',
+        individualDetails: {
+          firstName: 'Rob',
+          lastName: 'Kennedy'
+        }
+      }
+    ];
+
+    const partiesInSHV: PartyDetailsModel[] = [
+      {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyName: 'Jane Butler',
+        partyRole: 'APPL',
+        individualDetails: {
+          firstName: 'Jane',
+          lastName: 'Smith',
+          reasonableAdjustments: [
+            'RA0002'
+          ]
+        }
+      },
+      {
+        partyID: 'P2',
+        partyType: PartyType.IND,
+        partyName: 'Jack Ryan',
+        partyRole: 'APPL',
+        individualDetails: {
+          firstName: 'Jack',
+          lastName: 'Ryan'
+        }
+      },
+      {
+        partyID: 'P3',
+        partyType: PartyType.IND,
+        partyName: 'Rob Kennedy',
+        partyRole: 'APPL',
+        individualDetails: {
+          firstName: 'Rob',
+          lastName: 'Kennedy'
+        }
+      }
+    ];
+
+    const caseFlags: PartyFlagsModel[] = [
+      {
+        partyId: 'P1',
+        partyName: 'Jane Smith',
+        flagParentId: 'RA0001',
+        flagId: 'RA0002',
+        flagDescription: 'Sign language interpreter required',
+        flagStatus: 'ACTIVE'
+      },
+      {
+        partyId: 'P1',
+        partyName: 'Jane Smith',
+        flagParentId: 'PF0001',
+        flagId: 'PF0015',
+        flagDescription: 'Language Interpreter',
+        flagStatus: 'ACTIVE'
+      },
+      {
+        partyId: 'P1',
+        partyName: 'Jane Smith',
+        flagParentId: null,
+        flagId: 'CF0006',
+        flagDescription: 'Potential fraud',
+        flagStatus: 'ACTIVE',
+        dateTimeCreated: '2023-12-19T09:00:00.000Z'
+      },
+      {
+        partyId: 'P2',
+        partyName: 'Jack Ryan',
+        flagParentId: null,
+        flagId: 'PF0002',
+        flagDescription: 'Vulnerable user',
+        flagStatus: 'ACTIVE',
+        dateTimeModified: '2023-12-19T09:00:00.000Z'
+      },
+      {
+        partyId: 'P2',
+        partyName: 'Jack Ryan',
+        flagParentId: null,
+        flagId: 'CF0002',
+        flagDescription: 'Complex Case',
+        flagStatus: 'ACTIVE',
+        dateTimeCreated: '2023-12-17T09:00:00.000Z'
+      },
+      {
+        partyId: 'P3',
+        partyName: 'Rob Kennedy',
+        flagParentId: null,
+        flagId: 'CF0007',
+        flagDescription: 'Urgent Case',
+        flagStatus: 'ACTIVE',
+        dateTimeModified: '2023-12-17T09:00:00.000Z'
+      }
+    ];
+
+    const requestDetails = {
+      timestamp: '2023-12-18T09:00:00.000Z',
+      versionNumber: 1
+    };
+
+    it('should return reasonable adjustment flags', () => {
+      const flagsGroup = CaseFlagsUtils.getNonReasonableAdjustmentFlags(caseFlagsRefData, caseFlags, partiesInHMC, partiesInSHV, requestDetails);
+      console.log('FLAGS GROUP', JSON.stringify(flagsGroup));
+      expect(flagsGroup[0].name).toEqual('Jane Butler');
+      expect(flagsGroup[0].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.AMENDED);
+      expect(flagsGroup[0].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
+      expect(flagsGroup[0].partyFlags[1].flagAmendmentLabelStatus).toBeUndefined();
+      expect(flagsGroup[0].partyFlags[2].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
+      expect(flagsGroup[1].name).toEqual('Jack Ryan');
+      expect(flagsGroup[1].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
+      expect(flagsGroup[1].partyFlags[0].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
+      expect(flagsGroup[0].partyFlags[1].flagAmendmentLabelStatus).toBeUndefined();
+      expect(flagsGroup[2].name).toEqual('Rob Kennedy');
+      expect(flagsGroup[2].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
+      expect(flagsGroup[2].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
+    });
+  });
 });

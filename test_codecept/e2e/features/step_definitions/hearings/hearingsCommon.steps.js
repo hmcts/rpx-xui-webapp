@@ -28,7 +28,7 @@ Then('In hearings requirements page, I see case flags displayed for parties', as
 
     reportLogger.AddMessage(`Parties with case flags ${JSON.stringify(parties)}`)
     for (const party of expectedPartyNames){
-        expect(parties).to.includes(party.partyName)
+        expect(parties.find(p => p.includes(party.partyName)), `${parties} missing expected ${party.partyName}`).to.not.equal(undefined)
     }
 
 })
@@ -40,8 +40,54 @@ Then('In hearings Participant attendance page, I see parties', async function (p
 
     reportLogger.AddMessage(`Parties  ${JSON.stringify(parties)}`)
     for (const party of expectedPartyNames) {
-        expect(parties).to.includes(party.partyName)
+        expect(parties.find(p => p.includes(party.partyName)), `${parties} missing expected ${party.partyName}`).to.not.equal(undefined)
     }
+
+})
+
+
+
+Then('In Additional facilities page, I see case flags displayed for parties', async function (partiesDatatable) {
+    const expectedPartyNames = partiesDatatable.parse().hashes();
+    const additionalFacilitiesPage = getPageObject("Do you require any additional facilities?");
+    const parties = await additionalFacilitiesPage.getPartiesWithCaseFlagsDisplayed()
+
+    reportLogger.AddMessage(`Parties  ${JSON.stringify(parties)}`)
+    for (const party of expectedPartyNames) {
+        expect(parties.find(p => p.includes(party.partyName)), `${parties} missing expected ${party.partyName}`).to.not.equal(undefined)
+    }
+
+})
+
+async function validatePartyFlagsDisplayed(partyName,flagsDatatable){
+    const flags = flagsDatatable.parse().hashes()
+    const additionalFacilitiesPage = getPageObject("Do you require any additional facilities?");
+    const partyFlags = await additionalFacilitiesPage.getCaseFlagsDisplayedForParty(partyName)
+
+    reportLogger.AddMessage(`Parties  ${JSON.stringify(partyFlags)}`)
+
+    for (const expectedFlag of flags) {
+        const isFlagDisplayed = partyFlags.find(f => f.includes(expectedFlag.flag))
+        expect(isFlagDisplayed, `${expectedFlag.flag} not displayed`).to.not.equal(undefined)
+        if (expectedFlag.label === '') {
+            expect(isFlagDisplayed.includes('AMENDED'), `${expectedFlag.flag} has AMENDED label`).to.be.false
+            expect(isFlagDisplayed.includes('ACTION NEEDED'), `${expectedFlag.flag} has ACTION NEEDED label`).to.be.false
+        } else {
+            expect(isFlagDisplayed, `${expectedFlag.flag} not displayed`).to.includes(expectedFlag.label)
+        }
+
+    }
+
+}
+
+
+Then('In hearing requirements page, I see party {string} with case flags', async function (partyName, flagsDatatable) {
+    await validatePartyFlagsDisplayed(partyName, flagsDatatable)
+
+})
+
+Then('In Additional facilities page, I see party {string} with case flags', async function (partyName, flagsDatatable) {
+    await validatePartyFlagsDisplayed(partyName, flagsDatatable)
 
 })
 

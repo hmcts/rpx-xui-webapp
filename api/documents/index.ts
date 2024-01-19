@@ -33,7 +33,7 @@ export function handleResponse(req, res, proxyRes, json) {
   // Current time stored as the last time a document upload was completed
   res.session.lastUploadTime = Date.now();
 
-  // Double the timeout period up to the maximum, if not rate-limited
+  // Double the timeout period up to the maximum, if rate-limited
   if (res.session.isRequestRateLimited) {
     const nextTimeout = (res.session.nextTimeout || INITIAL_TIMEOUT_PERIOD) * 2;
     res.session.nextTimeout = Math.min(nextTimeout, MAX_TIMEOUT_PERIOD);

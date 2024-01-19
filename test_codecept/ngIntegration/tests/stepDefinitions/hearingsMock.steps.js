@@ -23,6 +23,12 @@ const updateRequestedHearing = require('../../../backendMock/services/hearings/m
 const mockServiceHearingValues = require('../../../backendMock/services/hearings/serviceHearingValuesMock');
 
 const jsonUtil = require('../.././../e2e/utils/jsonUtil')
+const path = require('path')
+
+function getHearingsMockJsonFromFile(fileName){
+  return jsonUtil.getJsonFromFile(path.resolve(__dirname,`../features/hearings/mockData/${fileName}.json`,))
+}
+
 
 function updateObjectValues(object, key, value){
   const dateField = ['hearingRequestDateTime', 'lastResponseReceivedDateTime', 'hearingDaySchedule.hearingStartDateTime', 'hearingDaySchedule.hearingEndDateTime'];
@@ -34,6 +40,25 @@ function updateObjectValues(object, key, value){
     object[key] = value;
   }
 }
+
+
+Given('I set mock case hearings from file {string}', async function (filename) {
+  const response = getHearingsMockJsonFromFile(filename)
+  mockClient.setCaseHearings(response, 200);
+
+});
+
+Given('I set mock hearing HMC response from file {string}', async function (fileName) {
+  const response = getHearingsMockJsonFromFile(fileName)
+  await mockClient.setOnGetHearing(response, 200);
+});
+
+Given('I set mock hearing SHV response from file {string}', async function (fileName) {
+  const response = getHearingsMockJsonFromFile(fileName)
+  await mockClient.setHearingServiceHearingValues(response, 200);
+});
+
+
 
 Given('I set mock case hearings', async function (hearingsDatatable) {
 
@@ -51,6 +76,7 @@ Given('I set mock case hearings', async function (hearingsDatatable) {
     "caseHearings": hearingsList,
     "hmctsServiceCode": null
   };
+  reportLogger.AddJson(res)
   mockClient.setCaseHearings(res, 200);
 
 });
@@ -90,6 +116,8 @@ Given('I set mock get hearing with with status {string}', async function (hearin
   mockClient.setOnGetHearing(hearingResponse, 200);
 });
 
+
+
 Given('I set mock get hearing with with status {string} and values at jsonpath', async function (hearingStatus, valuesDatatable) {
   let hearingResponse = global.scenarioData[hearingStatus]
   if (hearingResponse === null || hearingResponse === undefined) {
@@ -100,6 +128,7 @@ Given('I set mock get hearing with with status {string} and values at jsonpath',
   const dataTableObjects = valuesDatatable.parse().hashes();
 
   jsonUtil.updateJsonWithJsonPath(dataTableObjects, hearingResponse)
+  reportLogger.AddJson(hearingResponse)
   mockClient.setOnGetHearing(hearingResponse, 200);
 });
 
@@ -123,6 +152,8 @@ Given('I set parties in mock hearing data for state {string}', async function (h
 
   const hearingData = global.scenarioData[hearingState];
   hearingData.partyDetails = mockParties;
+  reportLogger.AddJson(hearingData)
+
   mockClient.setOnGetHearing(hearingData, 200);
 });
 
@@ -139,7 +170,7 @@ Given('I update mock hearings service hearing values with ref {string} for field
   } else if (field === 'parties'){
     updatedShv = mockServiceHearingValues.setParties(dataTableObjects, serviceHearingValue);
   }
-  reportLogger.AddJson(updatedShv)
+  reportLogger.AddMessage(JSON.stringify(updatedShv,null,2))
   mockClient.setHearingServiceHearingValues(updatedShv, 200);
 });
 

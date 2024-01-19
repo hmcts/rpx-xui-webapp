@@ -35,7 +35,7 @@ describe('HearingRequirementsSectionComponent', () => {
 
   it('should set the HMC parties', () => {
     component.ngOnInit();
-    expect(component.partyIdsInHMC).toEqual(['P1', 'P2', 'P2']);
+    expect(component.partyIdsInHMC).toEqual(['P1', 'P2', 'P3']);
     expect(component.partyNamesInHMC).toEqual(['Jane and Smith', 'DWP', 'DWP']);
   });
 

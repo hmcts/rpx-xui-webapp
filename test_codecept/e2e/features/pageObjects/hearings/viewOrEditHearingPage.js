@@ -50,7 +50,7 @@ class ViewOrEditHearingPage{
     async getSectionHeadingLabel(heading){
         const e = element(by.xpath(`//h2[contains(text(),'${heading}')]//exui-amendment-label`))
         const isDisplayed = await e.isDisplayed();
-        return isDisplayed ? await e.getText() : null;
+        return isDisplayed ? await e.getText() : '';
     }
 
 }

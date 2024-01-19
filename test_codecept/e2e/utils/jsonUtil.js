@@ -1,8 +1,17 @@
 
 const jsonpath = require('jsonpath')
 const reportLogger = require('../../codeceptCommon/reportLogger')
-
+const fs = require('fs')
 class JSONUtil{
+
+
+getJsonFromFile(filePath) {
+  const fileContent = fs.readFileSync(filePath,'utf-8');
+  const fileContentJson = JSON.parse(fileContent)
+  reportLogger.AddJson(fileContentJson)
+  return fileContentJson
+}
+
 
   updateJsonWithJsonPath(updatePaths, updateJson){
     for (const row of updatePaths) {

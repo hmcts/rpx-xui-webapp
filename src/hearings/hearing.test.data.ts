@@ -2587,7 +2587,7 @@ export const initialState = {
             ]
           },
           {
-            partyID: 'P2',
+            partyID: 'P3',
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',

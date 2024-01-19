@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.3-event-before-task":
-  version: 7.0.3-event-before-task
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.3-event-before-task"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.3-event-before-task-with-logic":
+  version: 7.0.3-event-before-task-with-logic
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.3-event-before-task-with-logic"
   dependencies:
     tslib: ^2.3.0
-  checksum: 849123cb3b3a8ec4afca45374d8eda29641a70c886637fb243803e17c74e9bdbeef2ddccba77e7e709797cb982a701a59cb27f0317fa16996bbbc1687bf2ae83
+  checksum: f0761b4c82bb51d350dac07fb7e9d4a3d0090a12d0714bff5b434f550349c5cda673a9d6cebeb9018816e8847dc49e264e302a99f394813afb32b4c5fa7aeb6f
   languageName: node
   linkType: hard
 
@@ -19013,7 +19013,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.3-event-before-task
+    "@hmcts/ccd-case-ui-toolkit": 7.0.3-event-before-task-with-logic
     "@hmcts/ccpay-web-component": 6.0.2
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.10.1-RC.1

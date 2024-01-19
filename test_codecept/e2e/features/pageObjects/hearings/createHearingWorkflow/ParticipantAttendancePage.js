@@ -1,5 +1,7 @@
 
 
+const partyCaseFlags = require('./partyCaseFlagsTable')
+
 class ParticipantAttendancePage {
     constructor() {
         this.pageContainer = $('exui-hearing-attendance');
@@ -99,6 +101,16 @@ class ParticipantAttendancePage {
 
     async enterAttendanceNumber(count) {
         await this.attendanceNumber.sendKeys(count);
+    }
+
+    async getPartiesWithCaseFlagsDisplayed() {
+
+        return await partyCaseFlags.getPartiesWithCaseFlagsDisplayed();
+    }
+
+    async getCaseFlagsDisplayedForParty(partyName) {
+
+        return await partyCaseFlags.getCaseFlagsDisplayedForParty(partyName);;
     }
 }
 

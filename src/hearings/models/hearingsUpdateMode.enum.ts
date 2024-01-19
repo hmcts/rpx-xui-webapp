@@ -54,7 +54,7 @@ export interface WithinPageProperties {
 export interface AfterPageVisitProperties {
   reasonableAdjustmentChangesRequired: boolean;
   reasonableAdjustmentChangesConfirmed?: boolean;
-  nonReasonableAdjustmentChangesRequired?: boolean;
+  nonReasonableAdjustmentChangesRequired: boolean;
   nonReasonableAdjustmentChangesConfirmed?: boolean;
   partyDetailsChangesRequired: boolean;
   partyDetailsChangesConfirmed?: boolean;

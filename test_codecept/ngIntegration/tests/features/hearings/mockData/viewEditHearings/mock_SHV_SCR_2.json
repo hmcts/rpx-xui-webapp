@@ -164,43 +164,6 @@
                 "flagStatus": "ACTIVE"
             },
             {
-                "partyId": "1234-uytr-7654-asdf-0001",
-                "partyName": "Party1 name",
-                "flagParentId": null,
-                "flagId": "PF0002",
-                "flagDescription": "Party1 - Vulnerable user",
-                "flagStatus": "ACTIVE",
-                "dateTimeCreated": "2023-11-07T14:01:32.836316"
-            },
-            {
-                "partyId": "1234-uytr-7654-asdf-0001",
-                "partyName": "Party1 name",
-                "flagParentId": null,
-                "flagId": "PF0007",
-                "flagDescription": "Party1 - Unacceptable/disruptive customer behaviour",
-                "flagStatus": "ACTIVE",
-                "dateTimeCreated": "2023-12-05T14:01:32.836316",
-                "dateTimeModified": "2023-12-07T14:01:32.836316"
-            },
-            {
-                "partyId": "1234-uytr-7654-asdf-0001",
-                "partyName": "Party1 name",
-                "flagParentId": null,
-                "flagId": "CF0002",
-                "flagDescription": "Party1 - Complex Case",
-                "flagStatus": "ACTIVE",
-                "dateTimeCreated": "2023-11-07T14:01:32.836316"
-            },
-            {
-                "partyId": "1234-uytr-7654-asdf-0001",
-                "partyName": "Party1 name",
-                "flagParentId": null,
-                "flagId": "CF0007",
-                "flagDescription": "Party1 - Urgent Case",
-                "flagStatus": "ACTIVE",
-                "dateTimeCreated": "2023-11-07T14:01:32.836316"
-            },
-            {
                 "partyId": "1234-uytr-7654-asdf-0002",
                 "partyName": "Party2 name",
                 "flagParentId": "PARENT_0",

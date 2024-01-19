@@ -1,9 +1,9 @@
 <h2 class="govuk-heading-m">
   Length, date and priority level of hearing
-  <exui-amendment-label *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired"
+  <exui-amendment-label id="hearing-window-action-needed-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired"
     [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
   </exui-amendment-label>
-  <exui-amendment-label *ngIf="hearingWindowChangesConfirmed && hearingWindowChangesRequired"
+  <exui-amendment-label id="hearing-window-amended-label" *ngIf="hearingWindowChangesConfirmed && hearingWindowChangesRequired"
     [displayLabel]="amendmentLabelEnum.AMENDED">
   </exui-amendment-label>
 </h2>

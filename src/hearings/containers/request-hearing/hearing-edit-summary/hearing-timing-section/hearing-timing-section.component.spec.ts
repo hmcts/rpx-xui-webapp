@@ -3,10 +3,12 @@ import { initialState } from '../../../../hearing.test.data';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { HearingsService } from '../../../../services/hearings.service';
 import { HearingTimingSectionComponent } from './hearing-timing-section.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('HearingTimingSectionComponent', () => {
   let component: HearingTimingSectionComponent;
   let fixture: ComponentFixture<HearingTimingSectionComponent>;
+  let nativeElement: any;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post', 'delete']);
   const hearingsService = new HearingsService(mockedHttpClient);
 
@@ -40,6 +42,7 @@ describe('HearingTimingSectionComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
         HearingTimingSectionComponent
       ],
@@ -52,6 +55,7 @@ describe('HearingTimingSectionComponent', () => {
     component = fixture.componentInstance;
     component.hearingPrioritiesRefData = hearingPrioritiesRefData;
     component.hearingDetails = initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails;
+    nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
   });
 
@@ -66,7 +70,7 @@ describe('HearingTimingSectionComponent', () => {
     expect(component.hearingPriority).toEqual('Standard');
   });
 
-  it('should display label', () => {
+  it('should display action needed label', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
@@ -80,6 +84,30 @@ describe('HearingTimingSectionComponent', () => {
     };
     component.ngOnInit();
     expect(component.hearingWindowChangesRequired).toEqual(true);
+    expect(component.hearingWindowChangesConfirmed).toBeUndefined();
+    expect(nativeElement.querySelector('#hearing-window-action-needed-label')).toBeDefined();
+    expect(nativeElement.querySelector('#hearing-window-amended-label')).toBeNull();
+  });
+
+  it('should display amended label', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: true,
+        hearingWindowChangesConfirmed: true
+      }
+    };
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.hearingWindowChangesRequired).toEqual(true);
+    expect(component.hearingWindowChangesConfirmed).toEqual(true);
+    expect(nativeElement.querySelector('#hearing-window-action-needed-label')).toBeNull();
+    expect(nativeElement.querySelector('#hearing-window-amended-label')).toBeDefined();
   });
 
   it('should not display label', () => {
@@ -96,6 +124,8 @@ describe('HearingTimingSectionComponent', () => {
     };
     component.ngOnInit();
     expect(component.hearingWindowChangesRequired).toEqual(false);
+    expect(nativeElement.querySelector('#hearing-window-action-needed-label')).toBeNull();
+    expect(nativeElement.querySelector('#hearing-window-amended-label')).toBeDefined();
   });
 
   it('should verify onChange', () => {

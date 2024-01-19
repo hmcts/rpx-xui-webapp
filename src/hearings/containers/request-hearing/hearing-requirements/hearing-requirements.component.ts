@@ -215,10 +215,11 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         (propertiesUpdatedOnPageVisit?.afterPageVisit.reasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired)) {
       // Hearings manual amendment journey is enabled and there are changes to reasonable adjustment flags detected
       this.reasonableAdjustmentFlags = CaseFlagsUtils.getReasonableAdjustmentFlags(this.caseFlagsRefData,
-        this.hearingsService.propertiesUpdatedOnPageVisit?.caseFlags?.flags, this.hearingRequestMainModel.partyDetails, this.serviceHearingValuesModel.parties);
+        propertiesUpdatedOnPageVisit.caseFlags?.flags, this.hearingRequestMainModel.partyDetails, this.serviceHearingValuesModel.parties);
     } else {
       // Hearings manual amendment journey is NOT enabled
-      this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel?.caseFlags?.flags, this.caseFlagsRefData, this.caseFlagType);
+      this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel?.caseFlags?.flags,
+        this.caseFlagsRefData, this.caseFlagType);
     }
   }
 }

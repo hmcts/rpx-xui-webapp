@@ -5,6 +5,7 @@ import { CaseFlagType } from '../models/hearings.enum';
 import { AmendmentLabelStatus } from '../models/hearingsUpdateMode.enum';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { PartyFlagsDisplayModel, PartyFlagsModel } from '../models/partyFlags.model';
+import { RequestDetailsModel } from '../models/requestDetails.model';
 
 export class CaseFlagsUtils {
   public static ACTIVE = 'active';
@@ -14,10 +15,25 @@ export class CaseFlagsUtils {
   public static getReasonableAdjustmentFlags(caseFlagsRefData: CaseFlagReferenceModel[],
     caseFlags: PartyFlagsModel[], partiesInHMC: PartyDetailsModel[], partiesInSHV: PartyDetailsModel[]): CaseFlagGroup[] {
     // Get all active reasonable adjustment and language interpreter flags
-    const reasonableAdjustmentFlags = this.getActiveReasonableAdjustmentFlags(caseFlags, caseFlagsRefData, partiesInSHV);
+    const activeFlags = this.getActiveDisplaysFlags(caseFlags, caseFlagsRefData, partiesInSHV);
+    // Get only the active reasonable adjustment and language interpreter flags
+    const reasonableAdjustmentFlags = activeFlags?.filter((caseFlag) =>
+      (caseFlag.displayPath?.includes(CaseFlagType.REASONABLE_ADJUSTMENT) || caseFlag.flagId === CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID)
+    );
     // Group the reasonable adjustment flags based on party name
     const groupedReasonableAdjustmentFlags = _.groupBy(reasonableAdjustmentFlags, CaseFlagsUtils.PARTY_NAME);
     return this.getReasonableAdjustmentFlagsGroup(groupedReasonableAdjustmentFlags, partiesInHMC, partiesInSHV);
+  }
+
+  public static getNonReasonableAdjustmentFlags(caseFlagsRefData: CaseFlagReferenceModel[],
+    caseFlags: PartyFlagsModel[], partiesInHMC: PartyDetailsModel[], partiesInSHV: PartyDetailsModel[], hearingDetails: RequestDetailsModel): CaseFlagGroup[] {
+    // Get all active non-reasonable adjustment and language interpreter flags
+    const activeFlags = this.getActiveDisplaysFlags(caseFlags, caseFlagsRefData, partiesInSHV);
+    const nonReasonableAdjustmentPartyFlags = activeFlags.filter((nonRAF) => nonRAF.displayPath.includes(CaseFlagType.PARTY_FLAGS));
+    const activeCaseFlags = activeFlags.filter((nonRAF) => nonRAF.displayPath.includes(CaseFlagType.CASE_FLAG));
+    const flags = [...nonReasonableAdjustmentPartyFlags, ...activeCaseFlags];
+    const groupedFlags = _.groupBy(flags, CaseFlagsUtils.PARTY_NAME);
+    return this.getNonReasonableAdjustmentFlagsGroup(groupedFlags, partiesInHMC, partiesInSHV, hearingDetails);
   }
 
   /**
@@ -45,7 +61,8 @@ export class CaseFlagsUtils {
     return this.getAllNonRAFsWithGroup(allNonRAFs);
   }
 
-  private static getAllActiveDisplayFlags(partyFlags: PartyFlagsModel[], caseFlagsRefDataModels: CaseFlagReferenceModel[]): PartyFlagsDisplayModel[] {
+  private static getAllActiveDisplayFlags(partyFlags: PartyFlagsModel[],
+    caseFlagsRefDataModels: CaseFlagReferenceModel[]): PartyFlagsDisplayModel[] {
     const displayCaseFlags: PartyFlagsDisplayModel[] = partyFlags.map((flag) => {
       const flagPath: CaseFlagReferenceModel = this.findFlagByFlagId(caseFlagsRefDataModels, flag.flagId);
       if (flagPath) {
@@ -127,7 +144,7 @@ export class CaseFlagsUtils {
     return caseFlagGroups;
   }
 
-  private static getActiveReasonableAdjustmentFlags(caseFlags: PartyFlagsModel[],
+  private static getActiveDisplaysFlags(caseFlags: PartyFlagsModel[],
     caseFlagsRefData: CaseFlagReferenceModel[], partiesInSHV: PartyDetailsModel[]): PartyFlagsDisplayModel[] {
     const flags: PartyFlagsDisplayModel[] = caseFlags?.map((flag) => {
       const flagPath = this.findFlagByFlagId(caseFlagsRefData, flag.flagId);
@@ -147,11 +164,7 @@ export class CaseFlagsUtils {
         displayPath: null
       };
     });
-    // Return only the active reasonable adjustment and language interpreter flags
-    const activeReasonableAdjustmentFlags = flags?.filter((caseFlag) =>
-      (caseFlag.displayPath?.includes(CaseFlagType.REASONABLE_ADJUSTMENT) || caseFlag.flagId === CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID)
-    );
-    return activeReasonableAdjustmentFlags;
+    return flags;
   }
 
   private static getReasonableAdjustmentFlagsGroup(groupedReasonableAdjustmentFlags: Record<string, PartyFlagsDisplayModel[]>,
@@ -188,10 +201,37 @@ export class CaseFlagsUtils {
     return reasonableAdjustmentFlags;
   }
 
-  private static getPartyAmendmentLabelStatus(reasonableAdjustmentFlags: PartyFlagsDisplayModel[],
+  private static getNonReasonableAdjustmentFlagsGroup(groupedFlags: Record<string, PartyFlagsDisplayModel[]>,
+    partiesInHMC: PartyDetailsModel[], partiesInSHV: PartyDetailsModel[], hearingDetails: RequestDetailsModel): CaseFlagGroup[] {
+    const nonReasonableAdjustmentFlagGroups = [];
+    for (const flag in groupedFlags) {
+      if (groupedFlags.hasOwnProperty(flag)) {
+        nonReasonableAdjustmentFlagGroups.push(
+          {
+            name: flag,
+            partyFlags: this.getNonReasonableAdjustmentFlagsWithAmendedLabelStatus(groupedFlags[flag], hearingDetails),
+            partyAmendmentLabelStatus: this.getPartyAmendmentLabelStatus(groupedFlags[flag], partiesInHMC, partiesInSHV)
+          } as CaseFlagGroup);
+      }
+    }
+    return nonReasonableAdjustmentFlagGroups;
+  }
+
+  private static getNonReasonableAdjustmentFlagsWithAmendedLabelStatus(flags: PartyFlagsDisplayModel[],
+    hearingDetails: RequestDetailsModel): PartyFlagsDisplayModel[] {
+    for (const flag of flags) {
+      if ((flag.dateTimeModified && new Date(flag.dateTimeModified) > new Date(hearingDetails.timestamp)) ||
+        (flag.dateTimeCreated && new Date(flag.dateTimeCreated) > new Date(hearingDetails.timestamp))) {
+        flag.flagAmendmentLabelStatus = AmendmentLabelStatus.ACTION_NEEDED;
+      }
+    }
+    return flags;
+  }
+
+  private static getPartyAmendmentLabelStatus(flags: PartyFlagsDisplayModel[],
     partiesInHMC: PartyDetailsModel[], partiesInSHV: PartyDetailsModel[]): AmendmentLabelStatus {
     // Find the party from service hearing values model
-    const partyInSHV = partiesInSHV.find((party) => party.partyID === reasonableAdjustmentFlags[0].partyId);
+    const partyInSHV = partiesInSHV.find((party) => party.partyID === flags[0].partyId);
     const isNewParty = !partiesInHMC.map((party) => party.partyID)?.includes(partyInSHV.partyID);
     // The party from service hearing values model is not present in the hearing reqquest model then
     // it is a new party and the label against the party should be displayed as ACTION NEEDED
@@ -200,7 +240,7 @@ export class CaseFlagsUtils {
     }
     // The party from service hearing values model is present in the hearing reqquest model and if the party name did not match then
     // it implied that the party name changed and the label against the party should be displayed as AMENDED
-    const partyInHMC = partiesInHMC.find((party) => party.partyID === reasonableAdjustmentFlags[0].partyId);
+    const partyInHMC = partiesInHMC.find((party) => party.partyID === flags[0].partyId);
     if (partyInHMC && partyInHMC.partyName !== partyInSHV.partyName) {
       return AmendmentLabelStatus.AMENDED;
     }

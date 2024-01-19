@@ -127,6 +127,22 @@ class PRDApi{
             {
                 name: "B", path: ["Reasonable adjustment"], flagCode: 'RA0053',
                 childFlags: [{ name: 'B.D', path: ["Party", "Others L3"], flagCode: 'RA0053' }]
+            },
+            {
+                name: "Vulnerable user", path: ["Party"], flagCode: 'PF0002',
+                childFlags: []
+            },
+            {
+                name: "Unacceptable/disruptive customer behaviour", path: ["Party"], flagCode: 'PF0007',
+                childFlags: []
+            },
+            {
+                name: "Complex Case", path: ["Case"], flagCode: 'CF0002',
+                childFlags: []
+            },
+            {
+                name: "Urgent case", path: ["Case"], flagCode: 'CF0007',
+                childFlags: []
             }
         ]
 

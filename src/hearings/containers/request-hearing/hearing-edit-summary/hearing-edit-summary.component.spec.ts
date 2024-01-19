@@ -381,7 +381,7 @@ describe('HearingEditSummaryComponent', () => {
         ]
       },
       {
-        partyID: 'P2',
+        partyID: 'P3',
         partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
@@ -390,20 +390,14 @@ describe('HearingEditSummaryComponent', () => {
           reasonableAdjustments: [
             'RA0005'
           ],
-          interpreterLanguage: null,
-          relatedParties: undefined,
-          custodyStatus: undefined,
-          vulnerableFlag: undefined,
-          vulnerabilityDetails: undefined,
-          hearingChannelEmail: undefined,
-          hearingChannelPhone: undefined
+          interpreterLanguage: null
         },
         organisationDetails: {
           name: 'DWP',
           organisationType: 'GOV',
           cftOrganisationID: 'O100000'
         },
-        unavailabilityDOW: undefined,
+        unavailabilityDOW: null,
         unavailabilityRanges: [
           {
             unavailableFromDate: '2021-12-20T09:00:00.000Z',

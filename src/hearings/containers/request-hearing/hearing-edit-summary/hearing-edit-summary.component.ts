@@ -231,7 +231,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     // Remove attribute with null to ignore change in CR-84 auto update
     shvCaseCategories.forEach((s) => {
-      Object.keys(s).forEach((k) => s[k] == null && delete s[k])
+      Object.keys(s).forEach((k) => s[k] === null && delete s[k]);
     });
 
     return shvCaseCategories;

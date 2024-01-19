@@ -1,5 +1,6 @@
 
 const GovUKTable = require('../../common/govUkTable')
+const partyCaseFlags = require('./partyCaseFlagsTable')
 class HearingFacilitiesPage {
     constructor() {
         this.pageContainer = $('exui-hearing-facilities')
@@ -51,15 +52,14 @@ class HearingFacilitiesPage {
         await ele.click()
     }
 
-    async getPartiesWithCaseFlagsDisplayed(){
-        const partiesElements = element.all(by.xpath(`//table[contains(@class,'govuk-table')]//th[contains(@class,'govuk-table__header_name')]`))
-        const count = await partiesElements.count()
-        const partNames = [];
-        for (let i = 0; i < count; i++) {
-            const e = await partiesElements.get(i)
-            partNames.push(await e.getText())
-        }
-        return partNames;
+    async getPartiesWithCaseFlagsDisplayed() {
+       
+        return await partyCaseFlags.getPartiesWithCaseFlagsDisplayed();
+    }
+
+    async getCaseFlagsDisplayedForParty(partyName) {
+      
+        return await partyCaseFlags.getCaseFlagsDisplayedForParty(partyName);;
     }
 }
 

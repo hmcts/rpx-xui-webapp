@@ -142,6 +142,7 @@ module.exports = async function () {
 
         const authCookies = idamLogin.authToken
         if (test.state === 'failed' && process.env.TEST_TYPE !== 'e2||e'){
+            
             const mockSessiondataResponse = await mockClient.getUserSesionData(authCookies);
             featureLogsMessage(test, `${JSON.stringify(mockSessiondataResponse.data, null, 2)}`);
             codeceptMochawesomeLog.AddJson(authCookies);

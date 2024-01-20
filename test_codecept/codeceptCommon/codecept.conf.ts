@@ -172,7 +172,7 @@ exports.config = {
   plugins:{
     screenshotOnFail: {
       enabled: true,
-      fullPageScreenshots: 'true'
+      fullPageScreenshots: true
     },
 
     "myPlugin": {
@@ -183,6 +183,7 @@ exports.config = {
       enabled: true
     },
     pauseOnFail: {},
+
     cucumberJsonReporter: {
       require: 'codeceptjs-cucumber-json-reporter',
       enabled: true,               // if false, pass --plugins cucumberJsonReporter

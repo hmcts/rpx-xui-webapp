@@ -114,7 +114,7 @@ exports.config = {
       uniqueScreenshotNames: true,
       video: true,
       screenshot: true,
-      windowSize: "1900x1400"
+      windowSize: "1600x1400"
     }
     // WebDriver:{
     //   url: 'https://manage-case.aat.platform.hmcts.net/',
@@ -172,7 +172,7 @@ exports.config = {
   plugins:{
     screenshotOnFail: {
       enabled: true,
-      fullPageScreenshots: 'true'
+      fullPageScreenshots: true
     },
 
     "myPlugin": {

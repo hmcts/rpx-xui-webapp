@@ -126,8 +126,6 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Reasonable adjustments   | Party1 name           | true              |                    |
             | Reasonable adjustments   | Party2 name           | true              |                    |
 
-
-
     Scenario: SCR 4: CAT1 and CAT2 with CAT2 accepted,AMENDED labels (Conditions (2) & (5))
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
         Then I am on hearings tab page
@@ -262,7 +260,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Reasonable adjustments   | Party1 name updated                        | true              | AMENDED            |
             | Reasonable adjustments   | Party2 name                                | true              |                    |
 
-@functional_debug
+
     Scenario: SCR 5: No chnages and no labels (Conditions (3) & (6)) and Scenario 6
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
         Then I am on hearings tab page

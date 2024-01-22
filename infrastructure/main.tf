@@ -48,23 +48,21 @@ module "redis6-cache" {
   capacity                      = var.redis_capacity
 }
 
-module "application_insights" {
-  source = "git@github.com:hmcts/terraform-module-application-insights?ref=main"
-
-  env                 = var.env
-  product             = var.product
-  name                = "${local.app_full_name}-appinsights"
+resource "azurerm_application_insights" "appinsights" {
+  name                = "${local.app_full_name}-appinsights-${var.env}"
   location            = var.location
-  application_type    = var.application_type
   resource_group_name = azurerm_resource_group.rg.name
+  application_type    = var.application_type
 
-  common_tags = var.common_tags
-}
+  tags = var.common_tags
 
-moved {
-  from = azurerm_application_insights.appinsights
-  to   = module.application_insights.azurerm_application_insights.this
-}
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to appinsights as otherwise upgrading to the Azure provider 2.x
+      # destroys and re-creates this appinsights instance
+      application_type,
+    ]
+  }
 
 resource "azurerm_resource_group" "rg" {
   name     = "${local.app_full_name}-${var.env}"
@@ -75,6 +73,6 @@ resource "azurerm_resource_group" "rg" {
 
 resource "azurerm_key_vault_secret" "app_insights_key" {
   name         = "appinsights-instrumentationkey-mc"
-  value        = module.application_insights.instrumentation_key
+  value        = azurerm_application_insights.appinsights.instrumentation_key
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }

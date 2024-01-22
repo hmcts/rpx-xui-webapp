@@ -48,7 +48,7 @@ module "redis6-cache" {
   capacity                      = var.redis_capacity
 }
 
-resource "azurerm_application_insights" "appinsights" {
+resource "azurerm_application_insights" "appinsight" {
   name                = "${local.app_full_name}-appinsights-${var.env}"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name

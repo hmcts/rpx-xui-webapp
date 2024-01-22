@@ -14,3 +14,8 @@ output "appInsightsInstrumentationKey" {
   value     = azurerm_application_insights.appinsights.instrumentation_key
   sensitive = true
 }
+
+output "appInsightsInstrumentationKey" {
+  value     = module.application_insights.instrumentation_key
+  sensitive = true
+}

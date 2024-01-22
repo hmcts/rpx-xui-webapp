@@ -92,12 +92,6 @@ resource "azurerm_resource_group" "rg" {
 
 resource "azurerm_key_vault_secret" "app_insights_key" {
   name         = "appinsights-instrumentationkey-mc"
-  value        = module.application_insights.instrumentation_key
-  key_vault_id = data.azurerm_key_vault.key_vault.id
-}
-
-resource "azurerm_key_vault_secret" "app_insights_key_classic" {
-  name         = "appinsights-instrumentationkey-mc"
   value        = azurerm_application_insights.appinsight.instrumentation_key
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }

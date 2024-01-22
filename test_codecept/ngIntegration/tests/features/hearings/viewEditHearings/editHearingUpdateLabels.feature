@@ -210,7 +210,6 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Length, date and priority level of hearing | ACTION NEEDED |
         # end of Accept participant attendance
 
-        # end of Accept Additional facilities
 
         # Accept Additional facilities
 
@@ -232,7 +231,6 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | disruptive customer behaviour | ACTION NEEDED |
             | Complex Case                  | ACTION NEEDED |
             | Urgent case                   | ACTION NEEDED |
-   
         When I click continue in hearing workflow
         Then I validate Edit hearing page displayed
         Then I validate edit hearing section heading labels

@@ -205,6 +205,24 @@ describe('HearingAttendanceComponent', () => {
     expect(component.prepareHearingRequestData).not.toHaveBeenCalled();
   });
 
+  it('should set partyDetailsChangesConfirmed when preparing hearing request data for manual amendments', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: null,
+      parties: partyDetailsFromLatestSHV,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowFirstDateMustBeChangesRequired: false
+      }
+    };
+    component.prepareHearingRequestData();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed).toEqual(true);
+  });
+
   it('should get individual parties', () => {
     expect(component.getIndividualParties()[0].partyID).toEqual('P1');
   });

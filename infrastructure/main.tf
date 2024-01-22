@@ -65,11 +65,6 @@ resource "azurerm_application_insights" "appinsights" {
   }
 }
 
-moved {
-  from = module.application_insights.azurerm_application_insights.this
-  to   = azurerm_application_insights.appinsights
-}
-
 resource "azurerm_resource_group" "rg" {
   name     = "${local.app_full_name}-${var.env}"
   location = var.location

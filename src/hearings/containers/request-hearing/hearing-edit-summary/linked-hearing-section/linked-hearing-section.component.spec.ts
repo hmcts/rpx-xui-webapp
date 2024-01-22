@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { initialState } from '../../../../../hearings/hearing.test.data';
 import { LinkedHearingSectionComponent } from './linked-hearing-section.component';
 
 describe('LinkedHearingSectionComponent', () => {
@@ -11,7 +13,7 @@ describe('LinkedHearingSectionComponent', () => {
       declarations: [
         LinkedHearingSectionComponent
       ],
-      providers: []
+      providers: [provideMockStore({ initialState })]
     }).compileComponents();
 
     fixture = TestBed.createComponent(LinkedHearingSectionComponent);
@@ -29,5 +31,6 @@ describe('LinkedHearingSectionComponent', () => {
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
       fragmentId: 'linkedHearings', changeLink: '/hearings/request/hearing-link#yes'
     });
+    expect(component.showAmmended).toEqual(false);
   });
 });

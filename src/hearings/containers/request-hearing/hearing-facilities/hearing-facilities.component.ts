@@ -136,7 +136,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   private setNonReasonableAdjustmentFlags(): void {
     const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
     if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
-        propertiesUpdatedOnPageVisit.hasOwnProperty('caseFlags') &&
+        propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
         (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired)) {
       this.nonReasonableAdjustmentFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlags(this.caseFlagsRefData,
         propertiesUpdatedOnPageVisit.caseFlags?.flags, this.hearingRequestMainModel.partyDetails, this.serviceHearingValuesModel.parties,

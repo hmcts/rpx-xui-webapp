@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { initialState } from '../../../../../hearings/hearing.test.data';
 import { HearingLocationModel } from '../../../../models/hearingLocation.model';
 import { HMCLocationType } from '../../../../models/hearings.enum';
 import { LocationByEPIMMSModel } from '../../../../models/location.model';
@@ -77,6 +79,7 @@ describe('HearingVenueSectionComponent', () => {
         HearingVenueSectionComponent
       ],
       providers: [
+        provideMockStore({ initialState }),
         {
           provide: LocationsDataService,
           useValue: locationsDataServiceMock
@@ -101,6 +104,7 @@ describe('HearingVenueSectionComponent', () => {
       console.log('RESULT', result);
       expect(result).toEqual(locationsReturnedByService);
     });
+    expect(component.showAmmendedForHeading).toEqual(false);
   });
 
   it('should verify onChange', () => {

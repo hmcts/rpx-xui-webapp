@@ -10,7 +10,7 @@ output "vaultUri" {
   value = data.azurerm_key_vault.key_vault.vault_uri
 }
 
-output "appInsightsInstrumentationKey" {
+output "appInsightsInstrumentationKeyclassic" {
   value     = azurerm_application_insights.appinsights.instrumentation_key
   sensitive = true
 }

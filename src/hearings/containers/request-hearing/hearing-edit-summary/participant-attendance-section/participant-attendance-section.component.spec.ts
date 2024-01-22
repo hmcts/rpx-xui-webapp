@@ -92,7 +92,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
     expect(component.numberOfPhysicalAttendees).toEqual(3);
   });
 
-  it('should display label', () => {
+  it('should display action needed label', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
@@ -106,6 +106,24 @@ describe('ParticipantAttendanceSectionComponent', () => {
     };
     component.ngOnInit();
     expect(component.partyDetailsChangesRequired).toEqual(true);
+    expect(component.partyDetailsChangesConfirmed).toBeUndefined();
+  });
+
+  it('should display amended label', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        partyDetailsChangesConfirmed: true,
+        hearingWindowFirstDateMustBeChangesRequired: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.partyDetailsChangesRequired).toEqual(true);
+    expect(component.partyDetailsChangesConfirmed).toEqual(true);
   });
 
   it('should not display label', () => {
@@ -122,6 +140,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
     };
     component.ngOnInit();
     expect(component.partyDetailsChangesRequired).toEqual(false);
+    expect(component.partyDetailsChangesConfirmed).toBeUndefined();
   });
 
   it('should verify onChange', () => {

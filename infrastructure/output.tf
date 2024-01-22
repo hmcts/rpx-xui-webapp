@@ -3,7 +3,7 @@ output "microserviceName" {
 }
 
 output "vaultName" {
-  value = local.shared_vault_name
+    value = local.shared_vault_name
 }
 
 output "vaultUri" {
@@ -11,6 +11,6 @@ output "vaultUri" {
 }
 
 output "appInsightsInstrumentationKey" {
-  value     = module.application_insights.instrumentation_key
+  value = azurerm_application_insights.appinsights.instrumentation_key
   sensitive = true
 }

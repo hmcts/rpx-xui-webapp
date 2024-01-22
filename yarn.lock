@@ -487,16 +487,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/code-frame@npm:^7.23.4":
-  version: 7.23.4
-  resolution: "@babel/code-frame@npm:7.23.4"
-  dependencies:
-    "@babel/highlight": ^7.23.4
-    chalk: ^2.4.2
-  checksum: 29999d08c3dbd803f3c296dae7f4f40af1f9e381d6bbc76e5a75327c4b8b023bcb2e209843d292f5d71c3b5c845df1da959d415ed862d6a68e0ad6c5c9622d37
-  languageName: node
-  linkType: hard
-
 "@babel/code-frame@npm:^7.23.5":
   version: 7.23.5
   resolution: "@babel/code-frame@npm:7.23.5"
@@ -590,30 +580,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.7.5":
-  version: 7.23.3
-  resolution: "@babel/core@npm:7.23.3"
-  dependencies:
-    "@ampproject/remapping": ^2.2.0
-    "@babel/code-frame": ^7.22.13
-    "@babel/generator": ^7.23.3
-    "@babel/helper-compilation-targets": ^7.22.15
-    "@babel/helper-module-transforms": ^7.23.3
-    "@babel/helpers": ^7.23.2
-    "@babel/parser": ^7.23.3
-    "@babel/template": ^7.22.15
-    "@babel/traverse": ^7.23.3
-    "@babel/types": ^7.23.3
-    convert-source-map: ^2.0.0
-    debug: ^4.1.0
-    gensync: ^1.0.0-beta.2
-    json5: ^2.2.3
-    semver: ^6.3.1
-  checksum: d306c1fa68972f4e085e9e7ad165aee80eb801ef331f6f07808c86309f03534d638b82ad00a3bc08f4d3de4860ccd38512b2790a39e6acc2caf9ea21e526afe7
-  languageName: node
-  linkType: hard
-
-"@babel/core@npm:~7.23.0":
+"@babel/core@npm:^7.7.5, @babel/core@npm:~7.23.0":
   version: 7.23.7
   resolution: "@babel/core@npm:7.23.7"
   dependencies:
@@ -656,18 +623,6 @@ __metadata:
     "@jridgewell/trace-mapping": ^0.3.17
     jsesc: ^2.5.1
   checksum: 5b2a3ccdc3634f6ea86e0a442722bcd430238369432d31f15b428a4ee8013c2f4f917b5b135bf4fc1d0a3e2f87f10fd4ce5d07955ecc2d3b9400a05c2a481374
-  languageName: node
-  linkType: hard
-
-"@babel/generator@npm:^7.23.3, @babel/generator@npm:^7.23.4":
-  version: 7.23.4
-  resolution: "@babel/generator@npm:7.23.4"
-  dependencies:
-    "@babel/types": ^7.23.4
-    "@jridgewell/gen-mapping": ^0.3.2
-    "@jridgewell/trace-mapping": ^0.3.17
-    jsesc: ^2.5.1
-  checksum: 7403717002584eaeb58559f4d0de19b79e924ef2735711278f7cb5206d081428bf3960578566d6fa4102b7b30800d44f70acffea5ecef83f0cb62361c2a23062
   languageName: node
   linkType: hard
 
@@ -1058,17 +1013,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helpers@npm:^7.23.2":
-  version: 7.23.4
-  resolution: "@babel/helpers@npm:7.23.4"
-  dependencies:
-    "@babel/template": ^7.22.15
-    "@babel/traverse": ^7.23.4
-    "@babel/types": ^7.23.4
-  checksum: 85677834f2698d0a468db59c062b011ebdd65fc12bab96eeaae64084d3ce3268427ce2dbc23c2db2ddb8a305c79ea223c2c9f7bbd1fb3f6d2fa5e978c0eb1cea
-  languageName: node
-  linkType: hard
-
 "@babel/helpers@npm:^7.23.7":
   version: 7.23.8
   resolution: "@babel/helpers@npm:7.23.8"
@@ -1108,15 +1052,6 @@ __metadata:
   bin:
     parser: ./bin/babel-parser.js
   checksum: 7431c1ab445cf2b6e8acb2d7acc60d9d7c25728c7649ae16732590834002786bea10b54ab1936ae0784b0e7d080efe9fd4bf17c4534b6eb36d09c75a85253ef9
-  languageName: node
-  linkType: hard
-
-"@babel/parser@npm:^7.23.3, @babel/parser@npm:^7.23.4":
-  version: 7.23.4
-  resolution: "@babel/parser@npm:7.23.4"
-  bin:
-    parser: ./bin/babel-parser.js
-  checksum: 1d90e17d966085b8ea12f357ffcc76568969364481254f0ae3e7ed579e9421d31c7fd3876ccb3b215a5b2ada48251b0c2d0f21ba225ee194f0e18295b49085f2
   languageName: node
   linkType: hard
 
@@ -2235,24 +2170,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/traverse@npm:^7.23.3, @babel/traverse@npm:^7.23.4":
-  version: 7.23.4
-  resolution: "@babel/traverse@npm:7.23.4"
-  dependencies:
-    "@babel/code-frame": ^7.23.4
-    "@babel/generator": ^7.23.4
-    "@babel/helper-environment-visitor": ^7.22.20
-    "@babel/helper-function-name": ^7.23.0
-    "@babel/helper-hoist-variables": ^7.22.5
-    "@babel/helper-split-export-declaration": ^7.22.6
-    "@babel/parser": ^7.23.4
-    "@babel/types": ^7.23.4
-    debug: ^4.1.0
-    globals: ^11.1.0
-  checksum: e8c9cd92cfd6fec9cf3969604edea5a58c2d55275b88b9de06f0d94de43b64b04d57168554b617159d62c840a8700e6d4c7954d2e6ed69cfb918202ac01561e9
-  languageName: node
-  linkType: hard
-
 "@babel/traverse@npm:^7.23.7":
   version: 7.23.7
   resolution: "@babel/traverse@npm:7.23.7"
@@ -2282,7 +2199,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.23.0, @babel/types@npm:^7.23.3, @babel/types@npm:^7.23.4":
+"@babel/types@npm:^7.23.0":
   version: 7.23.4
   resolution: "@babel/types@npm:7.23.4"
   dependencies:
@@ -4850,7 +4767,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stryker-mutator/api@npm:8.0.0":
+"@stryker-mutator/api@npm:8.0.0, @stryker-mutator/api@npm:^8.0.0":
   version: 8.0.0
   resolution: "@stryker-mutator/api@npm:8.0.0"
   dependencies:
@@ -4862,7 +4779,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stryker-mutator/api@npm:^3.0.1":
+"@stryker-mutator/api@npm:^3.3.1":
   version: 3.3.1
   resolution: "@stryker-mutator/api@npm:3.3.1"
   dependencies:
@@ -4951,17 +4868,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stryker-mutator/mocha-runner@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@stryker-mutator/mocha-runner@npm:8.0.0"
+"@stryker-mutator/mocha-runner@npm:^3.0.1":
+  version: 3.3.1
+  resolution: "@stryker-mutator/mocha-runner@npm:3.3.1"
   dependencies:
-    "@stryker-mutator/api": 8.0.0
-    "@stryker-mutator/util": 8.0.0
-    tslib: ~2.6.0
+    "@stryker-mutator/api": ^3.3.1
+    "@stryker-mutator/util": ^3.3.1
+    multimatch: ~4.0.0
+    tslib: ~2.0.0
   peerDependencies:
-    "@stryker-mutator/core": ~8.0.0
-    mocha: ">= 7.2 < 11"
-  checksum: 59361b78075f880f0e0cfedcfb897e73623033e8b9414370ef482909ac44430f9982212e6d879f779654cec5fbb484eeeb2d854ded1056ff33a1714aa3cc6d94
+    "@stryker-mutator/core": ^3.0.0
+    mocha: ">= 2.3.3 < 9"
+  checksum: 94a44f9ddbfc2bb05a4f9b898d7afabe8acb0aae657b7b0fc9010f611f3ecdecf7fdba8bc9ec77c66043b09520edba8f9a71ea7668e48430b39eee3e9699bb54
   languageName: node
   linkType: hard
 
@@ -4976,6 +4894,13 @@ __metadata:
   version: 8.0.0
   resolution: "@stryker-mutator/util@npm:8.0.0"
   checksum: 59cb4f426db78cafdaaf7f3500ac0cc9e5bfbcd666ebeb46de471af51967fecbb961a461d00e2ff4e5ebba74404ccdfe7fb4b0d5ea2380375a7dd8714b0a7da2
+  languageName: node
+  linkType: hard
+
+"@stryker-mutator/util@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "@stryker-mutator/util@npm:3.3.1"
+  checksum: 344c17ebcb65093be12e32ec69f5aa01fcb2aefd30f8af73e0767763b9dd62fd982c08d5f5f6313d47354ef05604edec0f5937f99e288ba9ea64479aa66d1f17
   languageName: node
   linkType: hard
 
@@ -5447,6 +5372,13 @@ __metadata:
   version: 1.3.2
   resolution: "@types/mime@npm:1.3.2"
   checksum: 0493368244cced1a69cb791b485a260a422e6fcc857782e1178d1e6f219f1b161793e9f87f5fae1b219af0f50bee24fcbe733a18b4be8fdd07a38a8fb91146fd
+  languageName: node
+  linkType: hard
+
+"@types/minimatch@npm:^3.0.3":
+  version: 3.0.5
+  resolution: "@types/minimatch@npm:3.0.5"
+  checksum: c41d136f67231c3131cf1d4ca0b06687f4a322918a3a5adddc87ce90ed9dbd175a3610adee36b106ae68c0b92c637c35e02b58c8a56c424f71d30993ea220b92
   languageName: node
   linkType: hard
 
@@ -6738,6 +6670,13 @@ __metadata:
     call-bind: ^1.0.2
     is-array-buffer: ^3.0.1
   checksum: 044e101ce150f4804ad19c51d6c4d4cfa505c5b2577bd179256e4aa3f3f6a0a5e9874c78cd428ee566ac574c8a04d7ce21af9fe52e844abfdccb82b33035a7c3
+  languageName: node
+  linkType: hard
+
+"array-differ@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "array-differ@npm:3.0.0"
+  checksum: 117edd9df5c1530bd116c6e8eea891d4bd02850fd89b1b36e532b6540e47ca620a373b81feca1c62d1395d9ae601516ba538abe5e8172d41091da2c546b05fb7
   languageName: node
   linkType: hard
 
@@ -16134,6 +16073,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"multimatch@npm:~4.0.0":
+  version: 4.0.0
+  resolution: "multimatch@npm:4.0.0"
+  dependencies:
+    "@types/minimatch": ^3.0.3
+    array-differ: ^3.0.0
+    array-union: ^2.1.0
+    arrify: ^2.0.1
+    minimatch: ^3.0.4
+  checksum: bdb6a98dad4e919d9a1a2a0db872f44fa2337315f2fd5827d91ae005cf22f4425782bdfa97c10b80d567f0cb3c226c31f4e85f8f6a4a4be4facf9af0de1bb0c2
+  languageName: node
+  linkType: hard
+
 "multiple-cucumber-html-reporter@npm:^1.11.0":
   version: 1.21.6
   resolution: "multiple-cucumber-html-reporter@npm:1.21.6"
@@ -19162,11 +19114,11 @@ __metadata:
     "@nicky-lenaers/ngx-scroll-to": ^14.0.0
     "@pact-foundation/pact": ^9.11.1
     "@pact-foundation/pact-node": ^10.9.7
-    "@stryker-mutator/api": ^3.0.1
+    "@stryker-mutator/api": ^8.0.0
     "@stryker-mutator/core": ^8.0.0
     "@stryker-mutator/html-reporter": ^3.1.0
     "@stryker-mutator/karma-runner": ^8.0.0
-    "@stryker-mutator/mocha-runner": ^8.0.0
+    "@stryker-mutator/mocha-runner": ^3.0.1
     "@stryker-mutator/typescript": ^4.0.0
     "@types/applicationinsights-js": ^1.0.9
     "@types/config": ^0.0.36

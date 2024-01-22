@@ -63,6 +63,7 @@ resource "azurerm_application_insights" "appinsights" {
       application_type,
     ]
   }
+}
 
 resource "azurerm_resource_group" "rg" {
   name     = "${local.app_full_name}-${var.env}"

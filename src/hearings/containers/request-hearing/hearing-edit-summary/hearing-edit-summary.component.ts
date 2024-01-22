@@ -230,11 +230,22 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     });
 
     // Remove attribute with null to ignore change in CR-84 auto update
+    const newCaseCategories: CaseCategoryModel[] = [];
+
     shvCaseCategories.forEach((s) => {
-      Object.keys(s).forEach((k) => s[k] === null && delete s[k]);
+      let caseCategory: CaseCategoryModel;
+
+      caseCategory = {
+        categoryType: s.categoryType,
+        categoryValue: s.categoryValue,
+      }
+
+      if (s.categoryParent) {
+        caseCategory.categoryParent = s.categoryParent;
+      }
     });
 
-    return shvCaseCategories;
+    return newCaseCategories;
   }
 
   private compareAndUpdateServiceHearingValues(currentValue, serviceHearingValue, pageMode: AutoUpdateMode = null, property: string = null) {

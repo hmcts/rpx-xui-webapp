@@ -1,10 +1,16 @@
-<h2 class="govuk-heading-m">Judge details</h2>
+<h2 class="govuk-heading-m">Judge details
+  <exui-amendment-label [displayLabel]="amendmentLabelEnum.AMENDED"
+  *ngIf="showAmmendedForNeedJudge || showAmmendedForJudgeName || showAmmendedForJudgeType || showAmmendedForExcludedJudgeNames">
+  </exui-amendment-label>
+</h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
       Do you want a specific judge?
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="showAmmendedForNeedJudge" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       {{ needJudge }}
     </div>
     <div class="govuk-summary-list__actions">
@@ -16,6 +22,8 @@
   </div>
   <div class="govuk-summary-list__row" *ngIf="judgeName?.length > 0">
     <div class="govuk-summary-list__key">
+      <exui-amendment-label *ngIf="showAmmendedForJudgeName" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       Name of the judge
     </div>
     <div class="govuk-summary-list__value">
@@ -33,6 +41,8 @@
       Select all judge types that apply
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="showAmmendedForJudgeType" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       {{ judgeTypes }}
     </div>
     <div class="govuk-summary-list__actions">
@@ -47,6 +57,8 @@
       Exclude a judge
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="showAmmendedForExcludedJudgeNames" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       {{ excludedJudgeNames }}
     </div>
     <div class="govuk-summary-list__actions">

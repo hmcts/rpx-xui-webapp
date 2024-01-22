@@ -211,7 +211,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   private setReasonableAdjustmentFlags(): void {
     const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
     if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
-        propertiesUpdatedOnPageVisit.hasOwnProperty('caseFlags') &&
+        propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
         (propertiesUpdatedOnPageVisit?.afterPageVisit.reasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired)) {
       // Hearings manual amendment journey is enabled and there are changes to reasonable adjustment flags detected
       this.reasonableAdjustmentFlags = CaseFlagsUtils.getReasonableAdjustmentFlags(this.caseFlagsRefData,

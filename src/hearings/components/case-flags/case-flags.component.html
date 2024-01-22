@@ -2,12 +2,12 @@
   {{ info }}
 </div>
 <div class="govuk-form-group">
-  <table *ngFor="let caseFlags of caseFlagsGroup" class="govuk-table">
+  <table *ngFor="let caseFlags of caseFlagsGroup, let i = index" class="govuk-table">
     <thead class="govuk-table__head">
     <tr class="govuk-table__row">
       <th scope="col" class="govuk-table__header govuk-table__header_name">
         {{ caseFlags.name }}
-        <exui-amendment-label *ngIf="caseFlags.partyAmendmentLabelStatus && caseFlags.partyAmendmentLabelStatus !== amendmentLabelStatus.NONE"
+        <exui-amendment-label id="party-label-{{i}}" *ngIf="caseFlags.partyAmendmentLabelStatus && caseFlags.partyAmendmentLabelStatus !== amendmentLabelStatus.NONE"
           [displayLabel]="caseFlags.partyAmendmentLabelStatus">
         </exui-amendment-label>
       </th>

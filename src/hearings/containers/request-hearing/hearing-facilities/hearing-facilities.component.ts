@@ -107,6 +107,12 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
         facilitiesRequired
       }
     };
+    const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
+    if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
+      propertiesUpdatedOnPageVisit.hasOwnProperty('caseFlags') &&
+      (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired)) {
+      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed = true;
+    }
   }
 
   public isFormValid(): boolean {
@@ -133,7 +139,8 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
         propertiesUpdatedOnPageVisit.hasOwnProperty('caseFlags') &&
         (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired)) {
       this.nonReasonableAdjustmentFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlags(this.caseFlagsRefData,
-        propertiesUpdatedOnPageVisit.caseFlags?.flags, this.hearingRequestMainModel.partyDetails, this.serviceHearingValuesModel.parties, this.hearingRequestMainModel.requestDetails);
+        propertiesUpdatedOnPageVisit.caseFlags?.flags, this.hearingRequestMainModel.partyDetails, this.serviceHearingValuesModel.parties,
+        this.hearingRequestMainModel.requestDetails, this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed);
     } else {
       this.nonReasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel?.caseFlags?.flags,
         this.caseFlagsRefData, this.caseFlagType);

@@ -61,6 +61,11 @@ module "application_insights" {
   common_tags = var.common_tags
 }
 
+moved {
+  from = azurerm_application_insights.appinsights
+  to   = module.application_insights.azurerm_application_insights.this
+}
+
 resource "azurerm_application_insights" "appinsights" {
   name                = "${local.app_full_name}-appinsights-${var.env}-classic"
   location            = var.location
@@ -87,6 +92,6 @@ resource "azurerm_resource_group" "rg" {
 
 resource "azurerm_key_vault_secret" "app_insights_key" {
   name         = "appinsights-instrumentationkey-mc"
-  value        = azurerm_application_insights.appinsights.instrumentation_key
+  value        = azurerm_application_insights.appinsight.instrumentation_key
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }

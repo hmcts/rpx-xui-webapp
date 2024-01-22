@@ -1,10 +1,15 @@
-<h2 class="govuk-heading-m">Language requirements</h2>
+<h2 class="govuk-heading-m">Language requirements
+  <exui-amendment-label *ngIf="showAmmended" [displayLabel]="amendmentLabelEnum.AMENDED">
+  </exui-amendment-label>
+</h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
       Does this hearing need to be in Welsh?
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="showAmmended" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       {{ hearingInWelshFlag ? 'Yes' : 'No' }}
     </div>
     <div class="govuk-summary-list__actions">

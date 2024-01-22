@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
@@ -19,6 +19,7 @@ import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { HearingsService } from '../../../services/hearings.service';
+import { HearingsFeatureService } from '../../../services/hearings-feature.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
@@ -62,6 +63,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
     protected readonly featureToggleService: FeatureToggleService,
+    protected readonly hearingsFeatureService: HearingsFeatureService,
     protected readonly route: ActivatedRoute) {
     super(hearingStore, hearingsService, featureToggleService, route);
     this.additionalFacilitiesRefData = this.route.snapshot.data.additionFacilitiesOptions;
@@ -93,7 +95,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     );
 
     // Enable hearings manual amendments journey only if the feature is toggled on
-    this.featureToggleServiceSubscription = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
+    this.featureToggleServiceSubscription = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
       this.isHearingAmendmentsEnabled = enabled;
       if (enabled) {
         this.setPropertiesUpdatedAutomatically();
@@ -148,8 +150,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       },
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        privateHearingRequiredFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel.hearingDetails.privateHearingRequiredFlag, this.serviceHearingValuesModel.privateHearingRequiredFlag, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PRIVATE_HEARING_REQUIRED_FLAG),
-        hearingInWelshFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel.hearingDetails.hearingInWelshFlag, this.serviceHearingValuesModel.hearingInWelshFlag, AutoUpdateMode.PAGELESS, PagelessPropertiesEnum.HEARING_IN_WELSH_FLAG)
+        privateHearingRequiredFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel.hearingDetails.privateHearingRequiredFlag, this.serviceHearingValuesModel.privateHearingRequiredFlag, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PRIVATE_HEARING_REQUIRED_FLAG)
       },
       partyDetails: [
         ...this.updatePartyDetails(this.serviceHearingValuesModel.parties)

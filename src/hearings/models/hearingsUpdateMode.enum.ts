@@ -38,7 +38,6 @@ export enum AfterPageVisitPropertiesEnum {
 
 export interface PagelessProperties {
   caseManagementLocationCode?: boolean;
-  hearingInWelshFlag?: boolean;
   parties?: boolean;
 }
 

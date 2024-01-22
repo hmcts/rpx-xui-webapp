@@ -25,12 +25,14 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   public participantAttendanceModes: ParticipantAttendanceMode[] = [];
   public numberOfPhysicalAttendees: number;
   public partyDetailsChangesRequired: boolean;
+  public partyDetailsChangesConfirmed: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
 
   constructor(private readonly hearingsService: HearingsService) {}
 
   public ngOnInit(): void {
     this.partyDetailsChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesRequired;
+    this.partyDetailsChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed;
     this.partyChannelsRefDataCombined = [...this.partyChannelsRefData, ...this.partySubChannelsRefData];
     this.isPaperHearing = this.getIsPaperHearing();
     this.participantChannels = this.getParticipantChannels();

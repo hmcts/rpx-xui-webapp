@@ -1,5 +1,5 @@
 
-@ng @functional_enabled     
+@ng @functional_enabled  @functional_debug
 Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
     https://tools.hmcts.net/jira/browse/EUI-8905
     https://tools.hmcts.net/jira/browse/EUI-9504
@@ -126,8 +126,6 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Reasonable adjustments   | Party1 name           | true              |                    |
             | Reasonable adjustments   | Party2 name           | true              |                    |
 
-
-
     Scenario: SCR 4: CAT1 and CAT2 with CAT2 accepted,AMENDED labels (Conditions (2) & (5))
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
         Then I am on hearings tab page
@@ -183,17 +181,24 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
         When In create hearing page "Participant attendance", I input values
             | field                         | value |
             | Will this be a paper hearing? | No    |
+
         Then In hearings Participant attendance page, I see parties
-            | partyName   |
-            | Party1 name |
-            | Party2 name |
+            | partyName   |label|
+            | Party1 name |AMENDED|
+            | Party2 name ||
+            | Party4 name |ACTION NEEDED|
+
+
+# Then debug sleep minutes 30
 
         When In hearing page "Participant attendance", I input values
             | field                                                    | value                               |
             | Will this be a paper hearing?                            | No                                  |
-            | What will be the methods of attendance for this hearing? | Hearing channel 1,Hearing channel 2 |
-            | How will each participant attend the hearing?            | Party1 name,Hearing channel 1       |
-            | How will each participant attend the hearing?            | Party2 name,Hearing channel 1       |
+            | What will be the methods of attendance for this hearing? | In Person, Video |
+            | How will each participant attend the hearing?            | Party1 name,In Person       |
+            | How will each participant attend the hearing?            | Party4 name,Video       |
+            | How will each participant attend the hearing? | Party2 name,Video |
+
             | How many people will attend the hearing in person?       | 2                                   |
         When I click continue in hearing workflow
         Then I validate Edit hearing page displayed
@@ -227,24 +232,13 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | disruptive customer behaviour | ACTION NEEDED |
             | Complex Case                  | ACTION NEEDED |
             | Urgent case                   | ACTION NEEDED |
-        # Then In hearings Participant attendance page, I see parties
-        #     | partyName   |
-        #     | Party1 name |
-        #     | Party2 name |
-
-        # When In hearing page "Participant attendance", I input values
-        #     | field                                                    | value                               |
-        #     | Will this be a paper hearing?                            | No                                  |
-        #     | What will be the methods of attendance for this hearing? | Hearing channel 1,Hearing channel 2 |
-        #     | How will each participant attend the hearing?            | Party1 name,Hearing channel 1       |
-        #     | How will each participant attend the hearing?            | Party2 name,Hearing channel 1       |
-        #     | How many people will attend the hearing in person?       | 2                                   |
+   
         When I click continue in hearing workflow
         Then I validate Edit hearing page displayed
         Then I validate edit hearing section heading labels
             | Heading                                    | Label         |
             | Hearing requirements                       | AMENDED       |
-            | Additional facilities                      | ACTION NEEDED |
+            | Additional facilities                      | AMENDED |
             | Participant attendance                     | ACTION NEEDED |
             | Length, date and priority level of hearing | ACTION NEEDED |
         # end of Additional facilities
@@ -262,7 +256,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Reasonable adjustments   | Party1 name updated                        | true              | AMENDED            |
             | Reasonable adjustments   | Party2 name                                | true              |                    |
 
-@functional_debug
+
     Scenario: SCR 5: No chnages and no labels (Conditions (3) & (6)) and Scenario 6
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
         Then I am on hearings tab page

@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CaseFlagGroup } from '../../models/caseFlagGroup.model';
 import { AmendmentLabelStatus } from '../../models/hearingsUpdateMode.enum';
@@ -80,7 +81,8 @@ describe('CaseFlagsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [CaseFlagsComponent]
+      declarations: [CaseFlagsComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
     fixture = TestBed.createComponent(CaseFlagsComponent);
@@ -105,5 +107,26 @@ describe('CaseFlagsComponent', () => {
     expect(tableRowElements[4].textContent).toContain('Some more additional comment');
     expect(headerElements[2].textContent).toContain('Rob Kennedy');
     expect(tableRowElements[6].textContent).toContain('Some details about the flag');
+  });
+
+  it('should not render the party labels', () => {
+    component.caseFlagsGroup = [
+      {
+        ...caseFlagsGroup[0],
+        partyAmendmentLabelStatus: AmendmentLabelStatus.NONE
+      },
+      {
+        ...caseFlagsGroup[1],
+        partyAmendmentLabelStatus: AmendmentLabelStatus.NONE
+      },
+      {
+        ...caseFlagsGroup[2],
+        partyAmendmentLabelStatus: AmendmentLabelStatus.NONE
+      }
+    ];
+    fixture.detectChanges();
+    expect(nativeElement.querySelector('#party-label-0')).toBeNull();
+    expect(nativeElement.querySelector('#party-label-1')).toBeNull();
+    expect(nativeElement.querySelector('#party-label-2')).toBeNull();
   });
 });

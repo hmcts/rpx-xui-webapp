@@ -308,6 +308,44 @@ describe('HearingFacilitiesComponent', () => {
     expect(component.nonReasonableAdjustmentFlags.length).toEqual(2);
   });
 
+  it('should prepareHearingRequestData set nonReasonableAdjustmentChangesConfirmed property to true', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: false,
+        hearingWindowFirstDateMustBeChangesRequired: false
+      }
+    };
+    component.prepareHearingRequestData();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed).toEqual(true);
+  });
+
+  it('should prepareHearingRequestData not set nonReasonableAdjustmentChangesConfirmed property to true', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowFirstDateMustBeChangesRequired: false
+      }
+    };
+    component.prepareHearingRequestData();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed).toBeUndefined();
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

@@ -233,12 +233,10 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const newCaseCategories: CaseCategoryModel[] = [];
 
     shvCaseCategories.forEach((s) => {
-      let caseCategory: CaseCategoryModel;
-
-      caseCategory = {
+      const caseCategory: CaseCategoryModel = {
         categoryType: s.categoryType,
-        categoryValue: s.categoryValue,
-      }
+        categoryValue: s.categoryValue
+      };
 
       if (s.categoryParent) {
         caseCategory.categoryParent = s.categoryParent;

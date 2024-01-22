@@ -46,7 +46,8 @@ export class JudgeDetailsSectionComponent implements OnInit {
       const objA = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements;
       const objB = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
       this.showAmmendedForNeedJudge = !_.isEqual(objA?.roleType.length > 0, objB?.roleType.length > 0);
-      this.showAmmendedForJudgeType = !_.isEqual([...objA?.roleType].sort((a, b) => a.localeCompare(b)), [...objB?.roleType].sort((a, b) => a.localeCompare(b)));
+      // tslint:disable-next-line
+      this.showAmmendedForJudgeType = !_.isEqual([...objA.roleType].sort((a, b) => a.localeCompare(b)), [...objB.roleType].sort((a, b) => a.localeCompare(b)));
       this.showAmmendedForJudgeName = !_.isEqual(objA?.panelPreferences.filter((panel) => panel.memberType === MemberType.JUDGE && panel.requirementType === RequirementType.MUSTINC),
         objB?.panelPreferences.filter((panel) => panel.memberType === MemberType.JUDGE && panel.requirementType === RequirementType.MUSTINC));
       this.showAmmendedForExcludedJudgeNames = !_.isEqual(objA?.panelPreferences.filter((panel) => panel.memberType === MemberType.JUDGE && panel.requirementType === RequirementType.EXCLUDE),

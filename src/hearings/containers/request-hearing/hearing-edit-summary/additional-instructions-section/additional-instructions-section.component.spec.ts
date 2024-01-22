@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { initialState } from '../../../../../hearings/hearing.test.data';
 import { AdditionalInstructionsSectionComponent } from './additional-instructions-section.component';
 
 describe('AdditionalInstructionsSectionComponent', () => {
@@ -11,7 +13,7 @@ describe('AdditionalInstructionsSectionComponent', () => {
       declarations: [
         AdditionalInstructionsSectionComponent
       ],
-      providers: []
+      providers: [provideMockStore({ initialState })]
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdditionalInstructionsSectionComponent);
@@ -27,6 +29,7 @@ describe('AdditionalInstructionsSectionComponent', () => {
     component.listingComments = 'This is a test comment.';
     component.ngOnInit();
     expect(component.additionalInstructions).toEqual('This is a test comment.');
+    expect(component.showAmmended).toEqual(false);
   });
 
   it('should verify onChange', () => {

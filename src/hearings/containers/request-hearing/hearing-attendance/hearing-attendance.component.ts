@@ -101,7 +101,10 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public initialiseFromHearingValuesForAmendments(): void {
-    const individualPartyIdsInHMC = this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND)?.map((party) => party.partyID);
+    const partyDetails = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesConfirmed
+      ? this.hearingRequestMainModel.partyDetails
+      : this.hearingRequestToCompareMainModel.partyDetails;
+    const individualPartyIdsInHMC = partyDetails.filter((party) => party.partyType === PartyType.IND)?.map((party) => party.partyID);
     const individualPartiesInSHV = this.serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND);
     individualPartiesInSHV?.forEach((partyDetailsModel: PartyDetailsModel) => {
       if (!individualPartyIdsInHMC.includes(partyDetailsModel.partyID)) {
@@ -110,7 +113,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
           partyAmendmentStatus: AmendmentLabelStatus.ACTION_NEEDED
         };
       } else {
-        const partyInHMC = this.hearingRequestMainModel.partyDetails.find((party) => party.partyID === partyDetailsModel.partyID);
+        const partyInHMC = partyDetails.find((party) => party.partyID === partyDetailsModel.partyID);
         if (partyInHMC.partyName !== partyDetailsModel.partyName) {
           partyDetailsModel = {
             ...partyDetailsModel,

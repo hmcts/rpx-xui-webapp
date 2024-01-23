@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Subscription, combineLatest } from 'rxjs';
 import { AppConstants } from '../../../app/app.constants';
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 import * as fromHearingStore from '../../store';
+import { HearingsFeatureService } from '../../../hearings/services/hearings-feature.service';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -15,10 +15,10 @@ export class HearingPartiesTitleComponent implements OnInit, OnDestroy {
   public serviceValueSub: Subscription;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-    private readonly featureToggleService: FeatureToggleService) {}
+    private readonly hearingsFeatureService: HearingsFeatureService) {}
 
   public ngOnInit(): void {
-    const isHearingAmendmentsEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments);
+    const isHearingAmendmentsEnabled$ = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments);
     const hearingValues$ = this.hearingStore.pipe<ServiceHearingValuesModel>(select(fromHearingStore.getHearingValuesModel));
 
     this.serviceValueSub = combineLatest([isHearingAmendmentsEnabled$, hearingValues$]).subscribe(([isHearingAmendmentsEnabled, hearingValues]) => {

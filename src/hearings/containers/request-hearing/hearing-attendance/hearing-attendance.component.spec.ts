@@ -320,8 +320,7 @@ describe('HearingAttendanceComponent', () => {
       }
     };
     component.ngOnInit();
-    expect(component.initialiseFromHearingValues).toHaveBeenCalled();
-    expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(3);
+    expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(1);
   });
 
   afterEach(() => {

@@ -1,5 +1,5 @@
 
-@ng @functional_enabled  @functional_debug
+@ng @functional_enabled  
 Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
     https://tools.hmcts.net/jira/browse/EUI-8905
     https://tools.hmcts.net/jira/browse/EUI-9504
@@ -126,6 +126,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Reasonable adjustments   | Party1 name           | true              |                    |
             | Reasonable adjustments   | Party2 name           | true              |                    |
 
+@functional_debug
     Scenario: SCR 4: CAT1 and CAT2 with CAT2 accepted,AMENDED labels (Conditions (2) & (5))
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
         Then I am on hearings tab page
@@ -241,7 +242,25 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Length, date and priority level of hearing | ACTION NEEDED |
         # end of Additional facilities
 
-        # end of Additional facilities
+
+
+# Accept Length, date and priority level of hearing
+
+        When In view or edit hearing page, I click change link for field "Length of hearing"
+        Then I am on hearings workflow page "Length, date and priority level of hearing"
+    
+        Then In Length, date and priority level of hearing page, I see ACTION NEEDED label displayed for The first date of the hearing must be
+      
+        When I click continue in hearing workflow
+        Then I validate Edit hearing page displayed
+        Then I validate edit hearing section heading labels
+            | Heading                                    | Label         |
+            | Hearing requirements                       | AMENDED       |
+            | Additional facilities                      | AMENDED       |
+            | Participant attendance                     | ACTION NEEDED |
+            | Length, date and priority level of hearing | AMENDED |
+# end of Length, date and priority level of hearing
+
 
 
 

@@ -122,6 +122,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     }
     const objA = JSON.parse(JSON.stringify(this.hearingRequestMainModel));
     const objB = JSON.parse(JSON.stringify(this.hearingRequestToCompareMainModel));
+    debugger;
+    console.log(objA)
+    console.log(objB)
     if (_.isEqual(objA, objB)) {
       this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
       window.scrollTo({ top: 0, left: 0 });

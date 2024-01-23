@@ -33,6 +33,12 @@ describe('HearingCreateEditSummaryComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should call removeUnnecessarySummaryTemplateItems in ngOnInit', () => {
+    const rmvSummaryTemp = spyOn(component, 'removeUnnecessarySummaryTemplateItems');
+    component.ngOnInit();
+    expect(rmvSummaryTemp).toHaveBeenCalled();
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

@@ -10,6 +10,7 @@ class ViewOrEditHearingPage {
         this.summaryTable = new SummaryTable('exui-hearing-edit-summary')
 
         this.warningMessage = $('exui-warning-and-error-section .govuk-warning-text__text')
+        this.errorSummaryMessage = $('.govuk-error-summary__body')
 
     }
 
@@ -43,6 +44,10 @@ class ViewOrEditHearingPage {
 
     async getWarningBanerText(){
         return await this.warningMessage.getText();
+    }
+
+    async getErrorSummary() {
+        return await this.errorSummaryMessage.getText();
     }
 
 }

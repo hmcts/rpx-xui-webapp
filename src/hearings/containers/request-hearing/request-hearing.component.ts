@@ -12,8 +12,9 @@ import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 })
 export class RequestHearingComponent implements OnDestroy {
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly pageFlow: AbstractPageFlow,
-              private readonly hearingsService: HearingsService) {}
+    private readonly pageFlow: AbstractPageFlow,
+    private readonly hearingsService: HearingsService) {
+  }
 
   public onBack(): void {
     this.hearingsService.navigateAction(ACTION.BACK);
@@ -28,11 +29,7 @@ export class RequestHearingComponent implements OnDestroy {
   }
 
   public submitUpdatedRequest(): void {
-    this.hearingsService.submitUpdatedRequestClicked = true;
-    // Check if validation error exists
-    if (!this.hearingsService.displayValidationError) {
-      this.hearingsService.navigateAction(ACTION.VIEW_EDIT_REASON);
-    }
+    this.hearingsService.navigateAction(ACTION.VIEW_EDIT_REASON);
   }
 
   public submitChangeRequest(): void {

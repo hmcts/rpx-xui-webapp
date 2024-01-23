@@ -133,3 +133,9 @@ Then('In edit hearing page warning message banner contains {string}', async func
 })
 
 
+Then('In edit hearing page error displayed with message {string}', async function (errorMessage) {
+    expect(await editHearingPage.getErrorSummary()).to.includes(errorMessage)
+})
+
+
+

@@ -4,6 +4,7 @@ import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpd
 import { CaseFlagReferenceModel } from '../../../../models/caseFlagReference.model';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
+import { PartyDetailsModel } from '../../../../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../../../../models/serviceHearingValues.model';
 import { HearingsService } from '../../../../services/hearings.service';
 import { CaseFlagsUtils } from '../../../../utils/case-flags.utils';
@@ -22,7 +23,8 @@ export class HearingRequirementsSectionComponent implements OnInit {
   public reasonableAdjustmentChangesRequired: boolean;
   public reasonableAdjustmentChangesConfirmed: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
-  public partyIdsInHMC: string[];
+  public partyDetails: PartyDetailsModel[];
+  public partyIds: string[];
   public partyNamesInHMC: string[];
   public partyNamesInHMCRequestToCompare: string[];
   public partiesWithFlags: Map<string, CaseFlagReferenceModel[]>;
@@ -32,8 +34,11 @@ export class HearingRequirementsSectionComponent implements OnInit {
   public ngOnInit(): void {
     this.reasonableAdjustmentChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesRequired;
     this.reasonableAdjustmentChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed;
-    this.partyIdsInHMC = this.hearingRequestMainModel.partyDetails.map(((party) => party.partyID));
-    this.partyNamesInHMC = this.hearingRequestMainModel.partyDetails.map(((party) => party.partyName));
+    this.partyDetails = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed
+      ? this.hearingRequestMainModel.partyDetails
+      : this.hearingRequestToCompareMainModel.partyDetails;
+    this.partyIds = this.partyDetails.map(((party) => party.partyID));
+    this.partyNamesInHMC = this.partyDetails.map(((party) => party.partyName));
     this.partyNamesInHMCRequestToCompare = this.hearingRequestToCompareMainModel.partyDetails.map(((party) => party.partyName));
     this.partiesWithFlags = this.getPartiesWithFlagData();
   }
@@ -42,9 +47,9 @@ export class HearingRequirementsSectionComponent implements OnInit {
     const partiesWithFlags: Map<string, CaseFlagReferenceModel[]> = new Map();
     const individualParties = this.serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND);
     individualParties.forEach((partyInSHV) => {
-      if (this.partyIdsInHMC.includes(partyInSHV.partyID)) {
+      if (this.partyIds.includes(partyInSHV.partyID)) {
         const flagIds = this.reasonableAdjustmentChangesRequired && !this.reasonableAdjustmentChangesConfirmed
-          ? this.hearingRequestMainModel.partyDetails.find((partyInHMC) => partyInHMC.partyID === partyInSHV.partyID)?.individualDetails?.reasonableAdjustments
+          ? this.partyDetails.find((partyInHMC) => partyInHMC.partyID === partyInSHV.partyID)?.individualDetails?.reasonableAdjustments
           : partyInSHV.individualDetails?.reasonableAdjustments;
         if (partyInSHV.individualDetails?.interpreterLanguage) {
           flagIds.push(partyInSHV.individualDetails.interpreterLanguage);

@@ -47,14 +47,13 @@ export class HearingsUtils {
 
   public static getHearingWindow(propertiesUpdatedOnPageVisit: PropertiesUpdatedOnPageVisit,
     hearingCondition: HearingConditions,
-    hearingRequestMainModel: HearingRequestMainModel,
-    serviceHearingValuesModel: ServiceHearingValuesModel): HearingWindowModel {
+    hearingRequestMainModel: HearingRequestMainModel): HearingWindowModel {
     if (hearingCondition.mode === Mode.VIEW_EDIT &&
         propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow') &&
         propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired) {
-      return serviceHearingValuesModel.hearingWindow && Object.keys(serviceHearingValuesModel.hearingWindow).length === 0
+      return propertiesUpdatedOnPageVisit.hearingWindow && Object.keys(propertiesUpdatedOnPageVisit.hearingWindow).length === 0
         ? null
-        : serviceHearingValuesModel.hearingWindow;
+        : propertiesUpdatedOnPageVisit.hearingWindow;
     }
     return hearingRequestMainModel.hearingDetails.hearingWindow && Object.keys(hearingRequestMainModel.hearingDetails.hearingWindow).length === 0
       ? null

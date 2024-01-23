@@ -95,4 +95,11 @@ describe('CaseTaskUtil', () => {
     const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(null);
     expect(appendedTaskDescription).toEqual('');
   });
+
+  it('should return blank if description being passed as blank', () => {
+    let taskToCheck = task;
+    taskToCheck.description = '';
+    const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(taskToCheck);
+    expect(appendedTaskDescription).toEqual('');
+  });
 });

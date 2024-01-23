@@ -53,12 +53,12 @@ export interface WithinPageProperties {
 export interface AfterPageVisitProperties {
   reasonableAdjustmentChangesRequired: boolean;
   reasonableAdjustmentChangesConfirmed?: boolean;
-  nonReasonableAdjustmentChangesRequired?: boolean;
+  nonReasonableAdjustmentChangesRequired: boolean;
   nonReasonableAdjustmentChangesConfirmed?: boolean;
   partyDetailsChangesRequired: boolean;
   partyDetailsChangesConfirmed?: boolean;
-  hearingWindowFirstDateMustBeChangesRequired: boolean;
-  hearingWindowFirstDateMustBeChangesConfirmed?: boolean;
+  hearingWindowChangesRequired: boolean;
+  hearingWindowChangesConfirmed?: boolean;
 }
 
 export interface PropertiesUpdatedAutomatically {

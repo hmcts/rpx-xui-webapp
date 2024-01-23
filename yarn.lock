@@ -32,6 +32,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@angular-builders/custom-webpack@npm:^15.0.0":
+  version: 15.0.0
+  resolution: "@angular-builders/custom-webpack@npm:15.0.0"
+  dependencies:
+    "@angular-devkit/architect": ">=0.1500.0 < 0.1600.0"
+    "@angular-devkit/build-angular": ^15.0.0
+    "@angular-devkit/core": ^15.0.0
+    lodash: ^4.17.15
+    ts-node: ^10.0.0
+    tsconfig-paths: ^4.1.0
+    webpack-merge: ^5.7.3
+  peerDependencies:
+    "@angular/compiler-cli": ^15.0.0
+  checksum: 3f69163c7893c1f5eadccfad76c8432ca8b38066cf43f54c16645b8435d73b30db20d5499d30f0dea620893daa68f32bc1eef1e7d08bdb6e19cf2245f4e13448
+  languageName: node
+  linkType: hard
+
+"@angular-devkit/architect@npm:0.1502.10, @angular-devkit/architect@npm:>=0.1500.0 < 0.1600.0":
+  version: 0.1502.10
+  resolution: "@angular-devkit/architect@npm:0.1502.10"
+  dependencies:
+    "@angular-devkit/core": 15.2.10
+    rxjs: 6.6.7
+  checksum: a71b673c92b1450cce139a29f2ef9f23ccf344e09d7c269723eb690223adcd932f62313e0a508cbc2582cd60122ce26686d2f06f6410e9392101c007cfdc5540
+  languageName: node
+  linkType: hard
+
 "@angular-devkit/architect@npm:0.1502.9":
   version: 0.1502.9
   resolution: "@angular-devkit/architect@npm:0.1502.9"
@@ -39,6 +66,103 @@ __metadata:
     "@angular-devkit/core": 15.2.9
     rxjs: 6.6.7
   checksum: 3805b19adc311f90417e7e6d32dd17ed497d012a874c0ff17745e209e43f0781ba6909fd9eadcc37744b04129be26d5bd0cd50d94944275bbf17cefd851aafc0
+  languageName: node
+  linkType: hard
+
+"@angular-devkit/build-angular@npm:^15.0.0":
+  version: 15.2.10
+  resolution: "@angular-devkit/build-angular@npm:15.2.10"
+  dependencies:
+    "@ampproject/remapping": 2.2.0
+    "@angular-devkit/architect": 0.1502.10
+    "@angular-devkit/build-webpack": 0.1502.10
+    "@angular-devkit/core": 15.2.10
+    "@babel/core": 7.20.12
+    "@babel/generator": 7.20.14
+    "@babel/helper-annotate-as-pure": 7.18.6
+    "@babel/helper-split-export-declaration": 7.18.6
+    "@babel/plugin-proposal-async-generator-functions": 7.20.7
+    "@babel/plugin-transform-async-to-generator": 7.20.7
+    "@babel/plugin-transform-runtime": 7.19.6
+    "@babel/preset-env": 7.20.2
+    "@babel/runtime": 7.20.13
+    "@babel/template": 7.20.7
+    "@discoveryjs/json-ext": 0.5.7
+    "@ngtools/webpack": 15.2.10
+    ansi-colors: 4.1.3
+    autoprefixer: 10.4.13
+    babel-loader: 9.1.2
+    babel-plugin-istanbul: 6.1.1
+    browserslist: 4.21.5
+    cacache: 17.0.4
+    chokidar: 3.5.3
+    copy-webpack-plugin: 11.0.0
+    critters: 0.0.16
+    css-loader: 6.7.3
+    esbuild: 0.17.8
+    esbuild-wasm: 0.17.8
+    glob: 8.1.0
+    https-proxy-agent: 5.0.1
+    inquirer: 8.2.4
+    jsonc-parser: 3.2.0
+    karma-source-map-support: 1.4.0
+    less: 4.1.3
+    less-loader: 11.1.0
+    license-webpack-plugin: 4.0.2
+    loader-utils: 3.2.1
+    magic-string: 0.29.0
+    mini-css-extract-plugin: 2.7.2
+    open: 8.4.1
+    ora: 5.4.1
+    parse5-html-rewriting-stream: 7.0.0
+    piscina: 3.2.0
+    postcss: 8.4.31
+    postcss-loader: 7.0.2
+    resolve-url-loader: 5.0.0
+    rxjs: 6.6.7
+    sass: 1.58.1
+    sass-loader: 13.2.0
+    semver: 7.5.3
+    source-map-loader: 4.0.1
+    source-map-support: 0.5.21
+    terser: 5.16.3
+    text-table: 0.2.0
+    tree-kill: 1.2.2
+    tslib: 2.5.0
+    webpack: 5.76.1
+    webpack-dev-middleware: 6.0.1
+    webpack-dev-server: 4.11.1
+    webpack-merge: 5.8.0
+    webpack-subresource-integrity: 5.1.0
+  peerDependencies:
+    "@angular/compiler-cli": ^15.0.0
+    "@angular/localize": ^15.0.0
+    "@angular/platform-server": ^15.0.0
+    "@angular/service-worker": ^15.0.0
+    karma: ^6.3.0
+    ng-packagr: ^15.0.0
+    protractor: ^7.0.0
+    tailwindcss: ^2.0.0 || ^3.0.0
+    typescript: ">=4.8.2 <5.0"
+  dependenciesMeta:
+    esbuild:
+      optional: true
+  peerDependenciesMeta:
+    "@angular/localize":
+      optional: true
+    "@angular/platform-server":
+      optional: true
+    "@angular/service-worker":
+      optional: true
+    karma:
+      optional: true
+    ng-packagr:
+      optional: true
+    protractor:
+      optional: true
+    tailwindcss:
+      optional: true
+  checksum: 1416e2b544af3b2d37646d90ae350e190bd50fc42a8237471884e70481cb31296548b748cf2d0b95d790db1051005ea352106e10f057a4223977969a2a2cd9d2
   languageName: node
   linkType: hard
 
@@ -139,6 +263,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@angular-devkit/build-webpack@npm:0.1502.10":
+  version: 0.1502.10
+  resolution: "@angular-devkit/build-webpack@npm:0.1502.10"
+  dependencies:
+    "@angular-devkit/architect": 0.1502.10
+    rxjs: 6.6.7
+  peerDependencies:
+    webpack: ^5.30.0
+    webpack-dev-server: ^4.0.0
+  checksum: eedb0815d94836a9bdbf4aad98b27b800a62cb50ffabbc405f4a455cd67ec6315f8002594d57f9e732dcefa43522d227221c131c98a0d233d4117fd5ca136e9c
+  languageName: node
+  linkType: hard
+
 "@angular-devkit/build-webpack@npm:0.1502.9":
   version: 0.1502.9
   resolution: "@angular-devkit/build-webpack@npm:0.1502.9"
@@ -149,6 +286,24 @@ __metadata:
     webpack: ^5.30.0
     webpack-dev-server: ^4.0.0
   checksum: 8a5a044ce86e374d9183097b45478cf4b98c3c79b5a542c7a62c6fa484b99f3b8a640975e9048b8aef64740c1ef4989e969c4bc3f23c15437190beaf9fe6e1ed
+  languageName: node
+  linkType: hard
+
+"@angular-devkit/core@npm:15.2.10, @angular-devkit/core@npm:^15.0.0":
+  version: 15.2.10
+  resolution: "@angular-devkit/core@npm:15.2.10"
+  dependencies:
+    ajv: 8.12.0
+    ajv-formats: 2.1.1
+    jsonc-parser: 3.2.0
+    rxjs: 6.6.7
+    source-map: 0.7.4
+  peerDependencies:
+    chokidar: ^3.5.2
+  peerDependenciesMeta:
+    chokidar:
+      optional: true
+  checksum: a7a8715d31ccdda74dd15fe7c8c1d06e3cb4adb5749c208fbac9dec93760ca8b54ea13a2c94446f577ab92a635f8f110043717c41fa0a712edd5c45494bde83b
   languageName: node
   linkType: hard
 
@@ -4020,6 +4175,17 @@ __metadata:
     "@angular/core": ^15.0.0
     rxjs: ^6.5.3 || ^7.5.0
   checksum: 444ab9c3da0f69fda6c09a92d50de5b828b3dce221abb4167aecbac3a120102ccbd64d3060c173b0db21b29632b850646a4d9d977a15c65d45a244f2352b3c5e
+  languageName: node
+  linkType: hard
+
+"@ngtools/webpack@npm:15.2.10":
+  version: 15.2.10
+  resolution: "@ngtools/webpack@npm:15.2.10"
+  peerDependencies:
+    "@angular/compiler-cli": ^15.0.0
+    typescript: ">=4.8.2 <5.0"
+    webpack: ^5.54.0
+  checksum: 7075a06df63327894629b888e6a3a1f80312076810e8346d200171d74e7a893cfc30bc57e98fab682830118c31fad407218ba2c8803ccd2ca9f125dd3795f3ca
   languageName: node
   linkType: hard
 
@@ -17819,6 +17985,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"postcss@npm:8.4.31":
+  version: 8.4.31
+  resolution: "postcss@npm:8.4.31"
+  dependencies:
+    nanoid: ^3.3.6
+    picocolors: ^1.0.0
+    source-map-js: ^1.0.2
+  checksum: 1d8611341b073143ad90486fcdfeab49edd243377b1f51834dc4f6d028e82ce5190e4f11bb2633276864503654fb7cab28e67abdc0fbf9d1f88cad4a0ff0beea
+  languageName: node
+  linkType: hard
+
 "postcss@npm:^8.2.14, postcss@npm:^8.3.7, postcss@npm:^8.4.19":
   version: 8.4.29
   resolution: "postcss@npm:8.4.29"
@@ -18995,6 +19172,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "rpx-exui@workspace:."
   dependencies:
+    "@angular-builders/custom-webpack": ^15.0.0
     "@angular-devkit/build-angular": ~15.2.9
     "@angular-eslint/builder": 15.2.1
     "@angular-material-components/datetime-picker": 15.0.0
@@ -21207,6 +21385,44 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ts-node@npm:^10.0.0":
+  version: 10.9.2
+  resolution: "ts-node@npm:10.9.2"
+  dependencies:
+    "@cspotcode/source-map-support": ^0.8.0
+    "@tsconfig/node10": ^1.0.7
+    "@tsconfig/node12": ^1.0.7
+    "@tsconfig/node14": ^1.0.0
+    "@tsconfig/node16": ^1.0.2
+    acorn: ^8.4.1
+    acorn-walk: ^8.1.1
+    arg: ^4.1.0
+    create-require: ^1.1.0
+    diff: ^4.0.1
+    make-error: ^1.1.1
+    v8-compile-cache-lib: ^3.0.1
+    yn: 3.1.1
+  peerDependencies:
+    "@swc/core": ">=1.2.50"
+    "@swc/wasm": ">=1.2.50"
+    "@types/node": "*"
+    typescript: ">=2.7"
+  peerDependenciesMeta:
+    "@swc/core":
+      optional: true
+    "@swc/wasm":
+      optional: true
+  bin:
+    ts-node: dist/bin.js
+    ts-node-cwd: dist/bin-cwd.js
+    ts-node-esm: dist/bin-esm.js
+    ts-node-script: dist/bin-script.js
+    ts-node-transpile-only: dist/bin-transpile.js
+    ts-script: dist/bin-script-deprecated.js
+  checksum: fde256c9073969e234526e2cfead42591b9a2aec5222bac154b0de2fa9e4ceb30efcd717ee8bc785a56f3a119bdd5aa27b333d9dbec94ed254bd26f8944c67ac
+  languageName: node
+  linkType: hard
+
 "ts-node@npm:~10.8.1":
   version: 10.8.2
   resolution: "ts-node@npm:10.8.2"
@@ -21242,6 +21458,17 @@ __metadata:
     ts-node-transpile-only: dist/bin-transpile.js
     ts-script: dist/bin-script-deprecated.js
   checksum: 1eede939beed9f4db35bcc88d78ef803815b99dcdbed1ecac728d861d74dc694918a7f0f437aa08d026193743a31e7e00e2ee34f875f909b5879981c1808e2a7
+  languageName: node
+  linkType: hard
+
+"tsconfig-paths@npm:^4.1.0":
+  version: 4.2.0
+  resolution: "tsconfig-paths@npm:4.2.0"
+  dependencies:
+    json5: ^2.2.2
+    minimist: ^1.2.6
+    strip-bom: ^3.0.0
+  checksum: 28c5f7bbbcabc9dabd4117e8fdc61483f6872a1c6b02a4b1c4d68c5b79d06896c3cc9547610c4c3ba64658531caa2de13ead1ea1bf321c7b53e969c4752b98c7
   languageName: node
   linkType: hard
 

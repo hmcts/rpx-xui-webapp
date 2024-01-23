@@ -168,6 +168,7 @@
     "zone.js": "~0.13.1"
   },
   "devDependencies": {
+    "@angular-builders/custom-webpack": "^15.0.0",
     "@angular-devkit/build-angular": "~15.2.9",
     "@angular-eslint/builder": "15.2.1",
     "@angular-material-components/moment-adapter": "^15.0.0",

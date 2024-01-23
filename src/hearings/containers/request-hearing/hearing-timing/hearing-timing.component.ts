@@ -94,7 +94,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     duration = this.hearingRequestMainModel.hearingDetails.duration ?
       this.hearingRequestMainModel.hearingDetails.duration : 0;
     const hearingWindow: HearingWindowModel = HearingsUtils.getHearingWindow(this.hearingsService.propertiesUpdatedOnPageVisit,
-      this.hearingCondition, this.hearingRequestMainModel, this.serviceHearingValuesModel);
+      this.hearingCondition, this.hearingRequestMainModel);
     if (hearingWindow && (hearingWindow.dateRangeStart || hearingWindow.dateRangeEnd)) {
       this.checkedHearingAvailability = RadioOptions.CHOOSE_DATE_RANGE;
       startDate = hearingWindow.dateRangeStart && new Date(hearingWindow.dateRangeStart);

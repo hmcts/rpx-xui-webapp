@@ -91,7 +91,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         hearingLocations: this.serviceHearingValuesModel.hearingLocations,
         hearingIsLinkedFlag: this.serviceHearingValuesModel.hearingIsLinkedFlag,
         hearingWindow: HearingsUtils.getHearingWindow(this.hearingsService.propertiesUpdatedOnPageVisit,
-          this.hearingCondition, this.hearingRequestMainModel, this.serviceHearingValuesModel),
+          this.hearingCondition, this.hearingRequestMainModel),
         privateHearingRequiredFlag: this.serviceHearingValuesModel.privateHearingRequiredFlag,
         panelRequirements: this.serviceHearingValuesModel.panelRequirements,
         autolistFlag: this.serviceHearingValuesModel.autoListFlag,

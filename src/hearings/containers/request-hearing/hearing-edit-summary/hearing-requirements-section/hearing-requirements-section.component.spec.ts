@@ -41,8 +41,9 @@ describe('HearingRequirementsSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         reasonableAdjustmentChangesConfirmed: false,
+        nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
-        hearingWindowFirstDateMustBeChangesRequired: true
+        hearingWindowChangesRequired: true
       }
     };
     component.ngOnInit();
@@ -55,8 +56,9 @@ describe('HearingRequirementsSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         reasonableAdjustmentChangesConfirmed: true,
+        nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
-        hearingWindowFirstDateMustBeChangesRequired: true
+        hearingWindowChangesRequired: true
       }
     };
     component.ngOnInit();

@@ -30,8 +30,8 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
     super.navigateAction(action);
   }
 
-  private getScreenFlowFromStore(hearingStore) {
-    let workFlow = null;
+  public getScreenFlowFromStore(hearingStore) {
+    let workFlow = [];
     hearingStore.subscribe(str => {
       if (!str || !str.hearings) {
         return;
@@ -46,6 +46,7 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
   removeUnnecessarySummaryTemplateItems() {
     let filteredTemplate:Section[] = [];
     const sFlow: ScreenNavigationModel[] = this.getScreenFlowFromStore(this.hearingStore);
+    if(sFlow) {
     const isFlowWithoutLinkedHearing = sFlow.some((fL:ScreenNavigationModel) => !fL.screenName.includes('hearing-link'));
 
     if(isFlowWithoutLinkedHearing) {
@@ -55,6 +56,7 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
       filteredTemplate = this.template;
     }
     return filteredTemplate;
+  }
   }
 
   public ngOnDestroy(): void {

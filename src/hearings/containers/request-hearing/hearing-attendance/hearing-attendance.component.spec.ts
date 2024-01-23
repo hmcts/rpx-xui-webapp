@@ -323,6 +323,22 @@ describe('HearingAttendanceComponent', () => {
     expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(1);
   });
 
+  it('should return the party details from hearing request main model', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        partyDetailsChangesConfirmed: true,
+        hearingWindowFirstDateMustBeChangesRequired: false
+      }
+    };
+    component.initialiseFromHearingValuesForAmendments();
+    expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(2);
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

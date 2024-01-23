@@ -215,8 +215,9 @@ describe('HearingAttendanceComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
-        hearingWindowFirstDateMustBeChangesRequired: false
+        hearingWindowChangesRequired: false
       }
     };
     component.prepareHearingRequestData();
@@ -306,6 +307,7 @@ describe('HearingAttendanceComponent', () => {
       mode: 'create'
     };
     component.ngOnInit();
+    expect(component.initialiseFromHearingValues).not.toHaveBeenCalled();
     expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(2);
   });
 
@@ -320,8 +322,9 @@ describe('HearingAttendanceComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowFirstDateMustBeChangesRequired: true
+        hearingWindowChangesRequired: true
       }
     };
     component.ngOnInit();
@@ -339,8 +342,9 @@ describe('HearingAttendanceComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowFirstDateMustBeChangesRequired: true
+        hearingWindowChangesRequired: true
       }
     };
     component.ngOnInit();
@@ -368,8 +372,9 @@ describe('HearingAttendanceComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: false,
-        hearingWindowFirstDateMustBeChangesRequired: true
+        hearingWindowChangesRequired: true
       }
     };
     component.ngOnInit();
@@ -383,9 +388,10 @@ describe('HearingAttendanceComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
         partyDetailsChangesConfirmed: true,
-        hearingWindowFirstDateMustBeChangesRequired: false
+        hearingWindowChangesRequired: false
       }
     };
     component.initialiseFromHearingValuesForAmendments();

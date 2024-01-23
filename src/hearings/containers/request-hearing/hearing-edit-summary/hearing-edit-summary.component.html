@@ -1,7 +1,7 @@
 <xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'">
 </xuilib-hmcts-error-summary>
 <exui-warning-and-error-section
-  [pageVisitChangeExists]="pageVisitChangeExists()"
+  [pageVisitChangeExists]="pageVisitChangeExists"
   [isPagelessAttributeChanged]="isPagelessAttributeChanged"
 ></exui-warning-and-error-section>
 <h1 class="govuk-heading-l">Edit hearing</h1>
@@ -117,6 +117,6 @@
   (changeEditHearing)="onChange($event)"
 ></exui-additional-instructions-section>
 <exui-warning-and-error-section
-  [pageVisitChangeExists]="pageVisitChangeExists()"
+  [pageVisitChangeExists]="pageVisitChangeExists"
   [isPagelessAttributeChanged]="isPagelessAttributeChanged"
 ></exui-warning-and-error-section>

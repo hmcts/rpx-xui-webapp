@@ -15,6 +15,7 @@ import { PropertiesUpdatedOnPageVisit } from '../../../models/hearingsUpdateMode
 import { LocationByEPIMMSModel } from '../../../models/location.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
+import { HearingsFeatureService } from '../../../services/hearings-feature.service';
 import * as fromHearingStore from '../../../store';
 import { HearingEditSummaryComponent } from './hearing-edit-summary.component';
 
@@ -38,6 +39,7 @@ describe('HearingEditSummaryComponent', () => {
   const locationsDataService = new LocationsDataService(mockedHttpClient);
   const hearingsService = new HearingsService(mockedHttpClient);
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
+  const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled']);
 
   const locations: LocationByEPIMMSModel[] = [{
     epimms_id: '196538',
@@ -153,6 +155,10 @@ describe('HearingEditSummaryComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: routeMock
+        },
+        {
+          provide: HearingsFeatureService,
+          useValue: hearingsFeatureServiceMock
         }
       ]
     })
@@ -160,6 +166,7 @@ describe('HearingEditSummaryComponent', () => {
 
     store = TestBed.inject(Store);
     mockFeatureToggleService.isEnabled.and.returnValue(of(true));
+    hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
     spyOn(locationsDataService, 'getLocationById').and.returnValue(of(locations));
     fixture = TestBed.createComponent(HearingEditSummaryComponent);
     component = fixture.componentInstance;
@@ -211,10 +218,26 @@ describe('HearingEditSummaryComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowFirstDateMustBeChangesRequired: true
+        hearingWindowChangesRequired: true
       }
     };
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
+  });
+
+  it('should set the hearingWindowChangesRequired to true', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '2024-02-13T10:00:00';
+    component.serviceHearingValuesModel.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesRequired).toEqual(true);
+  });
+
+  it('should set the hearingWindowChangesRequired to false', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
+    component.serviceHearingValuesModel.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesRequired).toEqual(false);
   });
 
   it('should update the case details properties automatically setPropertiesUpdatedAutomatically', () => {

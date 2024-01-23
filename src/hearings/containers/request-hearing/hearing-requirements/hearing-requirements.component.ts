@@ -90,7 +90,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         hearingType: this.serviceHearingValuesModel.hearingType,
         hearingLocations: this.serviceHearingValuesModel.hearingLocations,
         hearingIsLinkedFlag: this.serviceHearingValuesModel.hearingIsLinkedFlag,
-        hearingWindow: this.validatorsUtils.getHearingWindow(this.hearingRequestMainModel),
+        hearingWindow: HearingsUtils.getHearingWindow(this.hearingsService.propertiesUpdatedOnPageVisit,
+          this.hearingCondition, this.hearingRequestMainModel),
         privateHearingRequiredFlag: this.serviceHearingValuesModel.privateHearingRequiredFlag,
         panelRequirements: this.serviceHearingValuesModel.panelRequirements,
         autolistFlag: this.serviceHearingValuesModel.autoListFlag,
@@ -214,8 +215,11 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
         (propertiesUpdatedOnPageVisit?.afterPageVisit.reasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired)) {
       // Hearings manual amendment journey is enabled and there are changes to reasonable adjustment flags detected
+      const partyDetails = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed
+        ? this.hearingRequestMainModel.partyDetails
+        : this.hearingRequestToCompareMainModel.partyDetails;
       this.reasonableAdjustmentFlags = CaseFlagsUtils.getReasonableAdjustmentFlags(this.caseFlagsRefData,
-        propertiesUpdatedOnPageVisit.caseFlags?.flags, this.hearingRequestMainModel.partyDetails, this.serviceHearingValuesModel.parties);
+        propertiesUpdatedOnPageVisit.caseFlags?.flags, partyDetails, this.serviceHearingValuesModel.parties);
     } else {
       // Hearings manual amendment journey is NOT enabled
       this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel?.caseFlags?.flags,

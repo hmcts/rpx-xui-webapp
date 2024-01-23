@@ -42,6 +42,7 @@ import { HearingViewActualSummaryComponent } from './containers/view-hearing/hea
 import { HearingViewSummaryComponent } from './containers/view-hearing/hearing-view-summary/hearing-view-summary.component';
 import { ViewHearingComponent } from './containers/view-hearing/view-hearing.component';
 import { HearingsEditGuard } from './guards/hearings-edit-guard';
+import { HearingAmendmentsGuard } from './guards/hearing-amendments-guard';
 import { HearingsViewGuard } from './guards/hearings-view-guard';
 import { HearingCategory, MemberType, Mode } from './models/hearings.enum';
 import { ActualSummaryResponseResolver } from './resolvers/actual-summary-response-resolver.resolve';
@@ -428,10 +429,9 @@ export const ROUTES: Routes = [
           courtLocation: CourtLocationsDataResolver
         },
         component: HearingEditSummaryComponent,
-        canActivate: [HearingsEditGuard, FeatureToggleGuard],
+        canActivate: [HearingsEditGuard, HearingAmendmentsGuard],
         data: {
           title: 'HMCTS Hearings | Amend Hearing',
-          needsFeaturesEnabled: [AppConstants.FEATURE_NAMES.enableHearingAmendments],
           isChildRequired: [HearingCategory.PanelMemberType, HearingCategory.CaseType]
         }
       },

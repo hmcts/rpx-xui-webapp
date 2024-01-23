@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
@@ -19,6 +19,7 @@ import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { HearingsService } from '../../../services/hearings.service';
+import { HearingsFeatureService } from '../../../services/hearings-feature.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
@@ -56,6 +57,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public isPagelessAttributeChanged: boolean = false;
   public afterPageVisit: AfterPageVisitProperties;
   public isWithinPageAttributeChanged: boolean = false;
+  public pageVisitChangeExists: boolean = false;
   private readonly notUpdatedMessage = 'The request has not been updated';
 
   constructor(private readonly router: Router,
@@ -63,6 +65,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
     protected readonly featureToggleService: FeatureToggleService,
+    protected readonly hearingsFeatureService: HearingsFeatureService,
     protected readonly route: ActivatedRoute) {
     super(hearingStore, hearingsService, featureToggleService, route);
     this.additionalFacilitiesRefData = this.route.snapshot.data.additionFacilitiesOptions;
@@ -94,7 +97,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     );
 
     // Enable hearings manual amendments journey only if the feature is toggled on
-    this.featureToggleServiceSubscription = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
+    this.featureToggleServiceSubscription = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
       this.isHearingAmendmentsEnabled = enabled;
       if (enabled) {
         this.setPropertiesUpdatedAutomatically();
@@ -178,10 +181,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   private setPropertiesUpdatedOnPageVisit(serviceHearingValues: ServiceHearingValuesModel): void {
     if (serviceHearingValues) {
       const afterPageVisitProperties = this.getAfterPageVisitProperties();
-      if (afterPageVisitProperties.reasonableAdjustmentChangesRequired ||
+      this.pageVisitChangeExists = afterPageVisitProperties.reasonableAdjustmentChangesRequired ||
         afterPageVisitProperties.nonReasonableAdjustmentChangesRequired ||
         afterPageVisitProperties.partyDetailsChangesRequired ||
-        afterPageVisitProperties.hearingWindowFirstDateMustBeChangesRequired) {
+        afterPageVisitProperties.hearingWindowChangesRequired;
+      if (this.pageVisitChangeExists) {
         this.hearingsService.propertiesUpdatedOnPageVisit = {
           caseFlags: serviceHearingValues.caseFlags,
           parties: serviceHearingValues.parties,
@@ -197,10 +201,10 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       return this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit;
     }
     return {
-      reasonableAdjustmentChangesRequired: this.pageVisitCaseFlagsChangeExists(),
-      nonReasonableAdjustmentChangesRequired: this.pageVisitNonReasonalbleChangeExists(),
+      reasonableAdjustmentChangesRequired: this.pageVisitReasonableAdjustmentChangeExists(),
+      nonReasonableAdjustmentChangesRequired: this.pageVisitNonReasonableAdjustmentChangeExists(),
       partyDetailsChangesRequired: this.pageVisitPartiesChangeExists(),
-      hearingWindowFirstDateMustBeChangesRequired: this.pageVisitHearingWindowChangeExists()
+      hearingWindowChangesRequired: this.pageVisitHearingWindowChangeExists()
     };
   }
 
@@ -312,24 +316,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     this.isWithinPageAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.withinPage).some((prop) => prop);
 
     // Display Validation
-    this.hearingsService.displayValidationError = this.pageVisitChangeExists();
+    this.hearingsService.displayValidationError = this.pageVisitChangeExists;
     this.hearingsService.submitUpdatedRequestClicked = false;
   }
 
-  public pageVisitChangeExists(): boolean {
-    // check for changes on page visit
-    const isPageVisitCaseFlagsChangeExists = this.pageVisitCaseFlagsChangeExists();
-    const isPageVisitNonReasonalbleChangeExists = this.pageVisitNonReasonalbleChangeExists();
-    const isPageVisitPartiesChangeExists = this.pageVisitPartiesChangeExists();
-    const isPageVisitHearingWindowChangeExists = this.pageVisitHearingWindowChangeExists();
-
-    return isPageVisitCaseFlagsChangeExists ||
-      isPageVisitNonReasonalbleChangeExists ||
-      isPageVisitPartiesChangeExists ||
-      isPageVisitHearingWindowChangeExists;
-  }
-
-  private pageVisitCaseFlagsChangeExists(): boolean {
+  private pageVisitReasonableAdjustmentChangeExists(): boolean {
     const caseFlagsSHV = this.serviceHearingValuesModel.caseFlags.flags;
     const individualParties = this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND);
     // HMC stores only reasonable adjustment flag ids and language interpreter flag ids under parties
@@ -354,7 +345,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     return false;
   }
 
-  private pageVisitNonReasonalbleChangeExists(): boolean {
+  private pageVisitNonReasonableAdjustmentChangeExists(): boolean {
     const caseFlagsModifiedDate = this.serviceHearingValuesModel.caseFlags.flags.map((flags) => flags.dateTimeModified);
     const caseFlagsCreatedDate = this.serviceHearingValuesModel.caseFlags.flags.map((flags) => flags.dateTimeCreated);
     const caseFlagsWithModifiedDate = caseFlagsModifiedDate.filter((date) => date !== null).filter((date) => date !== undefined);
@@ -397,8 +388,13 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const hearingWindowSHV = this.serviceHearingValuesModel.hearingWindow;
     const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
     // Return true if the first date time must be value in SHV and HMC are different
-    if (hearingWindowSHV?.firstDateTimeMustBe !== hearingWindowHMC?.firstDateTimeMustBe) {
-      return true;
+    if (hearingWindowSHV?.firstDateTimeMustBe) {
+      if (!hearingWindowHMC?.firstDateTimeMustBe) {
+        return true;
+      }
+      if (!_.isEqual(new Date(hearingWindowSHV.firstDateTimeMustBe), new Date(hearingWindowHMC.firstDateTimeMustBe))) {
+        return true;
+      }
     }
     // There is no change in first date time must be when compared SHV with HMC
     return false;

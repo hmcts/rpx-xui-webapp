@@ -116,7 +116,10 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   public executeAction(action: ACTION): void {
-    this.hearingsService.submitUpdatedRequestClicked = true;
+    if (action === ACTION.BACK) {
+      super.navigateAction(action);
+      return;
+    }
     const objA = JSON.parse(JSON.stringify(this.hearingRequestMainModel));
     const objB = JSON.parse(JSON.stringify(this.hearingRequestToCompareMainModel));
     if (_.isEqual(objA, objB)) {

@@ -8,6 +8,7 @@ import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import * as fromAppReducers from '../../../app/store/reducers';
+import * as fromHearingStore from '../../../hearings/store';
 import { HttpError } from '../../../models/httpError.model';
 import { KEY_FRAGMENT_ID, KEY_IS_HEARING_AMENDMENTS_ENABLED, KEY_MODE } from '../../models/hearingConditions';
 import { HearingRequestPageRouteNames, Mode } from '../../models/hearings.enum';
@@ -27,6 +28,7 @@ export class HearingRequestEffects {
   public mode: Mode;
   public isHearingAmendmentsEnabled: boolean;
   public fragmentId: string;
+  public hearingId: string;
 
   constructor(
     private readonly actions$: Actions,
@@ -43,6 +45,7 @@ export class HearingRequestEffects {
     this.hearingStore.pipe(select(fromHearingReducers.getHearingsFeatureState)).subscribe(
       (state) => {
         this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
+        this.hearingId = state.hearingRequest.hearingRequestMainModel.requestDetails.hearingRequestID;
         this.mode = state.hearingConditions.hasOwnProperty(KEY_MODE) ? state.hearingConditions[KEY_MODE] : Mode.CREATE;
         this.isHearingAmendmentsEnabled = state.hearingConditions.hasOwnProperty(KEY_IS_HEARING_AMENDMENTS_ENABLED) ? state.hearingConditions[KEY_IS_HEARING_AMENDMENTS_ENABLED] : false;
         this.fragmentId = state.hearingConditions.hasOwnProperty(KEY_FRAGMENT_ID) ? state.hearingConditions[KEY_FRAGMENT_ID] : '';
@@ -52,20 +55,24 @@ export class HearingRequestEffects {
 
   @Effect({ dispatch: false })
   public backNavigation$ = this.actions$.pipe(
-      ofType(hearingRequestActions.NAVIGATE_BACK_HEARING_REQUEST),
-      switchMap(() => {
-        switch (this.mode) {
-          case Mode.CREATE:
-          case Mode.CREATE_EDIT:
-          case Mode.VIEW:
-          case Mode.VIEW_EDIT:
+    ofType(hearingRequestActions.NAVIGATE_BACK_HEARING_REQUEST),
+    switchMap(() => {
+      switch (this.mode) {
+        case Mode.CREATE:
+        case Mode.CREATE_EDIT:
+        case Mode.VIEW:
+        case Mode.VIEW_EDIT:
+          if (this.router.url.includes('hearing-edit-summary')) {
+            this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID: this.hearingId , targetURL: '/hearings/view/hearing-view-summary' }));
+          } else {
             this.location.back();
             return of(null); // Return an observable that emits null and then completes
-          default:
-            return from(this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']));
-        }
-      })
-    );
+          }
+        default:
+          return from(this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']));
+      }
+    })
+  );
 
   @Effect({ dispatch: false })
   public continueNavigation$ = this.actions$.pipe(

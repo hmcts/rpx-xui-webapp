@@ -43,7 +43,7 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
     return workFlow;
   }
 
-  removeUnnecessarySummaryTemplateItems() {
+  public removeUnnecessarySummaryTemplateItems() {
     let filteredTemplate:Section[] = [];
     const sFlow: ScreenNavigationModel[] = this.getScreenFlowFromStore(this.hearingStore);
     if(sFlow) {

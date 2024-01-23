@@ -173,7 +173,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       this.pageVisitChangeExists = afterPageVisitProperties.reasonableAdjustmentChangesRequired ||
         afterPageVisitProperties.nonReasonableAdjustmentChangesRequired ||
         afterPageVisitProperties.partyDetailsChangesRequired ||
-        afterPageVisitProperties.hearingWindowFirstDateMustBeChangesRequired;
+        afterPageVisitProperties.hearingWindowChangesRequired;
       if (this.pageVisitChangeExists) {
         this.hearingsService.propertiesUpdatedOnPageVisit = {
           caseFlags: serviceHearingValues.caseFlags,
@@ -193,7 +193,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       reasonableAdjustmentChangesRequired: this.pageVisitReasonableAdjustmentChangeExists(),
       nonReasonableAdjustmentChangesRequired: this.pageVisitNonReasonableAdjustmentChangeExists(),
       partyDetailsChangesRequired: this.pageVisitPartiesChangeExists(),
-      hearingWindowFirstDateMustBeChangesRequired: this.pageVisitHearingWindowChangeExists()
+      hearingWindowChangesRequired: this.pageVisitHearingWindowChangeExists()
     };
   }
 

@@ -114,3 +114,17 @@ Then('In additional facilities page, I see case flags displayed for parties', as
     }
 })
 
+
+Then('In Length, date and priority level of hearing page, I see ACTION NEEDED label displayed for The first date of the hearing must be', async function () {
+    const page = getPageObject("Length, date and priority level of hearing");
+    expect(await page.isActionNeededLabelDisplayedForField('The first date of the hearing must be')).to.be.true
+})
+
+
+Then('In Length, date and priority level of hearing page, I dont see ACTION NEEDED label displayed for The first date of the hearing must be', async function () {
+    const page = getPageObject("Length, date and priority level of hearing");
+    expect(await page.isActionNeededLabelDisplayedForField('The first date of the hearing must be')).to.be.false
+})
+
+
+

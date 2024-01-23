@@ -274,7 +274,7 @@ describe('HearingFacilitiesComponent', () => {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: false,
-        hearingWindowFirstDateMustBeChangesRequired: false
+        hearingWindowChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -293,7 +293,7 @@ describe('HearingFacilitiesComponent', () => {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: false,
-        hearingWindowFirstDateMustBeChangesRequired: false
+        hearingWindowChangesRequired: false
       }
     };
     component.hearingRequestMainModel = {
@@ -320,7 +320,7 @@ describe('HearingFacilitiesComponent', () => {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: false,
-        hearingWindowFirstDateMustBeChangesRequired: false
+        hearingWindowChangesRequired: false
       }
     };
     component.prepareHearingRequestData();
@@ -339,7 +339,7 @@ describe('HearingFacilitiesComponent', () => {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: false,
-        hearingWindowFirstDateMustBeChangesRequired: false
+        hearingWindowChangesRequired: false
       }
     };
     component.prepareHearingRequestData();

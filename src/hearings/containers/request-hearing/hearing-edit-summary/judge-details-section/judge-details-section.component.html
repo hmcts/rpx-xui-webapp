@@ -22,11 +22,11 @@
   </div>
   <div class="govuk-summary-list__row" *ngIf="judgeName?.length > 0">
     <div class="govuk-summary-list__key">
-      <exui-amendment-label *ngIf="showAmmendedForJudgeName" [displayLabel]="amendmentLabelEnum.AMENDED">
-      </exui-amendment-label>
       Name of the judge
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="showAmmendedForJudgeName" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       {{ judgeName }}
     </div>
     <div class="govuk-summary-list__actions">

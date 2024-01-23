@@ -19,6 +19,7 @@ import { AmendmentLabelStatus } from '../../../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.model';
 import { HearingsService } from '../../../services/hearings.service';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
@@ -92,7 +93,8 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     let secondDate: Date = null;
     duration = this.hearingRequestMainModel.hearingDetails.duration ?
       this.hearingRequestMainModel.hearingDetails.duration : 0;
-    const hearingWindow: HearingWindowModel = this.validatorsUtils.getHearingWindow(this.hearingRequestMainModel);
+    const hearingWindow: HearingWindowModel = HearingsUtils.getHearingWindow(this.hearingsService.propertiesUpdatedOnPageVisit,
+      this.hearingCondition, this.hearingRequestMainModel, this.serviceHearingValuesModel);
     if (hearingWindow && (hearingWindow.dateRangeStart || hearingWindow.dateRangeEnd)) {
       this.checkedHearingAvailability = RadioOptions.CHOOSE_DATE_RANGE;
       startDate = hearingWindow.dateRangeStart && new Date(hearingWindow.dateRangeStart);

@@ -1,7 +1,12 @@
 import * as moment from 'moment';
 import { HearingConditions } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
+import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
+import { HearingWindowModel } from '../models/hearingWindow.model';
+import { Mode } from '../models/hearings.enum';
+import { PropertiesUpdatedOnPageVisit } from '../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
+import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 
 export class HearingsUtils {
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
@@ -38,5 +43,21 @@ export class HearingsUtils {
     return hearingDaySchedule.slice().sort((schedule1, schedule2) =>
       moment.utc(schedule1.hearingStartDateTime).diff(moment.utc(schedule2.hearingStartDateTime))
     );
+  }
+
+  public static getHearingWindow(propertiesUpdatedOnPageVisit: PropertiesUpdatedOnPageVisit,
+    hearingCondition: HearingConditions,
+    hearingRequestMainModel: HearingRequestMainModel,
+    serviceHearingValuesModel: ServiceHearingValuesModel): HearingWindowModel {
+    if (hearingCondition.mode === Mode.VIEW_EDIT &&
+        propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow') &&
+        propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired) {
+      return serviceHearingValuesModel.hearingWindow && Object.keys(serviceHearingValuesModel.hearingWindow).length === 0
+        ? null
+        : serviceHearingValuesModel.hearingWindow;
+    }
+    return hearingRequestMainModel.hearingDetails.hearingWindow && Object.keys(hearingRequestMainModel.hearingDetails.hearingWindow).length === 0
+      ? null
+      : hearingRequestMainModel.hearingDetails.hearingWindow;
   }
 }

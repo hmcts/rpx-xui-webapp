@@ -8,6 +8,7 @@ import { StoreModule } from '@ngrx/store';
 import { SessionStorageService } from '../../services/session-storage/session-storage.service';
 import { MediaViewerWrapperComponent } from './media-viewer-wrapper.component';
 import createSpyObj = jasmine.createSpyObj;
+import { Title } from '@angular/platform-browser';
 
 const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
 const REMOTE_DOCUMENT_URL = 'https://www.example.com/binary';
@@ -24,6 +25,7 @@ describe('MediaViewerWrapperComponent', () => {
   let sessionStorageService;
   let mockAppConfig: any;
   let featureToggleService;
+  let titleService;
 
   beforeEach(waitForAsync(() => {
     mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
@@ -32,6 +34,7 @@ describe('MediaViewerWrapperComponent', () => {
     windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
     sessionStorageService = createSpyObj('sessionStorageService', ['setItem', 'getItem']);
     featureToggleService = createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
+    titleService = createSpyObj('titleService', ['setTitle']);
     TestBed.configureTestingModule({
       imports: [
         MediaViewerModule,
@@ -47,7 +50,8 @@ describe('MediaViewerWrapperComponent', () => {
         { provide: AbstractAppConfig, useValue: mockAppConfig },
         { provide: WindowService, useValue: windowService },
         { provide: FeatureToggleService, useValue: featureToggleService },
-        { provide: SessionStorageService, useValue: sessionStorageService }
+        { provide: SessionStorageService, useValue: sessionStorageService },
+        { provide: Title, useValue: titleService }
       ],
       teardown: { destroyAfterEach: false }
     })
@@ -112,6 +116,14 @@ describe('MediaViewerWrapperComponent', () => {
     it('should return false when icp-enabled is false and jurisdiction is not empty but is wrong ', () => {
       component.caseJurisdiction = 'dummy';
       expect(component.isIcpEnabled(false, ['dummy1'])).toBeFalsy();
+    });
+
+    it('should change the browser title', () => {
+      titleService.setTitle.and.returnValues('View Document - Any');
+      fixture.detectChanges();
+      expect(component).toBeTruthy();
+      component.ngOnInit();
+      expect(titleService.setTitle).toHaveBeenCalled();
     });
   });
 });

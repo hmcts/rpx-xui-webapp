@@ -224,6 +224,22 @@ describe('HearingEditSummaryComponent', () => {
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
   });
 
+  it('should set the hearingWindowFirstDateMustBeChangesRequired to true', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '2024-02-13T10:00:00';
+    component.serviceHearingValuesModel.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowFirstDateMustBeChangesRequired).toEqual(true);
+  });
+
+  it('should set the hearingWindowFirstDateMustBeChangesRequired to false', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
+    component.serviceHearingValuesModel.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowFirstDateMustBeChangesRequired).toEqual(false);
+  });
+
   it('should update the case details properties automatically setPropertiesUpdatedAutomatically', () => {
     component.serviceHearingValuesModel.hmctsInternalCaseName = 'New hmcts case name from service hearings';
     component.serviceHearingValuesModel.publicCaseName = 'New public case name from service hearings';

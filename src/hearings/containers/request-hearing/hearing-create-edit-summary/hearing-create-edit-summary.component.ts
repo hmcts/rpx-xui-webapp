@@ -32,31 +32,30 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
 
   public getScreenFlowFromStore(hearingStore) {
     let workFlow = [];
-    hearingStore.subscribe(str => {
+    hearingStore.subscribe((str) => {
       if (!str || !str.hearings) {
         return;
-      } else {
-        const hearing = str.hearings;
-        workFlow = hearing.hearingValues.serviceHearingValuesModel.screenFlow
       }
+      const hearing = str.hearings;
+      workFlow = hearing.hearingValues.serviceHearingValuesModel.screenFlow;
     });
     return workFlow;
   }
 
   public removeUnnecessarySummaryTemplateItems() {
-    let filteredTemplate:Section[] = [];
+    let filteredTemplate: Section[] = [];
     const sFlow: ScreenNavigationModel[] = this.getScreenFlowFromStore(this.hearingStore);
-    if(sFlow) {
-    const isFlowWithoutLinkedHearing = sFlow.some((fL:ScreenNavigationModel) => !fL.screenName.includes('hearing-link'));
+    if (sFlow) {
+      const isFlowWithoutLinkedHearing = sFlow.some((fL: ScreenNavigationModel) => !fL.screenName.includes('hearing-link'));
 
-    if(isFlowWithoutLinkedHearing) {
-      const template = this.template.filter((csl) => !csl.sectionHTMLTitle.includes('Linked hearings'));
-      filteredTemplate = template;
-    } else {
-      filteredTemplate = this.template;
+      if (isFlowWithoutLinkedHearing) {
+        const template = this.template.filter((csl) => !csl.sectionHTMLTitle.includes('Linked hearings'));
+        filteredTemplate = template;
+      } else {
+        filteredTemplate = this.template;
+      }
     }
     return filteredTemplate;
-  }
   }
 
   public ngOnDestroy(): void {

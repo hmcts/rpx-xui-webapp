@@ -2293,8 +2293,9 @@ describe('HearingRequirementsComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: false,
-        hearingWindowFirstDateMustBeChangesRequired: false
+        hearingWindowChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -2311,8 +2312,9 @@ describe('HearingRequirementsComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: false,
-        hearingWindowFirstDateMustBeChangesRequired: true
+        hearingWindowChangesRequired: true
       }
     };
     component.ngOnInit();
@@ -2329,8 +2331,9 @@ describe('HearingRequirementsComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
-        hearingWindowFirstDateMustBeChangesRequired: true
+        hearingWindowChangesRequired: true
       }
     };
     component.ngOnInit();
@@ -2347,8 +2350,9 @@ describe('HearingRequirementsComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
-        hearingWindowFirstDateMustBeChangesRequired: true
+        hearingWindowChangesRequired: true
       }
     };
     component.ngOnInit();
@@ -2365,8 +2369,9 @@ describe('HearingRequirementsComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
-        hearingWindowFirstDateMustBeChangesRequired: true
+        hearingWindowChangesRequired: true
       }
     };
     component.ngOnInit();

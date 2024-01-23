@@ -99,8 +99,9 @@ describe('ParticipantAttendanceSectionComponent', () => {
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
-        hearingWindowFirstDateMustBeChangesRequired: false
+        hearingWindowChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -115,9 +116,10 @@ describe('ParticipantAttendanceSectionComponent', () => {
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
         partyDetailsChangesConfirmed: true,
-        hearingWindowFirstDateMustBeChangesRequired: false
+        hearingWindowChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -132,8 +134,9 @@ describe('ParticipantAttendanceSectionComponent', () => {
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: false,
-        hearingWindowFirstDateMustBeChangesRequired: true
+        hearingWindowChangesRequired: true
       }
     };
     component.ngOnInit();

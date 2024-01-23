@@ -50,7 +50,10 @@ export function toSARoleAssignmentBody(
       classification: 'PRIVATE',
       attributes: {
         caseId: allocateRoleData.caseId,
+        // Potentially remove the below line - COT-708
         requestedRole,
+        // Below fix is for COT-708 - add jurisdiction - needs to be tested
+        jurisdiction: allocateRoleData.jurisdiction,
         ...extraAttributesForBasicRole
       },
       roleName: 'specific-access-granted',

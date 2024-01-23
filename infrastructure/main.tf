@@ -48,8 +48,26 @@ module "redis6-cache" {
   capacity                      = var.redis_capacity
 }
 
-resource "azurerm_application_insights" "appinsights" {
-  name                = "${local.app_full_name}-appinsights-${var.env}"
+module "application_insights" {
+  source = "git@github.com:hmcts/terraform-module-application-insights?ref=main"
+
+  env                 = var.env
+  product             = var.product
+  name                = "${local.app_full_name}-appinsights"
+  location            = var.location
+  application_type    = var.application_type
+  resource_group_name = azurerm_resource_group.rg.name
+
+  common_tags = var.common_tags
+}
+
+moved {
+  from = azurerm_application_insights.appinsights
+  to   = module.application_insights.azurerm_application_insights.this
+}
+
+resource "azurerm_application_insights" "appinsight" {
+  name                = "${local.app_full_name}-appinsights-${var.env}-classic"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = var.application_type
@@ -65,11 +83,6 @@ resource "azurerm_application_insights" "appinsights" {
   }
 }
 
-moved {
-  from = module.application_insights.azurerm_application_insights.this
-  to   = azurerm_application_insights.appinsights
-}
-
 resource "azurerm_resource_group" "rg" {
   name     = "${local.app_full_name}-${var.env}"
   location = var.location
@@ -79,6 +92,6 @@ resource "azurerm_resource_group" "rg" {
 
 resource "azurerm_key_vault_secret" "app_insights_key" {
   name         = "appinsights-instrumentationkey-mc"
-  value        = azurerm_application_insights.appinsights.instrumentation_key
+  value        = azurerm_application_insights.appinsight.instrumentation_key
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }

@@ -36,6 +36,7 @@ export function toSARoleAssignmentBody(
   const period = specificAccessData.period;
   const requestedRole = allocateRoleData.requestedRole !== 'specific-access-judicial'
     ? allocateRoleData.requestedRole : 'specific-access-judiciary';
+  debugger;
   return {
     roleRequest: {
       assignerId: currentUserId,
@@ -50,9 +51,8 @@ export function toSARoleAssignmentBody(
       classification: 'PRIVATE',
       attributes: {
         caseId: allocateRoleData.caseId,
-        // Potentially remove the below line - COT-708
         requestedRole,
-        // Below fix is for COT-708 - add jurisdiction - needs to be tested
+        // Below line added as a fix for COT-708 - add jurisdiction
         jurisdiction: allocateRoleData.jurisdiction,
         ...extraAttributesForBasicRole
       },
@@ -80,6 +80,8 @@ export function toSARoleAssignmentBody(
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole,
+        // Below line added as a fix for COT-708 - add jurisdiction
+        jurisdiction: allocateRoleData.jurisdiction,
         ...extraAttributesForSpecificRole
       },
       roleName: requestedRole,
@@ -136,6 +138,8 @@ export function toDenySARoleAssignmentBody(
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole: requestedrole,
+        // Below line added as a fix for COT-708 - add jurisdiction
+        jurisdiction: allocateRoleData.jurisdiction,
         specificAccessReason: allocateRoleData.specificAccessReason,
         requestDate: allocateRoleData.requestCreated,
         reviewer: currentUserId,
@@ -194,6 +198,8 @@ export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole: allocateRoleData.requestedRole,
+        // Below line added as a fix for COT-708 - add jurisdiction
+        jurisdiction: allocateRoleData.jurisdiction,
         ...extraAttributesForBasicRole
       },
       roleName: 'specific-access-requested',

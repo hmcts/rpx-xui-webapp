@@ -51,6 +51,7 @@ export function toSARoleAssignmentBody(
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole,
+        jurisdiction: allocateRoleData.jurisdiction,
         ...extraAttributesForBasicRole
       },
       roleName: 'specific-access-granted',
@@ -77,6 +78,7 @@ export function toSARoleAssignmentBody(
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole,
+        jurisdiction: allocateRoleData.jurisdiction,
         ...extraAttributesForSpecificRole
       },
       roleName: requestedRole,
@@ -133,6 +135,7 @@ export function toDenySARoleAssignmentBody(
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole: requestedrole,
+        jurisdiction: allocateRoleData.jurisdiction,
         specificAccessReason: allocateRoleData.specificAccessReason,
         requestDate: allocateRoleData.requestCreated,
         reviewer: currentUserId,
@@ -191,6 +194,7 @@ export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole: allocateRoleData.requestedRole,
+        jurisdiction: allocateRoleData.jurisdiction,
         ...extraAttributesForBasicRole
       },
       roleName: 'specific-access-requested',

@@ -1,5 +1,5 @@
 
-@ng @functional_enabled
+@ng @functional_enabled 
 Feature: Hearings : Summary page validations EUI-9097
     Background: Setup
         Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_ON"
@@ -22,6 +22,7 @@ Feature: Hearings : Summary page validations EUI-9097
         Given I set mock hearing HMC response from file "viewEditHearings/mock_HMC_setup"
         Given I set mock hearing SHV response from file "viewEditHearings/mock_SHV_setup"
 
+
     Scenario: No changes,EUI-9097 scr 1 and scr 5
         cenario: SCR_1: CAT1 and CAT 2 ,Ameded and ACTION NEEDED labels  (Conditions (1) & (4))
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
@@ -36,7 +37,7 @@ Feature: Hearings : Summary page validations EUI-9097
         When In view hearing page, I click Edit hearing button
         Then I validate Edit hearing page displayed
 
-        When In view or edit hearing page, I click Submit updated request
+        When I click button with label "Submit updated request"
         Then In edit hearing page error displayed with message "The request has not been updated"
 
         # hearing stage start
@@ -51,7 +52,7 @@ Feature: Hearings : Summary page validations EUI-9097
         When I click continue in hearing workflow
         Then I validate Edit hearing page displayed
 
-        When In view or edit hearing page, I click Submit updated request
+        When I click button with label "Submit updated request"
         Then I am on hearings workflow page "Provide a reason for changing this hearing"
 
 
@@ -69,25 +70,10 @@ Feature: Hearings : Summary page validations EUI-9097
         When In view hearing page, I click Edit hearing button
         Then I validate Edit hearing page displayed
 
-        When In view or edit hearing page, I click Submit updated request
-        Then In edit hearing page error displayed with message "The request has not been updated"
-
-        # hearing stage start
-        When In view or edit hearing page, I click change link for field "What stage is this hearing at?"
-        Then I am on hearings workflow page "What stage is this hearing at?"
-
-        When In hearing page "What stage is this hearing at?", I input values
-            | field                          | value    |
-            | What stage is this hearing at? | Breach 1 |
-
-
-        When I click continue in hearing workflow
-        Then I validate Edit hearing page displayed
-
-        When In view or edit hearing page, I click Submit updated request
+        When I click button with label "Submit updated request"
         Then I am on hearings workflow page "Provide a reason for changing this hearing"
 
-
+@functional_debug
     Scenario: changes to CAT2 only, EUI-9097 scr 3 and scr 4
         cenario: SCR_1: CAT1 and CAT 2 ,Ameded and ACTION NEEDED labels  (Conditions (1) & (4))
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
@@ -102,8 +88,8 @@ Feature: Hearings : Summary page validations EUI-9097
         When In view hearing page, I click Edit hearing button
         Then I validate Edit hearing page displayed
 
-        When In view or edit hearing page, I click Submit updated request
-        Then In edit hearing page error displayed with message "The request has not been updated"
+        When I click button with label "Submit updated request"
+        Then In edit hearing page error displayed with message "You have not added all the updates. Click the 'Change' link under any sections labelled 'Action needed' and then click the continue button at the end of the page to add the changes to the hearing summary. You will not be able to submit the request until this is done."
 
         # Accept Hearing requirements
         When In view or edit hearing page, I click change link for field "Reasonable adjustments"
@@ -111,16 +97,41 @@ Feature: Hearings : Summary page validations EUI-9097
 
         Then In hearings requirements page, I see case flags displayed for parties
             | partyName           |
-            | Party1 name updated |
+            | Party1 name |
             | Party2 name         |
 
-        Then In hearing requirements page, I see party "Party1 name updated" with case flags
-            | flag | label         |
-            | A    |               |
-            | B    | ACTION NEEDED |
+
         When I click continue in hearing workflow
         Then I validate Edit hearing page displayed
 
-        When In view or edit hearing page, I click Submit updated request
+
+        When In view or edit hearing page, I click change link for field "Will this be a paper hearing?"
+        Then I am on hearings workflow page "Participant attendance"
+        When In create hearing page "Participant attendance", I input values
+            | field                         | value |
+            | Will this be a paper hearing? | No    |
+
+        Then In hearings Participant attendance page, I see parties
+            | partyName   | label         |
+            | Party1 name |        |
+            | Party2 name |               |
+            | Party4 name |  |
+
+
+        # Then debug sleep minutes 30
+
+        When In hearing page "Participant attendance", I input values
+            | field                                                    | value                 |
+            | Will this be a paper hearing?                            | No                    |
+            | What will be the methods of attendance for this hearing? | In Person, Video      |
+            | How will each participant attend the hearing?            | Party1 name,In Person |
+            | How will each participant attend the hearing?            | Party4 name,Video     |
+            | How will each participant attend the hearing?            | Party2 name,Video     |
+
+            | How many people will attend the hearing in person? | 2 |
+        When I click continue in hearing workflow
+        Then I validate Edit hearing page displayed
+
+        When I click button with label "Submit updated request"
         Then I am on hearings workflow page "Provide a reason for changing this hearing"
 

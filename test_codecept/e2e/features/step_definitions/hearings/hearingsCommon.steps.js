@@ -28,7 +28,20 @@ Then('In hearings requirements page, I see case flags displayed for parties', as
 
     reportLogger.AddMessage(`Parties with case flags ${JSON.stringify(parties)}`)
     for (const party of expectedPartyNames){
-        expect(parties.find(p => p.includes(party.partyName)), `${parties} missing expected ${party.partyName}`).to.not.equal(undefined)
+        const partyWithName = parties.find(p => p.includes(party.partyName))
+
+        expect(partyWithName, `${parties} missing expected ${party.partyName}`).to.not.equal(undefined)
+        if (party.label) {
+            if (party.label === '') {
+                expect(partyWithName, `${parties} missing expected ${party.partyName}`).to.not.includes('AMENDED')
+                expect(partyWithName, `${parties} missing expected ${party.partyName}`).to.not.includes('ACTION NEEDED')
+
+
+            } else {
+                expect(partyWithName, `${parties} missing expected ${party.partyName}`).to.includes(party.label)
+
+            }
+        }
     }
 
 })

@@ -11,6 +11,8 @@ class ViewOrEditHearingPage {
 
         this.warningMessage = $('exui-warning-and-error-section .govuk-warning-text__text')
         this.errorSummaryMessage = $('.govuk-error-summary__body')
+        this.errorMessage = $('.govuk-error-message')
+
 
     }
 

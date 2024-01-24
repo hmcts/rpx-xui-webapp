@@ -1,12 +1,11 @@
+import { CASE_FLAG_REFERENCE_VALUES } from '../../../api/prd/caseFlag/data/caseFlagReference.mock.data';
 import { caseFlagsRefData, serviceHearingValuesModel } from '../hearing.test.data';
+import { CaseFlagReferenceModel } from '../models/caseFlagReference.model';
 import { CaseFlagType, PartyType } from '../models/hearings.enum';
 import { AmendmentLabelStatus } from '../models/hearingsUpdateMode.enum';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { PartyFlagsModel } from '../models/partyFlags.model';
 import { CaseFlagsUtils } from './case-flags.utils';
-import { CASE_FLAG_REFERENCE_VALUES } from '../../../api/prd/caseFlag/data/caseFlagReference.mock.data';
-import { CaseFlagReferenceModel } from '../models/caseFlagReference.model';
-import { PartyType } from '../../../api/hearings/models/hearings.enum';
 
 describe('CaseFlagsUtils', () => {
   const caseFlagReferenceModels: CaseFlagReferenceModel[] = CASE_FLAG_REFERENCE_VALUES;
@@ -435,24 +434,24 @@ describe('CaseFlagsUtils', () => {
       expect(flagsGroup[2].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
     });
 
-  it('should set reasonable adjustments from hearing request if found', () => {
-    const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
-    expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag1);
-    expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag2);
-  });
+    it('should set reasonable adjustments from hearing request if found', () => {
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
+      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag1);
+      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag2);
+    });
 
-  it('should set reasonable adjustments from service hearing values if null in hearing request', () => {
-    partyDetails[0].individualDetails.reasonableAdjustments = null;
-    const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
-    expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag3);
-    expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag4);
-  });
+    it('should set reasonable adjustments from service hearing values if null in hearing request', () => {
+      partyDetails[0].individualDetails.reasonableAdjustments = null;
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
+      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag3);
+      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag4);
+    });
 
-  it('should set reasonable adjustments from service hearing values if empty array in hearing request', () => {
-    partyDetails[0].individualDetails.reasonableAdjustments = [];
-    const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
-    expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag3);
-    expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag4);
-
+    it('should set reasonable adjustments from service hearing values if empty array in hearing request', () => {
+      partyDetails[0].individualDetails.reasonableAdjustments = [];
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
+      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag3);
+      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag4);
+    });
   });
 });

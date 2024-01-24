@@ -26,7 +26,6 @@ import * as fromHearingStore from '../../../store';
 import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { HearingRequirementsComponent } from './hearing-requirements.component';
 
-
 @Component({
   selector: 'exui-hearing-parties-title',
   template: ''
@@ -2775,7 +2774,7 @@ describe('HearingRequirementsComponent', () => {
 
     // Assert
     expect(result).toEqual([]);
-  });  
+  });
 
   afterEach(() => {
     fixture.destroy();

@@ -5,7 +5,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HEARING_CREATE_EDIT_SUMMARY_TEMPLATE } from '../../../templates/hearing-create-edit-summary.template';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
-import {Section} from  '../../../../hearings/models/section';
+import { Section } from '../../../../hearings/models/section';
 import { ScreenNavigationModel } from 'api/hearings/models/screenNavigation.model';
 
 @Component({

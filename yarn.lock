@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.3-event-before-task-with-logic":
-  version: 7.0.3-event-before-task-with-logic
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.3-event-before-task-with-logic"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.4-task-completion-error-message":
+  version: 7.0.4-task-completion-error-message
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.4-task-completion-error-message"
   dependencies:
     tslib: ^2.3.0
-  checksum: f0761b4c82bb51d350dac07fb7e9d4a3d0090a12d0714bff5b434f550349c5cda673a9d6cebeb9018816e8847dc49e264e302a99f394813afb32b4c5fa7aeb6f
+  checksum: 674f6640497ec6438a90100528ccff3f6884d63f61ffaad61d66c276082b5da62a8baa803b6c1b6316012c6a318faeefa634676a9b97702f3e48efe1ea1f1443
   languageName: node
   linkType: hard
 
@@ -19013,7 +19013,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.3-event-before-task-with-logic
+    "@hmcts/ccd-case-ui-toolkit": 7.0.4-task-completion-error-message
     "@hmcts/ccpay-web-component": 6.0.2
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.10.1-RC.1

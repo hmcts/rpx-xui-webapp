@@ -23,6 +23,7 @@ import { HearingsFeatureService } from '../../../services/hearings-feature.servi
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import { UnavailabilityRangeModel } from 'src/hearings/models/unavailabilityRange.model';
 
 @Component({
   selector: 'exui-hearing-edit-summary',
@@ -379,7 +380,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         return true;
       }
     }
-
     // There are no changes for parties when compared SHV with HMC
     return false;
   }
@@ -387,6 +387,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   private pageVisitHearingWindowChangeExists(): boolean {
     const hearingWindowSHV = this.serviceHearingValuesModel.hearingWindow;
     const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
+
+    const unavailabilityDateList: UnavailabilityRangeModel[] = this.serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRanges);
+
     // Return true if the first date time must be value in SHV and HMC are different
     if (hearingWindowSHV?.firstDateTimeMustBe) {
       if (!hearingWindowHMC?.firstDateTimeMustBe) {

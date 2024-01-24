@@ -11,6 +11,8 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | roleCategory | LEGAL_OPERATIONS                                                                      |
 
         Given I set MOCK case "hearingCase" details with reference "Hearing_case"
+        Given I set MOCK case details "Hearing_case" property "jurisdiction.id" as "CIVIL"
+        Given I set MOCK case details "Hearing_case" property "case_type.id" as "CIVIL"
 
         Given I set mock case hearings from file "viewEditHearings/caseHearings"
 
@@ -126,7 +128,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Reasonable adjustments   | Party1 name           | true              |                    |
             | Reasonable adjustments   | Party2 name           | true              |                    |
 
-@functional_debug
+
     Scenario: SCR 4: CAT1 and CAT2 with CAT2 accepted,AMENDED labels (Conditions (2) & (5))
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
         Then I am on hearings tab page
@@ -155,9 +157,9 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
         Then I am on hearings workflow page "Hearing requirements"
 
         Then In hearings requirements page, I see case flags displayed for parties
-            | partyName           |
-            | Party1 name updated |
-            | Party2 name         |
+            | partyName           |label|
+            | Party1 name updated |AMENDED|
+            | Party2 name         ||
 
         Then In hearing requirements page, I see party "Party1 name updated" with case flags
             | flag | label         |
@@ -207,7 +209,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Heading                                    | Label         |
             | Hearing requirements                       | AMENDED       |
             | Additional facilities                      | ACTION NEEDED |
-            | Participant attendance                     | ACTION NEEDED |
+            | Participant attendance                     | AMENDED |
             | Length, date and priority level of hearing | ACTION NEEDED |
         # end of Accept participant attendance
 
@@ -221,9 +223,9 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Will additional security be required? | No    |
 
         Then In Additional facilities page, I see case flags displayed for parties
-            | partyName           |
-            | Party1 name updated |
-            | Party2 name         |
+            | partyName           |label|
+            | Party1 name updated |AMENDED|
+            | Party2 name         ||
 
         Then In Additional facilities page, I see party "Party1 name updated" with case flags
             | flag                          | label         |
@@ -238,7 +240,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Heading                                    | Label         |
             | Hearing requirements                       | AMENDED       |
             | Additional facilities                      | AMENDED |
-            | Participant attendance                     | ACTION NEEDED |
+            | Participant attendance                     | AMENDED |
             | Length, date and priority level of hearing | ACTION NEEDED |
         # end of Additional facilities
 
@@ -257,7 +259,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Heading                                    | Label         |
             | Hearing requirements                       | AMENDED       |
             | Additional facilities                      | AMENDED       |
-            | Participant attendance                     | ACTION NEEDED |
+            | Participant attendance                     | AMENDED |
             | Length, date and priority level of hearing | AMENDED |
 # end of Length, date and priority level of hearing
 

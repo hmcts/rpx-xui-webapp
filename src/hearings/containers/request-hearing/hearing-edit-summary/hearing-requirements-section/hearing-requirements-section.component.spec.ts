@@ -40,6 +40,7 @@ describe('HearingRequirementsSectionComponent', () => {
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
         reasonableAdjustmentChangesConfirmed: false,
         nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
@@ -55,6 +56,7 @@ describe('HearingRequirementsSectionComponent', () => {
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
         reasonableAdjustmentChangesConfirmed: true,
         nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,

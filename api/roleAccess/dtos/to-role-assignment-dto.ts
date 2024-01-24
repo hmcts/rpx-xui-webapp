@@ -52,7 +52,6 @@ export function toSARoleAssignmentBody(
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole,
-        // Below line added as a fix for COT-708 - add jurisdiction
         jurisdiction: allocateRoleData.jurisdiction,
         ...extraAttributesForBasicRole
       },
@@ -80,7 +79,6 @@ export function toSARoleAssignmentBody(
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole,
-        // Below line added as a fix for COT-708 - add jurisdiction
         jurisdiction: allocateRoleData.jurisdiction,
         ...extraAttributesForSpecificRole
       },
@@ -138,7 +136,6 @@ export function toDenySARoleAssignmentBody(
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole: requestedrole,
-        // Below line added as a fix for COT-708 - add jurisdiction
         jurisdiction: allocateRoleData.jurisdiction,
         specificAccessReason: allocateRoleData.specificAccessReason,
         requestDate: allocateRoleData.requestCreated,
@@ -198,7 +195,6 @@ export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole: allocateRoleData.requestedRole,
-        // Below line added as a fix for COT-708 - add jurisdiction
         jurisdiction: allocateRoleData.jurisdiction,
         ...extraAttributesForBasicRole
       },

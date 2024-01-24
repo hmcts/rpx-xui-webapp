@@ -33,7 +33,9 @@
         },
         "hearingIsLinkedFlag": false,
         "hearingChannels": [
-            "INTER"
+            "INTER",
+            "VID",
+            "TEL"
         ],
         "autolistFlag": false
     },
@@ -81,6 +83,7 @@
                 "hearingChannelPhone": [
                     "1234567890"
                 ],
+                "preferredHearingChannel": "INTER",
                 "relatedParties": [
                     {
                         "relationshipType": "mock relationship",
@@ -117,6 +120,7 @@
                 "hearingChannelPhone": [
                     "1234567890"
                 ],
+                "preferredHearingChannel": "INTER",
                 "relatedParties": [
                     {
                         "relationshipType": "mock relationship",

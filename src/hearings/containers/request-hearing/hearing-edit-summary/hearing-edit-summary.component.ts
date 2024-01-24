@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
@@ -18,8 +18,8 @@ import { ACTION, CategoryType, HearingDateEnum, HearingTemplate, LaCaseStatus, M
 import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
-import { HearingsService } from '../../../services/hearings.service';
 import { HearingsFeatureService } from '../../../services/hearings-feature.service';
+import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
@@ -116,23 +116,19 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   public executeAction(action: ACTION): void {
-    if (action === ACTION.BACK) {
-      super.navigateAction(action);
-      return;
+    if (action === ACTION.VIEW_EDIT_REASON) {
+      const objA = JSON.parse(JSON.stringify(this.hearingRequestMainModel));
+      const objB = JSON.parse(JSON.stringify(this.hearingRequestToCompareMainModel));
+      if (_.isEqual(objA, objB)) {
+        this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
+        window.scrollTo({ top: 0, left: 0 });
+        return;
+      } else if (this.hearingsService.displayValidationError) {
+        return;
+      }
     }
-    const objA = JSON.parse(JSON.stringify(this.hearingRequestMainModel));
-    const objB = JSON.parse(JSON.stringify(this.hearingRequestToCompareMainModel));
-    debugger;
-    console.log(objA)
-    console.log(objB)
-    if (_.isEqual(objA, objB)) {
-      this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
-      window.scrollTo({ top: 0, left: 0 });
-    } else if (this.hearingsService.displayValidationError) {
-      return;
-    } else {
-      super.navigateAction(action);
-    }
+    super.navigateAction(action);
+    return;
   }
 
   public onChange(event: EditHearingChangeConfig): void {
@@ -187,10 +183,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   private setPropertiesUpdatedOnPageVisit(serviceHearingValues: ServiceHearingValuesModel): void {
     if (serviceHearingValues) {
       const afterPageVisitProperties = this.getAfterPageVisitProperties();
-      this.pageVisitChangeExists = afterPageVisitProperties.reasonableAdjustmentChangesRequired ||
-        afterPageVisitProperties.nonReasonableAdjustmentChangesRequired ||
-        afterPageVisitProperties.partyDetailsChangesRequired ||
-        afterPageVisitProperties.hearingWindowChangesRequired;
+      this.pageVisitChangeExists =
+        (afterPageVisitProperties.reasonableAdjustmentChangesRequired && !afterPageVisitProperties.reasonableAdjustmentChangesConfirmed) ||
+        (afterPageVisitProperties.nonReasonableAdjustmentChangesRequired && !afterPageVisitProperties.nonReasonableAdjustmentChangesConfirmed) ||
+        (afterPageVisitProperties.partyDetailsChangesRequired && !afterPageVisitProperties.partyDetailsChangesConfirmed) ||
+        (afterPageVisitProperties.hearingWindowChangesRequired && !afterPageVisitProperties.hearingWindowChangesConfirmed);
       if (this.pageVisitChangeExists) {
         this.hearingsService.propertiesUpdatedOnPageVisit = {
           caseFlags: serviceHearingValues.caseFlags,
@@ -258,6 +255,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private compareAndUpdateServiceHearingValues(currentValue, serviceHearingValue, pageMode: AutoUpdateMode = null, property: string = null) {
+    if (!currentValue && !serviceHearingValue) {
+      return currentValue;
+    }
     if (!_.isEqual(currentValue, serviceHearingValue)) {
       // Store ammended properties to dispay it in UI
       if (pageMode && (property || pageMode === AutoUpdateMode.PARTY)) {

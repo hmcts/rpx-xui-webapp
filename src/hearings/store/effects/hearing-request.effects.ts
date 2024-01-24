@@ -10,7 +10,7 @@ import * as fromAppStoreActions from '../../../app/store/actions';
 import * as fromAppReducers from '../../../app/store/reducers';
 import * as fromHearingStore from '../../../hearings/store';
 import { HttpError } from '../../../models/httpError.model';
-import { KEY_FRAGMENT_ID, KEY_IS_HEARING_AMENDMENTS_ENABLED, KEY_MODE } from '../../models/hearingConditions';
+import { HearingConditions, KEY_FRAGMENT_ID, KEY_IS_HEARING_AMENDMENTS_ENABLED, KEY_MODE } from '../../models/hearingConditions';
 import { HearingRequestPageRouteNames, Mode } from '../../models/hearings.enum';
 import { ScreenNavigationModel } from '../../models/screenNavigation.model';
 import { HearingsService } from '../../services/hearings.service';
@@ -55,24 +55,32 @@ export class HearingRequestEffects {
 
   @Effect({ dispatch: false })
   public backNavigation$ = this.actions$.pipe(
-    ofType(hearingRequestActions.NAVIGATE_BACK_HEARING_REQUEST),
-    switchMap(() => {
-      switch (this.mode) {
-        case Mode.CREATE:
-        case Mode.CREATE_EDIT:
-        case Mode.VIEW:
-        case Mode.VIEW_EDIT:
-          if (this.router.url.includes('hearing-edit-summary')) {
-            this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID: this.hearingId , targetURL: '/hearings/view/hearing-view-summary' }));
-          } else {
-            this.location.back();
-            return of(null); // Return an observable that emits null and then completes
-          }
-        default:
-          return from(this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']));
-      }
-    })
-  );
+      ofType(hearingRequestActions.NAVIGATE_BACK_HEARING_REQUEST),
+      switchMap(() => {
+        switch (this.mode) {
+          case Mode.CREATE:
+          case Mode.CREATE_EDIT:
+          case Mode.VIEW:
+          case Mode.VIEW_EDIT:
+            if (this.router.url.includes('hearing-edit-summary')) {
+              const hearingCondition: HearingConditions = {
+                mode: Mode.VIEW_EDIT,
+                isHearingAmendmentsEnabled: true
+              };
+              // Save hearing conditions
+              this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
+              this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
+              this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID: this.hearingId, targetURL: '/hearings/view/hearing-view-summary' }));
+            } else {
+              this.location.back();
+              return of(null); // Return an observable that emits null and then completes
+            }
+            break;
+          default:
+            return from(this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']));
+        }
+      })
+    );
 
   @Effect({ dispatch: false })
   public continueNavigation$ = this.actions$.pipe(

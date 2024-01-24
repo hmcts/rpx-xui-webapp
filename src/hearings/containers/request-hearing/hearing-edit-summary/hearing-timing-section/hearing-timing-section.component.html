@@ -37,6 +37,19 @@
   </div>
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
+      Does the hearing need to take place on a specific date?
+    </div>
+    <div class="govuk-summary-list__value" [innerHTML]="specificDate">
+    </div>
+    <div class="govuk-summary-list__actions">
+      <a id="hearingSpecificDate"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('hearingSpecificDate')">Change</a>
+    </div>
+  </div>
+  <div class="govuk-summary-list__row">
+    <div class="govuk-summary-list__key">
       What is the priority of this hearing?
     </div>
     <div class="govuk-summary-list__value">

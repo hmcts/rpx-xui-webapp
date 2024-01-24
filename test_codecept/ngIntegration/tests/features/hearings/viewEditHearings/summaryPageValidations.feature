@@ -1,5 +1,5 @@
 
-@ng @functional_enabled 
+@ng @functional_enabled @functional_debug
 Feature: Hearings : Summary page validations EUI-9097
     Background: Setup
         Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_ON"
@@ -38,7 +38,7 @@ Feature: Hearings : Summary page validations EUI-9097
         Then I validate Edit hearing page displayed
 
         When I click button with label "Submit updated request"
-        Then In edit hearing page error displayed with message "The request has not been updated"
+        Then In edit hearing page error banner displayed with message "The request has not been updated"
 
         # hearing stage start
         When In view or edit hearing page, I click change link for field "What stage is this hearing at?"

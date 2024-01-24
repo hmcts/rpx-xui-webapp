@@ -23,7 +23,7 @@
     "hearingWindow": {
         "dateRangeStart": "",
         "dateRangeEnd": "",
-        "firstDateTimeMustBe": "2024-12-14T00:00:00"
+        "firstDateTimeMustBe": "2024-12-17T00:00:00"
     },
     "duration": 0,
     "hearingPriorityType": "Standard",
@@ -55,8 +55,7 @@
                 "lastName": "Party1 name LN",
                 "interpreterLanguage": "",
                 "reasonableAdjustments": [
-                    "RA001",
-                    "RA0042"
+                    "RA001"
                 ],
                 "vulnerableFlag": false,
                 "vulnerabilityDetails": "",
@@ -128,6 +127,29 @@
                 "organisationType": "ORG",
                 "cftOrganisationID": "ECKZ4BE"
             }
+        },
+        {
+            "partyID": "1234-uytr-7654-asdf-0004",
+            "partyType": "IND",
+            "partyName": "Party4 name",
+            "partyRole": "APPL",
+            "individualDetails": {
+                "firstName": "Party1 name FN",
+                "lastName": "Party1 name LN",
+                "interpreterLanguage": "",
+                "reasonableAdjustments": [
+                    "RA001"
+                ],
+                "vulnerableFlag": false,
+                "vulnerabilityDetails": "",
+                "hearingChannelEmail": [
+                    "applicant@test.com"
+                ],
+                "hearingChannelPhone": [
+                    "1234567890"
+                ],
+                "relatedParties": []
+            }
         }
     ],
     "caseFlags": {
@@ -162,14 +184,6 @@
                 "flagParentId": "PARENT_0",
                 "flagId": "OT001",
                 "flagDescription": "Party2 comment",
-                "flagStatus": "ACTIVE"
-            },
-            {
-                "partyId": "1234-uytr-7654-asdf-0001",
-                "partyName": "Party1 name",
-                "flagParentId": "PARENT_0",
-                "flagId": "RA0042",
-                "flagDescription": "Party1 comment",
                 "flagStatus": "ACTIVE"
             }
         ],

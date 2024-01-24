@@ -29,6 +29,7 @@ export class RequestHearingComponent implements OnDestroy {
   }
 
   public submitUpdatedRequest(): void {
+    this.hearingsService.submitUpdatedRequestClicked = true;
     this.hearingsService.navigateAction(ACTION.VIEW_EDIT_REASON);
   }
 

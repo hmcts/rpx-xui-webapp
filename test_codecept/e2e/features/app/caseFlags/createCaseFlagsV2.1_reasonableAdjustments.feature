@@ -1,5 +1,5 @@
 
-@fullfunctional @functional_enabled @functional_test
+@fullfunctional @functional_enabled 
 Feature: Case flags V2.1 Add/Update Reasonable adjustment
 
     Background: Setup case
@@ -7,9 +7,9 @@ Feature: Case flags V2.1 Add/Update Reasonable adjustment
         Given I am logged into Expert UI with with case flags
         When I setup a case for case flags version "V2.1"
             | party                       | fieldName  | value      |
-            | Flags for legal rep Party 1 | Flag Type  | Party 1    |
+            | Flags for legal rep Party 1 | Role On Case | Party 1 |
             | Flags for legal rep Party 1 | Party Name | Applicant  |
-            | Flags for legal rep Party 2 | Flag Type  | Party 2    |
+            | Flags for legal rep Party 2 | Role On Case | Party 2 |
             | Flags for legal rep Party 2 | Party Name | Respondent |
         Then I see case details page
 

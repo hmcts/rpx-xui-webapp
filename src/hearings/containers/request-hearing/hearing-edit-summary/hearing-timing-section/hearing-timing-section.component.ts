@@ -6,6 +6,7 @@ import { HearingDateEnum, RadioOptions } from '../../../../models/hearings.enum'
 import { AmendmentLabelStatus } from '../../../../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { HearingsService } from '../../../../services/hearings.service';
+import { HearingWindowModel } from 'src/hearings/models/hearingWindow.model';
 
 @Component({
   selector: 'exui-hearing-timing-section',
@@ -20,6 +21,7 @@ export class HearingTimingSectionComponent implements OnInit {
 
   public hearingLength: string;
   public specificDate: string;
+  public specificDateSelection: string;
   public earliestHearingDate: string;
   public latestHearingDate: string;
   public firstHearingDate: string;
@@ -27,6 +29,7 @@ export class HearingTimingSectionComponent implements OnInit {
   public hearingWindowChangesRequired: boolean;
   public hearingWindowChangesConfirmed: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
+  public radioOptions = RadioOptions;
 
   public ngOnInit(): void {
     this.hearingWindowChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired;
@@ -34,6 +37,10 @@ export class HearingTimingSectionComponent implements OnInit {
     this.hearingLength = this.getHearingLength();
     this.specificDate = this.getSpecificDate();
     this.hearingPriority = this.getHearingPriority();
+    this.specificDateSelection = this.getSpecificDateSelection(this.hearingDetails.hearingWindow);
+    this.earliestHearingDate = this.getEarliestHearingDate(this.hearingDetails.hearingWindow);
+    this.latestHearingDate = this.getLatestHearingDate(this.hearingDetails.hearingWindow);
+    this.firstHearingDate = this.getFirstHearingDate(this.hearingDetails.hearingWindow);
   }
 
   public onChange(fragmentId: string): void {
@@ -107,29 +114,33 @@ export class HearingTimingSectionComponent implements OnInit {
     return specificDateSelection;
   }
 
-  private getSpecificDates(): string {
-    let specificDateSelection: string = RadioOptions.NO;
-    let earliestHearingDate: string = '';
-    let latestHearingDate: string = '';
-    const hearingWindow = this.hearingDetails.hearingWindow;
-
+  private getSpecificDateSelection(hearingWindow: HearingWindowModel): string {
     if (hearingWindow?.dateRangeStart || hearingWindow?.dateRangeEnd) {
-      specificDateSelection = RadioOptions.CHOOSE_DATE_RANGE;
-      earliestHearingDate = moment(hearingWindow.dateRangeStart).format(HearingDateEnum.DisplayMonth);
-      latestHearingDate = hearingWindow.dateRangeEnd && moment(hearingWindow.dateRangeEnd).format(HearingDateEnum.DisplayMonth);
-      specificDateSelection += earliestHearingDate !== HearingDateEnum.InvalidDate ? `<br>Earliest start date: ${earliestHearingDate}` : '';
-      specificDateSelection += latestHearingDate && latestHearingDate !== HearingDateEnum.InvalidDate ? `<br>Latest end date: ${latestHearingDate}` : '';
-    } else if (hearingWindow?.firstDateTimeMustBe) {
-      specificDateSelection = RadioOptions.YES;
-      const firstDate = moment(hearingWindow.firstDateTimeMustBe).format(HearingDateEnum.DisplayMonth);
-      specificDateSelection += firstDate !== HearingDateEnum.InvalidDate ? `<dt class="heading-h3 bottom-0">The first date of the hearing must be</dt><exui-amendment-label [displayLabel]="${AmendmentLabelStatus.ACTION_NEEDED}"></exui-amendment-label>${firstDate}` : '';
-    } else if (hearingWindow === null) {
-      specificDateSelection = RadioOptions.NO;
+      return RadioOptions.CHOOSE_DATE_RANGE;
     }
-
-    return specificDateSelection;
+    if (hearingWindow?.firstDateTimeMustBe) {
+      return RadioOptions.YES;
+    }
+    return RadioOptions.NO;
   }
 
+  private getEarliestHearingDate(hearingWindow: HearingWindowModel): string {
+    return hearingWindow?.dateRangeStart || hearingWindow?.dateRangeEnd
+      ? moment(hearingWindow.dateRangeStart).format(HearingDateEnum.DisplayMonth)
+      : '';
+  }
+
+  private getLatestHearingDate(hearingWindow: HearingWindowModel): string {
+    return hearingWindow?.dateRangeStart || hearingWindow?.dateRangeEnd
+      ? moment(hearingWindow.dateRangeEnd).format(HearingDateEnum.DisplayMonth)
+      : '';
+  }
+
+  private getFirstHearingDate(hearingWindow: HearingWindowModel): string {
+    return hearingWindow?.firstDateTimeMustBe
+      ? moment(hearingWindow.firstDateTimeMustBe).format(HearingDateEnum.DisplayMonth)
+      : '';
+  }
 
   private getHearingPriority(): string {
     const hearingPriorityFromRefData = this.hearingPrioritiesRefData.find((priority) => priority.key === this.hearingDetails.hearingPriorityType);

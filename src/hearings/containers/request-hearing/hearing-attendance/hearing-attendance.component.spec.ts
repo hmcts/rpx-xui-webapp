@@ -330,9 +330,10 @@ describe('HearingAttendanceComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
         partyDetailsChangesConfirmed: true,
-        hearingWindowFirstDateMustBeChangesRequired: false
+        hearingWindowChangesRequired: false
       }
     };
     component.initialiseFromHearingValuesForAmendments();

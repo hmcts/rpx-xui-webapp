@@ -13,9 +13,9 @@ import { HearingConditions } from '../../../models/hearingConditions';
 import { ACTION, CategoryType, Mode, PartyType, UnavailabilityType } from '../../../models/hearings.enum';
 import { PropertiesUpdatedOnPageVisit } from '../../../models/hearingsUpdateMode.enum';
 import { LocationByEPIMMSModel } from '../../../models/location.model';
+import { HearingsFeatureService } from '../../../services/hearings-feature.service';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
-import { HearingsFeatureService } from '../../../services/hearings-feature.service';
 import * as fromHearingStore from '../../../store';
 import { HearingEditSummaryComponent } from './hearing-edit-summary.component';
 
@@ -387,7 +387,7 @@ describe('HearingEditSummaryComponent', () => {
           organisationType: 'GOV',
           cftOrganisationID: 'O100000'
         },
-        unavailabilityDOW: undefined,
+        unavailabilityDOW: null,
         unavailabilityRanges: [
           {
             unavailableFromDate: '2021-12-20T09:00:00.000Z',

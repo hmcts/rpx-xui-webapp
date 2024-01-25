@@ -251,6 +251,14 @@
                 "flagId": "OT001",
                 "flagDescription": "Party2 comment",
                 "flagStatus": "ACTIVE"
+            },
+            {
+                "partyId": "1234-uytr-7654-asdf-0004",
+                "partyName": "Party4 name",
+                "flagParentId": "PARENT_0",
+                "flagId": "RA001",
+                "flagDescription": "Party4 comment",
+                "flagStatus": "ACTIVE"
             }
         ],
         "flagAmendURL": "/"
@@ -349,4 +357,3 @@
     "caserestrictedFlag": true,
     "caseSLAStartDate": null
 }
-

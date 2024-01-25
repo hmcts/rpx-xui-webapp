@@ -77,6 +77,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
     component.partyChannelsRefData = partyChannels;
     component.partySubChannelsRefData = partySubChannelsRefData;
     component.hearingRequestMainModel = initialState.hearings.hearingRequest.hearingRequestMainModel;
+    component.hearingRequestToCompareMainModel = initialState.hearings.hearingRequestToCompare.hearingRequestMainModel;
     component.serviceHearingValuesModel = initialState.hearings.hearingValues.serviceHearingValuesModel;
     fixture.detectChanges();
   });

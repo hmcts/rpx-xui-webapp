@@ -42,7 +42,6 @@ describe('HearingRequirementsSectionComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: false,
         reasonableAdjustmentChangesConfirmed: false,
-        nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true
       }
@@ -58,7 +57,6 @@ describe('HearingRequirementsSectionComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: false,
         reasonableAdjustmentChangesConfirmed: true,
-        nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true
       }

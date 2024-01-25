@@ -16,6 +16,7 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   @Input() public partyChannelsRefData: LovRefDataModel[];
   @Input() public partySubChannelsRefData: LovRefDataModel[];
   @Input() public hearingRequestMainModel: HearingRequestMainModel;
+  @Input() public hearingRequestToCompareMainModel: HearingRequestMainModel;
   @Input() public serviceHearingValuesModel: ServiceHearingValuesModel;
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
@@ -78,28 +79,30 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
 
   private getParticipantAttendanceModes(): ParticipantAttendanceMode[] {
     const participantAttendanceModes: ParticipantAttendanceMode[] = [];
-    const individualPartiesFromRequest = this.hearingRequestMainModel.partyDetails?.filter((partyFromRequest) => partyFromRequest.partyType === PartyType.IND);
+    const individualPartiesFromRequest = this.partyDetailsChangesConfirmed
+      ? this.hearingRequestMainModel.partyDetails?.filter((partyFromRequest) => partyFromRequest.partyType === PartyType.IND)
+      : this.hearingRequestToCompareMainModel.partyDetails?.filter((partyFromRequest) => partyFromRequest.partyType === PartyType.IND);
     const partiesFromServiceValue = this.serviceHearingValuesModel.parties?.filter((partiesFromService) => partiesFromService.partyType === PartyType.IND);
     individualPartiesFromRequest.forEach((individualParty: PartyDetailsModel) => {
       const foundPartyFromService = partiesFromServiceValue.find((partyFromService) => partyFromService.partyID === individualParty.partyID);
       participantAttendanceModes.push({
         partyName: this.getPartyName(individualParty, foundPartyFromService),
         channel: this.getPartyChannelValue(individualParty),
-        partyNameChanged: individualParty.partyName !== foundPartyFromService.partyName
+        partyNameChanged: this.getPartyNameChanged(individualParty.partyID)
       });
     });
     return participantAttendanceModes;
   }
 
   private getPartyName(individualParty: PartyDetailsModel, foundPartyFromService: PartyDetailsModel): string {
-    if (individualParty.partyName) {
-      return individualParty.partyName;
-    }
     if (foundPartyFromService) {
       if (foundPartyFromService.partyName && foundPartyFromService.partyName !== null) {
         return foundPartyFromService.partyName;
       }
       return foundPartyFromService.partyID;
+    }
+    if (individualParty.partyName) {
+      return individualParty.partyName;
     }
     return '';
   }
@@ -109,7 +112,21 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
     if (individualParty.individualDetails) {
       preferredHearingChannelRefData = this.partyChannelsRefDataCombined.find((ref) => ref.key === individualParty.individualDetails?.preferredHearingChannel);
     }
-    return preferredHearingChannelRefData?.value_en || '';
+    return preferredHearingChannelRefData?.value_en
+      ? ` - ${preferredHearingChannelRefData.value_en}`
+      : '';
+  }
+
+  private getPartyNameChanged(partyId: string): boolean {
+    const partyInSHV = this.serviceHearingValuesModel.parties.find((party) => party.partyID === partyId);
+    if (partyInSHV) {
+      const partyInHMCToCompare = this.hearingRequestToCompareMainModel.partyDetails.find((party) => party.partyID === partyId);
+      if (partyInHMCToCompare) {
+        return partyInSHV.partyName !== partyInHMCToCompare.partyName;
+      }
+      return true;
+    }
+    return false;
   }
 
   private getNumberOfPhysicalAttendees(): number {

@@ -118,7 +118,7 @@ const {postTaskAction, getTask} = require("../../../../api/workAllocation");
             caseDetails.case_id = value;
         }
         else {
-            throw Error(` metada field ${property} is not recognised or not implemented in test`);
+            throw Error(` metadata field ${property} is not recognised or not implemented in test`);
         }
 
         await serviceMock.updateCaseData(caseDetails, 200)

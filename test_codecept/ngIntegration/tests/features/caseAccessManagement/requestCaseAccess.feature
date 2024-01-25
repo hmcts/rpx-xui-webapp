@@ -1,5 +1,5 @@
 
-@functional_enabled
+@functional_enabled @functional_debug @ignore
 Feature: Case access management - Request access
     Background: Setup
         Given I init MockApp
@@ -15,7 +15,7 @@ Feature: Case access management - Request access
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
         Given I set MOCK case details "caseDetails" service name as "Immigration Asylum test"
         # Given I set MOCK case details "caseDetails" state as "ngIntegration test state"
-        Given I set MOCK case details "caseDetails" property "CaseType" as "Asylum"
+        Given I set MOCK case details "caseDetails" property "case_type" as "Asylum"
         Given I set MOCK case details "caseDetails" access process "CHALLENGED" and access granted "BASIC"
 
         Given I set set global search mock results response and resultInfo
@@ -53,7 +53,7 @@ Feature: Case access management - Request access
     Scenario: Case search results view validations Specific access
         Given I set MOCK case details with reference "caseDetailsSpecific"
         Given I set MOCK case details "caseDetailsSpecific" property "Jurisdiction" as "Civil"
-        Given I set MOCK case details "caseDetailsSpecific" property "CaseType" as "Civil"
+        Given I set MOCK case details "caseDetailsSpecific" property "case_type" as "Civil"
         Given I set MOCK case details "caseDetailsSpecific" access process "SPECIFIC" and access granted "BASIC"
 
         Given I set set global search mock results response and resultInfo

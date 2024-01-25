@@ -172,7 +172,7 @@ class Request {
                     setTimeout(() => {
                         reporterMsg(` <<<<<<<<<<<< Sleep for ${sleepInSec} sec before retry`);
                         resolve(true);
-                    }, sleepInSec*20*1000);
+                    }, sleepInSec);
                 });
             } 
             

@@ -167,12 +167,12 @@ class Request {
                 // console.log(` Unexpected response : ${errorMessage}`);
                 // console.log(` Retrying atempt ${retryAttemptCounter}`);
 
-                let sleepInSec = retryAttemptCounter *2; 
+                let sleepInSec = retryAttemptCounter *20; 
                 await new Promise((resolve,reject) => {
                     setTimeout(() => {
                         reporterMsg(` <<<<<<<<<<<< Sleep for ${sleepInSec} sec before retry`);
                         resolve(true);
-                    }, sleepInSec*1000);
+                    }, sleepInSec*20*1000);
                 });
             } 
             

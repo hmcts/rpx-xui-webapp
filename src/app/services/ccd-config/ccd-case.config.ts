@@ -57,8 +57,8 @@ export class AppConfig extends AbstractAppConfig {
 
     this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.enableRestrictedCaseAccess, false).subscribe({
       next: (val) => this.config = {
-        ...this.config,
-        enable_restricted_case_access: val
+        ...this.config
+      //  enable_restricted_case_access: val
       }
     });
 
@@ -251,7 +251,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getEnableRestrictedCaseAccessConfig(): boolean {
-    return this.config.enable_restricted_case_access;
+    return;//false; //this.config.enable_restricted_case_access;
   }
 
   public getEnableCaseFileViewVersion1_1(): boolean {

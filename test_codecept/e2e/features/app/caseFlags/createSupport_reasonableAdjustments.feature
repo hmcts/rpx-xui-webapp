@@ -6,11 +6,11 @@ Feature: Support request Add/Update Reasonable adjustment
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with with case flags
         When I setup a case for case flags version "V1"
-            | party                       | fieldName  | value      |
-            | Flags for legal rep Party 1 | Role On Case | Party 1 |
-            | Flags for legal rep Party 1 | Party Name | Applicant  |
-            | Flags for legal rep Party 2 | Role On Case | Party 2 |
-            | Flags for legal rep Party 2 | Party Name | Respondent |
+            | party                       | fieldName    | value      |
+            | Flags for legal rep Party 1 | Role On Case | Party 1    |
+            | Flags for legal rep Party 1 | Party Name   | Applicant  |
+            | Flags for legal rep Party 2 | Role On Case | Party 2    |
+            | Flags for legal rep Party 2 | Party Name   | Respondent |
         Then I see case details page
 
     Scenario: Create support request
@@ -19,21 +19,21 @@ Feature: Support request Add/Update Reasonable adjustment
         When I start case next step "Request support"
         Then I am on create support request page "Who is the support for?"
         Then In create support request page "Who is the support for?", I validate fields displayed
-            | field                            |
+            | field                   |
             | Who is the support for? |
 
         When In create support request page "Who is the support for?", I input values
-            | field                            | value     |
+            | field                   | value     |
             | Who is the support for? | Applicant |
 
         When In create support request workflow, I click Next
         Then I am on create support request, select support type page "Select support type"
         Then In create support request page "Select support type", I validate fields displayed
-            | field            |
+            | field               |
             | Select support type |
 
         When In create support request page "Select support type", I input values
-            | field            | value                 |
+            | field               | value                 |
             | Select support type | Reasonable adjustment |
 
         When In create support request workflow, I click Next
@@ -44,39 +44,39 @@ Feature: Support request Add/Update Reasonable adjustment
             | field                 |
             | Reasonable adjustment |
         When In create support request page "Reasonable adjustment", I input values
-            | field                 | value                  |
-            | Reasonable adjustment | I need help with forms |
+            | field                 | value                                     |
+            | Reasonable adjustment | I need documents in an alternative format |
         When In create support request workflow, I click Next
 
-        Then I am on create support request, select support type page "I need help with forms"
-        Then In create support request page "I need help with forms", I validate fields displayed
-            | field                  |
-            | I need help with forms |
-        When In create support request page "I need help with forms", I input values
-            | field                  | value                    |
-            | I need help with forms | Support filling in forms |
+        Then I am on create support request, select support type page "I need documents in an alternative format"
+        Then In create support request page "I need documents in an alternative format", I validate fields displayed
+            | field                                     |
+            | I need documents in an alternative format |
+        When In create support request page "I need documents in an alternative format", I input values
+            | field                                     | value                           |
+            | I need documents in an alternative format | Documents in a specified colour |
         When In create support request workflow, I click Next
 
 
 
         Then I am on create support request page "Tell us more about the request"
         Then In create support request page "Tell us more about the request", I validate fields displayed
-            | field                      |
+            | field                          |
             | Tell us more about the request |
 
         When In create support request page "Tell us more about the request", I input values
-            | field                      | value             |
+            | field                          | value             |
             | Tell us more about the request | Test auto comment |
 
         When In create support request workflow, I click Next
 
         Then In create support request workflow, I am on Review details page
         Then In create support request workflow, I validate Review details displayed
-            | field       | value                    | isChangeLinkDisplayed |
-            | Add support to | Applicant | true |
-            | Support type | Support filling in forms | true |
-            | Comments    | Test auto comment        | true                  |
-            | Status      | Active                   | false                 |
+            | field          | value                           | isChangeLinkDisplayed |
+            | Add support to | Applicant                       | true                  |
+            | Support type   | Documents in a specified colour | true                  |
+            | Comments       | Test auto comment               | true                  |
+            | Status         | Requested                       | false                 |
 
         When In create support request workflow, I click submit
 
@@ -85,12 +85,12 @@ Feature: Support request Add/Update Reasonable adjustment
         When I start case next step "Manage support"
         Then I am on manage support request page "Which support is no longer needed?"
         Then In create support request page "Which support is no longer needed?", I validate fields displayed
-            | field             |
+            | field                              |
             | Which support is no longer needed? |
 
         When In manage support request page "Which support is no longer needed?", I input values
-            | field            | value                                                        |
-            | Which support is no longer needed? | Applicant -  Reasonable adjustment, Support filling in forms |
+            | field                              | value                                                                       |
+            | Which support is no longer needed? | Applicant (Part 1) - Reasonable adjustment, Documents in a specified colour |
 
         When In manage support request workflow, I click Next
 
@@ -98,7 +98,7 @@ Feature: Support request Add/Update Reasonable adjustment
 
 
         When In manage support request page "Tell us why the support is no longer needed", I input values
-            | field                                           | value             |
+            | field                                       | value             |
             | Tell us why the support is no longer needed | Test auto comment |
 
 
@@ -106,11 +106,11 @@ Feature: Support request Add/Update Reasonable adjustment
 
         Then In manage support request workflow, I am on Review details page
         Then In manage support request workflow, I validate Review details displayed
-            | field           | value                    | isChangeLinkDisplayed |
-            | Update support for | Applicant | true |
-            | Support type | Support filling in forms | true |
-            | Comments        | Test auto comment        | true                  |
-            | Status          | Inactive                 | false                 |
+            | field              | value                           | isChangeLinkDisplayed |
+            | Update support for | Applicant                       | true                  |
+            | Support type       | Documents in a specified colour | true                  |
+            | Comments           | Test auto comment               | true                  |
+            | Status             | Inactive                        | false                 |
 
         When In manage support request workflow, I click submit
 

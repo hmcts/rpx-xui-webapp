@@ -89,7 +89,7 @@ When('In view or edit hearing page, I click change link for field {string}', asy
 })
 
 When('In view or edit hearing page, I click Submit updated request', async function (field) {
-    await viewOrEditHearingPage.clickChangeLinkForField(field)
+    await viewOrEditHearingPage.s(field)
 })
 
 
@@ -133,8 +133,12 @@ Then('In edit hearing page warning message banner contains {string}', async func
 })
 
 
-Then('In edit hearing page error displayed with message {string}', async function (errorMessage) {
+Then('In edit hearing page error banner displayed with message {string}', async function (errorMessage) {
     expect(await editHearingPage.getErrorSummary()).to.includes(errorMessage)
+})
+
+Then('In edit hearing page error displayed with message {string}', async function (errorMessage) {
+    expect(await editHearingPage.errorMessage.getText()).to.includes(errorMessage)
 })
 
 

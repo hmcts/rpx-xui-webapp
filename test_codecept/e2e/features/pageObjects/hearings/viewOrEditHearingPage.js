@@ -8,7 +8,7 @@ class ViewOrEditHearingPage{
         this.headerElement = $('exui-hearing-view-edit-summary exui-hearing-summary h1')
 
         this.summaryTable = new SummaryTable('exui-hearing-view-edit-summary')
-
+        this.submitUpdatedRequestBtn = $('')
         this.multiValueFields = [
             'Reasonable adjustments',
             'Does the hearing need to take place on a specific date?'

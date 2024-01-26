@@ -114,7 +114,7 @@ export class CaseHearingsListComponent implements OnInit {
         this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
       }
       // Set the navigation url based on the hearing amendments enabled Launch Darkly setting
-      const url = enabled ? '/hearings/view/hearing-view-summary' : '/hearings/request/hearing-view-edit-summary';
+      const url = enabled ? '/hearings/request/hearing-view-summary' : '/hearings/request/hearing-view-edit-summary';
       // Load hearing request and navigate
       this.loadHearingRequestAndRedirect(hearingID, url);
     });

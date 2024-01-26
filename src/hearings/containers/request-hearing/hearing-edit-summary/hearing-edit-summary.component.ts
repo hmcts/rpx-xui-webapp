@@ -128,7 +128,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       }
     }
     super.navigateAction(action);
-    return;
   }
 
   public onChange(event: EditHearingChangeConfig): void {

@@ -10,8 +10,8 @@ Feature:  Hearings CR84: Hearing View details
         # Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
 
         Given I set MOCK case "hearingCase" details with reference "Hearing_case"
-        # Given I set MOCK case details "WA_Case" property "jurisdiction.id" as "IA"
-        # Given I set MOCK case details "WA_Case" property "case_type.id" as "Asylum"
+        Given I set MOCK case details "Hearing_case" property "jurisdiction.id" as "CIVIL"
+        Given I set MOCK case details "Hearing_case" property "case_type.id" as "CIVIL"
 
         Given I set mock case hearings
             | hmcStatus              | hearingType                 | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
@@ -52,7 +52,7 @@ Feature:  Hearings CR84: Hearing View details
             | jsonpath          | value |
             | $.publicCaseName | Mock case public name |
 
-        When In hearings tab, I click action "View details" for hearing "<HearingType>" under table "<Table>"
+        When In hearings tab, I click action "View or edit" for hearing "<HearingType>" under table "<Table>"
 
         Then I validate view hearing page displayed
         Then I validate view hearing page Edit hearing button displayed is "TEST_<EditHearing>"
@@ -68,7 +68,7 @@ Feature:  Hearings CR84: Hearing View details
 
         Examples:
             | UserIdentifier          | UserRole        | EditActions  | EditHearing | HearingType      | HearingStatus            | Table                |
-            | HEARING_MANAGER_CR84_ON | hearing-manager | View details | true        | LISTED           | LISTED                   | Current and upcoming |
-            | HEARING_MANAGER_CR84_ON | hearing-manager | View details | true        | AWAITING_LISTING | AWAITING HEARING DETAILS | Current and upcoming |
-            | HEARING_MANAGER_CR84_ON | hearing-manager | View details | true        | UPDATE_REQUESTED | UPDATE REQUESTED         | Current and upcoming |
+            | HEARING_MANAGER_CR84_ON | hearing-manager | View or edit | true        | LISTED           | LISTED                   | Current and upcoming |
+            | HEARING_MANAGER_CR84_ON | hearing-manager | View or edit | true        | AWAITING_LISTING | AWAITING HEARING DETAILS | Current and upcoming |
+            | HEARING_MANAGER_CR84_ON | hearing-manager | View or edit | true        | UPDATE_REQUESTED | UPDATE REQUESTED         | Current and upcoming |
 

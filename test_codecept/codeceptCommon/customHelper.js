@@ -106,6 +106,25 @@ class CustomHelper extends Helper {
         return this.helpers.Puppeteer.page;
     }
 
+    async getTextUsingPlaywright(selector){
+        const locator = this.getPlaywrightPage().locator(selector)
+        const txt = await locator.first().textContent()
+        return txt
+    }
+
+    async getAttributeUsingPlaywright(selector,name) {
+        let locator = null;
+        if(name === 'value'){
+            locator = this.getPlaywrightPage().locator(selector).first()
+            return await locator.inputValue()
+        }else{
+            locator  = this.getPlaywrightPage().locator(selector).first()
+            return await locator.getAttribute(name)
+        }
+        
+    }
+
+
     async isVisible(selector) {
         const helper = this._getHelper();
         try {

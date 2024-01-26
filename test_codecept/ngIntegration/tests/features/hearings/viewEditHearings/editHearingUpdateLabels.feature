@@ -117,7 +117,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Hearing requirements                       | ACTION NEEDED |
             | Participant attendance                     |               |
             | Additional facilities                      | ACTION NEEDED |
-            | Length, date and priority level of hearing |               |
+            | Length, date and priority level of hearing | ACTION NEEDED |
 
         Then I validate fields displayed in view or edit hearing page
             | field                    | value                 | changeLinkDisplay | amendedFlagDisplay |

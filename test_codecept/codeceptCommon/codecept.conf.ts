@@ -1,4 +1,6 @@
 
+const { setDefaultResultOrder } = require('dns')
+
 const report = require("multiple-cucumber-html-reporter");
 const { merge } = require('mochawesome-merge')
 const marge = require('mochawesome-report-generator')
@@ -11,6 +13,8 @@ import applicationServer from '../localServer'
 var spawn = require('child_process').spawn;
 const backendMockApp = require('../backendMock/app');
 const statsReporter = require('./statsReporter')
+
+setDefaultResultOrder('ipv4first')
 
 let executionResult = 'passed';
 
@@ -105,7 +109,7 @@ exports.config = {
     Playwright: {
       url: "https://manage-case.aat.platform.hmcts.net",
       restart: true,
-      show: true,
+      show: head,
       waitForNavigation: "domcontentloaded",
       waitForAction: 500,
       browser: 'chromium',
@@ -114,7 +118,7 @@ exports.config = {
       uniqueScreenshotNames: true,
       video: true,
       screenshot: true,
-      windowSize: "1600x1400"
+      windowSize: "1600x900"
     }
     // WebDriver:{
     //   url: 'https://manage-case.aat.platform.hmcts.net/',

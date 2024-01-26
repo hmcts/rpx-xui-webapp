@@ -11,8 +11,9 @@ Feature: Hearings CR84 OFF: View or edit action
         # Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
 
         Given I set MOCK case "hearingCase" details with reference "Hearing_case"
-        # Given I set MOCK case details "WA_Case" property "jurisdiction.id" as "IA"
-        # Given I set MOCK case details "WA_Case" property "case_type.id" as "Asylum"
+        Given I set MOCK case details "Hearing_case" property "jurisdiction.id" as "PRIVATELAW"
+        Given I set MOCK case details "Hearing_case" property "case_type.id" as "PRLAPPS"
+      
         Given I set mock case hearings
             | hmcStatus        | hearingType           | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
             | LISTED           | TEST_TYPE             | -3                     | 0                            | -3                                      | 2                                     |

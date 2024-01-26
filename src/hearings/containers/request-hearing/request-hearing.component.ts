@@ -4,6 +4,7 @@ import { ACTION, HearingRequestPageRouteNames } from '../../models/hearings.enum
 import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
 import { AbstractPageFlow } from '../../utils/abstract-page-flow';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'exui-request-hearing',
@@ -11,13 +12,22 @@ import { AbstractPageFlow } from '../../utils/abstract-page-flow';
   styleUrls: ['./request-hearing.component.scss']
 })
 export class RequestHearingComponent implements OnDestroy {
+  public caseId: string;
+
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly pageFlow: AbstractPageFlow,
-    private readonly hearingsService: HearingsService) {
+    private readonly hearingsService: HearingsService,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly router: Router) {
+    this.caseId = this.activatedRoute.snapshot.params.cid;
   }
 
   public onBack(): void {
+    // if (this.router.url.includes('hearing-view-summary')) {
+    //   this.router.navigateByUrl(`/cases/case-details/${this.caseId}/hearings`);
+    // } else {
     this.hearingsService.navigateAction(ACTION.BACK);
+    // }
   }
 
   public onContinue(): void {

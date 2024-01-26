@@ -62,20 +62,8 @@ export class HearingRequestEffects {
           case Mode.CREATE_EDIT:
           case Mode.VIEW:
           case Mode.VIEW_EDIT:
-            if (this.router.url.includes('hearing-edit-summary')) {
-              const hearingCondition: HearingConditions = {
-                mode: Mode.VIEW_EDIT,
-                isHearingAmendmentsEnabled: true
-              };
-              // Save hearing conditions
-              this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-              this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
-              this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID: this.hearingId, targetURL: '/hearings/view/hearing-view-summary' }));
-            } else {
-              this.location.back();
-              return of(null); // Return an observable that emits null and then completes
-            }
-            break;
+            this.location.back();
+            return of(null); // Return an observable that emits null and then completes
           default:
             return from(this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']));
         }
@@ -117,7 +105,7 @@ export class HearingRequestEffects {
               const pageRouteName = this.isHearingAmendmentsEnabled
                 ? HearingRequestPageRouteNames.HEARING_EDIT_SUMMARY
                 : HearingRequestPageRouteNames.HEARING_VIEW_EDIT_SUMMARY;
-              this.router.navigate(['hearings', 'request', pageRouteName], { fragment: this.fragmentId })
+              this.router.navigate(['hearings', 'request', pageRouteName], this.fragmentId && { fragment: this.fragmentId })
                 .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${pageRouteName}#${this.fragmentId} `, err));
             }
             break;

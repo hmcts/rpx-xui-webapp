@@ -2703,16 +2703,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.1":
-  version: 2.0.1
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.1"
+"@hmcts/rpx-xui-common-lib@npm:2.0.12-remove-special-characters-allow-space":
+  version: 2.0.12-remove-special-characters-allow-space
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.12-remove-special-characters-allow-space"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: d077e9fc16eedb6786effcdafb378d39e7f547a15636a4514f7d36453407beb2e02ca8c2bbd74322b3cd63e10e0c471be557f6d645d4f83f15b2694e380297b7
+  checksum: fd188f51e85129578e6b3be37d98a5b8c4fda90ce3a7d5c1d72275162d8a32d6e98c88af027228801eaa6fb942a70f199715ace167c244977d3373fb21ed8cc0
   languageName: node
   linkType: hard
 
@@ -19019,7 +19019,7 @@ __metadata:
     "@hmcts/media-viewer": 2.10.1-RC.1
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 2.0.1
+    "@hmcts/rpx-xui-common-lib": 2.0.12-remove-special-characters-allow-space
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3

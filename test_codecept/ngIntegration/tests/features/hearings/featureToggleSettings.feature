@@ -36,8 +36,8 @@ Feature:  Hearings: Feature toggles
             | roleCategory | LEGAL_OPERATIONS                                                                      |
 
         Given I set MOCK case "hearingCase" details with reference "Hearing_case"
-        Given I set MOCK case details "Hearing_case" property "jurisdiction.id" as "SSCS"
-        Given I set MOCK case details "Hearing_case" property "case_type.id" as "Benefit"
+        # Given I set MOCK case details "Hearing_case" property "jurisdiction.id" as "CIVIL"
+        # Given I set MOCK case details "Hearing_case" property "case_type.id" as "CIVIL"
 
         Given I set mock case hearings
             | hmcStatus              | hearingType                 | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |

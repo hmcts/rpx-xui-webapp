@@ -151,8 +151,16 @@ class Element {
     async getText(){
         await this.wait();
         reportLogger.AddMessage(`getText: ${JSON.stringify(this.selector)}`)
+        const selectorType = Object.keys(this.selector)[0]
+        const selector = selectorType === 'css' ? this.selector.css : `xpath=${this.selector.xpath}`
+        return await getActor().getTextUsingPlaywright(selector) 
+    }
 
-        return await getActor().grabTextFrom(this.selector) 
+    async getTextFromAll() {
+        await this.wait();
+        reportLogger.AddMessage(`getText: ${JSON.stringify(this.selector)}`)
+
+        return await getActor().grabTextFromAll(this.selector)
     }
 
     async sendKeys(keys){
@@ -255,7 +263,9 @@ class Element {
     async getAttribute(attr){
         await this.wait();
         reportLogger.AddMessage(`getAttribute "${attr}" from ${JSON.stringify(this.selector)}`)
-        const attributeValue = await getActor().grabAttributeFrom(this.selector, attr)
+        const selectorType = Object.keys(this.selector)[0]
+        const selector = selectorType === 'css' ? this.selector.css : `xpath=${this.selector.xpath}`
+        const attributeValue = await getActor().getAttributeUsingPlaywright(selector, attr)
         if (attributeValue instanceof Object){
             const values = Object.values(attributeValue)
             let attributeItemValues = ''

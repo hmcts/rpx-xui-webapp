@@ -1,5 +1,5 @@
 
-@ng @functional_enabled @functional_debug
+@ng @functional_enabled
 Feature: Hearings : Summary page validations EUI-9097
     Background: Setup
         Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_ON"
@@ -7,6 +7,8 @@ Feature: Hearings : Summary page validations EUI-9097
             | roleCategory | LEGAL_OPERATIONS                                                                      |
 
         Given I set MOCK case "hearingCase" details with reference "Hearing_case"
+        Given I set MOCK case details "Hearing_case" property "jurisdiction.id" as "CIVIL"
+        Given I set MOCK case details "Hearing_case" property "case_type.id" as "CIVIL"
 
         Given I set mock case hearings from file "viewEditHearings/caseHearings"
 
@@ -73,7 +75,6 @@ Feature: Hearings : Summary page validations EUI-9097
         When I click button with label "Submit updated request"
         Then I am on hearings workflow page "Provide a reason for changing this hearing"
 
-@functional_debug
     Scenario: changes to CAT2 only, EUI-9097 scr 3 and scr 4
         cenario: SCR_1: CAT1 and CAT 2 ,Ameded and ACTION NEEDED labels  (Conditions (1) & (4))
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"

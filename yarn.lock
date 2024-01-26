@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.4-mv-upgrade":
-  version: 7.0.4-mv-upgrade
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.4-mv-upgrade"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.6-mv-upgrade-rc1":
+  version: 7.0.6-mv-upgrade-rc1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.6-mv-upgrade-rc1"
   dependencies:
     tslib: ^2.3.0
-  checksum: 82c824bd7aebf42e2dab8d9056167bd2f90095e6109037f94237a6d5926368b3b43c8beb376e72030740d85cd24c28cd44dfce2ba29dbfa3535f4f88391a7d1f
+  checksum: e9333e7973dbbfd1fef05ae9606d35b2eeaa4df7b777ae476badc47c47dd425ff3cdf22f584f02158fa3aa72488e7ff1e6726875155a001db66deea1a7b4ace2
   languageName: node
   linkType: hard
 
@@ -2643,9 +2643,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:3.0.1":
-  version: 3.0.1
-  resolution: "@hmcts/media-viewer@npm:3.0.1"
+"@hmcts/media-viewer@npm:3.0.2":
+  version: 3.0.2
+  resolution: "@hmcts/media-viewer@npm:3.0.2"
   dependencies:
     "@circlon/angular-tree-component": ^11.0.4
     "@swimlane/ngx-datatable": ^20.0.0
@@ -2666,7 +2666,7 @@ __metadata:
     "@ngrx/router-store": ^15.0.0
     "@ngrx/store": ^15.0.0
     "@ngrx/store-devtools": ^15.0.0
-  checksum: 4f47d4acf5d564162a1116e166a63494a838f5c02373db5c926ba56d6c8be404e1207b3bbccefa87dcb47f527fd24cfdf4fecf65d35b7502299fca952b7224ef
+  checksum: 8b055fa73099c76078b1b7109b15b2779afdbac2328aa5398869eaf1b0a95b2f2105c3dec8b370a506b0ef4bf82ca34861a2c9f0d5dcee55b5106dc2702a9a4b
   languageName: node
   linkType: hard
 
@@ -19013,10 +19013,10 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.4-mv-upgrade
+    "@hmcts/ccd-case-ui-toolkit": 7.0.6-mv-upgrade-rc1
     "@hmcts/ccpay-web-component": 6.0.2
     "@hmcts/frontend": 0.0.50-alpha
-    "@hmcts/media-viewer": 3.0.1
+    "@hmcts/media-viewer": 3.0.2
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
     "@hmcts/rpx-xui-common-lib": 2.0.1

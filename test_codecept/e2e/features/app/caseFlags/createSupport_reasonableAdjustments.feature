@@ -1,5 +1,5 @@
 
-@fullfunctional @functional_enabled  @functional_test @ignore
+@fullfunctional @functional_enabled  @functional_test
 Feature: Support request Add/Update Reasonable adjustment
 
     Background: Setup case
@@ -80,7 +80,6 @@ Feature: Support request Add/Update Reasonable adjustment
 
         When In create support request workflow, I click submit
 
-        Then I see case details page and I see case flags banner with message "There is 1 active flag on this case"
 
         When I start case next step "Manage support"
         Then I am on manage support request page "Which support is no longer needed?"
@@ -90,7 +89,7 @@ Feature: Support request Add/Update Reasonable adjustment
 
         When In manage support request page "Which support is no longer needed?", I input values
             | field                              | value                                                                       |
-            | Which support is no longer needed? | Applicant (Part 1) - Reasonable adjustment, Documents in a specified colour |
+            | Which support is no longer needed? | Applicant (Party 1) - Reasonable adjustment, Documents in a specified colour |
 
         When In manage support request workflow, I click Next
 

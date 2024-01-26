@@ -13,8 +13,10 @@ export class JudgeTypesAnswerConverter implements AnswerConverter {
 
     return hearingState$.pipe(
       map((state) => {
-        const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-        if (panelRequirements && panelRequirements.roleType && panelRequirements.roleType.length) {
+        const panelRequirements = state.hearingConditions?.isHearingAmendmentsEnabled
+          ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements
+          : state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
+        if (panelRequirements?.roleType?.length) {
           const selectedJudgeTypes: string[] = [];
           judgeTypes.forEach((judgeType) => {
             if (panelRequirements.roleType.includes(judgeType.key)) {

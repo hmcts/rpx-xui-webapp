@@ -7,8 +7,9 @@ import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode } from '../../../hearings/models/hearings.enum';
 import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
-import * as fromHearingStore from '../../../hearings/store';
 import { HearingsFeatureService } from '../../../hearings/services/hearings-feature.service';
+import { HearingsService } from '../../../hearings/services/hearings.service';
+import * as fromHearingStore from '../../../hearings/store';
 
 @Component({
   selector: 'exui-case-hearings-list',
@@ -38,7 +39,8 @@ export class CaseHearingsListComponent implements OnInit {
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
-    private readonly hearingsFeatureService: HearingsFeatureService) {
+    private readonly hearingsFeatureService: HearingsFeatureService,
+    private readonly hearingsService: HearingsService) {
     this.caseId = this.activatedRoute.snapshot.params.cid;
   }
 
@@ -107,6 +109,9 @@ export class CaseHearingsListComponent implements OnInit {
         mode: Mode.VIEW_EDIT,
         isHearingAmendmentsEnabled: enabled
       };
+      // Clear the in-memory objects for hearing amendments
+      this.hearingsService.propertiesUpdatedAutomatically = { pageless: {}, withinPage: {} };
+      this.hearingsService.propertiesUpdatedOnPageVisit = null;
       // Save hearing conditions
       this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
       // If hearing amendments enabled in Launch Darkly, then load the Service Hearing Values to get the latest

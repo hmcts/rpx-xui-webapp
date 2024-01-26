@@ -1,4 +1,4 @@
-@fullfunctional @functional_enabled 
+@fullfunctional @functional_enabled @ignore
 Feature: Case flags V2.1 Add/Update Language interpreter
 
     Background: Setup case

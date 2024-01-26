@@ -13,7 +13,9 @@ export class CourtLocationAnswerConverter implements AnswerConverter {
     const courtLocations: LocationModel[] = this.route.snapshot.data.courtLocation || [];
     return hearingState$.pipe(
       map((state) => {
-        const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;
+        const hearingResponse = state.hearingConditions?.isHearingAmendmentsEnabled
+          ? state.hearingRequestToCompare.hearingRequestMainModel.hearingResponse
+          : state.hearingRequest.hearingRequestMainModel.hearingResponse;
         let hearingDaySchedule = hearingResponse && hearingResponse.hearingDaySchedule;
         if (!hearingDaySchedule) {
           return '';

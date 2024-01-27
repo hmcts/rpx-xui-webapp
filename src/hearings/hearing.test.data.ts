@@ -2326,7 +2326,7 @@ export const initialState = {
             'sameSexCourtroom',
             'secureDock'
           ],
-          listingComments: 'blah blah blah',
+          listingComments: 'some comments to compare',
           hearingRequester: null,
           leadJudgeContractType: null,
           amendReasonCodes: null,
@@ -3023,7 +3023,7 @@ export const initialStateImmutable = {
           caseDeepLink: null,
           hmctsInternalCaseName: null,
           publicCaseName: null,
-          caseAdditionalSecurityFlag: false,
+          caseAdditionalSecurityFlag: true,
           caseInterpreterRequiredFlag: false,
           caseCategories: [
             {

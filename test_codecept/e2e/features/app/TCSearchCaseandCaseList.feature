@@ -7,6 +7,7 @@ Feature: Test case type case list and find case workflow
     Then I should be redirected to EUI dashboard page
 
 
+
     Scenario: Validate workbasket inputs against the API response
         When I click on Case list
         Then I am on case list page

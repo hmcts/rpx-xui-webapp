@@ -207,6 +207,7 @@ exports.config = {
 
   },
   bootstrap:async () =>{
+    share({ users: [], reuseCounter: 0 });
     if(!parallel){
       await setup()
     }

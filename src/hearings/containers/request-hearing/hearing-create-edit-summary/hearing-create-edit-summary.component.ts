@@ -36,7 +36,7 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
         return;
       }
       const hearing = str.hearings;
-      workFlow = hearing.hearingValues.serviceHearingValuesModel.screenFlow;
+      workFlow = hearing.hearingValues?.serviceHearingValuesModel?.screenFlow;
     });
     return workFlow;
   }
@@ -44,10 +44,10 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
   public removeUnnecessarySummaryTemplateItems() {
     let filteredTemplate: Section[] = [];
     const sFlow: ScreenNavigationModel[] = this.getScreenFlowFromStore(this.hearingStore);
-    if (sFlow) {
-      const isFlowWithoutLinkedHearing = sFlow.some((fL: ScreenNavigationModel) => !fL.screenName.includes('hearing-link'));
+    if (sFlow.length) {
+      const isFlowWithoutLinkedHearing = sFlow.some((fL: ScreenNavigationModel) => fL.screenName.includes('hearing-link'));
 
-      if (isFlowWithoutLinkedHearing) {
+      if (!isFlowWithoutLinkedHearing) {
         const template = this.template.filter((csl) => !csl.sectionHTMLTitle.includes('Linked hearings'));
         filteredTemplate = template;
       } else {

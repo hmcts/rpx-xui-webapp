@@ -29,7 +29,7 @@ describe('AdditionalInstructionsSectionComponent', () => {
     component.listingComments = 'This is a test comment.';
     component.ngOnInit();
     expect(component.additionalInstructions).toEqual('This is a test comment.');
-    expect(component.showAmmended).toEqual(false);
+    expect(component.showAmmended).toEqual(true);
   });
 
   it('should verify onChange', () => {

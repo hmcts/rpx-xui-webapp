@@ -16,7 +16,7 @@ export class CourtLocationAnswerConverter implements AnswerConverter {
         const hearingResponse = state.hearingConditions?.isHearingAmendmentsEnabled
           ? state.hearingRequestToCompare.hearingRequestMainModel.hearingResponse
           : state.hearingRequest.hearingRequestMainModel.hearingResponse;
-        let hearingDaySchedule = hearingResponse && hearingResponse.hearingDaySchedule;
+        let hearingDaySchedule = hearingResponse?.hearingDaySchedule;
         if (!hearingDaySchedule) {
           return '';
         }

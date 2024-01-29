@@ -164,8 +164,7 @@ Feature: Create hearings workflow
             | jsonpath                                                     | value  |
             | $.partyDetails[0].individualDetails.reasonableAdjustments[0] | RA0042 |
 
-    Scenario: Create hearing , input combo 2
-
+   
     Scenario: Create hearing , input combo 1
         Given I set MOCK with user details
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |

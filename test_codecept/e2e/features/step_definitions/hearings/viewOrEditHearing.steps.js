@@ -40,6 +40,7 @@ Then('I validate fields displayed in view or edit hearing page', async function 
         const expectedVal = row.value
         const expectedChangeLinkDisplayed = row.changeLinkDisplay
         const expectedAmendFlagDisplayed = row.amendedFlagDisplay
+        const expectedAmendFlagDisplayed_preCR84 = row.amendedFlagDisplayed_preCR84
 
         reportLogger.AddMessage(`Validating: ${JSON.stringify(row)}`)
         expect(await viewOrEditHearingPage.isKeyFieldDisplayed(field)).to.be.true
@@ -54,9 +55,13 @@ Then('I validate fields displayed in view or edit hearing page', async function 
         const actualValue = values.find(v => v.includes(expectedVal) )
         expect(actualValue, `Field:${field} no displayed ${expectedAmendFlagDisplayed}`).to.not.equal(undefined)
 
-        if (expectedAmendFlagDisplayed !== '') {
-
+        if (expectedAmendFlagDisplayed && expectedAmendFlagDisplayed !== '') {
             expect(actualValue, `Field:${field} to include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.includes(expectedAmendFlagDisplayed)
+        } else if (expectedAmendFlagDisplayed_preCR84 && expectedAmendFlagDisplayed_preCR84 !== ''){
+            const actionColText = await viewOrEditHearingPage.getActionColumnTextForKeyField(field);
+            expect(actionColText.toLowerCase()).includes(expectedAmendFlagDisplayed_preCR84.toLowerCase())
+        } else if (expectedAmendFlagDisplayed_preCR84 && expectedAmendFlagDisplayed_preCR84 === '') {
+            expect(await viewOrEditHearingPage.getActionColumnTextForKeyField(field)).to.not.includes('AMENDED')
         } else {
             expect(actualValue, `Field:${field} to not include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.not.includes('AMENDED')
             expect(actualValue, `Field:${field} to not include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.not.includes('ACTION NEEDED')
@@ -95,12 +100,15 @@ When('In view or edit hearing page, I click Submit updated request', async funct
 
 Then('I validate edit heating change links and navigation', async function(datatable){
     const validationPages = datatable.parse().hashes()
+    let ctr = 0;
     for (const validationPage of validationPages){
+        ctr++;
         const changeLinkFor = validationPage.changeLinkFor
         const navigationPage = validationPage.navigationPage
         const pageHeader = validationPage.pageHeader
+        reportLogger.AddMessage(`************** ${ctr}: Validation of ${changeLinkFor}, ${navigationPage}`)
+
         await browserWaits.retryWithActionCallback(async () => {
-            reportLogger.AddMessage(`Validation of ${changeLinkFor}, ${navigationPage}`)
             await viewOrEditHearingPage.clickChangeLinkForField(changeLinkFor)
 
             const navigationPageObject = getPageObject(navigationPage);

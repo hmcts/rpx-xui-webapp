@@ -7,12 +7,10 @@ import { inject,
 import { LaunchDarklyService } from '@hmcts/rpx-xui-common-lib';
 
 export const MCLAUNCHDARKLYKEY = new InjectionToken<string>('LAUNCHDARKLYKEY');
-
 @Injectable({
   providedIn: 'root'
 })
 export class McLaunchDarklyService extends LaunchDarklyService {
-
   constructor(@Inject(MCLAUNCHDARKLYKEY) key: string) {
     super();
     this.rootGuard(LaunchDarklyService);

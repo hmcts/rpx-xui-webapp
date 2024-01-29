@@ -108,6 +108,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       const roleId = this.route.snapshot.queryParams.typeOfRole ? this.route.snapshot.queryParams.typeOfRole : null;
       this.setReallocatedRole(roleId);
       this.action = this.route.snapshot.routeConfig.path ? this.route.snapshot.routeConfig.path : null;
+      this.existingUsers = this.route.snapshot.queryParams.existingUsers ? this.route.snapshot.queryParams.existingUsers.split(',') : [];
     }
     if (this.action === Actions.Reallocate) {
       this.instantiateReallocateRoleData();
@@ -148,14 +149,11 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     }
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
       (allocateRoleStateData) => {
-        console.log(allocateRoleStateData);
         this.navigationCurrentState = allocateRoleStateData.state;
         this.allocateTo = allocateRoleStateData.allocateTo;
         this.action = allocateRoleStateData.action;
       }
     );
-    console.log("from allocate-role-home-component");
-    console.log(this.existingUsers);
   }
 
   public isComponentVisible(currentNavigationState: AllocateRoleState, requiredNavigationState: AllocateRoleState[]): boolean {

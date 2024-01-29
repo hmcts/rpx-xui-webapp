@@ -28,7 +28,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   public allocateAction = 'Allocate';
   public ERROR_MESSAGE = PERSON_ERROR_MESSAGE;
   @Input() public navEvent: AllocateRoleNavigation;
-  public existingUsers: string[] = [];
+  @Input() public existingUsers: string[] = [];
   public domain = PersonRole.JUDICIAL;
   public title: string;
   public userIncluded: boolean = true;
@@ -39,7 +39,6 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   public userId: string;
   public appStoreSub: Subscription;
   public subscription: Subscription;
-  public specificAccessSub: Subscription;
   public roleType: SpecificRole;
   public services: string;
   public assignedUser: string;
@@ -48,15 +47,9 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
 
   public ngOnInit(): void {
     this.subscription = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe((allocateRoleStateData) => this.setData(allocateRoleStateData));
-    this.specificAccessSub = this.store.pipe(select(fromFeature.getSpecificAccessState)).subscribe((specificAccessStateData) => console.log(specificAccessStateData));
-    this.route.paramMap.subscribe(params => {
-      const existingUsersParam = params.get('existingUsersParam');
-      this.existingUsers = existingUsersParam ? existingUsersParam.split(',') : [];
-    });
   }
 
   private setData(allocateRoleStateData: AllocateRoleStateData): void {
-    console.log(allocateRoleStateData);
     const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
     if (allocateRoleStateData.roleCategory === RoleCategory.LEGAL_OPERATIONS) {
       this.domain = PersonRole.CASEWORKER;
@@ -65,24 +58,19 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
     } else if (allocateRoleStateData.roleCategory === RoleCategory.CTSC) {
       this.domain = PersonRole.CTSC;
     }
-    console.log(this.domain);
     this.title = getTitleText(allocateRoleStateData.typeOfRole, action, allocateRoleStateData.roleCategory);
     this.personName = allocateRoleStateData && allocateRoleStateData.person ? this.getDisplayName(allocateRoleStateData.person) : null;
     this.person = allocateRoleStateData.person;
     // hide user when allocate as user can select allocate to me
     this.userIncluded = !(allocateRoleStateData.action === Actions.Allocate);
     // Set assigned user from state data.
-    this.assignedUser = allocateRoleStateData.personToBeRemoved.id;
+    this.assignedUser = allocateRoleStateData && allocateRoleStateData.personToBeRemoved && allocateRoleStateData.personToBeRemoved.id;
 
     // Add assigned user to existingUsers array if both are given
     if (this.existingUsers && this.existingUsers.length > 0 && this.assignedUser) {
       this.existingUsers.push(this.assignedUser)
     }
 
-    // ET Demo Senior Admin & ET Demo Admin should be filtered out
-    // this.existingUsers = ['b464ba12-5dd5-4e48-9874-f7f270d12e88', '17d7db7f-ea93-4b0d-969c-44778b4aa3ad'];
-
-    console.log(this.existingUsers);
     this.roleType = allocateRoleStateData.typeOfRole;
     this.services = allocateRoleStateData.jurisdiction;
   }

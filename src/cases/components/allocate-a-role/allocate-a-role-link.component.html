@@ -1,13 +1,12 @@
 <p>
     <a href="javascript:void(0)"
        class="govuk-link"
-       [routerLink]="[routerLink, {existingUsersParam}]"
-       [queryParams]="queryParams"
+       [routerLink]=routerLink
+       [queryParams]=queryParams
        exuiShowAllocateLink
        [showAllocateRoleLink]="showAllocateRoleLink"
        [roles]="roles"
-       [roleCategory]="roleCategory"
-       [existingUsers]="existingUsers">
+       [roleCategory]="roleCategory">
        {{linkText}}
     </a>
 </p>

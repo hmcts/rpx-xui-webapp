@@ -52,10 +52,8 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
       this.adminRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.ADMIN);
       this.ctscRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.CTSC);
     }
-    console.log(this.adminRoles);
     // Get unique array of existing admin user id's
     this.existingAdminUsers = [... new Set(this.adminRoles.map(ar => ar.actorId))];
-    console.log(this.existingAdminUsers);
     this.showLegalOpsAllocate = this.showAllocateRoleLink && this.legalOpsRoles.length === 0;
   }
 

@@ -4,7 +4,7 @@ import { CaseRole, RoleCategory, TypeOfRole } from '../../role-access/models';
 @Directive({
   selector: '[exuiShowAllocateLink]'
 })
-export class ShowAllocateLinkDirective implements OnInit, OnChanges {
+export class ShowAllocateLinkDirective implements OnInit {
   private static readonly CASE_MANAGERS_LIMIT = 1;
   @Input() public showAllocateRoleLink: boolean = false;
   @Input() public roles: CaseRole[];
@@ -31,10 +31,5 @@ export class ShowAllocateLinkDirective implements OnInit, OnChanges {
       const host = this.element.nativeElement;
       host.style.display = 'none';
     }
-  }
-
-  public ngOnChanges(): void {
-    console.log("logged from show-allocate-link.directive")
-    console.log(this.existingUsers);
   }
 }

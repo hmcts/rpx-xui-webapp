@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { CaseRole, RoleCategory } from '../../../role-access/models';
+import { Params } from '@angular/router';
 
 @Component({
   selector: 'exui-allocate-a-role-link',
@@ -9,7 +10,7 @@ import { CaseRole, RoleCategory } from '../../../role-access/models';
 
 export class AllocateARoleLinkComponent implements OnChanges {
     @Input() public routerLink: string;
-    @Input() public queryParams: string;
+    @Input() public queryParams: Params;
     @Input() public showAllocateRoleLink = false;
     @Input() public roles: CaseRole[] = [];
     @Input() public roleCategory: RoleCategory;
@@ -17,13 +18,9 @@ export class AllocateARoleLinkComponent implements OnChanges {
     @Input() public existingUsers: string[];
     public existingUsersParam: string;
     public ngOnChanges(): void {
-      console.log("logged from allocate-a-role-link component");
-      console.log(this.existingUsers);
       if (this.existingUsers) {
         this.existingUsersParam = this.existingUsers.join(',');
       }
-      console.log(this.routerLink);
-      console.log(this.existingUsersParam);
-      console.log(this.queryParams);
+      this.queryParams.existingUsers = this.existingUsersParam;
     }
 }

@@ -16,7 +16,6 @@ import * as fromFeature from '../../../store';
   templateUrl: './allocate-role-navigation.component.html'
 })
 export class AllocateRoleNavigationComponent implements OnInit {
-
   @Output() public eventTrigger = new EventEmitter();
 
   public allocateRoleStateData$: Observable<AllocateRoleStateData>;

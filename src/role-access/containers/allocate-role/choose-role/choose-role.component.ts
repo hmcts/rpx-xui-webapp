@@ -72,7 +72,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     );
     this.store.pipe(select(fromFeature.getAvailableRolesForService)).subscribe((roles) => {
       if (roles) {
-        this.optionsList = this.getOptions(roles.filter((role) => role.roleCategory === this.roleCategory))
+        this.optionsList = this.getOptions(roles.filter((role) => role.roleCategory === this.roleCategory));
       }
     });
   }

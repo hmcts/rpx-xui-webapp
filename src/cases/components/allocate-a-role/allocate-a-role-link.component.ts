@@ -18,7 +18,7 @@ export class AllocateARoleLinkComponent implements OnChanges {
     @Input() public existingUsers: string[];
     public existingUsersParam: string;
     public ngOnChanges(): void {
-      if (this.existingUsers) {
+      if (this.existingUsers && this.existingUsers.length > 0) {
         this.queryParams.existingUsers = this.existingUsers.join(',');
       }
     }

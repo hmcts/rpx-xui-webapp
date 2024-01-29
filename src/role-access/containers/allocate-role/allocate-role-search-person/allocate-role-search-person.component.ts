@@ -68,7 +68,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
 
     // Add assigned user to existingUsers array if both are given
     if (this.existingUsers && this.existingUsers.length > 0 && this.assignedUser) {
-      this.existingUsers.push(this.assignedUser)
+      this.existingUsers.push(this.assignedUser);
     }
 
     this.roleType = allocateRoleStateData.typeOfRole;

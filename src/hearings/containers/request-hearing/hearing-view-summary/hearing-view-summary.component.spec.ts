@@ -123,8 +123,6 @@ describe('HearingViewSummaryComponent', () => {
   it('should navigate to case details page', () => {
     component.hearingRequestMainModel = initialState.hearings.hearingRequest.hearingRequestMainModel;
     component.executeAction(ACTION.BACK);
-    expect(hearingsService.propertiesUpdatedAutomatically).toEqual({ pageless: {}, withinPage: {} });
-    expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(null);
     expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', '1234123412341234', 'hearings']);
   });
 

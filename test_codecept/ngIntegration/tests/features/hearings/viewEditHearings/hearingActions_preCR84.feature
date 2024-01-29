@@ -1,5 +1,5 @@
 
-@ng @functional_enabled @functional_debug
+@ng @functional_enabled
 Feature: Hearings CR84 OFF: View or edit action
 
 
@@ -53,14 +53,14 @@ Feature: Hearings CR84 OFF: View or edit action
         When I click continue in hearing workflow
         Then I validate view or edit hearing page displayed
 
-        # When In view or edit hearing page, I click change link for field "Select any additional facilities required"
-        # Then I am on hearings workflow page "Do you require any additional facilities?"
-        # Then In additional facilities page, I see case flags displayed for parties
-        #     | partyName   |
-        #     | Jane Smith 2 |
+        When In view or edit hearing page, I click change link for field "Select any additional facilities required"
+        Then I am on hearings workflow page "Do you require any additional facilities?"
+        Then In additional facilities page, I see case flags displayed for parties
+            | partyName   |
+            | Jane Smith 2 |
 
-        # When I click continue in hearing workflow
-        # Then I validate view or edit hearing page displayed
+        When I click continue in hearing workflow
+        Then I validate view or edit hearing page displayed
 
 
         When In view or edit hearing page, I click change link for field "Will this be a paper hearing?"

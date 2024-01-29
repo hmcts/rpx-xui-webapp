@@ -1,11 +1,11 @@
 
-@ng @functional_enabled
+@ng @functional_enabled 
 Feature:  Hearings: Hearings tab
 
     Scenario Outline:  Hearings tab for "<UserIdentifier>" role "<UserRole>"
         Given I set MOCK with user details with user identifier "<UserIdentifier>"
-            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
-            | roleCategory | LEGAL_OPERATIONS                                                                      |
+            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,<UserRole> |
+            | roleCategory | LEGAL_OPERATIONS                                                                 |
 
         # Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
 
@@ -48,22 +48,22 @@ Feature:  Hearings: Hearings tab
         #     | -3           | WAITING TO BE LISTED | View or edit,Cancel |
 
         Then In hearings tab, I see hearings with values under "Current and upcoming"
-            | hearingName                 | Hearing date | Status                   | Actions              |
-            | TEST_AWAITING_LISTING       | -3           | WAITING TO BE LISTED     | <EditActions>,Cancel |
-            | TEST_LISTED                 | -3           | LISTED                   | <EditActions>,Cancel |
-            | TEST_UPDATE_REQUESTED       | -3           | UPDATE REQUESTED         | <EditActions>,Cancel |
-            | TEST_UPDATE_SUBMITTED       | -3           | UPDATE REQUESTED         | <EditActions>,Cancel |
-            | TEST_CANCELLATION_REQUESTED | 2 | CANCELLATION REQUESTED | View details |
-            | TEST_CANCELLATION_SUBMITTED | 2 | CANCELLATION REQUESTED | View details |
-            | TEST_AWAITING_ACTUALS | 2 | AWAITING HEARING DETAILS | Add or edit |
-            | TEST_EXCEPTION | 2 | REQUEST FAILURE | View details |
+            | hearingName                 | Hearing date | Status                   | Actions                    |
+            | TEST_AWAITING_LISTING       | -3           | WAITING TO BE LISTED     | <EditActions>              |
+            | TEST_LISTED                 | -3           | LISTED                   | <EditActions>              |
+            | TEST_UPDATE_REQUESTED       | -3           | UPDATE REQUESTED         | <EditActions>              |
+            | TEST_UPDATE_SUBMITTED       | -3           | UPDATE REQUESTED         | <EditActions>              |
+            | TEST_CANCELLATION_REQUESTED | 2            | CANCELLATION REQUESTED   | View details               |
+            | TEST_CANCELLATION_SUBMITTED | 2            | CANCELLATION REQUESTED   | View details               |
+            | TEST_AWAITING_ACTUALS       | 2            | AWAITING HEARING DETAILS | <Awaiting_hearing_Actions> |
+            | TEST_EXCEPTION              | 2            | REQUEST FAILURE          | View details               |
 
 
         Then In hearings tab, I see hearings with values under "Past or cancelled"
-            | hearingName | Hearing date | Status | Actions |
-            | TEST_ADJOURNED | 2 | ADJOURNED | View details |
-            | TEST_COMPLETED | 2 | COMPLETED | View details |
-            | TEST_CANCELLED | 2 | CANCELLED | View details |
+            | hearingName    | Hearing date | Status    | Actions      |
+            | TEST_ADJOURNED | 2            | ADJOURNED | View details |
+            | TEST_COMPLETED | 2            | COMPLETED | View details |
+            | TEST_CANCELLED | 2            | CANCELLED | View details |
 
 
         # Then In hearings tab, I see hearing "TEST_TYPE_2" with values under "Past or cancelled"
@@ -72,11 +72,11 @@ Feature:  Hearings: Hearings tab
 
 
         Examples:
-            | UserIdentifier           | UserRole        | EditActions  |
-            | HEARING_MANAGER_CR84_ON  | hearing-manager | View details |
-            | HEARING_MANAGER_CR84_ON  | hearing-viewer  | View details |
-            | HEARING_MANAGER_CR84_OFF | hearing-manager | View or edit |
-            | HEARING_MANAGER_CR84_OFF | hearing-viewer | View or edit |
+            | UserIdentifier           | UserRole        | EditActions         | Awaiting_hearing_Actions |
+            | HEARING_MANAGER_CR84_ON | hearing-manager | View or edit,Cancel | Add or edit |
+            | HEARING_MANAGER_CR84_ON | hearing-viewer | View details | View details |
+            | HEARING_MANAGER_CR84_OFF | hearing-manager | View or edit,Cancel | Add or edit |
+            | HEARING_MANAGER_CR84_OFF | hearing-viewer | View details | View details |
 # Then debug sleep minutes 30
 # Then I see hearings tab displayed
 

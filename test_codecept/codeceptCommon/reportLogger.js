@@ -114,7 +114,7 @@ class CodeceptMochawesomeLog{
 
         // const decodedImage = await this.getScreenshot(onbrowser);
         // await browser.get_I().addMochawesomeContext(decodedImage, 'image/png');
-        I.saveScreenshot('debug.png', true)
+        // I.saveScreenshot('debug.png', true)
         this.AddMessage(`!!! Add screenshot not implemented !!!`)
 
         

@@ -437,6 +437,11 @@ describe('HearingEditSummaryComponent', () => {
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories).toEqual(['BBA3-002']);
   });
 
+  it('should set auto updated pageless properties to true', () => {
+    // @ts-ignore
+    expect(component.pageVisitPartiesChangeExists()).toEqual(true);
+  });
+
   describe('Display of warning and error message', () => {
     it('should display banner message', () => {
       component.serviceHearingValuesModel.caseManagementLocationCode = 'New Management location code';

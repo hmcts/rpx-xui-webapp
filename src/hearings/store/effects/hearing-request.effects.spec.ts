@@ -7,16 +7,16 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
-import { LoggerService } from 'src/app/services/logger/logger.service';
-import { Go } from 'src/app/store';
-import { hearingRequestMainModel, initialState } from 'src/hearings/hearing.test.data';
-import { Mode } from 'src/hearings/models/hearings.enum';
-import { AbstractPageFlow } from 'src/hearings/utils/abstract-page-flow';
+import { LoggerService } from '../../../app/services/logger/logger.service';
+import { Go } from '../../../app/store';
+import { hearingRequestMainModel, initialState } from '../../../hearings/hearing.test.data';
+import { Mode } from '../../../hearings/models/hearings.enum';
+import { AbstractPageFlow } from '../../../hearings/utils/abstract-page-flow';
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingRequestActions from '../actions/hearing-request.action';
 import { HearingRequestEffects } from './hearing-request.effects';
 
-describe('Hearing Actuals Effects', () => {
+describe('Hearing Request Effects', () => {
   let actions$;
   let store: any;
   let effects: HearingRequestEffects;

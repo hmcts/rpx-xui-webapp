@@ -17,7 +17,7 @@ import { LocationsDataService } from '../services/locations-data.service';
 import { State } from '../store/reducers';
 import { HearingAnswersPipe } from './hearing-answers.pipe';
 
-describe('HearingAnswersPipe', () => {
+fdescribe('HearingAnswersPipe', () => {
   const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
     epimms_id: '196538',
     site_name: 'Liverpool Social Security and Child Support Tribunal',
@@ -203,6 +203,112 @@ describe('HearingAnswersPipe', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.LINKED_HEARINGS, of(STATE), 0);
     const linkedHearings = 'No';
     const expected = cold('(b|)', { b: linkedHearings });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform type from request', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.TYPE_FROM_REQUEST, of(STATE), 0);
+    const typeName = `PERSONAL INDEPENDENT PAYMENT (NEW CLAIM) 
+<ul><li>- CONDITIONS OF ENTITLEMENT - COMPLEX</li><li>- GOOD CAUSE</li><li>- RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX</li></ul>`;
+    const expected = cold('(b|)', { b: typeName });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform status', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.STATUS, of(STATE), 0);
+    const status = 'LISTED';
+    const expected = cold('(b|)', { b: status });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform date request submitted', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.DATE_REQUEST_SUBMITTED, of(STATE), 0);
+    const date = '30 November 2021';
+    const expected = cold('(b|)', { b: date });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform time response submitted', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.DATE_RESPONSE_SUBMITTED_TIME, of(STATE), 0);
+    const date = '09:00';
+    const expected = cold('(b|)', { b: date });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform date response submitted', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.DATE_RESPONSE_SUBMITTED, of(STATE), 0);
+    const date = '12 December 2022';
+    const expected = cold('(b|)', { b: date });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform date response submitted multiday', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.DATE_RESPONSE_SUBMITTED_MULTI_DAY, of(STATE), 0);
+    const date = '12 December 2022 - 12 December 2022';
+    const expected = cold('(b|)', { b: date });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform date response received', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.DATE_RESPONSE_RECEIVED, of(STATE), 0);
+    const date = '30 November 2021';
+    const expected = cold('(b|)', { b: date });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform additional security required', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.ADDITIONAL_SECURITY_REQUIRED, of(STATE), 0);
+    const answer = 'No';
+    const expected = cold('(b|)', { b: answer });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform court location', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.COURT_LOCATION, of(STATE), 0);
+    const answer = '';
+    const expected = cold('(b|)', { b: answer });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform participant attendence', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.PARTICIPANT_ATTENDENCE, of(STATE), 0);
+    const answer = 'Jane Smith - In person';
+    const expected = cold('(b|)', { b: answer });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform response status', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_RESPONSE_STATUS, of(STATE), 0);
+    const answer = 'PENDING_RELISTING';
+    const expected = cold('(b|)', { b: answer });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform response status', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_RESPONSE_LENGTH, of(STATE), 0);
+    const answer = '1 Day 1 Hour';
+    const expected = cold('(b|)', { b: answer });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform private hearing required', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.PRIVATE_HEARING_REQUIRED, of(STATE), 0);
+    const answer = 'No';
+    const expected = cold('(b|)', { b: answer });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform public case name', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.PUBLIC_CASE_NAME, of(STATE), 0);
+    const answer = 'Jane Smith vs DWP';
+    const expected = cold('(b|)', { b: answer });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform case restriction', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_RESTRICTION, of(STATE), 0);
+    const answer = 'No';
+    const expected = cold('(b|)', { b: answer });
     expect(result$).toBeObservable(expected);
   });
 });

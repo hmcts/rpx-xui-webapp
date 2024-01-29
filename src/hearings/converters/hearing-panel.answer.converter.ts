@@ -11,8 +11,8 @@ export class HearingPanelAnswerConverter implements AnswerConverter {
         const panelRequirements = state.hearingConditions?.isHearingAmendmentsEnabled
           ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements
           : state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-        const panelMembers = panelRequirements?.panelPreferences?.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER).length || 0;
-        const panelSpecialisms = panelRequirements?.panelSpecialisms.length || 0;
+        const panelMembers = panelRequirements?.panelPreferences?.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER)?.length || 0;
+        const panelSpecialisms = panelRequirements?.panelSpecialisms?.length || 0;
         if (panelMembers > 0 || panelSpecialisms > 0) {
           return RadioOptions.YES;
         }

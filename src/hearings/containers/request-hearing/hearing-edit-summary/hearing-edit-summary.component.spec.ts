@@ -6,7 +6,6 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { PartyFlagsModel } from '../../../../hearings/models/partyFlags.model';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
@@ -33,6 +32,7 @@ describe('HearingEditSummaryComponent', () => {
     fragment: of('point-to-me')
   };
   const routerMock = jasmine.createSpyObj('Router', [
+    'navigate',
     'navigateByUrl'
   ]);
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -64,49 +64,6 @@ describe('HearingEditSummaryComponent', () => {
     is_case_management_location: 'Y',
     is_hearing_location: 'Y'
   }];
-
-  const caseFlags: PartyFlagsModel[] = [
-    {
-      partyId: 'P1',
-      partyName: 'Jane Smith',
-      flagParentId: 'RA0008',
-      flagId: 'RA0013',
-      flagDescription: 'Sign language interpreter required',
-      flagStatus: 'ACTIVE'
-    },
-    {
-      partyId: 'P2',
-      partyName: 'Jane Smith vs DWP',
-      flagParentId: 'CF0001',
-      flagId: 'RA0016',
-      flagDescription: 'Potential fraud',
-      flagStatus: 'ACTIVE'
-    },
-    {
-      partyId: 'P3',
-      partyName: 'Jane Smith vs DWP',
-      flagParentId: 'CF0001',
-      flagId: 'RA0042',
-      flagDescription: 'Urgent flag',
-      flagStatus: 'ACTIVE'
-    },
-    {
-      partyId: 'P4',
-      partyName: 'Jane Smith vs DWP',
-      flagParentId: 'CF0001',
-      flagId: 'RA0042',
-      flagDescription: 'Urgent flag',
-      flagStatus: 'ACTIVE'
-    },
-    {
-      partyId: 'P5',
-      partyName: 'Jane Smith vs DWP',
-      flagParentId: 'CF0001',
-      flagId: 'RA0053',
-      flagDescription: 'Urgent flag',
-      flagStatus: 'ACTIVE'
-    }
-  ];
 
   const categories = [
     {
@@ -553,6 +510,11 @@ describe('HearingEditSummaryComponent', () => {
     component.hearingRequestToCompareMainModel = Object.assign({});
     component.executeAction(ACTION.VIEW_EDIT_REASON);
     expect(component.validationErrors.length).toEqual(1);
+  });
+
+  it('should navigate to hearing view summary page', () => {
+    component.executeAction(ACTION.BACK);
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-view-summary']);
   });
 
   afterEach(() => {

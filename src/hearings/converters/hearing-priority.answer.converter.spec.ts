@@ -44,7 +44,7 @@ describe('HearingPriorityAnswerConverter', () => {
     expect(result$).toBeObservable(expected);
   });
 
-  fit('should transform hearing stage when hearings amendment is enabled', () => {
+  it('should transform hearing stage when hearings amendment is enabled', () => {
     const STATE = {
       ...initialStateImmutable.hearings,
       hearingConditions: {

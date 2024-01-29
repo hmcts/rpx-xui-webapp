@@ -401,7 +401,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
       }
     };
     if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
-      this.hearingsService.propertiesUpdatedOnPageVisit.hasOwnProperty('hearingWindow') &&
+      this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow') &&
       this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired) {
       this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesConfirmed = true;
     }

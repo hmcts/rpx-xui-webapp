@@ -63,7 +63,6 @@ Then('In case file view tab, I see tree view displays folders', async function (
         expect(await folderContainer.isDisplayed()).to.be.true;
     }
 
-
 });
 
 

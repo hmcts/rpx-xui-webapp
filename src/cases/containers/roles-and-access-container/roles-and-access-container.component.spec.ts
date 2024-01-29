@@ -1,12 +1,29 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AbstractAppConfig, AlertService, AuthService, CaseField, CaseNotifier, CaseView, CasesService, HttpErrorService } from '@hmcts/ccd-case-ui-toolkit';
+import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
+import { CaseRolesTableComponent } from '../../../role-access/components/case-roles-table/case-roles-table.component';
+import { ExclusionsTableComponent } from '../../../role-access/components/exclusions-table/exclusions-table.component';
+import { RoleExclusionsService } from '../../../role-access/services';
+import { RoleExclusionsMockService } from '../../../role-access/services/role-exclusions.mock.service';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
+import { AllocateARoleLinkComponent, RoleAccessSectionComponent } from '../../components';
+import { RolesAndAccessComponent } from '../../components/roles-and-access/roles-and-access.component';
+import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
 import { RolesAndAccessContainerComponent } from './roles-and-access-container.component';
 
 const metadataField = {} as CaseField;
 metadataField.id = '[JURISDICTION]';
 metadataField.value = 'JUDICIAL';
+const flags = {
+  enabledFlag: true,
+  disabledFlag: false
+};
 const CASE_VIEW: CaseView = {
   metadataFields: [metadataField],
   events: [],

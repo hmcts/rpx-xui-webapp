@@ -535,7 +535,7 @@ describe('HearingEditSummaryComponent', () => {
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caserestrictedFlag).toEqual(true);
     // @ts-ignore
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.parties).toEqual(true);
-  });  
+  });
 
   it('should set auto updated pageless properties to true', () => {
     component.serviceHearingValuesModel.caseManagementLocationCode = 'New case management code';

@@ -3001,7 +3001,7 @@ export const initialStateImmutable = {
           panelRequirements: null,
           autolistFlag: false,
           nonStandardHearingDurationReasons: [],
-          hearingPriorityType: 'standard',
+          hearingPriorityType: 'urgent',
           numberOfPhysicalAttendees: 3,
           hearingInWelshFlag: false,
           facilitiesRequired: [

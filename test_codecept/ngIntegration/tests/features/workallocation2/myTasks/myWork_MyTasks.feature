@@ -4,7 +4,6 @@ Feature: WA Release 2: My work - My Tasks
     Background: Mock and browser setup
         Given I init MockApp
 
-
     Scenario Outline:  My Tasks, colums and column links for "<UserType>"
         
         

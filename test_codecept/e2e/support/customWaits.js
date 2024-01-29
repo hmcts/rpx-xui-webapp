@@ -42,6 +42,11 @@ class BrowserWaits{
         const startTime = Date.now();
         CucumberReporter.AddMessage("ELEMENT_WAIT: at " + this.__getCallingFunctionName()+ " " + JSON.stringify(element.selector)+" at ");
         await element.wait(this.waitTime / 1000)
+
+        await this.waitForConditionAsync(async () => {
+            const isPresent = await element.isPresent();
+            return isPresent;
+        }, 20*1000);
         // CucumberReporter.AddMessage("ELEMENT_FOUND: in sec " + (Date.now() - startTime) / 1000 + " "+ JSON.stringify(element.selector) );
 
     }
@@ -80,6 +85,7 @@ class BrowserWaits{
                 let isConditionMet = false;
                 try {
                     isConditionMet = await condition();
+                    console.log(`Wait for condition stateus : ${isConditionMet}`)
                 } catch (err) {
                     CucumberReporter.AddMessage("Error waiting for condition " + err);
                 }
@@ -213,7 +219,7 @@ class BrowserWaits{
         let status = true
         let counter = 0;
         do{
-            status = await $("div.spinner-container").isPresent();
+            status = await $("div.spinner-container").isDisplayed();
             CucumberReporter.AddMessage(`waiting for spinner to disappear`);
 
             await this.waitForSeconds(2)

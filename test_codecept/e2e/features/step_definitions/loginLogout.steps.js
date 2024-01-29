@@ -23,11 +23,14 @@ async function waitForElement(el) {
   async function loginattemptCheckAndRelogin(username, password, world) {
     testCounter++;
     let loginAttemptRetryCounter = 1;
-
+    // if (loginAttemptRetryCounter === 1){
+    //   return;
+    // }
     while (loginAttemptRetryCounter < 5) {
       let emailFieldValue = "";
 
       try {
+        await loginPage.emailAddress.waitForElementdetach()
         // await BrowserWaits.waitForstalenessOf(loginPage.emailAddress, 5);
         await BrowserWaits.waitForCondition(async () => {
           let isEmailFieldDisplayed = await loginPage.emailAddress.isPresent() ;

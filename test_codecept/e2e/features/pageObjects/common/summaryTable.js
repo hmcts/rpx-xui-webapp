@@ -20,6 +20,11 @@ class SummaryTable{
         return `${keyElement}/../*[contains(@class,'govuk-summary-list__actions')]//a`
     }
 
+    getTableActionsElementXpath(forKey) {
+        const keyElement = this.getTableKeyElementXpath(forKey)
+        return `${keyElement}/../*[contains(@class,'govuk-summary-list__actions')]`
+    }
+
     getTableAmendedElementXpath(forKey) {
         const keyElement = this.getTableKeyElementXpath(forKey)
         return `${keyElement}/..//exui-amendment-label//strong`;

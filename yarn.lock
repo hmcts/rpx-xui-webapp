@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.3-case-flags-v2-1-case-level-flags-fix":
-  version: 7.0.3-case-flags-v2-1-case-level-flags-fix
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.3-case-flags-v2-1-case-level-flags-fix"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.6-case-flags-v2-1-release":
+  version: 7.0.6-case-flags-v2-1-release
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.6-case-flags-v2-1-release"
   dependencies:
     tslib: ^2.3.0
-  checksum: 524b7f395035712d4a85ff05430f9a45b40c4d8a595928e9c76e10214baca2c8e87bb475486a21d154d257ceffa671429011bbda1ddf875864f9f848886eead1
+  checksum: 371e35356399203c33898ac5a763b276cf290d4bc22a1facdd8701e08deb4b3a1b3a362e5b978148eaae12aae356b6807c6569398256dbeafe71d7785b93ba79
   languageName: node
   linkType: hard
 
@@ -19006,7 +19006,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.3-case-flags-v2-1-case-level-flags-fix
+    "@hmcts/ccd-case-ui-toolkit": 7.0.6-case-flags-v2-1-release
     "@hmcts/ccpay-web-component": 6.0.2
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.10.1-RC.1

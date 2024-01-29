@@ -70,7 +70,6 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
 import { RestrictedCaseAccessGuard } from './guards/restricted-case-access-guard';
 import * as fromServices from './services';
 import { effects, reducers } from './store';
-import { RestrictedCaseAccessGuard } from './guards/restricted-case-access-guard';
 
 @NgModule({
   imports: [

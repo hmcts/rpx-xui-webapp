@@ -59,9 +59,6 @@ export class HearingViewSummaryComponent extends RequestHearingPageFlow implemen
 
   public executeAction(action: ACTION): void {
     if (action === ACTION.BACK) {
-      // Clear the in-memory objects for hearing amendments
-      this.hearingsService.propertiesUpdatedAutomatically = { pageless: {}, withinPage: {} };
-      this.hearingsService.propertiesUpdatedOnPageVisit = null;
       // Navigate to the hearings tab
       this.router.navigate(['/', 'cases', 'case-details', this.hearingRequestMainModel.caseDetails.caseRef, 'hearings']);
     }

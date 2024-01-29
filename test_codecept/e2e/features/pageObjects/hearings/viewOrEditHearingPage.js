@@ -39,6 +39,11 @@ class ViewOrEditHearingPage{
         return await this.summaryTable.isChangeLinkDisplayedForField(field)
     }
 
+    async getActionColumnTextForKeyField(field) {
+        const actionColumnElement = this.summaryTable.getTableActionsElementXpath(field)
+        return await element(by.xpath(actionColumnElement)).getText()
+    }
+
     async clickChangeLinkForField(field) {
         return await this.summaryTable.clickChangeLinkForField(field)
     }

@@ -42,7 +42,6 @@ Feature: Hearings: Hearings tab Hearing action based on roles
             | hearing-viewer        | View details        |
             | listed-hearing-viewer | View details        |
 
-
     Scenario: Hearing actions with status AWAITING_HEARING_DETAILS
         Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_OFF"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |

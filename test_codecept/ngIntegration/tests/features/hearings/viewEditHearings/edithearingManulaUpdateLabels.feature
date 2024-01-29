@@ -9,6 +9,8 @@ Feature: Hearings CR84: Manual update labels
             | roleCategory | LEGAL_OPERATIONS                                                                      |
 
         Given I set MOCK case "hearingCase" details with reference "Hearing_case"
+        Given I set MOCK case details "Hearing_case" property "jurisdiction.id" as "CIVIL"
+        Given I set MOCK case details "Hearing_case" property "case_type.id" as "CIVIL"
 
         Given I set mock case hearings from file "viewEditHearings/caseHearings"
 

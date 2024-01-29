@@ -44,7 +44,7 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
   public removeUnnecessarySummaryTemplateItems() {
     let filteredTemplate: Section[] = [];
     const sFlow: ScreenNavigationModel[] = this.getScreenFlowFromStore(this.hearingStore);
-    if (sFlow.length) {
+    if (sFlow && sFlow.length) {
       const isFlowWithoutLinkedHearing = sFlow.some((fL: ScreenNavigationModel) => fL.screenName.includes('hearing-link'));
 
       if (!isFlowWithoutLinkedHearing) {

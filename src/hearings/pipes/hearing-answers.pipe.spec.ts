@@ -17,7 +17,7 @@ import { LocationsDataService } from '../services/locations-data.service';
 import { State } from '../store/reducers';
 import { HearingAnswersPipe } from './hearing-answers.pipe';
 
-fdescribe('HearingAnswersPipe', () => {
+describe('HearingAnswersPipe', () => {
   const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
     epimms_id: '196538',
     site_name: 'Liverpool Social Security and Child Support Tribunal',

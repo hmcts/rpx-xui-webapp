@@ -206,7 +206,7 @@ class CaseManager {
       
         await BrowserWaits.retryWithActionCallback(async () => {
             await this.nextStepGoButton.click();
-            await BrowserWaits.waitForElement(this.ccdCaseEdit);
+            await BrowserWaits.waitForElement($('exui-case-details-home'));
         })
         
     }

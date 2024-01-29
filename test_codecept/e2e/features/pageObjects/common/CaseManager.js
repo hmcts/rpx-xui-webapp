@@ -129,7 +129,7 @@ class CaseManager {
         let pageCounter = 0;
 
         var checkYouranswers = $(".check-your-answers");
-        isCheckYourAnswersPage = await checkYouranswers.isPresent();
+        isCheckYourAnswersPage = await checkYouranswers.isDisplayed();
         while (!isCheckYourAnswersPage) {
             let page = tcTypeStatus ? pageCounter : "null";
             await BrowserWaits.retryWithActionCallback(async () => {
@@ -140,7 +140,7 @@ class CaseManager {
             });
             
             await BrowserWaits.waitForSeconds(2)
-            isCheckYourAnswersPage = await checkYouranswers.isPresent();
+            isCheckYourAnswersPage = await checkYouranswers.isDisplayed();
             pageCounter++;
         }
         //reset api response to null for next event
@@ -204,11 +204,11 @@ class CaseManager {
 
         }
       
-        var thisPageUrl = await browser.getCurrentUrl();
-
-        await this.nextStepGoButton.click();
-        await BrowserWaits.waitForPageNavigation(thisPageUrl);
-
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await this.nextStepGoButton.click();
+            await BrowserWaits.waitForElement(this.ccdCaseEdit);
+        })
+        
     }
 
 
@@ -386,7 +386,14 @@ class CaseManager {
 
                     await BrowserWaits.waitForElement(addressSelectionField);
                     var addressToSelectOption = addressSelectionField.$("option:nth-of-type(2)");
-                    await BrowserWaits.waitForElement(addressToSelectOption);
+                    await BrowserWaits.retryWithActionCallback(async () => {
+                        var addressOptions = await addressSelectionField.getSelectOptions();
+                        if (addressOptions.length <= 1){
+                            throw new Error('')
+                        }
+                    })
+                    // await BrowserWaits.waitForElement(addressToSelectOption);
+                    // const optionText = await addressToSelectOption.getText()
                     await addressSelectionField.selectOptionAtIndex(2);
                     cucumberReporter.AddMessage(fieldName + " : 2nd option selected", LOG_LEVELS.Debug);
                 }); 
@@ -417,9 +424,9 @@ class CaseManager {
                 await selectFieldId.selectOptionAtIndex(2);
 
                 let id = await selectFieldId.getAttribute('id');
-                let selectionOptionValue = await selectOptionElement.getAttribute('value');
-                cucumberReporter.AddMessage(fieldName + " : " + selectionOptionValue, LOG_LEVELS.Debug);
-                this._appendFormPageValues(fieldName1, selectionOptionValue);
+                // let selectionOptionValue = await selectOptionElement.getAttribute('value');
+                // cucumberReporter.AddMessage(fieldName + " : " + selectionOptionValue, LOG_LEVELS.Debug);
+                // this._appendFormPageValues(fieldName1, selectionOptionValue);
                 break;
             case "ccd-write-date-field":
             case "ccd-write-date-container-field":
@@ -443,7 +450,7 @@ class CaseManager {
                     let statusMessage = "";
 
                     await BrowserWaits.waitForCondition(async () => {
-                        let isStatusDisplayed = await statusMessageELement.isPresent();
+                        let isStatusDisplayed = await statusMessageELement.isDisplayed();
                         if (isStatusDisplayed){
                             statusMessage = await statusMessageELement.getText();
                         }
@@ -451,7 +458,7 @@ class CaseManager {
                         return !isStatusDisplayed || statusMessage.includes("error");
                     });
 
-                    let isStatusDisplayed = await statusMessageELement.isPresent();
+                    let isStatusDisplayed = await statusMessageELement.isDisplayed();
                     if (isStatusDisplayed) {
                         statusMessage = await statusMessageELement.getText();
                     }

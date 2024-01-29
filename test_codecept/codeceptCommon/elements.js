@@ -103,7 +103,8 @@ class ElementCollection {
         // }
         // return this.nativeElements.length
 
-        return await getActor().grabNumberOfVisibleElements(this.selector)
+        const elements = await getActor().grabHTMLFromAll(this.selector)
+        return elements.length;
     }
 
 
@@ -191,7 +192,9 @@ class Element {
 
     async selectOptionWithLabel(label){
         await this.wait();
-        await getActor().selectOption(this.selector, label)
+        const options = await this.getSelectOptions();
+        const option = options.find((option) => option.includes(label))
+        await this.select(option)
     }
 
     async select(option){
@@ -213,9 +216,9 @@ class Element {
     }
 
     async isPresent(){
-        let count = 0;
-        const locatorType = Object.keys(this.selector)[0]
-        return await getActor().isVisible(this.selector)
+        const e = await getActor().getPlaywrightlocator(this.selector)
+        const count = await e.count()
+        return count > 0;
       
     }
 
@@ -226,21 +229,8 @@ class Element {
 
     async isChecked(){
         const selectorType = Object.keys(this.selector)[0]
-        const isChecked = await getActor().executeScript(function(selectorType, selector){
-            if (selectorType === 'css'){
-                return document.querySelector(selector).checked;
-            }else{
-                return document.evaluate(
-                    selector,
-                    document,
-                    null,
-                    XPathResult.FIRST_ORDERED_NODE_TYPE,
-                    null
-                ).singleNodeValue.checked;
-            }
-            
-        }, selectorType, this.selector[selectorType]);
-        return isChecked
+        const selector = selectorType === 'css' ? this.selector.css : `xpath=${this.selector.xpath}`
+        return await getActor().isElementChecked(selector)
     }
 
     async isDisplayed(){
@@ -250,7 +240,7 @@ class Element {
 
 
     async count(){
-        await this.wait();
+        // await this.wait();
         const elements = new ElementCollection(this.selector) 
         return await elements.count()
     }
@@ -317,31 +307,7 @@ class Element {
 
     async wait(waitInSec){
         reportLogger.AddMessage("ELEMENT_WAIT: " + JSON.stringify(this.selector) +" at "+this.__getCallingFunctionName());
-
-        return new Promise((resolve, reject) => {
-            const startTime = Date.now();
-            const thisElement = this;
-            const interval = setInterval(async () => {
-                const elapsedTime = (Date.now() - startTime)/1000;
-                const isPresent = await thisElement.isPresent()
-                // reportLogger.AddMessage(`WAIT elapsed time : ${elapsedTime}`)
-                if (isPresent) {
-                    clearInterval(interval)
-                    resolve(true)
-                } 
-                // else if (elapsedTime > 30){
-                //     clearInterval(interval);
-                //     reportLogger.AddMessage(`ELEMENT_WAIT_FAILED: not present ${JSON.stringify(this.selector)} at ${this.__getCallingFunctionName()} `);
-                //     reject(false);
-                // }
-            }, 500);
-
-            setTimeout(() => {
-                clearInterval(interval);
-                reject(false);
-            }, 30*1000)
-         
-        });
+        await getActor().waitForPlaywrightLocator(this.selector)
     }
 
     async scrollIntoView(){
@@ -373,6 +339,10 @@ class Element {
         }
         functionName + ":" + lineNumber;
         return functionName;
+    }
+
+    async waitForElementdetach(){
+        await getActor().waitForPlaywrightLocatorState(this.selector,'detached')
     }
     
 }

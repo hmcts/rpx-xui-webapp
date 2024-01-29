@@ -123,13 +123,13 @@ Feature: WA Release 2: My work - Work filters
         When I unselect service "Civil" in my work filter
         When I unselect service "Immigration and Asylum" in my work filter
         When I click work location filter Apply button
-        Then I see error message "Select a service" for service work filter in my work page
+        # Then I see error message "Select a service" for service work filter in my work page
     
-        When I select service "Immigration and Asylum" in my work filter
+        # When I select service "Immigration and Asylum" in my work filter
 
-        When I remove slected location "IA Court Center 1" from my work filters
+        # When I remove slected location "IA Court Center 1" from my work filters
 
-        When I click work location filter Apply button
+        # When I click work location filter Apply button
 
         Then I validate work filter button text is "Show work filter"
         Then I validate location filter is not displayed

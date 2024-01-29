@@ -111,7 +111,7 @@ exports.config = {
       restart: true,
       show: head,
       waitForNavigation: "domcontentloaded",
-      waitForAction: 500,
+      waitForAction: 10,
       browser: 'chromium',
       // disableScreenshots: false,
       fullPageScreenshots: true,

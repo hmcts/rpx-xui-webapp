@@ -9,7 +9,8 @@
     roleCategory="JUDICIAL"
     linkText="Allocate a judicial role"
     [showAllocateRoleLink]="showAllocateRoleLink"
-    showAllocate="true">
+    showAllocate="true"
+    [existingUsers]="existingJudicialUsers">
   </exui-role-access-section>
 
   <exui-role-access-section
@@ -21,7 +22,8 @@
     roleCategory="LEGAL_OPERATIONS"
     [showAllocateRoleLink]="showAllocateRoleLink"
     linkText="Allocate a legal ops role"
-    [showAllocate]="showLegalOpsAllocate">
+    [showAllocate]="showLegalOpsAllocate"
+    [existingUsers]="existingLegalOpsUsers">
   </exui-role-access-section>
 
   <exui-role-access-section

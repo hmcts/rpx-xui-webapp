@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 
 import { CaseRole } from '../../../role-access/models';
@@ -17,4 +17,5 @@ export class RoleAccessSectionComponent {
   @Input() public roleCategory: string;
   @Input() public showAllocate: boolean;
   @Input() public linkText = 'Allocate a role';
+  @Input() public existingUsers: string[];
 }

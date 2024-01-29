@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { Store, select } from '@ngrx/store';
@@ -42,6 +42,7 @@ import { ChooseRoleComponent } from '../choose-role/choose-role.component';
   styleUrls: ['./allocate-role-home.component.scss']
 })
 export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
+  @Input() public existingUsers: string[] = [];
   @ViewChild('chooseRole', { static: false, read: ChooseRoleComponent })
   public chooseRoleComponent: ChooseRoleComponent;
 
@@ -71,7 +72,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 
   public navigationCurrentState: AllocateRoleState;
   public allocateTo: AllocateTo;
-  public assignmentId: string;
+  public assignmentId: string | string[];
   public caseId: string;
   public jurisdiction: string;
   public userRole: UserRole;
@@ -147,11 +148,14 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     }
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
       (allocateRoleStateData) => {
+        console.log(allocateRoleStateData);
         this.navigationCurrentState = allocateRoleStateData.state;
         this.allocateTo = allocateRoleStateData.allocateTo;
         this.action = allocateRoleStateData.action;
       }
     );
+    console.log("from allocate-role-home-component");
+    console.log(this.existingUsers);
   }
 
   public isComponentVisible(currentNavigationState: AllocateRoleState, requiredNavigationState: AllocateRoleState[]): boolean {

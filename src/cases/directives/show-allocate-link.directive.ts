@@ -1,14 +1,15 @@
-import { Directive, ElementRef, Input, OnInit } from '@angular/core';
+import { Directive, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
 import { CaseRole, RoleCategory, TypeOfRole } from '../../role-access/models';
 
 @Directive({
   selector: '[exuiShowAllocateLink]'
 })
-export class ShowAllocateLinkDirective implements OnInit {
+export class ShowAllocateLinkDirective implements OnInit, OnChanges {
   private static readonly CASE_MANAGERS_LIMIT = 1;
   @Input() public showAllocateRoleLink: boolean = false;
   @Input() public roles: CaseRole[];
   @Input() public roleCategory: RoleCategory;
+  @Input() public existingUsers: string[] = [];
 
   constructor(private readonly element: ElementRef<HTMLElement>) {}
 
@@ -30,5 +31,10 @@ export class ShowAllocateLinkDirective implements OnInit {
       const host = this.element.nativeElement;
       host.style.display = 'none';
     }
+  }
+
+  public ngOnChanges(): void {
+    console.log("logged from show-allocate-link.directive")
+    console.log(this.existingUsers);
   }
 }

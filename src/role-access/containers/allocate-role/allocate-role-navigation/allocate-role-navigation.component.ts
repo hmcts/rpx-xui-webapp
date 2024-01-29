@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import {
@@ -16,6 +16,7 @@ import * as fromFeature from '../../../store';
   templateUrl: './allocate-role-navigation.component.html'
 })
 export class AllocateRoleNavigationComponent implements OnInit {
+
   @Output() public eventTrigger = new EventEmitter();
 
   public allocateRoleStateData$: Observable<AllocateRoleStateData>;

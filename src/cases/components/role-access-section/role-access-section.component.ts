@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 
 import { CaseRole, RoleCategory } from '../../../role-access/models';

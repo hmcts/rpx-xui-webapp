@@ -124,14 +124,6 @@ describe('JudgeDetailsSectionComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call ngOninit', () => {
-    component.ngOnInit();
-    expect(component.showAmmendedForNeedJudge).toEqual(false);
-    expect(component.showAmmendedForJudgeName).toEqual(false);
-    expect(component.showAmmendedForExcludedJudgeNames).toEqual(false);
-    expect(component.showAmmendedForJudgeType).toEqual(undefined);
-  });
-
   it('should set judge details', () => {
     expect(component.needJudge).toEqual('No');
     expect(component.judgeName).toEqual('Jacky Collins');

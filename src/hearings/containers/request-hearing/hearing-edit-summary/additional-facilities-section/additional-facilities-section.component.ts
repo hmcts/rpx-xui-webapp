@@ -24,7 +24,7 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
   public nonReasonableAdjustmentChangesRequired: boolean;
   public nonReasonableAdjustmentChangesConfirmed: boolean;
   public hearingState$: Observable<fromHearingStore.State>;
-  public showAmmended: boolean;
+  public showAmended: boolean;
   public facilitiesRequiredToCompare: string[];
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -50,7 +50,7 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
       this.facilitiesRequiredToCompare = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
       const objA = state.hearingRequestToCompare.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag;
       const objB = state.hearingRequest.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag;
-      this.showAmmended = !_.isEqual(objA, objB);
+      this.showAmended = !_.isEqual(objA, objB);
     });
   }
 

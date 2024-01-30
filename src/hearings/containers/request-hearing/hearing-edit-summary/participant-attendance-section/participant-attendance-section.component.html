@@ -13,7 +13,7 @@
       Will this be a paper hearing?
     </div>
     <div class="govuk-summary-list__value">
-      {{ isPaperHearing  }}
+      {{ isPaperHearing }}
     </div>
     <div class="govuk-summary-list__actions">
       <a id="paperHearing"
@@ -22,7 +22,7 @@
         (click)="onChange('paperHearing')">Change</a>
     </div>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
+  <div class="govuk-summary-list__row" *ngIf="isPaperHearing === 'No'">
     <div class="govuk-summary-list__key">
       What will be the methods of attendance for this hearing?
     </div>
@@ -40,7 +40,7 @@
         (click)="onChange('howParticipantsAttendant')">Change</a>
     </div>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
+  <div class="govuk-summary-list__row" *ngIf="isPaperHearing === 'No'">
     <div class="govuk-summary-list__key">
       How will each participant attend the hearing?
     </div>
@@ -50,7 +50,7 @@
           <exui-amendment-label *ngIf="participantAttendanceMode.partyNameChanged"
             [displayLabel]="amendmentLabelEnum.AMENDED">
           </exui-amendment-label>
-          {{ participantAttendanceMode.partyName }} - {{ participantAttendanceMode.channel }}
+          {{ participantAttendanceMode.partyName }}{{ participantAttendanceMode.channel }}
         </li>
       </ul>
     </div>
@@ -61,7 +61,7 @@
         (click)="onChange('howAttendant')">Change</a>
     </div>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
+  <div class="govuk-summary-list__row" *ngIf="isPaperHearing === 'No'">
     <div class="govuk-summary-list__key">
       How many people will attend the hearing in person?
     </div>

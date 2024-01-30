@@ -205,6 +205,25 @@ describe('HearingAttendanceComponent', () => {
     expect(component.prepareHearingRequestData).not.toHaveBeenCalled();
   });
 
+  it('should set partyDetailsChangesConfirmed when preparing hearing request data for manual amendments', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: null,
+      parties: partyDetailsFromLatestSHV,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: false
+      }
+    };
+    component.prepareHearingRequestData();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed).toEqual(true);
+  });
+
   it('should get individual parties', () => {
     expect(component.getIndividualParties()[0].partyID).toEqual('P1');
   });
@@ -287,17 +306,6 @@ describe('HearingAttendanceComponent', () => {
     component.hearingCondition = {
       mode: 'create'
     };
-    hearingsService.propertiesUpdatedOnPageVisit = {
-      caseFlags: null,
-      parties: partyDetailsFromLatestSHV,
-      hearingWindow: null,
-      afterPageVisit: {
-        reasonableAdjustmentChangesRequired: true,
-        nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: true
-      }
-    };
     component.ngOnInit();
     expect(component.initialiseFromHearingValues).not.toHaveBeenCalled();
     expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(2);
@@ -314,13 +322,63 @@ describe('HearingAttendanceComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
-        nonReasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true
       }
     };
     component.ngOnInit();
     expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(1);
+  });
+
+  it('should call initialiseFromHearingValuesForAmendments for manual amendments journey with party changes', () => {
+    spyOn(component, 'initialiseFromHearingValuesForAmendments');
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: null,
+      parties: partyDetailsFromLatestSHV,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.initialiseFromHearingValuesForAmendments).toHaveBeenCalled();
+  });
+
+  it('should not call initialiseFromHearingValuesForAmendments for non-manual amendments journey', () => {
+    spyOn(component, 'initialiseFromHearingValuesForAmendments');
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.ngOnInit();
+    expect(component.initialiseFromHearingValuesForAmendments).not.toHaveBeenCalled();
+  });
+
+  it('should not call initialiseFromHearingValuesForAmendments for non-manual amendments journey with party changes', () => {
+    spyOn(component, 'initialiseFromHearingValuesForAmendments');
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.initialiseFromHearingValuesForAmendments).not.toHaveBeenCalled();
   });
 
   it('should return the party details from hearing request main model', () => {

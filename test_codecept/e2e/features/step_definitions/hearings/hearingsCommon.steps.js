@@ -119,8 +119,8 @@ Then('In Additional facilities page, I see party {string} with case flags', asyn
 Then('In additional facilities page, I see case flags displayed for parties', async function (partiesDatatable){
     const expectedPartyNames = partiesDatatable.parse().hashes();
     const additionalFacilitiesPage = getPageObject("Do you require any additional facilities?");
-    const parties = await additionalFacilitiesPage.getPartiesWithCaseFlagsDisplayed()
-
+    let parties = await additionalFacilitiesPage.getPartiesWithCaseFlagsDisplayed()
+    parties = parties.map((partyName) => partyName.trim())
     reportLogger.AddMessage(`Parties with case flags ${JSON.stringify(parties)}`)
     for (const party of expectedPartyNames) {
         expect(parties).to.includes(party.partyName)

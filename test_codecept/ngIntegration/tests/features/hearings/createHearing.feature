@@ -131,7 +131,7 @@ Feature: Create hearings workflow
             |                                            | Case name                                                | 1690                      |
             |                                            | Case number                                              | 1690-                     |
             # |                                            | Type                                                     |                                     |
-            | Hearing requirements                       | Reasonable adjustments                                   |                           |
+            # | Hearing requirements                       | Reasonable adjustments                                   |                           |
             | Additional facilities                      | Will additional security be required?                    | No                        |
             | Additional facilities                      | Select any additional facilities required                | Facility 1,Facility 2     |
             | Stage                                      | What stage is this hearing at?                           | Breach 1                  |
@@ -278,7 +278,7 @@ Feature: Create hearings workflow
             |                                            | Case name                                                | 1690                      |
             |                                            | Case number                                              | 1690-                     |
             # |                                            | Type                                                     |                                     |
-            | Hearing requirements                       | Reasonable adjustments                                   |                           |
+            # | Hearing requirements                       | Reasonable adjustments                                   |                           |
             | Additional facilities                      | Will additional security be required?                    | No                        |
             | Additional facilities                      | Select any additional facilities required                | Facility 1,Facility 2     |
             | Stage                                      | What stage is this hearing at?                           | Breach 1                  |
@@ -422,7 +422,7 @@ Feature: Create hearings workflow
             |                                            | Case name                                                | 1690                                                       |
             |                                            | Case number                                              | 1690-                                                      |
             # |                                            | Type                                                     |                                     |
-            | Hearing requirements                       | Reasonable adjustments                                   |                                                            |
+            # | Hearing requirements                       | Reasonable adjustments                                   |                                                            |
             | Additional facilities                      | Will additional security be required?                    | No                                                         |
             | Additional facilities                      | Select any additional facilities required                | Facility 1,Facility 2                                      |
             | Stage                                      | What stage is this hearing at?                           | Breach 1                                                   |

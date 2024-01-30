@@ -1,8 +1,11 @@
 
 const linkHearingWorkflowPage = require('../../pageObjects/hearings/linkHearingWorkflowPage')
+const browserWaits = require('../../../support/customWaits')
 
 Then('I am on linked hearing page {string}', async function(page){
-    expect( await linkHearingWorkflowPage.pages[page].isDisplayed()).to.be.true
+    await browserWaits.retryWithActionCallback(async () => {
+        expect(await linkHearingWorkflowPage.pages[page].isDisplayed()).to.be.true
+    })
 })
 
 When('In link hearing page I select case hearings', async function(datatable){

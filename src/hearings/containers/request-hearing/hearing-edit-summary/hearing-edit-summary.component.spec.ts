@@ -5,8 +5,8 @@ import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
+import * as _ from 'lodash';
 import { of } from 'rxjs';
-import { PartyFlagsModel } from '../../../../hearings/models/partyFlags.model';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
@@ -64,49 +64,6 @@ describe('HearingEditSummaryComponent', () => {
     is_case_management_location: 'Y',
     is_hearing_location: 'Y'
   }];
-
-  const caseFlags: PartyFlagsModel[] = [
-    {
-      partyId: 'P1',
-      partyName: 'Jane Smith',
-      flagParentId: 'RA0008',
-      flagId: 'RA0013',
-      flagDescription: 'Sign language interpreter required',
-      flagStatus: 'ACTIVE'
-    },
-    {
-      partyId: 'P2',
-      partyName: 'Jane Smith vs DWP',
-      flagParentId: 'CF0001',
-      flagId: 'RA0016',
-      flagDescription: 'Potential fraud',
-      flagStatus: 'ACTIVE'
-    },
-    {
-      partyId: 'P3',
-      partyName: 'Jane Smith vs DWP',
-      flagParentId: 'CF0001',
-      flagId: 'RA0042',
-      flagDescription: 'Urgent flag',
-      flagStatus: 'ACTIVE'
-    },
-    {
-      partyId: 'P4',
-      partyName: 'Jane Smith vs DWP',
-      flagParentId: 'CF0001',
-      flagId: 'RA0042',
-      flagDescription: 'Urgent flag',
-      flagStatus: 'ACTIVE'
-    },
-    {
-      partyId: 'P5',
-      partyName: 'Jane Smith vs DWP',
-      flagParentId: 'CF0001',
-      flagId: 'RA0053',
-      flagDescription: 'Urgent flag',
-      flagStatus: 'ACTIVE'
-    }
-  ];
 
   const categories = [
     {
@@ -179,9 +136,15 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should unsubscribe', () => {
     component.hearingStateSub = of().subscribe();
+    component.hearingValuesSubscription = of().subscribe();
+    component.featureToggleServiceSubscription = of().subscribe();
     spyOn(component.hearingStateSub, 'unsubscribe').and.callThrough();
+    spyOn(component.hearingValuesSubscription, 'unsubscribe').and.callThrough();
+    spyOn(component.featureToggleServiceSubscription, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
     expect(component.hearingStateSub.unsubscribe).toHaveBeenCalled();
+    expect(component.hearingValuesSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.featureToggleServiceSubscription.unsubscribe).toHaveBeenCalled();
   });
 
   it('should focus on the element', () => {
@@ -222,6 +185,18 @@ describe('HearingEditSummaryComponent', () => {
       }
     };
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
+  });
+
+  it('should partyDetailsChangesRequired return true', () => {
+    spyOn(store, 'select').and.returnValue(of(initialState.hearings.hearingValues));
+    component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
+    component.serviceHearingValuesModel = {
+      ...component.serviceHearingValuesModel,
+      parties: initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails
+    };
+    component.serviceHearingValuesModel.parties[0].individualDetails.firstName = 'Jane updated';
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
   });
 
   it('should set the hearingWindowChangesRequired to true', () => {

@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.2":
-  version: 7.0.2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.6-case-flags-v2-1-release":
+  version: 7.0.6-case-flags-v2-1-release
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.6-case-flags-v2-1-release"
   dependencies:
     tslib: ^2.3.0
-  checksum: f2b7265ed82a867c4481bffbf970acf7d2737c59616b0c9ae1661bbbb9e78438a7ec6166cac4c486a9b687bcfcc1c0512b163dbaeb8b216f5444f0239112f6cb
+  checksum: 371e35356399203c33898ac5a763b276cf290d4bc22a1facdd8701e08deb4b3a1b3a362e5b978148eaae12aae356b6807c6569398256dbeafe71d7785b93ba79
   languageName: node
   linkType: hard
 
@@ -15071,17 +15071,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:>= 3.7.0, lodash@npm:^4.17.10, lodash@npm:^4.17.11, lodash@npm:^4.17.12, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21":
+"lodash@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7
-  languageName: node
-  linkType: hard
-
-"lodash@npm:^3.7.0":
-  version: 3.10.1
-  resolution: "lodash@npm:3.10.1"
-  checksum: 53065d3712a2fd90b55690c5af19f9625a5bbb2b7876ff76d782ee1dc22618fd4dff191d44a8e165a17b5b81a851c3e884d3b5b25e314422fbe24bb299542685
   languageName: node
   linkType: hard
 
@@ -19058,7 +19051,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.2
+    "@hmcts/ccd-case-ui-toolkit": 7.0.6-case-flags-v2-1-release
     "@hmcts/ccpay-web-component": 6.0.2
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 2.10.1-RC.1

@@ -67,7 +67,9 @@ Then('In hearing actuals page, I click continue', async function () {
 
 
 Then('I am hearing actuals check your answers page', async function () {
-    expect(await hearingActualsPage.checkYourAnswersHeader.isDisplayed()).to.be.true
+    await browserWaits.retryWithActionCallback(async () => {
+        expect(await hearingActualsPage.checkYourAnswersHeader.isDisplayed()).to.be.true
+    })
 })
 
 

@@ -1,5 +1,5 @@
 
-@ng @functional_enabled 
+@ng @functional_enabled
 Feature: Hearings CR84 OFF: View or edit action
 
 
@@ -11,20 +11,13 @@ Feature: Hearings CR84 OFF: View or edit action
         # Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
 
         Given I set MOCK case "hearingCase" details with reference "Hearing_case"
-        # Given I set MOCK case details "WA_Case" property "jurisdiction.id" as "IA"
-        # Given I set MOCK case details "WA_Case" property "case_type.id" as "Asylum"
-        Given I set mock case hearings
-            | hmcStatus        | hearingType           | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
-            | LISTED           | TEST_TYPE             | -3                     | 0                            | -3                                      | 2                                     |
-            | COMPLETED        | TEST_TYPE             | -5                     | -1                           | 2                                       | 4                                     |
-            | CANCELLED        | TEST_TYPE             | -5                     | -1                           | 2                                       | 4                                     |
-            | AWAITING_ACTUALS | TEST_AWAITING_HEARING | -5                     | -1                           | 2                                       | 4                                     |
+        Given I set MOCK case details "Hearing_case" property "jurisdiction.id" as "PRIVATELAW"
+        Given I set MOCK case details "Hearing_case" property "case_type.id" as "PRLAPPS"
 
-        Given I set mock get hearing with with status "LISTED" and values at jsonpath
-            | jsonpath                            | value                 |
-            | $.caseDetails.hmctsInternalCaseName | 1234567812345678      |
-            | $.caseDetails.publicCaseName        | Mock case public name |
-            | $.hearingDetails.hearingType        | ABA5-ABC              |
+        Given I set mock case hearings from file "viewEditHearings/caseHearings"
+
+        Given I set mock hearing HMC response from file "viewEditHearings/mock_HMC_setup"
+        Given I set mock hearing SHV response from file "viewEditHearings/mock_SHV_setup"
 
         Given I start MockApp
         Given I navigate to home page
@@ -40,32 +33,21 @@ Feature: Hearings CR84 OFF: View or edit action
         Then I am on hearings tab page
         Then I see hearings table for "Current and upcoming" in hearings tab page
 
-        Given I update mock hearings service hearing values with ref "partiesUpdated" for field "parties"
-            | partyName   |
-            | Party1 name |
-            | Party2 name |
-        Given I update mock hearings service hearing values with ref "partiesUpdated" for field "caseFlags"
-            | partyID | partyName   | flagParentId | flagId | flagDescription | flagStatus |
-            | party_1 | Party1 name | PARENT_0     | RA001  | Party1 comment  | ACTIVE     |
-            | party_2 | Party2 name | PARENT_0     | RA001  | Party2 comment  | ACTIVE     |
-            | party_1 | Party1 name | PARENT_0     | OT001  | Party1 comment  | ACTIVE     |
-            | party_2 | Party2 name | PARENT_0     | OT001  | Party2 comment  | ACTIVE     |
-
         When In hearings tab, I click action "View or edit" for hearing "TEST_TYPE" under table "Current and upcoming"
 
         Then I validate view or edit hearing page displayed
 
 
         Then I validate fields displayed in view or edit hearing page
-            | field                                 | value  | changeLinkDisplay | amendedFlagDisplay |
-            | Status                                | LISTED | false             | false              |
-            | Will additional security be required? | No     | true              | false              |
+            | field                                 | value  | changeLinkDisplay | amendedFlagDisplayed_preCR84 |
+            | Status                                | LISTED | false             |                              |
+            | Will additional security be required? | No     | true              |                              |
 
 
         When In view or edit hearing page, I click change link for field "Reasonable adjustments"
         Then I am on hearings workflow page "Hearing requirements"
         Then In hearings requirements page, I see case flags displayed for parties
-            | partyName   |
+            | partyName  |
             | Jane Smith |
 
         When I click continue in hearing workflow
@@ -87,22 +69,199 @@ Feature: Hearings CR84 OFF: View or edit action
             | field                         | value |
             | Will this be a paper hearing? | No    |
         Then In hearings Participant attendance page, I see parties
-            | partyName   |
-            | ApplC10001Fn ApplC10001Ln |
-            | TestC10001RepFn TestC10001RepLn |
-            | TestC10001RespFn TestC10001RespLn |
+            | partyName                     |
+            | Party1 name FN Party1 name LN |
+            | Party2 name FN Party2 name LN |
 
 
         When In hearing page "Participant attendance", I input values
-            | field                                                    | value                               |
-            | Will this be a paper hearing?                            | No                                  |
-            | What will be the methods of attendance for this hearing? | Hearing channel 1,Hearing channel 2 |
-            | How will each participant attend the hearing? | ApplC10001Fn ApplC10001Ln,Hearing channel 1 |
-            | How will each participant attend the hearing? | TestC10001RepFn TestC10001RepLn,Hearing channel 1 |
-            | How will each participant attend the hearing? | TestC10001RespFn TestC10001RespLn,Hearing channel 1 |
-            | How many people will attend the hearing in person?       | 2                                   |
+            | field                                                    | value                                   |
+            | Will this be a paper hearing?                            | No                                      |
+            | What will be the methods of attendance for this hearing? | In Person,Video,Telephone               |
+            | How will each participant attend the hearing?            | Party1 name FN Party1 name LN,In Person |
+            | How will each participant attend the hearing?            | Party2 name FN Party2 name LN,Video     |
+            | How many people will attend the hearing in person?       | 2                                       |
         When I click continue in hearing workflow
         Then I validate view or edit hearing page displayed
+
+
+        # hearing stage start
+        When In view or edit hearing page, I click change link for field "What stage is this hearing at?"
+        Then I am on hearings workflow page "What stage is this hearing at?"
+
+        When In hearing page "What stage is this hearing at?", I input values
+            | field                          | value    |
+            | What stage is this hearing at? | Breach 1 |
+
+
+        When I click continue in hearing workflow
+        Then I validate view or edit hearing page displayed
+
+
+        Then I validate edit hearing section heading labels
+            | Heading                 | Label |
+            | Stage                   |       |
+            | Hearing venue           |       |
+            | Language requirements   |       |
+            | Judge details           |       |
+            | Linked hearings         |       |
+            | Additional instructions |       |
+
+        Then I validate fields displayed in view or edit hearing page
+            | field                          | value    | changeLinkDisplay | amendedFlagDisplayed_preCR84 |
+            | What stage is this hearing at? | Breach 1 | true              | AMENDED                      |
+
+        # hearing stage end
+
+
+        # Hearing venue start
+        When In view or edit hearing page, I click change link for field "What are the hearing venue details"
+        Then I am on hearings workflow page "What are the hearing venue details?"
+
+        When In hearing page "What are the hearing venue details?", I input values
+            | field                         | value                 |
+            | Search for a location by name | cen,IA Court Center 2 |
+
+        When I click continue in hearing workflow
+        Then I validate view or edit hearing page displayed
+
+
+        Then I validate edit hearing section heading labels
+            | Heading                 | Label |
+            | Stage                   |       |
+            | Hearing venue           |       |
+            | Language requirements   |       |
+            | Judge details           |       |
+            | Linked hearings         |       |
+            | Additional instructions |       |
+
+        Then I validate fields displayed in view or edit hearing page
+            | field                              | value             | changeLinkDisplay | amendedFlagDisplayed_preCR84 |
+            | What are the hearing venue details | IA Court Center 2 | true              | AMENDED                      |
+
+        # Hearing venue end
+
+        # Language requirements start
+        # When In view or edit hearing page, I click change link for field "Does this hearing need to be in Welsh?"
+        # Then I am on hearings workflow page "Does this hearing need to be in Welsh?"
+
+        # When In hearing page "Does this hearing need to be in Welsh?", I input values
+        #     | field                                  | value |
+        #     | Does this hearing need to be in Welsh? | Yes   |
+
+
+        # When I click continue in hearing workflow
+        # Then I validate view or edit hearing page displayed
+
+
+        # Then I validate edit hearing section heading labels
+        #     | Heading                 | Label |
+        #     | Stage                   |       |
+        #     | Hearing venue           |       |
+        #     | Language requirements   |       |
+        #     | Judge details           |       |
+        #     | Linked hearings         |       |
+        #     | Additional instructions |       |
+
+        # Then I validate fields displayed in view or edit hearing page
+        #     | field                                  | value | changeLinkDisplay | amendedFlagDisplayed_preCR84 |
+        #     | Does this hearing need to be in Welsh? | Yes   | true              |                              |
+
+        # Language requirements end
+
+
+
+
+        # Judge details start
+        When In view or edit hearing page, I click change link for field "Do you want a specific judge?"
+        Then I am on hearings workflow page "Do you want a specific judge?"
+
+        When In hearing page "Do you want a specific judge?", I input values
+            | field                             | value                     |
+            | Do you want a specific judge?     | No                        |
+            | Select all judge types that apply | Judge type 1,Judge type 2 |
+
+
+        When I click continue in hearing workflow
+        Then I validate view or edit hearing page displayed
+
+
+        Then I validate edit hearing section heading labels
+            | Heading                 | Label |
+            | Stage                   |       |
+            | Hearing venue           |       |
+            | Language requirements   |       |
+            | Judge details           |       |
+            | Linked hearings         |       |
+            | Additional instructions |       |
+
+        Then I validate fields displayed in view or edit hearing page
+            | field                             | value                      | changeLinkDisplay | amendedFlagDisplayed_preCR84 |
+            | Do you want a specific judge?     | No                         | true              |                              |
+            | Select all judge types that apply | Judge type 1, Judge type 2 | true              | AMENDED                      |
+
+        # Judge details end
+
+
+
+
+        # Linked hearings start
+        When In view or edit hearing page, I click change link for field "Will this hearing need to be linked to other hearings?"
+        Then I am on hearings workflow page "Will this hearing need to be linked to other hearings?"
+
+        When In hearing page "Will this hearing need to be linked to other hearings?", I input values
+            | field                                                  | value |
+            | Will this hearing need to be linked to other hearings? | Yes   |
+
+        When I click continue in hearing workflow
+        Then I validate view or edit hearing page displayed
+
+
+        Then I validate edit hearing section heading labels
+            | Heading                 | Label |
+            | Stage                   |       |
+            | Hearing venue           |       |
+            | Language requirements   |       |
+            | Judge details           |       |
+            | Linked hearings         |       |
+            | Additional instructions |       |
+
+        Then I validate fields displayed in view or edit hearing page
+            | field                                                  | value | changeLinkDisplay | amendedFlagDisplayed_preCR84 |
+            | Will this hearing need to be linked to other hearings? | Yes   | true              | AMENDED                      |
+
+        # Linked hearings end
+
+
+
+
+        # Additional instructions start
+        When In view or edit hearing page, I click change link for field "Enter any additional instructions for the hearing"
+        Then I am on hearings workflow page "Enter any additional instructions for the hearing"
+
+        When In hearing page "Enter any additional instructions for the hearing", I input values
+            | field                                             | value                     |
+            | Enter any additional instructions for the hearing | Manual update labels test |
+
+        When I click continue in hearing workflow
+        Then I validate view or edit hearing page displayed
+
+
+        Then I validate edit hearing section heading labels
+            | Heading                 | Label |
+            | Stage                   |       |
+            | Hearing venue           |       |
+            | Language requirements   |       |
+            | Judge details           |       |
+            | Linked hearings         |       |
+            | Additional instructions |       |
+
+        Then I validate fields displayed in view or edit hearing page
+            | field                                             | value                     | changeLinkDisplay | amendedFlagDisplayed_preCR84 |
+            | Enter any additional instructions for the hearing | Manual update labels test | true              | AMENDED                      |
+
+
+
 
         When I click button with label "Submit updated request"
 
@@ -117,9 +276,8 @@ Feature: Hearings CR84 OFF: View or edit action
         # Then I validate hearings request body "OnPutHearing"
 
         Then I validate request body json "OnPutHearing", jsonpaths
-            | jsonpath                     | value       |
-            | $.requestDetails.status      | LISTED      |
-            | $.hearingDetails.hearingType | ABA5-ABC    |
-            | $.partyDetails[0].partyName | ApplC10001Fn ApplC10001Ln |
+            | jsonpath                     | value                     |
+            | $.requestDetails.status      | LISTED                    |
+            | $.hearingDetails.hearingType | ABA1-BRE                |
 
 

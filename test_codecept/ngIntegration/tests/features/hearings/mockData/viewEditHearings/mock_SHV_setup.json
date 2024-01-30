@@ -17,13 +17,13 @@
     ],
     "caseDeepLink": "https://manage-case-hearings-int.demo.platform.hmcts.net/cases/case-details/1690807693531270#Case File View",
     "externalCaseReference": "",
-    "caseManagementLocationCode": "283922",
+    "caseManagementLocationCode": "827534",
     "autoListFlag": false,
     "hearingType": "",
     "hearingWindow": {
         "dateRangeStart": "",
         "dateRangeEnd": "",
-        "firstDateTimeMustBe": "2024-12-14T00:00:00"
+        "firstDateTimeMustBe": "2024-12-17T00:00:00"
     },
     "duration": 0,
     "hearingPriorityType": "Standard",

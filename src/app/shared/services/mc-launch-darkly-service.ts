@@ -17,7 +17,7 @@ export class McLaunchDarklyService extends LaunchDarklyService {
   }
 
   private rootGuard(type: Type<any>) {
-    const io: InjectOptions = { optional: true, skipSelf: true}
+    const io: InjectOptions = { optional: true, skipSelf: true };
     const parent = inject(type, io);
 
     if (parent) {

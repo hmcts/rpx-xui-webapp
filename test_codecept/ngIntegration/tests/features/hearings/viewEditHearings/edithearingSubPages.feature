@@ -1,5 +1,5 @@
 
-@ng @functional_enabled
+@ng 
 Feature: Hearings : Edit hearing sub pages
 
 
@@ -14,37 +14,9 @@ Feature: Hearings : Edit hearing sub pages
         Given I set MOCK case details "Hearing_case" property "jurisdiction.id" as "PRIVATELAW"
         Given I set MOCK case details "Hearing_case" property "case_type.id" as "PRLAPPS"
 
-        Given I set mock case hearings
-            | hmcStatus        | hearingType           | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
-            | LISTED           | TEST_TYPE             | -3                     | 0                            | -3                                      | 2                                     |
-            | COMPLETED        | TEST_TYPE             | -5                     | -1                           | 2                                       | 4                                     |
-            | CANCELLED        | TEST_TYPE             | -5                     | -1                           | 2                                       | 4                                     |
-            | AWAITING_ACTUALS | TEST_AWAITING_HEARING | -5                     | -1                           | 2                                       | 4                                     |
-
-        Given I set mock get hearing with with status "LISTED" and values at jsonpath
-            | jsonpath                                          | value                              |
-            | $.caseDetails.hmctsInternalCaseName               | Mock case hmcts internal case name |
-            | $.caseDetails.publicCaseName                      | Mock case public name              |
-            | $.hearingDetails.hearingType                      | ABA5-ABC                           |
-            | $.hearingDetails.hearingChannels                  | [ABA1-HRC,ABA2-HRC]                |
-            | $.hearingDetails.hearingLocations[0].locationType | court                              |
-            | $.hearingDetails.hearingLocations[0].locationId   | 20001                              |
-            | $.hearingDetails.panelRequirements.roleType       | [ABA1-JDT,ABA2-JDT]                |
-
-
-        Given I set mock hearings service hearing values with ref "mockLSH"
-        Given I update mock hearings service hearing values with ref "mockLSH" for field "parties"
-            | partyName   |
-            | Party1 name |
-            | Party2 name |
-        Given I update mock hearings service hearing values with ref "mockLSH" at jsonpaths
-            | jsonpath                                               | value                              |
-            | $.publicCaseName                                       | Mock Test case public case name    |
-            | $.hmctsInternalCaseName                                | Mock case hmcts internal case name |
-            | $.hearingChannels                                      | [ABA1-HRC,ABA2-HRC]                |
-            | $.parties[0].individualDetails.preferredHearingChannel | ABA1-HRC                           |
-            | $.parties[1].individualDetails.preferredHearingChannel | ABA1-HRC                           |
-
+        Given I set mock case hearings from file "viewEditHearings/caseHearings"
+        Given I set mock hearing HMC response from file "viewEditHearings/mock_HMC_setup"
+        Given I set mock hearing SHV response from file "viewEditHearings/mock_SHV_setup"
 
         Given I start MockApp
         Given I navigate to home page

@@ -1,5 +1,4 @@
-
-@ng @functional_enabled 
+@ng @functional_enabled
 Feature: Create hearings workflow
 
     Scenario: Create hearing , input combo 1

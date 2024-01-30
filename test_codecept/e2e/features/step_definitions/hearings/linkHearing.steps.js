@@ -38,7 +38,10 @@ When('In link hearing How should these linked hearings be heard? page, I select 
 })
 
 Then('I see link hearings confirmatin page with message {string}', async function(message){
-    expect(await linkHearingWorkflowPage.confirmationBanner.isDisplayed()).to.be.true
-    expect(await linkHearingWorkflowPage.confirmationBanner.getText()).to.includes(message)
+    await browserWaits.retryWithActionCallback(async () => {
+        expect(await linkHearingWorkflowPage.confirmationBanner.isDisplayed()).to.be.true
+        expect(await linkHearingWorkflowPage.confirmationBanner.getText()).to.includes(message)
+    })
+    
 })
 

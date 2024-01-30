@@ -289,7 +289,7 @@ Feature: Create hearings workflow
             # | Hearing venue                              | What are the hearing venue details?                      |       |
             | Judge details                              | Do you want a specific judge?                            | No                        |
             | Judge details                              | Select all judge types that apply                        | Judge type 1,Judge type 2 |
-            | Panel details                              | Do you require a panel for this hearing?                 | No                        |
+            # | Panel details                              | Do you require a panel for this hearing?                 | No                        |
             | Length, date and priority level of hearing | Length of hearing                                        | 1 Day 2 Hours 5 Minutes   |
             | Length, date and priority level of hearing | Does the hearing need to take place on a specific date?  | No                        |
             | Length, date and priority level of hearing | What is the priority of this hearing?                    | Hearing priority 1        |

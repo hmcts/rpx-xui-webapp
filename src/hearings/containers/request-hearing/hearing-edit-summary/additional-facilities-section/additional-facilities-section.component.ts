@@ -64,7 +64,7 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
     this.changeEditHearing.emit({ fragmentId, changeLink });
   }
 
-  public showAmmendedForFacilitiesRequired(facility: string): boolean {
+  public showAmendedForFacilitiesRequired(facility: string): boolean {
     return !this.facilitiesRequiredToCompare.includes(this.additionalFacilitiesRefData.find((facilityRefData) => facilityRefData.value_en === facility).key);
   }
 }

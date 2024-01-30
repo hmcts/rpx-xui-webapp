@@ -31,7 +31,7 @@
     <div class="govuk-summary-list__value">
       <ul>
         <li *ngFor="let additionalFacility of additionalFacilities">
-          <exui-amendment-label *ngIf="showAmmendedForFacilitiesRequired(additionalFacility)" [displayLabel]="amendmentLabelEnum.AMENDED">
+          <exui-amendment-label *ngIf="showAmendedForFacilitiesRequired(additionalFacility)" [displayLabel]="amendmentLabelEnum.AMENDED">
           </exui-amendment-label>
           {{ additionalFacility }}
         </li>

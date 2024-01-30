@@ -113,7 +113,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
           partyAmendmentStatus: AmendmentLabelStatus.ACTION_NEEDED
         };
       } else {
-        const partyInHMC: PartyDetailsModel = this.hearingRequestMainModel.partyDetails.find((party) => party.partyID === partyInSHV.partyID);
+        const partyInHMC: PartyDetailsModel = partyDetails.find((party) => party.partyID === partyInSHV.partyID);
         if (partyInHMC.partyName !== partyInSHV.partyName) {
           partyInSHV = {
             ...partyInHMC,

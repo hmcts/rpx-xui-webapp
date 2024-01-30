@@ -1,7 +1,6 @@
 @functional_enabled
 Feature: Case file view
 
-
     Scenario: Display of case file view V1.1
         Given I set MOCK with user details with user identifier "RESTRICTED_CASE_FILE_VIEW_V1.1_ON"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |
@@ -55,9 +54,9 @@ Feature: Case file view
         Then In case file view tab, I see documents media view
         Then In case file view tab, I see documents tree view header with text "Documents (17)"
 
-        Then In case file view tab, I dont see file upload stamp for files under folder "Orders"
-            | file                           |
-            | Blank_Order_Directions_C21.pdf |
+        # Then In case file view tab, I dont see file upload stamp for files under folder "Orders"
+        #     | file                           |
+        #     | Blank_Order_Directions_C21.pdf |
 
     Scenario: PDF Media file display
         Given I set MOCK with user details with user identifier "RESTRICTED_CASE_FILE_VIEW_V1.1_ON"

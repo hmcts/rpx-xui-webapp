@@ -106,20 +106,59 @@ class CustomHelper extends Helper {
         return this.helpers.Puppeteer.page;
     }
 
-    async isVisible(selector) {
-        const helper = this._getHelper();
-        try {
-            const numVisible = await helper.grabNumberOfVisibleElements(selector);
+    async getTextUsingPlaywright(selector){
+        const locator = this.getPlaywrightPage().locator(selector)
+        const txt = await locator.first().textContent()
+        return txt
+    }
 
-            if (numVisible !== undefined) {
-                return numVisible > 0
-            }
-        } catch (err) {
-            return false
+    getPlaywrightlocator(selector){
+        const selectorType = Object.keys(selector)[0]
+        const selectorString = selectorType === 'css' ? selector.css : `xpath=${selector.xpath}`
+        const locator = this.getPlaywrightPage().locator(selectorString)
+        return locator;
+    }
+
+    async getAttributeUsingPlaywright(selector,name) {
+        let locator = null;
+        if(name === 'value'){
+            locator = this.getPlaywrightPage().locator(selector).first()
+            return await locator.inputValue()
+        }else{
+            locator  = this.getPlaywrightPage().locator(selector).first()
+            return await locator.getAttribute(name)
         }
+        
+    }
+
+    async isElementChecked(selector) {
+        const locator = this.getPlaywrightPage().locator(selector)
+        const isChecked = await locator.first().isChecked()
+        return isChecked
     }
 
 
+    async isVisible(selector) {
+        const locator = this.getPlaywrightlocator(selector)
+        const isLocatorVisible = await locator.first().isVisible()
+        return isLocatorVisible
+    }
+
+    async waitForPlaywrightLocator(selector){
+        const selectorType = Object.keys(selector)[0]
+        const selectorString = selectorType === 'css' ? selector.css : `xpath=${selector.xpath}`
+        const page = this.getPlaywrightPage();
+        await page.locator(selectorString).first().waitFor({ timeout: 20*1000 });
+    }
+
+
+
+    async waitForPlaywrightLocatorState(selector, state) {
+        const selectorType = Object.keys(selector)[0]
+        const selectorString = selectorType === 'css' ? selector.css : `xpath=${selector.xpath}`
+        const page = this.getPlaywrightPage();
+        await page.locator(selectorString).first().waitFor({state: state,  timeout: 20 * 1000 });
+    }
 
 
 

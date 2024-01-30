@@ -1,10 +1,11 @@
-@fullfunctional @test @functional_enabled
+@fullfunctional @test @functional_enabled 
 Feature: Test case type case list and find case workflow
 
   Background:
     When I navigate to Expert UI Url
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
+
 
 
     Scenario: Validate workbasket inputs against the API response

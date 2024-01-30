@@ -1,7 +1,7 @@
 import { inject,
   Inject,
   Injectable,
-  InjectFlags,
+  InjectOptions,
   InjectionToken,
   Type } from '@angular/core';
 import { LaunchDarklyService } from '@hmcts/rpx-xui-common-lib';
@@ -17,7 +17,8 @@ export class McLaunchDarklyService extends LaunchDarklyService {
   }
 
   private rootGuard(type: Type<any>) {
-    const parent = inject(type, InjectFlags.Optional | InjectFlags.SkipSelf);
+    const io: InjectOptions = { optional: true, skipSelf: true}
+    const parent = inject(type, io);
 
     if (parent) {
       throw Error(`[${type}]: Creating multiple instances, but should be singleton.`);

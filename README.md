@@ -12,6 +12,7 @@ Then follow:
 && export ALLOW_CONFIG_MUTATIONS=1 && npm run start:node`
 
 
+
 Explanation: 
 
 NODE_CONFIG_DIR tells the machine where the configuration for the Node application is located.

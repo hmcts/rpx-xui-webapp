@@ -318,6 +318,10 @@ class Element {
             elapsedWait += 100;
 
         } while (!isPresentStatus && elapsedWait / 1000 < waitTime)
+
+        if (!isPresentStatus){
+            throw new Error(`Element not found after wait for ${waitTime}sec`)
+        }
         return isPresentStatus;
         // await getActor().waitForPlaywrightLocator(this.selector)
     }

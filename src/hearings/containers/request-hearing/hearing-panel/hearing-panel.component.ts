@@ -148,8 +148,6 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
         }
       });
       const panelSpecialisms = this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms || [];
-      console.log(panelSpecialisms);
-      console.log(this.multiLevelSelections);
       this.setPanelSpecialisms(panelSpecialisms);
     }
     if (selectedPanelRoles && selectedPanelRoles.length || this.excludedJudgeList.length || this.includedJudgeList.length) {

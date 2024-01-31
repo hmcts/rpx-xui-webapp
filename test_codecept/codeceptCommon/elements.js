@@ -216,9 +216,15 @@ class Element {
     }
 
     async isPresent(){
-        const e = await getActor().getPlaywrightlocator(this.selector)
-        const count = await e.count()
-        return count > 0;
+        try{
+            const e = await getActor().getPlaywrightlocator(this.selector)
+            const count = await e.count()
+            return count > 0;
+        }catch(err){
+            reportLogger.AddMessage(`error occured ${err.message}`)
+            return false
+        }
+      
       
     }
 

@@ -307,7 +307,19 @@ class Element {
 
     async wait(waitInSec){
         reportLogger.AddMessage("ELEMENT_WAIT: " + JSON.stringify(this.selector) +" at "+this.__getCallingFunctionName());
-        await getActor().waitForPlaywrightLocator(this.selector)
+        let waitTime = waitInSec ? waitInSec : 20;
+        let isPresentStatus = null;
+        let elapsedWait = 0;
+        do{ 
+            if (isPresentStatus === false){
+                await browser.sleepInMillisec(100)
+            }
+            isPresentStatus = await this.isPresent();
+            elapsedWait += 100;
+
+        } while (!isPresentStatus && elapsedWait / 1000 < waitTime)
+        return isPresentStatus;
+        // await getActor().waitForPlaywrightLocator(this.selector)
     }
 
     async scrollIntoView(){

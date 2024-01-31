@@ -187,6 +187,24 @@ describe('HearingEditSummaryComponent', () => {
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
   });
 
+  it('should set the pagesToDispaly', () => {
+    const sectionsToDisplay = [
+      'hearing-requirements',
+      'hearing-facilities',
+      'hearing-stage',
+      'hearing-attendance',
+      'hearing-venue',
+      'hearing-welsh',
+      'hearing-judge',
+      'hearing-panel',
+      'hearing-timing',
+      'hearing-additional-instructions'
+    ];
+    component.ngOnInit();
+    console.log('test', JSON.stringify(component.sectionsToDisplay));
+    expect(component.sectionsToDisplay).toEqual(sectionsToDisplay);
+  });
+
   it('should set the hearingWindowChangesRequired to true', () => {
     hearingsService.propertiesUpdatedOnPageVisit = null;
     component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '2024-02-13T10:00:00';

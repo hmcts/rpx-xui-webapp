@@ -106,7 +106,10 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
 
   public loadPanel(multi: LovRefDataModel, panelSpecialism: string): boolean {
     let skip = false;
+    console.log('multi' + JSON.stringify(multi));
+    console.log('panelSpecialism: ' + panelSpecialism);
     if (multi.child_nodes && multi.child_nodes.length) {
+      console.log("TEST1");
       multi.child_nodes.forEach((node) => {
         if (node.key.toLowerCase().trim() === panelSpecialism.toLocaleLowerCase().trim() && !skip && !multi.selected) {
           node.selected = multi.selected = true;
@@ -114,6 +117,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
         }
       });
     } else {
+      console.log("TEST2");
       if (multi.key === panelSpecialism) {
         multi.selected = true;
         skip = true;

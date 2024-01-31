@@ -390,3 +390,18 @@ export enum HearingActualsTimingErrorMessages {
   PAUSE_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Pause time must be between the hearing start and finish times',
   RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Resume time must be between the hearing start and finish times',
 }
+
+export enum HearingScreensEnum {
+  HEARING_REQUIREMENTS = 'hearing-requirements',
+  HEARING_FACILITIES = 'hearing-facilities',
+  HEARING_STAGE = 'hearing-stage',
+  HEARING_ATTENDANCE = 'hearing-attendance',
+  REGION_ID = 'regionId',
+  HEARING_VENUE = 'hearing-venue',
+  HEARING_WELSH = 'hearing-welsh',
+  HEARING_JUDGE = 'hearing-judge',
+  HEARING_TIMING = 'hearing-timing',
+  HEARING_LINK = 'hearing-link',
+  HEARING_PANEL = 'hearing-panel',
+  HEARING_ADDITIONAL_INSTRUCTIONS = 'hearing-additional-instructions'
+}

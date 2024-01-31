@@ -14,7 +14,7 @@ import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model'
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
 import { hearingStatusMappings } from '../../../models/hearingStatusMappings';
-import { ACTION, CategoryType, HearingDateEnum, HearingTemplate, LaCaseStatus, Mode, PartyType } from '../../../models/hearings.enum';
+import { ACTION, CategoryType, HearingDateEnum, HearingScreensEnum, HearingTemplate, LaCaseStatus, Mode, PartyType } from '../../../models/hearings.enum';
 import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -37,7 +37,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public responseReceivedDate: string;
   public caseStatus: string;
   public isHearingListed: boolean;
-  public showPanelDetailsSection: boolean;
   public showLanguageRequirementsSection$: Observable<boolean>;
   public hearingValuesSubscription: Subscription;
   public featureToggleServiceSubscription: Subscription;
@@ -58,6 +57,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public afterPageVisit: AfterPageVisitProperties;
   public isWithinPageAttributeChanged: boolean = false;
   public pageVisitChangeExists: boolean = false;
+  public sectionsToDisplay: string[];
+  public hearingScreenEnum = HearingScreensEnum;
   private readonly notUpdatedMessage = 'The request has not been updated';
 
   constructor(private readonly router: Router,
@@ -87,7 +88,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     this.responseReceivedDate = moment(this.hearingRequestMainModel.hearingResponse?.receivedDateTime).format(HearingDateEnum.DisplayMonth) || '';
     this.caseStatus = this.hearingRequestMainModel.hearingResponse?.laCaseStatus || '';
     this.isHearingListed = this.caseStatus === LaCaseStatus.LISTED;
-    this.showPanelDetailsSection = this.serviceHearingValuesModel?.screenFlow?.findIndex((screen) => screen.screenName === 'hearing-panel') > -1;
+    this.sectionsToDisplay = this.serviceHearingValuesModel?.screenFlow.map((s) => s.screenName);
 
     const locationIds = this.hearingRequestMainModel.hearingDetails.hearingLocations?.map((location) => location.locationId).join(',');
     this.showLanguageRequirementsSection$ = this.locationsDataService.getLocationById(locationIds).pipe(

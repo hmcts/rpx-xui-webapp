@@ -40,8 +40,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public isHearingListed: boolean;
   public showPanelDetailsSection: boolean;
   public showLanguageRequirementsSection$: Observable<boolean>;
-  private hearingValuesSubscription: Subscription;
-  private featureToggleServiceSubscription: Subscription;
+  public hearingValuesSubscription: Subscription;
+  public featureToggleServiceSubscription: Subscription;
   public validationErrors: { id: string, message: string }[] = [];
   public additionalFacilitiesRefData: LovRefDataModel[];
   public caseFlagsRefData: CaseFlagReferenceModel[];
@@ -129,7 +129,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       }
     }
     super.navigateAction(action);
-    return;
   }
 
   public onChange(event: EditHearingChangeConfig): void {

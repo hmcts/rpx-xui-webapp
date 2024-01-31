@@ -265,8 +265,8 @@ describe('HearingPanelComponent', () => {
         child_nodes: null
       }
     ],
-    selected: false,
-  }
+    selected: false
+  };
 
   beforeEach(() => {
     const STATE = _.cloneDeep(initialState);

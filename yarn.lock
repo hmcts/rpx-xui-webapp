@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.6-welsh-translation-yes-no-field-fix":
-  version: 7.0.6-welsh-translation-yes-no-field-fix
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.6-welsh-translation-yes-no-field-fix"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.7-welsh-translation-yes-no-field-fix":
+  version: 7.0.7-welsh-translation-yes-no-field-fix
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.7-welsh-translation-yes-no-field-fix"
   dependencies:
     tslib: ^2.3.0
-  checksum: 59dc283cf136978e250c6c3abc05deefde6f2766f385a332029268a8d9239eaf865edcc74d543face232d4632bab026f911f3e82d8f840e53dba2015e1ef49e1
+  checksum: 27fee2c5cc37925f2db0c6ca98069bdbc28e28e1724fcfae4046a8f3d96c48da6b5776d46be5697623aaa0735386c337848142db835cc2a7d17a8426f41e4a67
   languageName: node
   linkType: hard
 
@@ -19006,7 +19006,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.6-welsh-translation-yes-no-field-fix
+    "@hmcts/ccd-case-ui-toolkit": 7.0.7-welsh-translation-yes-no-field-fix
     "@hmcts/ccpay-web-component": 6.0.2
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 3.0.2

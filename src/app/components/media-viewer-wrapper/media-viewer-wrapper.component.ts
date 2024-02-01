@@ -65,7 +65,7 @@ export class MediaViewerWrapperComponent implements OnInit {
     this.icpEnabled$ = this.featureToggleService.isEnabled('icp-enabled');
     this.enableRedactSearch$ = this.featureToggleService.isEnabled('enable-redact-search');
 
-    this.titleService.setTitle('View Document - '+ this.mediaFilename);
+    this.titleService.setTitle(this.mediaFilename + ' - View Document');
   }
 
   /**

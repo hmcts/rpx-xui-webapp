@@ -62,6 +62,8 @@ export class MediaViewerWrapperComponent implements OnInit {
     this.icpJurisdictions$ = this.featureToggleService.getValue('icp-jurisdictions', []);
     this.icpEnabled$ = this.featureToggleService.isEnabled('icp-enabled');
     this.enableRedactSearch$ = this.featureToggleService.isEnabled('enable-redact-search');
+
+    // browser fix here.
   }
 
   /**

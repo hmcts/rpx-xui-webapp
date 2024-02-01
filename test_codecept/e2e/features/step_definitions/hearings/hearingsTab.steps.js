@@ -1,6 +1,6 @@
 const moment = require('moment')
 const hearingsTabPage = require('../../pageObjects/hearings/hearingsTabPage')
-
+const browserWaits = require('../../../support/customWaits')
 
 Then('I am on hearings tab page', async function () {
     expect(await hearingsTabPage.isDisplayed()).to.be.true
@@ -8,7 +8,10 @@ Then('I am on hearings tab page', async function () {
 
 
 Then('I see hearings table for {string} in hearings tab page', async function (hearingsTable) {
-    expect(await hearingsTabPage.getTableObject(hearingsTable).isDisplayed()).to.be.true
+    await browserWaits.retryWithActionCallback(async () => {
+        expect(await hearingsTabPage.getTableObject(hearingsTable).isDisplayed()).to.be.true
+    })
+   
 });
 
 

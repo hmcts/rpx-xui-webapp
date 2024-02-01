@@ -6,7 +6,6 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { HearingsUtils } from 'src/hearings/utils/hearings.utils';
 import { AppConstants } from '../../../../app/app.constants';
 import { CaseCategoryModel } from '../../../../hearings/models/caseCategory.model';
 import { AfterPageVisitProperties, AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../../hearings/models/hearingsUpdateMode.enum';
@@ -23,6 +22,7 @@ import { HearingsFeatureService } from '../../../services/hearings-feature.servi
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({

@@ -2,11 +2,11 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as moment from 'moment';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingDetailsModel } from '../../../../models/hearingDetails.model';
+import { HearingWindowModel } from '../../../../models/hearingWindow.model';
 import { HearingDateEnum, RadioOptions } from '../../../../models/hearings.enum';
 import { AmendmentLabelStatus } from '../../../../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { HearingsService } from '../../../../services/hearings.service';
-import { HearingWindowModel } from 'src/hearings/models/hearingWindow.model';
 
 @Component({
   selector: 'exui-hearing-timing-section',

@@ -7,6 +7,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { SessionStorageService } from '../../services/session-storage/session-storage.service';
 import { MediaViewerWrapperComponent } from './media-viewer-wrapper.component';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import createSpyObj = jasmine.createSpyObj;
 import { Title } from '@angular/platform-browser';
 
@@ -40,7 +41,15 @@ describe('MediaViewerWrapperComponent', () => {
         MediaViewerModule,
         StoreModule.forRoot({}),
         EffectsModule.forRoot([]),
-        RouterTestingModule
+        RouterTestingModule,
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true
+        })
       ],
       declarations: [
         MediaViewerWrapperComponent,

@@ -3,11 +3,9 @@ import { HearingConditions } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { HearingWindowModel } from '../models/hearingWindow.model';
-import { HearingDateEnum, Mode } from '../models/hearings.enum';
-import { PropertiesUpdatedOnPageVisit } from '../models/hearingsUpdateMode.enum';
+import { HearingDateEnum } from '../models/hearings.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
-import { UnavailabilityRangeModel } from '../models/unavailabilityRange.model';
-import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
+import { PartyDetailsModel } from '../models/partyDetails.model';
 
 export class HearingsUtils {
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
@@ -52,9 +50,9 @@ export class HearingsUtils {
       : hearingRequestMainModel.hearingDetails.hearingWindow;
   }
 
-  public static getPartiesNotAvailableDates(serviceHearingValuesModel: ServiceHearingValuesModel): string[] {
+  public static getPartiesNotAvailableDates(parties: PartyDetailsModel[]): string[] {
     const partiesNotAvailableDates: string[] = [];
-    const unavailabilityDateList = serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRanges);
+    const unavailabilityDateList = parties.flatMap((party) => party.unavailabilityRanges);
     unavailabilityDateList?.forEach((dateRange) => {
       if (dateRange) {
         const startDate = moment(dateRange.unavailableFromDate);

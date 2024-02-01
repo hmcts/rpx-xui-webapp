@@ -392,9 +392,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   private pageVisitHearingWindowChangeExists(): boolean {
     const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
     if (hearingWindowHMC?.firstDateTimeMustBe) {
-      const partiesNotAvailableDates = HearingsUtils.getPartiesNotAvailableDates(this.serviceHearingValuesModel);
-      console.log('PARTIES NOT AVAILABLE DATES', partiesNotAvailableDates);
-      if (partiesNotAvailableDates?.includes(moment(hearingWindowHMC.firstDateTimeMustBe).format(HearingDateEnum.DisplayMonth))) {
+      const partiesNotAvailableDatesHMC = HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestToCompareMainModel.partyDetails);
+      const partiesNotAvailableDatesSHV = HearingsUtils.getPartiesNotAvailableDates(this.serviceHearingValuesModel.parties);
+      if (!_.isEqual(partiesNotAvailableDatesSHV, partiesNotAvailableDatesHMC)) {
         return true;
       }
     }

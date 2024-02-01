@@ -7,6 +7,7 @@ import { HEARING_CREATE_EDIT_SUMMARY_TEMPLATE } from '../../../templates/hearing
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import { Section } from '../../../../hearings/models/section';
 import { ScreenNavigationModel } from 'api/hearings/models/screenNavigation.model';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'exui-hearing-create-edit-summary',
@@ -29,31 +30,27 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
     super.navigateAction(action);
   }
 
-  public getScreenFlowFromStore(hearingStore) {
-    let workFlow = [];
-    hearingStore.subscribe((str) => {
-      if (!str || !str.hearings) {
-        return;
-      }
-      const hearing = str.hearings;
-      workFlow = hearing.hearingValues?.serviceHearingValuesModel?.screenFlow;
-    });
-    return workFlow;
+  public getScreenFlowFromStore(hearingStore): Observable<ScreenNavigationModel[]> {
+    return hearingStore;
   }
 
   public removeUnnecessarySummaryTemplateItems() {
     let filteredTemplate: Section[] = [];
-    const sFlow: ScreenNavigationModel[] = this.getScreenFlowFromStore(this.hearingStore);
-    if (sFlow && sFlow.length) {
-      const isFlowWithoutLinkedHearing = sFlow.some((fL: ScreenNavigationModel) => fL.screenName.includes('hearing-link'));
+    this.getScreenFlowFromStore(this.hearingStore).subscribe((str: any) => {
+      if (str && str.hearings) {
+        const sFlow = str?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
+        if (sFlow && sFlow.length) {
+          const isFlowWithoutLinkedHearing = sFlow.some((fL: ScreenNavigationModel) => fL.screenName.includes('hearing-link'));
 
-      if (!isFlowWithoutLinkedHearing) {
-        const template = this.template.filter((csl) => !csl.sectionHTMLTitle.includes('Linked hearings'));
-        filteredTemplate = template;
-      } else {
-        filteredTemplate = this.template;
+          if (!isFlowWithoutLinkedHearing) {
+            const template = this.template.filter((csl) => !csl.sectionHTMLTitle.includes('Linked hearings'));
+            filteredTemplate = template;
+          } else {
+            filteredTemplate = this.template;
+          }
+        }
       }
-    }
+    });
     return filteredTemplate;
   }
 

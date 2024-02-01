@@ -12,6 +12,7 @@ const config = require('../../../config/functional.conf');
 
 const headerPage = require('../headerPage');
 const { LOG_LEVELS } = require('../../../support/constants');
+const reportLogger = require('../../../support/reportLogger');
 class CaseManager {
 
     constructor() {
@@ -205,6 +206,7 @@ class CaseManager {
         }
         
         const currentPageUrl = await browser.getCurrentUrl()
+        reportLogger.AddMessage(`on page with URL: ${currentPageUrl}`)
         await BrowserWaits.retryWithActionCallback(async () => {
             await this.nextStepGoButton.click();
             // await BrowserWaits.waitForElement($('exui-case-details-home'));

@@ -203,10 +203,12 @@ class CaseManager {
             await nextStepSelect.select(someStepEventName)
 
         }
-      
+        
+        const currentPageUrl = await browser.getCurrentUrl()
         await BrowserWaits.retryWithActionCallback(async () => {
             await this.nextStepGoButton.click();
-            await BrowserWaits.waitForElement($('exui-case-details-home'));
+            // await BrowserWaits.waitForElement($('exui-case-details-home'));
+            await BrowserWaits.waitForPageNavigation(currentPageUrl)
         })
         
     }

@@ -25,7 +25,6 @@ Feature: Test case type case creation and case details validations Part 1
         Then I see case details page
         Then Validate Case event next step trigger actions
 
-@functional_debug
     Scenario: Validate update form page click on next step trigger actions
         When I click on search button
         Then Search page should be displayed

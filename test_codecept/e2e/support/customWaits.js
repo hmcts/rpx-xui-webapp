@@ -3,7 +3,7 @@
 
 const CucumberReporter = require('../../codeceptCommon/reportLogger');
 const BrowserLogs = require('./browserLogs');
-const reportLogger = require('./reportLogger');
+const reportLogger = require('../../codeceptCommon/reportLogger');
 class BrowserWaits{
     constructor(){
         this.waitTime = 30000; 

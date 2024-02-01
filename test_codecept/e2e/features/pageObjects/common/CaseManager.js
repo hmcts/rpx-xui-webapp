@@ -204,7 +204,7 @@ class CaseManager {
             await nextStepSelect.select(someStepEventName)
 
         }
-        
+        await browser.sleep(2)
         const currentPageUrl = await browser.getCurrentUrl()
         reportLogger.AddMessage(`on page with URL: ${currentPageUrl}`)
         await BrowserWaits.retryWithActionCallback(async () => {

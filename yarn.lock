@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.4-task-completion-error-message":
-  version: 7.0.4-task-completion-error-message
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.4-task-completion-error-message"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.7-task-completion-error-message":
+  version: 7.0.7-task-completion-error-message
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.7-task-completion-error-message"
   dependencies:
     tslib: ^2.3.0
-  checksum: 674f6640497ec6438a90100528ccff3f6884d63f61ffaad61d66c276082b5da62a8baa803b6c1b6316012c6a318faeefa634676a9b97702f3e48efe1ea1f1443
+  checksum: 692c1a6e2608a84fde75967b0f76bf2834991dafdf799ff5a5150dd6b5a29e141b82415fd6c29a2d6df2497e24184739d6e9263675d05214972bfa5cc7e0cb94
   languageName: node
   linkType: hard
 
@@ -19006,7 +19006,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.4-task-completion-error-message
+    "@hmcts/ccd-case-ui-toolkit": 7.0.7-task-completion-error-message
     "@hmcts/ccpay-web-component": 6.0.2
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 3.0.2

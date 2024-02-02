@@ -20,6 +20,8 @@ import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { CaseTypesUtils } from '../../../utils/case-types.utils';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import { AmendmentLabelStatus } from 'src/hearings/models/hearingsUpdateMode.enum';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'exui-hearing-requirements',
@@ -35,6 +37,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   public strRegions: string;
   public caseTypeRefData: LovRefDataModel[];
   public caseTypes: CaseCategoryDisplayModel[];
+  public showReasonableAdjustmentFlagsWarningMessage: boolean;
 
   @HostListener('window:focus', ['$event'])
   public onFocus(): void {
@@ -220,6 +223,10 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         : this.hearingRequestToCompareMainModel.partyDetails;
       this.reasonableAdjustmentFlags = CaseFlagsUtils.getReasonableAdjustmentFlags(this.caseFlagsRefData,
         propertiesUpdatedOnPageVisit.caseFlags?.flags, partyDetails, this.serviceHearingValuesModel.parties);
+
+      this.showReasonableAdjustmentFlagsWarningMessage = this.reasonableAdjustmentFlags.map(
+        (flag) => flag.partyFlags.map((partyFlag) => partyFlag.flagAmendmentLabelStatus)
+      ).join().includes(AmendmentLabelStatus.WARNING);
     } else {
       // Hearings manual amendment journey is NOT enabled
       this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel?.caseFlags?.flags,

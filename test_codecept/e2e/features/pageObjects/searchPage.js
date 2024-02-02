@@ -81,7 +81,7 @@ class SearchPage {
     RuntimeTestData.searchCasesInputs.jurisdiction = jurisdiction;
     // const caseTypeElements = this.caseType.$$('option');
     // const caseTypesSize = await caseTypeElements.count();
-    RuntimeTestData.searchCasesInputs.casetypes = this.caseType.getSelectOptions()
+    RuntimeTestData.searchCasesInputs.casetypes = await this.caseType.getSelectOptions()
    
   }
 

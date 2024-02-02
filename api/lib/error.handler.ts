@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import * as log4jui from './log4jui';
 import { propsExist } from './objectUtilities';
 

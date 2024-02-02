@@ -40,8 +40,8 @@ describe('HearingCreateEditSummaryComponent', () => {
   });
 
   it('should call getScreenFlowFromStore ', () => {
-    const screenFlow = spyOn(component, 'getScreenFlowFromStore');
     const store = [{ screenName: 'hearing-link', navigation: [] }];
+    const screenFlow = spyOn(component, 'getScreenFlowFromStore').and.returnValue(of(store));
     component.removeUnnecessarySummaryTemplateItems();
     expect(screenFlow).toHaveBeenCalled();
   });

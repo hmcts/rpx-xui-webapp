@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockStore } from '@ngrx/store/testing';
+import * as _ from 'lodash';
 import { of } from 'rxjs';
 import { LoggerService } from '../../../../app/services/logger/logger.service';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
@@ -16,18 +17,16 @@ import {
   PartyType, RequirementType,
   UnavailabilityType
 } from '../../../models/hearings.enum';
+import { HearingWindowModel } from '../../../models/hearingWindow.model';
 import { LocationByEPIMMSModel } from '../../../models/location.model';
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
+import { PartyFlagsDisplayModel } from '../../../models/partyFlags.model';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
-import { HearingRequirementsComponent } from './hearing-requirements.component';
-import { LoggerService } from '../../../../app/services/logger/logger.service';
-import { HearingWindowModel } from '../../../models/hearingWindow.model';
-import { PartyDetailsModel } from '../../../models/partyDetails.model';
-import * as _ from 'lodash';
 import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
-import { PartyFlagsDisplayModel } from '../../../models/partyFlags.model';
+import { HearingRequirementsComponent } from './hearing-requirements.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',

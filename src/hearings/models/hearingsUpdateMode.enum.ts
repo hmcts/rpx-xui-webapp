@@ -79,6 +79,7 @@ export interface PropertiesUpdatedOnPageVisit {
 export enum AmendmentLabelStatus {
   ACTION_NEEDED = 'ACTION NEEDED',
   AMENDED = 'AMENDED',
+  WARNING = 'WARNING',
   NONE = 'NONE'
 }
 

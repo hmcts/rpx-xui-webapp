@@ -2,6 +2,7 @@ import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angu
 import { ActivatedRoute } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import { AmendmentLabelStatus } from 'src/hearings/models/hearingsUpdateMode.enum';
 import { LoggerService } from '../../../../app/services/logger/logger.service';
 import * as fromHearingStore from '../../../../hearings/store';
 import { ValidatorsUtils } from '../../../../hearings/utils/validators.utils';
@@ -20,8 +21,6 @@ import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { CaseTypesUtils } from '../../../utils/case-types.utils';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
-import { AmendmentLabelStatus } from 'src/hearings/models/hearingsUpdateMode.enum';
-import * as _ from 'lodash';
 
 @Component({
   selector: 'exui-hearing-requirements',

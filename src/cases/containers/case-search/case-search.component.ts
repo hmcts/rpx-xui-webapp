@@ -171,11 +171,15 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   private getCompressedLSItem (key: string): string {
     const item = localStorage.getItem(key);
     if (item && item.length>0) {
-      try {
-        const decomp = decompressFromUTF16(item);
-        return JSON.parse(decomp);
-      } catch (e) {
-        console.log('error decompressing data of length' + item.length, e);
+      if (item.startsWith('{')) { // probably not compressed
+        return item;
+      } else {
+        try {
+          const decomp = decompressFromUTF16(item);
+          return JSON.parse(decomp);
+        } catch (e) {
+          console.log('error decompressing data of length' + item.length, e);
+        }
       }
     }
     return null;

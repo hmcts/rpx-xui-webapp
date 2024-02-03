@@ -11,8 +11,8 @@ Feature: Hearings CR84 OFF: View or edit action
         # Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
 
         Given I set MOCK case "hearingCase" details with reference "Hearing_case"
-        Given I set MOCK case details "Hearing_case" property "jurisdiction.id" as "TestCaseType"
-        Given I set MOCK case details "Hearing_case" property "case_type.id" as "TestJurisdiction"
+        Given I set MOCK case details "Hearing_case" property "jurisdiction.id" as "SSCS"
+        Given I set MOCK case details "Hearing_case" property "case_type.id" as "Benefit"
 
         Given I set mock case hearings from file "viewEditHearings/caseHearings"
 

@@ -152,7 +152,7 @@ module.exports = async function () {
             codeceptMochawesomeLog.AddMessage(`*************** Browser error logs ***************`);
 
             let errorLogs = await actor().grabBrowserLogs()
-            errorLogs = errorLogs.filter(error => error._event.type === 'error')
+            // errorLogs = errorLogs.filter(error => error._event.type === 'error')
             for(let error of errorLogs){
                 codeceptMochawesomeLog.AddMessage(`${error._event.type}:${error._event.location.url} =>  ${error._event.text} `);
             }

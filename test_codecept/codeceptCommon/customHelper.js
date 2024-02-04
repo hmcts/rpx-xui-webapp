@@ -40,7 +40,6 @@ class CustomHelper extends Helper {
 
     async _failed() {
         codeceptMochawesomeLog.AddMessage('---------------------- TEST FAILED ----------------------');
-        await getActor().saveScreenshot()
         for (const log of this.browserErrorLogs) {
             this.attachBrowserLog(log)
               

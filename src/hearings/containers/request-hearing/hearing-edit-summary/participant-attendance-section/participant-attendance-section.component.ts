@@ -7,6 +7,7 @@ import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../../../../models/serviceHearingValues.model';
 import { HearingsService } from '../../../../services/hearings.service';
+import { HearingsUtils } from '../../../../utils/hearings.utils';
 
 @Component({
   selector: 'exui-participant-attendance-section',
@@ -122,7 +123,7 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
     if (partyInSHV) {
       const partyInHMCToCompare = this.hearingRequestToCompareMainModel.partyDetails.find((party) => party.partyID === partyId);
       if (partyInHMCToCompare) {
-        return partyInSHV.partyName !== partyInHMCToCompare.partyName;
+        return HearingsUtils.hasPartyNameChanged(partyInHMCToCompare, partyInSHV);
       }
       return true;
     }

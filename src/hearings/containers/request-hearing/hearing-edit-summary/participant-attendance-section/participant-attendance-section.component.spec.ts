@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { initialState, partySubChannelsRefData } from '../../../../hearing.test.data';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { HearingsService } from '../../../../services/hearings.service';
+import { HearingsUtils } from '../../../../utils/hearings.utils';
 import { ParticipantAttendanceSectionComponent } from './participant-attendance-section.component';
 
 describe('ParticipantAttendanceSectionComponent', () => {
@@ -111,6 +112,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
   });
 
   it('should display amended label', () => {
+    spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(true);
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
@@ -126,6 +128,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
     component.ngOnInit();
     expect(component.partyDetailsChangesRequired).toEqual(true);
     expect(component.partyDetailsChangesConfirmed).toEqual(true);
+    expect(HearingsUtils.hasPartyNameChanged).toHaveBeenCalled();
   });
 
   it('should not display label', () => {

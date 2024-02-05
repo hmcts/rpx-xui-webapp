@@ -2,8 +2,9 @@ import { initialState } from '../hearing.test.data';
 import { HearingConditions, KEY_MODE } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
-import { Mode } from '../models/hearings.enum';
+import { Mode, PartyType } from '../models/hearings.enum';
 import { PropertiesUpdatedOnPageVisit } from '../models/hearingsUpdateMode.enum';
+import { PartyDetailsModel } from '../models/partyDetails.model';
 import { HearingsUtils } from './hearings.utils';
 
 describe('HearingsUtils', () => {
@@ -78,6 +79,66 @@ describe('HearingsUtils', () => {
     ];
     const sortedResult = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
     expect(sortedResult).toEqual(expectedResult);
+  });
+
+  describe('hasPartyNameChanged', () => {
+    it('should hasPartyNameChanged return true', () => {
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson'
+        }
+      };
+      const partyInSHV: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Rogers',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Rogers',
+          preferredHearingChannel: 'inPerson'
+        }
+      };
+      const hasPartyNameChangedResult = HearingsUtils.hasPartyNameChanged(partyInHMC, partyInSHV);
+      expect(hasPartyNameChangedResult).toEqual(true);
+    });
+
+    it('should hasPartyNameChanged return false', () => {
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson'
+        }
+      };
+      const partyInSHV: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson'
+        }
+      };
+      const hasPartyNameChangedResult = HearingsUtils.hasPartyNameChanged(partyInHMC, partyInSHV);
+      expect(hasPartyNameChangedResult).toEqual(false);
+    });
   });
 
   describe('HearingWindowModel', () => {

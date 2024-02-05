@@ -4,6 +4,7 @@ var BrowserWaits = require('../../../support/customWaits');
 const date = require('moment');
 var path = require('path');
 var cucumberReporter = require('../../../../codeceptCommon/reportLogger');
+const reportLogger = require('../../../../codeceptCommon/reportLogger')
 var CaseEditPage = require('../caseEditPage');
 const BrowserUtil = require('../../../../ngIntegration/util/browserUtil');
 const App = require('./application');
@@ -196,9 +197,9 @@ class CaseManager {
 
         var nextStepSelect = element(by.xpath("//*[@id='next-step']"));
         var nextStepSelectoption = null;
-        if (stepName){
+        if (stepName) {
             await nextStepSelect.select(stepName)
-        }else{
+        } else {
             nextStepSelectoption = element(by.xpath("//*[@id='next-step']//option[2]"));
             const someStepEventName = await nextStepSelectoption.getText();
             await nextStepSelect.select(someStepEventName)
@@ -212,7 +213,7 @@ class CaseManager {
             // await BrowserWaits.waitForElement($('exui-case-details-home'));
             await BrowserWaits.waitForPageNavigation(currentPageUrl)
         })
-        
+
     }
 
 

@@ -164,7 +164,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
         Then In hearing requirements page, I see party "Party1 name updated" with case flags
             | flag | label         |
             | A    |               |
-            | B    | ACTION NEEDED |
+            | B    |  |
         When I click continue in hearing workflow
         Then I validate Edit hearing page displayed
 

@@ -13,7 +13,6 @@ const config = require('../../../config/functional.conf');
 
 const headerPage = require('../headerPage');
 const { LOG_LEVELS } = require('../../../support/constants');
-const reportLogger = require('../../../support/reportLogger');
 class CaseManager {
 
     constructor() {

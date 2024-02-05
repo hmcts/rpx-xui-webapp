@@ -6,6 +6,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
 import { LoggerService } from '../../../../app/services/logger/logger.service';
+import { initialState } from '../../../hearing.test.data';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import {
@@ -2380,6 +2381,56 @@ describe('HearingRequirementsComponent', () => {
     };
     component.ngOnInit();
     expect(component.reasonableAdjustmentFlags.length).toEqual(0);
+  });
+
+  it('should not set reasonable adjustments warning message', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.showReasonableAdjustmentFlagsWarningMessage).toEqual(false);
+  });
+
+  it('should set reasonable adjustments warning message', () => {
+    const partyDetails = [
+      initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails[0]
+    ];
+    partyDetails[0].individualDetails.reasonableAdjustments = ['RA0098'];
+    component.hearingRequestToCompareMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      partyDetails: partyDetails
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      parties: partyDetails
+    };
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.showReasonableAdjustmentFlagsWarningMessage).toEqual(true);
   });
 
   it('should initialize hearing request from hearing values', () => {

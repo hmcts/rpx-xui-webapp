@@ -6,7 +6,6 @@ import { HearingWindowModel } from '../models/hearingWindow.model';
 import { Mode } from '../models/hearings.enum';
 import { PropertiesUpdatedOnPageVisit } from '../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
-import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 
 export class HearingsUtils {
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {

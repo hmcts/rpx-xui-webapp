@@ -22,6 +22,7 @@ import { HearingsFeatureService } from '../../../services/hearings-feature.servi
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
@@ -376,15 +377,13 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // and return true if there are any changes in the party name of party type
     for (const partySHV of partiesSHV) {
       const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
-      if ((party.partyName !== partySHV.partyName) ||
-        (party.individualDetails?.title !== partySHV.individualDetails?.title) ||
-        (party.individualDetails?.firstName !== partySHV.individualDetails?.firstName) ||
-        (party.individualDetails?.lastName !== partySHV.individualDetails?.lastName) ||
-        (party.partyType !== partySHV.partyType)) {
+      if (party.partyType !== partySHV.partyType) {
+        return true;
+      }
+      if (HearingsUtils.hasPartyNameChanged(party, partySHV)) {
         return true;
       }
     }
-
     // There are no changes for parties when compared SHV with HMC
     return false;
   }

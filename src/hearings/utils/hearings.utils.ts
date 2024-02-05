@@ -6,7 +6,7 @@ import { HearingWindowModel } from '../models/hearingWindow.model';
 import { Mode } from '../models/hearings.enum';
 import { PropertiesUpdatedOnPageVisit } from '../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
-import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
+import { PartyDetailsModel } from '../models/partyDetails.model';
 
 export class HearingsUtils {
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
@@ -58,5 +58,24 @@ export class HearingsUtils {
     return hearingRequestMainModel.hearingDetails.hearingWindow && Object.keys(hearingRequestMainModel.hearingDetails.hearingWindow).length === 0
       ? null
       : hearingRequestMainModel.hearingDetails.hearingWindow;
+  }
+
+  /**
+   * Returns a boolean value based on the difference between
+   * the party name in hearing request and the party name in service hearing values
+   *
+   * @static
+   * @param {PartyDetailsModel} partyInHMC party in hearing request returned by HMC API
+   * @param {PartyDetailsModel} partyInSHV party in service hearing values returned by the integrated service
+   * @return {*}  {boolean}
+   * @memberof HearingsUtils
+   */
+  public static hasPartyNameChanged(partyInHMC: PartyDetailsModel, partyInSHV: PartyDetailsModel): boolean {
+    if ((partyInHMC.individualDetails.title !== partyInSHV.individualDetails.title) ||
+      (partyInHMC.individualDetails.firstName !== partyInSHV.individualDetails.firstName) ||
+      (partyInHMC.individualDetails.lastName !== partyInSHV.individualDetails.lastName)) {
+      return true;
+    }
+    return false;
   }
 }

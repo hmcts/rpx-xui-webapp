@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.7-welsh-translation-yes-no-field-fix":
-  version: 7.0.7-welsh-translation-yes-no-field-fix
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.7-welsh-translation-yes-no-field-fix"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.8-compress-ls":
+  version: 7.0.8-compress-ls
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.8-compress-ls"
   dependencies:
     tslib: ^2.3.0
-  checksum: 27fee2c5cc37925f2db0c6ca98069bdbc28e28e1724fcfae4046a8f3d96c48da6b5776d46be5697623aaa0735386c337848142db835cc2a7d17a8426f41e4a67
+  checksum: 986712d76b015c26378e2bb3e7ae2df299aaf423ccfb53cc5cc7470879a7816ca60fdebc5d1626e2436d5ab50c44b3c1b753a8c8ff5d3f39340f8999fe36ac04
   languageName: node
   linkType: hard
 
@@ -15258,6 +15258,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lz-string@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "lz-string@npm:1.5.0"
+  bin:
+    lz-string: bin/bin.js
+  checksum: 1ee98b4580246fd90dd54da6e346fb1caefcf05f677c686d9af237a157fdea3fd7c83a4bc58f858cd5b10a34d27afe0fdcbd0505a47e0590726a873dc8b8f65d
+  languageName: node
+  linkType: hard
+
 "magic-string@npm:0.29.0":
   version: 0.29.0
   resolution: "magic-string@npm:0.29.0"
@@ -19006,7 +19015,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.7-welsh-translation-yes-no-field-fix
+    "@hmcts/ccd-case-ui-toolkit": 7.0.8-compress-ls
     "@hmcts/ccpay-web-component": 6.0.2
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 3.0.2
@@ -19106,6 +19115,7 @@ __metadata:
     launchdarkly-js-client-sdk: ^2.16.3
     local-storage: ^2.0.0
     lodash: ^4.17.21
+    lz-string: ^1.5.0
     material-design-icons: ^3.0.1
     mocha: ^8.1.1
     mochawesome: ^6.2.1

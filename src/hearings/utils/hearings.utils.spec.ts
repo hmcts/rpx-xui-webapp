@@ -1,9 +1,8 @@
 import { initialState } from '../hearing.test.data';
-import { HearingConditions, KEY_MODE } from '../models/hearingConditions';
+import { KEY_MODE } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { Mode } from '../models/hearings.enum';
-import { PropertiesUpdatedOnPageVisit } from '../models/hearingsUpdateMode.enum';
 import { HearingsUtils } from './hearings.utils';
 
 describe('HearingsUtils', () => {
@@ -80,12 +79,15 @@ describe('HearingsUtils', () => {
     expect(sortedResult).toEqual(expectedResult);
   });
 
+  it('should return the unavailability date ranges for parties', () => {
+    const partiesNotAvailableDates = HearingsUtils.getPartiesNotAvailableDates(
+      initialState.hearings.hearingValues.serviceHearingValuesModel.parties
+    );
+    expect(partiesNotAvailableDates.length).toEqual(10);
+  });
+
   describe('HearingWindowModel', () => {
     it('should return HearingWindowModel as null when hearingWindow is an empty object', () => {
-      const propertiesUpdatedOnPageVisit: PropertiesUpdatedOnPageVisit = null;
-      const hearingCondition: HearingConditions = {
-        mode: Mode.VIEW_EDIT
-      };
       const hearingRequestMainModel: HearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
@@ -94,15 +96,11 @@ describe('HearingsUtils', () => {
         }
       };
       expect(
-        HearingsUtils.getHearingWindow(propertiesUpdatedOnPageVisit, hearingCondition, hearingRequestMainModel)
+        HearingsUtils.getHearingWindow(hearingRequestMainModel)
       ).toBeNull();
     });
 
     it('should return HearingWindowModel from ServiceHearingVaulesModel when hearingWindow is not empty', () => {
-      const propertiesUpdatedOnPageVisit: PropertiesUpdatedOnPageVisit = null;
-      const hearingCondition: HearingConditions = {
-        mode: Mode.VIEW_EDIT
-      };
       const hearingRequestMainModel: HearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
@@ -115,74 +113,8 @@ describe('HearingsUtils', () => {
         }
       };
       expect(
-        HearingsUtils.getHearingWindow(propertiesUpdatedOnPageVisit, hearingCondition, hearingRequestMainModel)
+        HearingsUtils.getHearingWindow(hearingRequestMainModel)
       ).toEqual(hearingRequestMainModel.hearingDetails.hearingWindow);
-    });
-  });
-
-  describe('HearingWindowModel - Hearing manual amendment enabled', () => {
-    it('should return HearingWindowModel as null when hearingWindow is an empty object and hearing manual amendment is enabled', () => {
-      const propertiesUpdatedOnPageVisit: PropertiesUpdatedOnPageVisit = {
-        caseFlags: null,
-        parties: null,
-        hearingWindow: null,
-        afterPageVisit: {
-          reasonableAdjustmentChangesRequired: false,
-          nonReasonableAdjustmentChangesRequired: false,
-          partyDetailsChangesRequired: false,
-          hearingWindowChangesRequired: false
-        }
-      };
-      const hearingCondition: HearingConditions = {
-        mode: Mode.VIEW_EDIT,
-        isHearingAmendmentsEnabled: true
-      };
-      const hearingRequestMainModel: HearingRequestMainModel = {
-        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-        hearingDetails: {
-          ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          hearingWindow: null
-        }
-      };
-      expect(
-        HearingsUtils.getHearingWindow(propertiesUpdatedOnPageVisit, hearingCondition, hearingRequestMainModel)
-      ).toBeNull();
-    });
-
-    it('should return HearingWindowModel from ServiceHearingVaulesModel when hearingWindow is not empty and hearing manual amendment is enabled', () => {
-      const propertiesUpdatedOnPageVisit: PropertiesUpdatedOnPageVisit = {
-        caseFlags: null,
-        parties: null,
-        hearingWindow: {
-          dateRangeStart: '2022-11-23T09:00:00.000Z',
-          dateRangeEnd: '2022-11-30T09:00:00.000Z',
-          firstDateTimeMustBe: '2022-12-02T09:00:00.000Z'
-        },
-        afterPageVisit: {
-          reasonableAdjustmentChangesRequired: false,
-          nonReasonableAdjustmentChangesRequired: false,
-          partyDetailsChangesRequired: false,
-          hearingWindowChangesRequired: true
-        }
-      };
-      const hearingCondition: HearingConditions = {
-        mode: Mode.VIEW_EDIT,
-        isHearingAmendmentsEnabled: true
-      };
-      const hearingRequestMainModel: HearingRequestMainModel = {
-        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-        hearingDetails: {
-          ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          hearingWindow: {
-            dateRangeStart: '2022-11-23T09:00:00.000Z',
-            dateRangeEnd: '2022-11-30T09:00:00.000Z',
-            firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
-          }
-        }
-      };
-      expect(
-        HearingsUtils.getHearingWindow(propertiesUpdatedOnPageVisit, hearingCondition, hearingRequestMainModel)
-      ).toEqual(propertiesUpdatedOnPageVisit.hearingWindow);
     });
   });
 });

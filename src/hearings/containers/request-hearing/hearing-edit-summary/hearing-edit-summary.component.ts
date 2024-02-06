@@ -377,10 +377,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // and return true if there are any changes in the party name of party type
     for (const partySHV of partiesSHV) {
       const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
-      if (party.partyType !== partySHV.partyType) {
-        return true;
-      }
-      if (HearingsUtils.hasPartyNameChanged(party, partySHV)) {
+      if (party.partyType !== partySHV.partyType ||
+        HearingsUtils.hasPartyNameChanged(party, partySHV)) {
         return true;
       }
     }

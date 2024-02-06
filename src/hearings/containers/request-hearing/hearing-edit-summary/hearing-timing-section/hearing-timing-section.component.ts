@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as moment from 'moment';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingDetailsModel } from '../../../../models/hearingDetails.model';
+import { HearingWindowModel } from '../../../../models/hearingWindow.model';
 import { HearingDateEnum, RadioOptions } from '../../../../models/hearings.enum';
 import { AmendmentLabelStatus } from '../../../../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
@@ -20,10 +21,15 @@ export class HearingTimingSectionComponent implements OnInit {
 
   public hearingLength: string;
   public specificDate: string;
+  public specificDateSelection: string;
+  public earliestHearingDate: string;
+  public latestHearingDate: string;
+  public firstHearingDate: string;
   public hearingPriority: string;
   public hearingWindowChangesRequired: boolean;
   public hearingWindowChangesConfirmed: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
+  public radioOptions = RadioOptions;
 
   public ngOnInit(): void {
     this.hearingWindowChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired;
@@ -31,6 +37,10 @@ export class HearingTimingSectionComponent implements OnInit {
     this.hearingLength = this.getHearingLength();
     this.specificDate = this.getSpecificDate();
     this.hearingPriority = this.getHearingPriority();
+    this.specificDateSelection = this.getSpecificDateSelection(this.hearingDetails.hearingWindow);
+    this.earliestHearingDate = this.getEarliestHearingDate(this.hearingDetails.hearingWindow);
+    this.latestHearingDate = this.getLatestHearingDate(this.hearingDetails.hearingWindow);
+    this.firstHearingDate = this.getFirstHearingDate(this.hearingDetails.hearingWindow);
   }
 
   public onChange(fragmentId: string): void {
@@ -96,12 +106,40 @@ export class HearingTimingSectionComponent implements OnInit {
     } else if (hearingWindow?.firstDateTimeMustBe) {
       specificDateSelection = RadioOptions.YES;
       const firstDate = moment(hearingWindow.firstDateTimeMustBe).format(HearingDateEnum.DisplayMonth);
-      specificDateSelection += firstDate !== HearingDateEnum.InvalidDate ? `<dt class="heading-h3 bottom-0">The first date of the hearing must be</dt>${firstDate}` : '';
+      specificDateSelection += firstDate !== HearingDateEnum.InvalidDate ? `<dt class="heading-h3 bottom-0">The first date of the hearing must be</dt><exui-amendment-label [displayLabel]="${AmendmentLabelStatus.ACTION_NEEDED}"></exui-amendment-label>${firstDate}` : '';
     } else if (hearingWindow === null) {
       specificDateSelection = RadioOptions.NO;
     }
 
     return specificDateSelection;
+  }
+
+  private getSpecificDateSelection(hearingWindow: HearingWindowModel): string {
+    if (hearingWindow?.dateRangeStart || hearingWindow?.dateRangeEnd) {
+      return RadioOptions.CHOOSE_DATE_RANGE;
+    }
+    if (hearingWindow?.firstDateTimeMustBe) {
+      return RadioOptions.YES;
+    }
+    return RadioOptions.NO;
+  }
+
+  private getEarliestHearingDate(hearingWindow: HearingWindowModel): string {
+    return hearingWindow?.dateRangeStart || hearingWindow?.dateRangeEnd
+      ? moment(hearingWindow.dateRangeStart).format(HearingDateEnum.DisplayMonth)
+      : '';
+  }
+
+  private getLatestHearingDate(hearingWindow: HearingWindowModel): string {
+    return hearingWindow?.dateRangeStart || hearingWindow?.dateRangeEnd
+      ? moment(hearingWindow.dateRangeEnd).format(HearingDateEnum.DisplayMonth)
+      : '';
+  }
+
+  private getFirstHearingDate(hearingWindow: HearingWindowModel): string {
+    return hearingWindow?.firstDateTimeMustBe
+      ? moment(hearingWindow.firstDateTimeMustBe).format(HearingDateEnum.DisplayMonth)
+      : '';
   }
 
   private getHearingPriority(): string {

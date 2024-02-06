@@ -47,10 +47,10 @@
     <div class="govuk-summary-list__value">
       <ul>
         <li *ngFor="let participantAttendanceMode of participantAttendanceModes">
+          {{ participantAttendanceMode.partyName }}{{ participantAttendanceMode.channel }}
           <exui-amendment-label *ngIf="participantAttendanceMode.partyNameChanged"
             [displayLabel]="amendmentLabelEnum.AMENDED">
           </exui-amendment-label>
-          {{ participantAttendanceMode.partyName }}{{ participantAttendanceMode.channel }}
         </li>
       </ul>
     </div>

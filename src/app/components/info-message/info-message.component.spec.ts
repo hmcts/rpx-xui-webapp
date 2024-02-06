@@ -1,7 +1,8 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { InfoMessage } from './../../shared/enums/info-message';
 import { InfoMessageType } from '../../../role-access/models/enums';
+import { InfoMessage } from './../../shared/enums/info-message';
+import { MockRpxTranslatePipe } from './../../shared/test/mock-rpx-translate.pipe';
 import { InfoMessageComponent } from './info-message.component';
 
 @Component({
@@ -21,7 +22,7 @@ describe('SharedModule', () => {
 
     beforeEach(async () => {
       TestBed.configureTestingModule({
-        declarations: [WrapperComponent, InfoMessageComponent],
+        declarations: [WrapperComponent, InfoMessageComponent, MockRpxTranslatePipe],
         schemas: [
           CUSTOM_ELEMENTS_SCHEMA
         ]

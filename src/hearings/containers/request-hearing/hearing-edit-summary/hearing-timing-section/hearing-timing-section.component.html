@@ -26,7 +26,20 @@
     <div class="govuk-summary-list__key">
       Does the hearing need to take place on a specific date?
     </div>
-    <div class="govuk-summary-list__value" [innerHTML]="specificDate">
+    <div class="govuk-summary-list__value">
+      {{ specificDateSelection }}
+      <div *ngIf="specificDateSelection === radioOptions.CHOOSE_DATE_RANGE">
+        Earliest start date: {{ earliestHearingDate }}
+        <br>
+        Latest end date: {{ latestHearingDate }}
+      </div>
+      <div *ngIf="specificDateSelection === radioOptions.YES">
+        <dt class="heading-h3 bottom-0">The first date of the hearing must be</dt>
+        <exui-amendment-label *ngIf="hearingWindowChangesConfirmed"
+          [displayLabel]="amendmentLabelEnum.AMENDED">
+        </exui-amendment-label>
+        {{ firstHearingDate }}
+      </div>
     </div>
     <div class="govuk-summary-list__actions">
       <a id="hearingSpecificDate"

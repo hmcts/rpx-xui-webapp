@@ -1,6 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Store, select } from '@ngrx/store';
+import * as _ from 'lodash';
+import { Observable } from 'rxjs';
 import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
 import { HearingsService } from '../../../../../hearings/services/hearings.service';
+import * as fromHearingStore from '../../../../../hearings/store';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
@@ -19,8 +23,14 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
   public amendmentLabelEnum = AmendmentLabelStatus;
   public nonReasonableAdjustmentChangesRequired: boolean;
   public nonReasonableAdjustmentChangesConfirmed: boolean;
+  public hearingState$: Observable<fromHearingStore.State>;
+  public showAmended: boolean;
+  public facilitiesRequiredToCompare: string[];
 
-  constructor(private readonly hearingsService: HearingsService) {}
+  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly hearingsService: HearingsService) {
+    this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
+  }
 
   public ngOnInit(): void {
     this.additionalFacilitiesRequiredText = this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag
@@ -36,6 +46,12 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
 
     this.nonReasonableAdjustmentChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesRequired;
     this.nonReasonableAdjustmentChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed;
+    this.hearingState$.subscribe((state) => {
+      this.facilitiesRequiredToCompare = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
+      const objA = state.hearingRequestToCompare.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag;
+      const objB = state.hearingRequest.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag;
+      this.showAmended = !_.isEqual(objA, objB);
+    });
   }
 
   public onChange(fragmentId: string): void {
@@ -46,5 +62,9 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
       changeLink = '/hearings/request/hearing-facilities#immigrationDetentionCentre';
     }
     this.changeEditHearing.emit({ fragmentId, changeLink });
+  }
+
+  public showAmendedForFacilitiesRequired(facility: string): boolean {
+    return !this.facilitiesRequiredToCompare.includes(this.additionalFacilitiesRefData.find((facilityRefData) => facilityRefData.value_en === facility).key);
   }
 }

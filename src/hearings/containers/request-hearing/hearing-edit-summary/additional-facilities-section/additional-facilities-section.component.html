@@ -13,6 +13,8 @@
       Will additional security be required?
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="showAmended" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       {{ additionalFacilitiesRequiredText }}
     </div>
     <div class="govuk-summary-list__actions">
@@ -29,6 +31,8 @@
     <div class="govuk-summary-list__value">
       <ul>
         <li *ngFor="let additionalFacility of additionalFacilities">
+          <exui-amendment-label *ngIf="showAmendedForFacilitiesRequired(additionalFacility)" [displayLabel]="amendmentLabelEnum.AMENDED">
+          </exui-amendment-label>
           {{ additionalFacility }}
         </li>
       </ul>

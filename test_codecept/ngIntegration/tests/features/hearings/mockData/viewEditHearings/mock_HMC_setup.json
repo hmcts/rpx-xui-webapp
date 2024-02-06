@@ -33,7 +33,9 @@
         },
         "hearingIsLinkedFlag": false,
         "hearingChannels": [
-            "INTER"
+            "INTER",
+            "VID",
+            "TEL"
         ],
         "autolistFlag": false
     },
@@ -66,6 +68,11 @@
             "partyType": "IND",
             "partyName": "Party1 name",
             "partyRole": "APPL",
+            "unavailabilityRanges": {
+                "unavailableFromDate": "2024-08-01T10:00:00",
+                "unavailableToDate": "2024-08-10T10:00:00",
+                "unavailabilityType": "All Day"
+            },
             "individualDetails": {
                 "firstName": "Party1 name FN",
                 "lastName": "Party1 name LN",
@@ -81,6 +88,7 @@
                 "hearingChannelPhone": [
                     "1234567890"
                 ],
+                "preferredHearingChannel": "INTER",
                 "relatedParties": [
                     {
                         "relationshipType": "mock relationship",
@@ -102,6 +110,11 @@
             "partyType": "IND",
             "partyName": "Party2 name",
             "partyRole": "APPL",
+            "unavailabilityRanges": {
+                "unavailableFromDate": "2024-08-02T10:00:00",
+                "unavailableToDate": "2024-08-12T10:00:00",
+                "unavailabilityType": "All Day"
+            },
             "individualDetails": {
                 "firstName": "Party2 name FN",
                 "lastName": "Party2 name LN",
@@ -117,6 +130,7 @@
                 "hearingChannelPhone": [
                     "1234567890"
                 ],
+                "preferredHearingChannel": "INTER",
                 "relatedParties": [
                     {
                         "relationshipType": "mock relationship",

@@ -77,6 +77,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
     component.partyChannelsRefData = partyChannels;
     component.partySubChannelsRefData = partySubChannelsRefData;
     component.hearingRequestMainModel = initialState.hearings.hearingRequest.hearingRequestMainModel;
+    component.hearingRequestToCompareMainModel = initialState.hearings.hearingRequestToCompare.hearingRequestMainModel;
     component.serviceHearingValuesModel = initialState.hearings.hearingValues.serviceHearingValuesModel;
     fixture.detectChanges();
   });
@@ -88,7 +89,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
   it('should set participant attendance details', () => {
     expect(component.isPaperHearing).toEqual('No');
     expect(component.participantChannels).toEqual(['By phone']);
-    expect(component.participantAttendanceModes).toEqual([{ partyName: 'Jane and Smith', channel: 'In person', partyNameChanged: true }]);
+    expect(component.participantAttendanceModes).toEqual([{ partyName: 'Jane Smith', channel: ' - By video', partyNameChanged: true }]);
     expect(component.numberOfPhysicalAttendees).toEqual(3);
   });
 

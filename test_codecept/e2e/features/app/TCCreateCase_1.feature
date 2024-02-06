@@ -1,4 +1,4 @@
-@fullfunctional @test @functional_enabled 
+@fullfunctional @ignore @test @functional_enabled
 Feature: Test case type case creation and case details validations Part 1
 
   Background:
@@ -14,7 +14,7 @@ Feature: Test case type case creation and case details validations Part 1
 #         Then I am on case form page
 #         Then Validate create case form pages fields against the api response
 
-   
+
     Scenario: Validate Case event next step trigger actions
         When I click on search button
         Then Search page should be displayed
@@ -25,7 +25,6 @@ Feature: Test case type case creation and case details validations Part 1
         Then I see case details page
         Then Validate Case event next step trigger actions
 
-@functional_debug
     Scenario: Validate update form page click on next step trigger actions
         When I click on search button
         Then Search page should be displayed

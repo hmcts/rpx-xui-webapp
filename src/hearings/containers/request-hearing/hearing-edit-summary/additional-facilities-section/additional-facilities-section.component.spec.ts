@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { HearingsService } from '../../../../../hearings/services/hearings.service';
 import { initialState } from '../../../../hearing.test.data';
@@ -129,6 +130,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
         AdditionalFacilitiesSectionComponent
       ],
       providers: [
+        provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService }
       ]
     }).compileComponents();

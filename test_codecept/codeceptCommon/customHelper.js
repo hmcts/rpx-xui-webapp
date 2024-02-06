@@ -40,10 +40,19 @@ class CustomHelper extends Helper {
 
     async _failed() {
         codeceptMochawesomeLog.AddMessage('---------------------- TEST FAILED ----------------------');
+        for (const log of this.browserErrorLogs) {
+            this.attachBrowserLog(log)
+
+        }
+    }
+
+
+    async _failed() {
+        codeceptMochawesomeLog.AddMessage('---------------------- TEST FAILED ----------------------');
         await getActor().saveScreenshot()
         for (const log of this.browserErrorLogs) {
             this.attachBrowserLog(log)
-              
+
         }
 
     }
@@ -128,7 +137,7 @@ class CustomHelper extends Helper {
             locator  = this.getPlaywrightPage().locator(selector).first()
             return await locator.getAttribute(name)
         }
-        
+
     }
 
     async isElementChecked(selector) {

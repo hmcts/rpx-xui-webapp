@@ -35,10 +35,10 @@
       </div>
       <div *ngIf="specificDateSelection === radioOptions.YES">
         <dt class="heading-h3 bottom-0">The first date of the hearing must be</dt>
+        {{ firstHearingDate }}
         <exui-amendment-label *ngIf="hearingWindowChangesConfirmed"
           [displayLabel]="amendmentLabelEnum.AMENDED">
         </exui-amendment-label>
-        {{ firstHearingDate }}
       </div>
     </div>
     <div class="govuk-summary-list__actions">

@@ -13,9 +13,9 @@
       Will additional security be required?
     </div>
     <div class="govuk-summary-list__value">
+      {{ additionalFacilitiesRequiredText }}
       <exui-amendment-label *ngIf="showAmended" [displayLabel]="amendmentLabelEnum.AMENDED">
       </exui-amendment-label>
-      {{ additionalFacilitiesRequiredText }}
     </div>
     <div class="govuk-summary-list__actions">
       <a id="additionalSecurityRequired"
@@ -31,9 +31,9 @@
     <div class="govuk-summary-list__value">
       <ul>
         <li *ngFor="let additionalFacility of additionalFacilities">
+          {{ additionalFacility }}
           <exui-amendment-label *ngIf="showAmendedForFacilitiesRequired(additionalFacility)" [displayLabel]="amendmentLabelEnum.AMENDED">
           </exui-amendment-label>
-          {{ additionalFacility }}
         </li>
       </ul>
     </div>

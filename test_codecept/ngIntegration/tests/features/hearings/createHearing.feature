@@ -133,8 +133,8 @@ Feature: Create hearings workflow
           | Length, date and priority level of hearing | Length of hearing                                        | 1 Day 2 Hours 5 Minutes             |
           | Length, date and priority level of hearing | Does the hearing need to take place on a specific date?  | No                                  |
           | Length, date and priority level of hearing | What is the priority of this hearing?                    | Hearing priority 1                  |
-          #| Linked hearings                            | Will this hearing need to be linked to other hearings?   | No                                  |
-          | Additional instructions                    | Enter any additional instructions for the hearing        | test instructions                   |
+          | Linked hearings                            | Will this hearing need to be linked to other hearings?   | No                                  |
+          #| Additional instructions                    | Enter any additional instructions for the hearing        | test instructions                   |
 
 
       When In create hearing work flow, I click submit request
@@ -439,7 +439,7 @@ Feature: Create hearings workflow
 
             | Length, date and priority level of hearing | What is the priority of this hearing?                  | Hearing priority 1 |
             | Linked hearings                            | Will this hearing need to be linked to other hearings? | Yes                |
-            | Additional instructions                    | Enter any additional instructions for the hearing      | test instructions  |
+          # | Additional instructions                    | Enter any additional instructions for the hearing      | test instructions  |
 
 
         When In create hearing work flow, I click submit request

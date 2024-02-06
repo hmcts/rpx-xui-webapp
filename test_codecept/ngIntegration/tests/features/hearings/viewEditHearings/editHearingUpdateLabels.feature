@@ -1,5 +1,5 @@
 
-@ng @functional_enabled  @functional_debug
+@ng @functional_enabled
 Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
     https://tools.hmcts.net/jira/browse/EUI-8905
     https://tools.hmcts.net/jira/browse/EUI-9504

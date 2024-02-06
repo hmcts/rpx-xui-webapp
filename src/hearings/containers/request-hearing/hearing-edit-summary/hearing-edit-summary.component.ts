@@ -389,18 +389,14 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private pageVisitHearingWindowChangeExists(): boolean {
-    const hearingWindowSHV = this.serviceHearingValuesModel.hearingWindow;
     const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
-    // Return true if the first date time must be value in SHV and HMC are different
-    if (hearingWindowSHV?.firstDateTimeMustBe) {
-      if (!hearingWindowHMC?.firstDateTimeMustBe) {
-        return true;
-      }
-      if (!_.isEqual(new Date(hearingWindowSHV.firstDateTimeMustBe), new Date(hearingWindowHMC.firstDateTimeMustBe))) {
+    if (hearingWindowHMC?.firstDateTimeMustBe) {
+      const partiesNotAvailableDatesHMC = HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestToCompareMainModel.partyDetails);
+      const partiesNotAvailableDatesSHV = HearingsUtils.getPartiesNotAvailableDates(this.serviceHearingValuesModel.parties);
+      if (!_.isEqual(partiesNotAvailableDatesSHV, partiesNotAvailableDatesHMC)) {
         return true;
       }
     }
-    // There is no change in first date time must be when compared SHV with HMC
     return false;
   }
 }

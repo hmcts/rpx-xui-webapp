@@ -1,5 +1,8 @@
 
 
+const reportLogger = require('../../../../../codeceptCommon/reportLogger');
+const partyCaseFlags = require('./partyCaseFlagsTable')
+
 class ParticipantAttendancePage {
     constructor() {
         this.pageContainer = $('exui-hearing-attendance');
@@ -21,6 +24,7 @@ class ParticipantAttendancePage {
     }
 
     async inputValue(field, value) {
+        reportLogger.AddMessage(`input to field ${field}`)
         switch (field) {
             case "Will this be a paper hearing?":
                 if (value.toLowerCase().includes('yes')) {
@@ -42,7 +46,7 @@ class ParticipantAttendancePage {
             case "How many people will attend the hearing in person?":
                 await this.enterAttendanceNumber(value)
                 break;
-          
+
             default:
                 throw new Error(`${field} is not recognised`)
         }
@@ -77,12 +81,38 @@ class ParticipantAttendancePage {
     }
 
     async selectParticipantHearingMethod(partyname, method) {
-        const ele = element(by.xpath(`//div[contains(@class,'party-row')]//strong[contains(text(),'${partyname}')]/../../select`))
+        const ele = element(by.xpath(`//div[contains(@class,'party-row')]//label[contains(text(),'${partyname}')]/../select`))
         await ele.select(method);
+    }
+
+    async getPartiesDisplayed(){
+        const elements = element.all(by.xpath(`//div[contains(@class,'party-row')]//label`))
+        const parties = []
+        const count = await elements.count();
+        for(let i = 0 ; i< count; i++){
+            const e = await elements.get(i)
+            parties.push(await e.getText())
+        }
+        return parties;
+    }
+
+    async isPartyWithNameDisplayed(partyname){
+        const ele = element(by.xpath(`//div[contains(@class,'party-row')]//label[contains(text(),'${partyname}')]`))
+        await ele.isDisplayed();
     }
 
     async enterAttendanceNumber(count) {
         await this.attendanceNumber.sendKeys(count);
+    }
+
+    async getPartiesWithCaseFlagsDisplayed() {
+
+        return await partyCaseFlags.getPartiesWithCaseFlagsDisplayed();
+    }
+
+    async getCaseFlagsDisplayedForParty(partyName) {
+
+        return await partyCaseFlags.getCaseFlagsDisplayedForParty(partyName);;
     }
 }
 

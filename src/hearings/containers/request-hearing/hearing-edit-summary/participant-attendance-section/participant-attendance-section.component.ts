@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import * as _ from 'lodash';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 import { HearingChannelEnum, PartyType } from '../../../../models/hearings.enum';
@@ -27,6 +28,10 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   public numberOfPhysicalAttendees: number;
   public partyDetailsChangesRequired: boolean;
   public partyDetailsChangesConfirmed: boolean;
+  public showAmendedForPageTitle: boolean;
+  public isPaperHearingChanged: boolean;
+  public numberOfPhysicalAttendeesChanged: boolean;
+  public participantChannelsChanged: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
 
   constructor(private readonly hearingsService: HearingsService) {}
@@ -39,6 +44,26 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
     this.participantChannels = this.getParticipantChannels();
     this.participantAttendanceModes = this.getParticipantAttendanceModes();
     this.numberOfPhysicalAttendees = this.getNumberOfPhysicalAttendees();
+
+    this.isPaperHearingChanged = !_.isEqual(
+      this.hearingRequestToCompareMainModel.hearingDetails.hearingChannels,
+      this.hearingRequestMainModel.hearingDetails.hearingChannels
+    );
+
+    this.numberOfPhysicalAttendeesChanged = !_.isEqual(
+      this.hearingRequestToCompareMainModel.hearingDetails?.numberOfPhysicalAttendees || 0,
+      this.hearingRequestMainModel.hearingDetails?.numberOfPhysicalAttendees || 0
+    );
+
+    this.participantChannelsChanged = !_.isEqual(
+      this.hearingRequestToCompareMainModel.hearingDetails?.hearingChannels,
+      this.hearingRequestMainModel.hearingDetails?.hearingChannels
+    );
+
+    this.showAmendedForPageTitle = (this.partyDetailsChangesRequired && this.partyDetailsChangesConfirmed) ||
+      this.isPaperHearingChanged ||
+      this.numberOfPhysicalAttendeesChanged ||
+      this.participantChannelsChanged;
   }
 
   public onChange(fragmentId: string): void {
@@ -88,7 +113,8 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
       participantAttendanceModes.push({
         partyName: this.getPartyName(individualParty, foundPartyFromService),
         channel: this.getPartyChannelValue(individualParty),
-        partyNameChanged: this.getPartyNameChanged(individualParty.partyID)
+        partyNameChanged: this.getPartyNameChanged(individualParty.partyID),
+        partyChannelChanged: this.getPartyChannelChanged(individualParty)
       });
     });
     return participantAttendanceModes;
@@ -122,11 +148,20 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
     if (partyInSHV) {
       const partyInHMCToCompare = this.hearingRequestToCompareMainModel.partyDetails.find((party) => party.partyID === partyId);
       if (partyInHMCToCompare) {
-        return partyInSHV.partyName !== partyInHMCToCompare.partyName;
+        return partyInSHV.individualDetails?.firstName !== partyInHMCToCompare.individualDetails?.firstName ||
+        partyInSHV.individualDetails?.lastName !== partyInHMCToCompare.individualDetails?.lastName;
       }
       return true;
     }
     return false;
+  }
+
+  private getPartyChannelChanged(party: PartyDetailsModel): boolean {
+    const partyInHMCToCompare = this.hearingRequestToCompareMainModel.partyDetails.find((party) => party.partyID === party.partyID);
+    return !_.isEqual(
+      party.individualDetails?.preferredHearingChannel,
+      partyInHMCToCompare.individualDetails?.preferredHearingChannel
+    );
   }
 
   private getNumberOfPhysicalAttendees(): number {

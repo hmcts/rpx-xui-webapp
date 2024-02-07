@@ -1,6 +1,6 @@
 <h2 class="govuk-heading-m">
   Additional facilities
-  <exui-amendment-label *ngIf="nonReasonableAdjustmentChangesConfirmed"
+  <exui-amendment-label *ngIf="showAmendedForPageTitle"
     [displayLabel]="amendmentLabelEnum.AMENDED">
   </exui-amendment-label>
   <exui-amendment-label *ngIf="nonReasonableAdjustmentChangesRequired && !nonReasonableAdjustmentChangesConfirmed"
@@ -13,7 +13,7 @@
       Will additional security be required?
     </div>
     <div class="govuk-summary-list__value">
-      <exui-amendment-label *ngIf="showAmended" [displayLabel]="amendmentLabelEnum.AMENDED">
+      <exui-amendment-label *ngIf="caseAdditionalSecurityFlagChanged" [displayLabel]="amendmentLabelEnum.AMENDED">
       </exui-amendment-label>
       {{ additionalFacilitiesRequiredText }}
     </div>

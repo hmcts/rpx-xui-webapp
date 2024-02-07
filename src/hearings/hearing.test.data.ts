@@ -2349,13 +2349,13 @@ export const initialState = {
         partyDetails: [
           {
             partyID: 'P1',
-            partyName: 'Jane and Smith',
+            partyName: 'Jane Rogers',
             partyType: PartyType.IND,
             partyRole: 'appellant',
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
-              lastName: 'Smith',
+              lastName: 'Rogers',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',

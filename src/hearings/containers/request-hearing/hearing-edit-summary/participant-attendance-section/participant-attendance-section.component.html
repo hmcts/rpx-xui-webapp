@@ -3,7 +3,7 @@
   <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired"
     [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
   </exui-amendment-label>
-  <exui-amendment-label *ngIf="partyDetailsChangesConfirmed && partyDetailsChangesRequired"
+  <exui-amendment-label *ngIf="showAmendedForPageTitle"
     [displayLabel]="amendmentLabelEnum.AMENDED">
   </exui-amendment-label>
 </h2>
@@ -13,6 +13,9 @@
       Will this be a paper hearing?
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="isPaperHearingChanged"
+        [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       {{ isPaperHearing }}
     </div>
     <div class="govuk-summary-list__actions">
@@ -27,6 +30,9 @@
       What will be the methods of attendance for this hearing?
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="participantChannelsChanged"
+        [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       <ul>
         <li *ngFor="let participantChannel of participantChannels">
           {{ participantChannel  }}
@@ -47,7 +53,8 @@
     <div class="govuk-summary-list__value">
       <ul>
         <li *ngFor="let participantAttendanceMode of participantAttendanceModes">
-          <exui-amendment-label *ngIf="participantAttendanceMode.partyNameChanged"
+          <exui-amendment-label
+            *ngIf="participantAttendanceMode.partyNameChanged || participantAttendanceMode.partyChannelChanged"
             [displayLabel]="amendmentLabelEnum.AMENDED">
           </exui-amendment-label>
           {{ participantAttendanceMode.partyName }}{{ participantAttendanceMode.channel }}
@@ -66,6 +73,9 @@
       How many people will attend the hearing in person?
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="numberOfPhysicalAttendeesChanged"
+        [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       {{ numberOfPhysicalAttendees }}
     </div>
     <div class="govuk-summary-list__actions">

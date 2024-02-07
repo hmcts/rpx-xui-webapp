@@ -26,6 +26,8 @@ export class HearingTimingSectionComponent implements OnInit {
   public latestHearingDate: string;
   public firstHearingDate: string;
   public hearingPriority: string;
+  public showAmendedForHearingLength: boolean;
+  public showAmendedForHearingPriority: boolean;
   public hearingWindowChangesRequired: boolean;
   public hearingWindowChangesConfirmed: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;

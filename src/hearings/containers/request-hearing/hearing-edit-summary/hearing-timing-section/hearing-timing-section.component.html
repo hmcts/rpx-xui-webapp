@@ -13,6 +13,8 @@
       Length of hearing
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="showAmendedForHearingLength" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       {{ hearingLength }}
     </div>
     <div class="govuk-summary-list__actions">
@@ -53,6 +55,8 @@
       What is the priority of this hearing?
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="showAmendedForHearingPriority" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       {{ hearingPriority }}
     </div>
     <div class="govuk-summary-list__actions">

@@ -65,7 +65,7 @@ Feature: Hearings: Hearings tab display controls
         # Then debug sleep minutes 20
         Then I see case details tab label "Hearings" is displayed is "false"
         Examples:
-            |role| jurisdiction | caseType | 
+            |role| jurisdiction | caseType |
             | hearing-manager | dummy | dummy |
             | hearing-viewer| PRIVATELAW | dummy |
             | hearing-manager | dummy | PRLAPPS |

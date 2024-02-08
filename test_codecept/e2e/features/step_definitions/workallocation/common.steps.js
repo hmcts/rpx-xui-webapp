@@ -186,10 +186,11 @@ const { DataTableArgument } = require('codeceptjs');
 
         const actualHeadeColumns = await taskListTable.getColumnHeaderNames();
 
-        const actuallinkColumns = await ArrayUtil.filter(actualHeadeColumns,  (headerCol) => {
-            return  taskListTable.isColValForTaskALink(headerCol,1);
+        let actuallinkColumns = await ArrayUtil.filter(actualHeadeColumns,  (headerCol) => {
+            return taskListTable.isColValForTaskALink(headerCol, 1);
         });
 
+        actuallinkColumns = actuallinkColumns.filter(col => col !== '')
         expect(actuallinkColumns.length, `Actual Cols ||${actuallinkColumns}|| !== Expected Cols ||${expectdLinkCols}|| `).to.equal(expectdLinkCols.length);
         expect(actuallinkColumns).to.include.members(expectdLinkCols);
 

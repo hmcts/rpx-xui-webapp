@@ -1,5 +1,6 @@
 
-
+const GovUKTable = require('../../common/govUkTable')
+const partyCaseFlags = require('./partyCaseFlagsTable')
 class HearingFacilitiesPage {
     constructor() {
         this.pageContainer = $('exui-hearing-facilities')
@@ -49,6 +50,16 @@ class HearingFacilitiesPage {
     async clickAdditionalFacilityCheckbox(facility) {
         const ele = element(by.xpath(`//div[@id='checkbox-addition-facility']//label[contains(text(),'${facility}')]/../input`))
         await ele.click()
+    }
+
+    async getPartiesWithCaseFlagsDisplayed() {
+       
+        return await partyCaseFlags.getPartiesWithCaseFlagsDisplayed();
+    }
+
+    async getCaseFlagsDisplayedForParty(partyName) {
+      
+        return await partyCaseFlags.getCaseFlagsDisplayedForParty(partyName);;
     }
 }
 

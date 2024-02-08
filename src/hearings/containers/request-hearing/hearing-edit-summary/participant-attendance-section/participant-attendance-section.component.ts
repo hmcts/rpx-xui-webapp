@@ -151,15 +151,15 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
         return partyInSHV.individualDetails?.firstName !== partyInHMCToCompare.individualDetails?.firstName ||
         partyInSHV.individualDetails?.lastName !== partyInHMCToCompare.individualDetails?.lastName;
       }
-      return true;
     }
     return false;
   }
 
-  private getPartyChannelChanged(party: PartyDetailsModel): boolean {
-    const partyInHMCToCompare = this.hearingRequestToCompareMainModel.partyDetails.find((party) => party.partyID === party.partyID);
+  private getPartyChannelChanged(partyDetails: PartyDetailsModel): boolean {
+    const partyInHMC = this.hearingRequestMainModel.partyDetails.find((party) => party.partyID === partyDetails.partyID);
+    const partyInHMCToCompare = this.hearingRequestToCompareMainModel.partyDetails.find((party) => party.partyID === partyDetails.partyID);
     return !_.isEqual(
-      party.individualDetails?.preferredHearingChannel,
+      partyInHMC.individualDetails?.preferredHearingChannel,
       partyInHMCToCompare.individualDetails?.preferredHearingChannel
     );
   }

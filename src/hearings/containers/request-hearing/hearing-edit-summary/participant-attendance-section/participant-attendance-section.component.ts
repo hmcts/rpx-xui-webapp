@@ -45,25 +45,7 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
     this.participantAttendanceModes = this.getParticipantAttendanceModes();
     this.numberOfPhysicalAttendees = this.getNumberOfPhysicalAttendees();
 
-    this.isPaperHearingChanged = !_.isEqual(
-      this.hearingRequestToCompareMainModel.hearingDetails.hearingChannels,
-      this.hearingRequestMainModel.hearingDetails.hearingChannels
-    );
-
-    this.numberOfPhysicalAttendeesChanged = !_.isEqual(
-      this.hearingRequestToCompareMainModel.hearingDetails?.numberOfPhysicalAttendees || 0,
-      this.hearingRequestMainModel.hearingDetails?.numberOfPhysicalAttendees || 0
-    );
-
-    this.participantChannelsChanged = !_.isEqual(
-      this.hearingRequestToCompareMainModel.hearingDetails?.hearingChannels,
-      this.hearingRequestMainModel.hearingDetails?.hearingChannels
-    );
-
-    this.showAmendedForPageTitle = (this.partyDetailsChangesRequired && this.partyDetailsChangesConfirmed) ||
-      this.isPaperHearingChanged ||
-      this.numberOfPhysicalAttendeesChanged ||
-      this.participantChannelsChanged;
+    this.setAmendmentLabels();
   }
 
   public onChange(fragmentId: string): void {
@@ -166,5 +148,27 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
 
   private getNumberOfPhysicalAttendees(): number {
     return this.hearingRequestMainModel.hearingDetails?.numberOfPhysicalAttendees || 0;
+  }
+
+  private setAmendmentLabels(): void {
+    this.isPaperHearingChanged = !_.isEqual(
+      this.hearingRequestToCompareMainModel.hearingDetails.hearingChannels,
+      this.hearingRequestMainModel.hearingDetails.hearingChannels
+    );
+
+    this.numberOfPhysicalAttendeesChanged = !_.isEqual(
+      this.hearingRequestToCompareMainModel.hearingDetails?.numberOfPhysicalAttendees || 0,
+      this.hearingRequestMainModel.hearingDetails?.numberOfPhysicalAttendees || 0
+    );
+
+    this.participantChannelsChanged = !_.isEqual(
+      this.hearingRequestToCompareMainModel.hearingDetails?.hearingChannels,
+      this.hearingRequestMainModel.hearingDetails?.hearingChannels
+    );
+
+    this.showAmendedForPageTitle = (this.partyDetailsChangesRequired && this.partyDetailsChangesConfirmed) ||
+      this.isPaperHearingChanged ||
+      this.numberOfPhysicalAttendeesChanged ||
+      this.participantChannelsChanged;
   }
 }

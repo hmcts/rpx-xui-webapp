@@ -34,7 +34,7 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
       ? 'Yes'
       : 'No';
 
-    this.hearingRequestMainModel.hearingDetails?.facilitiesRequired?.forEach((facility) => {
+    this.hearingRequestMainModel.hearingDetails.facilitiesRequired?.forEach((facility) => {
       const facilityFromRefData = this.additionalFacilitiesRefData.find((facilityRefData) => facilityRefData.key === facility);
       if (facilityFromRefData) {
         this.additionalFacilities.push(facilityFromRefData.value_en);
@@ -44,26 +44,7 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
     this.nonReasonableAdjustmentChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesRequired;
     this.nonReasonableAdjustmentChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed;
 
-    this.caseAdditionalSecurityFlagChanged = !_.isEqual(
-      this.hearingRequestToCompareMainModel.caseDetails?.caseAdditionalSecurityFlag,
-      this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag
-    );
-
-    this.facilitiesChanged = !_.isEqual(
-      this.hearingRequestToCompareMainModel.hearingDetails.facilitiesRequired,
-      this.hearingRequestMainModel.hearingDetails.facilitiesRequired
-    );
-
-    this.showAmendedForPageTitle = this.nonReasonableAdjustmentChangesConfirmed ||
-      this.caseAdditionalSecurityFlagChanged ||
-      this.facilitiesChanged;
-
-    this.hearingRequestToCompareMainModel.hearingDetails.facilitiesRequired?.forEach((facility) => {
-      const facilityFromRefData = this.additionalFacilitiesRefData.find((additionalFacility) => additionalFacility.key === facility);
-      if (facilityFromRefData) {
-        this.facilitiesRequiredToCompare.push(facilityFromRefData.value_en);
-      }
-    });
+    this.setAmendmentLabels();
   }
 
   public onChange(fragmentId: string): void {
@@ -78,5 +59,33 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
 
   public showAmendedForFacilitiesRequired(facility: string): boolean {
     return !this.facilitiesRequiredToCompare.includes(facility);
+  }
+
+  private setFacilitiesToCompare(): void {
+    this.hearingRequestToCompareMainModel.hearingDetails.facilitiesRequired?.forEach((facility) => {
+      const facilityFromRefData = this.additionalFacilitiesRefData.find((additionalFacility) => additionalFacility.key === facility);
+      if (facilityFromRefData) {
+        this.facilitiesRequiredToCompare.push(facilityFromRefData.value_en);
+      }
+    });
+  }
+
+  private setAmendmentLabels(): void {
+    this.caseAdditionalSecurityFlagChanged = !_.isEqual(
+      this.hearingRequestToCompareMainModel.caseDetails?.caseAdditionalSecurityFlag,
+      this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag
+    );
+
+    this.facilitiesChanged = !_.isEqual(
+      this.hearingRequestToCompareMainModel.hearingDetails.facilitiesRequired,
+      this.hearingRequestMainModel.hearingDetails.facilitiesRequired
+    );
+
+    this.showAmendedForPageTitle = this.nonReasonableAdjustmentChangesConfirmed ||
+      this.caseAdditionalSecurityFlagChanged ||
+      this.facilitiesChanged;
+
+    // Set facilities to compare array, used to compare and display amended labels for facilities
+    this.setFacilitiesToCompare();
   }
 }

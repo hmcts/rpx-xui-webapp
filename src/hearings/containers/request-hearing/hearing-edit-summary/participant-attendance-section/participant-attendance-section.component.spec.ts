@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { initialState, partySubChannelsRefData } from '../../../../hearing.test.data';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
@@ -67,6 +68,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
       declarations: [
         ParticipantAttendanceSectionComponent
       ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: HearingsService, useValue: hearingsService }
       ]
@@ -89,7 +91,9 @@ describe('ParticipantAttendanceSectionComponent', () => {
   it('should set participant attendance details', () => {
     expect(component.isPaperHearing).toEqual('No');
     expect(component.participantChannels).toEqual(['By phone']);
-    expect(component.participantAttendanceModes).toEqual([{ partyName: 'Jane Smith', channel: ' - By video', partyNameChanged: true }]);
+    expect(component.participantAttendanceModes).toEqual(
+      [{ partyName: 'Jane Smith', channel: ' - By video', partyNameChanged: false, partyChannelChanged: true }]
+    );
     expect(component.numberOfPhysicalAttendees).toEqual(3);
   });
 

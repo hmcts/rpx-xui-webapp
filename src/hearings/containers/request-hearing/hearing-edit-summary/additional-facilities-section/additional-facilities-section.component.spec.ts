@@ -139,6 +139,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
     component = fixture.componentInstance;
     component.additionalFacilitiesRefData = additionalFacilitiesRefData;
     component.hearingRequestMainModel = initialState.hearings.hearingRequest.hearingRequestMainModel;
+    component.hearingRequestToCompareMainModel = initialState.hearings.hearingRequestToCompare.hearingRequestMainModel;
     fixture.detectChanges();
   });
 

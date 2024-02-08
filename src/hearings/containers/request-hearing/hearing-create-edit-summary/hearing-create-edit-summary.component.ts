@@ -35,17 +35,15 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
   }
 
   public removeUnnecessarySummaryTemplateItems() {
-    let filteredTemplate: Section[] = [];
+    let filteredTemplate;
     this.getScreenFlowFromStore(this.hearingStore).subscribe((storeData: any) => {
+    
       if (storeData && storeData.hearings) {
-        const screenFlow: [] = storeData?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
-        const mapTemplateToScreenFlow = screenFlow.map((x, i) => ({
-          screenName: this.template[i]
-        }));
+        let screenFlow: any[] = storeData?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
 
-        filteredTemplate = mapTemplateToScreenFlow.map((screenFl: any) => {
+        filteredTemplate = screenFlow.map((screenFl: any) => {
           if (screenFl && screenFl.screenName !== undefined) {
-            const templateItems = this.template.find((tRef: any) => tRef.sectionHTMLTitle.includes(screenFl.screenName.sectionHTMLTitle));
+            const templateItems = this.template.find((tRef: any) => tRef.screenName.includes(screenFl.screenName));
             return templateItems;
           }
         });

@@ -46,10 +46,26 @@ class CustomHelper extends Helper {
         }
     }
 
+    _beforeStep() {
+        // const page = this.getPuppeteerPage();
+
+        // if (!this.pageOnListener && page){
+
+        //     page.on('console', (msg) => {
+        //         const type = msg.type();
+        //         if (type === 'error') {
+        //             // console.log(msg);
+        //             // this.attachBrowserLog(msg)
+        //             this.browserErrorLogs.push(msg)
+        //         }
+        //     });
+        //     this.pageOnListener = true;
+        // }
+    }
+
 
     async _failed() {
         codeceptMochawesomeLog.AddMessage('---------------------- TEST FAILED ----------------------');
-        await getActor().saveScreenshot()
         for (const log of this.browserErrorLogs) {
             this.attachBrowserLog(log)
 
@@ -137,7 +153,6 @@ class CustomHelper extends Helper {
             locator  = this.getPlaywrightPage().locator(selector).first()
             return await locator.getAttribute(name)
         }
-
     }
 
     async isElementChecked(selector) {

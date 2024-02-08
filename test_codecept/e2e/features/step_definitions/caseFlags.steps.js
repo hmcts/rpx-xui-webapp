@@ -239,7 +239,7 @@ Then('I validate case flags tab table data for {string}', async function(tableFo
     const isCaseFlagPresent = (expectedCaseFlag, caseFlags) => {
         const expectedkeys = Object.keys(expectedCaseFlag)
         for(const actualFlag of caseFlags){
-            
+            actualFlag['Flag status'] = actualFlag['Flag status'].toUpperCase()
             const matchingFields = expectedkeys.filter(key => { 
                 reportLogger.AddMessage(`${expectedCaseFlag[key]} === ${actualFlag[key] }`)
                 return actualFlag[key].includes(expectedCaseFlag[key])
@@ -254,6 +254,7 @@ Then('I validate case flags tab table data for {string}', async function(tableFo
     const expectedTableData = datatable.parse().hashes();
     const caseFlagsTablePage = caseFlagsTabPage.getFlagTableFor(tableFor)
     const tableData = await caseFlagsTablePage.getTableData();
+
     reportLogger.AddMessage(`Case flags displayed for ${tableFor} : ${JSON.stringify(tableData,null,2)}`)
     for (const expected of expectedTableData){
         if (expected['Creation date'] === 'today'){

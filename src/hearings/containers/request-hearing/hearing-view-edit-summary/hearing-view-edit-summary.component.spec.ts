@@ -66,6 +66,19 @@ describe('HearingViewEditSummaryComponent', () => {
       expect(component.validationErrors.length).toEqual(1);
     });
 
+    it('should call removeUnnecessarySummaryTemplateItems in ngOnInit', () => {
+      const rmvSummaryTemp = spyOn(component, 'removeUnnecessarySummaryTemplateItems');
+      component.ngOnInit();
+      expect(rmvSummaryTemp).toHaveBeenCalled();
+    });
+  
+    it('should call getScreenFlowFromStore ', () => {
+      const store = [{ screenName: 'hearing-link', navigation: [] }];
+      const screenFlow = spyOn(component, 'getScreenFlowFromStore').and.returnValue(of(store));
+      component.removeUnnecessarySummaryTemplateItems();
+      expect(screenFlow).toHaveBeenCalled();
+    });
+
     afterEach(() => {
       fixture.destroy();
     });

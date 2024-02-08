@@ -10,6 +10,7 @@ import * as fromHearingStore from '../../../store';
 import { HEARING_VIEW_EDIT_SUMMARY_TEMPLATE } from '../../../templates/hearing-view-edit-summary.template';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import { ScreenNavigationModel } from 'api/hearings/models/screenNavigation.model';
+import { Section } from 'src/hearings/models/section';
 
 @Component({
   selector: 'exui-hearing-view-edit-summary',
@@ -35,6 +36,7 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
   }
 
   ngOnInit(): void {
+   // this.removeUnnecessarySummaryTemplateItems();
    this.template = this.removeUnnecessarySummaryTemplateItems();
   }
 
@@ -61,15 +63,12 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
   public removeUnnecessarySummaryTemplateItems() {
     let filteredTemplate;
     this.getScreenFlowFromStore(this.hearingStore).subscribe((storeData: any) => {
-    
       if (storeData && storeData.hearings) {
-        let screenFlow: any[] = storeData?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
-
-        filteredTemplate = screenFlow.map((screenFl: any) => {
-          if (screenFl && screenFl.screenName !== undefined) {
-            const templateItems = this.template.find((tRef: any) => tRef?.screenName?.includes(screenFl?.screenName));
-            return templateItems;
-          }
+        let screenFlow: Section[] = storeData?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
+        filteredTemplate = this.template.filter((tp:Section) => {
+          return screenFlow.some((sr:Section)  => {
+            return tp.screenName.includes(sr.screenName) || tp.screenName.includes('edit-hearing') ||  tp.screenName.includes('hearing-listing-info')
+          })
         });
       }
     });

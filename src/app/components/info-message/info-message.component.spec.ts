@@ -19,6 +19,7 @@ describe('SharedModule', () => {
     let component: InfoMessageComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
+    let translatePipeSpy: jasmine.SpyObj<(value: any) => any>;
 
     beforeEach(async () => {
       TestBed.configureTestingModule({
@@ -32,6 +33,7 @@ describe('SharedModule', () => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
+      translatePipeSpy = spyOn(MockRpxTranslatePipe.prototype, 'transform').and.callThrough();
       fixture.detectChanges();
     });
 
@@ -47,6 +49,7 @@ describe('SharedModule', () => {
       fixture.detectChanges();
 
       expect(fixture.debugElement.nativeElement.innerText).toContain(InfoMessage.TASK_NO_LONGER_AVAILABLE);
+      expect(translatePipeSpy).toHaveBeenCalledWith(InfoMessageType.SUCCESS);
     });
 
     /**
@@ -62,6 +65,7 @@ describe('SharedModule', () => {
       fixture.detectChanges();
 
       expect(fixture.debugElement.nativeElement.innerText).toContain(InfoMessageType.SUCCESS);
+      expect(translatePipeSpy).toHaveBeenCalledWith(InfoMessageType.SUCCESS);
 
       component.type = InfoMessageType.WARNING;
       component.message = InfoMessage.TASK_NO_LONGER_AVAILABLE;
@@ -69,6 +73,7 @@ describe('SharedModule', () => {
       fixture.detectChanges();
 
       expect(fixture.debugElement.nativeElement.innerText).toContain(InfoMessageType.WARNING);
+      expect(translatePipeSpy).toHaveBeenCalledWith(InfoMessageType.WARNING);
 
       component.type = InfoMessageType.INFO;
       component.message = InfoMessage.TASK_NO_LONGER_AVAILABLE;
@@ -76,6 +81,7 @@ describe('SharedModule', () => {
       fixture.detectChanges();
 
       expect(fixture.debugElement.nativeElement.innerText).toContain(InfoMessageType.INFO);
+      expect(translatePipeSpy).toHaveBeenCalledWith('information');
     });
   });
 });

@@ -181,7 +181,7 @@ describe('HearingEditSummaryComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: true
+        hearingWindowChangesRequired: false
       }
     };
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);

@@ -1,5 +1,5 @@
-
 const reportLogger = require("../../../../codeceptCommon/reportLogger");
+
 
 
 class HearingsTabPage{

@@ -31,8 +31,9 @@ class HearingTimingPage {
             "The first date of the hearing must be": $("#firstHearingDate-date"),
             "Earliest start date": $('#earliestHearingDate-date'),
             "Latest end date": $('#latestHearingDate-date')
-
         }
+
+        this.firstDateHearingAmendedLabel = $('#first-date-amendment-label')
     }
 
     async isDisplayed() {
@@ -88,6 +89,17 @@ class HearingTimingPage {
     async selectHearingPriority(priority){
         const ele = element(by.xpath(`//fieldset[@id='hearing-priority']//label[contains(text(),'${priority}')]/../input`))
         await ele.click();
+    }
+
+    async isActionNeededLabelDisplayedForField(fieldName){
+        let retVal = false;
+        switch (fieldName){
+            case 'The first date of the hearing must be':
+                retVal = await this.firstDateHearingAmendedLabel.isDisplayed();
+                break;
+            default:
+        } 
+        return retVal;  
     }
 
 }

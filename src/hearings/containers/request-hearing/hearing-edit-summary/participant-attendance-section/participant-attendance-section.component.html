@@ -13,10 +13,10 @@
       Will this be a paper hearing?
     </div>
     <div class="govuk-summary-list__value">
+      {{ isPaperHearing }}
       <exui-amendment-label *ngIf="isPaperHearingChanged"
         [displayLabel]="amendmentLabelEnum.AMENDED">
       </exui-amendment-label>
-      {{ isPaperHearing }}
     </div>
     <div class="govuk-summary-list__actions">
       <a id="paperHearing"
@@ -30,14 +30,14 @@
       What will be the methods of attendance for this hearing?
     </div>
     <div class="govuk-summary-list__value">
-      <exui-amendment-label *ngIf="participantChannelsChanged"
-        [displayLabel]="amendmentLabelEnum.AMENDED">
-      </exui-amendment-label>
       <ul>
         <li *ngFor="let participantChannel of participantChannels">
           {{ participantChannel  }}
         </li>
       </ul>
+      <exui-amendment-label *ngIf="participantChannelsChanged"
+        [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
     </div>
     <div class="govuk-summary-list__actions">
       <a id="howParticipantsAttendant"
@@ -73,10 +73,10 @@
       How many people will attend the hearing in person?
     </div>
     <div class="govuk-summary-list__value">
+      {{ numberOfPhysicalAttendees }}
       <exui-amendment-label *ngIf="numberOfPhysicalAttendeesChanged"
         [displayLabel]="amendmentLabelEnum.AMENDED">
       </exui-amendment-label>
-      {{ numberOfPhysicalAttendees }}
     </div>
     <div class="govuk-summary-list__actions">
       <a id="attendantPersonAmount"

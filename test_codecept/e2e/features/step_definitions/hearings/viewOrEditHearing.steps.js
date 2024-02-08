@@ -78,13 +78,14 @@ Then('I validate edit hearing section heading labels', async function (datatable
     for(const row of fields){
         const heading = row.Heading
         const expectedLabel = row.Label
-        const actualLabel = await viewOrEditHearingPage.getSectionHeadingLabel(heading)
-        if (expectedLabel === ''){
-            expect(actualLabel, `${heading} expected no label, actual displayed ${actualLabel}`).to.equal('')
-        }else{
-            expect(actualLabel, `${heading} expected label did not match`).to.includes(expectedLabel)
-        }
-
+        await browserWaits.retryWithActionCallback(async () => {
+            const actualLabel = await viewOrEditHearingPage.getSectionHeadingLabel(heading)
+            if (expectedLabel === '') {
+                expect(actualLabel, `${heading} expected no label, actual displayed ${actualLabel}`).to.equal('')
+            } else {
+                expect(actualLabel, `${heading} expected label did not match`).to.includes(expectedLabel)
+            }
+        })
 
     }
 })

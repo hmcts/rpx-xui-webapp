@@ -1,7 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
-import { combineLatest, Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, combineLatest } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { HearingRequestStateData } from '../../../models/hearingRequestStateData.model';
 import { ACTION, Mode } from '../../../models/hearings.enum';
@@ -23,8 +24,9 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
   private readonly notUpdatedMessage = 'The request has not been updated';
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService) {
-    super(hearingStore, hearingsService);
+              protected readonly hearingsService: HearingsService,
+              protected readonly featureToggleService: FeatureToggleService) {
+    super(hearingStore, hearingsService, featureToggleService);
   }
 
   private getInitialAndCurrentState(): Observable<[HearingRequestStateData, HearingRequestStateData]> {
@@ -51,8 +53,6 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
 
   public ngOnDestroy(): void {
     super.unsubscribe();
-    if (this.initialAndCurrentStatesSubscription) {
-      this.initialAndCurrentStatesSubscription.unsubscribe();
-    }
+    this.initialAndCurrentStatesSubscription?.unsubscribe();
   }
 }

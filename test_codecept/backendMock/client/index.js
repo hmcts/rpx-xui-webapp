@@ -43,6 +43,13 @@ class BackendMockClient{
         })
     }
 
+    async getRequestBody(auth, apiMethod) {
+        return await axiosInstance.post(`${this.baseUrl}session/get/capturedRequest`, {
+            auth: auth,
+            apiMethod: apiMethod
+        })
+    }
+
 
     async getSessionRolesAndRoleAssignments(auth){
         return await axiosInstance.post(`${this.baseUrl}session/getUserRolesAndRoleAssignments`, {

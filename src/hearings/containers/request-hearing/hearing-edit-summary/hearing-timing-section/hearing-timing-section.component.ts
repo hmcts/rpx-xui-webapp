@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import * as _ from 'lodash';
 import * as moment from 'moment';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
-import { HearingDetailsModel } from '../../../../models/hearingDetails.model';
+import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 import { HearingWindowModel } from '../../../../models/hearingWindow.model';
 import { HearingDateEnum, RadioOptions } from '../../../../models/hearings.enum';
 import { AmendmentLabelStatus } from '../../../../models/hearingsUpdateMode.enum';
@@ -14,7 +15,8 @@ import { HearingsService } from '../../../../services/hearings.service';
 })
 export class HearingTimingSectionComponent implements OnInit {
   @Input() public hearingPrioritiesRefData: LovRefDataModel[];
-  @Input() public hearingDetails: HearingDetailsModel;
+  @Input() public hearingRequestMainModel: HearingRequestMainModel;
+  @Input() public hearingRequestToCompareMainModel: HearingRequestMainModel;
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
   constructor(private readonly hearingsService: HearingsService) {}
@@ -26,10 +28,12 @@ export class HearingTimingSectionComponent implements OnInit {
   public latestHearingDate: string;
   public firstHearingDate: string;
   public hearingPriority: string;
-  public showAmendedForHearingLength: boolean;
-  public showAmendedForHearingPriority: boolean;
+  public hearingLengthChanged: boolean;
+  public hearingDateChanged: boolean;
+  public hearingPriorityChanged: boolean;
   public hearingWindowChangesRequired: boolean;
   public hearingWindowChangesConfirmed: boolean;
+  public showAmendedLabelForPageTitle: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
   public radioOptions = RadioOptions;
 
@@ -39,10 +43,14 @@ export class HearingTimingSectionComponent implements OnInit {
     this.hearingLength = this.getHearingLength();
     this.specificDate = this.getSpecificDate();
     this.hearingPriority = this.getHearingPriority();
-    this.specificDateSelection = this.getSpecificDateSelection(this.hearingDetails.hearingWindow);
-    this.earliestHearingDate = this.getEarliestHearingDate(this.hearingDetails.hearingWindow);
-    this.latestHearingDate = this.getLatestHearingDate(this.hearingDetails.hearingWindow);
-    this.firstHearingDate = this.getFirstHearingDate(this.hearingDetails.hearingWindow);
+
+    const hearingWindow = this.hearingRequestMainModel.hearingDetails.hearingWindow;
+    this.specificDateSelection = this.getSpecificDateSelection(hearingWindow);
+    this.earliestHearingDate = this.getEarliestHearingDate(hearingWindow);
+    this.latestHearingDate = this.getLatestHearingDate(hearingWindow);
+    this.firstHearingDate = this.getFirstHearingDate(hearingWindow);
+
+    this.setAmendmentLabels();
   }
 
   public onChange(fragmentId: string): void {
@@ -62,7 +70,7 @@ export class HearingTimingSectionComponent implements OnInit {
   }
 
   private getHearingLength(): string {
-    let duration = this.hearingDetails.duration;
+    let duration = this.hearingRequestMainModel.hearingDetails.duration;
     if (duration) {
       let days = 0;
       let hours = 0;
@@ -97,7 +105,7 @@ export class HearingTimingSectionComponent implements OnInit {
     let specificDateSelection: string = RadioOptions.NO;
     let earliestHearingDate: string = '';
     let latestHearingDate: string = '';
-    const hearingWindow = this.hearingDetails.hearingWindow;
+    const hearingWindow = this.hearingRequestMainModel.hearingDetails.hearingWindow;
 
     if (hearingWindow?.dateRangeStart || hearingWindow?.dateRangeEnd) {
       specificDateSelection = RadioOptions.CHOOSE_DATE_RANGE;
@@ -145,7 +153,29 @@ export class HearingTimingSectionComponent implements OnInit {
   }
 
   private getHearingPriority(): string {
-    const hearingPriorityFromRefData = this.hearingPrioritiesRefData.find((priority) => priority.key === this.hearingDetails.hearingPriorityType);
+    const hearingPriorityFromRefData = this.hearingPrioritiesRefData.find((priority) => priority.key === this.hearingRequestMainModel.hearingDetails.hearingPriorityType);
     return (hearingPriorityFromRefData?.value_en || '');
+  }
+
+  private setAmendmentLabels(): void {
+    this.hearingLengthChanged = !_.isEqual(
+      this.hearingRequestToCompareMainModel.hearingDetails.duration,
+      this.hearingRequestMainModel.hearingDetails.duration
+    );
+
+    this.hearingDateChanged = !_.isEqual(
+      this.hearingRequestToCompareMainModel.hearingDetails.hearingWindow,
+      this.hearingRequestMainModel.hearingDetails.hearingWindow,
+    );
+
+    this.hearingPriorityChanged = !_.isEqual(
+      this.hearingRequestToCompareMainModel.hearingDetails.hearingPriorityType,
+      this.hearingRequestMainModel.hearingDetails.hearingPriorityType
+    );
+
+    this.showAmendedLabelForPageTitle = (this.hearingWindowChangesConfirmed && this.hearingWindowChangesRequired) ||
+      this.hearingLengthChanged ||
+      this.hearingDateChanged ||
+      this.hearingPriorityChanged;
   }
 }

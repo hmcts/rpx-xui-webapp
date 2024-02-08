@@ -70,8 +70,11 @@
               <span class="govuk-visually-hidden">Error:</span> Select how each party will attend the hearing
             </span>
           <div *ngFor="let partyControl of partiesFormArray.controls; let i=index" class="party-row" [formGroupName]="i">
-            <label class="govuk-label" [for]="'partyChannel'+i">
-                <strong>{{ partyControl.value.partyName }}</strong>
+            <label class="govuk-label govuk-!-font-weight-bold" [for]="'partyChannel'+i">
+                {{ partyControl.value.partyName }}
+                <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && partyControl.value.partyAmendmentStatus"
+                  [displayLabel]="partyControl.value.partyAmendmentStatus">
+                </exui-amendment-label>
             </label>
             <ng-container formGroupName="individualDetails">
               <select class="govuk-select" [id]="'partyChannel'+i" [name]="'partyChannel'+i" formControlName="preferredHearingChannel">

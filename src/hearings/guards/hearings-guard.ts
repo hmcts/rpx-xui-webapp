@@ -16,6 +16,7 @@ export class HearingsGuard {
   public static CASE_TYPE: string = 'caseType';
   public static DEFAULT_URL: string = '/cases';
   public userRoles$: Observable<string[]>;
+  protected featureName: string;
 
   constructor(protected readonly appStore: Store<fromAppStore.State>,
               protected readonly sessionStorageService: SessionStorageService,
@@ -23,12 +24,13 @@ export class HearingsGuard {
     this.userRoles$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
       map((userDetails) => userDetails.userInfo.roles)
     );
+    this.featureName = AppConstants.FEATURE_NAMES.mcHearingsFeature;
   }
 
   public hasMatchedPermissions(): Observable<boolean> {
     let jurisdiction: string;
     let caseType: string;
-    return this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []).pipe(
+    return this.featureToggleService.getValueOnce<FeatureVariation[]>(this.featureName, []).pipe(
       map((featureVariations: FeatureVariation[]) => {
         const caseInfo = JSON.parse(this.sessionStorageService.getItem(HearingsGuard.CASE_INFO));
         if (caseInfo?.hasOwnProperty(HearingsGuard.JURISDICTION)) {

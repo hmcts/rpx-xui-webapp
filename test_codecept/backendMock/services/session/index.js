@@ -20,7 +20,7 @@ class MockSessionService {
             this.sessionsPath = path.resolve(__dirname, '../../../../.sessions')
 
         }
-        console.log("Session path : " + this.sessionsPath)
+        // console.log("Session path : " + this.sessionsPath)
         this.defaultSession = '';
     }
 
@@ -39,7 +39,7 @@ class MockSessionService {
     getSessionFiles() {
 
 
-        console.log(this.sessionsPath)
+        // console.log(this.sessionsPath)
         return fs.readdirSync(this.sessionsPath)
     }
 

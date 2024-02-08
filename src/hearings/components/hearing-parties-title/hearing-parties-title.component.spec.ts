@@ -1,22 +1,41 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import * as fromHearingStore from '../../../hearings/store';
 import { initialState } from '../../hearing.test.data';
 import { HearingPartiesTitleComponent } from './hearing-parties-title.component';
+import { HearingsFeatureService } from '../../../hearings/services/hearings-feature.service';
 
 describe('HearingPartiesTitleComponent', () => {
   let component: HearingPartiesTitleComponent;
   let fixture: ComponentFixture<HearingPartiesTitleComponent>;
+  let storeMock: Store<fromHearingStore.State>;
+  let featureToggleServiceMock: any;
+  let hearingsFeatureServiceMock;
 
   beforeEach(() => {
+    featureToggleServiceMock = jasmine.createSpyObj('featureToggleService', ['isEnabled']);
+    hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled']);
     TestBed.configureTestingModule({
       declarations: [HearingPartiesTitleComponent],
       providers: [
-        provideMockStore({ initialState })
+        provideMockStore({ initialState }),
+        {
+          provide: FeatureToggleService,
+          useValue: featureToggleServiceMock
+        },
+        {
+          provide: HearingsFeatureService,
+          useValue: hearingsFeatureServiceMock
+        }
       ]
     })
       .compileComponents();
     fixture = TestBed.createComponent(HearingPartiesTitleComponent);
+    storeMock = TestBed.inject(Store);
+    spyOn(storeMock, 'pipe').and.returnValue(of(initialState.hearings.hearingValues.serviceHearingValuesModel));
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -25,8 +44,18 @@ describe('HearingPartiesTitleComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should return title', () => {
-    expect(component.caseTitle).toBe('Jane vs DWP');
+  it('should return internal case name for title', () => {
+    hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
+    featureToggleServiceMock.isEnabled.and.returnValue(of(true));
+    component.ngOnInit();
+    expect(component.caseTitle).toBe('Jane Smith vs DWP');
+  });
+
+  it('should return public case name for title', () => {
+    hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
+    featureToggleServiceMock.isEnabled.and.returnValue(of(false));
+    component.ngOnInit();
+    expect(component.caseTitle).toBe('Jane Smith vs DWP');
   });
 
   it('should destroy subscription', () => {

@@ -15,12 +15,15 @@ import * as fromComponents from './components';
 import * as fromContainers from './containers';
 import { HearingsEditGuard } from './guards/hearings-edit-guard';
 import { HearingsViewGuard } from './guards/hearings-view-guard';
+import { HearingAmendmentsGuard } from './guards/hearing-amendments-guard';
 import { hearingsRouting } from './hearings.routes';
 import { HearingsPipesModule } from './pipes/hearings.pipes.module';
 import { HearingsService } from './services/hearings.service';
+import { HearingsFeatureService } from './services/hearings-feature.service';
 import { effects, reducers } from './store';
 import { AbstractPageFlow } from './utils/abstract-page-flow';
 import { PageFlow } from './utils/page-flow';
+import { WarningAndErrorSectionComponent } from './containers/request-hearing/hearing-edit-summary/warning-and-error-section/warning-and-error-section.component';
 
 @NgModule({
   imports: [
@@ -35,7 +38,7 @@ import { PageFlow } from './utils/page-flow';
     ExuiCommonLibModule,
     HearingsPipesModule
   ],
-  declarations: [...fromComponents.components, ...fromContainers.containers],
+  declarations: [...fromComponents.components, ...fromContainers.containers, WarningAndErrorSectionComponent],
   entryComponents: [],
   providers: [
     PageFlow,
@@ -50,7 +53,9 @@ import { PageFlow } from './utils/page-flow';
     HearingsService,
     HearingsEditGuard,
     HearingsViewGuard,
-    LoadingService
+    LoadingService,
+    HearingAmendmentsGuard,
+    HearingsFeatureService
   ]
 })
 /**

@@ -5,8 +5,7 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { RpxTranslationService } from 'rpx-xui-translation';
-import { HmctsGlobalHeaderComponent } from '..';
-import { PhaseBannerComponent } from '../../components/phase-banner/phase-banner.component';
+import { of } from 'rxjs';
 import { HeaderComponent } from './header.component';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -23,11 +22,11 @@ describe('Header Component', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation$: (phrase: string) => of(phrase) });
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HeaderComponent, HmctsGlobalHeaderComponent, PhaseBannerComponent, RpxTranslateMockPipe],
+      declarations: [HeaderComponent, RpxTranslateMockPipe],
       imports: [HttpClientModule, RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -37,7 +36,8 @@ describe('Header Component', () => {
           useFactory: rpxTranslationServiceStub
         }
       ]
-    }).compileComponents();
+    })
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -48,8 +48,11 @@ describe('Header Component', () => {
   });
 
   it('should render the skip to content link', () => {
+    const translatePipeSpy = spyOn(RpxTranslateMockPipe.prototype, 'transform').and.callThrough();
+    fixture.detectChanges();
     const element = fixture.debugElement.query(By.css('.govuk-skip-link')).nativeElement;
-    expect(element.innerHTML).toEqual('Skip to main content');
+    expect(element.textContent).toEqual('Skip to main content');
+    expect(translatePipeSpy).toHaveBeenCalledWith('Skip to main content');
   });
 
   it('should call emitNavigate with event and this.navigate', () => {

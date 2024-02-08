@@ -64,9 +64,16 @@
                 formControlName="specificDate" (change)="showDateAvailability()">
               <label class="govuk-label govuk-radios__label" for="hearingSingleDate">Yes</label>
             </div>
-            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Yes'}">
+            <div id="first-hearing-date-container"
+              [ngClass]="{'js-hidden': checkedHearingAvailability!=='Yes'}"
+              class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3">
               <div class="govuk-form-group">
-                <xuilib-gov-uk-date [config]="firstHearingDate" [formGroup]="firstHearingFormGroup" [errorMessage]="firstDateOfHearingError"></xuilib-gov-uk-date>
+                <div class="govuk-!-margin-right-1 first-hearing-date">
+                  <xuilib-gov-uk-date [config]="firstHearingDate" [formGroup]="firstHearingFormGroup" [errorMessage]="firstDateOfHearingError"></xuilib-gov-uk-date>
+                </div>
+                <exui-amendment-label id="first-date-amendment-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired"
+                  [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
+                </exui-amendment-label>
               </div>
             </div>
             <div class="govuk-radios__item">

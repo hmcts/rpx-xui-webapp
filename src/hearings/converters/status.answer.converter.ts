@@ -8,8 +8,7 @@ export class StatusAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map((state) => {
-        const hearingRequestStatus = state.hearingRequest.hearingRequestMainModel.requestDetails
-          && state.hearingRequest.hearingRequestMainModel.requestDetails.status;
+        const hearingRequestStatus = state.hearingRequest.hearingRequestMainModel.requestDetails?.status;
         return hearingStatusMappings.find((mapping) => mapping.hmcStatus === hearingRequestStatus).exuiDisplayStatus;
       })
     );

@@ -31,9 +31,10 @@ router.get('/roles', (req, res) => {
 
 
 router.post('/query', (req, res) => {
-    const auth = req.headers.authorization.replace('Bearer', '').trim()
+    let auth = req.headers.authorization ? req.headers.authorization : req.headers.serviceauthorization
+    auth = auth.replace('Bearer', '').trim()
     let roleAssignments = [];
-    console.log(`Role assignments req: ${JSON.stringify(req.body, null, 2)}`)
+    // console.log(`Role assignments req: ${JSON.stringify(req.body, null, 2)}`)
     const reqProps = Object.keys(req.body);
     if (reqProps.includes('queryRequests')) {
         for (const queryReq of req.body.queryRequests) {

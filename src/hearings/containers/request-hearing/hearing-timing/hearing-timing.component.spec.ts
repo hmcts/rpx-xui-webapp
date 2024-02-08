@@ -34,6 +34,8 @@ describe('HearingTimingComponent', () => {
   let fixture: ComponentFixture<HearingTimingComponent>;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: Router;
+  let nativeElement: any;
+
   const priorities: LovRefDataModel[] = [
     {
       key: 'urgent',
@@ -90,6 +92,7 @@ describe('HearingTimingComponent', () => {
     fixture = TestBed.createComponent(HearingTimingComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
+    nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
   });
 
@@ -395,6 +398,49 @@ describe('HearingTimingComponent', () => {
   it('should check if form is valid', () => {
     component.validationErrors = [];
     expect(component.isFormValid()).toBeTruthy();
+  });
+
+  it('should set the hearing window confirmation to true', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: true,
+        hearingWindowChangesConfirmed: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.hearingWindowChangesRequired).toEqual(true);
+    expect(component.hearingWindowChangesConfirmed).toEqual(true);
+    expect(nativeElement.querySelector('#first-date-amendment-label')).toBeDefined();
+  });
+
+  it('should set the hearing window confirmation to false', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.hearingWindowChangesRequired).toEqual(false);
+    expect(component.hearingWindowChangesConfirmed).toBeUndefined();
+    expect(nativeElement.querySelector('#first-date-amendment-label')).toBeNull();
   });
 
   afterEach(() => {

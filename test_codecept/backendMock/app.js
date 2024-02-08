@@ -83,7 +83,7 @@ class MockApp {
         app.use(express.json({ type: '*/*'}));
 
         app.use((req,res,next) => {
-            console.log(`${req.method} : ${req.url}`);
+            // console.log(`${req.method} : ${req.url}`);
 
             res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate');
             const authToken = req.headers.authorization;

@@ -67,6 +67,12 @@ describe('RequestHearingComponent', () => {
     expect(component.isConfirmationPage).toBeTruthy();
   });
 
+  it('should check is child page', () => {
+    spyOn(hearingsService, 'navigateAction');
+    mockPageFlow.getCurrentPage.and.returnValue('hearing-requirements');
+    expect(component.isChildPage).toBeTruthy();
+  });
+
   it('should purge data in store if page is destroyed', () => {
     const dispatchSpy = spyOn(mockStore, 'dispatch');
     component.ngOnDestroy();

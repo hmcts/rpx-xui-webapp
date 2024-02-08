@@ -29,9 +29,14 @@
     <td class="govuk-table__cell govuk-table-width-30-percent">
       <div *ngIf="hasUpdateAction" class="div-action">
         <ng-container *ngIf="!isAwaitingActual(hearing.exuiDisplayStatus) && !isNonCancellable(hearing.exuiDisplayStatus)">
+<<<<<<< HEAD
           <a id="link-view-or-edit-{{hearing.hearingID}}"
              href="javascript:void(0)"
              (click)="viewAndEdit(hearing.hearingID)">{{ 'View or edit' | rpxTranslate }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
+=======
+          <a id="link-view-or-edit-{{hearing.hearingID}}" href="javascript:void(0)"
+              (click)="viewAndEdit(hearing.hearingID)">View or edit</a>&nbsp;&nbsp;&nbsp;&nbsp;
+>>>>>>> master
         </ng-container>
         <ng-container *ngIf="isAwaitingActual(hearing.exuiDisplayStatus)">
           <a id="link-add-or-edit-{{hearing.hearingID}}"

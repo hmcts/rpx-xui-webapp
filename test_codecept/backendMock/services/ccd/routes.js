@@ -14,7 +14,7 @@ const caseEventMockData = require('./caseEvent_data')
 router.get('/data/internal/cases/:caseId', (req, res) => {
     const caseId = req.params['caseId'];
 
-    userApiData.sendResponse(req, res, "OnCaseDetails", () => ccdMockData.caseDetailsResponse.hearingCase)
+    userApiData.sendResponse(req, res, "OnCaseDetails", () => ccdMockData.caseDetailsResponse.defaultCase)
     // res.status(403).send({})
 });
 
@@ -28,7 +28,7 @@ router.get('/aggregated/caseworkers/:uid/jurisdictions', (req, res) => {
     // responseData[0].description = 'Div '+Date.now()
     // res.set('Content-Type', 'application/json');
     // res.setEncoding('gzip');
-    console.log('jurisdictions response size: '+JSON.stringify(responseData).length)
+    // console.log('jurisdictions response size: '+JSON.stringify(responseData).length)
     // res.set('Cache-control', 'public, max-age=0')
     if(req.query.access === 'read'){
         responseData.data[0].description = 'read request';

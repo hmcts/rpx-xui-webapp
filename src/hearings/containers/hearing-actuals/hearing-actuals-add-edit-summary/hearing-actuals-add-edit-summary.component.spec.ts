@@ -369,7 +369,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
     });
 
     it('should return false if the hearing date is the current date', () => {
-      const currentDate = new Date().toLocaleDateString();
+      const currentDate = new Date().toString();
       const result = component.hearingIsInFuture(currentDate);
       expect(result).toBe(false);
     });

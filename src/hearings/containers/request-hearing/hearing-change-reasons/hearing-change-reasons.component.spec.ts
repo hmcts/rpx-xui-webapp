@@ -2,8 +2,9 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of, throwError } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
@@ -11,13 +12,19 @@ import { initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
+import { HearingsFeatureService } from '../../../services/hearings-feature.service';
 import { HearingChangeReasonsComponent } from './hearing-change-reasons.component';
 
 describe('HearingChangeReasonsComponent', () => {
   let component: HearingChangeReasonsComponent;
   let fixture: ComponentFixture<HearingChangeReasonsComponent>;
+  let mockStore: any;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
+  const mockRouter = jasmine.createSpyObj('router', ['navigateByUrl']);
+  const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
+  const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled']);
+
   const reasons: LovRefDataModel[] = [
     {
       key: 'reasonOne',
@@ -57,14 +64,15 @@ describe('HearingChangeReasonsComponent', () => {
     }
   ];
 
-  let mockStore: any;
-
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingChangeReasonsComponent, MockRpxTranslatePipe],
       providers: [
-        { provide: HearingsService, useValue: hearingsService },
+        {
+          provide: HearingsService,
+          useValue: hearingsService
+        },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -75,8 +83,23 @@ describe('HearingChangeReasonsComponent', () => {
             }
           }
         },
+        {
+          provide: Router,
+          useValue: mockRouter
+        },
+        {
+          provide: FeatureToggleService,
+          useValue: mockFeatureToggleService
+        },
         provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService },
+        {
+          provide: HearingsService,
+          useValue: hearingsService
+        },
+        {
+          provide: HearingsFeatureService,
+          useValue: hearingsFeatureServiceMock
+        },
         FormBuilder
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -93,6 +116,8 @@ describe('HearingChangeReasonsComponent', () => {
     spyOn(component, 'isFormValid').and.callThrough();
     mockStore = jasmine.createSpyObj('mockStore', ['unsubscribe', 'dispatch', 'pipe']);
     mockStore.pipe.and.returnValue(of(initialState.hearings.hearingList));
+    mockFeatureToggleService.isEnabled.and.returnValue(of(true));
+    hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
     fixture.detectChanges();
   });
 
@@ -140,8 +165,10 @@ describe('HearingChangeReasonsComponent', () => {
 
   it('should call unsubscribe', () => {
     spyOn(component.lastErrorSubscription, 'unsubscribe');
+    spyOn(component.featureToggleServiceSubscription, 'unsubscribe');
     component.ngOnDestroy();
     expect(component.lastErrorSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.featureToggleServiceSubscription.unsubscribe).toHaveBeenCalled();
   });
 
   it('should execute Action', () => {
@@ -152,5 +179,17 @@ describe('HearingChangeReasonsComponent', () => {
     expect(component.errors.length).toBe(0);
     component.executeAction(ACTION.BACK);
     expect(component.errors.length).toBe(0);
+  });
+
+  it('should navigate back to hearing view edit summary page', () => {
+    component.isHearingAmendmentsEnabled = false;
+    component.onBackToSummaryPage();
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/hearings/request/hearing-view-edit-summary');
+  });
+
+  it('should navigate back to hearing edit summary page', () => {
+    component.isHearingAmendmentsEnabled = true;
+    component.onBackToSummaryPage();
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/hearings/request/hearing-edit-summary');
   });
 });

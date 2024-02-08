@@ -81,6 +81,8 @@ When('I click Submit hearing details button in hearing actuals CYA', async funct
 
 When('In hearing actual, I see hearings for date {string}', async function (hearingDate) {
     const hearingDateObj = hearingActualsPage.getHearingDateObject(hearingDate)
+
+    await browserWaits.waitForElement(element(by.xpath(hearingDateObj.hearingDateDetailsSummary)))
     expect(await hearingDateObj.isDisplayed()).to.be.true
 })
 
@@ -115,7 +117,7 @@ Then('In hearing actuals, hearing date {string} displayed with values and action
         for (const action of actions){
             expect(actualActions, `Expected action ${action} not present in actual actions ${actualActions}`).to.includes(action)
         }
-        
+
     }
 
 })

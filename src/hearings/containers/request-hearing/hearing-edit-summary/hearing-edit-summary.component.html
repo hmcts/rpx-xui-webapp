@@ -119,7 +119,8 @@
 ></exui-linked-hearing-section>
 <!-- Additional instructions -->
 <exui-additional-instructions-section
-  [listingComments]="hearingRequestMainModel.hearingDetails.listingComments"
+  [hearingRequestMainModel]="hearingRequestMainModel"
+  [hearingRequestToCompareMainModel]="hearingRequestToCompareMainModel"
   (changeEditHearing)="onChange($event)"
 ></exui-additional-instructions-section>
 <exui-warning-and-error-section

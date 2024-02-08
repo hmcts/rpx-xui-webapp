@@ -9,7 +9,6 @@ import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.m
   templateUrl: './additional-instructions-section.component.html'
 })
 export class AdditionalInstructionsSectionComponent implements OnInit {
-  @Input() public listingComments: string;
   @Input() public hearingRequestMainModel: HearingRequestMainModel;
   @Input() public hearingRequestToCompareMainModel: HearingRequestMainModel;
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
@@ -23,7 +22,7 @@ export class AdditionalInstructionsSectionComponent implements OnInit {
       this.hearingRequestToCompareMainModel.hearingDetails.listingComments,
       this.hearingRequestMainModel.hearingDetails.listingComments
     );
-    this.additionalInstructions = this.listingComments?.replace(/(?:\r\n|\r|\n)/g, '<br>') || '';
+    this.additionalInstructions = this.hearingRequestMainModel.hearingDetails.listingComments?.replace(/(?:\r\n|\r|\n)/g, '<br>') || '';
   }
 
   public onChange(fragmentId: string): void {

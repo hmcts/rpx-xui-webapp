@@ -12,7 +12,6 @@ class CaseDetailsData{
         
         this.setupHearingCase()
         this.setupDefaultCase()
-        this.setupCaseFileViewCase();
         this.setupQMCase()
         this.setupCaseFileViewCase();
         this.setupCaseFlagsCase()
@@ -73,6 +72,17 @@ class CaseDetailsData{
 
         this.caseFlagsCase.tabs.push(caseFlagsTabConfig);
     }
+
+    setupCaseFlagsCase() {
+        this.setCaseTypeProperties(this.caseFlagsCase, {
+            id: 'PRLAPPS',
+            name: 'Immigration & Asylum',
+            "jurisdiction.id": 'PRIVATELAW'
+        })
+
+        this.caseFlagsCase.tabs.push(caseFlagsTabConfig);
+    }
+
 
     setupDefaultCase(){
         this.setCaseTypeProperties(this.defaultCase,{

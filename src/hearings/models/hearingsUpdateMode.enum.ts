@@ -86,4 +86,5 @@ export interface ParticipantAttendanceMode {
   partyName: string;
   channel: string;
   partyNameChanged: boolean;
+  partyChannelChanged: boolean;
 }

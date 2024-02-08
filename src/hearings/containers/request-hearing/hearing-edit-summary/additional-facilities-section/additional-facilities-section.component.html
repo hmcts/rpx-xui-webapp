@@ -1,6 +1,6 @@
 <h2 class="govuk-heading-m">
   Additional facilities
-  <exui-amendment-label *ngIf="nonReasonableAdjustmentChangesConfirmed"
+  <exui-amendment-label *ngIf="showAmendedForPageTitle"
     [displayLabel]="amendmentLabelEnum.AMENDED">
   </exui-amendment-label>
   <exui-amendment-label *ngIf="nonReasonableAdjustmentChangesRequired && !nonReasonableAdjustmentChangesConfirmed"
@@ -14,7 +14,7 @@
     </div>
     <div class="govuk-summary-list__value">
       {{ additionalFacilitiesRequiredText }}
-      <exui-amendment-label *ngIf="showAmended" [displayLabel]="amendmentLabelEnum.AMENDED">
+      <exui-amendment-label *ngIf="caseAdditionalSecurityFlagChanged" [displayLabel]="amendmentLabelEnum.AMENDED">
       </exui-amendment-label>
     </div>
     <div class="govuk-summary-list__actions">

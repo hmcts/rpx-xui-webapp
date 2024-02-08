@@ -3,7 +3,7 @@
   <exui-amendment-label id="hearing-window-action-needed-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired"
     [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
   </exui-amendment-label>
-  <exui-amendment-label id="hearing-window-amended-label" *ngIf="hearingWindowChangesConfirmed && hearingWindowChangesRequired"
+  <exui-amendment-label id="hearing-window-amended-label" *ngIf="showAmendedLabelForPageTitle"
     [displayLabel]="amendmentLabelEnum.AMENDED">
   </exui-amendment-label>
 </h2>
@@ -13,6 +13,8 @@
       Length of hearing
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="hearingLengthChanged" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       {{ hearingLength }}
     </div>
     <div class="govuk-summary-list__actions">
@@ -27,6 +29,8 @@
       Does the hearing need to take place on a specific date?
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="hearingDateChanged" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       {{ specificDateSelection }}
       <div *ngIf="specificDateSelection === radioOptions.CHOOSE_DATE_RANGE">
         Earliest start date: {{ earliestHearingDate }}
@@ -53,6 +57,8 @@
       What is the priority of this hearing?
     </div>
     <div class="govuk-summary-list__value">
+      <exui-amendment-label *ngIf="hearingPriorityChanged" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
       {{ hearingPriority }}
     </div>
     <div class="govuk-summary-list__actions">

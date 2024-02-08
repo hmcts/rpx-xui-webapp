@@ -1,10 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Store, select } from '@ngrx/store';
 import * as _ from 'lodash';
-import { Observable } from 'rxjs';
 import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
 import { HearingsService } from '../../../../../hearings/services/hearings.service';
-import * as fromHearingStore from '../../../../../hearings/store';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
@@ -16,6 +13,7 @@ import { LovRefDataModel } from '../../../../models/lovRefData.model';
 export class AdditionalFacilitiesSectionComponent implements OnInit {
   @Input() public additionalFacilitiesRefData: LovRefDataModel[];
   @Input() public hearingRequestMainModel: HearingRequestMainModel;
+  @Input() public hearingRequestToCompareMainModel: HearingRequestMainModel;
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
   public additionalFacilitiesRequiredText: string;
@@ -23,13 +21,12 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
   public amendmentLabelEnum = AmendmentLabelStatus;
   public nonReasonableAdjustmentChangesRequired: boolean;
   public nonReasonableAdjustmentChangesConfirmed: boolean;
-  public hearingState$: Observable<fromHearingStore.State>;
-  public showAmended: boolean;
-  public facilitiesRequiredToCompare: string[];
+  public caseAdditionalSecurityFlagChanged: boolean;
+  public facilitiesChanged: boolean;
+  public showAmendedForPageTitle: boolean;
+  public facilitiesRequiredToCompare: string[] = [];
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-    private readonly hearingsService: HearingsService) {
-    this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
+  constructor(private readonly hearingsService: HearingsService) {
   }
 
   public ngOnInit(): void {
@@ -37,7 +34,7 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
       ? 'Yes'
       : 'No';
 
-    this.hearingRequestMainModel.hearingDetails?.facilitiesRequired?.forEach((facility) => {
+    this.hearingRequestMainModel.hearingDetails.facilitiesRequired?.forEach((facility) => {
       const facilityFromRefData = this.additionalFacilitiesRefData.find((facilityRefData) => facilityRefData.key === facility);
       if (facilityFromRefData) {
         this.additionalFacilities.push(facilityFromRefData.value_en);
@@ -46,12 +43,8 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
 
     this.nonReasonableAdjustmentChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesRequired;
     this.nonReasonableAdjustmentChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed;
-    this.hearingState$.subscribe((state) => {
-      this.facilitiesRequiredToCompare = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
-      const objA = state.hearingRequestToCompare.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag;
-      const objB = state.hearingRequest.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag;
-      this.showAmended = !_.isEqual(objA, objB);
-    });
+
+    this.setAmendmentLabels();
   }
 
   public onChange(fragmentId: string): void {
@@ -65,6 +58,34 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
   }
 
   public showAmendedForFacilitiesRequired(facility: string): boolean {
-    return !this.facilitiesRequiredToCompare.includes(this.additionalFacilitiesRefData.find((facilityRefData) => facilityRefData.value_en === facility).key);
+    return !this.facilitiesRequiredToCompare.includes(facility);
+  }
+
+  private setFacilitiesToCompare(): void {
+    this.hearingRequestToCompareMainModel.hearingDetails.facilitiesRequired?.forEach((facility) => {
+      const facilityFromRefData = this.additionalFacilitiesRefData.find((additionalFacility) => additionalFacility.key === facility);
+      if (facilityFromRefData) {
+        this.facilitiesRequiredToCompare.push(facilityFromRefData.value_en);
+      }
+    });
+  }
+
+  private setAmendmentLabels(): void {
+    this.caseAdditionalSecurityFlagChanged = !_.isEqual(
+      this.hearingRequestToCompareMainModel.caseDetails?.caseAdditionalSecurityFlag,
+      this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag
+    );
+
+    this.facilitiesChanged = !_.isEqual(
+      this.hearingRequestToCompareMainModel.hearingDetails.facilitiesRequired,
+      this.hearingRequestMainModel.hearingDetails.facilitiesRequired
+    );
+
+    this.showAmendedForPageTitle = this.nonReasonableAdjustmentChangesConfirmed ||
+      this.caseAdditionalSecurityFlagChanged ||
+      this.facilitiesChanged;
+
+    // Set facilities to compare array, used to compare and display amended labels for facilities
+    this.setFacilitiesToCompare();
   }
 }

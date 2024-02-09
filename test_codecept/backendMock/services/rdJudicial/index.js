@@ -15,14 +15,14 @@ class RDJudicialService{
       for(let i = 0 ; i< 10;i++){
         sidamId += 1
         const personTemplate = this.getPersonTemplate();
-        personTemplate.sidam_id = sidamId.toString()
-        
+        personTemplate.sidam_id = v4();
+
           personTemplate.full_name = `auto test ${i} judge ${i}`
         personTemplate.fullName = personTemplate.full_name
 
           personTemplate.surname = `judge ${i}`
         personTemplate.email_id = `auto_test_judge_${i}@justice.gov.uk`
-                
+
         personTemplate.emailId = personTemplate.email_id
 
           personTemplate.knownAs = `auto testjudge ${i} judicial`
@@ -35,7 +35,7 @@ class RDJudicialService{
           this.persons.push(personTemplate)
 
       }
-     
+
     }
 
     findPerson(reqBody){

@@ -19,6 +19,8 @@ const testType = process.env.TEST_TYPE
 
 let featureLogFile = null;
 
+global.scenarioData = {}
+
 function overrideConsoleLogforWorkersThreads(){
 
     const consoleLogRef = console.log;
@@ -115,7 +117,6 @@ module.exports = async function () {
     });
     event.dispatcher.on(event.test.before, async function (test) {
         setFeatureLogFile(test)
-        global.scenarioData = {}
         output.print(`Test started : ${test.title}`)
         codeceptMochawesomeLog.AddMessage(`************ Test started : ${test.title}`)
         await mockClient.logMessage(`************ Test started : ${test.title}`)
@@ -151,7 +152,7 @@ module.exports = async function () {
             codeceptMochawesomeLog.AddMessage(`*************** Browser error logs ***************`);
 
             let errorLogs = await actor().grabBrowserLogs()
-            // errorLogs = errorLogs.filter(error => error._event.type === 'error')
+            errorLogs = errorLogs.filter(error => error._event.type.includes('error'))
             for(let error of errorLogs){
                 codeceptMochawesomeLog.AddMessage(`${error._event.type}:${error._event.location.url} =>  ${error._event.text} `);
             }

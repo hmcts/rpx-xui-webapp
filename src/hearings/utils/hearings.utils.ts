@@ -3,9 +3,9 @@ import { HearingConditions } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { HearingWindowModel } from '../models/hearingWindow.model';
-import { Mode } from '../models/hearings.enum';
-import { PropertiesUpdatedOnPageVisit } from '../models/hearingsUpdateMode.enum';
+import { HearingDateEnum } from '../models/hearings.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
+import { PartyDetailsModel } from '../models/partyDetails.model';
 
 export class HearingsUtils {
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
@@ -44,18 +44,29 @@ export class HearingsUtils {
     );
   }
 
-  public static getHearingWindow(propertiesUpdatedOnPageVisit: PropertiesUpdatedOnPageVisit,
-    hearingCondition: HearingConditions,
-    hearingRequestMainModel: HearingRequestMainModel): HearingWindowModel {
-    if (hearingCondition.mode === Mode.VIEW_EDIT &&
-        propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow') &&
-        propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired) {
-      return propertiesUpdatedOnPageVisit.hearingWindow && Object.keys(propertiesUpdatedOnPageVisit.hearingWindow).length === 0
-        ? null
-        : propertiesUpdatedOnPageVisit.hearingWindow;
-    }
+  public static getHearingWindow(hearingRequestMainModel: HearingRequestMainModel): HearingWindowModel {
     return hearingRequestMainModel.hearingDetails.hearingWindow && Object.keys(hearingRequestMainModel.hearingDetails.hearingWindow).length === 0
       ? null
       : hearingRequestMainModel.hearingDetails.hearingWindow;
+  }
+
+  public static getPartiesNotAvailableDates(parties: PartyDetailsModel[]): string[] {
+    const partiesNotAvailableDates: string[] = [];
+    const unavailabilityDateList = parties.flatMap((party) => party.unavailabilityRanges);
+    unavailabilityDateList?.forEach((dateRange) => {
+      if (dateRange) {
+        const startDate = moment(dateRange.unavailableFromDate);
+        const endDate = moment(dateRange.unavailableToDate);
+
+        while (startDate <= endDate) {
+          const currentDate = startDate.format(HearingDateEnum.DisplayMonth);
+          if (startDate.weekday() !== 6 && startDate.weekday() !== 0) {
+            partiesNotAvailableDates.push(currentDate);
+          }
+          startDate.add(1, 'd');
+        }
+      }
+    });
+    return partiesNotAvailableDates;
   }
 }

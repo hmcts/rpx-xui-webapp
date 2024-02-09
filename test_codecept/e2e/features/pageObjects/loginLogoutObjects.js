@@ -76,7 +76,10 @@ function loginLogoutObjects() {
   };
 
   this.clickSignIn = async function () {
-    await this.signinBtn.click();
+    await BrowserWaits.retryWithActionCallback( async () => {
+      await this.signinBtn.click();
+    })
+    
   };
 
   this.waitFor = async function (selector) {

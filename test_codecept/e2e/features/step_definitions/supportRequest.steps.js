@@ -22,8 +22,10 @@ Then('I am on create support request page {string}', async function (page) {
 
 Then('I am on manage support request page {string}', async function (page) {
     const pageObj = getPageObject(page);
-    await browserWaits.waitForElement(pageObj.container)
-    expect(await pageObj.container.isDisplayed(), `${page} not displayed`).to.be.true
+    await browserWaits.retryWithActionCallback(async () => {
+        await browserWaits.waitForElement(pageObj.container)
+        expect(await pageObj.container.isDisplayed(), `${page} not displayed`).to.be.true
+    })
 })
 
 Then('I am on create support request, select support type page {string}', async function (page) {

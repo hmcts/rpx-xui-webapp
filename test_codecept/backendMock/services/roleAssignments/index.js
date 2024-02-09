@@ -95,7 +95,7 @@ class RoleAssignments {
     }
 
     pushNewRoleAssignmentRequests(auth, roleRequests) {
-        console.log(roleRequests)
+        // console.log(roleRequests)
 
         this.getRolesAssignmentsForSession(auth).push(...roleRequests.requestedRoles)
         return roleRequests.requestedRoles;

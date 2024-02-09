@@ -5,6 +5,7 @@ import { HearingActualsMainModel, HearingActualsModel } from '../models/hearingA
 import { HearingListMainModel } from '../models/hearingListMain.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { ACTION } from '../models/hearings.enum';
+import { PropertiesUpdatedAutomatically, PropertiesUpdatedOnPageVisit } from '../models/hearingsUpdateMode.enum';
 import {
   LinkedHearingGroupMainModel,
   LinkedHearingGroupResponseModel,
@@ -21,7 +22,12 @@ export class HearingsService {
 
   public navigateAction$: Observable<ACTION> = this.actionSubject.asObservable();
 
-  constructor(private readonly http: HttpClient) {}
+  public propertiesUpdatedOnPageVisit: PropertiesUpdatedOnPageVisit;
+  public propertiesUpdatedAutomatically: PropertiesUpdatedAutomatically = { pageless: {}, withinPage: {} };
+  public displayValidationError: boolean = false;
+  public submitUpdatedRequestClicked: boolean = false;
+
+  constructor(private readonly http: HttpClient) { }
 
   public navigateAction(action: ACTION): void {
     this.actionSubject.next(action);

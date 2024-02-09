@@ -12,6 +12,7 @@ const HearingAdditionalInstructionsPage = require('./HearingAdditionalInstractio
 const HearingCreateEditSummaryPage = require('./HearingCreateEditSummaryPage')
 const HearingSubmitConfirmationPage = require('./HearingSubmitConfirmationPage')
 const HearingWelshPage = require('./hearingWelshPage')
+const HearingChangeReasonsPage = require('./HearingChangeReasonsPage')
 class CreateHearingWorkflow{
 
     constructor(){
@@ -36,9 +37,10 @@ class CreateHearingWorkflow{
             "Enter any additional instructions for the hearing": new HearingAdditionalInstructionsPage(),
             "Check your answers before sending your request": new HearingCreateEditSummaryPage(),
             "Hearing request submitted": new HearingSubmitConfirmationPage(),
-            "Does this hearing need to be in Welsh?" : new HearingWelshPage()
+            "Does this hearing need to be in Welsh?" : new HearingWelshPage(),
+            "Provide a reason for changing this hearing": new HearingChangeReasonsPage()
         }
-      
+
     }
 
     async isCreateHearingWorkflowDIsplayed(){

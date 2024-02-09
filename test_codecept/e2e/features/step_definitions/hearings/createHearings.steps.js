@@ -16,7 +16,22 @@ When('I click continue in create hearing workflow', async function(){
     await createHearingWorkflow.continueBtn.click();
 })
 
+When('I click continue in hearing workflow', async function () {
+    await createHearingWorkflow.continueBtn.click();
+})
+
+async function verifyOnHearingPage(page){
+    await browserWaits.retryWithActionCallback(async () => {
+        expect(await getPageObject(page).isDisplayed(), `${page} not displayed`).to.be.true
+    })
+}
+
 Then('I am on create hearing page {string}', async function(page){
+    await verifyOnHearingPage(page)
+})
+
+Then('I am on hearing page {string}', async function (page) {
+    await verifyOnHearingPage(page)
     await browserWaits.retryWithActionCallback(async () => {
         expect(await getPageObject(page).isDisplayed(), `${page} not displayed`).to.be.true
     })
@@ -43,15 +58,23 @@ Then('In create hearing page {string}, I validate fields not displayed', async f
     }
 })
 
-
-When('In create hearing page {string}, I input values', async function(page, datatable){
+async function inputValuesInPage(page, datatable){
     const datatablehashes = datatable.parse().hashes();
     const pageObj = getPageObject(page);
 
-    for (const row of datatablehashes){
+    for (const row of datatablehashes) {
         await pageObj.inputValue(row.field, row.value);
         reportLogger.AddMessage(`Done: ${row.field} input ${row.value}`)
     }
+}
+
+When('In create hearing page {string}, I input values', async function(page, datatable){
+    await inputValuesInPage(page, datatable)
+})
+
+
+When('In hearing page {string}, I input values', async function (page, datatable) {
+    await inputValuesInPage(page, datatable)
 })
 
 
@@ -59,6 +82,10 @@ When('In create hearing work flow, I click submit request', async function (page
     await createHearingWorkflow.clickSubmitRequest()
 })
 
+
+When('In hearing work flow, I click submit request', async function (page, datatable) {
+    await createHearingWorkflow.clickSubmitRequest()
+})
 
 
 Then('In create hearing workflow, I validate check yoor answers displayed', async function(datatable){
@@ -77,6 +104,8 @@ When('In create hearing work flow, I click back link', async function () {
 When('In create hearing check your answers page, I click change link for field {string}', async function (field) {
     await createHearingWorkflow.pages['Check your answers before sending your request'].clickChangeLinkForField(field)
 })
+
+
 
 
 

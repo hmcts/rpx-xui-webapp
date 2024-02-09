@@ -115,7 +115,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
         Then I validate edit hearing section heading labels
             | Heading                                    | Label         |
             | Hearing requirements                       | ACTION NEEDED |
-            | Participant attendance                     |               |
+            | Participant attendance | ACTION NEEDED |
             | Additional facilities                      | ACTION NEEDED |
             | Length, date and priority level of hearing | ACTION NEEDED |
 
@@ -158,8 +158,8 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
 
         Then In hearings requirements page, I see case flags displayed for parties
             | partyName           |label|
-            | Party1 name updated |AMENDED|
-            | Party2 name         ||
+            | Party1 name FN updated Party1 name LN | AMENDED |
+            | Party2 name FN Party2 name LN |  |
 
         Then In hearing requirements page, I see party "Party1 name updated" with case flags
             | flag | label         |
@@ -187,9 +187,9 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
 
         Then In hearings Participant attendance page, I see parties
             | partyName   |label|
-            | Party1 name |AMENDED|
-            | Party2 name ||
-            | Party4 name |ACTION NEEDED|
+            | Party1 name FN Party1 name LN | AMENDED |
+            | Party2 name FN Party2 name LN |  |
+            | Party4 name FN Party4 name LN | ACTION NEEDED |
 
 
 # Then debug sleep minutes 30
@@ -224,8 +224,8 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
 
         Then In Additional facilities page, I see case flags displayed for parties
             | partyName           |label|
-            | Party1 name updated |AMENDED|
-            | Party2 name         ||
+            | PParty1 name FN updated Party1 name LN | AMENDED |
+            | Party2 name FN Party2 name LN |  |
 
         Then In Additional facilities page, I see party "Party1 name updated" with case flags
             | flag                          | label         |
@@ -272,8 +272,8 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Case public name         | Case public name                           | false             | AMENDED            |
             | Case restriction         | Yes                                        | false             | AMENDED            |
             | Private hearing required | Yes                                        | false             | AMENDED            |
-            | Reasonable adjustments   | Party1 name updated                        | true              | AMENDED            |
-            | Reasonable adjustments   | Party2 name                                | true              |                    |
+            | Reasonable adjustments | Party1 name FN updated Party1 name LN | true | AMENDED |
+            | Reasonable adjustments | Party2 name FN Party2 name LN | true |  |
 
 
     Scenario: SCR 5: No chnages and no labels (Conditions (3) & (6)) and Scenario 6

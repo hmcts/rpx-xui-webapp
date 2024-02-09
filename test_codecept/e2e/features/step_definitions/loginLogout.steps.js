@@ -23,11 +23,14 @@ async function waitForElement(el) {
   async function loginattemptCheckAndRelogin(username, password, world) {
     testCounter++;
     let loginAttemptRetryCounter = 1;
-
+    // if (loginAttemptRetryCounter === 1){
+    //   return;
+    // }
     while (loginAttemptRetryCounter < 5) {
       let emailFieldValue = "";
 
       try {
+        await loginPage.emailAddress.waitForElementdetach()
         // await BrowserWaits.waitForstalenessOf(loginPage.emailAddress, 5);
         await BrowserWaits.waitForCondition(async () => {
           let isEmailFieldDisplayed = await loginPage.emailAddress.isPresent() ;
@@ -225,6 +228,22 @@ async function waitForElement(el) {
     });
 
   });
+
+   Given('I am logged into Expert UI with with case flags', async function () {
+     const user = 'henry_fr_harper@yahoo.com'
+     const key = 'Nagoya0102'
+
+    await loginPage.givenIAmLoggedIn(user, key);
+
+    loginAttempts++;
+    // await loginattemptCheckAndRelogin(matchingUsers[0].email, matchingUsers[0].key, this);
+
+    await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+      console.log("Login success page load load attempt : " + message)
+    });
+
+  });
+
 
   Given('I am logged into Expert UI with valid Probate back office user credentials', async function () {
     CucumberReportLogger.AddMessage(`Login user  is ${config.config.params.usernameProbate}`)

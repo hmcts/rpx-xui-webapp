@@ -19,6 +19,8 @@ const testType = process.env.TEST_TYPE
 
 let featureLogFile = null;
 
+global.scenarioData = {}
+
 function overrideConsoleLogforWorkersThreads(){
 
     const consoleLogRef = console.log;
@@ -115,7 +117,6 @@ module.exports = async function () {
     });
     event.dispatcher.on(event.test.before, async function (test) {
         setFeatureLogFile(test)
-        global.scenarioData = {}
         output.print(`Test started : ${test.title}`)
         codeceptMochawesomeLog.AddMessage(`************ Test started : ${test.title}`)
         await mockClient.logMessage(`************ Test started : ${test.title}`)
@@ -140,13 +141,24 @@ module.exports = async function () {
         actor().flushLogsToReport();
 
         const authCookies = idamLogin.authToken
-        if (test.state === 'failed' && process.env.TEST_TYPE !== 'e2||e'){
+        if (test.state === 'failed' && process.env.TEST_TYPE !== 'e2e'){
+            
             const mockSessiondataResponse = await mockClient.getUserSesionData(authCookies);
             featureLogsMessage(test, `${JSON.stringify(mockSessiondataResponse.data, null, 2)}`);
             codeceptMochawesomeLog.AddJson(authCookies);
         }
-       
 
+        if (test.state === 'failed' || true){
+            codeceptMochawesomeLog.AddMessage(`*************** Browser error logs ***************`);
+
+            let errorLogs = await actor().grabBrowserLogs()
+            errorLogs = errorLogs.filter(error => error._event.type.includes('error'))
+            for(let error of errorLogs){
+                codeceptMochawesomeLog.AddMessage(`${error._event.type}:${error._event.location.url} =>  ${error._event.text} `);
+            }
+        }
+       
+  
         // featureLogsMessage(test, `\n cookies \n ${JSON.stringify(cookies, null, 2)}`);
         const dateTime = new Date().toLocaleTimeString('en-GB');
         featureLogsMessage(test, `\n${dateTime}| ************ Test status|${test.state}|${test.title}`);

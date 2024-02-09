@@ -141,8 +141,8 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
     const partyInHMC = this.hearingRequestMainModel.partyDetails.find((party) => party.partyID === partyDetails.partyID);
     const partyInHMCToCompare = this.hearingRequestToCompareMainModel.partyDetails.find((party) => party.partyID === partyDetails.partyID);
     return !_.isEqual(
-      partyInHMC.individualDetails?.preferredHearingChannel,
-      partyInHMCToCompare.individualDetails?.preferredHearingChannel
+      partyInHMC?.individualDetails?.preferredHearingChannel,
+      partyInHMCToCompare?.individualDetails?.preferredHearingChannel
     );
   }
 

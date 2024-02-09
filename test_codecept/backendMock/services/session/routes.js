@@ -62,7 +62,7 @@ router.post('/session/user/sessionData', async (req, res) => {
 
 
 router.post('/session/logMessage', async (req, res) => {
-    console.log(req.body.message)
+    // console.log(req.body.message)
     res.send({})
 })
 

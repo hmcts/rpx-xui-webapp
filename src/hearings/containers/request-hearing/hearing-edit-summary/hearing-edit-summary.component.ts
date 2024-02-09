@@ -22,6 +22,7 @@ import { HearingsFeatureService } from '../../../services/hearings-feature.servi
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
@@ -384,24 +385,19 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         return true;
       }
     }
-
     // There are no changes for parties when compared SHV with HMC
     return false;
   }
 
   private pageVisitHearingWindowChangeExists(): boolean {
-    const hearingWindowSHV = this.serviceHearingValuesModel.hearingWindow;
     const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
-    // Return true if the first date time must be value in SHV and HMC are different
-    if (hearingWindowSHV?.firstDateTimeMustBe) {
-      if (!hearingWindowHMC?.firstDateTimeMustBe) {
-        return true;
-      }
-      if (!_.isEqual(new Date(hearingWindowSHV.firstDateTimeMustBe), new Date(hearingWindowHMC.firstDateTimeMustBe))) {
+    if (hearingWindowHMC?.firstDateTimeMustBe) {
+      const partiesNotAvailableDatesHMC = HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestToCompareMainModel.partyDetails);
+      const partiesNotAvailableDatesSHV = HearingsUtils.getPartiesNotAvailableDates(this.serviceHearingValuesModel.parties);
+      if (!_.isEqual(partiesNotAvailableDatesSHV, partiesNotAvailableDatesHMC)) {
         return true;
       }
     }
-    // There is no change in first date time must be when compared SHV with HMC
     return false;
   }
 }

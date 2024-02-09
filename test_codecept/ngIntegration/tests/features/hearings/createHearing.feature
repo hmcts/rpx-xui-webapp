@@ -131,7 +131,7 @@ Feature: Create hearings workflow
             |                                            | Case name                                                | 1690                      |
             |                                            | Case number                                              | 1690-                     |
             # |                                            | Type                                                     |                                     |
-            | Hearing requirements                       | Reasonable adjustments                                   |                           |
+            # | Hearing requirements                       | Reasonable adjustments                                   |                           |
             | Additional facilities                      | Will additional security be required?                    | No                        |
             | Additional facilities                      | Select any additional facilities required                | Facility 1,Facility 2     |
             | Stage                                      | What stage is this hearing at?                           | Breach 1                  |
@@ -163,7 +163,7 @@ Feature: Create hearings workflow
             | jsonpath                                                     | value  |
             | $.partyDetails[0].individualDetails.reasonableAdjustments[0] | RA0042 |
 
-   
+
     Scenario: Create hearing , input combo 1
         Given I set MOCK with user details
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |
@@ -278,7 +278,7 @@ Feature: Create hearings workflow
             |                                            | Case name                                                | 1690                      |
             |                                            | Case number                                              | 1690-                     |
             # |                                            | Type                                                     |                                     |
-            | Hearing requirements                       | Reasonable adjustments                                   |                           |
+            # | Hearing requirements                       | Reasonable adjustments                                   |                           |
             | Additional facilities                      | Will additional security be required?                    | No                        |
             | Additional facilities                      | Select any additional facilities required                | Facility 1,Facility 2     |
             | Stage                                      | What stage is this hearing at?                           | Breach 1                  |
@@ -289,7 +289,7 @@ Feature: Create hearings workflow
             # | Hearing venue                              | What are the hearing venue details?                      |       |
             | Judge details                              | Do you want a specific judge?                            | No                        |
             | Judge details                              | Select all judge types that apply                        | Judge type 1,Judge type 2 |
-            | Panel details                              | Do you require a panel for this hearing?                 | No                        |
+            # | Panel details                              | Do you require a panel for this hearing?                 | No                        |
             | Length, date and priority level of hearing | Length of hearing                                        | 1 Day 2 Hours 5 Minutes   |
             | Length, date and priority level of hearing | Does the hearing need to take place on a specific date?  | No                        |
             | Length, date and priority level of hearing | What is the priority of this hearing?                    | Hearing priority 1        |
@@ -422,7 +422,7 @@ Feature: Create hearings workflow
             |                                            | Case name                                                | 1690                                                       |
             |                                            | Case number                                              | 1690-                                                      |
             # |                                            | Type                                                     |                                     |
-            | Hearing requirements                       | Reasonable adjustments                                   |                                                            |
+            # | Hearing requirements                       | Reasonable adjustments                                   |                                                            |
             | Additional facilities                      | Will additional security be required?                    | No                                                         |
             | Additional facilities                      | Select any additional facilities required                | Facility 1,Facility 2                                      |
             | Stage                                      | What stage is this hearing at?                           | Breach 1                                                   |

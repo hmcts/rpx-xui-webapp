@@ -128,6 +128,41 @@ describe('HearingTimingSectionComponent', () => {
     expect(nativeElement.querySelector('#hearing-window-amended-label')).toBeDefined();
   });
 
+  it('should set the hearing length', () => {
+    component.hearingDetails.duration = 1365;
+    component.ngOnInit();
+    expect(component.hearingLength).toEqual('3 Days 4 Hours 45 Minutes');
+  });
+
+  it('should return the hearing length as empty string', () => {
+    component.hearingDetails.duration = null;
+    component.ngOnInit();
+    expect(component.hearingLength).toEqual('');
+  });
+
+  it('should return Yes as date selection', () => {
+    component.hearingDetails.hearingWindow = {
+      firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
+    };
+    component.ngOnInit();
+    expect(component.specificDateSelection).toEqual('Yes');
+  });
+
+  it('should return No as date selection', () => {
+    component.hearingDetails.hearingWindow = null;
+    component.ngOnInit();
+    expect(component.specificDateSelection).toEqual('No');
+  });
+
+  it('should return Choose a date range as date selection', () => {
+    component.hearingDetails.hearingWindow = {
+      dateRangeStart: '2022-11-23T09:00:00.000Z',
+      dateRangeEnd: '2022-11-30T09:00:00.000Z'
+    };
+    component.ngOnInit();
+    expect(component.specificDateSelection).toEqual('Choose a date range');
+  });
+
   it('should verify onChange', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('hearingLength');

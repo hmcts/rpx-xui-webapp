@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, Pipe, PipeTransform, ViewChild } from '@angular/core';
+import { Component, NO_ERRORS_SCHEMA, Pipe, PipeTransform, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -109,7 +109,8 @@ describe('AvailableTasksComponent', () => {
         { provide: Store, useValue: storeMock },
         { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
         { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService }
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     store = TestBed.inject(Store);

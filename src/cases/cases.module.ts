@@ -49,6 +49,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
 import { HearingsModule } from '../hearings/hearings.module';
@@ -64,10 +65,11 @@ import * as fromComponents from './components';
 import * as fromContainers from './containers';
 // from directives
 import * as fromDirectives from './directives';
+import { queryManagementRouting } from './query-management.routes';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
-// from services
 import { RestrictedCaseAccessGuard } from './guards/restricted-case-access-guard';
+// from services
 import * as fromServices from './services';
 import { effects, reducers } from './store';
 
@@ -98,7 +100,9 @@ import { effects, reducers } from './store';
     CaseListModule,
     PaletteModule,
     CaseViewerModule,
-    PipesModule
+    PipesModule,
+    queryManagementRouting,
+    RpxTranslationModule.forChild()
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
   providers: [

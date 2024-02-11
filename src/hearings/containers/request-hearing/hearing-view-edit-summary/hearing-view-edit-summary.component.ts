@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
-import { combineLatest, Observable, Subscription } from 'rxjs';
+import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { HearingRequestStateData } from '../../../models/hearingRequestStateData.model';
 import { ACTION, Mode } from '../../../models/hearings.enum';
@@ -16,16 +16,17 @@ import { Section } from 'src/hearings/models/section';
   selector: 'exui-hearing-view-edit-summary',
   templateUrl: './hearing-view-edit-summary.component.html'
 })
-export class HearingViewEditSummaryComponent extends RequestHearingPageFlow implements OnDestroy,OnInit {
+export class HearingViewEditSummaryComponent extends RequestHearingPageFlow implements OnDestroy, OnInit {
   public template = HEARING_VIEW_EDIT_SUMMARY_TEMPLATE;
   public mode = Mode.VIEW_EDIT;
   public validationErrors: { id: string, message: string }[] = [];
   private initialAndCurrentStates$: Observable<[HearingRequestStateData, HearingRequestStateData]>;
   private initialAndCurrentStatesSubscription: Subscription;
   private readonly notUpdatedMessage = 'The request has not been updated';
+  public screenFlow: ScreenNavigationModel[] = [];
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService) {
+    protected readonly hearingsService: HearingsService) {
     super(hearingStore, hearingsService);
   }
 
@@ -36,8 +37,7 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
   }
 
   ngOnInit(): void {
-   // this.removeUnnecessarySummaryTemplateItems();
-   this.template = this.removeUnnecessarySummaryTemplateItems();
+   this.removeUnnecessarySummaryTemplateItems();
   }
 
   public executeAction(action: ACTION): void {
@@ -56,23 +56,22 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
     }
   }
 
-  public getScreenFlowFromStore(hearingStore): Observable<ScreenNavigationModel[]> {
-    return hearingStore;
+  public getScreenFlowFromStore(): Observable<any> {
+    return this.hearingStore;
   }
 
-  public removeUnnecessarySummaryTemplateItems() {
-    let filteredTemplate;
-    this.getScreenFlowFromStore(this.hearingStore).subscribe((storeData: any) => {
+  public removeUnnecessarySummaryTemplateItems(): Section[] {
+    this.getScreenFlowFromStore().subscribe((storeData: any) => {
       if (storeData && storeData.hearings) {
-        let screenFlow: Section[] = storeData?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
-        filteredTemplate = this.template.filter((tp:Section) => {
-          return screenFlow.some((sr:Section)  => {
-            return tp.screenName.includes(sr.screenName) || tp.screenName.includes('edit-hearing') ||  tp.screenName.includes('hearing-listing-info')
+        this.screenFlow = storeData?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
+        this.template = this.template.filter((tp: Section) => {
+          return this.screenFlow.some((sr: ScreenNavigationModel) => {
+            return tp.screenName.includes(sr.screenName) || tp.screenName.includes('edit-hearing') || tp.screenName.includes('hearing-listing-info')
           })
         });
       }
     });
-    return filteredTemplate;
+    return this.template
   }
 
   public ngOnDestroy(): void {

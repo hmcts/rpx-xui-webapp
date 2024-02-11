@@ -39,6 +39,18 @@ describe('HearingViewEditSummaryComponent', () => {
       component.executeAction(ACTION.VIEW_EDIT_REASON);
       expect(component.validationErrors.length).toEqual(0);
     });
+     
+    it('should display fewer items when screenFlow is less', () => {
+      spyOn(component,'removeUnnecessarySummaryTemplateItems').and.callThrough();
+      fixture.detectChanges();
+      component.getScreenFlowFromStore().subscribe(scr => {
+        const sFlow = scr?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow[1];
+        fixture.detectChanges();
+        component.template = component.template.filter(tl => tl.screenName.includes(sFlow.screenName));
+        fixture.detectChanges();
+       expect(component.template.length).toEqual(1);
+      });
+    });
 
     afterEach(() => {
       fixture.destroy();
@@ -71,7 +83,7 @@ describe('HearingViewEditSummaryComponent', () => {
       component.ngOnInit();
       expect(rmvSummaryTemp).toHaveBeenCalled();
     });
-  
+
     it('should call getScreenFlowFromStore ', () => {
       const store = [{ screenName: 'hearing-link', navigation: [] }];
       const screenFlow = spyOn(component, 'getScreenFlowFromStore').and.returnValue(of(store));

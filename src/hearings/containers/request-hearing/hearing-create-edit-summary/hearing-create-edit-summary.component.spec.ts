@@ -45,6 +45,17 @@ describe('HearingCreateEditSummaryComponent', () => {
     component.removeUnnecessarySummaryTemplateItems();
     expect(screenFlow).toHaveBeenCalled();
   });
+  it('should display fewer items when screenFlow is less', () => {
+    spyOn(component,'removeUnnecessarySummaryTemplateItems').and.callThrough();
+    fixture.detectChanges();
+    component.getScreenFlowFromStore().subscribe(scr => {
+      const sFlow = scr?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow[1];
+      fixture.detectChanges();
+      component.template = component.template.filter(tl => tl.screenName.includes(sFlow.screenName));
+      fixture.detectChanges();
+     expect(component.template.length).toEqual(1);
+    });
+  });
 
   afterEach(() => {
     fixture.destroy();

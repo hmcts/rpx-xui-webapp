@@ -16,6 +16,7 @@ import { Observable } from 'rxjs';
 export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow implements OnDestroy, OnInit {
   public template = HEARING_CREATE_EDIT_SUMMARY_TEMPLATE;
   public mode = Mode.CREATE_EDIT;
+  public screenFlow: ScreenNavigationModel[] = [];
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService) {
@@ -30,23 +31,22 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
     super.navigateAction(action);
   }
 
-  public getScreenFlowFromStore(hearingStore): Observable<ScreenNavigationModel[]> {
-    return hearingStore;
+  public getScreenFlowFromStore(): Observable<any> {
+    return this.hearingStore;
   }
 
   public removeUnnecessarySummaryTemplateItems() {
-    let filteredTemplate;
-    this.getScreenFlowFromStore(this.hearingStore).subscribe((storeData: any) => {
+    this.getScreenFlowFromStore().subscribe((storeData: any) => {
       if (storeData && storeData.hearings) {
-        let screenFlow: Section[] = storeData?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
-        filteredTemplate = this.template.filter((tp:Section) => {
-          return screenFlow.some((sr:Section)  => {
-            return tp.screenName.includes(sr.screenName) || tp.screenName.includes('check-answers')
+        this.screenFlow = storeData?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
+        this.template = this.template.filter((tp: Section) => {
+          return this.screenFlow.some((sr: ScreenNavigationModel) => {
+            return tp.screenName.includes(sr.screenName) || tp.screenName.includes('edit-hearing') || tp.screenName.includes('hearing-listing-info')
           })
         });
       }
     });
-    return filteredTemplate;
+    return this.template;
   }
 
   public ngOnDestroy(): void {

@@ -1,5 +1,5 @@
 
-@functional_enabled @functional_debug @ignore
+@functional_enabled @ignore
 Feature: Case access management - Request access
     Background: Setup
         Given I init MockApp

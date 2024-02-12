@@ -181,7 +181,7 @@ describe('HearingEditSummaryComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: true
+        hearingWindowChangesRequired: false
       }
     };
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
@@ -207,16 +207,24 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should set the hearingWindowChangesRequired to true', () => {
     hearingsService.propertiesUpdatedOnPageVisit = null;
-    component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '2024-02-13T10:00:00';
-    component.serviceHearingValuesModel.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = {
+      firstDateTimeMustBe: '2024-02-01T10:00:00'
+    };
+    component.serviceHearingValuesModel.parties[0].unavailabilityRanges = [{
+      unavailableFromDate: '2024-05-01T10:00:00',
+      unavailableToDate: '2024-05-14T10:00:00',
+      unavailabilityType: UnavailabilityType.ALL_DAY
+    }];
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesRequired).toEqual(true);
   });
 
   it('should set the hearingWindowChangesRequired to false', () => {
     hearingsService.propertiesUpdatedOnPageVisit = null;
-    component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
-    component.serviceHearingValuesModel.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = {
+      firstDateTimeMustBe: '2024-02-01T10:00:00'
+    };
+    component.serviceHearingValuesModel.parties = initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.partyDetails;
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesRequired).toEqual(false);
   });

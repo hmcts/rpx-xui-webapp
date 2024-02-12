@@ -2,7 +2,6 @@
 @ng @functional_enabled
 Feature:  Hearings: Feature toggles
 
-
     Scenario:  Hearings in feature toggle mc-hearings-jurisdictions is enabled, mc-enable-hearings-amendments-service enabled
         Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_ON"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
@@ -37,13 +36,13 @@ Feature:  Hearings: Feature toggles
             | roleCategory | LEGAL_OPERATIONS                                                                      |
 
         Given I set MOCK case "hearingCase" details with reference "Hearing_case"
-        # Given I set MOCK case details "Hearing_case" property "jurisdiction.id" as "CIVIL"
-        # Given I set MOCK case details "Hearing_case" property "case_type.id" as "CIVIL"
+        Given I set MOCK case details "Hearing_case" property "jurisdiction.id" as "SSCS"
+        Given I set MOCK case details "Hearing_case" property "case_type.id" as "Benefit"
 
         Given I set mock case hearings
             | hmcStatus              | hearingType                 | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
             | LISTED                 | TEST_LISTED                 | -3                     | 0                            | -3                                      | 2                                     |
-          
+
         Given I start MockApp
         Given I navigate to home page
         When I click on primary navigation header tab "Case list", I see selected tab page displayed

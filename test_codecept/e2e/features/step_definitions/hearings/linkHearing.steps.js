@@ -1,8 +1,11 @@
 
 const linkHearingWorkflowPage = require('../../pageObjects/hearings/linkHearingWorkflowPage')
+const browserWaits = require('../../../support/customWaits')
 
 Then('I am on linked hearing page {string}', async function(page){
-    expect( await linkHearingWorkflowPage.pages[page].isDisplayed()).to.be.true
+    await browserWaits.retryWithActionCallback(async () => {
+        expect(await linkHearingWorkflowPage.pages[page].isDisplayed()).to.be.true
+    })
 })
 
 When('In link hearing page I select case hearings', async function(datatable){
@@ -35,7 +38,10 @@ When('In link hearing How should these linked hearings be heard? page, I select 
 })
 
 Then('I see link hearings confirmatin page with message {string}', async function(message){
-    expect(await linkHearingWorkflowPage.confirmationBanner.isDisplayed()).to.be.true
-    expect(await linkHearingWorkflowPage.confirmationBanner.getText()).to.includes(message)
+    await browserWaits.retryWithActionCallback(async () => {
+        expect(await linkHearingWorkflowPage.confirmationBanner.isDisplayed()).to.be.true
+        expect(await linkHearingWorkflowPage.confirmationBanner.getText()).to.includes(message)
+    })
+
 })
 

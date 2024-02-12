@@ -12,14 +12,12 @@ const userApiData = require('../userApiData')
 router.post('/users/search', (req, res) => {
     // throw new Error('judicial ref data  /refdata/judicial/users/search not implemented')
     // res.send(locations)
-    console.log('')
     userApiData.sendResponse(req, res, service.methods.OnFindperson, () => service.findPerson(req.body))
 
 });
 router.post('/users', (req, res) => {
     // throw new Error('judicial ref data  /refdata/judicial/users/search not implemented')
     // res.send(locations)
-    console.log('')
     const persons = service.persons.filter((person) => {
         const reqKeys = Object.keys(req.body)
         if (reqKeys.includes('sidam_ids')){
@@ -37,7 +35,6 @@ router.post('/users', (req, res) => {
 router.post('/users', (req, res) => {
     // throw new Error('judicial ref data  /refdata/judicial/users/search not implemented')
     // res.send(locations)
-    console.log('')
     const persons = service.persons.filter((person) => {
         const reqKeys = Object.keys(req.body)
         if (reqKeys.includes('sidam_ids')){

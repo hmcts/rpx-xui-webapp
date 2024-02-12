@@ -6,6 +6,7 @@ import { HearingWindowModel } from '../models/hearingWindow.model';
 import { HearingDateEnum } from '../models/hearings.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { PartyDetailsModel } from '../models/partyDetails.model';
+import { IndividualDetailsModel } from '../models/individualDetails.model';
 
 export class HearingsUtils {
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
@@ -68,6 +69,13 @@ export class HearingsUtils {
       }
     });
     return partiesNotAvailableDates;
+  }
+
+  public static getPartyNameFormatted(individualDetails: IndividualDetailsModel): string {
+    if (individualDetails) {
+      return `${individualDetails.firstName} ${individualDetails.lastName}`;
+    }
+    return '';
   }
 
   /**

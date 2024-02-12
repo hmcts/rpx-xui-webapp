@@ -119,6 +119,22 @@ describe('HearingsUtils', () => {
     });
   });
 
+  describe('getPartyNameFormatted', () => {
+    it('should getPartyNameFormatted return empty string', () => {
+      const individualDetails = initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails[0].individualDetails;
+      individualDetails.firstName = '';
+      individualDetails.lastName = '';
+      expect(HearingsUtils.getPartyNameFormatted(individualDetails).trim()).toEqual('');
+    });
+
+    it('should getPartyNameFormatted return formatted party name', () => {
+      const individualDetails = initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails[0].individualDetails;
+      individualDetails.firstName = 'Jack';
+      individualDetails.lastName = 'Jones';
+      expect(HearingsUtils.getPartyNameFormatted(individualDetails)).toEqual('Jack Jones');
+    });
+  });
+
   describe('hasPartyNameChanged', () => {
     it('should hasPartyNameChanged return true', () => {
       const partyInHMC: PartyDetailsModel = {

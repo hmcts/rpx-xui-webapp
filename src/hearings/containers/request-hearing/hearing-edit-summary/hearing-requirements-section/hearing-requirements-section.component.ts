@@ -8,6 +8,7 @@ import { PartyDetailsModel } from '../../../../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../../../../models/serviceHearingValues.model';
 import { HearingsService } from '../../../../services/hearings.service';
 import { CaseFlagsUtils } from '../../../../utils/case-flags.utils';
+import { HearingsUtils } from '../../../../utils/hearings.utils';
 
 @Component({
   selector: 'exui-hearing-requirements-section',
@@ -35,11 +36,15 @@ export class HearingRequirementsSectionComponent implements OnInit {
     this.reasonableAdjustmentChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesRequired;
     this.reasonableAdjustmentChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed;
     this.partyDetails = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed
-      ? this.hearingRequestMainModel.partyDetails
-      : this.hearingRequestToCompareMainModel.partyDetails;
+      ? this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND)
+      : this.hearingRequestToCompareMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND);
     this.partyIds = this.partyDetails.map(((party) => party.partyID));
-    this.partyNamesInHMC = this.partyDetails.map(((party) => party.partyName));
-    this.partyNamesInHMCRequestToCompare = this.hearingRequestToCompareMainModel.partyDetails.map(((party) => party.partyName));
+    this.partyNamesInHMC = this.partyDetails.map(((party) => HearingsUtils.getPartyNameFormatted(party.individualDetails)));
+    this.partyNamesInHMCRequestToCompare = this.hearingRequestToCompareMainModel.partyDetails.filter(
+      (party) => party.partyType === PartyType.IND
+    )?.map(
+      ((party) => HearingsUtils.getPartyNameFormatted(party.individualDetails))
+    );
     this.partiesWithFlags = this.getPartiesWithFlagData();
   }
 

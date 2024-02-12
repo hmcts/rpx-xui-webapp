@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.10-address-validation-fix":
-  version: 7.0.10-address-validation-fix
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.10-address-validation-fix"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.11-address-validation-fix":
+  version: 7.0.11-address-validation-fix
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.11-address-validation-fix"
   dependencies:
     tslib: ^2.3.0
-  checksum: c5d2af0b887bf431e43a0b302e498f1e7fe40fc3151a667cafc23861ad58b8de0d0a7616926ecabba25c0af130ece730a872829b81af62446f391c393a6135c2
+  checksum: 02d0cfff21bc6494a355afb9fbe904696e89df8f1bf2125e1e287173e893a06c78fd4e7e4925b0f2e041e818ebd65a7d56597f966a147bc33aa957206457091b
   languageName: node
   linkType: hard
 
@@ -19060,7 +19060,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.10-address-validation-fix
+    "@hmcts/ccd-case-ui-toolkit": 7.0.11-address-validation-fix
     "@hmcts/ccpay-web-component": 6.0.2
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 3.0.2

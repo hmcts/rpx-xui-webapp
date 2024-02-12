@@ -60,18 +60,18 @@ export class MonitoringService implements IMonitoringService {
     measurements?: any, duration?: number) {
     this.send(() => {
       this.appInsights.trackPageView({ name, uri: url }, { properties, measurements, duration });
-     });
+    });
   }
 
   public logEvent(name: string, properties?: any, measurements?: any) {
     this.send(() => {
-      this.appInsights.trackEvent({name}, {properties, measurements});
+      this.appInsights.trackEvent({ name }, { properties, measurements });
     });
   }
 
   public logException(exception: Error) {
     this.send(() => {
-      this.appInsights.trackException({exception});
+      this.appInsights.trackException({ exception });
     });
   }
 

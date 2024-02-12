@@ -19,6 +19,7 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
   public additionalFacilitiesRequiredText: string;
   public additionalFacilities: string[] = [];
   public amendmentLabelEnum = AmendmentLabelStatus;
+  public pageTitleDisplayLabel: string;
   public nonReasonableAdjustmentChangesRequired: boolean;
   public nonReasonableAdjustmentChangesConfirmed: boolean;
   public caseAdditionalSecurityFlagChanged: boolean;
@@ -81,9 +82,16 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
       this.hearingRequestMainModel.hearingDetails.facilitiesRequired
     );
 
-    this.showAmendedForPageTitle = this.nonReasonableAdjustmentChangesConfirmed ||
-      this.caseAdditionalSecurityFlagChanged ||
-      this.facilitiesChanged;
+    if (this.nonReasonableAdjustmentChangesRequired) {
+      this.pageTitleDisplayLabel = !this.nonReasonableAdjustmentChangesConfirmed
+        ? AmendmentLabelStatus.ACTION_NEEDED
+        : AmendmentLabelStatus.AMENDED;
+    } else {
+      if (this.caseAdditionalSecurityFlagChanged ||
+        this.facilitiesChanged) {
+        this.pageTitleDisplayLabel = AmendmentLabelStatus.AMENDED;
+      }
+    }
 
     // Set facilities to compare array, used to compare and display amended labels for facilities
     this.setFacilitiesToCompare();

@@ -97,13 +97,13 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
 
   private getPartyName(individualParty: PartyDetailsModel, foundPartyFromService: PartyDetailsModel): string {
     if (foundPartyFromService) {
-      if (foundPartyFromService.partyName && foundPartyFromService.partyName !== null) {
-        return foundPartyFromService.partyName;
-      }
-      return foundPartyFromService.partyID;
+      const partyNameFormatted = HearingsUtils.getPartyNameFormatted(foundPartyFromService.individualDetails);
+      return partyNameFormatted.length > 0
+        ? partyNameFormatted
+        : foundPartyFromService.partyID;
     }
-    if (individualParty.partyName) {
-      return individualParty.partyName;
+    if (individualParty.individualDetails) {
+      return HearingsUtils.getPartyNameFormatted(individualParty.individualDetails);
     }
     return '';
   }
@@ -125,7 +125,6 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
       if (partyInHMCToCompare) {
         return HearingsUtils.hasPartyNameChanged(partyInHMCToCompare, partyInSHV);
       }
-      return true;
     }
     return false;
   }

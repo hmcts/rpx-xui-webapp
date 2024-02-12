@@ -20,8 +20,8 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
   public screenFlow: ScreenNavigationModel[] = [];
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService,
-              protected readonly featureToggleService: FeatureToggleService) {
+    protected readonly hearingsService: HearingsService,
+    protected readonly featureToggleService: FeatureToggleService) {
     super(hearingStore, hearingsService, featureToggleService);
   }
 
@@ -41,11 +41,10 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
     this.getScreenFlowFromStore().subscribe((storeData: any) => {
       if (storeData && storeData.hearings) {
         this.screenFlow = storeData?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
-        console.log('sFl2', this.screenFlow)
         this.template = this.template.filter((tp: Section) => {
           return this.screenFlow.some((sr: ScreenNavigationModel) => {
-            return tp.screenName.includes(sr.screenName) || tp.screenName.includes('check-answers')
-          })
+            return tp.screenName.includes(sr.screenName) || tp.screenName.includes('check-answers');
+          });
         });
       }
     });

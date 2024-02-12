@@ -3,7 +3,7 @@ import { MonitorConfig, MonitoringService } from './monitoring.service';
 
 describe('Monitoring service', () => {
   const mockedHttpClient = jasmine.createSpyObj('mockedHttpClient', { get: of({ key: 'Some Value' }) });
-  const mockedAppInsights = jasmine.createSpyObj('mockedAppInsights', ['downloadAndSetup', 'trackException', 'trackEvent',
+  const mockedAppInsights = jasmine.createSpyObj('mockedAppInsights', ['trackException', 'trackEvent',
     'trackPageView']);
   const mockedConfig = new MonitorConfig();
 
@@ -18,7 +18,6 @@ describe('Monitoring service', () => {
     expect(service).toBeTruthy();
     service.logException(new Error('Some ErrorMesssage'));
     expect(mockedHttpClient.get).not.toHaveBeenCalled();
-    expect(mockedAppInsights.downloadAndSetup).not.toHaveBeenCalled();
     expect(mockedAppInsights.trackException).toHaveBeenCalled();
   });
 
@@ -28,7 +27,6 @@ describe('Monitoring service', () => {
     expect(service).toBeTruthy();
     service.logEvent('name', [], []);
     expect(mockedHttpClient.get).not.toHaveBeenCalled();
-    expect(mockedAppInsights.downloadAndSetup).not.toHaveBeenCalled();
     expect(mockedAppInsights.trackEvent).toHaveBeenCalled();
   });
 
@@ -38,7 +36,6 @@ describe('Monitoring service', () => {
     expect(service).toBeTruthy();
     service.logPageView('name', null, [], [], 1);
     expect(mockedHttpClient.get).not.toHaveBeenCalled();
-    expect(mockedAppInsights.downloadAndSetup).not.toHaveBeenCalled();
     expect(mockedAppInsights.trackPageView).toHaveBeenCalled();
   });
 

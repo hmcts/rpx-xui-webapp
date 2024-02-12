@@ -24,7 +24,7 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
   }
 
   ngOnInit(): void {
-    this.template = this.removeUnnecessarySummaryTemplateItems();
+    this.removeUnnecessarySummaryTemplateItems();
   }
 
   public executeAction(action: ACTION): void {
@@ -39,9 +39,10 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
     this.getScreenFlowFromStore().subscribe((storeData: any) => {
       if (storeData && storeData.hearings) {
         this.screenFlow = storeData?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
+        console.log('sFl2', this.screenFlow)
         this.template = this.template.filter((tp: Section) => {
           return this.screenFlow.some((sr: ScreenNavigationModel) => {
-            return tp.screenName.includes(sr.screenName) || tp.screenName.includes('edit-hearing') || tp.screenName.includes('hearing-listing-info')
+            return tp.screenName.includes(sr.screenName) || tp.screenName.includes('check-answers')
           })
         });
       }

@@ -7,6 +7,8 @@ import { initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingViewEditSummaryComponent } from './hearing-view-edit-summary.component';
+import { Section } from '../../../../hearings/models/section';
+import { ScreenNavigationModel } from '../../../../hearings/models/screenNavigation.model';
 
 describe('HearingViewEditSummaryComponent', () => {
   let component: HearingViewEditSummaryComponent;
@@ -39,16 +41,55 @@ describe('HearingViewEditSummaryComponent', () => {
       component.executeAction(ACTION.VIEW_EDIT_REASON);
       expect(component.validationErrors.length).toEqual(0);
     });
-     
+
+    it('should call removeUnnecessarySummaryTemplateItems in ngOnInit', () => {
+      const rmvSummaryTemp = spyOn(component, 'removeUnnecessarySummaryTemplateItems');
+      component.ngOnInit();
+      expect(rmvSummaryTemp).toHaveBeenCalled();
+    });
+
+    it('should call getScreenFlowFromStore ', () => {
+      const store = [{ screenName: 'hearing-link', navigation: [] }];
+      const screenFlow = spyOn(component, 'getScreenFlowFromStore').and.returnValue(of(store));
+      component.removeUnnecessarySummaryTemplateItems();
+      expect(screenFlow).toHaveBeenCalled();
+    });
+
     it('should display fewer items when screenFlow is less', () => {
-      spyOn(component,'removeUnnecessarySummaryTemplateItems').and.callThrough();
+      component.removeUnnecessarySummaryTemplateItems();
       fixture.detectChanges();
-      component.getScreenFlowFromStore().subscribe(scr => {
-        const sFlow = scr?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow[1];
+      component.getScreenFlowFromStore().subscribe((scr) => {
+        const originalViewEditsFlow = scr?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
+        expect(component.screenFlow.length).toEqual(originalViewEditsFlow.length);
+        expect(component.template.length).toEqual(originalViewEditsFlow.length + 2);
+
+        const reducedSreeenFlowFlow = [scr?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow[1]];
+        component.template = component.template.filter((tl: Section) => {
+          return reducedSreeenFlowFlow.some((sr: ScreenNavigationModel) => {
+            return tl.screenName.includes(sr.screenName) || tl.screenName.includes('edit-hearing') || tl.screenName.includes('hearing-listing-info');
+          });
+        });
         fixture.detectChanges();
-        component.template = component.template.filter(tl => tl.screenName.includes(sFlow.screenName));
+        expect(component.template.length).toEqual(3);
+      });
+    });
+
+    it('should display zero item if screen flow is empty', () => {
+      component.removeUnnecessarySummaryTemplateItems();
+      fixture.detectChanges();
+      component.getScreenFlowFromStore().subscribe((scr) => {
+        const originalsFlow = scr?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
+        expect(component.screenFlow.length).toEqual(originalsFlow.length);
+        expect(component.template.length).toEqual(originalsFlow.length + 2);
+
+        const reducedSreeenFlowFlow = [scr?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow[1]];
+        component.template = component.template.filter((tl: Section) => {
+          return reducedSreeenFlowFlow.some((sr: ScreenNavigationModel) => {
+            return tl.screenName.includes(sr.screenName + 'fake-name');
+          });
+        });
         fixture.detectChanges();
-       expect(component.template.length).toEqual(1);
+        expect(component.template.length).toEqual(0);
       });
     });
 
@@ -76,19 +117,6 @@ describe('HearingViewEditSummaryComponent', () => {
     it('should have a validation errors mapped when nothing has changed summary page', () => {
       component.executeAction(ACTION.VIEW_EDIT_REASON);
       expect(component.validationErrors.length).toEqual(1);
-    });
-
-    it('should call removeUnnecessarySummaryTemplateItems in ngOnInit', () => {
-      const rmvSummaryTemp = spyOn(component, 'removeUnnecessarySummaryTemplateItems');
-      component.ngOnInit();
-      expect(rmvSummaryTemp).toHaveBeenCalled();
-    });
-
-    it('should call getScreenFlowFromStore ', () => {
-      const store = [{ screenName: 'hearing-link', navigation: [] }];
-      const screenFlow = spyOn(component, 'getScreenFlowFromStore').and.returnValue(of(store));
-      component.removeUnnecessarySummaryTemplateItems();
-      expect(screenFlow).toHaveBeenCalled();
     });
 
     afterEach(() => {

@@ -9,8 +9,8 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HEARING_VIEW_EDIT_SUMMARY_TEMPLATE } from '../../../templates/hearing-view-edit-summary.template';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
-import { ScreenNavigationModel } from 'api/hearings/models/screenNavigation.model';
-import { Section } from 'src/hearings/models/section';
+import { Section } from '../../../../hearings/models/section';
+import { ScreenNavigationModel } from '../../../../hearings/models/screenNavigation.model';
 
 @Component({
   selector: 'exui-hearing-view-edit-summary',
@@ -37,7 +37,7 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
   }
 
   ngOnInit(): void {
-   this.removeUnnecessarySummaryTemplateItems();
+    this.removeUnnecessarySummaryTemplateItems();
   }
 
   public executeAction(action: ACTION): void {
@@ -66,12 +66,12 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
         this.screenFlow = storeData?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
         this.template = this.template.filter((tp: Section) => {
           return this.screenFlow.some((sr: ScreenNavigationModel) => {
-            return tp.screenName.includes(sr.screenName) || tp.screenName.includes('edit-hearing') || tp.screenName.includes('hearing-listing-info')
-          })
+            return tp.screenName.includes(sr.screenName) || tp.screenName.includes('edit-hearing') || tp.screenName.includes('hearing-listing-info');
+          });
         });
       }
     });
-    return this.template
+    return this.template;
   }
 
   public ngOnDestroy(): void {

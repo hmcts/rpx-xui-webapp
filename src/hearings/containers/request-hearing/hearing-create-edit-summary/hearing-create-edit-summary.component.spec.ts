@@ -6,6 +6,8 @@ import { initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingCreateEditSummaryComponent } from './hearing-create-edit-summary.component';
+import { Section } from 'src/hearings/models/section';
+import { ScreenNavigationModel } from 'api/hearings/models/screenNavigation.model';
 
 describe('HearingCreateEditSummaryComponent', () => {
   let component: HearingCreateEditSummaryComponent;
@@ -45,15 +47,42 @@ describe('HearingCreateEditSummaryComponent', () => {
     component.removeUnnecessarySummaryTemplateItems();
     expect(screenFlow).toHaveBeenCalled();
   });
+
   it('should display fewer items when screenFlow is less', () => {
-    spyOn(component,'removeUnnecessarySummaryTemplateItems').and.callThrough();
+    component.removeUnnecessarySummaryTemplateItems();
     fixture.detectChanges();
-    component.getScreenFlowFromStore().subscribe(scr => {
-      const sFlow = scr?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow[1];
+    component.getScreenFlowFromStore().subscribe((scr) => {
+      const originalCreateEditScrnFlow = scr?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
+      expect(component.screenFlow.length).toEqual(originalCreateEditScrnFlow.length);
+      expect(component.template.length).toEqual(originalCreateEditScrnFlow.length + 1);
+
+      const reducedSreeenFlowFlow = [scr?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow[1]];
+      component.template = component.template.filter((tl: Section) => {
+        return reducedSreeenFlowFlow.some((sr: ScreenNavigationModel) => {
+          return tl.screenName.includes(sr.screenName) || tl.screenName.includes('check-answers');
+        });
+      });
       fixture.detectChanges();
-      component.template = component.template.filter(tl => tl.screenName.includes(sFlow.screenName));
+      expect(component.template.length).toEqual(2);
+    });
+  });
+
+  it('should display zero item if screen flow is empty', () => {
+    component.removeUnnecessarySummaryTemplateItems();
+    fixture.detectChanges();
+    component.getScreenFlowFromStore().subscribe((scr) => {
+      const originalCreateEditScrnFlow = scr?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
+      expect(component.screenFlow.length).toEqual(originalCreateEditScrnFlow.length);
+      expect(component.template.length).toEqual(originalCreateEditScrnFlow.length + 1);
+
+      const reducedSreeenFlowFlow = [scr?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow[1]];
+      component.template = component.template.filter((tl: Section) => {
+        return reducedSreeenFlowFlow.some((sr: ScreenNavigationModel) => {
+          return tl.screenName.includes(sr.screenName + '-unavailable-name');
+        });
+      });
       fixture.detectChanges();
-     expect(component.template.length).toEqual(1);
+      expect(component.template.length).toEqual(0);
     });
   });
 

@@ -45,7 +45,7 @@ export class HearingRequestEffects {
     this.hearingStore.pipe(select(fromHearingReducers.getHearingsFeatureState)).subscribe(
       (state) => {
         this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
-        this.hearingId = state.hearingRequest.hearingRequestMainModel.requestDetails.hearingRequestID;
+        this.hearingId = state.hearingRequest.hearingRequestMainModel?.requestDetails?.hearingRequestID;
         this.mode = state.hearingConditions.hasOwnProperty(KEY_MODE) ? state.hearingConditions[KEY_MODE] : Mode.CREATE;
         this.isHearingAmendmentsEnabled = state.hearingConditions.hasOwnProperty(KEY_IS_HEARING_AMENDMENTS_ENABLED) ? state.hearingConditions[KEY_IS_HEARING_AMENDMENTS_ENABLED] : false;
         this.fragmentId = state.hearingConditions.hasOwnProperty(KEY_FRAGMENT_ID) ? state.hearingConditions[KEY_FRAGMENT_ID] : '';

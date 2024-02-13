@@ -89,9 +89,11 @@ export class HearingsUtils {
    * @memberof HearingsUtils
    */
   public static hasPartyNameChanged(partyInHMC: PartyDetailsModel, partyInSHV: PartyDetailsModel): boolean {
-    if ((partyInHMC.individualDetails.firstName !== partyInSHV.individualDetails.firstName) ||
-      (partyInHMC.individualDetails.lastName !== partyInSHV.individualDetails.lastName)) {
-      return true;
+    if (partyInHMC.individualDetails && partyInSHV.individualDetails) {
+      if ((partyInHMC.individualDetails.firstName !== partyInSHV.individualDetails.firstName) ||
+        (partyInHMC.individualDetails.lastName !== partyInSHV.individualDetails.lastName)) {
+        return true;
+      }
     }
     return false;
   }

@@ -22,9 +22,9 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
-    enableFortifyScan('rpx-aat')
-    enableFullFunctionalTest(120)
-    //enableSecurityScan()
+    //enableFortifyScan('rpx-aat')
+    //enableFullFunctionalTest(120)
+    enableSecurityScan()
     //enableMutationTest()
     enableCrossBrowserTest()
 

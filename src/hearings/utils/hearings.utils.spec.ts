@@ -1,9 +1,8 @@
 import { initialState } from '../hearing.test.data';
-import { HearingConditions, KEY_MODE } from '../models/hearingConditions';
+import { KEY_MODE } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { Mode } from '../models/hearings.enum';
-import { PropertiesUpdatedOnPageVisit } from '../models/hearingsUpdateMode.enum';
 import { HearingsUtils } from './hearings.utils';
 
 describe('HearingsUtils', () => {
@@ -85,6 +84,24 @@ describe('HearingsUtils', () => {
       initialState.hearings.hearingValues.serviceHearingValuesModel.parties
     );
     expect(partiesNotAvailableDates.length).toEqual(10);
+  });
+
+  describe('HearingLength', () => {
+    it('should transform hearing stage days and hours', () => {
+      expect(HearingsUtils.getHearingLength(960)).toEqual('2 Days 4 Hours');
+    });
+
+    it('should transform hearing stage days and minutes', () => {
+      expect(HearingsUtils.getHearingLength(750)).toEqual('2 Days 30 Minutes');
+    });
+
+    it('should transform hearing stage both hours and minutes', () => {
+      expect(HearingsUtils.getHearingLength(70)).toEqual('1 Hour 10 Minutes');
+    });
+
+    it('should transform hearing stage empty', () => {
+      expect(HearingsUtils.getHearingLength(null)).toEqual('');
+    });
   });
 
   describe('HearingWindowModel', () => {

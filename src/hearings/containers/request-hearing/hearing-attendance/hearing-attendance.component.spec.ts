@@ -307,6 +307,17 @@ describe('HearingAttendanceComponent', () => {
     component.hearingCondition = {
       mode: 'create'
     };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: null,
+      parties: partyDetailsFromLatestSHV,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: true
+      }
+    };
     component.ngOnInit();
     expect(component.initialiseFromHearingValues).not.toHaveBeenCalled();
     expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(2);
@@ -323,7 +334,7 @@ describe('HearingAttendanceComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
-        nonReasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true
       }

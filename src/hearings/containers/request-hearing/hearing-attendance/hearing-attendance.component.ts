@@ -107,29 +107,22 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       : this.hearingRequestToCompareMainModel.partyDetails;
     const individualPartyIdsInHMC = partyDetails.filter((party) => party.partyType === PartyType.IND)?.map((party) => party.partyID);
     const individualPartiesInSHV = this.serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND);
-    individualPartiesInSHV?.forEach((partyInSHV: PartyDetailsModel) => {
-      if (!individualPartyIdsInHMC.includes(partyInSHV.partyID)) {
-        partyInSHV = {
-          ...partyInSHV,
+    individualPartiesInSHV?.forEach((partyDetailsModel: PartyDetailsModel) => {
+      if (!individualPartyIdsInHMC.includes(partyDetailsModel.partyID)) {
+        partyDetailsModel = {
+          ...partyDetailsModel,
           partyAmendmentStatus: AmendmentLabelStatus.ACTION_NEEDED
         };
       } else {
-        const partyInHMC: PartyDetailsModel = partyDetails.find((party) => party.partyID === partyInSHV.partyID);
-        if (HearingsUtils.hasPartyNameChanged(partyInHMC, partyInSHV)) {
-          partyInSHV = {
-            ...partyInHMC,
-            partyName: partyInSHV.partyName,
-            individualDetails: {
-              ...partyInHMC.individualDetails,
-              title: partyInSHV.individualDetails.title,
-              firstName: partyInSHV.individualDetails.firstName,
-              lastName: partyInSHV.individualDetails.lastName
-            },
+        const partyInHMC = partyDetails.find((party) => party.partyID === partyDetailsModel.partyID);
+        if (partyInHMC.partyName !== partyDetailsModel.partyName) {
+          partyDetailsModel = {
+            ...partyDetailsModel,
             partyAmendmentStatus: AmendmentLabelStatus.AMENDED
           };
         }
       }
-      (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyInSHV) as FormGroup);
+      (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyDetailsModel) as FormGroup);
     });
     this.attendanceFormGroup.controls.estimation.setValue(this.serviceHearingValuesModel.numberOfPhysicalAttendees);
   }

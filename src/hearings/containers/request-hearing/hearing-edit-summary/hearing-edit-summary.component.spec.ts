@@ -199,6 +199,7 @@ describe('HearingEditSummaryComponent', () => {
       'hearing-judge',
       'hearing-panel',
       'hearing-timing',
+      'hearing-link',
       'hearing-additional-instructions'
     ];
     component.ngOnInit();

@@ -51,7 +51,7 @@ export class CaseFlagsUtils {
   public static displayCaseFlagsGroup(partyFlags: PartyFlagsModel[],
     caseFlagsRefDataModels: CaseFlagReferenceModel[],
     caseFlagType: CaseFlagType): CaseFlagGroup[] {
-    const allActiveFlags = this.getAllActiveDisplayFlags(partyFlags, caseFlagsRefDataModels);
+    const allActiveFlags = this.getAllActiveDisplayFlags(partyFlags, caseFlagsRefDataModels) || [];
     const allRAFs = allActiveFlags.filter((caseFlag) =>
       (caseFlag.displayPath.includes(CaseFlagType.REASONABLE_ADJUSTMENT)
         || caseFlag.flagId === CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID));
@@ -65,7 +65,7 @@ export class CaseFlagsUtils {
 
   private static getAllActiveDisplayFlags(partyFlags: PartyFlagsModel[],
     caseFlagsRefDataModels: CaseFlagReferenceModel[]): PartyFlagsDisplayModel[] {
-    const displayCaseFlags: PartyFlagsDisplayModel[] = partyFlags.map((flag) => {
+    const displayCaseFlags: PartyFlagsDisplayModel[] = partyFlags?.map((flag) => {
       const flagPath: CaseFlagReferenceModel = this.findFlagByFlagId(caseFlagsRefDataModels, flag.flagId);
       if (flagPath) {
         return {
@@ -122,7 +122,7 @@ export class CaseFlagsUtils {
       let reasonableAdjustments: string[] = party.individualDetails && party.individualDetails.reasonableAdjustments ? party.individualDetails.reasonableAdjustments : [];
       // If reasonable adjustments are not found in the hearing request,
       // check the service hearing values in case flags have been set after the hearing was requested
-      if (reasonableAdjustments.length === 0 && foundPartyFromService.individualDetails && foundPartyFromService.individualDetails.reasonableAdjustments.length > 0) {
+      if (reasonableAdjustments.length === 0 && foundPartyFromService.individualDetails && foundPartyFromService.individualDetails?.reasonableAdjustments?.length > 0) {
         reasonableAdjustments = foundPartyFromService.individualDetails.reasonableAdjustments;
       }
       const allFlagsId: string[] = reasonableAdjustments.slice();

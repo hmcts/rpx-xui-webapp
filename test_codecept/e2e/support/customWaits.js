@@ -3,10 +3,11 @@
 
 const CucumberReporter = require('../../codeceptCommon/reportLogger');
 const BrowserLogs = require('./browserLogs');
-const reportLogger = require('../../codeceptCommon/reportLogger')
+const reportLogger = require('../../codeceptCommon/reportLogger');
+
 class BrowserWaits{
     constructor(){
-        this.waitTime = 30000; 
+        this.waitTime = 30000;
         this.pageErrors = $$(".error-summary");
         this.retriesCount = 3;
 
@@ -44,10 +45,10 @@ class BrowserWaits{
         CucumberReporter.AddMessage("ELEMENT_WAIT: at " + this.__getCallingFunctionName()+ " " + JSON.stringify(element.selector)+" at ");
         await element.wait(this.waitTime / 1000)
 
-        await this.waitForConditionAsync(async () => {
-            const isPresent = await element.isPresent();
-            return isPresent;
-        }, 20*1000);
+        // await this.waitForConditionAsync(async () => {
+        //     const isPresent = await element.isPresent();
+        //     return isPresent;
+        // }, 20*1000);
         // CucumberReporter.AddMessage("ELEMENT_FOUND: in sec " + (Date.now() - startTime) / 1000 + " "+ JSON.stringify(element.selector) );
 
     }
@@ -177,7 +178,7 @@ class BrowserWaits{
 
 
     async retryWithActionCallback(callback, actionMessage, retryTryAttempts) {
-        
+
         const functionName = this.__getCallingFunctionName()
 
         let retryCounter = 0;
@@ -203,7 +204,7 @@ class BrowserWaits{
 
                 error = err
                 console.log(err)
-                
+
                 const currentRoute = await browser.getCurrentUrl()
                 if (currentRoute.includes('service-down')) {
                     throw new Error('Generic system error displayed: "Sorry, there is a problem with the service"');
@@ -231,7 +232,7 @@ class BrowserWaits{
         }
         while (status && counter < 10)
         CucumberReporter.AddMessage(status ? `spinner closed` : 'spinner still displayed');
-        
+
         // const isSpinnerPresent = await $("div.spinner-container").isPresent();
 
         // await this.waitForCondition(async () => {
@@ -255,4 +256,4 @@ class BrowserWaits{
     }
 }
 
-module.exports = new BrowserWaits(); 
+module.exports = new BrowserWaits();

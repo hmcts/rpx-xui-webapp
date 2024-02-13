@@ -117,18 +117,22 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   public executeAction(action: ACTION): void {
-    if (action === ACTION.VIEW_EDIT_REASON) {
-      const objA = JSON.parse(JSON.stringify(this.hearingRequestMainModel));
-      const objB = JSON.parse(JSON.stringify(this.hearingRequestToCompareMainModel));
-      if (_.isEqual(objA, objB)) {
-        this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
-        window.scrollTo({ top: 0, left: 0 });
-        return;
-      } else if (this.hearingsService.displayValidationError) {
-        return;
+    if (action === ACTION.BACK) {
+      this.router.navigate(['/', 'hearings', 'request', 'hearing-view-summary']);
+    } else {
+      if (action === ACTION.VIEW_EDIT_REASON) {
+        const objA = JSON.parse(JSON.stringify(this.hearingRequestMainModel));
+        const objB = JSON.parse(JSON.stringify(this.hearingRequestToCompareMainModel));
+        if (_.isEqual(objA, objB)) {
+          this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
+          window.scrollTo({ top: 0, left: 0 });
+          return;
+        } else if (this.hearingsService.displayValidationError) {
+          return;
+        }
       }
+      super.navigateAction(action);
     }
-    super.navigateAction(action);
   }
 
   public onChange(event: EditHearingChangeConfig): void {
@@ -331,7 +335,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const individualParties = this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND);
     // HMC stores only reasonable adjustment flag ids and language interpreter flag ids under parties
     // Get only the reasonable adjustment and language interpreter flag ids from SHV and sort them for easy comparison
-    const flagIdsSHV = caseFlagsSHV.map((flag) => flag.flagId)?.filter((flagId) => flagId.startsWith('RA') || flagId === this.LANGUAGE_INTERPRETER_FLAG_ID)?.sort((a, b) => {
+    const flagIdsSHV = caseFlagsSHV.map((flag) => flag.flagId)?.filter((flagId) => flagId?.startsWith('RA') || flagId === this.LANGUAGE_INTERPRETER_FLAG_ID)?.sort((a, b) => {
       return a > b ? 1 : (a === b ? 0 : -1);
     });
     // Get individual parties reasonable adjustment flags and sort the result

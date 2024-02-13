@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
-import { Observable } from 'rxjs';
 import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
 import * as fromHearingStore from '../../../../../hearings/store';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
@@ -12,22 +11,20 @@ import { EditHearingChangeConfig } from '../../../../models/editHearingChangeCon
 })
 export class LanguageRequirementsSectionComponent {
   @Input() public hearingInWelshFlag: boolean;
+  @Input() public hearingInWelshFlagToCompare: boolean;
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
-  public hearingState$: Observable<fromHearingStore.State>;
   public showAmmended: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {
-    this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
   }
 
   public ngOnInit(): void {
-    this.hearingState$.subscribe((state) => {
-      const objA = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingInWelshFlag;
-      const objB = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingInWelshFlag;
-      this.showAmmended = !_.isEqual(objA, objB);
-    });
+    this.showAmmended = !_.isEqual(
+      this.hearingInWelshFlagToCompare,
+      this.hearingInWelshFlag
+    );
   }
 
   public onChange(fragmentId: string): void {

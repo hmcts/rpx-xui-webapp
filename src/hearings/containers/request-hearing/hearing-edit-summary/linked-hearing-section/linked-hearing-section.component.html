@@ -9,9 +9,9 @@
       Will this hearing need to be linked to other hearings?
     </div>
     <div class="govuk-summary-list__value">
+      {{ hearingIsLinkedFlag ? 'Yes' : 'No' }}
       <exui-amendment-label *ngIf="showAmmended" [displayLabel]="amendmentLabelEnum.AMENDED">
       </exui-amendment-label>
-      {{ hearingIsLinkedFlag ? 'Yes' : 'No' }}
     </div>
     <div class="govuk-summary-list__actions">
       <a id="linkedHearings"

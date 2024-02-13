@@ -1,4 +1,4 @@
-<a class="govuk-back-link" href="javascript:history.back()">Back</a>
+<a class="govuk-back-link" href="javascript:void(0)" (click)="onBack()">Back</a>
 <xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'">
 </xuilib-hmcts-error-summary>
 <xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem'" *ngIf="errors$ | async">

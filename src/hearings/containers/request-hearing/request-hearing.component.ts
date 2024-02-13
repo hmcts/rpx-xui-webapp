@@ -11,6 +11,8 @@ import { AbstractPageFlow } from '../../utils/abstract-page-flow';
   styleUrls: ['./request-hearing.component.scss']
 })
 export class RequestHearingComponent implements OnDestroy {
+  public caseId: string;
+
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly pageFlow: AbstractPageFlow,
     private readonly hearingsService: HearingsService) {

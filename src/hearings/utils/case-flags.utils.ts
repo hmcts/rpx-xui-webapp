@@ -197,10 +197,14 @@ export class CaseFlagsUtils {
     // Loop through the case flags and if the flag id is present in the service hearing values but not
     // in hearing request model then display action needed label
     for (const reasonableAdjustmentFlag of reasonableAdjustmentFlags) {
+      reasonableAdjustmentFlag.flagAmendmentLabelStatus = AmendmentLabelStatus.NONE;
       if (partyInHMC) {
-        if (!partyInHMC.individualDetails?.reasonableAdjustments?.includes(reasonableAdjustmentFlag.flagId) &&
-          partyInSHV.individualDetails?.reasonableAdjustments?.includes(reasonableAdjustmentFlag.flagId)) {
-          reasonableAdjustmentFlag.flagAmendmentLabelStatus = AmendmentLabelStatus.ACTION_NEEDED;
+        if (!partyInHMC.individualDetails?.reasonableAdjustments?.includes(reasonableAdjustmentFlag.flagId)) {
+          if (partyInSHV.individualDetails?.reasonableAdjustments?.includes(reasonableAdjustmentFlag.flagId)) {
+            reasonableAdjustmentFlag.flagAmendmentLabelStatus = AmendmentLabelStatus.ACTION_NEEDED;
+          } else {
+            reasonableAdjustmentFlag.flagAmendmentLabelStatus = AmendmentLabelStatus.WARNING;
+          }
         }
       }
     }

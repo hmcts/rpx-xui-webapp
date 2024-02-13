@@ -7,7 +7,9 @@ export class PrivateHearingAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$?: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map((state) => {
-        const privateHearingRequiredFlag = state.hearingRequest.hearingRequestMainModel.hearingDetails.privateHearingRequiredFlag;
+        const privateHearingRequiredFlag = state.hearingConditions?.isHearingAmendmentsEnabled
+          ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.privateHearingRequiredFlag
+          : state.hearingRequest.hearingRequestMainModel.hearingDetails.privateHearingRequiredFlag;
         return privateHearingRequiredFlag ? 'Yes' : 'No';
       })
     );

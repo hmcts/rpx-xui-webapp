@@ -59,6 +59,7 @@
 <!-- Additional facilities -->
 <exui-additional-facilities-section *ngIf="sectionsToDisplay.includes(hearingScreenEnum.HEARING_FACILITIES)"
   [hearingRequestMainModel]="hearingRequestMainModel"
+  [hearingRequestToCompareMainModel]="hearingRequestToCompareMainModel"
   [additionalFacilitiesRefData]="additionalFacilitiesRefData"
   (changeEditHearing)="onChange($event)"
 ></exui-additional-facilities-section>
@@ -80,12 +81,14 @@
 ></exui-participant-attendance-section>
 <!-- Hearing venue -->
 <exui-hearing-venue-section *ngIf="sectionsToDisplay.includes(hearingScreenEnum.HEARING_VENUE)"
-  [hearingLocations]="hearingRequestMainModel.hearingDetails.hearingLocations"
+  [hearingRequestMainModel]="hearingRequestMainModel"
+  [hearingRequestToCompareMainModel]="hearingRequestToCompareMainModel"
   (changeEditHearing)="onChange($event)"
 ></exui-hearing-venue-section>
 <!-- Language requirements -->
 <exui-language-requirements-section *ngIf="showLanguageRequirementsSection$ | async"
   [hearingInWelshFlag]="hearingRequestMainModel.hearingDetails.hearingInWelshFlag"
+  [hearingInWelshFlagToCompare]="hearingRequestToCompareMainModel.hearingDetails.hearingInWelshFlag"
   (changeEditHearing)="onChange($event)"
 ></exui-language-requirements-section>
 <!-- Judge details -->
@@ -103,18 +106,21 @@
 ></exui-panel-details-section>
 <!-- Hearing length, date and priority -->
 <exui-hearing-timing-section *ngIf="sectionsToDisplay.includes(hearingScreenEnum.HEARING_TIMING)"
-  [hearingDetails]="hearingRequestMainModel.hearingDetails"
+  [hearingRequestMainModel]="hearingRequestMainModel"
+  [hearingRequestToCompareMainModel]="hearingRequestToCompareMainModel"
   [hearingPrioritiesRefData]="hearingPrioritiesRefData"
   (changeEditHearing)="onChange($event)"
 ></exui-hearing-timing-section>
 <!-- Linked hearing -->
 <exui-linked-hearing-section *ngIf="sectionsToDisplay.includes(hearingScreenEnum.HEARING_LINK)"
   [hearingIsLinkedFlag]="hearingRequestMainModel.hearingDetails.hearingIsLinkedFlag"
+  [hearingIsLinkedFlagToCompare]="hearingRequestToCompareMainModel.hearingDetails.hearingIsLinkedFlag"
   (changeEditHearing)="onChange($event)"
 ></exui-linked-hearing-section>
 <!-- Additional instructions -->
 <exui-additional-instructions-section *ngIf="sectionsToDisplay.includes(hearingScreenEnum.HEARING_ADDITIONAL_INSTRUCTIONS)"
-  [listingComments]="hearingRequestMainModel.hearingDetails.listingComments"
+  [hearingRequestMainModel]="hearingRequestMainModel"
+  [hearingRequestToCompareMainModel]="hearingRequestToCompareMainModel"
   (changeEditHearing)="onChange($event)"
 ></exui-additional-instructions-section>
 <exui-warning-and-error-section

@@ -5,6 +5,7 @@ import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
+import * as _ from 'lodash';
 import { of } from 'rxjs';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
@@ -136,9 +137,15 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should unsubscribe', () => {
     component.hearingStateSub = of().subscribe();
+    component.hearingValuesSubscription = of().subscribe();
+    component.featureToggleServiceSubscription = of().subscribe();
     spyOn(component.hearingStateSub, 'unsubscribe').and.callThrough();
+    spyOn(component.hearingValuesSubscription, 'unsubscribe').and.callThrough();
+    spyOn(component.featureToggleServiceSubscription, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
     expect(component.hearingStateSub.unsubscribe).toHaveBeenCalled();
+    expect(component.hearingValuesSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.featureToggleServiceSubscription.unsubscribe).toHaveBeenCalled();
   });
 
   it('should focus on the element', () => {
@@ -175,7 +182,7 @@ describe('HearingEditSummaryComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: true
+        hearingWindowChangesRequired: false
       }
     };
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
@@ -183,16 +190,24 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should set the hearingWindowChangesRequired to true', () => {
     hearingsService.propertiesUpdatedOnPageVisit = null;
-    component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '2024-02-13T10:00:00';
-    component.serviceHearingValuesModel.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = {
+      firstDateTimeMustBe: '2024-02-01T10:00:00'
+    };
+    component.serviceHearingValuesModel.parties[0].unavailabilityRanges = [{
+      unavailableFromDate: '2024-05-01T10:00:00',
+      unavailableToDate: '2024-05-14T10:00:00',
+      unavailabilityType: UnavailabilityType.ALL_DAY
+    }];
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesRequired).toEqual(true);
   });
 
   it('should set the hearingWindowChangesRequired to false', () => {
     hearingsService.propertiesUpdatedOnPageVisit = null;
-    component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
-    component.serviceHearingValuesModel.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = {
+      firstDateTimeMustBe: '2024-02-01T10:00:00'
+    };
+    component.serviceHearingValuesModel.parties = initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.partyDetails;
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesRequired).toEqual(false);
   });
@@ -230,6 +245,7 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should update the party details properties automatically setPropertiesUpdatedAutomatically', () => {
+    component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
     component.serviceHearingValuesModel.parties = [
       {
         partyID: 'P1',
@@ -442,6 +458,18 @@ describe('HearingEditSummaryComponent', () => {
     expect(component.pageVisitPartiesChangeExists()).toEqual(true);
   });
 
+  it('should partyDetailsChangesRequired return true', () => {
+    spyOn(store, 'select').and.returnValue(of(initialState.hearings.hearingValues));
+    component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
+    component.serviceHearingValuesModel = {
+      ...component.serviceHearingValuesModel,
+      parties: initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails
+    };
+    component.serviceHearingValuesModel.parties[0].individualDetails.firstName = 'Jane updated';
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
+  });
+
   describe('Display of warning and error message', () => {
     it('should display banner message', () => {
       component.serviceHearingValuesModel.caseManagementLocationCode = 'New Management location code';
@@ -524,5 +552,6 @@ describe('HearingEditSummaryComponent', () => {
 
   afterEach(() => {
     fixture.destroy();
+    TestBed.resetTestingModule();
   });
 });

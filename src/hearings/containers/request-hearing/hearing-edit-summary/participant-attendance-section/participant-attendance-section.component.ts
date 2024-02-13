@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import * as _ from 'lodash';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 import { HearingChannelEnum, PartyType } from '../../../../models/hearings.enum';
@@ -16,6 +17,7 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   @Input() public partyChannelsRefData: LovRefDataModel[];
   @Input() public partySubChannelsRefData: LovRefDataModel[];
   @Input() public hearingRequestMainModel: HearingRequestMainModel;
+  @Input() public hearingRequestToCompareMainModel: HearingRequestMainModel;
   @Input() public serviceHearingValuesModel: ServiceHearingValuesModel;
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
@@ -24,8 +26,12 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   public participantChannels: string[] = [];
   public participantAttendanceModes: ParticipantAttendanceMode[] = [];
   public numberOfPhysicalAttendees: number;
+  public pageTitleDisplayLabel: string;
   public partyDetailsChangesRequired: boolean;
   public partyDetailsChangesConfirmed: boolean;
+  public isPaperHearingChanged: boolean;
+  public numberOfPhysicalAttendeesChanged: boolean;
+  public participantChannelsChanged: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
 
   constructor(private readonly hearingsService: HearingsService) {}
@@ -38,6 +44,8 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
     this.participantChannels = this.getParticipantChannels();
     this.participantAttendanceModes = this.getParticipantAttendanceModes();
     this.numberOfPhysicalAttendees = this.getNumberOfPhysicalAttendees();
+
+    this.setAmendmentLabels();
   }
 
   public onChange(fragmentId: string): void {
@@ -78,28 +86,31 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
 
   private getParticipantAttendanceModes(): ParticipantAttendanceMode[] {
     const participantAttendanceModes: ParticipantAttendanceMode[] = [];
-    const individualPartiesFromRequest = this.hearingRequestMainModel.partyDetails?.filter((partyFromRequest) => partyFromRequest.partyType === PartyType.IND);
+    const individualPartiesFromRequest = this.partyDetailsChangesConfirmed
+      ? this.hearingRequestMainModel.partyDetails?.filter((partyFromRequest) => partyFromRequest.partyType === PartyType.IND)
+      : this.hearingRequestToCompareMainModel.partyDetails?.filter((partyFromRequest) => partyFromRequest.partyType === PartyType.IND);
     const partiesFromServiceValue = this.serviceHearingValuesModel.parties?.filter((partiesFromService) => partiesFromService.partyType === PartyType.IND);
     individualPartiesFromRequest.forEach((individualParty: PartyDetailsModel) => {
       const foundPartyFromService = partiesFromServiceValue.find((partyFromService) => partyFromService.partyID === individualParty.partyID);
       participantAttendanceModes.push({
         partyName: this.getPartyName(individualParty, foundPartyFromService),
         channel: this.getPartyChannelValue(individualParty),
-        partyNameChanged: individualParty.partyName !== foundPartyFromService.partyName
+        partyNameChanged: this.getPartyNameChanged(individualParty.partyID),
+        partyChannelChanged: this.getPartyChannelChanged(individualParty)
       });
     });
     return participantAttendanceModes;
   }
 
   private getPartyName(individualParty: PartyDetailsModel, foundPartyFromService: PartyDetailsModel): string {
-    if (individualParty.partyName) {
-      return individualParty.partyName;
-    }
     if (foundPartyFromService) {
       if (foundPartyFromService.partyName && foundPartyFromService.partyName !== null) {
         return foundPartyFromService.partyName;
       }
       return foundPartyFromService.partyID;
+    }
+    if (individualParty.partyName) {
+      return individualParty.partyName;
     }
     return '';
   }
@@ -109,10 +120,62 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
     if (individualParty.individualDetails) {
       preferredHearingChannelRefData = this.partyChannelsRefDataCombined.find((ref) => ref.key === individualParty.individualDetails?.preferredHearingChannel);
     }
-    return preferredHearingChannelRefData?.value_en || '';
+    return preferredHearingChannelRefData?.value_en
+      ? ` - ${preferredHearingChannelRefData.value_en}`
+      : '';
+  }
+
+  private getPartyNameChanged(partyId: string): boolean {
+    const partyInSHV = this.serviceHearingValuesModel.parties.find((party) => party.partyID === partyId);
+    if (partyInSHV) {
+      const partyInHMCToCompare = this.hearingRequestToCompareMainModel.partyDetails.find((party) => party.partyID === partyId);
+      if (partyInHMCToCompare) {
+        return partyInSHV.individualDetails?.firstName !== partyInHMCToCompare.individualDetails?.firstName ||
+        partyInSHV.individualDetails?.lastName !== partyInHMCToCompare.individualDetails?.lastName;
+      }
+    }
+    return false;
+  }
+
+  private getPartyChannelChanged(partyDetails: PartyDetailsModel): boolean {
+    const partyInHMC = this.hearingRequestMainModel.partyDetails.find((party) => party.partyID === partyDetails.partyID);
+    const partyInHMCToCompare = this.hearingRequestToCompareMainModel.partyDetails.find((party) => party.partyID === partyDetails.partyID);
+    return !_.isEqual(
+      partyInHMC?.individualDetails?.preferredHearingChannel,
+      partyInHMCToCompare?.individualDetails?.preferredHearingChannel
+    );
   }
 
   private getNumberOfPhysicalAttendees(): number {
     return this.hearingRequestMainModel.hearingDetails?.numberOfPhysicalAttendees || 0;
+  }
+
+  private setAmendmentLabels(): void {
+    this.isPaperHearingChanged = !_.isEqual(
+      this.hearingRequestToCompareMainModel.hearingDetails.hearingChannels?.includes(HearingChannelEnum.ONPPR),
+      this.hearingRequestMainModel.hearingDetails.hearingChannels?.includes(HearingChannelEnum.ONPPR)
+    );
+
+    this.numberOfPhysicalAttendeesChanged = !_.isEqual(
+      this.hearingRequestToCompareMainModel.hearingDetails?.numberOfPhysicalAttendees || 0,
+      this.hearingRequestMainModel.hearingDetails?.numberOfPhysicalAttendees || 0
+    );
+
+    this.participantChannelsChanged = !_.isEqual(
+      this.hearingRequestToCompareMainModel.hearingDetails?.hearingChannels,
+      this.hearingRequestMainModel.hearingDetails?.hearingChannels
+    );
+
+    if (this.partyDetailsChangesRequired) {
+      this.pageTitleDisplayLabel = !this.partyDetailsChangesConfirmed
+        ? AmendmentLabelStatus.ACTION_NEEDED
+        : AmendmentLabelStatus.AMENDED;
+    } else {
+      if (this.isPaperHearingChanged ||
+        this.numberOfPhysicalAttendeesChanged ||
+        this.participantChannelsChanged) {
+        this.pageTitleDisplayLabel = AmendmentLabelStatus.AMENDED;
+      }
+    }
   }
 }

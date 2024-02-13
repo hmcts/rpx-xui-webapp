@@ -1,7 +1,5 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
-import { AppConstants } from '../app/app.constants';
 import { ErrorPageComponent } from './components';
 import { CancelHearingComponent } from './containers/cancel-hearing/cancel-hearing.component';
 import { HearingActualsAddEditSummaryComponent } from './containers/hearing-actuals/hearing-actuals-add-edit-summary/hearing-actuals-add-edit-summary.component';
@@ -41,8 +39,8 @@ import { HearingRequestFailedSummaryComponent } from './containers/view-hearing/
 import { HearingViewActualSummaryComponent } from './containers/view-hearing/hearing-view-actual-summary/hearing-view-actual-summary.component';
 import { HearingViewSummaryComponent } from './containers/request-hearing/hearing-view-summary/hearing-view-summary.component';
 import { ViewHearingComponent } from './containers/view-hearing/view-hearing.component';
-import { HearingsEditGuard } from './guards/hearings-edit-guard';
 import { HearingAmendmentsGuard } from './guards/hearing-amendments-guard';
+import { HearingsEditGuard } from './guards/hearings-edit-guard';
 import { HearingsViewGuard } from './guards/hearings-view-guard';
 import { HearingCategory, MemberType, Mode } from './models/hearings.enum';
 import { ActualSummaryResponseResolver } from './resolvers/actual-summary-response-resolver.resolve';

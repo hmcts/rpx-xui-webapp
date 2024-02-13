@@ -9,9 +9,10 @@ export class HearingPanelAnswerConverter implements AnswerConverter {
     return hearingState$.pipe(
       map((state) => {
         const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-        const panelMembers: number = panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER).length || 0;
-        const panelSpecialisms: number = panelRequirements && panelRequirements.panelSpecialisms && panelRequirements.panelSpecialisms.length || 0;
-        if (panelMembers > 0 || panelSpecialisms > 0) {
+        const panelMembers: number = panelRequirements?.panelPreferences?.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER).length || 0;
+        const otherPanelMembers: number = panelRequirements?.roleType?.length || 0;
+        const panelSpecialisms: number = panelRequirements?.panelSpecialisms?.length || 0;
+        if (panelMembers > 0 || panelSpecialisms > 0 || otherPanelMembers > 0) {
           return RadioOptions.YES;
         }
 

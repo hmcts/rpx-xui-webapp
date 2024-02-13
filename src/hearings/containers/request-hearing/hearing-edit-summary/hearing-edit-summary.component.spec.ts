@@ -33,6 +33,7 @@ describe('HearingEditSummaryComponent', () => {
     fragment: of('point-to-me')
   };
   const routerMock = jasmine.createSpyObj('Router', [
+    'navigate',
     'navigateByUrl'
   ]);
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -542,6 +543,11 @@ describe('HearingEditSummaryComponent', () => {
     component.hearingRequestToCompareMainModel = Object.assign({});
     component.executeAction(ACTION.VIEW_EDIT_REASON);
     expect(component.validationErrors.length).toEqual(1);
+  });
+
+  it('should navigate to hearing view summary page', () => {
+    component.executeAction(ACTION.BACK);
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-view-summary']);
   });
 
   afterEach(() => {

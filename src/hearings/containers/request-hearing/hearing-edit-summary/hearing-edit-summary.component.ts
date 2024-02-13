@@ -117,18 +117,22 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   public executeAction(action: ACTION): void {
-    if (action === ACTION.VIEW_EDIT_REASON) {
-      const objA = JSON.parse(JSON.stringify(this.hearingRequestMainModel));
-      const objB = JSON.parse(JSON.stringify(this.hearingRequestToCompareMainModel));
-      if (_.isEqual(objA, objB)) {
-        this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
-        window.scrollTo({ top: 0, left: 0 });
-        return;
-      } else if (this.hearingsService.displayValidationError) {
-        return;
+    if (action === ACTION.BACK) {
+      this.router.navigate(['/', 'hearings', 'request', 'hearing-view-summary']);
+    } else {
+      if (action === ACTION.VIEW_EDIT_REASON) {
+        const objA = JSON.parse(JSON.stringify(this.hearingRequestMainModel));
+        const objB = JSON.parse(JSON.stringify(this.hearingRequestToCompareMainModel));
+        if (_.isEqual(objA, objB)) {
+          this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
+          window.scrollTo({ top: 0, left: 0 });
+          return;
+        } else if (this.hearingsService.displayValidationError) {
+          return;
+        }
       }
+      super.navigateAction(action);
     }
-    super.navigateAction(action);
   }
 
   public onChange(event: EditHearingChangeConfig): void {

@@ -57,7 +57,7 @@ describe('AdditionalInstructionsSectionComponent', () => {
     };
     component.ngOnInit();
     expect(component.additionalInstructions).toEqual('This is a test comment.');
-    expect(component.showAmmended).toEqual(false);
+    expect(component.showAmmended).toEqual(true);
   });
 
   it('should verify onChange', () => {

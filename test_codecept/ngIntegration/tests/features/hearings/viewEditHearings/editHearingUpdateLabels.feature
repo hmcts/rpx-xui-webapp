@@ -1,5 +1,5 @@
 
-@ng @functional_enabled  
+@ng @functional_enabled
 Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
     https://tools.hmcts.net/jira/browse/EUI-8905
     https://tools.hmcts.net/jira/browse/EUI-9504
@@ -164,7 +164,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
         Then In hearing requirements page, I see party "Party1 name updated" with case flags
             | flag | label         |
             | A    |               |
-            | B    | ACTION NEEDED |
+            | B    |  |
         When I click continue in hearing workflow
         Then I validate Edit hearing page displayed
 
@@ -250,9 +250,9 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
 
         When In view or edit hearing page, I click change link for field "Length of hearing"
         Then I am on hearings workflow page "Length, date and priority level of hearing"
-    
+
         Then In Length, date and priority level of hearing page, I see ACTION NEEDED label displayed for The first date of the hearing must be
-      
+
         When I click continue in hearing workflow
         Then I validate Edit hearing page displayed
         Then I validate edit hearing section heading labels

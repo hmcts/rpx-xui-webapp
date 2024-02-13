@@ -22,6 +22,7 @@ import { HearingsFeatureService } from '../../../services/hearings-feature.servi
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
@@ -39,8 +40,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public isHearingListed: boolean;
   public showPanelDetailsSection: boolean;
   public showLanguageRequirementsSection$: Observable<boolean>;
-  private hearingValuesSubscription: Subscription;
-  private featureToggleServiceSubscription: Subscription;
+  public hearingValuesSubscription: Subscription;
+  public featureToggleServiceSubscription: Subscription;
   public validationErrors: { id: string, message: string }[] = [];
   public additionalFacilitiesRefData: LovRefDataModel[];
   public caseFlagsRefData: CaseFlagReferenceModel[];
@@ -334,7 +335,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const individualParties = this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND);
     // HMC stores only reasonable adjustment flag ids and language interpreter flag ids under parties
     // Get only the reasonable adjustment and language interpreter flag ids from SHV and sort them for easy comparison
-    const flagIdsSHV = caseFlagsSHV.map((flag) => flag.flagId)?.filter((flagId) => flagId.startsWith('RA') || flagId === this.LANGUAGE_INTERPRETER_FLAG_ID)?.sort((a, b) => {
+    const flagIdsSHV = caseFlagsSHV.map((flag) => flag.flagId)?.filter((flagId) => flagId?.startsWith('RA') || flagId === this.LANGUAGE_INTERPRETER_FLAG_ID)?.sort((a, b) => {
       return a > b ? 1 : (a === b ? 0 : -1);
     });
     // Get individual parties reasonable adjustment flags and sort the result
@@ -388,24 +389,19 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         return true;
       }
     }
-
     // There are no changes for parties when compared SHV with HMC
     return false;
   }
 
   private pageVisitHearingWindowChangeExists(): boolean {
-    const hearingWindowSHV = this.serviceHearingValuesModel.hearingWindow;
     const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
-    // Return true if the first date time must be value in SHV and HMC are different
-    if (hearingWindowSHV?.firstDateTimeMustBe) {
-      if (!hearingWindowHMC?.firstDateTimeMustBe) {
-        return true;
-      }
-      if (!_.isEqual(new Date(hearingWindowSHV.firstDateTimeMustBe), new Date(hearingWindowHMC.firstDateTimeMustBe))) {
+    if (hearingWindowHMC?.firstDateTimeMustBe) {
+      const partiesNotAvailableDatesHMC = HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestToCompareMainModel.partyDetails);
+      const partiesNotAvailableDatesSHV = HearingsUtils.getPartiesNotAvailableDates(this.serviceHearingValuesModel.parties);
+      if (!_.isEqual(partiesNotAvailableDatesSHV, partiesNotAvailableDatesHMC)) {
         return true;
       }
     }
-    // There is no change in first date time must be when compared SHV with HMC
     return false;
   }
 }

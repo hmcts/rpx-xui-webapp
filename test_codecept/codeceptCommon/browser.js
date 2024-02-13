@@ -68,6 +68,15 @@ class Browser{
         })
     }
 
+
+    async sleepInMillisec(millisec) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(true)
+            }, millisec )
+        })
+    }
+
     async pause(){
         await getActor().pause();
     }

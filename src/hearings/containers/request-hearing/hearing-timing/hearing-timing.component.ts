@@ -93,8 +93,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     let secondDate: Date = null;
     duration = this.hearingRequestMainModel.hearingDetails.duration ?
       this.hearingRequestMainModel.hearingDetails.duration : 0;
-    const hearingWindow: HearingWindowModel = HearingsUtils.getHearingWindow(this.hearingsService.propertiesUpdatedOnPageVisit,
-      this.hearingCondition, this.hearingRequestMainModel);
+    const hearingWindow: HearingWindowModel = HearingsUtils.getHearingWindow(this.hearingRequestMainModel);
     if (hearingWindow && (hearingWindow.dateRangeStart || hearingWindow.dateRangeEnd)) {
       this.checkedHearingAvailability = RadioOptions.CHOOSE_DATE_RANGE;
       startDate = hearingWindow.dateRangeStart && new Date(hearingWindow.dateRangeStart);
@@ -366,7 +365,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     let firstDateMustBe = null;
     let startDate = null;
     let endDate = null;
-    let hearingWindow: HearingWindowModel = null;
+    let hearingWindow: HearingWindowModel = {};
     if (this.priorityForm.value.specificDate === RadioOptions.YES) {
       firstDateMustBe = `${moment.utc(Object.values(this.priorityForm.value.firstHearing).join('-'), HearingDateEnum.DefaultFormat).local().toISOString()}`;
     } else if (this.priorityForm.value.specificDate === RadioOptions.CHOOSE_DATE_RANGE) {

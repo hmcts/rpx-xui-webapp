@@ -89,7 +89,9 @@ describe('HearingVenueSectionComponent', () => {
 
     fixture = TestBed.createComponent(HearingVenueSectionComponent);
     component = fixture.componentInstance;
-    component.hearingLocations = hearingLocations;
+    component.hearingRequestMainModel = initialState.hearings.hearingRequest.hearingRequestMainModel;
+    component.hearingRequestToCompareMainModel = initialState.hearings.hearingRequestToCompare.hearingRequestMainModel;
+    component.hearingRequestMainModel.hearingDetails.hearingLocations = hearingLocations;
     locationsDataServiceMock.getLocationById.and.returnValue(of(locationsReturnedByService));
     fixture.detectChanges();
   });
@@ -101,7 +103,6 @@ describe('HearingVenueSectionComponent', () => {
   it('should set locations', () => {
     component.ngOnInit();
     component.locations$.subscribe((result: LocationByEPIMMSModel[]) => {
-      console.log('RESULT', result);
       expect(result).toEqual(locationsReturnedByService);
     });
     expect(component.showAmmendedForHeading).toEqual(false);

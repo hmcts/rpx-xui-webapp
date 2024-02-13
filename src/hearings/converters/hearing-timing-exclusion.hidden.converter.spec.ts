@@ -16,16 +16,14 @@ describe('HearingTimingExclusionHiddenConverter', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingValues.serviceHearingValuesModel.screenFlow = null;
     const result$ = hearingTimingExclusionHiddenConverter.transformHidden(of(STATE));
-    const showWelshPage = true;
-    const expected = cold('(b|)', { b: showWelshPage });
+    const expected = cold('(b|)', { b: true });
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform hidden of false answer', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     const result$ = hearingTimingExclusionHiddenConverter.transformHidden(of(STATE));
-    const showWelshPage = false;
-    const expected = cold('(b|)', { b: showWelshPage });
+    const expected = cold('(b|)', { b: false });
     expect(result$).toBeObservable(expected);
   });
 });

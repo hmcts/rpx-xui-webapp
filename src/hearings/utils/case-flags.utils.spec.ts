@@ -258,7 +258,7 @@ describe('CaseFlagsUtils', () => {
       const flagsGroup = CaseFlagsUtils.getReasonableAdjustmentFlags(caseFlagsRefData, caseFlags, partiesInHMC, partiesInSHV);
       expect(flagsGroup[0].name).toEqual('Jane Butler');
       expect(flagsGroup[0].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
-      expect(flagsGroup[0].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
+      expect(flagsGroup[0].partyFlags[0].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[1].name).toEqual('Jack Ryan');
       expect(flagsGroup[1].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[1].partyFlags[1].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.WARNING);

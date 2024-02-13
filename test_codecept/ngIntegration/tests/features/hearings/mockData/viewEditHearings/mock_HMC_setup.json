@@ -34,8 +34,7 @@
         "hearingIsLinkedFlag": false,
         "hearingChannels": [
             "INTER",
-            "VID",
-            "TEL"
+            "VID"
         ],
         "autolistFlag": false
     },

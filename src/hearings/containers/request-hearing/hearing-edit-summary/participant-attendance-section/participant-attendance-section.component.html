@@ -1,10 +1,7 @@
 <h2 class="govuk-heading-m">
   Participant attendance
-  <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired"
-    [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
-  </exui-amendment-label>
-  <exui-amendment-label *ngIf="showAmendedForPageTitle"
-    [displayLabel]="amendmentLabelEnum.AMENDED">
+  <exui-amendment-label *ngIf="pageTitleDisplayLabel"
+    [displayLabel]="pageTitleDisplayLabel">
   </exui-amendment-label>
 </h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
@@ -13,10 +10,10 @@
       Will this be a paper hearing?
     </div>
     <div class="govuk-summary-list__value">
+      {{ isPaperHearing }}
       <exui-amendment-label *ngIf="isPaperHearingChanged"
         [displayLabel]="amendmentLabelEnum.AMENDED">
       </exui-amendment-label>
-      {{ isPaperHearing }}
     </div>
     <div class="govuk-summary-list__actions">
       <a id="paperHearing"
@@ -30,14 +27,14 @@
       What will be the methods of attendance for this hearing?
     </div>
     <div class="govuk-summary-list__value">
-      <exui-amendment-label *ngIf="participantChannelsChanged"
-        [displayLabel]="amendmentLabelEnum.AMENDED">
-      </exui-amendment-label>
       <ul>
         <li *ngFor="let participantChannel of participantChannels">
           {{ participantChannel  }}
         </li>
       </ul>
+      <exui-amendment-label *ngIf="participantChannelsChanged"
+        [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
     </div>
     <div class="govuk-summary-list__actions">
       <a id="howParticipantsAttendant"
@@ -53,11 +50,11 @@
     <div class="govuk-summary-list__value">
       <ul>
         <li *ngFor="let participantAttendanceMode of participantAttendanceModes">
+          {{ participantAttendanceMode.partyName }}{{ participantAttendanceMode.channel }}
           <exui-amendment-label
             *ngIf="participantAttendanceMode.partyNameChanged || participantAttendanceMode.partyChannelChanged"
             [displayLabel]="amendmentLabelEnum.AMENDED">
           </exui-amendment-label>
-          {{ participantAttendanceMode.partyName }}{{ participantAttendanceMode.channel }}
         </li>
       </ul>
     </div>
@@ -73,10 +70,10 @@
       How many people will attend the hearing in person?
     </div>
     <div class="govuk-summary-list__value">
+      {{ numberOfPhysicalAttendees }}
       <exui-amendment-label *ngIf="numberOfPhysicalAttendeesChanged"
         [displayLabel]="amendmentLabelEnum.AMENDED">
       </exui-amendment-label>
-      {{ numberOfPhysicalAttendees }}
     </div>
     <div class="govuk-summary-list__actions">
       <a id="attendantPersonAmount"

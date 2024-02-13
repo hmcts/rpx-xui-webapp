@@ -157,6 +157,24 @@ export const facilitiesListRefData = [
     hintTextCY: '',
     order: 2,
     parentKey: null
+  },
+  {
+    key: 'sameSexCourtroom',
+    value_en: 'Same-sex courtroom',
+    value_cy: '',
+    hint_text_EN: 'Same-sex courtroom',
+    hint_text_CY: '',
+    order: 3,
+    parentKey: null
+  },
+  {
+    key: 'secureDock',
+    value_en: 'Secure dock',
+    value_cy: '',
+    hint_text_EN: 'Secure dock',
+    hint_text_CY: '',
+    order: 4,
+    parentKey: null
   }
 ];
 
@@ -2305,10 +2323,10 @@ export const initialState = {
           numberOfPhysicalAttendees: 3,
           hearingInWelshFlag: false,
           facilitiesRequired: [
-            'immigrationDetentionCentre',
-            'inCameraCourt'
+            'sameSexCourtroom',
+            'secureDock'
           ],
-          listingComments: 'blah blah blah',
+          listingComments: 'some comments to compare',
           hearingRequester: null,
           leadJudgeContractType: null,
           amendReasonCodes: null,
@@ -2983,7 +3001,7 @@ export const initialStateImmutable = {
           panelRequirements: null,
           autolistFlag: false,
           nonStandardHearingDurationReasons: [],
-          hearingPriorityType: 'standard',
+          hearingPriorityType: 'urgent',
           numberOfPhysicalAttendees: 3,
           hearingInWelshFlag: false,
           facilitiesRequired: [
@@ -3005,7 +3023,7 @@ export const initialStateImmutable = {
           caseDeepLink: null,
           hmctsInternalCaseName: null,
           publicCaseName: null,
-          caseAdditionalSecurityFlag: false,
+          caseAdditionalSecurityFlag: true,
           caseInterpreterRequiredFlag: false,
           caseCategories: [
             {

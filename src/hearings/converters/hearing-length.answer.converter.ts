@@ -7,7 +7,9 @@ export class HearingLengthAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map((state) => {
-        let duration = state.hearingRequest.hearingRequestMainModel.hearingDetails.duration;
+        let duration = state.hearingConditions?.isHearingAmendmentsEnabled
+          ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.duration
+          : state.hearingRequest.hearingRequestMainModel.hearingDetails.duration;
         if (duration) {
           let days = 0;
           let hours = 0;

@@ -2404,9 +2404,23 @@ describe('HearingRequirementsComponent', () => {
 
   it('should set reasonable adjustments warning message', () => {
     const partyDetails = [
-      initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails[0]
+      {
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Miss',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: [
+            'RA0098'
+          ],
+          interpreterLanguage: 'PF0015'
+        }
+      }
     ];
-    partyDetails[0].individualDetails.reasonableAdjustments = ['RA0098'];
     component.hearingRequestToCompareMainModel = {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
       partyDetails: partyDetails

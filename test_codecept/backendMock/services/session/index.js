@@ -3,7 +3,6 @@ const path = require('path')
 
 const axios = require('axios')
 
-const session = require('./sampleSession.json')
 
 const roleAssignmentsService = require('../roleAssignments/index')
 
@@ -21,7 +20,7 @@ class MockSessionService {
             this.sessionsPath = path.resolve(__dirname, '../../../../.sessions')
 
         }
-        console.log("Session path : " + this.sessionsPath)
+        // console.log("Session path : " + this.sessionsPath)
         this.defaultSession = '';
     }
 
@@ -40,7 +39,7 @@ class MockSessionService {
     getSessionFiles() {
 
 
-        console.log(this.sessionsPath)
+        // console.log(this.sessionsPath)
         return fs.readdirSync(this.sessionsPath)
     }
 
@@ -142,7 +141,8 @@ class MockSessionService {
         roleAssignmentsService.serviceUsersRoleAssignments.push(...roleAssignments)
         let sessionJson = await fs.readFileSync(sessionFile);
 
-        roleAssignmentsService.addRoleAssigmemntsToSession(auth,roleAssignments)
+        roleAssignmentsService.serviceUsersRoleAssignments.push(...roleAssignments)
+
         sessionJson = JSON.parse(sessionJson)
         if (sessionJson.roleAssignmentResponse) {
             sessionJson.roleAssignmentResponse.push(...roleAssignments)
@@ -166,7 +166,47 @@ class MockSessionService {
             roleAssignments: sessionJson.roleAssignmentResponse
         }
     }
+
+    captureRequestDetails(apiMethod, requestObj) {
+        // apiMethod = apiMethod.toUpperCase();
+        const token = requestObj.headers.authorization.replace('Bearer ', '')
+        let userSession = this.sessionUsers.find(sess => sess.token === token)
+        if (!userSession) {
+            userSession = {
+                requests: [],
+                token: token,
+                apiData: []
+            };
+            this.sessionUsers.push(userSession)
+        }
+        const apiResponse = userSession.apiData.find(methodData => methodData.method === apiMethod)
+        if (!apiResponse) {
+            userSession.apiData.push({
+                method: apiMethod,
+                response: null,
+                request: {
+                    body: requestObj.body
+                }
+            })
+        } else {
+            apiResponse.request = {
+                body: requestObj.body
+            }
+        }
+
+    }
+
+    getCapturedRequestData(token, apiMethod) {
+        let userSession = this.sessionUsers.find(sess => sess.token === token.replace('Bearer ', ''))
+        if (!userSession) {
+            return null;
+        }
+        const apiResponse = userSession.apiData.find(methodData => methodData.method === apiMethod)
+        return apiResponse ? apiResponse.request : null
+    }
 }
+
+
 
 const mode = process.env.DEBUG && process.env.DEBUG === "true" ? "DEBUG" : ""
 module.exports = new MockSessionService(mode);

@@ -357,6 +357,7 @@ export enum Mode {
 export enum HearingRequestPageRouteNames {
   HEARING_CREATE_EDIT_SUMMARY = 'hearing-create-edit-summary',
   HEARING_VIEW_EDIT_SUMMARY = 'hearing-view-edit-summary',
+  HEARING_VIEW_SUMMARY = 'hearing-view-summary',
   HEARING_EDIT_SUMMARY = 'hearing-edit-summary',
   HEARING_CHANGE_REASON = 'hearing-change-reason',
   HEARING_CONFIRMATION = 'hearing-confirmation'

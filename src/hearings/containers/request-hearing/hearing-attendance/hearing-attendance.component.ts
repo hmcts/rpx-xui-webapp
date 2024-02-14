@@ -10,6 +10,7 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
@@ -114,7 +115,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
         };
       } else {
         const partyInHMC = partyDetails.find((party) => party.partyID === partyDetailsModel.partyID);
-        if (partyInHMC.partyName !== partyDetailsModel.partyName) {
+        if (partyInHMC && HearingsUtils.hasPartyNameChanged(partyInHMC, partyDetailsModel)) {
           partyDetailsModel = {
             ...partyDetailsModel,
             partyAmendmentStatus: AmendmentLabelStatus.AMENDED

@@ -6,6 +6,7 @@ import { AmendmentLabelStatus } from '../models/hearingsUpdateMode.enum';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { PartyFlagsModel } from '../models/partyFlags.model';
 import { CaseFlagsUtils } from './case-flags.utils';
+import { HearingsUtils } from './hearings.utils';
 
 describe('CaseFlagsUtils', () => {
   const caseFlagReferenceModels: CaseFlagReferenceModel[] = CASE_FLAG_REFERENCE_VALUES;
@@ -256,7 +257,7 @@ describe('CaseFlagsUtils', () => {
     it('should return reasonable adjustment flags', () => {
       const flagsGroup = CaseFlagsUtils.getReasonableAdjustmentFlags(caseFlagsRefData, caseFlags, partiesInHMC, partiesInSHV);
       expect(flagsGroup[0].name).toEqual('Jane Butler');
-      expect(flagsGroup[0].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.AMENDED);
+      expect(flagsGroup[0].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[0].partyFlags[0].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[1].name).toEqual('Jack Ryan');
       expect(flagsGroup[1].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
@@ -401,6 +402,7 @@ describe('CaseFlagsUtils', () => {
     };
 
     it('should return non-reasonable adjustment flags with labels', () => {
+      spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(true);
       const flagsGroup = CaseFlagsUtils.getNonReasonableAdjustmentFlags(caseFlagsRefData, caseFlags,
         partiesInHMC, partiesInSHV, requestDetails, false);
       expect(flagsGroup[0].name).toEqual('Jane Butler');
@@ -409,15 +411,17 @@ describe('CaseFlagsUtils', () => {
       expect(flagsGroup[0].partyFlags[1].flagAmendmentLabelStatus).toBeUndefined();
       expect(flagsGroup[0].partyFlags[2].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
       expect(flagsGroup[1].name).toEqual('Jack Ryan');
-      expect(flagsGroup[1].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
+      expect(flagsGroup[1].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.AMENDED);
       expect(flagsGroup[1].partyFlags[0].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
       expect(flagsGroup[0].partyFlags[1].flagAmendmentLabelStatus).toBeUndefined();
       expect(flagsGroup[2].name).toEqual('Rob Kennedy');
-      expect(flagsGroup[2].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
+      expect(flagsGroup[2].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.AMENDED);
       expect(flagsGroup[2].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
+      expect(HearingsUtils.hasPartyNameChanged).toHaveBeenCalled();
     });
 
     it('should return non-reasonable adjustment flags with no labels', () => {
+      spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(false);
       const flagsGroup = CaseFlagsUtils.getNonReasonableAdjustmentFlags(caseFlagsRefData, caseFlags,
         partiesInHMC, partiesInSHV, requestDetails, true);
       expect(flagsGroup[0].name).toEqual('Jane Butler');
@@ -432,6 +436,7 @@ describe('CaseFlagsUtils', () => {
       expect(flagsGroup[2].name).toEqual('Rob Kennedy');
       expect(flagsGroup[2].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[2].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
+      expect(HearingsUtils.hasPartyNameChanged).not.toHaveBeenCalled();
     });
 
     it('should set reasonable adjustments from hearing request if found', () => {

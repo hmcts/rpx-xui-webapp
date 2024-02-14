@@ -133,6 +133,8 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
       if (partyInHMCToCompare) {
         return HearingsUtils.hasPartyNameChanged(partyInHMCToCompare, partyInSHV);
       }
+      // Return true as it is a new party available only in SHV
+      return true;
     }
     return false;
   }

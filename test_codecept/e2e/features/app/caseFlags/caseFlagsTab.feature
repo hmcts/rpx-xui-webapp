@@ -1,4 +1,4 @@
-
+@fullfunctional @functional_enabled
 Feature: Case flags tab
 
     Background: Setup case
@@ -7,7 +7,7 @@ Feature: Case flags tab
 
 
     Scenario: Create case flag
-        
+
         Given I navigate to page route "/cases/case-details/1698247586927453"
         When I click tab with label "Case flags" in case details page, to see element with css selector "ccd-read-case-flag-field #read-case-flag-title"
 

@@ -332,6 +332,10 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private pageVisitReasonableAdjustmentChangeExists(): boolean {
+    if (!this.sectionsToDisplay.includes(this.hearingScreenEnum.HEARING_REQUIREMENTS)) {
+      // Do not consider reasonable adjustments as hearing requirements is not part of the screen flow
+      return false;
+    }
     const caseFlagsSHV = this.serviceHearingValuesModel.caseFlags.flags;
     const individualParties = this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND);
     // HMC stores only reasonable adjustment flag ids and language interpreter flag ids under parties
@@ -357,6 +361,10 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private pageVisitNonReasonableAdjustmentChangeExists(): boolean {
+    if (!this.sectionsToDisplay.includes(this.hearingScreenEnum.HEARING_FACILITIES)) {
+      // Do not consider non-reasonable adjustment case flags as hearing facilities is not part of the screen flow
+      return false;
+    }
     const caseFlagsModifiedDate = this.serviceHearingValuesModel.caseFlags.flags.map((flags) => flags.dateTimeModified);
     const caseFlagsCreatedDate = this.serviceHearingValuesModel.caseFlags.flags.map((flags) => flags.dateTimeCreated);
     const caseFlagsWithModifiedDate = caseFlagsModifiedDate.filter((date) => date !== null).filter((date) => date !== undefined);
@@ -395,6 +403,10 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private pageVisitHearingWindowChangeExists(): boolean {
+    if (!this.sectionsToDisplay.includes(this.hearingScreenEnum.HEARING_TIMING)) {
+      // Do not consider hearing window changes as hearing timing is not part of the screen flow
+      return false;
+    }
     const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
     if (hearingWindowHMC?.firstDateTimeMustBe) {
       const partiesNotAvailableDatesHMC = HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestToCompareMainModel.partyDetails);

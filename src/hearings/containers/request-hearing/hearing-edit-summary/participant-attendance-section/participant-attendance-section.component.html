@@ -52,7 +52,7 @@
         <li *ngFor="let participantAttendanceMode of participantAttendanceModes">
           {{ participantAttendanceMode.partyName }}{{ participantAttendanceMode.channel }}
           <exui-amendment-label
-            *ngIf="participantAttendanceMode.partyNameChanged || participantAttendanceMode.partyChannelChanged"
+            *ngIf="participantAttendanceMode.partyNameChanged"
             [displayLabel]="amendmentLabelEnum.AMENDED">
           </exui-amendment-label>
         </li>

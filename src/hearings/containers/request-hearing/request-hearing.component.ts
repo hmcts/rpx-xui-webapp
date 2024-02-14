@@ -51,6 +51,10 @@ export class RequestHearingComponent implements OnDestroy {
     return this.pageFlow.getCurrentPage() === HearingRequestPageRouteNames.HEARING_VIEW_EDIT_SUMMARY;
   }
 
+  public get isViewSummary(): boolean {
+    return this.pageFlow.getCurrentPage() === HearingRequestPageRouteNames.HEARING_VIEW_SUMMARY;
+  }
+
   public get isEditSummary(): boolean {
     return this.pageFlow.getCurrentPage() === HearingRequestPageRouteNames.HEARING_EDIT_SUMMARY;
   }
@@ -66,6 +70,7 @@ export class RequestHearingComponent implements OnDestroy {
   public get isChildPage(): boolean {
     return !this.isCreateEditSummary &&
       !this.isViewEditSummary &&
+      !this.isViewSummary &&
       !this.isEditSummary &&
       !this.isViewEditReason &&
       !this.isConfirmationPage;

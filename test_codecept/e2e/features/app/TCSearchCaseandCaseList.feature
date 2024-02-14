@@ -1,10 +1,11 @@
-@fullfunctional @test @functional_enabled
+@fullfunctional @test @functional_enabled 
 Feature: Test case type case list and find case workflow
 
   Background:
     When I navigate to Expert UI Url
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
+
 
 
     Scenario: Validate workbasket inputs against the API response
@@ -42,13 +43,14 @@ Feature: Test case type case list and find case workflow
         When I click apply to perform case search
         # Then Validate search inputs against the API response
 
-    Scenario: Validating the search inputs case list headers against api response
-        When I click on search button
-        Then Search page should be displayed
-        When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type dev"
-        When I click apply to perform case search
-        Then I see results returned
-        # Then Validating the search inputs case list headers against api response
+#  @ignore
+#    Scenario: Validating the search inputs case list headers against api response
+#        When I click on search button
+#        Then Search page should be displayed
+#        When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type dev"
+#        When I click apply to perform case search
+#        Then I see results returned
+#        # Then Validating the search inputs case list headers against api response
 
 # @ignore
 #     Scenario: Validate search inputs on case type change

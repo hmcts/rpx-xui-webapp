@@ -87,6 +87,24 @@ describe('HearingsUtils', () => {
     expect(partiesNotAvailableDates.length).toEqual(10);
   });
 
+  describe('HearingLength', () => {
+    it('should transform hearing stage days and hours', () => {
+      expect(HearingsUtils.getHearingLength(960)).toEqual('2 Days 4 Hours');
+    });
+
+    it('should transform hearing stage days and minutes', () => {
+      expect(HearingsUtils.getHearingLength(750)).toEqual('2 Days 30 Minutes');
+    });
+
+    it('should transform hearing stage both hours and minutes', () => {
+      expect(HearingsUtils.getHearingLength(70)).toEqual('1 Hour 10 Minutes');
+    });
+
+    it('should transform hearing stage empty', () => {
+      expect(HearingsUtils.getHearingLength(null)).toEqual('');
+    });
+  });
+
   describe('HearingWindowModel', () => {
     it('should return HearingWindowModel as null when hearingWindow is an empty object', () => {
       const hearingRequestMainModel: HearingRequestMainModel = {

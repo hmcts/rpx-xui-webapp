@@ -8,6 +8,7 @@ import { HearingDateEnum, RadioOptions } from '../../../../models/hearings.enum'
 import { AmendmentLabelStatus } from '../../../../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { HearingsService } from '../../../../services/hearings.service';
+import { HearingsUtils } from '../../../../utils/hearings.utils';
 
 @Component({
   selector: 'exui-hearing-timing-section',
@@ -40,7 +41,7 @@ export class HearingTimingSectionComponent implements OnInit {
   public ngOnInit(): void {
     this.hearingWindowChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired;
     this.hearingWindowChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesConfirmed;
-    this.hearingLength = this.getHearingLength();
+    this.hearingLength = HearingsUtils.getHearingLength(this.hearingRequestMainModel.hearingDetails.duration);
     this.specificDate = this.getSpecificDate();
     this.hearingPriority = this.getHearingPriority();
 
@@ -67,38 +68,6 @@ export class HearingTimingSectionComponent implements OnInit {
         break;
     }
     this.changeEditHearing.emit({ fragmentId, changeLink });
-  }
-
-  private getHearingLength(): string {
-    let duration = this.hearingRequestMainModel.hearingDetails.duration;
-    if (duration) {
-      let days = 0;
-      let hours = 0;
-      let minutes = 0;
-      if (duration > 0) {
-        minutes = duration % 60;
-        duration = duration - minutes;
-        days = Math.floor((duration / 60) / 6);
-        hours = Math.floor((duration / 60) % 6);
-        let formattedHearingLength = '';
-        if (days > 0) {
-          const daysLabel = days > 1 ? 'Days' : 'Day';
-          formattedHearingLength = `${days} ${daysLabel}`;
-        }
-        if (hours > 0) {
-          const hoursLabel = hours > 1 ? 'Hours' : 'Hour';
-          formattedHearingLength = formattedHearingLength.length > 0 ? `${formattedHearingLength} ${hours} ${hoursLabel}` : `${hours} ${hoursLabel}`;
-        }
-        if (minutes > 0) {
-          const minutesLabel = 'Minutes';
-          formattedHearingLength = formattedHearingLength.length > 0 ? `${formattedHearingLength} ${minutes} ${minutesLabel}` : `${minutes} ${minutesLabel}`;
-        }
-        if (formattedHearingLength.length > 0) {
-          return formattedHearingLength;
-        }
-      }
-    }
-    return '';
   }
 
   private getSpecificDate(): string {

@@ -53,13 +53,13 @@ export class HearingRequirementsSectionComponent implements OnInit {
     const individualParties = this.serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND);
     individualParties.forEach((partyInSHV) => {
       if (this.partyIds.includes(partyInSHV.partyID)) {
-        const flagIds = this.reasonableAdjustmentChangesRequired && !this.reasonableAdjustmentChangesConfirmed
+        let flagIds = this.reasonableAdjustmentChangesRequired && !this.reasonableAdjustmentChangesConfirmed
           ? this.partyDetails.find((partyInHMC) => partyInHMC.partyID === partyInSHV.partyID)?.individualDetails?.reasonableAdjustments
           : partyInSHV.individualDetails?.reasonableAdjustments;
         if (partyInSHV.individualDetails?.interpreterLanguage) {
-          flagIds.push(partyInSHV.individualDetails.interpreterLanguage);
+          flagIds = [...flagIds, partyInSHV.individualDetails.interpreterLanguage];
         }
-        const flags = flagIds?.map((flagId) => CaseFlagsUtils.findFlagByFlagId(this.caseFlagsRefData, flagId));
+        const flags = flagIds?.map((flagId) => CaseFlagsUtils.findFlagByFlagId(this.caseFlagsRefData, flagId))?.filter((flag) => flag !== null);
         if (partyInSHV.partyName && flags?.length > 0) {
           partiesWithFlags.set(partyInSHV.partyName, flags);
         }

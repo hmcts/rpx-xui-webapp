@@ -12,6 +12,7 @@ import { ACTION, HearingChannelEnum, PartyType, RadioOptions, UnavailabilityType
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { LovRefDataService } from '../../../services/lov-ref-data.service';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { HearingAttendanceComponent } from './hearing-attendance.component';
 
@@ -393,6 +394,7 @@ describe('HearingAttendanceComponent', () => {
   });
 
   it('should return the party details from hearing request main model', () => {
+    spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(true);
     hearingsService.propertiesUpdatedOnPageVisit = {
       caseFlags: null,
       parties: null,
@@ -406,6 +408,7 @@ describe('HearingAttendanceComponent', () => {
       }
     };
     component.initialiseFromHearingValuesForAmendments();
+    expect(HearingsUtils.hasPartyNameChanged).toHaveBeenCalled();
     expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(2);
   });
 

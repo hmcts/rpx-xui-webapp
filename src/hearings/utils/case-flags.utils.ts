@@ -6,6 +6,7 @@ import { AmendmentLabelStatus } from '../models/hearingsUpdateMode.enum';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { PartyFlagsDisplayModel, PartyFlagsModel } from '../models/partyFlags.model';
 import { RequestDetailsModel } from '../models/requestDetails.model';
+import { HearingsUtils } from './hearings.utils';
 
 export class CaseFlagsUtils {
   public static ACTIVE = 'active';
@@ -253,7 +254,7 @@ export class CaseFlagsUtils {
     // The party from service hearing values model is present in the hearing reqquest model and if the party name did not match then
     // it implied that the party name changed and the label against the party should be displayed as AMENDED
     const partyInHMC = partiesInHMC.find((party) => party.partyID === flags[0].partyId);
-    if (partyInHMC && partyInHMC.partyName !== partyInSHV.partyName) {
+    if (partyInHMC && HearingsUtils.hasPartyNameChanged(partyInHMC, partyInSHV)) {
       return AmendmentLabelStatus.AMENDED;
     }
     return AmendmentLabelStatus.NONE;

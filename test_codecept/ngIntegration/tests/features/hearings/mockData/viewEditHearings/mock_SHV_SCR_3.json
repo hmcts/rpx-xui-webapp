@@ -51,7 +51,7 @@
             "partyName": "Party1 name",
             "partyRole": "APPL",
             "individualDetails": {
-                "firstName": "Party1 name FN",
+                "firstName": "Party1 name FN updated",
                 "lastName": "Party1 name LN",
                 "interpreterLanguage": "",
                 "reasonableAdjustments": [

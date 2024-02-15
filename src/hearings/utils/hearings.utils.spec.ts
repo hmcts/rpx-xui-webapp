@@ -139,9 +139,7 @@ describe('HearingsUtils', () => {
 
   describe('getPartyNameFormatted', () => {
     it('should getPartyNameFormatted return empty string', () => {
-      const individualDetails = initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails[0].individualDetails;
-      individualDetails.firstName = '';
-      individualDetails.lastName = '';
+      const individualDetails = null;
       expect(HearingsUtils.getPartyNameFormatted(individualDetails).trim()).toEqual('');
     });
 

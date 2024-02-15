@@ -26,6 +26,13 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
   const markupPath: string = `${servicePath}/serviceHearingValues`;
   try {
     const { status, data }: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req);
+    // TODO: Remove next two lines once finished testing
+    let commentCount = 0;
+    data.caseFlags.flags.forEach((flag) => {
+      flag.flagComment = `This is comment ${commentCount}`;
+      commentCount++;
+    });
+    console.log(data.caseFlags.flags, 'marvellours');
     let dataByDefault = data;
     // If service don't supply the screenFlow pre-set the default screen flow from ExUI
     if (!data.screenFlow) {

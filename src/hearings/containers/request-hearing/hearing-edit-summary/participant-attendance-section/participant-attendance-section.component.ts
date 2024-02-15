@@ -8,6 +8,7 @@ import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../../../../models/serviceHearingValues.model';
 import { HearingsService } from '../../../../services/hearings.service';
+import { HearingsUtils } from '../../../../utils/hearings.utils';
 
 @Component({
   selector: 'exui-participant-attendance-section',
@@ -104,13 +105,13 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
 
   private getPartyName(individualParty: PartyDetailsModel, foundPartyFromService: PartyDetailsModel): string {
     if (foundPartyFromService) {
-      if (foundPartyFromService.partyName && foundPartyFromService.partyName !== null) {
-        return foundPartyFromService.partyName;
-      }
-      return foundPartyFromService.partyID;
+      const partyNameFormatted = HearingsUtils.getPartyNameFormatted(foundPartyFromService.individualDetails);
+      return partyNameFormatted.length > 0
+        ? partyNameFormatted
+        : foundPartyFromService.partyID;
     }
-    if (individualParty.partyName) {
-      return individualParty.partyName;
+    if (individualParty.individualDetails) {
+      return HearingsUtils.getPartyNameFormatted(individualParty.individualDetails);
     }
     return '';
   }
@@ -130,9 +131,10 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
     if (partyInSHV) {
       const partyInHMCToCompare = this.hearingRequestToCompareMainModel.partyDetails.find((party) => party.partyID === partyId);
       if (partyInHMCToCompare) {
-        return partyInSHV.individualDetails?.firstName !== partyInHMCToCompare.individualDetails?.firstName ||
-        partyInSHV.individualDetails?.lastName !== partyInHMCToCompare.individualDetails?.lastName;
+        return HearingsUtils.hasPartyNameChanged(partyInHMCToCompare, partyInSHV);
       }
+      // Return true as it is a new party available only in SHV
+      return true;
     }
     return false;
   }

@@ -470,6 +470,18 @@ describe('HearingEditSummaryComponent', () => {
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
   });
 
+  it('should partyDetailsChangesRequired return true if party type changed', () => {
+    spyOn(store, 'select').and.returnValue(of(initialState.hearings.hearingValues));
+    component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
+    component.serviceHearingValuesModel = {
+      ...component.serviceHearingValuesModel,
+      parties: initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails
+    };
+    component.serviceHearingValuesModel.parties[0].partyType = PartyType.ORG;
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
+  });
+
   describe('Display of warning and error message', () => {
     it('should display banner message', () => {
       component.serviceHearingValuesModel.caseManagementLocationCode = 'New Management location code';

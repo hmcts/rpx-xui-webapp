@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
 import * as moment from 'moment';
-import { Observable, Subscription, combineLatest } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserRole } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
@@ -47,20 +47,22 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public caseId: string = '';
   public serverError: { id: string, message: string } = null;
   public isOgdRole: boolean;
-  public showSpinner$ : Observable<boolean>;
+  public showSpinner$: Observable<boolean>;
   public hearingStageOptions: LovRefDataModel[];
   public hearingValuesSubscription: Subscription;
   public refDataSubscription: Subscription;
-  public showSpinner: boolean = true;
   private userRoles: string[] = [];
+  public showLoadSpinner$ = new BehaviorSubject<boolean>(true);
+  public unloadSpinnerSubscription: Subscription;
+  public displaySpinner: boolean = true;
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
-              private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly activatedRoute: ActivatedRoute,
-              private readonly router: Router,
-              private readonly lovRefDataService: LovRefDataService,
-              private readonly loadingService: LoadingService,
-              private readonly sessionSvc: SessionStorageService) {
+    private readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly router: Router,
+    private readonly lovRefDataService: LovRefDataService,
+    private readonly loadingService: LoadingService,
+    private readonly sessionSvc: SessionStorageService) {
     this.caseId = this.activatedRoute.snapshot.params.cid;
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
     this.hearingListLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingListLastError));
@@ -95,8 +97,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       } else {
         // Reset the error context if there is no error on subsequent requests
         this.serverError = null;
+        this.loadingService.unregister(loadingToken);
       }
-      this.loadingService.unregister(loadingToken);
     }, () => {
       this.loadingService.unregister(loadingToken);
     });
@@ -123,6 +125,15 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     } else {
       this.hearingsActions = [];
     }
+
+    this.unloadSpinnerSubscription = combineLatest([
+      this.showSpinner$,
+      this.showLoadSpinner$
+    ]).subscribe(([showSpinner, showLoadSpinner]) => {
+      if (!showSpinner && !showLoadSpinner) {
+        this.displaySpinner = false;
+      }
+    });
   }
 
   public getHearingListByStatus(status: EXUISectionStatusEnum | EXUIDisplayStatusEnum): Observable<HearingListViewModel[]> {
@@ -140,6 +151,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
               hearing.exuiDisplayStatus === status
             );
           }
+          this.showLoadSpinner$.next(false);
           const caseHearingViewModels: HearingListViewModel[] = this.calculateEarliestHearingDate(caseHearingModels);
           return this.sortHearingsByHearingAndRequestDate(caseHearingViewModels);
         }
@@ -200,6 +212,9 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     }
     if (this.refDataSubscription) {
       this.refDataSubscription.unsubscribe();
+    }
+    if (this.unloadSpinnerSubscription) {
+      this.unloadSpinnerSubscription.unsubscribe();
     }
   }
 }

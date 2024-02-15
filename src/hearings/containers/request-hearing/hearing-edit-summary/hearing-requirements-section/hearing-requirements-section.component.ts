@@ -57,13 +57,9 @@ export class HearingRequirementsSectionComponent implements OnInit {
           ? this.partyDetails.find((partyInHMC) => partyInHMC.partyID === partyInSHV.partyID)?.individualDetails?.reasonableAdjustments
           : partyInSHV.individualDetails?.reasonableAdjustments;
         if (partyInSHV.individualDetails?.interpreterLanguage) {
-          if (flagIds?.length > 0) {
-            flagIds.push(partyInSHV.individualDetails.interpreterLanguage);
-          } else {
-            flagIds = [partyInSHV.individualDetails.interpreterLanguage];
-          }
+          flagIds = [...flagIds, partyInSHV.individualDetails.interpreterLanguage];
         }
-        const flags = flagIds?.map((flagId) => CaseFlagsUtils.findFlagByFlagId(this.caseFlagsRefData, flagId));
+        const flags = flagIds?.map((flagId) => CaseFlagsUtils.findFlagByFlagId(this.caseFlagsRefData, flagId))?.filter((flag) => flag !== null);
         if (partyInSHV.partyName && flags?.length > 0) {
           partiesWithFlags.set(partyInSHV.partyName, flags);
         }

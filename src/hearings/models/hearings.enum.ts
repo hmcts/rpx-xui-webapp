@@ -315,7 +315,10 @@ export enum AnswerSource {
   REASON_FOR_ACTUAL_CANCELLATION,
   REASON_FOR_REQUEST_CANCELLATION,
   LINKED_HEARINGS,
-  REASONABLE_ADJUSTMENTS
+  REASONABLE_ADJUSTMENTS,
+  PRIVATE_HEARING_REQUIRED,
+  CASE_RESTRICTION,
+  PUBLIC_CASE_NAME
 }
 
 export enum IsHiddenSource {
@@ -340,6 +343,14 @@ export enum Mode {
   VIEW_EDIT = 'view-edit',
   LINK_HEARINGS = 'link-hearings',
   MANAGE_HEARINGS = 'manage-hearings',
+}
+
+export enum HearingRequestPageRouteNames {
+  HEARING_CREATE_EDIT_SUMMARY = 'hearing-create-edit-summary',
+  HEARING_VIEW_EDIT_SUMMARY = 'hearing-view-edit-summary',
+  HEARING_EDIT_SUMMARY = 'hearing-edit-summary',
+  HEARING_CHANGE_REASON = 'hearing-change-reason',
+  HEARING_CONFIRMATION = 'hearing-confirmation'
 }
 
 export enum ControlTypeEnum {

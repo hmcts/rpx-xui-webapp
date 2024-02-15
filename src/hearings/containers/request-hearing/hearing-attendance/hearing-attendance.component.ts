@@ -88,8 +88,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
             unavailabilityRanges: partyDetail.unavailabilityRanges
           } as PartyDetailsModel) as FormGroup);
         });
+      this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees || 0);
     }
-    this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees || 0);
     this.partiesFormArray = this.attendanceFormGroup.controls.parties as FormArray;
   }
 
@@ -113,14 +113,19 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
         };
       } else {
         const partyInHMC = partyDetails.find((party) => party.partyID === partyDetailsModel.partyID);
-        if (partyInHMC && HearingsUtils.hasPartyNameChanged(partyInHMC, partyDetailsModel)) {
+        if (partyInHMC) {
           partyDetailsModel = {
             ...partyDetailsModel,
-            partyAmendmentStatus: AmendmentLabelStatus.AMENDED
+            individualDetails: {
+              ...partyDetailsModel,
+              preferredHearingChannel: partyInHMC.individualDetails?.preferredHearingChannel
+            },
+            partyAmendmentStatus: HearingsUtils.hasPartyNameChanged(partyInHMC, partyDetailsModel) ? AmendmentLabelStatus.AMENDED : AmendmentLabelStatus.NONE
           };
         }
       }
       (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyDetailsModel) as FormGroup);
+      this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees || 0);
     });
   }
 

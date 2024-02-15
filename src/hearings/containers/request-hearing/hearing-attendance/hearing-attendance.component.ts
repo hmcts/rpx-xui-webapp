@@ -88,9 +88,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
             unavailabilityRanges: partyDetail.unavailabilityRanges
           } as PartyDetailsModel) as FormGroup);
         });
-
-      this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees || 0);
     }
+    this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees || 0);
     this.partiesFormArray = this.attendanceFormGroup.controls.parties as FormArray;
   }
 
@@ -98,7 +97,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     this.serviceHearingValuesModel.parties.forEach((partyDetailsModel: PartyDetailsModel) => {
       (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyDetailsModel) as FormGroup);
     });
-    this.attendanceFormGroup.controls.estimation.setValue(this.serviceHearingValuesModel.numberOfPhysicalAttendees);
   }
 
   public initialiseFromHearingValuesForAmendments(): void {
@@ -124,7 +122,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       }
       (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyDetailsModel) as FormGroup);
     });
-    this.attendanceFormGroup.controls.estimation.setValue(this.serviceHearingValuesModel.numberOfPhysicalAttendees);
   }
 
   public executeAction(action: ACTION): void {

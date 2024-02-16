@@ -152,7 +152,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
         let skipRoleSelection = false;
         if (this.multiLevelSelections?.length) {
           this.multiLevelSelections.forEach((role) => {
-            if ( role.key?.toLowerCase().trim() === selectedPanelRole?.toLocaleLowerCase().trim() && !skipRoleSelection && !role.selected) {
+            if (role.key?.toLowerCase().trim() === selectedPanelRole?.toLocaleLowerCase().trim() && !skipRoleSelection && !role.selected) {
               role.selected = true;
               skipRoleSelection = true;
             }

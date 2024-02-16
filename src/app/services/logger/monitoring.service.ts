@@ -45,15 +45,12 @@ export class MonitorConfig implements IConfig {
   public enableCorsCorrelation?: boolean;
 }
 
-
-
 @Injectable()
 export class MonitoringService implements IMonitoringService {
   public areCookiesEnabled: boolean = false;
-  appInsights: IAppInsights;
+  @Optional() appInsights: IAppInsights;
 
-  constructor(private readonly http: HttpClient, @Optional() private config?: MonitorConfig,
-              ) {
+  constructor(private readonly http: HttpClient, @Optional() private config?: MonitorConfig) {
     if (!this.appInsights) {
       this.appInsights = new ApplicationInsights({ config });
     }

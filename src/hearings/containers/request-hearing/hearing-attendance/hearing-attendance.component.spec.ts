@@ -473,9 +473,9 @@ describe('HearingAttendanceComponent', () => {
   });
 
   describe('The forms estimation', () => {
-    it('should equal 2 as partyDetails is empty', () => {
+    it('should equal 3 as partyDetails is empty', () => {
       fixture.detectChanges();
-      expect(component.attendanceFormGroup.controls.estimation.value).toEqual(2);
+      expect(component.attendanceFormGroup.controls.estimation.value).toEqual(3);
     });
   });
 

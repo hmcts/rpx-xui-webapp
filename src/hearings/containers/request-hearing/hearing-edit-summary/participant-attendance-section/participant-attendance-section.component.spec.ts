@@ -100,6 +100,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
 
   it('should display action needed label', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -117,6 +118,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
 
   it('should display amended label', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -135,6 +137,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
 
   it('should not display label', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -173,6 +176,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
   describe('pageTitleDisplayLabel', () => {
     it('should set pageTitleDisplayLabel to amended if hearing channel value is manually amended by user', () => {
       hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
         caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
         parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
         hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -196,6 +200,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
 
     it('should set pageTitleDisplayLabel to amended if number of physical attendees manually amended by user', () => {
       hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
         caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
         parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
         hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -219,6 +224,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
 
     it('should set pageTitleDisplayLabel to amended if participant channels manually amended by user', () => {
       hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
         caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
         parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
         hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -242,6 +248,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
 
     it('should set pageTitleDisplayLabel to action needed if manual amendment changes exists and not confirmed', () => {
       hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
         caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
         parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
         hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -260,6 +267,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
 
     it('should set pageTitleDisplayLabel to amended if manual amendment changes exists and confirmed', () => {
       hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
         caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
         parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
         hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,

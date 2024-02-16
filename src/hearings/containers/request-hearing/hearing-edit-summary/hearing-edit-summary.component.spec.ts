@@ -175,6 +175,7 @@ describe('HearingEditSummaryComponent', () => {
     component.serviceHearingValuesModel = initialState.hearings.hearingValues.serviceHearingValuesModel;
     component.ngOnInit();
     const expectedResult: PropertiesUpdatedOnPageVisit = {
+      hearingId: '1000000',
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,

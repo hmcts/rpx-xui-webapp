@@ -211,6 +211,7 @@ describe('HearingAttendanceComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: null,
       parties: partyDetailsFromLatestSHV,
       hearingWindow: null,
@@ -308,6 +309,7 @@ describe('HearingAttendanceComponent', () => {
       mode: 'create'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: null,
       parties: partyDetailsFromLatestSHV,
       hearingWindow: null,
@@ -329,6 +331,7 @@ describe('HearingAttendanceComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: null,
       parties: partyDetailsFromLatestSHV,
       hearingWindow: null,
@@ -349,6 +352,7 @@ describe('HearingAttendanceComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: null,
       parties: partyDetailsFromLatestSHV,
       hearingWindow: null,
@@ -379,6 +383,7 @@ describe('HearingAttendanceComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: null,
       parties: null,
       hearingWindow: null,
@@ -396,6 +401,7 @@ describe('HearingAttendanceComponent', () => {
   it('should return the party details from hearing request main model', () => {
     spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(true);
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: null,
       parties: null,
       hearingWindow: null,

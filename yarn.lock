@@ -4953,13 +4953,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/applicationinsights-js@npm:^1.0.9":
-  version: 1.0.9
-  resolution: "@types/applicationinsights-js@npm:1.0.9"
-  checksum: 642b3ba588253a3fa3cd32452e8eb99258057b8f7c99014f0006a707c858053f0d465dec1c727d47c646649343a88bab615d031e571a175aa6ccf743f8681b88
-  languageName: node
-  linkType: hard
-
 "@types/babel__core@npm:^7.1.14":
   version: 7.20.1
   resolution: "@types/babel__core@npm:7.20.1"
@@ -6489,13 +6482,6 @@ __metadata:
   dependencies:
     default-require-extensions: ^2.0.0
   checksum: 65fc4fe074aa1cf291763a5835b1e209b5e407597d6662c30b0921928be8a074f75e69e751ddf388ad16411dd61cb70351a10914090b354a7a447c7bc164b0ac
-  languageName: node
-  linkType: hard
-
-"applicationinsights-js@npm:^1.0.20":
-  version: 1.0.21
-  resolution: "applicationinsights-js@npm:1.0.21"
-  checksum: a9c50f469f75d6aa571012c7d7bf4161a60da8f6e8c81bf2f6e575486455d0711762cfca788102e08f2c168968c96c93d3a8fe13d63bfd6cf09584d0e8310439
   languageName: node
   linkType: hard
 
@@ -19247,7 +19233,6 @@ __metadata:
     "@stryker-mutator/karma-runner": ^3.0.1
     "@stryker-mutator/mocha-runner": ^3.0.1
     "@stryker-mutator/typescript": ^3.0.1
-    "@types/applicationinsights-js": ^1.0.9
     "@types/config": ^0.0.36
     "@types/cookie-parser": ^1.4.2
     "@types/crypto-js": ^3.1.43
@@ -19267,7 +19252,6 @@ __metadata:
     "@typescript-eslint/parser": ^5.57.0
     accessibility-checker: ^3.0.6
     applicationinsights: 1.7.2
-    applicationinsights-js: ^1.0.20
     axios: ^1.5.1
     axios-mock-adapter: ^1.22.0
     base-64: ^0.1.0

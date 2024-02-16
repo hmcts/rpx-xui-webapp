@@ -3,8 +3,6 @@ import { MonitorConfig, MonitoringService } from './monitoring.service';
 
 describe('Monitoring service', () => {
   const mockedHttpClient = jasmine.createSpyObj('mockedHttpClient', { get: of({ key: 'Some Value' }) });
-  const mockedAppInsights = jasmine.createSpyObj('mockedAppInsights', ['trackException', 'trackEvent',
-    'trackPageView']);
   const mockedConfig = new MonitorConfig();
 
   it('should be Truthy', () => {
@@ -14,34 +12,31 @@ describe('Monitoring service', () => {
 
   it('should be able to LogException and Should not call the http service', () => {
     mockedConfig.instrumentationKey = 'somevalue';
-    const service = new MonitoringService(mockedHttpClient, mockedConfig, mockedAppInsights);
+    const service = new MonitoringService(mockedHttpClient, mockedConfig);
     expect(service).toBeTruthy();
     service.logException(new Error('Some ErrorMesssage'));
     expect(mockedHttpClient.get).not.toHaveBeenCalled();
-    expect(mockedAppInsights.trackException).toHaveBeenCalled();
   });
 
   it('should be able to LogEvent', () => {
     mockedConfig.instrumentationKey = 'somevalue';
-    const service = new MonitoringService(mockedHttpClient, mockedConfig, mockedAppInsights);
+    const service = new MonitoringService(mockedHttpClient, mockedConfig);
     expect(service).toBeTruthy();
     service.logEvent('name', [], []);
     expect(mockedHttpClient.get).not.toHaveBeenCalled();
-    expect(mockedAppInsights.trackEvent).toHaveBeenCalled();
   });
 
   it('should be able to LogPageview', () => {
     mockedConfig.instrumentationKey = 'somevalue';
-    const service = new MonitoringService(mockedHttpClient, mockedConfig, mockedAppInsights);
+    const service = new MonitoringService(mockedHttpClient, mockedConfig);
     expect(service).toBeTruthy();
     service.logPageView('name', null, [], [], 1);
     expect(mockedHttpClient.get).not.toHaveBeenCalled();
-    expect(mockedAppInsights.trackPageView).toHaveBeenCalled();
   });
 
   it('should be able to LogPageview', () => {
     mockedConfig.instrumentationKey = null;
-    const service = new MonitoringService(mockedHttpClient, mockedConfig, mockedAppInsights);
+    const service = new MonitoringService(mockedHttpClient, mockedConfig);
     expect(service).toBeTruthy();
     service.logPageView('name', null, [], [], 1);
     expect(mockedHttpClient.get).toHaveBeenCalled();
@@ -49,7 +44,7 @@ describe('Monitoring service', () => {
 
   describe('enableCookies()', () => {
     it('should set areCookiesEnabled to true', () => {
-      const service = new MonitoringService(mockedHttpClient, mockedConfig, mockedAppInsights);
+      const service = new MonitoringService(mockedHttpClient, mockedConfig);
       service.enableCookies();
       expect(service.areCookiesEnabled).toBeTruthy();
     });

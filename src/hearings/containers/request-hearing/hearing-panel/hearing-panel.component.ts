@@ -134,10 +134,20 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public loadHearingPanels(): void {
     let selectedPanelRoles: string[];
     this.panelSelection = '';
+    let roleType: string[];
     if (
       this.multiLevelSelections?.length &&
       this.hearingRequestMainModel.hearingDetails?.panelRequirements?.roleType) {
-      selectedPanelRoles = this.hearingRequestMainModel.hearingDetails?.panelRequirements.roleType.filter((roleKey) => this.multiLevelSelections.map((role) => role.key).includes(roleKey));
+      const includedJudges: number = this.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences
+        ?.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).length || 0;
+      if (includedJudges > 0) {
+        roleType = this.hearingRequestMainModel.hearingDetails?.panelRequirements.roleType;
+      } else {
+        const [, ...rest] = this.hearingRequestMainModel.hearingDetails?.panelRequirements.roleType;
+        roleType = rest;
+      }
+
+      selectedPanelRoles = roleType.filter((roleKey) => this.multiLevelSelections.map((role) => role.key).includes(roleKey));
       selectedPanelRoles.forEach((selectedPanelRole) => {
         let skipRoleSelection = false;
         if (this.multiLevelSelections?.length) {
@@ -215,8 +225,13 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       this.preparePanelSpecialism(panelRoles, panelSpecialismsSelected);
       selectedPanelRoles = panelRoles && panelRoles.filter((role) => role.selected).map((role) => role.selected && role.key) || [];
     }
+    const includedJudges: number = this.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences
+      ?.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).length || 0;
     const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
-    const preSelectedPanelRoles = panelRequirements && panelRequirements.roleType && panelRequirements.roleType.filter((roleKey) => !panelRoles.map((role) => role.key).includes(roleKey));
+    let preSelectedPanelRoles: string[] = [];
+    if (includedJudges === 0 && panelRequirements.roleType.length > 0) {
+      preSelectedPanelRoles.push(panelRequirements.roleType[0])
+    }
     const selectedPanelJudges: PanelPreferenceModel[] = panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter((preferences) => preferences.memberType === MemberType.JUDGE) || [];
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,

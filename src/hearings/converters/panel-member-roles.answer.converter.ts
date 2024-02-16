@@ -6,29 +6,34 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { MemberType, RequirementType } from '../models/hearings.enum';
 
-export class JudgeTypesAnswerConverter implements AnswerConverter {
+export class PanelMemberRolesAnswerConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) {}
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
-    const judgeTypes: LovRefDataModel[] = this.route.snapshot.data.judgeTypes;
+    const panelMemberRoles: LovRefDataModel[] = this.route.snapshot.data.otherPanelRoles;
 
     return hearingState$.pipe(
       map((state) => {
         const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
         const includedJudges: number = panelRequirements.panelPreferences
           ?.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).length || 0;
-
+        const selectedPanelMembers: string[] = [];
+        let selectedPanelRole: string[];
         if (includedJudges === 0 && panelRequirements.roleType.length > 0) {
-          const selectedJudgeTypes: string[] = [];
-          const selectedPanelRole = panelRequirements.roleType[0];
-          judgeTypes.forEach((judgeType) => {
-            if (selectedPanelRole.includes(judgeType.key)) {
-              selectedJudgeTypes.push(judgeType.value_en);
-            }
-          });
-          return selectedJudgeTypes.join(', ');
+          const [, ...rest] = panelRequirements.roleType;
+          selectedPanelRole = rest;
+        } else if(includedJudges > 0 && panelRequirements.roleType.length > 0) {
+          selectedPanelRole = panelRequirements.roleType;
+        } else {
+          selectedPanelRole = [];
         }
-        return '';
+       
+        panelMemberRoles.forEach((panel) => {
+          if (selectedPanelRole.includes(panel.key)) {
+            selectedPanelMembers.push(panel.value_en);
+          }
+        });
+        return selectedPanelMembers.join(', ');
       })
     );
   }

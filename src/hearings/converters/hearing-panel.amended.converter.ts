@@ -16,7 +16,11 @@ export class HearingPanelAmendedConverter implements IsAmendedConverter {
       const requestedPanelMembers: number = hearingRequestPanelRequirements && hearingRequestPanelRequirements.panelPreferences && hearingRequestPanelRequirements.panelPreferences.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER).length || 0;
       const requestedPanelSpecialisms: number = hearingRequestPanelRequirements && hearingRequestPanelRequirements.panelSpecialisms && hearingRequestPanelRequirements.panelSpecialisms.length || 0;
 
-      return !_.isEqual(comparedPanelMembers, requestedPanelMembers) || !_.isEqual(comparedPanelSpecialisms, requestedPanelSpecialisms);
+      const comparedPanelmemberRoles = hearingComparePanelRequirements?.roleType;
+      const requestedPanelmemberRoles = hearingRequestPanelRequirements?.roleType;
+
+      return !_.isEqual(comparedPanelMembers, requestedPanelMembers) || !_.isEqual(comparedPanelSpecialisms, requestedPanelSpecialisms)
+        || !_.isEqual(comparedPanelmemberRoles, requestedPanelmemberRoles);
     }));
   }
 }

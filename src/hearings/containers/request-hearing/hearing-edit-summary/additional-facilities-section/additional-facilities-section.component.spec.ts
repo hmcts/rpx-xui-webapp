@@ -183,6 +183,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
   describe('pageTitleDisplayLabel', () => {
     xit('should not set pageTitleDisplayLabel', () => {
       hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
         caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
         parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
         hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -199,6 +200,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
 
     it('should set pageTitleDisplayLabel to amended if case additional security flag value is manually amended by user', () => {
       hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
         caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
         parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
         hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -223,6 +225,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
 
     it('should set pageTitleDisplayLabel to amended if facilities manually amended by user', () => {
       hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
         caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
         parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
         hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -246,6 +249,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
 
     it('should set pageTitleDisplayLabel to action needed if manual amendment changes exists and not confirmed', () => {
       hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
         caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
         parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
         hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -263,6 +267,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
 
     it('should set pageTitleDisplayLabel to amended if manual amendment changes exists and confirmed', () => {
       hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
         caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
         parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
         hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,

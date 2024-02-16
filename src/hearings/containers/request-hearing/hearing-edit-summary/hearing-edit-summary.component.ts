@@ -187,33 +187,21 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
   private setPropertiesUpdatedOnPageVisit(serviceHearingValues: ServiceHearingValuesModel): void {
     if (serviceHearingValues) {
-      const afterPageVisitProperties = this.getAfterPageVisitProperties();
-      this.pageVisitChangeExists =
-        (afterPageVisitProperties.reasonableAdjustmentChangesRequired && !afterPageVisitProperties.reasonableAdjustmentChangesConfirmed) ||
-        (afterPageVisitProperties.nonReasonableAdjustmentChangesRequired && !afterPageVisitProperties.nonReasonableAdjustmentChangesConfirmed) ||
-        (afterPageVisitProperties.partyDetailsChangesRequired && !afterPageVisitProperties.partyDetailsChangesConfirmed) ||
-        (afterPageVisitProperties.hearingWindowChangesRequired && !afterPageVisitProperties.hearingWindowChangesConfirmed);
-      if (this.pageVisitChangeExists) {
+      if (!_.isEqual(this.hearingsService.propertiesUpdatedOnPageVisit?.hearingId, this.hearingRequestMainModel.requestDetails.hearingRequestID)) {
         this.hearingsService.propertiesUpdatedOnPageVisit = {
+          hearingId: this.hearingRequestMainModel.requestDetails.hearingRequestID,
           caseFlags: serviceHearingValues.caseFlags,
           parties: serviceHearingValues.parties,
           hearingWindow: serviceHearingValues.hearingWindow,
-          afterPageVisit: afterPageVisitProperties
+          afterPageVisit: {
+            reasonableAdjustmentChangesRequired: this.pageVisitReasonableAdjustmentChangeExists(),
+            nonReasonableAdjustmentChangesRequired: this.pageVisitNonReasonableAdjustmentChangeExists(),
+            partyDetailsChangesRequired: this.pageVisitPartiesChangeExists(),
+            hearingWindowChangesRequired: this.pageVisitHearingWindowChangeExists()
+          }
         };
       }
     }
-  }
-
-  private getAfterPageVisitProperties(): AfterPageVisitProperties {
-    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit) {
-      return this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit;
-    }
-    return {
-      reasonableAdjustmentChangesRequired: this.pageVisitReasonableAdjustmentChangeExists(),
-      nonReasonableAdjustmentChangesRequired: this.pageVisitNonReasonableAdjustmentChangeExists(),
-      partyDetailsChangesRequired: this.pageVisitPartiesChangeExists(),
-      hearingWindowChangesRequired: this.pageVisitHearingWindowChangeExists()
-    };
   }
 
   private compareAndUpdateCaseCategories(hmcCaseCategories: CaseCategoryModel[], shvCaseCategories: CaseCategoryModel[]): CaseCategoryModel[] {

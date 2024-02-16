@@ -67,6 +67,7 @@ export interface PropertiesUpdatedAutomatically {
 }
 
 export interface PropertiesUpdatedOnPageVisit {
+  hearingId: string,
   caseFlags: {
     flags: PartyFlagsModel[],
     flagAmendURL: string,

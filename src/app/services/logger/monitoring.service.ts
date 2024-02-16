@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Optional } from '@angular/core';
-import { ApplicationInsights, IAppInsights, IConfig } from '@microsoft/applicationinsights-web';
+import { AppInsights } from 'applicationinsights-js';
+import { AbstractAppInsights } from './appInsightsWrapper';
 
 export interface IMonitoringService {
   logPageView(name?: string, url?: string, properties?: any,
@@ -9,7 +10,7 @@ export interface IMonitoringService {
   logException(exception: Error);
 }
 
-export class MonitorConfig implements IConfig {
+export class MonitorConfig implements Microsoft.ApplicationInsights.IConfig {
   public instrumentationKey?: string;
   public endpointUrl?: string;
   public emitLineDelimitedJson?: boolean;
@@ -50,28 +51,28 @@ export class MonitoringService implements IMonitoringService {
   public areCookiesEnabled: boolean = false;
 
   constructor(private readonly http: HttpClient, @Optional() private config?: MonitorConfig,
-              @Optional() private readonly appInsights?: IAppInsights) {
+              @Optional() private readonly appInsights?: AbstractAppInsights) {
     if (!appInsights) {
-      appInsights = new ApplicationInsights({ config });
+      appInsights = AppInsights;
     }
   }
 
   public logPageView(name?: string, url?: string, properties?: any,
     measurements?: any, duration?: number) {
     this.send(() => {
-      this.appInsights.trackPageView({ name, uri: url }, { properties, measurements, duration });
+      this.appInsights.trackPageView(name, url, properties, measurements, duration);
     });
   }
 
   public logEvent(name: string, properties?: any, measurements?: any) {
     this.send(() => {
-      this.appInsights.trackEvent({ name }, { properties, measurements });
+      this.appInsights.trackEvent(name, properties, measurements);
     });
   }
 
   public logException(exception: Error) {
     this.send(() => {
-      this.appInsights.trackException({ exception });
+      this.appInsights.trackException(exception);
     });
   }
 
@@ -80,7 +81,7 @@ export class MonitoringService implements IMonitoringService {
   }
 
   private send(func: () => any): void {
-    if (this.config?.instrumentationKey) {
+    if (this.config && this.config.instrumentationKey) {
       func();
     } else {
       this.http.get('/api/monitoring-tools').subscribe((it) => {
@@ -95,6 +96,9 @@ export class MonitoringService implements IMonitoringService {
             isStorageUseDisabled: true,
             enableSessionStorageBuffer: true
           };
+        }
+        if (!this.appInsights.config) {
+          this.appInsights.downloadAndSetup(this.config);
         }
         func();
       });

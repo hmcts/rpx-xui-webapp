@@ -326,14 +326,27 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // check automatic update within page
     this.isWithinPageAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.withinPage).some((prop) => prop);
 
-    // Display Validation
-    this.hearingsService.displayValidationError = this.pageVisitChangeExists;
+    // Validation error display
+    if (this.pageVisitReasonableAdjustmentChangeExists() ||
+      this.pageVisitNonReasonableAdjustmentChangeExists() ||
+      this.pageVisitPartiesChangeExists() ||
+      this.pageVisitHearingWindowChangeExists()) {
+      this.hearingsService.displayValidationError = true;
+    } else {
+      this.hearingsService.displayValidationError = false;
+    }
+
+    // Reset submit updated request event
     this.hearingsService.submitUpdatedRequestClicked = false;
   }
 
   private pageVisitReasonableAdjustmentChangeExists(): boolean {
     if (!this.sectionsToDisplay.includes(this.hearingScreenEnum.HEARING_REQUIREMENTS)) {
       // Do not consider reasonable adjustments as hearing requirements is not part of the screen flow
+      return false;
+    }
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed) {
+      // Reasonable adjustment changes already confirmed
       return false;
     }
     const caseFlagsSHV = this.serviceHearingValuesModel.caseFlags.flags;
@@ -365,6 +378,10 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // Do not consider non-reasonable adjustment case flags as hearing facilities is not part of the screen flow
       return false;
     }
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed) {
+      // Reasonable adjustment changes already confirmed
+      return false;
+    }
     const caseFlagsModifiedDate = this.serviceHearingValuesModel.caseFlags.flags.map((flags) => flags.dateTimeModified);
     const caseFlagsCreatedDate = this.serviceHearingValuesModel.caseFlags.flags.map((flags) => flags.dateTimeCreated);
     const caseFlagsWithModifiedDate = caseFlagsModifiedDate.filter((date) => date !== null).filter((date) => date !== undefined);
@@ -379,6 +396,10 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private pageVisitPartiesChangeExists(): boolean {
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed) {
+      // Reasonable adjustment changes already confirmed
+      return false;
+    }
     const partiesSHV = this.serviceHearingValuesModel.parties;
     const partiesHMC = this.hearingRequestMainModel.partyDetails;
     // Return true if the number of parties in SHV and HMC are different
@@ -402,6 +423,10 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   private pageVisitHearingWindowChangeExists(): boolean {
     if (!this.sectionsToDisplay.includes(this.hearingScreenEnum.HEARING_TIMING)) {
       // Do not consider hearing window changes as hearing timing is not part of the screen flow
+      return false;
+    }
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesConfirmed) {
+      // Reasonable adjustment changes already confirmed
       return false;
     }
     const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;

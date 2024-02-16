@@ -204,7 +204,6 @@ describe('HearingEditSummaryComponent', () => {
       'hearing-additional-instructions'
     ];
     component.ngOnInit();
-    console.log('test', JSON.stringify(component.sectionsToDisplay));
     expect(component.sectionsToDisplay).toEqual(sectionsToDisplay);
   });
 

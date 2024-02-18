@@ -4,13 +4,6 @@ Feature: Case flags V2.1 Add/Update Language interpreter
     Background: Setup case
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with with case flags
-
-        When I click on primary navigation header tab "Create case", I see selected tab page displayed
-        Then Create case page should be displayed
-
-        When I start case with jurisdiction "Family Divorce" case type "XUI Case flags V1" and event "Create a case"
-        Then I am on case form page
-
         When I setup a case for case flags version "V2.1"
             | party                       | fieldName  | value      |
             | Flags for legal rep Party 1 | Role On Case  | Party 1    |

@@ -16,8 +16,8 @@ class CaseFlagsCaseSetup{
     }
 
     async createCase(version, inputs) {
-        //await browser.get(`${process.env.TEST_URL}/cases/case-create/DIVORCE/xuiCaseFlags${version.toLowerCase().includes('v1') ? 'V1' : '2.1'}/createCase/createCasetestDataSetup`)
-        //await browserWaits.waitForElement($('ccd-case-edit-page'))
+        await browser.get(`${process.env.TEST_URL}/cases/case-create/DIVORCE/xuiCaseFlags${version.toLowerCase().includes('v1') ? 'V1' : '2.1'}/createCase/createCasetestDataSetup`)
+        await browserWaits.waitForElement($('ccd-case-edit-page'))
 
         for(const field of inputs){
             await this.inputField(field.party, field.fieldName, field.value)

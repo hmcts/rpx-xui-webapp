@@ -13,6 +13,7 @@ import { HearingConditions } from '../../../models/hearingConditions';
 import { ACTION, CategoryType, Mode, PartyType, UnavailabilityType } from '../../../models/hearings.enum';
 import { PropertiesUpdatedOnPageVisit } from '../../../models/hearingsUpdateMode.enum';
 import { LocationByEPIMMSModel } from '../../../models/location.model';
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { HearingsFeatureService } from '../../../services/hearings-feature.service';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
@@ -186,6 +187,81 @@ describe('HearingEditSummaryComponent', () => {
         hearingWindowChangesRequired: false
       }
     };
+    expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
+  });
+
+  it('should return party changes required if interpreter language changed', () => {
+    const partiesSHV: PartyDetailsModel[] = [
+      {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: [
+            'RA0042'
+          ],
+          interpreterLanguage: 'spa'
+        },
+        unavailabilityRanges: [
+          {
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      }
+    ];
+    const partiesHMC: PartyDetailsModel[] = [
+      {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: [
+            'RA0042'
+          ]
+        },
+        unavailabilityRanges: [
+          {
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      }
+    ];
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      parties: partiesSHV
+    };
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      partyDetails: partiesHMC
+    };
+    component.ngOnInit();
+    const expectedResult: PropertiesUpdatedOnPageVisit = {
+      hearingId: '1000000',
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: false
+      }
+    };
+    console.log('hearingsService.propertiesUpdatedOnPageVisit', JSON.stringify(hearingsService.propertiesUpdatedOnPageVisit));
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
   });
 

@@ -185,7 +185,8 @@ describe('CaseFlagsUtils', () => {
           lastName: 'Ryan',
           reasonableAdjustments: [
             'RA0002'
-          ]
+          ],
+          interpreterLanguage: 'spa'
         }
       },
       {
@@ -245,6 +246,14 @@ describe('CaseFlagsUtils', () => {
         flagStatus: 'ACTIVE'
       },
       {
+        partyId: 'P2',
+        partyName: 'Jack Ryan',
+        flagParentId: 'PF0001',
+        flagId: 'PF0015',
+        flagDescription: 'Language Interpreter',
+        flagStatus: 'ACTIVE'
+      },
+      {
         partyId: 'P3',
         partyName: 'Rob Kennedy',
         flagParentId: 'RA0001',
@@ -259,9 +268,11 @@ describe('CaseFlagsUtils', () => {
       expect(flagsGroup[0].name).toEqual('Jane Butler');
       expect(flagsGroup[0].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[0].partyFlags[0].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
+      expect(flagsGroup[0].partyFlags[1].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[1].name).toEqual('Jack Ryan');
       expect(flagsGroup[1].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[1].partyFlags[1].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.WARNING);
+      expect(flagsGroup[1].partyFlags[2].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[2].name).toEqual('Rob Kennedy');
       expect(flagsGroup[2].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
       expect(flagsGroup[2].partyFlags[0].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);

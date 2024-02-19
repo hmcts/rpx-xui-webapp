@@ -337,10 +337,19 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // Reasonable adjustment changes already confirmed
       return false;
     }
-    const caseFlagsSHV = this.serviceHearingValuesModel.caseFlags.flags;
+
+    // Get the individual parties
     const individualParties = this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND);
+    // Return true if there are changes to the interpreter languages
+    const interpreterLanguagesSHV = this.serviceHearingValuesModel.parties.map((party) => party.individualDetails?.interpreterLanguage);
+    const interpreterLanguagesHMC = individualParties.map((party) => party.individualDetails?.interpreterLanguage);
+    if (!_.isEqual(interpreterLanguagesSHV, interpreterLanguagesHMC)) {
+      return true;
+    }
+
     // HMC stores only reasonable adjustment flag ids and language interpreter flag ids under parties
     // Get only the reasonable adjustment and language interpreter flag ids from SHV and sort them for easy comparison
+    const caseFlagsSHV = this.serviceHearingValuesModel.caseFlags.flags;
     const flagIdsSHV = caseFlagsSHV.map((flag) => flag.flagId)?.filter((flagId) => flagId?.startsWith('RA') || flagId === this.LANGUAGE_INTERPRETER_FLAG_ID)?.sort((a, b) => {
       return a > b ? 1 : (a === b ? 0 : -1);
     });

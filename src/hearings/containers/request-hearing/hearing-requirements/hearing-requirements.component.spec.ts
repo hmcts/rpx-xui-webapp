@@ -2293,6 +2293,7 @@ describe('HearingRequirementsComponent', () => {
       mode: 'create'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
       hearingWindow: null,
@@ -2312,6 +2313,7 @@ describe('HearingRequirementsComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
       hearingWindow: null,
@@ -2331,6 +2333,7 @@ describe('HearingRequirementsComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
       hearingWindow: null,
@@ -2350,6 +2353,7 @@ describe('HearingRequirementsComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
       hearingWindow: null,
@@ -2369,6 +2373,7 @@ describe('HearingRequirementsComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: null,
       parties: null,
       hearingWindow: null,
@@ -2388,6 +2393,7 @@ describe('HearingRequirementsComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
       hearingWindow: null,
@@ -2433,6 +2439,7 @@ describe('HearingRequirementsComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
       hearingWindow: null,

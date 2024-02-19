@@ -12,7 +12,8 @@ import { HearingsUtils } from '../../../../utils/hearings.utils';
 
 @Component({
   selector: 'exui-participant-attendance-section',
-  templateUrl: './participant-attendance-section.component.html'
+  templateUrl: './participant-attendance-section.component.html',
+  styleUrls: ['./participant-attendance-section.component.scss']
 })
 export class ParticipantAttendanceSectionComponent implements OnInit {
   @Input() public partyChannelsRefData: LovRefDataModel[];

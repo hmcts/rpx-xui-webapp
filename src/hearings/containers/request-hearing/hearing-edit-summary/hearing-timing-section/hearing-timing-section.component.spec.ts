@@ -73,6 +73,7 @@ describe('HearingTimingSectionComponent', () => {
 
   it('should display action needed label', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -92,6 +93,7 @@ describe('HearingTimingSectionComponent', () => {
 
   it('should display amended label', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -113,6 +115,7 @@ describe('HearingTimingSectionComponent', () => {
 
   it('should not display label', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,

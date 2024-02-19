@@ -10,15 +10,11 @@ export class NeedJudgeAmendedConverter implements IsAmendedConverter {
     return hearingState$.pipe(map((state) => {
       const objAPanelRequirements = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements;
       const objBPanelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-      const objAIncludedJudges: number = objAPanelRequirements.panelPreferences
+      const objAIncludedJudges: number = objAPanelRequirements?.panelPreferences
         ?.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).length || 0;
-      const objBIncludedJudges: number = objBPanelRequirements.panelPreferences
+      const objBIncludedJudges: number = objBPanelRequirements?.panelPreferences
         ?.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).length || 0;
-      // const objARoleType = objAPanelRequirements && objAPanelRequirements.roleType && objAPanelRequirements.roleType.length > 0 || null;
-      // const objBRoleType = objBPanelRequirements && objBPanelRequirements.roleType && objBPanelRequirements.roleType.length > 0 || null;
-      const objAPanelPreferences = objAPanelRequirements && objAPanelRequirements.panelPreferences && objAPanelRequirements.panelPreferences.filter((panel) => panel.memberType === MemberType.JUDGE).length > 0 || null;
-      const objBPanelPreferences = objBPanelRequirements && objBPanelRequirements.panelPreferences && objBPanelRequirements.panelPreferences.filter((panel) => panel.memberType === MemberType.JUDGE).length > 0 || null;
-      return !_.isEqual(objAIncludedJudges, objBIncludedJudges) || !_.isEqual(objAPanelPreferences, objBPanelPreferences);
+      return !_.isEqual(objAIncludedJudges, objBIncludedJudges);
     }));
   }
 }

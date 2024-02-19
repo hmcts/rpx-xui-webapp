@@ -10,12 +10,10 @@ export class JudgeTypesAmendedConverter implements IsAmendedConverter {
     return hearingState$.pipe(map((state) => {
       const objAPanelRequirements = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements;
       const objBPanelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-      const objA: number = objAPanelRequirements.panelPreferences
+      const objA: number = objAPanelRequirements?.panelPreferences
         ?.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).length || 0;
-      const objB: number = objBPanelRequirements.panelPreferences
+      const objB: number = objBPanelRequirements?.panelPreferences
         ?.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).length || 0;
-      // const objA = objAPanelRequirements && objAPanelRequirements.roleType;
-      // const objB = objBPanelRequirements && objBPanelRequirements.roleType;
       return !_.isEqual(objA, objB);
     }));
   }

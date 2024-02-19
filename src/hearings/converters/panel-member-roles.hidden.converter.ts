@@ -1,8 +1,8 @@
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { State } from '../store';
 import { HiddenConverter } from './hidden.converter';
+import { map } from 'rxjs/operators';
 import { MemberType, RequirementType } from '../models/hearings.enum';
+import { Observable } from 'rxjs';
+import { State } from '../store';
 
 export class PanelMemberRolesHiddenConverter implements HiddenConverter {
   public transformHidden(hearingState$: Observable<State>): Observable<boolean> {

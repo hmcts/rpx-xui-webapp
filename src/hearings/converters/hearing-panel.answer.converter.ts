@@ -10,7 +10,7 @@ export class HearingPanelAnswerConverter implements AnswerConverter {
       map((state) => {
         const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
         const panelMembers: number = panelRequirements?.panelPreferences?.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER).length || 0;
-        const includedJudges: number = panelRequirements.panelPreferences
+        const includedJudges: number = panelRequirements?.panelPreferences
           ?.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).length || 0;
         const otherPanelMembers: number = panelRequirements?.roleType?.length || 0;
         const panelSpecialisms: number = panelRequirements?.panelSpecialisms?.length || 0;

@@ -1,34 +1,77 @@
-import { cold } from 'jasmine-marbles';
-import * as _ from 'lodash';
 import { of } from 'rxjs';
-import { initialState } from '../hearing.test.data';
-import { State } from '../store/reducers';
-import { JudgeTypesHiddenConverter } from './judge-types.hidden.converter';
+import { MemberType, RequirementType } from '../models/hearings.enum';
+import { PanelMemberRolesHiddenConverter } from './panel-member-roles.hidden.converter';
 
-describe('JudgeTypesHiddenConverter', () => {
-  let judgeTypesHiddenConverter: JudgeTypesHiddenConverter;
+describe('PanelMemberRolesHiddenConverter', () => {
+  let panelMemberRolesHiddenConverter: PanelMemberRolesHiddenConverter;
+  let mockState;
 
   beforeEach(() => {
-    judgeTypesHiddenConverter = new JudgeTypesHiddenConverter();
-  });
-
-  it('should transform hidden of true answer', () => {
-    const STATE: State = _.cloneDeep(initialState.hearings);
-    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;
-    const result$ = judgeTypesHiddenConverter.transformHidden(of(STATE));
-    const showWelshPage = true;
-    const expected = cold('(b|)', { b: showWelshPage });
-    expect(result$).toBeObservable(expected);
+    panelMemberRolesHiddenConverter = new PanelMemberRolesHiddenConverter();
   });
 
   it('should transform hidden of false answer', () => {
-    const STATE: State = _.cloneDeep(initialState.hearings);
-    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      roleType: ['P000001']
+    mockState = {
+      hearingRequest: {
+        hearingRequestMainModel: {
+          hearingDetails: {
+            panelRequirements: {
+              panelPreferences: [],
+              roleType: ['role1', 'role2']
+            }
+          }
+        }
+      }
     };
-    const result$ = judgeTypesHiddenConverter.transformHidden(of(STATE));
-    const showWelshPage = false;
-    const expected = cold('(b|)', { b: showWelshPage });
-    expect(result$).toBeObservable(expected);
+    const result$ = panelMemberRolesHiddenConverter.transformHidden(of(mockState));
+    result$.subscribe((result) => {
+      expect(result).toBe(false);
+    });
+  });
+
+  it('should transform hidden of true answer', () => {
+    mockState = {
+      hearingRequest: {
+        hearingRequestMainModel: {
+          hearingDetails: {
+            panelRequirements: {
+              panelPreferences: [{
+                memberID: '123',
+                memberType: MemberType.JUDGE,
+                requirementType: RequirementType.MUSTINC
+              }],
+              roleType: []
+            }
+          }
+        }
+      }
+    };
+    const result$ = panelMemberRolesHiddenConverter.transformHidden(of(mockState));
+    result$.subscribe(result => {
+      expect(result).toBe(true);
+    });
+  });
+
+  it('should transform hidden of true answer', () => {
+    mockState = {
+      hearingRequest: {
+        hearingRequestMainModel: {
+          hearingDetails: {
+            panelRequirements: {
+              panelPreferences: [{
+                memberID: '123',
+                memberType: MemberType.JUDGE,
+                requirementType: RequirementType.MUSTINC
+              }],
+              roleType: ['Role1']
+            }
+          }
+        }
+      }
+    };
+    const result$ = panelMemberRolesHiddenConverter.transformHidden(of(mockState));
+    result$.subscribe(result => {
+      expect(result).toBe(false);
+    });
   });
 });

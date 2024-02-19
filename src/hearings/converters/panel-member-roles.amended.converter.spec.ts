@@ -1,24 +1,50 @@
-import { cold } from 'jasmine-marbles';
-import * as _ from 'lodash';
 import { of } from 'rxjs';
-import { initialState } from '../hearing.test.data';
-import { State } from '../store/reducers';
-import { JudgeTypesAmendedConverter } from './judge-types.amended.converter';
+import { PanelMembersRolesAmendedConverter } from './panel-member-roles.amended.converter';
+import { MemberType, RequirementType } from '../models/hearings.enum';
 
 describe('JudgeTypesAmendedConverter', () => {
-  let judgeTypesAmendedConverter: JudgeTypesAmendedConverter;
+  let panelMembersRolesAmendedConverter: PanelMembersRolesAmendedConverter;
+  let mockState;
 
   beforeEach(() => {
-    judgeTypesAmendedConverter = new JudgeTypesAmendedConverter();
+    panelMembersRolesAmendedConverter = new PanelMembersRolesAmendedConverter();
   });
-
-  it('should transform judge type amended flag based on selection', () => {
-    const STATE: State = _.cloneDeep(initialState.hearings);
-    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {};
-    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = ['tj'];
-    const result$ = judgeTypesAmendedConverter.transformIsAmended(of(STATE));
-    const isAmended = true;
-    const expected = cold('(b|)', { b: isAmended });
-    expect(result$).toBeObservable(expected);
+  it('should transform panel members amended flag based on role type selection', () => {
+    mockState = {
+      hearingRequest: {
+        hearingRequestMainModel: {
+          hearingDetails: {
+            panelRequirements: {
+              panelPreferences: [
+              {
+                memberId: '123',
+                memberType: MemberType.PANEL_MEMBER,
+                requirementType: RequirementType.MUSTINC
+              },
+              {
+                memberId: '321',
+                memberType: MemberType.PANEL_MEMBER,
+                requirementType: RequirementType.EXCLUDE
+              }],
+              roleType: ['84']
+            }
+          }
+        }
+      },
+      hearingRequestToCompare: {
+        hearingRequestMainModel: {
+          hearingDetails: {
+            panelRequirements: {
+              panelPreferences: [],
+              roleType: ['84', '65']
+            }
+          }
+        }
+      }
+    };
+    const result$ = panelMembersRolesAmendedConverter.transformIsAmended(of(mockState));
+    result$.subscribe((result) => {
+      expect(result).toBe(true);
+    });
   });
 });

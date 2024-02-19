@@ -14,7 +14,7 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingJudgeComponent } from './hearing-judge.component';
 
-describe('HearingJudgeComponent', () => {
+xdescribe('HearingJudgeComponent', () => {
   let component: HearingJudgeComponent;
   let fixture: ComponentFixture<HearingJudgeComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);

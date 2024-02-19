@@ -27,7 +27,7 @@ export class PanelMemberRolesAnswerConverter implements AnswerConverter {
         } else {
           selectedPanelRole = [];
         }
-       
+
         panelMemberRoles.forEach((panel) => {
           if (selectedPanelRole.includes(panel.key)) {
             selectedPanelMembers.push(panel.value_en);

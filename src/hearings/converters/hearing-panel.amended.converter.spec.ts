@@ -46,7 +46,8 @@ describe('HearingPanelAmendedConverter', () => {
   it('should not transform the amended flag when previous vs current hearing type are equal', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelPreferences: JUDICAIL_USER_DETAILS
+      panelPreferences: JUDICAIL_USER_DETAILS,
+      roleType: ['role1']
     };
     const result$ = converter.transformIsAmended(of(STATE));
     const isAmended = true;

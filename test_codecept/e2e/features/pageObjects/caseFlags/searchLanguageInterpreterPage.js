@@ -7,7 +7,7 @@ class SearchLanguageInterpreterPage {
         this.fieldMapping = {
             'Language Interpreter': element(by.xpath(`//ccd-search-language-interpreter//label[contains(text(),'Language Interpreter')]/../..//div[contains(@class,'auto-complete-container')]//input`)),
             "Enter the language manually": element(by.xpath(`//label[contains(text(),'Enter the language manually')]/..//input`)),
-            "Enter the language": element(by.xpath(`//label[contains(text(),'Enter the language')]/..//input`))
+            "Enter the language": element(by.xpath(`//label[text()='Enter the language']/..//input`))
         }
     }
 
@@ -22,7 +22,7 @@ class SearchLanguageInterpreterPage {
             case "Enter the language manually":
                 await this.fieldMapping[field].click()
                 break;
-            case "Enter the language manually":
+            case "Enter the language":
                 await this.fieldMapping[field].sendKeys(value)
                 break;
             default:

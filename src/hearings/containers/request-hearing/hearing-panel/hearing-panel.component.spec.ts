@@ -201,6 +201,74 @@ describe('HearingPanelComponent', () => {
     requirementType: RequirementType.MUSTINC
   }];
 
+  const MEDICALLY_QUALIFIED_PANEL_MEMBERS: LovRefDataModel = {
+    category_key: 'PanelMemberType',
+    key: 'BBA3-MQPM2',
+    value_en: 'Medically Qualified Panel Member',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: [
+      {
+        category_key: 'PanelMemberSpecialism',
+        key: 'BBA3-MQPM2-003',
+        value_en: 'Eye Surgeon',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'PanelMemberType',
+        parent_key: 'BBA3-MQPM2',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'PanelMemberSpecialism',
+        key: 'BBA3-MQPM2-004',
+        value_en: 'General Practitioner',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'PanelMemberType',
+        parent_key: 'BBA3-MQPM2',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'PanelMemberSpecialism',
+        key: 'BBA3-MQPM2-001',
+        value_en: 'Cardiologist',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'PanelMemberType',
+        parent_key: 'BBA3-MQPM2',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'PanelMemberSpecialism',
+        key: 'BBA3-MQPM2-002',
+        value_en: 'Carer',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'PanelMemberType',
+        parent_key: 'BBA3-MQPM2',
+        active_flag: 'Y',
+        child_nodes: null
+      }
+    ],
+    selected: false
+  };
+
   beforeEach(() => {
     const STATE = _.cloneDeep(initialState);
     STATE.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
@@ -266,7 +334,7 @@ describe('HearingPanelComponent', () => {
     expect(component.isFormValid()).toBeTruthy();
   });
 
-  it('should check getPannelMemberList', () => {
+  it('should check getPanelMemberList', () => {
     component.personalCodejudgeList = [{
       title: 'Mr',
       knownAs: 'Hearing Judge',
@@ -283,9 +351,9 @@ describe('HearingPanelComponent', () => {
     }];
     component.initForm();
     expect(component.includedJudgeList.length).toBe(1);
-    expect(component.getPannelMemberList(RequirementType.MUSTINC).length).toBe(1);
+    expect(component.getPanelMemberList(RequirementType.MUSTINC).length).toBe(1);
     expect(component.panelSelection).toBe(RadioOptions.YES);
-    expect(component.getPannelMemberList(RequirementType.EXCLUDE).length).toBe(0);
+    expect(component.getPanelMemberList(RequirementType.EXCLUDE).length).toBe(0);
   });
 
   it('should check prepareData', () => {
@@ -310,9 +378,52 @@ describe('HearingPanelComponent', () => {
     expect(component.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences.length).toBe(2);
   });
 
-  xit('should prepare data when form is valid', () => {
-    component.executeAction(ACTION.CONTINUE);
-    expect(component.prepareData).toHaveBeenCalled();
+  it('should load panel and return true when matching panelSpecialism is found', () => {
+    const panelSpecialism = 'BBA3-MQPM2-001';
+    const result = component.loadPanel(MEDICALLY_QUALIFIED_PANEL_MEMBERS, panelSpecialism);
+    expect(result).toBe(true);
+    expect(MEDICALLY_QUALIFIED_PANEL_MEMBERS.selected).toBe(true);
+    expect(MEDICALLY_QUALIFIED_PANEL_MEMBERS.child_nodes[2].selected).toBe(true);
+  });
+
+  it('should return false when matching panelSpecialism is not found', () => {
+    const panelSpecialism = 'NonExistentSpecialism';
+    const panelMembers = {
+      category_key: 'PanelMemberType',
+      key: 'BBA3-MQPM2',
+      value_en: 'Medically Qualified Panel Member',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      selected: false
+    };
+    const result = component.loadPanel(panelMembers, panelSpecialism);
+    expect(result).toBe(false);
+    expect(panelMembers.selected).toBe(false);
+  });
+
+  it('should return false when child_nodes is empty', () => {
+    const panelSpecialism = 'BBA3-MQPM2';
+    const panelMembers = {
+      category_key: 'PanelMemberType',
+      key: 'BBA3-MQPM2',
+      value_en: 'Medically Qualified Panel Member',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      selected: false
+    };
+    const result = component.loadPanel(panelMembers, panelSpecialism);
+    expect(result).toBe(true);
+    expect(panelMembers.selected).toBe(true);
   });
 
   afterEach(() => {

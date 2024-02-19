@@ -175,6 +175,7 @@ describe('HearingEditSummaryComponent', () => {
     component.serviceHearingValuesModel = initialState.hearings.hearingValues.serviceHearingValuesModel;
     component.ngOnInit();
     const expectedResult: PropertiesUpdatedOnPageVisit = {
+      hearingId: '1000000',
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -186,6 +187,24 @@ describe('HearingEditSummaryComponent', () => {
       }
     };
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
+  });
+
+  it('should set the pagesToDispaly', () => {
+    const sectionsToDisplay = [
+      'hearing-requirements',
+      'hearing-facilities',
+      'hearing-stage',
+      'hearing-attendance',
+      'hearing-venue',
+      'hearing-welsh',
+      'hearing-judge',
+      'hearing-panel',
+      'hearing-timing',
+      'hearing-link',
+      'hearing-additional-instructions'
+    ];
+    component.ngOnInit();
+    expect(component.sectionsToDisplay).toEqual(sectionsToDisplay);
   });
 
   it('should set the hearingWindowChangesRequired to true', () => {

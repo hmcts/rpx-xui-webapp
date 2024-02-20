@@ -371,11 +371,6 @@ describe('HearingEditSummaryComponent', () => {
           hearingChannelEmail: ['New email'],
           hearingChannelPhone: ['New Phone']
         },
-        organisationDetails: {
-          name: 'New organisation name',
-          organisationType: 'New organisation type',
-          cftOrganisationID: 'New organisation Id'
-        },
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
@@ -392,7 +387,6 @@ describe('HearingEditSummaryComponent', () => {
     const expectedResult = [
       {
         partyID: 'P1',
-        partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'New appellant',
         individualDetails: {
@@ -418,11 +412,6 @@ describe('HearingEditSummaryComponent', () => {
           hearingChannelEmail: ['New email'],
           hearingChannelPhone: ['New Phone']
         },
-        organisationDetails: {
-          name: 'New organisation name',
-          organisationType: 'New organisation type',
-          cftOrganisationID: 'New organisation Id'
-        },
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
@@ -434,22 +423,8 @@ describe('HearingEditSummaryComponent', () => {
       },
       {
         partyID: 'P2',
-        partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        individualDetails: {
-          preferredHearingChannel: 'byVideo',
-          reasonableAdjustments: [
-            'RA0005'
-          ],
-          interpreterLanguage: null,
-          relatedParties: undefined,
-          custodyStatus: undefined,
-          vulnerableFlag: undefined,
-          vulnerabilityDetails: undefined,
-          hearingChannelEmail: undefined,
-          hearingChannelPhone: undefined
-        },
         organisationDetails: {
           name: 'DWP',
           organisationType: 'GOV',
@@ -466,16 +441,8 @@ describe('HearingEditSummaryComponent', () => {
       },
       {
         partyID: 'P3',
-        partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        individualDetails: {
-          preferredHearingChannel: 'byVideo',
-          reasonableAdjustments: [
-            'RA0005'
-          ],
-          interpreterLanguage: null
-        },
         organisationDetails: {
           name: 'DWP',
           organisationType: 'GOV',
@@ -555,12 +522,52 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should partyDetailsChangesRequired return true', () => {
     spyOn(store, 'select').and.returnValue(of(initialState.hearings.hearingValues));
-    component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
+    const parties = [
+      {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane updated',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: [
+            'RA0042'
+          ]
+        },
+        unavailabilityRanges: [
+          {
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      },
+      {
+        partyID: 'P2',
+        partyType: PartyType.ORG,
+        partyRole: 'claimant',
+        partyName: 'DWP',
+        organisationDetails: {
+          name: 'DWP',
+          organisationType: 'GOV',
+          cftOrganisationID: 'O100000'
+        },
+        unavailabilityRanges: [
+          {
+            unavailableFromDate: '2021-12-20T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      }
+    ];
     component.serviceHearingValuesModel = {
-      ...component.serviceHearingValuesModel,
-      parties: initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      parties: parties
     };
-    component.serviceHearingValuesModel.parties[0].individualDetails.firstName = 'Jane updated';
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
   });

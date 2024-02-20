@@ -80,7 +80,7 @@ describe('PanelMemberRolesAnswerConverter', () => {
     };
 
     const result$ = converter.transformAnswer(of(mockState));
-    result$.subscribe(result => {
+    result$.subscribe((result) => {
       expect(result).toBe('President of Tribunal');
     });
   });
@@ -104,7 +104,7 @@ describe('PanelMemberRolesAnswerConverter', () => {
     };
 
     const result$ = converter.transformAnswer(of(mockState));
-    result$.subscribe(result => {
+    result$.subscribe((result) => {
       expect(result).toBe('President of Tribunal, Tribunal Judge');
     });
   });
@@ -124,7 +124,7 @@ describe('PanelMemberRolesAnswerConverter', () => {
     };
 
     const result$ = converter.transformAnswer(of(mockState));
-    result$.subscribe(result => {
+    result$.subscribe((result) => {
       expect(result).toBe('');
     });
   });

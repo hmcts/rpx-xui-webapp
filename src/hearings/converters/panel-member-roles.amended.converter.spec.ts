@@ -15,8 +15,7 @@ describe('JudgeTypesAmendedConverter', () => {
         hearingRequestMainModel: {
           hearingDetails: {
             panelRequirements: {
-              panelPreferences: [
-              {
+              panelPreferences: [{
                 memberId: '123',
                 memberType: MemberType.PANEL_MEMBER,
                 requirementType: RequirementType.MUSTINC

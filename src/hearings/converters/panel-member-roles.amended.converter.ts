@@ -21,7 +21,19 @@ export class PanelMembersRolesAmendedConverter implements IsAmendedConverter {
       const objPanelExclAB: number = objBPanelRequirements.panelPreferences
         ?.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.EXCLUDE).length || 0;
 
-      return !_.isEqual(objPanelMustA, objPanelMustB) || !_.isEqual(objPanelExclA, objPanelExclAB) || !_.isEqual(objA, objB);
+      const includedCompareJudges: number = objAPanelRequirements?.panelPreferences
+        ?.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).length || 0;
+      const includedJudges: number = objBPanelRequirements?.panelPreferences
+        ?.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).length || 0;
+
+      const comparedPanelmemberRoles = objAPanelRequirements?.roleType;
+      const requestedPanelmemberRoles = objBPanelRequirements?.roleType;
+      const [, ...restCompare] = objAPanelRequirements.roleType;
+      const [, ...restB] = objBPanelRequirements.roleType;
+      const compareRoleType = includedCompareJudges === 0 && comparedPanelmemberRoles.length > 0 ? comparedPanelmemberRoles : restCompare;
+      const roleType = includedJudges === 0 && requestedPanelmemberRoles.length > 0 ? requestedPanelmemberRoles : restB;
+
+      return !_.isEqual(objPanelMustA, objPanelMustB) || !_.isEqual(objPanelExclA, objPanelExclAB) || !_.isEqual(compareRoleType, roleType);
     }));
   }
 }

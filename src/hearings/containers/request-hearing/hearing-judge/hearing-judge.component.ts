@@ -51,9 +51,9 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   }
 
   public getFormData(): void {
-    let judgeTypes: string[] = [];
+    const judgeTypes: string[] = [];
     const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
-    const includedJudges: string[] = panelRequirements.panelPreferences
+    const includedJudges: string[] = panelRequirements?.panelPreferences
       ?.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC)
       .map((preferences) => preferences.memberID);
 
@@ -162,8 +162,21 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
       selectedPanelJudges.push(panelPreference);
     });
     const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
+    const includedJudges: number = selectedPanelJudges
+      ?.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).length || 0;
+
+    const includedJudgesBeforeChange: number = this.hearingRequestMainModel?.hearingDetails?.panelRequirements?.panelPreferences
+      ?.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).length || 0;
+
     let preSelectedPanelRoles = [];
-    if (panelRequirements?.roleType.length > 0) {
+    if (includedJudges === 0 && panelRequirements?.roleType.length > 0) {
+      if (includedJudgesBeforeChange === 0) {
+        const [, ...rest] = panelRequirements.roleType;
+        preSelectedPanelRoles = rest;
+      } else {
+        preSelectedPanelRoles = panelRequirements.roleType;
+      }
+    } else if (includedJudges > 0) {
       const [, ...rest] = panelRequirements.roleType;
       preSelectedPanelRoles = rest;
     }

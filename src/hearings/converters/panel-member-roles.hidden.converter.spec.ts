@@ -47,7 +47,7 @@ describe('PanelMemberRolesHiddenConverter', () => {
       }
     };
     const result$ = panelMemberRolesHiddenConverter.transformHidden(of(mockState));
-    result$.subscribe(result => {
+    result$.subscribe((result) => {
       expect(result).toBe(true);
     });
   });
@@ -70,7 +70,7 @@ describe('PanelMemberRolesHiddenConverter', () => {
       }
     };
     const result$ = panelMemberRolesHiddenConverter.transformHidden(of(mockState));
-    result$.subscribe(result => {
+    result$.subscribe((result) => {
       expect(result).toBe(false);
     });
   });

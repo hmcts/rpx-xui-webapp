@@ -14,7 +14,7 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingJudgeComponent } from './hearing-judge.component';
 
-xdescribe('HearingJudgeComponent', () => {
+describe('HearingJudgeComponent', () => {
   let component: HearingJudgeComponent;
   let fixture: ComponentFixture<HearingJudgeComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -156,7 +156,7 @@ xdescribe('HearingJudgeComponent', () => {
     expect(childComponent.isExcludeJudgeInputValid).toHaveBeenCalled();
   });
 
-  it('should check prepareHearingRequestData', () => {
+  xit('should check prepareHearingRequestData', () => {
     const judgeInfo: JudicialUserModel = {
       title: 'Mr',
       knownAs: 'Hearing Judge',

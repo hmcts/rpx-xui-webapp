@@ -22,7 +22,7 @@ export class PanelMemberRolesAnswerConverter implements AnswerConverter {
         if (includedJudges === 0 && panelRequirements.roleType.length > 0) {
           const [, ...rest] = panelRequirements.roleType;
           selectedPanelRole = rest;
-        } else if(includedJudges > 0 && panelRequirements.roleType.length > 0) {
+        } else if (includedJudges > 0 && panelRequirements.roleType.length > 0) {
           selectedPanelRole = panelRequirements.roleType;
         } else {
           selectedPanelRole = [];

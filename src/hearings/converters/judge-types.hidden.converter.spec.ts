@@ -29,7 +29,8 @@ describe('JudgeTypesHiddenConverter', () => {
         memberID: '123',
         memberType: MemberType.JUDGE,
         requirementType: RequirementType.MUSTINC
-      }]
+      }],
+      roleType: ['role1']
     };
     const result$ = judgeTypesHiddenConverter.transformHidden(of(STATE));
     const showWelshPage = true;

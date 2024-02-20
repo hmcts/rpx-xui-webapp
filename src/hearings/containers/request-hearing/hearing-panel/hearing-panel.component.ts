@@ -143,7 +143,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       if (includedJudges > 0) {
         roleType = this.hearingRequestMainModel.hearingDetails?.panelRequirements.roleType;
       } else {
-        const [, ...rest] = this.hearingRequestMainModel.hearingDetails?.panelRequirements.roleType;
+        const [, ...rest] = this.hearingRequestMainModel.hearingDetails.panelRequirements.roleType;
         roleType = rest;
       }
 
@@ -228,9 +228,9 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     const includedJudges: number = this.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences
       ?.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).length || 0;
     const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
-    let preSelectedPanelRoles: string[] = [];
+    const preSelectedPanelRoles: string[] = [];
     if (includedJudges === 0 && panelRequirements.roleType.length > 0) {
-      preSelectedPanelRoles.push(panelRequirements.roleType[0])
+      preSelectedPanelRoles.push(panelRequirements.roleType[0]);
     }
     const selectedPanelJudges: PanelPreferenceModel[] = panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter((preferences) => preferences.memberType === MemberType.JUDGE) || [];
     this.hearingRequestMainModel = {

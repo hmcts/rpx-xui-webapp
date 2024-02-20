@@ -9,7 +9,7 @@ export class HearingPanelAmendedConverter implements IsAmendedConverter {
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {
     return hearingState$.pipe(map((state) => {
       const hearingComparePanelRequirements = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements;
-      const comparedPanelMembers: number =  hearingComparePanelRequirements?.panelPreferences?.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER).length || 0;
+      const comparedPanelMembers: number = hearingComparePanelRequirements?.panelPreferences?.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER).length || 0;
       const comparedPanelSpecialisms: number = hearingComparePanelRequirements?.panelSpecialisms?.length || 0;
 
       const hearingRequestPanelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;

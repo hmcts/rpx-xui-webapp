@@ -1,6 +1,6 @@
 import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
@@ -145,6 +145,14 @@ class MockFeatureToggleService implements FeatureToggleService {
       caseType: 'Benefit',
       roles: ['caseworker-sscs-judge', 'caseworker-sscs']
     }] as unknown as R);
+  }
+
+  public getValueSync<R>(_key: string, _defaultValue: R): R {
+    return {
+      jurisdiction: 'SSCS',
+      caseType: 'Benefit',
+      roles: ['caseworker-sscs-judge', 'caseworker-sscs']
+    } as unknown as R;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function

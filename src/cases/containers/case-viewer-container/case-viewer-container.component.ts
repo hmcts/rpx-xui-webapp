@@ -3,8 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
-import { combineLatest, of } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
+import { combineLatest, of, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
@@ -26,6 +25,70 @@ export class CaseViewerContainerComponent implements OnInit {
   public prependedTabs$: Observable<CaseTab[]>;
   public appendedTabs$: Observable<CaseTab[]>;
   public userRoles$: Observable<string[]>;
+  private waDefaultServiceConfig: any = {
+    'configurations': [
+      {
+        'caseTypes': [
+          ''
+        ],
+        'releaseVersion': '4',
+        'serviceName': ''
+      },
+      {
+        'caseTypes': [
+          'Asylum'
+        ],
+        'releaseVersion': '4',
+        'serviceName': 'IA'
+      },
+      {
+        'caseTypes': [
+          'CIVIL',
+          'GENERALAPPLICATION'
+        ],
+        'releaseVersion': '4',
+        'serviceName': 'CIVIL'
+      },
+      {
+        'caseTypes': [
+          'PRIVATELAW',
+          'PRLAPPS'
+        ],
+        'releaseVersion': '4',
+        'serviceName': 'PRIVATELAW'
+      },
+      {
+        'caseTypes': [
+          'CriminalInjuriesCompensation'
+        ],
+        'releaseVersion': '4',
+        'serviceName': 'ST_CIC'
+      },
+      {
+        'caseTypes': [
+          'ET_EnglandWales',
+          'ET_Scotland'
+        ],
+        'releaseVersion': '4',
+        'serviceName': 'EMPLOYMENT'
+      },
+      {
+        'caseTypes': [
+          'Benefit',
+          'SSCS_ExceptionRecord'
+        ],
+        'releaseVersion': '4',
+        'serviceName': 'SSCS'
+      },
+      {
+        'caseTypes': [
+          'CARE_SUPERVISION_EPO'
+        ],
+        'releaseVersion': '4',
+        'serviceName': 'PUBLICLAW'
+      }
+    ]
+  };
 
   private readonly prependedTabs: CaseTab[] = [
     {
@@ -52,10 +115,10 @@ export class CaseViewerContainerComponent implements OnInit {
   ];
 
   constructor(private readonly route: ActivatedRoute,
-              private readonly store: Store<fromRoot.State>,
-              private readonly featureToggleService: FeatureToggleService,
-              private readonly allocateRoleService: AllocateRoleService,
-              private readonly waService: WASupportedJurisdictionsService) {
+    private readonly store: Store<fromRoot.State>,
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly allocateRoleService: AllocateRoleService,
+    private readonly waService: WASupportedJurisdictionsService) {
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
       map((userDetails) => userDetails.userInfo.roles)
     );
@@ -84,7 +147,7 @@ export class CaseViewerContainerComponent implements OnInit {
 
   private prependedCaseViewTabs(): Observable<CaseTab[]> {
     return combineLatest([
-      this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null),
+      this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, this.waDefaultServiceConfig),
       this.userRoles$,
       this.waService.getWASupportedJurisdictions(),
       this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.excludedRolesForCaseTabs, [])

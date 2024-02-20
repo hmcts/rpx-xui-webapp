@@ -93,21 +93,18 @@ const data = {
                 release: "general", userIdentifier: "CASEWORKER_GLOBALSEARCH",
                 key: "Welcome01"
             },
-
             {
                 idamId: "ae28c49a-ad0f-467a-a480-15fcaa66165d",
                 email: "exuigsuser@mailinator.com",
                 release: "general", userIdentifier: "WA2",
                 key: "Welcome01"
             },
-
             {
                 idamId: "ae28c49a-ad0f-467a-a480-15fcaa66165d",
                 email: "exuigsuser@mailinator.com",
                 release: "general", userIdentifier: "WA2_GLOBAL-SEARCH",
                 key: "Welcome01"
             },
-
             {
                 idamId: "7381c1ae-9cc9-4251-b283-727feef94a3d",
                 email: "xui_bookingui_on@hmcts.net",
@@ -143,6 +140,18 @@ const data = {
                 email: "xui_casefileview_v11_off@mailinator.com",
                 release: "restricted-case-file-view-v1.1-off", userIdentifier: "RESTRICTED_CASE_FILE_VIEW_V1.1_OFF",
                 key: "Welcome01"
+            },
+            {
+                idamId: "e6cfb5e9-10c4-456c-ad51-160f077bda79",
+                email: "xui_hearing_manager_cr84_on@justice.gov.uk",
+                release: "hearing_CR84", userIdentifier: "HEARING_MANAGER_CR84_ON",
+                key: "Monday01"
+            },
+            {
+                idamId: "45295735-175a-45f0-94de-cdb805fccff3",
+                email: "xui_hearing_manager_cr84_off@justice.gov.uk",
+                release: "hearing_CR84", userIdentifier: "HEARING_MANAGER_CR84_OFF",
+                key: "Monday01"
             }
 
 
@@ -156,7 +165,7 @@ const data = {
             },
             {
                 idamId: "12b6a360-7f19-4985-b065-94320a891eaa",
-                email: "lukesuperuserxui@mailnesia.com",
+                email: "lukesuperuserxui_new@mailnesia.com",
                 release: "general", userIdentifier: "SOLICITOR"
             },
             {

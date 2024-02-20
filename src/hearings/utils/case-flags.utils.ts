@@ -114,11 +114,10 @@ export class CaseFlagsUtils {
 
   public static convertPartiesToPartyWithFlags(caseFlagReferenceModels: CaseFlagReferenceModel[],
     partyDetails: PartyDetailsModel[],
-    partiesFromServiceValue?: PartyDetailsModel[]): Map<string, CaseFlagReferenceModel[]> {
+    partiesFromServiceValue: PartyDetailsModel[]): Map<string, CaseFlagReferenceModel[]> {
     const partyWithFlags: Map<string, CaseFlagReferenceModel[]> = new Map();
     partyDetails.forEach((party) => {
       const foundPartyFromService = partiesFromServiceValue.find((pt) => pt.partyID === party.partyID);
-      const partyName = party.partyName ? party.partyName : (foundPartyFromService ? foundPartyFromService.partyName : '');
       let reasonableAdjustments: string[] = party.individualDetails && party.individualDetails.reasonableAdjustments ? party.individualDetails.reasonableAdjustments : [];
       // If reasonable adjustments are not found in the hearing request,
       // check the service hearing values in case flags have been set after the hearing was requested
@@ -130,6 +129,9 @@ export class CaseFlagsUtils {
         allFlagsId.push(party.individualDetails.interpreterLanguage);
       }
       const allFlags: CaseFlagReferenceModel[] = allFlagsId.map((flagId) => CaseFlagsUtils.findFlagByFlagId(caseFlagReferenceModels, flagId));
+      const partyName = party.individualDetails
+        ? HearingsUtils.getPartyNameFormatted(party.individualDetails)
+        : (foundPartyFromService ? HearingsUtils.getPartyNameFormatted(foundPartyFromService.individualDetails) : '');
       if (partyName) {
         partyWithFlags.set(partyName, allFlags);
       }

@@ -439,6 +439,12 @@ describe('CaseFlagsUtils', () => {
       expect(HearingsUtils.hasPartyNameChanged).not.toHaveBeenCalled();
     });
 
+    it('should call getPartyNameFormatted to format the party name', () => {
+      spyOn(HearingsUtils, 'getPartyNameFormatted').and.returnValue('Jane Smith');
+      CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
+      expect(HearingsUtils.getPartyNameFormatted).toHaveBeenCalled();
+    });
+
     it('should set reasonable adjustments from hearing request if found', () => {
       const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
       expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag1);

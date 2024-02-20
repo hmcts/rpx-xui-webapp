@@ -60,8 +60,9 @@ export class HearingRequirementsSectionComponent implements OnInit {
           flagIds = [...flagIds, partyInSHV.individualDetails.interpreterLanguage];
         }
         const flags = flagIds?.map((flagId) => CaseFlagsUtils.findFlagByFlagId(this.caseFlagsRefData, flagId))?.filter((flag) => flag !== null);
-        if (partyInSHV.partyName && flags?.length > 0) {
-          partiesWithFlags.set(partyInSHV.partyName, flags);
+        const partyName = HearingsUtils.getPartyNameFormatted(partyInSHV.individualDetails);
+        if (partyName && flags?.length > 0) {
+          partiesWithFlags.set(partyName, flags);
         }
       }
     });

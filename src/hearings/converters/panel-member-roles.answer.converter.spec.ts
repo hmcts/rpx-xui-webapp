@@ -115,8 +115,52 @@ describe('PanelMemberRolesAnswerConverter', () => {
         hearingRequestMainModel: {
           hearingDetails: {
             panelRequirements: {
+              panelPreferences: [{
+                memberID: '123',
+                memberType: MemberType.JUDGE,
+                requirementType: RequirementType.MUSTINC
+              }],
+              roleType: []
+            }
+          }
+        }
+      }
+    };
+
+    const result$ = converter.transformAnswer(of(mockState));
+    result$.subscribe((result) => {
+      expect(result).toBe('');
+    });
+  });
+
+  it('should transform none hearing panel member', () => {
+    mockState = {
+      hearingRequest: {
+        hearingRequestMainModel: {
+          hearingDetails: {
+            panelRequirements: {
               panelPreferences: [],
               roleType: ['84']
+            }
+          }
+        }
+      }
+    };
+
+    const result$ = converter.transformAnswer(of(mockState));
+    result$.subscribe((result) => {
+      expect(result).toBe('');
+    });
+  });
+
+  it('should transform none hearing panel member', () => {
+    mockState = {
+      hearingRequest: {
+        hearingRequestMainModel: {
+          hearingDetails: {
+            panelRequirements: {
+              panelPreferences: [],
+              roleType: []
             }
           }
         }

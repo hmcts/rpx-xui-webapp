@@ -37,4 +37,15 @@ describe('JudgeTypesHiddenConverter', () => {
     const expected = cold('(b|)', { b: showWelshPage });
     expect(result$).toBeObservable(expected);
   });
+
+  it('should transform hidden of false answer', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
+      roleType: ['role1']
+    };
+    const result$ = judgeTypesHiddenConverter.transformHidden(of(STATE));
+    const showWelshPage = false;
+    const expected = cold('(b|)', { b: showWelshPage });
+    expect(result$).toBeObservable(expected);
+  });
 });

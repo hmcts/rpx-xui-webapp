@@ -1,7 +1,7 @@
 import * as _ from 'underscore';
 import { CaseFlagGroup } from '../models/caseFlagGroup.model';
 import { CaseFlagReferenceModel } from '../models/caseFlagReference.model';
-import { CaseFlagType, PartyType } from '../models/hearings.enum';
+import { CaseFlagType } from '../models/hearings.enum';
 import { AmendmentLabelStatus } from '../models/hearingsUpdateMode.enum';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { PartyFlagsDisplayModel, PartyFlagsModel } from '../models/partyFlags.model';
@@ -118,7 +118,6 @@ export class CaseFlagsUtils {
     const partyWithFlags: Map<string, CaseFlagReferenceModel[]> = new Map();
     partyDetails.forEach((party) => {
       const foundPartyFromService = partiesFromServiceValue.find((pt) => pt.partyID === party.partyID);
-      console.log('FOUND PARTY FROM SERVICE', JSON.stringify(foundPartyFromService));
       const partyName = party.individualDetails
         ? `${party.individualDetails.firstName} ${party.individualDetails.lastName}`
         : (foundPartyFromService ? foundPartyFromService.partyName : '');

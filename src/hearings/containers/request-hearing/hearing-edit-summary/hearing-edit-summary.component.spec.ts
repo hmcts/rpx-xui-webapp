@@ -261,7 +261,6 @@ describe('HearingEditSummaryComponent', () => {
         hearingWindowChangesRequired: false
       }
     };
-    console.log('hearingsService.propertiesUpdatedOnPageVisit', JSON.stringify(hearingsService.propertiesUpdatedOnPageVisit));
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
   });
 

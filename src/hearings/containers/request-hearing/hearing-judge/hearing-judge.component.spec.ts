@@ -156,7 +156,7 @@ describe('HearingJudgeComponent', () => {
     expect(childComponent.isExcludeJudgeInputValid).toHaveBeenCalled();
   });
 
-  xit('should check prepareHearingRequestData', () => {
+  it('should check prepareHearingRequestData', () => {
     const judgeInfo: JudicialUserModel = {
       title: 'Mr',
       knownAs: 'Hearing Judge',
@@ -171,7 +171,10 @@ describe('HearingJudgeComponent', () => {
       isMagistrate: '',
       isPanelMember: ''
     };
-
+    component.hearingRequestMainModel.hearingDetails.panelRequirements = {
+      panelPreferences: [],
+      roleType: ['role1']
+    };
     component.hearingJudgeForm.controls.specificJudge.setValue(RadioOptions.YES);
     component.hearingJudgeForm.controls.judgeName.setValue(judgeInfo);
     component.prepareHearingRequestData();

@@ -208,8 +208,7 @@ describe('HearingAnswersPipe', () => {
 
   it('should transform type from request', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.TYPE_FROM_REQUEST, of(STATE), 0);
-    const typeName = `PERSONAL INDEPENDENT PAYMENT (NEW CLAIM)
-<ul><li>- CONDITIONS OF ENTITLEMENT - COMPLEX</li><li>- GOOD CAUSE</li><li>- RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX</li></ul>`;
+    const typeName = 'PERSONAL INDEPENDENT PAYMENT (NEW CLAIM) \n<ul><li>- CONDITIONS OF ENTITLEMENT - COMPLEX</li><li>- GOOD CAUSE</li><li>- RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX</li></ul>';
     const expected = cold('(b|)', { b: typeName });
     expect(result$).toBeObservable(expected);
   });

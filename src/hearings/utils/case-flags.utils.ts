@@ -204,7 +204,11 @@ export class CaseFlagsUtils {
           if (partyInSHV.individualDetails?.reasonableAdjustments?.includes(reasonableAdjustmentFlag.flagId)) {
             reasonableAdjustmentFlag.flagAmendmentLabelStatus = AmendmentLabelStatus.ACTION_NEEDED;
           } else {
-            reasonableAdjustmentFlag.flagAmendmentLabelStatus = AmendmentLabelStatus.WARNING;
+            // Do not show warning message for Language interpreter as this will be handled as part of future enhancement
+            // Please see the comments recorded in the ticket https://tools.hmcts.net/jira/browse/EUI-9183
+            if (reasonableAdjustmentFlag.flagId !== this.LANGUAGE_INTERPRETER_FLAG_ID) {
+              reasonableAdjustmentFlag.flagAmendmentLabelStatus = AmendmentLabelStatus.WARNING;
+            }
           }
         }
       }

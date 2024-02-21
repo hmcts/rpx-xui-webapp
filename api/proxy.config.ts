@@ -46,9 +46,6 @@ export const initProxy = (app: Express) => {
   });
 
   applyProxy(app, {
-    middlewares: [bodyParser.json()],
-    onReq: documents.handleRequest,
-    onRes: documents.handleResponse,
     rewrite: true,
     rewriteUrl: '/cases/documents',
     source: '/documentsv2',

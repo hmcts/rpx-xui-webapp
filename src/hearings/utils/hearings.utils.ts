@@ -45,16 +45,7 @@ export class HearingsUtils {
     );
   }
 
-  public static getHearingWindow(propertiesUpdatedOnPageVisit: PropertiesUpdatedOnPageVisit,
-    hearingCondition: HearingConditions,
-    hearingRequestMainModel: HearingRequestMainModel): HearingWindowModel {
-    if (hearingCondition.mode === Mode.VIEW_EDIT &&
-        propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow') &&
-        propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired) {
-      return propertiesUpdatedOnPageVisit.hearingWindow && Object.keys(propertiesUpdatedOnPageVisit.hearingWindow).length === 0
-        ? null
-        : propertiesUpdatedOnPageVisit.hearingWindow;
-    }
+  public static getHearingWindow(hearingRequestMainModel: HearingRequestMainModel): HearingWindowModel {
     return hearingRequestMainModel.hearingDetails.hearingWindow && Object.keys(hearingRequestMainModel.hearingDetails.hearingWindow).length === 0
       ? null
       : hearingRequestMainModel.hearingDetails.hearingWindow;

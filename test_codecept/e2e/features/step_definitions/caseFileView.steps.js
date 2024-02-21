@@ -13,7 +13,9 @@ Then('In case file view tab, I see documents media view', async function () {
 });
 
 Then('In case file view tab, I see documents tree view header with text {string}', async function (headerText) {
-    expect(await caseFileViewPageObject.documentFolderHeader.getText()).to.includes(headerText);
+    await browserWaits.retryWithActionCallback(async () => {
+        expect(await caseFileViewPageObject.documentFolderHeader.getText()).to.includes(headerText);
+    })
 
 });
 

@@ -17,7 +17,7 @@ nodejs:
      HEALTH_WORK_ALLOCATION_TASK_API: http://wa-task-management-api-aat.service.core-compute-aat.internal/health
      HEALTH_ROLE_ASSIGNMENT_API: http://am-role-assignment-service-aat.service.core-compute-aat.internal/health
      HEALTH_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal/health
-     SERVICES_TRANSLATION_API_URL: https://ts-translation-service-pr-265.preview.platform.hmcts.net
+     SERVICES_TRANSLATION_API_URL: http://ts-translation-service-aat.service.core-compute-aat.internal
      STUB: false
      DEBUG: xuiNode:*,-xuiNode:auth:s2s,-xuiNode:auth:oauth2
      FEATURE_WORKALLOCATION_ENABLED: true

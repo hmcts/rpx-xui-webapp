@@ -114,14 +114,20 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       } else {
         const partyInHMC = partyDetails.find((party) => party.partyID === partyDetailsModel.partyID);
         if (partyInHMC) {
-          partyDetailsModel = {
-            ...partyDetailsModel,
+          (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues({
+            partyID: partyDetailsModel.partyID,
+            partyType: partyDetailsModel.partyType,
+            partyRole: partyDetailsModel.partyRole,
+            partyName: `${partyDetailsModel.individualDetails.firstName} ${partyDetailsModel.individualDetails.lastName}`,
             individualDetails: {
-              ...partyDetailsModel,
+              ...partyDetailsModel.individualDetails,
               preferredHearingChannel: partyInHMC.individualDetails?.preferredHearingChannel
             },
+            organisationDetails: partyDetailsModel.organisationDetails,
+            unavailabilityDOW: partyDetailsModel.unavailabilityDOW,
+            unavailabilityRanges: partyDetailsModel.unavailabilityRanges,
             partyAmendmentStatus: HearingsUtils.hasPartyNameChanged(partyInHMC, partyDetailsModel) ? AmendmentLabelStatus.AMENDED : AmendmentLabelStatus.NONE
-          };
+          } as PartyDetailsModel) as FormGroup);
         }
       }
       (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyDetailsModel) as FormGroup);

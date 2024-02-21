@@ -341,8 +341,16 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // Get the individual parties
     const individualParties = this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND);
     // Return true if there are changes to the interpreter languages
-    const interpreterLanguagesSHV = this.serviceHearingValuesModel.parties.map((party) => party.individualDetails?.interpreterLanguage);
-    const interpreterLanguagesHMC = individualParties.map((party) => party.individualDetails?.interpreterLanguage);
+    const interpreterLanguagesSHV = this.serviceHearingValuesModel.parties.map(
+      (party) => party.individualDetails?.interpreterLanguage
+    )?.filter(
+      (interpreterLanguage) => interpreterLanguage !== null && interpreterLanguage !== undefined
+    );
+    const interpreterLanguagesHMC = individualParties.map(
+      (party) => party.individualDetails?.interpreterLanguage
+    )?.filter(
+      (interpreterLanguage) => interpreterLanguage !== null && interpreterLanguage !== undefined
+    );
     if (!_.isEqual(interpreterLanguagesSHV, interpreterLanguagesHMC)) {
       return true;
     }

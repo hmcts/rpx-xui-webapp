@@ -5062,6 +5062,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/http-proxy@npm:^1.17.5":
+  version: 1.17.14
+  resolution: "@types/http-proxy@npm:1.17.14"
+  dependencies:
+    "@types/node": "*"
+  checksum: 491320bce3565bbb6c7d39d25b54bce626237cfb6b09e60ee7f77b56ae7c6cbad76f08d47fe01eaa706781124ee3dfad9bb737049254491efd98ed1f014c4e83
+  languageName: node
+  linkType: hard
+
 "@types/http-proxy@npm:^1.17.8, @types/http-proxy@npm:^1.17.9":
   version: 1.17.11
   resolution: "@types/http-proxy@npm:1.17.11"
@@ -12307,7 +12316,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-proxy-middleware@npm:^2.0.3, http-proxy-middleware@npm:^2.0.6":
+"http-proxy-middleware@npm:1.1.x":
+  version: 1.1.2
+  resolution: "http-proxy-middleware@npm:1.1.2"
+  dependencies:
+    "@types/http-proxy": ^1.17.5
+    http-proxy: ^1.18.1
+    is-glob: ^4.0.1
+    is-plain-obj: ^3.0.0
+    micromatch: ^4.0.2
+  checksum: 919de2881ae94353fbc06dab219fd413e6ecd9d52a6ecad0d4aa2855f0c0691dd3d14c0c1ca5f558d3eabfa6168911e5093d480eeffe52b1cdb2259ded962c78
+  languageName: node
+  linkType: hard
+
+"http-proxy-middleware@npm:^2.0.3":
   version: 2.0.6
   resolution: "http-proxy-middleware@npm:2.0.6"
   dependencies:
@@ -19128,7 +19150,7 @@ __metadata:
     govuk-frontend: ^3.12.0
     govuk_frontend_toolkit: ^9.0.0
     helmet: ^3.21.3
-    http-proxy-middleware: ^2.0.6
+    http-proxy-middleware: 1.1.x
     isomorphic-fetch: ^3.0.0
     jasmine-core: ~3.4.0
     jasmine-marbles: ^0.9.1

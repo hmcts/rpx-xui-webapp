@@ -13,6 +13,7 @@ import { JudicialRefDataService } from '../../../services/judicial-ref-data.serv
 import * as fromHearingStore from '../../../store';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import { HearingsUtils } from 'src/hearings/utils/hearings.utils';
 
 @Component({
   selector: 'exui-hearing-judge',
@@ -162,23 +163,18 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
       selectedPanelJudges.push(panelPreference);
     });
     const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
-    const includedJudges: number = selectedPanelJudges
-      ?.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).length || 0;
-
-    const includedJudgesBeforeChange: number = this.hearingRequestMainModel?.hearingDetails?.panelRequirements?.panelPreferences
-      ?.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).length || 0;
+    const includedJudges: number = HearingsUtils.getMustIncludedJudgeCount(selectedPanelJudges);
+    const includedJudgesBeforeChange: number = HearingsUtils.getMustIncludedJudgeCount(this.hearingRequestMainModel?.hearingDetails?.panelRequirements?.panelPreferences);
 
     let preSelectedPanelRoles = [];
     if (includedJudges === 0 && panelRequirements?.roleType.length > 0) {
       if (includedJudgesBeforeChange === 0) {
-        const [, ...rest] = panelRequirements.roleType;
-        preSelectedPanelRoles = rest;
+        preSelectedPanelRoles = HearingsUtils.getRestOfRoleType(panelRequirements.roleType);
       } else {
         preSelectedPanelRoles = panelRequirements.roleType;
       }
     } else if (includedJudges > 0) {
-      const [, ...rest] = panelRequirements.roleType;
-      preSelectedPanelRoles = rest;
+      preSelectedPanelRoles = HearingsUtils.getRestOfRoleType(panelRequirements.roleType);
     }
     const selectedPanelMembers = panelRequirements?.panelPreferences.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER) || [];
     this.hearingRequestMainModel = {

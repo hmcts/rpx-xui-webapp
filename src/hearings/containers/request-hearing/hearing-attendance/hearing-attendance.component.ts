@@ -130,8 +130,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
           } as PartyDetailsModel) as FormGroup);
         }
       }
-      (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyDetailsModel) as FormGroup);
     });
+    this.partiesFormArray = this.attendanceFormGroup.controls.parties as FormArray;
   }
 
   public executeAction(action: ACTION): void {

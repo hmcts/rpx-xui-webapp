@@ -28,8 +28,8 @@ export class PanelMembersRolesAmendedConverter implements IsAmendedConverter {
       const requestedPanelmemberRoles = objBPanelRequirements?.roleType;
       const [, ...restCompare] = objAPanelRequirements.roleType;
       const [, ...restB] = objBPanelRequirements.roleType;
-      const compareRoleType = includedCompareJudges === 0 && comparedPanelmemberRoles.length > 0 ? comparedPanelmemberRoles : restCompare;
-      const roleType = includedJudges === 0 && requestedPanelmemberRoles.length > 0 ? requestedPanelmemberRoles : restB;
+      const compareRoleType = includedCompareJudges === 0 && comparedPanelmemberRoles.length > 0 ? restCompare : comparedPanelmemberRoles;
+      const roleType = includedJudges === 0 && requestedPanelmemberRoles.length > 0 ? restB : requestedPanelmemberRoles;
 
       return !_.isEqual(objPanelMustA, objPanelMustB) || !_.isEqual(objPanelExclA, objPanelExclAB) || !_.isEqual(compareRoleType, roleType);
     }));

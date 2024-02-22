@@ -13,7 +13,9 @@ export class JudgeTypesAmendedConverter implements IsAmendedConverter {
 
       const objA: number = HearingsUtils.getMustIncludedJudgeCount(objAPanelRequirements?.panelPreferences);
       const objB: number = HearingsUtils.getMustIncludedJudgeCount(objBPanelRequirements?.panelPreferences);
-      return !_.isEqual(objA, objB);
+      const compareRoleType = objA === 0 && objAPanelRequirements.roleType.length > 0 ? objAPanelRequirements.roleType[0] : [];
+      const roleType = objB === 0 && objBPanelRequirements.roleType.length > 0 ? objBPanelRequirements.roleType[0] : [];
+      return !_.isEqual(compareRoleType, roleType);
     }));
   }
 }

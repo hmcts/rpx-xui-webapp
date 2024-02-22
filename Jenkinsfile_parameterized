@@ -14,7 +14,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure")
+@Library("Infrastructure@DTSPO-15800-Angular-nagger")
 
 def type      = "nodejs"
 def product   = "xui"

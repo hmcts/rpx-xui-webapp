@@ -13,7 +13,7 @@ properties([
 
 // use Infrastructure branch in PR for long running FT's beyond 40mins for DEBUG only
 // @Library("Infrastructure@fpl-long-ft-timeout")
-@Library("Infrastructure")
+@Library("Infrastructure@DTSPO-15800-Angular-nagger")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 

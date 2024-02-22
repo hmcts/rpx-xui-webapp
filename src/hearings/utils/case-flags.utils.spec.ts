@@ -284,7 +284,6 @@ describe('CaseFlagsUtils', () => {
       {
         partyID: 'P1',
         partyType: PartyType.IND,
-        partyName: 'Jane Smith',
         partyRole: 'APPL',
         individualDetails: {
           firstName: 'Jane',
@@ -297,7 +296,6 @@ describe('CaseFlagsUtils', () => {
       {
         partyID: 'P2',
         partyType: PartyType.IND,
-        partyName: 'Jack Ryan',
         partyRole: 'APPL',
         individualDetails: {
           firstName: 'Jack',
@@ -307,7 +305,6 @@ describe('CaseFlagsUtils', () => {
       {
         partyID: 'P3',
         partyType: PartyType.IND,
-        partyName: 'Rob Kennedy',
         partyRole: 'APPL',
         individualDetails: {
           firstName: 'Rob',
@@ -452,22 +449,22 @@ describe('CaseFlagsUtils', () => {
 
     it('should set reasonable adjustments from hearing request if found', () => {
       const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
-      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag1);
-      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag2);
+      expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag1);
+      expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag2);
     });
 
     it('should set reasonable adjustments from service hearing values if null in hearing request', () => {
       partyDetails[0].individualDetails.reasonableAdjustments = null;
       const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
-      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag3);
-      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag4);
+      expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag3);
+      expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag4);
     });
 
     it('should set reasonable adjustments from service hearing values if empty array in hearing request', () => {
       partyDetails[0].individualDetails.reasonableAdjustments = [];
       const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
-      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag3);
-      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag4);
+      expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag3);
+      expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag4);
     });
   });
 });

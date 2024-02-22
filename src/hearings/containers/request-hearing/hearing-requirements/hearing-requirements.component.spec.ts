@@ -2812,7 +2812,6 @@ describe('HearingRequirementsComponent', () => {
     ];
     transformedPartyDetails[1].individualDetails.reasonableAdjustments = ['RA0005'];
     expect(result).toEqual(transformedPartyDetails);
-    console.log(result);
   });
 
   it('should dispatch InitializeHearingRequest action', () => {

@@ -26,8 +26,8 @@ export class PanelMembersRolesAmendedConverter implements IsAmendedConverter {
       const comparedPanelmemberRoles = objAPanelRequirements?.roleType;
       const requestedPanelmemberRoles = objBPanelRequirements?.roleType;
 
-      const comparedRestPanelmemberRoles = HearingsUtils.getRestOfRoleType(objAPanelRequirements.roleType);
-      const restPanelmemberRoles = HearingsUtils.getRestOfRoleType(objBPanelRequirements.roleType);
+      const comparedRestPanelmemberRoles = HearingsUtils.getRestOfRoleType(objAPanelRequirements?.roleType);
+      const restPanelmemberRoles = HearingsUtils.getRestOfRoleType(objBPanelRequirements?.roleType);
       const compareRoleType = includedCompareJudges === 0 && comparedPanelmemberRoles.length > 0 ? comparedRestPanelmemberRoles : comparedPanelmemberRoles;
       const roleType = includedJudges === 0 && requestedPanelmemberRoles.length > 0 ? restPanelmemberRoles : requestedPanelmemberRoles;
 

@@ -58,7 +58,10 @@ export class HearingsUtils {
   }
 
   public static getRestOfRoleType(roleType: string[]): string[] {
-    const [, ...rest] = roleType;
+    let rest: string[] = [];
+    if (roleType?.length > 0) {
+      rest = roleType.slice(1);
+    }
     return rest;
   }
 }

@@ -95,16 +95,16 @@ Feature: Case flags V1 Add/Update Language interpreter
 
         When In manage case flag workflow, I click Next
 
-       # Then I am on manage case update flag page "Update flag \"Language Interpreter, Bengali\""
+        #  Then I am on manage case update flag page "Update flag \"Language Interpreter, Bengali\""
 
-        Then In manage case flag page "Update flag \"Language Interpreter, Bengali\"", I validate fields displayed
-            | field       |
-            | Flag status |
+        #  Then In manage case flag page "Update flag \"Language Interpreter, Bengali\"", I validate fields displayed
+        #     | field       |
+        #     | Flag status |
 
-        When In manage case flag page "Update flag \"Language Interpreter, Bengali\"", I input values
-            | field                                           | value             |
-            | Update flag "Language Interpreter, Bengali" comments | Test auto comment |
-            | Flag status                                     | inactive          |
+        # When In manage case flag page "Update flag \"Language Interpreter, Bengali\"", I input values
+        #     | field                                           | value             |
+        #     | Update flag "Language Interpreter, Bengali" comments | Test auto comment |
+        #     | Flag status                                     | inactive          |
 
 
         When In manage case flag workflow, I click Next

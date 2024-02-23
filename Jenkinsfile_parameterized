@@ -16,6 +16,7 @@ properties([
 
 @Library("Infrastructure@DTSPO-15800-Angular-nagger")
 
+
 def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"

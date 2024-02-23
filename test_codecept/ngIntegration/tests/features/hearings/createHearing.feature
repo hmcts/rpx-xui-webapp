@@ -390,7 +390,7 @@ Feature: Create hearings workflow
         When In create hearing page "Do you want a specific judge?", I input values
             | field                         | value                                |
             | Do you want a specific judge? | Yes                                  |
-            | Name of the judge             | auto_test_judge_0@justice.gov.uk |
+            | Name of the judge             | jud,auto_test_judge_0@justice.gov.uk |
         When I click continue in create hearing workflow
 
         # Do you require a panel for this hearing?

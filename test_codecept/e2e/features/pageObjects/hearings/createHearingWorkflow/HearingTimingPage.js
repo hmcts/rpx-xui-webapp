@@ -40,6 +40,20 @@ class HearingTimingPage {
         return await this.pageContainer.isDisplayed();
     }
 
+    async getEarliestDate(){
+        const date = await  this.earliestHearingDate_day.getAttribute('value')
+        const month = await this.earliestHearingDate_month.getAttribute('value')
+        const year = await this.earliestHearingDate_year.getAttribute('value')
+        return `${date}-${month}-${year}`
+    }
+
+    async getLatestate() {
+        const date = await this.latestHearingDate_day.getAttribute('value')
+        const month = await this.latestHearingDate_month.getAttribute('value')
+        const year = await this.latestHearingDate_year.getAttribute('value')
+        return `${date}-${month}-${year}`
+    }
+
     async inputValue(field, value) {
         switch (field) {
             case "Length of hearing":

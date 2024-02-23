@@ -32,7 +32,6 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
       flag.flagComment = `This is comment ${commentCount}`;
       commentCount++;
     });
-    console.log(data.caseFlags.flags, 'marvellours');
     let dataByDefault = data;
     // If service don't supply the screenFlow pre-set the default screen flow from ExUI
     if (!data.screenFlow) {

@@ -1,15 +1,15 @@
-@fullfunctional @functional_enabled @ignore
+@fullfunctional @functional_enabled @functional_debug
 Feature: Case flags V1 Add/Update Language interpreter
 
     Background: Setup case
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with with case flags
         When I setup a case for case flags version "V1"
-            | party                       | fieldName  | value      |
-            | Flags for legal rep Party 1 | Role On Case | Party 1 |
-            | Flags for legal rep Party 1 | Party Name | Applicant  |
-            | Flags for legal rep Party 2 | Role On Case | Party 2 |
-            | Flags for legal rep Party 2 | Party Name | Respondent |
+            | party                       | fieldName    | value      |
+            | Flags for legal rep Party 1 | Role On Case | Party 1    |
+            | Flags for legal rep Party 1 | Party Name   | Applicant  |
+            | Flags for legal rep Party 2 | Role On Case | Party 2    |
+            | Flags for legal rep Party 2 | Party Name   | Respondent |
         Then I see case details page
 
     Scenario: Create case flag
@@ -44,8 +44,8 @@ Feature: Case flags V1 Add/Update Language interpreter
             | Language Interpreter |
 
         When In create case flag page "Language Interpreter", I input values
-            | field                | value       |
-            | Language Interpreter | eng,Bengali |
+            | field                | value               |
+            | Language Interpreter | eng,Bengali Sylheti |
         # | Enter the language manually | true|
         # | Enter the language | Test language |
 
@@ -78,8 +78,8 @@ Feature: Case flags V1 Add/Update Language interpreter
         Then I validate case flags table for "Applicant" has 1 flags
         Then I validate case flags table for "Respondent" has 0 flags
         Then I validate case flags tab table data for "Applicant"
-            | Party level flags        | Comments          | Creation date | Last modified | Flag status |
-            | Language Interpreter | Test auto comment | today |  | ACTIVE |
+            | Party level flags    | Comments          | Creation date | Last modified | Flag status |
+            | Language Interpreter | Test auto comment | today         |               | ACTIVE      |
 
 
 
@@ -95,27 +95,27 @@ Feature: Case flags V1 Add/Update Language interpreter
 
         When In manage case flag workflow, I click Next
 
-        Then I am on manage case update flag page "Update flag \"Language Interpreter, Bengali\""
+        Then I am on manage case update flag page "Update flag \"Language Interpreter, Bengali Sylheti\""
 
-        Then In manage case flag page "Update flag \"Language Interpreter, Bengali\"", I validate fields displayed
+        Then In manage case flag page "Update flag \"Language Interpreter, Bengali Sylheti\"", I validate fields displayed
             | field       |
             | Flag status |
 
-        When In manage case flag page "Update flag \"Language Interpreter, Bengali\"", I input values
-            | field                                           | value             |
-            | Update flag "Language Interpreter, Bengali" comments | Test auto comment |
-            | Flag status                                     | inactive          |
+        When In manage case flag page "Update flag \"Language Interpreter, Bengali Sylheti\"", I input values
+            | field                                                | value             |
+            | Update flag "Language Interpreter, Bengali Sylheti" comments | Test auto comment |
+            | Flag status                                          | inactive          |
 
 
         When In manage case flag workflow, I click Next
 
         Then In manage case flag workflow, I am on Review details page
         Then In manage case flag workflow, I validate Review details displayed
-            | field           | value                          | isChangeLinkDisplayed |
-            | Update flag for | Applicant                      | true                  |
-            | Flag type       | Language Interpreter - Bengali | true                  |
-            | Comments        | Test auto comment              | true                  |
-            | Status          | Inactive                       | false                 |
+            | field           | value                                  | isChangeLinkDisplayed |
+            | Update flag for | Applicant                              | true                  |
+            | Flag type       | Language Interpreter - Bengali Sylheti | true                  |
+            | Comments        | Test auto comment                      | true                  |
+            | Status          | Inactive                               | false                 |
 
         When In manage case flag workflow, I click submit
 
@@ -127,4 +127,4 @@ Feature: Case flags V1 Add/Update Language interpreter
         Then I validate case flags table for "Respondent" has 0 flags
         Then I validate case flags tab table data for "Applicant"
             | Party level flags    | Comments          | Creation date | Last modified | Flag status |
-            | Language Interpreter | Test auto comment | today | today | INACTIVE |
+            | Language Interpreter | Test auto comment | today         | today         | INACTIVE    |

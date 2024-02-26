@@ -95,7 +95,15 @@ class RDLocationService{
     }
 
     getLocationById(epimms_id){
-        const results = this.caseManagementLocations.filter(loc => loc.epimms_id === epimms_id);
+        const results = [];
+        for (const service of this.locationsConfig) {
+            for (const loc of service.locations) {
+                if (loc.epimms_id.includes(epimms_id)) {
+                    results.push(loc);
+                }
+            }
+
+        }
         return results;
     }
 

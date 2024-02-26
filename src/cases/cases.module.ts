@@ -9,8 +9,8 @@ import {
   AlertModule,
   AlertService,
   AuthService as CCDAuthService,
-  CaseEditorModule,
   CaseEditWizardGuard,
+  CaseEditorModule,
   CaseFileViewService,
   CaseHeaderModule,
   CaseListFiltersModule,
@@ -18,8 +18,8 @@ import {
   CaseNotifier,
   CaseReferencePipe,
   CaseResolver,
-  CasesService,
   CaseViewerModule,
+  CasesService,
   CcdCYAPageLabelFilterPipe,
   CreateCaseFiltersModule,
   DocumentManagementService,
@@ -39,11 +39,11 @@ import {
   PipesModule,
   PlaceholderService,
   RequestOptionsBuilder,
+  RetryUtil,
   RouterHelperService,
   SearchFiltersModule,
   SearchResultModule,
-  WorkbasketFiltersModule,
-  RetryUtil
+  WorkbasketFiltersModule
 } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
@@ -67,11 +67,9 @@ import * as fromDirectives from './directives';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 // from services
+import { RestrictedCaseAccessGuard } from './guards/restricted-case-access-guard';
 import * as fromServices from './services';
 import { effects, reducers } from './store';
-import { RestrictedCaseAccessComponent } from './components/restricted-case-access/restricted-case-access.component';
-import { RestrictedCaseAccessContainerComponent } from './containers/restricted-case-access-container/restricted-case-access-container.component';
-import { RestrictedCaseAccessGuard } from './guards/restricted-case-access-guard';
 
 @NgModule({
   imports: [

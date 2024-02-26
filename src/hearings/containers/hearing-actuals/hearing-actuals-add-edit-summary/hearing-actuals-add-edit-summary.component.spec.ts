@@ -14,6 +14,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { HearingActualsAddEditSummaryComponent } from './hearing-actuals-add-edit-summary.component';
 import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
+import { SessionStorageService } from 'src/app/services';
 
 @Pipe({ name: 'transformAnswer' })
 export class MockHearingAnswersPipe implements PipeTransform {
@@ -108,7 +109,8 @@ describe('HearingActualsAddEditSummaryComponent', () => {
           }
         },
         DatePipe,
-        FormatTranslatorService
+        FormatTranslatorService,
+        { provide: SessionStorageService }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -132,10 +134,26 @@ describe('HearingActualsAddEditSummaryComponent', () => {
     expect(component.sub.unsubscribe).toHaveBeenCalled();
   });
 
-  it('should check back method', () => {
-    spyOn(hearingsService, 'navigateAction');
+  it('should navigate to case details page when click back button', () => {
+    const caseInfo = `{
+      "caseType": "Asylum",
+      "cid": "1231231231231231",
+      "jurisdiction": "IA"
+    }`;
+    spyOn(component.sessionStorageService, 'getItem').and.returnValue(caseInfo);
+    const navigateSpy = spyOn(component.router, 'navigate');
+
     component.onBack();
-    expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.BACK);
+    expect(component.sessionStorageService.getItem).toHaveBeenCalled();
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'cases', 'case-details', '1231231231231231', 'hearings']);
+  });
+
+  it('should navigate to back page if caseId not available when click back button', () => {
+    spyOn(component.sessionStorageService, 'getItem').and.returnValue(null);
+    const historyBackSpy = spyOn(window.history, 'back');
+
+    component.onBack();
+    expect(historyBackSpy).toHaveBeenCalled();
   });
 
   it('should return correct hearing type from the hearing types', () => {
@@ -371,7 +389,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
     });
 
     it('should return false if the hearing date is the current date', () => {
-      const currentDate = new Date().toLocaleDateString();
+      const currentDate = new Date().toString();
       const result = component.hearingIsInFuture(currentDate);
       expect(result).toBe(false);
     });

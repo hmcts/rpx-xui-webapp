@@ -4,6 +4,7 @@ var BrowserWaits = require('../../../support/customWaits');
 const date = require('moment');
 var path = require('path');
 var cucumberReporter = require('../../../../codeceptCommon/reportLogger');
+const reportLogger = require('../../../../codeceptCommon/reportLogger')
 var CaseEditPage = require('../caseEditPage');
 const BrowserUtil = require('../../../../ngIntegration/util/browserUtil');
 const App = require('./application');
@@ -129,7 +130,7 @@ class CaseManager {
         let pageCounter = 0;
 
         var checkYouranswers = $(".check-your-answers");
-        isCheckYourAnswersPage = await checkYouranswers.isPresent();
+        isCheckYourAnswersPage = await checkYouranswers.isDisplayed();
         while (!isCheckYourAnswersPage) {
             let page = tcTypeStatus ? pageCounter : "null";
             await BrowserWaits.retryWithActionCallback(async () => {
@@ -140,7 +141,7 @@ class CaseManager {
             });
             
             await BrowserWaits.waitForSeconds(2)
-            isCheckYourAnswersPage = await checkYouranswers.isPresent();
+            isCheckYourAnswersPage = await checkYouranswers.isDisplayed();
             pageCounter++;
         }
         //reset api response to null for next event
@@ -195,19 +196,22 @@ class CaseManager {
 
         var nextStepSelect = element(by.xpath("//*[@id='next-step']"));
         var nextStepSelectoption = null;
-        if (stepName){
+        if (stepName) {
             await nextStepSelect.select(stepName)
-        }else{
+        } else {
             nextStepSelectoption = element(by.xpath("//*[@id='next-step']//option[2]"));
             const someStepEventName = await nextStepSelectoption.getText();
             await nextStepSelect.select(someStepEventName)
 
         }
-      
-        var thisPageUrl = await browser.getCurrentUrl();
-
-        await this.nextStepGoButton.click();
-        await BrowserWaits.waitForPageNavigation(thisPageUrl);
+        await browser.sleep(2)
+        const currentPageUrl = await browser.getCurrentUrl()
+        reportLogger.AddMessage(`on page with URL: ${currentPageUrl}`)
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await this.nextStepGoButton.click();
+            // await BrowserWaits.waitForElement($('exui-case-details-home'));
+            await BrowserWaits.waitForPageNavigation(currentPageUrl)
+        })
 
     }
 
@@ -386,7 +390,14 @@ class CaseManager {
 
                     await BrowserWaits.waitForElement(addressSelectionField);
                     var addressToSelectOption = addressSelectionField.$("option:nth-of-type(2)");
-                    await BrowserWaits.waitForElement(addressToSelectOption);
+                    await BrowserWaits.retryWithActionCallback(async () => {
+                        var addressOptions = await addressSelectionField.getSelectOptions();
+                        if (addressOptions.length <= 1){
+                            throw new Error('')
+                        }
+                    })
+                    // await BrowserWaits.waitForElement(addressToSelectOption);
+                    // const optionText = await addressToSelectOption.getText()
                     await addressSelectionField.selectOptionAtIndex(2);
                     cucumberReporter.AddMessage(fieldName + " : 2nd option selected", LOG_LEVELS.Debug);
                 }); 
@@ -417,9 +428,9 @@ class CaseManager {
                 await selectFieldId.selectOptionAtIndex(2);
 
                 let id = await selectFieldId.getAttribute('id');
-                let selectionOptionValue = await selectOptionElement.getAttribute('value');
-                cucumberReporter.AddMessage(fieldName + " : " + selectionOptionValue, LOG_LEVELS.Debug);
-                this._appendFormPageValues(fieldName1, selectionOptionValue);
+                // let selectionOptionValue = await selectOptionElement.getAttribute('value');
+                // cucumberReporter.AddMessage(fieldName + " : " + selectionOptionValue, LOG_LEVELS.Debug);
+                // this._appendFormPageValues(fieldName1, selectionOptionValue);
                 break;
             case "ccd-write-date-field":
             case "ccd-write-date-container-field":
@@ -443,7 +454,7 @@ class CaseManager {
                     let statusMessage = "";
 
                     await BrowserWaits.waitForCondition(async () => {
-                        let isStatusDisplayed = await statusMessageELement.isPresent();
+                        let isStatusDisplayed = await statusMessageELement.isDisplayed();
                         if (isStatusDisplayed){
                             statusMessage = await statusMessageELement.getText();
                         }
@@ -451,7 +462,7 @@ class CaseManager {
                         return !isStatusDisplayed || statusMessage.includes("error");
                     });
 
-                    let isStatusDisplayed = await statusMessageELement.isPresent();
+                    let isStatusDisplayed = await statusMessageELement.isDisplayed();
                     if (isStatusDisplayed) {
                         statusMessage = await statusMessageELement.getText();
                     }

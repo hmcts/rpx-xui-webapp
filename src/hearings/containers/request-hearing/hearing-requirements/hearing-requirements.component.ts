@@ -90,9 +90,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       hearingWindow = this.serviceHearingValuesModel.hearingWindow;
     }
     const combinedParties: PartyDetailsModel[] = this.combinePartiesWithIndOrOrg(this.serviceHearingValuesModel.parties);
-    // console.log('=============Start=====================================');
-    // console.log(combinedParties);
-    // console.log('=============End=====================================');
+
     const hearingRequestMainModel: HearingRequestMainModel = {
       hearingDetails: {
         duration: this.serviceHearingValuesModel.duration,
@@ -132,7 +130,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       },
       partyDetails: combinedParties
     };
-    // console.log(hearingRequestMainModel);
+
     this.hearingStore.dispatch(new fromHearingStore.InitializeHearingRequest(hearingRequestMainModel));
   }
 
@@ -147,38 +145,20 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   public combinePartiesWithIndOrOrg(partyDetails: PartyDetailsModel[]): PartyDetailsModel[] {
     const combinedPartyDetails: PartyDetailsModel[] = [];
-    const flagsForParty: string[] = []; 
+
     partyDetails.forEach((partyDetail) => {
       const organisationDetails = partyDetail.organisationDetails;
       const party: PartyDetailsModel = {
         ...partyDetail,
         individualDetails: {
           ...partyDetail.individualDetails,
-          reasonableAdjustments: this.getAllPartyFlagsByPartyId(partyDetail.partyID, flagsForParty)
-            .filter((flagId) => flagId !== CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID)
+          reasonableAdjustments: partyDetail?.individualDetails?.reasonableAdjustments
         },
         ...organisationDetails && ({ organisationDetails })
       };
       combinedPartyDetails.push(party);
     });
     return combinedPartyDetails;
-  }
-
-  public getAllPartyFlagsByPartyId(partyID: string, flagsForParty: string[]): string[] {
-
-
-    const allRAFs: any[] = this.reasonableAdjustmentFlags.reduce((previousValue, currentValue) =>
-      [...previousValue, ...currentValue.partyFlags], []
-    );
-
-    allRAFs.forEach(flag => {
-      if (flag.partyID === partyID) {
-        flagsForParty.push(flag.flagId);
-      }
-    });
-    return flagsForParty; 
-  
-    // return allRAFs.filter((flag) => flag.partyID === partyID).map((filterFlag) => filterFlag.flagId);
   }
 
   public initializeHearingCondition(): void {

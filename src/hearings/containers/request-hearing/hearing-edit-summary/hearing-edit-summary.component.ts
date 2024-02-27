@@ -276,29 +276,36 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       this.hearingRequestMainModel.partyDetails.forEach((party) => {
         const serviceParty = parties.find((serviceParty) => serviceParty.partyID === party.partyID);
         if (serviceParty) {
-          const individualDetails = {
-            ...party.individualDetails,
-            relatedParties: this.compareAndUpdateServiceHearingValues(party.individualDetails?.relatedParties, serviceParty.individualDetails?.relatedParties, AutoUpdateMode.PARTY),
-            custodyStatus: this.compareAndUpdateServiceHearingValues(party.individualDetails?.custodyStatus, serviceParty.individualDetails?.custodyStatus, AutoUpdateMode.PARTY),
-            vulnerableFlag: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerableFlag, serviceParty.individualDetails?.vulnerableFlag, AutoUpdateMode.PARTY),
-            vulnerabilityDetails: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerabilityDetails, serviceParty.individualDetails?.vulnerabilityDetails, AutoUpdateMode.PARTY),
-            hearingChannelEmail: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelEmail, serviceParty.individualDetails?.hearingChannelEmail, AutoUpdateMode.PARTY),
-            hearingChannelPhone: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelPhone, serviceParty.individualDetails?.hearingChannelPhone, AutoUpdateMode.PARTY)
-          };
-          const organisationDetails = {
-            ...party.organisationDetails,
-            name: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.name, serviceParty.organisationDetails?.name),
-            organisationType: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.organisationType, serviceParty.organisationDetails?.organisationType, AutoUpdateMode.PARTY),
-            cftOrganisationID: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.cftOrganisationID, serviceParty.organisationDetails?.cftOrganisationID, AutoUpdateMode.PARTY)
-          };
-          newParty.push({
-            ...party,
-            partyRole: this.compareAndUpdateServiceHearingValues(party.partyRole, serviceParty.partyRole, AutoUpdateMode.PARTY),
-            ...party.individualDetails && ({ individualDetails }),
-            ...party.organisationDetails && ({ organisationDetails }),
-            unavailabilityDOW: this.compareAndUpdateServiceHearingValues(party?.unavailabilityDOW, serviceParty?.unavailabilityDOW, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES),
-            unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES)
-          });
+          if (serviceParty.partyType === PartyType.IND) {
+            newParty.push({
+              ...party,
+              partyRole: this.compareAndUpdateServiceHearingValues(party.partyRole, serviceParty.partyRole, AutoUpdateMode.PARTY),
+              individualDetails: {
+                ...party.individualDetails,
+                relatedParties: this.compareAndUpdateServiceHearingValues(party.individualDetails?.relatedParties, serviceParty.individualDetails?.relatedParties, AutoUpdateMode.PARTY),
+                custodyStatus: this.compareAndUpdateServiceHearingValues(party.individualDetails?.custodyStatus, serviceParty.individualDetails?.custodyStatus, AutoUpdateMode.PARTY),
+                vulnerableFlag: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerableFlag, serviceParty.individualDetails?.vulnerableFlag, AutoUpdateMode.PARTY),
+                vulnerabilityDetails: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerabilityDetails, serviceParty.individualDetails?.vulnerabilityDetails, AutoUpdateMode.PARTY),
+                hearingChannelEmail: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelEmail, serviceParty.individualDetails?.hearingChannelEmail, AutoUpdateMode.PARTY),
+                hearingChannelPhone: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelPhone, serviceParty.individualDetails?.hearingChannelPhone, AutoUpdateMode.PARTY)
+              },
+              unavailabilityDOW: this.compareAndUpdateServiceHearingValues(party?.unavailabilityDOW, serviceParty?.unavailabilityDOW, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES),
+              unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES)
+            });
+          } else {
+            newParty.push({
+              ...party,
+              partyRole: this.compareAndUpdateServiceHearingValues(party.partyRole, serviceParty.partyRole, AutoUpdateMode.PARTY),
+              organisationDetails: {
+                ...party.organisationDetails,
+                name: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.name, serviceParty.organisationDetails?.name),
+                organisationType: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.organisationType, serviceParty.organisationDetails?.organisationType, AutoUpdateMode.PARTY),
+                cftOrganisationID: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.cftOrganisationID, serviceParty.organisationDetails?.cftOrganisationID, AutoUpdateMode.PARTY)
+              },
+              unavailabilityDOW: this.compareAndUpdateServiceHearingValues(party?.unavailabilityDOW, serviceParty?.unavailabilityDOW, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES),
+              unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES)
+            });
+          }
         } else {
           newParty.push(party);
         }

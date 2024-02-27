@@ -174,7 +174,11 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
         preSelectedPanelRoles = panelRequirements.roleType;
       }
     } else if (includedJudges > 0) {
-      preSelectedPanelRoles = HearingsUtils.getRestOfRoleType(panelRequirements?.roleType);
+      if (includedJudgesBeforeChange === 0) {
+        preSelectedPanelRoles = HearingsUtils.getRestOfRoleType(panelRequirements?.roleType);
+      } else {
+        preSelectedPanelRoles = panelRequirements.roleType;
+      }
     }
     const selectedPanelMembers = panelRequirements?.panelPreferences.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER) || [];
     this.hearingRequestMainModel = {

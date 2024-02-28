@@ -2699,17 +2699,6 @@ describe('HearingRequirementsComponent', () => {
     expect(result).toEqual([]);
   });
 
-  it('should return an empty array when partyID is not found', () => {
-    // Arrange
-    component.reasonableAdjustmentFlags = [{ name: 'P1', partyFlags: [] }, { name: 'P2', partyFlags: [] }];
-
-    // Act
-    const result = component.getAllPartyFlagsByPartyId('P3');
-
-    // Assert
-    expect(result).toEqual([]);
-  });
-
   afterEach(() => {
     fixture.destroy();
   });

@@ -17,19 +17,21 @@ export class HearingPanelAmendedConverter implements IsAmendedConverter {
       const requestedPanelMembers: number = hearingRequestPanelRequirements?.panelPreferences?.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER).length || 0;
       const requestedPanelSpecialisms: number = hearingRequestPanelRequirements?.panelSpecialisms?.length || 0;
 
+      const comparedPanelMembersCount: number = comparedPanelMembers + comparedPanelSpecialisms;
+      const requestedPanelMembersCount: number = requestedPanelMembers + requestedPanelSpecialisms;
+
       const includedCompareJudges: number = HearingsUtils.getMustIncludedJudgeCount(hearingComparePanelRequirements?.panelPreferences);
       const includedJudges: number = HearingsUtils.getMustIncludedJudgeCount(hearingRequestPanelRequirements?.panelPreferences);
 
-      const comparedPanelmemberRoles = hearingComparePanelRequirements?.roleType;
-      const requestedPanelmemberRoles = hearingRequestPanelRequirements?.roleType;
+      const comparedPanelmemberRoles = hearingComparePanelRequirements?.roleType?.length;
+      const requestedPanelmemberRoles = hearingRequestPanelRequirements?.roleType?.length;
 
-      const comparedRestPanelmemberRoles = HearingsUtils.getRestOfRoleType(hearingComparePanelRequirements?.roleType);
-      const restPanelmemberRoles = HearingsUtils.getRestOfRoleType(hearingRequestPanelRequirements?.roleType);
-      const compareRoleType = includedCompareJudges === 0 && comparedPanelmemberRoles.length > 0 ? comparedRestPanelmemberRoles : comparedPanelmemberRoles;
-      const roleType = includedJudges === 0 && requestedPanelmemberRoles.length > 0 ? restPanelmemberRoles : requestedPanelmemberRoles;
+      const comparedRestPanelmemberRoles = HearingsUtils.getRestOfRoleType(hearingComparePanelRequirements?.roleType).length;
+      const restPanelmemberRoles = HearingsUtils.getRestOfRoleType(hearingRequestPanelRequirements?.roleType).length;
+      const compareRolesCount = includedCompareJudges === 0 ? comparedRestPanelmemberRoles + comparedPanelMembersCount : comparedPanelmemberRoles + comparedPanelMembersCount;
+      const requestedRolesCount = includedJudges === 0 ? restPanelmemberRoles + requestedPanelMembersCount : requestedPanelmemberRoles + requestedPanelMembersCount;
 
-      return !_.isEqual(comparedPanelMembers, requestedPanelMembers) || !_.isEqual(comparedPanelSpecialisms, requestedPanelSpecialisms)
-        || !_.isEqual(compareRoleType, roleType);
+      return !_.isEqual(!!compareRolesCount, !!requestedRolesCount);
     }));
   }
 }

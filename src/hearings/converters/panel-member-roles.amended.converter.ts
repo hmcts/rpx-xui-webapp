@@ -11,14 +11,6 @@ export class PanelMembersRolesAmendedConverter implements IsAmendedConverter {
     return hearingState$.pipe(map((state) => {
       const objAPanelRequirements = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements;
       const objBPanelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-      const objPanelMustA: number = objAPanelRequirements.panelPreferences
-        ?.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.MUSTINC).length || 0;
-      const objPanelMustB: number = objBPanelRequirements.panelPreferences
-        ?.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.MUSTINC).length || 0;
-      const objPanelExclA: number = objAPanelRequirements.panelPreferences
-        ?.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.EXCLUDE).length || 0;
-      const objPanelExclAB: number = objBPanelRequirements.panelPreferences
-        ?.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.EXCLUDE).length || 0;
 
       const includedCompareJudges: number = HearingsUtils.getMustIncludedJudgeCount(objAPanelRequirements?.panelPreferences);
       const includedJudges: number = HearingsUtils.getMustIncludedJudgeCount(objBPanelRequirements?.panelPreferences);
@@ -28,10 +20,10 @@ export class PanelMembersRolesAmendedConverter implements IsAmendedConverter {
 
       const comparedRestPanelmemberRoles = HearingsUtils.getRestOfRoleType(objAPanelRequirements?.roleType);
       const restPanelmemberRoles = HearingsUtils.getRestOfRoleType(objBPanelRequirements?.roleType);
-      const compareRoleType = includedCompareJudges === 0 && comparedPanelmemberRoles.length > 0 ? comparedRestPanelmemberRoles : comparedPanelmemberRoles;
-      const roleType = includedJudges === 0 && requestedPanelmemberRoles.length > 0 ? restPanelmemberRoles : requestedPanelmemberRoles;
+      const compareRoleType = includedCompareJudges === 0 ? comparedRestPanelmemberRoles : comparedPanelmemberRoles;
+      const roleType = includedJudges === 0 ? restPanelmemberRoles : requestedPanelmemberRoles;
 
-      return !_.isEqual(objPanelMustA, objPanelMustB) || !_.isEqual(objPanelExclA, objPanelExclAB) || !_.isEqual(compareRoleType, roleType);
+      return !_.isEqual(compareRoleType, roleType);
     }));
   }
 }

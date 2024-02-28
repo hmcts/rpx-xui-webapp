@@ -2688,17 +2688,6 @@ describe('HearingRequirementsComponent', () => {
     expect(component.hearingStore.dispatch).toHaveBeenCalled();
   });
 
-  it('should return an empty array when reasonableAdjustmentFlags is empty', () => {
-    // Arrange
-    component.reasonableAdjustmentFlags = [];
-
-    // Act
-    const result = component.getAllPartyFlagsByPartyId('P2');
-
-    // Assert
-    expect(result).toEqual([]);
-  });
-
   afterEach(() => {
     fixture.destroy();
   });

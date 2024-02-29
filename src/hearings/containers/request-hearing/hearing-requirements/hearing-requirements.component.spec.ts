@@ -144,7 +144,15 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'Jane',
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
-          interpreterLanguage: 'POR'
+          interpreterLanguage: 'POR',
+          reasonableAdjustments: [
+            'RA0042',
+            'RA0053',
+            'RA0013',
+            'RA0016',
+            'RA0042',
+            'PF0015'
+          ]
         },
         unavailabilityRanges: [
           {
@@ -164,7 +172,10 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'DWP',
           lastName: null,
           preferredHearingChannel: 'inPerson',
-          interpreterLanguage: null
+          interpreterLanguage: null,
+          reasonableAdjustments: [
+            'RA0005'
+          ]
         },
         organisationDetails: {
           name: 'DWP',
@@ -2484,7 +2495,8 @@ describe('HearingRequirementsComponent', () => {
             'RA0053',
             'RA0013',
             'RA0016',
-            'RA0042'],
+            'RA0042',
+            'PF0015'],
           interpreterLanguage: 'POR'
         }
       }, {

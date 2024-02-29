@@ -150,10 +150,6 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       const organisationDetails = partyDetail.organisationDetails;
       const party: PartyDetailsModel = {
         ...partyDetail,
-        individualDetails: {
-          ...partyDetail.individualDetails,
-          reasonableAdjustments: partyDetail?.individualDetails?.reasonableAdjustments
-        },
         ...organisationDetails && ({ organisationDetails })
       };
       combinedPartyDetails.push(party);

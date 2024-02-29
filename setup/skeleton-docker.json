@@ -1,0 +1,112 @@
+{
+  "now": false,
+  "protocol": "http",
+  "stub": false,
+  "health": {
+    "ccdComponentApi": "http://localhost:3453/health",
+    "ccdActivityApi": "http://ccd-case-activity-api-${env}.service.core-compute-${env}.internal/health",
+    "ccdDataApi": "http://localhost:4452/health",
+    "documentsApi": "http://localhost:4502/health",
+    "documentsApiV2": "http://ccd-case-document-am-api-${env}.service.core-compute-${env}.internal/health",
+    "em_anno_api": "http://localhost:3453",
+    "em_docassembly_api": "http://dg-docassembly-${env}.service.core-compute-${env}.internal/health",
+    "termsAndConditions": "http://xui-terms-and-conditions-${env}.service.core-compute-${env}.internal/health",
+    "s2s": "http://rpe-service-auth-provider-${env}.service.core-compute-${env}.internal/health",
+    "taskApi": "http://wa-task-management-api-${env}.service.core-compute-${env}.internal/health",
+    "roleApi": "http://am-role-assignment-service-${env}.service.core-compute-${env}.internal/health",
+    "caseworkerApi": "http://rd-caseworker-ref-api-${env}.service.core-compute-${env}.internal/health",
+    "locationApi": "http://rd-location-ref-api-${env}.service.core-compute-${env}.internal/health"
+  },
+  "jurisdictions": "AUTOTEST1,DIVORCE,PROBATE,BEFTA_JURISDICTION_3,BEFTA_JURISDICTION_2,BEFTA_JURISDICTION_1,IA,SSCS,BEFTA_MASTER",
+  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
+  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
+  "services": {
+    "ccd": {
+      "componentApi": "http://localhost:3453",
+      "activityApi": "http://localhost:4452",
+      "dataApi": "http://ccd-data-store-api-${env}.service.core-compute-${env}.internal",
+      "caseAssignmentApi": "http://aac-manage-case-assignment-${env}.service.core-compute-${env}.internal"
+    },
+    "hearings": {
+      "hearingsJurisdictions": "SSCS,PRIVATELAW",
+      "sscs": {
+        "serviceApi": "http://sscs-hearings-api-${env}.service.core-compute-${env}.internal",
+        "caseTypes": "Benefit"
+      },
+      "privatelaw": {
+        "serviceApi": "http://fis-hmc-api-${env}.service.core-compute-${env}.internal",
+        "caseTypes": "PRLAPPS"
+      },
+      "hmcApi": "http://hmc-cft-hearing-service-${env}.service.core-compute-${env}.internal"
+    },
+    "documents": {
+      "api": "http://localhost:4502"
+    },
+    "documentsv2": {
+      "api": "http://localhost:4455"
+    },
+    "prd": {
+      "api": "http://localhost:5601",
+      "locationApi": "http://rd-location-ref-api-${env}.service.core-compute-${env}.internal",
+      "judicialApi": "http://rd-judicial-api-${env}.service.core-compute-${env}.internal",
+      "commondataApi": "http://rd-commondata-api-${env}.service.core-compute-${env}.internal"
+    },
+    "locationref": {
+      "api": "http://rd-location-ref-api-${env}.service.core-compute-${env}.internal"
+    },
+    "em_hrs_api": "http://em-hrs-api-${env}.service.core-compute-${env}.internal",
+    "em_anno_api": "http://localhost:3453",
+    "em_docassembly_api": "http://dg-docassembly-${env}.service.core-compute-${env}.internal/",
+    "waWorkflowApi": "http://wa-workflow-api-${env}.service.core-compute-${env}.internal",
+    "idam": {
+      "idamApiUrl": "http://localhost:5000",
+      "idamClientID": "xuiwebapp",
+      "idamLoginUrl": "http://localhost:5000",
+      "indexUrl": "/",
+      "oauthCallbackUrl": "oauth2/callback",
+      "iss": "https://forgerock-am.service.core-compute-idam-${env}.internal:8443/openam/oauth2/hmcts"
+    },
+    "location_api": "http://rd-location-ref-api-${env}.service.core-compute-${env}.internal",
+    "work_allocation": {
+      "taskApi": "http://wa-task-management-api-${env}.service.core-compute-${env}.internal"
+    },
+    "refunds": "http://ccpay-refunds-api-${env}.service.core-compute-${env}.internal",
+    "role_assignment": {
+      "roleApi": "http://localhost:4096",
+      "roleMappingApi": "http://am-org-role-mapping-service-${env}.service.core-compute-${env}.internal"
+    },
+    "case": {
+      "caseworkerApi": "http://rd-caseworker-ref-api-${env}.service.core-compute-${env}.internal",
+      "judicialworkerApi": "http://rd-judicialworker-ref-api-${env}.service.core-compute-${env}.internal",
+      "judicialApi": "http://rd-judicial-api-${env}.service.core-compute-${env}.internal"
+    },
+    "payments": "http://localhost:4502",
+    "markup_api": "http://em-npa-${env}.service.core-compute-${env}.internal",
+    "icp_api": "http://em-icp-${env}.service.core-compute-${env}.internal",
+    "s2s": "http://localhost:4502",
+    "termsAndConditions": "http://xui-terms-and-conditions-${env}.service.core-compute-${env}.internal",
+    "payment_return_url": "https://paymentoutcome-web.${env}.platform.hmcts.net",
+    "judicialBookingApi": "http://am-judicial-booking-service-${env}.service.core-compute-${env}.internal"
+  },
+  "secrets": {
+    "rpx": {
+      "launch-darkly-client-id": "dummy",
+      "appinsights-instrumentationkey-mc": "dummy",
+      "mc-s2s-client-secret": "dummy",
+      "mc-idam-client-secret": "dummy",
+      "webapp-redis-connection-string": "dummy",
+      "system-user-name": "dummy",
+      "system-user-password": "dummy"
+    }
+  },
+  "feature": {
+    "appInsightsEnabled": false,
+    "proxyEnabled": false,
+    "secureCookieEnabled": false,
+    "helmetEnabled": true,
+    "redisEnabled": false,
+    "oidcEnabled": false,
+    "workAllocationEnabled": true
+  },
+  "redis": { "prefix": "MC-activity:", "ttl": 86400 }
+}

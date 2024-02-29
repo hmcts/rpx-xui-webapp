@@ -230,6 +230,14 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         changeLink: '/hearings/request/hearing-panel#specificPanelSelection',
         isHiddenSource: IsHiddenSource.PANEL_ROLES,
         isAmendedSource: AnswerSource.PANEL_ROLES
+      },
+      {
+        id: 'panelMemberRoles',
+        answerTitle: 'Select any other panel member roles required',
+        answerSource: AnswerSource.PANEL_MEMBER_ROLES,
+        changeLink: '/hearings/request/hearing-panel#specificPanelSelection',
+        isHiddenSource: IsHiddenSource.PANEL_MEMBER_ROLES,
+        isAmendedSource: AnswerSource.PANEL_MEMBER_ROLES
       }
     ],
     isHiddenSource: IsHiddenSource.PANEL_DETAILS_EXCLUSION

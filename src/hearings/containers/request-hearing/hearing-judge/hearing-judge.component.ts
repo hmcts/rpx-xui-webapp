@@ -168,11 +168,11 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
 
     let preSelectedPanelRoles: string[] = [];
     if (includedJudges === 0 && includedJudgesBeforeChange === 0) {
-      preSelectedPanelRoles = HearingsUtils.getRestOfRoleType(panelRequirements.roleType);
+      preSelectedPanelRoles = HearingsUtils.getRestOfRoleType(panelRequirements?.roleType);
     } else if (includedJudges > 0 && includedJudgesBeforeChange === 0) {
       preSelectedPanelRoles = HearingsUtils.getRestOfRoleType(panelRequirements?.roleType);
     } else {
-      preSelectedPanelRoles = panelRequirements.roleType;
+      preSelectedPanelRoles = panelRequirements?.roleType;
     }
     const selectedPanelMembers = panelRequirements?.panelPreferences.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER) || [];
     this.hearingRequestMainModel = {

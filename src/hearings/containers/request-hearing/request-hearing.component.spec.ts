@@ -72,13 +72,15 @@ describe('RequestHearingComponent', () => {
     expect(component.isChildPage).toBeTruthy();
   });
 
-  it('should purge data in store if page is destroyed', () => {
+  it('should purge data in store and clear hearings service manual amendment properties if page is destroyed', () => {
     const dispatchSpy = spyOn(mockStore, 'dispatch');
     component.ngOnDestroy();
     fixture.detectChanges();
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingRequest()));
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingValues()));
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingConditions()));
+    expect(hearingsService.propertiesUpdatedAutomatically).toEqual({ pageless: {}, withinPage: {} });
+    expect(hearingsService.propertiesUpdatedOnPageVisit).toBeNull();
   });
 
   afterEach(() => {

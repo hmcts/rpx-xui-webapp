@@ -34,6 +34,9 @@ export const initProxy = (app: Express) => {
   });
 
   applyProxy(app, {
+    middlewares: [bodyParser.json()],
+    onReq: documents.handleRequest,
+    onRes: documents.handleResponse,
     rewrite: false,
     source: '/documents',
     target: getConfigValue(SERVICES_DOCUMENTS_API_PATH)

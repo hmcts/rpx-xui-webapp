@@ -10,7 +10,8 @@ Feature: Case flags V2.1 Add/Update Language interpreter
             | Flags for legal rep Party 1 | Party Name | Applicant  |
             | Flags for legal rep Party 2 | Role On Case  | Party 2    |
             | Flags for legal rep Party 2 | Party Name | Respondent |
-        Then I see case details page
+
+      Then I see case details page
 
     Scenario: Create case flag
         When I click tab with label "Case flags" in case details page, to see element with css selector "ccd-read-case-flag-field"

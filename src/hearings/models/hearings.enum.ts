@@ -318,7 +318,8 @@ export enum AnswerSource {
   REASONABLE_ADJUSTMENTS,
   PRIVATE_HEARING_REQUIRED,
   CASE_RESTRICTION,
-  PUBLIC_CASE_NAME
+  PUBLIC_CASE_NAME,
+  PANEL_MEMBER_ROLES
 }
 
 export enum IsHiddenSource {
@@ -333,7 +334,8 @@ export enum IsHiddenSource {
   JUDGE_NAME,
   LISTED,
   LISTED_HEARING_VIEWER,
-  NOT_LISTED
+  NOT_LISTED,
+  PANEL_MEMBER_ROLES
 }
 
 export enum Mode {

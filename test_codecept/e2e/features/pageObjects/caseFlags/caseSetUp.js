@@ -26,9 +26,10 @@ class CaseFlagsCaseSetup{
             await this.inputField(field.party, field.fieldName, field.value)
 
         }
+
+        const caseSubmitButtom = element(by.xpath(`//button[contains(text(),'Test submit')]`))
         await browserWaits.retryWithActionCallback(async () => {
             await element(by.xpath(`//button[contains(text(),'Continue')]`)).click()
-            const caseSubmitButtom = element(by.xpath(`//button[contains(text(),'Test submit')]`))
             await browserWaits.waitForElement(caseSubmitButtom)
         })
         

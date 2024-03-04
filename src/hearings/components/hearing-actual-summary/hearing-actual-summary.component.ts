@@ -46,7 +46,7 @@ export class HearingActualSummaryComponent implements OnInit {
   }
 
   public getHearingTypeDescription(hearingType: string): string {
-    const hearingTypeFromLookup = this.hearingStageOptions && this.hearingStageOptions.find((x) => x.key.toLowerCase() === hearingType.toLowerCase());
+    const hearingTypeFromLookup = this.hearingStageOptions?.find((x) => x.key.toLowerCase() === hearingType.toLowerCase());
 
     return hearingTypeFromLookup ? hearingTypeFromLookup.value_en : '';
   }

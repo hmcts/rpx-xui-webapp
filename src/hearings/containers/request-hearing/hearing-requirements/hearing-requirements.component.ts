@@ -91,6 +91,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       hearingWindow = this.serviceHearingValuesModel.hearingWindow;
     }
     const combinedParties: PartyDetailsModel[] = this.combinePartiesWithIndOrOrg(this.serviceHearingValuesModel.parties);
+
     const hearingRequestMainModel: HearingRequestMainModel = {
       hearingDetails: {
         duration: this.serviceHearingValuesModel.duration,
@@ -130,6 +131,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       },
       partyDetails: combinedParties
     };
+
     this.hearingStore.dispatch(new fromHearingStore.InitializeHearingRequest(hearingRequestMainModel));
   }
 
@@ -144,15 +146,11 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   public combinePartiesWithIndOrOrg(partyDetails: PartyDetailsModel[]): PartyDetailsModel[] {
     const combinedPartyDetails: PartyDetailsModel[] = [];
+
     partyDetails.forEach((partyDetail) => {
       const organisationDetails = partyDetail.organisationDetails;
       const party: PartyDetailsModel = {
         ...partyDetail,
-        individualDetails: {
-          ...partyDetail.individualDetails,
-          reasonableAdjustments: this.getAllPartyFlagsByPartyId(partyDetail.partyID)
-            .filter((flagId) => flagId !== CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID)
-        },
         ...organisationDetails && ({ organisationDetails })
       };
       combinedPartyDetails.push(party);
@@ -160,17 +158,10 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     return combinedPartyDetails;
   }
 
-  public getAllPartyFlagsByPartyId(partyID: string): string[] {
-    const allRAFs: PartyFlagsDisplayModel[] = this.reasonableAdjustmentFlags.reduce((previousValue, currentValue) =>
-      [...previousValue, ...currentValue.partyFlags], []
-    );
-    return allRAFs.filter((flag) => flag.partyId === partyID).map((filterFlag) => filterFlag.flagId);
-  }
-
-  public async initializeHearingCondition(): Promise<void> {
+  public initializeHearingCondition(): void {
     if (this.serviceHearingValuesModel?.hearingLocations) {
       const strLocationIds = this.serviceHearingValuesModel.hearingLocations.map((location) => location.locationId).join(',');
-      await lastValueFrom(this.locationsDataService.getLocationById(strLocationIds))
+      this.locationsDataService.getLocationById(strLocationIds).toPromise()
         .then((locations) => {
           this.strRegions = locations.map((location) => location.region_id).join(',');
         }).then(() => {

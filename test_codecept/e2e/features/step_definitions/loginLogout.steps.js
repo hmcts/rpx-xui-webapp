@@ -232,7 +232,7 @@ async function waitForElement(el) {
    Given('I am logged into Expert UI with with case flags', async function () {
      const user = 'henry_fr_harper@yahoo.com'
      const key = 'Nagoya0102'
-     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+     await BrowserWaits.retryForPageLoad($("exui-app-header"), async function (message) {
        await loginPage.givenIAmLoggedIn(user, key);
      });
     

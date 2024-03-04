@@ -6,7 +6,7 @@ class CaseFlagsCaseSetup{
 
 
     constructor(){
-
+        this.caseDetailsPage = $('ccd-case-viewer')
     }
 
     async inputField(comolexField, inputField, value){
@@ -33,7 +33,12 @@ class CaseFlagsCaseSetup{
             await browserWaits.waitForElement(caseSubmitButtom)
         })
         
-        await caseSubmitButtom.click()
+        await browserWaits.retryWithActionCallback(async () => {
+            await caseSubmitButtom.click()
+            await browserWaits.waitForElement(this.caseDetailsPage)
+        })
+        
+
     }
 }
 

@@ -225,7 +225,8 @@
           "*.launchdarkly.com",
           "https://*.google-analytics.com",
           "https://*.googletagmanager.com",
-          "https://*.analytics.google.com"
+          "https://*.analytics.google.com",
+          "wss//*.webpubsub.azure.com"
         ],
         "mediaSrc": ["'self'"],
         "objectSrc": ["'self'"],

@@ -3,10 +3,11 @@ import { HearingConditions } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { HearingWindowModel } from '../models/hearingWindow.model';
-import { HearingDateEnum } from '../models/hearings.enum';
-import { LovRefDataModel } from '../models/lovRefData.model';
-import { PartyDetailsModel } from '../models/partyDetails.model';
+import { HearingDateEnum, MemberType, RequirementType } from '../models/hearings.enum';
 import { IndividualDetailsModel } from '../models/individualDetails.model';
+import { LovRefDataModel } from '../models/lovRefData.model';
+import { PanelPreferenceModel } from '../models/panelPreference.model';
+import { PartyDetailsModel } from '../models/partyDetails.model';
 
 export class HearingsUtils {
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
@@ -125,5 +126,18 @@ export class HearingsUtils {
       }
     }
     return false;
+  }
+
+  public static getMustIncludedJudgeCount(panelPreferenceModel: PanelPreferenceModel[]): number {
+    return panelPreferenceModel?.filter((preferences) => preferences.memberType === MemberType.JUDGE &&
+      preferences.requirementType === RequirementType.MUSTINC).length || 0;
+  }
+
+  public static getRestOfRoleType(roleType: string[]): string[] {
+    let rest: string[] = [];
+    if (roleType?.length > 0) {
+      rest = roleType.slice(1);
+    }
+    return rest;
   }
 }

@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
+import { HearingsUtils } from '../utils/hearings.utils';
 
 export class JudgeTypesAnswerConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) {}
@@ -16,10 +17,13 @@ export class JudgeTypesAnswerConverter implements AnswerConverter {
         const panelRequirements = state.hearingConditions?.isHearingAmendmentsEnabled
           ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements
           : state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-        if (panelRequirements?.roleType?.length) {
+        const includedJudges: number = HearingsUtils.getMustIncludedJudgeCount(panelRequirements?.panelPreferences);
+
+        if (includedJudges === 0 && panelRequirements?.roleType.length > 0) {
           const selectedJudgeTypes: string[] = [];
+          const selectedPanelRole = panelRequirements.roleType[0];
           judgeTypes.forEach((judgeType) => {
-            if (panelRequirements.roleType.includes(judgeType.key)) {
+            if (selectedPanelRole.includes(judgeType.key)) {
               selectedJudgeTypes.push(judgeType.value_en);
             }
           });

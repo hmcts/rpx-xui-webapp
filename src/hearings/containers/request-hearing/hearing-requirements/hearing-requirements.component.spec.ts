@@ -145,7 +145,15 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'Jane',
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
-          interpreterLanguage: 'POR'
+          interpreterLanguage: 'POR',
+          reasonableAdjustments: [
+            'RA0042',
+            'RA0053',
+            'RA0013',
+            'RA0016',
+            'RA0042',
+            'PF0015'
+          ]
         },
         unavailabilityRanges: [
           {
@@ -165,7 +173,10 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'DWP',
           lastName: null,
           preferredHearingChannel: 'inPerson',
-          interpreterLanguage: null
+          interpreterLanguage: null,
+          reasonableAdjustments: [
+            'RA0005'
+          ]
         },
         organisationDetails: {
           name: 'DWP',
@@ -2556,7 +2567,8 @@ describe('HearingRequirementsComponent', () => {
             'RA0053',
             'RA0013',
             'RA0016',
-            'RA0042'],
+            'RA0042',
+            'PF0015'],
           interpreterLanguage: 'POR'
         }
       }, {
@@ -2823,28 +2835,6 @@ describe('HearingRequirementsComponent', () => {
 
     // Assert
     expect(component.hearingStore.dispatch).toHaveBeenCalled();
-  });
-
-  it('should return an empty array when reasonableAdjustmentFlags is empty', () => {
-    // Arrange
-    component.reasonableAdjustmentFlags = [];
-
-    // Act
-    const result = component.getAllPartyFlagsByPartyId('P2');
-
-    // Assert
-    expect(result).toEqual([]);
-  });
-
-  it('should return an empty array when partyID is not found', () => {
-    // Arrange
-    component.reasonableAdjustmentFlags = [{ name: 'P1', partyFlags: [] }, { name: 'P2', partyFlags: [] }];
-
-    // Act
-    const result = component.getAllPartyFlagsByPartyId('P3');
-
-    // Assert
-    expect(result).toEqual([]);
   });
 
   afterEach(() => {

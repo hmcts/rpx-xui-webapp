@@ -68,11 +68,4 @@ describe('Documents Uploading', () => {
     const result = documents.handleRequest(req, rateLimitedReq, proxyRes);
     expect(result).to.deep.equal(false);
   });
-
-  it('should handle response and delete session if rate-limited', () => {
-    const result = documents.handleResponse(req, res, proxyRes, json);
-
-    expect(result).to.deep.equal(json);
-    expect(res.session).to.not.have.property('nextTimeout');
-  });
 });

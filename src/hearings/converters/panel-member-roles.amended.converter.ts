@@ -2,9 +2,8 @@ import * as _ from 'lodash';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { State } from '../store/reducers';
-import { IsAmendedConverter } from './is-amended.converter';
-import { MemberType, RequirementType } from '../models/hearings.enum';
 import { HearingsUtils } from '../utils/hearings.utils';
+import { IsAmendedConverter } from './is-amended.converter';
 
 export class PanelMembersRolesAmendedConverter implements IsAmendedConverter {
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {

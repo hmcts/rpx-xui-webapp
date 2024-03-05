@@ -10,33 +10,22 @@ describe('Monitoring service', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should be able to LogException and Should not call the http service', () => {
-    mockedConfig.instrumentationKey = 'somevalue';
-    const service = new MonitoringService(mockedHttpClient, mockedConfig);
+  it('should be able to LogException and should call the http service', () => {
+    const service = new MonitoringService(mockedHttpClient);
     expect(service).toBeTruthy();
     service.logException(new Error('Some ErrorMesssage'));
-    expect(mockedHttpClient.get).not.toHaveBeenCalled();
+    expect(mockedHttpClient.get).toHaveBeenCalled();
   });
 
   it('should be able to LogEvent', () => {
-    mockedConfig.instrumentationKey = 'somevalue';
-    const service = new MonitoringService(mockedHttpClient, mockedConfig);
+    const service = new MonitoringService(mockedHttpClient);
     expect(service).toBeTruthy();
     service.logEvent('name', [], []);
-    expect(mockedHttpClient.get).not.toHaveBeenCalled();
+    expect(mockedHttpClient.get).toHaveBeenCalled();
   });
 
   it('should be able to LogPageview', () => {
-    mockedConfig.instrumentationKey = 'somevalue';
-    const service = new MonitoringService(mockedHttpClient, mockedConfig);
-    expect(service).toBeTruthy();
-    service.logPageView('name', null, [], [], 1);
-    expect(mockedHttpClient.get).not.toHaveBeenCalled();
-  });
-
-  it('should be able to LogPageview', () => {
-    mockedConfig.instrumentationKey = null;
-    const service = new MonitoringService(mockedHttpClient, mockedConfig);
+    const service = new MonitoringService(mockedHttpClient);
     expect(service).toBeTruthy();
     service.logPageView('name', null, [], [], 1);
     expect(mockedHttpClient.get).toHaveBeenCalled();
@@ -44,7 +33,7 @@ describe('Monitoring service', () => {
 
   describe('enableCookies()', () => {
     it('should set areCookiesEnabled to true', () => {
-      const service = new MonitoringService(mockedHttpClient, mockedConfig);
+      const service = new MonitoringService(mockedHttpClient);
       service.enableCookies();
       expect(service.areCookiesEnabled).toBeTruthy();
     });

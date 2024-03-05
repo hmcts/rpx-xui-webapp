@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Optional } from '@angular/core';
-import { ApplicationInsights, IAppInsights, IConfig } from '@microsoft/applicationinsights-web';
+import { ApplicationInsights, IAppInsights, IConfig, IEventTelemetry, IPageViewPerformanceTelemetry } from '@microsoft/applicationinsights-web';
+import { AppConfig } from '../ccd-config/ccd-case.config';
 
 export interface IMonitoringService {
   logPageView(name?: string, url?: string, properties?: any,
@@ -48,24 +49,27 @@ export class MonitorConfig implements IConfig {
 @Injectable()
 export class MonitoringService implements IMonitoringService {
   public areCookiesEnabled: boolean = false;
-  @Optional() appInsights: IAppInsights;
+  @Optional() appInsights: ApplicationInsights;
+  @Optional() private config?: MonitorConfig;
 
-  constructor(private readonly http: HttpClient, @Optional() private config?: MonitorConfig) {
-    if (!this.appInsights) {
-      this.appInsights = new ApplicationInsights({ config });
-    }
-  }
+  constructor(private readonly http: HttpClient) { }
 
   public logPageView(name?: string, url?: string, properties?: any,
     measurements?: any, duration?: number) {
+    const pageViewTelemetry: IPageViewPerformanceTelemetry = {
+      name, uri: url, properties, measurements, duration: duration.toString()
+    };
     this.send(() => {
-      this.appInsights.trackPageView({ name, uri: url }, { properties, measurements, duration });
+      this.appInsights.trackPageView(pageViewTelemetry);
     });
   }
 
   public logEvent(name: string, properties?: any, measurements?: any) {
+    const eventTelemetry: IEventTelemetry = {
+      name, properties, measurements
+    };
     this.send(() => {
-      this.appInsights.trackEvent({ name }, { properties, measurements });
+      this.appInsights.trackEvent(eventTelemetry);
     });
   }
 
@@ -83,6 +87,7 @@ export class MonitoringService implements IMonitoringService {
     if (this.config?.instrumentationKey) {
       func();
     } else {
+      // will only get run once per login
       this.http.get('/api/monitoring-tools').subscribe((it) => {
         this.config = {
           // eslint-disable-next-line dot-notation
@@ -96,6 +101,9 @@ export class MonitoringService implements IMonitoringService {
             enableSessionStorageBuffer: true
           };
         }
+        this.appInsights = new ApplicationInsights({ config: this.config });
+        // below is important step to utilise the app insights instance
+        this.appInsights.loadAppInsights();
         func();
       });
     }

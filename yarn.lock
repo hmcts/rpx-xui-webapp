@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.15":
-  version: 7.0.15
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.15"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.17":
+  version: 7.0.17
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.17"
   dependencies:
     tslib: ^2.3.0
-  checksum: 53679d17279fb4d81a34234dcf616e5788b8f62e5fdc2cde20800c1f912c48b56ed57c47155b1139f6fbfa838fe528593968670cdc3fb97ef4ca83ac360bf5d4
+  checksum: 67ac1d704a730a58eaca87ef4c37cea4a029d4c0edeb694f51e287d93fafb572c952445aba7c5e912dcd6f648d94f1ecf8f73b6f3e3e75cd3fb245cace0bf17d
   languageName: node
   linkType: hard
 
@@ -8898,10 +8898,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crypto-js@npm:^3.1.9-1":
-  version: 3.3.0
-  resolution: "crypto-js@npm:3.3.0"
-  checksum: 193923143a4784b2f974366068d96fe8280168fd3fef2bfea9551a5c3e32096f5a8fa49ff4eeb5bd0b9716d325618d38cfbe6125e359a4ef488fbca93e600824
+"crypto-js@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "crypto-js@npm:4.2.0"
+  checksum: f051666dbc077c8324777f44fbd3aaea2986f198fe85092535130d17026c7c2ccf2d23ee5b29b36f7a4a07312db2fae23c9094b644cc35f7858b1b4fcaf27774
   languageName: node
   linkType: hard
 
@@ -19207,7 +19207,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.15
+    "@hmcts/ccd-case-ui-toolkit": 7.0.17
     "@hmcts/ccpay-web-component": 6.0.2
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 3.0.2
@@ -19265,7 +19265,7 @@ __metadata:
     config: ^3.2.5
     cookie-parser: ^1.4.4
     core-js: ^3.19.3
-    crypto-js: ^3.1.9-1
+    crypto-js: ^4.2.0
     csurf: ^1.11.0
     cucumber: 5.1.0
     cucumber-html-report: 0.6.5

@@ -27,6 +27,7 @@ import { WelshHiddenConverter } from '../converters/welsh.hidden.converter';
 import { IsHiddenSource } from '../models/hearings.enum';
 import { LocationsDataService } from '../services/locations-data.service';
 import { State } from '../store';
+import { PanelMemberRolesHiddenConverter } from '../converters/panel-member-roles.hidden.converter';
 
 @Pipe({
   name: 'isHidden'
@@ -91,6 +92,9 @@ export class ShowHidePipe implements PipeTransform {
         break;
       case IsHiddenSource.ADDITIONAL_INSTRUCTION_EXCLUSION:
         converter = new AdditionalInstructionsExclusionHiddenConverter();
+        break;
+      case IsHiddenSource.PANEL_MEMBER_ROLES:
+        converter = new PanelMemberRolesHiddenConverter();
         break;
       case IsHiddenSource.LISTED_HEARING_VIEWER:
         converter = new ListedHearingViewerHiddenConverter(this.store);

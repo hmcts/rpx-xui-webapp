@@ -92,6 +92,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       hearingWindow = this.serviceHearingValuesModel.hearingWindow;
     }
     const combinedParties: PartyDetailsModel[] = this.combinePartiesWithIndOrOrg(this.serviceHearingValuesModel.parties);
+
     const hearingRequestMainModel: HearingRequestMainModel = {
       hearingDetails: {
         duration: this.serviceHearingValuesModel.duration,
@@ -131,6 +132,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       },
       partyDetails: combinedParties
     };
+
     this.hearingStore.dispatch(new fromHearingStore.InitializeHearingRequest(hearingRequestMainModel));
   }
 
@@ -145,6 +147,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   public combinePartiesWithIndOrOrg(partyDetails: PartyDetailsModel[]): PartyDetailsModel[] {
     const combinedPartyDetails: PartyDetailsModel[] = [];
+
     partyDetails.forEach((partyDetail) => {
       const organisationDetails = partyDetail.organisationDetails;
       const party: PartyDetailsModel = {

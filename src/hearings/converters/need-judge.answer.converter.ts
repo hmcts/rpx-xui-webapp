@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MemberType, RadioOptions } from '../models/hearings.enum';
 import { State } from '../store';
+import { HearingsUtils } from '../utils/hearings.utils';
 import { AnswerConverter } from './answer.converter';
 
 export class NeedJudgeAnswerConverter implements AnswerConverter {
@@ -12,7 +13,8 @@ export class NeedJudgeAnswerConverter implements AnswerConverter {
           ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements
           : state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
         const hasJudgeDetails = panelRequirements?.panelPreferences?.filter((panel) => panel.memberType === MemberType.JUDGE);
-        if (panelRequirements?.roleType?.length) {
+        const includedJudges: number = HearingsUtils.getMustIncludedJudgeCount(panelRequirements?.panelPreferences);
+        if (includedJudges === 0 && panelRequirements?.roleType?.length > 0) {
           return RadioOptions.NO;
         } else if (hasJudgeDetails?.length) {
           return RadioOptions.YES;

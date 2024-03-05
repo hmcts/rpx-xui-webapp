@@ -117,7 +117,7 @@
     "config": "^3.2.5",
     "cookie-parser": "^1.4.4",
     "core-js": "^3.19.3",
-    "crypto-js": "^3.1.9-1",
+    "crypto-js": "^4.2.0",
     "csurf": "^1.11.0",
     "dotenv-extended": "^2.7.1",
     "ejs": "^2.6.1",

@@ -2470,7 +2470,6 @@ describe('HearingRequirementsComponent', () => {
       hearingDetails: {
         duration: 45,
         hearingType: 'Final',
-        hearingChannels: [],
         hearingLocations: [
           {
             locationId: '196538',
@@ -2512,6 +2511,7 @@ describe('HearingRequirementsComponent', () => {
         hearingRequester: '',
         leadJudgeContractType: '',
         amendReasonCodes: null,
+        hearingChannels: [],
         listingAutoChangeReasonCode: null
       },
       caseDetails: {
@@ -2552,11 +2552,6 @@ describe('HearingRequirementsComponent', () => {
         partyType: PartyType.IND,
         partyRole: 'appellant',
         partyName: 'Jane Smith',
-        unavailabilityRanges: [{
-          unavailableFromDate: '2021-12-10T09:00:00.000Z',
-          unavailableToDate: '2021-12-31T09:00:00.000Z',
-          unavailabilityType: UnavailabilityType.ALL_DAY
-        }],
         individualDetails: {
           title: 'Mrs',
           firstName: 'Jane',
@@ -2567,20 +2562,19 @@ describe('HearingRequirementsComponent', () => {
             'RA0053',
             'RA0013',
             'RA0016',
-            'RA0042',
-            'PF0015'],
+            'RA0042'],
           interpreterLanguage: 'POR'
-        }
+        },
+        unavailabilityRanges: [{
+          unavailableFromDate: '2021-12-10T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        }]
       }, {
         partyID: 'P2',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
         partyName: 'DWP',
-        unavailabilityRanges: [{
-          unavailableFromDate: '2021-12-20T09:00:00.000Z',
-          unavailableToDate: '2021-12-31T09:00:00.000Z',
-          unavailabilityType: UnavailabilityType.ALL_DAY
-        }],
         individualDetails: {
           title: null,
           firstName: 'DWP',
@@ -2593,7 +2587,12 @@ describe('HearingRequirementsComponent', () => {
           name: 'DWP',
           organisationType: 'GOV',
           cftOrganisationID: 'O100000'
-        }
+        },
+        unavailabilityRanges: [{
+          unavailableFromDate: '2021-12-20T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        }]
       }]
     };
     const storeDispatchSpy = spyOn(component.hearingStore, 'dispatch');

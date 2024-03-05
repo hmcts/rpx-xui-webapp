@@ -114,7 +114,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
     this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search')
       .subscribe((value) => {
-        this.elasticSearchFlag = value
+        this.elasticSearchFlag = value;
         this.triggerQuery();
       });
   }

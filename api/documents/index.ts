@@ -29,7 +29,6 @@ export function handleRequest(proxyReq, req, res) {
 
 // Handle responses being sent back to the client
 export function handleResponse(proxyRes, req, res) {
-
   // Current time stored as the last time a document upload was completed
   req.session.lastUploadTime = Date.now();
 
@@ -40,5 +39,4 @@ export function handleResponse(proxyRes, req, res) {
   } else {
     delete req.session.nextTimeout;
   }
-};
-
+}

@@ -102,7 +102,7 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
       }
       if (individualParty.individualDetails.firstName || individualParty.individualDetails.lastName) {
         return ParticipantAttendenceAnswerConverter.getNameFromFirstLast(individualParty.individualDetails.firstName,
-          individualParty.individualDetails.lastName)
+          individualParty.individualDetails.lastName);
       }
       return foundPartyFromService.partyID;
     }

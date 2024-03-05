@@ -1,6 +1,6 @@
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { PartyType } from '../models/hearings.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { PartyDetailsModel } from '../models/partyDetails.model';
@@ -19,14 +19,18 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
 
   static getNameFromFirstLast(first: string, last: string): string {
     const res:string[] = [];
-    if (first)
-      res.push(first)
-    if (last)
-      res.push(first)
-    if (res.length>0)
-      return res.join(' ')
-    else return null;
+    if (first) {
+      res.push(first);
+    }
+    if (last) {
+      res.push(first);
+    }
+    if (res.length > 0) {
+      return res.join(' ');
+    }
+    return null;
   }
+
   private static getPartyName(partiesFromServiceValue: PartyDetailsModel[], partyInfo: PartyDetailsModel): string {
     const partyDetails = partiesFromServiceValue.find((pty) => pty.partyID === partyInfo.partyID);
     return (partyDetails && partyDetails.partyName)
@@ -40,7 +44,7 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
 
     return hearingState$.pipe(
       map((state) => {
-        if(!state) {
+        if (!state) {
           return '';
         }
         const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;

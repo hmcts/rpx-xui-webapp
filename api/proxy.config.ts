@@ -40,7 +40,7 @@ export const initProxy = (app: Express) => {
     rewrite: false,
     source: '/documents',
     target: getConfigValue(SERVICES_DOCUMENTS_API_PATH)
-  });
+  }, false);
 
   applyProxy(app, {
     rewrite: false,
@@ -56,7 +56,7 @@ export const initProxy = (app: Express) => {
     rewriteUrl: '/cases/documents',
     source: '/documentsv2',
     target: getConfigValue(SERVICES_DOCUMENTS_API_PATH_V2)
-  });
+  }, false);
 
   applyProxy(app, {
     filter: [

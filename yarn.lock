@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.18-event-flow-cancel-navigation":
-  version: 7.0.18-event-flow-cancel-navigation
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.18-event-flow-cancel-navigation"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.18-event-flow-cancel-navigation-v2":
+  version: 7.0.18-event-flow-cancel-navigation-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.18-event-flow-cancel-navigation-v2"
   dependencies:
     tslib: ^2.3.0
-  checksum: 167f57885555f6ed5662d14a5c6ae5ddf10b1d6dd1649ce32f229bfab44def28861e1337a44eab86f5b158079be2c69308cea39aa516f5a55a8f63537cb3a4bd
+  checksum: ab67e3dd6c661d02c65ee14df928c2d445c2f9fb883d67ca9e2c8ec504869a401cecc1dd97c2774a5a2345be0f7b6284c04b4f5cd581aeddad0eb24fa3993154
   languageName: node
   linkType: hard
 
@@ -19060,7 +19060,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.18-event-flow-cancel-navigation
+    "@hmcts/ccd-case-ui-toolkit": 7.0.18-event-flow-cancel-navigation-v2
     "@hmcts/ccpay-web-component": 6.0.2
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 3.0.2

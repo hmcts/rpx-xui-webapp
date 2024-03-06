@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.17":
-  version: 7.0.17
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.17"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.17-welsh-event-trigger":
+  version: 7.0.17-welsh-event-trigger
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.17-welsh-event-trigger"
   dependencies:
     tslib: ^2.3.0
-  checksum: 67ac1d704a730a58eaca87ef4c37cea4a029d4c0edeb694f51e287d93fafb572c952445aba7c5e912dcd6f648d94f1ecf8f73b6f3e3e75cd3fb245cace0bf17d
+  checksum: 2e8d83a03cd9424229b2f8665fc8eeaca94e157c9803616aebb9813c3badfd2a67306223b5ceef89163ece6ab4b12a56e12f3d561f080c5ef7e505443db60428
   languageName: node
   linkType: hard
 
@@ -19207,7 +19207,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.17
+    "@hmcts/ccd-case-ui-toolkit": 7.0.17-welsh-event-trigger
     "@hmcts/ccpay-web-component": 6.0.2
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 3.0.2

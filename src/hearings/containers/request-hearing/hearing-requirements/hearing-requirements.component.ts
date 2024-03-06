@@ -2,6 +2,7 @@ import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angu
 import { ActivatedRoute } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import { lastValueFrom } from 'rxjs';
 import { LoggerService } from '../../../../app/services/logger/logger.service';
 import * as fromHearingStore from '../../../../hearings/store';
 import { ValidatorsUtils } from '../../../../hearings/utils/validators.utils';

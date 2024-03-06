@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ActualHearingDayModel, HearingActualsMainModel, PlannedHearingDayModel, HearingOutcomeModel } from '../../models/hearingActualsMainModel';
+import { ActualHearingDayModel, HearingActualsMainModel, PlannedHearingDayModel } from '../../models/hearingActualsMainModel';
 import { AnswerSource, HearingChannelEnum, HearingDateEnum, HearingResult } from '../../models/hearings.enum';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import * as fromHearingStore from '../../store';
@@ -25,7 +25,6 @@ export class HearingActualSummaryComponent implements OnInit {
   public dateFormat = HearingDateEnum;
   public answerSource = AnswerSource;
   public hearingTypeDescription: string;
-  public hearingOutcome: HearingOutcomeModel;
 
   public ngOnInit(): void {
     const hearingOutcome = this.hearingActualsMainModel &&
@@ -45,7 +44,7 @@ export class HearingActualSummaryComponent implements OnInit {
     this.hearingTypeDescription = hearingOutcome?.hearingType && this.getHearingTypeDescription(hearingOutcome.hearingType);
   }
 
-  public getHearingTypeDescription(hearingType: string): string {
+  private getHearingTypeDescription(hearingType: string): string {
     const hearingTypeFromLookup = this.hearingStageOptions?.find((x) => x.key.toLowerCase() === hearingType.toLowerCase());
 
     return hearingTypeFromLookup ? hearingTypeFromLookup.value_en : '';

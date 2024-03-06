@@ -390,6 +390,19 @@ describe('HearingActualSummaryComponent', () => {
       parent_key: '',
       active_flag: 'Y',
       child_nodes: null
+    },
+    {
+      category_key: 'HearingType',
+      key: 'Pre-hearing review',
+      value_en: 'Bail',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
     }
   ];
 
@@ -424,12 +437,17 @@ describe('HearingActualSummaryComponent', () => {
     component = fixture.componentInstance;
     component.hearingActualsMainModel = hearingActualsMainModel;
     component.hearingState$ = new Observable();
+    component.hearingStageOptions = HEARING_TYPES;
     router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should set hearing type description', () => {
+    expect(component.hearingTypeDescription).toEqual('Bail');
   });
 
   afterEach(() => {

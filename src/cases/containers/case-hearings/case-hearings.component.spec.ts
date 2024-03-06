@@ -9,6 +9,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
 import { Observable, of } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
+import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingDayScheduleModel } from '../../../hearings/models/hearingDaySchedule.model';
 import { HearingListModel } from '../../../hearings/models/hearingList.model';
@@ -403,7 +404,7 @@ describe('CaseHearingsComponent', () => {
     mockSessionStore = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
 
     TestBed.configureTestingModule({
-      declarations: [CaseHearingsComponent],
+      declarations: [CaseHearingsComponent, MockRpxTranslatePipe],
       imports: [
         HttpClientTestingModule,
         RouterTestingModule

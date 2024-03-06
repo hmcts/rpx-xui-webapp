@@ -9,6 +9,7 @@ import { hearingStageRefData, initialState } from '../hearing.test.data';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { JudgeTypesAnswerConverter } from './judge-types.answer.converter';
+import { MemberType, RequirementType } from '../models/hearings.enum';
 
 describe('JudgeTypesAnswerConverter', () => {
   let converter: AnswerConverter;
@@ -36,6 +37,22 @@ describe('JudgeTypesAnswerConverter', () => {
     store = TestBed.inject(Store);
     router = TestBed.inject(ActivatedRoute);
     converter = new JudgeTypesAnswerConverter(router);
+  });
+
+  it('should transform hearing judge types to empty', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
+      roleType: ROLE_TYPE,
+      panelPreferences: [{
+        memberID: '123',
+        memberType: MemberType.JUDGE,
+        requirementType: RequirementType.MUSTINC
+      }]
+    };
+    const result$ = converter.transformAnswer(of(STATE));
+    const option = '';
+    const expected = cold('(b|)', { b: option });
+    expect(result$).toBeObservable(expected);
   });
 
   it('should transform hearing judge types', () => {

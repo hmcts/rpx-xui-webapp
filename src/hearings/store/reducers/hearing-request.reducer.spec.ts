@@ -81,6 +81,16 @@ describe('Hearing Request Reducer', () => {
                 partyID: '01234567',
                 partyType: PartyType.ORG,
                 partyRole: 'RESP'
+              },
+              {
+                partyID: '33334567',
+                partyType: PartyType.ORG,
+                partyRole: 'RESP',
+                partyName: 'Jane Smith',
+                individualDetails: {
+                  firstName: 'Jane',
+                  lastName: 'Wilson'
+                }
               }
             ]
           },
@@ -97,6 +107,10 @@ describe('Hearing Request Reducer', () => {
               },
               {
                 ...initialHearingRequestState.hearingRequestMainModel.partyDetails[1]
+              },
+              {
+                ...initialHearingRequestState.hearingRequestMainModel.partyDetails[2],
+                partyName: 'Jane Smith'
               }
             ]
           },

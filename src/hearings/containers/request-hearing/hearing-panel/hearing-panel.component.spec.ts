@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
@@ -279,7 +280,7 @@ describe('HearingPanelComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
-      declarations: [HearingPanelComponent, HearingJudgeNamesListComponent],
+      declarations: [HearingPanelComponent, HearingJudgeNamesListComponent, MockRpxTranslatePipe],
       providers: [
         provideMockStore({ initialState: STATE }),
         { provide: HearingsService, useValue: hearingsService },

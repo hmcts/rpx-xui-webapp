@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.18-event-flow-cancel-navigation-v2":
-  version: 7.0.18-event-flow-cancel-navigation-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.18-event-flow-cancel-navigation-v2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.17-welsh-event-trigger":
+  version: 7.0.17-welsh-event-trigger
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.17-welsh-event-trigger"
   dependencies:
     tslib: ^2.3.0
-  checksum: ab67e3dd6c661d02c65ee14df928c2d445c2f9fb883d67ca9e2c8ec504869a401cecc1dd97c2774a5a2345be0f7b6284c04b4f5cd581aeddad0eb24fa3993154
+  checksum: 2e8d83a03cd9424229b2f8665fc8eeaca94e157c9803616aebb9813c3badfd2a67306223b5ceef89163ece6ab4b12a56e12f3d561f080c5ef7e505443db60428
   languageName: node
   linkType: hard
 
@@ -19060,7 +19060,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.18-event-flow-cancel-navigation-v2
+    "@hmcts/ccd-case-ui-toolkit": 7.0.17-welsh-event-trigger
     "@hmcts/ccpay-web-component": 6.0.2
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 3.0.2

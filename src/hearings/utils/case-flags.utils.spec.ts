@@ -413,14 +413,14 @@ describe('CaseFlagsUtils', () => {
 
     const mockLanguageFlag: CaseFlagReferenceModel = {
       name: 'Language Interpreter',
-      'hearingRelevant': true,
-      'flagComment': true,
-      'flagCode': 'PF0015',
-      'isParent': false,
-      'Path': [
+      hearingRelevant: true,
+      flagComment: true,
+      flagCode: 'PF0015',
+      isParent: false,
+      Path: [
         'Party'
       ],
-      'childFlags': []
+      childFlags: []
     };
 
     it('should return non-reasonable adjustment flags with labels', () => {

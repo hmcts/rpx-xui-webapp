@@ -190,7 +190,7 @@ describe('HearingEditSummaryComponent', () => {
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
   });
 
-  it('should return party changes required if interpreter language changed', () => {
+  it('should return reasonableAdjustmentChangesRequired and partyDetailsChangesRequired as true if interpreter language changed', () => {
     const partiesSHV: PartyDetailsModel[] = [
       {
         partyID: 'P1',
@@ -280,6 +280,41 @@ describe('HearingEditSummaryComponent', () => {
     ];
     component.ngOnInit();
     expect(component.sectionsToDisplay).toEqual(sectionsToDisplay);
+  });
+
+  it('should set reasonableAdjustmentChangesRequired to false if hearing requirements is not present in the screen flow', () => {
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      screenFlow: [
+        {
+          screenName: 'hearing-facilities',
+          navigation: [
+            {
+              resultValue: 'hearing-stage'
+            }
+          ]
+        },
+        {
+          screenName: 'hearing-stage',
+          navigation: [
+            {
+              resultValue: 'hearing-attendance'
+            }
+          ]
+        },
+        {
+          screenName: 'hearing-additional-instructions',
+          navigation: [
+            {
+              resultValue: 'hearing-create-edit-summary'
+            }
+          ]
+        }
+      ]
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesRequired).toEqual(false);
   });
 
   it('should set the hearingWindowChangesRequired to true', () => {

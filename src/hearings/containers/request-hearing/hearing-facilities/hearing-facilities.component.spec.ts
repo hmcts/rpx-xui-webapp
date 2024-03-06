@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { ACTION, PartyType } from '../../../models/hearings.enum';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -193,7 +194,7 @@ describe('HearingFacilitiesComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      declarations: [HearingFacilitiesComponent],
+      declarations: [HearingFacilitiesComponent, MockRpxTranslatePipe],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },

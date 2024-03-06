@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UserDetails } from '../../../../app/models';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import * as fromAppStore from '../../../../app/store';
 import { ACTION } from '../../../../hearings/models/hearings.enum';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
@@ -51,7 +52,8 @@ describe('HearingViewSummaryComponent', () => {
     hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled']);
     routerMock = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
-      declarations: [HearingViewSummaryComponent],
+      declarations: [HearingViewSummaryComponent, MockRpxTranslatePipe],
+      imports: [RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         provideMockStore({ initialState }),

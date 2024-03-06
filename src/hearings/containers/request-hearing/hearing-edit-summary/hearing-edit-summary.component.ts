@@ -90,7 +90,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     this.caseStatus = this.hearingRequestMainModel.hearingResponse?.laCaseStatus || '';
     this.isHearingListed = this.caseStatus === LaCaseStatus.LISTED;
     this.sectionsToDisplay = this.serviceHearingValuesModel?.screenFlow.map((screen) => screen.screenName);
-
     const locationIds = this.hearingRequestMainModel.hearingDetails.hearingLocations?.map((location) => location.locationId).join(',');
     this.showLanguageRequirementsSection$ = this.locationsDataService.getLocationById(locationIds).pipe(
       map((locations) => {
@@ -352,12 +351,16 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       (party) => party.individualDetails?.interpreterLanguage
     )?.filter(
       (interpreterLanguage) => interpreterLanguage !== null && interpreterLanguage !== undefined
-    );
+    ).sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
     const interpreterLanguagesHMC = individualParties.map(
       (party) => party.individualDetails?.interpreterLanguage
     )?.filter(
       (interpreterLanguage) => interpreterLanguage !== null && interpreterLanguage !== undefined
-    );
+    ).sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
     if (!_.isEqual(interpreterLanguagesSHV, interpreterLanguagesHMC)) {
       return true;
     }
@@ -365,7 +368,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // HMC stores only reasonable adjustment flag ids and language interpreter flag ids under parties
     // Get only the reasonable adjustment and language interpreter flag ids from SHV and sort them for easy comparison
     const caseFlagsSHV = this.serviceHearingValuesModel.caseFlags.flags;
-    const flagIdsSHV = caseFlagsSHV.map((flag) => flag.flagId)?.filter((flagId) => flagId?.startsWith('RA') || flagId === this.LANGUAGE_INTERPRETER_FLAG_ID)?.sort((a, b) => {
+    const flagIdsSHV = caseFlagsSHV.map((flag) => flag.flagId)?.filter((flagId) => flagId?.startsWith('RA'))?.sort((a, b) => {
       return a > b ? 1 : (a === b ? 0 : -1);
     });
     // Get individual parties reasonable adjustment flags and sort the result

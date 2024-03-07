@@ -1,5 +1,5 @@
 
-@ng @functional_enabled
+@ng @functional_enabled @functional_debug
 Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
     https://tools.hmcts.net/jira/browse/EUI-8905
     https://tools.hmcts.net/jira/browse/EUI-9504
@@ -89,7 +89,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Case public name         | Mock case public name updated | false             | AMENDED            |
             | Case restriction         | Yes                           | false             | AMENDED            |
             | Private hearing required | Yes                           | false             | AMENDED            |
-            | Reasonable adjustments   | Party1 name updated           | true              | AMENDED            |
+            | Reasonable adjustments   | Party1 name FN updated           | true              | AMENDED            |
             | Reasonable adjustments   | Party2 name                   | true              |                    |
 
 

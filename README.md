@@ -1,10 +1,11 @@
 # Manage Cases
 
-To run the application locally please make sure you follow the prerequisite task of
+To run  the application locally please make sure you follow the prerequisite task of
 Setting up Secrets locally as documented below.
 
 Then follow: 
 ## Startup the Node service locally
+
 
 1. Make sure you have local-development.json within /config, if you do not you can get this from an XUI team member.
 2. Start the Node service locally using: 

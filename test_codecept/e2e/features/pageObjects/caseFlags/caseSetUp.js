@@ -6,7 +6,7 @@ class CaseFlagsCaseSetup{
 
 
     constructor(){
-
+        this.caseDetailsPage = $('ccd-case-viewer')
     }
 
     async inputField(comolexField, inputField, value){
@@ -16,18 +16,29 @@ class CaseFlagsCaseSetup{
     }
 
     async createCase(version, inputs) {
-        await browser.get(`${process.env.TEST_URL}/cases/case-create/DIVORCE/xuiCaseFlags${version.toLowerCase().includes('v1') ? 'V1' : '2.1'}/createCase/createCasetestDataSetup`)
-        await browserWaits.waitForElement($('ccd-case-edit-page'))
-        
+        await browserWaits.retryWithActionCallback(async () => {
+            await browser.sleep(5);
+            await browser.get(`${process.env.TEST_URL}/cases/case-create/DIVORCE/xuiCaseFlags${version.toLowerCase().includes('v1') ? 'V1' : '2.1'}/createCase/createCasetestDataSetup`)
+            await browserWaits.waitForElement($('ccd-case-edit-page'))
+        })
+
         for(const field of inputs){
             await this.inputField(field.party, field.fieldName, field.value)
-            
+
         }
 
-        await element(by.xpath(`//button[contains(text(),'Continue')]`)).click()
         const caseSubmitButtom = element(by.xpath(`//button[contains(text(),'Test submit')]`))
-        await browserWaits.waitForElement(caseSubmitButtom)
-        await caseSubmitButtom.click()
+        await browserWaits.retryWithActionCallback(async () => {
+            await element(by.xpath(`//button[contains(text(),'Continue')]`)).click()
+            await browserWaits.waitForElement(caseSubmitButtom)
+        })
+        
+        await browserWaits.retryWithActionCallback(async () => {
+            await caseSubmitButtom.click()
+            await browserWaits.waitForElement(this.caseDetailsPage)
+        })
+        
+
     }
 }
 

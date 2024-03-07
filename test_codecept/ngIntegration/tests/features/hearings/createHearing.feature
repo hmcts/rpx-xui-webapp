@@ -11,10 +11,13 @@ Feature: Create hearings workflow
         # Given I set MOCK case details "WA_Case" property "jurisdiction.id" as "IA"
         # Given I set MOCK case details "WA_Case" property "case_type.id" as "Asylum"
 
-        Given I set mock case hearings
-            | hmcStatus        | hearingType | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
-            | AWAITING_LISTING | TEST_TYPE   | -3                     | 0                            | -3                                      | 2                                     |
-            | COMPLETED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
+        # Given I set mock case hearings
+        #     | hmcStatus        | hearingType | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
+        #     | AWAITING_LISTING | TEST_TYPE   | -3                     | 0                            | -3                                      | 2                                     |
+        #     | COMPLETED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
+
+
+
 
         Given I start MockApp
         Given I navigate to home page
@@ -24,18 +27,22 @@ Feature: Create hearings workflow
         Then I see case details page
         Then I see case details tab label "Hearings" is displayed is "true"
 
-        Given I set mock hearings service hearing values with ref "partiesUpdated"
-        Given I update mock hearings service hearing values with ref "partiesUpdated" for field "parties"
-            | partyName   | partyID |
-            | Party1 name | party_1 |
-            | Party2 name | party_2 |
+        Given I set mock case hearings from file "viewEditHearings/caseHearings"
+        Given I set mock hearing HMC response from file "viewEditHearings/mock_HMC_setup"
+        Given I set mock hearing SHV response from file "viewEditHearings/mock_SHV_setup"
 
-        Given I update mock hearings service hearing values with ref "partiesUpdated" for field "caseFlags"
-            | partyId | partyName   | flagParentId | flagId | flagDescription | flagStatus |
-            | party_1 | Party1 name | PARENT_0     | RA0042 | Party1 comment  | ACTIVE     |
-            | party_2 | Party2 name | PARENT_0     | RA0042 | Party2 comment  | ACTIVE     |
-            | party_1 | Party1 name | PARENT_0     | RA0053 | Party1 comment  | ACTIVE     |
-            | party_2 | Party2 name | PARENT_0     | RA0053 | Party2 comment  | ACTIVE     |
+        # Given I set mock hearings service hearing values with ref "partiesUpdated"
+        # Given I update mock hearings service hearing values with ref "partiesUpdated" for field "parties"
+        #     | partyName   | partyID |
+        #     | Party1 name | party_1 |
+        #     | Party2 name | party_2 |
+
+        # Given I update mock hearings service hearing values with ref "partiesUpdated" for field "caseFlags"
+        #     | partyId | partyName   | flagParentId | flagId | flagDescription | flagStatus |
+        #     | party_1 | Party1 name | PARENT_0     | RA0042 | Party1 comment  | ACTIVE     |
+        #     | party_2 | Party2 name | PARENT_0     | RA0042 | Party2 comment  | ACTIVE     |
+        #     | party_1 | Party1 name | PARENT_0     | RA0053 | Party1 comment  | ACTIVE     |
+        #     | party_2 | Party2 name | PARENT_0     | RA0053 | Party2 comment  | ACTIVE     |
 
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
 
@@ -64,6 +71,7 @@ Feature: Create hearings workflow
 
         # Participant attendance
         Then I am on create hearing page "Participant attendance"
+
         When In create hearing page "Participant attendance", I input values
             | field                                                    | value                                   |
             | Will this be a paper hearing?                            | No                                      |
@@ -89,7 +97,7 @@ Feature: Create hearings workflow
         When In create hearing page "Do you want a specific judge?", I input values
             | field                             | value                     |
             | Do you want a specific judge?     | No                        |
-            | Select all judge types that apply | Judge type 1,Judge type 2 |
+            | Select all judge types that apply | Judge type 1|
         When I click continue in create hearing workflow
 
         # Do you require a panel for this hearing?
@@ -129,8 +137,8 @@ Feature: Create hearings workflow
 
         Then In create hearing workflow, I validate check yoor answers displayed
             | section                                    | field                                                    | value                     |
-            |                                            | Case name                                                | 1690                      |
-            |                                            | Case number                                              | 1690-                     |
+            |  | Case name | 1234567812345678 |
+            |  | Case number | 1690- |
             # |                                            | Type                                                     |                                     |
             # | Hearing requirements                       | Reasonable adjustments                                   |                           |
             | Additional facilities                      | Will additional security be required?                    | No                        |
@@ -142,7 +150,7 @@ Feature: Create hearings workflow
             | Participant attendance                     | How many people will attend the hearing in person?       | 2                         |
             # | Hearing venue                              | What are the hearing venue details?                      |       |
             | Judge details                              | Do you want a specific judge?                            | No                        |
-            | Judge details                              | Select all judge types that apply                        | Judge type 1,Judge type 2 |
+            | Judge details                              | Select all judge types that apply                        | Judge type 1|
             # | Panel details                              | Do you require a panel for this hearing?                 | No                                  |
             | Length, date and priority level of hearing | Length of hearing                                        | 1 Day 2 Hours 5 Minutes   |
             | Length, date and priority level of hearing | Does the hearing need to take place on a specific date?  | No                        |
@@ -162,7 +170,7 @@ Feature: Create hearings workflow
 
         Then I validate request body json "OnPostHearing", jsonpaths
             | jsonpath                                                     | value  |
-            | $.partyDetails[0].individualDetails.reasonableAdjustments[0] | RA0042 |
+            | $.partyDetails[0].individualDetails.reasonableAdjustments[0] | RA001 |
 
 
     Scenario: Create hearing , input combo 1.1
@@ -174,10 +182,14 @@ Feature: Create hearings workflow
         # Given I set MOCK case details "WA_Case" property "jurisdiction.id" as "IA"
         # Given I set MOCK case details "WA_Case" property "case_type.id" as "Asylum"
 
-        Given I set mock case hearings
-            | hmcStatus        | hearingType | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
-            | AWAITING_LISTING | TEST_TYPE   | -3                     | 0                            | -3                                      | 2                                     |
-            | COMPLETED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
+        # Given I set mock case hearings
+        #     | hmcStatus        | hearingType | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
+        #     | AWAITING_LISTING | TEST_TYPE   | -3                     | 0                            | -3                                      | 2                                     |
+        #     | COMPLETED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
+
+        Given I set mock case hearings from file "viewEditHearings/caseHearings"
+        Given I set mock hearing HMC response from file "viewEditHearings/mock_HMC_setup"
+        Given I set mock hearing SHV response from file "viewEditHearings/mock_SHV_setup_no_case_flags"
 
         Given I start MockApp
         Given I navigate to home page
@@ -215,11 +227,8 @@ Feature: Create hearings workflow
             | field                                                    | value                                           |
             | Will this be a paper hearing?                            | No                                              |
             | What will be the methods of attendance for this hearing? | In Person,Video,Telephone                       |
-            | How will each participant attend the hearing?            | First Applicant FN First Applicant LN,In Person |
-            | How will each participant attend the hearing?            | Solicitor First Name Solicitor Last Name,Video  |
-            | How will each participant attend the hearing?            | Mary Richards,Video                             |
-            | How will each participant attend the hearing?            | Elise Lynn,Video                                |
-            | How will each participant attend the hearing?            | David Carman,Video                              |
+            | How will each participant attend the hearing? | Party1 name FN Party1 name LN,In Person |
+            | How will each participant attend the hearing? | Party2 name FN Party2 name LN,Video     |
             | How many people will attend the hearing in person?       | 5                                               |
         When I click continue in create hearing workflow
 
@@ -236,7 +245,7 @@ Feature: Create hearings workflow
         When In create hearing page "Do you want a specific judge?", I input values
             | field                             | value                     |
             | Do you want a specific judge?     | No                        |
-            | Select all judge types that apply | Judge type 1,Judge type 2 |
+            | Select all judge types that apply | Judge type 1 |
         When I click continue in create hearing workflow
 
         # Do you require a panel for this hearing?
@@ -275,9 +284,9 @@ Feature: Create hearings workflow
         Then I am on create hearing page "Check your answers before sending your request"
 
         Then In create hearing workflow, I validate check yoor answers displayed
-          | section                                    | field                                                    | value                     |
-          |                                            | Case name                                                | 1690                      |
-          |                                            | Case number                                              | 1690-                     |
+            | section                                    | field                                                    | value                     |
+            |  | Case name   | 1234567812345678 |
+            |  | Case number | 1690-            |
             # |                                            | Type                                                     |                                     |
           | Hearing requirements                       | Reasonable adjustments                                   |                           |
           | Additional facilities                      | Will additional security be required?                    | No                        |
@@ -289,7 +298,7 @@ Feature: Create hearings workflow
           | Participant attendance                     | How many people will attend the hearing in person?       | 5                         |
             # | Hearing venue                              | What are the hearing venue details?                      |       |
           | Judge details                              | Do you want a specific judge?                            | No                        |
-          | Judge details                              | Select all judge types that apply                        | Judge type 1,Judge type 2 |
+          | Judge details                              | Select all judge types that apply                        | Judge type 1 |
           # | Panel details                              | Do you require a panel for this hearing?                 | No                        |
           | Length, date and priority level of hearing | Length of hearing                                        | 1 Day 2 Hours 5 Minutes   |
           | Length, date and priority level of hearing | Does the hearing need to take place on a specific date?  | No                        |
@@ -315,10 +324,14 @@ Feature: Create hearings workflow
         # Given I set MOCK case details "WA_Case" property "jurisdiction.id" as "IA"
         # Given I set MOCK case details "WA_Case" property "case_type.id" as "Asylum"
 
-        Given I set mock case hearings
-            | hmcStatus        | hearingType | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
-            | AWAITING_LISTING | TEST_TYPE   | -3                     | 0                            | -3                                      | 2                                     |
-            | COMPLETED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
+        # Given I set mock case hearings
+        #     | hmcStatus        | hearingType | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
+        #     | AWAITING_LISTING | TEST_TYPE   | -3                     | 0                            | -3                                      | 2                                     |
+        #     | COMPLETED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
+
+        Given I set mock case hearings from file "viewEditHearings/caseHearings"
+        Given I set mock hearing HMC response from file "viewEditHearings/mock_HMC_setup"
+        Given I set mock hearing SHV response from file "viewEditHearings/mock_SHV_setup"
 
         Given I start MockApp
         Given I navigate to home page
@@ -461,10 +474,14 @@ Feature: Create hearings workflow
         # Given I set MOCK case details "WA_Case" property "jurisdiction.id" as "IA"
         # Given I set MOCK case details "WA_Case" property "case_type.id" as "Asylum"
 
-        Given I set mock case hearings
-            | hmcStatus        | hearingType | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
-            | AWAITING_LISTING | TEST_TYPE   | -3                     | 0                            | -3                                      | 2                                     |
-            | COMPLETED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
+        # Given I set mock case hearings
+        #     | hmcStatus        | hearingType | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
+        #     | AWAITING_LISTING | TEST_TYPE   | -3                     | 0                            | -3                                      | 2                                     |
+        #     | COMPLETED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
+
+        Given I set mock case hearings from file "viewEditHearings/caseHearings"
+        Given I set mock hearing HMC response from file "viewEditHearings/mock_HMC_setup"
+        Given I set mock hearing SHV response from file "viewEditHearings/mock_SHV_setup"
 
         Given I start MockApp
         Given I navigate to home page
@@ -502,11 +519,8 @@ Feature: Create hearings workflow
             | field                                                    | value                                           |
             | Will this be a paper hearing?                            | No                                              |
             | What will be the methods of attendance for this hearing? | In Person,Video,Telephone                       |
-            | How will each participant attend the hearing?            | First Applicant FN First Applicant LN,In Person |
-            | How will each participant attend the hearing?            | Solicitor First Name Solicitor Last Name,Video  |
-            | How will each participant attend the hearing?            | Mary Richards,Video                             |
-            | How will each participant attend the hearing?            | Elise Lynn,Video                                |
-            | How will each participant attend the hearing?            | David Carman,Video                              |
+            | How will each participant attend the hearing? | Party1 name FN Party1 name LN,In Person |
+            | How will each participant attend the hearing? | Party2 name FN Party2 name LN,Video     |
             | How many people will attend the hearing in person?       | 5                                               |
         When I click continue in create hearing workflow
 
@@ -576,7 +590,7 @@ Feature: Create hearings workflow
 
         Then In create hearing workflow, I validate check yoor answers displayed
             | section                | field                                                    | value                     |
-            |                        | Case name                                                | 1690                      |
+            |  | Case name | 1234567812345678 |
             |                        | Case number                                              | 1690-                     |
             # |                                            | Type                                                     |                                     |
             # | Hearing requirements   | Reasonable adjustments                                   |                           |

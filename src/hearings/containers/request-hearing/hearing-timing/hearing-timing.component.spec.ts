@@ -8,6 +8,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
 import { of } from 'rxjs';
 import { ErrorMessage } from '../../../../app/models';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, HearingDatePriorityEnum, RadioOptions, UnavailabilityType } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
@@ -68,7 +69,7 @@ describe('HearingTimingComponent', () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule,
         HttpClientTestingModule],
-      declarations: [HearingTimingComponent, MockHearingPartiesComponent],
+      declarations: [HearingTimingComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },

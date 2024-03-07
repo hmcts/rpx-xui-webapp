@@ -4,6 +4,12 @@ import { mapDataByDefault } from './services.index';
 
 describe('hearings services', () => {
   describe('mapDataByDefault', () => {
+    it('should return data with no modifications if no case flags', () => {
+      const data = SERVICE_HEARING_VALUES;
+      const result = mapDataByDefault(data);
+      expect(result.caseFlags.flags.length).to.equal(0);
+    });
+
     it('should set the flagId and return the result', () => {
       const data = SERVICE_HEARING_VALUES;
       data.caseFlags = {

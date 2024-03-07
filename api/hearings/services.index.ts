@@ -44,18 +44,21 @@ export function mapDataByDefault(data: ServiceHearingValuesModel): ServiceHearin
   // There is an inconsistency with the PartyFlagsModel data provided by the services
   // i.e., PrL provides partyId and CIVIL provides partyID
   // Resolving this to copy over partyID into partyId
-  return {
-    ...data,
-    caseFlags: {
-      ...data.caseFlags,
-      flags: data.caseFlags.flags.map((flag) => (
-        {
-          ...flag,
-          partyId: flag.partyID ? flag.partyID : flag.partyId
-        }
-      ))
-    }
-  };
+  if (data?.caseFlags?.flags?.length > 0) {
+    return {
+      ...data,
+      caseFlags: {
+        ...data.caseFlags,
+        flags: data.caseFlags.flags.map((flag) => (
+          {
+            ...flag,
+            partyId: flag.partyID ? flag.partyID : flag.partyId
+          }
+        ))
+      }
+    };
+  }
+  return data;
 }
 
 /**

@@ -18,6 +18,8 @@ class CaseFlagsWorkflow{
 
     constructor(){
         this.nextButton = element(by.xpath(`//button[contains(text(),'Next')]`))
+        this.cancelLink = $('form p.cancel a')
+
         this.pages = {
             "Where should this flag be added?" : new SelectFlagLocationPage(),
             "Select flag type" : new SelectFlagTypePage(),

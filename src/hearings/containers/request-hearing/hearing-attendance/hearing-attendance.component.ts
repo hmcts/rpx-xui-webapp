@@ -157,8 +157,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       }
     };
     if ((this.hearingCondition.mode === Mode.VIEW_EDIT &&
-      this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('parties') &&
-      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired)) {
+      this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('parties'))) {
       this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed = true;
     }
   }

@@ -23,7 +23,7 @@ describe('CaseTaskComponent', () => {
     mockRouter.url = '/case-details/123243430403904/tasks';
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     mockRouter.navigate.and.callFake(() => new Promise((resolve, reject) => resolve(true)));
-    component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService, mockFeatureToggleService);
+    component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService);
     mockFeatureToggleService.getValue.and.returnValue(of({
       configurations: [
         {
@@ -223,7 +223,7 @@ describe('CaseTaskComponent', () => {
   it('should get the correct returnUrl', () => {
     expect(component.returnUrl).toEqual(mockRouter.url);
     mockRouter = null;
-    component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService, mockFeatureToggleService);
+    component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService);
     component.task = {
       assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
       assigneeName: 'Some Name',
@@ -349,58 +349,6 @@ describe('CaseTaskComponent', () => {
     it('should navigate correctly on click', () => {
       component.onClick('exampleUrl(firstUrlPart?secondUrlPart=equalPart)end');
       expect(mockRouter.navigate).toHaveBeenCalledWith(['firstUrlPart'], { queryParams: { tid: 'equalPart' } });
-    });
-  });
-
-  describe('setReleaseVersion()', () => {
-    it('should set isRelease4 to false if the task is for a service whose releaseVersion is not 4', (done) => {
-      component.task = {
-        assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
-        assigneeName: 'Some Name',
-        permissions: { values: ['Own'] },
-        id: null,
-        description: null,
-        case_id: null,
-        caseName: null,
-        caseCategory: null,
-        location: null,
-        taskName: null,
-        dueDate: new Date(),
-        actions: [],
-        warnings: false,
-        derivedIcon: null,
-        jurisdiction: 'IA'
-      };
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      component.setReleaseVersion().then((_) => {
-        expect(component.isRelease4).toBe(false);
-        done();
-      });
-    });
-
-    it('should set isRelease4 to true if the task is for a service whose releaseVersion is 4', (done) => {
-      component.task = {
-        assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
-        assigneeName: 'Some Name',
-        permissions: { values: ['Own'] },
-        id: null,
-        description: null,
-        case_id: null,
-        caseName: null,
-        caseCategory: null,
-        location: null,
-        taskName: null,
-        dueDate: new Date(),
-        actions: [],
-        warnings: false,
-        derivedIcon: null,
-        jurisdiction: 'TEST'
-      };
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      component.setReleaseVersion().then((_) => {
-        expect(component.isRelease4).toBe(true);
-        done();
-      });
     });
   });
 });

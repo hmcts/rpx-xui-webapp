@@ -1,6 +1,9 @@
-import { KEY_MODE } from '../models/hearingConditions';
+import { initialState } from '../hearing.test.data';
+import { HearingConditions, KEY_MODE } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
-import { Mode } from '../models/hearings.enum';
+import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
+import { MemberType, Mode, RequirementType } from '../models/hearings.enum';
+import { PropertiesUpdatedOnPageVisit } from '../models/hearingsUpdateMode.enum';
 import { HearingsUtils } from './hearings.utils';
 
 describe('HearingsUtils', () => {
@@ -75,5 +78,62 @@ describe('HearingsUtils', () => {
     ];
     const sortedResult = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
     expect(sortedResult).toEqual(expectedResult);
+  });
+
+  describe('HearingWindowModel', () => {
+    it('should return HearingWindowModel as null when hearingWindow is an empty object', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        hearingDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+          hearingWindow: null
+        }
+      };
+      expect(
+        HearingsUtils.getHearingWindow(hearingRequestMainModel)
+      ).toBeNull();
+    });
+
+    it('should return HearingWindowModel from ServiceHearingVaulesModel when hearingWindow is not empty', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        hearingDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+          hearingWindow: {
+            dateRangeStart: '2022-11-23T09:00:00.000Z',
+            dateRangeEnd: '2022-11-30T09:00:00.000Z',
+            firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
+          }
+        }
+      };
+      expect(
+        HearingsUtils.getHearingWindow(hearingRequestMainModel)
+      ).toEqual(hearingRequestMainModel.hearingDetails.hearingWindow);
+    });
+
+    it('should return must included judge count from panel prference list', () => {
+      const panelPreference = [{
+        memberID: '123',
+        memberType: MemberType.JUDGE,
+        requirementType: RequirementType.MUSTINC
+      },
+      {
+        memberID: '1234',
+        memberType: MemberType.JUDGE,
+        requirementType: RequirementType.EXCLUDE
+      }];
+
+      expect(
+        HearingsUtils.getMustIncludedJudgeCount(panelPreference)
+      ).toEqual(1);
+    });
+
+    it('should return must included judge count from panel prference list', () => {
+      const roleType = ['role1', 'role2', 'role3'];
+
+      expect(
+        HearingsUtils.getRestOfRoleType(roleType)
+      ).toEqual(['role2', 'role3']);
+    });
   });
 });

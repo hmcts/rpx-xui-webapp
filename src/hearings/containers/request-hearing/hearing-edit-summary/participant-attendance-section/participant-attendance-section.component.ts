@@ -33,6 +33,7 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   public partyDetailsChangesConfirmed: boolean;
   public isPaperHearingChanged: boolean;
   public numberOfPhysicalAttendeesChanged: boolean;
+  public methodOfAttendanceChanged: boolean;
   public participantChannelsChanged: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
 
@@ -164,10 +165,12 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
       this.hearingRequestMainModel.hearingDetails?.numberOfPhysicalAttendees || 0
     );
 
-    this.participantChannelsChanged = !_.isEqual(
+    this.methodOfAttendanceChanged = !_.isEqual(
       this.hearingRequestToCompareMainModel.hearingDetails?.hearingChannels,
       this.hearingRequestMainModel.hearingDetails?.hearingChannels
     );
+
+    this.participantChannelsChanged = this.participantAttendanceModes.some((mode) => mode.partyChannelChanged === true);
 
     if (this.partyDetailsChangesRequired) {
       this.pageTitleDisplayLabel = !this.partyDetailsChangesConfirmed
@@ -176,6 +179,7 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
     } else {
       if (this.isPaperHearingChanged ||
         this.numberOfPhysicalAttendeesChanged ||
+        this.methodOfAttendanceChanged ||
         this.participantChannelsChanged) {
         this.pageTitleDisplayLabel = AmendmentLabelStatus.AMENDED;
       }

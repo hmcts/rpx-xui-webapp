@@ -111,6 +111,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
           ...partyDetailsModel,
           partyAmendmentStatus: AmendmentLabelStatus.ACTION_NEEDED
         };
+        (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyDetailsModel) as FormGroup);
       } else {
         const partyInHMC = partyDetails.find((party) => party.partyID === partyDetailsModel.partyID);
         if (partyInHMC) {
@@ -156,8 +157,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       }
     };
     if ((this.hearingCondition.mode === Mode.VIEW_EDIT &&
-      this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('parties') &&
-      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired)) {
+      this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('parties'))) {
       this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed = true;
     }
   }

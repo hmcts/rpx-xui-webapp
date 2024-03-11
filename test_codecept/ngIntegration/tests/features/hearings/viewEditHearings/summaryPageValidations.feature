@@ -57,7 +57,6 @@ Feature: Hearings : Summary page validations EUI-9097
         When I click button with label "Submit updated request"
         Then I am on hearings workflow page "Provide a reason for changing this hearing"
 
-@functional_debug
     Scenario: changes to CAT1 only, EUI-9097 scr 2
         cenario: SCR_1: CAT1 and CAT 2 ,Ameded and ACTION NEEDED labels  (Conditions (1) & (4))
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
@@ -75,7 +74,6 @@ Feature: Hearings : Summary page validations EUI-9097
         When I click button with label "Submit updated request"
         Then I am on hearings workflow page "Provide a reason for changing this hearing"
 
-@functional_debug
     Scenario: changes to CAT2 only, EUI-9097 scr 3 and scr 4
         cenario: SCR_1: CAT1 and CAT 2 ,Ameded and ACTION NEEDED labels  (Conditions (1) & (4))
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"

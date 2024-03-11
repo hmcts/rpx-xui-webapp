@@ -20,7 +20,7 @@
       <td class="govuk-table__cell">
         <label>
           {{ partyFlag.displayName }}
-          <exui-amendment-label *ngIf="partyFlag.flagAmendmentLabelStatus"
+          <exui-amendment-label *ngIf="partyFlag.flagAmendmentLabelStatus && partyFlag.flagAmendmentLabelStatus !== amendmentLabelStatus.NONE"
             [displayLabel]="partyFlag.flagAmendmentLabelStatus">
           </exui-amendment-label>
         </label>

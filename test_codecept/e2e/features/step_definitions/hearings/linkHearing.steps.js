@@ -42,6 +42,6 @@ Then('I see link hearings confirmatin page with message {string}', async functio
         expect(await linkHearingWorkflowPage.confirmationBanner.isDisplayed()).to.be.true
         expect(await linkHearingWorkflowPage.confirmationBanner.getText()).to.includes(message)
     })
-    
+
 })
 

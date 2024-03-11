@@ -54,8 +54,9 @@ describe('HearingTimingSectionComponent', () => {
     fixture = TestBed.createComponent(HearingTimingSectionComponent);
     component = fixture.componentInstance;
     component.hearingPrioritiesRefData = hearingPrioritiesRefData;
-    component.hearingDetails = initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails;
     nativeElement = fixture.debugElement.nativeElement;
+    component.hearingRequestMainModel = initialState.hearings.hearingRequest.hearingRequestMainModel;
+    component.hearingRequestToCompareMainModel = initialState.hearings.hearingRequestToCompare.hearingRequestMainModel;
     fixture.detectChanges();
   });
 
@@ -72,6 +73,7 @@ describe('HearingTimingSectionComponent', () => {
 
   it('should display action needed label', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -91,6 +93,7 @@ describe('HearingTimingSectionComponent', () => {
 
   it('should display amended label', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -112,6 +115,7 @@ describe('HearingTimingSectionComponent', () => {
 
   it('should not display label', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -126,6 +130,41 @@ describe('HearingTimingSectionComponent', () => {
     expect(component.hearingWindowChangesRequired).toEqual(false);
     expect(nativeElement.querySelector('#hearing-window-action-needed-label')).toBeNull();
     expect(nativeElement.querySelector('#hearing-window-amended-label')).toBeDefined();
+  });
+
+  it('should set the hearing length', () => {
+    component.hearingRequestMainModel.hearingDetails.duration = 1365;
+    component.ngOnInit();
+    expect(component.hearingLength).toEqual('3 Days 4 Hours 45 Minutes');
+  });
+
+  it('should return the hearing length as empty string', () => {
+    component.hearingRequestMainModel.hearingDetails.duration = null;
+    component.ngOnInit();
+    expect(component.hearingLength).toEqual('');
+  });
+
+  it('should return Yes as date selection', () => {
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = {
+      firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
+    };
+    component.ngOnInit();
+    expect(component.specificDateSelection).toEqual('Yes');
+  });
+
+  it('should return No as date selection', () => {
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = null;
+    component.ngOnInit();
+    expect(component.specificDateSelection).toEqual('No');
+  });
+
+  it('should return Choose a date range as date selection', () => {
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = {
+      dateRangeStart: '2022-11-23T09:00:00.000Z',
+      dateRangeEnd: '2022-11-30T09:00:00.000Z'
+    };
+    component.ngOnInit();
+    expect(component.specificDateSelection).toEqual('Choose a date range');
   });
 
   it('should verify onChange', () => {

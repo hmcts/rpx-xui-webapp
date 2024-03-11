@@ -11,6 +11,8 @@ import { AbstractPageFlow } from '../../utils/abstract-page-flow';
   styleUrls: ['./request-hearing.component.scss']
 })
 export class RequestHearingComponent implements OnDestroy {
+  public caseId: string;
+
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly pageFlow: AbstractPageFlow,
     private readonly hearingsService: HearingsService) {
@@ -49,6 +51,10 @@ export class RequestHearingComponent implements OnDestroy {
     return this.pageFlow.getCurrentPage() === HearingRequestPageRouteNames.HEARING_VIEW_EDIT_SUMMARY;
   }
 
+  public get isViewSummary(): boolean {
+    return this.pageFlow.getCurrentPage() === HearingRequestPageRouteNames.HEARING_VIEW_SUMMARY;
+  }
+
   public get isEditSummary(): boolean {
     return this.pageFlow.getCurrentPage() === HearingRequestPageRouteNames.HEARING_EDIT_SUMMARY;
   }
@@ -64,6 +70,7 @@ export class RequestHearingComponent implements OnDestroy {
   public get isChildPage(): boolean {
     return !this.isCreateEditSummary &&
       !this.isViewEditSummary &&
+      !this.isViewSummary &&
       !this.isEditSummary &&
       !this.isViewEditReason &&
       !this.isConfirmationPage;
@@ -73,5 +80,7 @@ export class RequestHearingComponent implements OnDestroy {
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequest());
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingConditions());
+    this.hearingsService.propertiesUpdatedAutomatically = { pageless: {}, withinPage: {} };
+    this.hearingsService.propertiesUpdatedOnPageVisit = null;
   }
 }

@@ -86,7 +86,7 @@ Then('I validate edit hearing section heading labels', async function (datatable
                 expect(actualLabel, `${heading} expected label did not match`).to.includes(expectedLabel)
             }
         })
-        
+
     }
 })
 

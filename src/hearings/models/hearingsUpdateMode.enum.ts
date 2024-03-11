@@ -67,6 +67,7 @@ export interface PropertiesUpdatedAutomatically {
 }
 
 export interface PropertiesUpdatedOnPageVisit {
+  hearingId: string,
   caseFlags: {
     flags: PartyFlagsModel[],
     flagAmendURL: string,
@@ -79,6 +80,7 @@ export interface PropertiesUpdatedOnPageVisit {
 export enum AmendmentLabelStatus {
   ACTION_NEEDED = 'ACTION NEEDED',
   AMENDED = 'AMENDED',
+  WARNING = 'WARNING',
   NONE = 'NONE'
 }
 
@@ -86,4 +88,5 @@ export interface ParticipantAttendanceMode {
   partyName: string;
   channel: string;
   partyNameChanged: boolean;
+  partyChannelChanged: boolean;
 }

@@ -9,7 +9,9 @@ export class HearingPanelAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map((state) => {
-        const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
+        const panelRequirements = state.hearingConditions?.isHearingAmendmentsEnabled
+          ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements
+          : state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
         const panelMembers: number = panelRequirements?.panelPreferences?.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER).length || 0;
 
         const includedJudges: number = HearingsUtils.getMustIncludedJudgeCount(panelRequirements?.panelPreferences);
@@ -20,7 +22,6 @@ export class HearingPanelAnswerConverter implements AnswerConverter {
         if (panelMembers > 0 || panelSpecialisms > 0 || checkOtherPanelMembers) {
           return RadioOptions.YES;
         }
-
         return RadioOptions.NO;
       })
     );

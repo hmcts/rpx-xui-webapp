@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { caseFlagsRefData, initialState } from '../../../../hearing.test.data';
 import { HearingsService } from '../../../../services/hearings.service';
+import { HearingsUtils } from '../../../../utils/hearings.utils';
 import { HearingRequirementsSectionComponent } from './hearing-requirements-section.component';
 
 describe('HearingRequirementsSectionComponent', () => {
@@ -35,6 +36,7 @@ describe('HearingRequirementsSectionComponent', () => {
 
   it('should set the HMC parties based on reasonableAdjustmentChangesConfirmed flag', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -47,27 +49,13 @@ describe('HearingRequirementsSectionComponent', () => {
       }
     };
     component.ngOnInit();
-    expect(component.partyIds).toEqual(['P1', 'P2']);
-    expect(component.partyNamesInHMC).toEqual(['Jane and Smith', 'DWP']);
-    hearingsService.propertiesUpdatedOnPageVisit = {
-      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
-      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
-      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
-      afterPageVisit: {
-        reasonableAdjustmentChangesRequired: true,
-        nonReasonableAdjustmentChangesRequired: false,
-        reasonableAdjustmentChangesConfirmed: true,
-        partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: true
-      }
-    };
-    component.ngOnInit();
-    expect(component.partyIds).toEqual(['P1', 'P2', 'P3']);
-    expect(component.partyNamesInHMC).toEqual(['Jane and Smith', 'DWP', 'DWP']);
+    expect(component.partyIds).toEqual(['P1']);
+    expect(component.partyNamesInHMC).toEqual(['Jane Rogers']);
   });
 
   it('should display label', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -84,6 +72,7 @@ describe('HearingRequirementsSectionComponent', () => {
 
   it('should not display label', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -96,6 +85,24 @@ describe('HearingRequirementsSectionComponent', () => {
     };
     component.ngOnInit();
     expect(component.reasonableAdjustmentChangesRequired).toEqual(false);
+  });
+
+  it('should call getPartyNameFormatted to format the party name', () => {
+    spyOn(HearingsUtils, 'getPartyNameFormatted').and.returnValue('Jane Smith');
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: true
+      }
+    };
+    component.ngOnInit();
+    expect(HearingsUtils.getPartyNameFormatted).toHaveBeenCalled();
   });
 
   it('should verify onChange', () => {

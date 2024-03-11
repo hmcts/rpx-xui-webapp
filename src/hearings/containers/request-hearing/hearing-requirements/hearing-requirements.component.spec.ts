@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 import { of } from 'rxjs';
 import { LoggerService } from '../../../../app/services/logger/logger.service';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
+import { initialState } from '../../../hearing.test.data';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import {
@@ -2304,6 +2305,7 @@ describe('HearingRequirementsComponent', () => {
       mode: 'create'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
       hearingWindow: null,
@@ -2323,6 +2325,7 @@ describe('HearingRequirementsComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
       hearingWindow: null,
@@ -2342,6 +2345,7 @@ describe('HearingRequirementsComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
       hearingWindow: null,
@@ -2361,6 +2365,7 @@ describe('HearingRequirementsComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
       hearingWindow: null,
@@ -2380,6 +2385,7 @@ describe('HearingRequirementsComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: null,
       parties: null,
       hearingWindow: null,
@@ -2394,12 +2400,77 @@ describe('HearingRequirementsComponent', () => {
     expect(component.reasonableAdjustmentFlags.length).toEqual(0);
   });
 
+  it('should not set reasonable adjustments warning message', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.showReasonableAdjustmentFlagsWarningMessage).toEqual(false);
+  });
+
+  it('should set reasonable adjustments warning message', () => {
+    const partyDetails = [
+      {
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Miss',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: [
+            'RA0098'
+          ],
+          interpreterLanguage: 'PF0015'
+        }
+      }
+    ];
+    component.hearingRequestToCompareMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      partyDetails: partyDetails
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      parties: partyDetails
+    };
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.showReasonableAdjustmentFlagsWarningMessage).toEqual(true);
+  });
+
   it('should initialize hearing request from hearing values', () => {
     const expectedHearingRequestMainModel: HearingRequestMainModel = {
       hearingDetails: {
         duration: 45,
         hearingType: 'Final',
-        hearingChannels: [],
         hearingLocations: [
           {
             locationId: '196538',
@@ -2441,6 +2512,7 @@ describe('HearingRequirementsComponent', () => {
         hearingRequester: '',
         leadJudgeContractType: '',
         amendReasonCodes: null,
+        hearingChannels: [],
         listingAutoChangeReasonCode: null
       },
       caseDetails: {
@@ -2481,11 +2553,6 @@ describe('HearingRequirementsComponent', () => {
         partyType: PartyType.IND,
         partyRole: 'appellant',
         partyName: 'Jane Smith',
-        unavailabilityRanges: [{
-          unavailableFromDate: '2021-12-10T09:00:00.000Z',
-          unavailableToDate: '2021-12-31T09:00:00.000Z',
-          unavailabilityType: UnavailabilityType.ALL_DAY
-        }],
         individualDetails: {
           title: 'Mrs',
           firstName: 'Jane',
@@ -2496,20 +2563,19 @@ describe('HearingRequirementsComponent', () => {
             'RA0053',
             'RA0013',
             'RA0016',
-            'RA0042',
-            'PF0015'],
+            'RA0042'],
           interpreterLanguage: 'POR'
-        }
+        },
+        unavailabilityRanges: [{
+          unavailableFromDate: '2021-12-10T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        }]
       }, {
         partyID: 'P2',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
         partyName: 'DWP',
-        unavailabilityRanges: [{
-          unavailableFromDate: '2021-12-20T09:00:00.000Z',
-          unavailableToDate: '2021-12-31T09:00:00.000Z',
-          unavailabilityType: UnavailabilityType.ALL_DAY
-        }],
         individualDetails: {
           title: null,
           firstName: 'DWP',
@@ -2522,7 +2588,12 @@ describe('HearingRequirementsComponent', () => {
           name: 'DWP',
           organisationType: 'GOV',
           cftOrganisationID: 'O100000'
-        }
+        },
+        unavailabilityRanges: [{
+          unavailableFromDate: '2021-12-20T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        }]
       }]
     };
     const storeDispatchSpy = spyOn(component.hearingStore, 'dispatch');
@@ -2688,6 +2759,71 @@ describe('HearingRequirementsComponent', () => {
 
     // Assert
     expect(result).toEqual([]);
+  });
+
+  it('should remove language interpreter flag from reasonable adjustments', () => {
+    // Arrange
+    const partyDetails: PartyDetailsModel[] = [{
+      partyID: 'P1',
+      partyType: PartyType.IND,
+      partyRole: 'appellant',
+      partyName: 'Jane Smith',
+      unavailabilityRanges: [{
+        unavailableFromDate: '2021-12-10T09:00:00.000Z',
+        unavailableToDate: '2021-12-31T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY
+      }],
+      individualDetails: {
+        title: 'Mrs',
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
+        reasonableAdjustments: [
+          'RA0042',
+          'RA0053',
+          CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID,
+          'RA0013',
+          'RA0016',
+          'RA0042'
+        ],
+        interpreterLanguage: 'POR'
+      }
+    }, {
+      partyID: 'P2',
+      partyType: PartyType.ORG,
+      partyRole: 'claimant',
+      partyName: 'DWP',
+      unavailabilityRanges: [{
+        unavailableFromDate: '2021-12-20T09:00:00.000Z',
+        unavailableToDate: '2021-12-31T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY
+      }],
+      individualDetails: {
+        title: null,
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'inPerson',
+        reasonableAdjustments: ['RA0005', CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID],
+        interpreterLanguage: null
+      },
+      organisationDetails: {
+        name: 'DWP',
+        organisationType: 'GOV',
+        cftOrganisationID: 'O100000'
+      }
+    }];
+
+    // Act
+    const result = component.combinePartiesWithIndOrOrg(partyDetails);
+
+    // Assert
+    expect(result.length).toEqual(2);
+    const transformedPartyDetails = _.cloneDeep(partyDetails);
+    transformedPartyDetails[0].individualDetails.reasonableAdjustments = [
+      'RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'
+    ];
+    transformedPartyDetails[1].individualDetails.reasonableAdjustments = ['RA0005'];
+    expect(result).toEqual(transformedPartyDetails);
   });
 
   it('should dispatch InitializeHearingRequest action', () => {

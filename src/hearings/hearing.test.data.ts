@@ -157,6 +157,24 @@ export const facilitiesListRefData = [
     hintTextCY: '',
     order: 2,
     parentKey: null
+  },
+  {
+    key: 'sameSexCourtroom',
+    value_en: 'Same-sex courtroom',
+    value_cy: '',
+    hint_text_EN: 'Same-sex courtroom',
+    hint_text_CY: '',
+    order: 3,
+    parentKey: null
+  },
+  {
+    key: 'secureDock',
+    value_en: 'Secure dock',
+    value_cy: '',
+    hint_text_EN: 'Secure dock',
+    hint_text_CY: '',
+    order: 4,
+    parentKey: null
   }
 ];
 
@@ -1672,12 +1690,6 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
       partyType: PartyType.ORG,
       partyRole: 'claimant',
       partyName: 'DWP',
-      individualDetails: {
-        title: null,
-        firstName: 'DWP',
-        lastName: null,
-        preferredHearingChannel: 'inPerson'
-      },
       organisationDetails: {
         name: 'DWP',
         organisationType: 'GOV',
@@ -1871,6 +1883,14 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
       screenName: 'hearing-timing',
       navigation: [
         {
+          resultValue: 'hearing-link'
+        }
+      ]
+    },
+    {
+      screenName: 'hearing-link',
+      navigation: [
+        {
           resultValue: 'hearing-additional-instructions'
         }
       ]
@@ -1964,7 +1984,6 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
   partyDetails: [
     {
       partyID: 'P1',
-      partyName: 'Jane and Smith',
       partyType: PartyType.IND,
       partyRole: 'appellant',
       individualDetails: {
@@ -1976,14 +1995,12 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     },
     {
       partyID: 'P2',
-      partyName: 'DWP',
       partyType: PartyType.ORG,
       partyRole: 'claimant',
-      individualDetails: {
-        title: null,
-        firstName: 'DWP',
-        lastName: null,
-        preferredHearingChannel: 'byVideo'
+      organisationDetails: {
+        name: 'DWP',
+        organisationType: 'GOV',
+        cftOrganisationID: 'O100000'
       }
     }
   ],
@@ -2020,11 +2037,10 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
           partyName: 'DWP',
           partyType: PartyType.ORG,
           partyRole: 'claimant',
-          individualDetails: {
-            title: null,
-            firstName: 'DWP',
-            lastName: null,
-            preferredHearingChannel: 'byVideo'
+          organisationDetails: {
+            name: 'DWP',
+            organisationType: 'GOV',
+            cftOrganisationID: 'O100000'
           }
         }
       ]
@@ -2305,10 +2321,10 @@ export const initialState = {
           numberOfPhysicalAttendees: 3,
           hearingInWelshFlag: false,
           facilitiesRequired: [
-            'immigrationDetentionCentre',
-            'inCameraCourt'
+            'sameSexCourtroom',
+            'secureDock'
           ],
-          listingComments: 'blah blah blah',
+          listingComments: 'some comments to compare',
           hearingRequester: null,
           leadJudgeContractType: null,
           amendReasonCodes: null,
@@ -2349,13 +2365,12 @@ export const initialState = {
         partyDetails: [
           {
             partyID: 'P1',
-            partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'appellant',
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
-              lastName: 'Smith',
+              lastName: 'Rogers',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -2367,7 +2382,6 @@ export const initialState = {
               interpreterLanguage: 'PF0015',
               preferredHearingChannel: 'byVideo'
             },
-            organisationDetails: {},
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
@@ -2379,18 +2393,8 @@ export const initialState = {
           },
           {
             partyID: 'P2',
-            partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            individualDetails: {
-              firstName: 'DWP',
-              lastName: null,
-              preferredHearingChannel: 'byVideo',
-              reasonableAdjustments: [
-                'RA0005'
-              ],
-              interpreterLanguage: null
-            },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
@@ -2452,10 +2456,10 @@ export const initialState = {
                 partyName: 'DWP',
                 partyType: PartyType.ORG,
                 partyRole: 'claimant',
-                individualDetails: {
-                  firstName: 'DWP',
-                  lastName: null,
-                  preferredHearingChannel: 'byVideo'
+                organisationDetails: {
+                  name: 'DWP',
+                  organisationType: 'GOV',
+                  cftOrganisationID: 'O100000'
                 }
               }
             ]
@@ -2533,7 +2537,6 @@ export const initialState = {
         partyDetails: [
           {
             partyID: 'P1',
-            partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'appellant',
             individualDetails: {
@@ -2550,7 +2553,6 @@ export const initialState = {
               ],
               interpreterLanguage: 'PF0015'
             },
-            organisationDetails: {},
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
@@ -2562,16 +2564,8 @@ export const initialState = {
           },
           {
             partyID: 'P2',
-            partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            individualDetails: {
-              preferredHearingChannel: 'byVideo',
-              reasonableAdjustments: [
-                'RA0005'
-              ],
-              interpreterLanguage: null
-            },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
@@ -2588,16 +2582,8 @@ export const initialState = {
           },
           {
             partyID: 'P3',
-            partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            individualDetails: {
-              preferredHearingChannel: 'byVideo',
-              reasonableAdjustments: [
-                'RA0005'
-              ],
-              interpreterLanguage: null
-            },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
@@ -2983,7 +2969,7 @@ export const initialStateImmutable = {
           panelRequirements: null,
           autolistFlag: false,
           nonStandardHearingDurationReasons: [],
-          hearingPriorityType: 'standard',
+          hearingPriorityType: 'urgent',
           numberOfPhysicalAttendees: 3,
           hearingInWelshFlag: false,
           facilitiesRequired: [
@@ -3005,7 +2991,7 @@ export const initialStateImmutable = {
           caseDeepLink: null,
           hmctsInternalCaseName: null,
           publicCaseName: null,
-          caseAdditionalSecurityFlag: false,
+          caseAdditionalSecurityFlag: true,
           caseInterpreterRequiredFlag: false,
           caseCategories: [
             {
@@ -3031,7 +3017,6 @@ export const initialStateImmutable = {
         partyDetails: [
           {
             partyID: 'P1',
-            partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'appellant',
             individualDetails: {
@@ -3049,7 +3034,6 @@ export const initialStateImmutable = {
               interpreterLanguage: 'PF0015',
               preferredHearingChannel: 'byVideo'
             },
-            organisationDetails: {},
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
@@ -3061,18 +3045,8 @@ export const initialStateImmutable = {
           },
           {
             partyID: 'P2',
-            partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            individualDetails: {
-              firstName: 'DWP',
-              lastName: null,
-              preferredHearingChannel: 'byVideo',
-              reasonableAdjustments: [
-                'RA0005'
-              ],
-              interpreterLanguage: null
-            },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',
@@ -3134,10 +3108,10 @@ export const initialStateImmutable = {
                 partyName: 'DWP',
                 partyType: PartyType.ORG,
                 partyRole: 'claimant',
-                individualDetails: {
-                  firstName: 'DWP',
-                  lastName: null,
-                  preferredHearingChannel: 'byVideo'
+                organisationDetails: {
+                  name: 'DWP',
+                  organisationType: 'GOV',
+                  cftOrganisationID: 'O100000'
                 }
               }
             ]
@@ -3215,7 +3189,6 @@ export const initialStateImmutable = {
         partyDetails: [
           {
             partyID: 'P1',
-            partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'appellant',
             individualDetails: {
@@ -3232,7 +3205,6 @@ export const initialStateImmutable = {
               ],
               interpreterLanguage: 'PF0015'
             },
-            organisationDetails: {},
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
@@ -3244,16 +3216,8 @@ export const initialStateImmutable = {
           },
           {
             partyID: 'P2',
-            partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            individualDetails: {
-              preferredHearingChannel: 'byVideo',
-              reasonableAdjustments: [
-                'RA0005'
-              ],
-              interpreterLanguage: null
-            },
             organisationDetails: {
               name: 'DWP',
               organisationType: 'GOV',

@@ -65,7 +65,7 @@
   <ng-container *ngIf="!casesTotal">
     <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
       <th class="govuk-table__header" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell
-        *cdkHeaderCellDef>
+        *cdkHeaderCellDef>&#x200b;
         <button class="column-sort"
                 *ngIf="field.columnLabel && !field.disableSort"
                 type="button"

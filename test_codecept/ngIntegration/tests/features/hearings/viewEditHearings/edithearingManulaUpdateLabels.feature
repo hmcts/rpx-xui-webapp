@@ -253,7 +253,7 @@ Feature: Hearings CR84: Manual update labels
             | Hearing venue           | AMENDED |
             | Language requirements   | AMENDED |
             | Judge details           | AMENDED |
-            | Length, date and priority level of hearing |  |
+            | Length, date and priority level of hearing | AMENDED |
             | Linked hearings         |  |
             | Additional instructions |         |
 

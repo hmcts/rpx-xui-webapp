@@ -1,5 +1,5 @@
 
-@ng @functional_enabled @functional_debug
+@ng @functional_enabled
 Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
     https://tools.hmcts.net/jira/browse/EUI-8905
     https://tools.hmcts.net/jira/browse/EUI-9504
@@ -128,7 +128,6 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Reasonable adjustments   | Party1 name           | true              |                    |
             | Reasonable adjustments   | Party2 name           | true              |                    |
 
-    @functional_debug
     Scenario: SCR 4: CAT1 and CAT2 with CAT2 accepted,AMENDED labels (Conditions (2) & (5))
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
         Then I am on hearings tab page
@@ -194,16 +193,15 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
 
         # Then debug sleep minutes 30
 
-        When In hearing page "Participant attendance", I input values
+        When In hearing page "Participant attendance", I input values and click continue
             | field                                                    | value                                           |
             | Will this be a paper hearing?                            | No                                              |
             | What will be the methods of attendance for this hearing? | In Person, Video                                |
             | How will each participant attend the hearing?            | Party1 name FN updated Party1 name LN,In Person |
             | How will each participant attend the hearing?            | Party4 name FN Party4 name LN,Video             |
             | How will each participant attend the hearing?            | Party2 name FN Party2 name LN,Video             |
-
             | How many people will attend the hearing in person? | 2 |
-        When I click continue in hearing workflow
+
         Then I validate Edit hearing page displayed
         Then I validate edit hearing section heading labels
             | Heading                                    | Label         |

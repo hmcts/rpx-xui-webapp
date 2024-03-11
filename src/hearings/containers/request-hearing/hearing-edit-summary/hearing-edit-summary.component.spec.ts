@@ -13,6 +13,7 @@ import { HearingConditions } from '../../../models/hearingConditions';
 import { ACTION, CategoryType, Mode, PartyType, UnavailabilityType } from '../../../models/hearings.enum';
 import { PropertiesUpdatedOnPageVisit } from '../../../models/hearingsUpdateMode.enum';
 import { LocationByEPIMMSModel } from '../../../models/location.model';
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { HearingsFeatureService } from '../../../services/hearings-feature.service';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
@@ -33,6 +34,7 @@ describe('HearingEditSummaryComponent', () => {
     fragment: of('point-to-me')
   };
   const routerMock = jasmine.createSpyObj('Router', [
+    'navigate',
     'navigateByUrl'
   ]);
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -174,6 +176,7 @@ describe('HearingEditSummaryComponent', () => {
     component.serviceHearingValuesModel = initialState.hearings.hearingValues.serviceHearingValuesModel;
     component.ngOnInit();
     const expectedResult: PropertiesUpdatedOnPageVisit = {
+      hearingId: '1000000',
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
@@ -181,24 +184,159 @@ describe('HearingEditSummaryComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: true
+        hearingWindowChangesRequired: false
       }
     };
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
   });
 
+  it('should return reasonableAdjustmentChangesRequired and partyDetailsChangesRequired as true if interpreter language changed', () => {
+    const partiesSHV: PartyDetailsModel[] = [
+      {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: [
+            'RA0042'
+          ],
+          interpreterLanguage: 'spa'
+        },
+        unavailabilityRanges: [
+          {
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      }
+    ];
+    const partiesHMC: PartyDetailsModel[] = [
+      {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: [
+            'RA0042'
+          ]
+        },
+        unavailabilityRanges: [
+          {
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      }
+    ];
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      parties: partiesSHV
+    };
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      partyDetails: partiesHMC
+    };
+    component.ngOnInit();
+    const expectedResult: PropertiesUpdatedOnPageVisit = {
+      hearingId: '1000000',
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: false
+      }
+    };
+    expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
+  });
+
+  it('should set the pagesToDispaly', () => {
+    const sectionsToDisplay = [
+      'hearing-requirements',
+      'hearing-facilities',
+      'hearing-stage',
+      'hearing-attendance',
+      'hearing-venue',
+      'hearing-welsh',
+      'hearing-judge',
+      'hearing-panel',
+      'hearing-timing',
+      'hearing-link',
+      'hearing-additional-instructions'
+    ];
+    component.ngOnInit();
+    expect(component.sectionsToDisplay).toEqual(sectionsToDisplay);
+  });
+
+  it('should set reasonableAdjustmentChangesRequired to false if hearing requirements is not present in the screen flow', () => {
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      screenFlow: [
+        {
+          screenName: 'hearing-facilities',
+          navigation: [
+            {
+              resultValue: 'hearing-stage'
+            }
+          ]
+        },
+        {
+          screenName: 'hearing-stage',
+          navigation: [
+            {
+              resultValue: 'hearing-attendance'
+            }
+          ]
+        },
+        {
+          screenName: 'hearing-additional-instructions',
+          navigation: [
+            {
+              resultValue: 'hearing-create-edit-summary'
+            }
+          ]
+        }
+      ]
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesRequired).toEqual(false);
+  });
+
   it('should set the hearingWindowChangesRequired to true', () => {
     hearingsService.propertiesUpdatedOnPageVisit = null;
-    component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '2024-02-13T10:00:00';
-    component.serviceHearingValuesModel.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = {
+      firstDateTimeMustBe: '2024-02-01T10:00:00'
+    };
+    component.serviceHearingValuesModel.parties[0].unavailabilityRanges = [{
+      unavailableFromDate: '2024-05-01T10:00:00',
+      unavailableToDate: '2024-05-14T10:00:00',
+      unavailabilityType: UnavailabilityType.ALL_DAY
+    }];
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesRequired).toEqual(true);
   });
 
   it('should set the hearingWindowChangesRequired to false', () => {
     hearingsService.propertiesUpdatedOnPageVisit = null;
-    component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
-    component.serviceHearingValuesModel.hearingWindow.firstDateTimeMustBe = '2024-02-14T10:00:00';
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = {
+      firstDateTimeMustBe: '2024-02-01T10:00:00'
+    };
+    component.serviceHearingValuesModel.parties = initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.partyDetails;
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesRequired).toEqual(false);
   });
@@ -267,11 +405,6 @@ describe('HearingEditSummaryComponent', () => {
           hearingChannelEmail: ['New email'],
           hearingChannelPhone: ['New Phone']
         },
-        organisationDetails: {
-          name: 'New organisation name',
-          organisationType: 'New organisation type',
-          cftOrganisationID: 'New organisation Id'
-        },
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
@@ -288,7 +421,6 @@ describe('HearingEditSummaryComponent', () => {
     const expectedResult = [
       {
         partyID: 'P1',
-        partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'New appellant',
         individualDetails: {
@@ -314,11 +446,6 @@ describe('HearingEditSummaryComponent', () => {
           hearingChannelEmail: ['New email'],
           hearingChannelPhone: ['New Phone']
         },
-        organisationDetails: {
-          name: 'New organisation name',
-          organisationType: 'New organisation type',
-          cftOrganisationID: 'New organisation Id'
-        },
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
@@ -330,22 +457,8 @@ describe('HearingEditSummaryComponent', () => {
       },
       {
         partyID: 'P2',
-        partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        individualDetails: {
-          preferredHearingChannel: 'byVideo',
-          reasonableAdjustments: [
-            'RA0005'
-          ],
-          interpreterLanguage: null,
-          relatedParties: undefined,
-          custodyStatus: undefined,
-          vulnerableFlag: undefined,
-          vulnerabilityDetails: undefined,
-          hearingChannelEmail: undefined,
-          hearingChannelPhone: undefined
-        },
         organisationDetails: {
           name: 'DWP',
           organisationType: 'GOV',
@@ -362,16 +475,8 @@ describe('HearingEditSummaryComponent', () => {
       },
       {
         partyID: 'P3',
-        partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        individualDetails: {
-          preferredHearingChannel: 'byVideo',
-          reasonableAdjustments: [
-            'RA0005'
-          ],
-          interpreterLanguage: null
-        },
         organisationDetails: {
           name: 'DWP',
           organisationType: 'GOV',
@@ -451,12 +556,64 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should partyDetailsChangesRequired return true', () => {
     spyOn(store, 'select').and.returnValue(of(initialState.hearings.hearingValues));
+    const parties = [
+      {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane updated',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: [
+            'RA0042'
+          ]
+        },
+        unavailabilityRanges: [
+          {
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      },
+      {
+        partyID: 'P2',
+        partyType: PartyType.ORG,
+        partyRole: 'claimant',
+        partyName: 'DWP',
+        organisationDetails: {
+          name: 'DWP',
+          organisationType: 'GOV',
+          cftOrganisationID: 'O100000'
+        },
+        unavailabilityRanges: [
+          {
+            unavailableFromDate: '2021-12-20T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }
+        ]
+      }
+    ];
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      parties: parties
+    };
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
+  });
+
+  it('should partyDetailsChangesRequired return true if party type changed', () => {
+    spyOn(store, 'select').and.returnValue(of(initialState.hearings.hearingValues));
     component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
     component.serviceHearingValuesModel = {
       ...component.serviceHearingValuesModel,
       parties: initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails
     };
-    component.serviceHearingValuesModel.parties[0].individualDetails.firstName = 'Jane updated';
+    component.serviceHearingValuesModel.parties[0].partyType = PartyType.ORG;
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
   });
@@ -534,6 +691,11 @@ describe('HearingEditSummaryComponent', () => {
     component.hearingRequestToCompareMainModel = Object.assign({});
     component.executeAction(ACTION.VIEW_EDIT_REASON);
     expect(component.validationErrors.length).toEqual(1);
+  });
+
+  it('should navigate to hearing view summary page', () => {
+    component.executeAction(ACTION.BACK);
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-view-summary']);
   });
 
   afterEach(() => {

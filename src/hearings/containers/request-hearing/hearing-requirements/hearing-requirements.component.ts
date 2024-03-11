@@ -2,7 +2,7 @@ import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angu
 import { ActivatedRoute } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { lastValueFrom } from 'rxjs';
+import { AmendmentLabelStatus } from 'src/hearings/models/hearingsUpdateMode.enum';
 import { LoggerService } from '../../../../app/services/logger/logger.service';
 import * as fromHearingStore from '../../../../hearings/store';
 import { ValidatorsUtils } from '../../../../hearings/utils/validators.utils';
@@ -36,6 +36,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   public strRegions: string;
   public caseTypeRefData: LovRefDataModel[];
   public caseTypes: CaseCategoryDisplayModel[];
+  public showReasonableAdjustmentFlagsWarningMessage: boolean;
 
   @HostListener('window:focus', ['$event'])
   public onFocus(): void {
@@ -151,11 +152,23 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       const organisationDetails = partyDetail.organisationDetails;
       const party: PartyDetailsModel = {
         ...partyDetail,
+        individualDetails: partyDetail.individualDetails && {
+          ...partyDetail.individualDetails,
+          reasonableAdjustments: this.getAllPartyFlagsByPartyId(partyDetail.partyID)
+            .filter((flagId) => flagId !== CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID)
+        },
         ...organisationDetails && ({ organisationDetails })
       };
       combinedPartyDetails.push(party);
     });
     return combinedPartyDetails;
+  }
+
+  public getAllPartyFlagsByPartyId(partyID: string): string[] {
+    const allRAFs: PartyFlagsDisplayModel[] = this.reasonableAdjustmentFlags.reduce((previousValue, currentValue) =>
+      [...previousValue, ...currentValue.partyFlags], []
+    );
+    return allRAFs.filter((flag) => flag.partyId === partyID).map((filterFlag) => filterFlag.flagId);
   }
 
   public initializeHearingCondition(): void {
@@ -217,6 +230,10 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         : this.hearingRequestToCompareMainModel.partyDetails;
       this.reasonableAdjustmentFlags = CaseFlagsUtils.getReasonableAdjustmentFlags(this.caseFlagsRefData,
         propertiesUpdatedOnPageVisit.caseFlags?.flags, partyDetails, this.serviceHearingValuesModel.parties);
+
+      this.showReasonableAdjustmentFlagsWarningMessage = this.reasonableAdjustmentFlags.map(
+        (flag) => flag.partyFlags.map((partyFlag) => partyFlag.flagAmendmentLabelStatus)
+      ).join().includes(AmendmentLabelStatus.WARNING);
     } else {
       // Hearings manual amendment journey is NOT enabled
       this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel?.caseFlags?.flags,

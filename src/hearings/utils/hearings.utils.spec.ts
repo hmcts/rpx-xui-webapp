@@ -1,9 +1,9 @@
 import { initialState } from '../hearing.test.data';
-import { HearingConditions, KEY_MODE } from '../models/hearingConditions';
+import { KEY_MODE } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
-import { MemberType, Mode, RequirementType } from '../models/hearings.enum';
-import { PropertiesUpdatedOnPageVisit } from '../models/hearingsUpdateMode.enum';
+import { MemberType, Mode, PartyType, RequirementType } from '../models/hearings.enum';
+import { PartyDetailsModel } from '../models/partyDetails.model';
 import { HearingsUtils } from './hearings.utils';
 
 describe('HearingsUtils', () => {
@@ -80,6 +80,31 @@ describe('HearingsUtils', () => {
     expect(sortedResult).toEqual(expectedResult);
   });
 
+  it('should return the unavailability date ranges for parties', () => {
+    const partiesNotAvailableDates = HearingsUtils.getPartiesNotAvailableDates(
+      initialState.hearings.hearingValues.serviceHearingValuesModel.parties
+    );
+    expect(partiesNotAvailableDates.length).toEqual(10);
+  });
+
+  describe('HearingLength', () => {
+    it('should transform hearing stage days and hours', () => {
+      expect(HearingsUtils.getHearingLength(960)).toEqual('2 Days 4 Hours');
+    });
+
+    it('should transform hearing stage days and minutes', () => {
+      expect(HearingsUtils.getHearingLength(750)).toEqual('2 Days 30 Minutes');
+    });
+
+    it('should transform hearing stage both hours and minutes', () => {
+      expect(HearingsUtils.getHearingLength(70)).toEqual('1 Hour 10 Minutes');
+    });
+
+    it('should transform hearing stage empty', () => {
+      expect(HearingsUtils.getHearingLength(null)).toEqual('');
+    });
+  });
+
   describe('HearingWindowModel', () => {
     it('should return HearingWindowModel as null when hearingWindow is an empty object', () => {
       const hearingRequestMainModel: HearingRequestMainModel = {
@@ -134,6 +159,80 @@ describe('HearingsUtils', () => {
       expect(
         HearingsUtils.getRestOfRoleType(roleType)
       ).toEqual(['role2', 'role3']);
+    });
+  });
+
+  describe('getPartyNameFormatted', () => {
+    it('should getPartyNameFormatted return empty string', () => {
+      const individualDetails = null;
+      expect(HearingsUtils.getPartyNameFormatted(individualDetails).trim()).toEqual('');
+    });
+
+    it('should getPartyNameFormatted return formatted party name', () => {
+      const individualDetails = initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails[0].individualDetails;
+      individualDetails.firstName = 'Jack';
+      individualDetails.lastName = 'Jones';
+      expect(HearingsUtils.getPartyNameFormatted(individualDetails)).toEqual('Jack Jones');
+    });
+  });
+
+  describe('hasPartyNameChanged', () => {
+    it('should hasPartyNameChanged return true', () => {
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson'
+        }
+      };
+      const partyInSHV: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Rogers',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Rogers',
+          preferredHearingChannel: 'inPerson'
+        }
+      };
+      const hasPartyNameChangedResult = HearingsUtils.hasPartyNameChanged(partyInHMC, partyInSHV);
+      expect(hasPartyNameChangedResult).toEqual(true);
+    });
+
+    it('should hasPartyNameChanged return false', () => {
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson'
+        }
+      };
+      const partyInSHV: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson'
+        }
+      };
+      const hasPartyNameChangedResult = HearingsUtils.hasPartyNameChanged(partyInHMC, partyInSHV);
+      expect(hasPartyNameChangedResult).toEqual(false);
     });
   });
 });

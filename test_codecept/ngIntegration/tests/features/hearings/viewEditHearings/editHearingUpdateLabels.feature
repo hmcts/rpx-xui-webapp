@@ -1,5 +1,5 @@
 
-@ng @functional_enabled  
+@ng @functional_enabled @functional_debug
 Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
     https://tools.hmcts.net/jira/browse/EUI-8905
     https://tools.hmcts.net/jira/browse/EUI-9504
@@ -80,17 +80,17 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Heading                                    | Label         |
             | Hearing requirements                       |               |
             | Participant attendance                     | ACTION NEEDED |
-            | Additional facilities                      |  |
+            | Additional facilities                      |               |
             | Length, date and priority level of hearing | ACTION NEEDED |
 
         Then I validate fields displayed in view or edit hearing page
-            | field                    | value                    | changeLinkDisplay | amendedFlagDisplay |
-            | Case internal name       | 1234567812345678 updated | false             | AMENDED            |
-            | Case public name | Mock case public name updated | false | AMENDED |
-            | Case restriction         | Yes                      | false             | AMENDED            |
-            | Private hearing required | Yes                      | false             | AMENDED            |
-            | Reasonable adjustments   | Party1 name updated      | true              | AMENDED            |
-            | Reasonable adjustments   | Party2 name              | true              |                    |
+            | field                    | value                         | changeLinkDisplay | amendedFlagDisplay |
+            | Case internal name       | 1234567812345678 updated      | false             | AMENDED            |
+            | Case public name         | Mock case public name updated | false             | AMENDED            |
+            | Case restriction         | Yes                           | false             | AMENDED            |
+            | Private hearing required | Yes                           | false             | AMENDED            |
+            | Reasonable adjustments   | Party1 name FN updated           | true              | AMENDED            |
+            | Reasonable adjustments   | Party2 name                   | true              |                    |
 
 
 
@@ -115,7 +115,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
         Then I validate edit hearing section heading labels
             | Heading                                    | Label         |
             | Hearing requirements                       | ACTION NEEDED |
-            | Participant attendance                     |               |
+            | Participant attendance                     | ACTION NEEDED |
             | Additional facilities                      | ACTION NEEDED |
             | Length, date and priority level of hearing | ACTION NEEDED |
 
@@ -128,7 +128,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Reasonable adjustments   | Party1 name           | true              |                    |
             | Reasonable adjustments   | Party2 name           | true              |                    |
 
-
+    @functional_debug
     Scenario: SCR 4: CAT1 and CAT2 with CAT2 accepted,AMENDED labels (Conditions (2) & (5))
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
         Then I am on hearings tab page
@@ -157,14 +157,14 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
         Then I am on hearings workflow page "Hearing requirements"
 
         Then In hearings requirements page, I see case flags displayed for parties
-            | partyName           |label|
-            | Party1 name updated |AMENDED|
-            | Party2 name         ||
+            | partyName                             | label   |
+            | Party1 name FN updated Party1 name LN | AMENDED |
+            | Party2 name FN Party2 name LN         |         |
 
-        Then In hearing requirements page, I see party "Party1 name updated" with case flags
-            | flag | label         |
-            | A    |               |
-            | B    | ACTION NEEDED |
+        Then In hearing requirements page, I see party "Party1 name FN updated Party1 name LN" with case flags
+            | flag | label |
+            | A    |       |
+            | B    |       |
         When I click continue in hearing workflow
         Then I validate Edit hearing page displayed
 
@@ -186,30 +186,30 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Will this be a paper hearing? | No    |
 
         Then In hearings Participant attendance page, I see parties
-            | partyName   |label|
-            | Party1 name |AMENDED|
-            | Party2 name ||
-            | Party4 name |ACTION NEEDED|
+            | partyName                             | label         |
+            | Party1 name FN updated Party1 name LN | AMENDED       |
+            | Party2 name FN Party2 name LN         |               |
+            | Party4 name FN Party4 name LN         | ACTION NEEDED |
 
 
-# Then debug sleep minutes 30
+        # Then debug sleep minutes 30
 
         When In hearing page "Participant attendance", I input values
-            | field                                                    | value                               |
-            | Will this be a paper hearing?                            | No                                  |
-            | What will be the methods of attendance for this hearing? | In Person, Video |
-            | How will each participant attend the hearing?            | Party1 name,In Person       |
-            | How will each participant attend the hearing?            | Party4 name,Video       |
-            | How will each participant attend the hearing? | Party2 name,Video |
+            | field                                                    | value                                           |
+            | Will this be a paper hearing?                            | No                                              |
+            | What will be the methods of attendance for this hearing? | In Person, Video                                |
+            | How will each participant attend the hearing?            | Party1 name FN updated Party1 name LN,In Person |
+            | How will each participant attend the hearing?            | Party4 name FN Party4 name LN,Video             |
+            | How will each participant attend the hearing?            | Party2 name FN Party2 name LN,Video             |
 
-            | How many people will attend the hearing in person?       | 2                                   |
+            | How many people will attend the hearing in person? | 2 |
         When I click continue in hearing workflow
         Then I validate Edit hearing page displayed
         Then I validate edit hearing section heading labels
             | Heading                                    | Label         |
             | Hearing requirements                       | AMENDED       |
             | Additional facilities                      | ACTION NEEDED |
-            | Participant attendance                     | AMENDED |
+            | Participant attendance                     | AMENDED       |
             | Length, date and priority level of hearing | ACTION NEEDED |
         # end of Accept participant attendance
 
@@ -223,11 +223,11 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Will additional security be required? | No    |
 
         Then In Additional facilities page, I see case flags displayed for parties
-            | partyName           |label|
-            | Party1 name updated |AMENDED|
-            | Party2 name         ||
+            | partyName                             | label   |
+            | Party1 name FN updated Party1 name LN | AMENDED |
+            | Party2 name FN Party2 name LN         |         |
 
-        Then In Additional facilities page, I see party "Party1 name updated" with case flags
+        Then In Additional facilities page, I see party "Party1 name FN updated Party1 name LN" with case flags
             | flag                          | label         |
             | B.A                           |               |
             | Vulnerable user               | ACTION NEEDED |
@@ -239,29 +239,29 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
         Then I validate edit hearing section heading labels
             | Heading                                    | Label         |
             | Hearing requirements                       | AMENDED       |
-            | Additional facilities                      | AMENDED |
-            | Participant attendance                     | AMENDED |
+            | Additional facilities                      | AMENDED       |
+            | Participant attendance                     | AMENDED       |
             | Length, date and priority level of hearing | ACTION NEEDED |
         # end of Additional facilities
 
 
 
-# Accept Length, date and priority level of hearing
+        # Accept Length, date and priority level of hearing
 
         When In view or edit hearing page, I click change link for field "Length of hearing"
         Then I am on hearings workflow page "Length, date and priority level of hearing"
-    
+
         Then In Length, date and priority level of hearing page, I see ACTION NEEDED label displayed for The first date of the hearing must be
-      
+
         When I click continue in hearing workflow
         Then I validate Edit hearing page displayed
         Then I validate edit hearing section heading labels
-            | Heading                                    | Label         |
-            | Hearing requirements                       | AMENDED       |
-            | Additional facilities                      | AMENDED       |
+            | Heading                                    | Label   |
+            | Hearing requirements                       | AMENDED |
+            | Additional facilities                      | AMENDED |
             | Participant attendance                     | AMENDED |
             | Length, date and priority level of hearing | AMENDED |
-# end of Length, date and priority level of hearing
+        # end of Length, date and priority level of hearing
 
 
 
@@ -272,8 +272,8 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
             | Case public name         | Case public name                           | false             | AMENDED            |
             | Case restriction         | Yes                                        | false             | AMENDED            |
             | Private hearing required | Yes                                        | false             | AMENDED            |
-            | Reasonable adjustments   | Party1 name updated                        | true              | AMENDED            |
-            | Reasonable adjustments   | Party2 name                                | true              |                    |
+            | Reasonable adjustments   | Party1 name FN updated Party1 name LN      | true              | AMENDED            |
+            | Reasonable adjustments   | Party2 name FN Party2 name LN              | true              |                    |
 
 
     Scenario: SCR 5: No chnages and no labels (Conditions (3) & (6)) and Scenario 6
@@ -299,7 +299,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
         Then I validate fields displayed in view or edit hearing page
             | field                    | value                 | changeLinkDisplay | amendedFlagDisplay |
             | Case internal name       | 1234567812345678      | false             |                    |
-            | Case public name | Mock case public name | false |  |
+            | Case public name         | Mock case public name | false             |                    |
             | Case restriction         | No                    | false             |                    |
             | Private hearing required | No                    | false             |                    |
             | Reasonable adjustments   | Party1 name           | true              |                    |

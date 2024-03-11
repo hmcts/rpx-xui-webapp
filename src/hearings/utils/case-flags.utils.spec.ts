@@ -6,6 +6,7 @@ import { AmendmentLabelStatus } from '../models/hearingsUpdateMode.enum';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { PartyFlagsModel } from '../models/partyFlags.model';
 import { CaseFlagsUtils } from './case-flags.utils';
+import { HearingsUtils } from './hearings.utils';
 
 describe('CaseFlagsUtils', () => {
   const caseFlagReferenceModels: CaseFlagReferenceModel[] = CASE_FLAG_REFERENCE_VALUES;
@@ -184,7 +185,8 @@ describe('CaseFlagsUtils', () => {
           lastName: 'Ryan',
           reasonableAdjustments: [
             'RA0002'
-          ]
+          ],
+          interpreterLanguage: 'spa'
         }
       },
       {
@@ -244,6 +246,14 @@ describe('CaseFlagsUtils', () => {
         flagStatus: 'ACTIVE'
       },
       {
+        partyId: 'P2',
+        partyName: 'Jack Ryan',
+        flagParentId: 'PF0001',
+        flagId: 'PF0015',
+        flagDescription: 'Language Interpreter',
+        flagStatus: 'ACTIVE'
+      },
+      {
         partyId: 'P3',
         partyName: 'Rob Kennedy',
         flagParentId: 'RA0001',
@@ -256,14 +266,16 @@ describe('CaseFlagsUtils', () => {
     it('should return reasonable adjustment flags', () => {
       const flagsGroup = CaseFlagsUtils.getReasonableAdjustmentFlags(caseFlagsRefData, caseFlags, partiesInHMC, partiesInSHV);
       expect(flagsGroup[0].name).toEqual('Jane Butler');
-      expect(flagsGroup[0].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.AMENDED);
-      expect(flagsGroup[0].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
+      expect(flagsGroup[0].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
+      expect(flagsGroup[0].partyFlags[0].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
+      expect(flagsGroup[0].partyFlags[1].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[1].name).toEqual('Jack Ryan');
       expect(flagsGroup[1].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
-      expect(flagsGroup[1].partyFlags[1].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
+      expect(flagsGroup[1].partyFlags[1].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.WARNING);
+      expect(flagsGroup[1].partyFlags[2].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[2].name).toEqual('Rob Kennedy');
       expect(flagsGroup[2].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
-      expect(flagsGroup[2].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
+      expect(flagsGroup[2].partyFlags[0].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
     });
   });
 
@@ -272,7 +284,6 @@ describe('CaseFlagsUtils', () => {
       {
         partyID: 'P1',
         partyType: PartyType.IND,
-        partyName: 'Jane Smith',
         partyRole: 'APPL',
         individualDetails: {
           firstName: 'Jane',
@@ -285,7 +296,6 @@ describe('CaseFlagsUtils', () => {
       {
         partyID: 'P2',
         partyType: PartyType.IND,
-        partyName: 'Jack Ryan',
         partyRole: 'APPL',
         individualDetails: {
           firstName: 'Jack',
@@ -295,7 +305,6 @@ describe('CaseFlagsUtils', () => {
       {
         partyID: 'P3',
         partyType: PartyType.IND,
-        partyName: 'Rob Kennedy',
         partyRole: 'APPL',
         individualDetails: {
           firstName: 'Rob',
@@ -401,6 +410,7 @@ describe('CaseFlagsUtils', () => {
     };
 
     it('should return non-reasonable adjustment flags with labels', () => {
+      spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(true);
       const flagsGroup = CaseFlagsUtils.getNonReasonableAdjustmentFlags(caseFlagsRefData, caseFlags,
         partiesInHMC, partiesInSHV, requestDetails, false);
       expect(flagsGroup[0].name).toEqual('Jane Butler');
@@ -409,15 +419,17 @@ describe('CaseFlagsUtils', () => {
       expect(flagsGroup[0].partyFlags[1].flagAmendmentLabelStatus).toBeUndefined();
       expect(flagsGroup[0].partyFlags[2].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
       expect(flagsGroup[1].name).toEqual('Jack Ryan');
-      expect(flagsGroup[1].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
+      expect(flagsGroup[1].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.AMENDED);
       expect(flagsGroup[1].partyFlags[0].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
       expect(flagsGroup[0].partyFlags[1].flagAmendmentLabelStatus).toBeUndefined();
       expect(flagsGroup[2].name).toEqual('Rob Kennedy');
-      expect(flagsGroup[2].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
+      expect(flagsGroup[2].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.AMENDED);
       expect(flagsGroup[2].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
+      expect(HearingsUtils.hasPartyNameChanged).toHaveBeenCalled();
     });
 
     it('should return non-reasonable adjustment flags with no labels', () => {
+      spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(false);
       const flagsGroup = CaseFlagsUtils.getNonReasonableAdjustmentFlags(caseFlagsRefData, caseFlags,
         partiesInHMC, partiesInSHV, requestDetails, true);
       expect(flagsGroup[0].name).toEqual('Jane Butler');
@@ -432,26 +444,27 @@ describe('CaseFlagsUtils', () => {
       expect(flagsGroup[2].name).toEqual('Rob Kennedy');
       expect(flagsGroup[2].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[2].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
+      expect(HearingsUtils.hasPartyNameChanged).not.toHaveBeenCalled();
     });
 
     it('should set reasonable adjustments from hearing request if found', () => {
       const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
-      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag1);
-      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag2);
+      expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag1);
+      expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag2);
     });
 
     it('should set reasonable adjustments from service hearing values if null in hearing request', () => {
       partyDetails[0].individualDetails.reasonableAdjustments = null;
       const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
-      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag3);
-      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag4);
+      expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag3);
+      expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag4);
     });
 
     it('should set reasonable adjustments from service hearing values if empty array in hearing request', () => {
       partyDetails[0].individualDetails.reasonableAdjustments = [];
       const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
-      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag3);
-      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag4);
+      expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag3);
+      expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag4);
     });
   });
 });

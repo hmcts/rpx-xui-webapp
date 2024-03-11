@@ -405,6 +405,7 @@ describe('HearingTimingComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: null,
       parties: null,
       hearingWindow: null,
@@ -427,6 +428,7 @@ describe('HearingTimingComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: null,
       parties: null,
       hearingWindow: null,

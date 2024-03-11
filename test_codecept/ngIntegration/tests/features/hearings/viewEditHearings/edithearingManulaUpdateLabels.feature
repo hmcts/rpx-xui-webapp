@@ -48,6 +48,74 @@ Feature: Hearings CR84: Manual update labels
             | Linked hearings         |       |
             | Additional instructions |       |
 
+# Additional facilities start
+        When In view or edit hearing page, I click change link for field "Will additional security be required?"
+        Then I am on hearings workflow page "Do you require any additional facilities?"
+
+        When In hearing page "Do you require any additional facilities?", I input values
+            | field                          | value    |
+            | Will additional security be required? | Yes |
+            | Select any additional facilities required | Facility 1 |
+
+
+        When I click continue in hearing workflow
+        Then I validate Edit hearing page displayed
+
+        Then I validate edit hearing section heading labels
+            | Heading                 | Label   |
+            # | Additional facilities | AMENDED |
+            | Stage                   |  |
+            | Hearing venue           |         |
+            | Language requirements   |         |
+            | Judge details           |         |
+            | Linked hearings         |         |
+            | Additional instructions |         |
+
+        Then I validate fields displayed in view or edit hearing page
+            | field                          | value    | changeLinkDisplay | amendedFlagDisplay |
+            | Will additional security be required? | Yes | true | AMENDED |
+            | Select any additional facilities required |Facility 1  |true  |AMENDED  |
+
+# Additional facilities end
+
+
+
+# Participant attendance start
+        When In view or edit hearing page, I click change link for field "Will this be a paper hearing?"
+        Then I am on hearings workflow page "Participant attendance"
+
+        When In hearing page "Participant attendance", I input values
+            | field                                     | value      |
+            | What will be the methods of attendance for this hearing? | In Person,Video,Telephone |
+            | How will each participant attend the hearing? | Party1 name,Video |
+            | How will each participant attend the hearing? | Party2 name,Video |
+            | How many people will attend the hearing in person? | 4 |
+
+
+        When I click continue in hearing workflow
+        Then I validate Edit hearing page displayed
+
+        Then I validate edit hearing section heading labels
+            | Heading                 | Label |
+            # | Additional facilities | AMENDED |
+            | Participant attendance  | AMENDED |
+            | Stage                   |       |
+            | Hearing venue           |       |
+            | Language requirements   |       |
+            | Judge details           |       |
+            | Linked hearings         |       |
+            | Additional instructions |       |
+
+        Then I validate fields displayed in view or edit hearing page
+            | field                                     | value      | changeLinkDisplay | amendedFlagDisplay |
+            | Will this be a paper hearing? | No | true |  |
+            | What will be the methods of attendance for this hearing? |Telephone | true | AMENDED |
+            | How will each participant attend the hearing? | Video | true | AMENDED |
+            | How many people will attend the hearing in person? | 4 | true | AMENDED |
+
+# Participant attendance end
+
+
         # hearing stage start
         When In view or edit hearing page, I click change link for field "What stage is this hearing at?"
         Then I am on hearings workflow page "What stage is this hearing at?"
@@ -166,6 +234,36 @@ Feature: Hearings CR84: Manual update labels
         # Judge details end
 
 
+# Length, date and priority level of hearing start
+        When In view or edit hearing page, I click change link for field "Length of hearing"
+        Then I am on hearings workflow page "Length, date and priority level of hearing"
+
+        When In hearing page "Length, date and priority level of hearing", I input values
+            | field                                                  | value |
+            | Length of hearing                                       | 1,2,5              |
+            | Does the hearing need to take place on a specific date? | No                 |
+            | What is the priority of this hearing?                   | Hearing priority 1 |
+        When I click continue in hearing workflow
+        Then I validate Edit hearing page displayed
+
+
+        Then I validate edit hearing section heading labels
+            | Heading                 | Label   |
+            | Stage                   | AMENDED |
+            | Hearing venue           | AMENDED |
+            | Language requirements   | AMENDED |
+            | Judge details           | AMENDED |
+            | Length, date and priority level of hearing |  |
+            | Linked hearings         |  |
+            | Additional instructions |         |
+
+        Then I validate fields displayed in view or edit hearing page
+            | field                                                  | value | changeLinkDisplay | amendedFlagDisplay |
+            | Length of hearing | 1 Day 2 Hours 5 Minutes | true | AMENDED |
+            | Does the hearing need to take place on a specific date? | No | true | AMENDED |
+            | What is the priority of this hearing? | Hearing priority 1 | true | AMENDED |
+
+# Length, date and priority level of hearingend
 
 
         # Linked hearings start

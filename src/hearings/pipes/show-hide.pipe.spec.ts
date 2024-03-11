@@ -4,7 +4,7 @@ import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { UserService } from '../../app/services/user/user.service';
 import { initialState } from '../hearing.test.data';
-import { IsHiddenSource } from '../models/hearings.enum';
+import { HearingChannelEnum, IsHiddenSource, MemberType, RequirementType } from '../models/hearings.enum';
 import { LocationByEPIMMSModel } from '../models/location.model';
 import { State } from '../store/reducers';
 import { ShowHidePipe } from './show-hide.pipe';
@@ -91,5 +91,185 @@ describe('ShowHidePipe', () => {
     const isHidden = true;
     const expected = cold('(b|)', { b: isHidden });
     expect(result$).toBeObservable(expected);
+  });
+
+  describe('Paper hearing', () => {
+    it('should transform is paper hearing page hidden', () => {
+      const STATE: State = {
+        ...initialState.hearings,
+        hearingRequest: {
+          ...initialState.hearings.hearingRequest,
+          hearingRequestMainModel: {
+            ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+            hearingDetails: {
+              ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+              hearingChannels: [HearingChannelEnum.ONPPR]
+            }
+          }
+        }
+      };
+      const result$ = showHidePipe.transform(IsHiddenSource.PAPER_HEARING, of(STATE));
+      const isHidden = true;
+      const expected = cold('(b|)', { b: isHidden });
+      expect(result$).toBeObservable(expected);
+    });
+
+    it('should transform is paper hearing page not hidden', () => {
+      const STATE: State = {
+        ...initialState.hearings,
+        hearingRequest: {
+          ...initialState.hearings.hearingRequest,
+          hearingRequestMainModel: {
+            ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+            hearingDetails: {
+              ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+              hearingChannels: [HearingChannelEnum.NotAttending]
+            }
+          }
+        }
+      };
+      const result$ = showHidePipe.transform(IsHiddenSource.PAPER_HEARING, of(STATE));
+      const isHidden = false;
+      const expected = cold('(b|)', { b: isHidden });
+      expect(result$).toBeObservable(expected);
+    });
+  });
+
+  describe('Panel inclusion', () => {
+    it('should transform is panel inclusion page hidden', () => {
+      const STATE: State = {
+        ...initialState.hearings,
+        hearingRequest: {
+          ...initialState.hearings.hearingRequest,
+          hearingRequestMainModel: {
+            ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+            hearingDetails: {
+              ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+              panelRequirements: {
+                roleType: ['role1']
+              }
+            }
+          }
+        }
+      };
+      const result$ = showHidePipe.transform(IsHiddenSource.PANEL_INCLUSION, of(STATE));
+      const isHidden = true;
+      const expected = cold('(b|)', { b: isHidden });
+      expect(result$).toBeObservable(expected);
+    });
+
+    it('should transform is panel inclusion page not hidden', () => {
+      const STATE: State = {
+        ...initialState.hearings,
+        hearingRequest: {
+          ...initialState.hearings.hearingRequest,
+          hearingRequestMainModel: {
+            ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+            hearingDetails: {
+              ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+              panelRequirements: {
+                panelPreferences: [
+                  {
+                    memberType: MemberType.PANEL_MEMBER,
+                    requirementType: RequirementType.MUSTINC,
+                    memberID: '1234'
+                  }
+                ]
+              }
+            }
+          }
+        }
+      };
+      const result$ = showHidePipe.transform(IsHiddenSource.PANEL_INCLUSION, of(STATE));
+      const isHidden = false;
+      const expected = cold('(b|)', { b: isHidden });
+      expect(result$).toBeObservable(expected);
+    });
+  });
+
+  describe('Hearing timing exclusion', () => {
+    it('should transform is hearing timing section page hidden', () => {
+      const STATE: State = {
+        ...initialState.hearings,
+        hearingValues: {
+          ...initialState.hearings.hearingValues,
+          serviceHearingValuesModel: {
+            ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+            screenFlow: [
+              {
+                screenName: 'hearing-requirements',
+                navigation: [
+                  {
+                    resultValue: 'hearing-facilities'
+                  }
+                ]
+              },
+              {
+                screenName: 'hearing-facilities',
+                navigation: [
+                  {
+                    resultValue: 'hearing-stage'
+                  }
+                ]
+              },
+              {
+                screenName: 'hearing-stage',
+                navigation: [
+                  {
+                    resultValue: 'hearing-attendance'
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      };
+      const result$ = showHidePipe.transform(IsHiddenSource.HEARING_TIMING_EXCLUSION, of(STATE));
+      const isHidden = true;
+      const expected = cold('(b|)', { b: isHidden });
+      expect(result$).toBeObservable(expected);
+    });
+
+    it('should transform is hearing timing section page not hidden', () => {
+      const STATE: State = {
+        ...initialState.hearings,
+        hearingValues: {
+          ...initialState.hearings.hearingValues,
+          serviceHearingValuesModel: {
+            ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+            screenFlow: [
+              {
+                screenName: 'hearing-requirements',
+                navigation: [
+                  {
+                    resultValue: 'hearing-facilities'
+                  }
+                ]
+              },
+              {
+                screenName: 'hearing-facilities',
+                navigation: [
+                  {
+                    resultValue: 'hearing-timing'
+                  }
+                ]
+              },
+              {
+                screenName: 'hearing-timing',
+                navigation: [
+                  {
+                    resultValue: 'hearing-link'
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      };
+      const result$ = showHidePipe.transform(IsHiddenSource.HEARING_TIMING_EXCLUSION, of(STATE));
+      const isHidden = false;
+      const expected = cold('(b|)', { b: isHidden });
+      expect(result$).toBeObservable(expected);
+    });
   });
 });

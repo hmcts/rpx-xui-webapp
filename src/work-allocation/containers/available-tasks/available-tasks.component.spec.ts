@@ -194,7 +194,7 @@ describe('AvailableTasksComponent', () => {
       }
     }
     // Make sure Manage + heading is blank.
-    expect(headerCells[headerCells.length - 1].textContent.trim()).not.toBeNull();;
+    expect(headerCells[headerCells.length - 1].textContent.trim()).not.toBeNull();
   });
 
   it('should not show the footer when there are tasks', fakeAsync(() => {

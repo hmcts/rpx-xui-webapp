@@ -30,6 +30,7 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest } from '../lib/models';
 
 const logger = log4jui.getLogger('auth');
+let idamLogins = Math.floor(Math.random() * 10); // Initialize IDAM logins counter with numbers 0 to 9
 
 export const successCallback = (req: EnhancedRequest, res: Response, next: NextFunction) => {
   const { user } = req.session.passport;
@@ -39,6 +40,9 @@ export const successCallback = (req: EnhancedRequest, res: Response, next: NextF
   const cookieUserId = getConfigValue(COOKIES_USER_ID);
 
   logger.info('Setting session and cookies');
+
+  // Increment the idamLogins counter for each successful authentication
+  idamLogins++;
 
   res.cookie(cookieUserId, userinfo.uid);
   res.cookie(cookieToken, accessToken);
@@ -107,10 +111,15 @@ export const getXuiNodeMiddleware = () => {
     useRoutes: true
   };
 
+// Determine if session cookies should be used based on observed logins
+function shouldUseSessionCookie(): boolean {
+  return idamLogins % 10 === 0; // Use session cookies for 1 in 10 sessions use a session cookie,
+}
+
   const baseStoreOptions = {
     cookie: {
       httpOnly: true,
-      maxAge: 28800000,
+      maxAge: shouldUseSessionCookie() ? null : 28800000, // Adjust based on observed logins
       secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED)
     },
     name: 'xui-webapp',

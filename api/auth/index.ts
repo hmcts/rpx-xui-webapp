@@ -111,10 +111,10 @@ export const getXuiNodeMiddleware = () => {
     useRoutes: true
   };
 
-// Determine if session cookies should be used based on observed logins
-function shouldUseSessionCookie(): boolean {
-  return idamLogins % 10 === 0; // Use session cookies for 1 in 10 sessions use a session cookie,
-}
+  // Determine if session cookies should be used based on observed logins
+  function shouldUseSessionCookie(): boolean {
+    return idamLogins % 10 === 0; // Use session cookies for 1 in 10 sessions use a session cookie,
+  }
 
   const baseStoreOptions = {
     cookie: {

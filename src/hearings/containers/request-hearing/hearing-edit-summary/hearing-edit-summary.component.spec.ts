@@ -345,6 +345,7 @@ describe('HearingEditSummaryComponent', () => {
     component.serviceHearingValuesModel.hmctsInternalCaseName = 'New hmcts case name from service hearings';
     component.serviceHearingValuesModel.publicCaseName = 'New public case name from service hearings';
     component.serviceHearingValuesModel.caseManagementLocationCode = 'New location code';
+    component.serviceHearingValuesModel.caseInterpreterRequiredFlag = true;
     component.serviceHearingValuesModel.caserestrictedFlag = true;
     component.serviceHearingValuesModel.caseCategories = categories;
     const storeDispatchSpy = spyOn(store, 'dispatch');
@@ -353,6 +354,7 @@ describe('HearingEditSummaryComponent', () => {
     expectedResult.hmctsInternalCaseName = 'New hmcts case name from service hearings';
     expectedResult.publicCaseName = 'New public case name from service hearings';
     expectedResult.caseManagementLocationCode = 'New location code';
+    expectedResult.caseInterpreterRequiredFlag = true;
     expectedResult.caserestrictedFlag = true;
     expectedResult.caseCategories = [...categories];
     expect(component.hearingRequestMainModel.caseDetails).toEqual(expectedResult);

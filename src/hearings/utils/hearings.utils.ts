@@ -68,7 +68,7 @@ export class HearingsUtils {
     const channel = party.hearingSubChannel ? party.hearingSubChannel : party.individualDetails.preferredHearingChannel;
     if (channel) {
       const preferredHearingChannelRefData = refData.find((ref) => ref.key === channel);
-      return preferredHearingChannelRefData?.value_en ? preferredHearingChannelRefData.value_en : `Undefined hearing channel: ${channel}`;
+      return preferredHearingChannelRefData?.value_en ? preferredHearingChannelRefData.value_en : `invalid hearing channel: ${channel}`;
     }
     return 'No hearing channel selected';
   }

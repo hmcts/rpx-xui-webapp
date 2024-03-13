@@ -3,11 +3,10 @@ import { HearingConditions } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { HearingWindowModel } from '../models/hearingWindow.model';
-import { MemberType, Mode, RequirementType } from '../models/hearings.enum';
-import { PropertiesUpdatedOnPageVisit } from '../models/hearingsUpdateMode.enum';
+import { MemberType, RequirementType } from '../models/hearings.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
-import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 import { PanelPreferenceModel } from '../models/panelPreference.model';
+import { PartyDetailsModel } from '../models/partyDetails.model';
 
 export class HearingsUtils {
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
@@ -64,4 +63,36 @@ export class HearingsUtils {
     }
     return rest;
   }
+
+  public static getPartyChannelValue(refData: LovRefDataModel[], party: PartyDetailsModel): string {
+    const channel = party.hearingSubChannel ? party.hearingSubChannel : party.individualDetails.preferredHearingChannel;
+    if (channel) {
+      const preferredHearingChannelRefData = refData.find((ref) => ref.key === channel);
+      return preferredHearingChannelRefData?.value_en ? preferredHearingChannelRefData.value_en : `Undefined hearing channel: ${channel}`;
+    } else {
+      return 'No hearing channel selected'
+    }
+  }
+  public static getNameFromFirstLast(first: string, last: string): string {
+    const res:string[] = [];
+    if (first) {
+      res.push(first);
+    }
+    if (last) {
+      res.push(last);
+    }
+    if (res.length > 0) {
+      return res.join(' ');
+    }
+    return null;
+  }
+
+  public static getPartyName(partiesFromServiceValue: PartyDetailsModel[], partyInfo: PartyDetailsModel): string {
+    const partyDetails = partiesFromServiceValue.find((pty) => pty.partyID === partyInfo.partyID);
+    return (partyDetails && partyDetails.partyName)
+      || HearingsUtils.getNameFromFirstLast(partyInfo.individualDetails.firstName,
+        partyInfo.individualDetails.lastName)
+      || `Error: ${partyInfo.partyID}`;
+  }
+
 }

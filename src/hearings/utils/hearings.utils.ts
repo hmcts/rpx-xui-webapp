@@ -69,10 +69,10 @@ export class HearingsUtils {
     if (channel) {
       const preferredHearingChannelRefData = refData.find((ref) => ref.key === channel);
       return preferredHearingChannelRefData?.value_en ? preferredHearingChannelRefData.value_en : `Undefined hearing channel: ${channel}`;
-    } else {
-      return 'No hearing channel selected'
     }
+    return 'No hearing channel selected';
   }
+
   public static getNameFromFirstLast(first: string, last: string): string {
     const res:string[] = [];
     if (first) {
@@ -94,5 +94,4 @@ export class HearingsUtils {
         partyInfo.individualDetails.lastName)
       || `Error: ${partyInfo.partyID}`;
   }
-
 }

@@ -11,13 +11,12 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
   constructor(
     protected readonly route: ActivatedRoute) {}
 
-
   public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
     const partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
 
     return hearingState$.pipe(
-      filter (state => !!state),
-      map((state) => {
+      filter((state: State) => !!state),
+      map((state: State) => {
         // There are potentially party details in 3 places:
         // 1) In state.hearingValues.parties - values supplied originally by service
         // 2) In state.hearingRequest.hearingRequestMainModel.partyDetails - values sent to HMC
@@ -43,25 +42,24 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
         if (attendeeParties?.length > 0) {
           return attendeeParties.join('<br>');
         }
-        let pd: PartyDetailsModel[] = [];
+        let pdm: PartyDetailsModel[] = [];
         if (state.hearingRequest.hearingRequestMainModel.partyDetails?.length > 0) {
-          pd = state.hearingRequest.hearingRequestMainModel.partyDetails;
+          pdm = state.hearingRequest.hearingRequestMainModel.partyDetails;
         } else if (partiesFromRequest?.length > 0) {
-          pd = partiesFromRequest;
+          pdm = partiesFromRequest;
         }
-        const ret= pd
-            .filter( pd => pd.individualDetails?.firstName?.length > 0)
-            .map( pd => {
-              const name = HearingsUtils.getNameFromFirstLast(pd.individualDetails.firstName,
-                pd.individualDetails.lastName)
-              const chan = HearingsUtils.getPartyChannelValue(partyChannels, pd);
-              return `${name} - ${chan}`;
-            }).join('<br>');
+        const ret = pdm
+          .filter((pd) => pd.individualDetails?.firstName?.length > 0)
+          .map((pd) => {
+            const name = HearingsUtils.getNameFromFirstLast(pd.individualDetails.firstName,
+              pd.individualDetails.lastName);
+            const chan = HearingsUtils.getPartyChannelValue(partyChannels, pd);
+            return `${name} - ${chan}`;
+          }).join('<br>');
         if (ret?.length > 0) {
           return ret;
-        } else {
-          return "No party details found";
         }
+        return 'No party details found';
       })
     );
   }

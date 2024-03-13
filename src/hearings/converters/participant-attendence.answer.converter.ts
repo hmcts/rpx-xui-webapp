@@ -1,8 +1,7 @@
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { PartyType } from '../models/hearings.enum';
-import { LovRefDataModel } from '../models/lovRefData.model';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { State } from '../store';
 import { HearingsUtils } from '../utils/hearings.utils';
@@ -12,60 +11,57 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
   constructor(
     protected readonly route: ActivatedRoute) {}
 
-  private static getPartyChannelValue(refData: LovRefDataModel[], party: PartyDetailsModel): string {
-    const preferredHearingChannelRefData = refData.find((ref) => ref.key === party.hearingSubChannel);
-    return preferredHearingChannelRefData?.value_en ? preferredHearingChannelRefData.value_en : `Error: ${party.hearingSubChannel}`;
-  }
-
-  static getNameFromFirstLast(first: string, last: string): string {
-    const res:string[] = [];
-    if (first) {
-      res.push(first);
-    }
-    if (last) {
-      res.push(first);
-    }
-    if (res.length > 0) {
-      return res.join(' ');
-    }
-    return null;
-  }
-
-  private static getPartyName(partiesFromServiceValue: PartyDetailsModel[], partyInfo: PartyDetailsModel): string {
-    const partyDetails = partiesFromServiceValue.find((pty) => pty.partyID === partyInfo.partyID);
-    return (partyDetails && partyDetails.partyName)
-      || ParticipantAttendenceAnswerConverter.getNameFromFirstLast(partyInfo.individualDetails.firstName,
-        partyInfo.individualDetails.lastName)
-      || `Error: ${partyInfo.partyID}`;
-  }
 
   public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
     const partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
 
     return hearingState$.pipe(
+      filter (state => !!state),
       map((state) => {
-        if (!state) {
-          return '';
-        }
+        // There are potentially party details in 3 places:
+        // 1) In state.hearingValues.parties - values supplied originally by service
+        // 2) In state.hearingRequest.hearingRequestMainModel.partyDetails - values sent to HMC
+        // 3) In state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].attendees
+        // - this is returned by HMC, but seems to be blank at least sometimes
+        // Probably the most appropriate thing to do is to check each of these in the order 3,2,1
+        // 3, when available is just party ids, so we need to use data from 1) to convert the ID to a name
+
         const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;
         let hearingDaySchedule = hearingResponse && hearingResponse.hearingDaySchedule;
-        if (!hearingDaySchedule) {
-          return '';
-        }
         const partiesFromServiceValue = state.hearingValues.serviceHearingValuesModel.parties?.filter((party) => party.partyType === PartyType.IND);
-        if (!partiesFromServiceValue) {
-          return '';
-        }
         const partyIds = partiesFromServiceValue.map((party) => party.partyID);
         hearingDaySchedule = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
+
         const partiesFromRequest = hearingDaySchedule[index || 0]
           .attendees
           ?.filter((attendee) => partyIds.includes(attendee.partyID));
-        return partiesFromRequest.map((partyInfo) => {
-          const name = ParticipantAttendenceAnswerConverter.getPartyName(partiesFromServiceValue, partyInfo);
-          const value = ParticipantAttendenceAnswerConverter.getPartyChannelValue(partyChannels, partyInfo);
-          return `${name} - ${value}`;
-        }).join('<br>');
+        const attendeeParties = partiesFromRequest.map((partyInfo) => {
+          const name = HearingsUtils.getPartyName(partiesFromServiceValue, partyInfo);
+          const chan = HearingsUtils.getPartyChannelValue(partyChannels, partyInfo);
+          return `${name} - ${chan}`;
+        });
+        if (attendeeParties?.length > 0) {
+          return attendeeParties.join('<br>');
+        }
+        let pd: PartyDetailsModel[] = [];
+        if (state.hearingRequest.hearingRequestMainModel.partyDetails?.length > 0) {
+          pd = state.hearingRequest.hearingRequestMainModel.partyDetails;
+        } else if (partiesFromRequest?.length > 0) {
+          pd = partiesFromRequest;
+        }
+        const ret= pd
+            .filter( pd => pd.individualDetails?.firstName?.length > 0)
+            .map( pd => {
+              const name = HearingsUtils.getNameFromFirstLast(pd.individualDetails.firstName,
+                pd.individualDetails.lastName)
+              const chan = HearingsUtils.getPartyChannelValue(partyChannels, pd);
+              return `${name} - ${chan}`;
+            }).join('<br>');
+        if (ret?.length > 0) {
+          return ret;
+        } else {
+          return "No party details found";
+        }
       })
     );
   }

@@ -17,6 +17,7 @@ export enum AutoUpdateMode {
 
 export enum PagelessPropertiesEnum {
   CASE_MANAGEMENT_LOCATIONCODE = 'caseManagementLocationCode',
+  CASE_INTERPRETER_REQUIRED_FLAG = 'caseInterpreterRequiredFlag',
   HEARING_IN_WELSH_FLAG = 'hearingInWelshFlag',
   PARTIES = 'parties'
 }

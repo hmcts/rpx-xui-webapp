@@ -119,7 +119,7 @@ export const getXuiNodeMiddleware = () => {
   const baseStoreOptions = {
     cookie: {
       httpOnly: true,
-      maxAge: shouldUseSessionCookie() ? null : 28800000, // Adjust based on observed logins
+      ...(shouldUseSessionCookie() ? {} : { maxAge: 28800000 }), // Conditionally add maxAge attribute if session cookies are not used, setting expiration time to 8 hours (28800000 milliseconds)
       secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED)
     },
     name: 'xui-webapp',

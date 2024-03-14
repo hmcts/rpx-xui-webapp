@@ -161,6 +161,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       caseDetails: {
         ...this.hearingRequestMainModel?.caseDetails,
         caseManagementLocationCode: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caseManagementLocationCode, this.serviceHearingValuesModel.caseManagementLocationCode, AutoUpdateMode.PAGELESS, PagelessPropertiesEnum.CASE_MANAGEMENT_LOCATIONCODE),
+        caseInterpreterRequiredFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caseInterpreterRequiredFlag, this.serviceHearingValuesModel.caseInterpreterRequiredFlag, AutoUpdateMode.PAGELESS, PagelessPropertiesEnum.CASE_INTERPRETER_REQUIRED_FLAG),
         hmctsInternalCaseName: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.hmctsInternalCaseName, this.serviceHearingValuesModel.hmctsInternalCaseName, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.HMCTS_INTERNAL_CASENAME),
         publicCaseName: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.publicCaseName, this.serviceHearingValuesModel.publicCaseName, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PUBLIC_CASE_NAME),
         caserestrictedFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caserestrictedFlag, this.serviceHearingValuesModel.caserestrictedFlag, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.CASE_RESTRICTED_FLAG),

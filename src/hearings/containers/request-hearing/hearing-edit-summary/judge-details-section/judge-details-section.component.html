@@ -1,6 +1,5 @@
 <h2 class="govuk-heading-m">Judge details
-  <exui-amendment-label [displayLabel]="amendmentLabelEnum.AMENDED"
-  *ngIf="showAmmendedForNeedJudge || showAmmendedForJudgeName || showAmmendedForJudgeType || showAmmendedForExcludedJudgeNames">
+  <exui-amendment-label  *ngIf="showAmendedLabelForPageTitle" [displayLabel]="amendmentLabelEnum.AMENDED">
   </exui-amendment-label>
 </h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">

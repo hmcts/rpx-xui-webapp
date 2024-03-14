@@ -187,6 +187,92 @@ describe('ShowHidePipe', () => {
     });
   });
 
+  describe('Judge details exclusion', () => {
+    it('should transform is judge details page hidden', () => {
+      const STATE: State = {
+        ...initialState.hearings,
+        hearingValues: {
+          ...initialState.hearings.hearingValues,
+          serviceHearingValuesModel: {
+            ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+            screenFlow: [
+              {
+                screenName: 'hearing-requirements',
+                navigation: [
+                  {
+                    resultValue: 'hearing-facilities'
+                  }
+                ]
+              },
+              {
+                screenName: 'hearing-facilities',
+                navigation: [
+                  {
+                    resultValue: 'hearing-stage'
+                  }
+                ]
+              },
+              {
+                screenName: 'hearing-stage',
+                navigation: [
+                  {
+                    resultValue: 'hearing-attendance'
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      };
+      const result$ = showHidePipe.transform(IsHiddenSource.JUDGE_DETAILS_EXCLUSION, of(STATE));
+      const isHidden = true;
+      const expected = cold('(b|)', { b: isHidden });
+      expect(result$).toBeObservable(expected);
+    });
+
+    it('should transform is judge details page not hidden', () => {
+      const STATE: State = {
+        ...initialState.hearings,
+        hearingValues: {
+          ...initialState.hearings.hearingValues,
+          serviceHearingValuesModel: {
+            ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+            screenFlow: [
+              {
+                screenName: 'hearing-requirements',
+                navigation: [
+                  {
+                    resultValue: 'hearing-facilities'
+                  }
+                ]
+              },
+              {
+                screenName: 'hearing-facilities',
+                navigation: [
+                  {
+                    resultValue: 'hearing-stage'
+                  }
+                ]
+              },
+              {
+                screenName: 'hearing-judge',
+                navigation: [
+                  {
+                    resultValue: 'hearing-panel'
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      };
+      const result$ = showHidePipe.transform(IsHiddenSource.JUDGE_DETAILS_EXCLUSION, of(STATE));
+      const isHidden = false;
+      const expected = cold('(b|)', { b: isHidden });
+      expect(result$).toBeObservable(expected);
+    });
+  });
+
   describe('Hearing timing exclusion', () => {
     it('should transform is hearing timing section page hidden', () => {
       const STATE: State = {

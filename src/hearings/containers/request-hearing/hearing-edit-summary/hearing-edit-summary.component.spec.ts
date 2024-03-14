@@ -454,45 +454,10 @@ describe('HearingEditSummaryComponent', () => {
             unavailabilityType: UnavailabilityType.ALL_DAY
           }
         ]
-      },
-      {
-        partyID: 'P2',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        organisationDetails: {
-          name: 'DWP',
-          organisationType: 'GOV',
-          cftOrganisationID: 'O100000'
-        },
-        unavailabilityDOW: null,
-        unavailabilityRanges: [
-          {
-            unavailableFromDate: '2021-12-20T09:00:00.000Z',
-            unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY
-          }
-        ]
-      },
-      {
-        partyID: 'P3',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        organisationDetails: {
-          name: 'DWP',
-          organisationType: 'GOV',
-          cftOrganisationID: 'O100000'
-        },
-        unavailabilityDOW: null,
-        unavailabilityRanges: [
-          {
-            unavailableFromDate: '2021-12-20T09:00:00.000Z',
-            unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY
-          }
-        ]
       }
     ];
    
+    expect(component.hearingRequestMainModel.partyDetails).toEqual(expectedResult);
     expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(component.hearingRequestMainModel, component.hearingCondition));
     storeDispatchSpy.calls.reset();
   });

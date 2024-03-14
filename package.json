@@ -97,7 +97,7 @@
     "@hmcts/nodejs-healthcheck": "1.7.0",
     "@hmcts/properties-volume": "^0.0.13",
     "@hmcts/rpx-xui-common-lib": "2.0.13",
-    "@hmcts/rpx-xui-node-lib": "2.25.12",
+    "@hmcts/rpx-xui-node-lib": "2.28.0",
     "@ng-idle/core": "^11.1.0",
     "@ng-idle/keepalive": "^11.0.3",
     "@ngrx/effects": "^11.1.0",

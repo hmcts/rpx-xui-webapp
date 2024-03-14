@@ -456,7 +456,6 @@ describe('HearingEditSummaryComponent', () => {
         ]
       }
     ];
-   
     expect(component.hearingRequestMainModel.partyDetails).toEqual(expectedResult);
     expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(component.hearingRequestMainModel, component.hearingCondition));
     storeDispatchSpy.calls.reset();

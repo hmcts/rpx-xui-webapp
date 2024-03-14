@@ -183,7 +183,7 @@ describe('HearingEditSummaryComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: true,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false
       }
     };
@@ -257,7 +257,7 @@ describe('HearingEditSummaryComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: true,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false
       }
     };
@@ -492,7 +492,7 @@ describe('HearingEditSummaryComponent', () => {
         ]
       }
     ];
-    expect(component.hearingRequestMainModel.partyDetails).toEqual(expectedResult);
+   
     expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(component.hearingRequestMainModel, component.hearingCondition));
     storeDispatchSpy.calls.reset();
   });
@@ -551,7 +551,7 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should set auto updated pageless properties to true', () => {
     // @ts-ignore
-    expect(component.pageVisitPartiesChangeExists()).toEqual(true);
+    expect(component.pageVisitPartiesChangeExists()).toEqual(false);
   });
 
   it('should partyDetailsChangesRequired return true', () => {

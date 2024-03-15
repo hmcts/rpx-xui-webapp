@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.21":
-  version: 7.0.21
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.21"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.18-event-flow-cancel-navigation-v2":
+  version: 7.0.18-event-flow-cancel-navigation-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.18-event-flow-cancel-navigation-v2"
   dependencies:
     tslib: ^2.3.0
-  checksum: 566adde9c6be0f65293b306f51a6a22b74df487cf6818b00a1529479e6261abd6d0490edda064bffe978d7eeec6434de429218588424ce0393a86399ae5426e6
+  checksum: ab67e3dd6c661d02c65ee14df928c2d445c2f9fb883d67ca9e2c8ec504869a401cecc1dd97c2774a5a2345be0f7b6284c04b4f5cd581aeddad0eb24fa3993154
   languageName: node
   linkType: hard
 
@@ -19116,7 +19116,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.21
+    "@hmcts/ccd-case-ui-toolkit": 7.0.18-event-flow-cancel-navigation-v2
     "@hmcts/ccpay-web-component": 6.1.0
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 3.0.2

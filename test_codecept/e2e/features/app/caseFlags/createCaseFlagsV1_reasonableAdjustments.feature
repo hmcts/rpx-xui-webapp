@@ -1,16 +1,16 @@
 
-@fullfunctional @functional_enabled @functional_debug
+@fullfunctional @functional_enabled
 Feature: Case flags V1 Add/Update Reasonable adjustment
 
     Background: Setup case
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with with case flags
         When I setup a case for case flags version "V1"
-            | party                       | fieldName  | value      |
-            | Flags for legal rep Party 1 | Role On Case | Party 1 |
-            | Flags for legal rep Party 1 | Party Name | Applicant  |
-            | Flags for legal rep Party 2 | Role On Case | Party 2 |
-            | Flags for legal rep Party 2 | Party Name | Respondent |
+            | party                       | fieldName    | value      |
+            | Flags for legal rep Party 1 | Role On Case | Party 1    |
+            | Flags for legal rep Party 1 | Party Name   | Applicant  |
+            | Flags for legal rep Party 2 | Role On Case | Party 2    |
+            | Flags for legal rep Party 2 | Party Name   | Respondent |
         Then I see case details page
 
 
@@ -138,4 +138,107 @@ Feature: Case flags V1 Add/Update Reasonable adjustment
         Then I validate case flags table for "Respondent" has 0 flags
         Then I validate case flags tab table data for "Applicant"
             | Party level flags        | Comments          | Creation date | Last modified | Flag status |
-            | Support filling in forms | Test auto comment | today         | today         | INACTIVE      |
+            | Support filling in forms | Test auto comment | today         | today         | INACTIVE    |
+
+
+    Scenario: Create case flag workflow, cancel action
+        When I click tab with label "Case flags" in case details page, to see element with css selector "ccd-read-case-flag-field"
+        When I start case flags event "Create case flag" and input details
+            | page                             | field                            | value                 |
+            | Where should this flag be added? | Where should this flag be added? | Applicant             |
+        When In create case flag workflow, I click cancel
+        Then I see case details page
+
+        When I start case flags event "Create case flag" and input details
+            | page                             | field                            | value                  |
+            | Where should this flag be added? | Where should this flag be added? | Applicant              |
+            | flag type,Select flag type | Select flag type | Reasonable adjustment |
+        When In create case flag workflow, I click cancel
+        Then I see case details page
+
+        When I start case flags event "Create case flag" and input details
+            | page                             | field                            | value                    |
+            | Where should this flag be added? | Where should this flag be added? | Applicant                |
+            | flag type,Select flag type | Select flag type | Reasonable adjustment |
+            | flag type,Reasonable adjustment | Reasonable adjustment | I need help with forms |
+        When In create case flag workflow, I click cancel
+        Then I see case details page
+
+        When I start case flags event "Create case flag" and input details
+            | page                             | field                            | value                    |
+            | Where should this flag be added? | Where should this flag be added? | Applicant                |
+            | flag type,Select flag type | Select flag type | Reasonable adjustment |
+            | flag type,Reasonable adjustment | Reasonable adjustment | I need help with forms |
+            | flag type,I need help with forms | I need help with forms | Support filling in forms |
+        When In create case flag workflow, I click cancel
+        Then I see case details page
+
+        When I start case flags event "Create case flag" and input details
+            | page | field | value |
+            | Where should this flag be added? | Where should this flag be added? | Applicant |
+            | flag type,Select flag type | Select flag type | Reasonable adjustment |
+            | flag type,Reasonable adjustment | Reasonable adjustment | I need help with forms |
+            | flag type,I need help with forms | I need help with forms | Support filling in forms |
+            | Add comments for this flag | Add comments for this flag | Test auto comment|
+
+        When In create case flag workflow, I click cancel
+        Then I see case details page
+
+
+        When I start case flags event "Create case flag" and input details
+            | page                             | field                            | value                    |
+            | Where should this flag be added? | Where should this flag be added? | Applicant                |
+            | flag type,Select flag type       | Select flag type                 | Reasonable adjustment    |
+            | flag type,Reasonable adjustment  | Reasonable adjustment            | I need help with forms   |
+            | flag type,I need help with forms | I need help with forms           | Support filling in forms |
+            | Add comments for this flag       | Add comments for this flag       | Test auto comment        |
+        When In manage case flag workflow, I click Next
+
+        Then In manage case flag workflow, I am on Review details page
+        When In create case flag workflow, I click cancel
+        Then I see case details page
+ 
+
+    Scenario: update case flag workflow, cancel action
+        When I click tab with label "Case flags" in case details page, to see element with css selector "ccd-read-case-flag-field"
+        When I start case flags event "Create case flag" and input details
+            | page                             | field                            | value                    |
+            | Where should this flag be added? | Where should this flag be added? | Applicant                |
+            | flag type,Select flag type       | Select flag type                 | Reasonable adjustment    |
+            | flag type,Reasonable adjustment  | Reasonable adjustment            | I need help with forms   |
+            | flag type,I need help with forms | I need help with forms           | Support filling in forms |
+            | Add comments for this flag       | Add comments for this flag       | Test auto comment        |
+        When In manage case flag workflow, I click Next
+
+        Then In manage case flag workflow, I am on Review details page
+        When In create case flag workflow, I click submit
+        Then I see case details page
+
+        When I start case flags event "Manage case flags" and input details
+            | page                             | field                            | value     |
+            | Manage case flags | Manage case flag | Applicant -  Reasonable adjustment, Support filling in forms |
+        When In create case flag workflow, I click cancel
+        Then I see case details page
+
+
+        When I start case flags event "Manage case flags" and input details
+            | page                                             | field                                           | value                                                        |
+            | Manage case flags                                | Manage case flag                                | Applicant -  Reasonable adjustment, Support filling in forms |
+            | update flag,Update flag "Support filling in forms" | Update flag "Support filling in forms" comments | Test auto comment |
+            | update flag,Update flag "Support filling in forms" | Flag status | inactive |
+        When In create case flag workflow, I click cancel
+        Then I see case details page
+
+
+        When I start case flags event "Manage case flags" and input details
+            | page                                             | field                                           | value                                                        |
+            | Manage case flags                                | Manage case flag                                | Applicant -  Reasonable adjustment, Support filling in forms |
+            | update flag,Update flag "Support filling in forms" | Update flag "Support filling in forms" comments | Test auto comment |
+            | update flag,Update flag "Support filling in forms" | Flag status | inactive |
+        When In manage case flag workflow, I click Next
+        Then In manage case flag workflow, I am on Review details page
+        
+        When In create case flag workflow, I click cancel
+        Then I see case details page
+
+    

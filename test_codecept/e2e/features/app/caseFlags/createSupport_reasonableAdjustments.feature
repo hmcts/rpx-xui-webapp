@@ -114,3 +114,93 @@ Feature: Support request Add/Update Reasonable adjustment
         When In manage support request workflow, I click submit
 
         Then I see case details page and I dont see case flags banner
+
+
+    Scenario: Create support request workflow, cancel action
+        When I click tab with label "Case flags" in case details page, to see element with css selector "ccd-read-case-flag-field"
+   
+        When I start case flags event "Request support" and input details
+            | page                             | field                            | value                 |
+            | Who is the support for? | Who is the support for? | Applicant |
+           
+        When In create case flag workflow, I click cancel
+        Then I see case details page
+
+        When I start case flags event "Request support" and input details
+            | page                                                | field                                     | value                                     |
+            | Who is the support for?                             | Who is the support for?                   | Applicant                                 |
+            | flag type,Select support type                       | Select support type                       | Reasonable adjustment                     |
+          
+        When In create case flag workflow, I click cancel
+        Then I see case details page
+
+        When I start case flags event "Request support" and input details
+            | page                                                | field                                     | value                                     |
+            | Who is the support for?                             | Who is the support for?                   | Applicant                                 |
+            | flag type,Select support type                       | Select support type                       | Reasonable adjustment                     |
+            | flag type,Reasonable adjustment                     | Reasonable adjustment                     | I need documents in an alternative format |
+           
+        When In create case flag workflow, I click cancel
+        Then I see case details page
+
+        When I start case flags event "Request support" and input details
+            | page                             | field                            | value                    |
+            | Who is the support for?                             | Who is the support for?                   | Applicant                                 |
+            | flag type,Select support type                       | Select support type                       | Reasonable adjustment                     |
+            | flag type,Reasonable adjustment                     | Reasonable adjustment                     | I need documents in an alternative format |
+            | flag type,I need documents in an alternative format | I need documents in an alternative format | Documents in a specified colour           |
+          
+        When In create case flag workflow, I click cancel
+        Then I see case details page
+
+
+        When I start case flags event "Request support" and input details
+            | page                                                | field                                     | value                                     |
+            | Who is the support for?                             | Who is the support for?                   | Applicant                                 |
+            | flag type,Select support type                       | Select support type                       | Reasonable adjustment                     |
+            | flag type,Reasonable adjustment                     | Reasonable adjustment                     | I need documents in an alternative format |
+            | flag type,I need documents in an alternative format | I need documents in an alternative format | Documents in a specified colour           |
+            | Tell us more about the request                      | Tell us more about the request            | Test auto comment                         |
+
+        When In manage case flag workflow, I click Next
+
+        Then In manage case flag workflow, I am on Review details page
+        When In create case flag workflow, I click cancel
+        Then I see case details page
+
+    Scenario: update support request workflow, cancel action
+        When I click tab with label "Case flags" in case details page, to see element with css selector "ccd-read-case-flag-field"
+        When I start case flags event "Request support" and input details
+            | page                                                | field                                     | value                                     |
+            | Who is the support for?                             | Who is the support for?                   | Applicant                                 |
+            | flag type,Select support type                       | Select support type                       | Reasonable adjustment                     |
+            | flag type,Reasonable adjustment                     | Reasonable adjustment                     | I need documents in an alternative format |
+            | flag type,I need documents in an alternative format | I need documents in an alternative format | Documents in a specified colour           |
+            | Tell us more about the request                      | Tell us more about the request            | Test auto comment                         |
+
+        When In manage case flag workflow, I click Next
+
+        Then In manage case flag workflow, I am on Review details page
+        When In create case flag workflow, I click submit
+        Then I see case details page
+
+        When I start case flags event "Manage support" and input details
+            | page              | field            | value                                                        |
+            | Which support is no longer needed? | Which support is no longer needed? | Applicant (Party 1) - Reasonable adjustment, Documents in a specified colour |
+        When In create case flag workflow, I click cancel
+        Then I see case details page
+
+
+        When I start case flags event "Manage support" and input details
+            | page                               | field                              | value                                                                        |
+            | Which support is no longer needed? | Which support is no longer needed? | Applicant (Party 1) - Reasonable adjustment, Documents in a specified colour |
+            | Tell us why the support is no longer needed | Tell us why the support is no longer needed | Test auto comment |
+   
+        When In create case flag workflow, I click cancel
+        Then I see case details page
+
+
+ 
+
+
+

@@ -6,6 +6,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
 import { LoggerService } from '../../../../app/services/logger/logger.service';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import {
@@ -2242,7 +2243,7 @@ describe('HearingRequirementsComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingRequirementsComponent, MockHearingPartiesComponent],
+      declarations: [HearingRequirementsComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
       providers: [
         provideMockStore({ initialState: initialStateImmutable }),
         { provide: HearingsService, useValue: hearingsService },

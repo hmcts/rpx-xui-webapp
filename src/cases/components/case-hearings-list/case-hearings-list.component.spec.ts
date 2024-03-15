@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearings/hearing.test.data';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, PartyType } from '../../../hearings/models/hearings.enum';
@@ -635,7 +636,7 @@ describe('CaseHearingsListComponent', () => {
         RouterTestingModule.withRoutes([]),
         HearingsPipesModule
       ],
-      declarations: [CaseHearingsListComponent],
+      declarations: [CaseHearingsListComponent, MockRpxTranslatePipe],
       providers: [
         provideMockStore({ initialState }),
         {

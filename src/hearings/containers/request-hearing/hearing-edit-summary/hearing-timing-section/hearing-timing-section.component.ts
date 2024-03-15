@@ -7,6 +7,7 @@ import { HearingWindowModel } from '../../../../models/hearingWindow.model';
 import { HearingDateEnum, RadioOptions } from '../../../../models/hearings.enum';
 import { AmendmentLabelStatus } from '../../../../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
+import { ServiceHearingValuesModel } from '../../../../models/serviceHearingValues.model';
 import { HearingsService } from '../../../../services/hearings.service';
 import { HearingsUtils } from '../../../../utils/hearings.utils';
 
@@ -18,6 +19,7 @@ export class HearingTimingSectionComponent implements OnInit {
   @Input() public hearingPrioritiesRefData: LovRefDataModel[];
   @Input() public hearingRequestMainModel: HearingRequestMainModel;
   @Input() public hearingRequestToCompareMainModel: HearingRequestMainModel;
+  @Input() public serviceHearingValuesModel: ServiceHearingValuesModel;
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
   constructor(private readonly hearingsService: HearingsService) {}
@@ -32,8 +34,10 @@ export class HearingTimingSectionComponent implements OnInit {
   public hearingLengthChanged: boolean;
   public hearingDateChanged: boolean;
   public hearingPriorityChanged: boolean;
+  public hearingUnavailabilityDatesChanged: boolean;
   public hearingWindowChangesRequired: boolean;
   public hearingWindowChangesConfirmed: boolean;
+  public showActionNeededLabelForPageTitle: boolean;
   public showAmendedLabelForPageTitle: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
   public radioOptions = RadioOptions;
@@ -142,9 +146,19 @@ export class HearingTimingSectionComponent implements OnInit {
       this.hearingRequestMainModel.hearingDetails.hearingPriorityType
     );
 
-    this.showAmendedLabelForPageTitle = (this.hearingWindowChangesConfirmed && this.hearingWindowChangesRequired) ||
-      this.hearingLengthChanged ||
-      this.hearingDateChanged ||
-      this.hearingPriorityChanged;
+    this.hearingUnavailabilityDatesChanged = !_.isEqual(
+      HearingsUtils.getPartiesNotAvailableDates(this.serviceHearingValuesModel.parties),
+      HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestToCompareMainModel.partyDetails)
+    );
+
+    this.showActionNeededLabelForPageTitle = !this.hearingWindowChangesConfirmed && this.hearingWindowChangesRequired;
+
+    this.showAmendedLabelForPageTitle = !this.showActionNeededLabelForPageTitle &&
+      (
+        (this.hearingWindowChangesConfirmed && this.hearingWindowChangesRequired) ||
+        this.hearingLengthChanged ||
+        this.hearingDateChanged ||
+        this.hearingPriorityChanged
+      );
   }
 }

@@ -446,7 +446,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       return false;
     }
     const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
-    if (hearingWindowHMC?.firstDateTimeMustBe) {
+    if ((hearingWindowHMC?.firstDateTimeMustBe) ||
+      (hearingWindowHMC?.dateRangeStart || hearingWindowHMC?.dateRangeEnd)) {
       const partiesNotAvailableDatesHMC = HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestToCompareMainModel.partyDetails);
       const partiesNotAvailableDatesSHV = HearingsUtils.getPartiesNotAvailableDates(this.serviceHearingValuesModel.parties);
       if (!_.isEqual(partiesNotAvailableDatesSHV, partiesNotAvailableDatesHMC)) {

@@ -1,6 +1,6 @@
 <h2 class="govuk-heading-m">
   Length, date and priority level of hearing
-  <exui-amendment-label id="hearing-window-action-needed-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired"
+  <exui-amendment-label id="hearing-window-action-needed-label" *ngIf="showActionNeededLabelForPageTitle"
     [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
   </exui-amendment-label>
   <exui-amendment-label id="hearing-window-amended-label" *ngIf="showAmendedLabelForPageTitle"
@@ -30,7 +30,8 @@
     </div>
     <div class="govuk-summary-list__value">
       {{ specificDateSelection }}
-      <exui-amendment-label *ngIf="hearingDateChanged" [displayLabel]="amendmentLabelEnum.AMENDED">
+      <exui-amendment-label *ngIf="hearingDateChanged || (!hearingWindowChangesRequired && hearingUnavailabilityDatesChanged)"
+        [displayLabel]="amendmentLabelEnum.AMENDED">
       </exui-amendment-label>
       <div *ngIf="specificDateSelection === radioOptions.CHOOSE_DATE_RANGE">
         Earliest start date: {{ earliestHearingDate }}

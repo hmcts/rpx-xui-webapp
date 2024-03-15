@@ -97,7 +97,10 @@
           </div>
         </fieldset>
       </div>
-      <exui-parties-unavailable-dates [unAvailableDates]="partiesNotAvailableDates"></exui-parties-unavailable-dates>
+      <exui-parties-unavailable-dates
+        [unAvailableDates]="partiesNotAvailableDates"
+        [showAmendedLabel]="hearingUnavailabilityDatesChanged">
+      </exui-parties-unavailable-dates>
       <div class="govuk-form-group govuk-!-margin-top-5"  [ngClass]="{'govuk-form-group--error': hearingPriorityError}">
         <fieldset class="govuk-fieldset" id="hearing-priority">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">

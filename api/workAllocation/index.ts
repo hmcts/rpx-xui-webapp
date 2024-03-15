@@ -444,7 +444,8 @@ export async function getRolesCategory(req: EnhancedRequest, res: Response) {
   const personRoles = [
     { roleId: 'judicial', roleName: 'Judicial' },
     { roleId: 'legalOps', roleName: 'Legal Ops' },
-    { roleId: 'admin', roleName: 'Admin' }];
+    { roleId: 'admin', roleName: 'Admin' },
+    { roleId: 'ctsc', roleName: 'CTSC'}];
   return res.send(personRoles).status(200);
 }
 

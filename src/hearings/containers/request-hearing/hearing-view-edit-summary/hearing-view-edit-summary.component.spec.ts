@@ -1,8 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, AnswerSource, IsHiddenSource } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
@@ -22,7 +23,7 @@ describe('HearingViewEditSummaryComponent', () => {
   describe('getHearingRequestToCompare and getHearingRequest are holding different state', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
-        declarations: [HearingViewEditSummaryComponent],
+        declarations: [HearingViewEditSummaryComponent, MockRpxTranslatePipe],
         providers: [
           LoadingService,
           provideMockStore({ initialState }),
@@ -258,7 +259,7 @@ describe('HearingViewEditSummaryComponent', () => {
   describe('getHearingRequestToCompare and getHearingRequest state are same', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
-        declarations: [HearingViewEditSummaryComponent],
+        declarations: [HearingViewEditSummaryComponent, MockRpxTranslatePipe],
         providers: [
           provideMockStore({ initialState: { hearings: {} } }),
           { provide: HearingsService, useValue: hearingsService }

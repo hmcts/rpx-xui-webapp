@@ -3,10 +3,11 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
+import { HearingsFeatureService } from '../../../hearings/services/hearings-feature.service';
 import * as fromHearingStore from '../../../hearings/store';
 import { initialState } from '../../hearing.test.data';
 import { HearingPartiesTitleComponent } from './hearing-parties-title.component';
-import { HearingsFeatureService } from '../../../hearings/services/hearings-feature.service';
 
 describe('HearingPartiesTitleComponent', () => {
   let component: HearingPartiesTitleComponent;
@@ -19,7 +20,7 @@ describe('HearingPartiesTitleComponent', () => {
     featureToggleServiceMock = jasmine.createSpyObj('featureToggleService', ['isEnabled']);
     hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled']);
     TestBed.configureTestingModule({
-      declarations: [HearingPartiesTitleComponent],
+      declarations: [HearingPartiesTitleComponent, MockRpxTranslatePipe],
       providers: [
         provideMockStore({ initialState }),
         {

@@ -8,6 +8,10 @@ const caseSetup = require('../pageObjects/caseFlags/caseSetUp')
 const reviewDetailsPage = require('../pageObjects/caseFlags/reviewDetailsPage')
 const caseFlagsTabPage = require('../pageObjects/caseFlags/caseFlagsTabPage')
 
+const CaseManager = require('../pageObjects/common/CaseManager')
+
+const caseManager = new CaseManager()
+
 function getPageObject(page) {
     const pageObj = workflow.pages[page];
     if (pageObj === null || pageObj === undefined) {
@@ -42,6 +46,10 @@ Then('I am on create case flags, select flag type page {string}', async function
 
 When('In create case flag workflow, I click Next', async function (page) {
     await workflow.nextButton.click();
+})
+
+When('In create case flag workflow, I click cancel', async function (page) {
+    await workflow.cancelLink.click();
 })
 
 When('In manage case flag workflow, I click Next', async function (page) {
@@ -269,6 +277,43 @@ Then('I validate case flags tab table data for {string}', async function(tableFo
     }
     reportLogger.AddMessage(`Table data : ${JSON.stringify(tableData, null,2)}`)
 
+})
+
+When('I start case flags event {string} and input details', async function (event, datatable){
+    const caseFlagInputs = datatable.parse().hashes();
+    let page = null;
+    await browser.sleep(1)
+
+    await browserWaits.retryWithActionCallback(async () => {
+        await caseManager.startNextStep(event);
+    });
+    
+    for (const inputRow of caseFlagInputs){
+        let nextPage = inputRow.page
+        const field = inputRow.field
+        const value = inputRow.value
+
+        if(nextPage.startsWith('flag type,')){
+            nextPage = nextPage.split(',')[1]
+            workflow.addAndGetSelectFlagTypePage(nextPage)
+        } else if (nextPage.startsWith('update flag,')){
+            nextPage = nextPage.split(',')[1]
+            workflow.addAndGetUpdateFlagPage(nextPage)
+        }
+        reportLogger.AddMessage(`**** ${nextPage} => ${field}=${value} *********`)
+
+        if (!page){
+            page = nextPage
+
+        } else if (page !== nextPage){
+            await workflow.nextButton.click();
+            page = nextPage;
+        }
+        const pageObj = getPageObject(page);
+        await browserWaits.waitForElement(pageObj.container)
+        expect(await pageObj.container.isDisplayed(), `${page} not displayed`).to.be.true
+        await pageObj.inputValue(field, value);
+    }
 })
 
 

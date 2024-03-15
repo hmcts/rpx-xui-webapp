@@ -10,6 +10,7 @@ import { HearingStageExclusionHiddenConverter } from '../converters/hearing-stag
 import { HearingTimingExclusionHiddenConverter } from '../converters/hearing-timing-exclusion.hidden.converter';
 import { HearingVenueExclusionHiddenConverter } from '../converters/hearing-venue-exclusion.hidden.converter';
 import { HiddenConverter } from '../converters/hidden.converter';
+import { JudgeDetailsExclusionHiddenConverter } from '../converters/judge-details-exclusion.hidden.converter';
 import { JudgeExclusionHiddenConverter } from '../converters/judge-exclusion.hidden.converter';
 import { JudgeNameHiddenConverter } from '../converters/judge-name.hidden.converter';
 import { JudgeTypesHiddenConverter } from '../converters/judge-types.hidden.converter';
@@ -20,6 +21,7 @@ import { NotListedHiddenConverter } from '../converters/not-listed.hidden.conver
 import { PanelDetailsExclusionHiddenConverter } from '../converters/panel-details-exclusion.hidden.converter';
 import { PanelExclusionHiddenConverter } from '../converters/panel-exclusion.hidden.converter';
 import { PanelInclusionHiddenConverter } from '../converters/panel-inclusion.hidden.converter';
+import { PanelMemberRolesHiddenConverter } from '../converters/panel-member-roles.hidden.converter';
 import { PanelRolesHiddenConverter } from '../converters/panel-roles.hidden.converter';
 import { PaperHearingHiddenConverter } from '../converters/paper-hearing.hidden.converter';
 import { ParticipantAttendanceExclusionHiddenConverter } from '../converters/participant-attendance-exclusion.hidden.converter';
@@ -27,7 +29,6 @@ import { WelshHiddenConverter } from '../converters/welsh.hidden.converter';
 import { IsHiddenSource } from '../models/hearings.enum';
 import { LocationsDataService } from '../services/locations-data.service';
 import { State } from '../store';
-import { PanelMemberRolesHiddenConverter } from '../converters/panel-member-roles.hidden.converter';
 
 @Pipe({
   name: 'isHidden'
@@ -64,7 +65,7 @@ export class ShowHidePipe implements PipeTransform {
         converter = new PanelDetailsExclusionHiddenConverter();
         break;
       case IsHiddenSource.JUDGE_DETAILS_EXCLUSION:
-        converter = new PanelDetailsExclusionHiddenConverter();
+        converter = new JudgeDetailsExclusionHiddenConverter();
         break;
       case IsHiddenSource.HEARING_TIMING_EXCLUSION:
         converter = new HearingTimingExclusionHiddenConverter();

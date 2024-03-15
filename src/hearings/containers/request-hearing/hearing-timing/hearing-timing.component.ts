@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { Store } from '@ngrx/store';
+import * as _ from 'lodash';
 import * as moment from 'moment';
 import * as fromHearingStore from '../../../../hearings/store';
 import { HearingWindowModel } from '../../../models/hearingWindow.model';
@@ -47,6 +48,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public priorityFormInfo: { days: string, hours: string, minutes: string, startDate: Date, firstDate: Date, secondDate: Date, priority: string };
   public hearingWindowChangesRequired: boolean;
   public hearingWindowChangesConfirmed: boolean;
+  public hearingUnavailabilityDatesChanged: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
 
   constructor(private readonly formBuilder: FormBuilder,
@@ -82,8 +84,16 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     // @ts-ignore
     const unavailabilityDateList: UnavailabilityRangeModel[] = this.serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRanges);
     this.checkUnavailableDatesList(unavailabilityDateList);
-    this.hearingWindowChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesRequired;
-    this.hearingWindowChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesConfirmed;
+
+    if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
+      this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow')) {
+      this.hearingWindowChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesRequired;
+      this.hearingWindowChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesConfirmed;
+      this.hearingUnavailabilityDatesChanged = !_.isEqual(
+        HearingsUtils.getPartiesNotAvailableDates(this.serviceHearingValuesModel.parties),
+        HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestToCompareMainModel.partyDetails)
+      );
+    }
   }
 
   public getFormData(): void {

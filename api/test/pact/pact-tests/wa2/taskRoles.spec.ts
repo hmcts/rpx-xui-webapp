@@ -97,7 +97,6 @@ describe('Task management api, task roles', () => {
   });
 });
 
-
 function assertResponses(dto: any) {
   console.log(JSON.stringify(dto));
   // expect(dto[0].role_category).to.be.equal('LEGAL_OPERATIONS');

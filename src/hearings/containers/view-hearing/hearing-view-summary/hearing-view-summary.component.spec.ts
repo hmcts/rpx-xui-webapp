@@ -6,11 +6,12 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { UserDetails } from '../../../../app/models';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import * as fromAppStore from '../../../../app/store';
 import { HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE } from '../../../../hearings/templates/hearing-request-view-summary.template';
 import { HEARING_VIEW_ONLY_SUMMARY_TEMPLATE } from '../../../../hearings/templates/hearing-view-only-summary.template';
-import { HearingsService } from '../../../services/hearings.service';
 import { HearingsFeatureService } from '../../../services/hearings-feature.service';
+import { HearingsService } from '../../../services/hearings.service';
 import { HearingViewSummaryComponent } from './hearing-view-summary.component';
 
 describe('HearingViewSummaryComponent', () => {
@@ -49,7 +50,7 @@ describe('HearingViewSummaryComponent', () => {
     hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled']);
     routerMock = jasmine.createSpyObj('Router', ['navigateByUrl']);
     TestBed.configureTestingModule({
-      declarations: [HearingViewSummaryComponent],
+      declarations: [HearingViewSummaryComponent, MockRpxTranslatePipe],
       imports: [RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [

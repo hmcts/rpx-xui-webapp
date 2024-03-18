@@ -106,7 +106,7 @@ describe('Locations ref data api, get matching location for service code', () =>
         return configValues[prop];
       });
 
-      const { getLocations } = requireReloaded('../../../../workAllocation/locationController.ts');
+      const { getLocations } = requireReloaded('../../../../locations/index.ts');
 
       const req = mockReq({
         headers: {

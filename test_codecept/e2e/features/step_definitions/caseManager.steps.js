@@ -6,8 +6,6 @@ var DivorceCase = require('../pageObjects/Divorcecase');
 var IACCase = require('../pageObjects/iacCase');
 var HearingRecordingsCase = require('../pageObjects/hearingRecordingsCase');
 
-var BrowserWaits = require('../../support/customWaits');
-
 var CaseManager = require('../pageObjects/common/CaseManager');
 
 var { defineSupportCode } = require('cucumber');
@@ -52,15 +50,11 @@ const creatCaseStepTimeout = 600*1000;
     })
 
     When('I start case next step', async function () {
-        await BrowserWaits.retryWithActionCallback(async () => {
-            await caseManager.startNextStep(false);
-        });
+        await caseManager.startNextStep(false);
     });
 
     When('I start case next step {string}', async function (stepName) {
-        await BrowserWaits.retryWithActionCallback(async () => {
-            await caseManager.startNextStep(stepName);
-        });
+        await caseManager.startNextStep(stepName);
     });
 
     When('I click cancel link', async function () {

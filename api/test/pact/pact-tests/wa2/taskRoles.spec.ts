@@ -30,6 +30,7 @@ describe('Task management api, task roles', () => {
 
     before(async () => {
       await pactSetUp.provider.setup();
+
       const interaction = {
         state: 'get task role information using taskId',
         uponReceiving: 'get task roles by taskId',
@@ -67,6 +68,7 @@ describe('Task management api, task roles', () => {
 
       const req = mockReq({
         headers: {
+
           'Authorization': 'Bearer someAuthorizationToken',
           'ServiceAuthorization': 'Bearer someServiceAuthorizationToken'
           // 'content-Type': 'application/json'
@@ -96,7 +98,6 @@ describe('Task management api, task roles', () => {
     });
   });
 });
-
 
 function assertResponses(dto: any) {
   console.log(JSON.stringify(dto));

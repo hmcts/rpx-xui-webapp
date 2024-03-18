@@ -69,6 +69,7 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
 import { RestrictedCaseAccessGuard } from './guards/restricted-case-access-guard';
 import * as fromServices from './services';
 import { effects, reducers } from './store';
+import { WorkAllocationComponentsModule } from 'src/work-allocation/components/work-allocation.components.module';
 
 @NgModule({
   imports: [
@@ -96,7 +97,8 @@ import { effects, reducers } from './store';
     CaseListModule,
     PaletteModule,
     CaseViewerModule,
-    PipesModule
+    PipesModule,
+    WorkAllocationComponentsModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
   providers: [

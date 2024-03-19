@@ -12,4 +12,8 @@ export class CaseFlagsComponent {
   @Input() public info: string;
 
   public amendmentLabelStatus = AmendmentLabelStatus;
+
+  public showLanguage(name: string): boolean {
+    return name && name.includes('Language Interpreter');
+  }
 }

@@ -18,8 +18,11 @@
     <tbody class="govuk-table__body">
     <tr class="govuk-table__row" *ngFor="let partyFlag of caseFlags.partyFlags">
       <td class="govuk-table__cell">
-        <label>
-          {{ partyFlag.displayName }}
+        <label >{{ partyFlag.displayName }}
+          <!-- If the flag is for interpreter then display the language -->
+          <ng-container *ngIf="showLanguage(partyFlag.displayName)">
+            <br/>{{ partyFlag.flagDescription }}
+          </ng-container>
           <exui-amendment-label *ngIf="partyFlag.flagAmendmentLabelStatus"
             [displayLabel]="partyFlag.flagAmendmentLabelStatus">
           </exui-amendment-label>
@@ -27,7 +30,7 @@
       </td>
       <td class="govuk-table__cell">
         <label>
-          {{ partyFlag.flagDescription }}
+          {{ partyFlag.flagComment ? partyFlag.flagComment : partyFlag.flagDescription }}
         </label>
       </td>
       <td class="govuk-table__cell">

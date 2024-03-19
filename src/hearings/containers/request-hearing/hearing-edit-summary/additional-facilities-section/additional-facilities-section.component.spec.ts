@@ -191,7 +191,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
           partyDetailsChangesRequired: false,
-          hearingWindowChangesRequired: false
+          hearingWindowChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false
         }
       };
       component.ngOnInit();
@@ -208,7 +209,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
           partyDetailsChangesRequired: false,
-          hearingWindowChangesRequired: false
+          hearingWindowChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false
         }
       };
       component.hearingRequestMainModel = {
@@ -233,7 +235,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
           partyDetailsChangesRequired: false,
-          hearingWindowChangesRequired: false
+          hearingWindowChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false
         }
       };
       component.hearingRequestMainModel = {
@@ -258,7 +261,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           nonReasonableAdjustmentChangesRequired: true,
           nonReasonableAdjustmentChangesConfirmed: false,
           partyDetailsChangesRequired: false,
-          hearingWindowChangesRequired: false
+          hearingWindowChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false
         }
       };
       component.ngOnInit();
@@ -276,7 +280,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           nonReasonableAdjustmentChangesRequired: true,
           nonReasonableAdjustmentChangesConfirmed: true,
           partyDetailsChangesRequired: false,
-          hearingWindowChangesRequired: false
+          hearingWindowChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false
         }
       };
       component.ngOnInit();

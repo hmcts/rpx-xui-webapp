@@ -60,6 +60,8 @@ export interface AfterPageVisitProperties {
   partyDetailsChangesConfirmed?: boolean;
   hearingWindowChangesRequired: boolean;
   hearingWindowChangesConfirmed?: boolean;
+  hearingUnavailabilityDatesChanged: boolean;
+  hearingUnavailabilityDatesConfirmed?: boolean;
 }
 
 export interface PropertiesUpdatedAutomatically {

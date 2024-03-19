@@ -26,8 +26,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-timing',
-  templateUrl: './hearing-timing.component.html',
-  styleUrls: ['./hearing-timing.component.scss']
+  templateUrl: './hearing-timing.component.html'
 })
 export class HearingTimingComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public priorityForm: FormGroup;
@@ -89,7 +88,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
       this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow')) {
       this.hearingWindowChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesRequired;
       this.hearingWindowChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesConfirmed;
-      this.hearingUnavailabilityDatesChanged = !_.isEqual(
+      this.hearingUnavailabilityDatesChanged = !this.hearingWindowChangesConfirmed && !_.isEqual(
         HearingsUtils.getPartiesNotAvailableDates(this.serviceHearingValuesModel.parties),
         HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestToCompareMainModel.partyDetails)
       );

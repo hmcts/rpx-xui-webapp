@@ -30,7 +30,7 @@
     </div>
     <div class="govuk-summary-list__value">
       {{ specificDateSelection }}
-      <exui-amendment-label *ngIf="hearingDateChanged || (!hearingWindowChangesRequired && hearingUnavailabilityDatesChanged)"
+      <exui-amendment-label *ngIf="hearingDateChanged || specificDateSelection === radioOptions.NO"
         [displayLabel]="amendmentLabelEnum.AMENDED">
       </exui-amendment-label>
       <div *ngIf="specificDateSelection === radioOptions.CHOOSE_DATE_RANGE">
@@ -41,9 +41,6 @@
       <div *ngIf="specificDateSelection === radioOptions.YES">
         <dt class="heading-h3 bottom-0">The first date of the hearing must be</dt>
         {{ firstHearingDate }}
-        <exui-amendment-label *ngIf="hearingWindowChangesConfirmed"
-          [displayLabel]="amendmentLabelEnum.AMENDED">
-        </exui-amendment-label>
       </div>
     </div>
     <div class="govuk-summary-list__actions">

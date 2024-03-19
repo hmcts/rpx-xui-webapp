@@ -420,7 +420,33 @@ describe('HearingTimingComponent', () => {
     component.ngOnInit();
     expect(component.hearingWindowChangesRequired).toEqual(true);
     expect(component.hearingWindowChangesConfirmed).toEqual(true);
+    expect(component.hearingUnavailabilityDatesChanged).toEqual(false);
     expect(nativeElement.querySelector('#first-date-amendment-label')).toBeDefined();
+  });
+
+  it('should set hearing unavailability dates changed to true', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: {
+        dateRangeStart: '2022-12-12T09:00:00.000Z',
+        dateRangeEnd: '2022-12-12T09:00:00.000Z',
+        firstDateTimeMustBe: ''
+      },
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: true,
+        hearingWindowChangesConfirmed: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.hearingUnavailabilityDatesChanged).toEqual(true);
   });
 
   it('should set the hearing window confirmation to false', () => {

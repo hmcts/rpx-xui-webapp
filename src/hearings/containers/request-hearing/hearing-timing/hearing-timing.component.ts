@@ -48,6 +48,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public hearingWindowChangesRequired: boolean;
   public hearingWindowChangesConfirmed: boolean;
   public hearingUnavailabilityDatesChanged: boolean;
+  public hearingUnavailabilityDatesConfirmed: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
 
   constructor(private readonly formBuilder: FormBuilder,
@@ -84,14 +85,13 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     const unavailabilityDateList: UnavailabilityRangeModel[] = this.serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRanges);
     this.checkUnavailableDatesList(unavailabilityDateList);
 
-    if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
-      this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow')) {
-      this.hearingWindowChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesRequired;
-      this.hearingWindowChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesConfirmed;
-      this.hearingUnavailabilityDatesChanged = !this.hearingWindowChangesConfirmed && !_.isEqual(
-        HearingsUtils.getPartiesNotAvailableDates(this.serviceHearingValuesModel.parties),
-        HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestToCompareMainModel.partyDetails)
-      );
+    if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
+      if (this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow')) {
+        this.hearingWindowChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesRequired;
+        this.hearingWindowChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesConfirmed;
+      }
+      this.hearingUnavailabilityDatesChanged = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingUnavailabilityDatesChanged &&
+        !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingUnavailabilityDatesConfirmed;
     }
   }
 
@@ -408,10 +408,14 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
         hearingPriorityType: this.priorityForm.value.priority
       }
     };
-    if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
-      this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow') &&
-      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired) {
-      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesConfirmed = true;
+    if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
+      if (this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow') &&
+        this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired) {
+        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesConfirmed = true;
+      }
+      if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingUnavailabilityDatesChanged) {
+        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingUnavailabilityDatesConfirmed = true;
+      }
     }
   }
 

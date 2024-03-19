@@ -414,7 +414,8 @@ describe('HearingTimingComponent', () => {
         nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: true,
-        hearingWindowChangesConfirmed: true
+        hearingWindowChangesConfirmed: true,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.ngOnInit();
@@ -442,7 +443,8 @@ describe('HearingTimingComponent', () => {
         nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: true,
-        hearingWindowChangesConfirmed: false
+        hearingWindowChangesConfirmed: false,
+        hearingUnavailabilityDatesChanged: true
       }
     };
     component.ngOnInit();
@@ -462,7 +464,8 @@ describe('HearingTimingComponent', () => {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: false,
-        hearingWindowChangesRequired: false
+        hearingWindowChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.ngOnInit();

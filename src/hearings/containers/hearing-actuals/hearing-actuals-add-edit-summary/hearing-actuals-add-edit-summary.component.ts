@@ -23,7 +23,7 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
     public readonly hearingsService: HearingsService,
     public readonly route: ActivatedRoute,
     public readonly router: Router,
-    public readonly ccdDatePipe: DatePipe.
+    public readonly ccdDatePipe: DatePipe,
     public readonly sessionStorageService: SessionStorageService
   ) {
     super(hearingStore, hearingsService, route, router, ccdDatePipe);

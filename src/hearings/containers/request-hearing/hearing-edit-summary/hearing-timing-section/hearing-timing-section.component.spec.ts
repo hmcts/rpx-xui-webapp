@@ -57,6 +57,7 @@ describe('HearingTimingSectionComponent', () => {
     nativeElement = fixture.debugElement.nativeElement;
     component.hearingRequestMainModel = initialState.hearings.hearingRequest.hearingRequestMainModel;
     component.hearingRequestToCompareMainModel = initialState.hearings.hearingRequestToCompare.hearingRequestMainModel;
+    component.serviceHearingValuesModel = initialState.hearings.hearingValues.serviceHearingValuesModel;
     fixture.detectChanges();
   });
 
@@ -183,9 +184,8 @@ describe('HearingTimingSectionComponent', () => {
     });
   });
 
-  fdescribe('hearingDateChanged', () => {
-    it('should return true if date range is different', () => {
-      component.ngOnInit();
+  describe('hearingDateChanged', () => {
+    it('should return true if date range changed', () => {
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
@@ -206,11 +206,11 @@ describe('HearingTimingSectionComponent', () => {
           }
         }
       };
+      component.ngOnInit();
       expect(component.hearingDateChanged).toEqual(true);
     });
 
     it('should return false if date range did not change', () => {
-      component.ngOnInit();
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
@@ -231,11 +231,11 @@ describe('HearingTimingSectionComponent', () => {
           }
         }
       };
+      component.ngOnInit();
       expect(component.hearingDateChanged).toEqual(false);
     });
 
     it('should return true if "firstDateTimeMustBe" changed', () => {
-      component.ngOnInit();
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
@@ -254,11 +254,11 @@ describe('HearingTimingSectionComponent', () => {
           }
         }
       };
+      component.ngOnInit();
       expect(component.hearingDateChanged).toEqual(true);
     });
 
     it('should return false if "firstDateTimeMustBe" did not change', () => {
-      component.ngOnInit();
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
@@ -277,11 +277,11 @@ describe('HearingTimingSectionComponent', () => {
           }
         }
       };
+      component.ngOnInit();
       expect(component.hearingDateChanged).toEqual(false);
     });
 
     it('should return false if no hearing window', () => {
-      component.ngOnInit();
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
@@ -296,6 +296,7 @@ describe('HearingTimingSectionComponent', () => {
           hearingWindow: null
         }
       };
+      component.ngOnInit();
       expect(component.hearingDateChanged).toEqual(false);
     });
   });

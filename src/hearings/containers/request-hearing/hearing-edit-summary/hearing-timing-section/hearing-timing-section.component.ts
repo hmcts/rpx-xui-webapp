@@ -136,10 +136,7 @@ export class HearingTimingSectionComponent implements OnInit {
       this.hearingRequestMainModel.hearingDetails.duration
     );
 
-    this.hearingDateChanged = !_.isEqual(
-      this.hearingRequestToCompareMainModel.hearingDetails.hearingWindow,
-      this.hearingRequestMainModel.hearingDetails.hearingWindow,
-    );
+    this.hearingDateChanged = this.isHearingDateChanged();
 
     this.hearingPriorityChanged = !_.isEqual(
       this.hearingRequestToCompareMainModel.hearingDetails.hearingPriorityType,
@@ -160,5 +157,38 @@ export class HearingTimingSectionComponent implements OnInit {
         this.hearingDateChanged ||
         this.hearingPriorityChanged
       );
+  }
+
+  private isHearingDateChanged(): boolean {
+    const hearingWindowToCompare = this.hearingRequestToCompareMainModel.hearingDetails.hearingWindow;
+    const hearingWindow = this.hearingRequestMainModel.hearingDetails.hearingWindow;
+
+    if (hearingWindow?.dateRangeStart || hearingWindow?.dateRangeEnd) {
+      if (hearingWindow?.dateRangeStart) {
+        if (!_.isEqual(
+          new Date(hearingWindowToCompare.dateRangeStart).setHours(0, 0, 0, 0),
+          new Date(hearingWindow.dateRangeStart).setHours(0, 0, 0, 0)
+        )) {
+          return true;
+        }
+      }
+      if (hearingWindow?.dateRangeEnd) {
+        if (!_.isEqual(
+          new Date(hearingWindowToCompare.dateRangeEnd).setHours(0, 0, 0, 0),
+          new Date(hearingWindow.dateRangeEnd).setHours(0, 0, 0, 0)
+        )) {
+          return true;
+        }
+      }
+    }
+
+    if (hearingWindow?.firstDateTimeMustBe) {
+      return !_.isEqual(
+        new Date(hearingWindowToCompare.firstDateTimeMustBe).setHours(0, 0, 0, 0),
+        new Date(hearingWindow.firstDateTimeMustBe).setHours(0, 0, 0, 0)
+      );
+    }
+
+    return false;
   }
 }

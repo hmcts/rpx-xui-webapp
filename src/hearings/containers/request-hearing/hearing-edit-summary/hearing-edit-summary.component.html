@@ -109,6 +109,7 @@
 <exui-hearing-timing-section *ngIf="sectionsToDisplay.includes(hearingScreenEnum.HEARING_TIMING)"
   [hearingRequestMainModel]="hearingRequestMainModel"
   [hearingRequestToCompareMainModel]="hearingRequestToCompareMainModel"
+  [serviceHearingValuesModel]="serviceHearingValuesModel"
   [hearingPrioritiesRefData]="hearingPrioritiesRefData"
   (changeEditHearing)="onChange($event)"
 ></exui-hearing-timing-section>

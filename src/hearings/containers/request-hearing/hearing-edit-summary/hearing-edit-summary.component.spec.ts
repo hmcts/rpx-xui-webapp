@@ -185,7 +185,8 @@ describe('HearingEditSummaryComponent', () => {
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
-        hearingFacilitiesChangesRequired: true
+        hearingFacilitiesChangesRequired: true,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
@@ -260,7 +261,8 @@ describe('HearingEditSummaryComponent', () => {
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
-        hearingFacilitiesChangesRequired: true
+        hearingFacilitiesChangesRequired: true,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);

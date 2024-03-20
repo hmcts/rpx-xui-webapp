@@ -192,7 +192,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           nonReasonableAdjustmentChangesRequired: false,
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
-          hearingFacilitiesChangesRequired: false
+          hearingFacilitiesChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false
         }
       };
       component.ngOnInit();
@@ -210,7 +211,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           nonReasonableAdjustmentChangesRequired: false,
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
-          hearingFacilitiesChangesRequired: false
+          hearingFacilitiesChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false
         }
       };
       component.hearingRequestMainModel = {
@@ -236,7 +238,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           nonReasonableAdjustmentChangesRequired: false,
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
-          hearingFacilitiesChangesRequired: false
+          hearingFacilitiesChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false
         }
       };
       component.hearingRequestMainModel = {
@@ -262,7 +265,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           nonReasonableAdjustmentChangesConfirmed: false,
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
-          hearingFacilitiesChangesRequired: false
+          hearingFacilitiesChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false
         }
       };
       component.ngOnInit();
@@ -300,7 +304,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           nonReasonableAdjustmentChangesConfirmed: false,
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
-          hearingFacilitiesChangesRequired: true
+          hearingFacilitiesChangesRequired: true,
+          hearingUnavailabilityDatesChanged: false
         }
       };
       component.ngOnInit();
@@ -320,7 +325,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: true,
-          hearingFacilitiesChangesConfirmed: true
+          hearingFacilitiesChangesConfirmed: true,
+          hearingUnavailabilityDatesChanged: false
         }
       };
       component.ngOnInit();

@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import * as moment from 'moment';
 import { HearingConditions } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
@@ -124,6 +125,25 @@ export class HearingsUtils {
         (partyInHMC.individualDetails.lastName !== partyInSHV.individualDetails.lastName)) {
         return true;
       }
+    }
+    return false;
+  }
+
+  /**
+   * Returns a boolean value on the difference between
+   * the unavailability dates of the parties
+   *
+   * @static
+   * @param {PartyDetailsModel[]} partiesInHMC list of parties in hearing request returned by HMC API
+   * @param {PartyDetailsModel[]} partiesInSHV list of parties in service hearing values returned by the integrated service
+   * @returns {*} {boolean}
+   * @memberof HearingsUtils
+   */
+  public static hasPartyUnavailabilityDatesChanged(partiesInHMC: PartyDetailsModel[], partiesInSHV: PartyDetailsModel[]): boolean {
+    const partiesNotAvailableDatesHMC = HearingsUtils.getPartiesNotAvailableDates(partiesInHMC);
+    const partiesNotAvailableDatesSHV = HearingsUtils.getPartiesNotAvailableDates(partiesInSHV);
+    if (!_.isEqual(partiesNotAvailableDatesSHV, partiesNotAvailableDatesHMC)) {
+      return true;
     }
     return false;
   }

@@ -145,9 +145,14 @@ const { DataTableArgument } = require('codeceptjs');
         reportLogger.reportDatatable(datatable)
 
         const columnHeadersHash = datatable.parse().hashes();
+
         
         let actualHeadeColumns = await taskListTable.getColumnHeaderNames();
         actualHeadeColumns = actualHeadeColumns.map(col => col.toLowerCase());
+        actualHeadeColumns.forEach(x => {
+            reportLogger.AddMessage('test', x);
+            console.log('test2', x);
+        })
         for (const headerHash of columnHeadersHash ){
             const columnHeader = headerHash.ColumnHeader;
             if (headerHash[userType].toLowerCase().includes('yes') || headerHash[userType].toLowerCase().includes('true')){

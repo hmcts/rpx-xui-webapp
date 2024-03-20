@@ -4,6 +4,7 @@ import { Section } from '../models/section';
 export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
   {
     sectionHTMLTitle: '<h1 class="govuk-heading-l">View or edit hearing</h1>',
+    screenName: 'edit-hearing',
     answers: [
       {
         id: 'caseName',
@@ -43,11 +44,13 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: HearingTemplate.LISTING_INFORMATION,
+    screenName: 'hearing-listing-info',
     isHiddenSource: IsHiddenSource.NOT_LISTED,
     isHiddenMargin: true
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing requirements</h2>',
+    screenName: 'hearing-requirements',
     insetInfo: 'To update this request, select change in the relevant section on this page then resubmit the request.',
     answers: [
       {
@@ -61,6 +64,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional facilities</h2>',
+    screenName: 'hearing-facilities',
     answers: [
       {
         id: 'additionalSecurityRequired',
@@ -80,6 +84,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Stage</h2>',
+    screenName: 'hearing-stage',
     answers: [
       {
         id: 'stage',
@@ -92,6 +97,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Participant attendance</h2>',
+    screenName: 'hearing-attendance',
     answers: [
       {
         id: 'paperHearing',
@@ -128,6 +134,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing venue</h2>',
+    screenName: 'hearing-venue',
     answers: [
       {
         id: 'venue',
@@ -140,6 +147,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Language requirements</h2>',
+    screenName: 'hearing-welsh',
     answers: [
       {
         id: 'needWelsh',
@@ -153,6 +161,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Judge details</h2>',
+    screenName: 'hearing-judge',
     answers: [
       {
         id: 'needJudge',
@@ -189,6 +198,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Panel details</h2>',
+    screenName: 'hearing-panel',
     answers: [
       {
         id: 'hearingPanel',
@@ -220,12 +230,21 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         changeLink: '/hearings/request/hearing-panel#specificPanelSelection',
         isHiddenSource: IsHiddenSource.PANEL_ROLES,
         isAmendedSource: AnswerSource.PANEL_ROLES
+      },
+      {
+        id: 'panelMemberRoles',
+        answerTitle: 'Select any other panel member roles required',
+        answerSource: AnswerSource.PANEL_MEMBER_ROLES,
+        changeLink: '/hearings/request/hearing-panel#specificPanelSelection',
+        isHiddenSource: IsHiddenSource.PANEL_MEMBER_ROLES,
+        isAmendedSource: AnswerSource.PANEL_MEMBER_ROLES
       }
     ],
     isHiddenSource: IsHiddenSource.PANEL_DETAILS_EXCLUSION
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Length, date and priority level of hearing</h2>',
+    screenName: 'hearing-timing',
     answers: [
       {
         id: 'hearingLength',
@@ -252,6 +271,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Linked hearings</h2>',
+    screenName: 'hearing-link',
     answers: [
       {
         id: 'linkedHearings',
@@ -264,6 +284,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional instructions</h2>',
+    screenName: 'hearing-additional-instructions',
     answers: [
       {
         id: 'additionalInstruction',

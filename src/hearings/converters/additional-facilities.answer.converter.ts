@@ -18,13 +18,10 @@ export class AdditionalFacilitiesAnswerConverter implements AnswerConverter {
       map((state) => {
         let result = '<ul>';
         const facilities = this.route.snapshot.data.additionFacilitiesOptions;
-        if (state.hearingRequest.hearingRequestMainModel.hearingDetails
-        && state.hearingRequest.hearingRequestMainModel.hearingDetails.facilitiesRequired
-        && state.hearingRequest.hearingRequestMainModel.hearingDetails.facilitiesRequired.length) {
-          state.hearingRequest.hearingRequestMainModel.hearingDetails.facilitiesRequired
-            .forEach((facility: string) => result += `<li>${AdditionalFacilitiesAnswerConverter.getFacilityValue(facilities, facility)}</li>`);
-          result += '</ul>';
-        }
+        state.hearingRequest.hearingRequestMainModel.hearingDetails?.facilitiesRequired?.forEach(
+          (facility: string) => result += `<li>${AdditionalFacilitiesAnswerConverter.getFacilityValue(facilities, facility)}</li>`
+        );
+        result += '</ul>';
         return result;
       })
     );

@@ -1,4 +1,6 @@
 
+const { setDefaultResultOrder } = require('dns')
+
 const report = require("multiple-cucumber-html-reporter");
 const { merge } = require('mochawesome-merge')
 const marge = require('mochawesome-report-generator')
@@ -11,6 +13,8 @@ import applicationServer from '../localServer'
 var spawn = require('child_process').spawn;
 const backendMockApp = require('../backendMock/app');
 const statsReporter = require('./statsReporter')
+
+setDefaultResultOrder('ipv4first')
 
 let executionResult = 'passed';
 
@@ -25,16 +29,14 @@ console.log(`testType : ${testType}`)
 console.log(`parallel : ${parallel}`)
 console.log(`headless : ${!head}`)
 
-
-
 let pipelineBranch = process.env.TEST_URL.includes('pr-') || process.env.TEST_URL.includes('manage-case.aat.platform.hmcts.net') ? "preview" : "master"
-
+let local = process.env.LOCAL && process.env.LOCAL.includes('true')
 let features = ''
 if (testType === 'e2e' || testType === 'smoke'){
   features = `../e2e/features/app/**/*.feature`
 } else if (testType === 'ngIntegration'){
   
-  features = pipelineBranch === 'master' ? `../ngIntegration/tests/features/**/notests.feature` : `../ngIntegration/tests/features/**/*.feature`
+  features = pipelineBranch === 'master' && !local ? `../ngIntegration/tests/features/**/notests.feature` : `../ngIntegration/tests/features/**/*.feature`
 
 } else{
   throw new Error(`Unrecognized test type ${testType}`);
@@ -71,44 +73,51 @@ exports.config = {
     "Mochawesome": {
       "uniqueScreenshotNames": "true"
     },
-    Puppeteer: {
-      url: 'https://manage-case.aat.platform.hmcts.net/',
-      show: true,
-      waitForNavigation: ['domcontentloaded'],
+    // Puppeteer: {
+    //   url: 'https://manage-case.aat.platform.hmcts.net/',
+    //   show: true,
+    //   waitForNavigation: ['domcontentloaded'],
+    //   restart: true,
+    //   keepCookies: false,
+    //   keepBrowserState: false,
+    //   smartWait: 50000,
+    //   waitForTimeout: 90000,
+    //   chrome: {
+    //     ignoreHTTPSErrors: true,
+    //     defaultViewport: {
+    //       width: 1280,
+    //       height: 960
+    //     },
+    //     args: [
+    //       `${head ? '' : '--headless'}`,
+    //       '—disable-notifications',
+    //       '--smartwait',
+    //       '--disable-gpu',
+    //       '--no-sandbox',
+    //       '--allow-running-insecure-content',
+    //       '--ignore-certificate-errors',
+    //       '--window-size=1440,1400',
+    //       '--viewport-size=1440,1400',
+
+    //        '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'
+    //     ]
+    //   }
+
+    // },
+    Playwright: {
+      url: "https://manage-case.aat.platform.hmcts.net",
       restart: true,
-      keepCookies: false,
-      keepBrowserState: false,
-      smartWait: 50000,
-      waitForTimeout: 90000,
-      chrome: {
-        ignoreHTTPSErrors: true,
-        defaultViewport: {
-          width: 1280,
-          height: 960
-        },
-        args: [
-          `${head ? '' : '--headless'}`,
-          '—disable-notifications',
-          '--smartwait',
-          '--disable-gpu',
-          '--no-sandbox',
-          '--allow-running-insecure-content',
-          '--ignore-certificate-errors',
-          '--window-size=1440,1400',
-          '--viewport-size=1440,1400',
-
-           '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'
-        ]
-      }
-
-    },
-    // Playwright: {
-    //   url: "https://manage-case.aat.platform.hmcts.net",
-    //   restart: false,
-    //   show:true,
-    //   waitForNavigation: "domcontentloaded",
-    //   waitForAction: 500
-    // }
+      show: head,
+      waitForNavigation: "domcontentloaded",
+      waitForAction: 10,
+      browser: 'chromium',
+      // disableScreenshots: false,
+      fullPageScreenshots: true,
+      uniqueScreenshotNames: true,
+      video: true,
+      screenshot: true,
+      windowSize: "1600x900"
+    }
     // WebDriver:{
     //   url: 'https://manage-case.aat.platform.hmcts.net/',
     //   browser: 'chrome',
@@ -165,7 +174,7 @@ exports.config = {
   plugins:{
     screenshotOnFail: {
       enabled: true,
-      fullPageScreenshots: 'true'
+      fullPageScreenshots: true
     },
 
     "myPlugin": {
@@ -176,6 +185,7 @@ exports.config = {
       enabled: true
     },
     pauseOnFail: {},
+
     cucumberJsonReporter: {
       require: 'codeceptjs-cucumber-json-reporter',
       enabled: true,               // if false, pass --plugins cucumberJsonReporter

@@ -13,7 +13,6 @@ const pactSetUp = new PactTestSetup({ provider: 'referenceData_location', port: 
 const service = 'IA';
 const serviceCode = 'BFA1';
 
-
 describe('Locations ref data api, get matching location for service code', () => {
   const RESPONSE_BODY = {
     'service_code': somethingLike('AAA6'),

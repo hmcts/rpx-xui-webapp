@@ -2703,16 +2703,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.13":
-  version: 2.0.13
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.13"
+"@hmcts/rpx-xui-common-lib@npm:2.0.8":
+  version: 2.0.8
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.8"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: d077e9fc16eedb6786effcdafb378d39e7f547a15636a4514f7d36453407beb2e02ca8c2bbd74322b3cd63e10e0c471be557f6d645d4f83f15b2694e380297b7
+<<<<<<<<< Temporary merge branch 1
+  checksum: 14e1b83388c792ab5c11695eb5eac9467470eb66a4383666b9611b2010fa24c813435a40bda17bbcac5e92c7f0c8aa2872b5373674268f309e727cc4e3afdc01
+=========
+  checksum: 0bc444dac8cdf213d8f5485fd2db591f9a20a89c4b0e2cc81af7f8ca04fc8efa26d4db40466861596d35f2ae4c6db7b0d09501c3d9ae6565e99eb1d3a770790e
+>>>>>>>>> Temporary merge branch 2
   languageName: node
   linkType: hard
 
@@ -19122,7 +19126,11 @@ __metadata:
     "@hmcts/media-viewer": 3.0.2
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 2.0.1
+<<<<<<<<< Temporary merge branch 1
+    "@hmcts/rpx-xui-common-lib": 2.0.8
+=========
+    "@hmcts/rpx-xui-common-lib": 2.0.13
+>>>>>>>>> Temporary merge branch 2
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3

@@ -37,8 +37,8 @@ const data = {
         key: 'Welcome01'
       },
       {
-        idamId: "5493d9d5-a343-4049-bad3-c557277cea4b",
-        email: "ia.caseofficer.ccd@gmail.com",
+        idamId: '3db21928-cbbc-4364-bd91-137c7031fe17',
+        email: 'CRD_func_test_aat_tcw@justice.gov.uk',
         release: 'wa_release_2', userIdentifier: 'IAC_CaseOfficer_R2',
         key: 'AldgateT0wer'
       },

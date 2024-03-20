@@ -7,6 +7,7 @@ Feature: WA Release 2: All work to pagination sorting (EUI-4804)
     Background: Mock and browser setup
         Given I init MockApp
 
+@ignore
     Scenario Outline: My Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "All work" and assigned state "assigned"

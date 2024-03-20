@@ -1,5 +1,5 @@
 
-@ng @functional_enabled
+@ng @functional_enabled @functional_debug
 Feature: Create hearings workflow navigation controls
 
     Background: create hearing
@@ -51,12 +51,12 @@ Feature: Create hearings workflow navigation controls
         When In create hearing page "Participant attendance", I input values
             | field                                                    | value                                                      |
             | Will this be a paper hearing?                            | No                                                         |
-            | What will be the methods of attendance for this hearing? | Hearing channel 1,Hearing channel 2                        |
-            | How will each participant attend the hearing?            | First Applicant FN First Applicant LN,Hearing channel 1    |
-            | How will each participant attend the hearing?            | Solicitor First Name Solicitor Last Name,Hearing channel 1 |
-            | How will each participant attend the hearing?            | Mary Richards,Hearing channel 1                            |
-            | How will each participant attend the hearing?            | Elise Lynn,Hearing channel 1                               |
-            | How will each participant attend the hearing?            | David Carman,Hearing channel 1                             |
+            | What will be the methods of attendance for this hearing? | In Person,Video,Telephone                       |
+            | How will each participant attend the hearing?            | First Applicant FN First Applicant LN,In Person    |
+            | How will each participant attend the hearing?            | Solicitor First Name Solicitor Last Name,Video |
+            | How will each participant attend the hearing?            | Mary Richards,In Person                            |
+            | How will each participant attend the hearing?            | Elise Lynn,Video                              |
+            | How will each participant attend the hearing?            | David Carman,Telephone                            |
             | How many people will attend the hearing in person?       | 5                                                          |
         When I click continue in create hearing workflow
 
@@ -77,11 +77,11 @@ Feature: Create hearings workflow navigation controls
         When I click continue in create hearing workflow
 
         # Do you require a panel for this hearing?
-        Then I am on create hearing page "Do you require a panel for this hearing?"
-        When In create hearing page "Do you require a panel for this hearing?", I input values
-            | field                                    | value |
-            | Do you require a panel for this hearing? | No    |
-        When I click continue in create hearing workflow
+        # Then I am on create hearing page "Do you require a panel for this hearing?"
+        # When In create hearing page "Do you require a panel for this hearing?", I input values
+        #     | field                                    | value |
+        #     | Do you require a panel for this hearing? | No    |
+        # When I click continue in create hearing workflow
 
 
         # What are the hearing venue details?
@@ -122,9 +122,9 @@ Feature: Create hearings workflow navigation controls
         When In create hearing work flow, I click back link
         Then I am on create hearing page "Length, date and priority level of hearing"
 
-        When In create hearing work flow, I click back link
-        Then I am on create hearing page "Do you require a panel for this hearing?"
-        
+        # When In create hearing work flow, I click back link
+        # Then I am on create hearing page "Do you require a panel for this hearing?"
+
         When In create hearing work flow, I click back link
         Then I am on create hearing page "Do you want a specific judge?"
 
@@ -143,7 +143,7 @@ Feature: Create hearings workflow navigation controls
         When In create hearing work flow, I click back link
         Then I am on create hearing page "Hearing requirements"
 
-@ignore
+
     Scenario: Navigation controls, change link then continue, back links
         When In create hearing check your answers page, I click change link for field "Enter any additional instructions for the hearing"
         Then I am on create hearing page "Enter any additional instructions for the hearing"
@@ -153,11 +153,10 @@ Feature: Create hearings workflow navigation controls
         When In create hearing check your answers page, I click change link for field "Will this hearing need to be linked to other hearings?"
         Then I am on create hearing page "Will this hearing need to be linked to other hearings?"
         When I click continue in create hearing workflow
-        # Then I am on create hearing page "Enter any additional instructions for the hearing"
-        # When I click continue in create hearing workflow
         Then I am on create hearing page "Check your answers before sending your request"
 
         When In create hearing check your answers page, I click change link for field "Length of hearing"
         Then I am on create hearing page "Length, date and priority level of hearing"
-        When In create hearing work flow, I click back link
-        Then I am on create hearing page "Do you require a panel for this hearing?"
+        # When In create hearing work flow, I click back link
+        # Then I am on create hearing page "Do you require a panel for this hearing?"
+

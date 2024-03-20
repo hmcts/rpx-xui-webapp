@@ -3,29 +3,29 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockStore } from '@ngrx/store/testing';
+import * as _ from 'lodash';
 import { of } from 'rxjs';
+import { LoggerService } from '../../../../app/services/logger/logger.service';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import {
   ACTION,
-  CaseFlagType,
   CategoryType, EXUIDisplayStatusEnum, EXUISectionStatusEnum, GroupLinkType, HearingListingStatusEnum, HearingResult,
   HMCLocationType, HMCStatus, LaCaseStatus, ListingStatus, MemberType,
   PartyType, RequirementType,
   UnavailabilityType
 } from '../../../models/hearings.enum';
+import { HearingWindowModel } from '../../../models/hearingWindow.model';
 import { LocationByEPIMMSModel } from '../../../models/location.model';
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
+import { PartyFlagsModel } from '../../../models/partyFlags.model';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
-import { HearingRequirementsComponent } from './hearing-requirements.component';
-import { LoggerService } from '../../../../app/services/logger/logger.service';
-import { HearingWindowModel } from '../../../models/hearingWindow.model';
-import { PartyDetailsModel } from '../../../models/partyDetails.model';
-import * as _ from 'lodash';
 import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
-import { PartyFlagsDisplayModel } from '../../../models/partyFlags.model';
+import { HearingRequirementsComponent } from './hearing-requirements.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -145,7 +145,15 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'Jane',
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
-          interpreterLanguage: 'POR'
+          interpreterLanguage: 'POR',
+          reasonableAdjustments: [
+            'RA0042',
+            'RA0053',
+            'RA0013',
+            'RA0016',
+            'RA0042',
+            'PF0015'
+          ]
         },
         unavailabilityRanges: [
           {
@@ -165,7 +173,10 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'DWP',
           lastName: null,
           preferredHearingChannel: 'inPerson',
-          interpreterLanguage: null
+          interpreterLanguage: null,
+          reasonableAdjustments: [
+            'RA0005'
+          ]
         },
         organisationDetails: {
           name: 'DWP',
@@ -183,7 +194,7 @@ describe('HearingRequirementsComponent', () => {
     caseFlags: {
       flags: [
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'RA0008',
           flagId: 'RA0042',
@@ -191,7 +202,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'RA0032',
           flagId: 'RA0053',
@@ -199,7 +210,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'RA0002',
           flagId: 'RA0013',
@@ -207,7 +218,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'RA0003',
           flagId: 'RA0016',
@@ -215,7 +226,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'RA0008',
           flagId: 'RA0042',
@@ -223,7 +234,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'PF0001',
           flagId: 'PF0015',
@@ -231,7 +242,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'PF0001',
           flagId: 'PF0002',
@@ -239,7 +250,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P2',
+          partyId: 'P2',
           partyName: 'DWP',
           flagParentId: 'RA0001',
           flagId: 'RA0005',
@@ -247,7 +258,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P2',
+          partyId: 'P2',
           partyName: 'DWP',
           flagParentId: 'PF0001',
           flagId: 'PF0011',
@@ -255,7 +266,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P2',
+          partyId: 'P2',
           partyName: 'Jane Smith vs DWP',
           flagParentId: 'CF0001',
           flagId: 'CF0002',
@@ -263,7 +274,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P2',
+          partyId: 'P2',
           partyName: 'Jane Smith vs DWP',
           flagParentId: 'CF0001',
           flagId: 'CF0006',
@@ -271,7 +282,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P2',
+          partyId: 'P2',
           partyName: 'Jane Smith vs DWP',
           flagParentId: 'CF0001',
           flagId: 'CF0007',
@@ -2172,6 +2183,33 @@ describe('HearingRequirementsComponent', () => {
     }
   ];
 
+  const caseFlagsFromLatestSHV: PartyFlagsModel[] = [
+    {
+      partyId: 'P1',
+      partyName: 'Jane Smith',
+      flagParentId: 'RA0008',
+      flagId: 'RA0042',
+      flagDescription: 'Sign language interpreter required',
+      flagStatus: 'ACTIVE'
+    },
+    {
+      partyId: 'P2',
+      partyName: 'Jane Smith vs DWP',
+      flagParentId: 'CF0001',
+      flagId: 'CF0006',
+      flagDescription: 'Potential fraud',
+      flagStatus: 'ACTIVE'
+    },
+    {
+      partyId: 'P3',
+      partyName: 'Jane Smith vs DWP',
+      flagParentId: 'CF0001',
+      flagId: 'CF0007',
+      flagDescription: 'Urgent flag',
+      flagStatus: 'ACTIVE'
+    }
+  ];
+
   const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
     epimms_id: '196538',
     site_name: 'Liverpool Social Security and Child Support Tribunal',
@@ -2205,7 +2243,7 @@ describe('HearingRequirementsComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingRequirementsComponent, MockHearingPartiesComponent],
+      declarations: [HearingRequirementsComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
       providers: [
         provideMockStore({ initialState: initialStateImmutable }),
         { provide: HearingsService, useValue: hearingsService },
@@ -2229,7 +2267,6 @@ describe('HearingRequirementsComponent', () => {
       .compileComponents();
     fixture = TestBed.createComponent(HearingRequirementsComponent);
     component = fixture.componentInstance;
-    component.caseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
     spyOn(locationsDataService, 'getLocationById').and.returnValue(of(FOUND_LOCATIONS));
     fixture.detectChanges();
   });
@@ -2260,6 +2297,101 @@ describe('HearingRequirementsComponent', () => {
     spyOn(component.hearingStateSub, 'unsubscribe');
     component.ngOnDestroy();
     expect(component.hearingStateSub.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should not consider the case flags from in-memory object for create new hearing request journey', () => {
+    component.hearingCondition = {
+      mode: 'create'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentFlags.length).toEqual(2);
+  });
+
+  it('should set the case flags from in-memory object when there are changes to case flags but not party name', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentFlags.length).toEqual(1);
+  });
+
+  it('should set the case flags from in-memory object when there are changes to case flags and party name', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentFlags.length).toEqual(1);
+  });
+
+  it('should set the case flags from in-memory object when there are changes to party names', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentFlags.length).toEqual(1);
+  });
+
+  it('should set the case flags from in-memory object when there are changes to party names', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentFlags.length).toEqual(0);
   });
 
   it('should initialize hearing request from hearing values', () => {
@@ -2364,7 +2496,8 @@ describe('HearingRequirementsComponent', () => {
             'RA0053',
             'RA0013',
             'RA0016',
-            'RA0042'],
+            'RA0042',
+            'PF0015'],
           interpreterLanguage: 'POR'
         }
       }, {
@@ -2557,72 +2690,6 @@ describe('HearingRequirementsComponent', () => {
     expect(result).toEqual([]);
   });
 
-  it('should remove language interpreter flag from reasonable adjustments', () => {
-    // Arrange
-    const partyDetails: PartyDetailsModel[] = [{
-      partyID: 'P1',
-      partyType: PartyType.IND,
-      partyRole: 'appellant',
-      partyName: 'Jane Smith',
-      unavailabilityRanges: [{
-        unavailableFromDate: '2021-12-10T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }],
-      individualDetails: {
-        title: 'Mrs',
-        firstName: 'Jane',
-        lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
-        reasonableAdjustments: [
-          'RA0042',
-          'RA0053',
-          CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID,
-          'RA0013',
-          'RA0016',
-          'RA0042'
-        ],
-        interpreterLanguage: 'POR'
-      }
-    }, {
-      partyID: 'P2',
-      partyType: PartyType.ORG,
-      partyRole: 'claimant',
-      partyName: 'DWP',
-      unavailabilityRanges: [{
-        unavailableFromDate: '2021-12-20T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }],
-      individualDetails: {
-        title: null,
-        firstName: 'DWP',
-        lastName: null,
-        preferredHearingChannel: 'inPerson',
-        reasonableAdjustments: ['RA0005', CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID],
-        interpreterLanguage: null
-      },
-      organisationDetails: {
-        name: 'DWP',
-        organisationType: 'GOV',
-        cftOrganisationID: 'O100000'
-      }
-    }];
-
-    // Act
-    const result = component.combinePartiesWithIndOrOrg(partyDetails);
-
-    // Assert
-    expect(result.length).toEqual(2);
-    const transformedPartyDetails = _.cloneDeep(partyDetails);
-    transformedPartyDetails[0].individualDetails.reasonableAdjustments = [
-      'RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'
-    ];
-    transformedPartyDetails[1].individualDetails.reasonableAdjustments = ['RA0005'];
-    expect(result).toEqual(transformedPartyDetails);
-    console.log(result);
-  });
-
   it('should dispatch InitializeHearingRequest action', () => {
     // Arrange
     spyOn(component.hearingStore, 'dispatch');
@@ -2632,74 +2699,6 @@ describe('HearingRequirementsComponent', () => {
 
     // Assert
     expect(component.hearingStore.dispatch).toHaveBeenCalled();
-  });
-
-  it('should return an empty array when reasonableAdjustmentFlags is empty', () => {
-    // Arrange
-    component.reasonableAdjustmentFlags = [];
-
-    // Act
-    const result = component.getAllPartyFlagsByPartyId('P2');
-
-    // Assert
-    expect(result).toEqual([]);
-  });
-
-  it('should return an empty array when partyID is not found', () => {
-    // Arrange
-    component.reasonableAdjustmentFlags = [{ name: 'P1', partyFlags: [] }, { name: 'P2', partyFlags: [] }];
-
-    // Act
-    const result = component.getAllPartyFlagsByPartyId('P3');
-
-    // Assert
-    expect(result).toEqual([]);
-  });
-
-  it('should return an array of flagIds for the specified partyID', () => {
-    // Arrange
-    const P1Flag1 = {
-      partyID: 'P1',
-      partyName: 'Jane Smith',
-      flagParentId: 'RA0003',
-      flagId: 'RA0016',
-      flagDescription: 'Reading documents for customer',
-      flagStatus: 'ACTIVE'
-    } as PartyFlagsDisplayModel;
-    const P1Flag2 = {
-      partyID: 'P1',
-      partyName: 'Jane Smith',
-      flagParentId: 'RA0008',
-      flagId: 'RA0042',
-      flagDescription: 'Sign Language Interpreter',
-      flagStatus: 'ACTIVE'
-    } as PartyFlagsDisplayModel;
-    const P2Flag1 = {
-      partyID: 'P2',
-      partyName: 'DWP',
-      flagParentId: 'RA0001',
-      flagId: 'RA0005',
-      flagDescription: 'Physical access and facilities',
-      flagStatus: 'ACTIVE'
-    } as PartyFlagsDisplayModel;
-    const P2Flag2 = {
-      partyID: 'P2',
-      partyName: 'DWP',
-      flagParentId: 'PF0001',
-      flagId: 'PF0011',
-      flagDescription: 'Banning order',
-      flagStatus: 'ACTIVE'
-    } as PartyFlagsDisplayModel;
-    component.reasonableAdjustmentFlags = [
-      { name: 'P1', partyFlags: [P1Flag1, P1Flag2] },
-      { name: 'P2', partyFlags: [P2Flag1, P2Flag2] }
-    ];
-
-    // Act
-    const result = component.getAllPartyFlagsByPartyId('P2');
-
-    // Assert
-    expect(result).toEqual(['RA0005', 'PF0011']);
   });
 
   afterEach(() => {

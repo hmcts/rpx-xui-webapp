@@ -51,7 +51,10 @@ class SearchPage {
     await this._waitForSearchComponent();
 
     await BrowserWaits.waitForElement(this.jurisdiction);
-    await this.jurisdiction.selectWithLabelContains(jurisdiction);
+
+    const options = await this.jurisdiction.getSelectOptions();
+    const option = options.find(opt => opt.includes(jurisdiction))
+    await this.jurisdiction.select(option);
 
     // const options = jurisdiction.split('|'); 
     // // let locatorString = "//option[";
@@ -76,24 +79,21 @@ class SearchPage {
     CucumberReportLogger.LogTestDataInput('Search  page Jurisdiction : ');
 
     RuntimeTestData.searchCasesInputs.jurisdiction = jurisdiction;
-    const caseTypeElements = this.caseType.$$('option');
-    const caseTypesSize = await caseTypeElements.count();
-    RuntimeTestData.searchCasesInputs.casetypes = [];
-    for (let i = 0; i < caseTypesSize; i++) {
-      const option = await caseTypeElements.get(i);
-      const optionText = await option.getText();
-      RuntimeTestData.searchCasesInputs.casetypes.push(optionText);
-    }
+    // const caseTypeElements = this.caseType.$$('option');
+    // const caseTypesSize = await caseTypeElements.count();
+    RuntimeTestData.searchCasesInputs.casetypes = await this.caseType.getSelectOptions()
+   
   }
 
   async selectCaseType(option){
     await this._waitForSearchComponent();
     await BrowserWaits.waitForElement(this.caseType);
     // await this.caseType.selectWithLabelContains(option);
+    const options = await this.caseType.getSelectOptions();
+    const optionToSelect = options.find(opt => opt.includes(option))
 
 
-
-    this.caseType.selectWithLabelContains(option);
+    await this.caseType.select(optionToSelect);
     // await optionElement.click();
     CucumberReportLogger.LogTestDataInput(`Search  page case type : ${option}`);
 

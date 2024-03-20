@@ -142,7 +142,8 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I validate task list table columns displayed for user {string}', async function (userType, datatable) {
-        reportLogger.reportDatatable(datatable)
+        reportLogger.reportDatatable(datatable);
+        reportLogger.AddMessage(userType);
 
         const columnHeadersHash = datatable.parse().hashes();
 
@@ -150,8 +151,8 @@ const { DataTableArgument } = require('codeceptjs');
         let actualHeadeColumns = await taskListTable.getColumnHeaderNames();
         actualHeadeColumns = actualHeadeColumns.map(col => col.toLowerCase());
         actualHeadeColumns.forEach(x => {
-            reportLogger.AddMessage('test', x);
-            console.log('test2', x);
+            reportLogger.AddMessage(x);
+            console.log('test2', '');
         })
         for (const headerHash of columnHeadersHash ){
             const columnHeader = headerHash.ColumnHeader;

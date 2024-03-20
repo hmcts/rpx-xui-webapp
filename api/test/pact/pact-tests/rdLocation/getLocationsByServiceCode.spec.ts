@@ -10,7 +10,9 @@ const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_location', port: 8000 });
 
-const serviceCode = 'IA';
+const service = 'IA';
+const serviceCode = 'BFA1';
+
 
 describe('Locations ref data api, get matching location for service code', () => {
   const RESPONSE_BODY = {
@@ -76,7 +78,7 @@ describe('Locations ref data api, get matching location for service code', () =>
         withRequest: {
           method: 'GET',
           path: '/refdata/location/court-venues/services',
-          query: `service_code=BFA1`,
+          query: `service_code=${serviceCode}`,
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
@@ -109,7 +111,6 @@ describe('Locations ref data api, get matching location for service code', () =>
       sandbox.stub(config, 'get').callsFake((prop) => {
         return configValues[prop];
       });
-      
 
       const { getLocations } = requireReloaded('../../../../workAllocation/locationController');
 
@@ -119,7 +120,7 @@ describe('Locations ref data api, get matching location for service code', () =>
           'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
           'content-type': 'application/json'
         },
-        query: { serviceCodes: serviceCode }
+        query: { serviceCodes: service }
 
       });
       let returnedResponse = null;

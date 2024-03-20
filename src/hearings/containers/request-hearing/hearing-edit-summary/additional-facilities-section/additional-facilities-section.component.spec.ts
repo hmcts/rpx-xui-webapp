@@ -285,7 +285,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           nonReasonableAdjustmentChangesConfirmed: true,
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
-          hearingFacilitiesChangesRequired: false
+          hearingFacilitiesChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false
         }
       };
       component.ngOnInit();

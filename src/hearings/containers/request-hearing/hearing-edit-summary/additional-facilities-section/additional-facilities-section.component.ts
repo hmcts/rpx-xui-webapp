@@ -22,6 +22,8 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
   public pageTitleDisplayLabel: string;
   public nonReasonableAdjustmentChangesRequired: boolean;
   public nonReasonableAdjustmentChangesConfirmed: boolean;
+  public hearingFacilitiesChangesRequired: boolean;
+  public hearingFacilitiesChangesConfirmed: boolean;
   public caseAdditionalSecurityFlagChanged: boolean;
   public facilitiesChanged: boolean;
   public showAmendedForPageTitle: boolean;
@@ -44,6 +46,8 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
 
     this.nonReasonableAdjustmentChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesRequired;
     this.nonReasonableAdjustmentChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed;
+    this.hearingFacilitiesChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesRequired;
+    this.hearingFacilitiesChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesConfirmed;
 
     this.setAmendmentLabels();
   }
@@ -82,13 +86,14 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
       this.hearingRequestMainModel.hearingDetails.facilitiesRequired
     );
 
-    if (this.nonReasonableAdjustmentChangesRequired) {
-      this.pageTitleDisplayLabel = !this.nonReasonableAdjustmentChangesConfirmed
-        ? AmendmentLabelStatus.ACTION_NEEDED
-        : AmendmentLabelStatus.AMENDED;
+    if ((this.nonReasonableAdjustmentChangesRequired && !this.nonReasonableAdjustmentChangesConfirmed) ||
+      (this.hearingFacilitiesChangesRequired && !this.hearingFacilitiesChangesConfirmed)) {
+      this.pageTitleDisplayLabel = AmendmentLabelStatus.ACTION_NEEDED;
     } else {
       if (this.caseAdditionalSecurityFlagChanged ||
-        this.facilitiesChanged) {
+        this.facilitiesChanged ||
+        (this.nonReasonableAdjustmentChangesRequired && this.nonReasonableAdjustmentChangesConfirmed) ||
+        (this.hearingFacilitiesChangesRequired && this.hearingFacilitiesChangesConfirmed)) {
         this.pageTitleDisplayLabel = AmendmentLabelStatus.AMENDED;
       }
     }

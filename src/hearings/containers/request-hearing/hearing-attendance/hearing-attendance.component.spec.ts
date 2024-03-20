@@ -221,7 +221,8 @@ describe('HearingAttendanceComponent', () => {
         nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
-        hearingFacilitiesChangesRequired: false
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.prepareHearingRequestData();
@@ -320,7 +321,8 @@ describe('HearingAttendanceComponent', () => {
         nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
-        hearingFacilitiesChangesRequired: false
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.ngOnInit();
@@ -343,7 +345,8 @@ describe('HearingAttendanceComponent', () => {
         nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
-        hearingFacilitiesChangesRequired: false
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.ngOnInit();
@@ -365,7 +368,8 @@ describe('HearingAttendanceComponent', () => {
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
-        hearingFacilitiesChangesRequired: false
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.ngOnInit();
@@ -397,7 +401,8 @@ describe('HearingAttendanceComponent', () => {
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: true,
-        hearingFacilitiesChangesRequired: false
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.ngOnInit();
@@ -417,7 +422,8 @@ describe('HearingAttendanceComponent', () => {
         partyDetailsChangesRequired: true,
         partyDetailsChangesConfirmed: true,
         hearingWindowChangesRequired: false,
-        hearingFacilitiesChangesRequired: false
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.initialiseFromHearingValuesForAmendments();

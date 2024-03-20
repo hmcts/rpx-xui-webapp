@@ -198,7 +198,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
             nonReasonableAdjustmentChangesRequired: this.pageVisitNonReasonableAdjustmentChangeExists(),
             partyDetailsChangesRequired: this.pageVisitPartiesChangeExists(),
             hearingWindowChangesRequired: this.pageVisitHearingWindowChangeExists(),
-            hearingFacilitiesChangesRequired: this.pageVisitHearingFacilitiesChanged()
+            hearingFacilitiesChangesRequired: this.pageVisitHearingFacilitiesChanged(),
+            hearingUnavailabilityDatesChanged: HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)
           }
         };
       }
@@ -462,12 +463,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       return false;
     }
     const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
-    if (hearingWindowHMC?.firstDateTimeMustBe) {
-      const partiesNotAvailableDatesHMC = HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestToCompareMainModel.partyDetails);
-      const partiesNotAvailableDatesSHV = HearingsUtils.getPartiesNotAvailableDates(this.serviceHearingValuesModel.parties);
-      if (!_.isEqual(partiesNotAvailableDatesSHV, partiesNotAvailableDatesHMC)) {
-        return true;
-      }
+    if ((hearingWindowHMC?.firstDateTimeMustBe) ||
+      (hearingWindowHMC?.dateRangeStart || hearingWindowHMC?.dateRangeEnd)) {
+      return HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties);
     }
     return false;
   }

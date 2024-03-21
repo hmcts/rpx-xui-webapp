@@ -145,7 +145,6 @@ Then('I validate task list table columns displayed for user {string}', async fun
     reportLogger.reportDatatable(datatable);
 
     const columnHeadersHash = datatable.parse().hashes();
-    reportLogger.AddMessage(columnHeadersHash, '');
 
 
 
@@ -156,17 +155,14 @@ Then('I validate task list table columns displayed for user {string}', async fun
 
     let actualHeadeColumnsFilter = await taskListTable.getColumnHeaderNames();
     actualHeadeColumnsFilter = actualHeadeColumnsFilter.map(col => col.toLowerCase());
-    const actualHeadeColumns = actualHeadeColumnsFilter.filter(cols => cols.trim().length);
+    const actualHeadeColumns = actualHeadeColumnsFilter.filter(cols => cols.trim().length || cols !== ' ');
 
     actualHeadeColumns.forEach(x => {
         reportLogger.AddMessage(x);
     });
-    actualHeadeColumnsFilter.forEach(y => {
-        reportLogger.AddMessage(y);
-    });
     for (const headerHash of columnHeadersHash) {
         const columnHeader = headerHash.ColumnHeader;
-        reportLogger.AddMessage(columnHeader, '');
+        reportLogger.AddMessage(columnHeader[userType], '');
         if (headerHash[userType].toLowerCase().includes('yes') || headerHash[userType].toLowerCase().includes('true')) {
             expect(actualHeadeColumns).to.include(columnHeader.toLowerCase());
 

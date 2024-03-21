@@ -48,7 +48,6 @@ Feature: WA Release 2: My work - My Tasks
             | Task created  | No         | Yes   |
             | Due date      | Yes        | No    |
             | Priority      | Yes        | Yes   |
-            |               |            |       |
 
         Then If current user "<UserType>" is "Judge", I validate task table values displayed
             | row | Case name | Case category        | Location        | Task             | Task created |

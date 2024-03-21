@@ -198,6 +198,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
             nonReasonableAdjustmentChangesRequired: this.pageVisitNonReasonableAdjustmentChangeExists(),
             partyDetailsChangesRequired: this.pageVisitPartiesChangeExists(),
             hearingWindowChangesRequired: this.pageVisitHearingWindowChangeExists(),
+            hearingFacilitiesChangesRequired: this.pageVisitHearingFacilitiesChanged(),
             hearingUnavailabilityDatesChanged: HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)
           }
         };
@@ -326,7 +327,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     if (this.pageVisitReasonableAdjustmentChangeExists() ||
       this.pageVisitNonReasonableAdjustmentChangeExists() ||
       this.pageVisitPartiesChangeExists() ||
-      this.pageVisitHearingWindowChangeExists()) {
+      this.pageVisitHearingWindowChangeExists() ||
+      this.pageVisitHearingFacilitiesChanged()) {
       this.hearingsService.displayValidationError = true;
     } else {
       this.hearingsService.displayValidationError = false;
@@ -410,6 +412,20 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         caseFlagsWithCreatedDate.some((date) => new Date(date) > new Date(this.hearingRequestMainModel.requestDetails?.timestamp));
     }
     return false;
+  }
+
+  private pageVisitHearingFacilitiesChanged(): boolean {
+    if (!this.sectionsToDisplay.includes(this.hearingScreenEnum.HEARING_FACILITIES)) {
+      // Do not consider non-reasonable adjustment case flags as hearing facilities is not part of the screen flow
+      return false;
+    }
+    const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired?.sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
+    const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired?.sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
+    return !_.isEqual(facilitiesInHMC, facilitiesInSHV);
   }
 
   private pageVisitPartiesChangeExists(): boolean {

@@ -236,7 +236,8 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   }
 
   public isFormValid(): boolean {
-    return this.excludedJudge.isExcludeJudgeInputValid() && this.hearingJudgeForm.valid && !this.hearingJudgeForm.controls.judgeName.touched && !this.isSameJudgeSelected();
+    return this.excludedJudge.isExcludeJudgeInputValid() && this.hearingJudgeForm.valid &&
+      !this.hearingJudgeForm.controls.judgeName.touched && !this.isSameJudgeSelected();
   }
 
   public ngAfterViewInit(): void {

@@ -1,4 +1,4 @@
-@fullfunctional @test @functional_enabled @ignore
+@fullfunctional @ignore @test @functional_enabled
 
 Feature: Test case type case creation and case details validations Part 1
 

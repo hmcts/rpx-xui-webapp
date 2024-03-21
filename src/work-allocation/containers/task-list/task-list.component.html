@@ -36,7 +36,7 @@
               type="button"
               [id]="'sort_by_' + field.sortName"
               data-index="0"
-              (click)="onSortHandler(field.sortName)">{{field.columnLabel}}</button>
+              (click)="onSortHandler(field.sortName)">{{field.columnLabel}}&ZeroWidthSpace;</button>
       <h1 class="column-label" *ngIf="field.disableSort">{{field.columnLabel}}</h1>
     </th>
     <td class="govuk-table__cell" cdk-cell *cdkCellDef="let rowData">
@@ -53,7 +53,7 @@
               type="button"
               [id]="'sort_by_' + field.sortName"
               data-index="0"
-              (click)="onSortHandler(field.sortName)" >{{field.columnLabel}}</button>
+              (click)="onSortHandler(field.sortName)" >{{field.columnLabel}}&ZeroWidthSpace;</button>
       <h1 class="column-label" *ngIf="field.disableSort">{{field.columnLabel}}</h1>
     </th>
     <td class="govuk-table__cell" cdk-cell *cdkCellDef="let rowData">

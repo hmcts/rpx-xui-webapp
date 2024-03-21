@@ -143,20 +143,27 @@ const { DataTableArgument } = require('codeceptjs');
 
     Then('I validate task list table columns displayed for user {string}', async function (userType, datatable) {
         reportLogger.reportDatatable(datatable);
-        reportLogger.AddMessage(userType);
+        reportLogger.AddMessage(userType, '');
 
         const columnHeadersHash = datatable.parse().hashes();
+        reportLogger.AddMessage(columnHeadersHash, '');
+
+
 
         
         let actualHeadeColumns = await taskListTable.getColumnHeaderNames();
         actualHeadeColumns = actualHeadeColumns.map(col => col.toLowerCase());
+        const actualHeadeColumnsFilter = actualHeadeColumns.filter(cols => cols.toLowerCase() !== '');
+        reportLogger.AddMessage(actualHeadeColumnsFilter, '');
+
         actualHeadeColumns.forEach(x => {
             reportLogger.AddMessage(x);
             console.log('test2', '');
         })
         for (const headerHash of columnHeadersHash ){
             const columnHeader = headerHash.ColumnHeader;
-            if (headerHash[userType].toLowerCase().includes('yes') || headerHash[userType].toLowerCase().includes('true')){
+            reportLogger.AddMessage(columnHeader, '');
+            if (columnHeader !== '' || headerHash[userType].toLowerCase().includes('yes') || headerHash[userType].toLowerCase().includes('true')){
                 expect(actualHeadeColumns).to.include(columnHeader.toLowerCase());
 
             }else{

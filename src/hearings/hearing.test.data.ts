@@ -1785,7 +1785,9 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagParentId: 'CF0001',
         flagId: 'CF0002',
         flagDescription: 'Complex Case',
-        flagStatus: 'ACTIVE'
+        flagStatus: 'ACTIVE',
+        dateTimeCreated: '2024-07-02T00:00:00.000Z',
+        dateTimeModified: null
       },
       {
         partyId: 'P2',
@@ -1793,7 +1795,9 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagParentId: 'CF0001',
         flagId: 'CF0006',
         flagDescription: 'Potential fraud',
-        flagStatus: 'ACTIVE'
+        flagStatus: 'ACTIVE',
+        dateTimeCreated: '2024-07-02T00:00:00.000Z',
+        dateTimeModified: '2024-07-03T00:00:00.000Z'
       },
       {
         partyId: 'P2',
@@ -1801,7 +1805,8 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagParentId: 'CF0001',
         flagId: 'CF0007',
         flagDescription: 'Urgent flag',
-        flagStatus: 'ACTIVE'
+        flagStatus: 'ACTIVE',
+        dateTimeCreated: '2022-01-23T09:00:00.000Z'
       }
     ],
     flagAmendURL: '/'

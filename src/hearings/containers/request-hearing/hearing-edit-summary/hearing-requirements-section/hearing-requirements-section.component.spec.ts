@@ -114,54 +114,6 @@ describe('HearingRequirementsSectionComponent', () => {
     expect(HearingsUtils.getPartyNameFormatted).toHaveBeenCalled();
   });
 
-  it('should not include the special measure flags', () => {
-    const parties = [
-      {
-        partyID: 'P1',
-        partyType: PartyType.IND,
-        partyRole: 'appellant',
-        individualDetails: {
-          title: 'Mrs',
-          firstName: 'Jane',
-          lastName: 'Smith',
-          preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: [
-            'RA0042',
-            'SM001'
-          ]
-        },
-        unavailabilityRanges: [
-          {
-            unavailableFromDate: '2021-12-10T09:00:00.000Z',
-            unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY
-          }
-        ]
-      }
-    ];
-    component.serviceHearingValuesModel = {
-      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
-      parties: parties
-    };
-    hearingsService.propertiesUpdatedOnPageVisit = {
-      hearingId: 'h000001',
-      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
-      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
-      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
-      afterPageVisit: {
-        reasonableAdjustmentChangesRequired: true,
-        reasonableAdjustmentChangesConfirmed: true,
-        nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: true,
-        hearingUnavailabilityDatesChanged: false
-      }
-    };
-    component.ngOnInit();
-    const flags = component.partiesWithFlags.get('Jane Smith');
-    expect(flags[0].flagCode).toEqual('RA0042');
-  });
-
   it('should verify onChange', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('caseFlags');

@@ -37,6 +37,10 @@ nodejs:
         - system-user-password
   autoscaling:
     enabled: false
+  devmemoryRequests: 512Mi
+  devcpuRequests: 250m
+  devmemoryLimits: 2Gi
+  devcpuLimits: 2
 redis:
   enabled: true
 idam-pr:

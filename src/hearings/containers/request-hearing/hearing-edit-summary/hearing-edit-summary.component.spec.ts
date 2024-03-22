@@ -19,6 +19,8 @@ import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingEditSummaryComponent } from './hearing-edit-summary.component';
+import { CaseFlagsUtils } from 'src/hearings/utils/case-flags.utils';
+import { PartyFlagsDisplayModel } from 'src/hearings/models/partyFlags.model';
 
 describe('HearingEditSummaryComponent', () => {
   let component: HearingEditSummaryComponent;
@@ -700,6 +702,11 @@ describe('HearingEditSummaryComponent', () => {
   it('should navigate to hearing view summary page', () => {
     component.executeAction(ACTION.BACK);
     expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-view-summary']);
+  });
+
+  it('should nonReasonableAdjustmentChangesRequired be set to true', () => {
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesRequired).toEqual(true);
   });
 
   afterEach(() => {

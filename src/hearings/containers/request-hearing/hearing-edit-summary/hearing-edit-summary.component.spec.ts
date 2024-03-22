@@ -187,6 +187,7 @@ describe('HearingEditSummaryComponent', () => {
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: true,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -262,6 +263,7 @@ describe('HearingEditSummaryComponent', () => {
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: true,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -622,6 +624,22 @@ describe('HearingEditSummaryComponent', () => {
     component.serviceHearingValuesModel.parties[0].partyType = PartyType.ORG;
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
+  });
+
+  it('should pageVisitHearingFacilitiesChanged return true if hearing facilties changed', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: ['11', '22']
+      }
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      facilitiesRequired: ['12', '23']
+    };
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesRequired).toEqual(true);
   });
 
   describe('Display of warning and error message', () => {

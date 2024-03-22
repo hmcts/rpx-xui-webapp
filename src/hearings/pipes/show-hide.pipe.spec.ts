@@ -74,7 +74,7 @@ describe('ShowHidePipe', () => {
   it('should transform is judge name hidden', () => {
     const STATE: State = initialState.hearings;
     const result$ = showHidePipe.transform(IsHiddenSource.JUDGE_NAME, of(STATE));
-    const isHidden = true;
+    const isHidden = false;
     const expected = cold('(b|)', { b: isHidden });
     expect(result$).toBeObservable(expected);
   });

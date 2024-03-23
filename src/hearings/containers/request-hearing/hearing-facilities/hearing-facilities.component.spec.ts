@@ -238,6 +238,11 @@ describe('HearingFacilitiesComponent', () => {
     expect(component.prepareHearingRequestData).toHaveBeenCalled();
   });
 
+  it('should executeAction not call prepareHearingRequestData', () => {
+    component.executeAction(ACTION.BACK);
+    expect(component.prepareHearingRequestData).not.toHaveBeenCalled();
+  });
+
   it('should be true when calling isFormValid when security is selected', () => {
     component.hearingFactilitiesForm.controls['addition-security-required'].setValue('Yes');
     const formValid = component.isFormValid();

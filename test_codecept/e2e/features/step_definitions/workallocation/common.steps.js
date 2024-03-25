@@ -149,13 +149,13 @@ Then('I validate task list table columns displayed for user {string}', async fun
 
 
 
-    let actualHeadeColumns = await taskListTable.getColumnHeaderNames();
-    actualHeadeColumns = actualHeadeColumns.map(col => col.toLowerCase());
-    //actualHeadeColumnsFilter = actualHeadeColumns.filter(cols => cols.toLowerCase() !== '');
+    // let actualHeadeColumns = await taskListTable.getColumnHeaderNames();
+    // actualHeadeColumns = actualHeadeColumns.map(col => col.toLowerCase());
+    // actualHeadeColumnsFilter = actualHeadeColumns.filter(cols => cols.toLowerCase() !== '');
 
-    // let actualHeadeColumnsFilter = await taskListTable.getColumnHeaderNames();
-    // actualHeadeColumnsFilter = actualHeadeColumnsFilter.map(col => col.toLowerCase());
-    // const actualHeadeColumns = actualHeadeColumnsFilter.filter(cols => cols.trim().length && cols !== '' && cols);
+    let actualHeadeColumnsFilter = await taskListTable.getColumnHeaderNames();
+    actualHeadeColumnsFilter = actualHeadeColumnsFilter.map(col => col.toLowerCase());
+    const actualHeadeColumns = actualHeadeColumnsFilter.filter(cols => cols !== '');
 
     actualHeadeColumns.forEach(x => {
         reportLogger.AddMessage(x);

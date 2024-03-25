@@ -154,8 +154,8 @@ Then('I validate task list table columns displayed for user {string}', async fun
     // actualHeadeColumnsFilter = actualHeadeColumns.filter(cols => cols.toLowerCase() !== '');
 
     let actualHeadeColumnsFilter = await taskListTable.getColumnHeaderNames();
-    actualHeadeColumnsFilter = actualHeadeColumnsFilter.map(col => col.toLowerCase());
-    const actualHeadeColumns = actualHeadeColumnsFilter.filter(cols => cols.trim().length || cols !== '' && cols !== ZeroWidthSpace);
+    actualHeadeColumnsFilter = actualHeadeColumnsFilter.map(col => col);
+    const actualHeadeColumns = actualHeadeColumnsFilter.filter(cols => cols);
 
     actualHeadeColumns.forEach(x => {
         reportLogger.AddMessage(x);
@@ -167,11 +167,11 @@ Then('I validate task list table columns displayed for user {string}', async fun
     });
     for (const headerHash of columnHeadersHash) {
         const columnHeader = headerHash.ColumnHeader;
-        if (headerHash[userType].toLowerCase().includes('yes') || headerHash[userType].toLowerCase().includes('true')) {
-            expect(actualHeadeColumns).to.include(columnHeader.toLowerCase());
+        if (headerHash[userType].includes('yes') || headerHash[userType].toLowerCase().includes('true')) {
+            expect(actualHeadeColumns).to.include(columnHeader);
 
         } else {
-            expect(actualHeadeColumns).to.not.include(columnHeader.toLowerCase());
+            expect(actualHeadeColumns).to.not.include(columnHeader);
 
         }
     }

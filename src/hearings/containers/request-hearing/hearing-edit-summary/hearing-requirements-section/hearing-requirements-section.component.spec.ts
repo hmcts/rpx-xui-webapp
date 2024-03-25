@@ -46,6 +46,7 @@ describe('HearingRequirementsSectionComponent', () => {
         reasonableAdjustmentChangesConfirmed: false,
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -65,6 +66,7 @@ describe('HearingRequirementsSectionComponent', () => {
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -83,6 +85,7 @@ describe('HearingRequirementsSectionComponent', () => {
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -102,6 +105,7 @@ describe('HearingRequirementsSectionComponent', () => {
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };

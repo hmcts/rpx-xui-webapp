@@ -415,6 +415,7 @@ describe('HearingTimingComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: true,
         hearingWindowChangesConfirmed: true,
+        hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -444,6 +445,7 @@ describe('HearingTimingComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: true,
         hearingWindowChangesConfirmed: false,
+        hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: true
       }
     };
@@ -465,6 +467,7 @@ describe('HearingTimingComponent', () => {
         nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };

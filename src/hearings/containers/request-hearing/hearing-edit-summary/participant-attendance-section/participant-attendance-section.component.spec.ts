@@ -109,6 +109,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
         nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -129,6 +130,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
         partyDetailsChangesRequired: true,
         partyDetailsChangesConfirmed: true,
         hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -148,6 +150,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
         nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -188,6 +191,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
           nonReasonableAdjustmentChangesRequired: false,
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
+          hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false
         }
       };
@@ -213,6 +217,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
           nonReasonableAdjustmentChangesRequired: false,
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
+          hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false
         }
       };
@@ -238,6 +243,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
           nonReasonableAdjustmentChangesRequired: false,
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
+          hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false
         }
       };
@@ -265,6 +271,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
           partyDetailsChangesRequired: true,
           partyDetailsChangesConfirmed: false,
           hearingWindowChangesRequired: false,
+          hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false
         }
       };
@@ -285,6 +292,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
           partyDetailsChangesRequired: true,
           partyDetailsChangesConfirmed: true,
           hearingWindowChangesRequired: false,
+          hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false
         }
       };

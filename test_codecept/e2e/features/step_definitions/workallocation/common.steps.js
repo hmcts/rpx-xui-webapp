@@ -155,16 +155,18 @@ Then('I validate task list table columns displayed for user {string}', async fun
 
     let actualHeadeColumnsFilter = await taskListTable.getColumnHeaderNames();
     actualHeadeColumnsFilter = actualHeadeColumnsFilter.map(col => col.toLowerCase());
-    const actualHeadeColumns = actualHeadeColumnsFilter.filter(cols => cols.trim().length || cols !== '');
+    const actualHeadeColumns = actualHeadeColumnsFilter.filter(cols => cols.trim().length || cols !== '' && cols !== ZeroWidthSpace);
 
     actualHeadeColumns.forEach(x => {
         reportLogger.AddMessage(x);
     });
+
+    columnHeadersHash.forEach(x => {
+        
+        reportLogger.AddMessage(JSON.stringify(x), '');
+    });
     for (const headerHash of columnHeadersHash) {
         const columnHeader = headerHash.ColumnHeader;
-        reportLogger.AddMessage(headerHash[userType], '');
-
-        reportLogger.AddMessage(headerHash, '');
         if (headerHash[userType].toLowerCase().includes('yes') || headerHash[userType].toLowerCase().includes('true')) {
             expect(actualHeadeColumns).to.include(columnHeader.toLowerCase());
 

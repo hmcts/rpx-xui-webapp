@@ -132,7 +132,6 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       },
       partyDetails: combinedParties
     };
-
     this.hearingStore.dispatch(new fromHearingStore.InitializeHearingRequest(hearingRequestMainModel));
   }
 
@@ -149,11 +148,13 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     const combinedPartyDetails: PartyDetailsModel[] = [];
 
     partyDetails.forEach((partyDetail) => {
+      const partyInHMC = this.hearingRequestMainModel?.partyDetails?.find((party) => party.partyID === partyDetail.partyID);
       const organisationDetails = partyDetail.organisationDetails;
       const party: PartyDetailsModel = {
         ...partyDetail,
         individualDetails: partyDetail.individualDetails && {
           ...partyDetail.individualDetails,
+          preferredHearingChannel: partyInHMC?.individualDetails?.preferredHearingChannel,
           reasonableAdjustments: this.getAllPartyFlagsByPartyId(partyDetail.partyID)
             .filter((flagId) => flagId !== CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID)
         },

@@ -321,6 +321,53 @@ describe('HearingEditSummaryComponent', () => {
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesRequired).toEqual(false);
   });
 
+  it('should set nonReasonableAdjustmentChangesRequired to false if hearing facilities is not present in the screen flow', () => {
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      screenFlow: [
+        {
+          screenName: 'hearing-stage',
+          navigation: [
+            {
+              resultValue: 'hearing-attendance'
+            }
+          ]
+        },
+        {
+          screenName: 'hearing-additional-instructions',
+          navigation: [
+            {
+              resultValue: 'hearing-create-edit-summary'
+            }
+          ]
+        }
+      ]
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesRequired).toEqual(false);
+  });
+
+  it('should pageVisitNonReasonableAdjustmentChangeExists return false if non-reasonable adjustment changes already confirmed', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesConfirmed: true,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesRequired).toEqual(false);
+  });
+
   it('should set the hearingWindowChangesRequired to true', () => {
     hearingsService.propertiesUpdatedOnPageVisit = null;
     component.hearingRequestMainModel.hearingDetails.hearingWindow = {

@@ -2594,7 +2594,7 @@ describe('HearingRequirementsComponent', () => {
           title: null,
           firstName: 'DWP',
           lastName: null,
-          preferredHearingChannel: 'inPerson',
+          preferredHearingChannel: 'byVideo',
           reasonableAdjustments: ['RA0005'],
           interpreterLanguage: null
         },
@@ -2816,7 +2816,7 @@ describe('HearingRequirementsComponent', () => {
         title: null,
         firstName: 'DWP',
         lastName: null,
-        preferredHearingChannel: 'inPerson',
+        preferredHearingChannel: 'byVideo',
         reasonableAdjustments: ['RA0005', CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID],
         interpreterLanguage: null
       },

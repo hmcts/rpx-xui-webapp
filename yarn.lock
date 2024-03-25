@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.21-CVE-fix":
-  version: 7.0.21-CVE-fix
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.21-CVE-fix"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.21-ng-packageManagr-update":
+  version: 7.0.21-ng-packageManagr-update
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.21-ng-packageManagr-update"
   dependencies:
     tslib: ^2.3.0
-  checksum: f9ddcccb4b81a015aecc46298cd50d9fdea9f1523ec5b9ab75e7ebe9760daa2f55bda19468ace68d13cd6fb51ff2ff472c9de83ff8f0ccc756178d6e3d70a898
+  checksum: 79a3db2d95a26c9a3844f69dbbee1bdcb6c4f6745d766f23f4d4804680e4d7bfdb108623636410c58b4df2f21f8fd9ddc6b6ef8110e8c2c19a1d436b4cafe3ba
   languageName: node
   linkType: hard
 
@@ -19107,7 +19107,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.21-CVE-fix
+    "@hmcts/ccd-case-ui-toolkit": 7.0.21-ng-packageManagr-update
     "@hmcts/ccpay-web-component": 6.1.0
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 3.0.2

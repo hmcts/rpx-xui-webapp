@@ -22,6 +22,20 @@ describe('HearingJudgeComponent', () => {
   const childComponent = jasmine.createSpyObj('HearingJudgeNamesListComponent', ['isExcludeJudgeInputValid']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
+  const judgeInfo: JudicialUserModel = {
+    title: 'Mr',
+    knownAs: 'Hearing Judge',
+    surname: 'Jacky',
+    fullName: 'Jacky Collins',
+    emailId: 'jacky.collins@judicial.com',
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+    initials: 'JC',
+    postNominals: 'JP',
+    personalCode: 'P100001',
+    isJudge: '',
+    isMagistrate: '',
+    isPanelMember: ''
+  };
   const judgeTypes: LovRefDataModel[] = [
     {
       key: 'Tribunal',
@@ -125,20 +139,6 @@ describe('HearingJudgeComponent', () => {
   });
 
   it('should check RadioButton selection', () => {
-    const judgeInfo: JudicialUserModel = {
-      title: 'Mr',
-      knownAs: 'Hearing Judge',
-      surname: 'Jacky',
-      fullName: 'Jacky Collins',
-      emailId: 'jacky.collins@judicial.com',
-      idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      initials: 'JC',
-      postNominals: 'JP',
-      personalCode: 'P100001',
-      isJudge: '',
-      isMagistrate: '',
-      isPanelMember: ''
-    };
     component.showSpecificJudge(RadioOptions.YES);
     expect(component.specificJudgeSelection).toBe(RadioOptions.YES);
     component.hearingJudgeForm.controls.specificJudge.setValue(RadioOptions.YES);
@@ -157,21 +157,17 @@ describe('HearingJudgeComponent', () => {
     expect(childComponent.isExcludeJudgeInputValid).toHaveBeenCalled();
   });
 
+  it('should not allow the same judge name in include and exclude list', () => {
+    component.showSpecificJudge(RadioOptions.YES);
+    component.hearingJudgeForm.controls.judgeName.setValue(judgeInfo);
+    component.excludedJudge.judgeList = [judgeInfo];
+    component.isFormValid();
+    component.checkSameJudgeSelectionError();
+    expect(component.selectJudgeNameError).toBe(HearingJudgeSelectionEnum.SameJudgeInIncludeExcludeList);
+    expect(component.isFormValid()).toBeFalsy();
+  });
+
   it('should check prepareHearingRequestData', () => {
-    const judgeInfo: JudicialUserModel = {
-      title: 'Mr',
-      knownAs: 'Hearing Judge',
-      surname: 'Jacky',
-      fullName: 'Jacky Collins',
-      emailId: 'jacky.collins@judicial.com',
-      idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      initials: 'JC',
-      postNominals: 'JP',
-      personalCode: 'P100001',
-      isJudge: '',
-      isMagistrate: '',
-      isPanelMember: ''
-    };
     component.hearingRequestMainModel.hearingDetails.panelRequirements = {
       panelPreferences: [],
       roleType: ['role1']

@@ -144,7 +144,8 @@ Then('I validate task list table columns displayed', async function (datatable) 
 Then('I validate task list table columns displayed for user {string}', async function (userType, datatable) {
     reportLogger.reportDatatable(datatable);
 
-    const columnHeadersHash = datatable.parse().hashes();
+    const columnHeadersHashItems = datatable.parse().hashes();
+    const columnHeadersHash = columnHeadersHashItems.filter(hc => hc.ColumnHeader !== '');
 
 
 

@@ -26,16 +26,24 @@ export class CaseFlagsUtils {
     return this.getReasonableAdjustmentFlagsGroup(groupedReasonableAdjustmentFlags, partiesInHMC, partiesInSHV);
   }
 
-  public static getNonReasonableAdjustmentFlags(caseFlagsRefData: CaseFlagReferenceModel[],
+  public static getNonReasonableAdjustmentFlagsGroupedByPartyName(caseFlagsRefData: CaseFlagReferenceModel[],
     caseFlags: PartyFlagsModel[], partiesInHMC: PartyDetailsModel[], partiesInSHV: PartyDetailsModel[],
     hearingDetails: RequestDetailsModel, nonReasonableAdjustmentChangesConfirmed: boolean): CaseFlagGroup[] {
-    // Get all active non-reasonable adjustment and language interpreter flags
-    const activeFlags = this.getActiveDisplaysFlags(caseFlags, caseFlagsRefData, partiesInSHV);
-    const nonReasonableAdjustmentPartyFlags = activeFlags?.filter((nonRAF) => nonRAF.displayPath?.includes(CaseFlagType.PARTY_FLAGS));
-    const activeCaseFlags = activeFlags?.filter((nonRAF) => nonRAF.displayPath?.includes(CaseFlagType.CASE_FLAG));
-    const flags = [...nonReasonableAdjustmentPartyFlags, ...activeCaseFlags];
+    const flags = this.getNonReasonableAdjustmentFlags(caseFlagsRefData, caseFlags, partiesInSHV);
     const groupedFlags = _.groupBy(flags, CaseFlagsUtils.PARTY_NAME);
     return this.getNonReasonableAdjustmentFlagsGroup(groupedFlags, partiesInHMC, partiesInSHV, hearingDetails, nonReasonableAdjustmentChangesConfirmed);
+  }
+
+  public static getNonReasonableAdjustmentFlags(caseFlagsRefData: CaseFlagReferenceModel[],
+    caseFlags: PartyFlagsModel[], partiesInSHV: PartyDetailsModel[]): PartyFlagsDisplayModel[] {
+    // Get all active non-reasonable adjustment and language interpreter flags
+    const activeFlags = this.getActiveDisplaysFlags(caseFlags, caseFlagsRefData, partiesInSHV);
+    const reasonableAdjustmentFlags = activeFlags.filter((caseFlag) =>
+      (caseFlag.displayPath.includes(CaseFlagType.REASONABLE_ADJUSTMENT)
+        || caseFlag.flagId === CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID));
+    const nonReasonableAdjustmentPartyFlags = activeFlags.filter((activeFlag) => !reasonableAdjustmentFlags.includes(activeFlag));
+    const activeCaseFlags = activeFlags?.filter((nonRAF) => nonRAF.displayPath?.includes(CaseFlagType.CASE_FLAG));
+    return [...nonReasonableAdjustmentPartyFlags, ...activeCaseFlags];
   }
 
   /**

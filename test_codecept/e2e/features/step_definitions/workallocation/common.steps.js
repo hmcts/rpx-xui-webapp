@@ -144,11 +144,7 @@ Then('I validate task list table columns displayed', async function (datatable) 
 Then('I validate task list table columns displayed for user {string}', async function (userType, datatable) {
     reportLogger.reportDatatable(datatable);
 
-    const columnHeadersHashItems = datatable.parse().hashes();
-    const columnHeadersHash = columnHeadersHashItems.filter(hc => hc.ColumnHeader !== '');
-
-
-
+    const columnHeadersHash = datatable.parse().hashes();
 
     // let actualHeadeColumns = await taskListTable.getColumnHeaderNames();
     // actualHeadeColumns = actualHeadeColumns.map(col => col.toLowerCase());
@@ -159,7 +155,7 @@ Then('I validate task list table columns displayed for user {string}', async fun
     const actualHeadeColumns = actualHeadeColumnsFilter.filter(cols => cols !== '');
 
     actualHeadeColumns.forEach(x => {
-        reportLogger.AddMessage(x);
+        reportLogger.AddMessage(x.length);
     });
 
     columnHeadersHash.forEach(x => {

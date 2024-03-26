@@ -79,7 +79,7 @@ export class HearingsService {
   }
 
   public submitHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<ResponseDetailsModel> {
-    return this.http.post<ResponseDetailsModel>('api/hearings/submitHearingRequestsss', this.prepareHearingRequestModel(hearingRequestMainModel));
+    return this.http.post<ResponseDetailsModel>('api/hearings/submitHearingRequest', this.prepareHearingRequestModel(hearingRequestMainModel));
   }
 
   public updateHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<ResponseDetailsModel> {

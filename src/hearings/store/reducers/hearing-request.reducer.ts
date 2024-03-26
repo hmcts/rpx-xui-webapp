@@ -49,8 +49,7 @@ export const initialHearingRequestState: HearingRequestStateData = {
     },
     partyDetails: []
   },
-  lastError: null,
-  loading: false 
+  lastError: null
 };
 
 export function hearingRequestReducer(currentState = initialHearingRequestState,
@@ -105,7 +104,6 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
     case fromActions.UPDATE_HEARING_REQUEST_FAILURE: {
       return {
         ...currentState,
-        loading: false, // Update loading to false on failure
         lastError: action.payload
       };
     }

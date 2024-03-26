@@ -767,6 +767,11 @@ describe('HearingEditSummaryComponent', () => {
     expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-view-summary']);
   });
 
+  it('should nonReasonableAdjustmentChangesRequired be set to true', () => {
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesRequired).toEqual(true);
+  });
+
   afterEach(() => {
     fixture.destroy();
     TestBed.resetTestingModule();

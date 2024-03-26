@@ -58,11 +58,11 @@ export class JudgeDetailsSectionComponent implements OnInit {
 
   private getNeedJudge(): string {
     const hasJudgeDetails = this.panelRequirements?.panelPreferences?.filter((panel) => panel.memberType === MemberType.JUDGE);
-    if (this.panelRequirements?.roleType?.length > 0) {
-      return RadioOptions.NO;
-    }
     if (hasJudgeDetails?.length > 0) {
       return RadioOptions.YES;
+    }
+    if (this.panelRequirements?.roleType?.length > 0) {
+      return RadioOptions.NO;
     }
     return '';
   }

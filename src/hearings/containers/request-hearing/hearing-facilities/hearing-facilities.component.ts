@@ -169,7 +169,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
       const partyDetails = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed
         ? this.hearingRequestMainModel.partyDetails
         : this.hearingRequestToCompareMainModel.partyDetails;
-      this.nonReasonableAdjustmentFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlags(this.caseFlagsRefData,
+      this.nonReasonableAdjustmentFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlagsGroupedByPartyName(this.caseFlagsRefData,
         propertiesUpdatedOnPageVisit.caseFlags?.flags, partyDetails, this.serviceHearingValuesModel.parties,
         this.hearingRequestMainModel.requestDetails, this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed);
     } else {

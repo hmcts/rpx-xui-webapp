@@ -34,6 +34,7 @@ import { NeedWelshAnswerConverter } from '../converters/need-welsh.answer.conver
 import { NumberOfAttendancesAnswerConverter } from '../converters/number-of-attendances-answer.converter';
 import { PanelExclusionAnswerConverter } from '../converters/panel-exclusion.answer.converter';
 import { PanelInclusionAnswerConverter } from '../converters/panel-inclusion.answer.converter';
+import { PanelMemberRolesAnswerConverter } from '../converters/panel-member-roles.answer.converter';
 import { PanelMembersAnswerConverter } from '../converters/panel-members.answer.converter';
 import { PanelRolesAnswerConverter } from '../converters/panel-roles.answer.converter';
 import { ParticipantAttendenceAnswerConverter } from '../converters/participant-attendence.answer.converter';
@@ -43,6 +44,7 @@ import { PrivateHearingAnswerConverter } from '../converters/private-hearing-req
 import { PublicCaseNameAnswerConverter } from '../converters/public-case-name.answer.converter';
 import { ReasonForActualCancellationAnswerConverter } from '../converters/reason-for-actual-cancellation.answer.converter';
 import { ReasonForRequestCancellationAnswerConverter } from '../converters/reason-for-request-cancellation.answer.converter';
+import { ReasonableAdjustmentFlagsAnswerConverter } from '../converters/reasonable-adjustment-flags.answer.converter';
 import { RoomIdAnswerConverter } from '../converters/room-id.answer.converter';
 import { StageAnswerConverter } from '../converters/stage.answer.converter';
 import { StatusAnswerConverter } from '../converters/status.answer.converter';
@@ -52,7 +54,6 @@ import { VenueAnswerConverter } from '../converters/venue.answer.converter';
 import { AnswerSource } from '../models/hearings.enum';
 import { LocationsDataService } from '../services/locations-data.service';
 import { State } from '../store';
-import { PanelMemberRolesAnswerConverter } from '../converters/panel-member-roles.answer.converter';
 
 @Pipe({
   name: 'transformAnswer'
@@ -99,6 +100,9 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.CASE_FLAGS:
         converter = new CaseFlagAnswerConverter(this.route);
+        break;
+      case AnswerSource.REASONABLE_ADJUSTMENT_FLAGS:
+        converter = new ReasonableAdjustmentFlagsAnswerConverter(this.route);
         break;
       case AnswerSource.ADDITIONAL_SECURITY_REQUIRED:
         converter = new AdditionalSecurityAnswerConverter();

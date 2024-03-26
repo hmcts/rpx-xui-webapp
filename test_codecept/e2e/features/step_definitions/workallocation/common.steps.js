@@ -168,7 +168,7 @@ Then('I validate task list table columns displayed for user {string}', async fun
     });
     for (const headerHash of columnHeadersHash) {
         const columnHeader = headerHash.ColumnHeader;
-        if (columnHeader !== '' && headerHash[userType].toLowerCase().includes('yes') || headerHash[userType].toLowerCase().includes('true')) {
+        if (headerHash[userType].toLowerCase().includes('yes') || headerHash[userType].toLowerCase().includes('true')) {
             expect(actualHeadeColumns).to.include(columnHeader.toLowerCase());
 
         } else {

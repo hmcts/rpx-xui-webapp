@@ -16,6 +16,17 @@ module.exports = {
   },
   plugins: ['@typescript-eslint'],
   root: true,
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": true
+  },
+  "globals": {
+    "browser": true,
+    "require": true,
+    "process": true,
+    "$":true
+  },
   rules: {
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-explicit-any': 'off',

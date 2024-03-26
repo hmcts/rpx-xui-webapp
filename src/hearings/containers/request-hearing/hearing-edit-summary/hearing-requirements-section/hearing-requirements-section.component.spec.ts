@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PartyType, UnavailabilityType } from '../../../../../hearings/models/hearings.enum';
 import { caseFlagsRefData, initialState } from '../../../../hearing.test.data';
 import { HearingsService } from '../../../../services/hearings.service';
 import { HearingsUtils } from '../../../../utils/hearings.utils';

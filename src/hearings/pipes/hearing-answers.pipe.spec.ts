@@ -132,6 +132,13 @@ describe('HearingAnswersPipe', () => {
     expect(result$).toBeObservable(expected);
   });
 
+  it('should transform reasonable adjustment flags', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.REASONABLE_ADJUSTMENT_FLAGS, of(STATE), 0);
+    const caseFlags = '<strong class=\'bold\'>Jane Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li><li>Language Interpreter</li></ul><br>';
+    const expected = cold('(b|)', { b: caseFlags });
+    expect(result$).toBeObservable(expected);
+  });
+
   it('should transform how party attend', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.HOW_ATTENDANT, of(STATE), 0);
     const partyFlags = '<ul><li>Jane Smith - In person</li></ul>';

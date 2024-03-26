@@ -28,8 +28,7 @@ exports.config = {
     WebDriver:{
       url: 'https://manage-case.aat.platform.hmcts.net/',
       browser: 'chrome',
-      show: true,
-
+      show: true
     }
   },
   "mocha": {
@@ -69,7 +68,7 @@ exports.config = {
   bootstrap: null,
   // teardown: () => {
   //   console.log("Run complete...")
-    
+
   //   return true
   // }
 }

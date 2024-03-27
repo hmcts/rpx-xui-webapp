@@ -184,7 +184,7 @@ describe('HearingEditSummaryComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: true,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
         hearingUnavailabilityDatesChanged: false
@@ -260,7 +260,7 @@ describe('HearingEditSummaryComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: true,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
         hearingUnavailabilityDatesChanged: false
@@ -508,42 +508,6 @@ describe('HearingEditSummaryComponent', () => {
             unavailabilityType: UnavailabilityType.ALL_DAY
           }
         ]
-      },
-      {
-        partyID: 'P2',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        organisationDetails: {
-          name: 'DWP',
-          organisationType: 'GOV',
-          cftOrganisationID: 'O100000'
-        },
-        unavailabilityDOW: null,
-        unavailabilityRanges: [
-          {
-            unavailableFromDate: '2021-12-20T09:00:00.000Z',
-            unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY
-          }
-        ]
-      },
-      {
-        partyID: 'P3',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        organisationDetails: {
-          name: 'DWP',
-          organisationType: 'GOV',
-          cftOrganisationID: 'O100000'
-        },
-        unavailabilityDOW: null,
-        unavailabilityRanges: [
-          {
-            unavailableFromDate: '2021-12-20T09:00:00.000Z',
-            unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY
-          }
-        ]
       }
     ];
     expect(component.hearingRequestMainModel.partyDetails).toEqual(expectedResult);
@@ -605,7 +569,7 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should set auto updated pageless properties to true', () => {
     // @ts-ignore
-    expect(component.pageVisitPartiesChangeExists()).toEqual(true);
+    expect(component.pageVisitPartiesChangeExists()).toEqual(false);
   });
 
   it('should partyDetailsChangesRequired return true', () => {

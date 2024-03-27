@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
+import { HearingsUtils } from '../../../../hearings/utils/hearings.utils';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
@@ -660,15 +661,53 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should partyDetailsChangesRequired return true if party type changed', () => {
-    spyOn(store, 'select').and.returnValue(of(initialState.hearings.hearingValues));
     component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
     component.serviceHearingValuesModel = {
       ...component.serviceHearingValuesModel,
       parties: initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails
     };
     component.serviceHearingValuesModel.parties[0].partyType = PartyType.ORG;
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h1234',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
+  });
+
+  it('should pageVisitPartiesChangeExists call hasPartyNameChanged', () => {
+    spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(true);
+    component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
+    component.serviceHearingValuesModel = {
+      ...component.serviceHearingValuesModel,
+      parties: initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h1234',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.ngOnInit();
+    expect(HearingsUtils.hasPartyNameChanged).toHaveBeenCalled();
   });
 
   it('should pageVisitHearingFacilitiesChanged return true if hearing facilties changed', () => {

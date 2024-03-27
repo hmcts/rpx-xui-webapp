@@ -160,8 +160,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private hasHearingRequestObjectChanged(): boolean {
-    console.log(JSON.parse(JSON.stringify(this.hearingRequestMainModel)));
-    console.log(JSON.stringify(this.hearingRequestToCompareMainModel));
     return !_.isEqual(
       JSON.parse(JSON.stringify(this.hearingRequestMainModel)),
       JSON.parse(JSON.stringify(this.hearingRequestToCompareMainModel))

@@ -11,7 +11,8 @@ import { AbstractPageFlow } from '../../utils/abstract-page-flow';
   styleUrls: ['./request-hearing.component.scss']
 })
 export class RequestHearingComponent implements OnDestroy {
-  isButtonSubmit: boolean = false;
+  isSubmitInProgress: boolean = false;
+  
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly pageFlow: AbstractPageFlow,
     private readonly hearingsService: HearingsService) {
@@ -26,7 +27,7 @@ export class RequestHearingComponent implements OnDestroy {
   }
 
   public submitNewRequest(): void {
-    this.isButtonSubmit = true;
+    this.isSubmitInProgress = true;
     this.hearingsService.navigateAction(ACTION.SUBMIT);
   }
 

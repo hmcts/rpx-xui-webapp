@@ -11,14 +11,16 @@ import {
 } from '../../../models';
 import { ChoosePersonAndGo } from '../../../store';
 import { AllocateRoleSearchPersonComponent } from './allocate-role-search-person.component';
+import { ActivatedRoute } from '@angular/router';
 
 describe('AllocateRolePersonComponent', () => {
   let component: AllocateRoleSearchPersonComponent;
   let mockStore: any;
+  let mockRoute: ActivatedRoute;
 
   beforeEach((() => {
     mockStore = jasmine.createSpyObj('mockStore', ['pipe', 'dispatch']);
-    component = new AllocateRoleSearchPersonComponent(mockStore);
+    component = new AllocateRoleSearchPersonComponent(mockStore, mockRoute);
   }));
 
   it('navigationHandler raises invalid Error when person not selected', () => {

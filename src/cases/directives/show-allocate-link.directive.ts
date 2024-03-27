@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnInit } from '@angular/core';
+import { Directive, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
 import { CaseRole, RoleCategory, TypeOfRole } from '../../role-access/models';
 
 @Directive({
@@ -9,6 +9,7 @@ export class ShowAllocateLinkDirective implements OnInit {
   @Input() public showAllocateRoleLink: boolean = false;
   @Input() public roles: CaseRole[];
   @Input() public roleCategory: RoleCategory;
+  @Input() public existingUsers: string[] = [];
 
   constructor(private readonly element: ElementRef<HTMLElement>) {}
 

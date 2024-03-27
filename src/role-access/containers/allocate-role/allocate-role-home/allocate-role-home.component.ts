@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { Store, select } from '@ngrx/store';
@@ -42,6 +42,7 @@ import { ChooseRoleComponent } from '../choose-role/choose-role.component';
   styleUrls: ['./allocate-role-home.component.scss']
 })
 export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
+  @Input() public existingUsers: string[] = [];
   @ViewChild('chooseRole', { static: false, read: ChooseRoleComponent })
   public chooseRoleComponent: ChooseRoleComponent;
 
@@ -71,7 +72,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 
   public navigationCurrentState: AllocateRoleState;
   public allocateTo: AllocateTo;
-  public assignmentId: string;
+  public assignmentId: string | string[];
   public caseId: string;
   public jurisdiction: string;
   public userRole: UserRole;
@@ -107,6 +108,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       const roleId = this.route.snapshot.queryParams.typeOfRole ? this.route.snapshot.queryParams.typeOfRole : null;
       this.setReallocatedRole(roleId);
       this.action = this.route.snapshot.routeConfig.path ? this.route.snapshot.routeConfig.path : null;
+      this.existingUsers = this.route.snapshot.queryParams.existingUsers ? this.route.snapshot.queryParams.existingUsers.split(',') : [];
     }
     if (this.action === Actions.Reallocate) {
       this.instantiateReallocateRoleData();

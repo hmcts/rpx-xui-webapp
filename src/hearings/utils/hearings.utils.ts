@@ -3,7 +3,7 @@ import { HearingConditions } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { HearingWindowModel } from '../models/hearingWindow.model';
-import { MemberType, Mode, RequirementType } from '../models/hearings.enum';
+import { Mode } from '../models/hearings.enum';
 import { PropertiesUpdatedOnPageVisit } from '../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
@@ -50,18 +50,5 @@ export class HearingsUtils {
     return hearingRequestMainModel.hearingDetails.hearingWindow && Object.keys(hearingRequestMainModel.hearingDetails.hearingWindow).length === 0
       ? null
       : hearingRequestMainModel.hearingDetails.hearingWindow;
-  }
-
-  public static getMustIncludedJudgeCount(panelPreferenceModel: PanelPreferenceModel[]): number {
-    return panelPreferenceModel?.filter((preferences) => preferences.memberType === MemberType.JUDGE &&
-      preferences.requirementType === RequirementType.MUSTINC).length || 0;
-  }
-
-  public static getRestOfRoleType(roleType: string[]): string[] {
-    let rest: string[] = [];
-    if (roleType?.length > 0) {
-      rest = roleType.slice(1);
-    }
-    return rest;
   }
 }

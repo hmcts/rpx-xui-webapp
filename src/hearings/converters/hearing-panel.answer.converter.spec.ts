@@ -9,11 +9,15 @@ import { MemberType, RadioOptions, RequirementType } from '../models/hearings.en
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { HearingPanelAnswerConverter } from './hearing-panel.answer.converter';
-
 describe('HearingPanelAnswerConverter', () => {
   let converter: AnswerConverter;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
+  const JUDICAIL_USER_DETAILS = [{
+    memberID: 'P0000001',
+    memberType: MemberType.PANEL_MEMBER,
+    requirementType: RequirementType.MUSTINC
+  }];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -24,28 +28,16 @@ describe('HearingPanelAnswerConverter', () => {
     store = TestBed.inject(Store);
     converter = new HearingPanelAnswerConverter();
   });
-
   it('should transform hearing panel answer selection to yes', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelPreferences: [{
-        memberID: '123',
-        memberType: MemberType.PANEL_MEMBER,
-        requirementType: RequirementType.MUSTINC
-      },
-      {
-        memberID: '1232',
-        memberType: MemberType.JUDGE,
-        requirementType: RequirementType.MUSTINC
-      }],
-      roleType: ['role1']
+      panelPreferences: JUDICAIL_USER_DETAILS
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = RadioOptions.YES;
     const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });
-
   it('should transform hearing panel answer selection to no', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;

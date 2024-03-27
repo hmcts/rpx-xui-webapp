@@ -234,7 +234,7 @@ async function waitForElement(el) {
      const key = 'Nagoya0102'
 
      await BrowserWaits.retryWithActionCallback(async () => {
-       await loginPage.givenIAmLvoggedIn(user, key);
+       await loginPage.givenIAmLoggedIn(user, key);
      })
     
     loginAttempts++;

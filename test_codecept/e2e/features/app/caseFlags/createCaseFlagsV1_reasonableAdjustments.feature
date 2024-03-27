@@ -1,5 +1,5 @@
 
-@fullfunctional @functional_enabled @functional_debug
+@fullfunctional @functional_enabled
 Feature: Case flags V1 Add/Update Reasonable adjustment
 
     Background: Setup case

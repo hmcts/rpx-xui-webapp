@@ -31,6 +31,8 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   templateUrl: './hearing-edit-summary.component.html'
 })
 export class HearingEditSummaryComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
+  private readonly notUpdatedMessage = 'The request has not been updated';
+
   public readonly REGION_ID = '7';
   public readonly LANGUAGE_INTERPRETER_FLAG_ID = 'PF0015';
   public caseReference: string;
@@ -55,13 +57,12 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public panelRolesRefData: LovRefDataModel[];
   public isHearingAmendmentsEnabled: boolean;
   public hearingTemplate = HearingTemplate;
-  public isPagelessAttributeChanged: boolean = false;
+  public isPagelessAttributeChanged: boolean;
+  public isWithinPageAttributeChanged: boolean;
+  public pageVisitChangeExists: boolean;
   public afterPageVisit: AfterPageVisitProperties;
-  public isWithinPageAttributeChanged: boolean = false;
-  public pageVisitChangeExists: boolean = false;
   public sectionsToDisplay: string[];
   public hearingScreenEnum = HearingScreensEnum;
-  private readonly notUpdatedMessage = 'The request has not been updated';
 
   constructor(private readonly router: Router,
     private readonly locationsDataService: LocationsDataService,
@@ -122,17 +123,19 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       this.router.navigate(['/', 'hearings', 'request', 'hearing-view-summary']);
     } else {
       if (action === ACTION.VIEW_EDIT_REASON) {
-        const objA = JSON.parse(JSON.stringify(this.hearingRequestMainModel));
-        const objB = JSON.parse(JSON.stringify(this.hearingRequestToCompareMainModel));
-        if (_.isEqual(objA, objB)) {
+        this.hearingsService.displayValidationError = false;
+        this.validationErrors = [];
+        if (!this.hasHearingRequestObjectChanged()) {
           this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
           window.scrollTo({ top: 0, left: 0 });
           return;
-        } else if (this.hearingsService.displayValidationError) {
+        }
+        if (this.pageVisitChangesNotConfirmed()) {
+          this.hearingsService.displayValidationError = true;
           return;
         }
+        super.navigateAction(action);
       }
-      super.navigateAction(action);
     }
   }
 
@@ -154,6 +157,15 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         element.focus();
       }
     });
+  }
+
+  private hasHearingRequestObjectChanged(): boolean {
+    console.log(JSON.parse(JSON.stringify(this.hearingRequestMainModel)));
+    console.log(JSON.stringify(this.hearingRequestToCompareMainModel));
+    return !_.isEqual(
+      JSON.parse(JSON.stringify(this.hearingRequestMainModel)),
+      JSON.parse(JSON.stringify(this.hearingRequestToCompareMainModel))
+    );
   }
 
   private setPropertiesUpdatedAutomatically(): void {
@@ -320,23 +332,24 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   private setBanner(): void {
     // check pageless automatic update
     this.isPagelessAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.pageless).some((prop) => prop);
-
     // check automatic update within page
     this.isWithinPageAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.withinPage).some((prop) => prop);
-
-    // Validation error display
-    if (this.pageVisitReasonableAdjustmentChangeExists() ||
+    // page visit change exists
+    this.pageVisitChangeExists = this.pageVisitReasonableAdjustmentChangeExists() ||
       this.pageVisitNonReasonableAdjustmentChangeExists() ||
       this.pageVisitPartiesChangeExists() ||
       this.pageVisitHearingWindowChangeExists() ||
-      this.pageVisitHearingFacilitiesChanged()) {
-      this.hearingsService.displayValidationError = true;
-    } else {
-      this.hearingsService.displayValidationError = false;
-    }
-
+      this.pageVisitHearingFacilitiesChanged();
     // Reset submit updated request event
     this.hearingsService.submitUpdatedRequestClicked = false;
+  }
+
+  private pageVisitChangesNotConfirmed(): boolean {
+    return this.pageVisitReasonableAdjustmentChangeExists() ||
+      this.pageVisitNonReasonableAdjustmentChangeExists() ||
+      this.pageVisitPartiesChangeExists() ||
+      this.pageVisitHearingWindowChangeExists() ||
+      this.pageVisitHearingFacilitiesChanged();
   }
 
   private pageVisitReasonableAdjustmentChangeExists(): boolean {
@@ -421,13 +434,15 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // Do not consider non-reasonable adjustment case flags as hearing facilities is not part of the screen flow
       return false;
     }
-    const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired?.sort((a, b) => {
+    const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
+    const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired || [];
+    const sortedFacilitiesInHMC = facilitiesInHMC.sort((a, b) => {
       return a > b ? 1 : (a === b ? 0 : -1);
     });
-    const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired?.sort((a, b) => {
+    const sortedFacilitiesInSHV = facilitiesInSHV.sort((a, b) => {
       return a > b ? 1 : (a === b ? 0 : -1);
     });
-    return !_.isEqual(facilitiesInHMC, facilitiesInSHV);
+    return !_.isEqual(sortedFacilitiesInHMC, sortedFacilitiesInSHV);
   }
 
   private pageVisitPartiesChangeExists(): boolean {

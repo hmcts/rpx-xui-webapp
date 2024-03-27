@@ -7,4 +7,5 @@ export interface PartyFlagsModel {
   flagStatus: string;
   dateTimeCreated?: string;
   dateTimeModified?: string;
+  flagComment?: string;
 }

@@ -94,5 +94,5 @@ ignore/
 
 /infrastructure/.terraform/
 .angular/cache/*
-install-state.gz
+.yarn/install-state.gz
 

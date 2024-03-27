@@ -9,7 +9,6 @@ import { CaseFlagsUtils } from './case-flags.utils';
 import { HearingsUtils } from './hearings.utils';
 
 describe('CaseFlagsUtils', () => {
-  const caseFlagReferenceModels: CaseFlagReferenceModel[] = CASE_FLAG_REFERENCE_VALUES;
   const partyDetails = [
     {
       partyID: 'P1',
@@ -411,17 +410,16 @@ describe('CaseFlagsUtils', () => {
 
     it('should return non-reasonable adjustment flags with labels', () => {
       spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(true);
-      const flagsGroup = CaseFlagsUtils.getNonReasonableAdjustmentFlags(caseFlagsRefData, caseFlags,
+      const flagsGroup = CaseFlagsUtils.getNonReasonableAdjustmentFlagsGroupedByPartyName(caseFlagsRefData, caseFlags,
         partiesInHMC, partiesInSHV, requestDetails, false);
       expect(flagsGroup[0].name).toEqual('Jane Butler');
       expect(flagsGroup[0].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.AMENDED);
-      expect(flagsGroup[0].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
-      expect(flagsGroup[0].partyFlags[1].flagAmendmentLabelStatus).toBeUndefined();
-      expect(flagsGroup[0].partyFlags[2].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
+      expect(flagsGroup[0].partyFlags[0].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
+      expect(flagsGroup[0].partyFlags[1].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
       expect(flagsGroup[1].name).toEqual('Jack Ryan');
       expect(flagsGroup[1].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.AMENDED);
       expect(flagsGroup[1].partyFlags[0].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
-      expect(flagsGroup[0].partyFlags[1].flagAmendmentLabelStatus).toBeUndefined();
+      expect(flagsGroup[0].partyFlags[1].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
       expect(flagsGroup[2].name).toEqual('Rob Kennedy');
       expect(flagsGroup[2].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.AMENDED);
       expect(flagsGroup[2].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
@@ -430,13 +428,12 @@ describe('CaseFlagsUtils', () => {
 
     it('should return non-reasonable adjustment flags with no labels', () => {
       spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(false);
-      const flagsGroup = CaseFlagsUtils.getNonReasonableAdjustmentFlags(caseFlagsRefData, caseFlags,
+      const flagsGroup = CaseFlagsUtils.getNonReasonableAdjustmentFlagsGroupedByPartyName(caseFlagsRefData, caseFlags,
         partiesInHMC, partiesInSHV, requestDetails, true);
       expect(flagsGroup[0].name).toEqual('Jane Butler');
       expect(flagsGroup[0].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[0].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
       expect(flagsGroup[0].partyFlags[1].flagAmendmentLabelStatus).toBeUndefined();
-      expect(flagsGroup[0].partyFlags[2].flagAmendmentLabelStatus).toBeUndefined();
       expect(flagsGroup[1].name).toEqual('Jack Ryan');
       expect(flagsGroup[1].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[1].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
@@ -448,23 +445,79 @@ describe('CaseFlagsUtils', () => {
     });
 
     it('should set reasonable adjustments from hearing request if found', () => {
-      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(CASE_FLAG_REFERENCE_VALUES, partyDetails, servicePartyDetails);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag1);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag2);
     });
 
     it('should set reasonable adjustments from service hearing values if null in hearing request', () => {
       partyDetails[0].individualDetails.reasonableAdjustments = null;
-      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(CASE_FLAG_REFERENCE_VALUES, partyDetails, servicePartyDetails);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag3);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag4);
     });
 
     it('should set reasonable adjustments from service hearing values if empty array in hearing request', () => {
       partyDetails[0].individualDetails.reasonableAdjustments = [];
-      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(CASE_FLAG_REFERENCE_VALUES, partyDetails, servicePartyDetails);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag3);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag4);
+    });
+
+    describe('convertPartiesToPartyWithReasonableAdjustmentFlags', () => {
+      it('should set reasonable adjustments flags', () => {
+        const parties = [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              title: 'Miss',
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
+              reasonableAdjustments: [
+                'RA0053'
+              ]
+            }
+          }
+        ];
+        const expectedResult = {
+          name: 'Hearing Loop',
+          hearingRelevant: true,
+          flagComment: true,
+          flagCode: 'RA0053',
+          isParent: false,
+          Path: [
+            'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
+            'Hearing Enhancement System (hearing loops infra red receiver)'
+          ],
+          childFlags: []
+        };
+        const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithReasonableAdjustmentFlags(CASE_FLAG_REFERENCE_VALUES, parties);
+        expect(partyWithFlags.get('Jane Smith')).toContain(expectedResult);
+      });
+
+      it('should not set reasonable adjustments flags', () => {
+        const parties = [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              title: 'Miss',
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
+              reasonableAdjustments: []
+            }
+          }
+        ];
+        const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithReasonableAdjustmentFlags(CASE_FLAG_REFERENCE_VALUES, parties);
+        expect(partyWithFlags.get('Jane Smith').length).toEqual(0);
+      });
     });
   });
 });

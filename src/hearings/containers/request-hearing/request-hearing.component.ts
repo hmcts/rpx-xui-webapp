@@ -12,7 +12,6 @@ import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 })
 export class RequestHearingComponent implements OnDestroy {
   isSubmitInProgress: boolean = false;
-  
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly pageFlow: AbstractPageFlow,
     private readonly hearingsService: HearingsService) {

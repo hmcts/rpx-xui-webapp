@@ -45,7 +45,9 @@ describe('HearingRequirementsSectionComponent', () => {
         nonReasonableAdjustmentChangesRequired: false,
         reasonableAdjustmentChangesConfirmed: false,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: true
+        hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.ngOnInit();
@@ -63,7 +65,9 @@ describe('HearingRequirementsSectionComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: true
+        hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.ngOnInit();
@@ -80,7 +84,9 @@ describe('HearingRequirementsSectionComponent', () => {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: true
+        hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.ngOnInit();
@@ -98,7 +104,9 @@ describe('HearingRequirementsSectionComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: true
+        hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.ngOnInit();

@@ -57,6 +57,7 @@ describe('HearingTimingSectionComponent', () => {
     nativeElement = fixture.debugElement.nativeElement;
     component.hearingRequestMainModel = initialState.hearings.hearingRequest.hearingRequestMainModel;
     component.hearingRequestToCompareMainModel = initialState.hearings.hearingRequestToCompare.hearingRequestMainModel;
+    component.serviceHearingValuesModel = initialState.hearings.hearingValues.serviceHearingValuesModel;
     fixture.detectChanges();
   });
 
@@ -81,7 +82,9 @@ describe('HearingTimingSectionComponent', () => {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: false,
-        hearingWindowChangesRequired: true
+        hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.ngOnInit();
@@ -102,7 +105,9 @@ describe('HearingTimingSectionComponent', () => {
         nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: true,
-        hearingWindowChangesConfirmed: true
+        hearingWindowChangesConfirmed: true,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.ngOnInit();
@@ -123,7 +128,9 @@ describe('HearingTimingSectionComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: false
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.ngOnInit();
@@ -180,6 +187,123 @@ describe('HearingTimingSectionComponent', () => {
     component.onChange('hearingPriority');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
       fragmentId: 'hearingPriority', changeLink: '/hearings/request/hearing-timing#urgent'
+    });
+  });
+
+  describe('hearingDateChanged', () => {
+    it('should return true if date range changed', () => {
+      component.hearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        hearingDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+          hearingWindow: {
+            dateRangeStart: '2024-03-22T09:00:00.000Z',
+            dateRangeEnd: '2024-03-26T09:00:00.000Z'
+          }
+        }
+      };
+      component.hearingRequestToCompareMainModel = {
+        ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
+        hearingDetails: {
+          ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
+          hearingWindow: {
+            dateRangeStart: '2024-03-23T09:00:00.000Z',
+            dateRangeEnd: '2024-03-27T09:00:00.000Z'
+          }
+        }
+      };
+      component.ngOnInit();
+      expect(component.hearingDateChanged).toEqual(true);
+    });
+
+    it('should return false if date range did not change', () => {
+      component.hearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        hearingDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+          hearingWindow: {
+            dateRangeStart: '2024-03-22T09:00:00.000Z',
+            dateRangeEnd: '2024-03-26T09:00:00.000Z'
+          }
+        }
+      };
+      component.hearingRequestToCompareMainModel = {
+        ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
+        hearingDetails: {
+          ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
+          hearingWindow: {
+            dateRangeStart: '2024-03-22T09:00:00.000Z',
+            dateRangeEnd: '2024-03-26T09:00:00.000Z'
+          }
+        }
+      };
+      component.ngOnInit();
+      expect(component.hearingDateChanged).toEqual(false);
+    });
+
+    it('should return true if "firstDateTimeMustBe" changed', () => {
+      component.hearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        hearingDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+          hearingWindow: {
+            firstDateTimeMustBe: '2024-03-22T09:00:00.000Z'
+          }
+        }
+      };
+      component.hearingRequestToCompareMainModel = {
+        ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
+        hearingDetails: {
+          ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
+          hearingWindow: {
+            firstDateTimeMustBe: '2024-03-23T09:00:00.000Z'
+          }
+        }
+      };
+      component.ngOnInit();
+      expect(component.hearingDateChanged).toEqual(true);
+    });
+
+    it('should return false if "firstDateTimeMustBe" did not change', () => {
+      component.hearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        hearingDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+          hearingWindow: {
+            firstDateTimeMustBe: '2024-03-22T09:00:00.000Z'
+          }
+        }
+      };
+      component.hearingRequestToCompareMainModel = {
+        ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
+        hearingDetails: {
+          ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
+          hearingWindow: {
+            firstDateTimeMustBe: '2024-03-22T09:00:00.000Z'
+          }
+        }
+      };
+      component.ngOnInit();
+      expect(component.hearingDateChanged).toEqual(false);
+    });
+
+    it('should return false if no hearing window', () => {
+      component.hearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        hearingDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+          hearingWindow: null
+        }
+      };
+      component.hearingRequestToCompareMainModel = {
+        ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
+        hearingDetails: {
+          ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
+          hearingWindow: null
+        }
+      };
+      component.ngOnInit();
+      expect(component.hearingDateChanged).toEqual(false);
     });
   });
 });

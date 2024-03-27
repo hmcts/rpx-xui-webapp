@@ -285,6 +285,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
   private updatePartyDetails(parties: PartyDetailsModel[]): PartyDetailsModel[] {
     const newParty: PartyDetailsModel[] = [];
+
     if (Array.isArray(this.hearingRequestMainModel.partyDetails)) {
       this.hearingRequestMainModel.partyDetails.forEach((party) => {
         const serviceParty = parties.find((serviceParty) => serviceParty.partyID === party.partyID);
@@ -319,11 +320,15 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
               unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES)
             });
           }
-        } else {
-          newParty.push(party);
         }
       });
     }
+
+    parties.filter((svcParty) => !newParty.find((y) => y.partyID === svcParty.partyID))
+      .forEach((svcParty) => {
+        newParty.push(svcParty);
+      });
+
     return newParty;
   }
 

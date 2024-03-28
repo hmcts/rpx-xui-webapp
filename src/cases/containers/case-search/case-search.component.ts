@@ -112,9 +112,11 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
     this.resultSubscription = this.resultView$.subscribe((resultView) => this.onResultsViewHandler(resultView));
 
-    this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe((value) => this.elasticSearchFlag = value);
-
-    this.triggerQuery();
+    this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search')
+      .subscribe((value) => {
+        this.elasticSearchFlag = value;
+        this.triggerQuery();
+      });
   }
 
   public listenToPaginationMetadata = () => {

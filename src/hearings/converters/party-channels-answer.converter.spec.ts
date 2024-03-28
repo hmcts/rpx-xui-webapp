@@ -138,7 +138,7 @@ describe('PartyChannelsAnswerConverter', () => {
     expect(converter.getPartyName(null, foundPartyFromService)).toEqual('Jack Smith');
   });
 
-  it('should return blank space if party name from party is null', () => {
+  it('should return empty string if party name from party is null', () => {
     const party: PartyDetailsModel = {
       partyID: 'P001', partyRole: 'appellant', partyType: PartyType.IND,
       individualDetails: { firstName: null, lastName: null }
@@ -146,6 +146,6 @@ describe('PartyChannelsAnswerConverter', () => {
     const foundPartyFromService: PartyDetailsModel = {
       partyID: 'P002', partyRole: 'appellant', partyType: PartyType.ORG, partyName: 'Jack'
     };
-    expect(converter.getPartyName(party, foundPartyFromService)).toEqual(' ');
+    expect(converter.getPartyName(party, foundPartyFromService)).toEqual('');
   });
 });

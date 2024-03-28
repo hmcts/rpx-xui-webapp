@@ -37,9 +37,7 @@ const idamLogin = require('../../../util/idamLogin');
 const browser = require('../../../../codeceptCommon/browser');
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 
-let invalidCredentialsCounter = 0;
 let testCounter = 0;
-let firstAttemptFailedLogins = 0;
 
 async function loginattemptCheckAndRelogin(username, password, world) {
     testCounter++;
@@ -111,13 +109,13 @@ async function loginattemptCheckAndRelogin(username, password, world) {
             idamLogin.withCredentials('lukesuperuserxui_new@mailnesia.com', 'Monday01')
             loginUser = 'lukesuperuserxui_new@mailnesia.com'
         }
-        
+
 
         await browser.get('http://localhost:3000/get-help');
-  
+
 
         let userDetails = null;
-      
+
         await BrowserWaits.retryWithActionCallback(async () => {
             await idamLogin.do();
             userDetails = idamLogin.userDetailsResponse.details.data;
@@ -125,7 +123,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
             if (sessionUserName !== loginUser ){
                 throw new Error('session not updated with user, retrying');
             }
-            
+
         })
 
         await BrowserWaits.retryWithActionCallback(async () => {
@@ -247,7 +245,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
             }else{
                 userDetails.userInfo[key] = properties[key]
             }
-            
+
         }
         const auth = await browser.driver.manage().getCookie('__auth__')
         await mockClient.updateAuthSessionWithUserInfo(auth.value, userDetails.userInfo);
@@ -265,7 +263,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
             }else{
                 userDetails.userInfo[key] = properties[key]
             }
-            
+
         }
         const auth = await browser.driver.manage().getCookie('__auth__')
         await mockClient.updateAuthSessionWithUserInfo(auth.value, userDetails.userInfo);

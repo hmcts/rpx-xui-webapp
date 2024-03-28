@@ -22,7 +22,7 @@ class BrowserUtil{
   }
 
   setAuthCookie(){
-    let token = jwt.sign({
+    const token = jwt.sign({
       data: 'foobar'
     }, 'secret', { expiresIn: 60 * 60 });
     this.addCookie('__auth__', token);
@@ -45,7 +45,7 @@ class BrowserUtil{
     await this.gotoHomePage();
     this.setAuthCookie();
 
-    if(roles){
+    if (roles){
       console.log('j:' + JSON.stringify(roles));
       const encodedRoles = encodeURIComponent('j:' + JSON.stringify(roles));
       console.log(encodedRoles);
@@ -60,9 +60,9 @@ class BrowserUtil{
   }
 
   async waitForLD(){
-    try{
+    try {
       return await this.waitForNetworkResponse('app.launchdarkly.com/sdk/evalx');
-    }catch(err){
+    } catch (err){
       reportLogger.AddMessage(err);
       console.log(err);
       return false;
@@ -70,34 +70,35 @@ class BrowserUtil{
   }
 
   onLDReceivedLogFeatureValue(name){
-    let togglesToLogs = global.scenarioData['featureToggleToLog'];
+    let togglesToLogs = global.scenarioData.featureToggleToLog;
     if (!togglesToLogs){
-      global.scenarioData['featureToggleToLog'] = [];
-      togglesToLogs = global.scenarioData['featureToggleToLog'];
+      global.scenarioData.featureToggleToLog = [];
+      togglesToLogs = global.scenarioData.featureToggleToLog;
     }
     togglesToLogs.push(name);
   }
 
   async waitForNetworkResponse(url){
-    let startTime = new Date();
+    const startTime = new Date();
     let elapsedTime = 0;
     let ldDone = false;
     while (!ldDone && elapsedTime < 15) {
-      let perf = await browser.executeScript('return window.performance.getEntriesByType(\'resource\')');
-      if(!perf){
+      const perf = await browser.executeScript('return window.performance.getEntriesByType(\'resource\')');
+      if (!perf){
         break;
       }
       for (let i = 0; i < perf.length; i++) {
+        reportLogger.AddMessage(elapsedTime + ' ::Retrieved ' + perf[i].name);
         if (perf[i].name.includes(url)) {
           ldDone = true;
-          await this.stepWithRetry(async () => global.scenarioData['featureToggles'] = (await http.get(perf[i].name, {})).data, 3, 'Get LD feature toggles request');
+          await this.stepWithRetry(async () => global.scenarioData.featureToggles = (await http.get(perf[i].name, {})).data, 3, 'Get LD feature toggles request');
           // await browser.sleep(2000);
           reportLogger.AddMessage('LD response received');
           this.logFeatureToggleForScenario();
           //reportLogger.AddJson(global.scenarioData['featureToggles']);
           return true;
         }
-      };
+      }
       elapsedTime = (new Date() - startTime) / 1000;
     }
     reportLogger.AddMessage('LD response not received in 15sec');
@@ -106,29 +107,19 @@ class BrowserUtil{
   }
 
   logFeatureToggleForScenario(){
-    const ldfeatureToggles = global.scenarioData['featureToggles'];
-    const togglesToLogs = global.scenarioData['featureToggleToLog'];
-    reportLogger.AddMessage(`LOgging scenario features toggle values ${JSON.stringify(togglesToLogs)}`);
+    const ldfeatureToggles = global.scenarioData.featureToggles;
+    const togglesToLog = global.scenarioData.featureToggleToLog;
+    reportLogger.AddMessage(`Logging scenario features toggle values ${JSON.stringify(togglesToLog)}`);
 
-    if (!togglesToLogs){
+    if (!togglesToLog){
       return;
     }
     const toggleValuesToLog = {};
-    for (let i = 0; i < togglesToLogs.length; i++) {
-      const toggleName = togglesToLogs[i];
+    for (let i = 0; i < togglesToLog.length; i++) {
+      const toggleName = togglesToLog[i];
       toggleValuesToLog[toggleName] = ldfeatureToggles[toggleName].value;
     }
-
     reportLogger.AddJson(toggleValuesToLog);
-  }
-
-  async addScreenshot(thisTest, onBrowser){
-    // addContext(thisTest, {
-    //     title: "screenshot",
-    //     // value: await reportLogger.getScreenshot(global.screenShotUtils),
-    //     value: "test"
-
-    // });
   }
 
   async stepWithRetry(action, retryCount, stepDesc) {
@@ -139,8 +130,8 @@ class BrowserUtil{
         return action();
       } catch (e) {
         retryCounter++;
-        reportLogger.AddMessage(stepDesc ? stepDesc : '' + ' : Error occured ' + e);
-        reportLogger.AddMessage('Retring attempt  ' + retryCounter);
+        reportLogger.AddMessage(stepDesc ? stepDesc : '' + ' : Error occurred ' + e);
+        reportLogger.AddMessage('Retrying attempt  ' + retryCounter);
       }
     }
   }
@@ -157,13 +148,13 @@ class BrowserUtil{
 
   async addTextToElementWithCssSelector(cssSelector, text, append){
     return await browser.executeScript(() => {
-      let div = document.querySelector(arguments[0]);
-      if(div === undefined || div == null){
+      const div = document.querySelector(arguments[0]);
+      if (div === undefined || div === null){
         return `no element found with query selector ${arguments[0]}`;
       }
       if (arguments[2]){
         div.innerHTML += arguments[1];
-      }else{
+      } else {
         div.innerHTML = arguments[1];
       }
       return 'success';

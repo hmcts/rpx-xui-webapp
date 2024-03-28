@@ -67,7 +67,7 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
       if (storeData && storeData.hearings) {
         this.screenFlow = storeData?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
         this.template = this.template.filter((tp: Section) => {
-          return this.screenFlow.some((sr: ScreenNavigationModel) => {
+          return !this.screenFlow || this.screenFlow.some((sr: ScreenNavigationModel) => {
             return tp.screenName.includes(sr.screenName) || tp.screenName.includes('edit-hearing') || tp.screenName.includes('hearing-listing-info');
           });
         });

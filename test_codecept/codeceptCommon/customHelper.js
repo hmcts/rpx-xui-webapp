@@ -15,9 +15,9 @@ class CustomHelper extends Helper {
     // before/after hooks
     _before() {
        this.browserErrorLogs = [];
-        
+
        this.pageOnListener = false;
-       
+
     }
 
     _beforeStep(){
@@ -42,7 +42,7 @@ class CustomHelper extends Helper {
         codeceptMochawesomeLog.AddMessage('---------------------- TEST FAILED ----------------------');
         for (const log of this.browserErrorLogs) {
             this.attachBrowserLog(log)
-              
+
         }
     }
 
@@ -68,7 +68,7 @@ class CustomHelper extends Helper {
         codeceptMochawesomeLog.AddMessage('---------------------- TEST FAILED ----------------------');
         for (const log of this.browserErrorLogs) {
             this.attachBrowserLog(log)
-              
+
         }
 
     }
@@ -114,21 +114,12 @@ class CustomHelper extends Helper {
     }
 
     _getHelper() {
-        const { WebDriver, Puppeteer, Playwright } = this.helpers;
+        const { Playwright } = this.helpers;
         return Playwright;
     }
 
-
-    getPuppeteer() {
-        return this._getHelper();
-    }
-
     getPlaywrightPage() {
-        return this.helpers.Playwright.page
-    }
-
-    getPuppeteerPage() {
-        return this.helpers.Puppeteer.page;
+        return this.helpers.Playwright?.page
     }
 
     async getTextUsingPlaywright(selector){
@@ -138,9 +129,9 @@ class CustomHelper extends Helper {
     }
 
     getPlaywrightlocator(selector){
-        const selectorType = Object.keys(selector)[0]
-        const selectorString = selectorType === 'css' ? selector.css : `xpath=${selector.xpath}`
-        const locator = this.getPlaywrightPage().locator(selectorString)
+        const selectorType = Object.keys(selector)[0];
+        const selectorString = selectorType === 'css' ? selector.css : `xpath=${selector.xpath}`;
+        const locator = this.getPlaywrightPage().locator(selectorString);
         return locator;
     }
 
@@ -153,40 +144,35 @@ class CustomHelper extends Helper {
             locator  = this.getPlaywrightPage().locator(selector).first()
             return await locator.getAttribute(name)
         }
-        
+
     }
 
     async isElementChecked(selector) {
-        const locator = this.getPlaywrightPage().locator(selector)
-        const isChecked = await locator.first().isChecked()
-        return isChecked
+        const locator = this.getPlaywrightPage().locator(selector);
+        const isChecked = await locator.first().isChecked();
+        return isChecked;
     }
 
 
     async isVisible(selector) {
-        const locator = this.getPlaywrightlocator(selector)
-        const isLocatorVisible = await locator.first().isVisible()
-        return isLocatorVisible
+        const locator = this.getPlaywrightlocator(selector);
+        const isLocatorVisible = await locator.first().isVisible();
+        return isLocatorVisible;
     }
 
     async waitForPlaywrightLocator(selector){
-        const selectorType = Object.keys(selector)[0]
-        const selectorString = selectorType === 'css' ? selector.css : `xpath=${selector.xpath}`
+        const selectorType = Object.keys(selector)[0];
+        const selectorString = selectorType === 'css' ? selector.css : `xpath=${selector.xpath}`;
         const page = this.getPlaywrightPage();
-        await page.locator(selectorString).first().waitFor({ timeout: 20*1000 });
+        await page.locator(selectorString).first().waitFor({ timeout: 20 * 1000 });
     }
-
-
 
     async waitForPlaywrightLocatorState(selector, state) {
         const selectorType = Object.keys(selector)[0]
         const selectorString = selectorType === 'css' ? selector.css : `xpath=${selector.xpath}`
         const page = this.getPlaywrightPage();
-        await page.locator(selectorString).first().waitFor({state: state,  timeout: 20 * 1000 });
+        await page.locator(selectorString).first().waitFor({state: state, timeout: 20 * 1000 });
     }
-
-
-
 }
 
 module.exports = CustomHelper;

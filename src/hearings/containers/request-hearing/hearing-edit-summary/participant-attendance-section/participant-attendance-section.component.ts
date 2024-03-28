@@ -2,11 +2,13 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 import { HearingChannelEnum, PartyType } from '../../../../models/hearings.enum';
+import { HearingsUtils } from '../../../../utils/hearings.utils';
 import { AmendmentLabelStatus, ParticipantAttendanceMode } from '../../../../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../../../../models/serviceHearingValues.model';
 import { HearingsService } from '../../../../services/hearings.service';
+import { ParticipantAttendenceAnswerConverter } from '../../../../converters/participant-attendence.answer.converter';
 
 @Component({
   selector: 'exui-participant-attendance-section',
@@ -98,6 +100,10 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
     if (foundPartyFromService) {
       if (foundPartyFromService.partyName && foundPartyFromService.partyName !== null) {
         return foundPartyFromService.partyName;
+      }
+      if (individualParty.individualDetails.firstName || individualParty.individualDetails.lastName) {
+        return HearingsUtils.getNameFromFirstLast(individualParty.individualDetails.firstName,
+          individualParty.individualDetails.lastName);
       }
       return foundPartyFromService.partyID;
     }

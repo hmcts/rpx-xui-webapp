@@ -6,6 +6,8 @@ import { LovRefDataModel } from '../models/lovRefData.model';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import * as fromHearingStore from '../store';
 import { AnswerConverter } from './answer.converter';
+import { ParticipantAttendenceAnswerConverter } from './participant-attendence.answer.converter';
+import { HearingsUtils } from '../utils/hearings.utils';
 
 export class PartyChannelsAnswerConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) { }
@@ -52,7 +54,8 @@ export class PartyChannelsAnswerConverter implements AnswerConverter {
     if (pdm.partyName) {
       return pdm.partyName;
     } else if (pdm.individualDetails) {
-      return this.getVal(pdm.individualDetails.firstName) + ' ' + this.getVal(pdm.individualDetails.lastName);
+      return this.getVal(HearingsUtils
+        .getNameFromFirstLast(pdm.individualDetails.firstName, pdm.individualDetails.lastName));
     }
     return pdm.partyID;
   }

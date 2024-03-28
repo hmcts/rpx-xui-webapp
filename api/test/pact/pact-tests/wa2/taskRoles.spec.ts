@@ -67,6 +67,7 @@ describe('Task management api, task roles', () => {
       const { getTaskRoles } = requireReloaded('../../../../workAllocation/index');
       const req = mockReq({
         headers: {
+
           'Authorization': 'Bearer someAuthorizationToken',
           'ServiceAuthorization': 'Bearer someServiceAuthorizationToken'
           // 'content-Type': 'application/json'

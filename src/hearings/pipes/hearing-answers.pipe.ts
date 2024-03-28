@@ -34,7 +34,6 @@ import { NeedWelshAnswerConverter } from '../converters/need-welsh.answer.conver
 import { NumberOfAttendancesAnswerConverter } from '../converters/number-of-attendances-answer.converter';
 import { PanelExclusionAnswerConverter } from '../converters/panel-exclusion.answer.converter';
 import { PanelInclusionAnswerConverter } from '../converters/panel-inclusion.answer.converter';
-import { PanelMemberRolesAnswerConverter } from '../converters/panel-member-roles.answer.converter';
 import { PanelMembersAnswerConverter } from '../converters/panel-members.answer.converter';
 import { PanelRolesAnswerConverter } from '../converters/panel-roles.answer.converter';
 import { ParticipantAttendenceAnswerConverter } from '../converters/participant-attendence.answer.converter';

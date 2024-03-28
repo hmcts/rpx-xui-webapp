@@ -1,11 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { firstValueFrom } from 'rxjs';
-import { first } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
-import { AppConstants } from '../../../app/app.constants';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
@@ -36,14 +32,12 @@ export class CaseTaskComponent implements OnInit {
   public isUserJudicial: boolean;
   public isTaskUrgent: boolean;
   private pTask: Task;
-  public isRelease4: boolean;
   public userRoleCategory: string;
 
   constructor(private readonly alertService: AlertService,
               private readonly router: Router,
               private readonly sessionStorageService: SessionStorageService,
-              protected taskService: WorkAllocationTaskService,
-              private featureToggleService: FeatureToggleService) {
+              protected taskService: WorkAllocationTaskService) {
   }
 
   public get returnUrl(): string {
@@ -88,7 +82,6 @@ export class CaseTaskComponent implements OnInit {
 
   public async ngOnInit(): Promise<void> {
     this.manageOptions = this.task.actions;
-    await this.setReleaseVersion();
   }
 
   public getAssigneeName(task: Task): string {
@@ -166,14 +159,5 @@ export class CaseTaskComponent implements OnInit {
         tid: urls[1].split('=')[1]
       }
     });
-  }
-
-  public async setReleaseVersion(): Promise<void> {
-    const featureConfigurations = await firstValueFrom(this.featureToggleService
-      .getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null)
-      .pipe(first()));
-    const jurisdictionConfiguration = featureConfigurations.configurations
-      .find((serviceConfig) => serviceConfig.serviceName === this.task.jurisdiction);
-    this.isRelease4 = jurisdictionConfiguration?.releaseVersion === '4';
   }
 }

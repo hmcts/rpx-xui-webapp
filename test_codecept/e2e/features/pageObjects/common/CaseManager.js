@@ -199,7 +199,7 @@ class CaseManager {
         if (stepName) {
             await nextStepSelect.select(stepName)
         } else {
-            nextStepSelectoption = element(by.xpath("//*[@id='next-step']//option[2]"));
+            nextStepSelectoption = element(by.xpath("//option[text() = \'' + stepName + '\']"));
             const someStepEventName = await nextStepSelectoption.getText();
             await nextStepSelect.select(someStepEventName)
 

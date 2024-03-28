@@ -130,6 +130,7 @@ export class CaseViewerContainerComponent implements OnInit {
     let requiredFeature = false;
     features.configurations.forEach((serviceConfig) => {
       if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
+        // EUI-724 - Needed as separator between WA and non-WA services/case types
         requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2;
       }
     });

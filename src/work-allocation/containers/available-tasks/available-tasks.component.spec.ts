@@ -20,7 +20,6 @@ import { TaskActionIds, TaskContext } from '../../enums';
 import * as dtos from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
-import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { MockRouter, getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
@@ -107,8 +106,7 @@ describe('AvailableTasksComponent', () => {
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: AllocateRoleService, useValue: mockRoleService },
         { provide: Store, useValue: storeMock },
-        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
-        { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService }
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);

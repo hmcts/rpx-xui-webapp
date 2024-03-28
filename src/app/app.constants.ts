@@ -138,6 +138,16 @@ const helpContactDetails: ContactDetailsDataModel[] = [
   }
 ];
 
+const ogdProfileTypes = {
+  OGD_DWP_PROFILE: 'OGD_DWP_PROFILE',
+  SOLICITOR_PROFILE: 'SOLICITOR_PROFILE',
+  OGD_HO_PROFILE: 'OGD_HO_PROFILE',
+  OGD_HMRC_PROFILE: 'OGD_HMRC_PROFILE',
+  OGD_CICA_PROFILE: 'OGD_CICA_PROFILE',
+  OGD_CAFCASS_PROFILE_ENGLAND: 'OGD_CAFCASS_PROFILE_ENGLAND',
+  OGD_CAFCASS_PROFILE_CYMRU: 'OGD_CAFCASS_PROFILE_CYMRU'
+};
+
 const environmentNames = {
   aat: 'aat',
   localhost: 'localhost',
@@ -184,6 +194,7 @@ export class AppConstants {
   public static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
   public static CASE_ALLOCATOR_ROLE = caseAllocatorRole;
   public static DEFAULT_MENU_ITEMS = defaultMenuItems;
+  public static OGD_PROFILE_TYPES = ogdProfileTypes;
 }
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';

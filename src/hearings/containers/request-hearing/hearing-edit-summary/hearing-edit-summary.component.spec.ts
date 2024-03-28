@@ -763,11 +763,24 @@ describe('HearingEditSummaryComponent', () => {
     component.hearingRequestToCompareMainModel = Object.assign({});
     component.executeAction(ACTION.VIEW_EDIT_REASON);
     expect(component.validationErrors.length).toEqual(1);
+    expect(hearingsService.displayValidationError).toEqual(false);
   });
 
   it('should navigate to hearing view summary page', () => {
     component.executeAction(ACTION.BACK);
     expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-view-summary']);
+  });
+
+  it('shoud set display validation error to true', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: ['11', '12']
+      }
+    };
+    component.executeAction(ACTION.VIEW_EDIT_REASON);
+    expect(hearingsService.displayValidationError).toEqual(true);
   });
 
   it('should nonReasonableAdjustmentChangesRequired be set to true', () => {

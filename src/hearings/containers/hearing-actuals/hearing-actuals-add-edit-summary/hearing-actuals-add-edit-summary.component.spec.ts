@@ -14,6 +14,7 @@ import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { HearingActualsAddEditSummaryComponent } from './hearing-actuals-add-edit-summary.component';
+import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from 'src/app/services';
 
 @Pipe({ name: 'transformAnswer' })
@@ -81,7 +82,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsAddEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe, MockRpxTranslatePipe],
+      declarations: [HearingActualsAddEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe, MockRpxTranslatePipe, DatePipe],
       imports: [RouterTestingModule.withRoutes(
         [
           { path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent }
@@ -108,6 +109,8 @@ describe('HearingActualsAddEditSummaryComponent', () => {
             }
           }
         },
+        DatePipe,
+        FormatTranslatorService,
         { provide: SessionStorageService }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]

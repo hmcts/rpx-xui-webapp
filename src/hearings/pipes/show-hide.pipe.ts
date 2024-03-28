@@ -21,7 +21,6 @@ import { NotListedHiddenConverter } from '../converters/not-listed.hidden.conver
 import { PanelDetailsExclusionHiddenConverter } from '../converters/panel-details-exclusion.hidden.converter';
 import { PanelExclusionHiddenConverter } from '../converters/panel-exclusion.hidden.converter';
 import { PanelInclusionHiddenConverter } from '../converters/panel-inclusion.hidden.converter';
-import { PanelMemberRolesHiddenConverter } from '../converters/panel-member-roles.hidden.converter';
 import { PanelRolesHiddenConverter } from '../converters/panel-roles.hidden.converter';
 import { PaperHearingHiddenConverter } from '../converters/paper-hearing.hidden.converter';
 import { ParticipantAttendanceExclusionHiddenConverter } from '../converters/participant-attendance-exclusion.hidden.converter';
@@ -93,9 +92,6 @@ export class ShowHidePipe implements PipeTransform {
         break;
       case IsHiddenSource.ADDITIONAL_INSTRUCTION_EXCLUSION:
         converter = new AdditionalInstructionsExclusionHiddenConverter();
-        break;
-      case IsHiddenSource.PANEL_MEMBER_ROLES:
-        converter = new PanelMemberRolesHiddenConverter();
         break;
       case IsHiddenSource.LISTED_HEARING_VIEWER:
         converter = new ListedHearingViewerHiddenConverter(this.store);

@@ -42,7 +42,10 @@
           <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
               <h1 class="govuk-fieldset__heading">
-                  {{ 'Select any additional facilities required' | rpxTranslate }}
+                {{ 'Select any additional facilities required' | rpxTranslate }}
+                <exui-amendment-label *ngIf="this.hearingFacilitiesChangesRequired && !this.hearingFacilitiesChangesConfirmed"
+                  [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
+                </exui-amendment-label>
               </h1>
               <div id="facils-name-hint" class="govuk-hint">
                   {{ 'If the facilities you need are not listed here, add them on the final page before you submit the request.' | rpxTranslate }}
@@ -54,7 +57,12 @@
                   <div id="checkbox-addition-facility" class="govuk-checkboxes" formArrayName="addition-securities" data-module="govuk-checkboxes">
                     <div class="govuk-checkboxes__item" *ngFor="let additionalFacility of additionalFacilities;index as pos" [formGroupName]="pos">
                       <input class="govuk-checkboxes__input" id="{{additionalFacility.key}}" name="pos" type="checkbox" formControlName="selected" [value]="additionalFacility.value_en">
-                      <label class="govuk-label govuk-checkboxes__label" for="{{additionalFacility.key}}" >{{additionalFacility.value_en}}</label>
+                      <label class="govuk-label govuk-checkboxes__label" for="{{additionalFacility.key}}" >
+                        {{additionalFacility.value_en}}
+                        <exui-amendment-label *ngIf="additionalFacility.showAmendedLabel"
+                          [displayLabel]="amendmentLabelEnum.AMENDED">
+                        </exui-amendment-label>
+                      </label>
                     </div>
                   </div>
                 </div>

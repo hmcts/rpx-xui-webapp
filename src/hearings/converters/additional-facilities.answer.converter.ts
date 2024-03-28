@@ -18,7 +18,10 @@ export class AdditionalFacilitiesAnswerConverter implements AnswerConverter {
       map((state) => {
         let result = '<ul>';
         const facilities = this.route.snapshot.data.additionFacilitiesOptions;
-        state.hearingRequest.hearingRequestMainModel.hearingDetails?.facilitiesRequired?.forEach(
+        const facilitiesRequired = state.hearingConditions?.isHearingAmendmentsEnabled
+          ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails?.facilitiesRequired
+          : state.hearingRequest.hearingRequestMainModel.hearingDetails?.facilitiesRequired;
+        facilitiesRequired?.forEach(
           (facility: string) => result += `<li>${AdditionalFacilitiesAnswerConverter.getFacilityValue(facilities, facility)}</li>`
         );
         result += '</ul>';

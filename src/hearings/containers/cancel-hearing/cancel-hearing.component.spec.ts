@@ -89,7 +89,6 @@ describe('CancelHearingComponent', () => {
           }
         },
         provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService },
         FormBuilder
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]

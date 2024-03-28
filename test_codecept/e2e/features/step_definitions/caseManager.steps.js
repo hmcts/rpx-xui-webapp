@@ -6,8 +6,6 @@ var DivorceCase = require('../pageObjects/Divorcecase');
 var IACCase = require('../pageObjects/iacCase');
 var HearingRecordingsCase = require('../pageObjects/hearingRecordingsCase');
 
-var BrowserWaits = require('../../support/customWaits');
-
 var CaseManager = require('../pageObjects/common/CaseManager');
 
 // const CCDCaseDetails = require("../../../nodeMock/ccd/ccdCaseConfig/caseDetailsConfigGenerator");
@@ -51,15 +49,11 @@ const creatCaseStepTimeout = 600*1000;
     })
 
     When('I start case next step', async function () {
-        await BrowserWaits.retryWithActionCallback(async () => {
-            await caseManager.startNextStep(false);
-        });
+        await caseManager.startNextStep(false);
     });
 
     When('I start case next step {string}', async function (stepName) {
-        await BrowserWaits.retryWithActionCallback(async () => {
-            await caseManager.startNextStep(stepName);
-        });
+        await caseManager.startNextStep(stepName);
     });
 
     When('I start case next step {string}, to see page with css seclector {string}', async function (stepName, cssSelector) {

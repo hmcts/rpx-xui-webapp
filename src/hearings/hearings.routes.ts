@@ -204,7 +204,8 @@ export const ROUTES: Routes = [
         resolve: {
           hearingTypes: RefDataResolver,
           actualPartHeardReasonCodes: AdjournHearingActualReasonResolver,
-          cancelHearingActualReasons: CancelHearingActualReasonResolver
+          cancelHearingActualReasons: CancelHearingActualReasonResolver,
+          caseType: CaseTypesResolver
         },
         component: HearingActualsEditSummaryComponent,
         data: {

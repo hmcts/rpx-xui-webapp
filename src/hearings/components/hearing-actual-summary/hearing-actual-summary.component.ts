@@ -13,6 +13,7 @@ import * as fromHearingStore from '../../store';
 })
 export class HearingActualSummaryComponent implements OnInit {
   @Input() public hearingState$: Observable<fromHearingStore.State>;
+  @Input() public hearingStageOptions: LovRefDataModel[];
   @Input() public hearingActualsMainModel: HearingActualsMainModel;
   @Input() public adjournReasons: LovRefDataModel[];
 
@@ -23,6 +24,7 @@ export class HearingActualSummaryComponent implements OnInit {
   public hearingDays: { actualHearingDay: ActualHearingDayModel; plannedHearingDay: PlannedHearingDayModel }[] = [];
   public dateFormat = HearingDateEnum;
   public answerSource = AnswerSource;
+  public hearingTypeDescription: string;
 
   public ngOnInit(): void {
     const hearingOutcome = this.hearingActualsMainModel &&
@@ -39,6 +41,13 @@ export class HearingActualSummaryComponent implements OnInit {
     this.isPaperHearing$ = this.hearingState$ && this.hearingState$.pipe(
       map((state) => state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR))
     );
+    this.hearingTypeDescription = hearingOutcome?.hearingType && this.getHearingTypeDescription(hearingOutcome.hearingType);
+  }
+
+  private getHearingTypeDescription(hearingType: string): string {
+    const hearingTypeFromLookup = this.hearingStageOptions?.find((x) => x.key.toLowerCase() === hearingType.toLowerCase());
+
+    return hearingTypeFromLookup ? hearingTypeFromLookup.value_en : '';
   }
 
   public get isMultiDayHearing(): boolean {

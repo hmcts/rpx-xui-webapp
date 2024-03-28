@@ -1,7 +1,7 @@
-<div class="hmcts-header__container">
+<div class="govuk-width-container app-width-container">
   <div class="govuk-phase-banner">
     <ng-container *xuilibFeatureToggle="'welsh-language'">
-      <a href="javascript:void(0)" (click)="toggleLanguage(currentLang == 'cy' ? 'en' : currentLang == 'en' ? 'cy' : 'en')" class="language">{{currentLang == 'cy' ? 'English' : currentLang == 'en' ? 'Cymraeg' : 'English' }}</a>
+      <a *ngIf="displayWelshToggle" href="javascript:void(0)" (click)="toggleLanguage(currentLang == 'cy' ? 'en' : currentLang == 'en' ? 'cy' : 'en')" class="language">{{currentLang == 'cy' ? 'English' : currentLang == 'en' ? 'Cymraeg' : 'English' }}</a>
     </ng-container>
     <p class="govuk-phase-banner__content">
       <strong class="govuk-tag govuk-phase-banner__content__tag ">

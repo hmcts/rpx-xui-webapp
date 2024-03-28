@@ -216,8 +216,8 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       selectedPanelRoles = panelRoles && panelRoles.filter((role) => role.selected).map((role) => role.selected && role.key) || [];
     }
     const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
-    const preSelectedPanelRoles = panelRequirements && panelRequirements.roleType && panelRequirements.roleType.filter((roleKey) => !panelRoles.map((role) => role.key).includes(roleKey));
-    const selectedPanelJudges: PanelPreferenceModel[] = panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter((preferences) => preferences.memberType === MemberType.JUDGE) || [];
+    const preSelectedPanelRoles = panelRequirements?.roleType?.filter((roleKey) => !panelRoles.map((role) => role.key).includes(roleKey));
+    const selectedPanelJudges: PanelPreferenceModel[] = panelRequirements?.panelPreferences?.filter((preferences) => preferences.memberType === MemberType.JUDGE) || [];
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       hearingDetails: {

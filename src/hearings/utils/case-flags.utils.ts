@@ -38,10 +38,10 @@ export class CaseFlagsUtils {
     caseFlags: PartyFlagsModel[], partiesInSHV: PartyDetailsModel[]): PartyFlagsDisplayModel[] {
     // Get all active non-reasonable adjustment and language interpreter flags
     const activeFlags = this.getActiveDisplaysFlags(caseFlags, caseFlagsRefData, partiesInSHV);
-    const reasonableAdjustmentFlags = activeFlags.filter((caseFlag) =>
-      (caseFlag.displayPath.includes(CaseFlagType.REASONABLE_ADJUSTMENT)
-        || caseFlag.flagId === CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID));
-    const nonReasonableAdjustmentPartyFlags = activeFlags.filter((activeFlag) => !reasonableAdjustmentFlags.includes(activeFlag));
+    const reasonableAdjustmentFlags = activeFlags?.filter((caseFlag) =>
+      (caseFlag?.displayPath?.includes(CaseFlagType.REASONABLE_ADJUSTMENT)
+        || caseFlag?.flagId === CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID));
+    const nonReasonableAdjustmentPartyFlags = activeFlags?.filter((activeFlag) => !reasonableAdjustmentFlags.includes(activeFlag));
     const activeCaseFlags = activeFlags?.filter((nonRAF) => nonRAF.displayPath?.includes(CaseFlagType.CASE_FLAG));
     return [...nonReasonableAdjustmentPartyFlags, ...activeCaseFlags];
   }

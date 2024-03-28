@@ -2479,12 +2479,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.23":
-  version: 7.0.23
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.23"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.21":
+  version: 7.0.21
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.21"
   dependencies:
     tslib: ^2.3.0
-  checksum: ea80f2192b986fdb360d739fa3649d74e7c4df27d9b461f0335498555e4c79dd7c2b52dd9422dcace8bb26ff98a9aac625d961eb7698aa3b89b9b81672141668
+  checksum: 566adde9c6be0f65293b306f51a6a22b74df487cf6818b00a1529479e6261abd6d0490edda064bffe978d7eeec6434de429218588424ce0393a86399ae5426e6
   languageName: node
   linkType: hard
 

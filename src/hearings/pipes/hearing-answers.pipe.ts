@@ -188,9 +188,6 @@ export class HearingAnswersPipe implements PipeTransform {
       case AnswerSource.PANEL_ROLES:
         converter = new PanelRolesAnswerConverter(this.route);
         break;
-      case AnswerSource.PANEL_MEMBER_ROLES:
-        converter = new PanelMemberRolesAnswerConverter(this.route);
-        break;
       case AnswerSource.REASON_FOR_ACTUAL_CANCELLATION:
         converter = new ReasonForActualCancellationAnswerConverter(this.route);
         break;

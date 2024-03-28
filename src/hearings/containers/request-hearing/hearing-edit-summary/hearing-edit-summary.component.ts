@@ -351,8 +351,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     return this.pageVisitReasonableAdjustmentChangeExists() ||
       this.pageVisitNonReasonableAdjustmentChangeExists() ||
       this.pageVisitPartiesChangeExists() ||
-      this.pageVisitHearingWindowChangeExists() ||
-      this.pageVisitHearingFacilitiesChanged();
+      this.pageVisitHearingWindowChangeExists();
   }
 
   private pageVisitReasonableAdjustmentChangeExists(): boolean {
@@ -439,10 +438,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     }
     const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
     const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired || [];
-    const sortedFacilitiesInHMC = facilitiesInHMC.sort((a, b) => {
+
+    const sortedFacilitiesInHMC = facilitiesInHMC.slice().sort((a, b) => {
       return a > b ? 1 : (a === b ? 0 : -1);
     });
-    const sortedFacilitiesInSHV = facilitiesInSHV.sort((a, b) => {
+    const sortedFacilitiesInSHV = facilitiesInSHV.slice().sort((a, b) => {
       return a > b ? 1 : (a === b ? 0 : -1);
     });
     return !_.isEqual(sortedFacilitiesInHMC, sortedFacilitiesInSHV);

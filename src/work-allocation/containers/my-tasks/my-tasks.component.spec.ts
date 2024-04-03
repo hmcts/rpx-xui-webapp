@@ -15,8 +15,7 @@ import { AllocateRoleService } from '../../../role-access/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { FieldType } from '../../enums';
 import { Task } from '../../models/tasks';
-import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
-import { CheckReleaseVersionService } from '../../services/check-release-version.service';
+import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { MyTasksComponent } from './my-tasks.component';
 
@@ -86,12 +85,10 @@ xdescribe('MyTasksComponent', () => {
         { provide: FilterService, useValue: mockFilterService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
-        { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: AllocateRoleService, useValue: mockRoleService },
-        { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService },
         { provide: Store, useValue: storeMock }
       ]
     }).compileComponents();

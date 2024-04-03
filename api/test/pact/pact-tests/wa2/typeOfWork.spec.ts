@@ -29,6 +29,7 @@ describe('Task management api, work types', () => {
 
     before(async () => {
       await pactSetUp.provider.setup();
+
       const interaction = {
         state: 'retrieve work types by userId',
         uponReceiving: 'retrieve all work types',
@@ -59,6 +60,7 @@ describe('Task management api, work types', () => {
 
     it('returns the correct response', async () => {
       const configValues = getWorkAllocationAPIOverrides(pactSetUp.provider.mockService.baseUrl);
+
       sandbox.stub(config, 'get').callsFake((prop) => {
         return configValues[prop];
       });

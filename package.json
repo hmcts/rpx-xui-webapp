@@ -96,7 +96,7 @@
     "@hmcts/media-viewer": "3.0.2",
     "@hmcts/nodejs-healthcheck": "1.7.0",
     "@hmcts/properties-volume": "^0.0.13",
-    "@hmcts/rpx-xui-common-lib": "2.0.17",
+    "@hmcts/rpx-xui-common-lib": "v2.0.17-search-venue-fix",
     "@hmcts/rpx-xui-node-lib": "2.25.12",
     "@ng-idle/core": "^11.1.0",
     "@ng-idle/keepalive": "^11.0.3",

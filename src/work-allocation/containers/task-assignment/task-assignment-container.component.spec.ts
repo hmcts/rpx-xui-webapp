@@ -20,7 +20,6 @@ import { TaskActionConstants } from '../../components/constants';
 import { TaskActionType } from '../../enums';
 import { Task } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
-import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskAssignmentContainerComponent } from './task-assignment-container.component';
 
@@ -108,7 +107,6 @@ describe('TaskAssignmentContainerComponent2', () => {
         { provide: Location, useValue: locationStub },
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService },
         {
           provide: ActivatedRoute,
           useValue: {

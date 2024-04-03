@@ -8,7 +8,6 @@ import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../../../../models/serviceHearingValues.model';
 import { HearingsService } from '../../../../services/hearings.service';
-import { ParticipantAttendenceAnswerConverter } from '../../../../converters/participant-attendence.answer.converter';
 
 @Component({
   selector: 'exui-participant-attendance-section',

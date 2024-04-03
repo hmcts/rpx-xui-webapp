@@ -89,9 +89,8 @@ export class HearingsUtils {
 
   public static getPartyName(partiesFromServiceValue: PartyDetailsModel[], partyInfo: PartyDetailsModel): string {
     const partyDetails = partiesFromServiceValue.find((pty) => pty.partyID === partyInfo.partyID);
-    return (partyDetails && partyDetails.partyName)
-      || HearingsUtils.getNameFromFirstLast(partyInfo.individualDetails.firstName,
-        partyInfo.individualDetails.lastName)
+    return partyDetails?.partyName
+      || HearingsUtils.getNameFromFirstLast(partyInfo.individualDetails.firstName, partyInfo.individualDetails.lastName)
       || `Error: ${partyInfo.partyID}`;
   }
 }

@@ -2404,6 +2404,21 @@ export const initialState = {
                 unavailabilityType: UnavailabilityType.ALL_DAY
               }
             ]
+          },
+          {
+            partyID: 'P3',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              title: 'Mr',
+              firstName: 'Bill',
+              lastName: 'Callahan',
+              preferredHearingChannel: 'byVideo',
+              reasonableAdjustments: [],
+              interpreterLanguage: null
+            },
+            unavailabilityDOW: null,
+            unavailabilityRanges: []
           }
         ]
       },
@@ -2455,6 +2470,18 @@ export const initialState = {
                 individualDetails: {
                   firstName: 'DWP',
                   lastName: null,
+                  preferredHearingChannel: 'byVideo'
+                }
+              },
+              {
+                partyID: 'P1',
+                hearingSubChannel: 'inPerson',
+                partyName: null,
+                partyType: PartyType.IND,
+                partyRole: 'appellant',
+                individualDetails: {
+                  firstName: 'Bill',
+                  lastName: 'Callahan',
                   preferredHearingChannel: 'byVideo'
                 }
               }

@@ -29,7 +29,7 @@ describe('CaseFlagAmendedConverter', () => {
     caseFlagAmendedConverter = new CaseFlagAmendedConverter(router);
   });
 
-  it('should transform is amended for reasonable adjustment flags', () => {
+  it(' should transform isAmended for reasonable adjustment flags', () => {
     const STATE: State = initialState.hearings;
     const result$ = caseFlagAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = true;

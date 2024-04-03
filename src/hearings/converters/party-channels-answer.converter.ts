@@ -6,7 +6,6 @@ import { LovRefDataModel } from '../models/lovRefData.model';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import * as fromHearingStore from '../store';
 import { AnswerConverter } from './answer.converter';
-import { ParticipantAttendenceAnswerConverter } from './participant-attendence.answer.converter';
 import { HearingsUtils } from '../utils/hearings.utils';
 
 export class PartyChannelsAnswerConverter implements AnswerConverter {

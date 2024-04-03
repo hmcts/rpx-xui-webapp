@@ -88,7 +88,9 @@ describe('ParticipantAttendanceSectionComponent', () => {
   it('should set participant attendance details', () => {
     expect(component.isPaperHearing).toEqual('No');
     expect(component.participantChannels).toEqual(['By phone']);
-    expect(component.participantAttendanceModes).toEqual([{ partyName: 'Jane and Smith', channel: 'In person', partyNameChanged: true }]);
+    expect(component.participantAttendanceModes).toEqual([
+      { partyName: 'Jane and Smith', channel: 'In person', partyNameChanged: true }
+    ]);
     expect(component.numberOfPhysicalAttendees).toEqual(3);
   });
 

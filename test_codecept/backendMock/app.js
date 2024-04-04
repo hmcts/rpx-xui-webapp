@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
 const minimist = require('minimist');
 const fs = require('fs');
+const path = require('path')
 const axios = require('axios');
 const http = axios.create({})
 axios.defaults.headers.common['Content-Type'] = 'application/json'
@@ -130,6 +131,19 @@ class MockApp {
 
         app.get('/activity/cases/:caseId/activity', (req,res) => {
             res.send({})
+        })
+
+
+        app.post('/translation/cy', (req, res) => {
+            const reqBody = req.body
+            const savePhrasesPath = path.resolve(__dirname,'../../functional-output/translations.txt')
+            const resposne = { translations:{}}
+            for(const phrase of reqBody.phrases){
+                fs.appendFileSync(savePhrasesPath, `\n${phrase}`)
+                resposne.translations[phrase] = { translation: `WELSH[${phrase}]`}
+            }
+
+            res.send(resposne)
         })
 
         // await this.stopServer();

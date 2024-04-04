@@ -1,5 +1,5 @@
 
-@fullfunctional @functional_enabled @ignore
+@fullfunctional @functional_enabled
 Feature: Case flags V1 Add/Update Reasonable adjustment
 
     Background: Setup case
@@ -17,7 +17,7 @@ Feature: Case flags V1 Add/Update Reasonable adjustment
     Scenario: Create case flag
         When I click tab with label "Case flags" in case details page, to see element with css selector "ccd-read-case-flag-field"
 
-        When I start case next step "Create case flag"
+        When I start case next step "Create case flag", to see page with css seclector "ccd-case-edit-page"
         Then I am on create case flags page "Where should this flag be added?"
         Then In create case flag page "Where should this flag be added?", I validate fields displayed
             | field                            |
@@ -93,7 +93,8 @@ Feature: Case flags V1 Add/Update Reasonable adjustment
             | Support filling in forms | Test auto comment | today         |               | ACTIVE      |
 
 
-        When I start case next step "Manage case flags"
+        When I start case next step "Manage case flags", to see page with css seclector "ccd-manage-case-flags"
+
         Then I am on manage case flags page "Manage case flags"
         Then In create case flag page "Manage case flags", I validate fields displayed
             | field             |

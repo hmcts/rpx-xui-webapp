@@ -2,6 +2,7 @@ import { CaseRole, CaseRoleDetails, RoleCategory, RoleExclusion } from '../../ro
 import { FeatureVariation } from '../models/feature-variation.model';
 
 export class Utils {
+  public static globalRegEx = '[sscs\-prPR\-0-9]';
   public static isStringOrNumber(value: any): boolean {
     return (typeof value === 'string' && value.length !== 0) || (typeof value === 'number');
   }
@@ -60,7 +61,8 @@ export class Utils {
   public static hasMatchedJurisdictionAndCaseType(featureVariation: FeatureVariation, jurisdictionId: string, caseType: string): boolean {
     if (featureVariation.jurisdiction === jurisdictionId) {
       if ((featureVariation?.caseType === caseType) ||
-        (featureVariation.includeCaseTypes?.length > 0 && featureVariation.includeCaseTypes.includes(caseType))) {
+        (featureVariation?.includeCaseTypes?.length > 0 &&
+          featureVariation?.includeCaseTypes.some((ct) => ct === caseType || new RegExp('^(sscs-pr-|SSCS-PR-)\\d+$').test(ct)))) {
         return true;
       }
     }

@@ -122,4 +122,46 @@ describe('Utils', () => {
     caseTypeId = 'CARESUPERVISION_EPO';
     expect(Utils.hasMatchedJurisdictionAndCaseType(featureVariations[1], jurisdictionId, caseTypeId)).toEqual(true);
   });
+
+  it('should return true for the caseType matching with regular expression from the includeCaseTypes', () => {
+    const featureVariations = [
+      {
+        jurisdiction: 'SSCS',
+        includeCaseTypes: [
+          'Benefit',
+          'sscs-pr-1234'
+        ]
+      },
+      {
+        jurisdiction: 'PRIVATELAW',
+        caseType: 'CARESUPERVISION_EPO',
+        roles: ['ignore1', 'ignore2']
+      }
+    ];
+
+    let jurisdictionId = 'SSCS';
+    let caseTypeId = 'Benefit123';
+    expect(Utils.hasMatchedJurisdictionAndCaseType(featureVariations[0], jurisdictionId, caseTypeId)).toEqual(true);
+  });
+
+  it('should return false for the caseType matching with regular expression from the includeCaseTypes', () => {
+    const featureVariations = [
+      {
+        jurisdiction: 'SSCS',
+        includeCaseTypes: [
+          'Benefit',
+          'sscs-1234'
+        ]
+      },
+      {
+        jurisdiction: 'PRIVATELAW',
+        caseType: 'CARESUPERVISION_EPO',
+        roles: ['ignore1', 'ignore2']
+      }
+    ];
+
+    let jurisdictionId = 'SSCS';
+    let caseTypeId = 'Benefit123';
+    expect(Utils.hasMatchedJurisdictionAndCaseType(featureVariations[0], jurisdictionId, caseTypeId)).toEqual(false);
+  });
 });

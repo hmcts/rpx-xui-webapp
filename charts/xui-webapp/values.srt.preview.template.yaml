@@ -1,5 +1,0 @@
-nodejs:
-  devmemoryRequests: 512Mi
-  devcpuRequests: 250m
-  devmemoryLimits: 2Gi
-  devcpuLimits: 2

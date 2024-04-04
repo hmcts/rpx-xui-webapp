@@ -2,7 +2,6 @@ import { CaseRole, CaseRoleDetails, RoleCategory, RoleExclusion } from '../../ro
 import { FeatureVariation } from '../models/feature-variation.model';
 
 export class Utils {
-  public static globalRegEx = '[sscs\-prPR\-0-9]';
   public static isStringOrNumber(value: any): boolean {
     return (typeof value === 'string' && value.length !== 0) || (typeof value === 'number');
   }

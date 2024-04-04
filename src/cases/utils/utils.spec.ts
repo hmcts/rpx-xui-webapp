@@ -139,8 +139,8 @@ describe('Utils', () => {
       }
     ];
 
-    let jurisdictionId = 'SSCS';
-    let caseTypeId = 'Benefit123';
+    const jurisdictionId = 'SSCS';
+    const caseTypeId = 'Benefit123';
     expect(Utils.hasMatchedJurisdictionAndCaseType(featureVariations[0], jurisdictionId, caseTypeId)).toEqual(true);
   });
 
@@ -160,8 +160,8 @@ describe('Utils', () => {
       }
     ];
 
-    let jurisdictionId = 'SSCS';
-    let caseTypeId = 'Benefit123';
+    const jurisdictionId = 'SSCS';
+    const caseTypeId = 'Benefit123';
     expect(Utils.hasMatchedJurisdictionAndCaseType(featureVariations[0], jurisdictionId, caseTypeId)).toEqual(false);
   });
 });

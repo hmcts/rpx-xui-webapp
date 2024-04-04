@@ -423,6 +423,30 @@ describe('CaseFlagsUtils', () => {
       childFlags: []
     };
 
+    const singleCaseFlagReferenceValue: CaseFlagReferenceModel[] = [
+      {
+        name: 'Case',
+        hearingRelevant: true,
+        flagComment: true,
+        flagCode: 'CF0001',
+        isParent: true,
+        Path: [],
+        childFlags: [
+          {
+            name: 'Complex Case',
+            hearingRelevant: true,
+            flagComment: true,
+            flagCode: 'CC0002',
+            isParent: false,
+            Path: [
+              'Case'
+            ],
+            childFlags: []
+          }
+        ]
+      }
+    ];
+
     it('should return non-reasonable adjustment flags with labels', () => {
       const flagsGroup = CaseFlagsUtils.getNonReasonableAdjustmentFlags(caseFlagsRefData, caseFlags,
         partiesInHMC, partiesInSHV, requestDetails, false);
@@ -477,6 +501,12 @@ describe('CaseFlagsUtils', () => {
       const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
       expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag3);
       expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag4);
+    });
+
+    it('should not set reasonable adjustments for party when missing in case flag', () => {
+      partyDetails[0].individualDetails.reasonableAdjustments = [];
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(singleCaseFlagReferenceValue, partyDetails, servicePartyDetails);
+      expect(partyWithFlags.size).toEqual(0);
     });
   });
 });

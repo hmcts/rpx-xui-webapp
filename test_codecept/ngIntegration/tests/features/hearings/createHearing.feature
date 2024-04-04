@@ -17,7 +17,7 @@ Feature: Create hearings workflow
         #     | COMPLETED        | TEST_TYPE   | -5                     | -1                           | 2                                       | 4                                     |
 
 
-      
+
 
         Given I start MockApp
         Given I navigate to home page

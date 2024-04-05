@@ -2703,16 +2703,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:v2.0.17-search-venue-fix":
-  version: 2.0.17-search-venue-fix
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.17-search-venue-fix"
+"@hmcts/rpx-xui-common-lib@npm:2.0.17-search-venue-fix-01":
+  version: 2.0.17-search-venue-fix-01
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.17-search-venue-fix-01"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: e195ffdf2a93b2c18858775a63555d142aa6181fb15a2a21dfd6e90a0fd595a4c9e40bc65b9d1894b72ad0bc74886b82ff5447f5066dcd61dee18cc2abe1521f
+  checksum: 2b02643a37831a276f3b1cb94fbb32ed8c50ac2f3ddd9afef5f75915dda751fdcce37a4dd00e7f980b348cf7cace51564f3e41b8c874417d2c6ef0613a04a932
   languageName: node
   linkType: hard
 
@@ -19123,7 +19123,7 @@ __metadata:
     "@hmcts/media-viewer": 3.0.2
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": v2.0.17-search-venue-fix
+    "@hmcts/rpx-xui-common-lib": 2.0.17-search-venue-fix-01
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3

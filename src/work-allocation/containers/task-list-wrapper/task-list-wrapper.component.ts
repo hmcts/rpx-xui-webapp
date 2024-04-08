@@ -27,7 +27,6 @@ import {
   WASupportedJurisdictionsService,
   WorkAllocationTaskService
 } from '../../services';
-import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
 
 @Component({
@@ -72,8 +71,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService,
     protected rolesService: AllocateRoleService,
-    protected store: Store<fromActions.State>,
-    protected checkReleaseVersionService: CheckReleaseVersionService
+    protected store: Store<fromActions.State>
   ) { }
 
   public get tasks(): Task[] {

@@ -19,7 +19,6 @@ import { PanelPreferenceModel } from '../../../models/panelPreference.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
-import { HearingsUtils } from 'src/hearings/utils/hearings.utils';
 
 @Component({
   selector: 'exui-hearing-panel',
@@ -135,17 +134,10 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public loadHearingPanels(): void {
     let selectedPanelRoles: string[];
     this.panelSelection = '';
-    let roleType: string[];
-    if (this.multiLevelSelections?.length &&
+    if (
+      this.multiLevelSelections?.length &&
       this.hearingRequestMainModel.hearingDetails?.panelRequirements?.roleType) {
-      const includedJudges: number = HearingsUtils.getMustIncludedJudgeCount(this.hearingRequestMainModel?.hearingDetails.panelRequirements.panelPreferences);
-      if (includedJudges > 0) {
-        roleType = this.hearingRequestMainModel.hearingDetails?.panelRequirements.roleType;
-      } else {
-        roleType = HearingsUtils.getRestOfRoleType(this.hearingRequestMainModel.hearingDetails.panelRequirements.roleType);
-      }
-
-      selectedPanelRoles = roleType.filter((roleKey) => this.multiLevelSelections.map((role) => role.key).includes(roleKey));
+      selectedPanelRoles = this.hearingRequestMainModel.hearingDetails?.panelRequirements.roleType.filter((roleKey) => this.multiLevelSelections.map((role) => role.key).includes(roleKey));
       selectedPanelRoles.forEach((selectedPanelRole) => {
         let skipRoleSelection = false;
         if (this.multiLevelSelections?.length) {
@@ -223,13 +215,9 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       this.preparePanelSpecialism(panelRoles, panelSpecialismsSelected);
       selectedPanelRoles = panelRoles && panelRoles.filter((role) => role.selected).map((role) => role.selected && role.key) || [];
     }
-    const includedJudges: number = HearingsUtils.getMustIncludedJudgeCount(this.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences);
     const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
-    const preSelectedPanelRoles: string[] = [];
-    if (includedJudges === 0 && panelRequirements.roleType.length > 0) {
-      preSelectedPanelRoles.push(panelRequirements.roleType[0]);
-    }
-    const selectedPanelJudges: PanelPreferenceModel[] = panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter((preferences) => preferences.memberType === MemberType.JUDGE) || [];
+    const preSelectedPanelRoles = panelRequirements?.roleType?.filter((roleKey) => !panelRoles.map((role) => role.key).includes(roleKey));
+    const selectedPanelJudges: PanelPreferenceModel[] = panelRequirements?.panelPreferences?.filter((preferences) => preferences.memberType === MemberType.JUDGE) || [];
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       hearingDetails: {

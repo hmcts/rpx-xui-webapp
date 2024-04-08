@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.21-case-flags-language-search-validation-v4":
-  version: 7.0.21-case-flags-language-search-validation-v4
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.21-case-flags-language-search-validation-v4"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.21-case-flags-language-search-validation-v5":
+  version: 7.0.21-case-flags-language-search-validation-v5
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.21-case-flags-language-search-validation-v5"
   dependencies:
     tslib: ^2.3.0
-  checksum: 3c324140af9f6bd5a290832b6df18f19d748412335c0394e1089593756192f5d3c5a7c10041cf6548eb857c8ff772301fd8cb65d11243cb45adf5bf8334bb89d
+  checksum: 83f6bb2ec3cdfa61ad2e6b80d2f390e554bddac14507b185041d193f4db33ec4bcdca453722ae8f08490ce88c935b4f9d7bb007471793cc8cec440b9f24bcc06
   languageName: node
   linkType: hard
 
@@ -2703,16 +2703,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.13":
-  version: 2.0.13
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.13"
+"@hmcts/rpx-xui-common-lib@npm:2.0.17":
+  version: 2.0.17
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.17"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 0bc444dac8cdf213d8f5485fd2db591f9a20a89c4b0e2cc81af7f8ca04fc8efa26d4db40466861596d35f2ae4c6db7b0d09501c3d9ae6565e99eb1d3a770790e
+  checksum: 466932865ac93ac66d86c3b11f5338a4803ee58fe7fc5705f186b1f92d8136295a41d120f3e65382c6a9393d5eb0183001004d83222042864599023998279a0a
   languageName: node
   linkType: hard
 
@@ -19116,13 +19116,13 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.21-case-flags-language-search-validation-v4
+    "@hmcts/ccd-case-ui-toolkit": 7.0.21-case-flags-language-search-validation-v5
     "@hmcts/ccpay-web-component": 6.1.0
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 3.0.2
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 2.0.13
+    "@hmcts/rpx-xui-common-lib": 2.0.17
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3

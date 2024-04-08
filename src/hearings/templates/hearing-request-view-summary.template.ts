@@ -70,7 +70,7 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
       {
         id: 'caseFlags',
         answerTitle: 'Reasonable adjustments',
-        answerSource: AnswerSource.CASE_FLAGS
+        answerSource: AnswerSource.REASONABLE_ADJUSTMENT_FLAGS
       }
     ],
     isHiddenSource: IsHiddenSource.HEARING_REQUIREMENTS_EXCLUSION

@@ -147,17 +147,4 @@ export class HearingsUtils {
     }
     return false;
   }
-
-  public static getMustIncludedJudgeCount(panelPreferenceModel: PanelPreferenceModel[]): number {
-    return panelPreferenceModel?.filter((preferences) => preferences.memberType === MemberType.JUDGE &&
-      preferences.requirementType === RequirementType.MUSTINC).length || 0;
-  }
-
-  public static getRestOfRoleType(roleType: string[]): string[] {
-    let rest: string[] = [];
-    if (roleType?.length > 0) {
-      rest = roleType.slice(1);
-    }
-    return rest;
-  }
 }

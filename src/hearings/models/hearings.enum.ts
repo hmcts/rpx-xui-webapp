@@ -183,7 +183,8 @@ export enum HearingJudgeSelectionEnum {
   SelectOneJudgeError = 'Select at least one judge type',
   SelectionError = 'Select the option that applies',
   ExcludeJudge = 'Exclude judge before continue',
-  ExcludeFullNameJudge = 'Enter a full name for a specific judge, or delete the name to stop the judge being included'
+  ExcludeFullNameJudge = 'Enter a full name for a specific judge, or delete the name to stop the judge being included',
+  SameJudgeInIncludeExcludeList = 'You cannot select same judge name in include and exclude list'
 }
 
 export enum HearingLinkedSelectionEnum {
@@ -284,6 +285,7 @@ export enum AnswerSource {
   DATE_RESPONSE_SUBMITTED_MULTI_DAY,
   DATE_RESPONSE_RECEIVED,
   CASE_FLAGS,
+  REASONABLE_ADJUSTMENT_FLAGS,
   ROOM_ID,
   ADDITIONAL_SECURITY_REQUIRED,
   ADDITIONAL_FACILITIES_REQUIRED,
@@ -318,8 +320,7 @@ export enum AnswerSource {
   REASONABLE_ADJUSTMENTS,
   PRIVATE_HEARING_REQUIRED,
   CASE_RESTRICTION,
-  PUBLIC_CASE_NAME,
-  PANEL_MEMBER_ROLES
+  PUBLIC_CASE_NAME
 }
 
 export enum IsHiddenSource {

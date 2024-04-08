@@ -10,6 +10,7 @@ import { AppConstants } from '../../../../app/app.constants';
 import { CaseCategoryModel } from '../../../../hearings/models/caseCategory.model';
 import { AfterPageVisitProperties, AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../../hearings/models/hearingsUpdateMode.enum';
 import { ServiceHearingValuesModel } from '../../../../hearings/models/serviceHearingValues.model';
+import { CaseFlagsUtils } from '../../../../hearings/utils/case-flags.utils';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
@@ -30,6 +31,8 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   templateUrl: './hearing-edit-summary.component.html'
 })
 export class HearingEditSummaryComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
+  private readonly notUpdatedMessage = 'The request has not been updated';
+
   public readonly REGION_ID = '7';
   public readonly LANGUAGE_INTERPRETER_FLAG_ID = 'PF0015';
   public caseReference: string;
@@ -54,13 +57,12 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public panelRolesRefData: LovRefDataModel[];
   public isHearingAmendmentsEnabled: boolean;
   public hearingTemplate = HearingTemplate;
-  public isPagelessAttributeChanged: boolean = false;
+  public isPagelessAttributeChanged: boolean;
+  public isWithinPageAttributeChanged: boolean;
+  public pageVisitChangeExists: boolean;
   public afterPageVisit: AfterPageVisitProperties;
-  public isWithinPageAttributeChanged: boolean = false;
-  public pageVisitChangeExists: boolean = false;
   public sectionsToDisplay: string[];
   public hearingScreenEnum = HearingScreensEnum;
-  private readonly notUpdatedMessage = 'The request has not been updated';
 
   constructor(private readonly router: Router,
     private readonly locationsDataService: LocationsDataService,
@@ -121,17 +123,19 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       this.router.navigate(['/', 'hearings', 'request', 'hearing-view-summary']);
     } else {
       if (action === ACTION.VIEW_EDIT_REASON) {
-        const objA = JSON.parse(JSON.stringify(this.hearingRequestMainModel));
-        const objB = JSON.parse(JSON.stringify(this.hearingRequestToCompareMainModel));
-        if (_.isEqual(objA, objB)) {
+        this.hearingsService.displayValidationError = false;
+        this.validationErrors = [];
+        if (!this.hasHearingRequestObjectChanged()) {
           this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
           window.scrollTo({ top: 0, left: 0 });
           return;
-        } else if (this.hearingsService.displayValidationError) {
+        }
+        if (this.pageVisitChangesNotConfirmed()) {
+          this.hearingsService.displayValidationError = true;
           return;
         }
+        super.navigateAction(action);
       }
-      super.navigateAction(action);
     }
   }
 
@@ -153,6 +157,13 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         element.focus();
       }
     });
+  }
+
+  private hasHearingRequestObjectChanged(): boolean {
+    return !_.isEqual(
+      JSON.parse(JSON.stringify(this.hearingRequestMainModel)),
+      JSON.parse(JSON.stringify(this.hearingRequestToCompareMainModel))
+    );
   }
 
   private setPropertiesUpdatedAutomatically(): void {
@@ -274,6 +285,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
   private updatePartyDetails(parties: PartyDetailsModel[]): PartyDetailsModel[] {
     const newParty: PartyDetailsModel[] = [];
+
     if (Array.isArray(this.hearingRequestMainModel.partyDetails)) {
       this.hearingRequestMainModel.partyDetails.forEach((party) => {
         const serviceParty = parties.find((serviceParty) => serviceParty.partyID === party.partyID);
@@ -308,34 +320,38 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
               unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES)
             });
           }
-        } else {
-          newParty.push(party);
         }
       });
     }
+
+    parties.filter((svcParty) => !newParty.find((y) => y.partyID === svcParty.partyID))
+      .forEach((svcParty) => {
+        newParty.push(svcParty);
+      });
+
     return newParty;
   }
 
   private setBanner(): void {
     // check pageless automatic update
     this.isPagelessAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.pageless).some((prop) => prop);
-
     // check automatic update within page
     this.isWithinPageAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.withinPage).some((prop) => prop);
-
-    // Validation error display
-    if (this.pageVisitReasonableAdjustmentChangeExists() ||
+    // page visit change exists
+    this.pageVisitChangeExists = this.pageVisitReasonableAdjustmentChangeExists() ||
       this.pageVisitNonReasonableAdjustmentChangeExists() ||
       this.pageVisitPartiesChangeExists() ||
       this.pageVisitHearingWindowChangeExists() ||
-      this.pageVisitHearingFacilitiesChanged()) {
-      this.hearingsService.displayValidationError = true;
-    } else {
-      this.hearingsService.displayValidationError = false;
-    }
-
+      this.pageVisitHearingFacilitiesChanged();
     // Reset submit updated request event
     this.hearingsService.submitUpdatedRequestClicked = false;
+  }
+
+  private pageVisitChangesNotConfirmed(): boolean {
+    return this.pageVisitReasonableAdjustmentChangeExists() ||
+      this.pageVisitNonReasonableAdjustmentChangeExists() ||
+      this.pageVisitPartiesChangeExists() ||
+      this.pageVisitHearingWindowChangeExists();
   }
 
   private pageVisitReasonableAdjustmentChangeExists(): boolean {
@@ -401,8 +417,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // Reasonable adjustment changes already confirmed
       return false;
     }
-    const caseFlagsModifiedDate = this.serviceHearingValuesModel.caseFlags.flags.map((flags) => flags.dateTimeModified);
-    const caseFlagsCreatedDate = this.serviceHearingValuesModel.caseFlags.flags.map((flags) => flags.dateTimeCreated);
+    const nonReasonableAdjustmentFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlags(this.caseFlagsRefData, this.serviceHearingValuesModel.caseFlags.flags, this.serviceHearingValuesModel.parties);
+    const caseFlagsModifiedDate = nonReasonableAdjustmentFlags?.map((flags) => flags.dateTimeModified);
+    const caseFlagsCreatedDate = nonReasonableAdjustmentFlags?.map((flags) => flags.dateTimeCreated);
     const caseFlagsWithModifiedDate = caseFlagsModifiedDate.filter((date) => date !== null).filter((date) => date !== undefined);
     const caseFlagsWithCreatedDate = caseFlagsCreatedDate.filter((date) => date !== null).filter((date) => date !== undefined);
 
@@ -419,13 +436,16 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // Do not consider non-reasonable adjustment case flags as hearing facilities is not part of the screen flow
       return false;
     }
-    const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired?.sort((a, b) => {
+    const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
+    const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired || [];
+
+    const sortedFacilitiesInHMC = facilitiesInHMC.slice().sort((a, b) => {
       return a > b ? 1 : (a === b ? 0 : -1);
     });
-    const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired?.sort((a, b) => {
+    const sortedFacilitiesInSHV = facilitiesInSHV.slice().sort((a, b) => {
       return a > b ? 1 : (a === b ? 0 : -1);
     });
-    return !_.isEqual(facilitiesInHMC, facilitiesInSHV);
+    return !_.isEqual(sortedFacilitiesInHMC, sortedFacilitiesInSHV);
   }
 
   private pageVisitPartiesChangeExists(): boolean {

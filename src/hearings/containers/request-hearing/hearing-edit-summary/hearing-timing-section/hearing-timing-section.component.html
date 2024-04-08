@@ -30,7 +30,7 @@
     </div>
     <div class="govuk-summary-list__value">
       {{ specificDateSelection }}
-      <exui-amendment-label *ngIf="hearingDateChanged || specificDateSelection === radioOptions.NO"
+      <exui-amendment-label *ngIf="hearingDateChanged || (hearingDateChanged && specificDateSelection === radioOptions.NO)"
         [displayLabel]="amendmentLabelEnum.AMENDED">
       </exui-amendment-label>
       <div *ngIf="specificDateSelection === radioOptions.CHOOSE_DATE_RANGE">

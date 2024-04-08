@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
+import { HearingsUtils } from '../../../../hearings/utils/hearings.utils';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
@@ -183,7 +184,7 @@ describe('HearingEditSummaryComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: true,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
         hearingUnavailabilityDatesChanged: false
@@ -259,7 +260,7 @@ describe('HearingEditSummaryComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: true,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
         hearingUnavailabilityDatesChanged: false
@@ -507,42 +508,6 @@ describe('HearingEditSummaryComponent', () => {
             unavailabilityType: UnavailabilityType.ALL_DAY
           }
         ]
-      },
-      {
-        partyID: 'P2',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        organisationDetails: {
-          name: 'DWP',
-          organisationType: 'GOV',
-          cftOrganisationID: 'O100000'
-        },
-        unavailabilityDOW: null,
-        unavailabilityRanges: [
-          {
-            unavailableFromDate: '2021-12-20T09:00:00.000Z',
-            unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY
-          }
-        ]
-      },
-      {
-        partyID: 'P3',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        organisationDetails: {
-          name: 'DWP',
-          organisationType: 'GOV',
-          cftOrganisationID: 'O100000'
-        },
-        unavailabilityDOW: null,
-        unavailabilityRanges: [
-          {
-            unavailableFromDate: '2021-12-20T09:00:00.000Z',
-            unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY
-          }
-        ]
       }
     ];
     expect(component.hearingRequestMainModel.partyDetails).toEqual(expectedResult);
@@ -604,7 +569,7 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should set auto updated pageless properties to true', () => {
     // @ts-ignore
-    expect(component.pageVisitPartiesChangeExists()).toEqual(true);
+    expect(component.pageVisitPartiesChangeExists()).toEqual(false);
   });
 
   it('should partyDetailsChangesRequired return true', () => {
@@ -660,15 +625,53 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should partyDetailsChangesRequired return true if party type changed', () => {
-    spyOn(store, 'select').and.returnValue(of(initialState.hearings.hearingValues));
     component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
     component.serviceHearingValuesModel = {
       ...component.serviceHearingValuesModel,
       parties: initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails
     };
     component.serviceHearingValuesModel.parties[0].partyType = PartyType.ORG;
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h1234',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
+  });
+
+  it('should pageVisitPartiesChangeExists call hasPartyNameChanged', () => {
+    spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(true);
+    component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
+    component.serviceHearingValuesModel = {
+      ...component.serviceHearingValuesModel,
+      parties: initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h1234',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.ngOnInit();
+    expect(HearingsUtils.hasPartyNameChanged).toHaveBeenCalled();
   });
 
   it('should pageVisitHearingFacilitiesChanged return true if hearing facilties changed', () => {
@@ -760,11 +763,29 @@ describe('HearingEditSummaryComponent', () => {
     component.hearingRequestToCompareMainModel = Object.assign({});
     component.executeAction(ACTION.VIEW_EDIT_REASON);
     expect(component.validationErrors.length).toEqual(1);
+    expect(hearingsService.displayValidationError).toEqual(false);
   });
 
   it('should navigate to hearing view summary page', () => {
     component.executeAction(ACTION.BACK);
     expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-view-summary']);
+  });
+
+  it('shoud set display validation error to true', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: ['11', '12']
+      }
+    };
+    component.executeAction(ACTION.VIEW_EDIT_REASON);
+    expect(hearingsService.displayValidationError).toEqual(true);
+  });
+
+  it('should nonReasonableAdjustmentChangesRequired be set to true', () => {
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesRequired).toEqual(true);
   });
 
   afterEach(() => {

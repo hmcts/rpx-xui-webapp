@@ -43,6 +43,7 @@ import { PrivateHearingAnswerConverter } from '../converters/private-hearing-req
 import { PublicCaseNameAnswerConverter } from '../converters/public-case-name.answer.converter';
 import { ReasonForActualCancellationAnswerConverter } from '../converters/reason-for-actual-cancellation.answer.converter';
 import { ReasonForRequestCancellationAnswerConverter } from '../converters/reason-for-request-cancellation.answer.converter';
+import { ReasonableAdjustmentFlagsAnswerConverter } from '../converters/reasonable-adjustment-flags.answer.converter';
 import { RoomIdAnswerConverter } from '../converters/room-id.answer.converter';
 import { StageAnswerConverter } from '../converters/stage.answer.converter';
 import { StatusAnswerConverter } from '../converters/status.answer.converter';
@@ -52,7 +53,6 @@ import { VenueAnswerConverter } from '../converters/venue.answer.converter';
 import { AnswerSource } from '../models/hearings.enum';
 import { LocationsDataService } from '../services/locations-data.service';
 import { State } from '../store';
-import { PanelMemberRolesAnswerConverter } from '../converters/panel-member-roles.answer.converter';
 
 @Pipe({
   name: 'transformAnswer'
@@ -99,6 +99,9 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.CASE_FLAGS:
         converter = new CaseFlagAnswerConverter(this.route);
+        break;
+      case AnswerSource.REASONABLE_ADJUSTMENT_FLAGS:
+        converter = new ReasonableAdjustmentFlagsAnswerConverter(this.route);
         break;
       case AnswerSource.ADDITIONAL_SECURITY_REQUIRED:
         converter = new AdditionalSecurityAnswerConverter();
@@ -183,9 +186,6 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.PANEL_ROLES:
         converter = new PanelRolesAnswerConverter(this.route);
-        break;
-      case AnswerSource.PANEL_MEMBER_ROLES:
-        converter = new PanelMemberRolesAnswerConverter(this.route);
         break;
       case AnswerSource.REASON_FOR_ACTUAL_CANCELLATION:
         converter = new ReasonForActualCancellationAnswerConverter(this.route);

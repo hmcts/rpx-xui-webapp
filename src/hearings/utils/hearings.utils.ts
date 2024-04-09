@@ -18,7 +18,6 @@ export class HearingsUtils {
       return models.concat(...models.map((lovData) => lovData.child_nodes && lovData.child_nodes.length ?
         this.flattenArray(lovData.child_nodes) : []));
     }
-
     return models;
   }
 

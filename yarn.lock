@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.24-disable-butttons-readonly":
-  version: 7.0.24-disable-butttons-readonly
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.24-disable-butttons-readonly"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.25-disable-buttons-readonly":
+  version: 7.0.25-disable-buttons-readonly
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.25-disable-buttons-readonly"
   dependencies:
     tslib: ^2.3.0
-  checksum: 707b66779f4af8424b21a5c9be715cb8a8aa86466d44186a0146e528654968fbdbfc25f3e13b057c33a9f94c2c4f6e52cf8de543a3a3eee91721b9aa89de71a6
+  checksum: 4f3f95663cc433f737ca312561999644385238759401fa10072a5e6d4562f0b9515e1a468673896b16f6a9165642e98bea00cf0080db45d58fb5d1ba50a558a5
   languageName: node
   linkType: hard
 
@@ -19117,7 +19117,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.24-disable-butttons-readonly
+    "@hmcts/ccd-case-ui-toolkit": 7.0.25-disable-buttons-readonly
     "@hmcts/ccpay-web-component": 6.1.0
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 3.0.2

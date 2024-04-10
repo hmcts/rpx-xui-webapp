@@ -59,6 +59,7 @@ describe('Documents Uploading', () => {
   it('should handle request and return false if rate-limited', () => {
     const nextTimeout = Date.now() + 5;
     const rateLimitedReq = {
+      method: 'POST',
       session: {
         lastUploadTime: Date.now(),
         nextTimeout: nextTimeout

@@ -85,6 +85,7 @@ ignore/
 
 /functional_output/
 .pnp.*
+.yarn/install-state.gz
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
@@ -94,5 +95,4 @@ ignore/
 
 /infrastructure/.terraform/
 .angular/cache/*
-.yarn/install-state.gz
 

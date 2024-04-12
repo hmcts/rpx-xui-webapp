@@ -190,11 +190,21 @@ Then('In manage case flag workflow, I validate Review details displayed', async 
 })
 
 When('In create case flag workflow, I click submit', async function () {
-    await element(by.xpath(`//button[contains(text(),'Submit')]`)).click()
+    await browserWaits.retryWithActionCallback(async () => {
+        await element(by.xpath(`//button[contains(text(),'Submit')]`)).click()
+        const caseDetailsPageContainer = $('ccd-case-full-access-view');
+        await browserWaits.waitForElement(caseDetailsPageContainer);
+    })
+   
 })
 
 When('In manage case flag workflow, I click submit', async function () {
-    await element(by.xpath(`//button[contains(text(),'Submit')]`)).click()
+    await browserWaits.retryWithActionCallback(async () => {
+        await element(by.xpath(`//button[contains(text(),'Submit')]`)).click()
+        const caseDetailsPageContainer = $('ccd-case-full-access-view');
+        await browserWaits.waitForElement(caseDetailsPageContainer);
+    })
+   
 })
 
 Then('I see case details page and I see case flags banner with message {string}', async function(message){

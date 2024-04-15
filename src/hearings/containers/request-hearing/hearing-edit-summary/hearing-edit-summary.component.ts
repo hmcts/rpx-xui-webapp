@@ -200,9 +200,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private replacer (key: any, value: any) {
-    if (key !== 'partyName' && value !== null) {
-      return value;
+    // party name is not present in HMC and ignoring keys which are initialized with null value
+    if (key === 'partyName' || value === null) {
+      return undefined;
     }
+    return value;
   }
 
   private setPropertiesUpdatedAutomatically(): void {

@@ -71,11 +71,16 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
     const id = userInfo.id ? userInfo.id : userInfo.uid;
     const path = `${baseUrl}/am/role-assignments/actors/${id}`;
     const headers = setHeaders(req);
+    if (req.session.roleRequestEtag) {
+      // add the last etag (note: could reuse more etags but requires storing of more data)
+      headers['If-None-Match'] = req.session.roleRequestEtag;
+    }
     delete headers.accept;
     try {
       const response: AxiosResponse = await http.get(path, { headers });
       const activeRoleAssignments = getActiveRoleAssignments(response.data.roleAssignmentResponse, new Date());
       userRoleAssignments = getRoleAssignmentInfo(activeRoleAssignments);
+      req.session.userRoleAssignments = userRoleAssignments;
       const idamRoles = getOrganisationRoles(activeRoleAssignments);
       userInfo.roles = userInfo.roles.concat(idamRoles);
       const roleAssignments: string[] = userRoleAssignments.filter((role) => role && !!role.roleCategory).length > 0 ?
@@ -83,7 +88,12 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
       // We check for the roleAssignments to determine the roleCategory. If not we try IDAM roles
       userInfo.roleCategory = getRoleCategoryFromRoleAssignments(roleAssignments) || getUserRoleCategory(userInfo.roles);
       req.session.roleAssignmentResponse = activeRoleAssignments;
+      req.session.roleRequestEtag = response.headers.etag;
     } catch (error) {
+      if (error.status === 304) {
+        // as user role assignments are not returned use session to send expected results
+        return req.session.userRoleAssignments;
+      }
       let err = error;
       if (typeof error === 'object' && error !== null) {
         err = JSON.stringify(error);
@@ -120,10 +130,6 @@ export function getRoleAssignmentInfo(roleAssignmentResponse: RoleAssignment[]):
 }
 
 export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<any[]> {
-  const refreshRoleAssignments = req.query && req.query.refreshRoleAssignments
-    ? req.query.refreshRoleAssignments === 'true' : false;
-  const roleAssignmentInfo =
-    req.session.roleAssignmentResponse && !refreshRoleAssignments ? getRoleAssignmentInfo(req.session.roleAssignmentResponse)
-      : await refreshRoleAssignmentForUser(userInfo, req);
+  const roleAssignmentInfo = await refreshRoleAssignmentForUser(userInfo, req);
   return roleAssignmentInfo;
 }

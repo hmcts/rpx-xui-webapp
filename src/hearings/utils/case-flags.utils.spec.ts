@@ -9,6 +9,7 @@ import { CaseFlagsUtils } from './case-flags.utils';
 import { HearingsUtils } from './hearings.utils';
 
 describe('CaseFlagsUtils', () => {
+  const caseFlagReferenceModels: CaseFlagReferenceModel[] = CASE_FLAG_REFERENCE_VALUES;
   const partyDetails = [
     {
       partyID: 'P1',
@@ -283,6 +284,7 @@ describe('CaseFlagsUtils', () => {
       {
         partyID: 'P1',
         partyType: PartyType.IND,
+        partyName: 'Jane Smith',
         partyRole: 'APPL',
         individualDetails: {
           firstName: 'Jane',
@@ -295,6 +297,7 @@ describe('CaseFlagsUtils', () => {
       {
         partyID: 'P2',
         partyType: PartyType.IND,
+        partyName: 'Jack Ryan',
         partyRole: 'APPL',
         individualDetails: {
           firstName: 'Jack',
@@ -304,6 +307,7 @@ describe('CaseFlagsUtils', () => {
       {
         partyID: 'P3',
         partyType: PartyType.IND,
+        partyName: 'Rob Kennedy',
         partyRole: 'APPL',
         individualDetails: {
           firstName: 'Rob',
@@ -403,10 +407,57 @@ describe('CaseFlagsUtils', () => {
       }
     ];
 
+    const partyDetailsWithLanguage = [
+      {
+        ...partyDetails[0],
+        individualDetails: {
+          ...partyDetails[0].individualDetails,
+          interpreterLanguage: 'req'
+        }
+      },
+      {
+        ...partyDetails[1]
+      }];
     const requestDetails = {
       timestamp: '2023-12-18T09:00:00.000Z',
       versionNumber: 1
     };
+
+    const mockLanguageFlag: CaseFlagReferenceModel = {
+      name: 'Language Interpreter',
+      hearingRelevant: true,
+      flagComment: true,
+      flagCode: 'PF0015',
+      isParent: false,
+      Path: [
+        'Party'
+      ],
+      childFlags: []
+    };
+
+    const singleCaseFlagReferenceValue: CaseFlagReferenceModel[] = [
+      {
+        name: 'Case',
+        hearingRelevant: true,
+        flagComment: true,
+        flagCode: 'CF0001',
+        isParent: true,
+        Path: [],
+        childFlags: [
+          {
+            name: 'Complex Case',
+            hearingRelevant: true,
+            flagComment: true,
+            flagCode: 'CC0002',
+            isParent: false,
+            Path: [
+              'Case'
+            ],
+            childFlags: []
+          }
+        ]
+      }
+    ];
 
     it('should return non-reasonable adjustment flags with labels', () => {
       spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(true);
@@ -445,9 +496,11 @@ describe('CaseFlagsUtils', () => {
     });
 
     it('should set reasonable adjustments from hearing request if found', () => {
-      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(CASE_FLAG_REFERENCE_VALUES, partyDetails, servicePartyDetails);
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetailsWithLanguage, servicePartyDetails);
+      expect(partyWithFlags.get('Jane Smith').length).toEqual(3);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag1);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag2);
+      expect(partyWithFlags.get('Jane Smith')).toContain(mockLanguageFlag);
     });
 
     it('should set reasonable adjustments from service hearing values if null in hearing request', () => {
@@ -518,6 +571,12 @@ describe('CaseFlagsUtils', () => {
         const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithReasonableAdjustmentFlags(CASE_FLAG_REFERENCE_VALUES, parties);
         expect(partyWithFlags.get('Jane Smith').length).toEqual(0);
       });
+    });
+
+    it('should not set reasonable adjustments for party when missing in case flag', () => {
+      partyDetails[0].individualDetails.reasonableAdjustments = [];
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(singleCaseFlagReferenceValue, partyDetails, servicePartyDetails);
+      expect(partyWithFlags.size).toEqual(0);
     });
   });
 });

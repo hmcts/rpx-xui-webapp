@@ -9,6 +9,7 @@ import { CaseFlagsUtils } from './case-flags.utils';
 import { HearingsUtils } from './hearings.utils';
 
 describe('CaseFlagsUtils', () => {
+  const caseFlagReferenceModels: CaseFlagReferenceModel[] = CASE_FLAG_REFERENCE_VALUES;
   const partyDetails = [
     {
       partyID: 'P1',
@@ -283,6 +284,7 @@ describe('CaseFlagsUtils', () => {
       {
         partyID: 'P1',
         partyType: PartyType.IND,
+        partyName: 'Jane Smith',
         partyRole: 'APPL',
         individualDetails: {
           firstName: 'Jane',
@@ -295,6 +297,7 @@ describe('CaseFlagsUtils', () => {
       {
         partyID: 'P2',
         partyType: PartyType.IND,
+        partyName: 'Jack Ryan',
         partyRole: 'APPL',
         individualDetails: {
           firstName: 'Jack',
@@ -304,6 +307,7 @@ describe('CaseFlagsUtils', () => {
       {
         partyID: 'P3',
         partyType: PartyType.IND,
+        partyName: 'Rob Kennedy',
         partyRole: 'APPL',
         individualDetails: {
           firstName: 'Rob',
@@ -492,17 +496,11 @@ describe('CaseFlagsUtils', () => {
     });
 
     it('should set reasonable adjustments from hearing request if found', () => {
-      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(CASE_FLAG_REFERENCE_VALUES, partyDetails, servicePartyDetails);
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetailsWithLanguage, servicePartyDetails);
+      expect(partyWithFlags.get('Jane Smith').length).toEqual(3);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag1);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag2);
-    });
-
-    it('should set reasonable adjustments from hearing request if found', () => {
-      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetailsWithLanguage, servicePartyDetails);
-      expect(partyWithFlags.get('Jane and Smith').length).toEqual(3);
-      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag1);
-      expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag2);
-      expect(partyWithFlags.get('Jane and Smith')).toContain(mockLanguageFlag);
+      expect(partyWithFlags.get('Jane Smith')).toContain(mockLanguageFlag);
     });
 
     it('should set reasonable adjustments from service hearing values if null in hearing request', () => {

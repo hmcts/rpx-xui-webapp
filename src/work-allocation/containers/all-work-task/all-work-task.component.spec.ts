@@ -16,8 +16,7 @@ import { AllocateRoleService } from '../../../role-access/services';
 import { TaskContext } from '../../../work-allocation/enums';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
-import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
-import { CheckReleaseVersionService } from '../../services/check-release-version.service';
+import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
 
@@ -90,14 +89,11 @@ xdescribe('AllWorkTaskComponent', () => {
         { provide: AlertService, useValue: mockAlertService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
-        { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
         { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
         { provide: AllocateRoleService, useValue: mockRoleService },
-        { provide: Store, useValue: storeMock },
-        { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService }
+        { provide: Store, useValue: storeMock }
       ]
     }).compileComponents();
   }));
@@ -111,41 +107,6 @@ xdescribe('AllWorkTaskComponent', () => {
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(caseRoles));
     mockCaseworkerService.getAll.and.returnValue(of([]));
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
-    mockFeatureToggleService.isEnabled.and.callFake(() => of(false));
-    mockFeatureToggleService.getValue.and.callFake((params) => {
-      if (params === AppConstants.FEATURE_NAMES.waServiceConfig) {
-        return of({
-          configurations: [
-            {
-              caseTypes: [
-                'Asylum'
-              ],
-              releaseVersion: '3.5',
-              serviceName: 'IA'
-            },
-            {
-              caseTypes: [
-                'PRIVATELAW',
-                'PRLAPPS'
-              ],
-              releaseVersion: '2.1',
-              serviceName: 'PRIVATELAW'
-            },
-            {
-              caseTypes: [
-                'CIVIL',
-                'GENERALAPPLICATION'
-              ],
-              releaseVersion: '2.1',
-              serviceName: 'CIVIL'
-            }
-          ]
-        });
-      }
-
-      return of(true);
-    });
     component.locations = [{ id: 'loc123', locationName: 'Test', services: [] }];
     mockLocationService.getLocations.and.returnValue(of([{ id: 'loc123', locationName: 'Test', services: [] }]));
     mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
@@ -243,41 +204,6 @@ xdescribe('AllWorkTaskComponent', () => {
       mockTaskService.searchTask.and.returnValue(throwError({ status: scr.statusCode }));
       // mockTaskService.searchTaskWithPagination.and.returnValue(of(throwError({ status: 500 })));
       mockCaseworkerService.getAll.and.returnValue(of([]));
-      mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
-      mockFeatureToggleService.isEnabled.and.callFake(() => of(false));
-      mockFeatureToggleService.getValue.and.callFake((params) => {
-        if (params === AppConstants.FEATURE_NAMES.waServiceConfig) {
-          return of({
-            configurations: [
-              {
-                caseTypes: [
-                  'Asylum'
-                ],
-                releaseVersion: '3.5',
-                serviceName: 'IA'
-              },
-              {
-                caseTypes: [
-                  'PRIVATELAW',
-                  'PRLAPPS'
-                ],
-                releaseVersion: '2.1',
-                serviceName: 'PRIVATELAW'
-              },
-              {
-                caseTypes: [
-                  'CIVIL',
-                  'GENERALAPPLICATION'
-                ],
-                releaseVersion: '2.1',
-                serviceName: 'CIVIL'
-              }
-            ]
-          });
-        }
-
-        return of(true);
-      });
       mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
       TestBed.configureTestingModule({
         imports: [
@@ -300,10 +226,8 @@ xdescribe('AllWorkTaskComponent', () => {
           { provide: AlertService, useValue: mockAlertService },
           { provide: SessionStorageService, useValue: mockSessionStorageService },
           { provide: CaseworkerDataService, useValue: mockCaseworkerService },
-          { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
           { provide: LoadingService, useValue: mockLoadingService },
           // FeatureToggleService,
-          { provide: FeatureToggleService, useValue: mockFeatureToggleService },
           { provide: LocationDataService, useValue: mockLocationService },
           { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
           { provide: Store, useValue: storeMock }

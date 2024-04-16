@@ -8,7 +8,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
 import { HearingsUtils } from '../../../../hearings/utils/hearings.utils';
-import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
+import { caseFlagsRefData, initialState} from '../../../hearing.test.data';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
 import { ACTION, CategoryType, Mode, PartyType, UnavailabilityType } from '../../../models/hearings.enum';
@@ -488,7 +488,7 @@ describe('HearingEditSummaryComponent', () => {
             'RA0016',
             'RA0042'
           ],
-          interpreterLanguage: 'PF0015',
+          interpreterLanguage: 'spa',
           preferredHearingChannel: 'inPerson',
           relatedParties: [{
             relatedPartyID: 'New party Id',
@@ -791,5 +791,35 @@ describe('HearingEditSummaryComponent', () => {
   afterEach(() => {
     fixture.destroy();
     TestBed.resetTestingModule();
+  });
+
+  it('should set propertiesUpdatedOnPageVisit when case flags not present', () => {
+    const parties = initialState.hearings.hearingValues.serviceHearingValuesModel.parties;
+    parties[0].individualDetails.interpreterLanguage = 'spa';
+
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      parties: [...parties],
+      caseFlags: {}
+    };
+
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.ngOnInit();
+    const expectedResult: PropertiesUpdatedOnPageVisit = {
+      hearingId: '1000000',
+      caseFlags: {},
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: true,
+        hearingUnavailabilityDatesChanged: true
+      }
+    };
+
+    expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
   });
 });

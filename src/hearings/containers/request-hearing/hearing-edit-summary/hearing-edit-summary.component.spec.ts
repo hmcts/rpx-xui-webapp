@@ -800,14 +800,14 @@ describe('HearingEditSummaryComponent', () => {
     component.serviceHearingValuesModel = {
       ...initialState.hearings.hearingValues.serviceHearingValuesModel,
       parties: [...parties],
-      caseFlags: {}
+      caseFlags: undefined
     };
 
     hearingsService.propertiesUpdatedOnPageVisit = null;
     component.ngOnInit();
     const expectedResult: PropertiesUpdatedOnPageVisit = {
       hearingId: '1000000',
-      caseFlags: {},
+      caseFlags: undefined,
       parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
       hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {

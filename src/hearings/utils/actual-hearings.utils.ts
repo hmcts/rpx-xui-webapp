@@ -229,6 +229,6 @@ export class ActualHearingsUtils {
   }
 
   public static formatTime(time: string, format: string = 'HH:mm'): string {
-    return moment(time).format(format);
+    return time ? moment(time).format(format) : null;
   }
 }

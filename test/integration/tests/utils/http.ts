@@ -1,6 +1,5 @@
 import { s2s } from '@hmcts/rpx-xui-node-lib';
 import axios, { AxiosInstance } from 'axios';
-import * as tunnel from 'tunnel';
 import { getConfigValue } from '../../../../api/configuration';
 import {
   MAX_LOG_LINE,
@@ -25,19 +24,9 @@ s2s.configure({
   s2sSecret
 });
 
-const httpsagent = tunnel.httpsOverHttp({
-  proxy: {
-    host: 'proxyout.reform.hmcts.net',
-    port: 8080
-  }
-});
-
 const axiosOptions = {};
-if (!config.baseUrl.includes('manage-case.')) {
-  axiosOptions['httpsAgent'] = httpsagent;
-}
 
-export const http: AxiosInstance = axios.create(axiosOptions);
+export const ht: AxiosInstance = axios.create(axiosOptions);
 
 export const initAxios = async () => {
   // const s2sToken = await s2s.serviceTokenGenerator();

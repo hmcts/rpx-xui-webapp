@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
@@ -12,50 +12,54 @@ import { AllocateRoleActionTypes, ConfirmAllocation, LoadRolesComplete, NoRolesF
 
 @Injectable()
 export class AllocateRoleEffects {
-  @Effect() public getRoles$ = this.actions$
-    .pipe(
-      ofType<ConfirmAllocation>(AllocateRoleActionTypes.LOAD_ROLES),
-      mergeMap(
-        (data) => this.allocateRoleService.getValidRoles([data.payload.jurisdiction])
-          .pipe(
-            map((roles) => {
-              const jurisdictionRoles = getRolesForRoleCategory(roles, data.payload.roleCategory);
-              return jurisdictionRoles && jurisdictionRoles.length > 0 ? new LoadRolesComplete({ roles: jurisdictionRoles }) : new NoRolesFound();
-            })
-          )
+  public getRoles$ = createEffect(() =>
+    this.actions$
+      .pipe(
+        ofType<ConfirmAllocation>(AllocateRoleActionTypes.LOAD_ROLES),
+        mergeMap(
+          (data) => this.allocateRoleService.getValidRoles([data.payload.jurisdiction])
+            .pipe(
+              map((roles) => {
+                const jurisdictionRoles = getRolesForRoleCategory(roles, data.payload.roleCategory);
+                return jurisdictionRoles && jurisdictionRoles.length > 0 ? new LoadRolesComplete({ roles: jurisdictionRoles }) : new NoRolesFound();
+              })
+            )
+        )
       )
-    );
+  );
 
-  @Effect() public confirmAllocation$ = this.actions$
-    .pipe(
-      ofType<ConfirmAllocation>(AllocateRoleActionTypes.CONFIRM_ALLOCATION),
-      mergeMap(
-        (data) => this.allocateRoleService.confirmAllocation(data.payload)
-          .pipe(
-            map(() => {
-              const message: any = {
-                type: 'success',
-                message: data.payload.action === RoleActions.Allocate ? RoleAllocationMessageText.Add : RoleAllocationMessageText.Reallocate
-              };
-              return new routeAction.CreateCaseGo({
-                path: [this.allocateRoleService.backUrl],
-                caseId: data.payload.caseId,
-                extras: {
-                  state: {
-                    showMessage: true,
-                    retainMessages: true,
-                    message,
-                    messageText: data.payload.action === RoleActions.Allocate ? RoleAllocationMessageText.Add : RoleAllocationMessageText.Reallocate
+  public confirmAllocation$ = createEffect(() =>
+    this.actions$
+      .pipe(
+        ofType<ConfirmAllocation>(AllocateRoleActionTypes.CONFIRM_ALLOCATION),
+        mergeMap(
+          (data) => this.allocateRoleService.confirmAllocation(data.payload)
+            .pipe(
+              map(() => {
+                const message: any = {
+                  type: 'success',
+                  message: data.payload.action === RoleActions.Allocate ? RoleAllocationMessageText.Add : RoleAllocationMessageText.Reallocate
+                };
+                return new routeAction.CreateCaseGo({
+                  path: [this.allocateRoleService.backUrl],
+                  caseId: data.payload.caseId,
+                  extras: {
+                    state: {
+                      showMessage: true,
+                      retainMessages: true,
+                      message,
+                      messageText: data.payload.action === RoleActions.Allocate ? RoleAllocationMessageText.Add : RoleAllocationMessageText.Reallocate
+                    }
                   }
-                }
-              });
-            }),
-            catchError((error) => {
-              return AllocateRoleEffects.handleError(error);
-            })
-          )
+                });
+              }),
+              catchError((error) => {
+                return AllocateRoleEffects.handleError(error);
+              })
+            )
+        )
       )
-    );
+  );
 
   private readonly payload: any;
 

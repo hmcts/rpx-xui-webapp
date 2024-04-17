@@ -44,7 +44,7 @@ describe('App Effects', () => {
       AuthServiceMock.signOut.and.returnValue(of(payload));
       const action = new Logout();
       actions$ = hot('-a', { a: action });
-      effects.logout.subscribe(() => {
+      effects.logout$.subscribe(() => {
         expect(AuthServiceMock.signOut).toHaveBeenCalled();
       });
     });

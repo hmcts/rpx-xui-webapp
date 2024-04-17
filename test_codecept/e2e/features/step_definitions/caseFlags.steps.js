@@ -190,11 +190,21 @@ Then('In manage case flag workflow, I validate Review details displayed', async 
 })
 
 When('In create case flag workflow, I click submit', async function () {
-    await element(by.xpath(`//button[contains(text(),'Submit')]`)).click()
+    await browserWaits.retryWithActionCallback(async () => {
+        await element(by.xpath(`//button[contains(text(),'Submit')]`)).click()
+        const caseDetailsPageContainer = $('ccd-case-full-access-view');
+        await browserWaits.waitForElement(caseDetailsPageContainer);
+    })
+   
 })
 
 When('In manage case flag workflow, I click submit', async function () {
-    await element(by.xpath(`//button[contains(text(),'Submit')]`)).click()
+    await browserWaits.retryWithActionCallback(async () => {
+        await element(by.xpath(`//button[contains(text(),'Submit')]`)).click()
+        const caseDetailsPageContainer = $('ccd-case-full-access-view');
+        await browserWaits.waitForElement(caseDetailsPageContainer);
+    })
+   
 })
 
 Then('I see case details page and I see case flags banner with message {string}', async function(message){
@@ -239,7 +249,7 @@ Then('I validate case flags tab table data for {string}', async function(tableFo
     const isCaseFlagPresent = (expectedCaseFlag, caseFlags) => {
         const expectedkeys = Object.keys(expectedCaseFlag)
         for(const actualFlag of caseFlags){
-            
+            actualFlag['Flag status'] = actualFlag['Flag status'].toUpperCase()
             const matchingFields = expectedkeys.filter(key => { 
                 reportLogger.AddMessage(`${expectedCaseFlag[key]} === ${actualFlag[key] }`)
                 return actualFlag[key].includes(expectedCaseFlag[key])
@@ -254,6 +264,7 @@ Then('I validate case flags tab table data for {string}', async function(tableFo
     const expectedTableData = datatable.parse().hashes();
     const caseFlagsTablePage = caseFlagsTabPage.getFlagTableFor(tableFor)
     const tableData = await caseFlagsTablePage.getTableData();
+
     reportLogger.AddMessage(`Case flags displayed for ${tableFor} : ${JSON.stringify(tableData,null,2)}`)
     for (const expected of expectedTableData){
         if (expected['Creation date'] === 'today'){

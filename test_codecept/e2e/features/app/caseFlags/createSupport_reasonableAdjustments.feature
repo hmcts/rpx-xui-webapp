@@ -1,5 +1,5 @@
 
-@fullfunctional @functional_enabled  @functional_test
+@fullfunctional @functional_enabled @functional_debug
 Feature: Support request Add/Update Reasonable adjustment
 
     Background: Setup case
@@ -81,7 +81,7 @@ Feature: Support request Add/Update Reasonable adjustment
         When In create support request workflow, I click submit
 
 
-        When I start case next step "Manage support"
+        When I start case next step "Manage support", to see page with css seclector "ccd-manage-case-flags"
         Then I am on manage support request page "Which support is no longer needed?"
         Then In create support request page "Which support is no longer needed?", I validate fields displayed
             | field                              |

@@ -9,7 +9,6 @@ import { MemberType, RadioOptions, RequirementType } from '../models/hearings.en
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { HearingPanelAnswerConverter } from './hearing-panel.answer.converter';
-
 describe('HearingPanelAnswerConverter', () => {
   let converter: AnswerConverter;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -29,7 +28,6 @@ describe('HearingPanelAnswerConverter', () => {
     store = TestBed.inject(Store);
     converter = new HearingPanelAnswerConverter();
   });
-
   it('should transform hearing panel answer selection to yes', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
@@ -40,7 +38,6 @@ describe('HearingPanelAnswerConverter', () => {
     const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });
-
   it('should transform hearing panel answer selection to no', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;

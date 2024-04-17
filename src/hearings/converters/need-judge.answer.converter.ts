@@ -9,11 +9,11 @@ export class NeedJudgeAnswerConverter implements AnswerConverter {
     return hearingState$.pipe(
       map((state) => {
         const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-        const panelPreferences = panelRequirements && panelRequirements.panelPreferences;
-        const hasJudgeDetails = panelPreferences && panelPreferences.filter((panel) => panel.memberType === MemberType.JUDGE);
-        if (panelRequirements && panelRequirements.roleType && panelRequirements.roleType.length) {
+        const panelPreferences = panelRequirements?.panelPreferences;
+        const hasJudgeDetails = panelPreferences?.filter((panel) => panel.memberType === MemberType.JUDGE);
+        if (panelRequirements?.roleType?.length) {
           return RadioOptions.NO;
-        } else if (hasJudgeDetails && hasJudgeDetails.length) {
+        } else if (hasJudgeDetails?.length) {
           return RadioOptions.YES;
         }
         return '';

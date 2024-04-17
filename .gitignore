@@ -96,3 +96,4 @@ ignore/
 .angular/cache/*
 .yarn/install-state.gz
 
+install-state.gz

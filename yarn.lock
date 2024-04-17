@@ -5064,13 +5064,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/global-agent@npm:^2.1.0":
-  version: 2.1.3
-  resolution: "@types/global-agent@npm:2.1.3"
-  checksum: 6129b6d5ba871b9d111ddf91e6f9a1725d3f28bf2aa6869ec83bebd14c688cde4275ebea6fa45b0b1c00d78109d022c935f952e9e4876d76289d4706484776c3
-  languageName: node
-  linkType: hard
-
 "@types/got@npm:^9.6.9":
   version: 9.6.12
   resolution: "@types/got@npm:9.6.12"
@@ -7265,13 +7258,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"boolean@npm:^3.0.1":
-  version: 3.2.0
-  resolution: "boolean@npm:3.2.0"
-  checksum: fb29535b8bf710ef45279677a86d14f5185d604557204abd2ca5fa3fb2a5c80e04d695c8dbf13ab269991977a79bb6c04b048220a6b2a3849853faa94f4a7d77
-  languageName: node
-  linkType: hard
-
 "bowser@npm:2.9.0":
   version: 2.9.0
   resolution: "bowser@npm:2.9.0"
@@ -8723,7 +8709,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.19.3, core-js@npm:^3.6.5":
+"core-js@npm:^3.19.3":
   version: 3.36.1
   resolution: "core-js@npm:3.36.1"
   checksum: 6f6c152179bd0673da34e67a82c6a5c37f31f9fbe908e9caf93749dc62a25b6e07fbff2411de3b74bb2d0661b7f9fb247115ba8efabf9904f5fef26edead515e
@@ -10249,13 +10235,6 @@ __metadata:
     esniff: ^2.0.1
     next-tick: ^1.1.0
   checksum: 01179fab0769fdbef213062222f99d0346724dbaccf04b87c0e6ee7f0c97edabf14be647ca1321f0497425ea7145de0fd278d1b3f3478864b8933e7136a5c645
-  languageName: node
-  linkType: hard
-
-"es6-error@npm:^4.1.1":
-  version: 4.1.1
-  resolution: "es6-error@npm:4.1.1"
-  checksum: ae41332a51ec1323da6bbc5d75b7803ccdeddfae17c41b6166ebbafc8e8beb7a7b80b884b7fab1cc80df485860ac3c59d78605e860bb4f8cd816b3d6ade0d010
   languageName: node
   linkType: hard
 
@@ -11907,21 +11886,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"global-agent@npm:^2.1.7":
-  version: 2.2.0
-  resolution: "global-agent@npm:2.2.0"
-  dependencies:
-    boolean: ^3.0.1
-    core-js: ^3.6.5
-    es6-error: ^4.1.1
-    matcher: ^3.0.0
-    roarr: ^2.15.3
-    semver: ^7.3.2
-    serialize-error: ^7.0.1
-  checksum: 09627d2cfc4ae0bee187730d6301cebb80c96c2adadb403d114c5574481b388d491e9c8a6fb2b935e5c0eda886a249bf954e4095d26ca553635cc1ae6d0feb95
-  languageName: node
-  linkType: hard
-
 "global-dirs@npm:^3.0.0":
   version: 3.0.1
   resolution: "global-dirs@npm:3.0.1"
@@ -11947,7 +11911,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globalthis@npm:^1.0.1, globalthis@npm:^1.0.3":
+"globalthis@npm:^1.0.3":
   version: 1.0.3
   resolution: "globalthis@npm:1.0.3"
   dependencies:
@@ -15636,15 +15600,6 @@ __metadata:
   bin:
     marked: ./bin/marked
   checksum: ba762b158d41ed8029d94e7cff1596aed2102e803633b7ebf089ffa501c989bfb79f1e267bbc4848c0d5719457f961ce3d7d173df1f7f9acfecac557b03479ea
-  languageName: node
-  linkType: hard
-
-"matcher@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "matcher@npm:3.0.0"
-  dependencies:
-    escape-string-regexp: ^4.0.0
-  checksum: 8bee1a7ab7609c2c21d9c9254b6785fa708eadf289032b556d57a34e98fcd4c537659a004dafee6ce80ab157099e645c199dc52678dff1e7fb0a6684e0da4dbe
   languageName: node
   linkType: hard
 
@@ -19404,20 +19359,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"roarr@npm:^2.15.3":
-  version: 2.15.4
-  resolution: "roarr@npm:2.15.4"
-  dependencies:
-    boolean: ^3.0.1
-    detect-node: ^2.0.4
-    globalthis: ^1.0.1
-    json-stringify-safe: ^5.0.1
-    semver-compare: ^1.0.0
-    sprintf-js: ^1.1.2
-  checksum: 682e28d5491e3ae99728a35ba188f4f0ccb6347dbd492f95dc9f4bfdfe8ee63d8203ad234766ee2db88c8d7a300714304976eb095ce5c9366fe586c03a21586c
-  languageName: node
-  linkType: hard
-
 "rpx-exui@workspace:.":
   version: 0.0.0-use.local
   resolution: "rpx-exui@workspace:."
@@ -19474,7 +19415,6 @@ __metadata:
     "@types/express": ^4.16.1
     "@types/express-session": ^1.17.0
     "@types/faker": ^5.1.2
-    "@types/global-agent": ^2.1.0
     "@types/jasmine": ~3.3.8
     "@types/jasminewd2": ~2.0.3
     "@types/mocha": ^8.0.3
@@ -19515,7 +19455,6 @@ __metadata:
     form-data: ^2.5.1
     get-port: ^5.1.1
     git-rev-sync: ^2.0.0
-    global-agent: ^2.1.7
     govuk-elements-sass: ^3.1.3
     govuk-frontend: ^3.12.0
     govuk_frontend_toolkit: ^9.0.0
@@ -19873,13 +19812,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver-compare@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "semver-compare@npm:1.0.0"
-  checksum: dd1d7e2909744cf2cf71864ac718efc990297f9de2913b68e41a214319e70174b1d1793ac16e31183b128c2b9812541300cb324db8168e6cf6b570703b171c68
-  languageName: node
-  linkType: hard
-
 "semver-dsl@npm:^1.0.1":
   version: 1.0.1
   resolution: "semver-dsl@npm:1.0.1"
@@ -19974,15 +19906,6 @@ __metadata:
   version: 3.0.0
   resolution: "serialize-error@npm:3.0.0"
   checksum: 695f695a451edf4e23369d0dcc70aa43b6a9e03725f21b852e7b863b7720ce7799b6fcfb382e9f349da50191c2139f9826d7b1a19077a1698ef2157a98aa2ca3
-  languageName: node
-  linkType: hard
-
-"serialize-error@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "serialize-error@npm:7.0.1"
-  dependencies:
-    type-fest: ^0.13.1
-  checksum: e0aba4dca2fc9fe74ae1baf38dbd99190e1945445a241ba646290f2176cdb2032281a76443b02ccf0caf30da5657d510746506368889a593b9835a497fc0732e
   languageName: node
   linkType: hard
 
@@ -21820,13 +21743,6 @@ __metadata:
   version: 4.0.8
   resolution: "type-detect@npm:4.0.8"
   checksum: 62b5628bff67c0eb0b66afa371bd73e230399a8d2ad30d852716efcc4656a7516904570cd8631a49a3ce57c10225adf5d0cbdcb47f6b0255fe6557c453925a15
-  languageName: node
-  linkType: hard
-
-"type-fest@npm:^0.13.1":
-  version: 0.13.1
-  resolution: "type-fest@npm:0.13.1"
-  checksum: e6bf2e3c449f27d4ef5d56faf8b86feafbc3aec3025fc9a5fbe2db0a2587c44714521f9c30d8516a833c8c506d6263f5cc11267522b10c6ccdb6cc55b0a9d1c4
   languageName: node
   linkType: hard
 

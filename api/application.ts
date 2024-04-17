@@ -104,8 +104,6 @@ if (showFeature(FEATURE_COMPRESSION_ENABLED)) {
   app.use(compression());
 }
 
-// TODO: remove tunnel and configurations
-tunnel.init();
 /**
  * Add Reform Standard health checks.
  */

@@ -39,8 +39,7 @@ import { effects, reducers } from './store';
     UtilsModule,
     ExuiCommonLibModule
   ],
-  declarations: [...fromContainers.containers],
-  entryComponents: [
+  declarations: [...fromContainers.containers,
     NocTextFieldComponent,
     NocNumberFieldComponent,
     NocEmailFieldComponent,

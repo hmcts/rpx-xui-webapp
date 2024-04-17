@@ -39,7 +39,6 @@ import { WarningAndErrorSectionComponent } from './containers/request-hearing/he
     HearingsPipesModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers, WarningAndErrorSectionComponent],
-  entryComponents: [],
   providers: [
     PageFlow,
     {

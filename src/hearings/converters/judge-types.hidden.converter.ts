@@ -7,7 +7,7 @@ export class JudgeTypesHiddenConverter implements HiddenConverter {
   public transformHidden(hearingState$: Observable<State>): Observable<boolean> {
     return hearingState$.pipe(map((state) => {
       const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-      if (panelRequirements && panelRequirements.roleType) {
+      if (panelRequirements?.roleType) {
         return !panelRequirements.roleType.length;
       }
       return true;

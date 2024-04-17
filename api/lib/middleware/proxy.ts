@@ -24,7 +24,7 @@ export const onProxyError = (err, req, res) => {
   }
 };
 
-export const applyProxy = (app, config) => {
+export const applyProxy = (app, config, modifyBody: boolean = true) => {
   const options: Options = {
     changeOrigin: true,
     logLevel: getConfigValue(LOGGING),
@@ -47,13 +47,17 @@ export const applyProxy = (app, config) => {
 
   if (config.onRes) {
     options.onProxyRes = (proxyRes, req, res) => {
-      modifyResponse(res, proxyRes, (body) => {
-        if (body) {
-          // modify some information
-          body = config.onRes(proxyRes, req, res, body);
-        }
-        return body; // return value can be a promise
-      });
+      if (modifyBody) {
+        modifyResponse(res, proxyRes, (body) => {
+          if (body) {
+            // modify some information
+            body = config.onRes(proxyRes, req, res, body);
+          }
+          return body; // return value can be a promise
+        });
+      } else {
+        config.onRes(proxyRes, req, res);
+      }
     };
   }
 

@@ -2,14 +2,16 @@ import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Action, select, Store } from '@ngrx/store';
-import { from, Observable, of } from 'rxjs';
+import { Action, Store, select } from '@ngrx/store';
+import { Observable, from, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import * as fromAppReducers from '../../../app/store/reducers';
+import * as fromHearingStore from '../../../hearings/store';
 import { HttpError } from '../../../models/httpError.model';
-import { KEY_FRAGMENT_ID, KEY_MODE } from '../../models/hearingConditions';
-import { Mode } from '../../models/hearings.enum';
+import { HearingConditions, KEY_FRAGMENT_ID, KEY_IS_HEARING_AMENDMENTS_ENABLED, KEY_MODE } from '../../models/hearingConditions';
+import { HearingRequestPageRouteNames, Mode } from '../../models/hearings.enum';
 import { ScreenNavigationModel } from '../../models/screenNavigation.model';
 import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingReducers from '../../store/reducers';
@@ -17,7 +19,6 @@ import * as fromHearingSelectors from '../../store/selectors';
 import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 import * as hearingRequestToCompareActions from '../actions/hearing-request-to-compare.action';
 import * as hearingRequestActions from '../actions/hearing-request.action';
-import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Injectable()
 export class HearingRequestEffects {
@@ -25,7 +26,9 @@ export class HearingRequestEffects {
   public screenNavigations$: Observable<ScreenNavigationModel[]>;
   public caseId: string;
   public mode: Mode;
+  public isHearingAmendmentsEnabled: boolean;
   public fragmentId: string;
+  public hearingId: string;
 
   constructor(
     private readonly actions$: Actions,
@@ -42,7 +45,9 @@ export class HearingRequestEffects {
     this.hearingStore.pipe(select(fromHearingReducers.getHearingsFeatureState)).subscribe(
       (state) => {
         this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
+        this.hearingId = state.hearingRequest.hearingRequestMainModel?.requestDetails?.hearingRequestID;
         this.mode = state.hearingConditions.hasOwnProperty(KEY_MODE) ? state.hearingConditions[KEY_MODE] : Mode.CREATE;
+        this.isHearingAmendmentsEnabled = state.hearingConditions.hasOwnProperty(KEY_IS_HEARING_AMENDMENTS_ENABLED) ? state.hearingConditions[KEY_IS_HEARING_AMENDMENTS_ENABLED] : false;
         this.fragmentId = state.hearingConditions.hasOwnProperty(KEY_FRAGMENT_ID) ? state.hearingConditions[KEY_FRAGMENT_ID] : '';
       }
     );
@@ -57,8 +62,20 @@ export class HearingRequestEffects {
           case Mode.CREATE_EDIT:
           case Mode.VIEW:
           case Mode.VIEW_EDIT:
-            this.location.back();
-            return of(null); // Return an observable that emits null and then completes
+            if (this.router.url.includes('hearing-edit-summary')) {
+              const hearingCondition: HearingConditions = {
+                mode: Mode.VIEW_EDIT,
+                isHearingAmendmentsEnabled: true
+              };
+              // Save hearing conditions
+              this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
+              this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
+              this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID: this.hearingId, targetURL: '/hearings/view/hearing-view-summary' }));
+            } else {
+              this.location.back();
+              return of(null); // Return an observable that emits null and then completes
+            }
+            break;
           default:
             return from(this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']));
         }
@@ -69,16 +86,18 @@ export class HearingRequestEffects {
   public continueNavigation$ = this.actions$.pipe(
       ofType(hearingRequestActions.UPDATE_HEARING_REQUEST),
       tap(() => {
-        const nextPage = this.pageFlow.getNextPage(this.screenNavigations$);
+        const nextPage = this.isHearingAmendmentsEnabled
+          ? ''
+          : this.pageFlow.getNextPage(this.screenNavigations$);
         switch (this.mode) {
           case Mode.CREATE:
             if (nextPage) {
               this.router.navigate(['hearings', 'request', nextPage])
                 .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${nextPage} `, err));
-              break;
+            } else {
+              throw new Error('Next page not found');
             }
-
-            throw new Error('Next page not found');
+            break;
 
           case Mode.CREATE_EDIT:
             if (nextPage === HearingRequestEffects.WELSH_PAGE) {
@@ -94,10 +113,12 @@ export class HearingRequestEffects {
             if (nextPage === HearingRequestEffects.WELSH_PAGE) {
               this.router.navigate(['hearings', 'request', nextPage])
                 .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${nextPage} `, err));
-              break;
             } else {
-              this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: this.fragmentId })
-                .catch((err) => this.loggerService.error(`Error navigating to hearings/request/hearing-view-edit-summary#${this.fragmentId} `, err));
+              const pageRouteName = this.isHearingAmendmentsEnabled
+                ? HearingRequestPageRouteNames.HEARING_EDIT_SUMMARY
+                : HearingRequestPageRouteNames.HEARING_VIEW_EDIT_SUMMARY;
+              this.router.navigate(['hearings', 'request', pageRouteName], { fragment: this.fragmentId })
+                .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${pageRouteName}#${this.fragmentId} `, err));
             }
             break;
 

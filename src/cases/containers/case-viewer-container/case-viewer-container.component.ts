@@ -25,6 +25,70 @@ export class CaseViewerContainerComponent implements OnInit {
   public prependedTabs$: Observable<CaseTab[]>;
   public appendedTabs$: Observable<CaseTab[]>;
   public userRoles$: Observable<string[]>;
+  private waDefaultServiceConfig: any = {
+    'configurations': [
+      {
+        'caseTypes': [
+          ''
+        ],
+        'releaseVersion': '4',
+        'serviceName': ''
+      },
+      {
+        'caseTypes': [
+          'Asylum'
+        ],
+        'releaseVersion': '4',
+        'serviceName': 'IA'
+      },
+      {
+        'caseTypes': [
+          'CIVIL',
+          'GENERALAPPLICATION'
+        ],
+        'releaseVersion': '4',
+        'serviceName': 'CIVIL'
+      },
+      {
+        'caseTypes': [
+          'PRIVATELAW',
+          'PRLAPPS'
+        ],
+        'releaseVersion': '4',
+        'serviceName': 'PRIVATELAW'
+      },
+      {
+        'caseTypes': [
+          'CriminalInjuriesCompensation'
+        ],
+        'releaseVersion': '4',
+        'serviceName': 'ST_CIC'
+      },
+      {
+        'caseTypes': [
+          'ET_EnglandWales',
+          'ET_Scotland'
+        ],
+        'releaseVersion': '4',
+        'serviceName': 'EMPLOYMENT'
+      },
+      {
+        'caseTypes': [
+          'Benefit',
+          'SSCS_ExceptionRecord'
+        ],
+        'releaseVersion': '4',
+        'serviceName': 'SSCS'
+      },
+      {
+        'caseTypes': [
+          'CARE_SUPERVISION_EPO'
+        ],
+        'releaseVersion': '4',
+        'serviceName': 'PUBLICLAW'
+      }
+    ]
+  };
 
   private readonly prependedTabs: CaseTab[] = [
     {
@@ -66,6 +130,7 @@ export class CaseViewerContainerComponent implements OnInit {
     let requiredFeature = false;
     features.configurations.forEach((serviceConfig) => {
       if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
+        // EUI-724 - Needed as separator between WA and non-WA services/case types
         requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2;
       }
     });
@@ -83,7 +148,7 @@ export class CaseViewerContainerComponent implements OnInit {
 
   private prependedCaseViewTabs(): Observable<CaseTab[]> {
     return combineLatest([
-      this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null),
+      this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, this.waDefaultServiceConfig),
       this.userRoles$,
       this.waService.getWASupportedJurisdictions(),
       this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.excludedRolesForCaseTabs, [])

@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { hearingActualsMainModel, initialState } from '../../hearing.test.data';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import { ConvertToValuePipe } from '../../pipes/convert-to-value.pipe';
@@ -397,7 +398,7 @@ describe('HearingActualSummaryComponent', () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingActualSummaryComponent,
-        HearingAnswersPipe, ConvertToValuePipe
+        HearingAnswersPipe, ConvertToValuePipe, MockRpxTranslatePipe
       ],
       providers: [
         provideMockStore({ initialState }),
@@ -424,12 +425,33 @@ describe('HearingActualSummaryComponent', () => {
     component = fixture.componentInstance;
     component.hearingActualsMainModel = hearingActualsMainModel;
     component.hearingState$ = new Observable();
+    component.hearingStageOptions = HEARING_TYPES;
     router = TestBed.inject(Router);
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
+  });
+
+  it('should set hearing type description', () => {
+    component.hearingActualsMainModel = {
+      ...hearingActualsMainModel,
+      hearingActuals: {
+        ...hearingActualsMainModel.hearingActuals,
+        hearingOutcome: {
+          ...hearingActualsMainModel.hearingActuals.hearingOutcome,
+          hearingType: 'BBA3-SUB'
+        }
+      }
+    };
+    fixture.detectChanges();
+    expect(component.hearingTypeDescription).toEqual('Substantive');
+  });
+
+  it('should set empty hearing type description', () => {
+    fixture.detectChanges();
+    expect(component.hearingTypeDescription).toEqual('');
   });
 
   afterEach(() => {

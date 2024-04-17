@@ -4,6 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../hearing.test.data';
 import { ACTION } from '../../models/hearings.enum';
 import { HearingsService } from '../../services/hearings.service';
@@ -23,7 +24,7 @@ describe('RequestHearingComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [RequestHearingComponent],
+      declarations: [RequestHearingComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: AbstractPageFlow, useValue: mockPageFlow },
@@ -64,6 +65,12 @@ describe('RequestHearingComponent', () => {
     spyOn(hearingsService, 'navigateAction');
     mockPageFlow.getCurrentPage.and.returnValue('hearing-confirmation');
     expect(component.isConfirmationPage).toBeTruthy();
+  });
+
+  it('should check is child page', () => {
+    spyOn(hearingsService, 'navigateAction');
+    mockPageFlow.getCurrentPage.and.returnValue('hearing-requirements');
+    expect(component.isChildPage).toBeTruthy();
   });
 
   it('should purge data in store if page is destroyed', () => {

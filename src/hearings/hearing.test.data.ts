@@ -2385,7 +2385,7 @@ export const initialState = {
                 'RA0042',
                 'RA0009'
               ],
-              interpreterLanguage: 'sat',
+              interpreterLanguage: 'spa',
               preferredHearingChannel: 'byVideo'
             },
             unavailabilityDOW: null,

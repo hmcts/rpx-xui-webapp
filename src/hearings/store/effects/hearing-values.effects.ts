@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
@@ -19,8 +19,8 @@ export class HearingValuesEffects {
     private readonly sessionStorage: SessionStorageService,
   ) {}
 
-  @Effect()
-  public loadHearingValue$ = this.actions$.pipe(
+  public loadHearingValue$ = createEffect(() =>
+    this.actions$.pipe(
       ofType(hearingValuesActions.LOAD_HEARING_VALUES),
       map((action: hearingValuesActions.LoadHearingValues) => action.payload),
       switchMap((payload) => {
@@ -35,7 +35,8 @@ export class HearingValuesEffects {
           })
         );
       })
-    );
+    )
+  );
 
   public static handleError(error: HttpError, caseId: string): Observable<Action> {
     if (error && error.status) {

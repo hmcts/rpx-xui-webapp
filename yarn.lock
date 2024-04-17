@@ -4575,31 +4575,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngrx/effects@npm:^11.1.0":
-  version: 11.1.1
-  resolution: "@ngrx/effects@npm:11.1.1"
+"@ngrx/effects@npm:16.3.0":
+  version: 16.3.0
+  resolution: "@ngrx/effects@npm:16.3.0"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
-    "@angular/core": ^11.0.0
-    "@ngrx/store": 11.1.1
-    rxjs: ^6.5.3
-  checksum: ec66a6e6b3ca6c07fb2f38a9e847025007d83bed168b9ac77d34eec5aa15a0a09f3fec83094dd7bffb8105708ac735619e4e5c9772c0f733562f1d379e8274e8
+    "@angular/core": ^16.0.0
+    "@ngrx/store": 16.3.0
+    rxjs: ^6.5.3 || ^7.5.0
+  checksum: 2774395929c91dfc0c289542d7960bbee61feed4305548af579b4ecb68da0f433356fd4b2a812856872d448410e7a2d7ec9a3c31bf14c57e31d45a13f2ddaed8
   languageName: node
   linkType: hard
 
-"@ngrx/router-store@npm:^15.2.1":
-  version: 15.4.0
-  resolution: "@ngrx/router-store@npm:15.4.0"
+"@ngrx/router-store@npm:16.3.0":
+  version: 16.3.0
+  resolution: "@ngrx/router-store@npm:16.3.0"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
-    "@angular/common": ^15.0.0
-    "@angular/core": ^15.0.0
-    "@angular/router": ^15.0.0
-    "@ngrx/store": 15.4.0
+    "@angular/common": ^16.0.0
+    "@angular/core": ^16.0.0
+    "@angular/router": ^16.0.0
+    "@ngrx/store": 16.3.0
     rxjs: ^6.5.3 || ^7.5.0
-  checksum: 0172e7aa16530e5c811df9a820a9ffbf9a12b873768239b3c0e67b1b29cfc995d1c32643eeb1e730a9752214094ed3aa428f008679fd16e31bde96c2bb268ba7
+  checksum: 1c5180fbab7c95ec131d4e16770b85f5e564dfa27cd819f45688274e81fa4d0e4ae8de95bc7e3a885156ac5747deb123a5a213b48043b1e7b49621b0897cfd32
   languageName: node
   linkType: hard
 
@@ -4610,15 +4610,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngrx/store-devtools@npm:^15.2.1":
-  version: 15.4.0
-  resolution: "@ngrx/store-devtools@npm:15.4.0"
+"@ngrx/store-devtools@npm:16.3.0":
+  version: 16.3.0
+  resolution: "@ngrx/store-devtools@npm:16.3.0"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
-    "@ngrx/store": 15.4.0
+    "@ngrx/store": 16.3.0
     rxjs: ^6.5.3 || ^7.5.0
-  checksum: cce09394386de064a7c2bfd02792b38888da231567f4ff4584cc0920a33f2a6b3055db6ea543b78b1113ff844e628976dc8f92d90fdfcb22fcf2839dfbc1585d
+  checksum: 05d978457e0dfa5fd3da574d2a79e4a7df3ce63e1cbc19e2741199bc4bebc782e9cf1d8ea02a9fc3540f56e0921f05a66b7dbc7b8bd1b84c8c81cb50a98b0b5f
   languageName: node
   linkType: hard
 
@@ -4645,32 +4645,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nguniversal/common@npm:15.2.1":
-  version: 15.2.1
-  resolution: "@nguniversal/common@npm:15.2.1"
+"@nguniversal/common@npm:16.2.0":
+  version: 16.2.0
+  resolution: "@nguniversal/common@npm:16.2.0"
   dependencies:
-    critters: 0.0.16
-    jsdom: 21.1.0
+    critters: 0.0.20
+    jsdom: 22.1.0
     tslib: ^2.3.0
   peerDependencies:
-    "@angular/common": ^15.0.0
-    "@angular/core": ^15.0.0
-  checksum: b97d984e7b5d6c7149eabc9e372fbbb92ec79eb7ef55b035a977abf460ea53150c5f7e7e4fdaa189ce0e9879153701e03756101ce58b02d0951c5ba61171e86a
+    "@angular/common": ^16.0.0 || ^16.1.0-next.0
+    "@angular/core": ^16.0.0 || ^16.1.0-next.0
+  checksum: d1bdb470134c7dff09be6901c8b18777db6625be66eb2de89ab4880ed897b4064835fa00397c30d728c2e0b49f9e1f0760ca2714ee8425f58f64d58eff6c2bd0
   languageName: node
   linkType: hard
 
-"@nguniversal/express-engine@npm:^15.2.1":
-  version: 15.2.1
-  resolution: "@nguniversal/express-engine@npm:15.2.1"
+"@nguniversal/express-engine@npm:16.2.0":
+  version: 16.2.0
+  resolution: "@nguniversal/express-engine@npm:16.2.0"
   dependencies:
-    "@nguniversal/common": 15.2.1
+    "@nguniversal/common": 16.2.0
     tslib: ^2.3.0
   peerDependencies:
-    "@angular/common": ^15.0.0
-    "@angular/core": ^15.0.0
-    "@angular/platform-server": ^15.0.0
+    "@angular/common": ^16.0.0 || ^16.1.0-next.0
+    "@angular/core": ^16.0.0 || ^16.1.0-next.0
     express: ^4.15.2
-  checksum: ce106f8764d043267f85587d2a3bf302daba1338a5576d2f390862169463268cb397248aee25dba3b6cc4ee5677b04ed82df640dbd318d3648907fcaa9547a45
+  checksum: e194ac3bfff6d41612b89a672e4fa075b42d58effdd465af619779d361c292bb6797b9499516c29178599994ed861fdcfdc8f3bf5614e6fd9aeb719b1732a293
   languageName: node
   linkType: hard
 
@@ -9319,20 +9318,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"critters@npm:0.0.16":
-  version: 0.0.16
-  resolution: "critters@npm:0.0.16"
-  dependencies:
-    chalk: ^4.1.0
-    css-select: ^4.2.0
-    parse5: ^6.0.1
-    parse5-htmlparser2-tree-adapter: ^6.0.1
-    postcss: ^8.3.7
-    pretty-bytes: ^5.3.0
-  checksum: cfccfbb94f0b461fffd3c02a20f033cc42b78191a8e2fe68f825e263a6f3c53bd091d5e3cfc477100ddc5be162f9601cb4f7f080a0993a030621bc5d3359e979
-  languageName: node
-  linkType: hard
-
 "critters@npm:0.0.20":
   version: 0.0.20
   resolution: "critters@npm:0.0.20"
@@ -9435,19 +9420,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"css-select@npm:^4.2.0":
-  version: 4.3.0
-  resolution: "css-select@npm:4.3.0"
-  dependencies:
-    boolbase: ^1.0.0
-    css-what: ^6.0.1
-    domhandler: ^4.3.1
-    domutils: ^2.8.0
-    nth-check: ^2.0.1
-  checksum: d6202736839194dd7f910320032e7cfc40372f025e4bf21ca5bf6eb0a33264f322f50ba9c0adc35dadd342d3d6fae5ca244779a4873afbfa76561e343f2058e0
-  languageName: node
-  linkType: hard
-
 "css-select@npm:^5.1.0":
   version: 5.1.0
   resolution: "css-select@npm:5.1.0"
@@ -9481,7 +9453,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"css-what@npm:^6.0.1, css-what@npm:^6.1.0":
+"css-what@npm:^6.1.0":
   version: 6.1.0
   resolution: "css-what@npm:6.1.0"
   checksum: b975e547e1e90b79625918f84e67db5d33d896e6de846c9b584094e529f0c63e2ab85ee33b9daffd05bff3a146a1916bec664e18bb76dd5f66cbff9fc13b2bbe
@@ -9533,6 +9505,15 @@ __metadata:
   dependencies:
     cssom: ~0.3.6
   checksum: 5f05e6fd2e3df0b44695c2f08b9ef38b011862b274e320665176467c0725e44a53e341bc4959a41176e83b66064ab786262e7380fd1cabeae6efee0d255bb4e3
+  languageName: node
+  linkType: hard
+
+"cssstyle@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "cssstyle@npm:3.0.0"
+  dependencies:
+    rrweb-cssom: ^0.6.0
+  checksum: 31f694dfed9998ed93570fe539610837b878193dd8487c33cb12db8004333c53c2a3904166288bbec68388c72fb01014d46d3243ddfb02fe845989d852c06f27
   languageName: node
   linkType: hard
 
@@ -9743,6 +9724,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"data-urls@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "data-urls@npm:4.0.0"
+  dependencies:
+    abab: ^2.0.6
+    whatwg-mimetype: ^3.0.0
+    whatwg-url: ^12.0.0
+  checksum: 006e869b5bf079647949a3e9b1dd69d84b2d5d26e6b01c265485699bc96e83817d4b5aae758b2910a4c58c0601913f3a0034121c1ca2da268e9a244c57515b15
+  languageName: node
+  linkType: hard
+
 "date-format@npm:^2.1.0":
   version: 2.1.0
   resolution: "date-format@npm:2.1.0"
@@ -9841,7 +9833,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"decimal.js@npm:^10.2.1, decimal.js@npm:^10.4.2":
+"decimal.js@npm:^10.2.1, decimal.js@npm:^10.4.2, decimal.js@npm:^10.4.3":
   version: 10.4.3
   resolution: "decimal.js@npm:10.4.3"
   checksum: 796404dcfa9d1dbfdc48870229d57f788b48c21c603c3f6554a1c17c10195fc1024de338b0cf9e1efe0c7c167eeb18f04548979bcc5fdfabebb7cc0ae3287bae
@@ -10184,17 +10176,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dom-serializer@npm:^1.0.1":
-  version: 1.4.1
-  resolution: "dom-serializer@npm:1.4.1"
-  dependencies:
-    domelementtype: ^2.0.1
-    domhandler: ^4.2.0
-    entities: ^2.0.0
-  checksum: fbb0b01f87a8a2d18e6e5a388ad0f7ec4a5c05c06d219377da1abc7bb0f674d804f4a8a94e3f71ff15f6cb7dcfc75704a54b261db672b9b3ab03da6b758b0b22
-  languageName: node
-  linkType: hard
-
 "dom-serializer@npm:^2.0.0":
   version: 2.0.0
   resolution: "dom-serializer@npm:2.0.0"
@@ -10206,7 +10187,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"domelementtype@npm:^2.0.1, domelementtype@npm:^2.2.0, domelementtype@npm:^2.3.0":
+"domelementtype@npm:^2.3.0":
   version: 2.3.0
   resolution: "domelementtype@npm:2.3.0"
   checksum: ee837a318ff702622f383409d1f5b25dd1024b692ef64d3096ff702e26339f8e345820f29a68bcdcea8cfee3531776b3382651232fbeae95612d6f0a75efb4f6
@@ -10231,32 +10212,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"domhandler@npm:^4.2.0, domhandler@npm:^4.3.1":
-  version: 4.3.1
-  resolution: "domhandler@npm:4.3.1"
-  dependencies:
-    domelementtype: ^2.2.0
-  checksum: 4c665ceed016e1911bf7d1dadc09dc888090b64dee7851cccd2fcf5442747ec39c647bb1cb8c8919f8bbdd0f0c625a6bafeeed4b2d656bbecdbae893f43ffaaa
-  languageName: node
-  linkType: hard
-
 "domhandler@npm:^5.0.2, domhandler@npm:^5.0.3":
   version: 5.0.3
   resolution: "domhandler@npm:5.0.3"
   dependencies:
     domelementtype: ^2.3.0
   checksum: 0f58f4a6af63e6f3a4320aa446d28b5790a009018707bce2859dcb1d21144c7876482b5188395a188dfa974238c019e0a1e610d2fc269a12b2c192ea2b0b131c
-  languageName: node
-  linkType: hard
-
-"domutils@npm:^2.8.0":
-  version: 2.8.0
-  resolution: "domutils@npm:2.8.0"
-  dependencies:
-    dom-serializer: ^1.0.1
-    domelementtype: ^2.2.0
-    domhandler: ^4.2.0
-  checksum: abf7434315283e9aadc2a24bac0e00eab07ae4313b40cc239f89d84d7315ebdfd2fb1b5bf750a96bc1b4403d7237c7b2ebf60459be394d625ead4ca89b934391
   languageName: node
   linkType: hard
 
@@ -10583,13 +10544,6 @@ __metadata:
   version: 2.2.0
   resolution: "ent@npm:2.2.0"
   checksum: f588b5707d6fef36011ea10d530645912a69530a1eb0831f8708c498ac028363a7009f45cfadd28ceb4dafd9ac17ec15213f88d09ce239cd033cfe1328dd7d7d
-  languageName: node
-  linkType: hard
-
-"entities@npm:^2.0.0":
-  version: 2.2.0
-  resolution: "entities@npm:2.2.0"
-  checksum: 19010dacaf0912c895ea262b4f6128574f9ccf8d4b3b65c7e8334ad0079b3706376360e28d8843ff50a78aabcb8f08f0a32dbfacdc77e47ed77ca08b713669b3
   languageName: node
   linkType: hard
 
@@ -15014,26 +14968,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsdom@npm:21.1.0":
-  version: 21.1.0
-  resolution: "jsdom@npm:21.1.0"
+"jsdom@npm:22.1.0":
+  version: 22.1.0
+  resolution: "jsdom@npm:22.1.0"
   dependencies:
     abab: ^2.0.6
-    acorn: ^8.8.1
-    acorn-globals: ^7.0.0
-    cssom: ^0.5.0
-    cssstyle: ^2.3.0
-    data-urls: ^3.0.2
-    decimal.js: ^10.4.2
+    cssstyle: ^3.0.0
+    data-urls: ^4.0.0
+    decimal.js: ^10.4.3
     domexception: ^4.0.0
-    escodegen: ^2.0.0
     form-data: ^4.0.0
     html-encoding-sniffer: ^3.0.0
     http-proxy-agent: ^5.0.0
     https-proxy-agent: ^5.0.1
     is-potential-custom-element-name: ^1.0.1
-    nwsapi: ^2.2.2
-    parse5: ^7.1.1
+    nwsapi: ^2.2.4
+    parse5: ^7.1.2
+    rrweb-cssom: ^0.6.0
     saxes: ^6.0.0
     symbol-tree: ^3.2.4
     tough-cookie: ^4.1.2
@@ -15041,15 +14992,15 @@ __metadata:
     webidl-conversions: ^7.0.0
     whatwg-encoding: ^2.0.0
     whatwg-mimetype: ^3.0.0
-    whatwg-url: ^11.0.0
-    ws: ^8.11.0
+    whatwg-url: ^12.0.1
+    ws: ^8.13.0
     xml-name-validator: ^4.0.0
   peerDependencies:
     canvas: ^2.5.0
   peerDependenciesMeta:
     canvas:
       optional: true
-  checksum: 2c89c72a6f399184ffc8de30bbdd86283086dbd72bb3a40667102d3f12af141c7517ffb78150a3bb6883a654e8c7d0266c3328d1c387a2b9a1fd0729dc537954
+  checksum: d955ab83a6dad3e6af444098d30647c719bbb4cf97de053aa5751c03c8d6f3283d8c4d7fc2774c181f1d432fb0250e7332bc159e6b466424f4e337d73adcbf30
   languageName: node
   linkType: hard
 
@@ -17747,7 +17698,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nwsapi@npm:^2.2.0, nwsapi@npm:^2.2.2":
+"nwsapi@npm:^2.2.0, nwsapi@npm:^2.2.2, nwsapi@npm:^2.2.4":
   version: 2.2.7
   resolution: "nwsapi@npm:2.2.7"
   checksum: cab25f7983acec7e23490fec3ef7be608041b460504229770e3bfcf9977c41d6fe58f518994d3bd9aa3a101f501089a3d4a63536f4ff8ae4b8c4ca23bdbfda4e
@@ -18476,15 +18427,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse5-htmlparser2-tree-adapter@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "parse5-htmlparser2-tree-adapter@npm:6.0.1"
-  dependencies:
-    parse5: ^6.0.1
-  checksum: 1848378b355d027915645c13f13f982e60502d201f53bc2067a508bf2dba4aac08219fc781dcd160167f5f50f0c73f58d20fa4fb3d90ee46762c20234fa90a6d
-  languageName: node
-  linkType: hard
-
 "parse5-sax-parser@npm:^7.0.0":
   version: 7.0.0
   resolution: "parse5-sax-parser@npm:7.0.0"
@@ -18494,7 +18436,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse5@npm:6.0.1, parse5@npm:^6.0.1":
+"parse5@npm:6.0.1":
   version: 6.0.1
   resolution: "parse5@npm:6.0.1"
   checksum: 7d569a176c5460897f7c8f3377eff640d54132b9be51ae8a8fa4979af940830b2b0c296ce75e5bd8f4041520aadde13170dbdec44889975f906098ea0002f4bd
@@ -19007,7 +18949,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.2.14, postcss@npm:^8.3.7":
+"postcss@npm:^8.2.14":
   version: 8.4.29
   resolution: "postcss@npm:8.4.29"
   dependencies:
@@ -19322,6 +19264,13 @@ __metadata:
   version: 2.3.0
   resolution: "punycode@npm:2.3.0"
   checksum: 39f760e09a2a3bbfe8f5287cf733ecdad69d6af2fe6f97ca95f24b8921858b91e9ea3c9eeec6e08cede96181b3bb33f95c6ffd8c77e63986508aa2e8159fa200
+  languageName: node
+  linkType: hard
+
+"punycode@npm:^2.3.0":
+  version: 2.3.1
+  resolution: "punycode@npm:2.3.1"
+  checksum: bb0a0ceedca4c3c57a9b981b90601579058903c62be23c5e8e843d2c2d4148a3ecf029d5133486fb0e1822b098ba8bba09e89d6b21742d02fa26bda6441a6fb2
   languageName: node
   linkType: hard
 
@@ -20230,12 +20179,12 @@ __metadata:
     "@microsoft/applicationinsights-web": ^3.1.0
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3
-    "@ngrx/effects": ^11.1.0
-    "@ngrx/router-store": ^15.2.1
+    "@ngrx/effects": 16.3.0
+    "@ngrx/router-store": 16.3.0
     "@ngrx/schematics": 16.3.0
     "@ngrx/store": ^15.2.1
-    "@ngrx/store-devtools": ^15.2.1
-    "@nguniversal/express-engine": ^15.2.1
+    "@ngrx/store-devtools": 16.3.0
+    "@nguniversal/express-engine": 16.2.0
     "@nicky-lenaers/ngx-scroll-to": ^14.0.0
     "@pact-foundation/pact": ^9.11.1
     "@pact-foundation/pact-node": ^10.9.7
@@ -20387,6 +20336,13 @@ __metadata:
     "@angular/common": ^15.2.9
     "@angular/core": ^15.2.9
   checksum: 305f4ae1d935de2f4d0874637a61863c1b5478872d335653f6986776fc274de9ebfe3728c04c8a386ff8b4d36fa1de8e444d000ad42f2a914bab3fb5989f28bc
+  languageName: node
+  linkType: hard
+
+"rrweb-cssom@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "rrweb-cssom@npm:0.6.0"
+  checksum: 182312f6e4f41d18230ccc34f14263bc8e8a6b9d30ee3ec0d2d8e643c6f27964cd7a8d638d4a00e988d93e8dc55369f4ab5a473ccfeff7a8bab95b36d2b5499c
   languageName: node
   linkType: hard
 
@@ -22373,6 +22329,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tr46@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "tr46@npm:4.1.1"
+  dependencies:
+    punycode: ^2.3.0
+  checksum: aeeb821ac2cd792e63ec84888b4fd6598ac6ed75d861579e21a5cf9d4ee78b2c6b94e7d45036f2ca2088bc85b9b46560ad23c4482979421063b24137349dbd96
+  languageName: node
+  linkType: hard
+
 "tr46@npm:~0.0.3":
   version: 0.0.3
   resolution: "tr46@npm:0.0.3"
@@ -23688,6 +23653,16 @@ __metadata:
     tr46: ^3.0.0
     webidl-conversions: ^7.0.0
   checksum: ed4826aaa57e66bb3488a4b25c9cd476c46ba96052747388b5801f137dd740b73fde91ad207d96baf9f17fbcc80fc1a477ad65181b5eb5fa718d27c69501d7af
+  languageName: node
+  linkType: hard
+
+"whatwg-url@npm:^12.0.0, whatwg-url@npm:^12.0.1":
+  version: 12.0.1
+  resolution: "whatwg-url@npm:12.0.1"
+  dependencies:
+    tr46: ^4.1.1
+    webidl-conversions: ^7.0.0
+  checksum: 8698993b763c1e7eda5ed16c31dab24bca6489626aca7caf8b5a2b64684dda6578194786f10ec42ceb1c175feea16d0a915096e6419e08d154ce551c43176972
   languageName: node
   linkType: hard
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
@@ -21,8 +21,8 @@ export class HearingLinksEffects {
     private readonly sessionStorage: SessionStorageService,
   ) {}
 
-  @Effect()
-  public loadServiceLinkedCases$ = this.actions$.pipe(
+  public loadServiceLinkedCases$ = createEffect(() =>
+    this.actions$.pipe(
       ofType(hearingLinksActions.LOAD_SERVICE_LINKED_CASES),
       map((action: hearingLinksActions.LoadServiceLinkedCases) => action.payload),
       switchMap((payload) => {
@@ -33,10 +33,11 @@ export class HearingLinksEffects {
           catchError((error: HttpError) => of(new hearingLinksActions.LoadServiceLinkedCasesFailure(error)))
         );
       })
-    );
+    )
+  );
 
-  @Effect()
-  public loadServiceLinkedCasesWithHearing$ = this.actions$.pipe(
+  public loadServiceLinkedCasesWithHearing$ = createEffect(() =>
+    this.actions$.pipe(
       ofType(hearingLinksActions.LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS),
       map((action: hearingLinksActions.LoadServiceLinkedCasesWithHearings) => action.payload),
       switchMap((payload) => {
@@ -47,10 +48,11 @@ export class HearingLinksEffects {
           catchError((error: HttpError) => of(new hearingLinksActions.LoadServiceLinkedCasesWithHearingsFailure(error)))
         );
       })
-    );
+    )
+  );
 
-  @Effect()
-  public loadLinkedHearingGroup$ = this.actions$.pipe(
+  public loadLinkedHearingGroup$ = createEffect(() =>
+    this.actions$.pipe(
       ofType(hearingLinksActions.LOAD_LINKED_HEARING_GROUP),
       map((action: hearingLinksActions.LoadLinkedHearingGroup) => action.payload),
       switchMap((payload) => {
@@ -59,10 +61,11 @@ export class HearingLinksEffects {
           catchError((error: HttpError) => of(new hearingLinksActions.LoadLinkedHearingGroupFailure(error)))
         );
       })
-    );
+    )
+  );
 
-  @Effect({ dispatch: false })
-  public submitLinkedHearingGroup$ = this.actions$.pipe(
+  public submitLinkedHearingGroup$ = createEffect(() =>
+    this.actions$.pipe(
       ofType(hearingLinksActions.SUBMIT_LINKED_HEARING_GROUP),
       map((action: hearingLinksActions.SubmitLinkedHearingGroup) => action.payload),
       switchMap((payload) => {
@@ -80,10 +83,12 @@ export class HearingLinksEffects {
           })
         );
       })
-    );
+    ),
+    { dispatch: false }
+  );
 
-  @Effect({ dispatch: false })
-  public manageLinkedHearingGroup$ = this.actions$.pipe(
+  public manageLinkedHearingGroup$ = createEffect(() =>
+    this.actions$.pipe(
       ofType(hearingLinksActions.MANAGE_LINKED_HEARING_GROUP),
       map((action: hearingLinksActions.ManageLinkedHearingGroup) => action.payload),
       switchMap((payload) => {
@@ -104,7 +109,9 @@ export class HearingLinksEffects {
           })
         );
       })
-    );
+    ),
+    { dispatch: false }
+  );
 
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status) {

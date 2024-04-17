@@ -164,7 +164,7 @@ export class CaseFlagsUtils {
         console.log('RAs', JSON.stringify(reasonableAdjustments));
         const flagsId = reasonableAdjustments.slice();
         if (party.individualDetails?.interpreterLanguage) {
-          flagsId.push(party.individualDetails.interpreterLanguage);
+          flagsId.push(CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID);
         }
 
         const allFlags: CaseFlagReferenceModel[] = flagsId.map((flagId) => CaseFlagsUtils.findFlagByFlagId(caseFlagReferenceModels, flagId));

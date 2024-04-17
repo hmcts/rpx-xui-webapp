@@ -21,8 +21,6 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
 export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private static readonly ALL_TASKS = 'All';
   private static readonly AVAILABLE_TASKS = 'None / Available tasks';
-  public locations: Location[];
-  public waSupportedJurisdictions$: Observable<string[]>;
   public supportedJurisdictions: string[];
   public sortedBy: SortField = {
     fieldName: '',

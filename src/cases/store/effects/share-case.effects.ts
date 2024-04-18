@@ -45,8 +45,7 @@ export class ShareCaseEffects {
         });
       })
     ),
-    { dispatch: false }
-  );
+  { dispatch: false });
 
   public loadShareCases$ = createEffect(() =>
     this.actions$.pipe(

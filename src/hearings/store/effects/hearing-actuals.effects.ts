@@ -11,7 +11,6 @@ import { HearingsService } from '../../services/hearings.service';
 
 @Injectable()
 export class HearingActualsEffects {
-
   public getHearingActuals$ = createEffect(() =>
     this.actions$.pipe(
       ofType(hearingActualsActions.GET_HEARING_ACTUALS),

@@ -13,7 +13,6 @@ export class NocEffects {
   constructor(private readonly actions$: Actions,
               private readonly nocService: NocService) {}
 
-
   public setCaseReference$ = createEffect(() =>
     this.actions$.pipe(
       ofType(nocActions.SET_CASE_REFERENCE),
@@ -35,7 +34,6 @@ export class NocEffects {
       })
     )
   );
-
 
   public setAnswers$ = createEffect(() =>
     this.actions$.pipe(

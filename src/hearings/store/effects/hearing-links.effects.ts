@@ -84,8 +84,7 @@ export class HearingLinksEffects {
         );
       })
     ),
-    { dispatch: false }
-  );
+  { dispatch: false });
 
   public manageLinkedHearingGroup$ = createEffect(() =>
     this.actions$.pipe(
@@ -110,8 +109,7 @@ export class HearingLinksEffects {
         );
       })
     ),
-    { dispatch: false }
-  );
+  { dispatch: false });
 
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status) {

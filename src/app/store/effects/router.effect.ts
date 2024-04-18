@@ -31,8 +31,7 @@ export class RouterEffects {
         )
       )
     ),
-    { dispatch: false }
-  );
+  { dispatch: false });
 
   public navigateNewCase$ = createEffect(() =>
     this.actions$.pipe(
@@ -46,22 +45,19 @@ export class RouterEffects {
         )
       )
     ),
-    { dispatch: false }
-  );
+  { dispatch: false });
 
   public navigateBack$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RouterActions.BACK),
       tap(() => this.location.back())
     ),
-    { dispatch: false }
-  );
+  { dispatch: false });
 
   public navigateForward$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RouterActions.FORWARD),
       tap(() => this.location.forward())
     ),
-    { dispatch: false }
-  );
+  { dispatch: false });
 }

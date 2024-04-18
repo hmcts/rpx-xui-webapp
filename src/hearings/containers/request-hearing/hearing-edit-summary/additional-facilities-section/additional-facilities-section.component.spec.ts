@@ -144,7 +144,10 @@ describe('AdditionalFacilitiesSectionComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  xit('should set additional factilities required as no', () => {
+  it('should set additional factilities required as no', () => {
+    const hearingRequestMainModel = _.cloneDeep(initialState.hearings.hearingRequest.hearingRequestMainModel);
+    hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag = false;
+    component.hearingRequestMainModel = hearingRequestMainModel;
     component.ngOnInit();
     expect(component.additionalFacilitiesRequiredText).toEqual('No');
   });

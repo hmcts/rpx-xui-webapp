@@ -80,8 +80,7 @@ export class HearingRequestEffects {
         }
       })
     ),
-    { dispatch: false }
-  );
+  { dispatch: false });
 
   public continueNavigation$ = createEffect(() =>
     this.actions$.pipe(
@@ -130,8 +129,7 @@ export class HearingRequestEffects {
         }
       })
     ),
-    { dispatch: false }
-  );
+  { dispatch: false });
 
   public loadHearingRequest$ = createEffect(() =>
     this.actions$.pipe(
@@ -174,8 +172,7 @@ export class HearingRequestEffects {
         );
       })
     ),
-    { dispatch: false }
-  );
+  { dispatch: false });
 
   public submitHearingReason$ = createEffect(() =>
     this.actions$.pipe(
@@ -185,8 +182,7 @@ export class HearingRequestEffects {
           .catch((err) => this.loggerService.error('Error navigating to /hearings/request/hearing-change-reason', err));
       })
     ),
-    { dispatch: false }
-  );
+  { dispatch: false });
 
   public viewEditSubmitHearingRequest$ = createEffect(() =>
     this.actions$.pipe(
@@ -206,8 +202,7 @@ export class HearingRequestEffects {
         );
       })
     ),
-    { dispatch: false }
-  );
+  { dispatch: false });
 
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status) {

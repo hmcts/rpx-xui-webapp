@@ -56,8 +56,7 @@ export class AppEffects {
         this.configurationServices.setConfiguration();
       })
     ),
-    { dispatch: false }
-  );
+  { dispatch: false });
 
   public logout$ = createEffect(() =>
     this.actions$.pipe(
@@ -67,8 +66,7 @@ export class AppEffects {
         this.authService.signOut();
       })
     ),
-    { dispatch: false }
-  );
+  { dispatch: false });
 
   public logoutAndRedirect$ = createEffect(() =>
     this.actions$.pipe(
@@ -77,8 +75,7 @@ export class AppEffects {
         this.authService.logOutAndRedirect();
       })
     ),
-    { dispatch: false }
-  );
+  { dispatch: false });
 
   public loadTermsConditions$ = createEffect(() =>
     this.actions$.pipe(
@@ -105,5 +102,4 @@ export class AppEffects {
       })
     )
   );
-
 }

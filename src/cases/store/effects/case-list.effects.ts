@@ -13,20 +13,19 @@ export class CaseListEffects {
         private readonly searchService: SearchFilterService,
   ) {}
 
-
   public applyPageMetadata$ = createEffect(() =>
     this.actions$.pipe(
-        ofType(caselistActions.FIND_CASELIST_PAGINATION_METADATA),
-        map((action: caselistActions.FindCaselistPaginationMetadata) => action.payload),
-        switchMap((payload) => {
-          this.payload = payload;
-          return this.searchService.findPaginationMetadata(payload).pipe(
-            map(
-              (response) => new caselistActions.FindCaselistPaginationMetadataSuccess(response.json())),
-            catchError((error) => of(new caselistActions.ApplyCaselistFilterFail(error)))
-          );
-        })
-      )
+      ofType(caselistActions.FIND_CASELIST_PAGINATION_METADATA),
+      map((action: caselistActions.FindCaselistPaginationMetadata) => action.payload),
+      switchMap((payload) => {
+        this.payload = payload;
+        return this.searchService.findPaginationMetadata(payload).pipe(
+          map(
+            (response) => new caselistActions.FindCaselistPaginationMetadataSuccess(response.json())),
+          catchError((error) => of(new caselistActions.ApplyCaselistFilterFail(error)))
+        );
+      })
+    )
   );
 
   public applyCaselistFilters$ = createEffect(() =>

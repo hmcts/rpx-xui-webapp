@@ -4562,16 +4562,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ng-idle/keepalive@npm:^11.0.3":
-  version: 11.0.3
-  resolution: "@ng-idle/keepalive@npm:11.0.3"
+"@ng-idle/keepalive@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "@ng-idle/keepalive@npm:14.0.0"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     "@angular/common": ">=9.0.0"
     "@angular/core": ">=9.0.0"
-    "@ng-idle/core": ^11.0.3
-  checksum: 085c4d93c8871a833c4171d27fcd39f29cbf379f442bc677145845ea52bcc27d54e05359ea6df4f81eb3022bc39802f28f2351b7c4d863407a9c81ca63674189
+    "@ng-idle/core": ^14.0.0
+  checksum: fb9f8dbce6c6a495a9022c485901ecb7d58d2cf14e8ac4d619f223c8eb050a21187e484abef60880431699d0de25502d8d2a4092dfe7878e5291cc67ca2a9d71
   languageName: node
   linkType: hard
 
@@ -20178,7 +20178,7 @@ __metadata:
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@microsoft/applicationinsights-web": ^3.1.0
     "@ng-idle/core": ^11.1.0
-    "@ng-idle/keepalive": ^11.0.3
+    "@ng-idle/keepalive": ^14.0.0
     "@ngrx/effects": 16.3.0
     "@ngrx/router-store": 16.3.0
     "@ngrx/schematics": 16.3.0

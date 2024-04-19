@@ -147,9 +147,7 @@ export async function getMyAccessNewCount(req, resp, next) {
 
 export async function manageLabellingRoleAssignment(req: EnhancedRequest, resp: Response, next: NextFunction) {
   try {
-    if (!req.session || !req.session.roleAssignmentResponse) {
-      return resp.status(500).send();
-    }
+    await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
     const currentUserAssignments = (req.session.roleAssignmentResponse as RoleAssignment[]);
     const challengedAccessRequest = currentUserAssignments.find((roleAssignment) => roleAssignment.attributes
       && roleAssignment.attributes.caseId === req.params.caseId

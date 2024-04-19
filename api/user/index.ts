@@ -80,7 +80,6 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
       const response: AxiosResponse = await http.get(path, { headers });
       const activeRoleAssignments = getActiveRoleAssignments(response.data.roleAssignmentResponse, new Date());
       userRoleAssignments = getRoleAssignmentInfo(activeRoleAssignments);
-      req.session.userRoleAssignments = userRoleAssignments;
       const idamRoles = getOrganisationRoles(activeRoleAssignments);
       userInfo.roles = userInfo.roles.concat(idamRoles);
       const roleAssignments: string[] = userRoleAssignments.filter((role) => role && !!role.roleCategory).length > 0 ?
@@ -89,6 +88,7 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
       userInfo.roleCategory = getRoleCategoryFromRoleAssignments(roleAssignments) || getUserRoleCategory(userInfo.roles);
       req.session.roleAssignmentResponse = activeRoleAssignments;
       req.session.roleRequestEtag = response.headers.etag;
+      req.session.userRoleAssignments = userRoleAssignments;
     } catch (error) {
       if (error.status === 304) {
         // as user role assignments are not returned use session to send expected results
@@ -131,5 +131,6 @@ export function getRoleAssignmentInfo(roleAssignmentResponse: RoleAssignment[]):
 
 export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<any[]> {
   const roleAssignmentInfo = await refreshRoleAssignmentForUser(userInfo, req);
+  console.log(roleAssignmentInfo, 'tell me ma')
   return roleAssignmentInfo;
 }

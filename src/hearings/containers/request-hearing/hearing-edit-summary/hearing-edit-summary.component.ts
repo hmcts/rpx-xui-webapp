@@ -160,10 +160,52 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private hasHearingRequestObjectChanged(): boolean {
+    let partyDetailsModels: PartyDetailsModel[] = [];
+    let partyDetailsCompareModels: PartyDetailsModel[] = [];
+
+    if (!!this.hearingRequestMainModel?.partyDetails) {
+      partyDetailsModels = [...this.hearingRequestMainModel.partyDetails];
+      partyDetailsModels.sort(this.compareParties);
+    }
+
+    if (!!this.hearingRequestToCompareMainModel?.partyDetails) {
+      partyDetailsCompareModels = [...this.hearingRequestToCompareMainModel.partyDetails];
+      partyDetailsCompareModels.sort(this.compareParties);
+    }
+
+    const hearingRequestMainModel = {
+      requestDetails: { ...this.hearingRequestMainModel.requestDetails },
+      hearingDetails: { ...this.hearingRequestMainModel.hearingDetails },
+      caseDetails: { ...this.hearingRequestMainModel.caseDetails },
+      hearingResponse: { ...this.hearingRequestMainModel.hearingResponse },
+      partyDetails: [...partyDetailsModels]
+    };
+
+    const hearingRequestToCompareMainModel = {
+      requestDetails: { ...this.hearingRequestToCompareMainModel.requestDetails },
+      hearingDetails: { ...this.hearingRequestToCompareMainModel.hearingDetails },
+      caseDetails: { ...this.hearingRequestToCompareMainModel.caseDetails },
+      hearingResponse: { ...this.hearingRequestToCompareMainModel.hearingResponse },
+      partyDetails: [...partyDetailsCompareModels]
+    };
+
     return !_.isEqual(
-      JSON.parse(JSON.stringify(this.hearingRequestMainModel)),
-      JSON.parse(JSON.stringify(this.hearingRequestToCompareMainModel))
+      JSON.parse(JSON.stringify(hearingRequestMainModel, this.replacer)),
+      JSON.parse(JSON.stringify(hearingRequestToCompareMainModel, this.replacer))
     );
+  }
+
+  private compareParties(firstParty: PartyDetailsModel, secondParty: PartyDetailsModel) {
+    return firstParty.partyID.localeCompare(secondParty.partyID);
+  }
+
+  private replacer (key: any, value: any) {
+    // Party name is not present in HMC so ignoring it.
+    // As well as, ignoring keys which are initialised with null value
+    if (key === 'partyName' || value === null) {
+      return undefined;
+    }
+    return value;
   }
 
   private setPropertiesUpdatedAutomatically(): void {

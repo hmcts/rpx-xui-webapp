@@ -808,7 +808,7 @@ describe('HearingEditSummaryComponent', () => {
             'RA0042',
             'RA0009'
           ],
-          interpreterLanguage: 'PF0015',
+          interpreterLanguage: 'spa',
           preferredHearingChannel: 'byVideo',
           custodyStatus: null,
           vulnerabilityDetails: null

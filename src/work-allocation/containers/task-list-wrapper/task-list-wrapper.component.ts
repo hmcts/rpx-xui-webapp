@@ -156,6 +156,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
     this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
     this.userRoleCategory = this.getCurrentUserRoleCategory();
+    console.log(this.userRoleCategory, 'jive')
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
     this.setupTaskList();
@@ -185,6 +186,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         this.initialFilterApplied = true;
         this.selectedLocations = (newLocations).map((l) => l.epimms_id);
         this.selectedWorkTypes = newWorkTypes.filter((workType) => workType !== 'types_of_work_all');
+        console.log(services, 'jumbo jones')
         this.selectedServices = services.filter((service) => service !== 'services_all');
         this.doLoad();
       });
@@ -390,7 +392,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public isCurrentUserJudicial(): boolean {
-    return this.userRoleCategory.toUpperCase() === RoleCategory.JUDICIAL;
+    return this.userRoleCategory === RoleCategory.JUDICIAL;
   }
 
   // Do the actual load. This is separate as it's called from two methods.

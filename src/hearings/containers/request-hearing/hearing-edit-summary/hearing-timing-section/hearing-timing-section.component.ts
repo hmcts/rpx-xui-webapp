@@ -189,6 +189,6 @@ export class HearingTimingSectionComponent implements OnInit {
       );
     }
 
-    return false;
+    return !_.isEqual(hearingWindow, hearingWindowToCompare);
   }
 }

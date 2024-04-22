@@ -184,7 +184,7 @@ describe('HearingEditSummaryComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: false,
+        partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
         hearingUnavailabilityDatesChanged: false
@@ -260,7 +260,7 @@ describe('HearingEditSummaryComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: false,
+        partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
         hearingUnavailabilityDatesChanged: false
@@ -626,11 +626,14 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should partyDetailsChangesRequired return true if party type changed', () => {
     component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
+
+    const parties = [...initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails];
+    parties[0].partyType = PartyType.ORG;
     component.serviceHearingValuesModel = {
       ...component.serviceHearingValuesModel,
-      parties: initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails
+      parties: parties
     };
-    component.serviceHearingValuesModel.parties[0].partyType = PartyType.ORG;
+
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h1234',
       caseFlags: null,
@@ -651,10 +654,14 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should pageVisitPartiesChangeExists call hasPartyNameChanged', () => {
     spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(true);
+    const parties = _.cloneDeep(component.hearingRequestMainModel.partyDetails);
+    const party: PartyDetailsModel = parties.find((party) => party.individualDetails);
+    party.individualDetails.firstName = 'Will';
+
     component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
     component.serviceHearingValuesModel = {
       ...component.serviceHearingValuesModel,
-      parties: initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails
+      parties: parties
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h1234',

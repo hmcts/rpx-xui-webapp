@@ -20,12 +20,12 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
   }
   try {
     const { roles } = req.session.passport.user.userinfo;
-
     const permissions = CASE_SHARE_PERMISSIONS.split(',');
     const canShareCases = roles.some((role) => permissions.includes(role));
     const sessionTimeouts = getConfigValue(SESSION_TIMEOUTS) as RoleGroupSessionTimeout[];
     const sessionTimeout = getUserSessionTimeout(roles, sessionTimeouts);
-    const roleAssignmentInfo = await getUserRoleAssignments(req.session.passport.user.userinfo, req);
+    await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+    const roleAssignmentInfo = req.session.roleAssignmentResponse;
     const userInfo = { ...req.session.passport.user.userinfo, token: `Bearer ${req.session.passport.user.tokenset.accessToken}` };
     const syntheticRoles = getSyntheticRoles(roleAssignmentInfo);
     const allRoles = [...new Set([...userInfo.roles, ...syntheticRoles])];

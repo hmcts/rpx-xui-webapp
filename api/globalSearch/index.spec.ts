@@ -29,7 +29,7 @@ describe('Jurisdiction', () => {
     { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' },
     { serviceId: 'PUBLICLAW', serviceName: 'Public Law' },
     { serviceId: 'EMPLOYMENT', serviceName: 'EMPLOYMENT' },
-    { serviceId: 'SCSS', serviceName: 'SCSS' }
+    { serviceId: 'SSCS', serviceName: 'SSCS' }
   ];
 
   beforeEach(() => {

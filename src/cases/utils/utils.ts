@@ -61,7 +61,7 @@ export class Utils {
     if (featureVariation.jurisdiction === jurisdictionId) {
       if ((featureVariation?.caseType === caseType) ||
         (featureVariation?.includeCaseTypes?.length > 0 &&
-          featureVariation?.includeCaseTypes.some((ct) => ct === caseType || new RegExp(ct,'i').test(caseType)))) {
+          featureVariation?.includeCaseTypes.some((ct) => ct === caseType || new RegExp('^'+ ct + '$').test(caseType)))) {
         return true;
       }
     }

@@ -88,6 +88,30 @@ describe('Utils', () => {
     expect(Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdictionId, caseTypeId)).toEqual(true);
   });
 
+  it('should check for regEx expression and matched permissions return true', () => {
+    const featureVariation = {
+      jurisdiction: 'SSCS',
+      includeCaseTypes: [
+        '(Benefit-|BENEFIT-)\\d+'
+      ]
+    };
+    const jurisdictionId = 'SSCS';
+    const caseTypeId = 'Benefit-1243';
+    expect(Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdictionId, caseTypeId)).toEqual(true);
+  });
+
+  it('should check for regEx expression and matched permissions return false', () => {
+    const featureVariation = {
+      jurisdiction: 'SSCS',
+      includeCaseTypes: [
+        '(Benefit-|BENEFIT-)\\d+'
+      ]
+    };
+    const jurisdictionId = 'SSCS';
+    const caseTypeId = 'Benefit1243';
+    expect(Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdictionId, caseTypeId)).toEqual(false);
+  });
+
   it('should check for matched permissions return false', () => {
     const featureVariation = {
       jurisdiction: 'SSCS',
@@ -121,47 +145,5 @@ describe('Utils', () => {
     jurisdictionId = 'PRIVATELAW';
     caseTypeId = 'CARESUPERVISION_EPO';
     expect(Utils.hasMatchedJurisdictionAndCaseType(featureVariations[1], jurisdictionId, caseTypeId)).toEqual(true);
-  });
-
-  it('should return true for the caseType matching with regular expression from the includeCaseTypes', () => {
-    const featureVariations = [
-      {
-        jurisdiction: 'SSCS',
-        includeCaseTypes: [
-          'Benefit',
-          'sscs-pr-1234'
-        ]
-      },
-      {
-        jurisdiction: 'PRIVATELAW',
-        caseType: 'CARESUPERVISION_EPO',
-        roles: ['ignore1', 'ignore2']
-      }
-    ];
-
-    const jurisdictionId = 'SSCS';
-    const caseTypeId = 'Benefit123';
-    expect(Utils.hasMatchedJurisdictionAndCaseType(featureVariations[0], jurisdictionId, caseTypeId)).toEqual(true);
-  });
-
-  it('should return false for the caseType matching with regular expression from the includeCaseTypes', () => {
-    const featureVariations = [
-      {
-        jurisdiction: 'SSCS',
-        includeCaseTypes: [
-          'Benefit',
-          'sscs-1234'
-        ]
-      },
-      {
-        jurisdiction: 'PRIVATELAW',
-        caseType: 'CARESUPERVISION_EPO',
-        roles: ['ignore1', 'ignore2']
-      }
-    ];
-
-    const jurisdictionId = 'SSCS';
-    const caseTypeId = 'Benefit123';
-    expect(Utils.hasMatchedJurisdictionAndCaseType(featureVariations[0], jurisdictionId, caseTypeId)).toEqual(false);
   });
 });

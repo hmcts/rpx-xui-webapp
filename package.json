@@ -122,6 +122,7 @@
     "dotenv-extended": "^2.7.1",
     "ejs": "^2.6.1",
     "eligrey-classlist.js": "^1.2.20180112",
+    "exceljs": "^4.4.0",
     "exception-formatter": "1.0.7",
     "faker": "^5.1.0",
     "file-saver": "^2.0.2",
@@ -165,7 +166,6 @@
     "ts-enum-util": "4.0.2",
     "tslib": "^2.6.1",
     "web-animations-js": "^2.3.2",
-    "xlsx": "^0.15.4",
     "yarn": "^1.22.18",
     "zone.js": "~0.13.1"
   },

@@ -492,6 +492,7 @@ export async function getMyAccess(req: EnhancedRequest, res: Response): Promise<
 
 export async function getMyCases(req: EnhancedRequest, res: Response): Promise<Response> {
   try {
+    await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
     const roleAssignments: RoleAssignment[] = req.session.roleAssignmentResponse;
 
     // get 'service' and 'location' filters from search_parameters on request

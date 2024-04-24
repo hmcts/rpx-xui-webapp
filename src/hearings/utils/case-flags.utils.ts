@@ -41,8 +41,9 @@ export class CaseFlagsUtils {
     const reasonableAdjustmentFlags = activeFlags?.filter((caseFlag) =>
       (caseFlag?.displayPath?.includes(CaseFlagType.REASONABLE_ADJUSTMENT)
         || caseFlag?.flagId === CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID));
-    const nonReasonableAdjustmentPartyFlags = activeFlags?.filter((activeFlag) => !reasonableAdjustmentFlags.includes(activeFlag));
-    const activeCaseFlags = activeFlags?.filter((nonRAF) => nonRAF.displayPath?.includes(CaseFlagType.CASE_FLAG));
+    const nonReasonableAdjustmentPartyFlags = activeFlags?.filter((activeFlag) => !reasonableAdjustmentFlags.includes(activeFlag)) || [];
+    const activeCaseFlags = activeFlags?.filter((nonRAF) => nonRAF.displayPath?.includes(CaseFlagType.CASE_FLAG)) || [];
+
     return [...nonReasonableAdjustmentPartyFlags, ...activeCaseFlags];
   }
 
@@ -139,6 +140,7 @@ export class CaseFlagsUtils {
       if (party.individualDetails?.interpreterLanguage) {
         allFlagsId.push(CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID);
       }
+
       const allFlags: CaseFlagReferenceModel[] = allFlagsId.map((flagId) => CaseFlagsUtils.findFlagByFlagId(caseFlagReferenceModels, flagId))
         .filter((foundFlag) => foundFlag !== null);
       if (allFlags?.length > 0 && partyName) {
@@ -162,7 +164,7 @@ export class CaseFlagsUtils {
         console.log('RAs', JSON.stringify(reasonableAdjustments));
         const flagsId = reasonableAdjustments.slice();
         if (party.individualDetails?.interpreterLanguage) {
-          flagsId.push(party.individualDetails.interpreterLanguage);
+          flagsId.push(CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID);
         }
 
         const allFlags: CaseFlagReferenceModel[] = flagsId.map((flagId) => CaseFlagsUtils.findFlagByFlagId(caseFlagReferenceModels, flagId));

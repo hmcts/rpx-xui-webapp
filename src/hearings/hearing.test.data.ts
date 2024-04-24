@@ -2385,7 +2385,7 @@ export const initialState = {
                 'RA0042',
                 'RA0009'
               ],
-              interpreterLanguage: 'PF0015',
+              interpreterLanguage: 'spa',
               preferredHearingChannel: 'byVideo'
             },
             unavailabilityDOW: null,
@@ -2557,7 +2557,7 @@ export const initialState = {
                 'RA0016',
                 'RA0042'
               ],
-              interpreterLanguage: 'PF0015'
+              interpreterLanguage: 'spa'
             },
             unavailabilityDOW: null,
             unavailabilityRanges: [
@@ -3037,7 +3037,7 @@ export const initialStateImmutable = {
                 'RA0042',
                 'RA0009'
               ],
-              interpreterLanguage: 'PF0015',
+              interpreterLanguage: 'spa',
               preferredHearingChannel: 'byVideo'
             },
             unavailabilityDOW: null,
@@ -3209,7 +3209,7 @@ export const initialStateImmutable = {
                 'RA0016',
                 'RA0042'
               ],
-              interpreterLanguage: 'PF0015'
+              interpreterLanguage: 'spa'
             },
             unavailabilityDOW: null,
             unavailabilityRanges: [

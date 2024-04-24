@@ -15455,15 +15455,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^4.0.17":
-  version: 4.3.0
-  resolution: "marked@npm:4.3.0"
-  bin:
-    marked: bin/marked.js
-  checksum: 0db6817893952c3ec710eb9ceafb8468bf5ae38cb0f92b7b083baa13d70b19774674be04db5b817681fa7c5c6a088f61300815e4dd75a59696f4716ad69f6260
-  languageName: node
-  linkType: hard
-
 "matcher@npm:^3.0.0":
   version: 3.0.0
   resolution: "matcher@npm:3.0.0"
@@ -16299,20 +16290,6 @@ __metadata:
     "@angular/core": ">6.0.0"
     rxjs: ">6.0.0"
   checksum: f1b3a237fd67992e2e011e3c53affbe66a50fc00111d91b266db09bc1ede17c06e43bf5eaa607226419f601aeac1aa1afc10addc985cdb540b1541337c979703
-  languageName: node
-  linkType: hard
-
-"ngx-md@npm:^14.0.9":
-  version: 14.0.9
-  resolution: "ngx-md@npm:14.0.9"
-  dependencies:
-    marked: ^4.0.17
-    prismjs: ^1.28.0
-    tslib: ^2.3.0
-  peerDependencies:
-    "@angular/common": ^14.0.0
-    "@angular/core": ^14.0.0
-  checksum: 922d015c98898d0e50ca540c1f962a57c4854b5395b5b95be2a7c54b38d3d7349835ce178ca1d8659b3f39b0f624bbae41ae16a30b3e01f6566c149bfe9abfa3
   languageName: node
   linkType: hard
 
@@ -17958,13 +17935,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prismjs@npm:^1.28.0":
-  version: 1.29.0
-  resolution: "prismjs@npm:1.29.0"
-  checksum: 007a8869d4456ff8049dc59404e32d5666a07d99c3b0e30a18bd3b7676dfa07d1daae9d0f407f20983865fd8da56de91d09cb08e6aa61f5bc420a27c0beeaf93
-  languageName: node
-  linkType: hard
-
 "proc-log@npm:^3.0.0":
   version: 3.0.0
   resolution: "proc-log@npm:3.0.0"
@@ -19192,7 +19162,6 @@ __metadata:
     ngrx-store-freeze: ^0.2.4
     ngx-chips: 3.0.0
     ngx-logger: ^4.3.3
-    ngx-md: ^14.0.9
     ngx-pagination: ^3.2.1
     node-fetch: ^2.6.1
     node-html-parser: ^6.1.5

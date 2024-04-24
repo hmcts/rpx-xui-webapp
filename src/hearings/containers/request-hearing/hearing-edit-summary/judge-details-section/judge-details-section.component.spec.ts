@@ -141,7 +141,7 @@ describe('JudgeDetailsSectionComponent', () => {
   });
 
   it('should set judge details', () => {
-    expect(component.needJudge).toEqual('No');
+    expect(component.needJudge).toEqual('Yes');
     expect(component.judgeName).toEqual('Jacky Collins');
     expect(component.judgeTypes).toEqual('Tribunal Judge, Deputy Tribunal Judge, Regional Tribunal Judge');
     expect(component.excludedJudgeNames).toEqual('Ramon Herrera');

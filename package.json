@@ -148,7 +148,7 @@
     "ngx-chips": "3.0.0",
     "ngx-logger": "^4.3.3",
     "ngx-md": "^14.0.9",
-    "ngx-pagination": "^3.2.1",
+    "ngx-pagination": "^6.0.3",
     "node-http-proxy-json": "^0.1.9",
     "p-iteration": "^1.1.7",
     "pegjs": "^0.10.0",

@@ -40,17 +40,6 @@ import { effects, reducers } from './store';
     ExuiCommonLibModule
   ],
   declarations: [...fromContainers.containers],
-  entryComponents: [
-    NocTextFieldComponent,
-    NocNumberFieldComponent,
-    NocEmailFieldComponent,
-    NocPhoneUkFieldComponent,
-    NocYesNoFieldComponent,
-    NocPostcodeFieldComponent,
-    NocDateFieldComponent,
-    NocDateTimeFieldComponent,
-    NocTimeFieldComponent
-  ],
   providers: [{
     provide: AbstractAppConfig,
     useExisting: AppConfig

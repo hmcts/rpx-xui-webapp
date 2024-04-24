@@ -42,6 +42,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@angular-devkit/architect@npm:0.1602.14":
+  version: 0.1602.14
+  resolution: "@angular-devkit/architect@npm:0.1602.14"
+  dependencies:
+    "@angular-devkit/core": 16.2.14
+    rxjs: 7.8.1
+  checksum: 88405d68dc3d1023ddfb02fe358bfa623d93c06a33cfd4e919e8928cfd04e3b35346b368b6cc6d38ddd12063b906bb76aca584be838d795f7d460d141def5794
+  languageName: node
+  linkType: hard
+
 "@angular-devkit/build-angular@npm:~15.2.9":
   version: 15.2.9
   resolution: "@angular-devkit/build-angular@npm:15.2.9"
@@ -170,16 +180,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/schematics@npm:15.2.9":
-  version: 15.2.9
-  resolution: "@angular-devkit/schematics@npm:15.2.9"
+"@angular-devkit/core@npm:16.2.14":
+  version: 16.2.14
+  resolution: "@angular-devkit/core@npm:16.2.14"
   dependencies:
-    "@angular-devkit/core": 15.2.9
+    ajv: 8.12.0
+    ajv-formats: 2.1.1
     jsonc-parser: 3.2.0
-    magic-string: 0.29.0
+    picomatch: 2.3.1
+    rxjs: 7.8.1
+    source-map: 0.7.4
+  peerDependencies:
+    chokidar: ^3.5.2
+  peerDependenciesMeta:
+    chokidar:
+      optional: true
+  checksum: 995a242bd11e1628967fe1ffd8268480a1452576dfa80efc4aec1de867ec3067a6e8852bcbea3a78c2bf6ea3c3c94c466b7cdb55ae1742191ca15d24f41224d9
+  languageName: node
+  linkType: hard
+
+"@angular-devkit/schematics@npm:16.2.14":
+  version: 16.2.14
+  resolution: "@angular-devkit/schematics@npm:16.2.14"
+  dependencies:
+    "@angular-devkit/core": 16.2.14
+    jsonc-parser: 3.2.0
+    magic-string: 0.30.1
     ora: 5.4.1
-    rxjs: 6.6.7
-  checksum: 17052e713e96c13f17e92f0568de613786926fba93ed5aa28409426cf874b1f340eb85c4b7c404ef933667448cb8f2e9ff999184fdc3f65dc123916a32e4fd9a
+    rxjs: 7.8.1
+  checksum: e6d2227c6622e2a4aaf85e7b4cda53d8824ce6e0b9a89db35496aadd890d34b5b03d141ba3f10ff293f1e32f5759cd4961255b235e2802fd5e88eb8cf90a1d0a
   languageName: node
   linkType: hard
 
@@ -250,31 +279,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cli@npm:^15.2.9":
-  version: 15.2.9
-  resolution: "@angular/cli@npm:15.2.9"
+"@angular/cli@npm:^16.2.14":
+  version: 16.2.14
+  resolution: "@angular/cli@npm:16.2.14"
   dependencies:
-    "@angular-devkit/architect": 0.1502.9
-    "@angular-devkit/core": 15.2.9
-    "@angular-devkit/schematics": 15.2.9
-    "@schematics/angular": 15.2.9
+    "@angular-devkit/architect": 0.1602.14
+    "@angular-devkit/core": 16.2.14
+    "@angular-devkit/schematics": 16.2.14
+    "@schematics/angular": 16.2.14
     "@yarnpkg/lockfile": 1.1.0
     ansi-colors: 4.1.3
-    ini: 3.0.1
+    ini: 4.1.1
     inquirer: 8.2.4
     jsonc-parser: 3.2.0
     npm-package-arg: 10.1.0
     npm-pick-manifest: 8.0.1
-    open: 8.4.1
+    open: 8.4.2
     ora: 5.4.1
-    pacote: 15.1.0
-    resolve: 1.22.1
-    semver: 7.5.3
+    pacote: 15.2.0
+    resolve: 1.22.2
+    semver: 7.5.4
     symbol-observable: 4.0.0
-    yargs: 17.6.2
+    yargs: 17.7.2
   bin:
     ng: bin/ng.js
-  checksum: 6e24a3178e4c00969e6d8e12c4c10a2c6eddc68d3bea73901ea14157ba0aecca554b6eca24fdac48a909eaf61f9b8c5c8d682845a232ed3d69dc205a9330f9d2
+  checksum: b2e11eff9384f01982391345ecea34841e52cf9beacf5865365c0dcb170cc77904bc7de8685db14150a87e6747eac9bc1c2a6c97f35cb5fee5249a5f20be824e
   languageName: node
   linkType: hard
 
@@ -3104,7 +3133,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jridgewell/sourcemap-codec@npm:^1.4.10, @jridgewell/sourcemap-codec@npm:^1.4.13, @jridgewell/sourcemap-codec@npm:^1.4.14":
+"@jridgewell/sourcemap-codec@npm:^1.4.10, @jridgewell/sourcemap-codec@npm:^1.4.13, @jridgewell/sourcemap-codec@npm:^1.4.14, @jridgewell/sourcemap-codec@npm:^1.4.15":
   version: 1.4.15
   resolution: "@jridgewell/sourcemap-codec@npm:1.4.15"
   checksum: b881c7e503db3fc7f3c1f35a1dd2655a188cc51a3612d76efc8a6eb74728bef5606e6758ee77423e564092b4a518aba569bbb21c9bac5ab7a35b0c6ae7e344c8
@@ -4501,14 +4530,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@schematics/angular@npm:15.2.9":
-  version: 15.2.9
-  resolution: "@schematics/angular@npm:15.2.9"
+"@schematics/angular@npm:16.2.14":
+  version: 16.2.14
+  resolution: "@schematics/angular@npm:16.2.14"
   dependencies:
-    "@angular-devkit/core": 15.2.9
-    "@angular-devkit/schematics": 15.2.9
+    "@angular-devkit/core": 16.2.14
+    "@angular-devkit/schematics": 16.2.14
     jsonc-parser: 3.2.0
-  checksum: 03e95407a1154e6ce30b65551e6beca1cec6461c1491462902eb0cc1020c593c1b728fb27cd5bcac8be6baa46690f22acbc2b8cb6cde9508d8d66f979aa8c8fb
+  checksum: 397adc090657b6d72a153f1198914d1e9a4ba831fd221e2b488eb4d27337a7b685b4e764e82f2f703e6a01802da1598e86fed5fc144fc02f0f18a3e24c1f24b6
   languageName: node
   linkType: hard
 
@@ -11507,6 +11536,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"function-bind@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "function-bind@npm:1.1.2"
+  checksum: 2b0ff4ce708d99715ad14a6d1f894e2a83242e4a52ccfcefaee5e40050562e5f6dafc1adbb4ce2d4ab47279a45dc736ab91ea5042d843c3c092820dfe032efb1
+  languageName: node
+  linkType: hard
+
 "function.name@npm:^1.0.3":
   version: 1.0.13
   resolution: "function.name@npm:1.0.13"
@@ -12178,6 +12214,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"hasown@npm:^2.0.0":
+  version: 2.0.2
+  resolution: "hasown@npm:2.0.2"
+  dependencies:
+    function-bind: ^1.1.2
+  checksum: e8516f776a15149ca6c6ed2ae3110c417a00b62260e222590e54aa367cbcd6ed99122020b37b7fbdf05748df57b265e70095d7bf35a47660587619b15ffb93db
+  languageName: node
+  linkType: hard
+
 "hdr-histogram-js@npm:^2.0.1":
   version: 2.0.3
   resolution: "hdr-histogram-js@npm:2.0.3"
@@ -12720,10 +12765,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ini@npm:3.0.1":
-  version: 3.0.1
-  resolution: "ini@npm:3.0.1"
-  checksum: 947b582a822f06df3c22c75c90aec217d604ea11f7a20249530ee5c1cf8f508288439abe17b0e1d9b421bda5f4fae5e7aae0b18cb3ded5ac9d68f607df82f10f
+"ini@npm:4.1.1":
+  version: 4.1.1
+  resolution: "ini@npm:4.1.1"
+  checksum: 0e5909554074fbc31824fa5415b0f604de4a665514c96a897a77bf77353a7ad4743927321270e9d0610a9d510ccd1f3cd77422f7cc80d8f4542dbce75476fb6d
   languageName: node
   linkType: hard
 
@@ -12926,7 +12971,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-core-module@npm:^2.13.0, is-core-module@npm:^2.8.1, is-core-module@npm:^2.9.0":
+"is-core-module@npm:^2.11.0":
+  version: 2.13.1
+  resolution: "is-core-module@npm:2.13.1"
+  dependencies:
+    hasown: ^2.0.0
+  checksum: 256559ee8a9488af90e4bad16f5583c6d59e92f0742e9e8bb4331e758521ee86b810b93bae44f390766ffbc518a0488b18d9dab7da9a5ff997d499efc9403f7c
+  languageName: node
+  linkType: hard
+
+"is-core-module@npm:^2.13.0, is-core-module@npm:^2.8.1":
   version: 2.13.0
   resolution: "is-core-module@npm:2.13.0"
   dependencies:
@@ -15446,6 +15500,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"magic-string@npm:0.30.1":
+  version: 0.30.1
+  resolution: "magic-string@npm:0.30.1"
+  dependencies:
+    "@jridgewell/sourcemap-codec": ^1.4.15
+  checksum: 7bc7e4493e32a77068f3753bf8652d4ab44142122eb7fb9fa871af83bef2cd2c57518a6769701cd5d0379bd624a13bc8c72ca25ac5655b27e5a61adf1fd38db2
+  languageName: node
+  linkType: hard
+
 "magic-string@npm:^0.27.0":
   version: 0.27.0
   resolution: "magic-string@npm:0.27.0"
@@ -17015,6 +17078,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"open@npm:8.4.2, open@npm:^8.0.9":
+  version: 8.4.2
+  resolution: "open@npm:8.4.2"
+  dependencies:
+    define-lazy-prop: ^2.0.0
+    is-docker: ^2.1.1
+    is-wsl: ^2.2.0
+  checksum: 6388bfff21b40cb9bd8f913f9130d107f2ed4724ea81a8fd29798ee322b361ca31fa2cdfb491a5c31e43a3996cfe9566741238c7a741ada8d7af1cb78d85cf26
+  languageName: node
+  linkType: hard
+
 "open@npm:^6.4.0":
   version: 6.4.0
   resolution: "open@npm:6.4.0"
@@ -17031,17 +17105,6 @@ __metadata:
     is-docker: ^2.0.0
     is-wsl: ^2.1.1
   checksum: 3333900ec0e420d64c23b831bc3467e57031461d843c801f569b2204a1acc3cd7b3ec3c7897afc9dde86491dfa289708eb92bba164093d8bd88fb2c231843c91
-  languageName: node
-  linkType: hard
-
-"open@npm:^8.0.9":
-  version: 8.4.2
-  resolution: "open@npm:8.4.2"
-  dependencies:
-    define-lazy-prop: ^2.0.0
-    is-docker: ^2.1.1
-    is-wsl: ^2.2.0
-  checksum: 6388bfff21b40cb9bd8f913f9130d107f2ed4724ea81a8fd29798ee322b361ca31fa2cdfb491a5c31e43a3996cfe9566741238c7a741ada8d7af1cb78d85cf26
   languageName: node
   linkType: hard
 
@@ -17379,9 +17442,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pacote@npm:15.1.0":
-  version: 15.1.0
-  resolution: "pacote@npm:15.1.0"
+"pacote@npm:15.2.0":
+  version: 15.2.0
+  resolution: "pacote@npm:15.2.0"
   dependencies:
     "@npmcli/git": ^4.0.0
     "@npmcli/installed-package-contents": ^2.0.1
@@ -17389,7 +17452,7 @@ __metadata:
     "@npmcli/run-script": ^6.0.0
     cacache: ^17.0.0
     fs-minipass: ^3.0.0
-    minipass: ^4.0.0
+    minipass: ^5.0.0
     npm-package-arg: ^10.0.0
     npm-packlist: ^7.0.0
     npm-pick-manifest: ^8.0.0
@@ -17398,12 +17461,12 @@ __metadata:
     promise-retry: ^2.0.1
     read-package-json: ^6.0.0
     read-package-json-fast: ^3.0.0
-    sigstore: ^1.0.0
+    sigstore: ^1.3.0
     ssri: ^10.0.0
     tar: ^6.1.11
   bin:
     pacote: lib/bin.js
-  checksum: bf5c43d51350a2ed5d407caa6ddffa9bb8fd7098f3d36600bd1f2dd40a76f5e78b27dd5c2828ae8c312b12888f3c1846385ffbcd1f2e0bd0e2e549f5d124cca4
+  checksum: c731572be2bf226b117eba076d242bd4cd8be7aa01e004af3374a304ad7ab330539e22644bc33de12d2a7d45228ccbcbf4d710f59c84414f3d09a1a95ee6f0bf
   languageName: node
   linkType: hard
 
@@ -17757,7 +17820,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"picomatch@npm:^2.0.4, picomatch@npm:^2.2.1, picomatch@npm:^2.2.3, picomatch@npm:^2.3.1":
+"picomatch@npm:2.3.1, picomatch@npm:^2.0.4, picomatch@npm:^2.2.1, picomatch@npm:^2.2.3, picomatch@npm:^2.3.1":
   version: 2.3.1
   resolution: "picomatch@npm:2.3.1"
   checksum: 050c865ce81119c4822c45d3c84f1ced46f93a0126febae20737bd05ca20589c564d6e9226977df859ed5e03dc73f02584a2b0faad36e896936238238b0446cf
@@ -18987,16 +19050,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:1.22.1":
-  version: 1.22.1
-  resolution: "resolve@npm:1.22.1"
+"resolve@npm:1.22.2":
+  version: 1.22.2
+  resolution: "resolve@npm:1.22.2"
   dependencies:
-    is-core-module: ^2.9.0
+    is-core-module: ^2.11.0
     path-parse: ^1.0.7
     supports-preserve-symlinks-flag: ^1.0.0
   bin:
     resolve: bin/resolve
-  checksum: 07af5fc1e81aa1d866cbc9e9460fbb67318a10fa3c4deadc35c3ad8a898ee9a71a86a65e4755ac3195e0ea0cfbe201eb323ebe655ce90526fd61917313a34e4e
+  checksum: 7e5df75796ebd429445d102d5824482ee7e567f0070b2b45897b29bb4f613dcbc262e0257b8aeedb3089330ccaea0d6a0464df1a77b2992cf331dcda0f4cb549
   languageName: node
   linkType: hard
 
@@ -19020,16 +19083,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@1.22.1#~builtin<compat/resolve>":
-  version: 1.22.1
-  resolution: "resolve@patch:resolve@npm%3A1.22.1#~builtin<compat/resolve>::version=1.22.1&hash=c3c19d"
+"resolve@patch:resolve@1.22.2#~builtin<compat/resolve>":
+  version: 1.22.2
+  resolution: "resolve@patch:resolve@npm%3A1.22.2#~builtin<compat/resolve>::version=1.22.2&hash=c3c19d"
   dependencies:
-    is-core-module: ^2.9.0
+    is-core-module: ^2.11.0
     path-parse: ^1.0.7
     supports-preserve-symlinks-flag: ^1.0.0
   bin:
     resolve: bin/resolve
-  checksum: 5656f4d0bedcf8eb52685c1abdf8fbe73a1603bb1160a24d716e27a57f6cecbe2432ff9c89c2bd57542c3a7b9d14b1882b73bfe2e9d7849c9a4c0b8b39f02b8b
+  checksum: 66cc788f13b8398de18eb4abb3aed90435c84bb8935953feafcf7231ba4cd191b2c10b4a87b1e9681afc34fb138c705f91f7330ff90bfa36f457e5584076a2b8
   languageName: node
   linkType: hard
 
@@ -19190,7 +19253,7 @@ __metadata:
     "@angular-material-components/moment-adapter": ^15.0.0
     "@angular/animations": ^15.2.9
     "@angular/cdk": ^15.2.9
-    "@angular/cli": ^15.2.9
+    "@angular/cli": ^16.2.14
     "@angular/common": ^15.2.9
     "@angular/compiler": ^15.2.9
     "@angular/compiler-cli": ^15.2.9
@@ -19417,7 +19480,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:^7.5.5, rxjs@npm:^7.8.1":
+"rxjs@npm:7.8.1, rxjs@npm:^7.5.5, rxjs@npm:^7.8.1":
   version: 7.8.1
   resolution: "rxjs@npm:7.8.1"
   dependencies:
@@ -19674,6 +19737,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"semver@npm:7.5.4, semver@npm:^7.3.8, semver@npm:^7.5.3, semver@npm:^7.5.4":
+  version: 7.5.4
+  resolution: "semver@npm:7.5.4"
+  dependencies:
+    lru-cache: ^6.0.0
+  bin:
+    semver: bin/semver.js
+  checksum: 12d8ad952fa353b0995bf180cdac205a4068b759a140e5d3c608317098b3575ac2f1e09182206bf2eb26120e1c0ed8fb92c48c592f6099680de56bb071423ca3
+  languageName: node
+  linkType: hard
+
 "semver@npm:7.6.0":
   version: 7.6.0
   resolution: "semver@npm:7.6.0"
@@ -19722,17 +19796,6 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 2d266937756689a76f124ffb4c1ea3e1bbb2b263219f90ada8a11aebebe1280b13bb76cca2ca96bdee3dbc554cbc0b24752eb895b2a51577aa644427e9229f2b
-  languageName: node
-  linkType: hard
-
-"semver@npm:^7.3.8, semver@npm:^7.5.3, semver@npm:^7.5.4":
-  version: 7.5.4
-  resolution: "semver@npm:7.5.4"
-  dependencies:
-    lru-cache: ^6.0.0
-  bin:
-    semver: bin/semver.js
-  checksum: 12d8ad952fa353b0995bf180cdac205a4068b759a140e5d3c608317098b3575ac2f1e09182206bf2eb26120e1c0ed8fb92c48c592f6099680de56bb071423ca3
   languageName: node
   linkType: hard
 
@@ -19998,7 +20061,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sigstore@npm:^1.0.0":
+"sigstore@npm:^1.3.0":
   version: 1.9.0
   resolution: "sigstore@npm:1.9.0"
   dependencies:
@@ -23057,21 +23120,6 @@ __metadata:
     y18n: ^5.0.5
     yargs-parser: ^20.2.2
   checksum: b14afbb51e3251a204d81937c86a7e9d4bdbf9a2bcee38226c900d00f522969ab675703bee2a6f99f8e20103f608382936034e64d921b74df82b63c07c5e8f59
-  languageName: node
-  linkType: hard
-
-"yargs@npm:17.6.2":
-  version: 17.6.2
-  resolution: "yargs@npm:17.6.2"
-  dependencies:
-    cliui: ^8.0.1
-    escalade: ^3.1.1
-    get-caller-file: ^2.0.5
-    require-directory: ^2.1.1
-    string-width: ^4.2.3
-    y18n: ^5.0.5
-    yargs-parser: ^21.1.1
-  checksum: 47da1b0d854fa16d45a3ded57b716b013b2179022352a5f7467409da5a04a1eef5b3b3d97a2dfc13e8bbe5f2ffc0afe3bc6a4a72f8254e60f5a4bd7947138643
   languageName: node
   linkType: hard
 

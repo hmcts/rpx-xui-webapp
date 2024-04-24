@@ -104,7 +104,7 @@
     "@ngrx/router-store": "^16.3.0",
     "@ngrx/store": "^16.3.0",
     "@ngrx/store-devtools": "^16.3.0",
-    "@nguniversal/express-engine": "^15.2.1",
+    "@nguniversal/express-engine": "^16.2.0",
     "accessibility-checker": "^3.0.6",
     "applicationinsights": "1.7.2",
     "axios": "^1.5.1",

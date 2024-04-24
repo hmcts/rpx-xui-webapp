@@ -7388,7 +7388,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.0.0":
+"axios@npm:^1.0.0, axios@npm:^1.6.8":
   version: 1.6.8
   resolution: "axios@npm:1.6.8"
   dependencies:
@@ -7410,7 +7410,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.5.0, axios@npm:^1.5.1":
+"axios@npm:^1.5.0":
   version: 1.5.1
   resolution: "axios@npm:1.5.1"
   dependencies:
@@ -20219,7 +20219,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.57.0
     accessibility-checker: ^3.0.6
     applicationinsights: 1.7.2
-    axios: ^1.5.1
+    axios: ^1.6.8
     axios-mock-adapter: ^1.22.0
     base-64: ^0.1.0
     chai: ^4.3.10

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
@@ -13,8 +13,8 @@ export class NocEffects {
   constructor(private readonly actions$: Actions,
               private readonly nocService: NocService) {}
 
-  @Effect()
-  public setCaseReference$ = this.actions$.pipe(
+  
+  public setCaseReference$ = createEffect(() => this.actions$.pipe(
       ofType(nocActions.SET_CASE_REFERENCE),
       map((action: nocActions.SetCaseReference) => action.payload),
       switchMap((payload) => {
@@ -32,10 +32,10 @@ export class NocEffects {
 
         return of(new nocActions.SetCaseRefValidationFailure());
       })
-    );
+    ));
 
-  @Effect()
-  public setAnswers$ = this.actions$.pipe(
+  
+  public setAnswers$ = createEffect(() => this.actions$.pipe(
       ofType(nocActions.SET_ANSWERS),
       map((action: nocActions.SetAnswers) => action.payload),
       switchMap((payload) => {
@@ -52,10 +52,10 @@ export class NocEffects {
 
         return of(new nocActions.SetAnswersIncomplete());
       })
-    );
+    ));
 
-  @Effect()
-  public submitNoc$ = this.actions$.pipe(
+  
+  public submitNoc$ = createEffect(() => this.actions$.pipe(
       ofType(nocActions.SUBMIT_NOC),
       map((action: nocActions.SubmitNoc) => action.payload),
       switchMap((payload) => {
@@ -72,7 +72,7 @@ export class NocEffects {
           })
         );
       })
-    );
+    ));
 
   public static handleError(error: NocHttpError, action: string): Observable<Action> {
     if (error && error.status) {

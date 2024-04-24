@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { SearchFilterService } from '../../../cases/services';
@@ -13,8 +13,8 @@ export class CaseListEffects {
         private readonly searchService: SearchFilterService,
   ) {}
 
-    @Effect()
-  public applyPageMetadata$ = this.actions$.pipe(
+    
+  public applyPageMetadata$ = createEffect(() => this.actions$.pipe(
         ofType(caselistActions.FIND_CASELIST_PAGINATION_METADATA),
         map((action: caselistActions.FindCaselistPaginationMetadata) => action.payload),
         switchMap((payload) => {
@@ -25,10 +25,10 @@ export class CaseListEffects {
             catchError((error) => of(new caselistActions.ApplyCaselistFilterFail(error)))
           );
         })
-      );
+      ));
 
-    @Effect()
-    public applyCaselistFilters$ = this.actions$.pipe(
+    
+    public applyCaselistFilters$ = createEffect(() => this.actions$.pipe(
         ofType(caselistActions.APPLY_CASELIST_FILTER),
         map((action: caselistActions.ApplyCaselistFilter) => action.payload),
         switchMap((payload) => {
@@ -36,10 +36,10 @@ export class CaseListEffects {
             map((result: Observable<any>) => new caselistActions.ApplyCaselistFilterSuccess(result)),
             catchError((error) => of(new caselistActions.ApplyCaselistFilterFail(error)))
           );
-        }));
+        })));
 
-    @Effect()
-    public applyCaselistFiltersForES$ = this.actions$.pipe(
+    
+    public applyCaselistFiltersForES$ = createEffect(() => this.actions$.pipe(
         ofType(caselistActions.APPLY_CASELIST_FILTER_FOR_ES),
         map((action: caselistActions.ApplyCaselistFilterForES) => action.payload),
         switchMap((payload) => {
@@ -47,11 +47,11 @@ export class CaseListEffects {
             map((result: Observable<any>) => new caselistActions.ApplyCaselistFilterSuccess(result)),
             catchError((error) => of(new caselistActions.ApplyCaselistFilterFail(error)))
           );
-        }));
+        })));
 
-    @Effect()
-    public applySearchFilterToggle$ = this.actions$.pipe(
+    
+    public applySearchFilterToggle$ = createEffect(() => this.actions$.pipe(
         ofType(caselistActions.CASE_FILTER_DISPLAY_TOGGLE),
         map((action: caselistActions.CaseFilterToggle) => new caselistActions.CaseFilterToggleSuccess(action.payload)),
-        catchError((error) => of(new caselistActions.ApplyCaselistFilterFail(error))));
+        catchError((error) => of(new caselistActions.ApplyCaselistFilterFail(error)))));
 }

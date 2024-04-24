@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Action, Store, select } from '@ngrx/store';
 import { Observable, from, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
@@ -53,8 +53,8 @@ export class HearingRequestEffects {
     );
   }
 
-  @Effect({ dispatch: false })
-  public backNavigation$ = this.actions$.pipe(
+  
+  public backNavigation$ = createEffect(() => this.actions$.pipe(
       ofType(hearingRequestActions.NAVIGATE_BACK_HEARING_REQUEST),
       switchMap(() => {
         switch (this.mode) {
@@ -80,10 +80,10 @@ export class HearingRequestEffects {
             return from(this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']));
         }
       })
-    );
+    ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  public continueNavigation$ = this.actions$.pipe(
+  
+  public continueNavigation$ = createEffect(() => this.actions$.pipe(
       ofType(hearingRequestActions.UPDATE_HEARING_REQUEST),
       tap(() => {
         const nextPage = this.isHearingAmendmentsEnabled
@@ -128,10 +128,10 @@ export class HearingRequestEffects {
             break;
         }
       })
-    );
+    ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  public loadHearingRequest$ = this.actions$.pipe(
+  
+  public loadHearingRequest$ = createEffect(() => this.actions$.pipe(
       ofType(hearingRequestActions.LOAD_HEARING_REQUEST),
       map((action: hearingRequestActions.LoadHearingRequest) => action.payload),
       switchMap((payload) => {
@@ -150,10 +150,10 @@ export class HearingRequestEffects {
           })
         );
       })
-    );
+    ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  public submitHearingRequest$ = this.actions$.pipe(
+  
+  public submitHearingRequest$ = createEffect(() => this.actions$.pipe(
       ofType(hearingRequestActions.SUBMIT_HEARING_REQUEST),
       map((action: hearingRequestActions.SubmitHearingRequest) => action.payload),
       switchMap((payload) => {
@@ -169,19 +169,19 @@ export class HearingRequestEffects {
           })
         );
       })
-    );
+    ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  public submitHearingReason$ = this.actions$.pipe(
+  
+  public submitHearingReason$ = createEffect(() => this.actions$.pipe(
       ofType(hearingRequestActions.VIEW_EDIT_SUBMIT_HEARING_REASON),
       tap(() => {
         this.router.navigate(['hearings', 'request', 'hearing-change-reason'])
           .catch((err) => this.loggerService.error('Error navigating to /hearings/request/hearing-change-reason', err));
       })
-    );
+    ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  public viewEditSubmitHearingRequest$ = this.actions$.pipe(
+  
+  public viewEditSubmitHearingRequest$ = createEffect(() => this.actions$.pipe(
       ofType(hearingRequestActions.VIEW_EDIT_SUBMIT_HEARING_REQUEST),
       map((action: hearingRequestActions.ViewEditSubmitHearingRequest) => action.payload),
       switchMap((payload) => {
@@ -197,7 +197,7 @@ export class HearingRequestEffects {
           })
         );
       })
-    );
+    ), { dispatch: false });
 
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status) {

@@ -146,7 +146,7 @@
     "mochawesome-report-generator": "^5.1.0",
     "moment-timezone": "^0.5.28",
     "ngx-chips": "3.0.0",
-    "ngx-logger": "^4.3.3",
+    "ngx-logger": "^5.0.12",
     "ngx-md": "^14.0.9",
     "ngx-pagination": "^6.0.3",
     "node-http-proxy-json": "^0.1.9",

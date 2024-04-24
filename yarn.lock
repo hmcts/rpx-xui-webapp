@@ -17187,17 +17187,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-logger@npm:^4.3.3":
-  version: 4.3.3
-  resolution: "ngx-logger@npm:4.3.3"
+"ngx-logger@npm:^5.0.12":
+  version: 5.0.12
+  resolution: "ngx-logger@npm:5.0.12"
   dependencies:
-    tslib: ^2.0.0
+    tslib: ^2.3.0
     vlq: ^1.0.0
   peerDependencies:
-    "@angular/common": ">6.0.0"
-    "@angular/core": ">6.0.0"
     rxjs: ">6.0.0"
-  checksum: f1b3a237fd67992e2e011e3c53affbe66a50fc00111d91b266db09bc1ede17c06e43bf5eaa607226419f601aeac1aa1afc10addc985cdb540b1541337c979703
+  checksum: dc3285a0f038e67070db1e621ec27b06764fba41bcd71617eeaefe2ee53ecdc49d003ecfaa42c725a657b74115e7577c21102dd5c263218a15b78fb6dea4c264
   languageName: node
   linkType: hard
 
@@ -20276,7 +20274,7 @@ __metadata:
     moment-timezone: ^0.5.28
     ngrx-store-freeze: ^0.2.4
     ngx-chips: 3.0.0
-    ngx-logger: ^4.3.3
+    ngx-logger: ^5.0.12
     ngx-md: ^14.0.9
     ngx-pagination: ^6.0.3
     node-fetch: ^2.6.1

@@ -213,16 +213,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-material-components/moment-adapter@npm:^15.0.0":
-  version: 15.0.0
-  resolution: "@angular-material-components/moment-adapter@npm:15.0.0"
+"@angular-material-components/moment-adapter@npm:^16.0.1":
+  version: 16.0.1
+  resolution: "@angular-material-components/moment-adapter@npm:16.0.1"
   dependencies:
     tslib: ^2.3.0
   peerDependencies:
-    "@angular/common": ^15.0.1
-    "@angular/core": ^15.0.1
+    "@angular/common": ^16.0.0
+    "@angular/core": ^16.0.0
     moment: ^2.18.1
-  checksum: 211f1538e0466242dc78ca23b8fa6022456a7584ecc0f484b6a72bf4971ca1311f5c3516e26a6802c6e4ab8568c59681ff8b4ec95d96eca7c54d93e46e55b958
+  checksum: bed4c2cdde555675b2455ffba6af50ca71ac013c968d1736777a77116f2841a2d2912bb452cd79cea33ed0e04094b634c5d2912d42ed700fd838562d21190301
   languageName: node
   linkType: hard
 
@@ -20002,7 +20002,7 @@ __metadata:
     "@angular-devkit/build-angular": ~16.2.14
     "@angular-eslint/builder": 16.3.1
     "@angular-material-components/datetime-picker": 16.0.1
-    "@angular-material-components/moment-adapter": ^15.0.0
+    "@angular-material-components/moment-adapter": ^16.0.1
     "@angular/animations": ^16.2.12
     "@angular/cdk": ^16.2.14
     "@angular/cli": ^16.2.14

@@ -57,14 +57,14 @@ export class HearingRequirementsSectionComponent implements OnInit {
         if (this.reasonableAdjustmentChangesConfirmed) {
           flagIds = partyInSHV.individualDetails?.reasonableAdjustments?.filter((flagCode) => flagCode?.startsWith('RA'));
           if (partyInSHV.individualDetails?.interpreterLanguage) {
-            flagIds = [...flagIds, partyInSHV.individualDetails.interpreterLanguage];
+            flagIds = [...flagIds, CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID];
           }
         } else {
           const partyInHMC = this.partyDetails.find((partyInHMC) => partyInHMC.partyID === partyInSHV.partyID);
           if (partyInHMC) {
             flagIds = partyInHMC.individualDetails?.reasonableAdjustments?.filter((flagCode) => flagCode?.startsWith('RA'));
             if (partyInHMC.individualDetails?.interpreterLanguage) {
-              flagIds = [...flagIds, partyInSHV.individualDetails.interpreterLanguage];
+              flagIds = [...flagIds, CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID];
             }
           }
         }

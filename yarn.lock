@@ -4812,19 +4812,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stryker-mutator/typescript@npm:^3.0.1":
-  version: 3.3.1
-  resolution: "@stryker-mutator/typescript@npm:3.3.1"
-  dependencies:
-    "@stryker-mutator/api": ^3.3.1
-    "@stryker-mutator/util": ^3.3.1
-    lodash.flatmap: ~4.5.0
-    semver: ~6.3.0
-    tslib: ~2.0.0
-  peerDependencies:
-    "@stryker-mutator/core": ^3.0.0
-    typescript: ^3.0.3
-  checksum: b3edc2e5b262f0bf418189b31682a4968acd76e6bad17e77794a106a59b13d960c8ba67211ce21f9b2f95c2eb4b9448df12fdf87f319868408757372038e7680
+"@stryker-mutator/typescript@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@stryker-mutator/typescript@npm:4.0.0"
+  checksum: 47edbfe9b0c764b7d92fed9178957123b95f6063fbbe829776bff8626d52d52126bba640a79224a418de12050966f5006f12ee17ddb00144d82770fb6df8a42d
   languageName: node
   linkType: hard
 
@@ -14987,7 +14978,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.flatmap@npm:^4.5.0, lodash.flatmap@npm:~4.5.0":
+"lodash.flatmap@npm:^4.5.0":
   version: 4.5.0
   resolution: "lodash.flatmap@npm:4.5.0"
   checksum: c01a47d32e99f8fce75409f0a4a9bd12fbb2d3a46519a0dde14deedb1e527b5ddccc2bf997705c67bdecb915f47749e8a9ffefa7a91c41f0c448e06348ec81c7
@@ -19116,7 +19107,7 @@ __metadata:
     "@stryker-mutator/html-reporter": ^3.0.1
     "@stryker-mutator/karma-runner": ^3.0.1
     "@stryker-mutator/mocha-runner": ^3.0.1
-    "@stryker-mutator/typescript": ^3.0.1
+    "@stryker-mutator/typescript": ^4.0.0
     "@types/config": ^0.0.36
     "@types/cookie-parser": ^1.4.2
     "@types/crypto-js": ^3.1.43

@@ -1,6 +1,5 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideMockStore } from '@ngrx/store/testing';
-import { initialState } from '../../../../../hearings/hearing.test.data';
 import { MemberType, RequirementType } from '../../../../models/hearings.enum';
 import { JudicialUserModel } from '../../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
@@ -11,15 +10,31 @@ describe('JudgeDetailsSectionComponent', () => {
   let component: JudgeDetailsSectionComponent;
   let fixture: ComponentFixture<JudgeDetailsSectionComponent>;
 
+  const panelRequirementsToCompare: PanelRequirementsModel = {
+    panelPreferences: [
+      {
+        memberID: '4917866',
+        memberType: MemberType.JUDGE,
+        requirementType: RequirementType.EXCLUDE
+      },
+      {
+        memberID: '4100728',
+        memberType: MemberType.JUDGE,
+        requirementType: RequirementType.EXCLUDE
+      }
+    ],
+    roleType: ['Tribunal', 'dtj', 'rtj']
+  };
+
   const panelRequirements: PanelRequirementsModel = {
     panelPreferences: [
       {
-        memberID: '7007496',
+        memberID: '4917866',
         memberType: MemberType.JUDGE,
         requirementType: RequirementType.MUSTINC
       },
       {
-        memberID: '6006842',
+        memberID: '4100728',
         memberType: MemberType.JUDGE,
         requirementType: RequirementType.EXCLUDE
       }
@@ -37,7 +52,7 @@ describe('JudgeDetailsSectionComponent', () => {
       idamId: '1102839232',
       initials: 'JC',
       postNominals: 'JP',
-      personalCode: '7007496',
+      personalCode: '4917866',
       isJudge: '',
       isMagistrate: '',
       isPanelMember: ''
@@ -51,7 +66,7 @@ describe('JudgeDetailsSectionComponent', () => {
       idamId: 'a229ec37-d84d-4eed-bd7f-0c77a6721da6',
       initials: 'RH',
       postNominals: 'JP',
-      personalCode: '6006842',
+      personalCode: '4100728',
       isJudge: '',
       isMagistrate: '',
       isPanelMember: ''
@@ -106,10 +121,10 @@ describe('JudgeDetailsSectionComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
         JudgeDetailsSectionComponent
-      ],
-      providers: provideMockStore({ initialState })
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(JudgeDetailsSectionComponent);
@@ -117,6 +132,7 @@ describe('JudgeDetailsSectionComponent', () => {
     component.judgeTypesRefData = judgeTypes;
     component.judicialUsers = judicialUsers;
     component.panelRequirements = panelRequirements;
+    component.panelRequirementsToCompare = panelRequirementsToCompare;
     fixture.detectChanges();
   });
 
@@ -125,7 +141,7 @@ describe('JudgeDetailsSectionComponent', () => {
   });
 
   it('should set judge details', () => {
-    expect(component.needJudge).toEqual('No');
+    expect(component.needJudge).toEqual('Yes');
     expect(component.judgeName).toEqual('Jacky Collins');
     expect(component.judgeTypes).toEqual('Tribunal Judge, Deputy Tribunal Judge, Regional Tribunal Judge');
     expect(component.excludedJudgeNames).toEqual('Ramon Herrera');
@@ -148,6 +164,254 @@ describe('JudgeDetailsSectionComponent', () => {
     component.onChange('judgeExclusion');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
       fragmentId: 'judgeExclusion', changeLink: '/hearings/request/hearing-judge#inputSelectPersonExclude'
+    });
+  });
+
+  describe('showAmmendedForNeedJudge', () => {
+    it('should "showAmmendedForNeedJudge" return true', () => {
+      component.panelRequirementsToCompare = {
+        panelPreferences: [
+          {
+            memberID: '4917866',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          },
+          {
+            memberID: '4100728',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          }
+        ],
+        roleType: ['Tribunal', 'rtj']
+      };
+      component.panelRequirements = {
+        panelPreferences: [
+          {
+            memberID: '4917866',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          },
+          {
+            memberID: '4100728',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.EXCLUDE
+          }
+        ],
+        roleType: []
+      };
+      component.ngOnInit();
+      expect(component.showAmmendedForNeedJudge).toEqual(true);
+    });
+
+    it('should "showAmmendedForNeedJudge" return false', () => {
+      component.panelRequirementsToCompare = {
+        panelPreferences: [
+          {
+            memberID: '4917866',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          },
+          {
+            memberID: '4100728',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          }
+        ],
+        roleType: ['Tribunal', 'dtj', 'rtj']
+      };
+      component.panelRequirements = {
+        panelPreferences: [
+          {
+            memberID: '4917866',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          },
+          {
+            memberID: '4100728',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.EXCLUDE
+          }
+        ],
+        roleType: ['Tribunal', 'dtj', 'rtj']
+      };
+      component.ngOnInit();
+      expect(component.showAmmendedForNeedJudge).toEqual(false);
+    });
+  });
+
+  describe('showAmmendedForJudgeName', () => {
+    it('should "showAmmendedForJudgeName" return true', () => {
+      component.panelRequirementsToCompare = {
+        panelPreferences: [
+          {
+            memberID: '4917866',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          },
+          {
+            memberID: '4100728',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          }
+        ],
+        roleType: ['Tribunal', 'dtj', 'rtj']
+      };
+      component.panelRequirements = {
+        panelPreferences: [
+          {
+            memberID: '4917866',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          },
+          {
+            memberID: '4100728',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.EXCLUDE
+          }
+        ],
+        roleType: ['Tribunal', 'dtj', 'rtj']
+      };
+      component.ngOnInit();
+      expect(component.showAmmendedForJudgeName).toEqual(true);
+    });
+
+    it('should "showAmmendedForJudgeName" return false', () => {
+      component.panelRequirementsToCompare = {
+        panelPreferences: [
+          {
+            memberID: '4917866',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          },
+          {
+            memberID: '4100728',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          }
+        ],
+        roleType: ['Tribunal', 'dtj', 'rtj']
+      };
+      component.panelRequirements = {
+        panelPreferences: [
+          {
+            memberID: '4917866',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          },
+          {
+            memberID: '4100728',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          }
+        ],
+        roleType: ['Tribunal', 'dtj', 'rtj']
+      };
+      component.ngOnInit();
+      expect(component.showAmmendedForJudgeName).toEqual(false);
+    });
+  });
+
+  describe('showAmmendedForExcludedJudgeNames', () => {
+    it('should "showAmmendedForExcludedJudgeNames" return true', () => {
+      component.panelRequirementsToCompare = {
+        panelPreferences: [
+          {
+            memberID: '4917866',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          },
+          {
+            memberID: '4100728',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          }
+        ],
+        roleType: ['Tribunal', 'dtj', 'rtj']
+      };
+      component.panelRequirements = {
+        panelPreferences: [
+          {
+            memberID: '4100728',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          }
+        ],
+        roleType: ['Tribunal', 'dtj', 'rtj']
+      };
+      component.ngOnInit();
+      expect(component.showAmmendedForExcludedJudgeNames).toEqual(true);
+    });
+
+    it('should "showAmmendedForExcludedJudgeNames" return false', () => {
+      component.panelRequirementsToCompare = {
+        panelPreferences: [
+          {
+            memberID: '4917866',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          },
+          {
+            memberID: '4100728',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          }
+        ],
+        roleType: ['Tribunal', 'dtj', 'rtj']
+      };
+      component.panelRequirements = {
+        panelPreferences: [
+          {
+            memberID: '4917866',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          },
+          {
+            memberID: '4100728',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          }
+        ],
+        roleType: ['Tribunal', 'dtj', 'rtj']
+      };
+      component.ngOnInit();
+      expect(component.showAmmendedForExcludedJudgeNames).toEqual(false);
+    });
+  });
+
+  describe('showAmendedLabelForPageTitle', () => {
+    it('should "showAmendedLabelForPageTitle" return false', () => {
+      component.panelRequirementsToCompare = {
+        panelPreferences: [
+          {
+            memberID: '4917866',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          },
+          {
+            memberID: '4100728',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          }
+        ],
+        roleType: ['Tribunal', 'dtj', 'rtj']
+      };
+      component.panelRequirements = {
+        panelPreferences: [
+          {
+            memberID: '4917866',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          },
+          {
+            memberID: '4100728',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.MUSTINC
+          }
+        ],
+        roleType: ['Tribunal', 'dtj', 'rtj']
+      };
+      component.ngOnInit();
+      expect(component.showAmendedLabelForPageTitle).toEqual(false);
     });
   });
 

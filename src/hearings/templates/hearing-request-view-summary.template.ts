@@ -70,9 +70,10 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
       {
         id: 'caseFlags',
         answerTitle: 'Reasonable adjustments',
-        answerSource: AnswerSource.CASE_FLAGS
+        answerSource: AnswerSource.REASONABLE_ADJUSTMENT_FLAGS
       }
-    ]
+    ],
+    isHiddenSource: IsHiddenSource.HEARING_REQUIREMENTS_EXCLUSION
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional facilities</h2>',
@@ -87,7 +88,8 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'Select any additional facilities required',
         answerSource: AnswerSource.ADDITIONAL_FACILITIES_REQUIRED
       }
-    ]
+    ],
+    isHiddenSource: IsHiddenSource.HEARING_FACILITIES_EXCLUSION
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing stage</h2>',
@@ -97,7 +99,8 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'What stage is this hearing at?',
         answerSource: AnswerSource.STAGE
       }
-    ]
+    ],
+    isHiddenSource: IsHiddenSource.HEARING_STAGE_EXCLUSION
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Participant attendance</h2>',
@@ -125,7 +128,8 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.ATTENDANT_PERSON_AMOUNT,
         isHiddenSource: IsHiddenSource.PAPER_HEARING
       }
-    ]
+    ],
+    isHiddenSource: IsHiddenSource.PARTICIPANT_ATTENDANCE_EXCLUSION
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing venue</h2>',
@@ -135,7 +139,8 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'What are the hearing venue details?',
         answerSource: AnswerSource.VENUE
       }
-    ]
+    ],
+    isHiddenSource: IsHiddenSource.HEARING_VENUE_EXCLUSION
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Language requirements</h2>',
@@ -174,7 +179,8 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.JUDGE_EXCLUSION,
         isHiddenSource: IsHiddenSource.JUDGE_EXCLUSION
       }
-    ]
+    ],
+    isHiddenSource: IsHiddenSource.JUDGE_DETAILS_EXCLUSION
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Panel details</h2>',
@@ -223,7 +229,8 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'What is the priority of this hearing?',
         answerSource: AnswerSource.HEARING_PRIORITY
       }
-    ]
+    ],
+    isHiddenSource: IsHiddenSource.HEARING_TIMING_EXCLUSION
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Linked hearings</h2>',
@@ -233,7 +240,8 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'Will this hearing need to be linked to other hearings?',
         answerSource: AnswerSource.LINKED_HEARINGS
       }
-    ]
+    ],
+    isHiddenSource: IsHiddenSource.LINKED_HEARINGS_EXCLUSION
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional instructions</h2>',
@@ -243,6 +251,7 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'Enter any additional instructions for the hearing',
         answerSource: AnswerSource.ADDITIONAL_INSTRUCTION
       }
-    ]
+    ],
+    isHiddenSource: IsHiddenSource.ADDITIONAL_INSTRUCTION_EXCLUSION
   }
 ];

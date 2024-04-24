@@ -15,8 +15,7 @@ describe('JudgeTypesHiddenConverter', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;
     const result$ = judgeTypesHiddenConverter.transformHidden(of(STATE));
-    const showWelshPage = true;
-    const expected = cold('(b|)', { b: showWelshPage });
+    const expected = cold('(b|)', { b: true });
     expect(result$).toBeObservable(expected);
   });
 
@@ -26,8 +25,7 @@ describe('JudgeTypesHiddenConverter', () => {
       roleType: ['P000001']
     };
     const result$ = judgeTypesHiddenConverter.transformHidden(of(STATE));
-    const showWelshPage = false;
-    const expected = cold('(b|)', { b: showWelshPage });
+    const expected = cold('(b|)', { b: false });
     expect(result$).toBeObservable(expected);
   });
 });

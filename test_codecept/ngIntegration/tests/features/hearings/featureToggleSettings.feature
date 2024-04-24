@@ -42,7 +42,7 @@ Feature:  Hearings: Feature toggles
         Given I set mock case hearings
             | hmcStatus              | hearingType                 | hearingRequestDateTime | lastResponseReceivedDateTime | hearingDaySchedule.hearingStartDateTime | hearingDaySchedule.hearingEndDateTime |
             | LISTED                 | TEST_LISTED                 | -3                     | 0                            | -3                                      | 2                                     |
-          
+
         Given I start MockApp
         Given I navigate to home page
         When I click on primary navigation header tab "Case list", I see selected tab page displayed

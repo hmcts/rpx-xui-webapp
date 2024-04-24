@@ -7,7 +7,9 @@ export class CaseRestrictedAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$?: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map((state) => {
-        const caserestrictedFlag = state.hearingRequest.hearingRequestMainModel.caseDetails.caserestrictedFlag;
+        const caserestrictedFlag = state.hearingConditions?.isHearingAmendmentsEnabled
+          ? state.hearingRequestToCompare.hearingRequestMainModel.caseDetails.caserestrictedFlag
+          : state.hearingRequest.hearingRequestMainModel.caseDetails.caserestrictedFlag;
         return caserestrictedFlag ? 'Yes' : 'No';
       })
     );

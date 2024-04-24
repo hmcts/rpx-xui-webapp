@@ -46,4 +46,28 @@ describe('HearingPanelAnswerConverter', () => {
     const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });
+
+  it('should transform hearing panel answer selection to no when hearings amendment is enabled', () => {
+    const STATE = {
+      ...initialState.hearings,
+      hearingConditions: {
+        ...initialState.hearings.hearingConditions,
+        isHearingAmendmentsEnabled: true
+      },
+      hearingRequestToCompare: {
+        ...initialState.hearings.hearingRequestToCompare,
+        hearingRequestMainModel: {
+          ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
+          hearingDetails: {
+            ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
+            panelRequirements: null
+          }
+        }
+      }
+    };
+    const result$ = converter.transformAnswer(of(STATE));
+    const option = RadioOptions.NO;
+    const expected = cold('(b|)', { b: option });
+    expect(result$).toBeObservable(expected);
+  });
 });

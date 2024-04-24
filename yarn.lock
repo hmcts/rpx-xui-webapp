@@ -16409,16 +16409,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ng2-material-dropdown@npm:0.11.0":
-  version: 0.11.0
-  resolution: "ng2-material-dropdown@npm:0.11.0"
+"ng2-material-dropdown@npm:>=1.0.0":
+  version: 1.0.0
+  resolution: "ng2-material-dropdown@npm:1.0.0"
   dependencies:
-    tslib: ^1.9.0
-  peerDependencies:
-    "@angular/animations": ^8.0.0
-    "@angular/common": ^8.0.0
-    "@angular/core": ^8.0.0
-  checksum: 6022aa673d3e20ec3816bee261fd9c6b75d40c2b6ef7eb1e59cab764907b1d8d5ee04d50093bcbb1be62be5c52e379120c7a8eedb270d7907e4bb8ee38a24ed2
+    tslib: ^2.0.0
+  checksum: 8c3f9ea6ca0e298c8b235995db3400193b8fdcbed4f53b3f726b655ee58fcfc750b9b00ddf82d388e4d28fcae510b301d448f82937d8f0503d3c59d8a71f1eda
   languageName: node
   linkType: hard
 
@@ -16433,18 +16429,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-chips@npm:2.1.0":
-  version: 2.1.0
-  resolution: "ngx-chips@npm:2.1.0"
+"ngx-chips@npm:3.0.0":
+  version: 3.0.0
+  resolution: "ngx-chips@npm:3.0.0"
   dependencies:
-    ng2-material-dropdown: 0.11.0
-    tslib: ^1.9.0
+    ng2-material-dropdown: ">=1.0.0"
+    tslib: ^2.3.0
   peerDependencies:
-    "@angular/animations": ^8.0.0
-    "@angular/common": ^8.0.0
-    "@angular/core": ^8.0.0
-    "@angular/forms": ^8.0.0
-  checksum: ea630d2876fe0e3c0ca8664b8be886a101d596d09c2165148c16c495346a73d15a021af35fa9404321d35c351cbb3bcba2b0975f0f64ca9ac5d0da0daeadcd5a
+    "@angular/animations": ">=10.1.5"
+    "@angular/common": ">=10.1.5"
+    "@angular/compiler": ">=10.1.5"
+    "@angular/core": ">=10.1.5"
+    "@angular/forms": ">=10.1.5"
+  checksum: 21172f30533375a4d9d19d3cbfc9167221510b4d4bf6db774352183ed696b226bb89325e3b632b1226432e3cef0da78ca5b5b6972ab6c4af216ce67eb12803ed
   languageName: node
   linkType: hard
 
@@ -19373,7 +19370,7 @@ __metadata:
     mochawesome-report-generator: ^5.1.0
     moment-timezone: ^0.5.28
     ngrx-store-freeze: ^0.2.4
-    ngx-chips: 2.1.0
+    ngx-chips: 3.0.0
     ngx-logger: ^4.3.3
     ngx-md: ^7.0.0
     ngx-pagination: ^3.2.1

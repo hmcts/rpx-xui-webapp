@@ -477,6 +477,12 @@ describe('CaseFlagsUtils', () => {
       expect(HearingsUtils.hasPartyNameChanged).toHaveBeenCalled();
     });
 
+    it('should return empty non-reasonable adjustment flags when case flags is undefined', () => {
+      const partyFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlags(caseFlagsRefData, undefined,
+        partiesInSHV);
+      expect(partyFlags.length).toEqual(0);
+    });
+
     it('should return non-reasonable adjustment flags with no labels', () => {
       spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(false);
       const flagsGroup = CaseFlagsUtils.getNonReasonableAdjustmentFlagsGroupedByPartyName(caseFlagsRefData, caseFlags,

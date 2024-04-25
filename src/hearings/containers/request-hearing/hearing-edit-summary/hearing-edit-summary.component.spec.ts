@@ -488,7 +488,7 @@ describe('HearingEditSummaryComponent', () => {
             'RA0016',
             'RA0042'
           ],
-          interpreterLanguage: 'PF0015',
+          interpreterLanguage: 'spa',
           preferredHearingChannel: 'inPerson',
           relatedParties: [{
             relatedPartyID: 'New party Id',
@@ -815,7 +815,7 @@ describe('HearingEditSummaryComponent', () => {
             'RA0042',
             'RA0009'
           ],
-          interpreterLanguage: 'PF0015',
+          interpreterLanguage: 'spa',
           preferredHearingChannel: 'byVideo',
           custodyStatus: null,
           vulnerabilityDetails: null
@@ -849,5 +849,35 @@ describe('HearingEditSummaryComponent', () => {
   afterEach(() => {
     fixture.destroy();
     TestBed.resetTestingModule();
+  });
+
+  it('should set propertiesUpdatedOnPageVisit when case flags not present', () => {
+    const parties = initialState.hearings.hearingValues.serviceHearingValuesModel.parties;
+    parties[0].individualDetails.interpreterLanguage = 'spa';
+
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      parties: [...parties],
+      caseFlags: undefined
+    };
+
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.ngOnInit();
+    const expectedResult: PropertiesUpdatedOnPageVisit = {
+      hearingId: '1000000',
+      caseFlags: undefined,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: true,
+        hearingUnavailabilityDatesChanged: true
+      }
+    };
+
+    expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
   });
 });

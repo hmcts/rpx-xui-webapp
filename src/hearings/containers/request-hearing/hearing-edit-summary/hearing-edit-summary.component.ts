@@ -429,7 +429,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     // HMC stores only reasonable adjustment flag ids and language interpreter flag ids under parties
     // Get only the reasonable adjustment and language interpreter flag ids from SHV and sort them for easy comparison
-    const caseFlagsSHV = this.serviceHearingValuesModel.caseFlags.flags;
+    const caseFlagsSHV = this.serviceHearingValuesModel.caseFlags?.flags || [];
     const flagIdsSHV = caseFlagsSHV.map((flag) => flag.flagId)?.filter((flagId) => flagId?.startsWith('RA'))?.sort((a, b) => {
       return a > b ? 1 : (a === b ? 0 : -1);
     });
@@ -459,7 +459,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // Reasonable adjustment changes already confirmed
       return false;
     }
-    const nonReasonableAdjustmentFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlags(this.caseFlagsRefData, this.serviceHearingValuesModel.caseFlags.flags, this.serviceHearingValuesModel.parties);
+    const nonReasonableAdjustmentFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlags(this.caseFlagsRefData, this.serviceHearingValuesModel.caseFlags?.flags, this.serviceHearingValuesModel.parties);
     const caseFlagsModifiedDate = nonReasonableAdjustmentFlags?.map((flags) => flags.dateTimeModified);
     const caseFlagsCreatedDate = nonReasonableAdjustmentFlags?.map((flags) => flags.dateTimeCreated);
     const caseFlagsWithModifiedDate = caseFlagsModifiedDate.filter((date) => date !== null).filter((date) => date !== undefined);

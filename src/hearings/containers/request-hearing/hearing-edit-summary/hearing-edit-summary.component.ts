@@ -511,8 +511,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         return true;
       }
     }
-    // There are no changes for parties when compared SHV with HMC
-    return false;
+
+    // Hearing channel is not set
+    return partiesHMC.filter((party) => party.individualDetails)
+      .map((party) => party.individualDetails)
+      .some((individualDetails) => individualDetails.preferredHearingChannel === null);
   }
 
   private pageVisitHearingWindowChangeExists(): boolean {

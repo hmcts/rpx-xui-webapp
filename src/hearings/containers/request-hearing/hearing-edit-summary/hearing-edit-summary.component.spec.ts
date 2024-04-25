@@ -710,6 +710,34 @@ describe('HearingEditSummaryComponent', () => {
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
   });
 
+  it('should pageVisitPartiesChangeExists when hearing channel not set', () => {
+    const parties = _.cloneDeep(component.hearingRequestMainModel.partyDetails);
+    const party: PartyDetailsModel = parties.find((party) => party.individualDetails);
+    party.individualDetails.preferredHearingChannel = null;
+
+    component.hearingRequestMainModel = {
+      ...component.hearingRequestMainModel,
+      partyDetails: parties
+    };
+
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h1234',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
+  });
+
   it('should pageVisitHearingFacilitiesChanged return true if hearing facilties changed', () => {
     component.hearingRequestMainModel = {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,

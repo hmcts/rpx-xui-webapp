@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { RefDataRegion, RefDataService } from '@hmcts/rpx-xui-common-lib';
+import { RefDataService } from '@hmcts/rpx-xui-common-lib';
 
 @Injectable({
   providedIn: 'root'

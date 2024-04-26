@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 
 import { RefDataService } from '@hmcts/rpx-xui-common-lib';
 import { map } from 'rxjs/operators';
-import { StaffFilterOption } from '../models/staff-filter-option.model';
 
 @Injectable({
   providedIn: 'root'

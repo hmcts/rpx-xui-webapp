@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, Optional } from '@angular/core';
 import { ApplicationInsights, IConfig, IEventTelemetry, IPageViewPerformanceTelemetry } from '@microsoft/applicationinsights-web';
 
-
 export interface IMonitoringService {
   logPageView(name?: string, url?: string, properties?: any,
               measurements?: any, duration?: number);

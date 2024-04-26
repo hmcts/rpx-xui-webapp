@@ -20083,7 +20083,7 @@ __metadata:
     protractor-multiple-cucumber-html-reporter-plugin: 1.8.0
     protractor-screenshot-utils: ^1.0.5
     puppeteer: ^22.4.1
-    rpx-xui-translation: 1.0.2
+    rpx-xui-translation: 1.0.3-angular-upgrade-17-rc
     rx-polling-hmcts: 1.1.1
     rxjs: ^7.8.1
     rxjs-compat: ^6.6.7
@@ -20114,9 +20114,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.0.2":
-  version: 1.0.2
-  resolution: "rpx-xui-translation@npm:1.0.2"
+"rpx-xui-translation@npm:1.0.3-angular-upgrade-17-rc":
+  version: 1.0.3-angular-upgrade-17-rc
+  resolution: "rpx-xui-translation@npm:1.0.3-angular-upgrade-17-rc"
   dependencies:
     dexie: ^3.2.2
     luxon: ^2.4.0
@@ -20124,7 +20124,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^15.2.9
     "@angular/core": ^15.2.9
-  checksum: 305f4ae1d935de2f4d0874637a61863c1b5478872d335653f6986776fc274de9ebfe3728c04c8a386ff8b4d36fa1de8e444d000ad42f2a914bab3fb5989f28bc
+  checksum: 430fc54d0d96a5f216047afd4c48d4ac69b9fb0f85708e690d07edb05cb4b999110fc6767151730a71fed0b32107f7d51d98eba249a943820934aea059d7cea9
   languageName: node
   linkType: hard
 

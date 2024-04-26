@@ -152,7 +152,7 @@
     "portfinder": "^1.0.28",
     "protractor-screenshot-utils": "^1.0.5",
     "puppeteer": "^22.4.1",
-    "rpx-xui-translation": "1.0.2",
+    "rpx-xui-translation": "1.0.3-angular-upgrade-17-rc",
     "rx-polling-hmcts": "1.1.1",
     "rxjs": "^7.8.1",
     "rxjs-compat": "^6.6.7",

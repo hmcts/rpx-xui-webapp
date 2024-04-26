@@ -19,23 +19,22 @@ export class HearingValuesEffects {
     private readonly sessionStorage: SessionStorageService,
   ) {}
 
-  
   public loadHearingValue$ = createEffect(() => this.actions$.pipe(
-      ofType(hearingValuesActions.LOAD_HEARING_VALUES),
-      map((action: hearingValuesActions.LoadHearingValues) => action.payload),
-      switchMap((payload) => {
-        const caseInfo = JSON.parse(this.sessionStorage.getItem('caseInfo'));
-        const jurisdictionId = caseInfo && caseInfo.jurisdiction;
-        return this.hearingsService.loadHearingValues(jurisdictionId, payload).pipe(
-          map(
-            (response) => new hearingValuesActions.LoadHearingValuesSuccess(response)),
-          catchError((error) => {
-            this.hearingStore.dispatch(new hearingValuesActions.LoadHearingValuesFailure(error));
-            return HearingValuesEffects.handleError(error, payload);
-          })
-        );
-      })
-    ));
+    ofType(hearingValuesActions.LOAD_HEARING_VALUES),
+    map((action: hearingValuesActions.LoadHearingValues) => action.payload),
+    switchMap((payload) => {
+      const caseInfo = JSON.parse(this.sessionStorage.getItem('caseInfo'));
+      const jurisdictionId = caseInfo && caseInfo.jurisdiction;
+      return this.hearingsService.loadHearingValues(jurisdictionId, payload).pipe(
+        map(
+          (response) => new hearingValuesActions.LoadHearingValuesSuccess(response)),
+        catchError((error) => {
+          this.hearingStore.dispatch(new hearingValuesActions.LoadHearingValuesFailure(error));
+          return HearingValuesEffects.handleError(error, payload);
+        })
+      );
+    })
+  ));
 
   public static handleError(error: HttpError, caseId: string): Observable<Action> {
     if (error && error.status) {

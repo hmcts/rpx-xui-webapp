@@ -7,7 +7,7 @@ import * as actions from '../store/actions/hearing-actuals.action';
 @Injectable({
   providedIn: 'root'
 })
-export class ActualSummaryResponseResolver  {
+export class ActualSummaryResponseResolver {
   constructor(private readonly store: Store<fromHearingStore.State>) {}
 
   public resolve(route: ActivatedRouteSnapshot): void {

@@ -6,7 +6,7 @@ import { StaffDataAccessService } from '../services/staff-data-access/staff-data
 @Injectable({
   providedIn: 'root'
 })
-export class StaffFilterOptionsJobTitlesResolver  {
+export class StaffFilterOptionsJobTitlesResolver {
   constructor(private staffDataAccessService: StaffDataAccessService) {}
 
   public resolve() {

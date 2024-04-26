@@ -9,7 +9,7 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation/
 @Injectable({
   providedIn: 'root'
 })
-export class CaseTasksResolverService  {
+export class CaseTasksResolverService {
   public static CASE_TASKS_URL: string = '/workallocation/case/task';
 
   constructor(private readonly http: HttpClient, private readonly router: Router) {}

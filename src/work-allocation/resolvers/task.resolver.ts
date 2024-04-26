@@ -9,7 +9,7 @@ import { CaseworkerDataService, WorkAllocationTaskService } from '../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
 
 @Injectable({ providedIn: 'root' })
-export class TaskResolver  {
+export class TaskResolver {
   constructor(
     private readonly service: WorkAllocationTaskService,
     private readonly router: Router,

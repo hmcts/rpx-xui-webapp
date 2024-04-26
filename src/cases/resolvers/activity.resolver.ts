@@ -4,7 +4,7 @@ import { ActivityService } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable, of } from 'rxjs';
 
 @Injectable()
-export class ActivityResolver  {
+export class ActivityResolver {
   constructor(private readonly activityService: ActivityService) {}
 
   public resolve(): Observable<boolean> {

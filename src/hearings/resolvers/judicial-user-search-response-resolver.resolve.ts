@@ -11,7 +11,7 @@ import { getHearingJudgeIds } from '../store/selectors/hearing-judges.selectors'
 @Injectable({
   providedIn: 'root'
 })
-export class JudicialUserSearchResponseResolver  {
+export class JudicialUserSearchResponseResolver {
   constructor(
     protected readonly judicialRefDataService: JudicialRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>

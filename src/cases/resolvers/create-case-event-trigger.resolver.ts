@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 @Injectable()
-export class CreateCaseEventTriggerResolver  {
+export class CreateCaseEventTriggerResolver {
   public static readonly PARAM_JURISDICTION_ID = 'jid';
   public static readonly PARAM_CASE_TYPE_ID = 'ctid';
   public static readonly PARAM_EVENT_ID = 'eid';

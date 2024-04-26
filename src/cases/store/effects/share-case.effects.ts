@@ -20,46 +20,43 @@ export class ShareCaseEffects {
     private readonly store: Store<shareCases.ShareCasesState>
   ) {}
 
-  
   public addShareCases$ = createEffect(() => this.actions$.pipe(
-      ofType(shareCaseActions.ADD_SHARE_CASES),
-      map((action: shareCaseActions.AddShareCases) => action.payload),
-      map((newCases) => {
-        return new shareCaseActions.AddShareCaseGo({
-          path: ['/cases/case-share'],
-          sharedCases: newCases.sharedCases
-        });
-      })
-    ));
+    ofType(shareCaseActions.ADD_SHARE_CASES),
+    map((action: shareCaseActions.AddShareCases) => action.payload),
+    map((newCases) => {
+      return new shareCaseActions.AddShareCaseGo({
+        path: ['/cases/case-share'],
+        sharedCases: newCases.sharedCases
+      });
+    })
+  ));
 
-  
   public navigateToAddShareCase$ = createEffect(() => this.actions$.pipe(
-      ofType(shareCaseActions.ADD_SHARE_CASE_GO),
-      map((action: shareCaseActions.AddShareCaseGo) => action.payload),
-      tap(({ path, query: queryParams, extras, sharedCases }) => {
-        const thatSharedCases = sharedCases;
-        queryParams = { init: true };
-        return this.router.navigate(path, { queryParams, ...extras }).then(() => {
-          this.store.dispatch(new shareCaseActions.NavigateToShareCase(thatSharedCases));
-        });
-      })
-    ), { dispatch: false });
+    ofType(shareCaseActions.ADD_SHARE_CASE_GO),
+    map((action: shareCaseActions.AddShareCaseGo) => action.payload),
+    tap(({ path, query: queryParams, extras, sharedCases }) => {
+      const thatSharedCases = sharedCases;
+      queryParams = { init: true };
+      return this.router.navigate(path, { queryParams, ...extras }).then(() => {
+        this.store.dispatch(new shareCaseActions.NavigateToShareCase(thatSharedCases));
+      });
+    })
+  ), { dispatch: false });
 
-  
   public loadShareCases$ = createEffect(() => this.actions$.pipe(
-      ofType(shareCaseActions.LOAD_SHARE_CASES),
-      map((action: shareCaseActions.LoadShareCase) => action.payload),
-      switchMap((payload) => {
-        this.payload = payload;
-        return this.caseShareService.getShareCases(payload).pipe(
-          map(
-            (response) => new shareCaseActions.LoadShareCaseSuccess(response)),
-          catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))
-        );
-      })
-    ));
+    ofType(shareCaseActions.LOAD_SHARE_CASES),
+    map((action: shareCaseActions.LoadShareCase) => action.payload),
+    switchMap((payload) => {
+      this.payload = payload;
+      return this.caseShareService.getShareCases(payload).pipe(
+        map(
+          (response) => new shareCaseActions.LoadShareCaseSuccess(response)),
+        catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))
+      );
+    })
+  ));
 
-   public loadOrgUsers$ = createEffect(() => this.actions$.pipe(
+  public loadOrgUsers$ = createEffect(() => this.actions$.pipe(
     ofType(shareCaseActions.LOAD_USERS_FROM_ORG_FOR_CASE),
     switchMap(() => {
       return this.caseShareService.getUsersFromOrg().pipe(
@@ -70,17 +67,16 @@ export class ShareCaseEffects {
     })
   ));
 
-  
   public assignUsersWithCases$ = createEffect(() => this.actions$.pipe(
-      ofType(shareCaseActions.ASSIGN_USERS_TO_CASE),
-      map((action: shareCaseActions.AssignUsersToCase) => action.payload),
-      switchMap((payload) => {
-        this.payload = payload;
-        return this.caseShareService.assignUsersWithCases(payload).pipe(
-          map(
-            (response) => new shareCaseActions.AssignUsersToCaseSuccess(response)),
-          catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))
-        );
-      })
-    ));
+    ofType(shareCaseActions.ASSIGN_USERS_TO_CASE),
+    map((action: shareCaseActions.AssignUsersToCase) => action.payload),
+    switchMap((payload) => {
+      this.payload = payload;
+      return this.caseShareService.assignUsersWithCases(payload).pipe(
+        map(
+          (response) => new shareCaseActions.AssignUsersToCaseSuccess(response)),
+        catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))
+      );
+    })
+  ));
 }

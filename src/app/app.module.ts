@@ -93,8 +93,8 @@ export function launchDarklyClientIdFactory(
     EffectsModule.forRoot(effects),
     StoreRouterConnectingModule.forRoot(),
     StoreDevtoolsModule.instrument({
-      logOnly: environment.production
-    , connectInZone: true}),
+      logOnly: environment.production,
+      connectInZone: true }),
     SharedModule,
     ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),

@@ -8,7 +8,7 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation/
 @Injectable({
   providedIn: 'root'
 })
-export class CaseAllocateRoleLinkResolverService  {
+export class CaseAllocateRoleLinkResolverService {
   private static readonly CASE_ALLOCATE_ROLE_LINK_URL: string = '/workallocation/roles';
   private caseId: string = null;
   private showAllocateRoleLink: boolean = null;

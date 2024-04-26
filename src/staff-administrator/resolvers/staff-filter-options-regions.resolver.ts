@@ -5,7 +5,7 @@ import { RefDataRegion, RefDataService } from '@hmcts/rpx-xui-common-lib';
 @Injectable({
   providedIn: 'root'
 })
-export class StaffFilterOptionsRegionsResolver  {
+export class StaffFilterOptionsRegionsResolver {
   constructor(private refDataService: RefDataService) {}
 
   public resolve() {

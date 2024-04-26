@@ -10,7 +10,7 @@ import * as fromHearingStore from '../store';
 @Injectable({
   providedIn: 'root'
 })
-export class PanelMemberSearchResponseResolver  {
+export class PanelMemberSearchResponseResolver {
   constructor(
     protected readonly judicialRefDataService: JudicialRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>

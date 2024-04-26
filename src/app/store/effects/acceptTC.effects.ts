@@ -13,29 +13,27 @@ export class AcceptTcEffects {
     private readonly acceptTcService: AcceptTermsService
   ) {}
 
-  
   public loadHasAccepted$ = createEffect(() => this.actions$.pipe(
-      ofType(acceptTandCActions.LOAD_HAS_ACCEPTED_TC),
-      switchMap((action: any) => {
-        return this.acceptTcService.getIsUserAccepted(action.payload).pipe(
-          map((userId) => {
-            return new acceptTandCActions.LoadHasAcceptedTCSuccess(userId);
-          }),
-          catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))
-        );
-      })
-    ));
+    ofType(acceptTandCActions.LOAD_HAS_ACCEPTED_TC),
+    switchMap((action: any) => {
+      return this.acceptTcService.getIsUserAccepted(action.payload).pipe(
+        map((userId) => {
+          return new acceptTandCActions.LoadHasAcceptedTCSuccess(userId);
+        }),
+        catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))
+      );
+    })
+  ));
 
-  
   public userHasAccepted$ = createEffect(() => this.actions$.pipe(
-      ofType(acceptTandCActions.ACCEPT_T_AND_C),
-      switchMap((action: any) => {
-        return this.acceptTcService.postUserAccepted(action.payload).pipe(
-          map((accepted) => {
-            return new acceptTandCActions.AcceptTandCSuccess(accepted);
-          }),
-          catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))
-        );
-      })
-    ));
+    ofType(acceptTandCActions.ACCEPT_T_AND_C),
+    switchMap((action: any) => {
+      return this.acceptTcService.postUserAccepted(action.payload).pipe(
+        map((accepted) => {
+          return new acceptTandCActions.AcceptTandCSuccess(accepted);
+        }),
+        catchError(() => of(new fromRoot.Go({ path: ['/service-down'] })))
+      );
+    })
+  ));
 }

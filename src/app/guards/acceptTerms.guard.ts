@@ -8,7 +8,7 @@ import * as fromApp from '../store';
 @Injectable({
   providedIn: 'root'
 })
-export class AcceptTermsGuard  {
+export class AcceptTermsGuard {
   constructor(private readonly store: Store<fromApp.State>) {}
 
   public canActivate(): Observable<boolean> {

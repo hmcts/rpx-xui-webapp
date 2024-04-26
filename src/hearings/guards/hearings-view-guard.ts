@@ -10,7 +10,7 @@ import * as fromAppStore from '../../app/store';
 import { HearingsGuard } from './hearings-guard';
 
 @Injectable()
-export class HearingsViewGuard extends HearingsGuard  {
+export class HearingsViewGuard extends HearingsGuard {
   constructor(protected readonly appStore: Store<fromAppStore.State>,
               protected readonly sessionStorageService: SessionStorageService,
               protected readonly featureToggleService: FeatureToggleService,

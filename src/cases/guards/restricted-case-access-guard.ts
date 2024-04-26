@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { AppConstants } from '../../app/app.constants';
 
 @Injectable()
-export class RestrictedCaseAccessGuard  {
+export class RestrictedCaseAccessGuard {
   constructor(private readonly featureToggleService: FeatureToggleService) {
   }
 

@@ -12,7 +12,7 @@ import { AllocateRoleActionTypes, ConfirmAllocation, LoadRolesComplete, NoRolesF
 
 @Injectable()
 export class AllocateRoleEffects {
-   public getRoles$ = createEffect(() => this.actions$
+  public getRoles$ = createEffect(() => this.actions$
     .pipe(
       ofType<ConfirmAllocation>(AllocateRoleActionTypes.LOAD_ROLES),
       mergeMap(
@@ -26,7 +26,7 @@ export class AllocateRoleEffects {
       )
     ));
 
-   public confirmAllocation$ = createEffect(() => this.actions$
+  public confirmAllocation$ = createEffect(() => this.actions$
     .pipe(
       ofType<ConfirmAllocation>(AllocateRoleActionTypes.CONFIRM_ALLOCATION),
       mergeMap(

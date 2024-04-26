@@ -22,7 +22,7 @@ import { WILDCARD_SERVICE_DOWN, addLocationToLocationsByService, handleFatalErro
   providedIn: 'root'
 })
 // Note: used before my work and booking screens
-export class LocationResolver  {
+export class LocationResolver {
   private userRole: string;
   // Note that bookableServices only used for ease of use
   // - i.e. removing non-bookable services from booking ui functionality

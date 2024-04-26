@@ -10,7 +10,7 @@ import * as fromActions from '../../app/store';
 import { RoleCategory } from '../models';
 
 @Injectable()
-export class BookingGuard  {
+export class BookingGuard {
   public static defaultUrl: string = '/cases';
 
   constructor(private readonly router: Router,

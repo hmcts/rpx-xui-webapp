@@ -7,7 +7,7 @@ import { SessionStorageService } from '../services';
   providedIn: 'root'
 })
 
-export class CaseAllocatorGuard  {
+export class CaseAllocatorGuard {
   constructor(private readonly sessionStorageService: SessionStorageService,
                 private readonly router: Router) {}
 

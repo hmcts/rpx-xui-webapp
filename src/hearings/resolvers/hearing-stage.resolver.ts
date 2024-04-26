@@ -12,7 +12,7 @@ import { RefDataResolver } from './ref-data-resolver.resolve';
 @Injectable({
   providedIn: 'root'
 })
-export class HearingStageResolver extends RefDataResolver  {
+export class HearingStageResolver extends RefDataResolver {
   constructor(
     protected readonly lovRefDataService: LovRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>,

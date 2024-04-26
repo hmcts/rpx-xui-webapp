@@ -7,7 +7,7 @@ import { AcceptTermsGuard } from './acceptTerms.guard';
 @Injectable({
   providedIn: 'root'
 })
-export class AllowAcceptTermsGuard  {
+export class AllowAcceptTermsGuard {
   constructor(private readonly acceptGuard: AcceptTermsGuard) {}
 
   public canActivate(): Observable<boolean> {

@@ -9,7 +9,7 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
 @Injectable({
   providedIn: 'root'
 })
-export class TaskRoleResolverService  {
+export class TaskRoleResolverService {
   constructor(private readonly service: WorkAllocationTaskService,
               private readonly router: Router) {}
 

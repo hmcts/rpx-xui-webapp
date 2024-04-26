@@ -13,7 +13,7 @@ import { ServiceIdResolverResolve } from './service-id-resolver.resolve';
 @Injectable({
   providedIn: 'root'
 })
-export class RefDataResolver extends ServiceIdResolverResolve  {
+export class RefDataResolver extends ServiceIdResolverResolve {
   public serviceId: string = '';
 
   constructor(

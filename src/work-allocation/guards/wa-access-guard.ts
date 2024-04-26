@@ -6,7 +6,7 @@ import { tap } from 'rxjs/operators';
 import { AppConstants } from '../../app/app.constants';
 
 @Injectable()
-export class WorkAllocationAccessGuard  {
+export class WorkAllocationAccessGuard {
   public static defaultUrl: string = '/cases';
   constructor(private readonly featureToggleService: FeatureToggleService,
               private readonly router: Router) {}

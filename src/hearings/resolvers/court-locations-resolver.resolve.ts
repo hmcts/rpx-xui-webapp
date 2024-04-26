@@ -10,7 +10,7 @@ import * as fromHearingStore from '../store';
 @Injectable({
   providedIn: 'root'
 })
-export class CourtLocationsDataResolver  {
+export class CourtLocationsDataResolver {
   constructor(
     protected readonly locationsDataService: LocationsDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>

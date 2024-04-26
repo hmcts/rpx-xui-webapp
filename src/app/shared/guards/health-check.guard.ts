@@ -7,7 +7,7 @@ import * as fromRoot from '../../store';
 import { HealthCheckService } from '../services/health-check.service';
 
 @Injectable()
-export class HealthCheckGuard  {
+export class HealthCheckGuard {
   constructor(
         private readonly healthCheck: HealthCheckService,
         private readonly store: Store<fromRoot.State>,

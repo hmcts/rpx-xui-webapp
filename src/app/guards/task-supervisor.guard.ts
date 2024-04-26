@@ -7,7 +7,7 @@ import { SessionStorageService } from '../services';
   providedIn: 'root'
 })
 
-export class TaskSupervisorGuard  {
+export class TaskSupervisorGuard {
   constructor(private readonly sessionStorageService: SessionStorageService,
                 private readonly router: Router) {}
 

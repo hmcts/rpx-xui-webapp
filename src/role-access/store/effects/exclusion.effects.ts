@@ -20,7 +20,7 @@ export class ExclusionEffects {
     private readonly roleExclusionsService: RoleExclusionsService
   ) {}
 
-   public confirmExclusion$ = createEffect(() => this.actions$
+  public confirmExclusion$ = createEffect(() => this.actions$
     .pipe(
       ofType<ConfirmExclusionAction>(ExclusionActionTypes.CONFIRM_EXCLUSION),
       mergeMap(

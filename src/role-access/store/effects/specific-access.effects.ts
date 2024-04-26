@@ -9,7 +9,7 @@ import { AllocateRoleEffects } from './allocate-role.effects';
 
 @Injectable()
 export class SpecificAccessEffects {
-   public approveSpecificAccessRequest$ = createEffect(() => this.actions$
+  public approveSpecificAccessRequest$ = createEffect(() => this.actions$
     .pipe(
       ofType<ApproveSpecificAccessRequest>(SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST),
       mergeMap(
@@ -26,7 +26,7 @@ export class SpecificAccessEffects {
       )
     ));
 
-   public requestMoreInfoSpecificAccessRequest$ = createEffect(() => this.actions$
+  public requestMoreInfoSpecificAccessRequest$ = createEffect(() => this.actions$
     .pipe(
       ofType<RequestMoreInfoSpecificAccessRequest>(SpecificAccessActionTypes.REQUEST_MORE_INFO_SPECIFIC_ACCESS_REQUEST),
       mergeMap(

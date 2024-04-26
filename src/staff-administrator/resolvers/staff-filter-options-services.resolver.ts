@@ -7,7 +7,7 @@ import { StaffFilterOption } from '../models/staff-filter-option.model';
 @Injectable({
   providedIn: 'root'
 })
-export class StaffFilterOptionsServicesResolver  {
+export class StaffFilterOptionsServicesResolver {
   constructor(private refDataService: RefDataService) { }
 
   public resolve() {

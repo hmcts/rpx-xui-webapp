@@ -9,7 +9,7 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation/
 import { AllocateRoleService } from '../services';
 
 @Injectable({ providedIn: 'root' })
-export class TaskRoleAccessResolver  {
+export class TaskRoleAccessResolver {
   constructor(
     private readonly taskService: WorkAllocationTaskService,
     private readonly router: Router,

@@ -11,7 +11,7 @@ import { ServiceIdResolverResolve } from './service-id-resolver.resolve';
 @Injectable({
   providedIn: 'root'
 })
-export class CaseFlagsResolver extends ServiceIdResolverResolve  {
+export class CaseFlagsResolver extends ServiceIdResolverResolve {
   constructor(
     private readonly caseFlagsRefDataService: CaseFlagsRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>,

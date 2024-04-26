@@ -4486,62 +4486,74 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngrx/effects@npm:^16.3.0":
-  version: 16.3.0
-  resolution: "@ngrx/effects@npm:16.3.0"
+"@ngrx/effects@npm:^17.2.0":
+  version: 17.2.0
+  resolution: "@ngrx/effects@npm:17.2.0"
   dependencies:
+    "@ngrx/operators": 17.0.0-beta.0
     tslib: ^2.0.0
   peerDependencies:
-    "@angular/core": ^16.0.0
-    "@ngrx/store": 16.3.0
+    "@angular/core": ^17.0.0
+    "@ngrx/store": 17.2.0
     rxjs: ^6.5.3 || ^7.5.0
-  checksum: 2774395929c91dfc0c289542d7960bbee61feed4305548af579b4ecb68da0f433356fd4b2a812856872d448410e7a2d7ec9a3c31bf14c57e31d45a13f2ddaed8
+  checksum: 090c009f63641890c9bcf6864dc3945da93664c099d5ac1138bcc369d8c65c09b4bcf8754a44de350ec0596cdbf885a3e790b0a652bcf6a369210e0fd1cbb55a
   languageName: node
   linkType: hard
 
-"@ngrx/router-store@npm:^16.3.0":
-  version: 16.3.0
-  resolution: "@ngrx/router-store@npm:16.3.0"
+"@ngrx/operators@npm:17.0.0-beta.0":
+  version: 17.0.0-beta.0
+  resolution: "@ngrx/operators@npm:17.0.0-beta.0"
   dependencies:
-    tslib: ^2.0.0
+    tslib: ^2.3.0
   peerDependencies:
-    "@angular/common": ^16.0.0
-    "@angular/core": ^16.0.0
-    "@angular/router": ^16.0.0
-    "@ngrx/store": 16.3.0
-    rxjs: ^6.5.3 || ^7.5.0
-  checksum: 1c5180fbab7c95ec131d4e16770b85f5e564dfa27cd819f45688274e81fa4d0e4ae8de95bc7e3a885156ac5747deb123a5a213b48043b1e7b49621b0897cfd32
+    rxjs: ^6.5.3 || ^7.4.0
+  checksum: e814a18baa1e84e161825d409afd54d7c1eed2ed05215302bd4870827bae83b2bff039398029e38aedec5c12694deb1c5bc67570531142c4fe7ac6e10a5b566d
   languageName: node
   linkType: hard
 
-"@ngrx/schematics@npm:^16.3.0":
-  version: 16.3.0
-  resolution: "@ngrx/schematics@npm:16.3.0"
-  checksum: ef6d85109358e6daf7a1eb282528adb15c7e981da6eebb5b1551c4e319af3bec50cdf2394c39bf73261d99c0e024e23b151e56001ab5878eb41d0a7ba5aec947
-  languageName: node
-  linkType: hard
-
-"@ngrx/store-devtools@npm:^16.3.0":
-  version: 16.3.0
-  resolution: "@ngrx/store-devtools@npm:16.3.0"
+"@ngrx/router-store@npm:^17.2.0":
+  version: 17.2.0
+  resolution: "@ngrx/router-store@npm:17.2.0"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
-    "@ngrx/store": 16.3.0
+    "@angular/common": ^17.0.0
+    "@angular/core": ^17.0.0
+    "@angular/router": ^17.0.0
+    "@ngrx/store": 17.2.0
     rxjs: ^6.5.3 || ^7.5.0
-  checksum: 05d978457e0dfa5fd3da574d2a79e4a7df3ce63e1cbc19e2741199bc4bebc782e9cf1d8ea02a9fc3540f56e0921f05a66b7dbc7b8bd1b84c8c81cb50a98b0b5f
+  checksum: d457fc6922ea6249e67554bdb641289918ff47ecbf05f1749b6dbfd8075b0b76673bbf286264f839f6b8eab378bf64f26dade27cd19f77edc54346f6412d9bad
   languageName: node
   linkType: hard
 
-"@ngrx/store@npm:^16.3.0":
-  version: 16.3.0
-  resolution: "@ngrx/store@npm:16.3.0"
+"@ngrx/schematics@npm:^17.2.0":
+  version: 17.2.0
+  resolution: "@ngrx/schematics@npm:17.2.0"
+  checksum: 0c3117a2cde65884761edabf44407cddd16de98d4c1c8a0923f5e0c26a11fd731bab62ca0b78da5fc970e47d1b58a9f0247f026db3a1b5faae55356522247d4f
+  languageName: node
+  linkType: hard
+
+"@ngrx/store-devtools@npm:^17.2.0":
+  version: 17.2.0
+  resolution: "@ngrx/store-devtools@npm:17.2.0"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
-    "@angular/core": ^16.0.0
+    "@ngrx/store": 17.2.0
     rxjs: ^6.5.3 || ^7.5.0
-  checksum: e31319f2e072a8145bb5093a38a1f6bfc4b723286128ca46bb1e571c7efe25114bc7c6ca8b96c7544030f28847bf1c116880aa8f32af9e8a8659e0083fb9fbc0
+  checksum: 999674a60aa683b83116a973fe175caacd270130d2baeaecae23e8ffbb9bd0e2c3e69957a8331e4d223bb5bea9bc5c25499e3ecd6e9af8a3cf4cca802649a4ef
+  languageName: node
+  linkType: hard
+
+"@ngrx/store@npm:^17.2.0":
+  version: 17.2.0
+  resolution: "@ngrx/store@npm:17.2.0"
+  dependencies:
+    tslib: ^2.0.0
+  peerDependencies:
+    "@angular/core": ^17.0.0
+    rxjs: ^6.5.3 || ^7.5.0
+  checksum: 82cb77c42ae5149c98fd5c2104023d6606c62daba0180babdc1c1306f604bc39fed4ccaeba86bb3d90949b92c864a01ad3865953597f092f6138ed54ab560a9e
   languageName: node
   linkType: hard
 
@@ -20144,11 +20156,11 @@ __metadata:
     "@microsoft/applicationinsights-web": ^3.1.0
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^14.0.0
-    "@ngrx/effects": ^16.3.0
-    "@ngrx/router-store": ^16.3.0
-    "@ngrx/schematics": ^16.3.0
-    "@ngrx/store": ^16.3.0
-    "@ngrx/store-devtools": ^16.3.0
+    "@ngrx/effects": ^17.2.0
+    "@ngrx/router-store": ^17.2.0
+    "@ngrx/schematics": ^17.2.0
+    "@ngrx/store": ^17.2.0
+    "@ngrx/store-devtools": ^17.2.0
     "@pact-foundation/pact": ^9.11.1
     "@pact-foundation/pact-node": ^10.9.7
     "@stryker-mutator/api": ^3.0.1

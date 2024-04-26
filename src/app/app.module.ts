@@ -94,7 +94,7 @@ export function launchDarklyClientIdFactory(
     StoreRouterConnectingModule.forRoot(),
     StoreDevtoolsModule.instrument({
       logOnly: environment.production
-    }),
+    , connectInZone: true}),
     SharedModule,
     ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),

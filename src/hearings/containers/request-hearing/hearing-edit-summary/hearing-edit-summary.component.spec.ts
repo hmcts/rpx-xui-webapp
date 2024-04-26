@@ -728,7 +728,8 @@ describe('HearingEditSummaryComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        partyDetailsChangesConfirmed: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -736,6 +737,7 @@ describe('HearingEditSummaryComponent', () => {
     };
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed).toEqual(undefined);
   });
 
   it('should pageVisitHearingFacilitiesChanged return true if hearing facilties changed', () => {

@@ -512,10 +512,12 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       }
     }
 
-    // Hearing channel is not set
-    return partiesHMC.filter((party) => party.individualDetails)
-      .map((party) => party.individualDetails)
-      .some((individualDetails) => individualDetails.preferredHearingChannel === null);
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired) {
+      return !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed;
+    }
+
+    // There are no changes for parties when compared SHV with HMC
+    return false;
   }
 
   private pageVisitHearingWindowChangeExists(): boolean {

@@ -8599,6 +8599,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cli-table3@npm:^0.6.0":
+  version: 0.6.4
+  resolution: "cli-table3@npm:0.6.4"
+  dependencies:
+    "@colors/colors": 1.5.0
+    string-width: ^4.2.0
+  dependenciesMeta:
+    "@colors/colors":
+      optional: true
+  checksum: 0942d9977c05b31e9c7e0172276246b3ac2124c2929451851c01dbf5fc9b3d40cc4e1c9d468ff26dd3cfd18617963fe227b4cfeeae2881b70f302d69d792b5bb
+  languageName: node
+  linkType: hard
+
 "cli-width@npm:^2.0.0":
   version: 2.2.1
   resolution: "cli-width@npm:2.2.1"
@@ -8870,7 +8883,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"colors@npm:1.4.0, colors@npm:^1.0.3, colors@npm:^1.1.2, colors@npm:^1.3.2":
+"colors@npm:1.4.0, colors@npm:^1.0.3, colors@npm:^1.1.2, colors@npm:^1.4.0":
   version: 1.4.0
   resolution: "colors@npm:1.4.0"
   checksum: 98aa2c2418ad87dedf25d781be69dc5fc5908e279d9d30c34d8b702e586a0474605b3a189511482b9d5ed0d20c867515d22749537f7bc546256c6014f3ebdcec
@@ -9542,16 +9555,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cucumber-pretty@npm:1.5.0":
-  version: 1.5.0
-  resolution: "cucumber-pretty@npm:1.5.0"
+"cucumber-pretty@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "cucumber-pretty@npm:6.0.1"
   dependencies:
-    cli-table3: ^0.5.1
-    colors: ^1.3.2
-    figures: ^2.0.0
+    cli-table3: ^0.6.0
+    colors: ^1.4.0
+    figures: ^3.2.0
   peerDependencies:
-    cucumber: ">=3.0.0"
-  checksum: c18f735fd22677e71285913e508929ad7f7cf0741d9ac2b30019588c45482b461c230f5a3a992e63589fa6a7c7feafc36cfa80ffb2eb4093f4b7835f3f3d66aa
+    cucumber: ">=6.0.0 <7.0.0"
+  checksum: ed9a73b979f15338ea09250034aacbc831902fc6a35e46409b853caafb4022be53f093b839a82e6b0f56772039c934794b0faa0513bbbc42e53585c5b39132c0
   languageName: node
   linkType: hard
 
@@ -20181,7 +20194,7 @@ __metadata:
     cucumber: 5.1.0
     cucumber-html-report: 0.6.5
     cucumber-html-reporter: ^7.1.1
-    cucumber-pretty: 1.5.0
+    cucumber-pretty: ^6.0.1
     cucumberjs-allure-reporter: 1.0.3
     dotenv-extended: ^2.7.1
     ejs: ^3.1.10

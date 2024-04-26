@@ -568,6 +568,20 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should set auto updated pageless properties to true', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h1234',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
     // @ts-ignore
     expect(component.pageVisitPartiesChangeExists()).toEqual(false);
   });

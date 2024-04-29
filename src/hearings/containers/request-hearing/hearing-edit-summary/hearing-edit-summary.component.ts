@@ -209,6 +209,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private setPropertiesUpdatedAutomatically(): void {
+    // Set properties updated on page visit
+    this.setPropertiesUpdatedOnPageVisit(this.serviceHearingValuesModel);
+
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       caseDetails: {
@@ -228,9 +231,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         ...this.updatePartyDetails(this.serviceHearingValuesModel.parties)
       ]
     };
-
-    // Set properties updated on page visit
-    this.setPropertiesUpdatedOnPageVisit(this.serviceHearingValuesModel);
 
     // Set banner
     this.setBanner();
@@ -346,7 +346,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
                 hearingChannelPhone: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelPhone, serviceParty.individualDetails?.hearingChannelPhone, AutoUpdateMode.PARTY)
               },
               unavailabilityDOW: this.compareAndUpdateServiceHearingValues(party?.unavailabilityDOW, serviceParty?.unavailabilityDOW, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES),
-              unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES)
+              // unavailabilityRanges: party?.unavailabilityRanges
             });
           } else {
             newParty.push({
@@ -359,7 +359,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
                 cftOrganisationID: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.cftOrganisationID, serviceParty.organisationDetails?.cftOrganisationID, AutoUpdateMode.PARTY)
               },
               unavailabilityDOW: this.compareAndUpdateServiceHearingValues(party?.unavailabilityDOW, serviceParty?.unavailabilityDOW, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES),
-              unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES)
+              // unavailabilityRanges: party?.unavailabilityRanges
             });
           }
         }
@@ -506,10 +506,17 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // and return true if there are any changes in the party name of party type
     for (const partySHV of partiesSHV) {
       const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
-      if (party.partyType !== partySHV.partyType ||
+      if (!party || party.partyType !== partySHV.partyType ||
         HearingsUtils.hasPartyNameChanged(party, partySHV)) {
         return true;
       }
+    }
+
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired) {
+      return !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed;
+    }
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingUnavailabilityDatesChanged) {
+      return !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingUnavailabilityDatesConfirmed;
     }
     // There are no changes for parties when compared SHV with HMC
     return false;

@@ -64,7 +64,6 @@ export const SERVICES_PAYMENTS_URL = 'services.payments';
 export const SERVICES_PAYMENT_RETURN_URL = 'services.payment_return_url';
 
 export const GLOBAL_SEARCH_SERVICES = 'globalSearchServices';
-export const WA_SUPPORTED_SERVICE_CASETYPES = 'waSupportedServiceandCaseTypes';
 
 export const SERVICES_PRD_API_URL = 'services.prd.api';
 export const SERVICES_PRD_LOCATION_API = 'services.prd.locationApi';
@@ -74,6 +73,8 @@ export const SERVICES_PRD_COMMONDATA_API = 'services.prd.commondataApi';
 export const SERVICES_REFUNDS_API_URL = 'services.refunds';
 export const SERVICES_NOTIFICATIONS_API_URL = 'services.notifications';
 export const SERVICES_LOCATION_REF_API_URL = 'services.locationref.api';
+
+export const SERVICES_TRANSLATION_API_URL = 'services.translation';
 
 export const PROTOCOL = 'protocol';
 export const MICROSERVICE = 'microservice';
@@ -117,7 +118,8 @@ export const FEATURE_ACCESS_MANAGEMENT_ENABLED = 'accessManagementEnabled';
 export const FEATURE_COMPRESSION_ENABLED = 'compressionEnabled';
 
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';
-export const FEATURE_UPDATED_TASK_PERMISSIONS_ENABLED = 'updatedTaskPermissionsEnabled';
+
+export const FEATURE_JRD_E_LINKS_V2_ENABLED = 'jrdELinksV2Enabled';
 
 export const HELMET = 'helmet';
 

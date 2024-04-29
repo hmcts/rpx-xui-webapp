@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
+import { decompressFromUTF16 } from 'lz-string';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { ActionBindingModel } from '../../../cases/models/create-case-actions.model';
@@ -138,37 +139,55 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     }
   };
 
-  public onResultsViewHandler = (resultView) => {
+  public onResultsViewHandler = (resultViewForCaseSearch) => {
+    // If elastic search flag is set then initialise pagination meta data
+    // and call onPaginationSubscribeHandler method
     if (this.elasticSearchFlag) {
       const paginationDataFromResult: PaginationMetadata = {
-        totalResultsCount: resultView.total,
-        totalPagesCount: Math.ceil(resultView.total / this.appConfig.getPaginationPageSize())
+        totalResultsCount: resultViewForCaseSearch.total,
+        totalPagesCount: Math.ceil(resultViewForCaseSearch.total / this.appConfig.getPaginationPageSize())
       };
       this.onPaginationSubscribeHandler(paginationDataFromResult);
     }
-
-    if (typeof resultView.results !== 'undefined') {
+    // Set resultViewIsReady to true if resultView results is defined
+    if (typeof resultViewForCaseSearch.results !== 'undefined') {
       this.resultViewIsReady = true;
     }
-
-    this.resultsArr = resultView.results;
+    this.resultsArr = resultViewForCaseSearch.results;
+    // Initialise resultView
     this.resultView = {
-      ...resultView,
-      columns: resultView.columns ? resultView.columns : [],
-      results: resultView.results ? resultView.results.map((item) => {
+      ...resultViewForCaseSearch,
+      columns: resultViewForCaseSearch.columns ? resultViewForCaseSearch.columns : [],
+      results: resultViewForCaseSearch.results ? resultViewForCaseSearch.results.map((item) => {
         return {
           ...item,
           hydrated_case_fields: null
         };
       }) : [],
-      hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
+      hasDrafts: resultViewForCaseSearch.hasDrafts ? resultViewForCaseSearch.hasDrafts : () => false
     };
   };
+
+  private getCompressedLSItem(key: string): string {
+    const item = localStorage.getItem(key);
+    if (item && item.length > 0) {
+      if (item.startsWith('{')) { // probably not compressed
+        return item;
+      }
+      try {
+        const decomp = decompressFromUTF16(item);
+        return JSON.parse(decomp);
+      } catch (e) {
+        console.log('error decompressing data of length' + item.length, e);
+      }
+    }
+    return null;
+  }
 
   public getEvent() {
     let event = null;
     const formGroupFromLS = JSON.parse(localStorage.getItem('search-form-group-value'));
-    const jurisdictionFromLS = JSON.parse(localStorage.getItem('search-jurisdiction'));
+    const jurisdictionFromLS =this.getCompressedLSItem('search-jurisdiction');
     const caseTypeGroupFromLS = JSON.parse(localStorage.getItem('search-caseType'));
     const metadataFieldsGroupFromLS = JSON.parse(localStorage.getItem('search-metadata-fields'));
 

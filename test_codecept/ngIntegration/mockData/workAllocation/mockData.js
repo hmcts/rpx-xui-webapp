@@ -8,10 +8,10 @@ const mockClient = require('../../../backendMock/client/index')
 class WorkAllocationMockData {
 
     constructor() {
-        this.locationIdCounter = 10000; 
+        this.locationIdCounter = 10000;
         this.locationsByServices = [];
         this.WorkAllocationDataModels = WorkAllocationDataModels;
-        this.init(); 
+        this.init();
     }
 
     init(){
@@ -19,16 +19,16 @@ class WorkAllocationMockData {
         this.setDefaultData();
     }
 
- 
+
 
     setDefaultData(){
         this.findPersonsAllAdata = [];
 
         this.locationsByServices = this.getLocationsByServices(this.waSupportedJusridictions);
 
-        this.caseWorkersList = this.getPersonList(20); 
+        this.caseWorkersList = this.getPersonList(20);
         this.judgeUsers = this.setUpJudicialUsersList(20);
-        
+
         this.caseworkersByService = this.getCaseworkersByService(this.waSupportedJusridictions);
 
         this.caseEventTasks = WorkAllocationDataModels.getCaseEventTasksCompletable();
@@ -63,14 +63,14 @@ class WorkAllocationMockData {
         this.myCases = this.getWACases(25);
         this.allWorkCases = this.getWACases(25);
 
-        this.taskDetails = { task: this.getRelease2TaskDetails() } 
+        this.taskDetails = { task: this.getRelease2TaskDetails() }
     }
 
     async applyToSession() {
         const authCookie = await browser.driver.manage().getCookie('__auth__');
-        mockClient.setUserApiData(authCookie.value, 'OnMyTasks', this.myWorkMyTasks)
-        mockClient.setUserApiData(authCookie.value, 'OnAvailableTasks', this.myWorkAvailableTasks)
-        mockClient.setUserApiData(authCookie.value, 'OnAllTasks', this.allWorkTasks)
+        mockClient.setUserApiData(authCookie.value, 'OnMyTasks', { status: 200, data: this.myWorkMyTasks })
+        mockClient.setUserApiData(authCookie.value, 'OnAvailableTasks', { status: 200, data: this.myWorkAvailableTasks })
+        mockClient.setUserApiData(authCookie.value, 'OnAllTasks', { status: 200, data: this.allWorkTasks })
 
     }
 
@@ -98,20 +98,20 @@ class WorkAllocationMockData {
             const waTask = { ...this.caseTasks[0] };
             Object.keys(task).forEach(taskkey => {
                 if (task[taskkey].includes('true') || task[taskkey].includes('false')){
-                    waTask[taskkey] = task[taskkey] === "true"; 
+                    waTask[taskkey] = task[taskkey] === "true";
                 }else{
-                    waTask[taskkey] = task[taskkey]; 
+                    waTask[taskkey] = task[taskkey];
                 }
             });
-            return waTask; 
+            return waTask;
         })
-        this.caseEventTasks.tasks = watasks; 
+        this.caseEventTasks.tasks = watasks;
     }
- 
+
 
     getCaseTasksForCaseId(caseId){
         for (const task of this.caseTasks){
-            task.case_id = caseId; 
+            task.case_id = caseId;
         }
         return this.caseTasks;
     }
@@ -123,7 +123,7 @@ class WorkAllocationMockData {
         for(const byService of this.locationsByServices){
             if (byService.service === service){
                 locationsByService = byService.locations;
-                break; 
+                break;
             }
         }
 
@@ -134,10 +134,10 @@ class WorkAllocationMockData {
                 personWithIdamd.location = {
                     id: locationsByService[0].epimms_id,
                         locationName: locationsByService[0].court_name
-                }; 
+                };
                 byservice.caseworkers.push(personWithIdamd);
-                user = personWithIdamd; 
-                break; 
+                user = personWithIdamd;
+                break;
             }
         }
         return user;
@@ -163,7 +163,7 @@ class WorkAllocationMockData {
                 personWithIdamd.firstName = caseworker.firstName;
                 personWithIdamd.lastName = caseworker.lastName;
                 personWithIdamd.email = caseworker.email;
-                personWithIdamd.roleCategory = caseworker.roleCategory; 
+                personWithIdamd.roleCategory = caseworker.roleCategory;
                 personWithIdamd.service = service;
 
                 personWithIdamd.location = {
@@ -190,19 +190,19 @@ class WorkAllocationMockData {
             if (location.epimms_id === locationId){
                 locationDetailsToDetach = {
                     id: location.epimms_id,
-                    locationName: location.court_name 
+                    locationName: location.court_name
                 }
-                break; 
+                break;
             }
         }
 
         for (const byservice of this.caseworkersByService) {
             if (byservice.service === service) {
-               
+
                 for(const caseworker of byservice.caseworkers){
                     if(caseworker.email === email){
-                        caseworker.location = locationDetailsToDetach; 
-                    } 
+                        caseworker.location = locationDetailsToDetach;
+                    }
                 }
                 break;
             }
@@ -213,7 +213,7 @@ class WorkAllocationMockData {
 
     getLocationsByServices(services){
        const  locationsByService = [];
-        
+
         for(const service of services){
             const byService = {service : service , locations : []};
             for(let i = 0; i < 20; i++){
@@ -236,18 +236,18 @@ class WorkAllocationMockData {
                     "postcode": "TW14 0LS"
                 }
 
-                byService.locations.push(location); 
+                byService.locations.push(location);
                 this.locationIdCounter++;
             }
             locationsByService.push(byService);
 
         }
-        return locationsByService; 
+        return locationsByService;
     }
 
     getLocationsWithNames(locations) {
         const returnValue = [];
-        
+
         for (const location of locations) {
             const locationOBj = {
                 "court_venue_id": "382",
@@ -289,8 +289,8 @@ class WorkAllocationMockData {
             for(const locationsByService of this.locationsByServices){
                 if (locationsByService.service === service){
                     locationsForThisService = locationsByService.locations;
-                    break; 
-               } 
+                    break;
+               }
             }
 
             let loctionTracker = 0;
@@ -301,10 +301,10 @@ class WorkAllocationMockData {
                 loctionTracker++;
                 if (loctionTracker >=locationsForThisService.length){
                     loctionTracker = 0;
-                } 
+                }
             }
 
-            caseworkersByServices.push(cwByService); 
+            caseworkersByServices.push(cwByService);
         }
         return caseworkersByServices;
     }
@@ -328,9 +328,9 @@ class WorkAllocationMockData {
         judge.appointments[0]['base_location_id'] = location.epimms_id;
         judge.appointments[0]['epimms_id'] = location.epimms_id;
         judge.appointments[0]['court_name'] = location.court_name;
-        
+
         this.judgeUsers.push(judge);
-        return judge; 
+        return judge;
     }
 
     setCaseRoleAssignment(caseRole){
@@ -354,7 +354,7 @@ class WorkAllocationMockData {
             let caseCounter = 0;
             for (const caseAlloc of cases) {
                 caseCounter++;
-                caseAlloc.case_name = new Array(caseCounter).fill(`testCase name ${caseCounter}`).join("-") 
+                caseAlloc.case_name = new Array(caseCounter).fill(`testCase name ${caseCounter}`).join("-")
                 caseAlloc.case_role = validRoleTypes[validRoleCounter].roleId;
                 caseAlloc.role_category = validRoleTypes[validRoleCounter].roleCategory;
                 validRoleCounter++;
@@ -460,7 +460,7 @@ class WorkAllocationMockData {
             }
         }
 
-       
+
         casesResponse.total_records = casesResponse.cases.length;
         return casesResponse;
 
@@ -516,7 +516,7 @@ class WorkAllocationMockData {
     }
 
     getJudicialList() {
-       
+
         return this.judgeUsers;
     }
 
@@ -564,7 +564,7 @@ class WorkAllocationMockData {
     getRelease2CaseWithPermission(permissions, view, assignState) {
         view = view.replace(" ", "");
         const waCase = WorkAllocationDataModels.getRelease2Case();
-       
+
         waCase.permissions = permissions;
         waCase.actions = WorkAllocationDataModels.getRelease2CaseActions(permissions, view, assignState);
 
@@ -578,9 +578,9 @@ class WorkAllocationMockData {
         if (searchOptions.userRole === 'Judicial'){
            for(const judge of this.judgeUsers){
                if (judge.full_name.includes(searchOptions.searchTerm)){
-                  
+
                    results.push({ ...judge, name: judge.full_name, email: judge.email_id, id: judge.sidam_id });
-            } 
+            }
            }
         } else if (searchOptions.userRole === 'LegalOps'){
             for (const cw of this.caseWorkersList) {
@@ -603,7 +603,7 @@ class WorkAllocationMockData {
         }
 
 
-       
+
         return results;
     }
 
@@ -635,8 +635,8 @@ class WorkAllocationMockData {
             serviceRoles.push({
                 service:service,
                 roles: WorkAllocationDataModels.getValidRoles()
-            }) 
-        }); 
+            })
+        });
         return serviceRoles;
 
     }
@@ -673,14 +673,14 @@ class WorkAllocationMockData {
         return caseExlusionsRes;
     }
 
-    getCaseTasks(tasksObjects, userDetails) {
+    async getCaseTasks(tasksObjects, userDetails) {
 
+        const integerValues = ['minor_priority','major_priority']
         const tasks = [];
         for (let task of tasksObjects) {
             const taskTemplate = this.getRelease2TaskDetails();
             let taskPermissions = [];
             const taskAttributes = Object.keys(task);
-
             let taskAssignState = 'ActiveTasksUnassigned';
             for (const taskAttribute of taskAttributes) {
                 if (taskAttribute.toLowerCase().includes('date')) {
@@ -691,7 +691,7 @@ class WorkAllocationMockData {
                     if (task[taskAttribute] === '') {
                         taskTemplate[taskAttribute].values = [];
                     } else {
-                        taskPermissions = task[taskAttribute].split(','); 
+                        taskPermissions = task[taskAttribute].split(',');
                         taskTemplate[taskAttribute].values = taskPermissions;
 
                     }
@@ -707,13 +707,13 @@ class WorkAllocationMockData {
                             warningText: t,
                             warningCode: t.split(' ').join('-')
                         }
-                    }) 
+                    })
                     taskTemplate.warning_list.values = responseWantings;
                 } else if (taskAttribute.toLowerCase().trim() === 'assignee') {
                     const val = task[taskAttribute].toLowerCase();
                     if (val.includes('session')) {
                         taskAssignState = 'ActiveTasksAssignedCurrentUser'
-                        taskTemplate[taskAttribute] = nodeAppMock.userDetails.userInfo.uid ? nodeAppMock.userDetails.userInfo.uid : nodeAppMock.userDetails.userInfo.id;
+                        taskTemplate[taskAttribute] = userDetails.userInfo.uid;
                     } else if (val === '' || val === undefined) {
                         taskTemplate[taskAttribute] = null;
                     } else if (val === 'someone' ) {
@@ -738,12 +738,14 @@ class WorkAllocationMockData {
                     if (task[taskAttribute] !== ''){
                         taskTemplate[taskAttribute] = task[taskAttribute];
                     }
+                } else if (integerValues.includes(taskAttribute.toLowerCase())){
+                    taskTemplate[taskAttribute] = parseInt(task[taskAttribute]);
                 }
                 else {
                     taskTemplate[taskAttribute] = task[taskAttribute];
                 }
             }
-            taskTemplate.actions = WorkAllocationDataModels.getRelease2TaskActions(taskPermissions, taskAssignState, taskTemplate.task_state); 
+            taskTemplate.actions = WorkAllocationDataModels.getRelease2TaskActions(taskPermissions, taskAssignState, taskTemplate.task_state);
 
             taskTemplate.jurisdiction = "IA";
             tasks.push(taskTemplate);
@@ -825,7 +827,7 @@ class WorkAllocationMockData {
            }
         }
         return caseWorkerForServices;
-        
+
     }
 
     addLocationWithNamesToService(locations, service){
@@ -836,7 +838,7 @@ class WorkAllocationMockData {
         const locationsByService = {};
         const servicesAvailable = [];
         for (const locationByService of this.locationsByServices) {
-            servicesAvailable.push(locationsByService.service); 
+            servicesAvailable.push(locationsByService.service);
             locationsByService[locationByService.service] = locationByService.locations;
         }
 
@@ -872,11 +874,11 @@ class WorkAllocationMockData {
             }
         }
         return locationMatchingId;
-       
+
     }
 
     getLocationsByIds(locations) {
-        const locationIdsToMatch = locations.map(l => l.id); 
+        const locationIdsToMatch = locations.map(l => l.id);
         const allLocations = [];
         for (const locationsByService of this.locationsByServices) {
             allLocations.push(...locationsByService.locations);
@@ -901,7 +903,7 @@ class WorkAllocationMockData {
             if (!serviceIds.includes(locationsByService.service)){
                 continue;
             }
-           
+
             mathcingLocation.push(...locationsByService.locations);
         }
 

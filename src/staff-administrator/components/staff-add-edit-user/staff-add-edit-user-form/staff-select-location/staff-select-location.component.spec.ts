@@ -1,7 +1,7 @@
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 
-import { FormControl } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { RefDataService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { LocationByEpimmsModelWithServiceCodes } from '../../../../models/location-by-service-code-model';
@@ -17,7 +17,8 @@ describe('StaffSelectLocationComponent', () => {
     refDataServiceMock.getLocationsByServiceCodes.and.returnValue(of([]));
 
     await TestBed.configureTestingModule({
-      imports: [MatAutocompleteModule],
+      imports: [MatAutocompleteModule,
+        ReactiveFormsModule],
       declarations: [StaffSelectLocationComponent],
       providers: [
         { provide: RefDataService, useValue: refDataServiceMock }
@@ -262,8 +263,11 @@ describe('StaffSelectLocationComponent', () => {
       }));
 
       it('should get an array when search term is not an empty string', fakeAsync(() => {
+        // obsCount added as observable should always run initially
+        let obsCount = 0;
         component.filteredList$.subscribe((result) => {
-          expect(Array.isArray(result)).toBe(true);
+          obsCount > 0 ? expect(Array.isArray(result)).toBe(true) : expect(Array.isArray(result)).toBe(false);
+          obsCount++;
         });
 
         component.searchTermFormControl.setValue('123');
@@ -273,9 +277,10 @@ describe('StaffSelectLocationComponent', () => {
 
       it('should filter out locations based on searchTerm', fakeAsync(() => {
         refDataServiceMock.getLocationsByServiceCodes.and.returnValue(of([dummyLocations[0], dummyLocations[1]]));
-        component.locationsControl.setValue([dummyLocations[0], dummyLocations[1]]);
+        let obsCount = 0;
         component.filteredList$.subscribe((result) => {
-          expect(result).toEqual([dummyLocations[0]]);
+          obsCount > 0 ? expect(result).toEqual([dummyLocations[0]]) : expect(Array.isArray(result)).toBe(false);
+          obsCount++;
         });
 
         component.searchTermFormControl.setValue(dummyLocations[0].venue_name);
@@ -285,10 +290,32 @@ describe('StaffSelectLocationComponent', () => {
 
       it('should fill locations with correct service codes', fakeAsync(() => {
         refDataServiceMock.getLocationsByServiceCodes.and.returnValue(of([dummyLocations[0], dummyLocations[1]]));
+        let obsCount = 0;
         component.filteredList$.subscribe((result) => {
-          expect(result).toEqual([dummyLocations[0]]);
-          expect(result[0].serviceCodes).toEqual(['BFA1', 'AAA7']);
+          if (obsCount > 1) {
+            expect(result).toEqual([dummyLocations[0]]);
+            expect(result[0].serviceCodes).toEqual(['BFA1', 'AAA7']);
+          }
+          obsCount++;
         });
+        component.searchTermFormControl.setValue(dummyLocations[0].venue_name);
+        tick();
+        flush();
+      }));
+
+      it('should correctly set service codes for locations in formControl', fakeAsync(() => {
+        refDataServiceMock.getLocationsByServiceCodes.and.returnValue(of([dummyLocations[0], dummyLocations[1]]));
+        const mockLocationInControl: any = dummyLocations[0];
+        // also ensures we are checking numbers as well as strings
+        mockLocationInControl.location_id = parseInt(mockLocationInControl.epimms_id);
+        component.locationsControl.setValue([mockLocationInControl]);
+        let obsCount = 0;
+        component.filteredList$.subscribe((result) => {
+          obsCount > 0 ? expect(result).toEqual([dummyLocations[0]]) : expect(result).toEqual(false);
+          expect(component.locationsControl.value[0].serviceCodes[0]).toEqual('BFA1');
+          obsCount++;
+        });
+
         component.searchTermFormControl.setValue(dummyLocations[0].venue_name);
         tick();
         flush();

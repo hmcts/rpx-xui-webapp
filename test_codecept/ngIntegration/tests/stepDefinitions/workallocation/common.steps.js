@@ -48,23 +48,9 @@ const { DataTableArgument } = require('codeceptjs');
     When('I click task list pagination link {string} and wait for req reference {string} not null', async function (paginationLinktext, reference) {
         await taskListTable.waitForTable();
         await BrowserWaits.retryWithActionCallback(async () => {
-            
-        //     const val = await browserUtil.addTextToElementWithCssSelector('tbody tr .cdk-column-case_category exui-task-field,tbody tr .cdk-column-case_category exui-work-field', 'Sort test', true);
-        //     if (val !== "success"){
-        //         throw new Error(JSON.stringify(val));
-
-        //    } 
+       
             await taskListTable.clickPaginationLink(paginationLinktext);
-            await BrowserWaits.waitForConditionAsync(async () => {
-                const caseCatColVal = await taskListTable.getColumnValueForTaskAt('Case category', 1);
-                CucumberReporter.AddMessage('OnPagination page refresh dinee: ' + !caseCatColVal.includes('Sort test'));
-                return !caseCatColVal.includes('Sort test');
-            });
-
-            await browser.sleep(2)
-            // await BrowserWaits.waitForConditionAsync(async () => {
-            //     return global.scenarioData[reference] !== null
-            // }, 5000);
+           
         });
        
     });
@@ -173,19 +159,19 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Given('I set MOCK case workers for release {string}', async function(forRelease,datatable){
-        const persons = getPersonResponse(datatable);
-        let url = null;
-        if (forRelease === "1"){
-            MockApp.onGet('workallocation/caseworker', (req,res) => {
-                res.send(persons);
-            });
-        } else if (forRelease === "2"){
-            MockApp.onGet('workallocation2/caseworker', (req, res) => {
-                res.send(persons);
-            });
-        } else{
-            throw new Error(`Unexpected release identifier "${forRelease}"  passed to setup mock`);
-        }
+        // const persons = getPersonResponse(datatable);
+        // let url = null;
+        // if (forRelease === "1"){
+        //     MockApp.onGet('workallocation/caseworker', (req,res) => {
+        //         res.send(persons);
+        //     });
+        // } else if (forRelease === "2"){
+        //     MockApp.onGet('workallocation2/caseworker', (req, res) => {
+        //         res.send(persons);
+        //     });
+        // } else{
+        //     throw new Error(`Unexpected release identifier "${forRelease}"  passed to setup mock`);
+        // }
 
     });
 

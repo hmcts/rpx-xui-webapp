@@ -73,6 +73,7 @@ var { defineSupportCode } = require('cucumber');
             "Appicant Postcode": "SW19 8JW"
         };
         await caseManager.createCase(caseData, false, true);
+        await caseManager.submitCase();
     });
     
     Then('I should be able to fill the form pages', async function () {
@@ -83,13 +84,24 @@ var { defineSupportCode } = require('cucumber');
         await caseManager.createCase(caseData, false);
     });
 
+    When('I create case with invalid date', async function () {
+        var caseData = {
+            "Reference": "1610530255167708",
+            "Appicant Postcode": "SW19 8JW",
+            "Date": "01-01-0000"
+        };
+        await caseManager.createCaseWithInvalidDate(caseData, false);
+    });    
+
     Then('Should be able to see check your answers summary page links', async function () {
         await caseEditPage.validateSummeryPageLinks();
     });
 
     Then('Validate check your answer summery page', async function () {
         let data = await caseManager._appendFormPageValues("", "", "caseEditPage");
-        await caseEditPage.validateCheckYouranswerPage(data);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await caseEditPage.validateCheckYouranswerPage(data);
+        })
     });
 
     Then('Validate mandatory fields functionality', async function(){

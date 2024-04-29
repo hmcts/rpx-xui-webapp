@@ -21,6 +21,8 @@ const CCDWorkBasketInputGenerator = require('./ccdCaseConfig/workBasketInputGene
 const CCDSearchInputGenerator = require('./ccdCaseConfig/searchInputGenerator');
 
 const caseDetailsData = require('./caseDetails_data');
+const caseEventData = require('./caseEvent_data');
+
 const elasticSearchCases = require('./elasticSearchCases');
 class CCDApi {
 
@@ -29,8 +31,9 @@ class CCDApi {
     }
 
     setDefaultData() {
-        this.caseDetailsResponse = JSON.parse(JSON.stringify(caseDetailsData));
+        this.caseDetailsResponse = caseDetailsData;
         this.caseList = this.getWorkbasketCases();
+        this.caseEventData = caseEventData;
     }
 
     getSearchCases(req,res){
@@ -165,7 +168,7 @@ class CCDApi {
                 return this.getCustomCase();
                 break;
             default:
-                return mockEvents[eventId]();
+                return this.caseEventData.eventData;
 
         }
 
@@ -367,7 +370,7 @@ class CCDApi {
             rows.push({
                 "supplementary_data": null,
                 "case_id": "0_157125441721456" + rowCounter,
-                "case_fields": {
+                "fields": {
                     "solsConfirmSignSOT2": "You will sign a statement of truth on your client’s behalf.",
                     "solsConfirmSignSOT3": "The executor believes that all the information stated in the legal statement is true. They have authorised ${solsSolicitorFirmName} to sign a statement of truth on their behalf.",
                     "immovableEstateInfo": "You are unable to apply online unless the estate in England and Wales consists wholly of immovable property.",
@@ -411,7 +414,7 @@ class CCDApi {
                     "noProofEntitlement": "The will is not entitled to proof in England and Wales.",
                     "[LAST_MODIFIED_DATE]": "2020-07-23T15:19:16.093575"
                 },
-                "case_fields_formatted": {
+                "fields_formatted": {
                     "solsConfirmSignSOT2": "You will sign a statement of truth on your client’s behalf.",
                     "solsConfirmSignSOT3": "The executor believes that all the information stated in the legal statement is true. They have authorised ${solsSolicitorFirmName} to sign a statement of truth on their behalf.",
                     "immovableEstateInfo": "You are unable to apply online unless the estate in England and Wales consists wholly of immovable property.",
@@ -457,7 +460,7 @@ class CCDApi {
                 }
             });
         }
-        return { columns: cols, results: rows, total: 1200 };
+        return { headers: [{ metadata: {}, fields: cols, cases: rows.map(caseObj => caseObj.case_id)}], cases: rows, total: 1200 };
     }
 
 
@@ -468,7 +471,6 @@ class CCDApi {
             caseActivities.push({
                 "caseId": caseid,
                 "viewers": [],
-                "unknownViewers": 0,
                 "editors": [],
                 "unknownEditors": 0
             });

@@ -14,7 +14,7 @@ properties([
 @Library("Infrastructure")
 
 def type      = "nodejs"
-def product   = "rpx"
+def product   = "xui"
 def component = "webapp"
 def channel   = '#xui-pipeline'
 
@@ -22,9 +22,9 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
-    //enableFortifyScan()
+    enableFortifyScan('rpx-aat')
     enableFullFunctionalTest(120)
-    //enableSecurityScan()
+    // enableSecurityScan()
     //enableMutationTest()
     enableCrossBrowserTest()
 

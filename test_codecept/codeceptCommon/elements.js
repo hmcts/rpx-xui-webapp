@@ -6,222 +6,6 @@ function getActor() {
 
 const reportLogger = require('./reportLogger')
 
-// class PuppeteerNativeElement {
-//     constructor(locator ,parent){
-       
-//         this.type = 'element'
-
-//         this.nativeElement = null;
-//         this.selector = locator;
-//         this.parent = parent
-       
-//         this.meta = this.getElementSelector()
-//     }
-
-//     getElementSelector(){
-//         const selectors = [];
-//         const parentSelectors = this.parent ? this.parent.getElementSelector() : null
-//         if (this.parent){
-//             const parentSelectors = this.parent.getElementSelector();
-//             selectors.push(...parentSelectors)
-//         }
-//         const keys = Object.keys(this.selector)
-//         if (keys.includes('css') || keys.includes('xpath')){
-//             selectors.push(this.selector)
-//         }else{
-//             selectors.push({ index: this.selector })
-//         }
-//         return selectors
-//     }
-
-//     async getNativeElements(locator) {
-//         this.page = await getActor().getPuppeteerPage();
-
-//         const keys = Object.keys(locator)
-//         if (keys[0] === 'css') {
-//             return await this.page.$$(locator[keys[0]])
-
-//         } else {
-//             return await this.page.$x(locator[keys[0]])
-//         }
-       
-//     }
-
-//     async __checkAndGetNativeElement(){
-//         let i = 0;
-//         while(i < 3){
-//             try {
-//                 this.page = await getActor().getPuppeteerPage();
-//                 let source = null;
-//                 if (this.parent) {
-//                     if (this.parent.type === 'element') {
-//                         const parentElement = await this.parent.__checkAndGetNativeElement();
-//                         source = parentElement;
-//                     } else if (this.parent.type === 'collection') {
-//                         const collectionCount = await this.parent.count();
-//                         if (this.selector >= collectionCount) {
-//                             throw Error(`Array index out of bound, elements count ${collectionCount} , index to get ${this.selector}`);
-//                         }
-//                         source = this.parent.nativeElements
-//                     }
-//                 } else {
-//                     source = this.page;
-//                 }
-//                 if (this.selector !== null) {
-//                     const keys = Object.keys(this.selector)
-//                     if (keys[0] === 'css') {
-//                         this.nativeElement = await source.$(this.selector[keys[0]])
-
-//                     } else if (keys[0] === 'xpath') {
-//                         this.nativeElement = await source.$x(this.selector[keys[0]])
-//                         this.nativeElement = this.nativeElement[0]
-
-//                     } else {
-//                         this.nativeElement = source[this.selector]
-//                     }
-//                 }
-//                 break;
-                
-//             } catch (err) {
-//                 i++;
-//                 console.log(err)
-//             }
-//         }
-//         return this.nativeElement;
-        
-        
-//     }
-
-   
-//     async getAttribute(attr){
-//         await this.__checkAndGetNativeElement();
-//         return await (await this.nativeElement.getProperty(attr)).jsonValue()
-//     }
-
-//     element(locator) {
-//         return new PuppeteerNativeElement(locator, this)
-//     }
-
-//     $(cssSelector){
-//         // await this.__checkAndGetNativeElement();
-//         // let childElement = await this.nativeElement.$(cssSelector) 
-//         return new PuppeteerNativeElement({ css: cssSelector }, this)
-//     }
-
-//     $$(cssSelector) {
-//         // await this.__checkAndGetNativeElement();
-//         // let childElements = await this.nativeElement.$$(cssSelector)
-//         const collection = new ElementCollection({ css: cssSelector }, this)
-//         // collection.nativeElements = childElements;
-//         return collection;
-//     }
-
-
-//     async getTagName(){
-//         await this.__checkAndGetNativeElement();
-
-//         const tagName = await this.nativeElement.getProperty('tagName');
-//         return (await tagName.jsonValue()).toLowerCase()
-//     }
-
-//     async isPresent(){
-//         await this.__checkAndGetNativeElement();
-//         return this.nativeElement !== null
-//     }
-
-//     async isDisplayed(){
-//         await this.__checkAndGetNativeElement();
-//         if (!this.nativeElement) {
-//             return false;
-//         }
-//         const elementVisisbleBox = await this.nativeElement.boundingBox();
-
-//         return elementVisisbleBox !== null
-       
-        
-//     }
-
-//     async sendKeys(keys){
-//         await this.__checkAndGetNativeElement();
-//         await this.nativeElement.scrollIntoView();
-//         await this.click();
-//         await this.nativeElement.type(keys.toString());
-//     }
-
-//     async clear(){
-//         await this.__checkAndGetNativeElement();
-//         // await this.page.evaluate((el) => el.value = '', this.nativeElement)
-//         // await this.nativeElement.type("");
-//     }
-
-//     async click(){
-//         await this.__checkAndGetNativeElement();
-//         // await this.nativeElement.scrollIntoView();
-//         await this.nativeElement.click();
-//     }
-
-
-//     async selectOptionAtIndex(index){
-//         await this.__checkAndGetNativeElement();
-//         const selectOptions = await this.nativeElement.$$('option')
-         
-
-//         let optionName = await selectOptions[index].evaluate(el => el.textContent, selectOptions[index])
-//         optionName = optionName.trim()
-//         // await select.select(optionName);
-//         await this.nativeElement.type(optionName)
-//     }
-
-//     async selectOptionWithLabel(label) {
-//         await this.__checkAndGetNativeElement();
-//         // const selectOptions = await this.nativeElement.$$('option')
-
-//         await this.nativeElement.type(label)
-
-
-       
-//         }
-
-//     async getText(){
-//         await this.__checkAndGetNativeElement();
-//         return await this.nativeElement.evaluate(el => el.textContent, this.nativeElement)
-//     }
-
-//     async uploadFile(filePath){
-//         await this.__checkAndGetNativeElement();
-//         await this.nativeElement.uploadFile(filePath);
-//     }
-
-//     async wait(){
-//         return new Promise((resolve,reject) => {
-//             const interval = setInterval(async () => {
-//                 await this.__checkAndGetNativeElement();
-//                 if(this.nativeElement !== null){
-//                     clearInterval(interval)
-//                     resolve(true)
-//                 }
-//             }, 1000);
-
-//             setTimeout(() => {
-//                 clearInterval(interval)
-//                 reject(false);
-//             }, 30000)
-//         });
-       
-//     }
-
-//     async scrollIntoView(){
-//         await this.__checkAndGetNativeElement();
-//         await this.page.evaluate((el) => el.scrollIntoView(), this.nativeElement)
-
-//     }
-
-//     async isSelected() {
-//         await this.__checkAndGetNativeElement();
-//         return await this.getAttribute('checked')
-//     }
-// }
-
 
 class ElementCollection {
     constructor(locator, parent) {
@@ -319,7 +103,8 @@ class ElementCollection {
         // }
         // return this.nativeElements.length
 
-        return await getActor().grabNumberOfVisibleElements(this.selector)
+        const elements = await getActor().grabHTMLFromAll(this.selector)
+        return elements.length;
     }
 
 
@@ -365,23 +150,40 @@ class Element {
     }
 
     async getText(){
-        return await getActor().grabTextFrom(this.selector) 
+        await this.wait();
+        reportLogger.AddMessage(`getText: ${JSON.stringify(this.selector)}`)
+        const selectorType = Object.keys(this.selector)[0]
+        const selector = selectorType === 'css' ? this.selector.css : `xpath=${this.selector.xpath}`
+        return await getActor().getTextUsingPlaywright(selector) 
+    }
+
+    async getTextFromAll() {
+        await this.wait();
+        reportLogger.AddMessage(`getText: ${JSON.stringify(this.selector)}`)
+
+        return await getActor().grabTextFromAll(this.selector)
     }
 
     async sendKeys(keys){
+        await this.wait();
         await this.click();
         await getActor().fillField(this.selector, keys) 
     }
 
     async clear(){
+        await this.wait();
         await getActor().clearField(this.selector)  
     }
 
     async click(){
+        await this.wait();
+        reportLogger.AddMessage(`click: ${JSON.stringify(this.selector)}`)
+
         await getActor().click(this.selector)  
     }
 
     async getSelectOptions() {
+        await this.wait();
         const options = await this._childElement('option')
         const labels = await getActor().grabTextFromAll(options.selector)
         return labels;
@@ -389,14 +191,19 @@ class Element {
 
 
     async selectOptionWithLabel(label){
-        await getActor().selectOption(this.selector, label)
+        await this.wait();
+        const options = await this.getSelectOptions();
+        const option = options.find((option) => option.includes(label))
+        await this.select(option)
     }
 
     async select(option){
+        await this.wait();
         await getActor().selectOption(this.selector,option)
     }
 
     async selectOptionAtIndex(index){
+        await this.wait();
         let options = await this.getSelectOptions();
         options = options.map(option => option.trim())
         await this.select(options[index])
@@ -409,9 +216,15 @@ class Element {
     }
 
     async isPresent(){
-        let count = 0;
-        const locatorType = Object.keys(this.selector)[0]
-        return await getActor().isVisible(this.selector)
+        try{
+            const e = await getActor().getPlaywrightlocator(this.selector)
+            const count = await e.count()
+            return count > 0;
+        }catch(err){
+            reportLogger.AddMessage(`error occured ${err.message}`)
+            return false
+        }
+      
       
     }
 
@@ -422,41 +235,33 @@ class Element {
 
     async isChecked(){
         const selectorType = Object.keys(this.selector)[0]
-        const isChecked = await getActor().executeScript(function(selectorType, selector){
-            if (selectorType === 'css'){
-                return document.querySelector(selector).checked;
-            }else{
-                return document.evaluate(
-                    selector,
-                    document,
-                    null,
-                    XPathResult.FIRST_ORDERED_NODE_TYPE,
-                    null
-                ).singleNodeValue.checked;
-            }
-            
-        }, selectorType, this.selector[selectorType]);
-        return isChecked
+        const selector = selectorType === 'css' ? this.selector.css : `xpath=${this.selector.xpath}`
+        return await getActor().isElementChecked(selector)
     }
 
     async isDisplayed(){
+        reportLogger.AddMessage(`isDisplayed: ${JSON.stringify(this.selector)}`)
         return await getActor().isVisible(this.selector)
-
     }
 
 
     async count(){
+        // await this.wait();
         const elements = new ElementCollection(this.selector) 
         return await elements.count()
     }
 
     async get(index){
+        await this.wait();
         return new Element(locate(this.selector).at(index+1)) 
     }
 
     async getAttribute(attr){
+        await this.wait();
         reportLogger.AddMessage(`getAttribute "${attr}" from ${JSON.stringify(this.selector)}`)
-        const attributeValue = await getActor().grabAttributeFrom(this.selector, attr)
+        const selectorType = Object.keys(this.selector)[0]
+        const selector = selectorType === 'css' ? this.selector.css : `xpath=${this.selector.xpath}`
+        const attributeValue = await getActor().getAttributeUsingPlaywright(selector, attr)
         if (attributeValue instanceof Object){
             const values = Object.values(attributeValue)
             let attributeItemValues = ''
@@ -473,6 +278,7 @@ class Element {
     }
 
     async getTagName(){
+        await this.wait();
         const locatorType = Object.keys(this.selector);
         let tagName = null;
 
@@ -497,6 +303,7 @@ class Element {
     }
 
     async uploadFile(file){
+        await this.wait();
         await getActor().attachFile(this.selector, '../e2e/documents/'+file);
     }
 
@@ -506,41 +313,37 @@ class Element {
 
     async wait(waitInSec){
         reportLogger.AddMessage("ELEMENT_WAIT: " + JSON.stringify(this.selector) +" at "+this.__getCallingFunctionName());
+        let waitTime = waitInSec ? waitInSec : 20;
+        let isPresentStatus = null;
+        let elapsedWait = 0;
+        do{ 
+            if (isPresentStatus === false){
+                await browser.sleepInMillisec(100)
+            }
+            isPresentStatus = await this.isPresent();
+            elapsedWait += 100;
 
-        return new Promise((resolve, reject) => {
-            const startTime = Date.now();
-            const interval = setInterval(async () => {
-                const elapsedTime = (Date.now() - startTime)/1000;
-                const isPresent = await this.isPresent()
-                // reportLogger.AddMessage(`WAIT elapsed time : ${elapsedTime}`)
-                if (isPresent) {
-                    clearInterval(interval)
-                    resolve(true)
-                } 
-                // else if (elapsedTime > 30){
-                //     clearInterval(interval);
-                //     reportLogger.AddMessage(`ELEMENT_WAIT_FAILED: not present ${JSON.stringify(this.selector)} at ${this.__getCallingFunctionName()} `);
-                //     reject(false);
-                // }
-            }, 500);
+        } while (!isPresentStatus && elapsedWait / 1000 < waitTime)
 
-            setTimeout(() => {
-                clearInterval(interval);
-                reject(false);
-            }, 30*1000)
-         
-        });
+        if (!isPresentStatus){
+            throw new Error(`Element not found after wait for ${waitTime}sec`)
+        }
+        return isPresentStatus;
+        // await getActor().waitForPlaywrightLocator(this.selector)
     }
 
     async scrollIntoView(){
+        await this.wait();
         await getActor().scrollTo(this.selector)
     }
 
     async isSelected(){
+        await this.wait();
         return await getActor().grabAttributeFrom(this.selector, 'checked');
     }
 
     async getSelectOptions(){
+        await this.wait();
         const options = await this._childElement('option')
         const labels = await getActor().grabTextFromAll(options.selector)
         return labels;
@@ -558,6 +361,10 @@ class Element {
         }
         functionName + ":" + lineNumber;
         return functionName;
+    }
+
+    async waitForElementdetach(){
+        await getActor().waitForPlaywrightLocatorState(this.selector,'detached')
     }
     
 }

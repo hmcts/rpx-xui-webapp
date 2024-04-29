@@ -12,6 +12,8 @@ const globalSearchDataModel = require('../../../dataModels/globalSearch');
 const { DataTableArgument } = require('codeceptjs');
 
 
+const backendMockClient = require('../../../backendMock/client/index')
+
 
     Given('I set global search mock results count {int}', async function (count) {
         globalSearchMockData.searchResponse.resultInfo.caseStartRecord = 1;
@@ -39,11 +41,23 @@ const { DataTableArgument } = require('codeceptjs');
         for (let i = 0; i < datatableHashes[0].casesReturned; i++) {
             globalSearchMockData.searchResponse.results.push(globalSearchDataModel.getCaseResult());
         }
-        MockApp.onPost('/api/globalsearch/results', (req, res) => {
-            res.send(globalSearchMockData.getResults());
-        });
+        const authCookies = await browser.driver.manage().getCookies()
+        const authCookie = authCookies.find(cookie => cookie.name === '__auth__')
+
+        await backendMockClient.setUserApiData(authCookie.value, 'GlobalSearchResults', { status: 200, data: globalSearchMockData.searchResponse } );
+
+        
+
+        // MockApp.onPost('/api/globalsearch/results', (req, res) => {
+        //     res.send(globalSearchMockData.getResults());
+        // });
        
     });
+
+
+
+
+
 
     Given('I set global search mock results with values', async function (datatable) {
         
@@ -64,6 +78,10 @@ const { DataTableArgument } = require('codeceptjs');
                 }
             }
         }
+        const authCookies = await browser.driver.manage().getCookies()
+        const authCookie = authCookies.find(cookie => cookie.name === '__auth__')
+
+        await backendMockClient.setUserApiData(authCookie.value, 'GlobalSearchResults', { status: 200, data: globalSearchMockData.searchResponse });
 
 
     });

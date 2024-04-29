@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -15,6 +15,13 @@ import { SearchService } from '../../services/search.service';
 import { SearchResultsComponent } from './search-results.component';
 
 import createSpyObj = jasmine.createSpyObj;
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('SearchResultsComponent', () => {
   let component: SearchResultsComponent;
@@ -144,7 +151,7 @@ describe('SearchResultsComponent', () => {
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getJurisdictions']);
     jurisdictionService.getJurisdictions.and.returnValue(of(jurisdictions));
     TestBed.configureTestingModule({
-      declarations: [SearchResultsComponent, PaginationComponent],
+      declarations: [SearchResultsComponent, PaginationComponent, RpxTranslateMockPipe],
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
         HttpClientTestingModule,

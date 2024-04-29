@@ -1,7 +1,7 @@
 
 const { v4 } = require('uuid');
 const userApiData = require('../userApiData')
-
+const serviceMockClient = require('../../client/serviceMock')
 
 class TaskManagementApi{
     
@@ -9,10 +9,15 @@ class TaskManagementApi{
     constructor(){
 
         this.method = {
-            searchTasks: "ON_SEARCH_TASKS"
+            searchTasks: "OnSearchTasks"
         }
 
+        this.setDefaultData()
+    }
+
+    setDefaultData(){
         this.searchTasksResponse = this.getSearchTasks(25, 140)
+        this.searchCompletableTasksRes = { task_required_for_event: false, tasks: [] }
     }
 
     setOnSearchTasks(token, response){
@@ -22,7 +27,9 @@ class TaskManagementApi{
     getSearchTasks(count, totalRecordsCount){
         const tasks = []
         for(let i = 0; i< count; i++){
-            tasks.push(this.getTaskTemplate());
+            const task = this.getTaskTemplate();
+            task.assignee = 'test_id'
+            tasks.push(task);
         }
         return { tasks: tasks, 'total_records': totalRecordsCount };
     }
@@ -30,6 +37,46 @@ class TaskManagementApi{
     getTask(){
         return { task: this.getTaskTemplate() }
     }
+
+    getTaskWithProperties(props){
+        const taskTemplate = this.getTaskTemplate();
+
+        for(const prop of Object.keys(props)){
+
+            if (prop.includes('warning_list') || prop.includes('permissions')){ 
+                taskTemplate[prop].values = props[prop].split(',');
+            }else{
+                taskTemplate[prop] = props[prop];
+
+            }
+
+        }
+        return taskTemplate;
+
+    }
+
+    async setTaskRequiredForEventAs(taskRequired) {
+        this.searchCompletableTasksRes.task_required_for_event = taskRequired;
+        await serviceMockClient.updateSearchForCompletableTasks(this.searchCompletableTasksRes, 200)
+    }
+
+    async setTaskRequiredForEventTasks(tasks) {
+
+        const watasks = tasks.map(task => {
+            const waTask = this.getTaskTemplate();
+            Object.keys(task).forEach(taskkey => {
+                if (task[taskkey].includes('true') || task[taskkey].includes('false')) {
+                    waTask[taskkey] = task[taskkey] === "true";
+                } else {
+                    waTask[taskkey] = task[taskkey];
+                }
+            });
+            return waTask;
+        })
+        this.searchCompletableTasksRes.tasks = watasks;
+        await serviceMockClient.updateSearchForCompletableTasks(this.searchCompletableTasksRes, 200)
+    }
+
 
     getWorkTypes(){
         return {

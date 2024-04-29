@@ -6,10 +6,12 @@ Setting up Secrets locally as documented below.
 Then follow: 
 ## Startup the Node service locally
 
+
 1. Make sure you have local-development.json within /config, if you do not you can get this from an XUI team member.
 2. Start the Node service locally using: 
 `export IDAM_SECRET=* && export S2S_SECRET=* && export NODE_CONFIG_DIR=../config && export NODE_CONFIG_ENV=development
 && export ALLOW_CONFIG_MUTATIONS=1 && npm run start:node`
+
 
 Explanation: 
 
@@ -162,7 +164,7 @@ Property 'cookies' does not exist on type 'EnhancedRequest' - you will need to m
 sure @types/express-session is added ie.
 `yarn add @types/express-session`
 
-### The following is legacy readme.
+### The following is the legacy readme.
 
 ## Code scaffolding
 
@@ -198,3 +200,5 @@ Extended version of script below:
 
 END
 Trigger2 Trigger3
+
+

@@ -16,10 +16,12 @@ import {
   SERVICES_PAYMENTS_URL,
   SERVICES_PRD_COMMONDATA_API,
   SERVICES_REFUNDS_API_URL,
-  SERVICES_NOTIFICATIONS_API_URL
+  SERVICES_NOTIFICATIONS_API_URL,
+  SERVICES_TRANSLATION_API_URL
 } from './configuration/references';
 import { applyProxy } from './lib/middleware/proxy';
 import * as searchCases from './searchCases';
+import * as documents from './documents';
 
 export const initProxy = (app: Express) => {
   applyProxy(app, {
@@ -32,10 +34,13 @@ export const initProxy = (app: Express) => {
   });
 
   applyProxy(app, {
+    middlewares: [bodyParser.json()],
+    onReq: documents.handleRequest,
+    onRes: documents.handleResponse,
     rewrite: false,
     source: '/documents',
     target: getConfigValue(SERVICES_DOCUMENTS_API_PATH)
-  });
+  }, false);
 
   applyProxy(app, {
     rewrite: false,
@@ -44,11 +49,14 @@ export const initProxy = (app: Express) => {
   });
 
   applyProxy(app, {
+    middlewares: [bodyParser.json()],
+    onReq: documents.handleRequest,
+    onRes: documents.handleResponse,
     rewrite: true,
     rewriteUrl: '/cases/documents',
     source: '/documentsv2',
     target: getConfigValue(SERVICES_DOCUMENTS_API_PATH_V2)
-  });
+  }, false);
 
   applyProxy(app, {
     filter: [
@@ -171,6 +179,13 @@ export const initProxy = (app: Express) => {
     rewrite: false,
     source: '/getLinkedCases',
     target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)
+  });
+
+  applyProxy(app, {
+    rewrite: true,
+    source: '/api/translation',
+    rewriteUrl: '/translation',
+    target: getConfigValue(SERVICES_TRANSLATION_API_URL)
   });
 
   applyProxy(app, {

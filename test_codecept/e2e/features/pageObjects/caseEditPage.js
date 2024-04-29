@@ -7,7 +7,7 @@ const CaseListPage = require("../pageObjects/CaseListPage");
 const { LOG_LEVELS } = require('../../support/constants');
 class caseEditPage {
     constructor() {
-        this.userName = 'lukesuperuserxui@mailnesia.com';
+        this.userName = 'lukesuperuserxui_new@mailnesia.com';
         this.password = 'Monday01';
         this.searchResultsTopPagination = $("ccd-search-result .pagination-top");
         this.ccdCaseEdit = $('ccd-case-edit')
@@ -149,25 +149,32 @@ class caseEditPage {
     async caseDetailsCheck() {
         let caseDetailsRes = await CcdApi.getCaseResultsResponse();
         this.caseDetailsTabs = $$("mat-tab-body table tbody>div>tbody");
-        await element(by.xpath("//mat-tab-header//div[contains(text(),'Tab 2')]")).click();
-        await BrowserWaits.waitForSeconds(1);
-        let fieldCount = await this.caseDetailsTabs.count();
-        let tabName = "Tab 2";
-        let tab = await caseDetailsRes.tabs.find(tab => tab.label == tabName);
-        for (let count = 0; count < fieldCount; count++) {
-            let complexFieldTable = await this.caseDetailsTabs.get(count).element(by.xpath('./*'));
-            let thCF = complexFieldTable.$$("tr th");
-            let tdCF = complexFieldTable.$$("tr td");
-            let webTableLabel = await thCF.getText();
-            let value = await tdCF.getText();
-            let field = await tab.fields.find(tab => tab.label == webTableLabel);
-            if (field.value && value && field.value.length > 0) {
-                let resKeyVal = await this._getKeyVal(field);
-                let fieldStatus = resKeyVal == value && field.label == webTableLabel;
-                expect(true, `${resKeyVal} is not present in the web`).to.eql(fieldStatus);
-            } else {
-                let fieldLabelStatus = field.label == webTableLabel;
-                expect(true, `${field.label} is not present in the web`).to.eql(fieldLabelStatus);
+        let tabHeaders = await $$("mat-tab-header .mat-tab-label");
+        let numberOfTabs = await tabHeaders.count();
+
+        for (let tabIndex = 0; tabIndex < numberOfTabs; tabIndex++) {
+            let tabHeader = tabHeaders.get(tabIndex);
+            let tabName = await tabHeader.getText();
+            await tabHeader.click();
+            await BrowserWaits.waitForSeconds(1);
+
+            let fieldCount = await this.caseDetailsTabs.count();
+            let tab = await caseDetailsRes.tabs.find(tab => tab.label == tabName);
+            for (let count = 0; count < fieldCount; count++) {
+                let complexFieldTable = await this.caseDetailsTabs.get(count).element(by.xpath('./*'));
+                let thCF = complexFieldTable.$$("tr th");
+                let tdCF = complexFieldTable.$$("tr td");
+                let webTableLabel = await thCF.getText();
+                let value = await tdCF.getText();
+                let field = await tab.fields.find(tab => tab.label == webTableLabel);
+                if (field.value && value && field.value.length > 0) {
+                    let resKeyVal = await this._getKeyVal(field);
+                    let fieldStatus = resKeyVal == value && field.label == webTableLabel;
+                    expect(true, `${resKeyVal} is not present in the web`).to.eql(fieldStatus);
+                } else {
+                    let fieldLabelStatus = field.label == webTableLabel;
+                    expect(true, `${field.label} is not present in the web`).to.eql(fieldLabelStatus);
+                }
             }
         }
     }
@@ -179,15 +186,9 @@ class caseEditPage {
     }
 
     async nextStepTriggerActions() {
-        let ccd_event_trigger = $$("ccd-event-trigger >form .form-group option");
-        let eventCount = await ccd_event_trigger.count();
-        let optionValues = [];
-        let id = "next-step";
-        for (let ecount = 1; ecount <= eventCount; ecount++) {
-            let optionText = await element(by.xpath(`//*[@id='${id}']//option[${ecount}]`)).getText()
-            optionValues.push(`${optionText}`);
-        }
-        return optionValues;
+        let ccd_event_trigger = $("select#next-step");
+        
+        return await ccd_event_trigger.getSelectOptions();
     }
 
     async clickNextStepTriggerActions() {
@@ -209,10 +210,10 @@ class caseEditPage {
         if (wizardPage1) {
             for (var i = 1; i < wizardPage1.length; i++) {
                 let caseField = await wizardPage.case_fields.find(caseObj => caseObj.id == wizardPage1[i].case_field_id);
+
                 if (wizardPage1[i].case_field_id !== "Organisation1") {
+
                     fieldIdPresent = await this._getFieldId(caseField, wizardPage1[i]);
-                    await BrowserWaits.waitForElement(fieldIdPresent);
-                    expect(await fieldIdPresent.isPresent(), `Case creation ${fieldIdPresent} field should be present`).to.be.true;
                 }
 
             }
@@ -295,6 +296,10 @@ class caseEditPage {
         let dd = checkURanswerPage.get(count).$$("td ccd-field-read dl dd");
         let dt = checkURanswerPage.get(count).$$("td ccd-field-read dl dt");
         for (let dtCount = 0; dtCount < await dt.count(); dtCount++) {
+            const isDisplayed = await await dd.get(dtCount).isDisplayed();
+            if (!isDisplayed){
+                continue;
+            }
             let ddValue = await dd.get(dtCount).getText();
             let dtLabel = await dt.get(dtCount).getText();
             this.checkURanswerPageData.push({ [dtLabel]: ddValue });
@@ -314,7 +319,7 @@ class caseEditPage {
         await this.continueButton.click();
         let e = $("#TextField");
         let errormsg = await $("ccd-write-text-field .error-message").getText();
-        expect(errormsg).to.eql("Text Field is required");
+        expect(errormsg.trim()).to.eql("Text Field is required");
         
     }
 

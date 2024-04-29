@@ -4,27 +4,43 @@ const { conf } = require('../config/config');
 
 const jwt = require('jsonwebtoken');
 const puppeteer = require('puppeteer');
-const MockApp = require('../../nodeMock/app');
+
+const idamLogin = require('../../ngIntegration/util/idamLogin')
+
+// const MockApp = require('../../nodeMock/app');
 
 const fs = require('fs');
 
 let testBrowser = null;
 let page = null;
 
+
+let sessionCookies = [];
+
 async function initBrowser() {
+    idamLogin.withCredentials('lukesuperuserxui_new@mailnesia.com', 'Monday01')
+    await idamLogin.do()
+
     testBrowser = await puppeteer.launch({
         ignoreHTTPSErrors: false,
         headless: conf.headless,
         args: [
             '--no-sandbox',
             '--disable-dev-shm-usage',
+            '--disable-gpu'
         ],
     });
 
     page = await testBrowser.newPage();
-    await page.goto("http://localhost:4200/");
-    await page.setCookie({ name: 'scenarioMockPort', value: '' + MockApp.serverPort })
-    // await page.goto("http://localhost:4200/");
+    // await page.goto("http://localhost:3000/");
+   
+    await page.goto("http://localhost:3000/get-help");
+    const cookies = idamLogin.xuiCallbackResponse.details.setCookies;
+    sessionCookies = cookies;
+    for(let cookie of cookies){
+        await page.setCookie({ name: cookie.name, value: cookie.value })
+    }
+    await page.goto("http://localhost:3000/");
 
 }
 
@@ -39,7 +55,7 @@ async function pa11ytest(test, actions, startUrl, roles) {
             isTestSuccess = true;
         } catch (err) {
             retryCounter++;
-            console.log("Error running pallt test " + err);
+            console.log("Error running pally test " + err);
             console.log("Retrying test again for " + retryCounter);
         }
     }
@@ -69,7 +85,7 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
   
     // await setScenarioCookie(test);
     try {
-        await initBrowser();
+        // await initBrowser();
         result = await pa11y(startUrl, {
             browser: testBrowser,
             page: page,
@@ -88,6 +104,7 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
         result = {
             documentTitle: "test name " + test.test.title,
             pageUrl:"",
+            steps: actions,
             issues:[{
                 code:"test execution error",
                 message:""+err.message,
@@ -119,10 +136,14 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
     if (conf.failTestOna11yIssues) {
         assert(result.issues.length === 0, "a11y issues reported")
     }
+    result.steps = actions
     return result;
 
 }
 
+function getAuthCookie(){
+    return sessionCookies.find(cookie => cookie.name === '__auth__').value
+}
 
 
-module.exports = { pa11ytest, initBrowser }
+module.exports = { pa11ytest, initBrowser, getAuthCookie }

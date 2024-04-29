@@ -20,12 +20,14 @@ const { DataTableArgument } = require('codeceptjs');
         await BrowserWaits.retryWithActionCallback(async () => {
             try{
                 await headerPage.clickPrimaryNavigationWithLabel('My work');
+                await BrowserWaits.waitForSeconds(2)
                 await BrowserWaits.waitForSpinnerToDissappear();
-                await browser.sleep(1)
                 await myWorkPage.clickSubNavigationTab(secondaryNavTab);
             }catch(err){
                 await headerPage.refreshBrowser();
                 throw new Error(err); 
+
+
             }
            
         });   
@@ -108,9 +110,14 @@ const { DataTableArgument } = require('codeceptjs');
 
 
     When('I click submit button {string} in task check your changes page', async function(buttonLabel){
-        expect(await caseAllocateCheckYourAnswersPage.submitButton.getText()).to.contains(buttonLabel);
-        await caseAllocateCheckYourAnswersPage.submitButton.click();
+        expect(await taskCheckYourChangesPage.submitButton.getText()).to.contains(buttonLabel);
+        await taskCheckYourChangesPage.submitButton.click();
     });
+
+When('I click submit button {string} in case allocate check your changes page', async function (buttonLabel) {
+    expect(await caseAllocateCheckYourAnswersPage.submitButton.getText()).to.contains(buttonLabel);
+    await caseAllocateCheckYourAnswersPage.submitButton.click();
+});
 
     Then('I see All work cases page displayed', async function(){
         await BrowserWaits.retryWithActionCallback(async () => {

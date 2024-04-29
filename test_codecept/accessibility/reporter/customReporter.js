@@ -2,7 +2,6 @@ var mocha = require('mocha');
 const fs = require('fs');
 
 const { conf } = require('../config/config');
-const MockApp = require('../../nodeMock/app');
 
 
 module.exports = report;
@@ -50,14 +49,17 @@ function report(runner) {
 
 
     runner.on('end', function () {
-        generateReport(passCounter, failCounter, tests);
+        const runnableFilepath = this.currentRunnable.file.split('/')
+        let suiteFileName = runnableFilepath[runnableFilepath.length - 1]
+        suiteFileName = suiteFileName.split('.').join('_')
+        generateReport(passCounter, failCounter, tests, suiteFileName);
     });
 
 }
 
 
 
-function generateReport(passCount, failCount, tests) {
+function generateReport(passCount, failCount, tests,suiteFilename) {
     let reportJson = {
         appName: conf.appName,
         passed: passCount,
@@ -71,8 +73,8 @@ function generateReport(passCount, failCount, tests) {
     if (!fs.existsSync(destDir)) {
         fs.mkdirSync(destDir);
     }
-    let destReport = `${destDir}Report_${MockApp.serverPort}.html`
-    let destJson = `${destDir}report_output_${MockApp.serverPort}.json`
+    let destReport = `${destDir}Report_${suiteFilename}.html`
+    let destJson = `${destDir}report_output_${suiteFilename}.json`
 
     fs.copyFileSync(sourceReport, destReport);
 

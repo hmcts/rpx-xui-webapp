@@ -7,7 +7,6 @@ import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import * as fromActions from '../../../app/store';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
-import { CONFIG_CONSTANTS_NOT_RELEASE4 } from '../../components/constants/config.constants';
 import { SortOrder, TaskContext } from '../../enums';
 import { Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
@@ -66,13 +65,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   }
 
   public get fields(): FieldConfig[] {
-    let fields = [];
-    this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
-      fields = this.isCurrentUserJudicial() ?
-        (isRelease4 ? ConfigConstants.AllWorkTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForJudicial) :
-        (isRelease4 ? ConfigConstants.AllWorkTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForLegalOps);
-    });
-    return fields;
+    return this.isCurrentUserJudicial() ? ConfigConstants.AllWorkTasksForJudicial : ConfigConstants.AllWorkTasksForLegalOps;
   }
 
   public loadCaseWorkersAndLocations(): void {
@@ -126,9 +119,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter()
       };
-      if (this.updatedTaskPermission) {
-        searchTaskParameter.request_context = TaskContext.ALL_WORK;
-      }
+      searchTaskParameter.request_context = TaskContext.ALL_WORK;
       return searchTaskParameter;
     }
   }

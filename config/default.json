@@ -33,7 +33,7 @@
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
     "hearings": {
-      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL",
+      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL,IA",
       "sscs": {
         "serviceApi": "http://sscs-hearings-api-prod.service.core-compute-prod.internal",
         "caseTypes": "Benefit"
@@ -45,6 +45,14 @@
       "civil": {
         "serviceApi": "http://civil-service-prod.service.core-compute-prod.internal",
         "caseTypes": "CIVIL"
+      },
+      "ia": {
+        "serviceApi": "http://ia-hearings-api-prod.service.core-compute-prod.internal",
+        "caseTypes": "Asylum,Bail"
+      },
+      "employment": {
+        "serviceApi": "http://et-hearings-api-prod.service.core-compute-prod.internal",
+        "caseTypes": "ET_EnglandWales,ET_Scotland"
       },
       "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
     },
@@ -96,13 +104,14 @@
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal",
     "payment_return_url": "https://paymentoutcome-web.prod.platform.hmcts.net",
+    "translation": "http://ts-translation-service-prod.service.core-compute-prod.internal",
     "judicialBookingApi": "http://am-judicial-booking-service-prod.service.core-compute-prod.internal"
   },
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
-  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
+  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT",
+  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
   "serviceRefDataMapping": [
     { "service": "IA", "serviceCodes": ["BFA1"] },
@@ -110,26 +119,9 @@
     { "service": "PRIVATELAW", "serviceCodes": ["ABA5"] },
     { "service": "PUBLICLAW", "serviceCodes": ["ABA3"] },
     { "service": "SSCS", "serviceCodes": ["BBA3"] },
+    { "service": "ST_CIC", "serviceCodes": ["BBA2"] },
     { "service": "EMPLOYMENT", "serviceCodes": ["BHA1"] }
   ],
-  "waSupportedServiceandCaseTypes": {
-    "IA": {
-        "caseTypes": "Asylum",
-        "releaseVersion": "3.5"
-      },
-    "CIVIL": {
-        "caseTypes": "CIVIL,GENERALAPPLICATION",
-        "releaseVersion": "3.5"
-      },
-    "PRIVATELAW": {
-        "caseTypes": "PRIVATELAW,PRLAPPS",
-        "releaseVersion": "3.5"
-      },
-    "PUBLICLAW": {
-       "caseTypes": "PUBLICLAW",
-       "releaseVersion": "3.5"
-      }
-  },
   "wildcardSearchFields": {
     "Benefit": [
       "generatedSurname",
@@ -169,7 +161,7 @@
     "redisEnabled": false,
     "oidcEnabled": false,
     "workAllocationEnabled": false,
-    "updatedTaskPermissionsEnabled": true,
+    "jrdELinksV2Enabled": false,
     "roleEnabled": false,
     "caseworkerRefEnabled": false,
     "substantiveRoleEnabled": true,
@@ -192,8 +184,8 @@
           "'self'",
           "'unsafe-inline'",
           "'unsafe-eval'",
-          "*.google-analytics.com",
-          "*.googletagmanager.com",
+          "https://*.google-analytics.com",
+          "https://*.googletagmanager.com",
           "az416426.vo.msecnd.net"
         ],
         "connectSrc": [
@@ -201,7 +193,10 @@
           "*.gov.uk",
           "dc.services.visualstudio.com",
           "*.launchdarkly.com",
-          "*.google-analytics.com"
+          "https://*.google-analytics.com",
+          "https://*.googletagmanager.com",
+          "https://*.analytics.google.com",
+          "wss//*.webpubsub.azure.com"
         ],
         "mediaSrc": ["'self'"],
         "objectSrc": ["'self'"],

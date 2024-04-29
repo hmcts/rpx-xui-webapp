@@ -24,7 +24,7 @@ class TaskListTable extends WATable{
 
     async getColumnValueForTaskAt(columnName, taskAtPos){
         
-        return this.getColumnValueAt(columnName, taskAtPos);
+        return await this.getColumnValueAt(columnName, taskAtPos);
     }
 
     async isColValForTaskALink(columnName, taskAtPos) {

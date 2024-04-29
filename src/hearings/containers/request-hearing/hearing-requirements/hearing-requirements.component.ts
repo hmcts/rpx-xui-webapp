@@ -1,7 +1,11 @@
 import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import { lastValueFrom } from 'rxjs';
+import { LoggerService } from '../../../../app/services/logger/logger.service';
 import * as fromHearingStore from '../../../../hearings/store';
+import { ValidatorsUtils } from '../../../../hearings/utils/validators.utils';
 import { CaseCategoryDisplayModel } from '../../../models/caseCategory.model';
 import { CaseFlagGroup } from '../../../models/caseFlagGroup.model';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
@@ -17,17 +21,17 @@ import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { CaseTypesUtils } from '../../../utils/case-types.utils';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
-import { LoggerService } from '../../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-hearing-requirements',
   templateUrl: './hearing-requirements.component.html'
 })
 export class HearingRequirementsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
+  public readonly caseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
+
   public caseFlagsRefData: CaseFlagReferenceModel[];
-  public caseFlagType: CaseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
   public reasonableAdjustmentFlags: CaseFlagGroup[] = [];
-  public lostFocus: boolean = false;
+  public lostFocus = false;
   public referenceId: string;
   public strRegions: string;
   public caseTypeRefData: LovRefDataModel[];
@@ -50,20 +54,20 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     this.lostFocus = true;
   }
 
-  constructor(protected readonly route: ActivatedRoute,
+  constructor(private readonly loggerService: LoggerService,
+              private readonly validatorsUtils: ValidatorsUtils,
               public readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
-              public readonly locationsDataService: LocationsDataService,
-              private readonly loggerService: LoggerService,) {
-    super(hearingStore, hearingsService, route);
+              protected readonly locationsDataService: LocationsDataService,
+              protected readonly featureToggleService: FeatureToggleService,
+              protected readonly route: ActivatedRoute) {
+    super(hearingStore, hearingsService, featureToggleService, route);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
     this.caseTypeRefData = this.route.snapshot.data.caseType;
-    if (this.serviceHearingValuesModel?.caseFlags?.flags) {
-      this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel.caseFlags.flags, this.caseFlagsRefData, this.caseFlagType);
-    }
   }
 
   public ngOnInit(): void {
+    this.setReasonableAdjustmentFlags();
     if (this.hearingListMainModel) {
       this.referenceId = this.hearingListMainModel.caseRef;
     }
@@ -80,14 +84,21 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
    * Initializes hearing request from hearing values
    */
   public initializeHearingRequestFromHearingValues(): void {
+    // Get hearing window from hearingRequestMainModel
+    let hearingWindow = HearingsUtils.getHearingWindow(this.hearingRequestMainModel);
+    // Get hearing window from serviceHearingValuesModel if null
+    if (!hearingWindow && this.serviceHearingValuesModel.hearingWindow) {
+      hearingWindow = this.serviceHearingValuesModel.hearingWindow;
+    }
     const combinedParties: PartyDetailsModel[] = this.combinePartiesWithIndOrOrg(this.serviceHearingValuesModel.parties);
+
     const hearingRequestMainModel: HearingRequestMainModel = {
       hearingDetails: {
         duration: this.serviceHearingValuesModel.duration,
         hearingType: this.serviceHearingValuesModel.hearingType,
         hearingLocations: this.serviceHearingValuesModel.hearingLocations,
         hearingIsLinkedFlag: this.serviceHearingValuesModel.hearingIsLinkedFlag,
-        hearingWindow: this.serviceHearingValuesModel.hearingWindow,
+        hearingWindow: hearingWindow,
         privateHearingRequiredFlag: this.serviceHearingValuesModel.privateHearingRequiredFlag,
         panelRequirements: this.serviceHearingValuesModel.panelRequirements,
         autolistFlag: this.serviceHearingValuesModel.autoListFlag,
@@ -104,7 +115,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       },
       caseDetails: {
         hmctsServiceCode: this.serviceHearingValuesModel.hmctsServiceID || null,
-        caseRef: this.hearingListMainModel && this.hearingListMainModel.caseRef || null,
+        caseRef: this.hearingListMainModel?.caseRef || null,
         requestTimeStamp: null,
         hearingID: null,
         caseDeepLink: this.serviceHearingValuesModel.caseDeepLink,
@@ -120,6 +131,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       },
       partyDetails: combinedParties
     };
+
     this.hearingStore.dispatch(new fromHearingStore.InitializeHearingRequest(hearingRequestMainModel));
   }
 
@@ -134,15 +146,11 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   public combinePartiesWithIndOrOrg(partyDetails: PartyDetailsModel[]): PartyDetailsModel[] {
     const combinedPartyDetails: PartyDetailsModel[] = [];
+
     partyDetails.forEach((partyDetail) => {
       const organisationDetails = partyDetail.organisationDetails;
       const party: PartyDetailsModel = {
         ...partyDetail,
-        individualDetails: {
-          ...partyDetail.individualDetails,
-          reasonableAdjustments: this.getAllPartyFlagsByPartyId(partyDetail.partyID)
-            .filter((flagId) => flagId !== CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID)
-        },
         ...organisationDetails && ({ organisationDetails })
       };
       combinedPartyDetails.push(party);
@@ -150,15 +158,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     return combinedPartyDetails;
   }
 
-  public getAllPartyFlagsByPartyId(partyID: string): string[] {
-    const allRAFs: PartyFlagsDisplayModel[] = this.reasonableAdjustmentFlags.reduce((previousValue, currentValue) =>
-      [...previousValue, ...currentValue.partyFlags], []
-    );
-    return allRAFs.filter((flag) => flag.partyID === partyID).map((filterFlag) => filterFlag.flagId);
-  }
-
   public initializeHearingCondition(): void {
-    if (this.serviceHearingValuesModel && this.serviceHearingValuesModel.hearingLocations) {
+    if (this.serviceHearingValuesModel?.hearingLocations) {
       const strLocationIds = this.serviceHearingValuesModel.hearingLocations.map((location) => location.locationId).join(',');
       this.locationsDataService.getLocationById(strLocationIds).toPromise()
         .then((locations) => {
@@ -174,6 +175,15 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   }
 
   protected executeAction(action: ACTION): void {
+    if (action === ACTION.CONTINUE) {
+      const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
+      if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
+          propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
+          (propertiesUpdatedOnPageVisit?.afterPageVisit.reasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesRequired)) {
+        // Hearings manual amendment journey is enabled and there are changes to reasonable adjustment flags detected
+        this.prepareHearingRequestData();
+      }
+    }
     super.navigateAction(action);
   }
 
@@ -183,5 +193,34 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   public ngOnDestroy() {
     super.unsubscribe();
+  }
+
+  private prepareHearingRequestData() {
+    const combinedParties: PartyDetailsModel[] = this.combinePartiesWithIndOrOrg(this.hearingsService.propertiesUpdatedOnPageVisit.parties);
+    this.hearingRequestMainModel = {
+      ...this.hearingRequestMainModel,
+      partyDetails: combinedParties
+    };
+    if (this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesRequired) {
+      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesConfirmed = true;
+    }
+  }
+
+  private setReasonableAdjustmentFlags(): void {
+    const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
+    if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
+        propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
+        (propertiesUpdatedOnPageVisit?.afterPageVisit.reasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired)) {
+      // Hearings manual amendment journey is enabled and there are changes to reasonable adjustment flags detected
+      const partyDetails = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed
+        ? this.hearingRequestMainModel.partyDetails
+        : this.hearingRequestToCompareMainModel.partyDetails;
+      this.reasonableAdjustmentFlags = CaseFlagsUtils.getReasonableAdjustmentFlags(this.caseFlagsRefData,
+        propertiesUpdatedOnPageVisit.caseFlags?.flags, partyDetails, this.serviceHearingValuesModel.parties);
+    } else {
+      // Hearings manual amendment journey is NOT enabled
+      this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel?.caseFlags?.flags,
+        this.caseFlagsRefData, this.caseFlagType);
+    }
   }
 }

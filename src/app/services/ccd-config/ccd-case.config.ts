@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { AppConstants } from '../../../app/app.constants';
 import { WAFeatureConfig } from '../../../work-allocation/models/common/service-config.model';
 import { EnvironmentService } from '../../shared/services/environment.service';
 import { AppConfigService } from '../config/configuration.services';
@@ -51,6 +52,20 @@ export class AppConfig extends AbstractAppConfig {
       next: (val) => this.config = {
         ...this.config,
         access_management_basic_view_mock: val
+      }
+    });
+
+    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.enableRestrictedCaseAccess, false).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        enable_restricted_case_access: val
+      }
+    });
+
+    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1, false).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        enable_case_file_view_version_1_1: val
       }
     });
   }
@@ -131,6 +146,14 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.activity_retry;
   }
 
+  public getTimeoutsForCaseRetrieval() {
+    return this.config.timeouts_case_retrieval;
+  }
+
+  public getTimeoutsCaseRetrievalArtificialDelay() {
+    return this.config.timeouts_case_retrieval_artificial_delay;
+  }
+
   public getActivityBatchCollectionDelayMs() {
     return this.config.activity_batch_collection_delay_ms;
   }
@@ -168,7 +191,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getCacheTimeOut(): number {
-    return 45000;
+    return 300000;
   }
 
   public getWorkAllocationApiUrl(): string {
@@ -225,5 +248,13 @@ export class AppConfig extends AbstractAppConfig {
 
   public getCaseDataStoreApiUrl(): string {
     return this.config.case_data_store_api_url;
+  }
+
+  public getEnableRestrictedCaseAccessConfig(): boolean {
+    return this.config.enable_restricted_case_access;
+  }
+
+  public getEnableCaseFileViewVersion1_1(): boolean {
+    return this.config.enable_case_file_view_version_1_1;
   }
 }

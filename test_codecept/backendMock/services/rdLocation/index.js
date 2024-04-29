@@ -1,12 +1,11 @@
 
-
-
 const courtTypeIds = {
     EMPLOYMENT: ['17'], // 17: Employment Tribunal
     IA: ['4', '23'],      // 4: Asylum Support Appeals 23: Immigration and Asylum Tribunal
     SSCS: ['31'],       // 31: Social Security and Child Support Tribunal
     CIVIL: ['10'],
     PRIVATELAW: ['18'],
+    PUBLICLAW: ['18']
 }
 
 const locationServiceCodes = {
@@ -20,15 +19,42 @@ class RDLocationService{
         this.locationsConfig = [
             {
                 service:'IA',
-                startIndex:20000
+                startIndex:20000,
+                serviceCode:['BFA1'],
+                locations:[]
             },
             {
                 service: 'CIVIL',
-                startIndex: 10000
+                startIndex: 10000,
+                serviceCode: [
+                "AAA6",
+                "AAA7"
+            ],
+                locations: []
             },
             {
-                service: 'SSCS',
-                startIndex: 30000
+                "service": "PUBLICLAW",
+                startIndex: 40000,
+                "serviceCode": [
+                    "ABA3"
+                ],
+                locations: []
+            },
+            {
+                "service": "SSCS",
+                startIndex: 50000,
+                "serviceCode": [
+                    "SSCS1"
+                ],
+                locations: []
+            },
+            {
+                "service": "PRIVATELAW",
+                startIndex: 60000,
+                "serviceCode": [
+                    "ABA5"
+                ],
+                locations: []
             }
         ];
 
@@ -50,48 +76,62 @@ class RDLocationService{
                 temp.site_name = `${service} Court Center ${i}`;
                 temp.court_type_id = typeIds[0];
                 temp.court_type = `${service} Court`;
-                this.caseManagementLocations.push(temp)
+                serviceConf.locations.push(temp)
             }
+
+            const temp = this.getMockLocations();
+            temp.epimms_id = index + '';
+            temp.is_case_management_location = 'Y';
+            temp.court_name = `${service} Court Center Wales`;
+            temp.venue_name = `${service} Court Center Wales`;
+            temp.site_name = `${service} Court Center Wales`;
+            temp.court_type_id = typeIds[0];
+            temp.court_type = `${service} Court`;
+            temp.region = 'Wales';
+            temp.region_id = "7";
+            serviceConf.locations.push(temp)
 
         })
     }
 
     getLocationById(epimms_id){
-        const results = this.caseManagementLocations.filter(loc => loc.epimms_id === epimms_id);
+        const results = [];
+        for (const service of this.locationsConfig) {
+            for (const loc of service.locations) {
+                if (loc.epimms_id.includes(epimms_id)) {
+                    results.push(loc);
+                }
+            }
+
+        }
         return results;
     }
 
     searchLocations(seearchTerm, courtTypeIds){
         const results = [];
-        for (const court of this.caseManagementLocations){
-            if (courtTypeIds.includes(court.court_type_id) && court.court_name.toLowerCase().includes(seearchTerm.toLowerCase())){
-                results.push(court);
+        for (const service of this.locationsConfig){
+            for(const loc of service.locations){
+                if (loc.court_name.toLowerCase().includes(seearchTerm.toLowerCase())) {
+                    results.push(loc);
+                }
             }
+            
         }
         return results;
     }
 
     getServiceLocations(serviceCode){
 
-        const services = Object.keys(locationServiceCodes)
-        const courtTypeIds = []
-        for(const service of services){
-            if(locationServiceCodes[service].includes(serviceCode)){
-                courtTypeIds.push(courtTypeIds[service])
-            }
-        }
-        const results = [];
-        for (const court of this.caseManagementLocations) {
-            if (courtTypeIds.includes(court.court_type_id) && court.court_name.includes(seearchTerm)) {
-                results.push(court);
-            }
-        }
+        const serviceWithCode = this.locationsConfig.find(service => service.serviceCode.includes(serviceCode))
+
+        console.assert(serviceWithCode, `Mock service config not found for service code ${serviceCode}`);
+        
         return {
             "service_code": serviceCode,
-            "court_type_id": courtTypeIds[0],
+            "court_type_id": "18",
             "court_type": "CASE_MANAGEMENT",
             "welsh_court_type": "N",
-            "court_venues": results
+            "court_venues": serviceWithCode.locations
         };
     }
 

@@ -50,7 +50,7 @@ class WAListTable {
         await BrowserWaits.waitForConditionAsync(async () => {
             let tableRowsCount = await this.tableRows.count();
             let isTableFooterDispayed = await this.tableFooter.isDisplayed();
-            cucumberReporter.AddMessage(`Waiting for WA list table condition : row count is ${tableRowsCount} or table foorter displayed ${isTableFooterDispayed}`, LOG_LEVELS.Info);
+            // cucumberReporter.AddMessage(`Waiting for WA list table condition : row count is ${tableRowsCount} or table foorter displayed ${isTableFooterDispayed}`, LOG_LEVELS.Info);
             return tableRowsCount > 0 || isTableFooterDispayed;
         }, BrowserWaits.waitTime);
     }
@@ -97,35 +97,22 @@ class WAListTable {
     }
 
     async getHeaderPositionWithName(headerName) {
-        const headers = element.all(by.xpath(`//${ this.baseCssLocator }//table//thead//th`));
-        const colCount = await headers.count();
-        for (let i = 0; i < colCount; i++) {
-            const name = await headers.get(i).getText();
-            if (name.includes(headerName)) {
+        const headerNames = await element(by.xpath(`//${this.baseCssLocator}//table//thead//th`)).getTextFromAll();
+        for (let i = 0; i < headerNames.length; i++) {
+            if (headerNames[i].includes(headerName)) {
                 return i + 1;
+
             }
         }
         return -1;
     }
 
     async getColumnHeaderNames() {
-        return await BrowserWaits.retryWithActionCallback(async () => {
-            await this.waitForTable();
-            const headers = element.all(by.xpath(`//${ this.baseCssLocator }//table//thead//th`));
-            const headerElementsCount = await headers.count();
-            const names = [];
+        await this.waitForTable();
+        const headers = await element(by.xpath(`//${this.baseCssLocator}//table//thead//th`)).getTextFromAll();
+      
 
-
-            for (let i = 0; i < headerElementsCount; i++) {
-                const headerElement = await headers.get(i);
-                const headerLabel = await headerElement.getText();
-                if (headerLabel.trim() !== ""){
-                    names.push(headerLabel.trim());
-                }
-            }
-           
-            return names;
-        });
+        return headers;
 
     }
 

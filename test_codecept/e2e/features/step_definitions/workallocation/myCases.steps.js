@@ -20,7 +20,8 @@ const { DataTableArgument } = require('codeceptjs');
         reportLogger.reportDatatable(datatable)
         const columnHeadersHash = datatable.parse().hashes();
         const expectdColHeaders = await ArrayUtil.map(columnHeadersHash, (headerhash) => headerhash.ColumnHeader);
-        const actualHeadeColumns = await casesListTable.getColumnHeaderNames();
+        let actualHeadeColumns = await casesListTable.getColumnHeaderNames();
+        actualHeadeColumns = actualHeadeColumns.map(c => c.trim()).filter((colName) => colName !== '')
         expect(actualHeadeColumns.length, `Actual Cols ||${actualHeadeColumns}|| !== Expected Cols ||${expectdColHeaders}|| `).to.equal(expectdColHeaders.length);
         expect(actualHeadeColumns, `Actual Cols ||${actualHeadeColumns}|| !== Expected Cols ||${expectdColHeaders}|| `).to.include.members(expectdColHeaders);
 
@@ -30,6 +31,7 @@ const { DataTableArgument } = require('codeceptjs');
         const columnHeadersHash = datatable.parse().hashes();
         const expectdLinkCols = await ArrayUtil.map(columnHeadersHash, (headerhash) => headerhash.ColumnHeader);
 
+        await BrowserWaits.waitForSpinnerToDissappear()
         const actualHeadeColumns = await casesListTable.getColumnHeaderNames();
 
         const actuallinkColumns = await ArrayUtil.filter(actualHeadeColumns, (headerCol) => {
@@ -47,6 +49,7 @@ const { DataTableArgument } = require('codeceptjs');
 
 
     Then('I validate work allocation cases count in page {int}', async function (casesCount) {
+        await BrowserWaits.waitForSpinnerToDissappear();
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(parseInt(await casesListTable.getCaseListCountInTable()), 'Cases count does not match expected ').to.equal(casesCount);
         })

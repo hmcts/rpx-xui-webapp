@@ -6,7 +6,6 @@ import { Store } from '@ngrx/store';
 import { Observable, Subscription, of } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
-import { AppConstants } from '../../../app/app.constants';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
@@ -28,7 +27,6 @@ import {
   WASupportedJurisdictionsService,
   WorkAllocationTaskService
 } from '../../services';
-import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
 
 @Component({
@@ -52,8 +50,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private pTasksTotal: number;
   private currentUser: string;
   public routeEventsSubscription: Subscription;
-  public isUpdatedTaskPermissions$: Observable<boolean>;
-  public updatedTaskPermission: boolean;
   public userRoleCategory: string;
   private initialFilterApplied = false;
   private goneBackCount = 0;
@@ -75,11 +71,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService,
     protected rolesService: AllocateRoleService,
-    protected store: Store<fromActions.State>,
-    protected checkReleaseVersionService: CheckReleaseVersionService
-  ) {
-    this.isUpdatedTaskPermissions$ = this.featureToggleService?.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
-  }
+    protected store: Store<fromActions.State>
+  ) { }
 
   public get tasks(): Task[] {
     return this.pTasks;
@@ -162,10 +155,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public ngOnInit(): void {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
     this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
-    this.isUpdatedTaskPermissions$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
-    this.isUpdatedTaskPermissions$.pipe(filter((v) => !!v)).subscribe((value) => {
-      this.updatedTaskPermission = value;
-    });
     this.userRoleCategory = this.getCurrentUserRoleCategory();
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
@@ -185,9 +174,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       )
       .subscribe((f: FilterSetting) => {
-        const newLocations = f.fields.find((field) => field.name === 'locations').value;
+        const newLocations = f.fields.find((field) => field.name === 'locations')?.value;
         const typesOfWork = f.fields.find((field) => field.name === 'types-of-work');
-        const services = f.fields.find((field) => field.name === 'services').value;
+        const services = f.fields.find((field) => field.name === 'services')?.value;
         const newWorkTypes = typesOfWork ? typesOfWork.value : [];
         if (this.initialFilterApplied) {
           // do not reset the pagination when the initial filter value has not been consumed

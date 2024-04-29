@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseNotifier, PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { InfoMessage } from 'src/app/shared/enums/info-message';
 import { InformationMessage } from 'src/app/shared/models';
@@ -53,6 +54,8 @@ describe('WorkAllocation', () => {
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
     const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
     const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['getValue']);
     mockFeatureToggleService.getValue.and.returnValue(
       of({ configurations: [{ serviceName: 'IA', releaseVersion: '4' }] })
@@ -90,7 +93,11 @@ describe('WorkAllocation', () => {
               params: of({ task: mockTasks[0] })
             }
           },
-          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+          {
+            provide: RpxTranslationService,
+            useFactory: rpxTranslationServiceStub
+          }
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
@@ -411,10 +418,8 @@ describe('WorkAllocation', () => {
   });
 
   describe('TaskActionContainerComponent performActionOnTask', () => {
-    let component: TaskActionContainerComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
-    let router: Router;
 
     const mockWorkAllocationService = {
       performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({})),
@@ -470,8 +475,6 @@ describe('WorkAllocation', () => {
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
-      component = wrapper.appComponentRef;
-      router = TestBed.inject(Router);
 
       wrapper.tasks = null;
       window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
@@ -490,10 +493,8 @@ describe('WorkAllocation', () => {
   });
 
   describe('TaskActionContainerComponent performActionOnTask', () => {
-    let component: TaskActionContainerComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
-    let router: Router;
 
     const mockWorkAllocationService = {
       performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({})),
@@ -552,8 +553,6 @@ describe('WorkAllocation', () => {
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
-      component = wrapper.appComponentRef;
-      router = TestBed.inject(Router);
 
       wrapper.tasks = null;
       window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');

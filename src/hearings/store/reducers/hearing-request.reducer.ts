@@ -3,11 +3,12 @@ import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
 import { HearingRequestStateData } from '../../models/hearingRequestStateData.model';
 import { Mode } from '../../models/hearings.enum';
 import * as fromActions from '../actions';
+import { PartyDetailsModel } from '../../models/partyDetails.model';
 
 export const initialHearingRequestState: HearingRequestStateData = {
   hearingRequestMainModel: {
     requestDetails: {
-      timeStamp: null,
+      timestamp: null,
       versionNumber: 0
     },
     hearingDetails: {
@@ -61,9 +62,24 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
       };
     }
     case fromActions.INITIALIZE_HEARING_REQUEST: {
+      const hearingRequestMainModel = action.payload;
+      const updatedPartyDetails: PartyDetailsModel[] = [];
+      hearingRequestMainModel.partyDetails.forEach((party) => {
+        let updateParty = party;
+        if (party.partyName === undefined && party?.individualDetails?.firstName !== undefined) {
+          updateParty = {
+            ...party,
+            partyName: `${party?.individualDetails?.firstName} ${party?.individualDetails?.lastName}`
+          };
+        }
+        updatedPartyDetails.push(updateParty);
+      });
       return {
         ...currentState,
-        hearingRequestMainModel: action.payload
+        hearingRequestMainModel: {
+          ...action.payload,
+          partyDetails: updatedPartyDetails
+        }
       };
     }
     case fromActions.UPDATE_HEARING_REQUEST: {

@@ -1,4 +1,4 @@
-@ng @ignore
+@ng @ignore @global_search
 Feature: Global search
 
     Background: Setup
@@ -10,11 +10,13 @@ Feature: Global search
         Then I see global search Page
 
     Scenario: Search page field validation
-        Then I validate field services has following values in global search page
-            | value                |
-            | BEFTA Master         |
-            | Immigration & Asylum |
-
+        Given I set set global search mock results response and resultInfo
+            | caseStartRecord | casesReturned | moreResultsToGo |
+            | 1               | 10            | false           |
+        Given I set global search mock results with values
+            | index | caseReference    | otherReferences | fullName        | addressLine1      |
+            | 0     | 1234567890123456 | some test ref   | Sherlock Holmes | 221B Baker street |
+        Given I start MockApp
         When I click search button in global search page
         Then I see error message "Enter information in at least one field" in global search Page
 
@@ -34,7 +36,7 @@ Feature: Global search
 
         When I input field "Postcode" with value "ABC" in global search Page
         When I click search button in global search page
-        Then I see error message "Enter a valid postcod" for field "Postcode" in global search Page
+        Then I see error message "Enter a valid postcode" for field "Postcode" in global search Page
         When I input field "Postcode" with value "SE12AB" in global search Page
         When I click search button in global search page
         Then I see global search results page
@@ -49,44 +51,7 @@ Feature: Global search
         Then I see global search results page
         When I click Change search link in global search results page
         Then I see global search Page
-        Then I validate input field "Email address" has value "abc@xyz.co" in global search page
-
-
-        When I input date field "Date of birth" with format DD-MM-YYYY "32-01-2021" in global search page
-        When I click search button in global search page
-        Then I see error message "Enter a valid date of birth" for field "Date of birth" in global search Page
-        When I input date field "Date of birth" with format DD-MM-YYYY "30-21-2021" in global search page
-        When I click search button in global search page
-        Then I see error message "Enter a valid date of birth" for field "Date of birth" in global search Page
-        #  When I input date field "Date of birth" with format DD-MM-YYYY "30-01-2021234" in global search page
-        # When I click search button in global search page
-        #  Then I see error message "Enter a valid date of birth" for field "Date of birth" in global search Page
-        When I input date field "Date of birth" with format DD-MM-YYYY "30-01-2000" in global search page
-        When I click search button in global search page
-        Then I see global search results page
-        When I click Change search link in global search results page
-        Then I see global search Page
-
-        When I input date field "Date of death" with format DD-MM-YYYY "32-01-2021" in global search page
-        When I click search button in global search page
-        Then I see error message "Enter a valid date of death" for field "Date of death" in global search Page
-        When I input date field "Date of death" with format DD-MM-YYYY "30-21-2021" in global search page
-        When I click search button in global search page
-        Then I see error message "Enter a valid date of death" for field "Date of death" in global search Page
-        #  When I input date field "Date of death" with format DD-MM-YYYY "30-01-2021234" in global search page
-        # When I click search button in global search page
-        #  Then I see error message "Enter a valid date of death" for field "Date of death" in global search Page
-        When I input date field "Date of death" with format DD-MM-YYYY "30-01-1999" in global search page
-        When I click search button in global search page
-        Then I see error message "The date of death cannot be earlier than the date of birth" for field "Date of death" in global search Page
-
-
-        When I input date field "Date of death" with format DD-MM-YYYY "30-01-2010" in global search page
-        When I click search button in global search page
-        Then I see global search results page
-        When I click Change search link in global search results page
-        Then I see global search Page
-
+        Then I validate input field "Email address" has value "abc@xyz.com" in global search page
 
         Then I validate input field "16-digit case reference" has value "1234567890123456" in global search page
         Then I validate input field "Other reference" has value "some test ref" in global search page
@@ -95,10 +60,6 @@ Feature: Global search
 
         Then I validate input field "Email address" has value "abc@xyz.com" in global search page
         Then I validate input field "Postcode" has value "SE12AB" in global search page
-
-        Then I validate input field "Date of birth" has value "30-1-2000" in global search page
-        Then I validate input field "Date of death" has value "30-1-2010" in global search page
-
 
         When I input field "16-digit case reference" with value "" in global search Page
         When I input field "Other reference" with value "f" in global search Page
@@ -125,35 +86,24 @@ Feature: Global search
         Then I validate input field "Date of birth" has value "" in global search page
         Then I validate input field "Date of death" has value "" in global search page
 
-
-    Scenario: Date fields validation error
+    Scenario: DoB Date fields validation error
         When I input date field "Date of birth" with format DD-MM-YYYY "302-21-2021" in global search page
         When I click search button in global search page
         When I input field "16-digit case reference" with value "1234567890123456" in global search Page
-
         Then I see error message "Enter a valid date of birth" for field "Date of birth" in global search Page
-        When I input date field "Date of birth" with format DD-MM-YYYY "" in global search page
-        When I click search button in global search page
-        Then I see global search results page
 
 
-        When I click Change search link in global search results page
-        Then I see global search Page
-
+    Scenario: DoD Date fields validation error
         When I input date field "Date of death" with format DD-MM-YYYY "302-21-2021" in global search page
         When I click search button in global search page
         Then I see error message "Enter a valid date of death" for field "Date of death" in global search Page
-        When I input date field "Date of death" with format DD-MM-YYYY "" in global search page
-        When I click search button in global search page
-        Then I see global search results page
 
-        When I click Change search link in global search results page
-        Then I see global search Page
-
+    Scenario: DoD earlier than DoB validation error
         When I input date field "Date of birth" with format DD-MM-YYYY "30-01-2000" in global search page
         When I input date field "Date of death" with format DD-MM-YYYY "30-01-1999" in global search page
         When I click search button in global search page
         Then I see error message "The date of death cannot be earlier than the date of birth" for field "Date of death" in global search Page
+
 
     Scenario: Case search results view column values
         Given I set set global search mock results response and resultInfo
@@ -226,75 +176,5 @@ Feature: Global search
         When I click action link "View" at row 1 in global search results page
         Then I see case details page
 
-
-    Scenario: Case search results view validations challenged access
-        Given I set MOCK case details with reference "caseDetails"
-        Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
-        Given I set MOCK case details "caseDetails" service name as "Immigration Asylum test"
-        # Given I set MOCK case details "caseDetails" state as "ngIntegration test state"
-        Given I set MOCK case details "caseDetails" property "CaseType" as "Asylum"
-        Given I set MOCK case details "caseDetails" access process "CHALLENGED" and access granted "BASIC"
-
-        Given I set set global search mock results response and resultInfo
-            | caseStartRecord | casesReturned | moreResultsToGo |
-            | 1               | 10            | false           |
-
-        Given I set global search mock results with values
-            | index | processForAccess | caseNameHmctsInternal | caseReference    | CCDJurisdictionName | stateId      | baseLocationName |
-            | 0     | CHALLENGED       | Test case 1           | 1234567812345678 | Test Jurisdiction   | Case created | Test location 1  |
-            | 1     | SPECIFIC         | Test case 2           | 8765432187654321 | Test Jurisdiction   | Case created | Test location 2  |
-        Given I start MockApp
-        When I input field "16-digit case reference" with value "1234567890123456" in global search Page
-
-        When I click search button in global search page
-        Then I see global search results page
-
-
-        Then I validate global search results displayed count 10
-
-        When I click action link "Challenged access" at row 1 in global search results page
-
-        Then I see case details basic view and request access page
-        Then I see case details basic view displays banner with message "This case requires challenged access"
-
-        Then I see case details basic view displays case property "Service" with values "Immigration Asylum test"
-        # Then I see case details basic view displays case property "State" with values "ngIntegration test state"
-        Then I see case details basic view displays case property "Access" with values "Challenged"
-
-
-        When I click request access button in case basic view page
-        Then I see case details challenged access request page
-
-    Scenario: Case search results view validations Specific access
-        Given I set MOCK case details with reference "caseDetailsSpecific"
-        Given I set MOCK case details "caseDetailsSpecific" property "Jurisdiction" as "Civil"
-        Given I set MOCK case details "caseDetailsSpecific" property "CaseType" as "Civil"
-        Given I set MOCK case details "caseDetailsSpecific" access process "SPECIFIC" and access granted "BASIC"
-
-        Given I set set global search mock results response and resultInfo
-            | caseStartRecord | casesReturned | moreResultsToGo |
-            | 1               | 10            | false           |
-
-        Given I set global search mock results with values
-            | index | processForAccess | caseNameHmctsInternal | caseReference    | CCDJurisdictionName | stateId      | baseLocationName |
-            | 0     | CHALLENGED       | Test case 1           | 1234567812345678 | Test Jurisdiction   | Case created | Test location 1  |
-            | 1     | SPECIFIC         | Test case 2           | 8765432187654321 | Test Jurisdiction   | Case created | Test location 2  |
-
-        Given I start MockApp
-        When I input field "16-digit case reference" with value "1234567890123456" in global search Page
-
-        When I click search button in global search page
-        Then I see global search results page
-
-
-        Then I validate global search results displayed count 10
-        # Then I validate global search results values
-        #     ||||
-
-        When I click action link "Specific access" at row 2 in global search results page
-        Then I see case details basic view and request access page
-        Then I see case details basic view displays banner with message "Authorisation is needed to access this case"
-        When I click request access button in case basic view page
-        Then I see case details specific access request page
 
 

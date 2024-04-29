@@ -73,43 +73,49 @@ export const hearingStageRefData = [
 ];
 
 export const judicialUsersRefData: JudicialUserModel[] = [{
-  emailId: 'jacky.collins@judicial.com',
+  title: 'Mr',
+  knownAs: 'Jacky Collins',
+  surname: 'Jacky Collins',
   fullName: 'Jacky Collins',
+  emailId: 'jacky.collins@judicial.com',
   idamId: '1102839232',
+  initials: 'JC',
+  postNominals: 'JP',
+  personalCode: 'P0000001',
   isJudge: '',
   isMagistrate: '',
-  isPanelMember: '',
-  knownAs: 'Jacky Collins',
-  personalCode: 'P0000001',
-  surname: 'Jacky Collins',
-  title: 'Mr'
+  isPanelMember: ''
 }];
 
 export const panelMembersRefData: JudicialUserModel[] = [{
-  emailId: '7007496EMP-@ejudiciary.net',
+  title: 'Mr',
+  knownAs: 'Ramon',
+  surname: 'Herrera',
   fullName: 'Ramon Herrera',
+  emailId: '7007496EMP-@ejudiciary.net',
   idamId: 'a229ec37-d84d-4eed-bd7f-0c77a6721da6',
+  initials: 'RH',
+  postNominals: 'JP',
+  personalCode: '7007496',
   isJudge: '',
   isMagistrate: '',
-  isPanelMember: '',
-  knownAs: 'Ramon',
-  personalCode: '7007496',
-  surname: 'Herrera',
-  title: 'Mr'
+  isPanelMember: ''
 }];
 
 export const judgeRefData: JudicialUserModel[] = [
   {
-    emailId: 'jacky.collins@judicial.com',
+    title: 'Mr',
+    knownAs: 'Jacky Collins',
+    surname: 'Collins',
     fullName: 'Jacky Collins',
+    emailId: 'jacky.collins@judicial.com',
     idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+    initials: 'JC',
+    postNominals: 'JP',
+    personalCode: 'P0000001',
     isJudge: '',
     isMagistrate: '',
-    isPanelMember: '',
-    knownAs: 'Jacky Collins',
-    personalCode: 'P0000001',
-    surname: 'Collins',
-    title: 'Mr'
+    isPanelMember: ''
   }];
 
 export const hearingPriorityRefData = [
@@ -1542,8 +1548,8 @@ export const caseFlagsRefData = [
 
 export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   hmctsServiceID: 'BBA3',
-  hmctsInternalCaseName: 'Jane vs DWP',
-  publicCaseName: 'Jane vs DWP',
+  hmctsInternalCaseName: 'Jane Smith vs DWP',
+  publicCaseName: 'Jane Smith vs DWP',
   autoListFlag: false,
   hearingType: 'Final',
   hearingChannels: [],
@@ -1573,7 +1579,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   hearingWindow: {
     dateRangeStart: '2022-11-23T09:00:00.000Z',
     dateRangeEnd: '2022-11-30T09:00:00.000Z',
-    firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
+    firstDateTimeMustBe: '2022-12-21T09:00:00.000Z'
   },
   duration: 45,
   hearingPriorityType: 'standard',
@@ -1648,7 +1654,10 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         title: 'Mrs',
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson'
+        preferredHearingChannel: 'inPerson',
+        reasonableAdjustments: [
+          'RA0042'
+        ]
       },
       unavailabilityRanges: [
         {
@@ -1685,15 +1694,17 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   caseFlags: {
     flags: [
       {
-        partyID: 'P1',
+        partyId: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0008',
         flagId: 'RA0042',
         flagDescription: 'Sign language interpreter required',
-        flagStatus: 'ACTIVE'
+        flagStatus: 'ACTIVE',
+        dateTimeCreated: '2023-11-07T09:00:00.000Z',
+        dateTimeModified: '2023-11-07T09:00:00.000Z'
       },
       {
-        partyID: 'P1',
+        partyId: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0032',
         flagId: 'RA0053',
@@ -1701,7 +1712,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P1',
+        partyId: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0002',
         flagId: 'RA0013',
@@ -1709,7 +1720,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P1',
+        partyId: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0003',
         flagId: 'RA0016',
@@ -1717,7 +1728,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P1',
+        partyId: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0008',
         flagId: 'RA0042',
@@ -1725,7 +1736,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P1',
+        partyId: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'PF0001',
         flagId: 'PF0015',
@@ -1733,7 +1744,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P1',
+        partyId: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'PF0001',
         flagId: 'PF0002',
@@ -1741,7 +1752,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P2',
+        partyId: 'P2',
         partyName: 'DWP',
         flagParentId: 'RA0001',
         flagId: 'RA0005',
@@ -1749,7 +1760,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P2',
+        partyId: 'P2',
         partyName: 'DWP',
         flagParentId: 'PF0001',
         flagId: 'PF0011',
@@ -1757,7 +1768,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P2',
+        partyId: 'P2',
         partyName: 'Jane Smith vs DWP',
         flagParentId: 'CF0001',
         flagId: 'CF0002',
@@ -1765,7 +1776,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P2',
+        partyId: 'P2',
         partyName: 'Jane Smith vs DWP',
         flagParentId: 'CF0001',
         flagId: 'CF0006',
@@ -1773,7 +1784,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE'
       },
       {
-        partyID: 'P2',
+        partyId: 'P2',
         partyName: 'Jane Smith vs DWP',
         flagParentId: 'CF0001',
         flagId: 'CF0007',
@@ -1882,7 +1893,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
 
 export const hearingRequestMainModel: HearingRequestMainModel = {
   requestDetails: {
-    timeStamp: '2022-02-23T09:00:00.000Z',
+    timestamp: '2022-02-23T09:00:00.000Z',
     versionNumber: 1
   },
   hearingDetails: {
@@ -1946,7 +1957,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
         categoryValue: 'BBA3-002RC',
         categoryParent: 'BBA3-002'
       }],
-    caseManagementLocationCode: null,
+    caseManagementLocationCode: '196538',
     caserestrictedFlag: false,
     caseSLAStartDate: '2021-11-23T09:00:00.000Z'
   },
@@ -2263,7 +2274,7 @@ export const initialState = {
     hearingRequestToCompare: {
       hearingRequestMainModel: {
         requestDetails: {
-          timeStamp: null,
+          timestamp: null,
           versionNumber: 1
         },
         hearingDetails: {
@@ -2292,7 +2303,7 @@ export const initialState = {
           nonStandardHearingDurationReasons: [],
           hearingPriorityType: 'standard',
           numberOfPhysicalAttendees: 3,
-          hearingInWelshFlag: true,
+          hearingInWelshFlag: false,
           facilitiesRequired: [
             'immigrationDetentionCentre',
             'inCameraCourt'
@@ -2305,7 +2316,7 @@ export const initialState = {
         },
         caseDetails: {
           hmctsServiceCode: null,
-          caseRef: null,
+          caseRef: '1234123412341234',
           requestTimeStamp: null,
           hearingID: null,
           externalCaseReference: null,
@@ -2403,7 +2414,7 @@ export const initialState = {
         requestDetails: {
           hearingRequestID: '1000000',
           status: 'LISTED',
-          timeStamp: '2021-11-30T09:00:00.000Z',
+          timestamp: '2021-11-30T09:00:00.000Z',
           versionNumber: 1,
           cancellationReasonCodes: ['withdraw', 'struck']
         },
@@ -2476,7 +2487,7 @@ export const initialState = {
           nonStandardHearingDurationReasons: [],
           hearingPriorityType: 'standard',
           numberOfPhysicalAttendees: 3,
-          hearingInWelshFlag: true,
+          hearingInWelshFlag: false,
           facilitiesRequired: [
             'immigrationDetentionCentre',
             'inCameraCourt'
@@ -2489,13 +2500,13 @@ export const initialState = {
         },
         caseDetails: {
           hmctsServiceCode: null,
-          caseRef: null,
+          caseRef: '1234123412341234',
           requestTimeStamp: null,
           hearingID: null,
           externalCaseReference: null,
           caseDeepLink: null,
-          hmctsInternalCaseName: 'Jane vs DWP',
-          publicCaseName: 'Jane vs DWP',
+          hmctsInternalCaseName: 'Jane Smith vs DWP',
+          publicCaseName: 'Jane Smith vs DWP',
           caseAdditionalSecurityFlag: false,
           caseInterpreterRequiredFlag: false,
           caseCategories: [
@@ -2515,7 +2526,7 @@ export const initialState = {
               categoryValue: 'BBA3-002RC',
               categoryParent: 'BBA3-002'
             }],
-          caseManagementLocationCode: null,
+          caseManagementLocationCode: '196538',
           caserestrictedFlag: false,
           caseSLAStartDate: null
         },
@@ -2574,10 +2585,39 @@ export const initialState = {
                 unavailabilityType: UnavailabilityType.ALL_DAY
               }
             ]
+          },
+          {
+            partyID: 'P3',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyRole: 'claimant',
+            individualDetails: {
+              preferredHearingChannel: 'byVideo',
+              reasonableAdjustments: [
+                'RA0005'
+              ],
+              interpreterLanguage: null
+            },
+            organisationDetails: {
+              name: 'DWP',
+              organisationType: 'GOV',
+              cftOrganisationID: 'O100000'
+            },
+            unavailabilityDOW: null,
+            unavailabilityRanges: [
+              {
+                unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY
+              }
+            ]
           }
         ]
       },
       lastError: null
+    },
+    hearingDetails: {
+      hearingWindow: {}
     },
     hearingConditions: {
       caseId: '1111222233334444',
@@ -2916,7 +2956,7 @@ export const initialStateImmutable = {
     hearingRequestToCompare: {
       hearingRequestMainModel: {
         requestDetails: {
-          timeStamp: null,
+          timestamp: null,
           versionNumber: 1
         },
         hearingDetails: {
@@ -2945,7 +2985,7 @@ export const initialStateImmutable = {
           nonStandardHearingDurationReasons: [],
           hearingPriorityType: 'standard',
           numberOfPhysicalAttendees: 3,
-          hearingInWelshFlag: true,
+          hearingInWelshFlag: false,
           facilitiesRequired: [
             'immigrationDetentionCentre',
             'inCameraCourt'
@@ -2958,7 +2998,7 @@ export const initialStateImmutable = {
         },
         caseDetails: {
           hmctsServiceCode: null,
-          caseRef: null,
+          caseRef: '1234123412341234',
           requestTimeStamp: null,
           hearingID: null,
           externalCaseReference: null,
@@ -3056,7 +3096,7 @@ export const initialStateImmutable = {
         requestDetails: {
           hearingRequestID: '1000000',
           status: 'LISTED',
-          timeStamp: '2021-11-30T09:00:00.000Z',
+          timestamp: '2021-11-30T09:00:00.000Z',
           versionNumber: 1,
           cancellationReasonCodes: ['withdraw', 'struck']
         },
@@ -3129,7 +3169,7 @@ export const initialStateImmutable = {
           nonStandardHearingDurationReasons: [],
           hearingPriorityType: 'standard',
           numberOfPhysicalAttendees: 3,
-          hearingInWelshFlag: true,
+          hearingInWelshFlag: false,
           facilitiesRequired: [
             'immigrationDetentionCentre',
             'inCameraCourt'
@@ -3142,13 +3182,13 @@ export const initialStateImmutable = {
         },
         caseDetails: {
           hmctsServiceCode: null,
-          caseRef: null,
+          caseRef: '1234123412341234',
           requestTimeStamp: null,
           hearingID: null,
           externalCaseReference: null,
           caseDeepLink: null,
-          hmctsInternalCaseName: 'Jane vs DWP',
-          publicCaseName: 'Jane vs DWP',
+          hmctsInternalCaseName: 'Jane Smith vs DWP',
+          publicCaseName: 'Jane Smith vs DWP',
           caseAdditionalSecurityFlag: false,
           caseInterpreterRequiredFlag: false,
           caseCategories: [

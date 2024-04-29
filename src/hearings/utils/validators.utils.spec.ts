@@ -3,6 +3,8 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
 import { HearingDateEnum } from '../models/hearings.enum';
 import { ValidatorsUtils } from './validators.utils';
+import { HearingWindowModel } from '../models/hearingWindow.model';
+import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 
 describe('ValidatorsUtils', () => {
   beforeEach(() => {

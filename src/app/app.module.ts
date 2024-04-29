@@ -38,6 +38,7 @@ import {
   NgxLoggerLevel,
   NGXMapperService
 } from 'ngx-logger';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
 import { environment } from '../environments/environment';
 import {
@@ -54,7 +55,6 @@ import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
 import { CaseShareService } from './services/case/share-case.service';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { JurisdictionService } from './services/jurisdiction/jurisdiction.service';
-import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { CryptoWrapper } from './services/logger/cryptoWrapper';
 import { LoggerService } from './services/logger/logger.service';
 import { MonitoringService } from './services/logger/monitoring.service';
@@ -92,14 +92,22 @@ export function launchDarklyClientIdFactory(
     RouterModule.forRoot(ROUTES, routingConfiguration),
     StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot(effects),
-    StoreRouterConnectingModule,
+    StoreRouterConnectingModule.forRoot(),
     StoreDevtoolsModule.instrument({
       logOnly: environment.production
     }),
     SharedModule,
     ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),
-    PaymentLibModule
+    PaymentLibModule,
+    RpxTranslationModule.forRoot({
+      baseUrl: '/api/translation',
+      debounceTimeMs: 300,
+      validity: {
+        days: 1
+      },
+      testMode: false
+    })
   ],
   providers: [
     NGXLogger,
@@ -118,10 +126,6 @@ export function launchDarklyClientIdFactory(
     CryptoWrapper,
     MonitoringService,
     LoggerService,
-    {
-      provide: AbstractAppInsights,
-      useClass: AppInsightsWrapper
-    },
     {
       provide: ErrorHandler,
       useClass: DefaultErrorHandler

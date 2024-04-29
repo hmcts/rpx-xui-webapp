@@ -17,6 +17,8 @@ const { DataTableArgument } = require('codeceptjs');
 
     Then('I see work filter of type {string} is displayed',async function(filterType){
         await BrowserWaits.retryWithActionCallback(async () => {
+            const filterContainer = myWorkPage.getFilterContainer(filterType)
+            await BrowserWaits.waitForElement(filterContainer);
             expect(await myWorkPage.isWorkFilterOfTypeDisplayed(filterType)).to.be.true;
         });
     });
@@ -237,6 +239,7 @@ const { DataTableArgument } = require('codeceptjs');
 
 
     Then('I see location search results in my work filter', async function (expectedLocationsDatatable){
+        reportLogger.reportDatatable(expectedLocationsDatatable)
         const datatableHashes = expectedLocationsDatatable.parse().hashes();
         const expectedLocations = [];
         for (const hash of datatableHashes) {
@@ -244,7 +247,8 @@ const { DataTableArgument } = require('codeceptjs');
         } 
         
         await BrowserWaits.retryWithActionCallback(async () => {
-            const locationResults = await myWorkPage.getWorkFilterLocationSearchResults();
+            let locationResults = await myWorkPage.getWorkFilterLocationSearchResults();
+            locationResults = locationResults.map(locname => locname.trim())
             for (const expectLoc of expectedLocations) {
                 expect(locationResults).to.includes(expectLoc);
             }
@@ -272,7 +276,8 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I see location {string} selected in my work filter', async function(location){
-        const locationsSelected = await myWorkPage.getWorkFilterSelectedLocations();
+        let locationsSelected = await myWorkPage.getWorkFilterSelectedLocations();
+        locationsSelected = locationsSelected.map(locName => locName.trim())
         expect(locationsSelected).to.includes(location);
     });
 

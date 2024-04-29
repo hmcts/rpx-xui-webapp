@@ -4,6 +4,9 @@ import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { HearingsService } from '../../../../services/hearings.service';
 import { HearingTimingSectionComponent } from './hearing-timing-section.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import {UnavailabilityRangeModel} from "../../../../models/unavailabilityRange.model";
+import {PartyType, UnavailabilityType} from "../../../../models/hearings.enum";
+import {PartyDetailsModel} from "../../../../models/partyDetails.model";
 
 describe('HearingTimingSectionComponent', () => {
   let component: HearingTimingSectionComponent;
@@ -72,7 +75,7 @@ describe('HearingTimingSectionComponent', () => {
     expect(component.hearingPriority).toEqual('Standard');
   });
 
-  it('should display action needed label', () => {
+  it('should display action needed label where window changed', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
@@ -93,6 +96,7 @@ describe('HearingTimingSectionComponent', () => {
     expect(nativeElement.querySelector('#hearing-window-action-needed-label')).toBeDefined();
     expect(nativeElement.querySelector('#hearing-window-amended-label')).toBeNull();
   });
+
 
   it('should display amended label', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
@@ -137,6 +141,60 @@ describe('HearingTimingSectionComponent', () => {
     expect(component.hearingWindowChangesRequired).toEqual(false);
     expect(nativeElement.querySelector('#hearing-window-action-needed-label')).toBeNull();
     expect(nativeElement.querySelector('#hearing-window-amended-label')).toBeDefined();
+  });
+
+  it('should display amended label for unavailability dates changed', () => {
+    let unavailabilityDates: UnavailabilityRangeModel[] = [{unavailableFromDate: '2024-12-10T09:00:00.000Z', unavailableToDate: '2024-12-12T09:00:00.000Z', unavailabilityType: UnavailabilityType.ALL_DAY }];
+    component.serviceHearingValuesModel.parties[0].unavailabilityRanges = unavailabilityDates;
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingWindowChangesConfirmed: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: true,
+        hearingUnavailabilityDatesConfirmed: true
+      }
+    };
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.hearingUnavailabilityDatesChanged).toEqual(true);
+    expect(component.hearingUnavailabilityDatesConfirmed).toEqual(true);
+    expect(nativeElement.querySelector('#hearing-window-action-needed-label')).toBeNull();
+    expect(nativeElement.querySelector('#hearing-window-amended-label')).toBeDefined();
+  });
+
+  it('should display action label for unavailability dates changed', () => {
+    let unavailabilityDates: UnavailabilityRangeModel[] = [{unavailableFromDate: '2024-12-10T09:00:00.000Z', unavailableToDate: '2024-12-12T09:00:00.000Z', unavailabilityType: UnavailabilityType.ALL_DAY }];
+    component.serviceHearingValuesModel.parties[0].unavailabilityRanges = unavailabilityDates;
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingWindowChangesConfirmed: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: true,
+        hearingUnavailabilityDatesConfirmed: false
+      }
+    };
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.hearingUnavailabilityDatesChanged).toEqual(true);
+    expect(component.hearingUnavailabilityDatesConfirmed).toEqual(false);
+    expect(nativeElement.querySelector('#hearing-window-action-needed-label')).toBeDefined();
+    expect(nativeElement.querySelector('#hearing-window-amended-label')).toBeNull();
   });
 
   it('should set the hearing length', () => {
@@ -305,5 +363,29 @@ describe('HearingTimingSectionComponent', () => {
       component.ngOnInit();
       expect(component.hearingDateChanged).toEqual(false);
     });
+  });
+
+  it('should return true if firstDateTimeMustBe is removed', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        hearingWindow: {
+          firstDateTimeMustBe: undefined
+        }
+      }
+    };
+
+    component.hearingRequestToCompareMainModel = {
+      ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
+        hearingWindow: {
+          firstDateTimeMustBe: '2024-03-23T09:00:00.000Z'
+        }
+      }
+    };
+    component.ngOnInit();
+    expect(component.hearingDateChanged).toEqual(true);
   });
 });

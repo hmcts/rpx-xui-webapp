@@ -1,25 +1,33 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ActivatedRoute, Router} from '@angular/router';
+import {LoadingService} from '@hmcts/ccd-case-ui-toolkit';
+import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
+import {Store} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
 import * as _ from 'lodash';
-import { of } from 'rxjs';
-import { HearingsUtils } from '../../../../hearings/utils/hearings.utils';
-import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
-import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
-import { HearingConditions } from '../../../models/hearingConditions';
-import { ACTION, CategoryType, Mode, PartyType, UnavailabilityType } from '../../../models/hearings.enum';
-import { PropertiesUpdatedOnPageVisit } from '../../../models/hearingsUpdateMode.enum';
-import { LocationByEPIMMSModel } from '../../../models/location.model';
-import { PartyDetailsModel } from '../../../models/partyDetails.model';
-import { HearingsFeatureService } from '../../../services/hearings-feature.service';
-import { HearingsService } from '../../../services/hearings.service';
-import { LocationsDataService } from '../../../services/locations-data.service';
+import {of} from 'rxjs';
+import {HearingsUtils} from '../../../../hearings/utils/hearings.utils';
+import {caseFlagsRefData, initialState} from '../../../hearing.test.data';
+import {EditHearingChangeConfig} from '../../../models/editHearingChangeConfig.model';
+import {HearingConditions} from '../../../models/hearingConditions';
+import {
+  ACTION,
+  CategoryType,
+  DOW,
+  DOWUnavailabilityType,
+  Mode,
+  PartyType,
+  UnavailabilityType
+} from '../../../models/hearings.enum';
+import {PropertiesUpdatedOnPageVisit} from '../../../models/hearingsUpdateMode.enum';
+import {LocationByEPIMMSModel} from '../../../models/location.model';
+import {PartyDetailsModel} from '../../../models/partyDetails.model';
+import {HearingsFeatureService} from '../../../services/hearings-feature.service';
+import {HearingsService} from '../../../services/hearings.service';
+import {LocationsDataService} from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
-import { HearingEditSummaryComponent } from './hearing-edit-summary.component';
+import {HearingEditSummaryComponent} from './hearing-edit-summary.component';
 
 describe('HearingEditSummaryComponent', () => {
   let component: HearingEditSummaryComponent;
@@ -184,7 +192,7 @@ describe('HearingEditSummaryComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: false,
+        partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
         hearingUnavailabilityDatesChanged: false
@@ -260,7 +268,7 @@ describe('HearingEditSummaryComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: false,
+        partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
         hearingUnavailabilityDatesChanged: false
@@ -520,13 +528,6 @@ describe('HearingEditSummaryComponent', () => {
     component.serviceHearingValuesModel.publicCaseName = 'New public case name from service hearings';
     component.serviceHearingValuesModel.privateHearingRequiredFlag = true;
     component.serviceHearingValuesModel.caserestrictedFlag = true;
-    component.serviceHearingValuesModel.parties[0].unavailabilityRanges = [
-      {
-        unavailableFromDate: '2022-12-10T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }
-    ];
 
     component.ngOnInit();
     // @ts-ignore
@@ -537,8 +538,7 @@ describe('HearingEditSummaryComponent', () => {
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.privateHearingRequiredFlag).toEqual(true);
     // @ts-ignore
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caserestrictedFlag).toEqual(true);
-    // @ts-ignore
-    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.parties).toEqual(true);
+
   });
 
   it('should set auto updated pageless properties to true', () => {
@@ -568,6 +568,20 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should set auto updated pageless properties to true', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h1234',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
     // @ts-ignore
     expect(component.pageVisitPartiesChangeExists()).toEqual(false);
   });
@@ -626,11 +640,14 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should partyDetailsChangesRequired return true if party type changed', () => {
     component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
+
+    const parties = [...initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails];
+    parties[0].partyType = PartyType.ORG;
     component.serviceHearingValuesModel = {
       ...component.serviceHearingValuesModel,
-      parties: initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails
+      parties: parties
     };
-    component.serviceHearingValuesModel.parties[0].partyType = PartyType.ORG;
+
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h1234',
       caseFlags: null,
@@ -651,10 +668,14 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should pageVisitPartiesChangeExists call hasPartyNameChanged', () => {
     spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(true);
+    const parties = _.cloneDeep(component.hearingRequestMainModel.partyDetails);
+    const party: PartyDetailsModel = parties.find((party) => party.individualDetails);
+    party.individualDetails.firstName = 'Will';
+
     component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
     component.serviceHearingValuesModel = {
       ...component.serviceHearingValuesModel,
-      parties: initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails
+      parties: parties
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h1234',
@@ -663,8 +684,8 @@ describe('HearingEditSummaryComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
-        nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -672,6 +693,65 @@ describe('HearingEditSummaryComponent', () => {
     };
     component.ngOnInit();
     expect(HearingsUtils.hasPartyNameChanged).toHaveBeenCalled();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
+  });
+
+  it('should pageVisitPartiesChangeExists when party not present in HMC', () => {
+    const parties = _.cloneDeep(component.hearingRequestMainModel.partyDetails);
+    const party: PartyDetailsModel = parties.find((party) => party.individualDetails);
+    party.partyID = 'newAdded';
+
+    component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
+    component.serviceHearingValuesModel = {
+      ...component.serviceHearingValuesModel,
+      parties: parties
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h1234',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
+  });
+
+  it('should pageVisitPartiesChangeExists when hearing channel not set', () => {
+    const parties = _.cloneDeep(component.hearingRequestMainModel.partyDetails);
+    const party: PartyDetailsModel = parties.find((party) => party.individualDetails);
+    party.individualDetails.preferredHearingChannel = null;
+
+    component.hearingRequestMainModel = {
+      ...component.hearingRequestMainModel,
+      partyDetails: parties
+    };
+
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h1234',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        partyDetailsChangesConfirmed: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed).toEqual(undefined);
   });
 
   it('should pageVisitHearingFacilitiesChanged return true if hearing facilties changed', () => {
@@ -721,13 +801,10 @@ describe('HearingEditSummaryComponent', () => {
     component.serviceHearingValuesModel.publicCaseName = 'New public case name from service hearings';
     component.serviceHearingValuesModel.privateHearingRequiredFlag = true;
     component.serviceHearingValuesModel.caserestrictedFlag = true;
-    component.serviceHearingValuesModel.parties[0].unavailabilityRanges = [
-      {
-        unavailableFromDate: '2022-12-10T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }
-    ];
+    component.serviceHearingValuesModel.parties[0].unavailabilityDOW = [{
+      DOW: DOW.Friday,
+      DOWUnavailabilityType: DOWUnavailabilityType.AM
+    }]
 
     component.ngOnInit();
     // @ts-ignore
@@ -738,8 +815,6 @@ describe('HearingEditSummaryComponent', () => {
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.privateHearingRequiredFlag).toEqual(true);
     // @ts-ignore
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caserestrictedFlag).toEqual(true);
-    // @ts-ignore
-    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.parties).toEqual(true);
   });
 
   it('should set auto updated pageless properties to true', () => {

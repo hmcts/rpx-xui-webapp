@@ -1,5 +1,5 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
@@ -26,17 +26,8 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   private sub2$: Subscription;
   private id: string;
   private hearingDate: string;
-
-  private readonly defaultHearingStartTimeValidators = [
-    Validators.required,
-    this.validatorsUtils.mandatory('Enter hearing start time'),
-    this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
-  ];
-
-  private readonly defaultHearingEndTimeValidators = [
-    this.validatorsUtils.mandatory('Enter hearing finish time'),
-    this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
-  ];
+  private readonly defaultHearingStartTimeValidators: ValidatorFn[];
+  private readonly defaultHearingEndTimeValidators: ValidatorFn[];
 
   public constructor(private readonly fb: FormBuilder,
                      private readonly hearingStore: Store<fromHearingStore.State>,
@@ -44,7 +35,18 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
                      private readonly route: ActivatedRoute,
                      private readonly ngZone: NgZone,
                      private readonly validatorsUtils: ValidatorsUtils,
-  ) {}
+  ) {
+    this.defaultHearingStartTimeValidators = [
+      Validators.required,
+      this.validatorsUtils.mandatory('Enter hearing start time'),
+      this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
+    ];
+
+    this.defaultHearingEndTimeValidators = [
+      this.validatorsUtils.mandatory('Enter hearing finish time'),
+      this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
+    ];
+  }
 
   private static getStartTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
     const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex].plannedStartTime;

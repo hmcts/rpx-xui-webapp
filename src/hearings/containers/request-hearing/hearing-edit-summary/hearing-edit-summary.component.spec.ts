@@ -1,33 +1,25 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {ActivatedRoute, Router} from '@angular/router';
-import {LoadingService} from '@hmcts/ccd-case-ui-toolkit';
-import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {HearingsUtils} from '../../../../hearings/utils/hearings.utils';
-import {caseFlagsRefData, initialState} from '../../../hearing.test.data';
-import {EditHearingChangeConfig} from '../../../models/editHearingChangeConfig.model';
-import {HearingConditions} from '../../../models/hearingConditions';
-import {
-  ACTION,
-  CategoryType,
-  DOW,
-  DOWUnavailabilityType,
-  Mode,
-  PartyType,
-  UnavailabilityType
-} from '../../../models/hearings.enum';
-import {PropertiesUpdatedOnPageVisit} from '../../../models/hearingsUpdateMode.enum';
-import {LocationByEPIMMSModel} from '../../../models/location.model';
-import {PartyDetailsModel} from '../../../models/partyDetails.model';
-import {HearingsFeatureService} from '../../../services/hearings-feature.service';
-import {HearingsService} from '../../../services/hearings.service';
-import {LocationsDataService} from '../../../services/locations-data.service';
+import { of } from 'rxjs';
+import { HearingsUtils } from '../../../../hearings/utils/hearings.utils';
+import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
+import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
+import { HearingConditions } from '../../../models/hearingConditions';
+import { ACTION, CategoryType, DOW, DOWUnavailabilityType, Mode, PartyType, UnavailabilityType } from '../../../models/hearings.enum';
+import { PropertiesUpdatedOnPageVisit } from '../../../models/hearingsUpdateMode.enum';
+import { LocationByEPIMMSModel } from '../../../models/location.model';
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
+import { HearingsFeatureService } from '../../../services/hearings-feature.service';
+import { HearingsService } from '../../../services/hearings.service';
+import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
-import {HearingEditSummaryComponent} from './hearing-edit-summary.component';
+import { HearingEditSummaryComponent } from './hearing-edit-summary.component';
 
 describe('HearingEditSummaryComponent', () => {
   let component: HearingEditSummaryComponent;
@@ -538,7 +530,6 @@ describe('HearingEditSummaryComponent', () => {
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.privateHearingRequiredFlag).toEqual(true);
     // @ts-ignore
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caserestrictedFlag).toEqual(true);
-
   });
 
   it('should set auto updated pageless properties to true', () => {
@@ -804,7 +795,7 @@ describe('HearingEditSummaryComponent', () => {
     component.serviceHearingValuesModel.parties[0].unavailabilityDOW = [{
       DOW: DOW.Friday,
       DOWUnavailabilityType: DOWUnavailabilityType.AM
-    }]
+    }];
 
     component.ngOnInit();
     // @ts-ignore

@@ -10,23 +10,13 @@ import { of } from 'rxjs';
 import { ErrorMessage } from '../../../../app/models';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
-import {
-  ACTION,
-  HearingDatePriorityEnum,
-  PartyType,
-  RadioOptions,
-  UnavailabilityType
-} from '../../../models/hearings.enum';
+import { ACTION, HearingDatePriorityEnum, PartyType, RadioOptions, UnavailabilityType } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { HearingTimingComponent } from './hearing-timing.component';
-//import {PartyType} from "../../../../../api/hearings/models/hearings.enum";
-import {SERVICE_HEARING_VALUES} from "../../../../../api/hearings/data/serviceHearingValues.mock.data";
-//import {ServiceHearingValuesModel} from "../../../../../api/hearings/models/serviceHearingValues.model";
-import {PartyDetailsModel} from "../../../models/partyDetails.model";
-import {ServiceHearingValuesModel} from "../../../models/serviceHearingValues.model";
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -489,23 +479,9 @@ describe('HearingTimingComponent', () => {
   });
 
   it('should update unavailability dates with SHV values.. ', () => {
-    let HMCUnavailabilityDatesParty1: UnavailabilityRangeModel[] = [{unavailableFromDate: '2024-11-15T09:00:00.000Z', unavailableToDate: '2024-11-16T09:00:00.000Z', unavailabilityType: UnavailabilityType.PM}];
-    let HMCUnavailabilityDatesParty2: UnavailabilityRangeModel[] = [{unavailableFromDate: '2024-11-17T09:00:00.000Z', unavailableToDate: '2024-11-18T09:00:00.000Z', unavailabilityType: UnavailabilityType.PM}];
-    let HMCUnavailabilityDatesParty3: UnavailabilityRangeModel[] = [{unavailableFromDate: '2024-01-17T09:00:00.000Z', unavailableToDate: '2024-01-18T09:00:00.000Z', unavailabilityType: UnavailabilityType.PM}];
-    component.hearingRequestMainModel.partyDetails = [{partyID: 'party1', partyType: PartyType.IND, partyRole: 'partyRole', unavailabilityRanges: HMCUnavailabilityDatesParty1},
-                                                      {partyID: 'party2', partyType: PartyType.ORG, partyRole: 'partyRole', unavailabilityRanges: HMCUnavailabilityDatesParty2},
-                                                      {partyID: 'party3', partyType: PartyType.IND, partyRole: 'partyRole', unavailabilityRanges: HMCUnavailabilityDatesParty3}];
+    const { SHVUnavailabilityDatesInd, SHVUnavailabilityDatesOrg, SHVPartyDetail } = createSHV();
 
-    let SHVUnavailabilityDatesInd: UnavailabilityRangeModel[] = [{unavailableFromDate: '2024-10-10T09:00:00.000Z', unavailableToDate: '2024-10-12T09:00:00.000Z', unavailabilityType: UnavailabilityType.ALL_DAY },
-                                                                 {unavailableFromDate: '2024-10-13T09:00:00.000Z', unavailableToDate: '2024-10-14T09:00:00.000Z', unavailabilityType: UnavailabilityType.ALL_DAY}];
-    let SHVUnavailabilityDatesOrg: UnavailabilityRangeModel[] = [{unavailableFromDate: '2024-12-10T09:00:00.000Z', unavailableToDate: '2024-12-12T09:00:00.000Z', unavailabilityType: UnavailabilityType.ALL_DAY },
-                                                                 {unavailableFromDate: '2024-12-13T09:00:00.000Z', unavailableToDate: '2024-12-14T09:00:00.000Z', unavailabilityType: UnavailabilityType.ALL_DAY}];
-
-    let SHVPartyDetail: PartyDetailsModel[] =   [{partyID: 'party1', partyType: PartyType.IND, partyRole: 'partyRole', unavailabilityRanges: SHVUnavailabilityDatesInd},
-                                                 {partyID: 'party2', partyType: PartyType.ORG, partyRole: 'partyRole', unavailabilityRanges: SHVUnavailabilityDatesOrg}];
-
-
-    let newParty = component.updatePartyDetails(SHVPartyDetail);
+    const newParty = component.updatePartyDetails(SHVPartyDetail);
 
     expect(newParty.length).toEqual(2);
     expect(newParty[0].unavailabilityRanges).toEqual(SHVUnavailabilityDatesInd);
@@ -513,20 +489,7 @@ describe('HearingTimingComponent', () => {
   });
 
   it('should update unavailability dates with SHV values.. ', () => {
-    let HMCUnavailabilityDatesParty1: UnavailabilityRangeModel[] = [{unavailableFromDate: '2024-11-15T09:00:00.000Z', unavailableToDate: '2024-11-16T09:00:00.000Z', unavailabilityType: UnavailabilityType.PM}];
-    let HMCUnavailabilityDatesParty2: UnavailabilityRangeModel[] = [{unavailableFromDate: '2024-11-17T09:00:00.000Z', unavailableToDate: '2024-11-18T09:00:00.000Z', unavailabilityType: UnavailabilityType.PM}];
-    let HMCUnavailabilityDatesParty3: UnavailabilityRangeModel[] = [{unavailableFromDate: '2024-01-17T09:00:00.000Z', unavailableToDate: '2024-01-18T09:00:00.000Z', unavailabilityType: UnavailabilityType.PM}];
-    component.hearingRequestMainModel.partyDetails = [{partyID: 'party1', partyType: PartyType.IND, partyRole: 'partyRole', unavailabilityRanges: HMCUnavailabilityDatesParty1},
-      {partyID: 'party2', partyType: PartyType.ORG, partyRole: 'partyRole', unavailabilityRanges: HMCUnavailabilityDatesParty2},
-      {partyID: 'party3', partyType: PartyType.IND, partyRole: 'partyRole', unavailabilityRanges: HMCUnavailabilityDatesParty3}];
-
-    let SHVUnavailabilityDatesInd: UnavailabilityRangeModel[] = [{unavailableFromDate: '2024-10-10T09:00:00.000Z', unavailableToDate: '2024-10-12T09:00:00.000Z', unavailabilityType: UnavailabilityType.ALL_DAY },
-      {unavailableFromDate: '2024-10-13T09:00:00.000Z', unavailableToDate: '2024-10-14T09:00:00.000Z', unavailabilityType: UnavailabilityType.ALL_DAY}];
-    let SHVUnavailabilityDatesOrg: UnavailabilityRangeModel[] = [{unavailableFromDate: '2024-12-10T09:00:00.000Z', unavailableToDate: '2024-12-12T09:00:00.000Z', unavailabilityType: UnavailabilityType.ALL_DAY },
-      {unavailableFromDate: '2024-12-13T09:00:00.000Z', unavailableToDate: '2024-12-14T09:00:00.000Z', unavailabilityType: UnavailabilityType.ALL_DAY}];
-
-    let SHVPartyDetail: PartyDetailsModel[] =   [{partyID: 'party1', partyType: PartyType.IND, partyRole: 'partyRole', unavailabilityRanges: SHVUnavailabilityDatesInd},
-      {partyID: 'party2', partyType: PartyType.ORG, partyRole: 'partyRole', unavailabilityRanges: SHVUnavailabilityDatesOrg}];
+    const { SHVUnavailabilityDatesInd, SHVUnavailabilityDatesOrg, SHVPartyDetail } = createSHV();
 
     component.serviceHearingValuesModel.parties = SHVPartyDetail;
 
@@ -536,6 +499,76 @@ describe('HearingTimingComponent', () => {
     expect(component.hearingRequestMainModel.partyDetails[1].unavailabilityRanges).toEqual(SHVUnavailabilityDatesOrg);
   });
 
+  function createSHV() {
+    const HMCUnavailabilityDatesParty1: UnavailabilityRangeModel[] = [{
+      unavailableFromDate: '2024-11-15T09:00:00.000Z',
+      unavailableToDate: '2024-11-16T09:00:00.000Z',
+      unavailabilityType: UnavailabilityType.PM
+    }];
+    const HMCUnavailabilityDatesParty2: UnavailabilityRangeModel[] = [{
+      unavailableFromDate: '2024-11-17T09:00:00.000Z',
+      unavailableToDate: '2024-11-18T09:00:00.000Z',
+      unavailabilityType: UnavailabilityType.PM
+    }];
+    const HMCUnavailabilityDatesParty3: UnavailabilityRangeModel[] = [{
+      unavailableFromDate: '2024-01-17T09:00:00.000Z',
+      unavailableToDate: '2024-01-18T09:00:00.000Z',
+      unavailabilityType: UnavailabilityType.PM
+    }];
+    component.hearingRequestMainModel.partyDetails = [{
+      partyID: 'party1',
+      partyType: PartyType.IND,
+      partyRole: 'partyRole',
+      unavailabilityRanges: HMCUnavailabilityDatesParty1
+    },
+    {
+      partyID: 'party2',
+      partyType: PartyType.ORG,
+      partyRole: 'partyRole',
+      unavailabilityRanges: HMCUnavailabilityDatesParty2
+    },
+    {
+      partyID: 'party3',
+      partyType: PartyType.IND,
+      partyRole: 'partyRole',
+      unavailabilityRanges: HMCUnavailabilityDatesParty3
+    }];
+
+    const SHVUnavailabilityDatesInd: UnavailabilityRangeModel[] = [{
+      unavailableFromDate: '2024-10-10T09:00:00.000Z',
+      unavailableToDate: '2024-10-12T09:00:00.000Z',
+      unavailabilityType: UnavailabilityType.ALL_DAY
+    },
+    {
+      unavailableFromDate: '2024-10-13T09:00:00.000Z',
+      unavailableToDate: '2024-10-14T09:00:00.000Z',
+      unavailabilityType: UnavailabilityType.ALL_DAY
+    }];
+    const SHVUnavailabilityDatesOrg: UnavailabilityRangeModel[] = [{
+      unavailableFromDate: '2024-12-10T09:00:00.000Z',
+      unavailableToDate: '2024-12-12T09:00:00.000Z',
+      unavailabilityType: UnavailabilityType.ALL_DAY
+    },
+    {
+      unavailableFromDate: '2024-12-13T09:00:00.000Z',
+      unavailableToDate: '2024-12-14T09:00:00.000Z',
+      unavailabilityType: UnavailabilityType.ALL_DAY
+    }];
+
+    const SHVPartyDetail: PartyDetailsModel[] = [{
+      partyID: 'party1',
+      partyType: PartyType.IND,
+      partyRole: 'partyRole',
+      unavailabilityRanges: SHVUnavailabilityDatesInd
+    },
+    {
+      partyID: 'party2',
+      partyType: PartyType.ORG,
+      partyRole: 'partyRole',
+      unavailabilityRanges: SHVUnavailabilityDatesOrg
+    }];
+    return { SHVUnavailabilityDatesInd, SHVUnavailabilityDatesOrg, SHVPartyDetail };
+  }
 
   afterEach(() => {
     fixture.destroy();

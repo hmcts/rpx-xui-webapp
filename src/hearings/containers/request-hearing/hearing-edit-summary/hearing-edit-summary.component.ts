@@ -15,7 +15,16 @@ import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model'
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
 import { hearingStatusMappings } from '../../../models/hearingStatusMappings';
-import { ACTION, CategoryType, HearingDateEnum, HearingScreensEnum, HearingTemplate, LaCaseStatus, Mode, PartyType } from '../../../models/hearings.enum';
+import {
+  ACTION,
+  CategoryType,
+  HearingDateEnum,
+  HearingScreensEnum,
+  HearingTemplate,
+  LaCaseStatus,
+  Mode,
+  PartyType
+} from '../../../models/hearings.enum';
 import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -175,7 +184,10 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     const hearingRequestMainModel = {
       requestDetails: { ...this.hearingRequestMainModel.requestDetails },
-      hearingDetails: { ...this.hearingRequestMainModel.hearingDetails },
+      hearingDetails: {
+        ...this.hearingRequestMainModel.hearingDetails,
+        hearingChannels: [...this.hearingsService.getHearingChannels(this.hearingRequestMainModel)]
+      },
       caseDetails: { ...this.hearingRequestMainModel.caseDetails },
       hearingResponse: { ...this.hearingRequestMainModel.hearingResponse },
       partyDetails: [...partyDetailsModels]
@@ -201,8 +213,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
   private replacer (key: any, value: any) {
     // Party name is not present in HMC so ignoring it.
+    // Is paper hearing flag is transient to indicate whether it is paper hearing
     // As well as, ignoring keys which are initialised with null value
-    if (key === 'partyName' || value === null) {
+    if (key === 'partyName' || key === 'isPaperHearing' || value === null) {
       return undefined;
     }
     return value;

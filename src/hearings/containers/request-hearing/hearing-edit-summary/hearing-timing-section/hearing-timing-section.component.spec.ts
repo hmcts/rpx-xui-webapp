@@ -4,9 +4,8 @@ import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { HearingsService } from '../../../../services/hearings.service';
 import { HearingTimingSectionComponent } from './hearing-timing-section.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import {UnavailabilityRangeModel} from "../../../../models/unavailabilityRange.model";
-import {PartyType, UnavailabilityType} from "../../../../models/hearings.enum";
-import {PartyDetailsModel} from "../../../../models/partyDetails.model";
+import { UnavailabilityRangeModel } from '../../../../models/unavailabilityRange.model';
+import { UnavailabilityType } from '../../../../models/hearings.enum';
 
 describe('HearingTimingSectionComponent', () => {
   let component: HearingTimingSectionComponent;

@@ -15,20 +15,14 @@ import {
   Mode, PartyType,
   RadioOptions
 } from '../../../models/hearings.enum';
-import {
-  AmendmentLabelStatus,
-  AutoUpdateMode,
-  PagelessPropertiesEnum,
-  WithinPagePropertiesEnum
-} from '../../../models/hearingsUpdateMode.enum';
+import { AmendmentLabelStatus } from '../../../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
-import {PartyDetailsModel} from "../../../models/partyDetails.model";
-import * as _ from "lodash";
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
 
 @Component({
   selector: 'exui-hearing-timing',
@@ -462,8 +456,6 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     }
     return serviceHearingValue;
   }
-
-
 
   public calculateDuration(): number {
     return Number(this.priorityForm.value.durationLength.days * 6 * 60) +

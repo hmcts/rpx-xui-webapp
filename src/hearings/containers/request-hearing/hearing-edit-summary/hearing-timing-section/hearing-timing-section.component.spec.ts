@@ -306,4 +306,28 @@ describe('HearingTimingSectionComponent', () => {
       expect(component.hearingDateChanged).toEqual(false);
     });
   });
+
+  it('should return true if firstDateTimeMustBe is removed', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        hearingWindow: {
+          firstDateTimeMustBe: undefined
+        }
+      }
+    };
+
+    component.hearingRequestToCompareMainModel = {
+      ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
+        hearingWindow: {
+          firstDateTimeMustBe: '2024-03-23T09:00:00.000Z'
+        }
+      }
+    };
+    component.ngOnInit();
+    expect(component.hearingDateChanged).toEqual(true);
+  });
 });

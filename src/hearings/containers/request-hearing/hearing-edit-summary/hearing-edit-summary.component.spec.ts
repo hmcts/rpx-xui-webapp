@@ -568,6 +568,20 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should set auto updated pageless properties to true', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h1234',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
     // @ts-ignore
     expect(component.pageVisitPartiesChangeExists()).toEqual(false);
   });
@@ -670,8 +684,8 @@ describe('HearingEditSummaryComponent', () => {
       hearingWindow: null,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
-        nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -679,6 +693,65 @@ describe('HearingEditSummaryComponent', () => {
     };
     component.ngOnInit();
     expect(HearingsUtils.hasPartyNameChanged).toHaveBeenCalled();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
+  });
+
+  it('should pageVisitPartiesChangeExists when party not present in HMC', () => {
+    const parties = _.cloneDeep(component.hearingRequestMainModel.partyDetails);
+    const party: PartyDetailsModel = parties.find((party) => party.individualDetails);
+    party.partyID = 'newAdded';
+
+    component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
+    component.serviceHearingValuesModel = {
+      ...component.serviceHearingValuesModel,
+      parties: parties
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h1234',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
+  });
+
+  it('should pageVisitPartiesChangeExists when hearing channel not set', () => {
+    const parties = _.cloneDeep(component.hearingRequestMainModel.partyDetails);
+    const party: PartyDetailsModel = parties.find((party) => party.individualDetails);
+    party.individualDetails.preferredHearingChannel = null;
+
+    component.hearingRequestMainModel = {
+      ...component.hearingRequestMainModel,
+      partyDetails: parties
+    };
+
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h1234',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        partyDetailsChangesConfirmed: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(true);
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed).toEqual(undefined);
   });
 
   it('should pageVisitHearingFacilitiesChanged return true if hearing facilties changed', () => {

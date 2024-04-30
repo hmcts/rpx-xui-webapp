@@ -109,7 +109,8 @@ describe('HearingTimingSectionComponent', () => {
         hearingWindowChangesRequired: true,
         hearingWindowChangesConfirmed: true,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
+        hearingUnavailabilityDatesChanged: false,
+        hearingUnavailabilityDatesConfirmed: true
       }
     };
     component.ngOnInit();

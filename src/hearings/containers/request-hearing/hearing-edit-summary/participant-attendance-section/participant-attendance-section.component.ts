@@ -71,7 +71,8 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   }
 
   private getIsPaperHearing(): string {
-    return this.hearingRequestMainModel.hearingDetails?.hearingChannels?.includes(HearingChannelEnum.ONPPR)
+    return (this.hearingRequestMainModel.hearingDetails?.hearingChannels?.includes(HearingChannelEnum.ONPPR)
+    || !!this.hearingRequestMainModel.hearingDetails.isPaperHearing)
       ? 'Yes'
       : 'No';
   }
@@ -155,9 +156,15 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   }
 
   private setAmendmentLabels(): void {
+    let hearingChannels = this.hearingRequestMainModel.hearingDetails?.hearingChannels || [];
+    if (!!this.hearingRequestMainModel.hearingDetails.isPaperHearing) {
+      hearingChannels = [...hearingChannels, HearingChannelEnum.ONPPR];
+    }
+
     this.isPaperHearingChanged = !_.isEqual(
       this.hearingRequestToCompareMainModel.hearingDetails.hearingChannels?.includes(HearingChannelEnum.ONPPR),
-      this.hearingRequestMainModel.hearingDetails.hearingChannels?.includes(HearingChannelEnum.ONPPR)
+      (this.hearingRequestMainModel.hearingDetails.hearingChannels?.includes(HearingChannelEnum.ONPPR)
+      || !!this.hearingRequestMainModel.hearingDetails.isPaperHearing)
     );
 
     this.numberOfPhysicalAttendeesChanged = !_.isEqual(
@@ -167,7 +174,7 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
 
     this.methodOfAttendanceChanged = !_.isEqual(
       this.hearingRequestToCompareMainModel.hearingDetails?.hearingChannels,
-      this.hearingRequestMainModel.hearingDetails?.hearingChannels
+      hearingChannels
     );
 
     this.participantChannelsChanged = this.participantAttendanceModes.some((mode) => mode.partyChannelChanged === true);

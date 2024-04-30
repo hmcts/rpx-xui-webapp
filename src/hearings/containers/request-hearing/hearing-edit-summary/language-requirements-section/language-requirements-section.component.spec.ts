@@ -25,7 +25,7 @@ describe('LanguageRequirementsSectionComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  xit('should verify onChange', () => {
+  it('should verify onChange', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('needWelsh');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({

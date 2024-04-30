@@ -156,7 +156,7 @@ describe('CaseTaskComponent', () => {
     expect(name).toEqual('Unassigned');
   });
 
-  xit('should replace the task variable with the case id', () => {
+  it('should replace the task variable with the case id', () => {
     const task = {
       actions: [],
       caseCategory: '',

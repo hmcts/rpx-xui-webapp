@@ -96,7 +96,6 @@ describe('HearingTimingSectionComponent', () => {
     expect(nativeElement.querySelector('#hearing-window-amended-label')).toBeNull();
   });
 
-
   it('should display amended label', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -143,7 +142,7 @@ describe('HearingTimingSectionComponent', () => {
   });
 
   it('should display amended label for unavailability dates changed', () => {
-    let unavailabilityDates: UnavailabilityRangeModel[] = [{unavailableFromDate: '2024-12-10T09:00:00.000Z', unavailableToDate: '2024-12-12T09:00:00.000Z', unavailabilityType: UnavailabilityType.ALL_DAY }];
+    const unavailabilityDates: UnavailabilityRangeModel[] = [{ unavailableFromDate: '2024-12-10T09:00:00.000Z', unavailableToDate: '2024-12-12T09:00:00.000Z', unavailabilityType: UnavailabilityType.ALL_DAY }];
     component.serviceHearingValuesModel.parties[0].unavailabilityRanges = unavailabilityDates;
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -170,7 +169,7 @@ describe('HearingTimingSectionComponent', () => {
   });
 
   it('should display action label for unavailability dates changed', () => {
-    let unavailabilityDates: UnavailabilityRangeModel[] = [{unavailableFromDate: '2024-12-10T09:00:00.000Z', unavailableToDate: '2024-12-12T09:00:00.000Z', unavailabilityType: UnavailabilityType.ALL_DAY }];
+    const unavailabilityDates: UnavailabilityRangeModel[] = [{ unavailableFromDate: '2024-12-10T09:00:00.000Z', unavailableToDate: '2024-12-12T09:00:00.000Z', unavailabilityType: UnavailabilityType.ALL_DAY }];
     component.serviceHearingValuesModel.parties[0].unavailabilityRanges = unavailabilityDates;
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',

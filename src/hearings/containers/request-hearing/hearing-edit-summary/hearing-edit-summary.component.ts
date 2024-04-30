@@ -514,9 +514,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired) {
       return !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed;
     }
+
     if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingUnavailabilityDatesChanged) {
       return !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingUnavailabilityDatesConfirmed;
     }
+
     // There are no changes for parties when compared SHV with HMC
     return false;
   }

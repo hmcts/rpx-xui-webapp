@@ -2,24 +2,20 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { shareReplay } from 'rxjs/operators';
 import { EnvironmentConfig } from '../../../models/environmentConfig.model';
-import { catchError, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EnvironmentService {
   private data: EnvironmentConfig;
-  public config$: Observable<EnvironmentConfig>;
+
+  public config$ = this.http.get<EnvironmentConfig>('/external/config/ui')
+    .pipe<EnvironmentConfig>(shareReplay<EnvironmentConfig>(1));
 
   constructor(private readonly http: HttpClient) {
-    this.config$ = this.http.get<EnvironmentConfig>('/external/config/ui')
-      .pipe(
-        catchError((error) => {
-          console.error('Error fetching configuration:', error);
-          return throwError(() => new Error('Error fetching configuration'));
-        }),
-        shareReplay(1)
-      );
+    this.config$.subscribe((config) => {
+      this.data = config;
+    });
   }
 
   public get<K extends keyof EnvironmentConfig>(key: K): EnvironmentConfig[K] {

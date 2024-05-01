@@ -166,11 +166,10 @@ async function  authenticateAndGetcookies(username, password)  {
     await page.close();
     await browser.close();
     return cookies;
-
 }
 
 function getPuppeteerLaunchOptions(){
-    const puppeteerOption = { ignoreHTTPSErrors: true, headless: 'new', args: ['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'] };
+    const puppeteerOption = { ignoreHTTPSErrors: true, headless: false, args: ['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'] };
     // if (!config.baseUrl.includes('manage-case.')) {
     //     puppeteerOption.args.push('--proxy-server=http://proxyout.reform.hmcts.net:8080');
     // }

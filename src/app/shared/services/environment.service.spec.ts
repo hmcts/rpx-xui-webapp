@@ -1,41 +1,45 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { inject, TestBed } from '@angular/core/testing';
+import { inject, TestBed, TestBedStatic } from '@angular/core/testing';
 import { EnvironmentService } from './environment.service';
+import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
+
+const dummyWindowProd = { location: new URL('https://manage-case.platform.hmcts.net') };
+const dummyWindowAat = { location: new URL('https://manage-case.aat.platform.hmcts.net') };
 
 describe('EnvironmentService', () => {
-  beforeEach(() => {
+  it('should be created', () => {
     TestBed.configureTestingModule({
-      providers: [EnvironmentService],
+      providers: [
+        { provide: Window, useValue: dummyWindowAat },
+        EnvironmentService
+      ],
       imports: [HttpClientTestingModule]
     });
+    const service = TestBed.inject(EnvironmentService);
+    expect(service).toBeTruthy();
   });
 
-  it('should be created', inject([EnvironmentService], (service: EnvironmentService) => {
-    expect(service).toBeTruthy();
-  }));
+  it('should detect the aat environment correctly', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: Window, useValue: dummyWindowAat },
+        EnvironmentService
+      ],
+      imports: [HttpClientTestingModule]
+    });
+    const service = TestBed.inject(EnvironmentService);
+    expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.AAT);
+  });
 
-  it('should detect the production environment correctly', inject([EnvironmentService], (service: EnvironmentService) => {
-    const dummyWithData = {
-      data: {
-        ccdGatewayUrl: ''
-      },
-      isProd: () => {
-        return false;
-      }
-    };
-
-    dummyWithData.isProd = service.isProd.bind(dummyWithData);
-
-    dummyWithData.data.ccdGatewayUrl = 'https://gateway.ccd.AAT.platform.hmcts.net';
-    expect(dummyWithData.isProd()).toBe(false);
-
-    dummyWithData.data.ccdGatewayUrl = '';
-    expect(dummyWithData.isProd()).toBe(true);
-
-    dummyWithData.data.ccdGatewayUrl = null;
-    expect(dummyWithData.isProd()).toBe(true);
-
-    dummyWithData.data.ccdGatewayUrl = 'https://gateway.ccd.platform.hmcts.net';
-    expect(dummyWithData.isProd()).toBe(true);
-  }));
+  it('should detect the prod environment correctly', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: Window, useValue: dummyWindowProd },
+        EnvironmentService
+      ],
+      imports: [HttpClientTestingModule]
+    });
+    const service = TestBed.inject(EnvironmentService);
+    expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.PROD);
+  });
 });

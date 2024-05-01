@@ -2,9 +2,10 @@ import { initialState } from '../hearing.test.data';
 import { KEY_MODE } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
-import { Mode, PartyType } from '../models/hearings.enum';
+import { Mode, PartyType, UnavailabilityType } from '../models/hearings.enum';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { HearingsUtils } from './hearings.utils';
+import { UnavailabilityRangeModel } from '../models/unavailabilityRange.model';
 
 describe('HearingsUtils', () => {
   it('should return true if has the right property', () => {
@@ -81,10 +82,32 @@ describe('HearingsUtils', () => {
   });
 
   it('should return the unavailability date ranges for parties', () => {
-    const partiesNotAvailableDates = HearingsUtils.getPartiesNotAvailableDates(
-      initialState.hearings.hearingValues.serviceHearingValuesModel.parties
+    const UnavailabilityDatesParty1: UnavailabilityRangeModel[] = [{
+      unavailableFromDate: '2021-12-10T09:00:00.000Z',
+      unavailableToDate: '2021-12-31T09:00:00.000Z',
+      unavailabilityType: UnavailabilityType.ALL_DAY
+    }];
+    const UnavailabilityDatesParty2: UnavailabilityRangeModel[] = [{
+      unavailableFromDate: '2021-12-20T09:00:00.000Z',
+      unavailableToDate: '2021-12-31T09:00:00.000Z',
+      unavailabilityType: UnavailabilityType.ALL_DAY
+    }];
+    const party1: PartyDetailsModel[] = [{
+      partyID: 'party1',
+      partyType: PartyType.IND,
+      partyRole: 'partyRole',
+      unavailabilityRanges: UnavailabilityDatesParty1
+    },
+    {
+      partyID: 'party2',
+      partyType: PartyType.ORG,
+      partyRole: 'partyRole',
+      unavailabilityRanges: UnavailabilityDatesParty2
+    }];
+
+    const partiesNotAvailableDates = HearingsUtils.getPartiesNotAvailableDates(party1
     );
-    expect(partiesNotAvailableDates.length).toEqual(10);
+    expect(partiesNotAvailableDates.length).toEqual(16);
   });
 
   describe('HearingLength', () => {

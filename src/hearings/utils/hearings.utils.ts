@@ -99,7 +99,7 @@ export class HearingsUtils {
         }
       }
     });
-    return partiesNotAvailableDates;
+    return [...new Set(partiesNotAvailableDates)];
   }
 
   public static getPartyNameFormatted(individualDetails: IndividualDetailsModel): string {

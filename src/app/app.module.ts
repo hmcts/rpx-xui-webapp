@@ -108,7 +108,7 @@ export function launchDarklyClientIdFactory(
         days: 1
       },
       testMode: false
-    }),
+    })
   ],
   providers: [
     NGXLogger,

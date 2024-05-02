@@ -4,7 +4,6 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { EnvironmentService } from '../../../app/shared/services/environment.service';
-import { EnvironmentConfig } from '../../../models/environmentConfig.model';
 import { AppConfigService } from '../config/configuration.services';
 import { AppConfig } from './ccd-case.config';
 import { InitialisationSyncService } from './initialisation-sync-service';

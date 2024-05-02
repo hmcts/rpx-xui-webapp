@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { inject, TestBed, TestBedStatic } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { EnvironmentService } from './environment.service';
 import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
 

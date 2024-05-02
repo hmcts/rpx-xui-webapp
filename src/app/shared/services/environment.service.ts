@@ -8,7 +8,6 @@ import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-en
   providedIn: 'root'
 })
 export class EnvironmentService {
-
   private data: EnvironmentConfig;
 
   public config$ = this.http.get<EnvironmentConfig>('/external/config/ui')
@@ -30,7 +29,7 @@ export class EnvironmentService {
 
   public getDeploymentEnv(): DeploymentEnvironmentEnum {
     const hostname = this.window.location.hostname;
-    console.log ('Detecting environment for hostname ' + hostname);
+    console.log('Detecting environment for hostname ' + hostname);
     switch (hostname) {
       case 'manage-case.platform.hmcts.net': return DeploymentEnvironmentEnum.PROD;
       case 'manage-case.aat.platform.hmcts.net': return DeploymentEnvironmentEnum.AAT;

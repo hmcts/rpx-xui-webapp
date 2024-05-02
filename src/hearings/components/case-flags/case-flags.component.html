@@ -20,7 +20,7 @@
       <td class="govuk-table__cell">
         <label >{{ partyFlag.displayName }}
           <!-- If the flag is for interpreter then display the language -->
-          <ng-container *ngIf="showLanguage(partyFlag.displayName)">
+          <ng-container *ngIf="showDescription(partyFlag)">
             <br/>{{ partyFlag.flagDescription }}
           </ng-container>
           <exui-amendment-label *ngIf="partyFlag.flagAmendmentLabelStatus"

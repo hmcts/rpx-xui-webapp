@@ -77,6 +77,25 @@ describe('CaseFlagsComponent', () => {
         }
       ],
       partyAmendmentLabelStatus: AmendmentLabelStatus.ACTION_NEEDED
+    },
+    {
+      name: 'test',
+      partyFlags: [
+        {
+          partyId: '1234-uytr-7654-asdf-1111',
+          partyName: 'Case level flags',
+          flagParentId: 'PARENT_10',
+          flagId: 'CF0012',
+          flagDescription: 'hello world',
+          flagStatus: 'Active',
+          flagComment: 'Comment to show',
+          displayName: 'Language Interpreter',
+          displayPath: [
+            'Reasonable adjustment'
+          ]
+        }
+      ],
+      partyAmendmentLabelStatus: AmendmentLabelStatus.ACTION_NEEDED
     }
   ];
 
@@ -129,5 +148,14 @@ describe('CaseFlagsComponent', () => {
     expect(nativeElement.querySelector('#party-label-0')).toBeNull();
     expect(nativeElement.querySelector('#party-label-1')).toBeNull();
     expect(nativeElement.querySelector('#party-label-2')).toBeNull();
+  });
+
+  it('should return true if all the check pass', () => {
+    expect(component.showDescription(caseFlagsGroup[3].partyFlags[0])).toBeTruthy();
+  });
+
+  it('should return false if all the check pass', () => {
+    caseFlagsGroup[3].partyFlags[0].flagComment = null;
+    expect(component.showDescription(caseFlagsGroup[3].partyFlags[0])).toBeFalsy();
   });
 });

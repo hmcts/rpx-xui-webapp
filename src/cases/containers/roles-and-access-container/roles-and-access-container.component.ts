@@ -11,7 +11,6 @@ import { SessionStorageService } from '../../../app/services';
 import * as fromRoot from '../../../app/store';
 import { CaseRole, CaseRoleDetails, RoleExclusion } from '../../../role-access/models';
 import { AllocateRoleService, RoleExclusionsService } from '../../../role-access/services';
-import { WAFeatureConfig } from '../../../work-allocation/models/common/service-config.model';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { CaseworkerDataService } from '../../../work-allocation/services';
 import { Utils } from '../../utils/utils';
@@ -26,7 +25,6 @@ export class RolesAndAccessContainerComponent implements OnInit {
   public caseworkers$: Observable<Caseworker[]>;
   public exclusions$: Observable<RoleExclusion[]>;
   public roles$: Observable<CaseRole[]>;
-  public waServiceConfig$: Observable<WAFeatureConfig>;
   public jurisdictionFieldId = '[JURISDICTION]';
   public caseJurisdiction: string;
 
@@ -48,7 +46,6 @@ export class RolesAndAccessContainerComponent implements OnInit {
     this.caseworkers$ = this.caseworkerDataService.getUsersFromServices([jurisdiction.value]).pipe(first());
     this.loadRoles(jurisdiction);
     this.loadExclusions(jurisdiction);
-    this.loadWaConfig();
   }
 
   public loadExclusions(jurisdiction: any): void {
@@ -83,10 +80,6 @@ export class RolesAndAccessContainerComponent implements OnInit {
         }
       })
     );
-  }
-
-  public loadWaConfig(): void {
-    this.waServiceConfig$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null);
   }
 
   public applyJurisdiction(caseDetails: CaseView): void {

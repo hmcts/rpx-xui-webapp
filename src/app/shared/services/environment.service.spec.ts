@@ -3,8 +3,22 @@ import { TestBed } from '@angular/core/testing';
 import { EnvironmentService } from './environment.service';
 import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
 
+/*
+  PROD = 'prod',
+  AAT = 'aat',
+  DEMO = 'demo',
+  PERFTEST = 'perftest',
+  ITHC = 'ithc',
+  PREVIEW = 'preview',
+  LOCAL = 'local'
+*/
 const dummyWindowProd = { location: new URL('https://manage-case.platform.hmcts.net') };
 const dummyWindowAat = { location: new URL('https://manage-case.aat.platform.hmcts.net') };
+const dummyWindowDemo = { location: new URL('https://manage-case.demo.platform.hmcts.net') };
+const dummyWindowPerftest = { location: new URL('https://manage-case.perftest.platform.hmcts.net') };
+const dummyWindowIthc = { location: new URL('https://manage-case.ithc.platform.hmcts.net') };
+const dummyWindowPreview = { location: new URL('https://pr-666.preview.platform.hmcts.net') };
+const dummyWindowLocalhost = { location: new URL('http://localhost:3000') };
 
 describe('EnvironmentService', () => {
   it('should be created', () => {
@@ -19,6 +33,18 @@ describe('EnvironmentService', () => {
     expect(service).toBeTruthy();
   });
 
+  it('should detect the prod environment correctly', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: Window, useValue: dummyWindowProd },
+        EnvironmentService
+      ],
+      imports: [HttpClientTestingModule]
+    });
+    const service = TestBed.inject(EnvironmentService);
+    expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.PROD);
+  });
+
   it('should detect the aat environment correctly', () => {
     TestBed.configureTestingModule({
       providers: [
@@ -31,15 +57,63 @@ describe('EnvironmentService', () => {
     expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.AAT);
   });
 
-  it('should detect the prod environment correctly', () => {
+  it('should detect the demo environment correctly', () => {
     TestBed.configureTestingModule({
       providers: [
-        { provide: Window, useValue: dummyWindowProd },
+        { provide: Window, useValue: dummyWindowDemo },
         EnvironmentService
       ],
       imports: [HttpClientTestingModule]
     });
     const service = TestBed.inject(EnvironmentService);
-    expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.PROD);
+    expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.DEMO);
+  });
+
+  it('should detect the perftest environment correctly', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: Window, useValue: dummyWindowPerftest },
+        EnvironmentService
+      ],
+      imports: [HttpClientTestingModule]
+    });
+    const service = TestBed.inject(EnvironmentService);
+    expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.PERFTEST);
+  });
+
+  it('should detect the ithc environment correctly', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: Window, useValue: dummyWindowIthc },
+        EnvironmentService
+      ],
+      imports: [HttpClientTestingModule]
+    });
+    const service = TestBed.inject(EnvironmentService);
+    expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.ITHC);
+  });
+
+  it('should detect the preview environment correctly', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: Window, useValue: dummyWindowPreview },
+        EnvironmentService
+      ],
+      imports: [HttpClientTestingModule]
+    });
+    const service = TestBed.inject(EnvironmentService);
+    expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.PREVIEW);
+  });
+
+  it('should detect the local environment correctly', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: Window, useValue: dummyWindowLocalhost },
+        EnvironmentService
+      ],
+      imports: [HttpClientTestingModule]
+    });
+    const service = TestBed.inject(EnvironmentService);
+    expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.LOCAL);
   });
 });

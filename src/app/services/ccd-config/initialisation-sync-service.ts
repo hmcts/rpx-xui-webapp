@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
 @Injectable()
 export class InitialisationSyncService {
@@ -29,5 +29,9 @@ export class InitialisationSyncService {
   public waitForInitialisation(callback: (arg:boolean) => void): void {
     console.log('InitialiseSyncService: waitForInitialisation');
     this.subscriptions.push(this.init$.subscribe(callback));
+  }
+
+  public getSubscriptionCount() {
+    return this.subscriptions.length;
   }
 }

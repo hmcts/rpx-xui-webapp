@@ -2615,24 +2615,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.33":
-  version: 7.0.33
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.33"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.33-rc1":
+  version: 7.0.33-rc1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.33-rc1"
   dependencies:
     tslib: ^2.3.0
-  checksum: 68c26064126cf29b72c73be0eeea005c6ee501972aa7db38ea7761cde1ea6d2e36d6aac9101ac101253f4e10bbf32ad747487fa4226f63348e6017068feb95e9
+  checksum: 7632fd46e123885da65f20c0f6c130f21dae345dc9a299bab99d596e5b44bf66144e54f71b7e6e599a1939ca1862f5ded5105069ca0e07bc6403b78263a10d5e
   languageName: node
   linkType: hard
 
-"@hmcts/ccpay-web-component@npm:6.1.9":
-  version: 6.1.9
-  resolution: "@hmcts/ccpay-web-component@npm:6.1.9"
+"@hmcts/ccpay-web-component@npm:6.1.10":
+  version: 6.1.10
+  resolution: "@hmcts/ccpay-web-component@npm:6.1.10"
   dependencies:
     tslib: ^2.3.0
   peerDependencies:
     "@angular/common": ^16.1.6
     "@angular/core": ^16.1.6
-  checksum: 885eaffaa46e131421e17690431de45cae879b6c570e381a5267e5d9b445c4d1aa3d282909e1d3cf3ccc4c0209397788cac8f11d7a46efb30b1d4b83c3ad3085
+  checksum: 888075d45cebb9fb3ea8cdc0791c1ef89bffac23e429b25b086f1051777d6b7eae86953c22f3f7edc8a57d443ac01c95350e3a4dfd00d7b1e50290a96caa1a04
   languageName: node
   linkType: hard
 
@@ -19202,8 +19202,8 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.33
-    "@hmcts/ccpay-web-component": 6.1.9
+    "@hmcts/ccd-case-ui-toolkit": 7.0.33-rc1
+    "@hmcts/ccpay-web-component": 6.1.10
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 3.0.4
     "@hmcts/nodejs-healthcheck": 1.7.0

@@ -25,7 +25,6 @@ export class AppConfig extends AbstractAppConfig {
     super();
     this.config = this.appConfigService.getEditorConfiguration() || {};
 
-
     this.featureToggleService.getValue('mc-document-secure-mode-enabled', false).subscribe({
       next: (val) => this.config = {
         ...this.config,
@@ -279,5 +278,4 @@ export class AppConfig extends AbstractAppConfig {
   public getIcpJurisdictions(): string[]{
     return this.config.icp_jurisdictions;
   }
-
 }

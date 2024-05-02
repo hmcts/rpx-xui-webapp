@@ -143,7 +143,7 @@ export function launchDarklyClientIdFactory(
     LoadingService,
     RoleService,
     InitialisationSyncService,
-    { provide: 'Window', useValue: window }
+    { provide: Window, useValue: window }
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

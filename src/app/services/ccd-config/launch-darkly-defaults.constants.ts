@@ -2,7 +2,8 @@ import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-en
 
 // Temporary solution to the problem that LaunchDarkly initialisation doesn't complete before we
 // need to initialise ccd-case-ui-toolkit.
-// TODO: Fix race condition so that toolkit initialisation doesn't start until LD is fully initialised
+// The full fix is to resolve the race condition so that toolkit initialisation
+// doesn't start until LD is fully initialised
 export class LaunchDarklyDefaultsConstants {
   public static readonly waServiceConfigTest = {
     configurations: [

@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.21":
-  version: 7.0.21
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.21"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.33-node-store-caseworkers":
+  version: 7.0.33-node-store-caseworkers
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.33-node-store-caseworkers"
   dependencies:
     tslib: ^2.3.0
-  checksum: 566adde9c6be0f65293b306f51a6a22b74df487cf6818b00a1529479e6261abd6d0490edda064bffe978d7eeec6434de429218588424ce0393a86399ae5426e6
+  checksum: 24e6af473ee696080325a8c547a135864d9fe067643010087c17e8336b93c65a9b2e65e70244c9ee21f52c75a4a37d9b21f1bf525cf514691b99ba9bebb8d3ab
   languageName: node
   linkType: hard
 
@@ -2703,16 +2703,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.13":
-  version: 2.0.13
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.13"
+"@hmcts/rpx-xui-common-lib@npm:2.0.17-node-store-caseworkers":
+  version: 2.0.17-node-store-caseworkers
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.17-node-store-caseworkers"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 0bc444dac8cdf213d8f5485fd2db591f9a20a89c4b0e2cc81af7f8ca04fc8efa26d4db40466861596d35f2ae4c6db7b0d09501c3d9ae6565e99eb1d3a770790e
+  checksum: 68cc4b96c62837da4999e0bb87d9c06842284d3dd44baac62fc532d3a6f38cfb103ab5ef806463fe1f354f305c3654a9f4518cbcb26e932db67d703250804894
   languageName: node
   linkType: hard
 
@@ -19116,13 +19116,13 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.21
+    "@hmcts/ccd-case-ui-toolkit": 7.0.33-node-store-caseworkers
     "@hmcts/ccpay-web-component": 6.1.0
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 3.0.2
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 2.0.13
+    "@hmcts/rpx-xui-common-lib": 2.0.17-node-store-caseworkers
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^11.1.0
     "@ng-idle/keepalive": ^11.0.3

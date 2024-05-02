@@ -67,9 +67,12 @@ import {
   prepareSearchTaskUrl,
   prepareServiceRoleApiRequest,
   prepareTaskSearchForCompletable,
-  searchCasesById
+  searchCasesById,
+  searchUsers
 } from './util';
 import { trackTrace } from '../lib/appInsights';
+import { fetchRoleAssignments, fetchUserData, timestampExists } from './caseWorkerUserDataCacheService';
+import { FullUserDetailCache } from './fullUserDetailCache';
 
 caseServiceMock.init();
 roleServiceMock.init();
@@ -492,6 +495,7 @@ export async function getMyAccess(req: EnhancedRequest, res: Response): Promise<
 
 export async function getMyCases(req: EnhancedRequest, res: Response): Promise<Response> {
   try {
+    await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
     const roleAssignments: RoleAssignment[] = req.session.roleAssignmentResponse;
 
     // get 'service' and 'location' filters from search_parameters on request
@@ -568,7 +572,6 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     const roleAssignmentResult = await getRoleAssignmentsByQuery(query, req);
 
     const cases = await getCaseIdListFromRoles(roleAssignmentResult.roleAssignmentResponse, req);
-
     const result = {
       cases,
       total_records: 0,
@@ -600,4 +603,36 @@ export async function getTaskNames(req: EnhancedRequest, res: Response): Promise
   const response = await handleTaskGet(`${baseWorkAllocationTaskUrl}/task/task-types?jurisdiction=${service}`, req);
 
   return res.send(response.task_types).status(200);
+}
+
+/**
+ * getUsersByServiceName
+ */
+export async function getUsersByServiceName(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const term = req.body.term;
+    const services = req.body.services;
+    let cachedUsers = [];
+    let firstEntry = false;
+    const fullUserDetailCache = FullUserDetailCache.getInstance();
+    if (timestampExists() && fullUserDetailCache.getAllUserDetails()) {
+      // if already ran just use the cache to avoid loading issues
+      firstEntry = true;
+      cachedUsers = fullUserDetailCache.getAllUserDetails();
+      cachedUsers = searchUsers(services, term, cachedUsers);
+      res.status(200);
+      res.send(cachedUsers);
+    }
+    // always update the cache after getting the cache if needed
+    const cachedUserData = await fetchUserData(req, next);
+    cachedUsers = await fetchRoleAssignments(cachedUserData, req, next);
+    if (!firstEntry) {
+      // if not previously ran ensure the new values are given back to angular layer
+      cachedUsers = searchUsers(services, term, cachedUsers);
+      res.status(200);
+      res.send(cachedUsers);
+    }
+  } catch (error) {
+    next(error);
+  }
 }

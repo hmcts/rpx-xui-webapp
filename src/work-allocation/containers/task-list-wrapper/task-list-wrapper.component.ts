@@ -194,7 +194,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   public setupTaskList() {
     const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
-      this.caseworkerService.getCaseworkersForServices(jurisdictions)
+      this.caseworkerService.getUsersFromServices(jurisdictions)
     ));
     // similar to case list wrapper changes
     caseworkersByService$.subscribe((caseworkers) => {

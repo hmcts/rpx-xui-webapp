@@ -839,8 +839,8 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should have validation error if there is no change', () => {
-    component.hearingRequestMainModel = Object.assign({hearingDetails: {hearingChannels: [HearingChannelEnum.ONPPR]}});
-    component.hearingRequestToCompareMainModel = Object.assign({hearingDetails: {hearingChannels: [HearingChannelEnum.ONPPR]}});
+    component.hearingRequestMainModel = Object.assign({ hearingDetails: { hearingChannels: [HearingChannelEnum.ONPPR] } });
+    component.hearingRequestToCompareMainModel = Object.assign({ hearingDetails: { hearingChannels: [HearingChannelEnum.ONPPR] } });
     component.executeAction(ACTION.VIEW_EDIT_REASON);
     expect(component.validationErrors.length).toEqual(1);
     expect(hearingsService.displayValidationError).toEqual(false);

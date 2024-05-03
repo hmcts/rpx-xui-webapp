@@ -105,7 +105,6 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
   }
 
   public prepareHearingRequestData(): void {
-    console.log('before hearing request: ', JSON.stringify(this.hearingRequestMainModel));
     let hearingChannels = this.hearingRequestMainModel.hearingDetails.hearingChannels;
     let updatedPartyDetails = [];
 
@@ -129,8 +128,6 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
       updatedPartyDetails = [...this.hearingRequestMainModel.partyDetails];
     }
 
-    console.log('updated party details: ', JSON.stringify(updatedPartyDetails));
-
     this.hearingRequestMainModel = JSON.parse(JSON.stringify({
       ...this.hearingRequestMainModel,
       hearingDetails: {
@@ -140,8 +137,6 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
       },
       partyDetails: updatedPartyDetails
     }, this.replacer));
-
-    console.log('updated hearing request: ', JSON.stringify(this.hearingRequestMainModel));
   }
 
   private replacer (key: any, value: any) {

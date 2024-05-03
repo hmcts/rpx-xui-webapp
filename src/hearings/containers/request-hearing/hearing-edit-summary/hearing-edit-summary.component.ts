@@ -238,7 +238,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       },
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        privateHearingRequiredFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel.hearingDetails.privateHearingRequiredFlag, this.serviceHearingValuesModel.privateHearingRequiredFlag, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PRIVATE_HEARING_REQUIRED_FLAG)
+        privateHearingRequiredFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel.hearingDetails.privateHearingRequiredFlag, this.serviceHearingValuesModel.privateHearingRequiredFlag, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PRIVATE_HEARING_REQUIRED_FLAG),
+        hearingInWelshFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel.hearingDetails.hearingInWelshFlag, this.serviceHearingValuesModel.hearingInWelshFlag, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.HEARING_IN_WELSH_FLAG)
       },
       partyDetails: [
         ...this.updatePartyDetails(this.serviceHearingValuesModel.parties)

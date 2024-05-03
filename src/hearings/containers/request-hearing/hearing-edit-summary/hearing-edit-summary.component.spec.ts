@@ -11,7 +11,7 @@ import { HearingsUtils } from '../../../../hearings/utils/hearings.utils';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
-import { ACTION, CategoryType, Mode, PartyType, UnavailabilityType } from '../../../models/hearings.enum';
+import { ACTION, CategoryType, Mode, PartyType, UnavailabilityType, HearingChannelEnum } from '../../../models/hearings.enum';
 import { PropertiesUpdatedOnPageVisit } from '../../../models/hearingsUpdateMode.enum';
 import { LocationByEPIMMSModel } from '../../../models/location.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -839,8 +839,8 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should have validation error if there is no change', () => {
-    component.hearingRequestMainModel = Object.assign({});
-    component.hearingRequestToCompareMainModel = Object.assign({});
+    component.hearingRequestMainModel = Object.assign({hearingDetails: {hearingChannels: [HearingChannelEnum.ONPPR]}});
+    component.hearingRequestToCompareMainModel = Object.assign({hearingDetails: {hearingChannels: [HearingChannelEnum.ONPPR]}});
     component.executeAction(ACTION.VIEW_EDIT_REASON);
     expect(component.validationErrors.length).toEqual(1);
     expect(hearingsService.displayValidationError).toEqual(false);

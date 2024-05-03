@@ -28,7 +28,8 @@ export enum WithinPagePropertiesEnum {
   CASE_CATEGORIES = 'caseCategories',
   CASE_RESTRICTED_FLAG = 'caserestrictedFlag',
   PRIVATE_HEARING_REQUIRED_FLAG = 'privateHearingRequiredFlag',
-  PARTIES = 'parties'
+  PARTIES = 'parties',
+  HEARING_IN_WELSH_FLAG = 'hearingInWelshFlag'
 }
 
 export enum AfterPageVisitPropertiesEnum {

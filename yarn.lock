@@ -2615,12 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.33":
-  version: 7.0.33
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.33"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.32-add-present-button-to-case--viewer-file":
+  version: 7.0.32-add-present-button-to-case--viewer-file
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.32-add-present-button-to-case--viewer-file"
   dependencies:
     tslib: ^2.3.0
-  checksum: 68c26064126cf29b72c73be0eeea005c6ee501972aa7db38ea7761cde1ea6d2e36d6aac9101ac101253f4e10bbf32ad747487fa4226f63348e6017068feb95e9
+  checksum: 8e6144f784664ab9ce6927d27b4e4fcdcf60a7f492d950d6d248c542d15047649efee8974311e897a86e76d1b107d13e71965705e15b2f5ff86cea2c70a74391
   languageName: node
   linkType: hard
 
@@ -19202,7 +19202,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.33
+    "@hmcts/ccd-case-ui-toolkit": 7.0.32-add-present-button-to-case--viewer-file
     "@hmcts/ccpay-web-component": 6.1.6
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 3.0.4

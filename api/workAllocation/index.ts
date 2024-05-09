@@ -613,11 +613,11 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
     const term = req.body.term;
     const services = req.body.services;
     let cachedUsers = [];
-    let firstEntry = false;
+    let firstEntry = true;
     const fullUserDetailCache = FullUserDetailCache.getInstance();
     if (timestampExists() && fullUserDetailCache.getAllUserDetails()) {
       // if already ran just use the cache to avoid loading issues
-      firstEntry = true;
+      firstEntry = false;
       cachedUsers = fullUserDetailCache.getAllUserDetails();
       cachedUsers = searchUsers(services, term, cachedUsers);
       res.status(200);

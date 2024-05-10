@@ -4,10 +4,9 @@ import { HearingConditions } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { HearingWindowModel } from '../models/hearingWindow.model';
-import { HearingDateEnum, MemberType, RequirementType } from '../models/hearings.enum';
+import { HearingDateEnum } from '../models/hearings.enum';
 import { IndividualDetailsModel } from '../models/individualDetails.model';
 import { LovRefDataModel } from '../models/lovRefData.model';
-import { PanelPreferenceModel } from '../models/panelPreference.model';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 
 export class HearingsUtils {
@@ -92,14 +91,15 @@ export class HearingsUtils {
 
         while (startDate <= endDate) {
           const currentDate = startDate.format(HearingDateEnum.DisplayMonth);
-          if (startDate.weekday() !== 6 && startDate.weekday() !== 0) {
-            partiesNotAvailableDates.push(currentDate);
-          }
+
+          partiesNotAvailableDates.push(currentDate);
+
           startDate.add(1, 'd');
         }
       }
     });
-    return [...new Set(partiesNotAvailableDates)];
+    const uniqueDates = [...new Set(partiesNotAvailableDates)];
+    return uniqueDates.sort((currentDate, previousDate) => new Date(currentDate).getTime() - new Date(previousDate).getTime());
   }
 
   public static getPartyNameFormatted(individualDetails: IndividualDetailsModel): string {
@@ -142,9 +142,7 @@ export class HearingsUtils {
   public static hasPartyUnavailabilityDatesChanged(partiesInHMC: PartyDetailsModel[], partiesInSHV: PartyDetailsModel[]): boolean {
     const partiesNotAvailableDatesHMC = HearingsUtils.getPartiesNotAvailableDates(partiesInHMC);
     const partiesNotAvailableDatesSHV = HearingsUtils.getPartiesNotAvailableDates(partiesInSHV);
-    if (!_.isEqual(partiesNotAvailableDatesSHV, partiesNotAvailableDatesHMC)) {
-      return true;
-    }
-    return false;
+
+    return !_.isEqual(partiesNotAvailableDatesSHV, partiesNotAvailableDatesHMC);
   }
 }

@@ -195,6 +195,26 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     );
   }
 
+  private hasHearingRequestPartiesObjectChanged(): boolean {
+    let partyDetailsSHVModels: PartyDetailsModel[] = [];
+    let partyDetailsCompareModels: PartyDetailsModel[] = [];
+
+    if (!!this.serviceHearingValuesModel.parties) {
+      partyDetailsSHVModels = [...this.serviceHearingValuesModel.parties];
+      partyDetailsSHVModels.sort(this.compareParties);
+    }
+
+    if (!!this.hearingRequestToCompareMainModel?.partyDetails) {
+      partyDetailsCompareModels = [...this.hearingRequestToCompareMainModel.partyDetails];
+      partyDetailsCompareModels.sort(this.compareParties);
+    }
+
+    return !_.isEqual(
+      JSON.parse(JSON.stringify(partyDetailsCompareModels, this.replacer)),
+      JSON.parse(JSON.stringify(partyDetailsSHVModels, this.replacer))
+    );
+  }
+
   private compareParties(firstParty: PartyDetailsModel, secondParty: PartyDetailsModel) {
     return firstParty.partyID.localeCompare(secondParty.partyID);
   }
@@ -252,6 +272,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
             partyDetailsChangesRequired: this.pageVisitPartiesChangeExists(),
             hearingWindowChangesRequired: this.pageVisitHearingWindowChangeExists(),
             hearingFacilitiesChangesRequired: this.pageVisitHearingFacilitiesChanged(),
+            partyDetailsAnyChangesRequired: this.hasHearingRequestPartiesObjectChanged(),
             hearingUnavailabilityDatesChanged: HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)
           }
         };
@@ -327,7 +348,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
   private updatePartyDetails(parties: PartyDetailsModel[]): PartyDetailsModel[] {
     const newParty: PartyDetailsModel[] = [];
-
     if (Array.isArray(this.hearingRequestMainModel.partyDetails)) {
       this.hearingRequestMainModel.partyDetails.forEach((party) => {
         const serviceParty = parties.find((serviceParty) => serviceParty.partyID === party.partyID);
@@ -346,7 +366,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
                 hearingChannelPhone: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelPhone, serviceParty.individualDetails?.hearingChannelPhone, AutoUpdateMode.PARTY)
               },
               unavailabilityDOW: this.compareAndUpdateServiceHearingValues(party?.unavailabilityDOW, serviceParty?.unavailabilityDOW, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES)
-
             });
           } else {
             newParty.push({

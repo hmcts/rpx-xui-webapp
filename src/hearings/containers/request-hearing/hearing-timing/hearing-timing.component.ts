@@ -414,7 +414,8 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
         this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired) {
         this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesConfirmed = true;
       }
-      if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingUnavailabilityDatesChanged) {
+      if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingUnavailabilityDatesChanged ||
+        this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsAnyChangesRequired) {
         this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingUnavailabilityDatesConfirmed = true;
       }
     }
@@ -446,7 +447,6 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
       .forEach((svcParty) => {
         newParty.push(svcParty);
       });
-
     return newParty;
   }
 

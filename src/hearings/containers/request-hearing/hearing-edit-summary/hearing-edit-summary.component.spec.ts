@@ -187,6 +187,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -263,6 +264,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -362,6 +364,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -570,6 +573,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -650,6 +654,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -679,6 +684,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -708,6 +714,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -737,6 +744,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesConfirmed: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -933,6 +941,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: true,
+        partyDetailsAnyChangesRequired: true,
         hearingUnavailabilityDatesChanged: true
       }
     };

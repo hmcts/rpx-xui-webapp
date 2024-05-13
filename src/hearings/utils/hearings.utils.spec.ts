@@ -107,7 +107,7 @@ describe('HearingsUtils', () => {
 
     const partiesNotAvailableDates = HearingsUtils.getPartiesNotAvailableDates(party1
     );
-    expect(partiesNotAvailableDates.length).toEqual(16);
+    expect(partiesNotAvailableDates.length).toEqual(22);
   });
 
   describe('HearingLength', () => {

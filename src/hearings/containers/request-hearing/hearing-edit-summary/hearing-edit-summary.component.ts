@@ -25,6 +25,7 @@ import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.model';
 
 @Component({
   selector: 'exui-hearing-edit-summary',
@@ -195,23 +196,20 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     );
   }
 
-  private hasHearingRequestPartiesObjectChanged(): boolean {
-    let partyDetailsSHVModels: PartyDetailsModel[] = [];
-    let partyDetailsCompareModels: PartyDetailsModel[] = [];
+  private hasHearingRequestPartiesUnavailableDatesChanged(): boolean {
+    let SHVUnavailabilityDates: UnavailabilityRangeModel[];
+    let CompareUnavailabilityDates: UnavailabilityRangeModel[];
 
     if (!!this.serviceHearingValuesModel.parties) {
-      partyDetailsSHVModels = [...this.serviceHearingValuesModel.parties];
-      partyDetailsSHVModels.sort(this.compareParties);
+      SHVUnavailabilityDates = this.serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRanges);
     }
 
     if (!!this.hearingRequestToCompareMainModel?.partyDetails) {
-      partyDetailsCompareModels = [...this.hearingRequestToCompareMainModel.partyDetails];
-      partyDetailsCompareModels.sort(this.compareParties);
+      CompareUnavailabilityDates = this.hearingRequestToCompareMainModel.partyDetails.flatMap((party) => party.unavailabilityRanges);
     }
-
     return !_.isEqual(
-      JSON.parse(JSON.stringify(partyDetailsCompareModels, this.replacer)),
-      JSON.parse(JSON.stringify(partyDetailsSHVModels, this.replacer))
+      JSON.parse(JSON.stringify(CompareUnavailabilityDates, this.replacer)),
+      JSON.parse(JSON.stringify(SHVUnavailabilityDates, this.replacer))
     );
   }
 
@@ -272,7 +270,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
             partyDetailsChangesRequired: this.pageVisitPartiesChangeExists(),
             hearingWindowChangesRequired: this.pageVisitHearingWindowChangeExists(),
             hearingFacilitiesChangesRequired: this.pageVisitHearingFacilitiesChanged(),
-            partyDetailsAnyChangesRequired: this.hasHearingRequestPartiesObjectChanged(),
+            partyDetailsAnyChangesRequired: this.hasHearingRequestPartiesUnavailableDatesChanged(),
             hearingUnavailabilityDatesChanged: HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)
           }
         };

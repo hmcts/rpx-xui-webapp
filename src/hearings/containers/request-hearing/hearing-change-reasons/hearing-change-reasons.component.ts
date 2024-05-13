@@ -97,7 +97,7 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
     if (action === ACTION.VIEW_EDIT_SUBMIT) {
       if (this.isFormValid(action)) {
         this.prepareHearingRequestData();
-        //super.navigateAction(action);
+        super.navigateAction(action);
       }
     } else if (action === ACTION.BACK) {
       super.navigateAction(action);

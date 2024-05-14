@@ -18,7 +18,9 @@ let cachedUsersWithRoles: Caseworker[];
 
 export async function fetchUserData(req: EnhancedRequest, next: NextFunction): Promise<StaffUserDetails[]> {
   try {
-    if (hasTTLExpired()) {
+    if (hasTTLExpired() || !cachedUsers) {
+      // hasTTLExpired to determine whether roles require refreshing
+      // cachedUsers to ensure rerun if user restarts request early
       refreshRoles = true;
       const jurisdictions = getWASupportedJurisdictionsList();
       cachedUsers = [];
@@ -45,7 +47,9 @@ export async function fetchRoleAssignments(cachedUserData: StaffUserDetails[], r
   // it is separate from the above as above caching will be done by backend
   const fullUserDetailCache = FullUserDetailCache.getInstance();
   try {
-    if (refreshRoles) {
+    if (refreshRoles || !cachedUsersWithRoles) {
+      // refreshRoles to determine whether roles require refreshing
+      // cachedUsersWithRoles to ensure rerun if user restarts request early
       const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
       const jurisdictions = getWASupportedJurisdictionsList();
       const payload = prepareRoleApiRequest(jurisdictions);

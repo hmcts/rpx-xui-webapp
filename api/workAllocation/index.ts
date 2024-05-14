@@ -615,22 +615,20 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
     let cachedUsers = [];
     let firstEntry = true;
     const fullUserDetailCache = FullUserDetailCache.getInstance();
-    if (timestampExists() && fullUserDetailCache.getAllUserDetails()) {
+    if (timestampExists() && fullUserDetailCache.getAllUserDetails()?.length > 0) {
       // if already ran just use the cache to avoid loading issues
       firstEntry = false;
       cachedUsers = fullUserDetailCache.getAllUserDetails();
       cachedUsers = searchUsers(services, term, cachedUsers);
-      res.status(200);
-      res.send(cachedUsers);
+      res.send(cachedUsers).status(200);
     }
     // always update the cache after getting the cache if needed
     const cachedUserData = await fetchUserData(req, next);
     cachedUsers = await fetchRoleAssignments(cachedUserData, req, next);
-    if (!firstEntry) {
+    if (firstEntry) {
       // if not previously ran ensure the new values are given back to angular layer
       cachedUsers = searchUsers(services, term, cachedUsers);
-      res.status(200);
-      res.send(cachedUsers);
+      res.send(cachedUsers).status(200);
     }
   } catch (error) {
     next(error);

@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
+import { cold } from 'jasmine-marbles';
 import { HearingsUtils } from '../../../../hearings/utils/hearings.utils';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
@@ -20,7 +21,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingEditSummaryComponent } from './hearing-edit-summary.component';
-import { cold } from 'jasmine-marbles';
+
 
 describe('HearingEditSummaryComponent', () => {
   let component: HearingEditSummaryComponent;

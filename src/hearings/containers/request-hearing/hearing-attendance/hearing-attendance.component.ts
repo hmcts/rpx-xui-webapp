@@ -53,7 +53,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     this.partiesFormArray = fb.array([]);
   }
 
-  private isPaperHearing() {
+  private isPaperHearing(): string {
     return (this.hearingRequestMainModel.hearingDetails.hearingChannels?.includes(HearingChannelEnum.ONPPR)
     || !!this.hearingRequestMainModel.hearingDetails?.isPaperHearing)
       ? RadioOptions.YES : RadioOptions.NO;

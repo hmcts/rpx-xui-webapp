@@ -131,10 +131,9 @@ export class AppComponent implements OnInit, OnDestroy {
    * }
    */
   public userDetailsHandler(ldClientId: string, userDetails: UserDetails) {
-    if (userDetails) {
+    if (userDetails?.userInfo) {
       this.initializeFeature(userDetails.userInfo, ldClientId);
-      console.log('userDetailsHandler initialiseFeature is complete');
-
+      console.log('userDetailsHandler initialiseFeature is complete for user ' + userDetails.userInfo?.email);
       this.initialisationSyncService.initialisationComplete();
       if (propsExist(userDetails, ['sessionTimeout']) && userDetails.sessionTimeout.totalIdleTime > 0) {
         const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
@@ -164,6 +163,8 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       };
       this.featureService.initialize(featureUser, ldClientId);
+    } else {
+      console.error('Cannot initialise featureService, no userInfo');
     }
   }
 

@@ -4,10 +4,12 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 @Injectable()
 export class InitialisationSyncService {
   private init$ = new BehaviorSubject<boolean>(false);
+  private isComplete = false;
   private subscriptions: Subscription[] = [];
 
   private observer = {
     complete: () => {
+      this.isComplete = true;
       this.subscriptions.forEach((s) => s.unsubscribe());
       this.subscriptions = [];
     }
@@ -28,7 +30,13 @@ export class InitialisationSyncService {
   // calls the supplied callback when the initialisationComplete function has been called
   public waitForInitialisation(callback: (arg:boolean) => void): void {
     console.log('InitialiseSyncService: waitForInitialisation');
-    this.subscriptions.push(this.init$.subscribe(callback));
+    // No need to wait if the initilisation has already completed
+    if (!this.isComplete) {
+      this.subscriptions.push(this.init$.subscribe(callback));
+    } else {
+      console.log('Initialisation complete before waitForInitialisation called, calling callback directly');
+      callback(true);
+    }
   }
 
   public getSubscriptionCount() {

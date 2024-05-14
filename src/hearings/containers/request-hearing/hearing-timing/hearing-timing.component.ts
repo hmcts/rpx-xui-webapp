@@ -215,7 +215,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
 
     while (startDate <= endDate) {
       const currentDate = startDate.format(HearingDateEnum.DisplayMonth);
-      if (this.isWeekDay(startDate) && !this.partiesNotAvailableDates.includes(currentDate)) {
+      if (!this.partiesNotAvailableDates.includes(currentDate)) {
         this.partiesNotAvailableDates.push(currentDate);
       }
       startDate.add(1, 'd');

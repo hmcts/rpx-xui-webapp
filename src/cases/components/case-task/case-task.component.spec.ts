@@ -345,10 +345,16 @@ describe('CaseTaskComponent', () => {
     });
   });
 
-  describe('onClick()', () => {
+  describe('onClick() with no tid', () => {
     it('should navigate correctly on click', () => {
-      component.onClick('exampleUrl(firstUrlPart?secondUrlPart=equalPart)end');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['firstUrlPart'], { queryParams: { tid: 'equalPart' } });
+      component.onClick('exampleUrl(http://firstUrlPart?foo=fooparam)end');
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['http://firstUrlPart?foo=fooparam'], { queryParams: {} });
+    });
+  });
+  describe('onClick() with tid', () => {
+    it('should navigate correctly on click', () => {
+      component.onClick('exampleUrl(http://firstUrlPart?tid=1234)end');
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['http://firstUrlPart'], { queryParams: { tid: '1234' } });
     });
   });
 });

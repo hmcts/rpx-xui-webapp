@@ -155,8 +155,12 @@ export class CaseTaskComponent implements OnInit {
     console.log('task onClick param = ' + event);
     const url = event.substring(event.indexOf('(') + 1, event.indexOf(')'));
     let qp = {};
+    let base = null;
+    if(!url.startsWith('http')) {
+      base = window.location.origin;
+    }
     try {
-      const u = new URL(url);
+      const u = new URL(url, base);
       const tid = u.searchParams.get('tid');
       if (tid) {
         qp = { tid: tid };
@@ -166,7 +170,7 @@ export class CaseTaskComponent implements OnInit {
         console.log('task onClick no taskId found in URL ' + url);
       }
       console.log('task onClick navigating to ' + u);
-      await this.router.navigate([], {
+      await this.router.navigate([u.toString()], {
         queryParams: qp
       });
     } catch (e) {

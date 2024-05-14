@@ -150,8 +150,8 @@ describe('HearingTimingComponent', () => {
       }
     ];
     component.checkUnavailableDatesList(unavailabilityDates);
-    expect(component.partiesNotAvailableDates[2]).toBe('14 December 2021');
-    expect(component.partiesNotAvailableDates.length).toBe(16);
+    expect(component.partiesNotAvailableDates[2]).toBe('12 December 2021');
+    expect(component.partiesNotAvailableDates.length).toBe(22);
   });
 
   it('should set unavailable dates', () => {

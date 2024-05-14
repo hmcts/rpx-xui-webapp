@@ -20,6 +20,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingEditSummaryComponent } from './hearing-edit-summary.component';
+import { cold } from 'jasmine-marbles';
 
 describe('HearingEditSummaryComponent', () => {
   let component: HearingEditSummaryComponent;
@@ -950,7 +951,28 @@ describe('HearingEditSummaryComponent', () => {
         hearingUnavailabilityDatesChanged: true
       }
     };
-
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
+  });
+
+  it('Welsh language flag should not display', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.ngOnInit();
+
+    const result$ = component.showLanguageRequirementsSection$;
+    const toShow = false;
+    const expected = cold('(b|)', { b: toShow });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('Welsh language flag should display', () => {
+    locations[0].region_id = '7';
+
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.ngOnInit();
+
+    const result$ = component.showLanguageRequirementsSection$;
+    const toShow = true;
+    const expected = cold('(b|)', { b: toShow });
+    expect(result$).toBeObservable(expected);
   });
 });

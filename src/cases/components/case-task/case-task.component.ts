@@ -163,7 +163,7 @@ export class CaseTaskComponent implements OnInit {
         console.log('task onClick found taskId '+ tid);
         u.searchParams.delete('tid');
       } else {
-        console.log('task onClick no taskId found in URL ' + url)
+        console.log('task onClick no taskId found in URL ' + url);
       }
       console.log('task onClick navigating to ' + u);
       await this.router.navigate([], {

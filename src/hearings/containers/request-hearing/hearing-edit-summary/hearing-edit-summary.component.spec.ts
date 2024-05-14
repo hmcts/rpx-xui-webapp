@@ -22,7 +22,6 @@ import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingEditSummaryComponent } from './hearing-edit-summary.component';
 
-
 describe('HearingEditSummaryComponent', () => {
   let component: HearingEditSummaryComponent;
   let fixture: ComponentFixture<HearingEditSummaryComponent>;

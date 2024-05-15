@@ -101,7 +101,7 @@ import { WorkAllocationComponentsModule } from 'src/work-allocation/components/w
     CaseViewerModule,
     PipesModule,
     queryManagementRouting,
-    RpxTranslationModule.forChild()
+    RpxTranslationModule.forChild(),
     WorkAllocationComponentsModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],

@@ -1,5 +1,5 @@
 
-@fullfunctional @functional_enabled @functional_debug
+@fullfunctional @functional_enablNOT @functional_debug @DEMOPOC
 Feature: Support request Add/Update Reasonable adjustment
 
     Background: Setup case

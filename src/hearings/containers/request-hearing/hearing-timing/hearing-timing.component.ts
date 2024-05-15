@@ -12,7 +12,7 @@ import {
   HearingDateEnum,
   HearingDatePriorityConstEnum,
   HearingDatePriorityEnum,
-  Mode,
+  Mode, PartyType,
   RadioOptions
 } from '../../../models/hearings.enum';
 import { AmendmentLabelStatus } from '../../../models/hearingsUpdateMode.enum';
@@ -22,6 +22,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
 
 @Component({
   selector: 'exui-hearing-timing',
@@ -214,7 +215,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
 
     while (startDate <= endDate) {
       const currentDate = startDate.format(HearingDateEnum.DisplayMonth);
-      if (this.isWeekDay(startDate) && !this.partiesNotAvailableDates.includes(currentDate)) {
+      if (!this.partiesNotAvailableDates.includes(currentDate)) {
         this.partiesNotAvailableDates.push(currentDate);
       }
       startDate.add(1, 'd');
@@ -405,17 +406,55 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
         duration,
         hearingWindow,
         hearingPriorityType: this.priorityForm.value.priority
-      }
+      },
+      partyDetails: [...this.updatePartyDetails(this.serviceHearingValuesModel.parties)]
     };
     if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
       if (this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow') &&
         this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired) {
         this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesConfirmed = true;
       }
-      if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingUnavailabilityDatesChanged) {
+      if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingUnavailabilityDatesChanged ||
+        this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsAnyChangesRequired) {
         this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingUnavailabilityDatesConfirmed = true;
       }
     }
+  }
+
+  public updatePartyDetails(parties: PartyDetailsModel[]): PartyDetailsModel[] {
+    const newParty: PartyDetailsModel[] = [];
+
+    if (Array.isArray(this.hearingRequestMainModel.partyDetails)) {
+      this.hearingRequestMainModel.partyDetails.forEach((party) => {
+        const serviceParty = parties.find((serviceParty) => serviceParty.partyID === party.partyID);
+        if (serviceParty) {
+          if (serviceParty.partyType === PartyType.IND) {
+            newParty.push({
+              ...party,
+              unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges)
+            });
+          } else {
+            newParty.push({
+              ...party,
+              unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges)
+            });
+          }
+        }
+      });
+    }
+
+    parties.filter((svcParty) => !newParty.find((y) => y.partyID === svcParty.partyID))
+      .forEach((svcParty) => {
+        newParty.push(svcParty);
+      });
+    return newParty;
+  }
+
+  private compareAndUpdateServiceHearingValues(currentValue, serviceHearingValue) {
+    if (!currentValue && !serviceHearingValue) {
+      return currentValue;
+    }
+    return serviceHearingValue;
   }
 
   public calculateDuration(): number {

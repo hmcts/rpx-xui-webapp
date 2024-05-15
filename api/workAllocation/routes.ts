@@ -2,12 +2,10 @@ import { Router } from 'express';
 import { getJudicialUsers } from '../roleAccess';
 
 import {
-  getAllCaseWorkers,
   getAllCaseWorkersForLocation,
   getCases,
   getCaseWorkersForLocationAndService,
   getCaseWorkersForService,
-  getCaseWorkersFromServices,
   getMyAccess,
   getMyCases,
   getRolesCategory,
@@ -37,8 +35,6 @@ router.use('/caseworker/location/:locationId/service/:serviceId', getCaseWorkers
 router.use('/caseworker/location/:locationId', getAllCaseWorkersForLocation);
 router.use('/caseworker/service/:serviceId', getCaseWorkersForService);
 router.use('/caseworker/search', searchCaseWorker);
-router.use('/caseworker', getAllCaseWorkers);
-router.use('/retrieveCaseWorkersForServices', getCaseWorkersFromServices);
 
 router.use('/findPerson', postFindPersonSearch);
 

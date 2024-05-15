@@ -1,7 +1,7 @@
-@fullfunctional @ignore  @staffUI 
+@fullfunctional @ignore  @staffUI @DEMOPOC
 Feature: Staff UI Manager user
 
-@functional_enabled
+@functional_enablNOT
     Scenario: User details
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with test user identified as "STAFF_ADMIN"

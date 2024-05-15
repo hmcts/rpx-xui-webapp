@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { CaseFlagGroup } from '../../models/caseFlagGroup.model';
 import { AmendmentLabelStatus } from '../../models/hearingsUpdateMode.enum';
 import { CaseFlagsComponent } from './case-flags.component';
@@ -81,7 +82,7 @@ describe('CaseFlagsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [CaseFlagsComponent],
+      declarations: [CaseFlagsComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();

@@ -17,6 +17,7 @@ nodejs:
      HEALTH_WORK_ALLOCATION_TASK_API: http://wa-task-management-api-aat.service.core-compute-aat.internal/health
      HEALTH_ROLE_ASSIGNMENT_API: http://am-role-assignment-service-aat.service.core-compute-aat.internal/health
      HEALTH_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal/health
+     SERVICES_TRANSLATION_API_URL: http://ts-translation-service-aat.service.core-compute-aat.internal
      STUB: false
      DEBUG: xuiNode:*,-xuiNode:auth:s2s,-xuiNode:auth:oauth2
      FEATURE_WORKALLOCATION_ENABLED: true
@@ -29,12 +30,17 @@ nodejs:
   keyVaults:
     rpx:
       secrets:
+        - appinsights-instrumentationkey-mc
         - mc-s2s-client-secret
         - mc-idam-client-secret
         - system-user-name
         - system-user-password
   autoscaling:
     enabled: false
+  devmemoryRequests: 512Mi
+  devcpuRequests: 250m
+  devmemoryLimits: 2Gi
+  devcpuLimits: 2
 redis:
   enabled: true
 idam-pr:

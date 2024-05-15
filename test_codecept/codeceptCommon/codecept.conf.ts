@@ -29,9 +29,7 @@ console.log(`testType : ${testType}`)
 console.log(`parallel : ${parallel}`)
 console.log(`headless : ${!head}`)
 
-
-
-let pipelineBranch = process.env.TEST_URL.includes('pr-') || process.env.TEST_URL.includes('manage-case.aat.platform.hmcts.net')  ? "preview" : "master"
+let pipelineBranch = process.env.TEST_URL.includes('pr-') || process.env.TEST_URL.includes('manage-case.aat.platform.hmcts.net') ? "preview" : "master"
 let local = process.env.LOCAL && process.env.LOCAL.includes('true')
 let features = ''
 if (testType === 'e2e' || testType === 'smoke'){

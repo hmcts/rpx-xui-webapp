@@ -12,7 +12,7 @@ import {
   HearingDateEnum,
   HearingDatePriorityConstEnum,
   HearingDatePriorityEnum,
-  Mode, PartyType,
+  Mode,
   RadioOptions
 } from '../../../models/hearings.enum';
 import { AmendmentLabelStatus } from '../../../models/hearingsUpdateMode.enum';
@@ -428,17 +428,10 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
       this.hearingRequestMainModel.partyDetails.forEach((party) => {
         const serviceParty = parties.find((serviceParty) => serviceParty.partyID === party.partyID);
         if (serviceParty) {
-          if (serviceParty.partyType === PartyType.IND) {
-            newParty.push({
-              ...party,
-              unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges)
-            });
-          } else {
-            newParty.push({
-              ...party,
-              unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges)
-            });
-          }
+          newParty.push({
+            ...party,
+            unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges)
+          });
         }
       });
     }

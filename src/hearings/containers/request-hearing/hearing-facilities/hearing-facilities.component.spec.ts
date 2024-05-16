@@ -408,7 +408,6 @@ describe('HearingFacilitiesComponent', () => {
         hearingFacilitiesChangesConfirmed: false,
         hearingUnavailabilityDatesChanged: false
       }
-      
     };
     component.serviceHearingValuesModel = {
       ...component.serviceHearingValuesModel,

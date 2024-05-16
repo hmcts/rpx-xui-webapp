@@ -8,7 +8,7 @@ import { NextFunction } from 'express';
 import { Caseworker } from './interfaces/common';
 import { FullUserDetailCache } from './fullUserDetailCache';
 
-const TTL = 60;
+const TTL = 300;
 
 let timestamp: Date;
 let refreshRoles: boolean;

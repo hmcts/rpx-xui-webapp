@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HearingDateEnum } from '../models/hearings.enum';
@@ -9,14 +9,16 @@ export class DateRequestFailedAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map((state) => {
-        const hearingResponse = state.hearingRequest.hearingRequestMainModel;
+          const hearingResponse = state.hearingRequest.hearingRequestMainModel;
+          if (hearingResponse.hearingResponse?.errorTimestamp) {
+            const errorTimestampBST = moment.utc(hearingResponse.hearingResponse.errorTimestamp).tz('Europe/London'); // Convert to BST
+            return errorTimestampBST.format(HearingDateEnum.RequestFailedDateAndTime);
+          } else if (hearingResponse.requestDetails) {
+            const requestTimestampBST = moment.utc(hearingResponse.requestDetails.timestamp).tz('Europe/London'); // Convert to BST
+            return requestTimestampBST.format(HearingDateEnum.RequestFailedDateAndTime);
+          }
 
-        if (hearingResponse.hearingResponse.errorTimestamp) {
-          return moment(hearingResponse.hearingResponse.errorTimestamp).format(HearingDateEnum.RequestFailedDateAndTime);
-        } else if (hearingResponse.requestDetails) {
-          return moment(hearingResponse.requestDetails.timestamp).format(HearingDateEnum.RequestFailedDateAndTime);
-        }
-        return '';
+          return '';
       })
     );
   }

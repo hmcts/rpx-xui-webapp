@@ -6,10 +6,7 @@ export class FullUserDetailCache {
   private userDetails: Caseworker[];
 
   static getInstance(): FullUserDetailCache {
-    if (this.instance) {
-      return this.instance;
-    }
-    this.instance = new FullUserDetailCache();
+    this.instance = this.instance ? this.instance : new FullUserDetailCache();
     return this.instance;
   }
 

@@ -16,9 +16,7 @@ describe('HearingsFeatureService', () => {
       ]
     });
   });
-
   it('should be created', inject([HearingsFeatureService], (service: HearingsFeatureService) => {
     expect(service).toBeTruthy();
   }));
-
 });

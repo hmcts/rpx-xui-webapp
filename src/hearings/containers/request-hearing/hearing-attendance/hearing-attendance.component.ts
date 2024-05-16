@@ -48,9 +48,15 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       estimation: [null, [Validators.pattern(/^\d+$/)]],
       parties: fb.array([]),
       hearingLevelChannels: this.getHearingLevelChannels,
-      paperHearing: [this.hearingRequestMainModel.hearingDetails.hearingChannels?.includes(HearingChannelEnum.ONPPR) ? RadioOptions.YES : RadioOptions.NO]
+      paperHearing: this.isPaperHearing()
     });
     this.partiesFormArray = fb.array([]);
+  }
+
+  private isPaperHearing(): string {
+    return (this.hearingRequestMainModel.hearingDetails.hearingChannels?.includes(HearingChannelEnum.ONPPR)
+    || !!this.hearingRequestMainModel.hearingDetails?.isPaperHearing)
+      ? RadioOptions.YES : RadioOptions.NO;
   }
 
   public get getHearingLevelChannels(): FormArray {
@@ -153,7 +159,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
         hearingChannels: this.getHearingChannels(),
-        numberOfPhysicalAttendees: parseInt(this.attendanceFormGroup.controls.estimation.value, 0)
+        numberOfPhysicalAttendees: parseInt(this.attendanceFormGroup.controls.estimation.value, 0),
+        isPaperHearing: this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES
       }
     };
     if ((this.hearingCondition.mode === Mode.VIEW_EDIT &&
@@ -164,11 +171,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
 
   public getIndividualParties(): PartyDetailsModel[] {
     const individualParties: PartyDetailsModel[] = [];
-    const onPaperHearing = this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES;
+
     (this.attendanceFormGroup.controls.parties as FormArray).controls.forEach((control) => {
-      if (onPaperHearing) {
-        control.value.individualDetails.preferredHearingChannel = 'NA';
-      }
       const partyDetail: PartyDetailsModel = {
         partyID: control.value.partyID,
         partyType: control.value.partyType,
@@ -188,9 +192,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public getHearingChannels(): string[] {
-    if (this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES) {
-      return [HearingChannelEnum.ONPPR];
-    }
     return this.attendanceFormGroup.controls.hearingLevelChannels.value.filter((channel) => channel.selected).map((channel) => channel.key);
   }
 

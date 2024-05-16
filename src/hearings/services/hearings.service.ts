@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { HearingActualsMainModel, HearingActualsModel } from '../models/hearingActualsMainModel';
 import { HearingListMainModel } from '../models/hearingListMain.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
-import { ACTION } from '../models/hearings.enum';
+import { ACTION, HearingChannelEnum } from '../models/hearings.enum';
 import { PropertiesUpdatedAutomatically, PropertiesUpdatedOnPageVisit } from '../models/hearingsUpdateMode.enum';
 import {
   LinkedHearingGroupMainModel,
@@ -135,5 +135,10 @@ export class HearingsService {
       model = newModel;
     }
     return model;
+  }
+
+  public getHearingChannels(hearingRequestMainModel: HearingRequestMainModel) : string[]{
+    return !!hearingRequestMainModel.hearingDetails?.isPaperHearing ?
+      [HearingChannelEnum.ONPPR] : hearingRequestMainModel.hearingDetails.hearingChannels;
   }
 }

@@ -11,7 +11,7 @@ import { HearingsUtils } from '../../../../hearings/utils/hearings.utils';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
-import { ACTION, CategoryType, Mode, PartyType, UnavailabilityType, HearingChannelEnum } from '../../../models/hearings.enum';
+import { ACTION, CategoryType, DOW, DOWUnavailabilityType, Mode, PartyType, UnavailabilityType, HearingChannelEnum } from '../../../models/hearings.enum';
 import { PropertiesUpdatedOnPageVisit } from '../../../models/hearingsUpdateMode.enum';
 import { LocationByEPIMMSModel } from '../../../models/location.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -187,6 +187,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -263,6 +264,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -362,6 +364,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -520,13 +523,6 @@ describe('HearingEditSummaryComponent', () => {
     component.serviceHearingValuesModel.publicCaseName = 'New public case name from service hearings';
     component.serviceHearingValuesModel.privateHearingRequiredFlag = true;
     component.serviceHearingValuesModel.caserestrictedFlag = true;
-    component.serviceHearingValuesModel.parties[0].unavailabilityRanges = [
-      {
-        unavailableFromDate: '2022-12-10T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }
-    ];
 
     component.ngOnInit();
     // @ts-ignore
@@ -537,8 +533,6 @@ describe('HearingEditSummaryComponent', () => {
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.privateHearingRequiredFlag).toEqual(true);
     // @ts-ignore
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caserestrictedFlag).toEqual(true);
-    // @ts-ignore
-    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.parties).toEqual(true);
   });
 
   it('should set auto updated pageless properties to true', () => {
@@ -579,6 +573,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -659,6 +654,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -688,6 +684,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -717,6 +714,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -746,6 +744,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesConfirmed: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -801,13 +800,10 @@ describe('HearingEditSummaryComponent', () => {
     component.serviceHearingValuesModel.publicCaseName = 'New public case name from service hearings';
     component.serviceHearingValuesModel.privateHearingRequiredFlag = true;
     component.serviceHearingValuesModel.caserestrictedFlag = true;
-    component.serviceHearingValuesModel.parties[0].unavailabilityRanges = [
-      {
-        unavailableFromDate: '2022-12-10T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }
-    ];
+    component.serviceHearingValuesModel.parties[0].unavailabilityDOW = [{
+      DOW: DOW.Friday,
+      DOWUnavailabilityType: DOWUnavailabilityType.AM
+    }];
 
     component.ngOnInit();
     // @ts-ignore
@@ -818,8 +814,6 @@ describe('HearingEditSummaryComponent', () => {
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.privateHearingRequiredFlag).toEqual(true);
     // @ts-ignore
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caserestrictedFlag).toEqual(true);
-    // @ts-ignore
-    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.parties).toEqual(true);
   });
 
   it('should set auto updated pageless properties to true', () => {
@@ -947,6 +941,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: true,
+        partyDetailsAnyChangesRequired: true,
         hearingUnavailabilityDatesChanged: true
       }
     };

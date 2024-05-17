@@ -10,11 +10,13 @@ export class DateRequestFailedAnswerConverter implements AnswerConverter {
     return hearingState$.pipe(
       map((state) => {
         const hearingResponse = state.hearingRequest.hearingRequestMainModel;
+        const userTimezone = moment.tz.guess(); // Detect the user's timezone
+
         if (hearingResponse.hearingResponse?.errorTimestamp) {
-          const errorTimestampBST = moment.utc(hearingResponse.hearingResponse.errorTimestamp).tz('Europe/London'); // Convert to BST
+          const errorTimestampBST = moment.utc(hearingResponse.hearingResponse.errorTimestamp).tz(userTimezone); // Convert to local time zone
           return errorTimestampBST.format(HearingDateEnum.RequestFailedDateAndTime);
         } else if (hearingResponse.requestDetails) {
-          const requestTimestampBST = moment.utc(hearingResponse.requestDetails.timestamp).tz('Europe/London'); // Convert to BST
+          const requestTimestampBST = moment.utc(hearingResponse.requestDetails.timestamp).tz(userTimezone); // Convert to local time zone
           return requestTimestampBST.format(HearingDateEnum.RequestFailedDateAndTime);
         }
 

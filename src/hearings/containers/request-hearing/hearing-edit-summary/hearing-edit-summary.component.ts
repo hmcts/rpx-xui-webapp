@@ -208,16 +208,27 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     );
   }
 
-  private hasHearingRequestPartiesUnavailableDatesChanged(): boolean {
+  hasHearingRequestPartiesUnavailableDatesChanged(): boolean {
     let SHVUnavailabilityDates: UnavailabilityRangeModel[];
     let CompareUnavailabilityDates: UnavailabilityRangeModel[];
 
     if (!!this.serviceHearingValuesModel.parties) {
-      SHVUnavailabilityDates = this.serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRanges);
+      SHVUnavailabilityDates = this.serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRanges)
+        .filter((SHVUnavailabilityDates) => SHVUnavailabilityDates!== null)
+        .sort((currentDate, previousDate) => {
+          return new Date(currentDate.unavailableFromDate).getTime() - new Date(previousDate.unavailableFromDate).getTime()
+         || new Date(currentDate.unavailableToDate).getDate() - new Date(previousDate.unavailableToDate).getDate();
+        });
     }
 
     if (!!this.hearingRequestToCompareMainModel?.partyDetails) {
-      CompareUnavailabilityDates = this.hearingRequestToCompareMainModel.partyDetails.flatMap((party) => party.unavailabilityRanges);
+      // CompareUnavailabilityDates = this.hearingRequestToCompareMainModel.partyDetails.flatMap((party) => party.unavailabilityRanges);
+      CompareUnavailabilityDates = this.hearingRequestToCompareMainModel.partyDetails.flatMap((party) => party.unavailabilityRanges)
+        .filter((CompareUnavailabilityDates) => CompareUnavailabilityDates!== null)
+        .sort((currentDate, previousDate) => {
+          return new Date(currentDate.unavailableFromDate).getTime() - new Date(previousDate.unavailableFromDate).getTime()
+           || new Date(currentDate.unavailableToDate).getDate() - new Date(previousDate.unavailableToDate).getDate();
+        });
     }
     return !_.isEqual(
       JSON.parse(JSON.stringify(CompareUnavailabilityDates, this.replacer)),

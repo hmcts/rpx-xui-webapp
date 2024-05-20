@@ -592,7 +592,7 @@ describe('HearingEditSummaryComponent', () => {
       unavailableFromDate: '2024-01-01T10:00:00.000Z',
       unavailableToDate: '2024-01-14T10:00:00.000Z',
       unavailabilityType: UnavailabilityType.ALL_DAY
-    },
+    }, undefined,
     {
       unavailableFromDate: '2024-03-01T10:00:00.000Z',
       unavailableToDate: '2024-03-12T10:00:00.000Z',

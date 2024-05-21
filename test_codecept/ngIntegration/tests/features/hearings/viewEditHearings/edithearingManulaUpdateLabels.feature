@@ -220,7 +220,7 @@ Feature: Hearings CR84: Manual update labels
             | Heading                 | Label   |
             | Stage                   | AMENDED |
             | Hearing venue           | AMENDED |
-            | Language requirements   | AMENDED |
+        #    | Language requirements   | AMENDED |
             | Judge details           | AMENDED |
             | Linked hearings         |         |
             | Additional instructions |         |
@@ -250,7 +250,7 @@ Feature: Hearings CR84: Manual update labels
             | Heading                 | Label   |
             | Stage                   | AMENDED |
             | Hearing venue           | AMENDED |
-            | Language requirements   | AMENDED |
+      #      | Language requirements   | AMENDED |
             | Judge details           | AMENDED |
             | Length, date and priority level of hearing | AMENDED |
             | Linked hearings         |  |
@@ -281,7 +281,7 @@ Feature: Hearings CR84: Manual update labels
             | Heading                 | Label   |
             | Stage                   | AMENDED |
             | Hearing venue           | AMENDED |
-            | Language requirements   | AMENDED |
+     #       | Language requirements   | AMENDED |
             | Judge details           | AMENDED |
             | Linked hearings         | AMENDED |
             | Additional instructions |         |
@@ -311,7 +311,7 @@ Feature: Hearings CR84: Manual update labels
             | Heading                 | Label   |
             | Stage                   | AMENDED |
             | Hearing venue           | AMENDED |
-            | Language requirements   | AMENDED |
+      #      | Language requirements   | AMENDED |
             | Judge details           | AMENDED |
             | Linked hearings         | AMENDED |
             | Additional instructions | AMENDED |

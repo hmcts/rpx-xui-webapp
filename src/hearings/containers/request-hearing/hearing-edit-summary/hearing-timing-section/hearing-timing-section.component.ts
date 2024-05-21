@@ -35,6 +35,8 @@ export class HearingTimingSectionComponent implements OnInit {
   public hearingDateChanged: boolean;
   public hearingPriorityChanged: boolean;
   public hearingUnavailabilityDatesChanged: boolean;
+  public partyDetailsAnyChangesRequired: boolean;
+  public hearingUnavailabilityDatesConfirmed: boolean;
   public hearingWindowChangesRequired: boolean;
   public hearingWindowChangesConfirmed: boolean;
   public showActionNeededLabelForPageTitle: boolean;
@@ -45,6 +47,8 @@ export class HearingTimingSectionComponent implements OnInit {
   public ngOnInit(): void {
     this.hearingWindowChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired;
     this.hearingWindowChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesConfirmed;
+    this.hearingUnavailabilityDatesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingUnavailabilityDatesConfirmed;
+    this.partyDetailsAnyChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsAnyChangesRequired;
     this.hearingLength = HearingsUtils.getHearingLength(this.hearingRequestMainModel.hearingDetails.duration);
     this.specificDate = this.getSpecificDate();
     this.hearingPriority = this.getHearingPriority();
@@ -147,15 +151,18 @@ export class HearingTimingSectionComponent implements OnInit {
       HearingsUtils.getPartiesNotAvailableDates(this.serviceHearingValuesModel.parties),
       HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestToCompareMainModel.partyDetails)
     );
-
-    this.showActionNeededLabelForPageTitle = !this.hearingWindowChangesConfirmed && this.hearingWindowChangesRequired;
+    this.showActionNeededLabelForPageTitle =
+      (!this.hearingWindowChangesConfirmed && this.hearingWindowChangesRequired) ||
+      (!this.hearingUnavailabilityDatesConfirmed && this.hearingUnavailabilityDatesChanged) ||
+      (!this.hearingUnavailabilityDatesConfirmed && this.partyDetailsAnyChangesRequired);
 
     this.showAmendedLabelForPageTitle = !this.showActionNeededLabelForPageTitle &&
       (
         (this.hearingWindowChangesConfirmed && this.hearingWindowChangesRequired) ||
         this.hearingLengthChanged ||
         this.hearingDateChanged ||
-        this.hearingPriorityChanged
+        this.hearingPriorityChanged ||
+        this.hearingUnavailabilityDatesConfirmed
       );
   }
 
@@ -188,7 +195,6 @@ export class HearingTimingSectionComponent implements OnInit {
         new Date(hearingWindow.firstDateTimeMustBe).setHours(0, 0, 0, 0)
       );
     }
-
     return !_.isEqual(hearingWindow, hearingWindowToCompare);
   }
 }

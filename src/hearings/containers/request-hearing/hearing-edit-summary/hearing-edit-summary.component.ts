@@ -222,7 +222,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     }
 
     if (!!this.hearingRequestToCompareMainModel?.partyDetails) {
-      // CompareUnavailabilityDates = this.hearingRequestToCompareMainModel.partyDetails.flatMap((party) => party.unavailabilityRanges);
       CompareUnavailabilityDates = this.hearingRequestToCompareMainModel.partyDetails.flatMap((party) => party.unavailabilityRanges)
         .filter((CompareUnavailabilityDates) => CompareUnavailabilityDates!== null && CompareUnavailabilityDates!== undefined)
         .sort((currentDate, previousDate) => {

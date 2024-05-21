@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
+import { cold } from 'jasmine-marbles';
 import { HearingsUtils } from '../../../../hearings/utils/hearings.utils';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
@@ -1161,7 +1162,28 @@ describe('HearingEditSummaryComponent', () => {
         hearingUnavailabilityDatesChanged: true
       }
     };
-
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
+  });
+
+  it('Welsh language flag should not display', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.ngOnInit();
+
+    const result$ = component.showLanguageRequirementsSection$;
+    const toShow = false;
+    const expected = cold('(b|)', { b: toShow });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('Welsh language flag should display', () => {
+    locations[0].region_id = '7';
+
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.ngOnInit();
+
+    const result$ = component.showLanguageRequirementsSection$;
+    const toShow = true;
+    const expected = cold('(b|)', { b: toShow });
+    expect(result$).toBeObservable(expected);
   });
 });

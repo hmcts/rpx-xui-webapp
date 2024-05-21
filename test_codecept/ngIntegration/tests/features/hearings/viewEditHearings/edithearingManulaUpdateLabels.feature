@@ -1,5 +1,5 @@
 
-@ng @functional_enabled @functional_debug
+@ng @functional_enabled
 Feature: Hearings CR84: Manual update labels
     https://tools.hmcts.net/jira/browse/EUI-9096
 
@@ -25,7 +25,6 @@ Feature: Hearings CR84: Manual update labels
         # Given I set mock hearing data for state "LISTED"
         Given I set mock hearing HMC response from file "viewEditHearings/mock_HMC_setup"
         Given I set mock hearing SHV response from file "viewEditHearings/mock_SHV_setup"
-
 
     Scenario: SCR 1: manual updated fieldsdisplay AMENDED labels
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
@@ -173,30 +172,30 @@ Feature: Hearings CR84: Manual update labels
         # Hearing venue end
 
         # Language requirements start
-        When In view or edit hearing page, I click change link for field "Does this hearing need to be in Welsh?"
-        Then I am on hearings workflow page "Does this hearing need to be in Welsh?"
+        #When In view or edit hearing page, I click change link for field "Does this hearing need to be in Welsh?"
+        #Then I am on hearings workflow page "Does this hearing need to be in Welsh?"
 
-        When In hearing page "Does this hearing need to be in Welsh?", I input values
-            | field                                  | value |
-            | Does this hearing need to be in Welsh? | Yes   |
-
-
-        When I click continue in hearing workflow
-        Then I validate Edit hearing page displayed
+        #When In hearing page "Does this hearing need to be in Welsh?", I input values
+        #    | field                                  | value |
+        #    | Does this hearing need to be in Welsh? | Yes   |
 
 
-        Then I validate edit hearing section heading labels
-            | Heading                 | Label   |
-            | Stage                   | AMENDED |
-            | Hearing venue           | AMENDED |
-            | Language requirements   | AMENDED |
-            | Judge details           |         |
-            | Linked hearings         |         |
-            | Additional instructions |         |
+        #When I click continue in hearing workflow
+        #Then I validate Edit hearing page displayed
 
-        Then I validate fields displayed in view or edit hearing page
-            | field                                  | value | changeLinkDisplay | amendedFlagDisplay |
-            | Does this hearing need to be in Welsh? | Yes   | true              | AMENDED            |
+
+        #Then I validate edit hearing section heading labels
+        #    | Heading                 | Label   |
+        #    | Stage                   | AMENDED |
+        #    | Hearing venue           | AMENDED |
+        #    | Language requirements   | AMENDED |
+        #    | Judge details           |         |
+        #    | Linked hearings         |         |
+        #    | Additional instructions |         |
+
+        #Then I validate fields displayed in view or edit hearing page
+        #    | field                                  | value | changeLinkDisplay | amendedFlagDisplay |
+        #    | Does this hearing need to be in Welsh? | Yes   | true              | AMENDED            |
 
         # Language requirements end
 
@@ -221,7 +220,7 @@ Feature: Hearings CR84: Manual update labels
             | Heading                 | Label   |
             | Stage                   | AMENDED |
             | Hearing venue           | AMENDED |
-            | Language requirements   | AMENDED |
+        #    | Language requirements   | AMENDED |
             | Judge details           | AMENDED |
             | Linked hearings         |         |
             | Additional instructions |         |
@@ -251,7 +250,7 @@ Feature: Hearings CR84: Manual update labels
             | Heading                 | Label   |
             | Stage                   | AMENDED |
             | Hearing venue           | AMENDED |
-            | Language requirements   | AMENDED |
+      #      | Language requirements   | AMENDED |
             | Judge details           | AMENDED |
             | Length, date and priority level of hearing | AMENDED |
             | Linked hearings         |  |
@@ -282,7 +281,7 @@ Feature: Hearings CR84: Manual update labels
             | Heading                 | Label   |
             | Stage                   | AMENDED |
             | Hearing venue           | AMENDED |
-            | Language requirements   | AMENDED |
+     #       | Language requirements   | AMENDED |
             | Judge details           | AMENDED |
             | Linked hearings         | AMENDED |
             | Additional instructions |         |
@@ -312,7 +311,7 @@ Feature: Hearings CR84: Manual update labels
             | Heading                 | Label   |
             | Stage                   | AMENDED |
             | Hearing venue           | AMENDED |
-            | Language requirements   | AMENDED |
+      #      | Language requirements   | AMENDED |
             | Judge details           | AMENDED |
             | Linked hearings         | AMENDED |
             | Additional instructions | AMENDED |

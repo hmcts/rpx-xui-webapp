@@ -463,6 +463,145 @@ describe('HearingEditSummaryComponent', () => {
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesRequired).toEqual(true);
   });
 
+  it('should remove nulls and order unavailability ranges to consistent order, values differ', () => {
+    component.hearingRequestToCompareMainModel = _.cloneDeep(initialState.hearings.hearingRequestToCompare.hearingRequestMainModel);
+    component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
+    component.serviceHearingValuesModel.parties = [
+      {
+        partyID: 'P1',
+        partyName: 'Jane Smith',
+        partyType: PartyType.IND,
+        partyRole: 'New appellant',
+        individualDetails: {
+          title: 'Miss',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          reasonableAdjustments: null,
+          interpreterLanguage: 'PF0015',
+          preferredHearingChannel: 'byVideo',
+          relatedParties: null,
+          custodyStatus: 'New custody status',
+          vulnerableFlag: true,
+          vulnerabilityDetails: 'New vulnerability details',
+          hearingChannelEmail: ['New email'],
+          hearingChannelPhone: ['New Phone']
+        },
+        unavailabilityDOW: null,
+        unavailabilityRanges: [{
+          unavailableFromDate: '2024-01-01T10:00:00',
+          unavailableToDate: '2024-01-14T10:00:00',
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        },
+        {
+          unavailableFromDate: '2024-03-01T10:00:00',
+          unavailableToDate: '2024-03-14T10:00:00',
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        },
+        {
+          unavailableFromDate: '2024-03-01T10:00:00',
+          unavailableToDate: '2024-03-12T10:00:00',
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        },
+        {
+          unavailableFromDate: '2024-02-01T10:00:00',
+          unavailableToDate: '2024-02-14T10:00:00',
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        }]
+      }];
+    component.hearingRequestToCompareMainModel.partyDetails[0].unavailabilityRanges = [{
+      unavailableFromDate: '2024-02-01T10:00:00',
+      unavailableToDate: '2024-02-14T10:00:00',
+      unavailabilityType: UnavailabilityType.ALL_DAY
+    },
+    {
+      unavailableFromDate: '2024-03-01T10:00:00',
+      unavailableToDate: '2024-03-14T10:00:00',
+      unavailabilityType: UnavailabilityType.ALL_DAY
+    }, null,
+    {
+      unavailableFromDate: '2024-01-01T10:00:00',
+      unavailableToDate: '2024-01-14T10:00:00',
+      unavailabilityType: UnavailabilityType.ALL_DAY
+    }];
+    component.ngOnInit();
+    expect(component.hasHearingRequestPartiesUnavailableDatesChanged()).toEqual(true);
+  });
+
+  it('should remove nulls and order unavailability ranges to consistent order, values the same', () => {
+    component.hearingRequestToCompareMainModel = _.cloneDeep(initialState.hearings.hearingRequestToCompare.hearingRequestMainModel);
+    component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
+    component.serviceHearingValuesModel.parties = [
+      {
+        partyID: 'P1',
+        partyName: 'Jane Smith',
+        partyType: PartyType.IND,
+        partyRole: 'New appellant',
+        individualDetails: {
+          title: 'Miss',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          reasonableAdjustments: null,
+          interpreterLanguage: 'PF0015',
+          preferredHearingChannel: 'byVideo',
+          relatedParties: null,
+          custodyStatus: 'New custody status',
+          vulnerableFlag: true,
+          vulnerabilityDetails: 'New vulnerability details',
+          hearingChannelEmail: ['New email'],
+          hearingChannelPhone: ['New Phone']
+        },
+        unavailabilityDOW: null,
+        unavailabilityRanges: [{
+          unavailableFromDate: '2024-01-01T10:00:00.000Z',
+          unavailableToDate: '2024-01-14T10:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        },
+        {
+          unavailableFromDate: '2024-03-01T10:00:00.000Z',
+          unavailableToDate: '2024-03-14T10:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        },
+        {
+          unavailableFromDate: '2024-03-01T10:00:00.000Z',
+          unavailableToDate: '2024-03-12T10:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        },
+        {
+          unavailableFromDate: '2024-02-01T10:00:00.000Z',
+          unavailableToDate: '2024-02-14T10:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        },
+        {
+          unavailableFromDate: '2021-12-20T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        }]
+      }
+    ];
+    component.hearingRequestToCompareMainModel.partyDetails[0].unavailabilityRanges = [{
+      unavailableFromDate: '2024-02-01T10:00:00.000Z',
+      unavailableToDate: '2024-02-14T10:00:00.000Z',
+      unavailabilityType: UnavailabilityType.ALL_DAY
+    },
+    {
+      unavailableFromDate: '2024-03-01T10:00:00.000Z',
+      unavailableToDate: '2024-03-14T10:00:00.000Z',
+      unavailabilityType: UnavailabilityType.ALL_DAY
+    }, null,
+    {
+      unavailableFromDate: '2024-01-01T10:00:00.000Z',
+      unavailableToDate: '2024-01-14T10:00:00.000Z',
+      unavailabilityType: UnavailabilityType.ALL_DAY
+    }, undefined,
+    {
+      unavailableFromDate: '2024-03-01T10:00:00.000Z',
+      unavailableToDate: '2024-03-12T10:00:00.000Z',
+      unavailabilityType: UnavailabilityType.ALL_DAY
+    }];
+    component.ngOnInit();
+    expect(component.hasHearingRequestPartiesUnavailableDatesChanged()).toEqual(false);
+  });
+
   it('should set the hearingWindowChangesRequired to false', () => {
     hearingsService.propertiesUpdatedOnPageVisit = null;
     component.hearingRequestMainModel.hearingDetails.hearingWindow = {

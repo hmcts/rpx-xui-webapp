@@ -26,7 +26,6 @@ Feature: Hearings CR84: Manual update labels
         Given I set mock hearing HMC response from file "viewEditHearings/mock_HMC_setup"
         Given I set mock hearing SHV response from file "viewEditHearings/mock_SHV_setup"
 
-  @ignore
     Scenario: SCR 1: manual updated fieldsdisplay AMENDED labels
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
         Then I am on hearings tab page

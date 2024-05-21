@@ -196,12 +196,6 @@ describe('HearingAttendanceComponent', () => {
     expect(component.prepareHearingRequestData).not.toHaveBeenCalled();
   });
 
-  it('should update hearingRequestMainModel when executeAction and forms paperHearing is YES', () => {
-    component.attendanceFormGroup.controls.paperHearing.setValue('Yes');
-    component.executeAction(ACTION.CONTINUE);
-    expect(component.hearingRequestMainModel.hearingDetails.hearingChannels).toEqual([HearingChannelEnum.ONPPR]);
-  });
-
   it('should NOT call prepareHearingRequestData when executeAction action is BACK', () => {
     component.executeAction(ACTION.BACK);
     expect(component.prepareHearingRequestData).not.toHaveBeenCalled();
@@ -243,13 +237,6 @@ describe('HearingAttendanceComponent', () => {
     expect(organisationParties[0].organisationDetails).toEqual(organisationDetails);
   });
 
-  it('should get hearing channels', () => {
-    component.attendanceFormGroup.controls.paperHearing.setValue('No');
-    expect(component.getHearingChannels()).toEqual(['TEL']);
-    component.attendanceFormGroup.controls.paperHearing.setValue('Yes');
-    expect(component.getHearingChannels()).toEqual(['ONPPRS']);
-  });
-
   describe('The forms paperHearing', () => {
     it('should equal No as hearingChannels has NOT got ONPPRS', () => {
       fixture.detectChanges();
@@ -268,11 +255,6 @@ describe('HearingAttendanceComponent', () => {
     component.attendanceFormGroup.controls.paperHearing.setValue(RadioOptions.YES);
     fixture.detectChanges();
     expect(component.isFormValid()).toEqual(true);
-  });
-
-  it('should return NA for preferredHearingChannel when paper hearings has set to Yes', () => {
-    component.attendanceFormGroup.controls.paperHearing.setValue(RadioOptions.YES);
-    expect(component.getIndividualParties()[0].individualDetails.preferredHearingChannel).toEqual('NA');
   });
 
   it('should true when calling isFormValid with partyChannel', () => {

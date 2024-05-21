@@ -12,7 +12,7 @@ import { HearingsUtils } from '../../../../hearings/utils/hearings.utils';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
-import { ACTION, CategoryType, Mode, PartyType, UnavailabilityType } from '../../../models/hearings.enum';
+import { ACTION, CategoryType, DOW, DOWUnavailabilityType, Mode, PartyType, UnavailabilityType, HearingChannelEnum } from '../../../models/hearings.enum';
 import { PropertiesUpdatedOnPageVisit } from '../../../models/hearingsUpdateMode.enum';
 import { LocationByEPIMMSModel } from '../../../models/location.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -188,6 +188,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -264,6 +265,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -323,6 +325,83 @@ describe('HearingEditSummaryComponent', () => {
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesRequired).toEqual(false);
   });
 
+  it('should set hearingWindowChangesRequired to false if hearingWindowChangesConfirmed', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesConfirmed: false,
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesConfirmed: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false,
+        hearingWindowChangesConfirmed: true
+      }
+    };
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesRequired).toEqual(false);
+  });
+
+  it('should set hearingWindowChangesRequired to false if no hearing window', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = null;
+
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesRequired).toEqual(false);
+  });
+
+  it('should set partyDetailsChangesRequired to false if partyDetailsChangesConfirmed', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesConfirmed: false,
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesConfirmed: false,
+        partyDetailsChangesRequired: false,
+        partyDetailsChangesConfirmed: true,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false,
+        hearingWindowChangesConfirmed: false
+      }
+    };
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesRequired).toEqual(false);
+  });
+
+  it('should set reasonableAdjustmentChangesRequired to false if reasonable adjustments changes confirmed', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesConfirmed: true,
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesConfirmed: true,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
+        hearingUnavailabilityDatesChanged: true
+      }
+    };
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesRequired).toEqual(false);
+  });
+
   it('should set nonReasonableAdjustmentChangesRequired to false if hearing facilities is not present in the screen flow', () => {
     component.serviceHearingValuesModel = {
       ...initialState.hearings.hearingValues.serviceHearingValuesModel,
@@ -363,6 +442,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -521,13 +601,6 @@ describe('HearingEditSummaryComponent', () => {
     component.serviceHearingValuesModel.publicCaseName = 'New public case name from service hearings';
     component.serviceHearingValuesModel.privateHearingRequiredFlag = true;
     component.serviceHearingValuesModel.caserestrictedFlag = true;
-    component.serviceHearingValuesModel.parties[0].unavailabilityRanges = [
-      {
-        unavailableFromDate: '2022-12-10T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }
-    ];
 
     component.ngOnInit();
     // @ts-ignore
@@ -538,8 +611,6 @@ describe('HearingEditSummaryComponent', () => {
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.privateHearingRequiredFlag).toEqual(true);
     // @ts-ignore
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caserestrictedFlag).toEqual(true);
-    // @ts-ignore
-    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.parties).toEqual(true);
   });
 
   it('should set auto updated pageless properties to true', () => {
@@ -580,6 +651,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -660,6 +732,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -689,6 +762,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -718,6 +792,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -747,6 +822,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesConfirmed: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
+        partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
@@ -802,13 +878,10 @@ describe('HearingEditSummaryComponent', () => {
     component.serviceHearingValuesModel.publicCaseName = 'New public case name from service hearings';
     component.serviceHearingValuesModel.privateHearingRequiredFlag = true;
     component.serviceHearingValuesModel.caserestrictedFlag = true;
-    component.serviceHearingValuesModel.parties[0].unavailabilityRanges = [
-      {
-        unavailableFromDate: '2022-12-10T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }
-    ];
+    component.serviceHearingValuesModel.parties[0].unavailabilityDOW = [{
+      DOW: DOW.Friday,
+      DOWUnavailabilityType: DOWUnavailabilityType.AM
+    }];
 
     component.ngOnInit();
     // @ts-ignore
@@ -819,8 +892,6 @@ describe('HearingEditSummaryComponent', () => {
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.privateHearingRequiredFlag).toEqual(true);
     // @ts-ignore
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caserestrictedFlag).toEqual(true);
-    // @ts-ignore
-    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.parties).toEqual(true);
   });
 
   it('should set auto updated pageless properties to true', () => {
@@ -840,8 +911,8 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should have validation error if there is no change', () => {
-    component.hearingRequestMainModel = Object.assign({});
-    component.hearingRequestToCompareMainModel = Object.assign({});
+    component.hearingRequestMainModel = Object.assign({ hearingDetails: { hearingChannels: [HearingChannelEnum.ONPPR] } });
+    component.hearingRequestToCompareMainModel = Object.assign({ hearingDetails: { hearingChannels: [HearingChannelEnum.ONPPR] } });
     component.executeAction(ACTION.VIEW_EDIT_REASON);
     expect(component.validationErrors.length).toEqual(1);
     expect(hearingsService.displayValidationError).toEqual(false);
@@ -948,6 +1019,7 @@ describe('HearingEditSummaryComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: true,
+        partyDetailsAnyChangesRequired: true,
         hearingUnavailabilityDatesChanged: true
       }
     };

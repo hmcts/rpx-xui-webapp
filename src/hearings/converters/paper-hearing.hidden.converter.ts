@@ -10,7 +10,9 @@ export class PaperHearingHiddenConverter implements HiddenConverter {
       const hearingChannels = state.hearingConditions?.isHearingAmendmentsEnabled
         ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingChannels
         : state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels;
-      return hearingChannels.includes(HearingChannelEnum.ONPPR);
+
+      return (hearingChannels.includes(HearingChannelEnum.ONPPR)
+        || !!state.hearingRequest.hearingRequestMainModel.hearingDetails.isPaperHearing);
     }
     ));
   }

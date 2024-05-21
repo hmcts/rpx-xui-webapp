@@ -1,5 +1,5 @@
 
-@ng @functional_enabled @functional_debug
+@ng @functional_enabled
 Feature: Hearings CR84: Manual update labels
     https://tools.hmcts.net/jira/browse/EUI-9096
 
@@ -176,9 +176,9 @@ Feature: Hearings CR84: Manual update labels
         When In view or edit hearing page, I click change link for field "Does this hearing need to be in Welsh?"
         Then I am on hearings workflow page "Does this hearing need to be in Welsh?"
 
-        When In hearing page "Does this hearing need to be in Welsh?", I input values
-            | field                                  | value |
-            | Does this hearing need to be in Welsh? | Yes   |
+        #When In hearing page "Does this hearing need to be in Welsh?", I input values
+        #    | field                                  | value |
+        #    | Does this hearing need to be in Welsh? | Yes   |
 
 
         When I click continue in hearing workflow

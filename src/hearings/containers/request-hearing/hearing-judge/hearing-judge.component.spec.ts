@@ -158,7 +158,6 @@ describe('HearingJudgeComponent', () => {
   });
 
   it('should not allow the same judge name in include and exclude list', () => {
-    console.log('break on entry');
     component.showSpecificJudge(RadioOptions.YES);
     component.hearingJudgeForm.controls.judgeName.setValue(judgeInfo);
     component.excludedJudge.judgeList = [judgeInfo];
@@ -169,7 +168,6 @@ describe('HearingJudgeComponent', () => {
   });
 
   it('should not validate the same judge name in include and exclude list when no specific judge option selected', () => {
-    console.log('break on entry');
     component.showSpecificJudge(RadioOptions.NO);
     component.hearingJudgeForm.controls.judgeName.setValue(judgeInfo);
     component.excludedJudge.judgeList = [judgeInfo];

@@ -109,7 +109,7 @@ exports.config = {
       restart: true,
       show: head,
       waitForNavigation: "domcontentloaded",
-      waitForAction: 10,
+      waitForAction: 100,
       browser: 'chromium',
       // disableScreenshots: false,
       fullPageScreenshots: true,
@@ -201,13 +201,12 @@ exports.config = {
   include: {
   },
   retry: {
-    Feature: 3
-
+    retries: 3
   },
   bootstrap:async () =>{
     share({ users: [], reuseCounter: 0 });
     if(!parallel){
-      await setup()
+    await setup()
     }
 
   },

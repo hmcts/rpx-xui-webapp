@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
-import * as momentTimezone from 'moment-timezone'
+import * as momentTimezone from 'moment-timezone';
 import { Subscription, combineLatest } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import { isEqual } from 'underscore';

@@ -62,6 +62,7 @@ import { effects } from './store/effects';
 // ngrx modules - END
 // APP store
 import { CustomSerializer, reducers } from './store/reducers';
+import { InitialisationSyncService } from './services/ccd-config/initialisation-sync-service';
 // enforces immutability
 export const metaReducers: MetaReducer<any>[] = !environment.production
   ? [storeFreeze]
@@ -138,7 +139,9 @@ export function launchDarklyClientIdFactory(
     FilterService,
     GoogleTagManagerService,
     LoadingService,
-    RoleService
+    RoleService,
+    InitialisationSyncService,
+    { provide: Window, useValue: window }
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

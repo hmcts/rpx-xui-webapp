@@ -11,8 +11,6 @@ import { AbstractPageFlow } from '../../utils/abstract-page-flow';
   styleUrls: ['./request-hearing.component.scss']
 })
 export class RequestHearingComponent implements OnDestroy {
-  public hasSubmitted = false;
-
   public action = ACTION;
 
   public caseId: string;
@@ -35,13 +33,13 @@ export class RequestHearingComponent implements OnDestroy {
       this.hearingsService.submitUpdatedRequestClicked = true;
     } else {
       // if we are submitting and awaiting backend process
-      this.hasSubmitted = true;
+      this.hearingsService.hearingRequestForSubmitValid = false;
     }
     this.hearingsService.navigateAction(action);
   }
 
-  public get isSummary(): boolean {
-    return this.isCreateEditSummary || this.isViewEditSummary;
+  public buttonDisabled(): boolean {
+    return ACTION.VIEW_EDIT_SUBMIT && this.hearingsService.hearingRequestForSubmitValid;
   }
 
   public get isCreateEditSummary(): boolean {

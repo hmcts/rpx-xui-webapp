@@ -9,7 +9,8 @@ import { AnswerConverter } from './answer.converter';
 
 export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
   constructor(
-    protected readonly route: ActivatedRoute) {}
+    protected readonly route: ActivatedRoute) {
+  }
 
   public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
     const partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];

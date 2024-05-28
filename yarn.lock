@@ -4469,6 +4469,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@playwright/test@npm:^1.42.0":
+  version: 1.44.1
+  resolution: "@playwright/test@npm:1.44.1"
+  dependencies:
+    playwright: 1.44.1
+  bin:
+    playwright: cli.js
+  checksum: 90507b77e388aa984deb92db56f7bb3b305c6be441e1d0087ca046989cfdda068bbc26d75bd29c20ad3dbb2434e69a8ff0d6b30003b88c9234cd3aa6a9f7deb9
+  languageName: node
+  linkType: hard
+
 "@puppeteer/browsers@npm:2.1.0":
   version: 2.1.0
   resolution: "@puppeteer/browsers@npm:2.1.0"
@@ -17866,27 +17877,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.41.0":
-  version: 1.41.0
-  resolution: "playwright-core@npm:1.41.0"
+"playwright-core@npm:1.44.1":
+  version: 1.44.1
+  resolution: "playwright-core@npm:1.44.1"
   bin:
     playwright-core: cli.js
-  checksum: 14671265916a1fd0c71d94640de19c48bcce3f7dec35530f10e349e97030ea44ffa8ee518cbf811501e3ab2b74874aecf917e46bf40fea0570db1d4bea1fe7ac
+  checksum: ebc6fa0ff77792fe52648fda06cc4474d4e9746db6dc5750d262b7fe2caf9f9e2327a71f1fb365e862213403a9daf95361c5040a9b0fd462928d7eb4fdc760e1
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.18":
-  version: 1.41.0
-  resolution: "playwright@npm:1.41.0"
+"playwright@npm:1.44.1, playwright@npm:^1.42":
+  version: 1.44.1
+  resolution: "playwright@npm:1.44.1"
   dependencies:
     fsevents: 2.3.2
-    playwright-core: 1.41.0
+    playwright-core: 1.44.1
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: e7c32136911c58e06b964fe7d33f8b3d8f6a067ae5218662a0811dd6c90e007db1774eb7e161f4aa748d760f404f4c066b7b7303c2b617f7448b6ee4b86c9999
+  checksum: c2e8ff0a855e4a9e665ae5ffa0ff90423289546157be55e83f78916d17075c5910a7244773739c2a973da884a4ff0b3cf9b6e6b543de112e43b12169a9208e86
   languageName: node
   linkType: hard
 
@@ -19194,6 +19205,7 @@ __metadata:
     "@nicky-lenaers/ngx-scroll-to": ^14.0.0
     "@pact-foundation/pact": ^9.11.1
     "@pact-foundation/pact-node": ^10.9.7
+    "@playwright/test": ^1.42.0
     "@stryker-mutator/api": ^3.0.1
     "@stryker-mutator/core": ^3.0.1
     "@stryker-mutator/html-reporter": ^3.0.1
@@ -19294,7 +19306,7 @@ __metadata:
     p-iteration: ^1.1.7
     pa11y: ^5.3.0
     pegjs: ^0.10.0
-    playwright: ^1.18
+    playwright: ^1.42
     portfinder: ^1.0.28
     protractor: ~7.0.0
     protractor-cucumber-framework: ^9.7.0

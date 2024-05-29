@@ -2061,19 +2061,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@circlon/angular-tree-component@npm:^11.0.4":
-  version: 11.0.4
-  resolution: "@circlon/angular-tree-component@npm:11.0.4"
-  dependencies:
-    mobx: ~4.14.1
-    tslib: ^2.0.0
-  peerDependencies:
-    "@angular/common": ">=11.0.0"
-    "@angular/core": ">=11.0.0"
-  checksum: bbadb1231b7422fa829da9afb10f0fa31a770c4c860e9aafec697260e47705d5b6c0e46dee3913fe0d1a8308ac0f19c4c0aaa9c27a956ecf1e37bee62723d2aa
-  languageName: node
-  linkType: hard
-
 "@codeceptjs/configure@npm:0.10.0":
   version: 0.10.0
   resolution: "@codeceptjs/configure@npm:0.10.0"
@@ -2615,24 +2602,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.33":
-  version: 7.0.33
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.33"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.37":
+  version: 7.0.37
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.37"
   dependencies:
     tslib: ^2.3.0
-  checksum: 68c26064126cf29b72c73be0eeea005c6ee501972aa7db38ea7761cde1ea6d2e36d6aac9101ac101253f4e10bbf32ad747487fa4226f63348e6017068feb95e9
+  checksum: 76247830276f7077720eb0a8b133b99a943dfc7576885033a04d5569e5b8e956b60b32159ada37c5ae9a6cc9fcbe621dfdcae6e25f68ec2d77b0e69a3c0f4894
   languageName: node
   linkType: hard
 
-"@hmcts/ccpay-web-component@npm:6.1.9":
-  version: 6.1.9
-  resolution: "@hmcts/ccpay-web-component@npm:6.1.9"
+"@hmcts/ccpay-web-component@npm:6.1.10":
+  version: 6.1.10
+  resolution: "@hmcts/ccpay-web-component@npm:6.1.10"
   dependencies:
     tslib: ^2.3.0
   peerDependencies:
     "@angular/common": ^16.1.6
     "@angular/core": ^16.1.6
-  checksum: 885eaffaa46e131421e17690431de45cae879b6c570e381a5267e5d9b445c4d1aa3d282909e1d3cf3ccc4c0209397788cac8f11d7a46efb30b1d4b83c3ad3085
+  checksum: 888075d45cebb9fb3ea8cdc0791c1ef89bffac23e429b25b086f1051777d6b7eae86953c22f3f7edc8a57d443ac01c95350e3a4dfd00d7b1e50290a96caa1a04
   languageName: node
   linkType: hard
 
@@ -2643,11 +2630,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:3.0.4":
-  version: 3.0.4
-  resolution: "@hmcts/media-viewer@npm:3.0.4"
+"@hmcts/media-viewer@npm:3.1.2":
+  version: 3.1.2
+  resolution: "@hmcts/media-viewer@npm:3.1.2"
   dependencies:
-    "@circlon/angular-tree-component": ^11.0.4
     "@swimlane/ngx-datatable": ^20.0.0
     hammerjs: ^2.0.8
     mutable-div: ^1.0.0
@@ -2666,7 +2652,7 @@ __metadata:
     "@ngrx/router-store": ^15.0.0
     "@ngrx/store": ^15.0.0
     "@ngrx/store-devtools": ^15.0.0
-  checksum: fb49991caf27ea3e74e94e54cf00f485828cfe76968a54a94fa3c3a84c1b7af9e77e90d5b4f06b98c023cbc5a3c144f64d5ca0efa55d3b4c03eff279382199c4
+  checksum: 989d9394f699f7c4ff8fd20b9c57373ddf58bb80f657e68d4f8a452755f80dbf4b1279b7de509f2f9749205bf52f99e45fbbee41f48c6891f5dccd4ba4e16a75
   languageName: node
   linkType: hard
 
@@ -4480,6 +4466,17 @@ __metadata:
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
   checksum: 6ad6a00fc4f2f2cfc6bff76fb1d88b8ee20bc0601e18ebb01b6d4be583733a860239a521a7fbca73b612e66705078809483549d2b18f370eb346c5155c8e4a0f
+  languageName: node
+  linkType: hard
+
+"@playwright/test@npm:^1.42.0":
+  version: 1.44.1
+  resolution: "@playwright/test@npm:1.44.1"
+  dependencies:
+    playwright: 1.44.1
+  bin:
+    playwright: cli.js
+  checksum: 90507b77e388aa984deb92db56f7bb3b305c6be441e1d0087ca046989cfdda068bbc26d75bd29c20ad3dbb2434e69a8ff0d6b30003b88c9234cd3aa6a9f7deb9
   languageName: node
   linkType: hard
 
@@ -15938,13 +15935,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mobx@npm:~4.14.1":
-  version: 4.14.1
-  resolution: "mobx@npm:4.14.1"
-  checksum: 0acf79c55fc77310e52b67a8ac9c8a00276c616cff0919bcc7ce7c9494ce97e2bbbc20abd5f75944f2a66a398e1e96b46d06b195f712069eb15305298c1717c1
-  languageName: node
-  linkType: hard
-
 "mocha@npm:10.2.0":
   version: 10.2.0
   resolution: "mocha@npm:10.2.0"
@@ -17887,27 +17877,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.41.0":
-  version: 1.41.0
-  resolution: "playwright-core@npm:1.41.0"
+"playwright-core@npm:1.44.1":
+  version: 1.44.1
+  resolution: "playwright-core@npm:1.44.1"
   bin:
     playwright-core: cli.js
-  checksum: 14671265916a1fd0c71d94640de19c48bcce3f7dec35530f10e349e97030ea44ffa8ee518cbf811501e3ab2b74874aecf917e46bf40fea0570db1d4bea1fe7ac
+  checksum: ebc6fa0ff77792fe52648fda06cc4474d4e9746db6dc5750d262b7fe2caf9f9e2327a71f1fb365e862213403a9daf95361c5040a9b0fd462928d7eb4fdc760e1
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.18":
-  version: 1.41.0
-  resolution: "playwright@npm:1.41.0"
+"playwright@npm:1.44.1, playwright@npm:^1.42":
+  version: 1.44.1
+  resolution: "playwright@npm:1.44.1"
   dependencies:
     fsevents: 2.3.2
-    playwright-core: 1.41.0
+    playwright-core: 1.44.1
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: e7c32136911c58e06b964fe7d33f8b3d8f6a067ae5218662a0811dd6c90e007db1774eb7e161f4aa748d760f404f4c066b7b7303c2b617f7448b6ee4b86c9999
+  checksum: c2e8ff0a855e4a9e665ae5ffa0ff90423289546157be55e83f78916d17075c5910a7244773739c2a973da884a4ff0b3cf9b6e6b543de112e43b12169a9208e86
   languageName: node
   linkType: hard
 
@@ -19195,10 +19185,10 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.33
-    "@hmcts/ccpay-web-component": 6.1.9
+    "@hmcts/ccd-case-ui-toolkit": 7.0.37
+    "@hmcts/ccpay-web-component": 6.1.10
     "@hmcts/frontend": 0.0.50-alpha
-    "@hmcts/media-viewer": 3.0.4
+    "@hmcts/media-viewer": 3.1.2
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
     "@hmcts/rpx-xui-common-lib": 2.0.17-search-venue-fix-rc2
@@ -19215,6 +19205,7 @@ __metadata:
     "@nicky-lenaers/ngx-scroll-to": ^14.0.0
     "@pact-foundation/pact": ^9.11.1
     "@pact-foundation/pact-node": ^10.9.7
+    "@playwright/test": ^1.42.0
     "@stryker-mutator/api": ^3.0.1
     "@stryker-mutator/core": ^3.0.1
     "@stryker-mutator/html-reporter": ^3.0.1
@@ -19315,7 +19306,7 @@ __metadata:
     p-iteration: ^1.1.7
     pa11y: ^5.3.0
     pegjs: ^0.10.0
-    playwright: ^1.18
+    playwright: ^1.42
     portfinder: ^1.0.28
     protractor: ~7.0.0
     protractor-cucumber-framework: ^9.7.0

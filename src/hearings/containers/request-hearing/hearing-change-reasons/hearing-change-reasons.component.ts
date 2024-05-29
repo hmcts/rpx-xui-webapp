@@ -96,6 +96,7 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
   public executeAction(action: ACTION): void {
     if (action === ACTION.VIEW_EDIT_SUBMIT) {
       if (this.isFormValid(action)) {
+        this.hearingsService.hearingRequestForSubmitValid = true;
         this.prepareHearingRequestData();
         super.navigateAction(action);
       }

@@ -26,6 +26,7 @@ export class HearingsService {
   public propertiesUpdatedAutomatically: PropertiesUpdatedAutomatically = { pageless: {}, withinPage: {} };
   public displayValidationError: boolean = false;
   public submitUpdatedRequestClicked: boolean = false;
+  public hearingRequestForSubmitValid: boolean = false;
 
   constructor(private readonly http: HttpClient) { }
 

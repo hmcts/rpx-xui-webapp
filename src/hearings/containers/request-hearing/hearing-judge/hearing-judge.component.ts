@@ -201,11 +201,9 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   }
 
   public checkSameJudgeSelectionError(): void {
-    if (this.specificJudgeSelection === RadioOptions.YES) {
-      if (this.isSameJudgeSelected()) {
-        this.selectJudgeNameError = HearingJudgeSelectionEnum.SameJudgeInIncludeExcludeList;
-        this.validationErrors.push({ id: 'inputSelectPerson', message: HearingJudgeSelectionEnum.SameJudgeInIncludeExcludeList });
-      }
+    if (this.isSameJudgeSelected()) {
+      this.selectJudgeNameError = HearingJudgeSelectionEnum.SameJudgeInIncludeExcludeList;
+      this.validationErrors.push({ id: 'inputSelectPerson', message: HearingJudgeSelectionEnum.SameJudgeInIncludeExcludeList });
     }
   }
 
@@ -220,8 +218,11 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   }
 
   private isSameJudgeSelected(): boolean {
-    const includedJudge = this.hearingJudgeForm.controls?.judgeName?.value?.personalCode;
-    return this.excludedJudge.judgeList.map((judge) => judge.personalCode).includes(includedJudge);
+    if (this.specificJudgeSelection === RadioOptions.YES) {
+      const includedJudge = this.hearingJudgeForm.controls?.judgeName?.value?.personalCode;
+      return this.excludedJudge.judgeList.map((judge) => judge.personalCode).includes(includedJudge);
+    }
+    return false;
   }
 
   public isFormValid(): boolean {

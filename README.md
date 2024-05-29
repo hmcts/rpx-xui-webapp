@@ -180,7 +180,7 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 ## Running pure playwright end-to-end tests
 
-Run `HEAD=true TEST_URL=<testurl> yarn test:fullfunctional2` to execute the pure playwright end-to-end tests via [Playwright](https://playwright.dev/).
+Run `HEAD=true CASEAPIBASEURL=https://manage-case.aat.platform.hmcts.net/cases yarn test:fullfunctional2` to execute the pure playwright end-to-end tests on aat via [Playwright](https://playwright.dev/).
 
 ## Running Consumer Driven Contract tests (pact)
 

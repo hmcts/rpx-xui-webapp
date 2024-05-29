@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import config from "../config.ts"
 
-test('test', async ({ page }) => {
+test('login un-authenticated user login', async ({ page }) => {
   await page.goto(config.CaseAPIBaseURL);
   await page.getByLabel('Email address').fill('test_nonexisting_or_invalid@gmail.com');
   await page.getByLabel('Password').click();

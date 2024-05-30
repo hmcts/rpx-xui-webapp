@@ -3150,15 +3150,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccpay-web-component@npm:6.2.1-beta2":
-  version: 6.2.1-beta2
-  resolution: "@hmcts/ccpay-web-component@npm:6.2.1-beta2"
+"@hmcts/ccpay-web-component@npm:6.2.1":
+  version: 6.2.1
+  resolution: "@hmcts/ccpay-web-component@npm:6.2.1"
   dependencies:
     tslib: ^2.3.0
   peerDependencies:
     "@angular/common": ^16.1.6
     "@angular/core": ^16.1.6
-  checksum: 280c7104a886f8404ab313729c2850c7f58c3672ffea4fe16b3bc3f4d9af7702a95b93a56108164365be83fd018e4706eda8a1bc42a7cbea31eff70ebde71193
+  checksum: e93a9408750823b13933cc478ba6dfdf89cf2620e4bb2d30b344ff1ac26ef3a67c5272cc85e0d0307b01412fa54b00c37ce08c5129b41b9931cf190bc738c69a
   languageName: node
   linkType: hard
 
@@ -21534,7 +21534,7 @@ __metadata:
     "@angular/ssr": ^17.3.6
     "@edium/fsm": ^2.1.2
     "@hmcts/ccd-case-ui-toolkit": 7.0.37-angular-upgrade
-    "@hmcts/ccpay-web-component": 6.2.1-beta2
+    "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 4.0.1
     "@hmcts/nodejs-healthcheck": 1.7.0

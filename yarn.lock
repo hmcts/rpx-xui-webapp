@@ -2900,12 +2900,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.37-rc2":
-  version: 7.0.37-rc2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.37-rc2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.38":
+  version: 7.0.38
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.38"
   dependencies:
     tslib: ^2.3.0
-  checksum: 366ced400b0e068558566108fa2e8cad0e9e241523022cd4e91df87d75c4fd074ac3de8f0c635831d34f84290b46cb8a865439a19f3138789aab5ceb3db330a6
+  checksum: 70d108e70dbf61c4e1d87cefc0fc52fa176f117dde9904f4890839e277f94023f6dc9e35a43c2e75e357ed709e494b52e1e66271213e17694f96fe570898d91c
   languageName: node
   linkType: hard
 
@@ -2987,16 +2987,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.19":
-  version: 2.0.19
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.19"
+"@hmcts/rpx-xui-common-lib@npm:2.0.20":
+  version: 2.0.20
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.20"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 68b12d353b375baa311da23ad56b7c5e0b13016fcbf931066c8ac0c065ba36dfb2a04030d78c8eed0c6546899b5e939227b7baefed525fd7f8dbc959c94e53b5
+  checksum: 94522b29ed0e95f4d7b0a35e68a6a4df072ee283c69a70bc97a6a84d31ef0296c74bd5cfa01744469c055db29fd85c3afeb76102b15218ff430dc2d24abb9e62
   languageName: node
   linkType: hard
 
@@ -19457,13 +19457,13 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.37-rc2
+    "@hmcts/ccd-case-ui-toolkit": 7.0.38
     "@hmcts/ccpay-web-component": 6.1.10
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 3.1.2
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 2.0.19
+    "@hmcts/rpx-xui-common-lib": 2.0.20
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@microsoft/applicationinsights-web": ^3.1.0
     "@ng-idle/core": ^11.1.0

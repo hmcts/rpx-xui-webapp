@@ -39,10 +39,10 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
     const dayRequired = !hearingDay.notRequired;
     let updatedActuals;
 
-    if(!dayRequired) {
+    if (!dayRequired) {
       updatedActuals = {
-        hearingStartTime: "",
-        hearingEndTime: "",
+        hearingStartTime: '',
+        hearingEndTime: '',
         pauseDateTimes: [],
         notRequired: dayRequired,
         actualDayParties: []

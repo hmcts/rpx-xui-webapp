@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CaseFlagGroup } from '../../models/caseFlagGroup.model';
 import { AmendmentLabelStatus } from '../../models/hearingsUpdateMode.enum';
+import { PartyFlagsDisplayModel } from 'src/hearings/models/partyFlags.model';
 
 @Component({
   selector: 'exui-case-flags',
@@ -13,7 +14,11 @@ export class CaseFlagsComponent {
 
   public amendmentLabelStatus = AmendmentLabelStatus;
 
-  public showLanguage(name: string): boolean {
-    return name && name.includes('Language Interpreter');
+  private checkName(name: string): boolean {
+    return name?.includes('Language Interpreter');
+  }
+
+  public showDescription(partyFlag: PartyFlagsDisplayModel): boolean {
+    return this.checkName(partyFlag.displayName) && partyFlag?.flagComment?.length > 0 && partyFlag?.flagDescription?.length > 0;
   }
 }

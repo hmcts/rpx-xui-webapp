@@ -7,6 +7,7 @@ export interface PartyFlagsModel {
   flagId: string;
   flagDescription: string;
   flagStatus: string;
+  flagComment?: string;
   dateTimeCreated?: string;
   dateTimeModified?: string;
 }
@@ -18,6 +19,7 @@ export interface PartyFlagsDisplayModel {
   flagId: string;
   flagDescription: string;
   flagStatus: string;
+  flagComment?: string;
   dateTimeCreated?: string;
   dateTimeModified?: string;
   displayName: string;

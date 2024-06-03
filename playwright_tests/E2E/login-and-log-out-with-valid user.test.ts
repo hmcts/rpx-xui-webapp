@@ -4,7 +4,7 @@ const testConfig = require('../../test_codecept/e2e/config/appTestConfig');
 
 test('login and log out from EUI with valid user', async ({ page }) => {
   const matchingUsers = testConfig.users[testConfig.testEnv].filter((user) => user.userIdentifier === 'PROD_LIKE');
-  await page.goto(config.CaseAPIBaseURL);
+  await page.goto(config.CaseBaseURL);
   await expect(page.getByRole('heading', { name: 'Sign in or create an account' })).toBeVisible();  await page.getByLabel('Email address').click();
   await page.getByLabel('Email address').fill(matchingUsers[0].email);
   await page.getByLabel('Password').click();

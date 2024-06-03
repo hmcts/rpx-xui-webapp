@@ -2900,12 +2900,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.38":
-  version: 7.0.38
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.38"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.38-mediaviewer-314":
+  version: 7.0.38-mediaviewer-314
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.38-mediaviewer-314"
   dependencies:
     tslib: ^2.3.0
-  checksum: 70d108e70dbf61c4e1d87cefc0fc52fa176f117dde9904f4890839e277f94023f6dc9e35a43c2e75e357ed709e494b52e1e66271213e17694f96fe570898d91c
+  checksum: 6aaa1601e9ef7896e19210320dd6cdf1ab04dbd39e4a32d8893f9dc73e5d87ab6f5ad1c58a4c6ab152af60c4017cc12f83fb09720cb30414f7f334a03caa988a
   languageName: node
   linkType: hard
 
@@ -2928,9 +2928,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:3.1.2":
-  version: 3.1.2
-  resolution: "@hmcts/media-viewer@npm:3.1.2"
+"@hmcts/media-viewer@npm:3.1.4":
+  version: 3.1.4
+  resolution: "@hmcts/media-viewer@npm:3.1.4"
   dependencies:
     "@swimlane/ngx-datatable": ^20.0.0
     hammerjs: ^2.0.8
@@ -2950,7 +2950,7 @@ __metadata:
     "@ngrx/router-store": ^15.0.0
     "@ngrx/store": ^15.0.0
     "@ngrx/store-devtools": ^15.0.0
-  checksum: 989d9394f699f7c4ff8fd20b9c57373ddf58bb80f657e68d4f8a452755f80dbf4b1279b7de509f2f9749205bf52f99e45fbbee41f48c6891f5dccd4ba4e16a75
+  checksum: 0f598e940229f05702c6a80b81e7e593b9bb6dc471dc83945f1f97f9e0f0db10bcffcf75c90d76e092440250913578999d9edbe3767753c49865333e977e3998
   languageName: node
   linkType: hard
 
@@ -5367,9 +5367,9 @@ __metadata:
   linkType: hard
 
 "@types/component-emitter@npm:^1.2.10":
-  version: 1.2.12
-  resolution: "@types/component-emitter@npm:1.2.12"
-  checksum: 8a4a5f88c5d2a772c6a365bce2e6941b5e91c0e79754b14e1c2a85af3bc3cb0feaa6362180fcd74428d6b7caba219e90434747af3a1783df6836477a0d1ea9c3
+  version: 1.2.14
+  resolution: "@types/component-emitter@npm:1.2.14"
+  checksum: 4cf41df13b25c6486f3936a74a0be33c83e6ff32ba07b9312b1eda4e7082018808ee6364d38243dbc74d0704e16cb20e018e5b59d726bab0607dc0199ee9299a
   languageName: node
   linkType: hard
 
@@ -8844,10 +8844,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"component-emitter@npm:^1.3.0, component-emitter@npm:~1.3.0":
+"component-emitter@npm:^1.3.0":
   version: 1.3.0
   resolution: "component-emitter@npm:1.3.0"
   checksum: b3c46de38ffd35c57d1c02488355be9f218e582aec72d72d1b8bbec95a3ac1b38c96cd6e03ff015577e68f550fbb361a3bfdbd9bb248be9390b7b3745691be6b
+  languageName: node
+  linkType: hard
+
+"component-emitter@npm:~1.3.0":
+  version: 1.3.1
+  resolution: "component-emitter@npm:1.3.1"
+  checksum: 94550aa462c7bd5a61c1bc480e28554aa306066930152d1b1844a0dd3845d4e5db7e261ddec62ae184913b3e59b55a2ad84093b9d3596a8f17c341514d6c483d
   languageName: node
   linkType: hard
 
@@ -19457,10 +19464,10 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.38
+    "@hmcts/ccd-case-ui-toolkit": 7.0.38-mediaviewer-314
     "@hmcts/ccpay-web-component": 6.1.10
     "@hmcts/frontend": 0.0.50-alpha
-    "@hmcts/media-viewer": 3.1.2
+    "@hmcts/media-viewer": 3.1.4
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
     "@hmcts/rpx-xui-common-lib": 2.0.19

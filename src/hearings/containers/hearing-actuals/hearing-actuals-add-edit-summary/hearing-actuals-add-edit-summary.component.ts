@@ -82,7 +82,7 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   public confirmActualPartiesForDay(hearingDay: ActualHearingDayModel) {
     this.resetErrorMessages();
     // Organisation parties do not have partyChannelSubType and can be ignored
-    // as they do not attend the actual hearing
+    // as they don't attend the actual hearing
     const individualPartyIds = this.individualParties.map((party) => party.partyID);
     const actualDayParties = hearingDay?.actualDayParties?.filter((party) => individualPartyIds.includes(party.actualPartyId));
     const updatedActuals = {

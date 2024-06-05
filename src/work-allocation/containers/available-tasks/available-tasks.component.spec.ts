@@ -19,7 +19,7 @@ import { AllocateRoleService } from '../../../role-access/services';
 import { TaskActionIds, TaskContext } from '../../enums';
 import * as dtos from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
-import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
+import { CaseworkerDataService, LocationDataService, StaffSupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { MockRouter, getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
@@ -64,7 +64,7 @@ describe('AvailableTasksComponent', () => {
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+  const mockStaffSupportedJurisdictionsService = jasmine.createSpyObj('mockStaffSupportedJurisdictionsService', ['getStaffSupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
   const mockCheckReleaseVersionService = {
     isRelease4: () => {
@@ -103,7 +103,7 @@ describe('AvailableTasksComponent', () => {
         { provide: AlertService, useValue: mockAlertService },
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
+        { provide: StaffSupportedJurisdictionsService, useValue: mockStaffSupportedJurisdictionsService },
         { provide: AllocateRoleService, useValue: mockRoleService },
         { provide: Store, useValue: storeMock },
         { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
@@ -133,13 +133,13 @@ describe('AvailableTasksComponent', () => {
     };
     mockCaseworkerDataService.getUsersFromServices.and.returnValue(of([]));
     mockFilterService.getStream.and.returnValue(of(filterFields));
-    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['Service1', 'Service2']));
+    mockStaffSupportedJurisdictionsService.getStaffSupportedJurisdictions.and.returnValue(of(['Service1', 'Service2']));
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockFeatureToggleService.getValue.and.returnValue(of(true));
-    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
+    mockStaffSupportedJurisdictionsService.getStaffSupportedJurisdictions.and.returnValue(of([]));
     spyOn(mockRouter, 'navigate');
     fixture.detectChanges();
   });

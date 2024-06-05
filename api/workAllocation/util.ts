@@ -74,7 +74,7 @@ export function prepareGetSpecificLocationUrl(baseUrl: string, epimmsId: string)
 }
 
 export function prepareGetUsersUrl(baseUrl: string, service: string): string {
-  return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=100000`;
+  return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=12000`;
 }
 
 export function prepareRoleApiUrl(baseUrl: string) {

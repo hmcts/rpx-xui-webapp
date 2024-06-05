@@ -73,10 +73,10 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       userDetails.roleAssignmentInfo.filter((role) => role.roleName && role.roleName === 'task-supervisor').map((role) => role.jurisdiction || null)
     ));
 
-    const waJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
-    this.waSupportedJurisdictions$ = combineLatest(
+    const staffJurisdictions$ = this.staffSupportedJurisdictionsService.getStaffSupportedJurisdictions();
+    this.staffSupportedJurisdictions$ = combineLatest(
       [userRoles$,
-        waJurisdictions$]
+        staffJurisdictions$]
     ).pipe(map((jurisdictions) => {
       this.supportedJurisdictions = jurisdictions[1];
       const result = jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];

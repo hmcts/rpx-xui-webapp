@@ -1,25 +1,24 @@
 import { test, expect } from '@playwright/test';
+import { userLogin } from "./steps/login-steps"
 
 test('Add new user work flow - back, cancel and change', async ({ page }) => {
-  await page.goto('https://manage-case.aat.platform.hmcts.net/');
-  //login
-  await page.getByLabel('Email address').click();
-  await page.getByLabel('Email address').fill('xui_caseofficer@justice.gov.uk');
-  await page.getByLabel('Password').click();
-  await page.getByLabel('Password').fill('Welcome01');
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await userLogin(page, 'STAFF_ADMIN');
+
+  console.log("Going to staff page");
   await expect(page.getByRole('link', { name: 'Staff' })).toBeVisible();
   await page.getByRole('link', { name: 'Staff' }).click();
   await expect(page.getByRole('button', { name: 'Add new user' })).toBeVisible();
+
+  console.log("Adding new user then cancel");
   await page.getByRole('button', { name: 'Add new user' }).click();
-  //add new user page with missing fields then cancel
   await expect(page.getByRole('heading', { name: 'Add user' })).toBeVisible();
   await page.locator('#first_name').click();
   await page.locator('#first_name').fill('firstName1');
   await page.locator('#last_name').click();
   await page.locator('#last_name').fill('LastName1');
   await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
-  //add new user page with missing fields
+  
+  console.log("Adding new user with missing fields");
   await expect(page.getByRole('heading', { name: 'Add user' })).toBeVisible();
   await page.locator('#first_name').click();
   await page.locator('#first_name').fill('firstName1');
@@ -38,17 +37,16 @@ test('Add new user work flow - back, cancel and change', async ({ page }) => {
   await page.getByText('East London').click();
   await page.getByRole('link', { name: 'Add primary location' }).click();
   await page.getByRole('button', { name: 'Continue' }).click();
+  console.log("Check for missing fields error messages, correct them, then cancel");
   await expect(page.getByRole('link', { name: 'Select a user type' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Select at least one job title' })).toBeVisible();
   await page.locator('#user_type').selectOption('Legal office');
   await page.getByLabel('CICA Caseworker').check();
   await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
   await page.getByRole('button', { name: 'Continue' }).click();
-  //await expect(page.getByText('Email address')).toBeVisible();
-  //await expect(page.getByText('User 1 LastName1')).toBeVisible();
-  //await expect(page.getByText('London', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Cancel' }).click();
-  //add new user page
+
+  console.log("Adding new user");
   await expect(page.getByRole('button', { name: 'Add new user' })).toBeVisible();
   await page.getByRole('button', { name: 'Add new user' }).click();
   await page.locator('#first_name').click();
@@ -72,7 +70,8 @@ test('Add new user work flow - back, cancel and change', async ({ page }) => {
   await page.getByRole('button', { name: 'Continue' }).click();
   await page.getByRole('link', { name: 'Add primary location' }).click();
   await page.getByRole('button', { name: 'Continue' }).click();
-  // change name from summary page then cancel
+  
+  console.log("Check summary page, update name and email, then cancel");
   await page.getByRole('link', { name: 'Change name' }).click();
   await page.locator('#first_name').fill('FirstName2');
   await page.getByRole('button', { name: 'Continue' }).click();

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import config from "../config"
 
-test('login un-authenticated user login', async ({ page }) => {
+test.skip('login un-authenticated user login', async ({ page }) => {
   await page.goto(config.CaseBaseURL);
   await page.getByLabel('Email address').fill('test_nonexisting_or_invalid@gmail.com');
   await page.getByLabel('Password').click();

@@ -1,0 +1,84 @@
+import { test, expect } from '@playwright/test';
+
+test('Add new user work flow - back, cancel and change', async ({ page }) => {
+  await page.goto('https://manage-case.aat.platform.hmcts.net/');
+  //login
+  await page.getByLabel('Email address').click();
+  await page.getByLabel('Email address').fill('xui_caseofficer@justice.gov.uk');
+  await page.getByLabel('Password').click();
+  await page.getByLabel('Password').fill('Welcome01');
+  await page.getByRole('button', { name: 'Sign in' }).click();
+  await expect(page.getByRole('link', { name: 'Staff' })).toBeVisible();
+  await page.getByRole('link', { name: 'Staff' }).click();
+  await expect(page.getByRole('button', { name: 'Add new user' })).toBeVisible();
+  await page.getByRole('button', { name: 'Add new user' }).click();
+  //add new user page with missing fields then cancel
+  await expect(page.getByRole('heading', { name: 'Add user' })).toBeVisible();
+  await page.locator('#first_name').click();
+  await page.locator('#first_name').fill('firstName1');
+  await page.locator('#last_name').click();
+  await page.locator('#last_name').fill('LastName1');
+  await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+  //add new user page with missing fields
+  await expect(page.getByRole('heading', { name: 'Add user' })).toBeVisible();
+  await page.locator('#first_name').click();
+  await page.locator('#first_name').fill('firstName1');
+  await page.locator('#last_name').click();
+  await page.locator('#last_name').fill('LastName1');
+  await page.locator('#email_id').click();
+  await page.locator('#email_id').fill('firstName1LastName1test@justice.co.uk');
+  await page.locator('#region_id').selectOption('1');
+  await page.getByLabel('Specified Money Claims').check();
+  await page.getByLabel('Damages').check();
+  await page.getByLabel('Family Public Law').check();
+  await page.getByLabel('Family Private Law').check();
+  await page.getByLabel('Criminal Injuries Compensation').check();
+  await page.getByLabel('Enter a location name').click();
+  await page.getByLabel('Enter a location name').fill('Lo');
+  await page.getByText('East London').click();
+  await page.getByRole('link', { name: 'Add primary location' }).click();
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await expect(page.getByRole('link', { name: 'Select a user type' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Select at least one job title' })).toBeVisible();
+  await page.locator('#user_type').selectOption('Legal office');
+  await page.getByLabel('CICA Caseworker').check();
+  await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+  await page.getByRole('button', { name: 'Continue' }).click();
+  //await expect(page.getByText('Email address')).toBeVisible();
+  //await expect(page.getByText('User 1 LastName1')).toBeVisible();
+  //await expect(page.getByText('London', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Cancel' }).click();
+  //add new user page
+  await expect(page.getByRole('button', { name: 'Add new user' })).toBeVisible();
+  await page.getByRole('button', { name: 'Add new user' }).click();
+  await page.locator('#first_name').click();
+  await page.locator('#first_name').fill('FirstName');
+  await page.locator('#last_name').click();
+  await page.locator('#last_name').fill('LastNema');
+  await page.locator('#email_id').click();
+  await page.locator('#email_id').fill('bablbabla178y98test@justice.co.uk');
+  await page.locator('#region_id').selectOption('1');
+  await page.getByLabel('Specified Money Claims').check();
+  await page.getByLabel('Damages').check();
+  await page.getByLabel('Family Public Law').check();
+  await page.getByLabel('Family Private Law').check();
+  await page.getByLabel('Enter a location name').click();
+  await page.getByLabel('Enter a location name').fill('Lon');
+  await page.getByText('East London').click();
+  await page.locator('#user_type').selectOption('Legal office');
+  await page.getByLabel('Case allocator').check();
+  await page.getByLabel('Case allocator').uncheck();
+  await page.getByLabel('CICA Caseworker').check();
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await page.getByRole('link', { name: 'Add primary location' }).click();
+  await page.getByRole('button', { name: 'Continue' }).click();
+  // change name from summary page then cancel
+  await page.getByRole('link', { name: 'Change name' }).click();
+  await page.locator('#first_name').fill('FirstName2');
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await page.getByRole('link', { name: 'Change email' }).click();
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await page.getByRole('button', { name: 'Cancel' }).click();
+  await expect(page.getByRole('heading', { name: 'User search' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Add new user' })).toBeVisible();
+});

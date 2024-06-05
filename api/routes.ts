@@ -49,7 +49,7 @@ router.use('/locations', locationsRouter);
 router.use('/caseshare', caseShareRoutes);
 router.use('/noc', nocRouter);
 router.use('/organisation', organisationRouter);
-router.use('/staff-supported-jurisdiction', staffSupportedJurisdictionsRouter)
+router.use('/staff-supported-jurisdiction', staffSupportedJurisdictionsRouter);
 router.use('/wa-supported-jurisdiction', waSupportedJurisdictionRouter);
 router.use('/globalSearch', globalSearchRoutes);
 router.use('/locations', locationsRouter);

@@ -15,7 +15,7 @@ import * as fromActions from '../../../app/store';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskActionIds } from '../../enums';
 import { Task } from '../../models/tasks';
-import { CaseworkerDataService, StaffSupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
+import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 
@@ -33,7 +33,7 @@ describe('TaskListWrapperComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue']);
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
-  const mockStaffSupportedJurisdictionsService = jasmine.createSpyObj('mockStaffSupportedJurisdictionsService', ['getStaffSupportedJurisdictions']);
+  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   const mockCheckReleaseVersionService = {
     isRelease4: () => {
       return {
@@ -78,7 +78,7 @@ describe('TaskListWrapperComponent', () => {
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: FilterService, useValue: mockFilterService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
-        { provide: StaffSupportedJurisdictionsService, useValue: mockStaffSupportedJurisdictionsService },
+        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: Store, useValue: storeMock },
         { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
       ]
@@ -92,7 +92,7 @@ describe('TaskListWrapperComponent', () => {
     mockFeatureToggleService.getValue.and.returnValue(of(true));
     mockCaseworkerDataService.getAll.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue('1');
-    mockStaffSupportedJurisdictionsService.getStaffSupportedJurisdictions.and.returnValue(of([]));
+    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
     store = TestBed.inject(Store);
     fixture.detectChanges();
   }));

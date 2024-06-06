@@ -24,7 +24,7 @@ import { TaskResponse } from '../../models/tasks/task.model';
 import {
   CaseworkerDataService,
   LocationDataService,
-  StaffSupportedJurisdictionsService,
+  WASupportedJurisdictionsService,
   WorkAllocationTaskService
 } from '../../services';
 import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
@@ -37,7 +37,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public caseworkers: Caseworker[];
   public locations: Location[] = new Array<Location>();
   public showSpinner$: Observable<boolean>;
-  public staffSupportedJurisdictions$: Observable<string[]>;
+  public waSupportedJurisdictions$: Observable<string[]>;
   public sortedBy: SortField;
   public pagination: PaginationParameter;
   public selectedLocations: string[] = [];
@@ -68,7 +68,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected loadingService: LoadingService,
     protected featureToggleService: FeatureToggleService,
     protected locationService: LocationDataService,
-    protected staffSupportedJurisdictionsService: StaffSupportedJurisdictionsService,
+    protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService,
     protected rolesService: AllocateRoleService,
     protected store: Store<fromActions.State>
@@ -154,7 +154,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   public ngOnInit(): void {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
-    this.staffSupportedJurisdictions$ = this.staffSupportedJurisdictionsService.getStaffSupportedJurisdictions();
+    this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
     this.userRoleCategory = this.getCurrentUserRoleCategory();
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
@@ -191,9 +191,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public setupTaskList() {
-    // note staffSupportedJurisdictions replaced waSupportedJurisdictions for quick testing purposes
-    // however there is no need to change this back as has no effect on functionality
-    const caseworkersByService$ = this.staffSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
+    // NOTE - staffSupportedJurisdictions can replace waSupportedJurisdictions for quick testing purposes
+    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
       this.caseworkerService.getUsersFromServices(jurisdictions)
     ));
     // similar to case list wrapper changes

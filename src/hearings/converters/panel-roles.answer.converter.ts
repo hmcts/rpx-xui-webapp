@@ -10,30 +10,40 @@ export class PanelRolesAnswerConverter implements AnswerConverter {
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     const panelRoles: LovRefDataModel[] = this.route.snapshot.data.otherPanelRoles;
-
+    const selectedPanelRoles: string[] = [];
     return hearingState$.pipe(
       map((state) => {
         const panelRequirements = state.hearingConditions?.isHearingAmendmentsEnabled
           ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements
           : state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
         const panelSpecialism: string[] = panelRequirements && panelRequirements.panelSpecialisms;
-        const selectedSpecialisms: string[] = [];
-        panelSpecialism.forEach((specialismName) => {
-          let selectedSpecialismName: string = '';
-          panelRoles.forEach((role) => {
-            if (role.key === specialismName) {
-              selectedSpecialismName = role.value_en;
-            } else if (role.child_nodes && role.child_nodes.length) {
-              role.child_nodes.forEach((specialism) => {
-                if (specialismName === specialism.key && !selectedSpecialismName.length) {
-                  selectedSpecialismName = `${role.value_en} - ${specialism.value_en}`;
-                }
-              });
+        if (panelSpecialism) {
+          panelSpecialism.forEach((specialismName) => {
+            let selectedSpecialismName: string = '';
+            panelRoles.forEach((role) => {
+              if (role.key === specialismName) {
+                selectedSpecialismName = role.value_en;
+              } else if (role.child_nodes && role.child_nodes.length) {
+                role.child_nodes.forEach((specialism) => {
+                  if (specialismName === specialism.key && !selectedSpecialismName.length) {
+                    selectedSpecialismName = `${role.value_en} - ${specialism.value_en}`;
+                  }
+                });
+              }
+            });
+            selectedPanelRoles.push(selectedSpecialismName);
+          });
+          return selectedPanelRoles.join('<br>');
+        }
+        if (panelRequirements?.roleType?.length) {
+          panelRoles.forEach((panelRole) => {
+            if (panelRequirements.roleType.includes(panelRole.key)) {
+              selectedPanelRoles.push(panelRole.value_en);
             }
           });
-          selectedSpecialisms.push(selectedSpecialismName);
-        });
-        return selectedSpecialisms.join('<br>');
+          return selectedPanelRoles.join('<br>');
+        }
+        return '';
       })
     );
   }

@@ -180,6 +180,7 @@ describe('HearingChangeReasonsComponent', () => {
     expect(hearingsService.hearingRequestForSubmitValid = true);
     component.executeAction(ACTION.BACK);
     expect(component.errors.length).toBe(0);
+    expect(hearingsService.hearingRequestForSubmitValid = false);
   });
 
   it('should execute Action and fail validation', () => {

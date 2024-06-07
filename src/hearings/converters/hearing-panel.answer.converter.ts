@@ -13,7 +13,7 @@ export class HearingPanelAnswerConverter implements AnswerConverter {
           : state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
         const panelMembers: number = panelRequirements?.panelPreferences?.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER).length || 0;
         const panelSpecialisms: number = panelRequirements?.panelSpecialisms?.length || 0;
-        if (panelMembers > 0 || panelSpecialisms > 0) {
+        if (panelMembers > 0 || panelSpecialisms > 0 || panelRequirements?.roleType?.length > 1) {
           return RadioOptions.YES;
         }
         return RadioOptions.NO;

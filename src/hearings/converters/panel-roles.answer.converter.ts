@@ -33,7 +33,6 @@ export class PanelRolesAnswerConverter implements AnswerConverter {
             });
             selectedPanelRoles.push(selectedSpecialismName);
           });
-          return selectedPanelRoles.join('<br>');
         }
         if (panelRequirements?.roleType?.length) {
           panelRoles.forEach((panelRole) => {
@@ -41,9 +40,8 @@ export class PanelRolesAnswerConverter implements AnswerConverter {
               selectedPanelRoles.push(panelRole.value_en);
             }
           });
-          return selectedPanelRoles.join('<br>');
         }
-        return '';
+        return selectedPanelRoles.join('<br>');
       })
     );
   }

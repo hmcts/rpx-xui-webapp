@@ -6,7 +6,6 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
-import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearings/hearing.test.data';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
@@ -616,8 +615,6 @@ const HEARING_TYPES_REF_DATA: LovRefDataModel[] = [
 
 describe('CaseHearingsListComponent', () => {
   let component: CaseHearingsListComponent;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let roleCategoryMappingService: RoleCategoryMappingService;
   let fixture: ComponentFixture<CaseHearingsListComponent>;
   const mockFeatureService = new MockRoleCategoryMappingService();
   let mockStore: Store<fromHearingStore.State>;
@@ -665,7 +662,6 @@ describe('CaseHearingsListComponent', () => {
     }).compileComponents();
     fixture = TestBed.createComponent(CaseHearingsListComponent);
     mockStore = TestBed.inject(Store);
-    roleCategoryMappingService = new RoleCategoryMappingService(mockFeatureService);
     component = fixture.componentInstance;
     component.hearingList$ = of(UPCOMING_HEARING_LIST);
     component.hearingStageOptions = HEARING_TYPES_REF_DATA;

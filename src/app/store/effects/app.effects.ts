@@ -89,7 +89,7 @@ export class AppEffects {
       switchMap(() => {
         return this.userService.getUserDetails().pipe(
           tap((userDetails) => this.sessionStorageService.setItem('userDetails', JSON.stringify(userDetails.userInfo))),
-          tap((userDetails) => this.roleService.roles = userDetails.userInfo && userDetails.userInfo.roles),
+          tap((userDetails) => this.roleService.roles = userDetails.userInfo && userDetails.userInfo?.roles),
           map((userDetails) => new fromActions.LoadUserDetailsSuccess(userDetails)),
           catchError((err) => of(new fromActions.LoadUserDetailsFail(err)))
         );

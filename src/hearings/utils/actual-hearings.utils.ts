@@ -226,6 +226,6 @@ export class ActualHearingsUtils {
   public static getPauseDateTime(day: ActualHearingDayModel, state: 'start' | 'end'): string {
     const pauseTimeState = state === 'start' ? 'pauseStartTime' : 'pauseEndTime';
     return day.pauseDateTimes && day.pauseDateTimes.length && day.pauseDateTimes[0] && day.pauseDateTimes[0].pauseStartTime
-    ? moment(day.pauseDateTimes[0][pauseTimeState]).format(HearingDateEnum.DisplayTime) : null;
+      ? moment(day.pauseDateTimes[0][pauseTimeState]).format(HearingDateEnum.DisplayTime) : null;
   }
 }

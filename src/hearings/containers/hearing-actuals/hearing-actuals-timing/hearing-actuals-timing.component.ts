@@ -208,7 +208,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
       ],
       pauseStartTime: [HearingActualsTimingComponent.getPauseStartTime(hearingActuals, actualIndex), [
         this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]],
-        pauseEndTime: [HearingActualsTimingComponent.getPauseEndTime(hearingActuals, actualIndex), [
+      pauseEndTime: [HearingActualsTimingComponent.getPauseEndTime(hearingActuals, actualIndex), [
         this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]]
     }, {
       updateOn: 'blur',

@@ -16,7 +16,6 @@ export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBas
     public readonly hearingsService: HearingsService,
     public readonly route: ActivatedRoute,
     public readonly router: Router
-
   ) {
     super(hearingStore, hearingsService, route, router);
     this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];

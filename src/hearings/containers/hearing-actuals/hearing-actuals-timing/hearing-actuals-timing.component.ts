@@ -83,7 +83,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes?.length)
         && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0]?.pauseEndTime;
     }
-    
+
     return actualPauseEndTime ? HearingActualsTimingComponent.getTime(actualPauseEndTime) : null;
   }
 

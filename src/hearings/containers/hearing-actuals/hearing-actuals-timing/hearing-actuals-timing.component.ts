@@ -12,7 +12,6 @@ import { HearingActualsTimingErrorMessages, RadioOptionType } from '../../../mod
 import * as fromHearingStore from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
-import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   selector: 'exui-hearing-actuals-timing',
@@ -45,38 +44,37 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
                      private readonly route: ActivatedRoute,
                      private readonly ngZone: NgZone,
                      private readonly validatorsUtils: ValidatorsUtils,
-                     public ccdDatePipe: DatePipe
   ) {}
 
-  private getStartTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
+  private static getStartTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
     const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex].plannedStartTime;
     let actualStartTime: string;
     if (actualIndex >= 0) {
       actualStartTime = hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingStartTime;
     }
-    return actualStartTime ? this.getTime(actualStartTime) : this.getTime(plannedTime);
+    return actualStartTime ? HearingActualsTimingComponent.getTime(actualStartTime) : HearingActualsTimingComponent.getTime(plannedTime);
   }
 
-  private getEndTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
+  private static getEndTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
     const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex].plannedEndTime;
     let actualEndTime: string;
     if (actualIndex >= 0) {
       actualEndTime = hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingEndTime;
     }
-    return actualEndTime ? this.getTime(actualEndTime) : this.getTime(plannedTime);
+    return actualEndTime ? HearingActualsTimingComponent.getTime(actualEndTime) : HearingActualsTimingComponent.getTime(plannedTime);
   }
 
-  private getPauseStartTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null {
+  private static getPauseStartTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null {
     let actualPauseStartTime: string;
     if (actualIndex >= 0) {
       actualPauseStartTime = (hearingActuals?.hearingActuals?.actualHearingDays
         && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes?.length)
         && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0]?.pauseStartTime;
     }
-    return actualPauseStartTime ? this.getTime(actualPauseStartTime) : null;
+    return actualPauseStartTime ? HearingActualsTimingComponent.getTime(actualPauseStartTime) : null;
   }
 
-  private getPauseEndTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null {
+  private static getPauseEndTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null {
     let actualPauseEndTime: string;
 
     if (actualIndex >= 0) {
@@ -84,7 +82,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes?.length)
         && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0]?.pauseEndTime;
     }
-    return actualPauseEndTime ? this.getTime(actualPauseEndTime) : null;
+    return actualPauseEndTime ? HearingActualsTimingComponent.getTime(actualPauseEndTime) : null;
   }
 
   private static replaceTime(dateTime: string, time: moment.Moment): string {
@@ -94,9 +92,8 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     }).format('YYYY-MM-DDTHH:mm:ss');
   }
 
-  // Convert UTC date/time string to a time string in the specified time zone and format using ccdDatePipe
-  public getTime(time: string, zone: string = 'local', format: string = 'HH:mm'): string {
-    return time ? moment(this.ccdDatePipe.transform(time, zone)).format(format) : null;
+  private static getTime(time: string): string {
+    return time ? moment(time).format('HH:mm') : null;
   }
 
   public ngOnInit() {
@@ -197,21 +194,21 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     const actualIndex = ActualHearingsUtils.getActualDayIndexFromHearingDate(hearingActuals, this.hearingDate);
 
     return this.fb.group({
-      hearingStartTime: [this.getStartTime(hearingActuals, plannedIndex, actualIndex),
+      hearingStartTime: [HearingActualsTimingComponent.getStartTime(hearingActuals, plannedIndex, actualIndex),
         this.defaultHearingStartTimeValidators
       ],
-      hearingEndTime: [this.getEndTime(hearingActuals, plannedIndex, actualIndex),
+      hearingEndTime: [HearingActualsTimingComponent.getEndTime(hearingActuals, plannedIndex, actualIndex),
         this.defaultHearingEndTimeValidators
       ],
       recordTimes: [
-        !this.getPauseStartTime(hearingActuals, actualIndex)
-        && !this.getPauseEndTime(hearingActuals, actualIndex)
+        !HearingActualsTimingComponent.getPauseStartTime(hearingActuals, actualIndex)
+        && !HearingActualsTimingComponent.getPauseEndTime(hearingActuals, actualIndex)
           ? null : RadioOptionType.YES,
         [this.validatorsUtils.mandatory('Select if you need to record times the hearing was paused')]
       ],
-      pauseStartTime: [this.getPauseStartTime(hearingActuals, actualIndex), [
+      pauseStartTime: [HearingActualsTimingComponent.getPauseStartTime(hearingActuals, actualIndex), [
         this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]],
-      pauseEndTime: [this.getPauseEndTime(hearingActuals, actualIndex), [
+        pauseEndTime: [HearingActualsTimingComponent.getPauseEndTime(hearingActuals, actualIndex), [
         this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]]
     }, {
       updateOn: 'blur',

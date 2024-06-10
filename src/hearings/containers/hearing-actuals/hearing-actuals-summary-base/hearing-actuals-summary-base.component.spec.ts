@@ -12,7 +12,6 @@ import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { HearingActualsSummaryBaseComponent } from './hearing-actuals-summary-base.component';
-import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Pipe({ name: 'transformAnswer' })
 export class MockHearingAnswersPipe implements PipeTransform {
@@ -106,9 +105,7 @@ describe('HearingActualsSummaryBaseComponent', () => {
               }
             }
           }
-        },
-        DatePipe,
-        FormatTranslatorService
+        }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -240,26 +237,6 @@ describe('HearingActualsSummaryBaseComponent', () => {
       };
       const actual = component.getPauseDateTime(actualHearingDays, 'start');
       expect(actual).toEqual(null);
-    });
-  });
-
-  describe('getTime', () => {
-    it('should format time with default parameters', () => {
-      const time = '2021-03-12T09:20:00.000Z';
-      const formattedTime = component.getTime(time);
-      expect(formattedTime).toBe('09:20');
-    });
-
-    it('should format time with custom format', () => {
-      const time = '2021-03-12T09:20:00.000Z';
-      const formattedTime = component.getTime(time, 'local', 'h:mm A');
-      expect(formattedTime).toBe('9:20 AM');
-    });
-
-    it('should format time to local time', () => {
-      const time = '2021-03-12T09:20:00.000Z';
-      const formattedTime = component.getTime(time, 'local');
-      expect(formattedTime).toBe('09:20');
     });
   });
 

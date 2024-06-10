@@ -15,7 +15,6 @@ import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HearingActualsEditSummaryComponent } from './hearing-actuals-edit-summary.component';
-import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Pipe({ name: 'transformAnswer' })
 export class MockHearingAnswersPipe implements PipeTransform {
@@ -84,7 +83,7 @@ describe('HearingActualSummaryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe, MockRpxTranslatePipe, DatePipe],
+      declarations: [HearingActualsEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe, MockRpxTranslatePipe],
       imports: [RouterTestingModule.withRoutes(
         [
           { path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent }
@@ -110,9 +109,7 @@ describe('HearingActualSummaryComponent', () => {
               }
             }
           }
-        },
-        DatePipe,
-        FormatTranslatorService
+        }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();

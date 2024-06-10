@@ -2615,24 +2615,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.33-rc1":
-  version: 7.0.33-rc1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.33-rc1"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.21-case-flags-language-search-validation-v5":
+  version: 7.0.21-case-flags-language-search-validation-v5
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.21-case-flags-language-search-validation-v5"
   dependencies:
     tslib: ^2.3.0
-  checksum: 7632fd46e123885da65f20c0f6c130f21dae345dc9a299bab99d596e5b44bf66144e54f71b7e6e599a1939ca1862f5ded5105069ca0e07bc6403b78263a10d5e
+  checksum: 83f6bb2ec3cdfa61ad2e6b80d2f390e554bddac14507b185041d193f4db33ec4bcdca453722ae8f08490ce88c935b4f9d7bb007471793cc8cec440b9f24bcc06
   languageName: node
   linkType: hard
 
-"@hmcts/ccpay-web-component@npm:6.1.10":
-  version: 6.1.10
-  resolution: "@hmcts/ccpay-web-component@npm:6.1.10"
+"@hmcts/ccpay-web-component@npm:6.1.6":
+  version: 6.1.6
+  resolution: "@hmcts/ccpay-web-component@npm:6.1.6"
   dependencies:
     tslib: ^2.3.0
   peerDependencies:
     "@angular/common": ^16.1.6
     "@angular/core": ^16.1.6
-  checksum: 888075d45cebb9fb3ea8cdc0791c1ef89bffac23e429b25b086f1051777d6b7eae86953c22f3f7edc8a57d443ac01c95350e3a4dfd00d7b1e50290a96caa1a04
+  checksum: 8be012d8154ab7f23517a99387e215bc36822791267226819bc820d2838331d30a073aa0b36e3f60c8e8d6547d8121af420830f022da1da2e0b352df0ef6a4b3
   languageName: node
   linkType: hard
 
@@ -2703,16 +2703,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.18":
-  version: 2.0.18
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.18"
+"@hmcts/rpx-xui-common-lib@npm:2.0.17":
+  version: 2.0.17
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.17"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 4eb916c687ca453d7f03cad661de00308962a4c7cd977f35fc5b3bccfafd172c01a8852a5c4ff5309fbcda8e18a125ec123587e0510c25865b254930b18f5f28
+  checksum: 466932865ac93ac66d86c3b11f5338a4803ee58fe7fc5705f186b1f92d8136295a41d120f3e65382c6a9393d5eb0183001004d83222042864599023998279a0a
   languageName: node
   linkType: hard
 
@@ -11196,7 +11196,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flat@npm:~5.0.1":
+"flat@npm:^5.0.2":
   version: 5.0.2
   resolution: "flat@npm:5.0.2"
   bin:
@@ -14957,7 +14957,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loader-utils@npm:~2.0.3":
+"loader-utils@npm:3.2.1":
+  version: 3.2.1
+  resolution: "loader-utils@npm:3.2.1"
+  checksum: 4e3ea054cdc8be1ab1f1238f49f42fdf0483039eff920fb1d442039f3f0ad4ebd11fb8e584ccdf2cb7e3c56b3d40c1832416e6408a55651b843da288960cc792
+  languageName: node
+  linkType: hard
+
+"loader-utils@npm:^2.0.0":
   version: 2.0.4
   resolution: "loader-utils@npm:2.0.4"
   dependencies:
@@ -15778,7 +15785,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimist@npm:^1.2.8":
+"minimist@npm:^1.1.3, minimist@npm:^1.2.0, minimist@npm:^1.2.5, minimist@npm:^1.2.6":
   version: 1.2.8
   resolution: "minimist@npm:1.2.8"
   checksum: 75a6d645fb122dad29c06a7597bddea977258957ed88d7a6df59b5cd3fe4a527e253e9bbf2e783e4b73657f9098b96a5fe96ab8a113655d4109108577ecf85b0
@@ -19195,13 +19202,13 @@ __metadata:
     "@angular/platform-browser-dynamic": ^15.2.9
     "@angular/router": ^15.2.9
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.33-rc1
-    "@hmcts/ccpay-web-component": 6.1.10
+    "@hmcts/ccd-case-ui-toolkit": 7.0.21-case-flags-language-search-validation-v5
+    "@hmcts/ccpay-web-component": 6.1.6
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 3.0.4
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 2.0.18
+    "@hmcts/rpx-xui-common-lib": 2.0.17
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@microsoft/applicationinsights-web": ^3.1.0
     "@ng-idle/core": ^11.1.0
@@ -21681,14 +21688,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typed-rest-client@npm:^1.8.0":
-  version: 1.8.11
-  resolution: "typed-rest-client@npm:1.8.11"
+"typed-rest-client@npm:~1.7.1":
+  version: 1.7.3
+  resolution: "typed-rest-client@npm:1.7.3"
   dependencies:
     qs: ^6.9.1
     tunnel: 0.0.6
-    underscore: ^1.12.1
-  checksum: baba87806381cb8e686e07dc0907bbc4a7588410f13f73f5a9fe662274d1961b84d0037bf2cb3966cb288ed6146b3350edcd896c42422f7dbc06625c347f3035
+    underscore: 1.8.3
+  checksum: 89048157a2fe576c6e7abb919a1fbc176f09a209cb52e2310eb788ef9746c8c38d1c2102dc94983d18048ab84e907756c2d6917757c2573c687c1a230361c077
   languageName: node
   linkType: hard
 
@@ -21805,7 +21812,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"underscore@npm:^1.12.1, underscore@npm:^1.9.1":
+"underscore@npm:1.8.3":
+  version: 1.8.3
+  resolution: "underscore@npm:1.8.3"
+  checksum: 46d9ea25c8b9f6f21080438f5abc1c8be3063efca5154670bf7ef6e61587660113581b258aea07ccab4045b9ab6e9293ef89103210a3491b64ef03c2d8051a36
+  languageName: node
+  linkType: hard
+
+"underscore@npm:^1.9.1":
   version: 1.13.6
   resolution: "underscore@npm:1.13.6"
   checksum: d5cedd14a9d0d91dd38c1ce6169e4455bb931f0aaf354108e47bd46d3f2da7464d49b2171a5cf786d61963204a42d01ea1332a903b7342ad428deaafaf70ec36

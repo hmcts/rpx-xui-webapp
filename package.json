@@ -90,13 +90,13 @@
     "@angular/platform-browser-dynamic": "^15.2.9",
     "@angular/router": "^15.2.9",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "7.0.33-rc1",
-    "@hmcts/ccpay-web-component": "6.1.10",
+    "@hmcts/ccd-case-ui-toolkit": "7.0.21-case-flags-language-search-validation-v5",
+    "@hmcts/ccpay-web-component": "6.1.6",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "3.0.4",
     "@hmcts/nodejs-healthcheck": "1.7.0",
     "@hmcts/properties-volume": "^0.0.13",
-    "@hmcts/rpx-xui-common-lib": "2.0.18",
+    "@hmcts/rpx-xui-common-lib": "2.0.17",
     "@hmcts/rpx-xui-node-lib": "2.25.12",
     "@microsoft/applicationinsights-web": "^3.1.0",
     "@ng-idle/core": "^11.1.0",
@@ -259,10 +259,6 @@
     "crypto": false
   },
   "resolutions": {
-    "flat": "~5.0.1",
-    "loader-utils": "~2.0.3",
-    "minimist": "^1.2.8",
-    "typed-rest-client": "^1.8.0",
     "lodash": "^4.17.21"
   },
   "packageManager": "yarn@3.6.3"

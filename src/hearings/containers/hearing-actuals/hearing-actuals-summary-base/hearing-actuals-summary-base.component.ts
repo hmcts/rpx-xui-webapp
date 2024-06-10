@@ -20,7 +20,6 @@ import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
-import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   selector: 'exui-hearing-actual-summary-base',
@@ -63,8 +62,7 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
     public readonly hearingStore: Store<fromHearingStore.State>,
     public readonly hearingsService: HearingsService,
     public readonly route: ActivatedRoute,
-    public readonly router: Router,
-    public readonly ccdDatePipe: DatePipe
+    public readonly router: Router
   ) {
     this.hearingRoles = this.route.snapshot.data.hearingRole;
     this.hearingTypes = this.route.snapshot.data.hearingTypes;
@@ -152,12 +150,7 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
   }
 
   public getPauseDateTime(day: ActualHearingDayModel, state: 'start' | 'end'): string {
-    return this.getTime(ActualHearingsUtils.getPauseDateTime(day, state));
-  }
-
-  // Convert UTC date/time string to a time string in the specified time zone and format using ccdDatePipe
-  public getTime(time: string, zone: string = 'local', format: string = 'HH:mm'): string {
-    return time ? moment(this.ccdDatePipe.transform(time, zone)).format(format) : null;
+    return ActualHearingsUtils.getPauseDateTime(day, state);
   }
 
   public isDetailsProvidedForDay(day): boolean {

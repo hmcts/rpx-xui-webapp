@@ -13,7 +13,6 @@ import { initialState } from '../../../hearing.test.data';
 import { HearingsService } from '../../../services/hearings.service';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { HearingActualsTimingComponent } from './hearing-actuals-timing.component';
-import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({ selector: 'exui-app-blank', template: '' })
 class BlankComponent { }
@@ -45,9 +44,7 @@ describe('HearingActualsTimingComponent', () => {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute
         },
-        ValidatorsUtils,
-        DatePipe,
-        FormatTranslatorService
+        ValidatorsUtils
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [HearingActualsTimingComponent, BlankComponent, MockRpxTranslatePipe]
@@ -165,24 +162,6 @@ describe('HearingActualsTimingComponent', () => {
     expect(component.formGroup.hasError('invalidPauseStartTimeRange')).toBeTruthy();
     expect(component.formGroup.hasError('invalidPauseEndTimeRange')).toBeTruthy();
   });
-
-  it('should format time with default parameters', () => {
-    const time = '2021-03-12T09:20:00.000Z';
-    const formattedTime = component.getTime(time);
-    expect(formattedTime).toBe('09:20');
-  });
-
-  it('should format time with custom format', () => {
-    const time = '2021-03-12T09:20:00.000Z';
-    const formattedTime = component.getTime(time, 'local', 'h:mm A');
-    expect(formattedTime).toBe('9:20 AM');
-  });
-
-  it('should format time to local time', () => {
-    const time = '2021-03-12T09:20:00.000Z';
-    const formattedTime = component.getTime(time, 'local');
-    expect(formattedTime).toBe('09:20');
-  });
 });
 
 describe('HearingActualsTimingComponent', () => {
@@ -209,9 +188,7 @@ describe('HearingActualsTimingComponent', () => {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute
         },
-        ValidatorsUtils,
-        DatePipe,
-        FormatTranslatorService
+        ValidatorsUtils
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [HearingActualsTimingComponent, BlankComponent, MockRpxTranslatePipe]

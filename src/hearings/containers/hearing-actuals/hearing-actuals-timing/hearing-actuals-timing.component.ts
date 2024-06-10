@@ -12,7 +12,6 @@ import { HearingActualsTimingErrorMessages, RadioOptionType } from '../../../mod
 import * as fromHearingStore from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
-
 @Component({
   selector: 'exui-hearing-actuals-timing',
   templateUrl: './hearing-actuals-timing.component.html'
@@ -27,6 +26,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   private sub2$: Subscription;
   private id: string;
   private hearingDate: string;
+
   private readonly defaultHearingStartTimeValidators = [
     Validators.required,
     this.validatorsUtils.mandatory('Enter hearing start time'),
@@ -71,6 +71,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes?.length)
         && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0]?.pauseStartTime;
     }
+
     return actualPauseStartTime ? HearingActualsTimingComponent.getTime(actualPauseStartTime) : null;
   }
 
@@ -82,6 +83,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes?.length)
         && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0]?.pauseEndTime;
     }
+    
     return actualPauseEndTime ? HearingActualsTimingComponent.getTime(actualPauseEndTime) : null;
   }
 

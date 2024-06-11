@@ -35,7 +35,7 @@ import * as fromHearingStore from '../../../store';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.model';
-import {cloneDeep} from "lodash";
+import { cloneDeep } from 'lodash';
 
 @Component({
   selector: 'exui-hearing-edit-summary',
@@ -478,8 +478,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     });
   }
 
-  private extractAndSortParties(partyDetails: PartyDetailsModel[]) {
-
+  private extractAndSortParties(partyDetails: PartyDetailsModel[]){
     // Get the individual parties
     let individualParties = cloneDeep(partyDetails);
     individualParties = individualParties.filter(

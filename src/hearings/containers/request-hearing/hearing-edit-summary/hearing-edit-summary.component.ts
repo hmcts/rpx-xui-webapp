@@ -7,10 +7,10 @@ import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConstants } from '../../../../app/app.constants';
-import { CaseCategoryModel } from '../../../../hearings/models/caseCategory.model';
-import { AfterPageVisitProperties, AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../../hearings/models/hearingsUpdateMode.enum';
-import { ServiceHearingValuesModel } from '../../../../hearings/models/serviceHearingValues.model';
-import { CaseFlagsUtils } from '../../../../hearings/utils/case-flags.utils';
+import { CaseCategoryModel } from '../../../models/caseCategory.model';
+import { AfterPageVisitProperties, AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../models/hearingsUpdateMode.enum';
+import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
+import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
@@ -35,6 +35,7 @@ import * as fromHearingStore from '../../../store';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.model';
+import {cloneDeep} from "lodash";
 
 @Component({
   selector: 'exui-hearing-edit-summary',
@@ -435,7 +436,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       this.pageVisitHearingWindowChangeExists();
   }
 
-  private pageVisitReasonableAdjustmentChangeExists(): boolean {
+  pageVisitReasonableAdjustmentChangeExists(): boolean {
     if (!this.sectionsToDisplay.includes(this.hearingScreenEnum.HEARING_REQUIREMENTS)) {
       // Do not consider reasonable adjustments as hearing requirements is not part of the screen flow
       return false;
@@ -444,49 +445,53 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // Reasonable adjustment changes already confirmed
       return false;
     }
+    const HRMIndividualParties = this.extractAndSortParties(this.hearingRequestMainModel.partyDetails);
+    const SHVIndividualParties = this.extractAndSortParties(this.serviceHearingValuesModel.parties);
+
+    const HRMIndiviualAdjustments = this.extractReasonableAdjustments(HRMIndividualParties);
+    const SHVIndiviualAdjustments = this.extractReasonableAdjustments(SHVIndividualParties);
+
+    if (!_.isEqual(HRMIndiviualAdjustments, SHVIndiviualAdjustments)){
+      return true;
+    }
+
+    const interpreterLanguagesSHV = this.extractInterpreterLanguages(SHVIndividualParties);
+    const interpreterLanguagesHMC = this.extractInterpreterLanguages(HRMIndividualParties);
+
+    return !_.isEqual(interpreterLanguagesSHV, interpreterLanguagesHMC);
+  }
+
+  private extractReasonableAdjustments(partyDetails: PartyDetailsModel[]) {
+    // Return true if there are changes to the interpreter languages
+    return partyDetails.map((parties) => parties.partyID + ',' + parties.individualDetails?.reasonableAdjustments?.
+      filter((adjustments) => adjustments.startsWith('RA'))).filter((adjustments) => !adjustments.includes(',undefined'));
+  }
+
+  private extractInterpreterLanguages(partyDetails: PartyDetailsModel[]) {
+    // Return true if there are changes to the interpreter languages
+    return partyDetails.map(
+      (party) => party.individualDetails?.interpreterLanguage
+    )?.filter(
+      (interpreterLanguage) => interpreterLanguage !== null && interpreterLanguage !== undefined
+    ).sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
+  }
+
+  private extractAndSortParties(partyDetails: PartyDetailsModel[]) {
 
     // Get the individual parties
-    const individualParties = this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND);
-    // Return true if there are changes to the interpreter languages
-    const interpreterLanguagesSHV = this.serviceHearingValuesModel.parties.map(
-      (party) => party.individualDetails?.interpreterLanguage
-    )?.filter(
-      (interpreterLanguage) => interpreterLanguage !== null && interpreterLanguage !== undefined
-    ).sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
+    let individualParties = cloneDeep(partyDetails);
+    individualParties = individualParties.filter(
+      (party) => party.partyType === PartyType.IND).sort((a, b) => {
+      return a.partyID > b.partyID ? 1 : (a.partyID === b.partyID ? 0 : -1);
     });
-    const interpreterLanguagesHMC = individualParties.map(
-      (party) => party.individualDetails?.interpreterLanguage
-    )?.filter(
-      (interpreterLanguage) => interpreterLanguage !== null && interpreterLanguage !== undefined
-    ).sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    });
-    if (!_.isEqual(interpreterLanguagesSHV, interpreterLanguagesHMC)) {
-      return true;
-    }
-
-    // HMC stores only reasonable adjustment flag ids and language interpreter flag ids under parties
-    // Get only the reasonable adjustment and language interpreter flag ids from SHV and sort them for easy comparison
-    const caseFlagsSHV = this.serviceHearingValuesModel.caseFlags?.flags || [];
-    const flagIdsSHV = caseFlagsSHV.map((flag) => flag.flagId)?.filter((flagId) => flagId?.startsWith('RA'))?.sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    });
-    // Get individual parties reasonable adjustment flags and sort the result
-    const partyFlagIds = individualParties.map((party) => party.individualDetails?.reasonableAdjustments)?.join(',').split(',').sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    });
-    // Convert to string for easy comparison as the partyFlagIds can be an array of empty strings;
-    const partyFlagIdsString = partyFlagIds?.length > 0
-      ? partyFlagIds?.filter((flagId) => flagId !== '').join()
-      : '';
-
-    // Return true if there are changes in reasonable adjustments and/or language interpreter flags
-    if (flagIdsSHV.join() !== partyFlagIdsString) {
-      return true;
-    }
-    // There are no changes for reasonable adjustments and language interpreter flags when compared SHV with HMC
-    return false;
+    individualParties.forEach(
+      (party) => party.individualDetails?.reasonableAdjustments?.sort((a, b) => {
+        return a > b ? 1 : (a === b ? 0 : -1);
+      })
+    );
+    return individualParties;
   }
 
   private pageVisitNonReasonableAdjustmentChangeExists(): boolean {

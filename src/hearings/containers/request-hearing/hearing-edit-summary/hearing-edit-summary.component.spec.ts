@@ -8,7 +8,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
 import { cold } from 'jasmine-marbles';
-import { HearingsUtils } from '../../../../hearings/utils/hearings.utils';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
@@ -1186,4 +1186,260 @@ describe('HearingEditSummaryComponent', () => {
     const expected = cold('(b|)', { b: toShow });
     expect(result$).toBeObservable(expected);
   });
+
+  // New tests for change to
+  it('should return false as no difference in reasonable adjustment', () => {
+    const partiesSHV = createSHVEntry();
+    const partiesHMC = createHMCEntry();
+
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      parties: partiesSHV
+    };
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      partyDetails: partiesHMC
+    };
+
+    const isDifference = component.pageVisitReasonableAdjustmentChangeExists();
+
+    expect(isDifference).toEqual(false);
+  });
+
+  it('should return true as there is a difference in reasonable adjustment', () => {
+    const partiesSHV = createSHVEntry();
+    const partiesHMC = createHMCEntry();
+    partiesHMC[1].individualDetails.reasonableAdjustments = ['RA0041', 'RA0044', 'RA0042'];
+
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      parties: partiesSHV
+    };
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      partyDetails: partiesHMC
+    };
+
+    const isDifference = component.pageVisitReasonableAdjustmentChangeExists();
+
+    expect(isDifference).toEqual(true);
+  });
+
+  it('should return false as removed party had no reasonable adjustments', () => {
+    const partiesSHV: PartyDetailsModel[] = createSHVEntry();
+
+    const partiesHMC: PartyDetailsModel[] = createHMCEntry();
+    partiesHMC.push(
+      {
+        partyID: 'P3',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Doe',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Doe',
+          preferredHearingChannel: 'inPerson'
+        }
+      }
+    );
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      parties: partiesSHV
+    };
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      partyDetails: partiesHMC
+    };
+
+    const isDifference = component.pageVisitReasonableAdjustmentChangeExists();
+
+    expect(isDifference).toEqual(false);
+  });
+
+  it('should return false as added party had no reasonable adjustments', () => {
+    const partiesSHV: PartyDetailsModel[] = createSHVEntry();
+
+    const partiesHMC: PartyDetailsModel[] = createHMCEntry();
+    partiesSHV.push(
+      {
+        partyID: 'P3',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Doe',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Doe',
+          preferredHearingChannel: 'inPerson'
+        }
+      }
+    );
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      parties: partiesSHV
+    };
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      partyDetails: partiesHMC
+    };
+
+    const isDifference = component.pageVisitReasonableAdjustmentChangeExists();
+
+    expect(isDifference).toEqual(false);
+  });
+
+  it('should return true as party removed from original hmc with reasonable adjustment', () => {
+    const partiesSHV = createSHVEntry();
+    const partiesHMC = createHMCEntry();
+
+    partiesHMC.push(
+      {
+        partyID: 'P3',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: [
+            'RA0045',
+            'RA0046',
+            'RA0047'
+          ]
+        }
+      });
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      parties: partiesSHV
+    };
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      partyDetails: partiesHMC
+    };
+
+    const isDifference = component.pageVisitReasonableAdjustmentChangeExists();
+
+    expect(isDifference).toEqual(true);
+  });
+
+  it('should return true as party to original shv with reasonable adjustment', () => {
+    const partiesSHV = createSHVEntry();
+    const partiesHMC = createHMCEntry();
+
+    partiesSHV.push(
+      {
+        partyID: 'P3',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: [
+            'RA0045',
+            'RA0046',
+            'RA0047'
+          ]
+        }
+      });
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      parties: partiesSHV
+    };
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      partyDetails: partiesHMC
+    };
+
+    const isDifference = component.pageVisitReasonableAdjustmentChangeExists();
+
+    expect(isDifference).toEqual(true);
+  });
+
+  function createSHVEntry() {
+    const partiesSHV: PartyDetailsModel[] = [
+      {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: [
+            'RA0042',
+            'RA0043',
+            'RA0041'
+          ]
+        }
+      },
+      {
+        partyID: 'P2',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Doe',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Doe',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: [
+            'RA0032',
+            'RA0033',
+            'RA0031',
+            'H00002'
+          ]
+        }
+      }
+    ];
+    return partiesSHV;
+  }
+
+  function createHMCEntry() {
+    const partiesHMC: PartyDetailsModel[] = [
+      {
+        partyID: 'P2',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Doe',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Doe',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: [
+            'RA0031',
+            'RA0033',
+            'RA0032',
+            'GA0001'
+          ]
+        }
+      },
+      {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: [
+            'RA0041',
+            'RA0043',
+            'RA0042'
+          ]
+        }
+      }
+    ];
+    return partiesHMC;
+  }
 });

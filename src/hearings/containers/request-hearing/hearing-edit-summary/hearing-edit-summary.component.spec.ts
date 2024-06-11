@@ -8,7 +8,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
 import { cold } from 'jasmine-marbles';
-import { HearingsUtils } from '../../../../hearings/utils/hearings.utils';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
@@ -193,6 +193,11 @@ describe('HearingEditSummaryComponent', () => {
       }
     };
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
+  });
+
+  it('should set hearingRequestForSubmitValid to false on initialising page.', () => {
+    component.ngOnInit();
+    expect(hearingsService.hearingRequestForSubmitValid).toEqual(false);
   });
 
   it('should return reasonableAdjustmentChangesRequired and partyDetailsChangesRequired as true if interpreter language changed', () => {

@@ -23,7 +23,6 @@ export class AdditionalInstructionsSectionComponent implements OnInit {
       this.hearingRequestMainModel.hearingDetails.listingComments
     );
     this.additionalInstructions = this.hearingRequestMainModel.hearingDetails.listingComments?.replace(/(?:\r\n|\r|\n)/g, '<br>') || '';
-    console.log('instructions', this.additionalInstructions);
   }
 
   public onChange(fragmentId: string): void {

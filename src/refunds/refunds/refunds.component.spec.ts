@@ -53,8 +53,8 @@ describe('RefundsComponent', () => {
 
   it('should load user details on init', () => {
     component.ngOnInit();
-    expect(component.userEmail).toBe('a');
-    expect(component.userRoles).toEqual(['b']);
+    expect(component.userEmail).toBe('john.doe@mail.com');
+    expect(component.userRoles).toEqual(['role1']);
     expect(component.userDataLoaded).toBeTruthy();
   });
 });

@@ -12,7 +12,7 @@ test('login and log out from EUI with valid user', async ({ page }) => {
 test('login Verify the direct link navigate to login page', async ({ page }) => {
     await page.goto(config.CaseBaseURL);
     await expect(page.getByRole('heading', { name: 'Sign in or create an account' })).toBeVisible();
-    expect(page.url()).toContain('idam-web-public');
+    await expect(page.url()).toContain('idam-web-public');
   });
 
   test('login un-authenticated user login', async ({ page }) => {
@@ -22,6 +22,6 @@ test('login Verify the direct link navigate to login page', async ({ page }) => 
     await page.getByLabel('Password').fill('123');
     await page.getByRole('button', { name: 'Sign in' }).click();
     await expect(page.getByRole('heading', { name: 'Incorrect email or password' })).toBeVisible();
-    expect(page.url()).toContain('idam-web-public');
+    await expect(page.url()).toContain('idam-web-public');
   });
 

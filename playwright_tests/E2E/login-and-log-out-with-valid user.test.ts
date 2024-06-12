@@ -14,3 +14,4 @@ test('login and log out from EUI with valid user', async ({ page }) => {
   await page.getByText('Sign out').click();
   await expect(page.getByRole('heading', { name: 'Sign in or create an account' })).toBeVisible();
 });
+

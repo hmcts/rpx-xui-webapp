@@ -1,4 +1,3 @@
-
 export interface UserCredentials {
   readonly email: string;
   readonly password: string;
@@ -19,14 +18,16 @@ interface Config {
   [key: string]: UserCredentials | string;
 }
 
+const baseURL = process.env.APPBASEURL || "https://manage-case.aat.platform.hmcts.net";
+
 const config: Config = {
-  CaseAPIBaseURL:
-    process.env.CASEAPIBASEURL ||
-    "https://manage-case.aat.platform.hmcts.net/cases",
+  AppBaseURL: baseURL,
+  CaseBaseURL: baseURL + "/cases",
 };
 
 export default config as {
   [key in UserRole]: UserCredentials;
 } & {
-  CaseAPIBaseURL: string;
+  AppBaseURL: string;
+  CaseBaseURL: string;
 };

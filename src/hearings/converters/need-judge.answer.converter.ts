@@ -18,7 +18,7 @@ export class NeedJudgeAnswerConverter implements AnswerConverter {
         } else if (hasJudgeDetails?.length) {
           return RadioOptions.YES;
         }
-        return '';
+        return RadioOptions.NO;
       })
     );
   }

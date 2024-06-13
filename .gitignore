@@ -99,3 +99,6 @@ ignore/
 
 .nx/cache/
 
+#playwright
+test-results/
+

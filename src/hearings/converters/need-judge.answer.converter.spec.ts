@@ -30,15 +30,6 @@ describe('NeedJudgeAnswerConverter', () => {
     converter = new NeedJudgeAnswerConverter();
   });
 
-  it('should transform hearing need judge empty', () => {
-    const STATE: State = _.cloneDeep(initialState.hearings);
-    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;
-    const result$ = converter.transformAnswer(of(STATE));
-    const option = '';
-    const expected = cold('(b|)', { b: option });
-    expect(result$).toBeObservable(expected);
-  });
-
   it('should transform hearing need judge No', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {

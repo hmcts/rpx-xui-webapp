@@ -9,11 +9,12 @@ export class PanelRolesHiddenConverter implements HiddenConverter {
       const panelRequirements = state.hearingConditions?.isHearingAmendmentsEnabled
         ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements
         : state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-      if (panelRequirements?.panelSpecialisms) {
+      if (panelRequirements?.panelSpecialisms.length > 0) {
         return !panelRequirements.panelSpecialisms.length;
+      } else if (panelRequirements?.panelSpecialisms.length === 0 && panelRequirements?.roleType.length >= 1) {
+        return false;
       }
       return true;
-    }
-    ));
+    }));
   }
 }

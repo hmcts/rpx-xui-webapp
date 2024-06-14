@@ -7,10 +7,10 @@ import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConstants } from '../../../../app/app.constants';
-import { CaseCategoryModel } from '../../../../hearings/models/caseCategory.model';
-import { AfterPageVisitProperties, AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../../hearings/models/hearingsUpdateMode.enum';
-import { ServiceHearingValuesModel } from '../../../../hearings/models/serviceHearingValues.model';
-import { CaseFlagsUtils } from '../../../../hearings/utils/case-flags.utils';
+import { CaseCategoryModel } from '../../../models/caseCategory.model';
+import { AfterPageVisitProperties, AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../models/hearingsUpdateMode.enum';
+import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
+import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
@@ -101,6 +101,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     this.responseReceivedDate = moment(this.hearingRequestMainModel.hearingResponse?.receivedDateTime).format(HearingDateEnum.DisplayMonth) || '';
     this.caseStatus = this.hearingRequestMainModel.hearingResponse?.laCaseStatus || '';
     this.isHearingListed = this.caseStatus === LaCaseStatus.LISTED;
+    this.hearingsService.hearingRequestForSubmitValid = false;
     this.sectionsToDisplay = this.serviceHearingValuesModel?.screenFlow.map((screen) => screen.screenName);
     const locationIds = this.hearingRequestMainModel.hearingDetails.hearingLocations?.map((location) => location.locationId).join(',');
     this.showLanguageRequirementsSection$ = this.locationsDataService.getLocationById(locationIds).pipe(

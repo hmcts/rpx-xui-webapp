@@ -42,7 +42,7 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
       if (storeData && storeData.hearings) {
         this.screenFlow = storeData?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
         this.template = this.template.filter((tp: Section) => {
-          return this.screenFlow.some((sr: ScreenNavigationModel) => {
+          return this.screenFlow?.some((sr: ScreenNavigationModel) => {
             return tp.screenName.includes(sr.screenName) || tp.screenName.includes('check-answers');
           });
         });

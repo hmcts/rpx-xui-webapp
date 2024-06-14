@@ -3393,12 +3393,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.39-angular-upgrade":
-  version: 7.0.39-angular-upgrade
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.39-angular-upgrade"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.39-angular-upgrade-rc":
+  version: 7.0.39-angular-upgrade-rc
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.39-angular-upgrade-rc"
   dependencies:
     tslib: ^2.3.0
-  checksum: ec71633881b95a5f36617dab556a2c4b1cd587e25b191d7a1a0d26fb89ec008bc651f4494cfcb25a7c65001b43a315a709ca33d0a610df464a32bc7643e3060a
+  checksum: 078079850fcea242dd31647951c6b29e9382770097e31a4ddcb958e19cc2d7ab77f61476d1aaddd434db07919ed3f9db37f7f1a8d6fada3323249b11842954f2
   languageName: node
   linkType: hard
 
@@ -21949,7 +21949,7 @@ __metadata:
     "@angular/router": ^17.3.6
     "@angular/ssr": ^17.3.6
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.39-angular-upgrade
+    "@hmcts/ccd-case-ui-toolkit": 7.0.39-angular-upgrade-rc
     "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 4.0.4

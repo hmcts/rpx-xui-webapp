@@ -103,5 +103,5 @@ test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await expect(page.getByRole('table', { name: 'Respondent' }).getByRole('caption')).toBeVisible();
   await page.waitForSelector('ccd-case-full-access-view');
   const ele = await page.$('ccd-notification-banner .govuk-notification-banner__content');
-  expect(ele == null);
+  expect(ele == null).toBeTruthy();
 });

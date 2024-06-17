@@ -97,3 +97,6 @@ ignore/
 .angular/cache/*
 .yarn/install-state.gz
 
+#playwright
+test-results/
+

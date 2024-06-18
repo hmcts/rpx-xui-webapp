@@ -27,7 +27,7 @@
                     </label>
                 </div>
                 <div class="govuk-radios__item">
-                    <input formControlName="paperHearing" class="govuk-radios__input" id="paperHearingNo" type="radio" value="No">
+                    <input formControlName="paperHearing" class="govuk-radios__input" id="paperHearingNo" type="radio" value="No" (click)="clearChannelSelection()">
                     <label class="govuk-label govuk-radios__label" for="paperHearingNo">
                         {{ 'Will this be a paper hearing?' | rpxTranslate : null : 'No' }}
                     </label>

@@ -22,13 +22,20 @@ test('Create case flag 2', async ({ page }) => {
   const rowTextRef = "Language Interpreter";
   const textsToCheck = [/Test/, /Oct 2023/, /Active/];
   await checkTableRowContent(page, tableClass, tableName, rowTextRef, textsToCheck);
+  await checkNumberOfRow(page, tableClass, tableName, 1+1);//One row for the header
 });
 
 async function checkTableRowContent(page, tableClass: string, tableName: string, rowTextRef: string, textsToCheck: RegExp[]) {
   const respondantTable = page.locator(`.${tableClass}:has-text("${tableName}")`);
-  await expect(respondantTable.locator('td', { hasText: `${rowTextRef}` })).toBeVisible();
+  await expect(respondantTable.locator('td', { hasText: `${rowTextRef}` })).toBeVisible(); 
   const rowToCheck = respondantTable.locator(`tr:has-text("${rowTextRef}")`);
   for (const text of textsToCheck) {
     await expect(rowToCheck).toHaveText(text);
   }
 }
+async function checkNumberOfRow(page, tableClass: string, tableName: string, expectedRowCount: number) {
+  const respondantTable = page.locator(`.${tableClass}:has-text("${tableName}")`);
+  const rowCount = await respondantTable.locator('tr').count();
+  await expect(rowCount).toBe(expectedRowCount);
+}
+

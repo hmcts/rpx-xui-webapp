@@ -29,9 +29,9 @@ class TaskForEventCompletionValidationPage{
 
     async isPageDisplayed(){
         const isPresent = await this.validatioPages.isPresent();
-        if (isPresent){
-            return await await this.validatioPages.isDisplayed(); 
-        }
+        // if (isPresent){
+        //     return await await this.validatioPages.isDisplayed(); 
+        // }
         return isPresent; 
     }
 

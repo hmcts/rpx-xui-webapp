@@ -1,18 +1,12 @@
-import { caseMessagesMockData } from '@hmcts/ccd-case-ui-toolkit';
 import { test, expect } from '@playwright/test';
-import * as c from 'config';
+import { checkTableCellContent, checkTableRowContent, checkNumberOfRow } from "./steps/table-steps"
+import config from "../config"
+import { routeToCasePage } from './steps/case-steps';
 
 test('Create case flag 2', async ({ page }) => {
-  await page.goto('https://manage-case.aat.platform.hmcts.net/');
-  await page.getByLabel('Email address').click();
-  await page.getByLabel('Email address').fill('henry_fr_harper@yahoo.com');
-  await page.getByLabel('Password').click();
-  await page.getByLabel('Password').fill('Nagoya0102');
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await loginExUIWithCaseFlag(page);
   
-  const caseId = '1698182796208883';
-  console.log("Going to case details page for caseId: "+caseId);
-  await page.goto('https://manage-case.aat.platform.hmcts.net/cases/case-details/'+caseId);
+  await routeToCasePage(page, '1698182796208883');
   await expect(page.getByText('Case flags', { exact: true })).toBeVisible();
   await page.getByText('Case flags', { exact: true }).click();
   await expect(page.getByRole('table', { name: 'Respondant' }).getByRole('caption')).toBeVisible();
@@ -28,19 +22,12 @@ test('Create case flag 2', async ({ page }) => {
 });
 
 test('View case flag', async ({ page }) => {
-  await page.goto('https://manage-case.aat.platform.hmcts.net/');
-  await page.getByLabel('Email address').click();
-  await page.getByLabel('Email address').fill('henry_fr_harper@yahoo.com');
-  await page.getByLabel('Password').click();
-  await page.getByLabel('Password').fill('Nagoya0102');
-  await page.locator('body').click();
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  await page.goto('https://manage-case.aat.platform.hmcts.net/cases/case-details/1698182796208883');
+  await loginExUIWithCaseFlag(page);
   
-
-  await expect(page.getByText('There are 4 active flags on')).toBeVisible();
-
+  await routeToCasePage(page, '1698182796208883');
+  
   console.log("Check Applicant details");
+  await expect(page.getByText('There are 4 active flags on')).toBeVisible();
   await page.getByText('Case flags', { exact: true }).click();
   await expect(page.getByRole('table', { name: 'Applicant' }).getByRole('caption')).toBeVisible();
   const tableClass= "govuk-table";
@@ -78,24 +65,12 @@ test('View case flag', async ({ page }) => {
   
 });
 
-async function checkTableCellContent(page, tableName: string, rowId: number, colID: number, expectedText: string) {
-  const row = await page.locator(`table.govuk-table:has-text("${tableName}")`).locator('tr').nth(rowId);
-  const text = await row.locator('td').nth(colID).innerText();
-  await expect(text).toBe(expectedText);
-  console.log(tableName+"["+rowId+","+colID+"]"+ text);
-}
-
-async function checkTableRowContent(page, tableClass: string, tableName: string, rowTextRef: string, textsToCheck: RegExp[]) {
-  const respondantTable = page.locator(`.${tableClass}:has-text("${tableName}")`);
-  await expect(respondantTable.locator('td', { hasText: `${rowTextRef}` })).toBeVisible(); 
-  const rowToCheck = respondantTable.locator(`tr:has-text("${rowTextRef}")`);
-  for (const text of textsToCheck) {
-    await expect(rowToCheck).toHaveText(text);
-  }
-}
-async function checkNumberOfRow(page, tableClass: string, tableName: string, expectedRowCount: number) {
-  const respondantTable = page.locator(`.${tableClass}:has-text("${tableName}")`);
-  const rowCount = await respondantTable.locator('tr').count();
-  await expect(rowCount).toBe(expectedRowCount);
+async function loginExUIWithCaseFlag(page) {
+  await page.goto(config.CaseBaseURL);
+  await page.getByLabel('Email address').click();
+  await page.getByLabel('Email address').fill('henry_fr_harper@yahoo.com');
+  await page.getByLabel('Password').click();
+  await page.getByLabel('Password').fill('Nagoya0102');
+  await page.getByRole('button', { name: 'Sign in' }).click();
 }
 

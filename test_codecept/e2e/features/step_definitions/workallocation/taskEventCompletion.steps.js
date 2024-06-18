@@ -12,7 +12,7 @@ const taskForEventCompletionValidationPage = require('../../pageObjects/workAllo
         const rowshash = datatable.parse().rowsHash();
 
         await BrowserWaits.retryWithActionCallback(async () => {
-            expect(await taskForEventCompletionValidationPage.isPageDisplayed()).to.be.false
+            expect(await taskForEventCompletionValidationPage.isPageDisplayed()).to.be.true
 
             const summaryHeader = await taskForEventCompletionValidationPage.summaryHeading.getText();
             const summaryMessage = await taskForEventCompletionValidationPage.summaryBody.getText();

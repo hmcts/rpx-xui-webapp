@@ -275,22 +275,23 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public clearChannelSelection(): void { 
+    let i = 0;
     (this.attendanceFormGroup.controls.parties.value).forEach((value) => {
-      console.log('value at the firt point is:', value);
-      this.setSelectData(value).then(() => {
-        this.resetSelect(1)
-      })
+      this.setSelectData(value, this.resetSelect(i++));
     });
   }
 
-  public async setSelectData(value: PartyDetailsModel): Promise<any> {
-    if(value) {
+  public async setSelectData(value: PartyDetailsModel, callback): Promise<any> {
+    if (value) {
       return value.individualDetails.preferredHearingChannel = '';
     }
+    callback();
   }
 
   public resetSelect(value: number): void {
-    const dropdown = document.getElementById(`partyChannel${value}`) as HTMLSelectElement;
-    dropdown.selectedIndex = 0;
+    setTimeout(() => {
+      const dropdown = document.getElementById(`partyChannel${value}`) as HTMLSelectElement;
+      dropdown.selectedIndex = 0;
+    }, 10);
   }
 }

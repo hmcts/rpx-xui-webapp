@@ -274,7 +274,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     });
   }
 
-  public clearChannelSelection(): void { 
+  public clearChannelSelection(): void {
     let i = 0;
     (this.attendanceFormGroup.controls.parties.value).forEach((value) => {
       this.setSelectData(value, this.resetSelect(i++));

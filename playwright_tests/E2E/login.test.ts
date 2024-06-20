@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { signIn } from "./steps/login-steps"
+import axeTest from "../../helpers/accessibilityTestHelper.ts";
 import config from "../config"
 
 test('login and log out from EUI with valid user', async ({ page }) => {
@@ -7,16 +8,22 @@ test('login and log out from EUI with valid user', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Case list' })).toBeVisible();
   await page.getByText('Sign out').click();
   await expect(page.getByRole('heading', { name: 'Sign in or create an account' })).toBeVisible();
+  const accessibilityScanResults = await new axeTest({ page }).analyze();
+  await expect(accessibilityScanResults.violations).toEqual([]);
 });
 
 test('login Verify the direct link navigate to login page', async ({ page }) => {
     await page.goto(config.CaseBaseURL);
+    const accessibilityScanResults = await new axeTest({ page }).analyze();
+    await expect(accessibilityScanResults.violations).toEqual([]);
     await expect(page.getByRole('heading', { name: 'Sign in or create an account' })).toBeVisible();
     await expect(page.url()).toContain('idam-web-public');
   });
 
   test('login un-authenticated user login', async ({ page }) => {
     await page.goto(config.CaseBaseURL);
+    const accessibilityScanResults = await new axeTest({ page }).analyze();
+    await expect(accessibilityScanResults.violations).toEqual([]);
     await page.getByLabel('Email address').fill('test_nonexisting_or_invalid@gmail.com');
     await page.getByLabel('Password').click();
     await page.getByLabel('Password').fill('123');

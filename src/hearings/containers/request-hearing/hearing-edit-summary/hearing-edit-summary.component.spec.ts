@@ -195,6 +195,11 @@ describe('HearingEditSummaryComponent', () => {
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(expectedResult);
   });
 
+  it('should set hearingRequestForSubmitValid to false on initialising page.', () => {
+    component.ngOnInit();
+    expect(hearingsService.hearingRequestForSubmitValid).toEqual(false);
+  });
+
   it('should return reasonableAdjustmentChangesRequired and partyDetailsChangesRequired as true if interpreter language changed', () => {
     const partiesSHV: PartyDetailsModel[] = [
       {

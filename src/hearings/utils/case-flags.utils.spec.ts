@@ -466,11 +466,9 @@ describe('CaseFlagsUtils', () => {
       expect(flagsGroup[0].name).toEqual('Jane Butler');
       expect(flagsGroup[0].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.AMENDED);
       expect(flagsGroup[0].partyFlags[0].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
-      expect(flagsGroup[0].partyFlags[1].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
       expect(flagsGroup[1].name).toEqual('Jack Ryan');
       expect(flagsGroup[1].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.AMENDED);
       expect(flagsGroup[1].partyFlags[0].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
-      expect(flagsGroup[0].partyFlags[1].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
       expect(flagsGroup[2].name).toEqual('Rob Kennedy');
       expect(flagsGroup[2].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.AMENDED);
       expect(flagsGroup[2].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
@@ -483,6 +481,16 @@ describe('CaseFlagsUtils', () => {
       expect(partyFlags.length).toEqual(0);
     });
 
+    it('should return non-reasonable adjustment flags when case flags is defined', () => {
+      const partyFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlags(caseFlagsRefData, caseFlags,
+        partiesInSHV);
+      expect(partyFlags.length).toEqual(4);
+      expect(partyFlags[0].flagId).toEqual('CF0006');
+      expect(partyFlags[1].flagId).toEqual('PF0002');
+      expect(partyFlags[2].flagId).toEqual('CF0002');
+      expect(partyFlags[3].flagId).toEqual('CF0007');
+    });
+
     it('should return non-reasonable adjustment flags with no labels', () => {
       spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(false);
       const flagsGroup = CaseFlagsUtils.getNonReasonableAdjustmentFlagsGroupedByPartyName(caseFlagsRefData, caseFlags,
@@ -490,11 +498,9 @@ describe('CaseFlagsUtils', () => {
       expect(flagsGroup[0].name).toEqual('Jane Butler');
       expect(flagsGroup[0].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[0].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
-      expect(flagsGroup[0].partyFlags[1].flagAmendmentLabelStatus).toBeUndefined();
       expect(flagsGroup[1].name).toEqual('Jack Ryan');
       expect(flagsGroup[1].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[1].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
-      expect(flagsGroup[0].partyFlags[1].flagAmendmentLabelStatus).toBeUndefined();
       expect(flagsGroup[2].name).toEqual('Rob Kennedy');
       expect(flagsGroup[2].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[2].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();

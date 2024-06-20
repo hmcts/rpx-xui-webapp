@@ -101,6 +101,7 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
         super.navigateAction(action);
       }
     } else if (action === ACTION.BACK) {
+      this.hearingsService.hearingRequestForSubmitValid = false;
       super.navigateAction(action);
     }
   }

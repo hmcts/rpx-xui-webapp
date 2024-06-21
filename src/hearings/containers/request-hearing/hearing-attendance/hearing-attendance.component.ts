@@ -273,4 +273,25 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       otherReasonableAdjustmentDetails: [individualDetails.otherReasonableAdjustmentDetails]
     });
   }
+
+  public clearChannelSelection(): void {
+    let i = 0;
+    (this.attendanceFormGroup.controls.parties.value).forEach((value) => {
+      this.setSelectData(value, this.resetSelect(i++));
+    });
+  }
+
+  public async setSelectData(value: PartyDetailsModel, callback): Promise<any> {
+    if (value) {
+      return value.individualDetails.preferredHearingChannel = '';
+    }
+    callback();
+  }
+
+  public resetSelect(value: number): void {
+    setTimeout(() => {
+      const dropdown = document.getElementById(`partyChannel${value}`) as HTMLSelectElement;
+      dropdown.selectedIndex = 0;
+    }, 10);
+  }
 }

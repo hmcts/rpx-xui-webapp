@@ -4,11 +4,11 @@ import { inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of, throwError } from 'rxjs';
+import { Store } from '@ngrx/store';
 import { initialState } from '../hearing.test.data';
 import { JudicialUserModel } from '../models/judicialUser.model';
 import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import { JudicialUserSearchResponseResolver } from './judicial-user-search-response-resolver.resolve';
-import { Store } from '@ngrx/store';
 import * as fromHearingStore from '../store';
 
 describe('Ref Data Resolver', () => {

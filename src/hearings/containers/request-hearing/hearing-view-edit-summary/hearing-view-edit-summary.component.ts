@@ -12,7 +12,7 @@ import { HEARING_VIEW_EDIT_SUMMARY_TEMPLATE } from '../../../templates/hearing-v
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import { Section } from '../../../../hearings/models/section';
 import { ScreenNavigationModel } from '../../../../hearings/models/screenNavigation.model';
-import { HearingResponseError } from 'src/hearings/models/hearingResponseError.model';
+import { HearingResponseError } from '../../../../hearings/models/hearingResponseError.model';
 
 @Component({
   selector: 'exui-hearing-view-edit-summary',

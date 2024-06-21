@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { Store } from '@ngrx/store';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, AnswerSource, IsHiddenSource } from '../../../models/hearings.enum';
@@ -11,7 +12,6 @@ import { HearingViewEditSummaryComponent } from './hearing-view-edit-summary.com
 import { Section } from '../../../../hearings/models/section';
 import { ScreenNavigationModel } from '../../../../hearings/models/screenNavigation.model';
 import * as fromHearingStore from '../../../../hearings/store';
-import { Store } from '@ngrx/store';
 
 describe('HearingViewEditSummaryComponent', () => {
   let component: HearingViewEditSummaryComponent;

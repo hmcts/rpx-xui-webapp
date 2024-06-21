@@ -1,4 +1,4 @@
-import { HearingResponseError } from 'src/hearings/models/hearingResponseError.model';
+import { HearingResponseError } from '../../../hearings/models/hearingResponseError.model';
 import * as fromHearingRequestAction from './hearing-request.action';
 
 describe('Hearing Request Actions', () => {

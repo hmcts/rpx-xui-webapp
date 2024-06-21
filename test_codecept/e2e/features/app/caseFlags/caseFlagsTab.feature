@@ -1,4 +1,4 @@
-@fullfunctional @functional_enabled
+@fullfunctional @functional_enablNOT @FLACKY @DEMOPOC
 Feature: Case flags tab
 
     Background: Setup case

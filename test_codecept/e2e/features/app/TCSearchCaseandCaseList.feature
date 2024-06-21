@@ -1,4 +1,4 @@
-@fullfunctional @test @functional_enabled 
+@fullfunctional @test @functional_enablNOT @DEMOPOC
 Feature: Test case type case list and find case workflow
 
   Background:

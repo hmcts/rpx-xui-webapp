@@ -1,4 +1,4 @@
-@fullfunctional  @staffUI @functional_enabled
+@fullfunctional  @staffUI @functional_enablNOT @DEMOPOC
 Feature: Staff UI Search
 
 

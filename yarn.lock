@@ -3393,12 +3393,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.34-cfv-sort-order-upload-date":
-  version: 7.0.34-cfv-sort-order-upload-date
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.34-cfv-sort-order-upload-date"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.41-cfv-sort-order-upload-date-renewed":
+  version: 7.0.41-cfv-sort-order-upload-date-renewed
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.41-cfv-sort-order-upload-date-renewed"
   dependencies:
     tslib: ^2.3.0
-  checksum: 4f7fe0743ef46e151f2ab4fd8ffec01d95847b9351e4c24e9fefb8b34707e08ce08f5f3af73baae5b3b844594fc7f10146c760b28a3303fe97b23eb8be11e831
+  checksum: b1acc03a20b68ca09719bed05902e87920b48f904ce5549bf358e651fc4ae1363ed6fbe103d2e51d43556c445f9e444ef3045e5bcab943b5f2bf3484fe54c353
   languageName: node
   linkType: hard
 
@@ -21949,7 +21949,7 @@ __metadata:
     "@angular/router": ^17.3.6
     "@angular/ssr": ^17.3.6
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.34-cfv-sort-order-upload-date
+    "@hmcts/ccd-case-ui-toolkit": 7.0.41-cfv-sort-order-upload-date-renewed
     "@hmcts/ccpay-web-component": 6.1.10
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 4.0.4

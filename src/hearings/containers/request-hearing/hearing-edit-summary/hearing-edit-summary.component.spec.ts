@@ -1262,6 +1262,40 @@ describe('HearingEditSummaryComponent', () => {
     expect(isDifference).toEqual(false);
   });
 
+  it('should return false as removed party had no reasonable adjustments test 2', () => {
+    console.log('in test!!!');
+    const partiesSHV: PartyDetailsModel[] = createSHVEntry();
+
+    const partiesHMC: PartyDetailsModel[] = createHMCEntry();
+    partiesHMC.push(
+      {
+        partyID: 'P3',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Doe',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Doe',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: []
+        }
+      }
+    );
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      parties: partiesSHV
+    };
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      partyDetails: partiesHMC
+    };
+
+    const isDifference = component.pageVisitReasonableAdjustmentChangeExists();
+
+    expect(isDifference).toEqual(false);
+  });
+
   it('should return false as added party had no reasonable adjustments', () => {
     const partiesSHV: PartyDetailsModel[] = createSHVEntry();
 

@@ -464,8 +464,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
   private extractReasonableAdjustments(partyDetails: PartyDetailsModel[]) {
     // Return true if there are changes to the interpreter languages
-    return partyDetails.map((parties) => parties.partyID + ',' + parties.individualDetails?.reasonableAdjustments?.
-      filter((adjustments) => adjustments.startsWith('RA'))).filter((adjustments) => !adjustments.includes(',undefined'));
+    const returnPartyDetails = partyDetails.map((parties) => parties.partyID + ',' + parties.individualDetails?.reasonableAdjustments?.
+      filter((adjustments) => adjustments.startsWith('RA'))).
+      filter((adjustments) => !adjustments.includes(',undefined', null)).
+      filter((adjustments) => !adjustments.endsWith(','));
+    return returnPartyDetails;
   }
 
   private extractInterpreterLanguages(partyDetails: PartyDetailsModel[]) {

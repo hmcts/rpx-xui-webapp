@@ -1,13 +1,9 @@
 import { test, expect } from '@playwright/test';
 import config from "../config"
+import { signIn } from './steps/login-steps';
 
 test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
-  await page.goto(config.CaseBaseURL);
-  await page.getByLabel('Email address').click();
-  await page.getByLabel('Email address').fill('henry_fr_harper@yahoo.com');
-  await page.getByLabel('Password').click();
-  await page.getByLabel('Password').fill('Nagoya0102');
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await signIn(page, "USER_WITH_FLAGS");
   await expect(page.getByRole('heading', { name: 'Case list' })).toBeVisible();
 
   const xuiCaseFlagV1Url = config.CaseBaseURL + '/case-create/DIVORCE/xuiCaseFlagsV1/createCase/createCasetestDataSetup';

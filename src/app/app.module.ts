@@ -34,8 +34,7 @@ import { storeFreeze } from 'ngrx-store-freeze';
 import {
   LoggerModule,
   NGXLogger,
-  NgxLoggerLevel,
-  NGXLoggerMapperService
+  NgxLoggerLevel
 } from 'ngx-logger';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
@@ -111,7 +110,6 @@ export function launchDarklyClientIdFactory(
   ],
   providers: [
     NGXLogger,
-    NGXLoggerMapperService,
     {
       provide: RouterStateSerializer,
       useClass: CustomSerializer

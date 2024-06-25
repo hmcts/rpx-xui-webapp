@@ -1192,7 +1192,6 @@ describe('HearingEditSummaryComponent', () => {
     expect(result$).toBeObservable(expected);
   });
 
-  // New tests for change to
   it('should return false as no difference in reasonable adjustment', () => {
     const partiesSHV = createSHVEntry();
     const partiesHMC = createHMCEntry();

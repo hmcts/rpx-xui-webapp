@@ -463,12 +463,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private extractReasonableAdjustments(partyDetails: PartyDetailsModel[]) {
-    // Return true if there are changes to the interpreter languages
-    const returnPartyDetails = partyDetails.map((parties) => parties.partyID + ',' + parties.individualDetails?.reasonableAdjustments?.
+    // Return a string of party id and reasonable adjustments.
+    return partyDetails.map((parties) => parties.partyID + ',' + parties.individualDetails?.reasonableAdjustments?.
       filter((adjustments) => adjustments.startsWith('RA'))).
       filter((adjustments) => !adjustments.includes(',undefined', null)).
       filter((adjustments) => !adjustments.endsWith(','));
-    return returnPartyDetails;
   }
 
   private extractInterpreterLanguages(partyDetails: PartyDetailsModel[]) {
@@ -483,17 +482,15 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private extractAndSortParties(partyDetails: PartyDetailsModel[]){
-    // Get the individual parties
+    // Get the individual parties and sort reasonable adjustments into order.
     let individualParties = cloneDeep(partyDetails);
     individualParties = individualParties.filter(
       (party) => party.partyType === PartyType.IND).sort((a, b) => {
       return a.partyID > b.partyID ? 1 : (a.partyID === b.partyID ? 0 : -1);
     });
-    individualParties.forEach(
-      (party) => party.individualDetails?.reasonableAdjustments?.sort((a, b) => {
-        return a > b ? 1 : (a === b ? 0 : -1);
-      })
-    );
+
+    individualParties.forEach((party) => party.individualDetails?.reasonableAdjustments?.sort());
+
     return individualParties;
   }
 

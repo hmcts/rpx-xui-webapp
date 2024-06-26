@@ -29,7 +29,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
 
   public isLoading = false;
   public isUpdateMode = false;
-  public errMsg:ResponseErrorMessage = null;
+  public errMsg: ResponseErrorMessage;
 
   constructor(
     private router: Router,
@@ -68,13 +68,12 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       } as InformationMessage);
       this.router.navigateByUrl('/staff', { state: { retainMessages: true } });
     }, (err) => {
-      if( err && err?.status === 400) {
+      if (err && err?.status === 400) {
         this.errMsg = err;
         window.scrollTo(0, 0);
       } else {
         this.router.navigateByUrl('/service-down');
       }
-      
     });
   }
 

@@ -490,7 +490,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     });
     individualParties.forEach(
       (party) => party.individualDetails?.reasonableAdjustments?.sort((a, b) => {
-        return a > b ? 1 : (a === b ? 0 : -1);
+        return a.localeCompare(b);
       })
     );
     return individualParties;

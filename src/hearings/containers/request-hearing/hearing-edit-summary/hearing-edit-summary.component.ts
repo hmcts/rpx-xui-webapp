@@ -488,9 +488,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       (party) => party.partyType === PartyType.IND).sort((a, b) => {
       return a.partyID > b.partyID ? 1 : (a.partyID === b.partyID ? 0 : -1);
     });
-
-    individualParties.forEach((party) => party.individualDetails?.reasonableAdjustments?.sort());
-
+    individualParties.forEach(
+      (party) => party.individualDetails?.reasonableAdjustments?.sort((a, b) => {
+        return a > b ? 1 : (a === b ? 0 : -1);
+      })
+    );
     return individualParties;
   }
 

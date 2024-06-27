@@ -1262,7 +1262,6 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should return false as removed party had no reasonable adjustments test 2', () => {
-    console.log('in test!!!');
     const partiesSHV: PartyDetailsModel[] = createSHVEntry();
 
     const partiesHMC: PartyDetailsModel[] = createHMCEntry();

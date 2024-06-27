@@ -108,7 +108,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   public async setHeaderContent(userDetails) {
     if (userDetails.userInfo) {
-      this.userRoles = userDetails.userInfo?.roles;
+      this.userRoles = userDetails?.userInfo?.roles;
       // const applicationTheme: ApplicationTheme = await this.getApplicationThemeForUser().pipe(first()).toPromise();
       this.getApplicationThemeForUser().subscribe((theme) => {
         this.hideNavigationListener(this.store);

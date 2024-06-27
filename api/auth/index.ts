@@ -1,4 +1,4 @@
-import { AUTH, AuthOptions, xuiNode } from '@hmcts/rpx-xui-node-lib';
+import { AUTH, AuthOptions, xuiNode, XuiNodeOptions } from '@hmcts/rpx-xui-node-lib';
 import { NextFunction, Response } from 'express';
 import { getConfigValue, showFeature } from '../configuration';
 import {
@@ -28,6 +28,7 @@ import {
 import { client } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest } from '../lib/models';
+import { FileSessionMetadata, RedisSessionMetadata } from '@hmcts/rpx-xui-node-lib/dist/session/models/sessionMetadata.interface';
 
 const logger = log4jui.getLogger('auth');
 let idamLogins = Math.floor(Math.random() * 10); // Initialize IDAM logins counter with numbers 0 to 9
@@ -127,29 +128,22 @@ export const getXuiNodeMiddleware = () => {
     secret: getConfigValue(SESSION_SECRET)
   };
 
-  const redisStoreOptions = {
-    redisStore: {
-      ...baseStoreOptions, ...{
-        redisStoreOptions: {
-          redisCloudUrl: getConfigValue(REDIS_CLOUD_URL),
-          redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
-          redisTtl: getConfigValue(REDIS_TTL)
-        }
-      }
+  const redisStoreOptions: RedisSessionMetadata = {
+    ...baseStoreOptions,
+    redisStoreOptions: {
+      redisCloudUrl: getConfigValue(REDIS_CLOUD_URL),
+      redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
+      redisTtl: getConfigValue(REDIS_TTL)
     }
   };
 
-  const fileStoreOptions = {
-    fileStore: {
-      ...baseStoreOptions, ...{
-        fileStoreOptions: {
-          filePath: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions'
-        }
-      }
+  const fileStoreOptions: FileSessionMetadata = {
+    ...baseStoreOptions,
+    fileStoreOptions: {
+      filePath: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions'
     }
   };
-
-  const nodeLibOptions = {
+  const nodeLibOptions:XuiNodeOptions = {
     auth: {
       s2s: {
         microservice: getConfigValue(MICROSERVICE),
@@ -157,11 +151,21 @@ export const getXuiNodeMiddleware = () => {
         s2sSecret: s2sSecret.trim()
       }
     },
-    session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions
+    session: getSessionOptions(redisStoreOptions, fileStoreOptions)
   };
-
   const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2';
   nodeLibOptions.auth[type] = options;
   logger._logger.info('Setting XuiNodeLib options');
   return xuiNode.configure(nodeLibOptions);
 };
+
+function getSessionOptions(redisStoreOptions: RedisSessionMetadata, fileStoreOptions: FileSessionMetadata): any {
+  if (showFeature(FEATURE_REDIS_ENABLED)) {
+    return {
+      redisStoreOptions: redisStoreOptions
+    };
+  }
+  return {
+    fileStoreOptions: fileStoreOptions
+  };
+}

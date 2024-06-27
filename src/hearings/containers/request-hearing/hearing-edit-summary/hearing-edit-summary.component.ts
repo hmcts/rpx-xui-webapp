@@ -459,7 +459,15 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const interpreterLanguagesSHV = this.extractInterpreterLanguages(SHVIndividualParties);
     const interpreterLanguagesHMC = this.extractInterpreterLanguages(HRMIndividualParties);
 
-    return !_.isEqual(interpreterLanguagesSHV, interpreterLanguagesHMC);
+    // return !_.isEqual(interpreterLanguagesSHV, interpreterLanguagesHMC);
+    if (!_.isEqual(interpreterLanguagesSHV, interpreterLanguagesHMC)){
+      return true;
+    }
+    if (this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesRequired) {
+      return !this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesConfirmed;
+    }
+    // There are no changes for reasonable adjustments and language interpreter flags when SHV compared with HMC
+    return false;
   }
 
   private extractReasonableAdjustments(partyDetails: PartyDetailsModel[]) {

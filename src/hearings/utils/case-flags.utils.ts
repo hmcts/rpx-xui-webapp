@@ -43,8 +43,7 @@ export class CaseFlagsUtils {
         || caseFlag?.flagId === CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID));
     const nonReasonableAdjustmentPartyFlags = activeFlags?.filter((activeFlag) => !reasonableAdjustmentFlags.includes(activeFlag)) || [];
     const activeCaseFlags = activeFlags?.filter((nonRAF) => nonRAF.displayPath?.includes(CaseFlagType.CASE_FLAG)) || [];
-
-    return [...nonReasonableAdjustmentPartyFlags, ...activeCaseFlags];
+    return _.uniq([...nonReasonableAdjustmentPartyFlags, ...activeCaseFlags]);
   }
 
   /**

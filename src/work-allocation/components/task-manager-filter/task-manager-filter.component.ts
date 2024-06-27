@@ -241,7 +241,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       (userDetails) => {
-        this.userRole = userDetails.userInfo && userDetails.userInfo?.roles ? AppUtils.getUserRole(userDetails.userInfo?.roles) : null;
+        this.userRole = userDetails?.userInfo?.roles ? AppUtils.getUserRole(userDetails.userInfo?.roles) : null;
         this.roleType = AppUtils.convertDomainToLabel(this.userRole);
         this.fieldsConfig.cancelSetting.fields.push({
           name: 'taskType',

@@ -2703,16 +2703,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.18-message-banner-start-end-date":
-  version: 2.0.18-message-banner-start-end-date
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.18-message-banner-start-end-date"
+"@hmcts/rpx-xui-common-lib@npm:2.0.21-message-banner-start-end-date-1":
+  version: 2.0.21-message-banner-start-end-date-1
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.21-message-banner-start-end-date-1"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: b8c151bb8a89a41bff94933c938ccee41637b5fa4827a7e34615ceffb204c91a97ed50956c26f911758fd458cb81ca5c975bde6aef448a8e8719a6ee3422abe3
+  checksum: 05b4939f4b6ab4fe78a896a8800c0d0d2af4eb230967e309dd828572b60ce1a14c63bd459d2df830d66de7df7cf849a08c7e5207c85b3a5df9d67f1f68245942
   languageName: node
   linkType: hard
 
@@ -19208,7 +19208,7 @@ __metadata:
     "@hmcts/media-viewer": 3.0.4
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 2.0.18-message-banner-start-end-date
+    "@hmcts/rpx-xui-common-lib": 2.0.21-message-banner-start-end-date-1
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@microsoft/applicationinsights-web": ^3.1.0
     "@ng-idle/core": ^11.1.0

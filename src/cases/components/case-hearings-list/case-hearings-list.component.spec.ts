@@ -14,6 +14,7 @@ import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.modu
 import * as fromHearingStore from '../../../hearings/store';
 import { CaseHearingsListComponent } from './case-hearings-list.component';
 import { HearingsFeatureService } from '../../../hearings/services/hearings-feature.service';
+import { of } from 'rxjs';
 
 const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   hearingID: 'h100001',

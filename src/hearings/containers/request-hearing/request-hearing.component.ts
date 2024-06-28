@@ -38,8 +38,11 @@ export class RequestHearingComponent implements OnDestroy {
     this.hearingsService.navigateAction(action);
   }
 
-  public buttonDisabled(): boolean {
-    return ACTION.VIEW_EDIT_SUBMIT && this.hearingsService.hearingRequestForSubmitValid;
+  public buttonDisabled(action: ACTION): boolean {
+    if (action === ACTION.VIEW_EDIT_SUBMIT) {
+      return this.hearingsService.hearingRequestForSubmitValid;
+    }
+    return false;
   }
 
   public get isCreateEditSummary(): boolean {

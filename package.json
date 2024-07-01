@@ -273,5 +273,5 @@
     "typed-rest-client": "^1.8.0",
     "lodash": "^4.17.21"
   },
-  "packageManager": "yarn@3.6.3"
+  "packageManager": "yarn@3.8.3"
 }

@@ -1,5 +1,5 @@
-import config from "../../config";
-const testConfig = require("../../../test_codecept/e2e/config/appTestConfig");
+import config from "../config";
+const testConfig = require("../../test_codecept/e2e/config/appTestConfig");
 
 export async function signIn(page: any, userIdentifier: string) {
   const matchingUsers = testConfig.users[testConfig.testEnv].filter(

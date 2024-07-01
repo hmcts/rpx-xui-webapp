@@ -1,7 +1,9 @@
 import { Page, expect } from '@playwright/test';
+import { SearchPage } from './SearchPage';
 
-export class CreateCase {
+export class UpdateCase {
   private page: Page;
+  private header = '.govuk-heading-xl';
   private jurisdiction = '#cc-jurisdiction';
   private caseType = '#cc-case-type';
   private applyButton = 'ccd-search-filters button:not(.button-secondary),ccd-workbasket-filters button:not(.button-secondary)';

@@ -40,8 +40,8 @@ export class SearchPage {
     await this.page.click(this.firstResultCaseLink);
   }
 
-  async amOnPage() {
-    await expect(this.page.getByRole('heading', { name: 'Search' })).toBeVisible();
+  async amOnPage(header: string){
+    await expect(this.page.getByRole('heading', { name: header })).toBeVisible();
   }
 
   async hasSearchReturnedResults(): Promise<boolean> {

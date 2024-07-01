@@ -1,5 +1,7 @@
 import { Page, expect } from '@playwright/test';
 import { SearchPage } from '../pageObjects/SearchPage';
+import { CaseView } from '../pageObjects/CaseView';
+import { UpdateCase } from '../pageObjects/UpdateCase';
 
 export async function clickToSearchPage(page: Page) {
   console.log("Going to Search Page");
@@ -21,7 +23,7 @@ export async function validateCaseEventNextStepTriggerActions(page: Page) {
   const searchPage = new SearchPage(page);
   
   await clickToSearchPage(page);
-  await searchPage.amOnPage();
+  await searchPage.amOnPage('Search');
   await searchPage.selectJurisdiction('Family Divorce');
   await searchPage.selectCaseType('XUI Case PoC');
   await searchPage.clickApplyButton();
@@ -38,10 +40,14 @@ export async function validateCaseEventNextStepTriggerActions(page: Page) {
 
 export async function validateUpdateFormPageNextStepTriggerActions(page: Page) {
   const searchPage = new SearchPage(page);
+  const caseview = new CaseView(page);
+  const updateCase = new UpdateCase(page);
 
   await clickToSearchPage(page);
 
-  await searchPage.amOnPage();
+  //await page.click("(//a[normalize-space()='Create case'])[1]"); 
+
+  await searchPage.amOnPage('Search');
 
   await searchPage.selectJurisdiction('Family Divorce');
   await searchPage.selectCaseType('XUI Case PoC');
@@ -54,24 +60,12 @@ export async function validateUpdateFormPageNextStepTriggerActions(page: Page) {
 
   await expect(page).toHaveURL(/.*case-details.*/);
 
-  await page.click('button#updateCase'); // Replace with new selector
+  await caseview.clickNextStep('Update case');
+  await expect(page).toHaveURL(/.*updateCase.*/);
+  
+  //await page.click('#next-step'); // Replace with new selector
   // Implement the necessary steps for validation
+
 }
 
-export async function validateInvalidDateErrorMessage(page: Page) {
-  const searchPage = new SearchPage(page);
 
-  await page.click('#createCaseTab'); // Replace with new selector
-
-  await searchPage.amOnPage();
-
-  await searchPage.selectJurisdiction('Family Divorce');
-  await searchPage.selectCaseType('XUI Test Case type dev');
-  await page.click('button#createCase'); // Replace with new selector
-  await expect(page).toHaveURL(/.*case-form.*/);
-
-  await page.fill('#generatedDOB-day', 'invalid date'); // Replace with new selector
-  await page.click('button#submitCase'); // Replace with new selector
-
-  await expect(page.locator('.error-message')).toHaveText('Date is not valid'); // Replace with new selector
-}

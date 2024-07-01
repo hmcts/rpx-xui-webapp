@@ -158,7 +158,7 @@ export class AppComponent implements OnInit, OnDestroy {
       const featureUser: FeatureUser = {
         key: userInfo.id || userInfo.uid,
         custom: {
-          roles: userInfo.roles,
+          roles: userInfo?.roles,
           orgId: '-1'
         }
       };

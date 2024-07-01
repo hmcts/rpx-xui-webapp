@@ -8,9 +8,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FeatureUser } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { State, reducers } from '../../../app/store';
+import * as fromRoot from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
@@ -211,6 +212,7 @@ describe('CaseViewerContainerComponent', () => {
   let component: CaseViewerContainerComponent;
   let fixture: ComponentFixture<CaseViewerContainerComponent>;
   let debug: DebugElement;
+  let store: MockStore;
 
   const initialState: State = {
     routerReducer: null,
@@ -272,6 +274,8 @@ describe('CaseViewerContainerComponent', () => {
     mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
     component = fixture.componentInstance;
     debug = fixture.debugElement;
+    store = TestBed.inject(MockStore);
+    store.overrideSelector(fromRoot.getUserDetails, initialState.appConfig.userDetails);
     fixture.detectChanges();
   });
 
@@ -297,6 +301,7 @@ describe('CaseViewerContainerComponent', () => {
 describe('CaseViewerContainerComponent - Hearings tab visible', () => {
   let component: CaseViewerContainerComponent;
   let fixture: ComponentFixture<CaseViewerContainerComponent>;
+  let store: MockStore;
 
   const initialState: State = {
     routerReducer: null,
@@ -357,6 +362,8 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
     fixture = TestBed.createComponent(CaseViewerContainerComponent);
     mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
     component = fixture.componentInstance;
+    store = TestBed.inject(MockStore);
+    store.overrideSelector(fromRoot.getUserDetails, initialState.appConfig.userDetails);
     fixture.detectChanges();
   });
 
@@ -370,6 +377,7 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
 describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
   let component: CaseViewerContainerComponent;
   let fixture: ComponentFixture<CaseViewerContainerComponent>;
+  let store: MockStore;
 
   const initialState: State = {
     routerReducer: null,
@@ -430,6 +438,8 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
     fixture = TestBed.createComponent(CaseViewerContainerComponent);
     mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
     component = fixture.componentInstance;
+    store = TestBed.inject(MockStore);
+    store.overrideSelector(fromRoot.getUserDetails, initialState.appConfig.userDetails);
     fixture.detectChanges();
   });
 

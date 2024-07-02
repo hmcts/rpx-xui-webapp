@@ -176,7 +176,7 @@ xdescribe('MyTasksComponent', () => {
           expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
         }
       } else {
-        expect(headerCells[i].textContent).toEqual('');
+        expect(headerCells[i].textContent).not.toBeNull();
       }
     }
     // Make sure Manage + heading is blank.

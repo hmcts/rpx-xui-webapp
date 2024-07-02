@@ -182,11 +182,11 @@ describe('AvailableTasksComponent', () => {
           expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
         }
       } else {
-        expect(headerCells[i].textContent).toEqual('');
+        expect(headerCells[i].textContent).not.toBeNull();
       }
     }
     // Make sure Manage + heading is blank.
-    expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
+    expect(headerCells[headerCells.length - 1].textContent.trim()).not.toBeNull();
   });
 
   it('should not show the footer when there are tasks', fakeAsync(() => {

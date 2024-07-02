@@ -96,62 +96,9 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
           id: roleOption ? roleOption.optionId : roleChosen,
           name: roleChosen
         };
-
-        switch (roleCategory) {
-          case RoleCategory.JUDICIAL: {
-            switch (userRole) {
-              case UserRole.LegalOps:
-                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
-                  typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
-                }));
-                break;
-              default:
-                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
-                  typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
-                }));
-                break;
-            }
-            break;
-          }
-          case RoleCategory.LEGAL_OPERATIONS: {
-            switch (userRole) {
-              case UserRole.LegalOps:
-                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
-                  typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
-                }));
-                break;
-              default:
-                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
-                  typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
-                }));
-                break;
-            }
-            break;
-          }
-          case RoleCategory.CTSC: {
-            switch (userRole) {
-              case UserRole.CTSC:
-                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
-                  typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
-                }));
-                break;
-              default:
-                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
-                  typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
-                }));
-                break;
-            }
-            break;
-          }
-          case RoleCategory.ADMIN: {
-            this.store.dispatch(new fromFeature.ChooseRoleAndGo({
-              typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
-            }));
-            break;
-          }
-          default:
-            throw new Error('Invalid userType');
-        }
+        this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+          typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
+        }));
         break;
       default:
         throw new Error('Invalid option');

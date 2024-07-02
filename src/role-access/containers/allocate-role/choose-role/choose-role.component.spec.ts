@@ -105,7 +105,7 @@ describe('ChooseRoleComponent', () => {
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
       typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
-      allocateRoleState: AllocateRoleState.SEARCH_PERSON
+      allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
     }));
   });
 
@@ -157,7 +157,7 @@ describe('ChooseRoleComponent', () => {
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
       typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
-      allocateRoleState: AllocateRoleState.SEARCH_PERSON
+      allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
     }));
   });
 
@@ -170,7 +170,7 @@ describe('ChooseRoleComponent', () => {
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
       typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
-      allocateRoleState: AllocateRoleState.SEARCH_PERSON
+      allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
     }));
   });
 

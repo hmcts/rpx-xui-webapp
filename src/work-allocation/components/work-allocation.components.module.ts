@@ -12,7 +12,6 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import * as fromComponents from '.';
 import { WorkAllocationPipesModule } from '../pipes/work-allocation.pipes.module';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService } from '../services';
-import { PriorityFieldModule } from './priority-field/priority-field.module';
 
 // from containers
 @NgModule({
@@ -28,8 +27,7 @@ import { PriorityFieldModule } from './priority-field/priority-field.module';
     MatAutocompleteModule,
     MatFormFieldModule,
     MatNativeDateModule,
-    MatInputModule,
-    PriorityFieldModule
+    MatInputModule
   ],
   declarations: [
     ...fromComponents.components

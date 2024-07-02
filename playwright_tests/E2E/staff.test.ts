@@ -19,7 +19,7 @@ test("staff user details", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "User details" })
   ).toBeVisible();
-  await expect(page.getByText("Name")).toBeVisible();
+  await expect(page.getByText("Name222")).toBeVisible();
   await expect(page.getByText("Email address")).toBeVisible();
   await expect(page.getByText("Service", { exact: true })).toBeVisible();
   await expect(page.getByText("User type")).toBeVisible();

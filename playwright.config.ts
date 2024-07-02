@@ -23,7 +23,7 @@ module.exports = defineConfig({
       name: "chromium",
       use: { ...devices["Desktop Chrome"],
         channel: "chrome",
-        headless: false,
+        headless: true,
         trace: "on-first-retry",
       },
     },
@@ -31,7 +31,7 @@ module.exports = defineConfig({
       name: "firefox",
       use: { ...devices["Desktop Firefox"],
         screenshot: 'only-on-failure',
-        headless: false,
+        headless: true,
         trace: 'off'
       },
     },
@@ -39,7 +39,7 @@ module.exports = defineConfig({
       name: "webkit",
       use: { ...devices["Desktop Safari"],
         screenshot: 'only-on-failure',
-        headless: false,
+        headless: true,
         trace: 'off'
       },
     },
@@ -47,7 +47,7 @@ module.exports = defineConfig({
       name: "MobileChrome",
       use: { ...devices["Pixel 5"],
         screenshot: 'only-on-failure',
-        headless: false,
+        headless: true,
         trace: 'off'
       },
     },
@@ -55,7 +55,7 @@ module.exports = defineConfig({
       name: "MobileSafari",
       use: { ...devices["iPhone 12"],
         screenshot: 'only-on-failure',
-        headless: false,
+        headless: true,
         trace: 'off'
       },
     },
@@ -64,7 +64,7 @@ module.exports = defineConfig({
       use: { ...devices["Desktop Edge"],
         channel: "msedge",
         screenshot: 'only-on-failure',
-        headless: false,
+        headless: true,
         trace: 'off'
       },
     },

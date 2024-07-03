@@ -36,8 +36,8 @@ class CaseFileViewPage{
         return await ele.isDisplayed();
     }
 
-    async getFileDisplayedInMediaViewer() {
-        const ele = element(by.xpath(`//title`))
+    async getFileDisplayedInMediaViewer(){
+        const ele = element(by.xpath(`//title`));
         return await ele.getText()
 }
 

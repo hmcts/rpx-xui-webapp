@@ -14,8 +14,3 @@ output "appInsightsInstrumentationKey" {
   value     = azurerm_application_insights.appinsight.instrumentation_key
   sensitive = true
 }
-
-output "appInsightsConnectionString" {
-  value     = azurerm_application_insights.appinsight.connection_string
-  sensitive = false
-}

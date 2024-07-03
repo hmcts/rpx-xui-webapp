@@ -77,15 +77,22 @@ describe('RequestHearingComponent', () => {
     spyOn(hearingsService, 'navigateAction');
     hearingsService.hearingRequestForSubmitValid = false;
     component.submitRequest(ACTION.VIEW_EDIT_SUBMIT);
-    const buttonDisabled = component.buttonDisabled();
+    const buttonDisabled = component.buttonDisabled(ACTION.VIEW_EDIT_SUBMIT);
     expect(buttonDisabled).toEqual(false);
   });
 
-  it('should check buttonDisabled returns a true for a submit with successful validation', () => {
+  it('should check buttonDisabled returns a true for a VIEW_EDIT_SUBMIT with successful validation', () => {
     spyOn(hearingsService, 'navigateAction');
     hearingsService.hearingRequestForSubmitValid = true;
-    const buttonDisabled = component.buttonDisabled();
+    const buttonDisabled = component.buttonDisabled(ACTION.VIEW_EDIT_SUBMIT);
     expect(buttonDisabled).toEqual(true);
+  });
+
+  it('should check buttonDisabled returns a false for a submit with successful validation', () => {
+    spyOn(hearingsService, 'navigateAction');
+    hearingsService.hearingRequestForSubmitValid = true;
+    const buttonDisabled = component.buttonDisabled(ACTION.SUBMIT);
+    expect(buttonDisabled).toEqual(false);
   });
 
   it('should check is answer page', () => {

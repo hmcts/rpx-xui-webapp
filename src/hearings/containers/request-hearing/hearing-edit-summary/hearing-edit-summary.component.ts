@@ -459,7 +459,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const interpreterLanguagesSHV = this.extractInterpreterLanguages(SHVIndividualParties);
     const interpreterLanguagesHMC = this.extractInterpreterLanguages(HRMIndividualParties);
 
-    // return !_.isEqual(interpreterLanguagesSHV, interpreterLanguagesHMC);
     if (!_.isEqual(interpreterLanguagesSHV, interpreterLanguagesHMC)){
       return true;
     }

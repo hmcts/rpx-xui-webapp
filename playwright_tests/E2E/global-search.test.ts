@@ -25,7 +25,6 @@ test('Search from page Search', async ({ page }) => {
   await signIn(page, 'IAC_CaseOfficer_R2');
 
   console.log('Go to Search Page');
-  console.log('Go to Search Page');
   clickOnMainMenu(page, 'Search', 'Search cases');
   await expect(page.getByRole('heading', { name: 'Search cases' })).toBeVisible();
   await expect(page.locator('span').filter({ hasText: '-digit case reference' })).toBeVisible();

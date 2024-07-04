@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const headless = process.env.HEAD !== 'true';
+
 module.exports = defineConfig({
   testDir: "./playwright_tests/E2E",
   /* Run tests in files in parallel */
@@ -23,7 +25,7 @@ module.exports = defineConfig({
       name: "chromium",
       use: { ...devices["Desktop Chrome"],
         channel: "chrome",
-        headless: true,
+        headless: headless,
         trace: "on-first-retry",
       },
     },
@@ -31,7 +33,7 @@ module.exports = defineConfig({
       name: "firefox",
       use: { ...devices["Desktop Firefox"],
         screenshot: 'only-on-failure',
-        headless: true,
+        headless: headless,
         trace: 'off'
       },
     },
@@ -39,7 +41,7 @@ module.exports = defineConfig({
       name: "webkit",
       use: { ...devices["Desktop Safari"],
         screenshot: 'only-on-failure',
-        headless: true,
+        headless: headless,
         trace: 'off'
       },
     },
@@ -47,7 +49,7 @@ module.exports = defineConfig({
       name: "MobileChrome",
       use: { ...devices["Pixel 5"],
         screenshot: 'only-on-failure',
-        headless: true,
+        headless: headless,
         trace: 'off'
       },
     },
@@ -55,7 +57,7 @@ module.exports = defineConfig({
       name: "MobileSafari",
       use: { ...devices["iPhone 12"],
         screenshot: 'only-on-failure',
-        headless: true,
+        headless: headless,
         trace: 'off'
       },
     },
@@ -64,7 +66,7 @@ module.exports = defineConfig({
       use: { ...devices["Desktop Edge"],
         channel: "msedge",
         screenshot: 'only-on-failure',
-        headless: true,
+        headless: headless,
         trace: 'off'
       },
     },

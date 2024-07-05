@@ -15,7 +15,7 @@ export class StaffUsersComponent {
   public advancedSearchEnabled = false;
   public staffSelectError: boolean = false;
   public staffSelectErrors: { title: string, description: string } = null;
-  private errorSubscription$: Observable<any>;
+  public errorSubscription$: Observable<any>;
   private unsubscribe$: Subject<void> = new Subject<void>();
 
   constructor(

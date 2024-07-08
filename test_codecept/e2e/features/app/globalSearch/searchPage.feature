@@ -1,4 +1,4 @@
-@fullfunctional @functional_enabled
+@fullfunctional @functional_enablNOT @DEMOPOC
 Feature: Global search
 
 

@@ -1,4 +1,4 @@
-@fullfunctional @wa2 @demo @functional_enablNOT @DEMOPOC 
+@fullfunctional @wa2 @demo @functional_enabled @DEMOPOC 
 Feature: WA Release 2: : Work allocations My work, All work
 
     Scenario Outline: View tasks, E2E journey of Caseworker-ia-officer user

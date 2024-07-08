@@ -1,4 +1,4 @@
-@fullfunctional
+@fullfunctionNOT @DEMOPOC
 Feature: Login
 
   Background:

@@ -1,7 +1,7 @@
 @fullfunctional @ignore  @staffUI 
 Feature: Staff UI Manager user
 
-@functional_enabled
+@functional_enablNOT @DEMOPOC
     Scenario: User details
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with test user identified as "STAFF_ADMIN"
@@ -12,7 +12,7 @@ Feature: Staff UI Manager user
         Then I validate staff UI search results displayed
         Then I validate staff user details display
 
-@functional_enabled
+@functional_enablNOT @DEMOPOC
     Scenario: Add new user work flow - back, cancel and change
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with test user identified as "STAFF_ADMIN"

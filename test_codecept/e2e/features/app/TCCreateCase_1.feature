@@ -1,4 +1,4 @@
-@fullfunctional @test @functional_enabled
+@fullfunctional @test @functional_enablNOT @DEMOPOC
 
 Feature: Test case type case creation and case details validations Part 1
 

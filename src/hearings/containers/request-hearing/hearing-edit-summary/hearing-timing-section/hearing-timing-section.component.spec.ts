@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { initialState } from '../../../../hearing.test.data';
+import { initialState, serviceHearingValuesModel } from '../../../../hearing.test.data';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { HearingsService } from '../../../../services/hearings.service';
 import { HearingTimingSectionComponent } from './hearing-timing-section.component';
@@ -294,18 +294,21 @@ describe('HearingTimingSectionComponent', () => {
           }
         }
       };
+      component.serviceHearingValuesModel = {
+        ...serviceHearingValuesModel, hearingWindow: {
+          dateRangeStart: '2024-03-22T09:00:00.000Z',
+          dateRangeEnd: '2024-03-26T09:00:00.000Z'
+        }
+      };
+
       component.ngOnInit();
       expect(component.hearingDateChanged).toEqual(false);
     });
 
     it('should return true if "firstDateTimeMustBe" changed', () => {
-      component.hearingRequestMainModel = {
-        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-        hearingDetails: {
-          ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          hearingWindow: {
-            firstDateTimeMustBe: '2024-03-22T09:00:00.000Z'
-          }
+      component.serviceHearingValuesModel = {
+        ...serviceHearingValuesModel, hearingWindow: {
+          firstDateTimeMustBe: '2024-03-22T09:00:00.000Z'
         }
       };
       component.hearingRequestToCompareMainModel = {
@@ -322,13 +325,9 @@ describe('HearingTimingSectionComponent', () => {
     });
 
     it('should return false if "firstDateTimeMustBe" did not change', () => {
-      component.hearingRequestMainModel = {
-        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-        hearingDetails: {
-          ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          hearingWindow: {
-            firstDateTimeMustBe: '2024-03-22T09:00:00.000Z'
-          }
+      component.serviceHearingValuesModel = {
+        ...serviceHearingValuesModel, hearingWindow: {
+          firstDateTimeMustBe: '2024-03-22T09:00:00.000Z'
         }
       };
       component.hearingRequestToCompareMainModel = {
@@ -345,13 +344,6 @@ describe('HearingTimingSectionComponent', () => {
     });
 
     it('should return false if no hearing window', () => {
-      component.hearingRequestMainModel = {
-        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-        hearingDetails: {
-          ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          hearingWindow: null
-        }
-      };
       component.hearingRequestToCompareMainModel = {
         ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
         hearingDetails: {
@@ -359,6 +351,11 @@ describe('HearingTimingSectionComponent', () => {
           hearingWindow: null
         }
       };
+      component.serviceHearingValuesModel = {
+        ...serviceHearingValuesModel,
+        hearingWindow: {}
+      };
+
       component.ngOnInit();
       expect(component.hearingDateChanged).toEqual(false);
     });

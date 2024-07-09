@@ -53,7 +53,7 @@
     "test:smoke:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
     "test:crossbrowser": "protractor ./test/e2e/config/crossbrowser.conf.js",
     "test:fullfunctional": "yarn run test:xuiIntegration && yarn run test:functionalApiE2e",
-    "test:fullfunctional2": "yarn playwright install && npx playwright test --project MicrosoftEdge",
+    "test:fullfunctional2": "yarn playwright install && npx playwright test --project chromium",
     "test:fullfunctional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js --local",
     "test:functional1": "yarn run test:xuiIntegration && yarn run test:functionalApiE2e",
     "test:functional_old": "yarn test:api && yarn run test:xuiIntegration && yarn run test:codeceptE2E",

@@ -186,7 +186,7 @@ describe('HearingEditSummaryComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: false,
+        hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: true,
         partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -268,7 +268,7 @@ describe('HearingEditSummaryComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: false,
+        hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: true,
         partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -356,7 +356,9 @@ describe('HearingEditSummaryComponent', () => {
   it('should set hearingWindowChangesRequired to false if no hearing window', () => {
     hearingsService.propertiesUpdatedOnPageVisit = null;
     component.hearingRequestMainModel.hearingDetails.hearingWindow = null;
-
+    component.serviceHearingValuesModel.hearingWindow = null;
+    component.hearingRequestMainModel.hearingDetails.duration = null;
+    component.serviceHearingValuesModel.duration = null;
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesRequired).toEqual(false);
   });
@@ -610,10 +612,9 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should set the hearingWindowChangesRequired to false', () => {
     hearingsService.propertiesUpdatedOnPageVisit = null;
-    component.hearingRequestMainModel.hearingDetails.hearingWindow = {
-      firstDateTimeMustBe: '2024-02-01T10:00:00'
-    };
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = component.serviceHearingValuesModel.hearingWindow;
     component.serviceHearingValuesModel.parties = initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.partyDetails;
+    component.serviceHearingValuesModel.duration = 60;
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesRequired).toEqual(false);
   });

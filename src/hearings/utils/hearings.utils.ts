@@ -173,19 +173,19 @@ export class HearingsUtils {
   public static hasHearingDatesChanged(hearingWindow: HearingWindowModel, hearingWindowToCompare: HearingWindowModel): boolean {
     if (hearingWindow?.dateRangeStart || hearingWindow?.dateRangeEnd) {
       if (hearingWindow?.dateRangeStart) {
-        if (this.hasDateChanged(hearingWindowToCompare.dateRangeStart, hearingWindow.dateRangeStart)){
+        if (this.hasDateChanged(hearingWindowToCompare?.dateRangeStart, hearingWindow?.dateRangeStart)){
           return true;
         }
       }
       if (hearingWindow?.dateRangeEnd) {
-        if (HearingsUtils.hasDateChanged(hearingWindowToCompare.dateRangeEnd, hearingWindow.dateRangeEnd)){
+        if (HearingsUtils.hasDateChanged(hearingWindowToCompare?.dateRangeEnd, hearingWindow?.dateRangeEnd)){
           return true;
         }
       }
     }
 
     if (hearingWindow?.firstDateTimeMustBe) {
-      return HearingsUtils.hasDateChanged(hearingWindowToCompare.firstDateTimeMustBe, hearingWindow.firstDateTimeMustBe);
+      return HearingsUtils.hasDateChanged(hearingWindowToCompare?.firstDateTimeMustBe, hearingWindow?.firstDateTimeMustBe);
     }
     return false;
   }

@@ -136,14 +136,15 @@ export class HearingTimingSectionComponent implements OnInit {
   }
 
   private setAmendmentLabels(): void {
-    this.hearingLengthChanged = HearingsUtils.hasHearingDurationChagned(this.hearingRequestToCompareMainModel.hearingDetails.duration, this.serviceHearingValuesModel.duration);
+    this.hearingLengthChanged = HearingsUtils.hasHearingDurationChagned(this.hearingRequestToCompareMainModel.hearingDetails.duration, this.hearingRequestMainModel.hearingDetails.duration);
 
-    this.hearingDateChanged = HearingsUtils.hasHearingDatesChanged(this.hearingRequestToCompareMainModel.hearingDetails.hearingWindow, this.serviceHearingValuesModel.hearingWindow);
+    this.hearingDateChanged = HearingsUtils.hasHearingDatesChanged(this.hearingRequestToCompareMainModel.hearingDetails.hearingWindow, this.hearingRequestMainModel.hearingDetails.hearingWindow);
 
-    this.hearingPriorityChanged = HearingsUtils.hasHearingPriorityChanged(this.hearingRequestToCompareMainModel.hearingDetails.hearingPriorityType, this.serviceHearingValuesModel.hearingPriorityType);
+    this.hearingPriorityChanged = HearingsUtils.hasHearingPriorityChanged(this.hearingRequestToCompareMainModel.hearingDetails.hearingPriorityType, this.hearingRequestMainModel.hearingDetails.hearingPriorityType);
 
     this.hearingUnavailabilityDatesChanged = !_.isEqual(
-      HearingsUtils.getPartiesNotAvailableDates(this.serviceHearingValuesModel.parties),
+
+      HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestMainModel.partyDetails),
       HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestToCompareMainModel.partyDetails)
     );
     this.showActionNeededLabelForPageTitle =

@@ -68,6 +68,10 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       } as InformationMessage);
       this.router.navigateByUrl('/staff', { state: { retainMessages: true } });
     }, (err) => {
+      if (!err?.error?.errorDescription) {
+        this.errMsg = { error: { errorDescription: 'Your user creation request could not be processed' } };
+      }
+
       if (err && err?.status === 400) {
         this.errMsg = err;
         window.scrollTo(0, 0);

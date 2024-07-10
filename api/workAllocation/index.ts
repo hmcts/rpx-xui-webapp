@@ -12,7 +12,6 @@ import {
 import { trackTrace } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
-import { getStaffSupportedJurisdictionsList } from '../staffSupportedJurisdictions';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
@@ -548,8 +547,8 @@ export const getNewUsersByServiceName = async (resolve, reject) => {
     const cachedUserData = await fetchNewUserData();
     await fetchRoleAssignmentsForNewUsers(cachedUserData);
   } catch (error) {
-    console.log('Error getting caseworkers')
+    console.log('Error getting caseworkers');
     reject(error);
   }
   resolve();
-}
+};

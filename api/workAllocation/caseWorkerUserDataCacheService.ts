@@ -12,7 +12,6 @@ import { mapUsersToCaseworkers, prepareGetUsersUrl, prepareRoleApiRequest, prepa
 import { handleNewUsersGet, handlePostRoleAssignments, handlePostRoleAssignmentsWithNewUsers, handleUsersGet } from './caseWorkerService';
 import { Caseworker } from './interfaces/common';
 import { FullUserDetailCache } from './fullUserDetailCache';
-import { AuthOptions } from '@hmcts/rpx-xui-node-lib';
 
 // 10 minutes
 const TTL = 600;
@@ -33,7 +32,7 @@ export async function fetchUserData(req: EnhancedRequest, next: NextFunction): P
       refreshRoles = true;
       cachedUsers = [];
       const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
-      const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl,  jurisdictions);
+      const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
       const userResponse = await handleUsersGet(getUsersPath, req);
       // TODO: Response will be cached eventually via API so caching below should be removed eventually
       cachedUsers = userResponse;
@@ -61,7 +60,7 @@ export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
       'content-type': 'application/json',
       'serviceAuthorization': `Bearer ${initialServiceAuthToken}`,
       'authorization': `Bearer ${initialAuthToken}`
-    }
+    };
     const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
     cachedUsers = [];
     const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
@@ -71,11 +70,10 @@ export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
   } catch (error) {
     if (cachedUsers) {
       return cachedUsers;
-    } else {
-      // in case of error, reset the cache on application start up
-      timestamp = null;
-      refreshRoles = false;
     }
+    // in case of error, reset the cache on application start up
+    timestamp = null;
+    refreshRoles = false;
   }
 }
 
@@ -121,7 +119,7 @@ export async function fetchRoleAssignmentsForNewUsers(cachedUserData: StaffUserD
         'authorization': `Bearer ${initialAuthToken}`,
         pageNumber: 0,
         size: 10000
-      }
+      };
       const { data } = await handlePostRoleAssignmentsWithNewUsers(roleApiPath, payload, roleAssignmentHeaders);
       const roleAssignments = data.roleAssignmentResponse;
       cachedUsersWithRoles = mapUsersToCaseworkers(cachedUserData, roleAssignments);
@@ -145,19 +143,19 @@ export async function getAuthTokens(): Promise<void> {
     const idamPath = getConfigValue(SERVICES_IDAM_API_URL);
     const authURL = `${idamPath}/o/token`;
     const axiosConfig = {
-      headers: { 'content-type': 'application/x-www-form-urlencoded' },
-    }
+      headers: { 'content-type': 'application/x-www-form-urlencoded' }
+    };
     const authBody = getRequestBody();
     // get auth token to use for pre-sign-in API calls
     const serviceAuthResponse = await http.post(`${s2sEndpointUrl}`, {
       microservice,
-      oneTimePassword,
+      oneTimePassword
     });
     initialServiceAuthToken = serviceAuthResponse.data;
     const authResponse = await http.post(authURL, authBody, axiosConfig);
     initialAuthToken = authResponse.data.access_token;
   } catch (error) {
-    console.log('Cannot get auth tokens')
+    console.log('Cannot get auth tokens');
   }
 }
 
@@ -187,4 +185,4 @@ export const getRequestBody = (): string => {
   const clientSecret = getConfigValue(IDAM_SECRET);
   const idamClient = getConfigValue(SERVICES_IDAM_CLIENT_ID);
   return `grant_type=password&password=${userPassword}&username=${userName}&scope=${scope}&client_id=${idamClient}&client_secret=${clientSecret}`;
-}
+};

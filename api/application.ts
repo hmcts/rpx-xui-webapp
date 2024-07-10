@@ -23,7 +23,7 @@ import { initProxy } from './proxy.config';
 import routes from './routes';
 import workAllocationRouter from './workAllocation/routes';
 import { idamCheck } from './idamCheck';
-import { getNewUsersByServiceName, getUsersByServiceName } from './workAllocation';
+import { getNewUsersByServiceName } from './workAllocation';
 
 export const app = express();
 

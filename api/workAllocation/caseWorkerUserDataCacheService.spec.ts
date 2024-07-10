@@ -50,8 +50,9 @@ describe('Caseworker Cache Service', () => {
             region: 'London',
             base_location: [{
               location_id: '637145',
-              location: "Wrexham",
-              is_primary: true}],
+              location: 'Wrexham',
+              is_primary: true
+            }],
             user_type_id: '1',
             role: [],
             skills: [],
@@ -59,8 +60,8 @@ describe('Caseworker Cache Service', () => {
             idam_roles: '',
             created_time: new Date(),
             last_updated_time: new Date()
-        }
-      }];
+          }
+        }];
       const mockRoleAssignments = [{
         id: '123',
         attributes: {},
@@ -68,14 +69,14 @@ describe('Caseworker Cache Service', () => {
         actorId: '0bdd43aa-527b-40ac-9d68-d72bd45054f4'
       }];
       const finalCaseworkers = [{
-        email: "test@test.com",
+        email: 'test@test.com',
         firstName: 'Latest',
         idamId: '0bdd43aa-527b-40ac-9d68-d72bd45054f4',
         lastName: 'New',
         location: { id: '637145', locationName: 'Wrexham', services: undefined },
         roleCategory: 'ADMIN',
         service: 'EMPLOYMENT'
-      }]
+      }];
       const res = mockRes({ status: 200, data: { roleAssignmentResponse: mockRoleAssignments } });
       sandbox.stub(http, 'post').resolves(res);
       const data = await fetchRoleAssignmentsForNewUsers(mockStaffUserDetails);

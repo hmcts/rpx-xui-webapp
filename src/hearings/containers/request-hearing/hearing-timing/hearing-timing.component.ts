@@ -100,7 +100,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
       this.dateRangeStartChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeStart, this.serviceHearingValuesModel.hearingWindow.dateRangeStart);
       this.dateRangeEndChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeEnd, this.serviceHearingValuesModel.hearingWindow.dateRangeEnd);
       this.firstDateTimeMustBeChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe, this.serviceHearingValuesModel.hearingWindow.firstDateTimeMustBe);
-      this.durationChanged = HearingsUtils.hasHearingDurationChagned(this.hearingRequestMainModel.hearingDetails.duration, this.serviceHearingValuesModel.duration);
+      this.durationChanged = HearingsUtils.hasHearingDurationChanged(this.hearingRequestMainModel.hearingDetails.duration, this.serviceHearingValuesModel.duration);
       this.priorityChanged = HearingsUtils.hasHearingPriorityChanged(this.hearingRequestMainModel.hearingDetails.hearingPriorityType, this.serviceHearingValuesModel.hearingPriorityType);
     }
   }

@@ -152,7 +152,7 @@ export class HearingsUtils {
     return !_.isEqual(partiesNotAvailableDatesSHV, partiesNotAvailableDatesHMC);
   }
 
-  public static hasHearingDurationChagned(length: number, lengthToCompare: number): boolean {
+  public static hasHearingDurationChanged(length: number, lengthToCompare: number): boolean {
     return !_.isEqual(length, lengthToCompare);
   }
 

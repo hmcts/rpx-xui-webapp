@@ -9,8 +9,10 @@ import {
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH
 } from '../configuration/references';
+import { trackTrace } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
+import { getStaffSupportedJurisdictionsList } from '../staffSupportedJurisdictions';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
@@ -21,7 +23,9 @@ import {
   handleCaseWorkerForService,
   handlePostSearch
 } from './caseWorkerService';
+import { fetchNewUserData, fetchRoleAssignments, fetchRoleAssignmentsForNewUsers, fetchUserData, timestampExists } from './caseWorkerUserDataCacheService';
 import { ViewType } from './constants/actions';
+import { FullUserDetailCache } from './fullUserDetailCache';
 import { CaseList } from './interfaces/case';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { CaseDataType } from './interfaces/common';
@@ -56,9 +60,6 @@ import {
   searchCasesById,
   searchUsers
 } from './util';
-import { trackTrace } from '../lib/appInsights';
-import { fetchRoleAssignments, fetchUserData, timestampExists } from './caseWorkerUserDataCacheService';
-import { FullUserDetailCache } from './fullUserDetailCache';
 
 caseServiceMock.init();
 roleServiceMock.init();
@@ -537,4 +538,18 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
   } catch (error) {
     next(error);
   }
+}
+
+/**
+ * getNewUsersByServiceName
+ */
+export const getNewUsersByServiceName = async (resolve, reject) => {
+  try {
+    const cachedUserData = await fetchNewUserData();
+    await fetchRoleAssignmentsForNewUsers(cachedUserData);
+  } catch (error) {
+    console.log('Error getting caseworkers')
+    reject(error);
+  }
+  resolve();
 }

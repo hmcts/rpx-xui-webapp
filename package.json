@@ -153,6 +153,7 @@
     "ngx-markdown": "^17.2.1",
     "ngx-pagination": "^6.0.3",
     "node-http-proxy-json": "^0.1.9",
+    "otplib": "^12.0.1",
     "p-iteration": "^1.1.7",
     "pegjs": "^0.10.0",
     "portfinder": "^1.0.28",

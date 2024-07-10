@@ -265,13 +265,13 @@ describe('HearingsUtils', () => {
     it('Durations entered are the same ', () => {
       const duration1 = 120;
       const duration2 = 120;
-      expect(HearingsUtils.hasHearingDurationChagned(duration1, duration2)).toEqual(false);
+      expect(HearingsUtils.hasHearingDurationChanged(duration1, duration2)).toEqual(false);
     });
 
     it('Durations entered differ.', () => {
       const duration1 = 120;
       const duration2 = 121;
-      expect(HearingsUtils.hasHearingDurationChagned(duration1, duration2)).toEqual(true);
+      expect(HearingsUtils.hasHearingDurationChanged(duration1, duration2)).toEqual(true);
     });
   });
   describe('Test of change of unavailability dates', () => {

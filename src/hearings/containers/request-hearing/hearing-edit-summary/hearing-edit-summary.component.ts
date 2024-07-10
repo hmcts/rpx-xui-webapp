@@ -600,7 +600,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       }
     }
     if (this.hearingRequestMainModel.hearingDetails.duration){
-      if (HearingsUtils.hasHearingDurationChagned(this.hearingRequestMainModel.hearingDetails.duration, this.serviceHearingValuesModel.duration)){
+      if (HearingsUtils.hasHearingDurationChanged(this.hearingRequestMainModel.hearingDetails.duration, this.serviceHearingValuesModel.duration)){
         return true;
       }
     }

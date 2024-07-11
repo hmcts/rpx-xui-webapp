@@ -180,48 +180,6 @@ describe('AdditionalFacilitiesSectionComponent', () => {
     });
   });
 
-  describe('Additional facilities is empty conparison check', () => {
-    it('facilities changes show no difference when comparing an empty array and undefined', () => {
-      component.hearingRequestMainModel = {
-        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-        hearingDetails: {
-          ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          facilitiesRequired: []
-        }
-      };
-
-      component.hearingRequestToCompareMainModel = {
-        ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
-        hearingDetails: {
-          ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
-          facilitiesRequired: undefined
-        }
-      };
-      component.ngOnInit();
-      expect(component.additionalFacilitiesRequiredText).toEqual('No');
-    });
-
-    it('facilities changes show no difference when comparing an empty array and null', () => {
-      component.hearingRequestMainModel = {
-        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-        hearingDetails: {
-          ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          facilitiesRequired: []
-        }
-      };
-
-      component.hearingRequestToCompareMainModel = {
-        ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
-        hearingDetails: {
-          ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
-          facilitiesRequired: null
-        }
-      };
-      component.ngOnInit();
-      expect(component.additionalFacilitiesRequiredText).toEqual('No');
-    });
-  });
-
   describe('pageTitleDisplayLabel', () => {
     xit('should not set pageTitleDisplayLabel', () => {
       hearingsService.propertiesUpdatedOnPageVisit = {

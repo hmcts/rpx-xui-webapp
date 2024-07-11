@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { signIn, signOut } from "./steps/login-steps";
-import { clickToStaffPage } from "./steps/staff-steps";
+import { signIn, signOut } from "../steps/login-steps";
+import { clickToStaffPage } from "../steps/staff-steps";
 
 test('Simplified search results', async ({ page }) => {
     await signIn(page, "STAFF_ADMIN");

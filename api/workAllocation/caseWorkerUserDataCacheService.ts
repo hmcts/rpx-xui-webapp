@@ -26,7 +26,7 @@ let cachedUsersWithRoles: Caseworker[];
 
 export async function fetchUserData(req: EnhancedRequest, next: NextFunction): Promise<StaffUserDetails[]> {
   try {
-    if (hasTTLExpired() || !cachedUsers) {
+    if (hasTTLExpired() || (!cachedUsers || cachedUsers.length === 0)) {
       // hasTTLExpired to determine whether roles require refreshing
       // cachedUsers to ensure rerun if user restarts request early
       refreshRoles = true;

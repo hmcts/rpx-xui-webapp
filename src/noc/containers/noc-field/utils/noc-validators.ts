@@ -36,6 +36,7 @@ export class NocValidators {
       }
       // eslint-disable-next-line no-useless-escape
       if (control.value.length < REGEX_DOS_FIX_LIMIT &&
+        // eslint-disable-next-line no-useless-escape
         !control.value.toString().match(/^(?:(?:\(?(?:0(?:0|11)\)?[\s-]?\(?|\+)44\)?[\s-]?(?:\(?0\)?[\s-]?)?)|(?:\(?0))(?:(?:\d{5}\)?[\s-]?\d{4,5})|(?:\d{4}\)?[\s-]?(?:\d{5}|\d{3}[\s-]?\d{3}))|(?:\d{3}\)?[\s-]?\d{3}[\s-]?\d{3,4})|(?:\d{2}\)?[\s-]?\d{4}[\s-]?\d{4}))(?:[\s-]?(?:x|ext\.?|\#)\d{3,4})?$/)) {
         return { phoneUK: true };
       }

@@ -2608,9 +2608,6 @@ export const initialState = {
       },
       lastError: null
     },
-    hearingDetails: {
-      hearingWindow: {}
-    },
     hearingConditions: {
       caseId: '1111222233334444',
       mode: 'create',

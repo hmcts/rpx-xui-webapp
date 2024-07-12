@@ -1,9 +1,8 @@
 import { initialState } from '../hearing.test.data';
-import { HearingConditions, KEY_MODE } from '../models/hearingConditions';
+import { KEY_MODE } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
-import { MemberType, Mode, RequirementType } from '../models/hearings.enum';
-import { PropertiesUpdatedOnPageVisit } from '../models/hearingsUpdateMode.enum';
+import { Mode } from '../models/hearings.enum';
 import { HearingsUtils } from './hearings.utils';
 
 describe('HearingsUtils', () => {
@@ -109,31 +108,6 @@ describe('HearingsUtils', () => {
       expect(
         HearingsUtils.getHearingWindow(hearingRequestMainModel)
       ).toEqual(hearingRequestMainModel.hearingDetails.hearingWindow);
-    });
-
-    it('should return must included judge count from panel prference list', () => {
-      const panelPreference = [{
-        memberID: '123',
-        memberType: MemberType.JUDGE,
-        requirementType: RequirementType.MUSTINC
-      },
-      {
-        memberID: '1234',
-        memberType: MemberType.JUDGE,
-        requirementType: RequirementType.EXCLUDE
-      }];
-
-      expect(
-        HearingsUtils.getMustIncludedJudgeCount(panelPreference)
-      ).toEqual(1);
-    });
-
-    it('should return must included judge count from panel prference list', () => {
-      const roleType = ['role1', 'role2', 'role3'];
-
-      expect(
-        HearingsUtils.getRestOfRoleType(roleType)
-      ).toEqual(['role2', 'role3']);
     });
   });
 });

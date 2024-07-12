@@ -3468,16 +3468,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.18-location-search-fix":
-  version: 2.0.18-location-search-fix
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.18-location-search-fix"
+"@hmcts/rpx-xui-common-lib@npm:2.0.23-location-search-fix":
+  version: 2.0.23-location-search-fix
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.23-location-search-fix"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
-    launchdarkly-js-client-sdk: ^2.15.2
+    launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 475fafd70fb57bca338ad236804d3f5ffc11508276ad919a2bb4b8ff551b7e54fe1f1a67816a1c7db6f4eff09d3351e80ba2168d5b0982b6c1a3b73ffc5d631a
+  checksum: 35be7c92f9f3a290724a96de07488b11ac2a4a7326fa9ba8f2c6fce1d47ce3d8a172980dd3de38ea8d1cee149f4640870b5c977e27c9084480d60c8f903e08e2
   languageName: node
   linkType: hard
 
@@ -21774,7 +21774,7 @@ __metadata:
     "@hmcts/media-viewer": 4.0.4
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 2.0.18-location-search-fix
+    "@hmcts/rpx-xui-common-lib": 2.0.23-location-search-fix
     "@hmcts/rpx-xui-node-lib": 2.29.0
     "@microsoft/applicationinsights-web": ^3.1.0
     "@ng-idle/core": ^14.0.0

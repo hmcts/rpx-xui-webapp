@@ -118,11 +118,12 @@
       <div class="govuk-form-group govuk-!-margin-top-5"  [ngClass]="{'govuk-form-group--error': hearingPriorityError}">
         <fieldset class="govuk-fieldset" id="hearing-priority">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-            <h3 class="govuk-fieldset__heading">{{ 'What is the priority of this hearing?' | rpxTranslate }}</h3>
+            <h3 class="govuk-fieldset__heading">{{ 'What is the priority of this hearing?' | rpxTranslate }}
+            <exui-amendment-label id="hearing-priority-amendment-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && priorityChanged"
+                                  [displayLabel]="amendmentLabelEnum.AMENDED">
+            </exui-amendment-label>
+            </h3>
           </legend>
-          <exui-amendment-label id="hearing-priority-amendment-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && priorityChanged"
-                                [displayLabel]="amendmentLabelEnum.AMENDED">
-          </exui-amendment-label>
           <span class="govuk-error-message" *ngIf="hearingPriorityError">
             <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{hearingPriorityError | rpxTranslate }}
           </span>

@@ -126,10 +126,11 @@ export class CaseFlagsUtils {
       }
       const allFlagsId: string[] = reasonableAdjustments.slice();
       if (party.individualDetails?.interpreterLanguage) {
-        allFlagsId.push(party.individualDetails.interpreterLanguage);
+        allFlagsId.push(CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID);
       }
-      const allFlags: CaseFlagReferenceModel[] = allFlagsId.map((flagId) => CaseFlagsUtils.findFlagByFlagId(caseFlagReferenceModels, flagId));
-      if (partyName) {
+      const allFlags: CaseFlagReferenceModel[] = allFlagsId.map((flagId) => CaseFlagsUtils.findFlagByFlagId(caseFlagReferenceModels, flagId))
+        .filter((foundFlag) => foundFlag !== null);
+      if (allFlags?.length > 0 && partyName) {
         partyWithFlags.set(partyName, allFlags);
       }
     });

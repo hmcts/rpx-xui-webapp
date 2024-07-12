@@ -15,6 +15,7 @@ const locationServiceCodes = {
 class RDLocationService{
 
     constructor(){
+      console.log('in RDLocationService constructor');
         this.caseManagementLocations = [];
         this.locationsConfig = [
             {
@@ -59,7 +60,8 @@ class RDLocationService{
         ];
 
         this.setupMockCaseManagementLocations();
-    }   
+        // console.log('service config locations', JSON.stringify(this.locationsConfig));
+    }
 
     setupMockCaseManagementLocations(){
         this.locationsConfig.forEach(serviceConf => {
@@ -76,11 +78,13 @@ class RDLocationService{
                 temp.site_name = `${service} Court Center ${i}`;
                 temp.court_type_id = typeIds[0];
                 temp.court_type = `${service} Court`;
-                serviceConf.locations.push(temp)
+                serviceConf.locations.push(temp);
+              console.log('mocked location 1 ', serviceConf.locations);
             }
 
             const temp = this.getMockLocations();
-            temp.epimms_id = index + '';
+            temp.epimms_id = (index + 20) + '';
+            // temp.epimms_id = index + '';
             temp.is_case_management_location = 'Y';
             temp.court_name = `${service} Court Center Wales`;
             temp.venue_name = `${service} Court Center Wales`;
@@ -89,8 +93,8 @@ class RDLocationService{
             temp.court_type = `${service} Court`;
             temp.region = 'Wales';
             temp.region_id = "7";
+            console.log('mocked location 2', temp);
             serviceConf.locations.push(temp)
-
         })
     }
 
@@ -115,7 +119,7 @@ class RDLocationService{
                     results.push(loc);
                 }
             }
-            
+
         }
         return results;
     }
@@ -125,7 +129,7 @@ class RDLocationService{
         const serviceWithCode = this.locationsConfig.find(service => service.serviceCode.includes(serviceCode))
 
         console.assert(serviceWithCode, `Mock service config not found for service code ${serviceCode}`);
-        
+
         return {
             "service_code": serviceCode,
             "court_type_id": "18",

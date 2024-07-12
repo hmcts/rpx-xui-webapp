@@ -1,5 +1,5 @@
 
-@ng @functional_enabled
+@ng @functional_enabled @functional_debug
 Feature: Hearings CR84: Manual update labels
     https://tools.hmcts.net/jira/browse/EUI-9096
 
@@ -36,7 +36,7 @@ Feature: Hearings CR84: Manual update labels
         Then I validate view hearing page Edit hearing button displayed is "true"
         When In view hearing page, I click Edit hearing button
         Then I validate Edit hearing page displayed
-
+        Then debug sleep minutes 2
 
         Then I validate edit hearing section heading labels
             | Heading                 | Label |
@@ -98,12 +98,12 @@ Feature: Hearings CR84: Manual update labels
             | Heading                 | Label |
             # | Additional facilities | AMENDED |
             | Participant attendance  | AMENDED |
-            | Stage                   |       |
-            | Hearing venue           |       |
-            | Language requirements   |       |
-            | Judge details           |       |
-            | Linked hearings         |       |
-            | Additional instructions |       |
+            | Stage                   |         |
+            | Hearing venue           |         |
+            | Language requirements   |         |
+            | Judge details           |         |
+            | Linked hearings         |         |
+            | Additional instructions |         |
 
         Then I validate fields displayed in view or edit hearing page
             | field                                     | value      | changeLinkDisplay | amendedFlagDisplay |
@@ -147,10 +147,11 @@ Feature: Hearings CR84: Manual update labels
         # Hearing venue start
         When In view or edit hearing page, I click change link for field "What are the hearing venue details"
         Then I am on hearings workflow page "What are the hearing venue details?"
-
+      Then debug sleep minutes 5
         When In hearing page "What are the hearing venue details?", I input values
             | field                         | value                 |
-            | Search for a location by name | cen,IA Court Center 2 |
+            | Search for a location by name | cen,IA Court Center Wales |
+
 
         When I click continue in hearing workflow
         Then I validate Edit hearing page displayed
@@ -165,6 +166,7 @@ Feature: Hearings CR84: Manual update labels
             | Linked hearings         |         |
             | Additional instructions |         |
 
+#      Then debug sleep minutes 1
         Then I validate fields displayed in view or edit hearing page
             | field                              | value             | changeLinkDisplay | amendedFlagDisplay |
             | What are the hearing venue details | IA Court Center 2 | true              | AMENDED            |
@@ -172,35 +174,32 @@ Feature: Hearings CR84: Manual update labels
         # Hearing venue end
 
         # Language requirements start
-        #When In view or edit hearing page, I click change link for field "Does this hearing need to be in Welsh?"
-        #Then I am on hearings workflow page "Does this hearing need to be in Welsh?"
+        When In view or edit hearing page, I click change link for field "Does this hearing need to be in Welsh?"
+        Then I am on hearings workflow page "Does this hearing need to be in Welsh?"
 
-        #When In hearing page "Does this hearing need to be in Welsh?", I input values
-        #    | field                                  | value |
-        #    | Does this hearing need to be in Welsh? | Yes   |
-
-
-        #When I click continue in hearing workflow
-        #Then I validate Edit hearing page displayed
+        When In hearing page "Does this hearing need to be in Welsh?", I input values
+            | field                                  | value |
+            | Does this hearing need to be in Welsh? | Yes   |
 
 
-        #Then I validate edit hearing section heading labels
-        #    | Heading                 | Label   |
-        #    | Stage                   | AMENDED |
-        #    | Hearing venue           | AMENDED |
-        #    | Language requirements   | AMENDED |
-        #    | Judge details           |         |
-        #    | Linked hearings         |         |
-        #    | Additional instructions |         |
+        When I click continue in hearing workflow
+        Then I validate Edit hearing page displayed
 
-        #Then I validate fields displayed in view or edit hearing page
-        #    | field                                  | value | changeLinkDisplay | amendedFlagDisplay |
-        #    | Does this hearing need to be in Welsh? | Yes   | true              | AMENDED            |
+
+        Then I validate edit hearing section heading labels
+            | Heading                 | Label   |
+            | Stage                   | AMENDED |
+            | Hearing venue           | AMENDED |
+            | Language requirements   | AMENDED |
+            | Judge details           |         |
+            | Linked hearings         |         |
+            | Additional instructions |         |
+
+        Then I validate fields displayed in view or edit hearing page
+            | field                                  | value | changeLinkDisplay | amendedFlagDisplay |
+            | Does this hearing need to be in Welsh? | Yes   | true              | AMENDED            |
 
         # Language requirements end
-
-
-
 
         # Judge details start
         When In view or edit hearing page, I click change link for field "Do you want a specific judge?"
@@ -220,7 +219,7 @@ Feature: Hearings CR84: Manual update labels
             | Heading                 | Label   |
             | Stage                   | AMENDED |
             | Hearing venue           | AMENDED |
-        #    | Language requirements   | AMENDED |
+            | Language requirements   | AMENDED |
             | Judge details           | AMENDED |
             | Linked hearings         |         |
             | Additional instructions |         |
@@ -250,7 +249,7 @@ Feature: Hearings CR84: Manual update labels
             | Heading                 | Label   |
             | Stage                   | AMENDED |
             | Hearing venue           | AMENDED |
-      #      | Language requirements   | AMENDED |
+            | Language requirements   | AMENDED |
             | Judge details           | AMENDED |
             | Length, date and priority level of hearing | AMENDED |
             | Linked hearings         |  |
@@ -262,7 +261,7 @@ Feature: Hearings CR84: Manual update labels
             | Does the hearing need to take place on a specific date? | No | true | AMENDED |
             | What is the priority of this hearing? | Hearing priority 1 | true | AMENDED |
 
-# Length, date and priority level of hearingend
+# Length, date and priority level of hearing end
 
 
         # Linked hearings start
@@ -281,7 +280,7 @@ Feature: Hearings CR84: Manual update labels
             | Heading                 | Label   |
             | Stage                   | AMENDED |
             | Hearing venue           | AMENDED |
-     #       | Language requirements   | AMENDED |
+            | Language requirements   | AMENDED |
             | Judge details           | AMENDED |
             | Linked hearings         | AMENDED |
             | Additional instructions |         |
@@ -291,8 +290,6 @@ Feature: Hearings CR84: Manual update labels
             | Will this hearing need to be linked to other hearings? | Yes    | true              | AMENDED            |
 
         # Linked hearings end
-
-
 
 
         # Additional instructions start
@@ -311,7 +308,7 @@ Feature: Hearings CR84: Manual update labels
             | Heading                 | Label   |
             | Stage                   | AMENDED |
             | Hearing venue           | AMENDED |
-      #      | Language requirements   | AMENDED |
+            | Language requirements   | AMENDED |
             | Judge details           | AMENDED |
             | Linked hearings         | AMENDED |
             | Additional instructions | AMENDED |

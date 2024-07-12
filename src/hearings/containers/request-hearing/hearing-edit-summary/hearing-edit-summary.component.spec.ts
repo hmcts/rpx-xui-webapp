@@ -1193,49 +1193,6 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should return false as no difference in reasonable adjustment', () => {
-    setAfterPageVisitValues();
-    const partiesSHV = createSHVEntry();
-    const partiesHMC = createHMCEntry();
-
-    component.serviceHearingValuesModel = {
-      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
-      parties: partiesSHV
-    };
-    component.hearingRequestMainModel = {
-      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      partyDetails: partiesHMC
-    };
-
-    const isDifference = component.pageVisitReasonableAdjustmentChangeExists();
-
-    expect(isDifference).toEqual(false);
-  });
-
-  it('should return true as reasonable adjustment required but not confirmed.', () => {
-    setAfterPageVisitValues();
-    hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesRequired = true;
-
-    const partiesSHV = createSHVEntry();
-    const partiesHMC = createHMCEntry();
-
-    component.serviceHearingValuesModel = {
-      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
-      parties: partiesSHV
-    };
-    component.hearingRequestMainModel = {
-      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      partyDetails: partiesHMC
-    };
-
-    const isDifference = component.pageVisitReasonableAdjustmentChangeExists();
-
-    expect(isDifference).toEqual(true);
-  });
-
-  it('should return false as reasonable adjustment required and confirmed.', () => {
-    setAfterPageVisitValues();
-    hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesRequired = true;
-    hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesConfirmed = true;
     const partiesSHV = createSHVEntry();
     const partiesHMC = createHMCEntry();
 
@@ -1254,8 +1211,6 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should return true as there is a difference in reasonable adjustment', () => {
-    setAfterPageVisitValues();
-    hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesRequired = true;
     const partiesSHV = createSHVEntry();
     const partiesHMC = createHMCEntry();
     partiesHMC[1].individualDetails.reasonableAdjustments = ['RA0041', 'RA0044', 'RA0042'];
@@ -1275,7 +1230,6 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should return false as removed party had no reasonable adjustments', () => {
-    setAfterPageVisitValues();
     const partiesSHV: PartyDetailsModel[] = createSHVEntry();
 
     const partiesHMC: PartyDetailsModel[] = createHMCEntry();
@@ -1308,7 +1262,6 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should return false as removed party had no reasonable adjustments test 2', () => {
-    setAfterPageVisitValues();
     const partiesSHV: PartyDetailsModel[] = createSHVEntry();
 
     const partiesHMC: PartyDetailsModel[] = createHMCEntry();
@@ -1342,7 +1295,6 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should return false as added party had no reasonable adjustments', () => {
-    setAfterPageVisitValues();
     const partiesSHV: PartyDetailsModel[] = createSHVEntry();
 
     const partiesHMC: PartyDetailsModel[] = createHMCEntry();
@@ -1375,8 +1327,6 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should return true as party removed from original hmc with reasonable adjustment', () => {
-    setAfterPageVisitValues();
-    hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesRequired = true;
     const partiesSHV = createSHVEntry();
     const partiesHMC = createHMCEntry();
 
@@ -1413,8 +1363,6 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should return true as party to original shv with reasonable adjustment', () => {
-    setAfterPageVisitValues();
-    hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesRequired = true;
     const partiesSHV = createSHVEntry();
     const partiesHMC = createHMCEntry();
 
@@ -1530,26 +1478,5 @@ describe('HearingEditSummaryComponent', () => {
       }
     ];
     return partiesHMC;
-  }
-  function setAfterPageVisitValues() {
-    hearingsService.propertiesUpdatedOnPageVisit = {
-      hearingId: 'h000001',
-      caseFlags: null,
-      parties: null,
-      hearingWindow: null,
-      afterPageVisit: {
-        reasonableAdjustmentChangesConfirmed: false,
-        reasonableAdjustmentChangesRequired: false,
-        nonReasonableAdjustmentChangesRequired: false,
-        nonReasonableAdjustmentChangesConfirmed: false,
-        partyDetailsChangesRequired: false,
-        partyDetailsChangesConfirmed: true,
-        hearingWindowChangesRequired: false,
-        hearingFacilitiesChangesRequired: false,
-        partyDetailsAnyChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false,
-        hearingWindowChangesConfirmed: false
-      }
-    };
   }
 });

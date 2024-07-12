@@ -4,7 +4,6 @@ import * as moment from 'moment';
 const REGEX_DOS_FIX_LIMIT = 100;
 
 export class NocValidators {
-
   private static isEmpty(value: any): boolean {
     return value === null || value === undefined || value === '';
   }

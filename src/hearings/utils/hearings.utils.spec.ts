@@ -168,9 +168,7 @@ describe('HearingsUtils', () => {
 
     it('should getPartyNameFormatted return formatted party name', () => {
       const individualDetails = initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails[0].individualDetails;
-      individualDetails.firstName = 'Jack';
-      individualDetails.lastName = 'Jones';
-      expect(HearingsUtils.getPartyNameFormatted(individualDetails)).toEqual('Jack Jones');
+      expect(HearingsUtils.getPartyNameFormatted(individualDetails)).toEqual('Jane Smith');
     });
   });
 

@@ -50,7 +50,7 @@ export class NocValidators {
       const [year, month, day] = value.split('-').map(Number);
       const isValidDate = moment(value, 'YYYY-MM-DD', true).isValid();
       if (!isValidDate || year === 0 || month === 0 || month > 12 || day === 0 || day > 31) {
-        return { date: true, valid: false };
+        return { month: true, date: true, valid: false };
       }
       return null;
     };
@@ -69,7 +69,7 @@ export class NocValidators {
 
       if (!isValidDateTime || year === 0 || month === 0 || month > 12 || day === 0 || day > 31 ||
           hour > 23 || minute > 59 || (second !== undefined && second > 59)) {
-        return { datetime: true, valid: false };
+        return { month: true, datetime: true, valid: false };
       }
       return null;
     };
@@ -84,7 +84,7 @@ export class NocValidators {
       const [hour, minute, second] = value.split(':').map(Number);
       const isValidTime = moment(value, 'HH:mm:ss', true).isValid();
       if (!isValidTime || hour > 23 || minute > 59 || (second !== undefined && second > 59)) {
-        return { time: true, valid: false };
+        return { hour: true, time: true, valid: false, message: '' };
       }
       return null;
     };

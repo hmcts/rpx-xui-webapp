@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const headless = process.env.HEAD !== 'true';
+const headlessMode = process.env.HEAD !== 'true';
 
 module.exports = defineConfig({
   testDir: "./playwright_tests/E2E",
@@ -11,9 +11,9 @@ module.exports = defineConfig({
   /* Retry on CI only */
   retries: 3, // Set the number of retries for all projects
 
-  timeout: 3 * 60 * 1000,  // 10 minutes
+  timeout: 3 * 60 * 1000,
   expect: {
-    timeout: 1 * 60 * 1000,  // 5 minutes
+    timeout: 1 * 60 * 1000,
   },
   reportSlowTests: null,
 
@@ -25,7 +25,7 @@ module.exports = defineConfig({
       name: "chromium",
       use: { ...devices["Desktop Chrome"],
         channel: "chrome",
-        headless: headless,
+        headless: headlessMode,
         trace: "on-first-retry",
       },
     },
@@ -33,7 +33,7 @@ module.exports = defineConfig({
       name: "firefox",
       use: { ...devices["Desktop Firefox"],
         screenshot: 'only-on-failure',
-        headless: headless,
+        headless: headlessMode,
         trace: 'off'
       },
     },
@@ -41,7 +41,7 @@ module.exports = defineConfig({
       name: "webkit",
       use: { ...devices["Desktop Safari"],
         screenshot: 'only-on-failure',
-        headless: headless,
+        headless: headlessMode,
         trace: 'off'
       },
     },
@@ -49,7 +49,7 @@ module.exports = defineConfig({
       name: "MobileChrome",
       use: { ...devices["Pixel 5"],
         screenshot: 'only-on-failure',
-        headless: headless,
+        headless: headlessMode,
         trace: 'off'
       },
     },
@@ -57,7 +57,7 @@ module.exports = defineConfig({
       name: "MobileSafari",
       use: { ...devices["iPhone 12"],
         screenshot: 'only-on-failure',
-        headless: headless,
+        headless: headlessMode,
         trace: 'off'
       },
     },
@@ -66,7 +66,7 @@ module.exports = defineConfig({
       use: { ...devices["Desktop Edge"],
         channel: "msedge",
         screenshot: 'only-on-failure',
-        headless: headless,
+        headless: headlessMode,
         trace: 'off'
       },
     },

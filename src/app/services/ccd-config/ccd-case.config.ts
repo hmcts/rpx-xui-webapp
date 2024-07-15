@@ -264,9 +264,9 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.case_data_store_api_url;
   }
 
-  public getEventsToHide(): string[] {
-    return this.config.events_to_hide;
-  }
+  // public getEventsToHide(): string[] {
+  //   return this.config.events_to_hide;
+  // }
 
   public getEnableRestrictedCaseAccessConfig(): boolean {
     return this.config.enable_restricted_case_access;

@@ -2,10 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearings/hearing.test.data';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, PartyType } from '../../../hearings/models/hearings.enum';
@@ -13,6 +15,7 @@ import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.module';
 import * as fromHearingStore from '../../../hearings/store';
 import { CaseHearingsListComponent } from './case-hearings-list.component';
+import { HearingsFeatureService } from '../../../hearings/services/hearings-feature.service';
 
 class MockRoleCategoryMappingService {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -20,6 +23,7 @@ class MockRoleCategoryMappingService {
   public isEnabled = (): Observable<boolean> => of(true);
   public getValue = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
   public getValueOnce = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
+  public getValueSync = <R>(feature: string, defaultValue: R): R => defaultValue;
 }
 
 const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
@@ -617,6 +621,8 @@ describe('CaseHearingsListComponent', () => {
   let fixture: ComponentFixture<CaseHearingsListComponent>;
   const mockFeatureService = new MockRoleCategoryMappingService();
   let mockStore: Store<fromHearingStore.State>;
+  const featureToggleServiceMock = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
+  const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled']);
 
   const mockRouter = {
     navigate: jasmine.createSpy('navigate'),
@@ -630,7 +636,7 @@ describe('CaseHearingsListComponent', () => {
         RouterTestingModule.withRoutes([]),
         HearingsPipesModule
       ],
-      declarations: [CaseHearingsListComponent],
+      declarations: [CaseHearingsListComponent, MockRpxTranslatePipe],
       providers: [
         provideMockStore({ initialState }),
         {
@@ -646,6 +652,14 @@ describe('CaseHearingsListComponent', () => {
         {
           provide: Router,
           useValue: mockRouter
+        },
+        {
+          provide: FeatureToggleService,
+          useValue: featureToggleServiceMock
+        },
+        {
+          provide: HearingsFeatureService,
+          useValue: hearingsFeatureServiceMock
         }
       ]
     }).compileComponents();
@@ -656,6 +670,8 @@ describe('CaseHearingsListComponent', () => {
     component.hearingList$ = of(UPCOMING_HEARING_LIST);
     component.hearingStageOptions = HEARING_TYPES_REF_DATA;
     component.actions = [Actions.DELETE];
+    featureToggleServiceMock.isEnabled.and.returnValue(of(false));
+    hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(false));
     fixture.detectChanges();
   });
 
@@ -845,6 +861,22 @@ describe('CaseHearingsListComponent', () => {
     expect(addOrEdit12).toBeNull();
   });
 
+  it('should show view details actions if feature toggle is on', () => {
+    featureToggleServiceMock.isEnabled.and.returnValue(of(true));
+    hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
+    component.status = EXUISectionStatusEnum.UPCOMING;
+    component.actions = [Actions.CREATE, Actions.DELETE, Actions.UPDATE, Actions.READ];
+    component.ngOnInit();
+    fixture.detectChanges();
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+    spyOn(mockStore, 'select').and.returnValue(of(null));
+    const loadHearingRequestAndRedirect = spyOn(component, 'loadHearingRequestAndRedirect');
+    component.viewAndEdit('h100000');
+    fixture.detectChanges();
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view-edit', isHearingAmendmentsEnabled: true })));
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/view/hearing-view-summary');
+  });
+
   it('should return the right flag depends on hearingGroupRequestId', () => {
     expect(component.isManageLinksEnabled('g1000000')).toBeTruthy();
     expect(component.isManageLinksEnabled(null)).toBeFalsy();
@@ -854,10 +886,10 @@ describe('CaseHearingsListComponent', () => {
   it('should viewAndEdit', () => {
     const dispatchSpy = spyOn(mockStore, 'dispatch');
     spyOn(mockStore, 'select').and.returnValue(of(null));
-    const loadHearingRequestAndRedirect = spyOn(component, 'LoadHearingRequestAndRedirect');
+    const loadHearingRequestAndRedirect = spyOn(component, 'loadHearingRequestAndRedirect');
     component.status = EXUISectionStatusEnum.UPCOMING;
     component.viewAndEdit('h100000');
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view' })));
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view-edit', isHearingAmendmentsEnabled: false })));
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/request/hearing-view-edit-summary');
   });
 
@@ -870,7 +902,7 @@ describe('CaseHearingsListComponent', () => {
    *  and had to comment it out due to business priority in releasing
    *  the feature. This test should be looked at later.
    */
-  xit('should addAndEdit', () => {
+  it('should addAndEdit', () => {
     component.addAndEdit('h100000');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'actuals', 'h100000', 'hearing-actual-add-edit-summary']);
   });
@@ -887,7 +919,7 @@ describe('CaseHearingsListComponent', () => {
   });
 
   it('should check viewDetails', () => {
-    const loadHearingRequestAndRedirect = spyOn(component, 'LoadHearingRequestAndRedirect');
+    const loadHearingRequestAndRedirect = spyOn(component, 'loadHearingRequestAndRedirect');
     // AWAITING_LISTING
     component.viewDetails(UPCOMING_HEARING_LIST[0]);
     fixture.detectChanges();

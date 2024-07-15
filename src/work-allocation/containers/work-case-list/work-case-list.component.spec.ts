@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, Input, NO_ERRORS_SCHEMA, Pipe, PipeTransform, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
@@ -61,12 +61,12 @@ function getCaseService(): CaseServiceConfig {
   };
 }
 
-@Pipe({ name: 'paginate' })
-class MockPaginatePipe implements PipeTransform {
-  transform(value: string): string {
-    return value;
-  }
-}
+// @Pipe({ name: 'paginate' })
+// class MockPaginatePipe implements PipeTransform {
+//   transform(value: string): string {
+//     return value;
+//   }
+// }
 
 describe('WorkCaseListComponent', () => {
   let component: WorkCaseListComponent;

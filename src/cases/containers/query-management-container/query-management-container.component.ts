@@ -12,9 +12,9 @@ import {
   QueryListItem
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { Observable, combineLatest } from 'rxjs';
-import { first, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import * as fromRoot from '../../../app/store';
 import { caseMessagesMockData } from '../../mock/query-management.mock';

@@ -28,7 +28,7 @@ export class StaffUsersComponent {
       takeUntil(this.unsubscribe$),
       tap((error) => {
         this.staffSelectError = !!error;
-        this.staffSelectErrors = error ? { title: 'Staff error', description: error.errorDescription } : null;
+        this.staffSelectErrors = error ? { title: 'Staff error', description: error?.errorDescription ? error?.errorDescription: 'An unknown error has occured' } : null;
       })
     )
       .subscribe();

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { StaffUser } from '../models/staff-user.model';
 import { StaffDataAccessService } from '../services/staff-data-access/staff-data-access.service';
@@ -19,7 +19,6 @@ export class StaffUserDetailsResolverService {
   public resolve(route?: ActivatedRouteSnapshot) {
     this.store.dispatch(new ResetStaffSelect());
     return this.staffDataAccessService.fetchSingleUserById(route.params.id).pipe(
-      tap((user:StaffUser) => console.log('User:', user)),
       map((user) => StaffUser.from(user)),
       catchError((error) => {
         this.store.dispatch(new SetError(error.error));

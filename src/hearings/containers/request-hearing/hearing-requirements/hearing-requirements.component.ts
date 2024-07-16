@@ -56,12 +56,12 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   }
 
   constructor(private readonly loggerService: LoggerService,
-              private readonly validatorsUtils: ValidatorsUtils,
-              public readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService,
-              protected readonly locationsDataService: LocationsDataService,
-              protected readonly featureToggleService: FeatureToggleService,
-              protected readonly route: ActivatedRoute) {
+    private readonly validatorsUtils: ValidatorsUtils,
+    public readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly hearingsService: HearingsService,
+    protected readonly locationsDataService: LocationsDataService,
+    protected readonly featureToggleService: FeatureToggleService,
+    protected readonly route: ActivatedRoute) {
     super(hearingStore, hearingsService, featureToggleService, route);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
     this.caseTypeRefData = this.route.snapshot.data.caseType;
@@ -132,6 +132,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       },
       partyDetails: combinedParties
     };
+
     this.hearingStore.dispatch(new fromHearingStore.InitializeHearingRequest(hearingRequestMainModel));
   }
 
@@ -231,7 +232,6 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         : this.hearingRequestToCompareMainModel.partyDetails;
       this.reasonableAdjustmentFlags = CaseFlagsUtils.getReasonableAdjustmentFlags(this.caseFlagsRefData,
         propertiesUpdatedOnPageVisit.caseFlags?.flags, partyDetails, this.serviceHearingValuesModel.parties);
-
       this.showReasonableAdjustmentFlagsWarningMessage = this.reasonableAdjustmentFlags.map(
         (flag) => flag.partyFlags.map((partyFlag) => partyFlag.flagAmendmentLabelStatus)
       ).join().includes(AmendmentLabelStatus.WARNING);

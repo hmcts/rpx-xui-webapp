@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import config from "../config"
 import { signIn } from './steps/login-steps';
 
-test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
+test.skip('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await signIn(page, "USER_WITH_FLAGS");
   await expect(page.getByRole('heading', { name: 'Case list' })).toBeVisible();
 

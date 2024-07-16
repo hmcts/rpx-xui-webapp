@@ -59,7 +59,7 @@ withPipeline(type, product, component) {
     syncBranchesWithMaster(branchesToSync)
 
     enablePactAs([
-        AppPipelineDsl.PactRoles.CONSUMER
+      enablePactAs([AppPipelineDsl.PactRoles.CONSUMER, AppPipelineDsl.PactRoles.PROVIDER])
     ])
 
     afterSuccess('build') {

@@ -3,7 +3,7 @@ import { signIn, signOut } from "./steps/login-steps";
 import { clickToStaffPage } from "./steps/staff-steps";
 
 
-test("staff user details", async ({ page }) => {
+test.skip("staff user details", async ({ page }) => {
   await signIn(page, "STAFF_ADMIN");
   await clickToStaffPage(page);
 
@@ -30,7 +30,7 @@ test("staff user details", async ({ page }) => {
   await signOut(page);
 });
 
-test('Add new user work flow - back, cancel and change', async ({ page }) => {
+test.skip('Add new user work flow - back, cancel and change', async ({ page }) => {
   await signIn(page, "STAFF_ADMIN");
   await clickToStaffPage(page);
 

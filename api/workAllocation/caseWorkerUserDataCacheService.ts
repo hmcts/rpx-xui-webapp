@@ -175,7 +175,7 @@ export function getRequestHeaders(): any {
   return {
     'content-type': 'application/json',
     'serviceAuthorization': `Bearer ${initialServiceAuthToken}`,
-    'authorization': `Bearer ${initialAuthToken}`,
+    'authorization': `Bearer ${initialAuthToken}`
   };
 }
 

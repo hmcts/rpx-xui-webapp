@@ -38,7 +38,7 @@ export class QueryManagementContainerComponent implements OnInit {
   public queryItem: QueryListItem | undefined;
   public showSummary = false;
   public showConfirmation = false;
-  public formGroup = new FormGroup({});
+  public formGroup: FormGroup = new FormGroup({});
   public submitted = false;
   public errorMessages: ErrorMessage[] = [];
   public queryCreateContextEnum = QueryCreateContext;

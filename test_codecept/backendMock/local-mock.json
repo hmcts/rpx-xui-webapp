@@ -27,12 +27,13 @@
         },
         "waWorkflowApi": "http://localhost:8080",
         "documentsv2": {
-            "api": "http://localhost:8080/cases/documents"
+            "api": "http://localhost:8080/"
         },
         "prd": {
             "api": "http://localhost:8080",
             "commondataApi": "http://localhost:8080",
-            "locationApi": "http://localhost:8080"
+            "locationApi": "http://localhost:8080",
+            "judicialApi": "http://localhost:8080"
         },
         "em_anno_api": "http://localhost:8080",
         "idam": {
@@ -103,6 +104,7 @@
         "prefix": "MC-activity:",
         "ttl": 86400
     },
+    "staffSupportedJurisdictions": "IA,CIVIL,PRIVATELAW",
     "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW",
     "serviceRefDataMapping": [
         {

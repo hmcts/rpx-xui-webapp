@@ -13,6 +13,7 @@ import { CaseShareConfirmComponent } from './case-share-confirm/case-share-confi
 import { CaseShareComponent } from './case-share/case-share.component';
 import { CaseViewerContainerComponent } from './case-viewer-container/case-viewer-container.component';
 import { QueryManagementContainerComponent } from './query-management-container/query-management-container.component';
+import { RestrictedCaseAccessContainerComponent } from './restricted-case-access-container/restricted-case-access-container.component';
 import { RolesAndAccessContainerComponent } from './roles-and-access-container/roles-and-access-container.component';
 import { TasksContainerComponent } from './tasks-container/tasks-container.component';
 
@@ -34,7 +35,8 @@ export const containers: any[] = [
   CaseShareConfirmComponent,
   CaseShareCompleteComponent,
   CaseHearingsComponent,
-  QueryManagementContainerComponent
+  QueryManagementContainerComponent,
+  RestrictedCaseAccessContainerComponent
 ];
 
 export * from './case-create-submit/case-create-submit.component';
@@ -42,6 +44,7 @@ export * from './case-create/case-create.component';
 export * from './case-details-home/case-details-home.component';
 export * from './case-details/case-details.component';
 export * from './case-filter/case-filter.component';
+export * from './case-hearings/case-hearings.component';
 export * from './case-home/case-home.component';
 export * from './case-list/case-list.component';
 export * from './case-share-complete/case-share-complete.component';

@@ -6,7 +6,6 @@ import { Store } from '@ngrx/store';
 import { Observable, Subscription, of } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
-import { AppConstants } from '../../../app/app.constants';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
@@ -28,7 +27,6 @@ import {
   WASupportedJurisdictionsService,
   WorkAllocationTaskService
 } from '../../services';
-import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
 
 @Component({
@@ -73,8 +71,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService,
     protected rolesService: AllocateRoleService,
-    protected store: Store<fromActions.State>,
-    protected checkReleaseVersionService: CheckReleaseVersionService
+    protected store: Store<fromActions.State>
   ) { }
 
   public get tasks(): Task[] {
@@ -177,9 +174,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       )
       .subscribe((f: FilterSetting) => {
-        const newLocations = f.fields.find((field) => field.name === 'locations').value;
+        const newLocations = f.fields.find((field) => field.name === 'locations')?.value;
         const typesOfWork = f.fields.find((field) => field.name === 'types-of-work');
-        const services = f.fields.find((field) => field.name === 'services').value;
+        const services = f.fields.find((field) => field.name === 'services')?.value;
         const newWorkTypes = typesOfWork ? typesOfWork.value : [];
         if (this.initialFilterApplied) {
           // do not reset the pagination when the initial filter value has not been consumed
@@ -194,8 +191,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public setupTaskList() {
+    // NOTE - staffSupportedJurisdictions can replace waSupportedJurisdictions for quick testing purposes
     const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
-      this.caseworkerService.getCaseworkersForServices(jurisdictions)
+      this.caseworkerService.getUsersFromServices(jurisdictions)
     ));
     // similar to case list wrapper changes
     caseworkersByService$.subscribe((caseworkers) => {

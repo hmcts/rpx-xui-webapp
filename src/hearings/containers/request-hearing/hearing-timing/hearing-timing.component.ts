@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
@@ -11,11 +12,14 @@ import {
   HearingDateEnum,
   HearingDatePriorityConstEnum,
   HearingDatePriorityEnum,
+  Mode,
   RadioOptions
 } from '../../../models/hearings.enum';
+import { AmendmentLabelStatus } from '../../../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.model';
 import { HearingsService } from '../../../services/hearings.service';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
@@ -41,13 +45,17 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public earliestDateOfHearingError: ErrorMessagesModel;
   public latestDateOfHearingError: ErrorMessagesModel;
   public priorityFormInfo: { days: string, hours: string, minutes: string, startDate: Date, firstDate: Date, secondDate: Date, priority: string };
+  public hearingWindowChangesRequired: boolean;
+  public hearingWindowChangesConfirmed: boolean;
+  public amendmentLabelEnum = AmendmentLabelStatus;
 
   constructor(private readonly formBuilder: FormBuilder,
-    protected readonly route: ActivatedRoute,
     private readonly validatorsUtils: ValidatorsUtils,
     protected readonly hearingStore: Store<fromHearingStore.State>,
-    protected readonly hearingsService: HearingsService) {
-    super(hearingStore, hearingsService, route);
+    protected readonly hearingsService: HearingsService,
+    protected readonly featureToggleService: FeatureToggleService,
+    protected readonly route: ActivatedRoute) {
+    super(hearingStore, hearingsService, featureToggleService, route);
   }
 
   public get firstHearingFormGroup(): FormGroup {
@@ -74,6 +82,8 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     // @ts-ignore
     const unavailabilityDateList: UnavailabilityRangeModel[] = this.serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRanges);
     this.checkUnavailableDatesList(unavailabilityDateList);
+    this.hearingWindowChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesRequired;
+    this.hearingWindowChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesConfirmed;
   }
 
   public getFormData(): void {
@@ -83,7 +93,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     let secondDate: Date = null;
     duration = this.hearingRequestMainModel.hearingDetails.duration ?
       this.hearingRequestMainModel.hearingDetails.duration : 0;
-    const hearingWindow: HearingWindowModel = this.hearingRequestMainModel.hearingDetails.hearingWindow;
+    const hearingWindow: HearingWindowModel = HearingsUtils.getHearingWindow(this.hearingRequestMainModel);
     if (hearingWindow && (hearingWindow.dateRangeStart || hearingWindow.dateRangeEnd)) {
       this.checkedHearingAvailability = RadioOptions.CHOOSE_DATE_RANGE;
       startDate = hearingWindow.dateRangeStart && new Date(hearingWindow.dateRangeStart);
@@ -231,7 +241,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public showChosenDateError(): void {
     const isInValidDate = this.getDateFormatted(this.firstHearingFormGroup, this.firstHearingDate.id).includes(null);
     const chosenDate = moment(this.getDateFormatted(this.firstHearingFormGroup, this.firstHearingDate.id), HearingDateEnum.DefaultFormat);
-    const isPastDate = chosenDate.isBefore() || chosenDate.isSame(new Date(), 'd');
+    const isPastDate = chosenDate.isBefore(moment().startOf('day'));
     const isFirstHearingDateValid = moment(chosenDate, HearingDateEnum.DefaultFormat, true).isValid();
     const isWeekday = this.isWeekDay(chosenDate);
     if (isInValidDate) {
@@ -257,8 +267,8 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     const isInValidLatestDate = this.getDateFormatted(this.latestHearingFormGroup, this.latestHearingDate.id).includes(null);
     const chosenEarliestDate = moment(this.getDateFormatted(this.earliestHearingFormGroup, this.earliestHearingDate.id), HearingDateEnum.DefaultFormat);
     const chosenLatestDate = moment(this.getDateFormatted(this.latestHearingFormGroup, this.latestHearingDate.id), HearingDateEnum.DefaultFormat);
-    const isPastEarliestDate = chosenEarliestDate.isBefore() || chosenEarliestDate.isSame(new Date(), 'd');
-    const isPastLatestDate = chosenLatestDate.isBefore() || chosenLatestDate.isSame(new Date(), 'd');
+    const isPastEarliestDate = chosenEarliestDate.isBefore(moment().startOf('day'));
+    const isPastLatestDate = chosenLatestDate.isBefore(moment().startOf('day'));
     const isLatestBeforeEarliest = chosenEarliestDate > chosenLatestDate;
     const isEarliestDateValid = chosenEarliestDate.isValid();
     const isLatestHearingDate = chosenLatestDate.isValid();
@@ -389,6 +399,11 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
         hearingPriorityType: this.priorityForm.value.priority
       }
     };
+    if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
+      this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow') &&
+      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired) {
+      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesConfirmed = true;
+    }
   }
 
   public calculateDuration(): number {

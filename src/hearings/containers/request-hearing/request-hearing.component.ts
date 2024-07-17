@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { ACTION } from '../../models/hearings.enum';
+import { ACTION, HearingRequestPageRouteNames } from '../../models/hearings.enum';
 import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
 import { AbstractPageFlow } from '../../utils/abstract-page-flow';
@@ -11,14 +11,14 @@ import { AbstractPageFlow } from '../../utils/abstract-page-flow';
   styleUrls: ['./request-hearing.component.scss']
 })
 export class RequestHearingComponent implements OnDestroy {
-  private static readonly HEARING_CREATE_EDIT_SUMMARY = 'hearing-create-edit-summary';
-  private static readonly HEARING_VIEW_EDIT_SUMMARY = 'hearing-view-edit-summary';
-  private static readonly HEARING_CHANGE_REASON = 'hearing-change-reason';
-  private static readonly HEARING_CONFIRMATION = 'hearing-confirmation';
+  public hasSubmitted = false;
+
+  public action = ACTION;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly pageFlow: AbstractPageFlow,
-              private readonly hearingsService: HearingsService) {}
+    private readonly pageFlow: AbstractPageFlow,
+    private readonly hearingsService: HearingsService) {
+  }
 
   public onBack(): void {
     this.hearingsService.navigateAction(ACTION.BACK);
@@ -28,16 +28,14 @@ export class RequestHearingComponent implements OnDestroy {
     this.hearingsService.navigateAction(ACTION.CONTINUE);
   }
 
-  public submitNewRequest(): void {
-    this.hearingsService.navigateAction(ACTION.SUBMIT);
-  }
-
-  public submitUpdatedRequest(): void {
-    this.hearingsService.navigateAction(ACTION.VIEW_EDIT_REASON);
-  }
-
-  public submitChangeRequest(): void {
-    this.hearingsService.navigateAction(ACTION.VIEW_EDIT_SUBMIT);
+  public submitRequest(action: ACTION): void {
+    if (action === ACTION.VIEW_EDIT_REASON) {
+      this.hearingsService.submitUpdatedRequestClicked = true;
+    } else {
+      // if we are submitting and awaiting backend process
+      this.hasSubmitted = true;
+    }
+    this.hearingsService.navigateAction(action);
   }
 
   public get isSummary(): boolean {
@@ -45,19 +43,31 @@ export class RequestHearingComponent implements OnDestroy {
   }
 
   public get isCreateEditSummary(): boolean {
-    return this.pageFlow.getCurrentPage() === RequestHearingComponent.HEARING_CREATE_EDIT_SUMMARY;
+    return this.pageFlow.getCurrentPage() === HearingRequestPageRouteNames.HEARING_CREATE_EDIT_SUMMARY;
   }
 
   public get isViewEditSummary(): boolean {
-    return this.pageFlow.getCurrentPage() === RequestHearingComponent.HEARING_VIEW_EDIT_SUMMARY;
+    return this.pageFlow.getCurrentPage() === HearingRequestPageRouteNames.HEARING_VIEW_EDIT_SUMMARY;
+  }
+
+  public get isEditSummary(): boolean {
+    return this.pageFlow.getCurrentPage() === HearingRequestPageRouteNames.HEARING_EDIT_SUMMARY;
   }
 
   public get isViewEditReason(): boolean {
-    return this.pageFlow.getCurrentPage() === RequestHearingComponent.HEARING_CHANGE_REASON;
+    return this.pageFlow.getCurrentPage() === HearingRequestPageRouteNames.HEARING_CHANGE_REASON;
   }
 
   public get isConfirmationPage(): boolean {
-    return this.pageFlow.getCurrentPage() === RequestHearingComponent.HEARING_CONFIRMATION;
+    return this.pageFlow.getCurrentPage() === HearingRequestPageRouteNames.HEARING_CONFIRMATION;
+  }
+
+  public get isChildPage(): boolean {
+    return !this.isCreateEditSummary &&
+      !this.isViewEditSummary &&
+      !this.isEditSummary &&
+      !this.isViewEditReason &&
+      !this.isConfirmationPage;
   }
 
   public ngOnDestroy(): void {

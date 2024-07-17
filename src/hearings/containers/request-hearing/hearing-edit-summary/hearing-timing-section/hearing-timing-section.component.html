@@ -1,0 +1,52 @@
+<h2 class="govuk-heading-m">
+  Length, date and priority level of hearing
+  <exui-amendment-label id="hearing-window-action-needed-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired"
+    [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
+  </exui-amendment-label>
+  <exui-amendment-label id="hearing-window-amended-label" *ngIf="hearingWindowChangesConfirmed && hearingWindowChangesRequired"
+    [displayLabel]="amendmentLabelEnum.AMENDED">
+  </exui-amendment-label>
+</h2>
+<div class="govuk-summary-list govuk-!-margin-bottom-9">
+  <div class="govuk-summary-list__row">
+    <div class="govuk-summary-list__key">
+      Length of hearing
+    </div>
+    <div class="govuk-summary-list__value">
+      {{ hearingLength }}
+    </div>
+    <div class="govuk-summary-list__actions">
+      <a id="hearingLength"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('hearingLength')">Change</a>
+    </div>
+  </div>
+  <div class="govuk-summary-list__row">
+    <div class="govuk-summary-list__key">
+      Does the hearing need to take place on a specific date?
+    </div>
+    <div class="govuk-summary-list__value" [innerHTML]="specificDate">
+    </div>
+    <div class="govuk-summary-list__actions">
+      <a id="hearingSpecificDate"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('hearingSpecificDate')">Change</a>
+    </div>
+  </div>
+  <div class="govuk-summary-list__row">
+    <div class="govuk-summary-list__key">
+      What is the priority of this hearing?
+    </div>
+    <div class="govuk-summary-list__value">
+      {{ hearingPriority }}
+    </div>
+    <div class="govuk-summary-list__actions">
+      <a id="hearingPriority"
+        class="govuk-link"
+        href="javascript:void(0)"
+        (click)="onChange('hearingPriority')">Change</a>
+    </div>
+  </div>
+</div>

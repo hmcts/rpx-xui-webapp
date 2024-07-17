@@ -15,9 +15,8 @@ import * as fromActions from '../../../app/store';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskActionIds } from '../../enums';
 import { Task } from '../../models/tasks';
-import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
-import { CheckReleaseVersionService } from '../../services/check-release-version.service';
-import { MockRouter, getMockTasks } from '../../tests/utils.spec';
+import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
+import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -42,13 +41,7 @@ describe('TaskListWrapperComponent', () => {
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue']);
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
-  const mockCheckReleaseVersionService = {
-    isRelease4: () => {
-      return {
-        subscribe: () => true
-      };
-    }
-  };
+
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
@@ -84,15 +77,13 @@ describe('TaskListWrapperComponent', () => {
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: AlertService, useValue: mockAlertService },
-        { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: FilterService, useValue: mockFilterService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: Store, useValue: storeMock },
-        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
-        { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService }
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);

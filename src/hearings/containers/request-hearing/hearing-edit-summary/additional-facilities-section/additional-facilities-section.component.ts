@@ -82,8 +82,8 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
     );
 
     this.facilitiesChanged = !_.isEqual(
-      this.hearingRequestToCompareMainModel.hearingDetails.facilitiesRequired,
-      this.hearingRequestMainModel.hearingDetails.facilitiesRequired
+      this.hearingRequestMainModel.hearingDetails?.facilitiesRequired,
+      this.hearingRequestToCompareMainModel.hearingDetails?.facilitiesRequired
     );
 
     if ((this.nonReasonableAdjustmentChangesRequired && !this.nonReasonableAdjustmentChangesConfirmed) ||

@@ -157,7 +157,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (userInfo) {
       const featureUser: FeatureUser = {
         key: userInfo.id || userInfo.uid,
-        roles: userInfo.roles,
+        roles: userInfo?.roles,
         orgId: '-1'
       };
       console.log(`LD Client: ${ldClientId}`);

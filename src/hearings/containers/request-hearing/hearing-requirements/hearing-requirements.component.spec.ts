@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockStore } from '@ngrx/store/testing';
-import * as _ from 'lodash';
 import { of } from 'rxjs';
 import { LoggerService } from '../../../../app/services/logger/logger.service';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
@@ -24,9 +23,10 @@ import { PartyFlagsModel } from '../../../models/partyFlags.model';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
-import * as fromHearingStore from '../../../store';
 import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
+import * as fromHearingStore from '../../../store';
 import { HearingRequirementsComponent } from './hearing-requirements.component';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -2485,6 +2485,7 @@ describe('HearingRequirementsComponent', () => {
       hearingDetails: {
         duration: 45,
         hearingType: 'Final',
+        hearingChannels: [],
         hearingLocations: [
           {
             locationId: '196538',
@@ -2526,7 +2527,6 @@ describe('HearingRequirementsComponent', () => {
         hearingRequester: '',
         leadJudgeContractType: '',
         amendReasonCodes: null,
-        hearingChannels: [],
         listingAutoChangeReasonCode: null
       },
       caseDetails: {

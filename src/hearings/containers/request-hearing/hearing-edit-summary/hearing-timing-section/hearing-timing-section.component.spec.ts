@@ -67,6 +67,13 @@ describe('HearingTimingSectionComponent', () => {
   });
 
   it('should verify component data', () => {
+    component.hearingRequestMainModel.hearingDetails.duration = 60;
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = {
+      dateRangeStart: '2022-12-12T09:00:00.000Z',
+      dateRangeEnd: '2022-12-12T09:00:00.000Z',
+      firstDateTimeMustBe: ''
+    };
+    component.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'standard';
     component.ngOnInit();
     expect(component.hearingLength).toEqual('1 Hour');
     expect(component.specificDate).toEqual('Choose a date range<br>Earliest start date: 12 December 2022<br>Latest end date: 12 December 2022');

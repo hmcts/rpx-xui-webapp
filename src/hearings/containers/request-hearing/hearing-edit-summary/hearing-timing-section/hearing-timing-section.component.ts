@@ -53,7 +53,6 @@ export class HearingTimingSectionComponent implements OnInit {
     this.hearingLength = HearingsUtils.getHearingLength(this.hearingRequestMainModel.hearingDetails.duration);
     this.specificDate = this.getSpecificDate();
     this.hearingPriority = this.getHearingPriority();
-
     const hearingWindow = this.hearingRequestMainModel.hearingDetails.hearingWindow;
     this.specificDateSelection = this.getSpecificDateSelection(hearingWindow);
     this.earliestHearingDate = this.getEarliestHearingDate(hearingWindow);

@@ -166,8 +166,8 @@ class Element {
 
     async sendKeys(keys){
         await this.wait();
-        await this.click();
-        await getActor().fillField(this.selector, keys)
+        // await this.click();
+        await getActor().fillField(this.selector, keys) 
     }
 
     async clear(){

@@ -14,6 +14,8 @@ describe('Documents Uploading', () => {
   let res;
   let req;
   let proxyRes;
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let json;
 
   beforeEach(() => {
@@ -28,6 +30,7 @@ describe('Documents Uploading', () => {
       }
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     json = [
       {
         classification: 'PUBLIC',
@@ -59,6 +62,7 @@ describe('Documents Uploading', () => {
   it('should handle request and return false if rate-limited', () => {
     const nextTimeout = Date.now() + 5;
     const rateLimitedReq = {
+      method: 'POST',
       session: {
         lastUploadTime: Date.now(),
         nextTimeout: nextTimeout

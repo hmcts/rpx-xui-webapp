@@ -3382,12 +3382,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.48":
-  version: 7.0.48
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.48"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.48-ungrey-back-button-2":
+  version: 7.0.48-ungrey-back-button-2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.48-ungrey-back-button-2"
   dependencies:
     tslib: ^2.3.0
-  checksum: 8d68f6bfaa1b19f0d34a2fe525882bec5f20f2a4c73898bdb1c17f902b49cc01f86ddc660c38c7bbb20b04a1e7f69d647d4d9e036021c4fd9e6ec1266f5cb751
+  checksum: a503dd0f6b15135b427f03d947d12032d38f2a8a68f43eb18bfd74e4afda9e2fd5128923aa2d683b33ce9356f0493c5f87f2a801c2f8a054f68d24afca960162
   languageName: node
   linkType: hard
 
@@ -21768,7 +21768,7 @@ __metadata:
     "@angular/router": ^17.3.6
     "@angular/ssr": ^17.3.6
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.48
+    "@hmcts/ccd-case-ui-toolkit": 7.0.48-ungrey-back-button-2
     "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 4.0.4

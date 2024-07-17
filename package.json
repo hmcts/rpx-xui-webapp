@@ -92,7 +92,7 @@
     "@angular/router": "^17.3.6",
     "@angular/ssr": "^17.3.6",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "6.19.7-qm-qualifying-questions-changes-v4",
+    "@hmcts/ccd-case-ui-toolkit": "7.0.48",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.0.4",
     "@hmcts/nodejs-healthcheck": "1.7.0",

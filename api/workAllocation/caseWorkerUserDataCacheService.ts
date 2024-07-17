@@ -56,11 +56,7 @@ export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
     refreshRoles = true;
     await getAuthTokens();
     // add the tokens to the request headers
-    const caseworkerHeaders = {
-      'content-type': 'application/json',
-      'serviceAuthorization': `Bearer ${initialServiceAuthToken}`,
-      'authorization': `Bearer ${initialAuthToken}`
-    };
+    const caseworkerHeaders = getRequestHeaders();
     const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
     cachedUsers = [];
     const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
@@ -114,9 +110,7 @@ export async function fetchRoleAssignmentsForNewUsers(cachedUserData: StaffUserD
       const jurisdictions = getStaffSupportedJurisdictionsList();
       const payload = prepareRoleApiRequest(jurisdictions);
       const roleAssignmentHeaders = {
-        'content-type': 'application/json',
-        'serviceAuthorization': `Bearer ${initialServiceAuthToken}`,
-        'authorization': `Bearer ${initialAuthToken}`,
+        ...getRequestHeaders(),
         pageNumber: 0,
         size: 10000
       };
@@ -175,6 +169,14 @@ export function hasTTLExpired(): boolean {
 
 export function timestampExists(): boolean {
   return !!timestamp;
+}
+
+export function getRequestHeaders(): any {
+  return {
+    'content-type': 'application/json',
+    'serviceAuthorization': `Bearer ${initialServiceAuthToken}`,
+    'authorization': `Bearer ${initialAuthToken}`,
+  };
 }
 
 // get the request information from config - similarly in node-lib

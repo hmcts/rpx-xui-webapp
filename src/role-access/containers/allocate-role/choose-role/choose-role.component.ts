@@ -3,8 +3,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-
-import { UserRole } from '../../../../app/models';
 import { getLabel } from '../../../../work-allocation/utils';
 import { CHOOSE_A_ROLE, ERROR_MESSAGE } from '../../../constants';
 import {
@@ -75,7 +73,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     );
   }
 
-  public navigationHandler(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, userRole: UserRole): void {
+  public navigationHandler(navEvent: AllocateRoleNavigationEvent): void {
     this.submitted = true;
     if (this.radioOptionControl.invalid) {
       this.radioOptionControl.setErrors({
@@ -84,10 +82,10 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       this.error = ERROR_MESSAGE;
       return;
     }
-    this.dispatchEvent(navEvent, roleCategory, userRole);
+    this.dispatchEvent(navEvent);
   }
 
-  public dispatchEvent(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, userRole: UserRole): void {
+  public dispatchEvent(navEvent: AllocateRoleNavigationEvent): void {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.CONTINUE:
         const roleChosen = this.radioOptionControl.value;

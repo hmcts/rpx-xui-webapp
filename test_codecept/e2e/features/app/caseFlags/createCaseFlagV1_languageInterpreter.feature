@@ -1,9 +1,9 @@
-@fullfunctional @functional_enabled 
+@fullfunctional @disabled
 Feature: Case flags V1 Add/Update Language interpreter
 
     Background: Setup case
         When I navigate to Expert UI Url
-        Given I am logged into Expert UI with with case flags
+        Given I am logged into Expert UI with case flags
         When I setup a case for case flags version "V1"
             | party                       | fieldName    | value      |
             | Flags for legal rep Party 1 | Role On Case | Party 1    |

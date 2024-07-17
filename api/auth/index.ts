@@ -128,22 +128,29 @@ export const getXuiNodeMiddleware = () => {
     secret: getConfigValue(SESSION_SECRET)
   };
 
-  const redisStoreOptions: RedisSessionMetadata = {
-    ...baseStoreOptions,
-    redisStoreOptions: {
-      redisCloudUrl: getConfigValue(REDIS_CLOUD_URL),
-      redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
-      redisTtl: getConfigValue(REDIS_TTL)
+  const redisStoreOptions = {
+    redisStore: {
+      ...baseStoreOptions, ...{
+        redisStoreOptions: {
+          redisCloudUrl: getConfigValue(REDIS_CLOUD_URL),
+          redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
+          redisTtl: getConfigValue(REDIS_TTL)
+        }
+      }
     }
   };
 
-  const fileStoreOptions: FileSessionMetadata = {
-    ...baseStoreOptions,
-    fileStoreOptions: {
-      filePath: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions'
+
+  const fileStoreOptions = {
+    fileStore: {
+      ...baseStoreOptions, ...{
+        fileStoreOptions: {
+          filePath: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions'
+        }
+      }
     }
   };
-  const nodeLibOptions:XuiNodeOptions = {
+  const nodeLibOptions = {
     auth: {
       s2s: {
         microservice: getConfigValue(MICROSERVICE),
@@ -151,21 +158,10 @@ export const getXuiNodeMiddleware = () => {
         s2sSecret: s2sSecret.trim()
       }
     },
-    session: getSessionOptions(redisStoreOptions, fileStoreOptions)
+    session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions
   };
   const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2';
   nodeLibOptions.auth[type] = options;
   logger._logger.info('Setting XuiNodeLib options');
   return xuiNode.configure(nodeLibOptions);
 };
-
-function getSessionOptions(redisStoreOptions: RedisSessionMetadata, fileStoreOptions: FileSessionMetadata): any {
-  if (showFeature(FEATURE_REDIS_ENABLED)) {
-    return {
-      redisStoreOptions: redisStoreOptions
-    };
-  }
-  return {
-    fileStoreOptions: fileStoreOptions
-  };
-}

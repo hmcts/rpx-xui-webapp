@@ -15,6 +15,7 @@ import {
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { BehaviorSubject } from 'rxjs';
+import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 import { QueryManagementContainerComponent } from './query-management-container.component';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -412,6 +413,40 @@ describe('QueryManagementContainerComponent', () => {
       fixture.detectChanges();
       expect(nativeElement.querySelector('.govuk-error-summary')).toBeNull();
     });
+
+    it('should navigate to error element', () => {
+      const nativeElement = document.getElementById('isHearingRelated-no');
+      spyOn(nativeElement, 'focus');
+      spyOn(nativeElement, 'scrollIntoView');
+      component.navigateToErrorElement('isHearingRelated-no');
+      fixture.detectChanges();
+      expect(nativeElement.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'center' });
+      expect(nativeElement.focus).toHaveBeenCalled();
+    });
+
+    it('should set query is related error message', () => {
+      component.formGroup.get('isHearingRelated').setValue(null);
+      component.validateForm();
+      fixture.detectChanges();
+      const error = {
+        title: '',
+        description: RaiseQueryErrorMessage.QUERY_HEARING_RELATED,
+        fieldId: 'isHearingRelated-yes'
+      };
+      expect(component.errorMessages).toContain(error);
+    });
+
+    it('should set enter valid date error message', () => {
+      component.formGroup.get('isHearingRelated').setValue(true);
+      component.validateForm();
+      fixture.detectChanges();
+      const error = {
+        title: '',
+        description: RaiseQueryErrorMessage.QUERY_HEARING_DATE,
+        fieldId: 'hearingDate-day'
+      };
+      expect(component.errorMessages).toContain(error);
+    });
   });
 
   describe('validateQualifyingQuestion', () => {
@@ -447,7 +482,18 @@ describe('QueryManagementContainerComponent', () => {
         { fragment: 'Overview' }
       );
     });
+  });
 
+  describe('navigateToCaseOverviewTab', () => {
+    it('should navigate to case overview tab', () => {
+      component.navigateToCaseOverviewTab();
+      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', component.caseId],
+        { fragment: 'Overview' }
+      );
+    });
+  });
+
+  describe('navigateToCaseTaskTab', () => {
     it('should navigate to case tasks tab', () => {
       component.navigateToCaseTaskTab();
       expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', component.caseId],

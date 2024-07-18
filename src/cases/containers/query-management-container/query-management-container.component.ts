@@ -133,12 +133,6 @@ export class QueryManagementContainerComponent implements OnInit {
     this.formGroup.get('attachments').setValue(attachments);
   }
 
-  public goToQueryList(): void {
-    this.router.navigate(['cases', 'case-details', this.caseId]).then(() => {
-      window.location.hash = 'Queries (read-only view)';
-    });
-  }
-
   public previous(): void {
     if (this.queryCreateContext === QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL) {
       this.queryCreateContext = QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
@@ -256,6 +250,12 @@ export class QueryManagementContainerComponent implements OnInit {
         }
         return qualifyingQuestions;
       })
+    );
+  }
+
+  public async goToQueryList(): Promise<void> {
+    await this.router.navigate(['cases', 'case-details', this.caseId],
+      { fragment: 'Queries (read-only view)' }
     );
   }
 

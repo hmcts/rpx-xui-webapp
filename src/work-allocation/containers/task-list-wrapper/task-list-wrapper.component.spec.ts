@@ -45,8 +45,6 @@ describe('TaskListWrapperComponent', () => {
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let mockRpxTranslationService: jasmine.SpyObj<RpxTranslationService>;
   const mockFilterService: any = {
     getStream: () => of(null),
     get: () => SELECTED_LOCATIONS,
@@ -61,7 +59,6 @@ describe('TaskListWrapperComponent', () => {
   const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
 
   beforeEach((() => {
-    mockRpxTranslationService = jasmine.createSpyObj('mockRpxTranslationService', ['translate', 'getTranslation$']);
     storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
       imports: [

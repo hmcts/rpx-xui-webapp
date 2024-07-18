@@ -1,4 +1,4 @@
-@fullfunctional
+@fullfunctional @functional_enabled
 Feature: Login
 
   Background:

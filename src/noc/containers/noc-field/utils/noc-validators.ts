@@ -25,12 +25,12 @@ export class NocValidators {
         return null;
       }
       const value = control.value.toString();
+
       const regEx = new RegExp(
-        /^(([A-Za-z]{1,2}[0-9][A-Za-z0-9]?/.source //eg SE17
-       + /|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA) ?/.source //special postcodes
+        /^([A-Za-z]{1,2}[0-9][A-Za-z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA) ?/.source //eg SE17 & special postcodes
        + /[0-9][A-Za-z]{2}|BFPO ?/.source //british forces postal overseas
-       + /[0-9]{1,4}|(KY[0-9]|MSR|VG|AI)[ -]?/.source //postcode magic
-       + /[0-9]{4}|[A-Za-z]{2} ?[0-9]{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1)$/.source
+       + /[0-9]{1,4}/.source // additional post code
+       + /|(KY[0-9]|MSR|VG|AI)[ -]?[0-9]{4}|[A-Za-z]{2} ?[0-9]{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1$/.source // more postcode
       ).test(value);
       const isValid = value.length < REGEX_DOS_FIX_LIMIT && regEx;
       return isValid ? null : { postcode: true };
@@ -43,11 +43,9 @@ export class NocValidators {
         return null;
       }
       const value = control.value.toString();
-      const regEx = new RegExp(
-        /^(?:(?:\(?(?:0(?:0|11)\)?[\s-]?\(?|\+)44\)?[\s-]?(?:\(?0\)?[\s-]?)?)|(?:\(?0))(?:(?:\d{5}\)?[\s-]?\d{4,5})/.source //e.g 0794561125
-        + /|(?:\d{4}\)?[\s-]?(?:\d{5}|\d{3}[\s-]?\d{3}))/.source //telephone
-        + /|(?:\d{3}\)?[\s-]?\d{3}[\s-]?\d{3,4})/.source //more tel ext
-        + /|(?:\d{2}\)?[\s-]?\d{4}[\s-]?\d{4}))(?:[\s-]?(?:x|ext\.?|#)\d{3,4})?$/.source //final
+      const regEx = new  RegExp(''
+      // /^(?:(?:\(?(?:0(?:0|11)\)?[\s-]?\(?|\+)44\)?[\s-]?(?:\(?0\)?[\s-]?)?)|(?:\(?0))(?:(?:\d{5}\)?[\s-]?\d{4,5})|(?:\d{4}\)?[\s-]?(?:\d{5}|\d{3}[\s-]?\d{3}))/.source //
+      // + /|(?:\d{3}\)?[\s-]?\d{3}[\s-]?\d{3,4})|(?:\d{2}\)?[\s-]?\d{4}[\s-]?\d{4}))(?:[\s-]?(?:x|ext\.?|#)\d{3,4})?$/.source //
       ).test(value);
       const isValid = value.length < REGEX_DOS_FIX_LIMIT && regEx;
       return isValid ? null : { phoneUK: true };

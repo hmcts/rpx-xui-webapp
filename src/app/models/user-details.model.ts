@@ -2,7 +2,6 @@ export interface UserInfo {
   id: string;
   forename: string;
   surname: string;
-  name?: string;
   email: string;
   active: boolean;
   roles: string[];

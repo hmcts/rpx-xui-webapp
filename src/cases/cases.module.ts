@@ -71,7 +71,7 @@ import { RestrictedCaseAccessGuard } from './guards/restricted-case-access-guard
 // from services
 import * as fromServices from './services';
 import { effects, reducers } from './store';
-import { WorkAllocationComponentsModule } from 'src/work-allocation/components/work-allocation.components.module';
+import { WorkAllocationComponentsModule } from '../work-allocation/components/work-allocation.components.module';
 
 @NgModule({
   imports: [

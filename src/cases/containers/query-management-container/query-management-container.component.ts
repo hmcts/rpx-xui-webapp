@@ -12,11 +12,9 @@ import {
   QueryListItem
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Store, select } from '@ngrx/store';
 import { Observable, combineLatest } from 'rxjs';
-import { first, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
-import * as fromRoot from '../../../app/store';
 import { caseMessagesMockData } from '../../mock/query-management.mock';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
 import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
@@ -36,7 +34,8 @@ export class QueryManagementContainerComponent implements OnInit {
   public caseId: string;
   public queryCreateContext: QueryCreateContext;
   public queryItem: QueryListItem | undefined;
-  public showSummary: boolean = false;
+  public showSummary = false;
+  public showConfirmation = false;
   public formGroup: FormGroup = new FormGroup({});
   public submitted = false;
   public errorMessages: ErrorMessage[] = [];
@@ -50,8 +49,7 @@ export class QueryManagementContainerComponent implements OnInit {
     private readonly router: Router,
     private readonly location: Location,
     private readonly caseNotifier: CaseNotifier,
-    private readonly featureToggleService: FeatureToggleService,
-    private readonly store: Store<fromRoot.State>
+    private readonly featureToggleService: FeatureToggleService
   ) {}
 
   public ngOnInit(): void {
@@ -63,7 +61,6 @@ export class QueryManagementContainerComponent implements OnInit {
     this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
 
     this.formGroup = new FormGroup({
-      name: new FormControl(null),
       subject: new FormControl(null),
       body: new FormControl(null, Validators.required),
       isHearingRelated: new FormControl(null),
@@ -78,12 +75,15 @@ export class QueryManagementContainerComponent implements OnInit {
       this.formGroup.get('subject')?.setValidators([Validators.required]);
       this.formGroup.get('isHearingRelated')?.setValidators([Validators.required]);
     }
-
-    this.setNameFromUserDetails();
   }
 
   public showResponseForm(): void {
     this.showSummary = false;
+  }
+
+  public showConfirmationPage(): void {
+    this.showSummary = false;
+    this.showConfirmation = true;
   }
 
   public submitForm(): void {
@@ -108,7 +108,6 @@ export class QueryManagementContainerComponent implements OnInit {
       this.submitted = true;
       this.validateForm();
       this.showSummary = this.errorMessages?.length === 0;
-
       // Reset hearing date if isHearingRelated
       if (!this.formGroup.get('isHearingRelated').value) {
         this.formGroup.get('hearingDate').setValue(null);
@@ -209,11 +208,6 @@ export class QueryManagementContainerComponent implements OnInit {
         htmlElement.focus();
       }
     }
-  }
-
-  private async setNameFromUserDetails(): Promise<void> {
-    const userDetails = await this.store.pipe(select(fromRoot.getUserDetails), first()).toPromise();
-    this.formGroup.get('name').setValue(userDetails.userInfo.name);
   }
 
   private getQueryCreateContext(): QueryCreateContext {

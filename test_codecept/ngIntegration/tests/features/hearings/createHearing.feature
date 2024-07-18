@@ -91,6 +91,13 @@ Feature: Create hearings workflow
             | Search for a location by name | cen,IA Court Center 1 |
         When I click continue in create hearing workflow
 
+        # Does this hearing need to be in Welsh?
+        Then I am on the create hearing page "Does this hearing need to be in Welsh?"
+        When In hearing page "Does this hearing need to be in Welsh?", I input values
+            | field                                  | value |
+            | Does this hearing need to be in Welsh? | No   |
+        When I click continue in create hearing workflow
+
 
         # Do you want a specific judge?
         Then I am on create hearing page "Do you want a specific judge?"
@@ -239,6 +246,12 @@ Feature: Create hearings workflow
             | Search for a location by name | cen,IA Court Center 1 |
         When I click continue in create hearing workflow
 
+        # Does this hearing need to be in Welsh?
+        Then I am on the create hearing page "Does this hearing need to be in Welsh?"
+        When In hearing page "Does this hearing need to be in Welsh?", I input values
+            | field                                  | value |
+            | Does this hearing need to be in Welsh? | No   |
+        When I click continue in create hearing workflow
 
         # Do you want a specific judge?
         Then I am on create hearing page "Do you want a specific judge?"

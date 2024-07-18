@@ -12,11 +12,9 @@ import {
   QueryListItem
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Store, select } from '@ngrx/store';
 import { Observable, combineLatest } from 'rxjs';
-import { first, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
-import * as fromRoot from '../../../app/store';
 import { caseMessagesMockData } from '../../mock/query-management.mock';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
 import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
@@ -51,8 +49,7 @@ export class QueryManagementContainerComponent implements OnInit {
     private readonly router: Router,
     private readonly location: Location,
     private readonly caseNotifier: CaseNotifier,
-    private readonly featureToggleService: FeatureToggleService,
-    private readonly store: Store<fromRoot.State>
+    private readonly featureToggleService: FeatureToggleService
   ) {}
 
   public ngOnInit(): void {

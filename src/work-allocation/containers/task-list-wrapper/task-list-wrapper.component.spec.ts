@@ -45,6 +45,7 @@ describe('TaskListWrapperComponent', () => {
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mockRpxTranslationService: jasmine.SpyObj<RpxTranslationService>;
   const mockFilterService: any = {
     getStream: () => of(null),

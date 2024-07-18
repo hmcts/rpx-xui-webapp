@@ -52,7 +52,6 @@ import { VenueAnswerConverter } from '../converters/venue.answer.converter';
 import { AnswerSource } from '../models/hearings.enum';
 import { LocationsDataService } from '../services/locations-data.service';
 import { State } from '../store';
-import { PanelMemberRolesAnswerConverter } from '../converters/panel-member-roles.answer.converter';
 
 @Pipe({
   name: 'transformAnswer'
@@ -183,9 +182,6 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.PANEL_ROLES:
         converter = new PanelRolesAnswerConverter(this.route);
-        break;
-      case AnswerSource.PANEL_MEMBER_ROLES:
-        converter = new PanelMemberRolesAnswerConverter(this.route);
         break;
       case AnswerSource.REASON_FOR_ACTUAL_CANCELLATION:
         converter = new ReasonForActualCancellationAnswerConverter(this.route);

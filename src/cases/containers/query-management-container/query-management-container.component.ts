@@ -29,7 +29,7 @@ import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.e
 })
 export class QueryManagementContainerComponent implements OnInit {
   private readonly LD_QUALIFYING_QUESTIONS = 'qm-qualifying-questions';
-  private readonly RAISE_A_QUERY_NAME = 'Raise another query relating to this case';
+  private readonly RAISE_A_QUERY_NAME = 'Raise a new query';
   public static readonly RAISE_A_QUERY_QUESTION_OPTION = 'raiseAQuery';
 
   private queryItemId: string;
@@ -134,12 +134,6 @@ export class QueryManagementContainerComponent implements OnInit {
     );
 
     this.formGroup.get('attachments').setValue(attachments);
-  }
-
-  public goToQueryList(): void {
-    this.router.navigate(['cases', 'case-details', this.caseId]).then(() => {
-      window.location.hash = 'Queries (read-only view)';
-    });
   }
 
   public previous(): void {
@@ -259,6 +253,12 @@ export class QueryManagementContainerComponent implements OnInit {
         }
         return qualifyingQuestions;
       })
+    );
+  }
+
+  public async goToQueryList(): Promise<void> {
+    await this.router.navigate(['cases', 'case-details', this.caseId],
+      { fragment: 'Queries (read-only view)' }
     );
   }
 

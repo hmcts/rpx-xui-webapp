@@ -61,13 +61,6 @@ function getCaseService(): CaseServiceConfig {
   };
 }
 
-// @Pipe({ name: 'paginate' })
-// class MockPaginatePipe implements PipeTransform {
-//   transform(value: string): string {
-//     return value;
-//   }
-// }
-
 describe('WorkCaseListComponent', () => {
   let component: WorkCaseListComponent;
   let wrapper: WrapperComponent;

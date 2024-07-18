@@ -72,20 +72,6 @@ function getTaskService(): TaskServiceConfig {
   };
 }
 
-// @Pipe({ name: 'rpxTranslate' })
-// class MockRpxTranslatePipe implements PipeTransform {
-//   transform(value: string): string {
-//     return value;
-//   }
-// }
-
-// @Pipe({ name: 'paginate' })
-// class MockPaginatePipe implements PipeTransform {
-//   transform(value: string): string {
-//     return value;
-//   }
-// }
-
 describe('TaskListComponent', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;

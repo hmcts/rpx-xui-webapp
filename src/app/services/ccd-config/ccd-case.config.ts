@@ -283,4 +283,8 @@ export class AppConfig extends AbstractAppConfig {
   public getIcpJurisdictions(): string[] {
     return this.config.icp_jurisdictions;
   }
+
+  public getEventsToHide(): string[] {
+    return ['events_to_hide'];
+  }
 }

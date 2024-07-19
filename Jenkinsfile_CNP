@@ -196,9 +196,11 @@ withPipeline(type, product, component) {
             reportName           : 'AAT NG Integration Test'
         ])
     }
+
+  // only for checking Pact Stage on pipeline - do not check in .
+  onPR() {
+    enablePactAs([AppPipelineDsl.PactRoles.CONSUMER, AppPipelineDsl.PactRoles.PROVIDER])
+  }
+
 }
 
-// only for checking Pact Stage on pipeline - do not check in .
-onPR() {
-  enablePactAs([AppPipelineDsl.PactRoles.CONSUMER, AppPipelineDsl.PactRoles.PROVIDER])
-}

@@ -199,8 +199,6 @@ withPipeline(type, product, component) {
 
   // only for checking Pact Stage on pipeline - do not check in .
   onPR() {
-    enablePactAs([AppPipelineDsl.PactRoles.CONSUMER, AppPipelineDsl.PactRoles.PROVIDER])
+    enablePactAs([AppPipelineDsl.PactRoles.CONSUMER])
   }
-
 }
-

@@ -25,18 +25,13 @@ export class NocValidators {
         return null;
       }
       const value = control.value.toString();
-
-      const regEx = new RegExp(
-        /^([A-Za-z]{1,2}[0-9][A-Za-z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA) ?/.source //eg SE17 & special postcodes
-       + /[0-9][A-Za-z]{2}|BFPO ?/.source //british forces postal overseas
-       + /[0-9]{1,4}/.source // additional post code
-       + /|(KY[0-9]|MSR|VG|AI)[ -]/.source // co
-       + /|[A-Za-z]{2} ?[0-9]{2}/.source // number
-       + /|GE ?CX/.source // others
-       + /|GIR ?0A{2}/.source // others
-       + /|SAN ?TA1$/.source // more postcode
-      ).test(value);
-      const isValid = value.length < REGEX_DOS_FIX_LIMIT && regEx;
+      const regEx1 = new RegExp(
+        /^(([A-Za-z]{1,2}\d[A-Za-z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA)) ?/.source //eg SE17 & special postcodes
+        + /\d[A-Za-z]{2}|BFPO ?\d{1,4}|(KY\d|MSR|VG|AI)[ -]?/.source //british forces postal overseas
+        + /\d{4}|[A-Za-z]{2} ?\d{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1/.source // more postcode
+        + /$/.source
+      );
+      const isValid = value.length < REGEX_DOS_FIX_LIMIT && regEx1.test(value);
       return isValid ? null : { postcode: true };
     };
   }

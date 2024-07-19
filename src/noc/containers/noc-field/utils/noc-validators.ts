@@ -27,7 +27,9 @@ export class NocValidators {
       const value = control.value.toString();
       const regEx1 = new RegExp(
         /^(([A-Za-z]{1,2}\d[A-Za-z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA)) ?/.source //eg SE17 & special postcodes
-        + /\d[A-Za-z]{2}|BFPO ?\d{1,4}|(KY\d|MSR|VG|AI)[ -]?/.source //british forces postal overseas
+        + /\d[A-Za-z]{2}|BFPO ?/.source
+        + /\d{1,4}|(KY\d|MSR|VG|AI)[ -]?/.source //british forces postal overseas
+        + /\d[A-Za-z]{2}|BFPO ?\d{1,4}|(KY\d|MSR|VG|AI)[ -]?/
         + /\d{4}|[A-Za-z]{2} ?\d{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1/.source // more postcode
         + /$/.source
       );
@@ -41,9 +43,11 @@ export class NocValidators {
       if (this.isEmpty(control.value)) {
         return null;
       }
-      // /^(?:(?:\(?(?:0(?:0|11)\)?[\s-]?\(?|\+)44\)?[\s-]?(?:\(?0\)?[\s-]?)?)|(?:\(?0))(?:(?:\d{5}\)?[\s-]?\d{4,5})|(?:\d{4}\)?[\s-]?(?:\d{5}|\d{3}[\s-]?\d{3}))/.source //
-      // + /|(?:\d{3}\)?[\s-]?\d{3}[\s-]?\d{3,4})|(?:\d{2}\)?[\s-]?\d{4}[\s-]?\d{4}))(?:[\s-]?(?:x|ext\.?|#)\d{3,4})?$/.source //
       const value = control.value.toString();
+      // /^(?:(?:\(?(?:0(?:0|11)\)?[\s-]?\(?|\+)44\)?[\s-]?(?:\(?0\)?[\s-]?)?)|(?:\(?0))(?:(?:\d{5}\)?[\s-]?\d{4,5})|(?:\d{4}\)?[\s-]?(?:\d{5}|\d{3}[\s-]?\d{3}))|(?:\d{3}\)?[\s-]?\d{3}[\s-]?\d{3,4})|(?:\d{2}\)?[\s-]?\d{4}[\s-]?\d{4}))(?:[\s-]?(?:x|ext\.?|#)\d{3,4})?$/
+      // /^(?:(?:\(?(?:0(?:0|11)\)?[\s-]?\(?|\+)44\)?[\s-]?(?:\(?0\)?[\s-]?)?)|(?:\(?0))(?:(?:\d{5}\)?[\s-]?\d{4,5})|(?:\d{4}\)?))/.source //
+      // + /[\s-]?(?:\d{5}|\d{3}[\s-]?\d{3}))|(?:\d{3}\)?[\s-]?\d{3}[\s-]?\d{3,4})|(?:\d{2}\)?[\s-]?\d{4}[\s-]?\d{4}/.source //
+      // + /(?:[\s-]?(?:x|ext\.?|#)\d{3,4})?$)/.source
       const regEx = new RegExp(/^[0-9]+(\.?[0-9]+)?$/).test(value);
       const isValid = value.length < REGEX_DOS_FIX_LIMIT && regEx;
       return isValid ? null : { phoneUK: true };

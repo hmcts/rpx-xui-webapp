@@ -92,7 +92,7 @@ Feature: Create hearings workflow
         When I click continue in create hearing workflow
 
         # Does this hearing need to be in Welsh?
-        Then I am on the create hearing page "Does this hearing need to be in Welsh?"
+        Then I am on create hearing page "Does this hearing need to be in Welsh?"
         When In hearing page "Does this hearing need to be in Welsh?", I input values
             | field                                  | value |
             | Does this hearing need to be in Welsh? | No   |
@@ -247,7 +247,7 @@ Feature: Create hearings workflow
         When I click continue in create hearing workflow
 
         # Does this hearing need to be in Welsh?
-        Then I am on the create hearing page "Does this hearing need to be in Welsh?"
+        Then I am on create hearing page "Does this hearing need to be in Welsh?"
         When In hearing page "Does this hearing need to be in Welsh?", I input values
             | field                                  | value |
             | Does this hearing need to be in Welsh? | No   |
@@ -398,7 +398,7 @@ Feature: Create hearings workflow
         When I click continue in create hearing workflow
 
         # Does this hearing need to be in Welsh?
-        Then I am on the create hearing page "Does this hearing need to be in Welsh?"
+        Then I am on create hearing page "Does this hearing need to be in Welsh?"
         When In hearing page "Does this hearing need to be in Welsh?", I input values
             | field                                  | value |
             | Does this hearing need to be in Welsh? | No   |

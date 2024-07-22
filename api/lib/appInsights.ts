@@ -2,6 +2,7 @@ import * as applicationinsights from 'applicationinsights';
 import * as express from 'express';
 import { getConfigValue, showFeature } from '../configuration/';
 import {
+  APP_INSIGHTS_CONNECTION_STRING,
   APP_INSIGHTS_KEY, FEATURE_APP_INSIGHTS_ENABLED
 } from '../configuration/references';
 
@@ -9,7 +10,7 @@ export let client: applicationinsights.TelemetryClient;
 
 if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
   applicationinsights
-    .setup(getConfigValue(APP_INSIGHTS_KEY))
+    .setup(getConfigValue(APP_INSIGHTS_CONNECTION_STRING))
     .setAutoDependencyCorrelation(true)
     .setAutoCollectRequests(true)
     .setAutoCollectPerformance(true)

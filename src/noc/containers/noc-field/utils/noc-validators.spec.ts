@@ -1,7 +1,7 @@
 import { FormControl } from '@angular/forms';
 import { NocValidators } from './noc-validators';
 
-fdescribe('NocValidators', () => {
+describe('NocValidators', () => {
   let control: FormControl;
 
   beforeEach(() => {

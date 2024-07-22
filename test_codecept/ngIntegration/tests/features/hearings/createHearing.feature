@@ -532,6 +532,9 @@ Feature: Create hearings workflow
 
         # What are the hearing venue details?
         Then I am on create hearing page "What are the hearing venue details?"
+        When In create hearing page "What are the hearing venue details?", I input values
+            | field                         | value                     |
+            | Search for a location by name | Wal,IA Court Center Wales |
         When I click continue in create hearing workflow
 
 

@@ -147,10 +147,10 @@ Feature: Hearings CR84: Manual update labels
         # Hearing venue start
         When In view or edit hearing page, I click change link for field "What are the hearing venue details"
         Then I am on hearings workflow page "What are the hearing venue details?"
-      Then debug sleep minutes 5
+    
         When In hearing page "What are the hearing venue details?", I input values
             | field                         | value                 |
-            | Search for a location by name | cen,IA Court Center Wales |
+            | Search for a location by name | cen,IA Court Center 2 |
 
 
         When I click continue in hearing workflow

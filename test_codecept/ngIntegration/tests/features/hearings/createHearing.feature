@@ -246,13 +246,6 @@ Feature: Create hearings workflow
             | Search for a location by name | cen,IA Court Center 1 |
         When I click continue in create hearing workflow
 
-        # Does this hearing need to be in Welsh?
-        Then I am on create hearing page "Does this hearing need to be in Welsh?"
-        When In hearing page "Does this hearing need to be in Welsh?", I input values
-            | field                                  | value |
-            | Does this hearing need to be in Welsh? | No   |
-        When I click continue in create hearing workflow
-
         # Do you want a specific judge?
         Then I am on create hearing page "Do you want a specific judge?"
         When In create hearing page "Do you want a specific judge?", I input values
@@ -395,13 +388,6 @@ Feature: Create hearings workflow
         When In create hearing page "What are the hearing venue details?", I input values
             | field                         | value                 |
             | Search for a location by name | cen,IA Court Center 1 |
-        When I click continue in create hearing workflow
-
-        # Does this hearing need to be in Welsh?
-        Then I am on create hearing page "Does this hearing need to be in Welsh?"
-        When In hearing page "Does this hearing need to be in Welsh?", I input values
-            | field                                  | value |
-            | Does this hearing need to be in Welsh? | No   |
         When I click continue in create hearing workflow
 
 
@@ -575,7 +561,6 @@ Feature: Create hearings workflow
         #     | Exclude specific panel members | jud,auto_test_judge_2@justice.gov.uk |
 
         # When I click continue in create hearing workflow
-
 
         # What are the hearing venue details?
         Then I am on create hearing page "Length, date and priority level of hearing"

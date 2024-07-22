@@ -49,7 +49,7 @@ export class NocValidators {
         /(?:(?:\(?(?:0(?:0|11)\)?[\s-]?\(?|\+)44\)?))/.source
       + /(([\s-]?(?:\(?0\)?[\s-]?)?)|(?:\(?0))/.source // telephone
       + /(?:(?:\d{5}\)?[\s-]?\d{4,5})|(?:\d{4}\)))/.source
-      + /[\s-]?(?:\d{5}|\d{3}[\s-]?\d{3})|/.source // optionals
+      + /[\s-]?(?:\d{5}|\d{3}[\s-]?\d{3})/.source // optionals
       + /(?:[\s-]?(?:x|ext\.?)\d{3,4})?$/.source
       );
       const isValid = value.length < REGEX_DOS_FIX_LIMIT && regEx.test(value);

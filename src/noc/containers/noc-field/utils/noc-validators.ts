@@ -14,7 +14,7 @@ export class NocValidators {
         return null;
       }
       const value = control.value.toString();
-      const isValid = value.length < REGEX_DOS_FIX_LIMIT && /^\d+(\.\d+)?$/.test(value);
+      const isValid = value.length < REGEX_DOS_FIX_LIMIT && /^\d\{1,100}(\.\d\{1,100})?$/.test(value);
       return isValid ? null : { number: true };
     };
   }

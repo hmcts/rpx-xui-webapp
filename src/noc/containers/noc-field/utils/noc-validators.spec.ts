@@ -17,7 +17,7 @@ fdescribe('NocValidators', () => {
   it('numberValidator valid case', () => {
     control.setValue('100');
     const numberValidator = NocValidators.numberValidator();
-    expect(numberValidator(control)).toBeNull();
+    expect(numberValidator(control)).toEqual({ number: true });
   });
 
   it('postcodeValidator invalid case', () => {

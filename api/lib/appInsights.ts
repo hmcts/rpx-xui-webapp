@@ -3,7 +3,7 @@ import * as express from 'express';
 import { getConfigValue, showFeature } from '../configuration/';
 import {
   APP_INSIGHTS_CONNECTION_STRING,
-  APP_INSIGHTS_KEY, FEATURE_APP_INSIGHTS_ENABLED
+  FEATURE_APP_INSIGHTS_ENABLED
 } from '../configuration/references';
 
 export let client: applicationinsights.TelemetryClient;

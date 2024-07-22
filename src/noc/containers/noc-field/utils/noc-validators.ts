@@ -45,7 +45,12 @@ export class NocValidators {
         return null;
       }
       const value = control.value.toString();
-      const regEx = new RegExp(/^(\+44|0)\d{9,10}$/);
+      const regEx = new RegExp(
+        /^(?:(?:\(?(?:0(?:0|11)\)?[\s-]?\(?|\+)44\)?[\s-]?(?:\(?0\)?[\s-]?)?)|(?:\(?0))/.source // telephone
+      + /(?:(?:\d{5}\)?[\s-]?\d{4,5})|(?:\d{4}\)?[\s-]?(?:\d{5}|\d{3}[\s-]?\d{3})))|/.source // optionals
+      + /(?:\d{3}\)?[\s-]?\d{3}[\s-]?\d{3,4})|(?:\d{2}\)?[\s-]?\d{4}[\s-]?\d{4})/.source
+      + /(?:[\s-]?(?:x|ext\.?)\d{3,4})?$/.source
+      );
       const isValid = value.length < REGEX_DOS_FIX_LIMIT && regEx.test(value);
       return isValid ? null : { phoneUK: true };
     };

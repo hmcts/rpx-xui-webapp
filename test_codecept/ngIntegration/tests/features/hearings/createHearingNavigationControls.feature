@@ -1,5 +1,5 @@
 
-@ng @functional_enabled
+@ng @functional_enabled @functional_debug
 Feature: Create hearings workflow navigation controls
 
     Background: create hearing
@@ -126,7 +126,7 @@ Feature: Create hearings workflow navigation controls
         # Then I am on create hearing page "Do you require a panel for this hearing?"
 
         When In create hearing work flow, I click back link
-        Then I am on create hearing page "What are the hearing venue details?"
+        Then I am on create hearing page "Do you want a specific judge?"
 
         When In create hearing work flow, I click back link
         Then I am on create hearing page "What are the hearing venue details?"
@@ -159,4 +159,3 @@ Feature: Create hearings workflow navigation controls
         Then I am on create hearing page "Length, date and priority level of hearing"
         # When In create hearing work flow, I click back link
         # Then I am on create hearing page "Do you require a panel for this hearing?"
-

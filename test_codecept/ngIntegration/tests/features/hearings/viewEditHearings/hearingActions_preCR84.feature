@@ -177,8 +177,6 @@ Feature: Hearings CR84 OFF: View or edit action
         # Language requirements end
 
 
-
-
         # Judge details start
         When In view or edit hearing page, I click change link for field "Do you want a specific judge?"
         Then I am on hearings workflow page "Do you want a specific judge?"

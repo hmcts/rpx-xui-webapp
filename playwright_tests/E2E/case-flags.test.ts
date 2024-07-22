@@ -62,7 +62,6 @@ test('View case flag', async ({ page }) => {
   await checkTableCellContent(page, tableName, 4, 1, "Test auto comment");
   await checkTableCellContent(page, tableName, 4, 2, "05 Feb 2024");
   await checkTableCellContent(page, tableName, 4, 4, "REQUESTED");
-  
 });
 
 async function loginExUIWithCaseFlag(page) {

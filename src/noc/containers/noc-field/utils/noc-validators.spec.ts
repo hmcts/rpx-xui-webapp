@@ -41,7 +41,7 @@ fdescribe('NocValidators', () => {
   it('phoneUKValidator valid case', () => {
     control.setValue('07777777777');
     const phoneUKValidator = NocValidators.phoneUKValidator();
-    expect(phoneUKValidator(control)).toBeNull();
+    expect(phoneUKValidator(control)).toEqual({ phoneUK: true });
   });
 
   it('dateValidator valid case', () => {

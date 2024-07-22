@@ -89,9 +89,11 @@ export class MonitoringService implements IMonitoringService {
     } else {
       // will only get run once per login
       this.http.get('/api/monitoring-tools').subscribe((monitor) => {
+        // eslint-disable-next-line dot-notation
+        const connStr = monitor['connectionString'];
+        console.log('Setting appInsights connection string to ' + connStr);
         this.config = {
-          // eslint-disable-next-line dot-notation
-          connectionString: monitor['connectionString']
+          connectionString: connStr
         };
         if (!this.areCookiesEnabled) {
           this.config = {

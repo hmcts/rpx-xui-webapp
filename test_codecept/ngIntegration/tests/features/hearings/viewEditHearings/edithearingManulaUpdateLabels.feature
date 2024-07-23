@@ -150,7 +150,7 @@ Feature: Hearings CR84: Manual update labels
     
         When In hearing page "What are the hearing venue details?", I input values
             | field                         | value                 |
-            | Search for a location by name | Wal,IA Court Center Wales |
+            | Search for a location by name | Wal,IA Court Center 1 |
 
 
         When I click continue in hearing workflow
@@ -166,10 +166,9 @@ Feature: Hearings CR84: Manual update labels
             | Linked hearings         |         |
             | Additional instructions |         |
 
-#      Then debug sleep minutes 1
         Then I validate fields displayed in view or edit hearing page
             | field                              | value             | changeLinkDisplay | amendedFlagDisplay |
-            | What are the hearing venue details | IA Court Center Wales | true              | AMENDED            |
+            | What are the hearing venue details | IA Court Center 1 | true              | AMENDED            |
 
         # Hearing venue end
 

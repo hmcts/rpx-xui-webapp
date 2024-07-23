@@ -59,7 +59,7 @@ withPipeline(type, product, component) {
     syncBranchesWithMaster(branchesToSync)
 
     enablePactAs([
-      enablePactAs([AppPipelineDsl.PactRoles.CONSUMER, AppPipelineDsl.PactRoles.PROVIDER])
+        AppPipelineDsl.PactRoles.CONSUMER
     ])
 
     afterSuccess('build') {
@@ -196,10 +196,4 @@ withPipeline(type, product, component) {
             reportName           : 'AAT NG Integration Test'
         ])
     }
-
-  // only for checking Pact Stage on pipeline - do not check in .
-  // Uncomment if you want to run Pact on PR builds.
-  onPR() {
-    enablePactAs([AppPipelineDsl.PactRoles.CONSUMER])
-  }
 }

@@ -150,7 +150,7 @@ Feature: Hearings CR84: Manual update labels
     
         When In hearing page "What are the hearing venue details?", I input values
             | field                         | value                 |
-            | Search for a location by name | Wal,IA Court Center 1 |
+            | Search for a location by name | cen,IA Court Center 1 |
 
 
         When I click continue in hearing workflow

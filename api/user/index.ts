@@ -26,7 +26,7 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
     const sessionTimeouts = getConfigValue(SESSION_TIMEOUTS) as RoleGroupSessionTimeout[];
     const sessionTimeout = getUserSessionTimeout(roles, sessionTimeouts);
     const roleAssignmentInfo = await getUserRoleAssignments(req.session.passport.user.userinfo, req);
-    const userInfo = { ...req.session.passport.user.userinfo, token: `Bearer ${req.session.passport.user.tokenset.accessToken}` };
+    const userInfo = validateUserInfo({ ...req.session.passport.user.userinfo, token: `Bearer ${req.session.passport.user.tokenset.accessToken}` });
     const syntheticRoles = getSyntheticRoles(roleAssignmentInfo);
     const allRoles = [...new Set([...userInfo.roles, ...syntheticRoles])];
     userInfo.roles = allRoles;
@@ -126,4 +126,31 @@ export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<a
     req.session.roleAssignmentResponse && !refreshRoleAssignments ? getRoleAssignmentInfo(req.session.roleAssignmentResponse)
       : await refreshRoleAssignmentForUser(userInfo, req);
   return roleAssignmentInfo;
+}
+
+const allowedChars = /^[a-zA-Z0-9.@-]*$/;
+const allowedRolesOrID = /^[a-zA-Z0-9-]*$/;
+const allowTokenRegex = /^Bearer [a-zA-Z0-9_.-]*$/;
+
+export function validateUserInfo(userInfo) {
+  ['forename', 'surname', 'email', 'roleCategory'].forEach((key) => {
+    if (userInfo[key] && !allowedChars.test(userInfo[key])) {
+      throw new Error(`Invalid character in ${key}`);
+    }
+  });
+  if (!allowedRolesOrID.test(userInfo.id)) {
+    throw new Error('Invalid id');
+  }
+  userInfo.roles.map((role) => {
+    if (!allowedRolesOrID.test(role)) {
+      throw new Error('Invalid role');
+    }
+  });
+  if (typeof userInfo.active !== 'boolean') {
+    throw new Error('Invalid active state');
+  }
+  if (!allowTokenRegex.test(userInfo?.token)) {
+    throw new Error('Invalid token');
+  }
+  return userInfo;
 }

@@ -1,11 +1,8 @@
 import { NextFunction, Response } from 'express';
-import { getConfigValue } from '../configuration';
-import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
 import { CourtVenue, Location } from './interfaces/location';
-import { getServiceRefDataMappingList } from '../ref-data/ref-data-utils';
 import { commonGetFullLocation, getRegionLocationsForServices, handleLocationGet } from './locationService';
-import { prepareGetLocationByIdUrl, prepareGetLocationsUrl } from './util';
+import { prepareGetLocationByIdUrl } from './util';
 
 export const baseUrl: string = 'http://localhost:8080';
 

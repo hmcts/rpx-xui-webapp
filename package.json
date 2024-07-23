@@ -61,7 +61,7 @@
     "test:functional": "npm-run-all -p -l -n -c test:playwrightE2E",
     "test:functional:backup": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",
     "test:functional:local": "yarn test:ngIntegration && webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/functional.conf.js --local",
-    "test:functionalApiE2e": "yarn run test:api && yarn run test:codeceptE2E",
+    "test:functionalApiE2e": "yarn run test:api && yarn run test:codeceptE2E test:codeceptE2E",
     "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
     "test:ng": "ng test",
     "test:ng:watch": "ng test --watch=true",

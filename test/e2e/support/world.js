@@ -48,7 +48,6 @@ class World {
     this.config.fr_judge_password = global.browser.params.fr_judge_password;
     this.config.sscs_username = global.browser.params.sscs_username;
     this.config.sscs_password = global.browser.params.sscs_password;
-    this.setDefaultTimeout(180 * 1000);
   }
 
   getSelector(field) {

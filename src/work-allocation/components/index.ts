@@ -4,6 +4,8 @@ import { CaseNameFieldComponent } from './case-name-field/case-name-field.compon
 import { CaseReferenceFieldComponent } from './case-reference-field/case-reference-field.component';
 import { DerivedIconFieldComponent } from './derived-icon-field/derived-icon-field.component';
 import { ImageFieldComponent } from './image-field/image-field.component';
+import { MyCasesFilterComponent } from './my-cases-filter/my-cases-filter.component';
+import { PriorityFieldComponent } from './priority-field/priority-field.component';
 import { TaskFieldComponent } from './task-field/task-field.component';
 import { TaskListFilterComponent } from './task-list-filter/task-list-filter.component';
 import { TaskManagerFilterComponent } from './task-manager-filter/task-manager-filter.component';
@@ -18,6 +20,8 @@ export const components: any[] = [
   CaseReferenceFieldComponent,
   DerivedIconFieldComponent,
   ImageFieldComponent,
+  MyCasesFilterComponent,
+  PriorityFieldComponent,
   TaskFieldComponent,
   TaskListFilterComponent,
   TaskManagerFilterComponent,
@@ -31,6 +35,8 @@ export * from './case-name-field/case-name-field.component';
 export * from './case-reference-field/case-reference-field.component';
 export * from './derived-icon-field/derived-icon-field.component';
 export * from './image-field/image-field.component';
+export * from './my-cases-filter/my-cases-filter.component';
+export * from './priority-field/priority-field.component';
 export * from './task-field/task-field.component';
 export * from './task-list-filter/task-list-filter.component';
 export * from './task-manager-filter/task-manager-filter.component';

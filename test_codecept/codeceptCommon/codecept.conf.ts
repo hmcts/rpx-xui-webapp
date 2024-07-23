@@ -45,6 +45,7 @@ if (testType === 'e2e' || testType === 'smoke'){
 } else{
   throw new Error(`Unrecognized test type ${testType}`);
 }
+console.log('features: ', features);
 
 
 const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`)

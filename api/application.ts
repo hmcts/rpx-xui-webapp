@@ -44,7 +44,8 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         'https://*.google-analytics.com',
         'https://*.googletagmanager.com',
         'https://*.analytics.google.com',
-        '*.hmcts.net'
+        '*.hmcts.net',
+        'wss://*.webpubsub.azure.com'
       ],
       defaultSrc: ['\'self\''],
       fontSrc: ['\'self\'', 'https://fonts.gstatic.com', 'data:'],

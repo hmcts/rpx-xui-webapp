@@ -13,7 +13,6 @@ import { HearingRequestMainModel } from '../../../models/hearingRequestMain.mode
 import { ACTION, CaseFlagType, Mode } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
-import { PartyFlagsDisplayModel } from '../../../models/partyFlags.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
@@ -83,15 +82,21 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
    * Initializes hearing request from hearing values
    */
   public initializeHearingRequestFromHearingValues(): void {
+    // Get hearing window from hearingRequestMainModel
+    let hearingWindow = HearingsUtils.getHearingWindow(this.hearingRequestMainModel);
+    // Get hearing window from serviceHearingValuesModel if null
+    if (!hearingWindow && this.serviceHearingValuesModel.hearingWindow) {
+      hearingWindow = this.serviceHearingValuesModel.hearingWindow;
+    }
     const combinedParties: PartyDetailsModel[] = this.combinePartiesWithIndOrOrg(this.serviceHearingValuesModel.parties);
+
     const hearingRequestMainModel: HearingRequestMainModel = {
       hearingDetails: {
         duration: this.serviceHearingValuesModel.duration,
         hearingType: this.serviceHearingValuesModel.hearingType,
         hearingLocations: this.serviceHearingValuesModel.hearingLocations,
         hearingIsLinkedFlag: this.serviceHearingValuesModel.hearingIsLinkedFlag,
-        hearingWindow: HearingsUtils.getHearingWindow(this.hearingsService.propertiesUpdatedOnPageVisit,
-          this.hearingCondition, this.hearingRequestMainModel),
+        hearingWindow: hearingWindow,
         privateHearingRequiredFlag: this.serviceHearingValuesModel.privateHearingRequiredFlag,
         panelRequirements: this.serviceHearingValuesModel.panelRequirements,
         autolistFlag: this.serviceHearingValuesModel.autoListFlag,
@@ -124,6 +129,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       },
       partyDetails: combinedParties
     };
+
     this.hearingStore.dispatch(new fromHearingStore.InitializeHearingRequest(hearingRequestMainModel));
   }
 
@@ -138,27 +144,16 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   public combinePartiesWithIndOrOrg(partyDetails: PartyDetailsModel[]): PartyDetailsModel[] {
     const combinedPartyDetails: PartyDetailsModel[] = [];
+
     partyDetails.forEach((partyDetail) => {
       const organisationDetails = partyDetail.organisationDetails;
       const party: PartyDetailsModel = {
         ...partyDetail,
-        individualDetails: {
-          ...partyDetail.individualDetails,
-          reasonableAdjustments: this.getAllPartyFlagsByPartyId(partyDetail.partyID)
-            .filter((flagId) => flagId !== CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID)
-        },
         ...organisationDetails && ({ organisationDetails })
       };
       combinedPartyDetails.push(party);
     });
     return combinedPartyDetails;
-  }
-
-  public getAllPartyFlagsByPartyId(partyID: string): string[] {
-    const allRAFs: PartyFlagsDisplayModel[] = this.reasonableAdjustmentFlags.reduce((previousValue, currentValue) =>
-      [...previousValue, ...currentValue.partyFlags], []
-    );
-    return allRAFs.filter((flag) => flag.partyId === partyID).map((filterFlag) => filterFlag.flagId);
   }
 
   public initializeHearingCondition(): void {

@@ -1,10 +1,10 @@
 
-@fullfunctional @functional_enabled  @functional_debug
+@fullfunctional @functional_enabled @functional_debug
 Feature: Support request Add/Update Reasonable adjustment
 
     Background: Setup case
         When I navigate to Expert UI Url
-        Given I am logged into Expert UI with with case flags
+        Given I am logged into Expert UI with case flags
         When I setup a case for case flags version "V1"
             | party                       | fieldName    | value      |
             | Flags for legal rep Party 1 | Role On Case | Party 1    |
@@ -81,7 +81,7 @@ Feature: Support request Add/Update Reasonable adjustment
         When In create support request workflow, I click submit
 
 
-        When I start case next step "Manage support"
+        When I start case next step "Manage support", to see page with css seclector "ccd-manage-case-flags"
         Then I am on manage support request page "Which support is no longer needed?"
         Then In create support request page "Which support is no longer needed?", I validate fields displayed
             | field                              |

@@ -169,7 +169,7 @@ Feature: Hearings CR84: Manual update labels
 #      Then debug sleep minutes 1
         Then I validate fields displayed in view or edit hearing page
             | field                              | value             | changeLinkDisplay | amendedFlagDisplay |
-            | What are the hearing venue details | IA Court Center 2 | true              | AMENDED            |
+            | What are the hearing venue details | IA Court Center Wales | true              | AMENDED            |
 
         # Hearing venue end
 

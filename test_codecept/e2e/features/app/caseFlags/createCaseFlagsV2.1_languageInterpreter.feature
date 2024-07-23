@@ -1,21 +1,22 @@
-@fullfunctional @functional_enabled @ignore
+@fullfunctional @disabled
 Feature: Case flags V2.1 Add/Update Language interpreter
 
     Background: Setup case
         When I navigate to Expert UI Url
-        Given I am logged into Expert UI with with case flags
+        Given I am logged into Expert UI with case flags
         When I setup a case for case flags version "V2.1"
             | party                       | fieldName  | value      |
             | Flags for legal rep Party 1 | Role On Case  | Party 1    |
             | Flags for legal rep Party 1 | Party Name | Applicant  |
             | Flags for legal rep Party 2 | Role On Case  | Party 2    |
             | Flags for legal rep Party 2 | Party Name | Respondent |
-        Then I see case details page
+
+      Then I see case details page
 
     Scenario: Create case flag
         When I click tab with label "Case flags" in case details page, to see element with css selector "ccd-read-case-flag-field"
 
-        When I start case next step "Create case flag"
+        When I start case next step "Create case flag", to see page with css seclector "ccd-case-edit-page"
         Then I am on create case flags page "Where should this flag be added?"
         Then In create case flag page "Where should this flag be added?", I validate fields displayed
             | field                            |
@@ -45,9 +46,8 @@ Feature: Case flags V2.1 Add/Update Language interpreter
 
         When In create case flag page "Language Interpreter", I input values
             | field                | value       |
-            | Language Interpreter | eng,Bengali |
-        # | Enter the language manually | true|
-        # | Enter the language | Test language |
+            | Enter the language manually | true|
+            | Enter the language | Klingon |
 
         When In create case flag workflow, I click Next
 
@@ -80,7 +80,7 @@ Feature: Case flags V2.1 Add/Update Language interpreter
         Then In create case flag workflow, I validate Review details displayed
             | field       | value                          | isChangeLinkDisplayed |
             | Add flag to | Applicant                      | true                  |
-            | Flag type   | Language Interpreter - Bengali | true                  |
+            | Flag type   | Language Interpreter - Klingon | true                  |
             | Comments    | Test auto comment              | true                  |
             | Status      | Active                         | true                 |
 
@@ -96,7 +96,7 @@ Feature: Case flags V2.1 Add/Update Language interpreter
             | Language Interpreter | Test auto comment | today         |          | ACTIVE    |
 
 
-        When I start case next step "Manage case flags"
+        When I start case next step "Manage case flags", to see page with css seclector "ccd-manage-case-flags"
         Then I am on manage case flags page "Manage case flags"
         Then In create case flag page "Manage case flags", I validate fields displayed
             | field             |
@@ -104,22 +104,22 @@ Feature: Case flags V2.1 Add/Update Language interpreter
 
         When In manage case flag page "Manage case flags", I input values
             | field            | value                                     |
-            | Manage case flag | Applicant - Language Interpreter, Bengali |
+            | Manage case flag | Applicant - Language Interpreter, Klingon |
 
         When In manage case flag workflow, I click Next
 
-        Then I am on manage case update flag page "Update flag \"Language Interpreter, Bengali\""
+        Then I am on manage case update flag page "Update flag \"Language Interpreter, Klingon\""
 
-        Then In manage case flag page "Update flag \"Language Interpreter, Bengali\"", I validate fields displayed
+        Then In manage case flag page "Update flag \"Language Interpreter, Klingon\"", I validate fields displayed
             | field       |
-            | Update flag "Language Interpreter, Bengali" comments |
-            | Update flag "Language Interpreter, Bengali" status |
+            | Update flag "Language Interpreter, Klingon" comments |
+            | Update flag "Language Interpreter, Klingon" status |
             | I need to add a translation |
 
-        When In manage case flag page "Update flag \"Language Interpreter, Bengali\"", I input values
+        When In manage case flag page "Update flag \"Language Interpreter, Klingon\"", I input values
             | field                                                | value             |
-            | Update flag "Language Interpreter, Bengali" comments | Test auto comment |
-            | Update flag "Language Interpreter, Bengali" status | Inactive |
+            | Update flag "Language Interpreter, Klingon" comments | Test auto comment |
+            | Update flag "Language Interpreter, Klingon" status | Inactive |
             | Describe reason for status change |Test auto reason|
 
 
@@ -130,7 +130,7 @@ Feature: Case flags V2.1 Add/Update Language interpreter
         Then In manage case flag workflow, I validate Review details displayed
             | field           | value                          | isChangeLinkDisplayed |
             | Update flag for | Applicant                      | true                  |
-            | Flag type       | Language Interpreter - Bengali | true                  |
+            | Flag type       | Language Interpreter - Klingon | true                  |
             | Comments        | Test auto comment              | true                  |
             | Status          | Inactive                       | true                 |
 

@@ -7,11 +7,14 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { HearingActualsSummaryBaseComponent } from '../hearing-actuals-summary-base/hearing-actuals-summary-base.component';
+import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
+import { SessionStorageService } from 'src/app/services';
 
 @Component({
   selector: 'exui-hearing-actuals-add-edit-summary',
   templateUrl: './hearing-actuals-add-edit-summary.component.html',
-  styleUrls: ['./hearing-actuals-add-edit-summary.component.scss']
+  styleUrls: ['./hearing-actuals-add-edit-summary.component.scss'],
+  providers: [DatePipe]
 })
 export class HearingActualsAddEditSummaryComponent extends HearingActualsSummaryBaseComponent {
   public successBanner = false;
@@ -19,9 +22,11 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   constructor(public readonly hearingStore: Store<fromHearingStore.State>,
     public readonly hearingsService: HearingsService,
     public readonly route: ActivatedRoute,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly ccdDatePipe: DatePipe,
+    public readonly sessionStorageService: SessionStorageService
   ) {
-    super(hearingStore, hearingsService, route, router);
+    super(hearingStore, hearingsService, route, router, ccdDatePipe);
     this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
   }
 
@@ -105,5 +110,16 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
 
   public hearingIsInFuture(comparisonDateString: string): boolean {
     return (new Date(comparisonDateString) > new Date());
+  }
+
+  public onBack(): void {
+    const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
+    if (caseInfoStr) {
+      const caseInfo = JSON.parse(caseInfoStr);
+      const caseId = caseInfo.cid;
+      this.router.navigate(['/', 'cases', 'case-details', caseId, 'hearings']);
+    } else {
+      window.history.back();
+    }
   }
 }

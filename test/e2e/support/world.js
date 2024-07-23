@@ -1,12 +1,11 @@
 const { expect, assert } = require('chai');
 const config = require('./config');
-const { setWorldConstructor } = require('cucumber');
+const { setWorldConstructor, setDefaultTimeout } = require('cucumber');
 const minimist = require('minimist');
 
 const argv = minimist(process.argv.slice(2));
-// const { setDefaultTimeout } = require('cucumber');
 
-// setDefaultTimeout(180 * 1000);
+setDefaultTimeout(180 * 1000);
 
 function processRecursive(part) {
   if (part in config.lookups) {
@@ -49,6 +48,7 @@ class World {
     this.config.fr_judge_password = global.browser.params.fr_judge_password;
     this.config.sscs_username = global.browser.params.sscs_username;
     this.config.sscs_password = global.browser.params.sscs_password;
+    this.setDefaultTimeout(180 * 1000);
   }
 
   getSelector(field) {

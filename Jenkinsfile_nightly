@@ -43,6 +43,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 withNightlyPipeline(type, product, component) {
+    env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net/'
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     enableFortifyScan('rpx-aat')
@@ -51,7 +52,6 @@ withNightlyPipeline(type, product, component) {
     //enableMutationTest()
     enableCrossBrowserTest()
 
-    env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net/'
   
       afterSuccess('checkout') {
         yarnBuilder.yarn('cache clean')

@@ -52,7 +52,7 @@
     "test:smoke": "yarn playwright install chromium && TEST_TYPE=smoke npx codeceptjs run --plugins cucumberJsonReporter --plugins retryFailedStep --config ./test_codecept/codeceptCommon/codecept.conf.ts --features --grep @smoke --reporter mochawesome",
     "test:smoke:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
     "test:crossbrowser": "protractor ./test/e2e/config/crossbrowser.conf.js",
-    "test:fullfunctional": "npm-run-all -p -l -n -c test:api test:xuiIntegration",
+    "test:fullfunctional": "yarn playwright install && npm-run-all -p -l -n -c test:api test:xuiIntegration test:codeceptE2E",
     "test:fullfunctional2": "yarn playwright install && npx playwright test --project chromium",
     "test:fullfunctional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js --local",
     "test:functional": "npm-run-all -p -l -n -c test:api test:xuiIntegration test:codeceptE2E",

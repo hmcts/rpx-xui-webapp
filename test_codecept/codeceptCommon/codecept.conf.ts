@@ -30,6 +30,10 @@ console.log(`parallel : ${parallel}`)
 console.log(`headless : ${!head}`)
 
 let pipelineBranch = process.env.TEST_URL.includes('pr-') || process.env.TEST_URL.includes('manage-case.aat.platform.hmcts.net') ? "preview" : "master"
+console.log('pipeline branch: ', pipelineBranch);
+console.log('testURL: ', process.env.TEST_URL);
+console.log('local: ', process.env.LOCAL);
+console.log('testType: ', testType);
 let local = process.env.LOCAL && process.env.LOCAL.includes('true')
 let features = ''
 if (testType === 'e2e' || testType === 'smoke'){
@@ -41,6 +45,7 @@ if (testType === 'e2e' || testType === 'smoke'){
 } else{
   throw new Error(`Unrecognized test type ${testType}`);
 }
+console.log('features: ', features);
 
 
 const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`)

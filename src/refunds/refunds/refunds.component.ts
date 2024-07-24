@@ -24,7 +24,7 @@ export class RefundsComponent implements OnInit {
     const userDetails$ = this.store.pipe(select(fromRoot.getUserDetails));
     userDetails$.subscribe((details) => {
       this.userEmail = details.userInfo.email;
-      this.userRoles = details.userInfo.roles;
+      this.userRoles = details?.userInfo?.roles;
       this.userDataLoaded = true;
     });
   }

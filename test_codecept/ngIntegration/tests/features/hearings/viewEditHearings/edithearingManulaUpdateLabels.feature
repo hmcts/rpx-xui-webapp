@@ -154,6 +154,8 @@ Feature: Hearings CR84: Manual update labels
 
 
         When I click continue in hearing workflow
+        Then debug sleep minutes 1
+        
         Then I validate Edit hearing page displayed
 
 

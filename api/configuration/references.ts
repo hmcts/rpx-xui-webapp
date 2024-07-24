@@ -64,7 +64,6 @@ export const SERVICES_PAYMENTS_URL = 'services.payments';
 export const SERVICES_PAYMENT_RETURN_URL = 'services.payment_return_url';
 
 export const GLOBAL_SEARCH_SERVICES = 'globalSearchServices';
-export const WA_SUPPORTED_SERVICE_CASETYPES = 'waSupportedServiceandCaseTypes';
 
 export const SERVICES_PRD_API_URL = 'services.prd.api';
 export const SERVICES_PRD_LOCATION_API = 'services.prd.locationApi';
@@ -88,6 +87,8 @@ export const ENVIRONMENT = 'environment';
 export const JURISDICTIONS = 'jurisdictions';
 
 export const WA_SUPPORTED_JURISDICTIONS = 'waSupportedJurisdictions';
+
+export const STAFF_SUPPORTED_JURISDICTIONS = 'staffSupportedJurisdictions';
 
 export const HEARINGS_SUPPORTED_JURISDICTIONS = 'services.hearings.hearingsJurisdictions';
 

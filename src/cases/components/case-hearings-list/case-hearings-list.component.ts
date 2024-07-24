@@ -33,7 +33,7 @@ export class CaseHearingsListComponent implements OnInit {
   public hasUpdateAction: boolean = false;
   public hasDeleteAction: boolean = false;
   public hasReadOnlyAction: boolean = false;
-  public isHearingAmendmentsEnabled$: Observable<boolean>;
+  public isHearingAmendmentsEnabled = false;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly activatedRoute: ActivatedRoute,
@@ -58,7 +58,10 @@ export class CaseHearingsListComponent implements OnInit {
       }
     }
 
-    this.isHearingAmendmentsEnabled$ = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments);
+    const isHearingAmendmentsEnabled$ = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments);
+    isHearingAmendmentsEnabled$.subscribe((enabled) => {
+      this.isHearingAmendmentsEnabled = enabled;
+    });
   }
 
   public isAwaitingActual(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {
@@ -102,22 +105,20 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public viewAndEdit(hearingID: string): void {
-    this.isHearingAmendmentsEnabled$.subscribe((enabled) => {
-      const hearingCondition: HearingConditions = {
-        mode: Mode.VIEW_EDIT,
-        isHearingAmendmentsEnabled: enabled
-      };
-      // Save hearing conditions
-      this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-      // If hearing amendments enabled in Launch Darkly, then load the Service Hearing Values to get the latest
-      if (enabled) {
-        this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
-      }
-      // Set the navigation url based on the hearing amendments enabled Launch Darkly setting
-      const url = enabled ? '/hearings/view/hearing-view-summary' : '/hearings/request/hearing-view-edit-summary';
-      // Load hearing request and navigate
-      this.loadHearingRequestAndRedirect(hearingID, url);
-    });
+    const hearingCondition: HearingConditions = {
+      mode: Mode.VIEW_EDIT,
+      isHearingAmendmentsEnabled: this.isHearingAmendmentsEnabled
+    };
+    // Save hearing conditions
+    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
+    // If hearing amendments enabled in Launch Darkly, then load the Service Hearing Values to get the latest
+    if (this.isHearingAmendmentsEnabled) {
+      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
+    }
+    // Set the navigation url based on the hearing amendments enabled Launch Darkly setting
+    const url = this.isHearingAmendmentsEnabled ? '/hearings/view/hearing-view-summary' : '/hearings/request/hearing-view-edit-summary';
+    // Load hearing request and navigate
+    this.loadHearingRequestAndRedirect(hearingID, url);
   }
 
   public viewDetails(hearing: HearingListViewModel): void {

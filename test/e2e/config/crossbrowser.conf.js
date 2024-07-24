@@ -119,7 +119,12 @@ const config = {
   cucumberOpts: {
     strict: true,
     format: ['node_modules/cucumber-pretty', 'json:cb_reports/saucelab_results.json'],
-    require: ['../support/world.js', '../support/*.js', '../features/step_definitions/**/*.steps.js'],
+    require: [
+      '../support/world.js',
+      '../support/timeout.js',
+      '../support/hooks.js',
+      //'../support/*.js',
+      '../features/step_definitions/**/*.steps.js'],
     tags: ['@crossbrowser']
   },
 

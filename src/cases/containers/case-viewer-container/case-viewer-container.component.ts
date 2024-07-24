@@ -67,7 +67,9 @@ export class CaseViewerContainerComponent implements OnInit {
       {
         'caseTypes': [
           'ET_EnglandWales',
-          'ET_Scotland'
+          'ET_Scotland',
+          'ET_EnglandWales_Multiple',
+          'ET_Scotland_Multiple'
         ],
         'releaseVersion': '4',
         'serviceName': 'EMPLOYMENT'
@@ -120,7 +122,7 @@ export class CaseViewerContainerComponent implements OnInit {
     private readonly allocateRoleService: AllocateRoleService,
     private readonly waService: WASupportedJurisdictionsService) {
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
-      map((userDetails) => userDetails.userInfo.roles)
+      map((userDetails) => userDetails?.userInfo?.roles)
     );
   }
 

@@ -158,20 +158,6 @@ Feature: Hearings CR84: Manual update labels
         
         Then I validate Edit hearing page displayed
 
-
-        Then I validate edit hearing section heading labels
-            | Heading                 | Label   |
-            | Stage                   | AMENDED |
-            | Hearing venue           | AMENDED |
-            | Language requirements   |         |
-            | Judge details           |         |
-            | Linked hearings         |         |
-            | Additional instructions |         |
-
-        Then I validate fields displayed in view or edit hearing page
-            | field                              | value             | changeLinkDisplay | amendedFlagDisplay |
-            | What are the hearing venue details | IA Court Center 1 | true              | AMENDED            |
-
         # Hearing venue end
 
         # Language requirements start

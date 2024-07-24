@@ -5,7 +5,7 @@ const minimist = require('minimist');
 
 const argv = minimist(process.argv.slice(2));
 
-setDefaultTimeout(180 * 1000);
+// setDefaultTimeout(180 * 1000);
 
 function processRecursive(part) {
   if (part in config.lookups) {

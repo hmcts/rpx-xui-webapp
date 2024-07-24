@@ -128,7 +128,7 @@ export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<a
   return roleAssignmentInfo;
 }
 
-const allowedChars = /^[a-zA-Z0-9.@-_]*/;
+const allowedChars = /^[a-zA-Z0-9.@-_-]*$/;
 const allowedRolesOrID = /^[a-zA-Z0-9-]*$/;
 const allowTokenRegex = /^Bearer [a-zA-Z0-9_.-]*$/;
 

@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
@@ -65,7 +64,6 @@ describe('Task management api, task roles', () => {
       });
 
       const { getTaskRoles } = requireReloaded('../../../../workAllocation/index');
-
       const req = mockReq({
         headers: {
 

@@ -14,8 +14,8 @@ export async function signIn(page: any, userIdentifier: string, goToCaseBaseURL:
   await page.getByLabel("Password").fill(matchingUsers[0].key);
   await page.getByRole("button", { name: "Sign in" }).click();
   console.log("Signed in as " + email);
-  
-}
+
+  }
 
 export async function signOut(page) {
   try {

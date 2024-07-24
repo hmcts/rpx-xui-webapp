@@ -1,4 +1,4 @@
-@fullfunctional @test @functional_enabled 
+@fullfunctional @test @functional_enablNOT
 Feature: Test case type case list and find case workflow
 
   Background:

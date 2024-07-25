@@ -21,7 +21,7 @@ module.exports = defineConfig({
   workers: process.env.FUNCTIONAL_TESTS_WORKERS ? 1 : 1,
 
   reporter: [[process.env.CI ? 'html' : 'list'],
-             ['html', { outputFolder: 'functional-output/tests/playwright-2e2' }]],
+             ['html', { outputFolder: 'functional-output/tests/playwright-e2e' }]],
   
   projects: [
     {

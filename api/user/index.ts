@@ -134,7 +134,7 @@ const allowTokenRegex = /^Bearer [a-zA-Z0-9_.-]*$/;
 
 export function validateUserInfo(userInfo) {
   ['forename', 'surname', 'email', 'roleCategory'].forEach((key) => {
-    if (userInfo[key] && !allowedChars.test(userInfo[key])) {
+    if (userInfo[key] && !allowedChars.test(userInfo[key].trim())) {
       console.log(userInfo);
       console.log('Invalid character in', key, '"' + userInfo[key] + '"');
       throw new Error(`Invalid character in ${key}`);

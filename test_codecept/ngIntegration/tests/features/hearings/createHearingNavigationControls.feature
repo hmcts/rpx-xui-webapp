@@ -4,7 +4,7 @@ Feature: Create hearings workflow navigation controls
 
     Background: create hearing
         Given I set MOCK with user details
-            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |
+            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                                            |
 
         Given I set MOCK case "hearingCase" details with reference "Hearing_case"

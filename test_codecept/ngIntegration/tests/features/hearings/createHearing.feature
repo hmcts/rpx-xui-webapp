@@ -4,7 +4,7 @@ Feature: Create hearings workflow
 
     Scenario: Create hearing , input combo 1
         Given I set MOCK with user details
-            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |
+            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                                            |
 
         Given I set MOCK case "hearingCase" details with reference "Hearing_case"
@@ -175,7 +175,7 @@ Feature: Create hearings workflow
 
     Scenario: Create hearing , input combo 1.1
         Given I set MOCK with user details
-            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |
+            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                                            |
 
         Given I set MOCK case "hearingCase" details with reference "Hearing_case"
@@ -315,7 +315,7 @@ Feature: Create hearings workflow
     Scenario: Create hearing , input combo 2
 
         Given I set MOCK with user details
-            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |
+            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                                            |
 
         # Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
@@ -465,7 +465,7 @@ Feature: Create hearings workflow
     Scenario: Create hearing , input combo 3 - Welsh hearing location
 
         Given I set MOCK with user details
-            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |
+            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                                            |
 
         # Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"

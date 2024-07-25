@@ -84,7 +84,7 @@ Feature: WA Release 2: My work -  Available tasks
         # Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I set MOCK with user details
-            | roles | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocato |
+            | roles | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocato |
             | roleCategory | LEGAL_OPERATIONS                         |
         
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo

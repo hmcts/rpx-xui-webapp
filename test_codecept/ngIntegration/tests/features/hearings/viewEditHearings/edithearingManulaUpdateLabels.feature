@@ -1,5 +1,5 @@
 
-@ng @functional_enabled @functional_debug
+@ng @functional_enabled @ftrying_fix
 Feature: Hearings CR84: Manual update labels
     https://tools.hmcts.net/jira/browse/EUI-9096
 
@@ -150,7 +150,7 @@ Feature: Hearings CR84: Manual update labels
     
         When In hearing page "What are the hearing venue details?", I input values
             | field                         | value                 |
-            | Search for a location by name | wal,IA Court Center Wales |
+            | Search for a location by name | wal,CIVIL Court Center Wales |
 
         When I click continue in hearing workflow
 
@@ -167,7 +167,7 @@ Feature: Hearings CR84: Manual update labels
 
         Then I validate fields displayed in view or edit hearing page
             | field                              | value             | changeLinkDisplay | amendedFlagDisplay |
-            | What are the hearing venue details | IA Court Center Wales | true              | AMENDED            |
+            | What are the hearing venue details | CIVIL Court Center Wales | true              | AMENDED            |
 
         # Hearing venue end
 

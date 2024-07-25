@@ -175,7 +175,7 @@ Feature: Hearings CR84: Manual update labels
         Then I validate edit hearing section heading labels
             | Heading                 | Label   |
             | Stage                   | AMENDED |
-            | Hearing venue           | AMENDED |
+            | Hearing venue           |         |
             | Language requirements   | AMENDED |
             | Judge details           |         |
             | Linked hearings         |         |
@@ -204,7 +204,7 @@ Feature: Hearings CR84: Manual update labels
         Then I validate edit hearing section heading labels
             | Heading                 | Label   |
             | Stage                   | AMENDED |
-            | Hearing venue           | AMENDED |
+            | Hearing venue           |         |
             | Language requirements   | AMENDED |
             | Judge details           | AMENDED |
             | Linked hearings         |         |
@@ -234,7 +234,7 @@ Feature: Hearings CR84: Manual update labels
         Then I validate edit hearing section heading labels
             | Heading                 | Label   |
             | Stage                   | AMENDED |
-            | Hearing venue           | AMENDED |
+            | Hearing venue           |         |
             | Language requirements   | AMENDED |
             | Judge details           | AMENDED |
             | Length, date and priority level of hearing | AMENDED |
@@ -265,7 +265,7 @@ Feature: Hearings CR84: Manual update labels
         Then I validate edit hearing section heading labels
             | Heading                 | Label   |
             | Stage                   | AMENDED |
-            | Hearing venue           | AMENDED |
+            | Hearing venue           |         |
             | Language requirements   | AMENDED |
             | Judge details           | AMENDED |
             | Linked hearings         | AMENDED |
@@ -293,7 +293,7 @@ Feature: Hearings CR84: Manual update labels
         Then I validate edit hearing section heading labels
             | Heading                 | Label   |
             | Stage                   | AMENDED |
-            | Hearing venue           | AMENDED |
+            | Hearing venue           |         |
             | Language requirements   | AMENDED |
             | Judge details           | AMENDED |
             | Linked hearings         | AMENDED |

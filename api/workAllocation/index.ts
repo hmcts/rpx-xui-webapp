@@ -241,16 +241,19 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
       delete req.body.hasNoAssigneeOnComplete;
     }
     let actionByEvent;
+    let mode;
     if (req.body.actionByEvent) {
       actionByEvent = req.body.actionByEvent;
       delete req.body.actionByEvent;
     }
-    const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
     if (actionByEvent === true) {
+      mode = 'AUTO';
       trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to automated task completion`, traceProps);
     } else {
+      mode = 'MANUAL';
       trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to manual task action`, traceProps);
     }
+    const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action, mode);
     const { status, data } = await handleTaskPost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);
@@ -276,7 +279,7 @@ export async function postTaskCompletionForAccess(req: EnhancedRequest, res: Res
     };
     // line added as requests are different for approval/rejection
     const getTaskPath: string =
-      preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, 'complete');
+      preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, 'complete', 'MANUAL');
     trackTrace(`complete on task Id: ${taskId} due to specific access processing`, traceProps);
     return await handleTaskPost(getTaskPath, newRequest, req);
   } catch (error) {

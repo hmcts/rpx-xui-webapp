@@ -1,5 +1,5 @@
 
-@ng @functional_enabled @ftrying_fix
+@ng @functional_enabled @functional_debug
 Feature: Hearings CR84: Manual update labels
     https://tools.hmcts.net/jira/browse/EUI-9096
 
@@ -153,6 +153,8 @@ Feature: Hearings CR84: Manual update labels
             | Search for a location by name | wal,CIVIL Court Center Wales |
 
         When I click continue in hearing workflow
+
+        Then debug sleep minutes 1
 
         Then I validate Edit hearing page displayed
 

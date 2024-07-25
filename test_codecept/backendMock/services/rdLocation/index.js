@@ -15,7 +15,6 @@ const locationServiceCodes = {
 class RDLocationService{
 
     constructor(){
-      console.log('in RDLocationService constructor');
         this.caseManagementLocations = [];
         this.locationsConfig = [
             {
@@ -60,7 +59,6 @@ class RDLocationService{
         ];
 
         this.setupMockCaseManagementLocations();
-        // console.log('service config locations', JSON.stringify(this.locationsConfig));
     }
 
     setupMockCaseManagementLocations(){
@@ -78,13 +76,11 @@ class RDLocationService{
                 temp.site_name = `${service} Court Center ${i}`;
                 temp.court_type_id = typeIds[0];
                 temp.court_type = `${service} Court`;
-                serviceConf.locations.push(temp);
-              console.log('mocked location 1 ', serviceConf.locations);
+                serviceConf.locations.push(temp)
             }
 
             const temp = this.getMockLocations();
             temp.epimms_id = (index + 20) + '';
-            // temp.epimms_id = index + '';
             temp.is_case_management_location = 'Y';
             temp.court_name = `${service} Court Center Wales`;
             temp.venue_name = `${service} Court Center Wales`;
@@ -93,7 +89,6 @@ class RDLocationService{
             temp.court_type = `${service} Court`;
             temp.region = 'Wales';
             temp.region_id = "7";
-            console.log('mocked location 2', temp);
             serviceConf.locations.push(temp)
         })
     }

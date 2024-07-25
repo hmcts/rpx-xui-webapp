@@ -150,13 +150,24 @@ Feature: Hearings CR84: Manual update labels
     
         When In hearing page "What are the hearing venue details?", I input values
             | field                         | value                 |
-            | Search for a location by name | cen,IA Court Center 1 |
-
+            | Search for a location by name | wal,IA Court Center Wales |
 
         When I click continue in hearing workflow
-        Then debug sleep minutes 1
-        
+
         Then I validate Edit hearing page displayed
+
+        Then I validate edit hearing section heading labels
+            | Heading                 | Label   |
+            | Stage                   | AMENDED |
+            | Hearing venue           | AMENDED |
+            | Language requirements   |         |
+            | Judge details           |         |
+            | Linked hearings         |         |
+            | Additional instructions |         |
+
+        Then I validate fields displayed in view or edit hearing page
+            | field                              | value             | changeLinkDisplay | amendedFlagDisplay |
+            | What are the hearing venue details | IA Court Center Wales | true              | AMENDED            |
 
         # Hearing venue end
 

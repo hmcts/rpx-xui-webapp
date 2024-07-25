@@ -19,7 +19,10 @@ module.exports = defineConfig({
 
   /* Opt out of parallel tests on CI. */
   workers: process.env.FUNCTIONAL_TESTS_WORKERS ? 1 : 1,
-  reporter: process.env.CI ? "html" : "list",
+
+  reporter: [[process.env.CI ? 'html' : 'list'],
+             ['html', { outputFolder: 'functional-output/tests/playwright-e2e' }]],
+  
   projects: [
     {
       name: "chromium",

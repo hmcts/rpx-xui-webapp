@@ -246,7 +246,6 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
       delete req.body.actionByEvent;
     }
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
-    console.log('Maual task completion', getTaskPath, actionByEvent);
     if (actionByEvent === true) {
       trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to automated task completion`, traceProps);
     } else {

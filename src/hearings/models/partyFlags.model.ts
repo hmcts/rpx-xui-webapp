@@ -1,19 +1,26 @@
+import { AmendmentLabelStatus } from './hearingsUpdateMode.enum';
+
 export interface PartyFlagsModel {
-  partyID: string;
+  partyId: string;
   partyName: string;
   flagParentId?: string;
   flagId: string;
   flagDescription: string;
   flagStatus: string;
+  dateTimeCreated?: string;
+  dateTimeModified?: string;
 }
 
 export interface PartyFlagsDisplayModel {
-  partyID: string;
+  partyId: string;
   partyName: string;
   flagParentId?: string;
   flagId: string;
   flagDescription: string;
   flagStatus: string;
+  dateTimeCreated?: string;
+  dateTimeModified?: string;
   displayName: string;
   displayPath: string[];
+  flagAmendmentLabelStatus?: AmendmentLabelStatus;
 }

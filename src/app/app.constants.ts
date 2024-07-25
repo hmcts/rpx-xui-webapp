@@ -14,8 +14,11 @@ const featureNames = {
   booking: 'mc-booking-active',
   mcHearingsFeature: 'mc-hearings-jurisdictions',
   excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
-  enableRestrictedCaseAccess: 'enable-restricted-case-access',
-  enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1'
+
+  enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1',
+  enableHearingAmendments: 'mc-enable-hearings-amendments-service',
+  enableRestrictedCaseAccess: 'enable-restricted-case-access'
+
 };
 
 const footerDataNavigation = {
@@ -63,7 +66,7 @@ const helpContactDetails: ContactDetailsDataModel[] = [
     badgeColour: BadgeColour.BADGE_BLUE,
     email: 'contactprobate@justice.gov.uk',
     phone: '0300 303 0648',
-    openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)'
+    openingTimes: 'Monday to Friday, 9am to 1pm (Closed on bank holidays)'
   },
   {
     title: 'Divorce',

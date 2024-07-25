@@ -148,8 +148,8 @@ async function  authenticateAndGetcookies(username, password)  {
                     loginAttemptsCounter++;
                     console.log("Login error : " + error.message);
                 } else {
-                    await page.close();
-                    await browser.close();
+                    await page?.close();
+                    await browser?.close();
                     throw error;
                 };
             }
@@ -157,16 +157,14 @@ async function  authenticateAndGetcookies(username, password)  {
 
     }catch(err){
         console.log("Pupeeteer browser login to app error occured : " + err);
-
-        await page.close();
-        await browser.close();
+        await page?.close();
+        await browser?.close();
         throw new Error(err);
     }
     const cookies = await page.cookies();
-    await page.close();
-    await browser.close();
+    await page?.close();
+    await browser?.close();
     return cookies;
-
 }
 
 function getPuppeteerLaunchOptions(){

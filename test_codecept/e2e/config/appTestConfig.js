@@ -140,6 +140,24 @@ const data = {
                 email: "xui_casefileview_v11_off@mailinator.com",
                 release: "restricted-case-file-view-v1.1-off", userIdentifier: "RESTRICTED_CASE_FILE_VIEW_V1.1_OFF",
                 key: "Welcome01"
+            },
+            {
+                idamId: "e6cfb5e9-10c4-456c-ad51-160f077bda79",
+                email: "xui_hearing_manager_cr84_on@justice.gov.uk",
+                release: "hearing_CR84", userIdentifier: "HEARING_MANAGER_CR84_ON",
+                key: "Monday01"
+            },
+            {
+                idamId: "45295735-175a-45f0-94de-cdb805fccff3",
+                email: "xui_hearing_manager_cr84_off@justice.gov.uk",
+                release: "hearing_CR84", userIdentifier: "HEARING_MANAGER_CR84_OFF",
+                key: "Monday01"
+            },
+            {
+                idamId: "11111111-1111-1111-1111-111111111111",
+                email: "henry_fr_harper@yahoo.com",
+                release: "flagsTest", userIdentifier: "USER_WITH_FLAGS",
+                key: "Nagoya0102"
             }
 
 
@@ -235,6 +253,12 @@ const data = {
                 email: "xui_caseofficer@justice.gov.uk",
                 release: "general", userIdentifier: "STAFF_ADMIN",
                 key: "Welcome01"
+            },
+            {
+                idamId: "11111111-1111-1111-1111-111111111111",
+                email: "henry_fr_harper@yahoo.com",
+                release: "flagsTest", userIdentifier: "USER_WITH_FLAGS",
+                key: "Nagoya0102"
             }
 
 

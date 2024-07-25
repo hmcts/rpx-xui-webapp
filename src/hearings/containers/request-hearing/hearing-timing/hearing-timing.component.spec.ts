@@ -8,6 +8,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
 import { of } from 'rxjs';
 import { ErrorMessage } from '../../../../app/models';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, HearingDatePriorityEnum, RadioOptions, UnavailabilityType } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
@@ -33,6 +34,8 @@ describe('HearingTimingComponent', () => {
   let fixture: ComponentFixture<HearingTimingComponent>;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: Router;
+  let nativeElement: any;
+
   const priorities: LovRefDataModel[] = [
     {
       key: 'urgent',
@@ -66,7 +69,7 @@ describe('HearingTimingComponent', () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule,
         HttpClientTestingModule],
-      declarations: [HearingTimingComponent, MockHearingPartiesComponent],
+      declarations: [HearingTimingComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
@@ -89,6 +92,7 @@ describe('HearingTimingComponent', () => {
     fixture = TestBed.createComponent(HearingTimingComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
+    nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
   });
 
@@ -275,6 +279,19 @@ describe('HearingTimingComponent', () => {
     expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
   });
 
+  it('should allow todays date', () => {
+    component.firstDateOfHearingError = null;
+    const currentDate = new Date();
+    const day = currentDate.getDate();
+    const month = currentDate.getMonth() + 1;
+    const year = currentDate.getUTCFullYear();
+    component.firstHearingFormGroup.get('firstHearingDate_day').setValue(day);
+    component.firstHearingFormGroup.get('firstHearingDate_month').setValue(month);
+    component.firstHearingFormGroup.get('firstHearingDate_year').setValue(year);
+    component.showChosenDateError();
+    expect(component.firstDateOfHearingError).toEqual(null);
+  });
+
   it('should check date selection format', () => {
     component.firstDateOfHearingError = null;
     component.firstHearingFormGroup.get('firstHearingDate_day').setValue('ewr');
@@ -284,6 +301,22 @@ describe('HearingTimingComponent', () => {
     expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
   });
 
+  it('should allow todays date to pass showChosenDateRangeError', () => {
+    component.earliestDateOfHearingError = null;
+    const currentDate = new Date();
+    const day = currentDate.getDate();
+    const month = currentDate.getMonth() + 1;
+    const year = currentDate.getUTCFullYear();
+    component.earliestHearingFormGroup.get('earliestHearingDate_day').setValue(day);
+    component.earliestHearingFormGroup.get('earliestHearingDate_month').setValue(month);
+    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue(year);
+    component.latestHearingFormGroup.get('latestHearingDate_day').setValue(day);
+    component.latestHearingFormGroup.get('latestHearingDate_month').setValue(month);
+    component.latestHearingFormGroup.get('latestHearingDate_year').setValue(year);
+    component.showChosenDateRangeError();
+    expect(component.earliestDateOfHearingError).toEqual(null);
+    expect(component.earliestDateOfHearingError).toEqual(null);
+  });
   it('should check showChosenDateRangeError', () => {
     component.earliestDateOfHearingError = null;
     component.earliestHearingFormGroup.get('earliestHearingDate_day').setValue('10');
@@ -394,6 +427,49 @@ describe('HearingTimingComponent', () => {
   it('should check if form is valid', () => {
     component.validationErrors = [];
     expect(component.isFormValid()).toBeTruthy();
+  });
+
+  it('should set the hearing window confirmation to true', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: true,
+        hearingWindowChangesConfirmed: true
+      }
+    };
+    component.ngOnInit();
+    expect(component.hearingWindowChangesRequired).toEqual(true);
+    expect(component.hearingWindowChangesConfirmed).toEqual(true);
+    expect(nativeElement.querySelector('#first-date-amendment-label')).toBeDefined();
+  });
+
+  it('should set the hearing window confirmation to false', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.hearingWindowChangesRequired).toEqual(false);
+    expect(component.hearingWindowChangesConfirmed).toBeUndefined();
+    expect(nativeElement.querySelector('#first-date-amendment-label')).toBeNull();
   });
 
   afterEach(() => {

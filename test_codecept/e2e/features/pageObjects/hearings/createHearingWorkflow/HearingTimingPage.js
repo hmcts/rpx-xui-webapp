@@ -31,12 +31,27 @@ class HearingTimingPage {
             "The first date of the hearing must be": $("#firstHearingDate-date"),
             "Earliest start date": $('#earliestHearingDate-date'),
             "Latest end date": $('#latestHearingDate-date')
-
         }
+
+        this.firstDateHearingAmendedLabel = $('#first-date-amendment-label')
     }
 
     async isDisplayed() {
         return await this.pageContainer.isDisplayed();
+    }
+
+    async getEarliestDate(){
+        const date = await  this.earliestHearingDate_day.getAttribute('value')
+        const month = await this.earliestHearingDate_month.getAttribute('value')
+        const year = await this.earliestHearingDate_year.getAttribute('value')
+        return `${date}-${month}-${year}`
+    }
+
+    async getLatestate() {
+        const date = await this.latestHearingDate_day.getAttribute('value')
+        const month = await this.latestHearingDate_month.getAttribute('value')
+        const year = await this.latestHearingDate_year.getAttribute('value')
+        return `${date}-${month}-${year}`
     }
 
     async inputValue(field, value) {
@@ -88,6 +103,17 @@ class HearingTimingPage {
     async selectHearingPriority(priority){
         const ele = element(by.xpath(`//fieldset[@id='hearing-priority']//label[contains(text(),'${priority}')]/../input`))
         await ele.click();
+    }
+
+    async isActionNeededLabelDisplayedForField(fieldName){
+        let retVal = false;
+        switch (fieldName){
+            case 'The first date of the hearing must be':
+                retVal = await this.firstDateHearingAmendedLabel.isDisplayed();
+                break;
+            default:
+        } 
+        return retVal;  
     }
 
 }

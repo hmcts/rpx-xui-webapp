@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { hearingActualsMainModel, hearingStageRefData, initialState, partyChannelsRefData, partySubChannelsRefData } from '../../../hearing.test.data';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
 import { ACTION, HearingResult } from '../../../models/hearings.enum';
@@ -13,6 +14,8 @@ import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { HearingActualsAddEditSummaryComponent } from './hearing-actuals-add-edit-summary.component';
+import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
+import { SessionStorageService } from 'src/app/services';
 
 @Pipe({ name: 'transformAnswer' })
 export class MockHearingAnswersPipe implements PipeTransform {
@@ -79,7 +82,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsAddEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe],
+      declarations: [HearingActualsAddEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe, MockRpxTranslatePipe, DatePipe],
       imports: [RouterTestingModule.withRoutes(
         [
           { path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent }
@@ -105,7 +108,10 @@ describe('HearingActualsAddEditSummaryComponent', () => {
               }
             }
           }
-        }
+        },
+        DatePipe,
+        FormatTranslatorService,
+        { provide: SessionStorageService }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -129,10 +135,26 @@ describe('HearingActualsAddEditSummaryComponent', () => {
     expect(component.sub.unsubscribe).toHaveBeenCalled();
   });
 
-  it('should check back method', () => {
-    spyOn(hearingsService, 'navigateAction');
+  it('should navigate to case details page when click back button', () => {
+    const caseInfo = `{
+      "caseType": "Asylum",
+      "cid": "1231231231231231",
+      "jurisdiction": "IA"
+    }`;
+    spyOn(component.sessionStorageService, 'getItem').and.returnValue(caseInfo);
+    const navigateSpy = spyOn(component.router, 'navigate');
+
     component.onBack();
-    expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.BACK);
+    expect(component.sessionStorageService.getItem).toHaveBeenCalled();
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'cases', 'case-details', '1231231231231231', 'hearings']);
+  });
+
+  it('should navigate to back page if caseId not available when click back button', () => {
+    spyOn(component.sessionStorageService, 'getItem').and.returnValue(null);
+    const historyBackSpy = spyOn(window.history, 'back');
+
+    component.onBack();
+    expect(historyBackSpy).toHaveBeenCalled();
   });
 
   it('should return correct hearing type from the hearing types', () => {
@@ -368,7 +390,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
     });
 
     it('should return false if the hearing date is the current date', () => {
-      const currentDate = new Date().toLocaleDateString();
+      const currentDate = new Date().toString();
       const result = component.hearingIsInFuture(currentDate);
       expect(result).toBe(false);
     });

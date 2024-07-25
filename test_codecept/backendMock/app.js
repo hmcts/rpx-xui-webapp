@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
 const minimist = require('minimist');
 const fs = require('fs');
+const path = require('path')
 const axios = require('axios');
 const http = axios.create({})
 axios.defaults.headers.common['Content-Type'] = 'application/json'
@@ -82,7 +83,7 @@ class MockApp {
         app.use(express.json({ type: '*/*'}));
 
         app.use((req,res,next) => {
-            console.log(`${req.method} : ${req.url}`);
+            // console.log(`${req.method} : ${req.url}`);
 
             res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate');
             const authToken = req.headers.authorization;
@@ -100,7 +101,7 @@ class MockApp {
         app.use('/task', taskApi)
         app.use('/work-types', workTypeRoutes)
         app.use('/refdata/location', locationRoutes)
-        app.use('/refdata/case-worker', caseworkerRoutes )
+        app.use('/refdata/internal/staff', caseworkerRoutes )
         app.use('/refdata/judicial', judicialRoutes )
 
 
@@ -130,6 +131,19 @@ class MockApp {
 
         app.get('/activity/cases/:caseId/activity', (req,res) => {
             res.send({})
+        })
+
+
+        app.post('/translation/cy', (req, res) => {
+            const reqBody = req.body
+            const savePhrasesPath = path.resolve(__dirname,'../../functional-output/translations.txt')
+            const resposne = { translations:{}}
+            for(const phrase of reqBody.phrases){
+                fs.appendFileSync(savePhrasesPath, `\n${phrase}`)
+                resposne.translations[phrase] = { translation: `WELSH[${phrase}]`}
+            }
+
+            res.send(resposne)
         })
 
         // await this.stopServer();

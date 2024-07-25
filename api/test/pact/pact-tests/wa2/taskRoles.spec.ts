@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
@@ -30,6 +29,7 @@ describe('Task management api, task roles', () => {
 
     before(async () => {
       await pactSetUp.provider.setup();
+
       const interaction = {
         state: 'get task role information using taskId',
         uponReceiving: 'get task roles by taskId',
@@ -64,7 +64,6 @@ describe('Task management api, task roles', () => {
       });
 
       const { getTaskRoles } = requireReloaded('../../../../workAllocation/index');
-
       const req = mockReq({
         headers: {
           'Authorization': 'Bearer someAuthorizationToken',

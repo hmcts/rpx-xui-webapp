@@ -156,7 +156,7 @@ export enum HearingDateEnum {
   DisplayTime = 'HH:mm',
   DisplayMonth = 'DD MMMM YYYY',
   DefaultFormat = 'DD-MM-YYYY',
-  RequestFailedDateAndTime = 'DD MMMM YYYY HH:MM:SS',
+  RequestFailedDateAndTime = 'DD MMMM YYYY HH:mm:ss',
   DateAndTimeInZoneZ = 'YYYY-MM-DDTHH:mm:ssZ',
   InvalidDate = 'Invalid date'
 }
@@ -183,7 +183,8 @@ export enum HearingJudgeSelectionEnum {
   SelectOneJudgeError = 'Select at least one judge type',
   SelectionError = 'Select the option that applies',
   ExcludeJudge = 'Exclude judge before continue',
-  ExcludeFullNameJudge = 'Enter a full name for a specific judge, or delete the name to stop the judge being included'
+  ExcludeFullNameJudge = 'Enter a full name for a specific judge, or delete the name to stop the judge being included',
+  SameJudgeInIncludeExcludeList = 'You cannot select same judge name in include and exclude list'
 }
 
 export enum HearingLinkedSelectionEnum {
@@ -219,6 +220,7 @@ export enum HearingStageResultEnum {
 export enum HearingErrorMessage {
   ENTER_A_VALID_LOCATION = 'Enter a valid location',
   ENTER_A_LOCATION = 'Enter a location',
+  ADD_A_LOCATION = 'Add a location',
 }
 
 export enum HearingDatePriorityConstEnum {
@@ -315,7 +317,10 @@ export enum AnswerSource {
   REASON_FOR_ACTUAL_CANCELLATION,
   REASON_FOR_REQUEST_CANCELLATION,
   LINKED_HEARINGS,
-  REASONABLE_ADJUSTMENTS
+  REASONABLE_ADJUSTMENTS,
+  PRIVATE_HEARING_REQUIRED,
+  CASE_RESTRICTION,
+  PUBLIC_CASE_NAME
 }
 
 export enum IsHiddenSource {
@@ -340,6 +345,14 @@ export enum Mode {
   VIEW_EDIT = 'view-edit',
   LINK_HEARINGS = 'link-hearings',
   MANAGE_HEARINGS = 'manage-hearings',
+}
+
+export enum HearingRequestPageRouteNames {
+  HEARING_CREATE_EDIT_SUMMARY = 'hearing-create-edit-summary',
+  HEARING_VIEW_EDIT_SUMMARY = 'hearing-view-edit-summary',
+  HEARING_EDIT_SUMMARY = 'hearing-edit-summary',
+  HEARING_CHANGE_REASON = 'hearing-change-reason',
+  HEARING_CONFIRMATION = 'hearing-confirmation'
 }
 
 export enum ControlTypeEnum {

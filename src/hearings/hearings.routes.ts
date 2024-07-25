@@ -18,6 +18,7 @@ import { HearingAdditionalInstructionsComponent } from './containers/request-hea
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
 import { HearingChangeReasonsComponent } from './containers/request-hearing/hearing-change-reasons/hearing-change-reasons.component';
 import { HearingCreateEditSummaryComponent } from './containers/request-hearing/hearing-create-edit-summary/hearing-create-edit-summary.component';
+import { HearingEditSummaryComponent } from './containers/request-hearing/hearing-edit-summary/hearing-edit-summary.component';
 import { HearingFacilitiesComponent } from './containers/request-hearing/hearing-facilities/hearing-facilities.component';
 import { HearingFinalConfirmationComponent } from './containers/request-hearing/hearing-final-confirmation/hearing-final-confirmation.component';
 import { HearingJudgeComponent } from './containers/request-hearing/hearing-judge/hearing-judge.component';
@@ -39,6 +40,7 @@ import { HearingViewActualSummaryComponent } from './containers/view-hearing/hea
 import { HearingViewSummaryComponent } from './containers/view-hearing/hearing-view-summary/hearing-view-summary.component';
 import { ViewHearingComponent } from './containers/view-hearing/view-hearing.component';
 import { HearingsEditGuard } from './guards/hearings-edit-guard';
+import { HearingAmendmentsGuard } from './guards/hearing-amendments-guard';
 import { HearingsViewGuard } from './guards/hearings-view-guard';
 import { HearingCategory, MemberType, Mode } from './models/hearings.enum';
 import { ActualSummaryResponseResolver } from './resolvers/actual-summary-response-resolver.resolve';
@@ -200,7 +202,8 @@ export const ROUTES: Routes = [
         resolve: {
           hearingTypes: RefDataResolver,
           actualPartHeardReasonCodes: AdjournHearingActualReasonResolver,
-          cancelHearingActualReasons: CancelHearingActualReasonResolver
+          cancelHearingActualReasons: CancelHearingActualReasonResolver,
+          caseType: CaseTypesResolver
         },
         component: HearingActualsEditSummaryComponent,
         data: {
@@ -404,6 +407,30 @@ export const ROUTES: Routes = [
         component: HearingViewEditSummaryComponent,
         data: {
           title: 'HMCTS Hearings | Amend Hearing | Check Answers',
+          isChildRequired: [HearingCategory.PanelMemberType, HearingCategory.CaseType]
+        }
+      },
+      {
+        path: 'hearing-edit-summary',
+        resolve: {
+          hearingPriorities: RefDataResolver,
+          caseType: CaseTypesResolver,
+          caseFlags: CaseFlagsResolver,
+          hearingStageOptions: HearingStageResolver,
+          additionFacilitiesOptions: AdditionalFacilitiesResolver,
+          partyChannels: PartyChannelsResolverService,
+          partySubChannels: PartySubChannelsResolverService,
+          judgeTypes: JudgeTypesResolverService,
+          judicialUsers: JudicialUserSearchResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
+          panelMemberResponseUsers: PanelMemberSearchResponseResolver,
+          otherPanelRoles: PanelRolesResolverService,
+          courtLocation: CourtLocationsDataResolver
+        },
+        component: HearingEditSummaryComponent,
+        canActivate: [HearingsEditGuard, HearingAmendmentsGuard],
+        data: {
+          title: 'HMCTS Hearings | Amend Hearing',
           isChildRequired: [HearingCategory.PanelMemberType, HearingCategory.CaseType]
         }
       },

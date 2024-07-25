@@ -1,4 +1,5 @@
 @fullfunctional @test @functional_enabled
+
 Feature: Test case type case creation and case details validations Part 1
 
   Background:
@@ -14,11 +15,11 @@ Feature: Test case type case creation and case details validations Part 1
 #         Then I am on case form page
 #         Then Validate create case form pages fields against the api response
 
-   
+
     Scenario: Validate Case event next step trigger actions
         When I click on search button
         Then Search page should be displayed
-        When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type dev"
+        When I enter search fields jurisdiction "Family Divorce" case type "XUI Case PoC"
         When I click apply to perform case search
         Then I see results returned
         When I open first case in search results
@@ -28,7 +29,7 @@ Feature: Test case type case creation and case details validations Part 1
     Scenario: Validate update form page click on next step trigger actions
         When I click on search button
         Then Search page should be displayed
-        When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type dev"
+        When I enter search fields jurisdiction "Family Divorce" case type "XUI Case PoC"
         When I click apply to perform case search
         Then I see results returned
         When I open first case in search results

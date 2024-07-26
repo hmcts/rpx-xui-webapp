@@ -1,4 +1,4 @@
-@fullfunctional @functional_enabled
+@fullfunctional @functional_enabled @crossbrowser
 Feature: Login
 
   Background:

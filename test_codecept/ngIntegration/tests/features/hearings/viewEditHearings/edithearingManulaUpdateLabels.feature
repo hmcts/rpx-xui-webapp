@@ -36,7 +36,6 @@ Feature: Hearings CR84: Manual update labels
         Then I validate view hearing page Edit hearing button displayed is "true"
         When In view hearing page, I click Edit hearing button
         Then I validate Edit hearing page displayed
-        Then debug sleep minutes 2
 
         Then I validate edit hearing section heading labels
             | Heading                 | Label |
@@ -63,7 +62,7 @@ Feature: Hearings CR84: Manual update labels
         Then I validate edit hearing section heading labels
             | Heading                 | Label   |
             # | Additional facilities | AMENDED |
-            | Stage                   |  |
+            | Stage                   |         |
             | Hearing venue           |         |
             | Language requirements   |         |
             | Judge details           |         |

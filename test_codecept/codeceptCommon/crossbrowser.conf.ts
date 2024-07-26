@@ -30,16 +30,8 @@ console.log(`headless : ${!head}`)
 
 let pipelineBranch = process.env.TEST_URL.includes('pr-') || process.env.TEST_URL.includes('manage-case.aat.platform.hmcts.net') ? "preview" : "master"
 let local = process.env.LOCAL && process.env.LOCAL.includes('true')
-let features = ''
-if (testType === 'e2e' || testType === 'smoke'){
-  features = `../e2e/features/app/**/*.feature`
-} else if (testType === 'ngIntegration'){
-  
-  features = pipelineBranch === 'master' && !local ? `../ngIntegration/tests/features/**/notests.feature` : `../ngIntegration/tests/features/**/*.feature`
+let features = `../e2e/features/app/**/*.feature`
 
-} else{
-  throw new Error(`Unrecognized test type ${testType}`);
-}
 
 
 const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`)

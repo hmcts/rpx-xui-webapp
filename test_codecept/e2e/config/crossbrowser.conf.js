@@ -5,6 +5,8 @@ const argv = minimist(process.argv.slice(2));
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
+var screenShotUtils = require('protractor-screenshot-utils').ProtractorScreenShotUtils;
+
 
 const config = {
   framework: 'custom',

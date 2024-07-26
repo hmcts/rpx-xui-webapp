@@ -1,17 +1,17 @@
 import { NextFunction } from 'express';
 import { authenticator } from 'otplib';
 
-import { baseCaseWorkerRefUrl, baseRoleAssignmentUrl } from './index';
-import { StaffProfile, StaffUserDetails } from './interfaces/staffUserDetails';
 import { getConfigValue } from '../configuration';
 import { IDAM_SECRET, MICROSERVICE, S2S_SECRET, SERVICES_IDAM_API_URL, SERVICES_IDAM_CLIENT_ID, SERVICE_S2S_PATH, STAFF_SUPPORTED_JURISDICTIONS, SYSTEM_USER_NAME, SYSTEM_USER_PASSWORD } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { getStaffSupportedJurisdictionsList } from '../staffSupportedJurisdictions';
-import { mapUsersToCachedCaseworkers, prepareGetUsersUrl, prepareRoleApiRequest, prepareRoleApiUrl } from './util';
 import { handleNewUsersGet, handlePostRoleAssignments, handlePostRoleAssignmentsWithNewUsers, handleUsersGet } from './caseWorkerService';
-import { CachedCaseworker, LocationApi } from './interfaces/common';
 import { FullUserDetailCache } from './fullUserDetailCache';
+import { baseCaseWorkerRefUrl, baseRoleAssignmentUrl } from './index';
+import { CachedCaseworker, LocationApi } from './interfaces/common';
+import { StaffProfile, StaffUserDetails } from './interfaces/staffUserDetails';
+import { mapUsersToCachedCaseworkers, prepareGetUsersUrl, prepareRoleApiRequest, prepareRoleApiUrl } from './util';
 
 // 10 minutes
 const TTL = 600;
@@ -56,11 +56,7 @@ export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
     refreshRoles = true;
     await getAuthTokens();
     // add the tokens to the request headers
-    const caseworkerHeaders = {
-      'content-type': 'application/json',
-      'serviceAuthorization': `Bearer ${initialServiceAuthToken}`,
-      'authorization': `Bearer ${initialAuthToken}`
-    };
+    const caseworkerHeaders = getRequestHeaders();
     const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
     cachedUsers = [];
     const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
@@ -114,9 +110,7 @@ export async function fetchRoleAssignmentsForNewUsers(cachedUserData: StaffUserD
       const jurisdictions = getStaffSupportedJurisdictionsList();
       const payload = prepareRoleApiRequest(jurisdictions);
       const roleAssignmentHeaders = {
-        'content-type': 'application/json',
-        'serviceAuthorization': `Bearer ${initialServiceAuthToken}`,
-        'authorization': `Bearer ${initialAuthToken}`,
+        ...getRequestHeaders(),
         pageNumber: 0,
         size: 10000
       };
@@ -273,6 +267,14 @@ export function getNewBaseLocation(baseLocationList: LocationApi[], matchingUser
   if (!matchFound && newBaseLocation) {
     return newBaseLocation;
   }
+}
+
+export function getRequestHeaders(): any {
+  return {
+    'content-type': 'application/json',
+    'serviceAuthorization': `Bearer ${initialServiceAuthToken}`,
+    'authorization': `Bearer ${initialAuthToken}`
+  };
 }
 
 // get the request information from config - similarly in node-lib

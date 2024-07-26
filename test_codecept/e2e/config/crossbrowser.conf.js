@@ -5,8 +5,6 @@ const argv = minimist(process.argv.slice(2));
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
-var screenShotUtils = require('protractor-screenshot-utils').ProtractorScreenShotUtils;
-
 
 const config = {
   framework: 'custom',
@@ -45,7 +43,13 @@ const config = {
       tunnelIdentifier: 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
-      maxInstances: 1
+      maxInstances: 1,
+      'sauce:options': {
+        username: process.env.SAUCE_USERNAME,
+        accessKey: process.env.SAUCE_ACCESS_KEY,
+        build: 'CodeceptJS Build',
+        name: 'Chrome Windows Tests',
+      }
     },
     {
       browserName: 'firefox',
@@ -55,7 +59,13 @@ const config = {
       tunnelIdentifier: 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
-      maxInstances: 1
+      maxInstances: 1,
+      'sauce:options': {
+        username: process.env.SAUCE_USERNAME,
+        accessKey: process.env.SAUCE_ACCESS_KEY,
+        build: 'CodeceptJS Build',
+        name: 'Firefox Windows Tests',
+      }
     },
     {
       browserName: 'MicrosoftEdge',
@@ -65,7 +75,13 @@ const config = {
       tunnelIdentifier: 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
-      maxInstances: 1
+      maxInstances: 1,
+      'sauce:options': {
+        username: process.env.SAUCE_USERNAME,
+        accessKey: process.env.SAUCE_ACCESS_KEY,
+        build: 'CodeceptJS Build',
+        name: 'Edge Mac Tests',
+      }
     },
     {
       browserName: 'chrome',
@@ -75,7 +91,13 @@ const config = {
       tunnelIdentifier: 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
-      maxInstances: 1
+      maxInstances: 1,
+      'sauce:options': {
+        username: process.env.SAUCE_USERNAME,
+        accessKey: process.env.SAUCE_ACCESS_KEY,
+        build: 'CodeceptJS Build',
+        name: 'Chrome Mac Tests',
+      }
     },
     {
       browserName: 'firefox',
@@ -85,7 +107,13 @@ const config = {
       tunnelIdentifier: 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
-      maxInstances: 1
+      maxInstances: 1,
+      'sauce:options': {
+        username: process.env.SAUCE_USERNAME,
+        accessKey: process.env.SAUCE_ACCESS_KEY,
+        build: 'CodeceptJS Build',
+        name: 'Firefox Mac Tests',
+      }
     }
   ],
   maxSessions: 1,

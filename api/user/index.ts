@@ -71,7 +71,7 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
     const path = `${baseUrl}/am/role-assignments/actors/${id}`;
     const headers = setHeaders(req);
     if (req.session.roleRequestEtag) {
-      // add the last etag (note: could reuse more etags but requires storing of more data)
+      // add the last etag (note: could re-use more etags but requires storing of more data)
       headers['If-None-Match'] = req.session.roleRequestEtag;
     }
     delete headers.accept;

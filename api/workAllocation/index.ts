@@ -247,10 +247,10 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
       delete req.body.actionByEvent;
     }
     if (actionByEvent === true) {
-      mode = 'AUTO';
+      mode = 'EXUI_CASE_EVENT';
       trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to automated task completion`, traceProps);
     } else {
-      mode = 'MANUAL';
+      mode = 'EXUI_USER';
       trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to manual task action`, traceProps);
     }
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action, mode);
@@ -279,7 +279,7 @@ export async function postTaskCompletionForAccess(req: EnhancedRequest, res: Res
     };
     // line added as requests are different for approval/rejection
     const getTaskPath: string =
-      preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, 'complete', 'MANUAL');
+      preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, 'complete', 'EXUI_USER');
     trackTrace(`complete on task Id: ${taskId} due to specific access processing`, traceProps);
     return await handleTaskPost(getTaskPath, newRequest, req);
   } catch (error) {

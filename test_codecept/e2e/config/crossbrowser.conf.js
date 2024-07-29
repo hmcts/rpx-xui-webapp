@@ -16,7 +16,7 @@ const config = {
     'fail-fast': false,
     'no-source': true,
     strict: true,
-    format: ['node_modules/cucumber-pretty', 'json:./cb_reports/saucelab_results.json'],
+    format: ['json:./cb_reports/saucelab_results.json'],
     retry: 1,
   },
 
@@ -32,6 +32,7 @@ const config = {
 
   specs: ['../crossbrowser/**/*.feature'],
   baseUrl: 'https://manage-case.aat.platform.hmcts.net',
+  directConnect: true,
   allScriptsTimeout: 240000,
   useAllAngular2AppRoots: true,
   multiCapabilities: [
@@ -102,7 +103,7 @@ const config = {
     return browser.getProcessedConfig().then(function (c) {
       return browser.getSession().then(function (session) {
         // required to be here so saucelabs picks up reports to put in jenkins
-        console.log('SauceOnDemandSessionID=' + session.getId() + ' job-name=mv-xb-tests');
+        console.log('SauceOnDemandSessionID=' + session.getId() + ' job-name=MC-Crossbrowser');
       });
     });
   }

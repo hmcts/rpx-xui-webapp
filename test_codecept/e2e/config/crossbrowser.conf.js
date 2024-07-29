@@ -3,13 +3,15 @@ const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 const retry = require('protractor-retry').retry;
 
+console.log(process.env.SAUCE_USERNAME)
+console.log(process.env.SAUCE_ACCESS_KEY)
 const config = {
   framework: 'custom',
   frameworkPath: require.resolve('protractor-cucumber-framework'),
   cucumberOpts: {
     require: ['./cucumber.crossbrowser.conf.js', '../features/stepDefinitions/**/*.steps'],
     keepAlive: false,
-    tags: false,
+    tags: '@crossbrowser',
     profile: false,
     'no-source': true,
     strict: true,

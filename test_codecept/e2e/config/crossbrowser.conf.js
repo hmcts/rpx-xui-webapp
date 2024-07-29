@@ -8,7 +8,6 @@ const config = {
   frameworkPath: require.resolve('protractor-cucumber-framework'),
   cucumberOpts: {
     require: [
-      '../support/timeout.js',
       '../features/stepDefinitions/**/*.steps',
     ],
     keepAlive: false,
@@ -108,5 +107,5 @@ const config = {
     });
   }
 };
-
+config.defaultTimeout = 30000;
 exports.config = config;

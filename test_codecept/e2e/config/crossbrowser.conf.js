@@ -88,7 +88,6 @@ const config = {
       '../crossbrowser/step_definitions/loginLogout.steps.js',
     ],
     tags: [],
-    'no-source': true,
     strict: true,
     format: ['json:./cb_reports/saucelab_results.json'],
     retry: 1,

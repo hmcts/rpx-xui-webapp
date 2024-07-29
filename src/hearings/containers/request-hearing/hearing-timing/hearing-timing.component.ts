@@ -49,6 +49,11 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public hearingWindowChangesConfirmed: boolean;
   public hearingUnavailabilityDatesChanged: boolean;
   public hearingUnavailabilityDatesConfirmed: boolean;
+  public dateRangeStartChanged: boolean;
+  public dateRangeEndChanged: boolean;
+  public firstDateTimeMustBeChanged: boolean;
+  public durationChanged: boolean;
+  public priorityChanged: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
 
   constructor(private readonly formBuilder: FormBuilder,
@@ -78,7 +83,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
 
   public ngOnInit(): void {
     this.initDateConfig();
-    this.getFormData();
+    this.getFormData(this.serviceHearingValuesModel.duration, HearingsUtils.getHearingWindow(this.serviceHearingValuesModel.hearingWindow), this.serviceHearingValuesModel.hearingPriorityType);
     this.initForm();
     this.priorities = this.route.snapshot.data.hearingPriorities.sort((currentPriority: { order: number; }, nextPriority: { order: number; }) => (currentPriority.order < nextPriority.order ? -1 : 1));
     // @ts-ignore
@@ -92,17 +97,21 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
       }
       this.hearingUnavailabilityDatesChanged = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingUnavailabilityDatesChanged &&
         !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingUnavailabilityDatesConfirmed;
+      this.dateRangeStartChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeStart, this.serviceHearingValuesModel.hearingWindow.dateRangeStart);
+      this.dateRangeEndChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeEnd, this.serviceHearingValuesModel.hearingWindow.dateRangeEnd);
+      this.firstDateTimeMustBeChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe, this.serviceHearingValuesModel.hearingWindow.firstDateTimeMustBe);
+      this.durationChanged = HearingsUtils.hasHearingDurationChanged(this.hearingRequestMainModel.hearingDetails.duration, this.serviceHearingValuesModel.duration);
+      this.priorityChanged = HearingsUtils.hasHearingPriorityChanged(this.hearingRequestMainModel.hearingDetails.hearingPriorityType, this.serviceHearingValuesModel.hearingPriorityType);
     }
   }
 
-  public getFormData(): void {
+  public getFormData(durationInput: number, hearingWindowInput: HearingWindowModel, priorityInput: string): void {
     let duration: number;
     let startDate: Date = null;
     let firstDate: Date = null;
     let secondDate: Date = null;
-    duration = this.hearingRequestMainModel.hearingDetails.duration ?
-      this.hearingRequestMainModel.hearingDetails.duration : 0;
-    const hearingWindow: HearingWindowModel = HearingsUtils.getHearingWindow(this.hearingRequestMainModel);
+    duration = durationInput ? durationInput : 0;
+    const hearingWindow: HearingWindowModel = hearingWindowInput;
     if (hearingWindow && (hearingWindow.dateRangeStart || hearingWindow.dateRangeEnd)) {
       this.checkedHearingAvailability = RadioOptions.CHOOSE_DATE_RANGE;
       startDate = hearingWindow.dateRangeStart && new Date(hearingWindow.dateRangeStart);
@@ -113,8 +122,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     } else if (hearingWindow === null) {
       this.checkedHearingAvailability = RadioOptions.NO;
     }
-    const priority: string = this.hearingRequestMainModel.hearingDetails.hearingPriorityType ?
-      this.hearingRequestMainModel.hearingDetails.hearingPriorityType : '';
+    const priority: string = priorityInput ? priorityInput : '';
 
     let days = 0;
     let hours = 0;

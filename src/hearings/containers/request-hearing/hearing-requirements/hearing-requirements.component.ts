@@ -86,7 +86,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
    */
   public initializeHearingRequestFromHearingValues(): void {
     // Get hearing window from hearingRequestMainModel
-    let hearingWindow = HearingsUtils.getHearingWindow(this.hearingRequestMainModel);
+    let hearingWindow = HearingsUtils.getHRMHearingWindow(this.hearingRequestMainModel);
     // Get hearing window from serviceHearingValuesModel if null
     if (!hearingWindow && this.serviceHearingValuesModel.hearingWindow) {
       hearingWindow = this.serviceHearingValuesModel.hearingWindow;

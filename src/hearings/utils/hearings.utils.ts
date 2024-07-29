@@ -75,10 +75,16 @@ export class HearingsUtils {
     return '';
   }
 
-  public static getHearingWindow(hearingRequestMainModel: HearingRequestMainModel): HearingWindowModel {
+  public static getHRMHearingWindow(hearingRequestMainModel: HearingRequestMainModel): HearingWindowModel {
     return hearingRequestMainModel.hearingDetails.hearingWindow && Object.keys(hearingRequestMainModel.hearingDetails.hearingWindow).length === 0
       ? null
       : hearingRequestMainModel.hearingDetails.hearingWindow;
+  }
+
+  public static getHearingWindow(hearingWindow: HearingWindowModel): HearingWindowModel {
+    return hearingWindow && Object.keys(hearingWindow).length === 0
+      ? null
+      : hearingWindow;
   }
 
   public static getPartiesNotAvailableDates(parties: PartyDetailsModel[]): string[] {
@@ -144,5 +150,64 @@ export class HearingsUtils {
     const partiesNotAvailableDatesSHV = HearingsUtils.getPartiesNotAvailableDates(partiesInSHV);
 
     return !_.isEqual(partiesNotAvailableDatesSHV, partiesNotAvailableDatesHMC);
+  }
+
+  public static hasHearingDurationChanged(length: number, lengthToCompare: number): boolean {
+    return !_.isEqual(length, lengthToCompare);
+  }
+
+  public static hasHearingPriorityChanged(priority: string, priorityToCompare: string): boolean {
+    return !_.isEqual(priority, priorityToCompare);
+  }
+
+  /**
+   * Returns a boolean value on the difference between
+   * two hearing windows.
+   *
+   * @static
+   * @param {HearingWindowModel} hearingWindow hearing window.
+   * @param {HearingWindowModel} hearingWindowToCompare hearing window to compare to.
+   * @returns {*} {boolean}
+   * @memberof HearingsUtils
+   */
+  public static hasHearingDatesChanged(hearingWindow: HearingWindowModel, hearingWindowToCompare: HearingWindowModel): boolean {
+    if (hearingWindow?.dateRangeStart || hearingWindow?.dateRangeEnd) {
+      if (hearingWindow?.dateRangeStart) {
+        if (this.hasDateChanged(hearingWindowToCompare?.dateRangeStart, hearingWindow?.dateRangeStart)){
+          return true;
+        }
+      }
+      if (hearingWindow?.dateRangeEnd) {
+        if (HearingsUtils.hasDateChanged(hearingWindowToCompare?.dateRangeEnd, hearingWindow?.dateRangeEnd)){
+          return true;
+        }
+      }
+    }
+
+    if (hearingWindow?.firstDateTimeMustBe) {
+      return HearingsUtils.hasDateChanged(hearingWindowToCompare?.firstDateTimeMustBe, hearingWindow?.firstDateTimeMustBe);
+    }
+    return false;
+  }
+
+  /**
+   * Returns a boolean value on the difference between
+   * the dateRangeEnd of the parties
+   *
+   * @static
+   * @param {String} inputDateString from HMC hearing window returned by HMC API
+   * @param {String} dateToCompareString hearing window returned by the integrated service
+   * @returns {*} {boolean}
+   * @memberof HearingsUtils
+   */
+  public static hasDateChanged(inputDateString: string, dateToCompareString: string): boolean {
+    const inputDate = HearingsUtils.convertStringToDate(inputDateString);
+    const dateToCompare = HearingsUtils.convertStringToDate(dateToCompareString);
+
+    return !_.isEqual(inputDate, dateToCompare);
+  }
+
+  static convertStringToDate(date: string): number {
+    return new Date(date).setHours(0, 0, 0, 0);
   }
 }

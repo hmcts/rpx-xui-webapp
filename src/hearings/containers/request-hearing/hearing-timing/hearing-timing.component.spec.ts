@@ -194,21 +194,18 @@ describe('HearingTimingComponent', () => {
   it('should get getFormData', () => {
     component.hearingRequestMainModel.hearingDetails.hearingWindow = {};
     component.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe = '01-01-2021';
-    component.getFormData();
+    component.getFormData(0, component.hearingRequestMainModel.hearingDetails.hearingWindow, '');
     expect(component.checkedHearingAvailability).toBe(RadioOptions.YES);
-    component.hearingRequestMainModel.hearingDetails.duration = 70;
-    component.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'Urgent';
-    component.hearingRequestMainModel.hearingDetails.hearingWindow = null;
-    component.getFormData();
+    component.getFormData(70, null, 'Urgent');
     expect(component.priorityFormInfo.hours).toBe('1');
     expect(component.priorityFormInfo.minutes).toBe('10');
     expect(component.priorityFormInfo.priority).toBe('Urgent');
     expect(component.checkedHearingAvailability).toBe(RadioOptions.NO);
     component.hearingRequestMainModel.hearingDetails.hearingWindow = { dateRangeStart: '01-01-2021' };
-    component.getFormData();
+    component.getFormData(0, component.hearingRequestMainModel.hearingDetails.hearingWindow, '');
     expect(component.checkedHearingAvailability).toBe(RadioOptions.CHOOSE_DATE_RANGE);
     component.hearingRequestMainModel.hearingDetails.hearingWindow = { dateRangeEnd: '01-01-2021' };
-    component.getFormData();
+    component.getFormData(0, component.hearingRequestMainModel.hearingDetails.hearingWindow, '');
     expect(component.checkedHearingAvailability).toBe(RadioOptions.CHOOSE_DATE_RANGE);
   });
 
@@ -395,7 +392,7 @@ describe('HearingTimingComponent', () => {
     component.showDateAvailability();
     component.prepareHearingRequestData();
     fixture.detectChanges();
-    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeEnd).toBe('2021-01-01T00:00:00.000Z');
+    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeEnd).toBe('2022-11-30T00:00:00.000Z');
   });
 
   it('should check date selection format for form data', () => {

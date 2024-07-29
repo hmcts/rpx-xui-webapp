@@ -587,9 +587,27 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       return false;
     }
     const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
+
+    if (this.hearingRequestMainModel.partyDetails) {
+      if (HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)){
+        return true;
+      }
+    }
     if ((hearingWindowHMC?.firstDateTimeMustBe) ||
       (hearingWindowHMC?.dateRangeStart || hearingWindowHMC?.dateRangeEnd)) {
-      return HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties);
+      if (HearingsUtils.hasHearingDatesChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow, this.serviceHearingValuesModel.hearingWindow)){
+        return true;
+      }
+    }
+    if (this.hearingRequestMainModel.hearingDetails.duration){
+      if (HearingsUtils.hasHearingDurationChanged(this.hearingRequestMainModel.hearingDetails.duration, this.serviceHearingValuesModel.duration)){
+        return true;
+      }
+    }
+    if (this.hearingRequestMainModel.hearingDetails.hearingPriorityType){
+      if (HearingsUtils.hasHearingPriorityChanged(this.hearingRequestMainModel.hearingDetails.hearingPriorityType, this.serviceHearingValuesModel.hearingPriorityType)){
+        return true;
+      }
     }
     return false;
   }

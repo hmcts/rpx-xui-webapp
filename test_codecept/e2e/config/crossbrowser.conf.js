@@ -2,23 +2,20 @@ const tsNode = require('ts-node');
 const path = require('path');
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
+const retry = require('protractor-retry').retry;
 
 const config = {
   framework: 'custom',
   frameworkPath: require.resolve('protractor-cucumber-framework'),
   cucumberOpts: {
-    require: [
-      '../support/world.js',
-      '../support/timeout.js',
-      '../support/hooks.js',
-      '../features/step_definitions/**/*.steps.js'
-    ],
-    tags: ['@crossbrowser'],
+    require: ['./cucumber.crossbrowser.conf.js', '../features/stepDefinitions/**/*.steps'],
+    keepAlive: false,
+    tags: false,
+    profile: false,
+    'no-source': true,
     strict: true,
-    format: ['node_modules/cucumber-pretty', 'json:cb_reports/saucelab_results.json'],
+    format: ['node_modules/cucumber-pretty', 'json:./cb_reports/saucelab_results.json'],
+    retry: 1,
   },
 
   sauceSeleniumAddress: 'ondemand.eu-central-1.saucelabs.com:443/wd/hub',
@@ -31,90 +28,43 @@ const config = {
   SAUCE_REST_ENDPOINT: 'https://eu-central-1.saucelabs.com/rest/v1/',
 
   specs: ['../features/**/*.feature'],
-  baseUrl: process.env.TEST_URL,
+  baseUrl: 'https://manage-case.aat.platform.hmcts.net',
   allScriptsTimeout: 240000,
   useAllAngular2AppRoots: true,
   multiCapabilities: [
     {
-      browserName: 'chrome',
+      browserName: 'firefox',
       version: 'latest',
       platform: 'Windows 10',
-      name: 'chrome-win-tests',
-      tunnelIdentifier: 'reformtunnel',
+      name: 'ia-firefox-windows-test',
+      tunnelIdentifier: process.env.TUNNEL_IDENTIFIER || 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
-      maxInstances: 1,
-      'sauce:options': {
-        username: process.env.SAUCE_USERNAME,
-        accessKey: process.env.SAUCE_ACCESS_KEY,
-        build: 'CodeceptJS Build',
-        name: 'Chrome Windows Tests',
-      }
+      capturePerformance: true,
+      maxInstances: 1
     },
     {
       browserName: 'firefox',
       version: 'latest',
-      platform: 'Windows 10',
-      name: 'firefox-win-tests',
-      tunnelIdentifier: 'reformtunnel',
+      platform: 'macOS 10.13',
+      name: 'ia-firefox-mac-test',
+      tunnelIdentifier: process.env.TUNNEL_IDENTIFIER || 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
+      capturePerformance: true,
       maxInstances: 1,
-      'sauce:options': {
-        username: process.env.SAUCE_USERNAME,
-        accessKey: process.env.SAUCE_ACCESS_KEY,
-        build: 'CodeceptJS Build',
-        name: 'Firefox Windows Tests',
-      }
     },
     {
       browserName: 'MicrosoftEdge',
-      platform: 'macOS 10.15',
-      version: '90.0',
-      name: 'chromium-tests',
-      tunnelIdentifier: 'reformtunnel',
-      extendedDebugging: true,
-      sharedTestFiles: false,
-      maxInstances: 1,
-      'sauce:options': {
-        username: process.env.SAUCE_USERNAME,
-        accessKey: process.env.SAUCE_ACCESS_KEY,
-        build: 'CodeceptJS Build',
-        name: 'Edge Mac Tests',
-      }
-    },
-    {
-      browserName: 'chrome',
       version: 'latest',
-      platform: 'macOS 10.15',
-      name: 'chrome-mac-tests',
-      tunnelIdentifier: 'reformtunnel',
+      platform: 'Windows 10',
+      name: 'ia-microsoft-edge-windows-test',
+      tunnelIdentifier: process.env.TUNNEL_IDENTIFIER || 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
+      capturePerformance: true,
       maxInstances: 1,
-      'sauce:options': {
-        username: process.env.SAUCE_USERNAME,
-        accessKey: process.env.SAUCE_ACCESS_KEY,
-        build: 'CodeceptJS Build',
-        name: 'Chrome Mac Tests',
-      }
     },
-    {
-      browserName: 'firefox',
-      version: 'latest',
-      platform: 'macOS 10.15',
-      name: 'ff-mac-tests',
-      tunnelIdentifier: 'reformtunnel',
-      extendedDebugging: true,
-      sharedTestFiles: false,
-      maxInstances: 1,
-      'sauce:options': {
-        username: process.env.SAUCE_USERNAME,
-        accessKey: process.env.SAUCE_ACCESS_KEY,
-        build: 'CodeceptJS Build',
-        name: 'Firefox Mac Tests',
-      }
-    }
   ],
   maxSessions: 1,
 
@@ -125,28 +75,39 @@ const config = {
         saveCollectedJSON: true,
         automaticallyGenerateReport: true,
         removeExistingJsonReportFile: true,
-        reportName: 'XUI Service Cross Browser Test',
+        reportName: 'MC Cross Browser Test',
         jsonDir: 'reports/tests/crossbrowser',
         reportPath: 'reports/tests/crossbrowser',
-        pageFooter: '<div><p> </p></div>'
-      }
-    }
+        pageFooter: '<div><p> </p></div>',
+      },
+    },
   ],
+
+  onCleanUp(results, files) {
+    retry.onCleanUp(results, files);
+  },
 
   onPrepare() {
     const caps = browser.getCapabilities();
-    browser.manage()
-      .window()
-      .maximize();
-    browser.waitForAngularEnabled(false);
-    global.expect = chai.expect;
-    global.assert = chai.assert;
-    global.should = chai.should;
+    browser.manage().window().maximize();
+    browser.waitForAngularEnabled(true);
 
-    global.screenShotUtils = new screenShotUtils({
-      browserInstance: browser
+    tsNode.register({
+      project: path.join(__dirname, './tsconfig.e2e.json'),
     });
-  }
+    retry.onPrepare();
+  },
+  afterLaunch() {
+    return retry.afterLaunch(1);
+  },
+  onComplete() {
+    return browser.getProcessedConfig().then(function (c) {
+      return browser.getSession().then(function (session) {
+        // required to be here so saucelabs picks up reports to put in jenkins
+        console.log('SauceOnDemandSessionID=' + session.getId() + ' job-name=mc-e2e-tests');
+      });
+    });
+  },
 };
 
 exports.config = config;

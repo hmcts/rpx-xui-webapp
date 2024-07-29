@@ -20,10 +20,7 @@ const config = {
   frameworkPath: resolvedFrameworkPath,
   cucumberOpts: {
     require: [
-      './cucumber.crossbrowser.conf.js', 
       '../features/stepDefinitions/**/*.steps',
-      '../support/hooks.js',
-      '../support/world.js',
       '../support/timeout.js',
     ],
     keepAlive: false,

@@ -1,4 +1,3 @@
-const tsNode = require('ts-node');
 const path = require('path');
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
@@ -91,10 +90,6 @@ const config = {
     const caps = browser.getCapabilities();
     browser.manage().window().maximize();
     browser.waitForAngularEnabled(true);
-
-    tsNode.register({
-      project: path.join(__dirname, './tsconfig.e2e.json'),
-    });
     retry.onPrepare();
   },
   afterLaunch() {

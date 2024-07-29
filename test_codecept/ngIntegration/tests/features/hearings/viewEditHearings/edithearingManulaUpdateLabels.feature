@@ -1,5 +1,5 @@
 
-@ng @functional_enabled @functional_debug
+@ng @functional_enabled
 Feature: Hearings CR84: Manual update labels
     https://tools.hmcts.net/jira/browse/EUI-9096
 

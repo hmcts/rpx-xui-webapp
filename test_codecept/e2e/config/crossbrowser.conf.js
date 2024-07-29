@@ -8,7 +8,7 @@ const config = {
   frameworkPath: require.resolve('protractor-cucumber-framework'),
   cucumberOpts: {
     require: [
-      '../crossbrowser/step_definitions/**/*.steps',
+      '../crossbrowser/**/*.steps',
     ],
     keepAlive: false,
     tags: ['@crossbrowser'],

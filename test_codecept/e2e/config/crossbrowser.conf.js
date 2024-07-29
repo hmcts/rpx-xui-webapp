@@ -8,7 +8,7 @@ const config = {
   frameworkPath: require.resolve('protractor-cucumber-framework'),
   cucumberOpts: {
     require: [
-      '../features/stepDefinitions/**/*.steps',
+      '../crossbrowser/stepDefinitions/**/*.steps',
     ],
     keepAlive: false,
     tags: ['@crossbrowser'],
@@ -30,7 +30,7 @@ const config = {
   sauceKey: process.env.SAUCE_ACCESS_KEY,
   SAUCE_REST_ENDPOINT: 'https://eu-central-1.saucelabs.com/rest/v1/',
 
-  specs: ['../features/**/*.feature'],
+  specs: ['../crossbrowser/**/*.feature'],
   baseUrl: 'https://manage-case.aat.platform.hmcts.net',
   allScriptsTimeout: 240000,
   useAllAngular2AppRoots: true,

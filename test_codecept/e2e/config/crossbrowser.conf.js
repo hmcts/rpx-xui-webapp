@@ -2,10 +2,13 @@ const path = require('path');
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 const retry = require('protractor-retry').retry;
+const { Given } = require('cucumber');
+const tsNode = require('ts-node');
 
 console.log(process.env.SAUCE_USERNAME)
 console.log(process.env.SAUCE_ACCESS_KEY)
 console.log(process.env.TUNNEL_IDENTIFIER)
+console.log(path.join(__dirname, '/tsconfig.e2e.json'))
 const config = {
   framework: 'custom',
   frameworkPath: require.resolve('protractor-cucumber-framework'),
@@ -38,7 +41,7 @@ const config = {
       browserName: 'firefox',
       version: 'latest',
       platform: 'Windows 10',
-      name: 'ia-firefox-windows-test',
+      name: 'MC-firefox-windows-test',
       tunnelIdentifier: 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
@@ -46,10 +49,10 @@ const config = {
       maxInstances: 1
     },
     {
-      browserName: 'firefox',
+      browserName: 'chrome',
       version: 'latest',
       platform: 'macOS 10.13',
-      name: 'ia-firefox-mac-test',
+      name: 'MC-chrome-mac-test',
       tunnelIdentifier: 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
@@ -60,7 +63,7 @@ const config = {
       browserName: 'MicrosoftEdge',
       version: 'latest',
       platform: 'Windows 10',
-      name: 'ia-microsoft-edge-windows-test',
+      name: 'MC-microsoft-edge-windows-test',
       tunnelIdentifier: 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
@@ -90,12 +93,13 @@ const config = {
   },
 
   onPrepare() {
-    console.log(path.join(__dirname, '/tsconfig.e2e.json'))
     const caps = browser.getCapabilities();
     browser.manage().window().maximize();
     browser.waitForAngularEnabled(true);
     retry.onPrepare();
-    require('ts-node/register');
+    tsNode.register({
+      project: '../../../e2e/tsconfig.e2e.json',
+    });
     browser.manage().logs().get('browser').then(function(browserLog) {
       browserLog.forEach(function(log) {
         console.log(log.message);

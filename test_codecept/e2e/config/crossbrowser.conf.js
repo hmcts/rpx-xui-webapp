@@ -8,9 +8,16 @@ console.log(process.env.SAUCE_USERNAME)
 console.log(process.env.SAUCE_ACCESS_KEY)
 console.log(process.env.TUNNEL_IDENTIFIER)
 console.log(path.join(__dirname, '/tsconfig.e2e.json'))
+
+// Debugging statement to check the module name
+const frameworkPath = 'protractor-cucumber-framework';
+console.log(`Resolving module: ${frameworkPath}`);
+const resolvedFrameworkPath = require.resolve(frameworkPath);
+console.log(`Resolved path: ${resolvedFrameworkPath}`);
+
 const config = {
   framework: 'custom',
-  frameworkPath: require.resolve('protractor-cucumber-framework'),
+  frameworkPath: resolvedFrameworkPath,
   cucumberOpts: {
     require: [
       './cucumber.crossbrowser.conf.js', 

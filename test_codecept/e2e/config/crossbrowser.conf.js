@@ -11,7 +11,7 @@ const config = {
       '../crossbrowser/**/*.steps',
     ],
     keepAlive: false,
-    tags: ['@crossbrowser'],
+    tags: [],
     profile: false,
     'fail-fast': false,
     'no-source': true,

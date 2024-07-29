@@ -5,8 +5,7 @@ const supportedBrowsers = {
       platformName: 'Windows 10',
       browserVersion: 'latest',
       'sauce:options': {
-        name: 'Manage Case: IE11',
-        screenResolution: '1400x1050'
+        name: 'Manage Case: IE11'
       }
     },
     edge_win_latest: {
@@ -25,8 +24,7 @@ const supportedBrowsers = {
       browserVersion: 'latest',
       'sauce:options': {
         name: 'Manage Case: MAC_SAFARI',
-        seleniumVersion: '3.141.59',
-        screenResolution: '1400x1050'
+        seleniumVersion: '3.141.59'
       }
     }
   },
@@ -117,7 +115,7 @@ const setupConfig = {
       waitForNavigation: "domcontentloaded",
       cssSelectorsEnabled: 'true',
       host: 'ondemand.eu-central-1.saucelabs.com',
-      port: 80,
+      port: 443,
       region: 'eu',
       capabilities: {}
     },

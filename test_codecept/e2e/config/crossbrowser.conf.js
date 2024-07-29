@@ -1,18 +1,20 @@
 const path = require('path');
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
-const retry = require('protractor-retry').retry;
 const tsNode = require('ts-node');
 
 const config = {
-  framework: 'cucumber',
+  framework: 'custom',
+  frameworkPath: require.resolve('protractor-cucumber-framework'),
   cucumberOpts: {
     require: [
+      '../support/timeout.js',
       '../features/stepDefinitions/**/*.steps',
     ],
     keepAlive: false,
-    tags: '@crossbrowser',
+    tags: ['@crossbrowser'],
     profile: false,
+    'fail-fast': false,
     'no-source': true,
     strict: true,
     format: ['node_modules/cucumber-pretty', 'json:./cb_reports/saucelab_results.json'],
@@ -23,6 +25,7 @@ const config = {
   host: 'ondemand.eu-central-1.saucelabs.com',
   sauceRegion: 'eu',
   port: 80,
+  processes: 23,
   sauceConnect: true,
   sauceUser: process.env.SAUCE_USERNAME,
   sauceKey: process.env.SAUCE_ACCESS_KEY,
@@ -47,7 +50,7 @@ const config = {
     {
       browserName: 'chrome',
       version: 'latest',
-      platform: 'macOS 10.13',
+      platform: 'macOS 10.15',
       name: 'MC-chrome-mac-test',
       tunnelIdentifier: 'reformtunnel',
       extendedDebugging: true,
@@ -84,35 +87,26 @@ const config = {
     },
   ],
 
-  onCleanUp(results, files) {
-    retry.onCleanUp(results, files);
+  onPrepare() {
+    browser.getCapabilities().then(function (caps) {
+      browser.browserName = caps.get('browserName');
+    });
+
+    browser.waitForAngularEnabled(false);
+
+    tsNode.register({
+      project: path.join(__dirname, './tsconfig.e2e.json')
+    });
   },
 
-  onPrepare() {
-    const caps = browser.getCapabilities();
-    browser.manage().window().maximize();
-    browser.waitForAngularEnabled(true);
-    retry.onPrepare();
-    tsNode.register({
-      project: path.join(__dirname, '/tsconfig.e2e.json'),
-    });
-    browser.manage().logs().get('browser').then(function(browserLog) {
-      browserLog.forEach(function(log) {
-        console.log(log.message);
-      });
-    });
-  },
-  afterLaunch() {
-    return retry.afterLaunch(1);
-  },
   onComplete() {
     return browser.getProcessedConfig().then(function (c) {
       return browser.getSession().then(function (session) {
         // required to be here so saucelabs picks up reports to put in jenkins
-        console.log('SauceOnDemandSessionID=' + session.getId() + ' job-name=mc-crossbrowser-tests');
+        console.log('SauceOnDemandSessionID=' + session.getId() + ' job-name=mv-xb-tests');
       });
     });
-  },
+  }
 };
 
 exports.config = config;

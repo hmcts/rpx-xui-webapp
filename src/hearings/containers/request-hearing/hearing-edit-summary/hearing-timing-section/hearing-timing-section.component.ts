@@ -22,7 +22,8 @@ export class HearingTimingSectionComponent implements OnInit {
   @Input() public serviceHearingValuesModel: ServiceHearingValuesModel;
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
-  constructor(private readonly hearingsService: HearingsService) {}
+  constructor(private readonly hearingsService: HearingsService) {
+  }
 
   public hearingLength: string;
   public specificDate: string;
@@ -134,20 +135,14 @@ export class HearingTimingSectionComponent implements OnInit {
   }
 
   private setAmendmentLabels(): void {
-    this.hearingLengthChanged = !_.isEqual(
-      this.hearingRequestToCompareMainModel.hearingDetails.duration,
-      this.hearingRequestMainModel.hearingDetails.duration
-    );
+    this.hearingLengthChanged = HearingsUtils.hasHearingDurationChanged(this.hearingRequestToCompareMainModel.hearingDetails.duration, this.hearingRequestMainModel.hearingDetails.duration);
 
-    this.hearingDateChanged = this.isHearingDateChanged();
+    this.hearingDateChanged = HearingsUtils.hasHearingDatesChanged(this.hearingRequestToCompareMainModel.hearingDetails.hearingWindow, this.hearingRequestMainModel.hearingDetails.hearingWindow);
 
-    this.hearingPriorityChanged = !_.isEqual(
-      this.hearingRequestToCompareMainModel.hearingDetails.hearingPriorityType,
-      this.hearingRequestMainModel.hearingDetails.hearingPriorityType
-    );
+    this.hearingPriorityChanged = HearingsUtils.hasHearingPriorityChanged(this.hearingRequestToCompareMainModel.hearingDetails.hearingPriorityType, this.hearingRequestMainModel.hearingDetails.hearingPriorityType);
 
     this.hearingUnavailabilityDatesChanged = !_.isEqual(
-      HearingsUtils.getPartiesNotAvailableDates(this.serviceHearingValuesModel.parties),
+      HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestMainModel.partyDetails),
       HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestToCompareMainModel.partyDetails)
     );
     this.showActionNeededLabelForPageTitle =
@@ -163,37 +158,5 @@ export class HearingTimingSectionComponent implements OnInit {
         this.hearingPriorityChanged ||
         this.hearingUnavailabilityDatesConfirmed
       );
-  }
-
-  private isHearingDateChanged(): boolean {
-    const hearingWindowToCompare = this.hearingRequestToCompareMainModel.hearingDetails.hearingWindow;
-    const hearingWindow = this.hearingRequestMainModel.hearingDetails.hearingWindow;
-
-    if (hearingWindow?.dateRangeStart || hearingWindow?.dateRangeEnd) {
-      if (hearingWindow?.dateRangeStart) {
-        if (!_.isEqual(
-          new Date(hearingWindowToCompare.dateRangeStart).setHours(0, 0, 0, 0),
-          new Date(hearingWindow.dateRangeStart).setHours(0, 0, 0, 0)
-        )) {
-          return true;
-        }
-      }
-      if (hearingWindow?.dateRangeEnd) {
-        if (!_.isEqual(
-          new Date(hearingWindowToCompare.dateRangeEnd).setHours(0, 0, 0, 0),
-          new Date(hearingWindow.dateRangeEnd).setHours(0, 0, 0, 0)
-        )) {
-          return true;
-        }
-      }
-    }
-
-    if (hearingWindow?.firstDateTimeMustBe) {
-      return !_.isEqual(
-        new Date(hearingWindowToCompare.firstDateTimeMustBe).setHours(0, 0, 0, 0),
-        new Date(hearingWindow.firstDateTimeMustBe).setHours(0, 0, 0, 0)
-      );
-    }
-    return !_.isEqual(hearingWindow, hearingWindowToCompare);
   }
 }

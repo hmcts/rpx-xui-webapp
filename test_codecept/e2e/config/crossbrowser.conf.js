@@ -6,20 +6,6 @@ const tsNode = require('ts-node');
 const config = {
   framework: 'custom',
   frameworkPath: require.resolve('protractor-cucumber-framework'),
-  cucumberOpts: {
-    require: [
-      '../crossbrowser/**/*.steps',
-    ],
-    keepAlive: false,
-    tags: [],
-    profile: false,
-    'fail-fast': false,
-    'no-source': true,
-    strict: true,
-    format: ['json:./cb_reports/saucelab_results.json'],
-    retry: 1,
-  },
-
   sauceSeleniumAddress: 'ondemand.eu-central-1.saucelabs.com:443/wd/hub',
   host: 'ondemand.eu-central-1.saucelabs.com',
   sauceRegion: 'eu',
@@ -30,6 +16,10 @@ const config = {
   sauceKey: process.env.SAUCE_ACCESS_KEY,
   SAUCE_REST_ENDPOINT: 'https://eu-central-1.saucelabs.com/rest/v1/',
 
+  params: {
+    serverUrls: process.env.TEST_URL || 'http://localhost:3000/',
+    targetEnv: argv.env || 'local'
+  },
   specs: ['../crossbrowser/**/*.feature'],
   baseUrl: 'https://manage-case.aat.platform.hmcts.net',
   allScriptsTimeout: 240000,
@@ -70,7 +60,19 @@ const config = {
     },
   ],
   maxSessions: 1,
-
+  cucumberOpts: {
+    require: [
+      '../crossbrowser/**/*.steps',
+    ],
+    keepAlive: false,
+    tags: [],
+    profile: false,
+    'fail-fast': false,
+    'no-source': true,
+    strict: true,
+    format: ['json:./cb_reports/saucelab_results.json'],
+    retry: 1,
+  },
   plugins: [
     {
       package: 'protractor-multiple-cucumber-html-reporter-plugin',

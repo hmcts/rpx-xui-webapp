@@ -46,20 +46,6 @@ const config = {
     },
     {
       browserName: 'chrome',
-      platformName: 'macOS 12',
-      browserVersion: 'latest',
-      tunnelIdentifier: 'reformtunnel',
-      acceptSslCerts: true,
-      pageLoadStrategy: 'normal',
-      idleTimeout: 700,
-      'sauce:options': {
-        name: 'MC-chrome-mac-test',
-        screenResolution: '1280x960',
-        extendedDebugging: true,
-      },
-    },
-    {
-      browserName: 'chrome',
       version: 'latest',
       platform: 'macOS 10.15',
       name: 'MC-chrome-mac-test',

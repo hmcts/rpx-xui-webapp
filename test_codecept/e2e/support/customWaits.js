@@ -1,5 +1,4 @@
-// var EC = protractor.ExpectedConditions;
-
+const EC = protractor.ExpectedConditions;
 
 const CucumberReporter = require('../../codeceptCommon/reportLogger');
 const BrowserLogs = require('./browserLogs');
@@ -43,7 +42,7 @@ class BrowserWaits{
     async waitForElement(element, message, waitForSeconds) {
         const startTime = Date.now();
         CucumberReporter.AddMessage("ELEMENT_WAIT: at " + this.__getCallingFunctionName()+ " " + JSON.stringify(element.selector)+" at ");
-        await element.wait(this.waitTime / 1000)
+        await this.waitForElementTime(element, this.waitTime / 1000);
 
         // await this.waitForConditionAsync(async () => {
         //     const isPresent = await element.isPresent();

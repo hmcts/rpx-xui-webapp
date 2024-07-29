@@ -32,7 +32,6 @@ const config = {
 
   specs: ['../crossbrowser/**/*.feature'],
   baseUrl: 'https://manage-case.aat.platform.hmcts.net',
-  directConnect: true,
   allScriptsTimeout: 240000,
   useAllAngular2AppRoots: true,
   multiCapabilities: [

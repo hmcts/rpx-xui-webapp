@@ -142,13 +142,15 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
     return hearingTypeFromLookup ? hearingTypeFromLookup.value_en : '';
   }
 
+  // Calculates the hearingDateRange to display accurately in different timezone in the following files
+  // hearing-actual-edit-summary.html, hearing-actuals-edit-summary.component.html
   public calculateEarliestHearingDate(hearingDays: ActualHearingDayModel[]): string {
-    const moments: moment.Moment[] = hearingDays.map((d) => moment(d.hearingDate));
+    const moments: moment.Moment[] = hearingDays.map((d) => moment.tz(d.hearingStartTime, moment.tz.guess()));
     if (moments.length > 1) {
-      return `${moment.min(moments).format('DD MMMM YYYY')} - ${moment.max(moments).format('DD MMMM YYYY')}`;
+      return `${moment.min(moments).format(HearingDateEnum.DateAndTimeInZoneZ)} - ${moment.max(moments).format(HearingDateEnum.DateAndTimeInZoneZ)}`;
     }
 
-    return moment.max(moments).format(HearingDateEnum.DisplayMonth);
+    return moment.max(moments).format(HearingDateEnum.DateAndTimeInZoneZ);
   }
 
   public getPauseDateTime(day: ActualHearingDayModel, state: 'start' | 'end'): string {

@@ -13,6 +13,7 @@ import { LovRefDataModel } from '../../models/lovRefData.model';
 import { ConvertToValuePipe } from '../../pipes/convert-to-value.pipe';
 import { HearingAnswersPipe } from '../../pipes/hearing-answers.pipe';
 import { HearingActualSummaryComponent } from './hearing-actual-summary.component';
+import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
 
 describe('HearingActualSummaryComponent', () => {
   let component: HearingActualSummaryComponent;
@@ -398,7 +399,7 @@ describe('HearingActualSummaryComponent', () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingActualSummaryComponent,
-        HearingAnswersPipe, ConvertToValuePipe, MockRpxTranslatePipe
+        HearingAnswersPipe, ConvertToValuePipe, MockRpxTranslatePipe, DatePipe
       ],
       providers: [
         provideMockStore({ initialState }),
@@ -414,7 +415,8 @@ describe('HearingActualSummaryComponent', () => {
             },
             fragment: of('point-to-me')
           }
-        }
+        },
+        DatePipe, FormatTranslatorService
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })

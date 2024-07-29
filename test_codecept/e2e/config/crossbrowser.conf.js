@@ -63,6 +63,7 @@ const config = {
   cucumberOpts: {
     require: [
       '../crossbrowser/**/*.steps',
+      '../crossbrowser/step_definitions/loginLogout.steps.js',
     ],
     keepAlive: false,
     tags: [],

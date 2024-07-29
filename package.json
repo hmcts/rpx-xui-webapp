@@ -51,7 +51,7 @@
     "test:all": "yarn test:ng && yarn test:node && yarn test:smoke && yarn test:functional && yarn test:crossbrowser",
     "test:smoke": "yarn playwright install chromium && TEST_TYPE=smoke npx codeceptjs run --plugins cucumberJsonReporter --plugins retryFailedStep --config ./test_codecept/codeceptCommon/codecept.conf.ts --features --grep @smoke --reporter mochawesome",
     "test:smoke:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
-    "test:crossbrowser": "npx codeceptjs run --config ./test_codecept/codeceptCommon/crossbrowser.conf.ts --features --grep @crossbrowser",
+    "test:crossbrowser": "codeceptjs run --config ./test_codecept/e2e/config/crossbrowser.conf.ts",
     "test:fullfunctional": "yarn playwright install && npm-run-all -p -l -n -c test:api test:xuiIntegration test:codeceptE2E",
     "test:playwrightE2E": "yarn playwright install && npx playwright test --project chromium",
     "test:fullfunctional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js --local",
@@ -165,6 +165,7 @@
     "ts-enum-util": "4.0.2",
     "tslib": "^2.6.1",
     "web-animations-js": "^2.3.2",
+    "webdriverio": "^7.30.2",
     "yarn": "^1.22.18",
     "zone.js": "~0.14.4"
   },

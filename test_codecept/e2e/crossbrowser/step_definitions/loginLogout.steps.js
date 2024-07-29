@@ -21,6 +21,10 @@ let invalidCredentialsCounter = 0;
 let testCounter = 0;
 
 async function loginattemptCheckAndRelogin(username, password, world) {
+
+  if (typeof username !== 'string' || typeof password !== 'string') {
+    throw new Error('Username or password is undefined');
+  }
   testCounter++;
   let loginAttemptRetryCounter = 1;
   // if (loginAttemptRetryCounter === 1){

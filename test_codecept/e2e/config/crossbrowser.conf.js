@@ -87,7 +87,6 @@ const config = {
       '../crossbrowser/**/*.steps',
       '../crossbrowser/step_definitions/loginLogout.steps.js',
     ],
-    keepAlive: false,
     tags: [],
     profile: false,
     'fail-fast': false,

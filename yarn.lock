@@ -7806,6 +7806,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"array-unique@npm:~0.3.2":
+  version: 0.3.2
+  resolution: "array-unique@npm:0.3.2"
+  checksum: da344b89cfa6b0a5c221f965c21638bfb76b57b45184a01135382186924f55973cd9b171d4dad6bf606c6d9d36b0d721d091afdc9791535ead97ccbe78f8a888
+  languageName: node
+  linkType: hard
+
 "arraybuffer.prototype.slice@npm:^1.0.1":
   version: 1.0.1
   resolution: "arraybuffer.prototype.slice@npm:1.0.1"
@@ -7884,7 +7891,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"assertion-error@npm:^1.1.0":
+"assertion-error@npm:^1.0.1, assertion-error@npm:^1.1.0":
   version: 1.1.0
   resolution: "assertion-error@npm:1.1.0"
   checksum: fd9429d3a3d4fd61782eb3962ae76b6d08aa7383123fca0596020013b3ebd6647891a85b05ce821c47d1471ed1271f00b0545cf6a4326cf2fc91efcc3b0fbecf
@@ -8938,6 +8945,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chai-as-promised@npm:5.x":
+  version: 5.3.0
+  resolution: "chai-as-promised@npm:5.3.0"
+  peerDependencies:
+    chai: ">= 2.1.2 < 4"
+  checksum: c34c3d5580d460187dcc83713803cacca44b5b503728173ce1b31e7a0c50db170775f0e427ba2848d36f7acf2a5939708ae0a33bfb69e9b58e62303dfe238ca0
+  languageName: node
+  linkType: hard
+
 "chai-as-promised@npm:7.1.1":
   version: 7.1.1
   resolution: "chai-as-promised@npm:7.1.1"
@@ -8959,6 +8975,17 @@ __metadata:
   peerDependencies:
     chai: ">=2.1.2"
   checksum: fb8500cab7dc2227a5da7dee7d24ed04d5e0d0cabad8c34f0c55ac1109cc812905370af0f71aa2663c7b672896e3e8dbfc40d069559db7b61c909bc9a206206d
+  languageName: node
+  linkType: hard
+
+"chai@npm:3.x":
+  version: 3.5.0
+  resolution: "chai@npm:3.5.0"
+  dependencies:
+    assertion-error: ^1.0.1
+    deep-eql: ^0.1.3
+    type-detect: ^1.0.0
+  checksum: d7e0c52913ebc5411ebf26bbaa014abec4e25ba341fe3e8c2fad09ee657706360d9114dda81e3ebb2931e54e86caf745b9fe4c07143a8121be13a4a5ac331a50
   languageName: node
   linkType: hard
 
@@ -10891,7 +10918,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:2.6.9, debug@npm:^2.2.0, debug@npm:^2.6.9":
+"debug@npm:2.6.9, debug@npm:^2.1.1, debug@npm:^2.2.0, debug@npm:^2.6.9":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
   dependencies:
@@ -11028,6 +11055,15 @@ __metadata:
   version: 1.0.2
   resolution: "deep-diff@npm:1.0.2"
   checksum: 9de8b5eedc1957116e1b47e4c3c4e3dbe23cb741abefc5ec8829a12e77958c689ac46888a3c35320f976cf42fb6de2b016e158facdb24d894ab5b5fdabad9b34
+  languageName: node
+  linkType: hard
+
+"deep-eql@npm:^0.1.3":
+  version: 0.1.3
+  resolution: "deep-eql@npm:0.1.3"
+  dependencies:
+    type-detect: 0.1.1
+  checksum: 959734acb233d00727b3e64c8c803d233315ad8d4f7ccf89455a8a12f745055e78df087d1afabbe8931a9387f585d3bc4bf57bdb94e5e52055b38f5ae9360ca7
   languageName: node
   linkType: hard
 
@@ -18424,7 +18460,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mkdirp@npm:0.5.x, mkdirp@npm:>=0.5 0, mkdirp@npm:^0.5.4, mkdirp@npm:^0.5.5, mkdirp@npm:^0.5.6":
+"mkdirp@npm:0.5.x, mkdirp@npm:>=0.5 0, mkdirp@npm:^0.5.1, mkdirp@npm:^0.5.4, mkdirp@npm:^0.5.5, mkdirp@npm:^0.5.6":
   version: 0.5.6
   resolution: "mkdirp@npm:0.5.6"
   dependencies:
@@ -20997,6 +21033,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"protractor-retry@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "protractor-retry@npm:2.0.1"
+  dependencies:
+    array-unique: ~0.3.2
+    chai: 3.x
+    chai-as-promised: 5.x
+    cross-spawn: ^7.0.2
+    debug: ^2.1.1
+    lodash: ^4.17.19
+    mkdirp: ^0.5.1
+    q: ^1.4.1
+    xml2js: ~0.4.17
+    yargs: ^16.1.1
+  checksum: e3b383fb11b98b6b90ed1325c5620c0907965057512ff4abb274a9d4234526a7ddcd3be4412600d8fc17849f010e46800e291ca9c445be11001c57828b5d8bb8
+  languageName: node
+  linkType: hard
+
 "protractor-screenshot-utils@npm:^1.0.5":
   version: 1.0.6
   resolution: "protractor-screenshot-utils@npm:1.0.6"
@@ -22274,6 +22328,7 @@ __metadata:
     protractor: ~7.0.0
     protractor-cucumber-framework: ^9.7.0
     protractor-multiple-cucumber-html-reporter-plugin: 1.8.1
+    protractor-retry: ^2.0.1
     protractor-screenshot-utils: ^1.0.5
     puppeteer: ^22.4.1
     rpx-xui-translation: 1.0.4
@@ -24655,10 +24710,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"type-detect@npm:0.1.1":
+  version: 0.1.1
+  resolution: "type-detect@npm:0.1.1"
+  checksum: 3660c29269d15d4cb7d8a6ed26b1cf8cb5789ec9b8ca78c99aef642a83794aba662c57d303e2eb0c2910af57de00db8f38dba8bd7bce13d30c49b0b5fa6b7bde
+  languageName: node
+  linkType: hard
+
 "type-detect@npm:4.0.8, type-detect@npm:^4.0.0, type-detect@npm:^4.0.5, type-detect@npm:^4.0.8":
   version: 4.0.8
   resolution: "type-detect@npm:4.0.8"
   checksum: 62b5628bff67c0eb0b66afa371bd73e230399a8d2ad30d852716efcc4656a7516904570cd8631a49a3ce57c10225adf5d0cbdcb47f6b0255fe6557c453925a15
+  languageName: node
+  linkType: hard
+
+"type-detect@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "type-detect@npm:1.0.0"
+  checksum: ea4eb0a9da4bbdfc92f00c2eab4b1f6e769ae0dbf98219992aeea3b207f2bc40bd4ee9d3fc71adac0ee7799f1e21efe0002858f4ed09a04ee15bc9051c6b8bb2
   languageName: node
   linkType: hard
 
@@ -26050,7 +26119,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xml2js@npm:^0.4.17":
+"xml2js@npm:^0.4.17, xml2js@npm:~0.4.17":
   version: 0.4.23
   resolution: "xml2js@npm:0.4.23"
   dependencies:

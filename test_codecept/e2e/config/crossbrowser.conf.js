@@ -39,7 +39,7 @@ const config = {
       version: 'latest',
       platform: 'Windows 10',
       name: 'ia-firefox-windows-test',
-      tunnelIdentifier: process.env.TUNNEL_IDENTIFIER || 'reformtunnel',
+      tunnelIdentifier: 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
       capturePerformance: true,
@@ -50,7 +50,7 @@ const config = {
       version: 'latest',
       platform: 'macOS 10.13',
       name: 'ia-firefox-mac-test',
-      tunnelIdentifier: process.env.TUNNEL_IDENTIFIER || 'reformtunnel',
+      tunnelIdentifier: 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
       capturePerformance: true,
@@ -61,7 +61,7 @@ const config = {
       version: 'latest',
       platform: 'Windows 10',
       name: 'ia-microsoft-edge-windows-test',
-      tunnelIdentifier: process.env.TUNNEL_IDENTIFIER || 'reformtunnel',
+      tunnelIdentifier: 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
       capturePerformance: true,
@@ -94,6 +94,9 @@ const config = {
     browser.manage().window().maximize();
     browser.waitForAngularEnabled(true);
     retry.onPrepare();
+    require('ts-node').register({
+      project: path.join(__dirname, './tsconfig.e2e.json')
+   });
     browser.manage().logs().get('browser').then(function(browserLog) {
       browserLog.forEach(function(log) {
         console.log(log.message);

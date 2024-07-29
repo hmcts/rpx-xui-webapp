@@ -98,7 +98,7 @@ const config = {
     browser.waitForAngularEnabled(true);
     retry.onPrepare();
     tsNode.register({
-      project: '../../../e2e/tsconfig.e2e.json',
+      project: '../../e2e/tsconfig.e2e.json',
     });
     browser.manage().logs().get('browser').then(function(browserLog) {
       browserLog.forEach(function(log) {

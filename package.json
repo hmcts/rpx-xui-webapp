@@ -181,6 +181,7 @@
     "@angular/cli": "^17.3.6",
     "@angular/compiler-cli": "^17.3.6",
     "@angular/language-service": "~17.3.6",
+    "@cucumber/cucumber": "^7.1.0",
     "@ngrx/schematics": "^17.2.0",
     "@pact-foundation/pact": "^9.11.1",
     "@pact-foundation/pact-node": "^10.9.7",

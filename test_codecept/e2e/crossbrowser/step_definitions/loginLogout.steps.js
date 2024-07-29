@@ -3,7 +3,7 @@
 const loginPage = require('../../features/pageObjects/loginLogoutObjects');
 const headerPage = require('../../features/pageObjects/headerPage');
 
-const { defineSupportCode, Given, When, Then } = require('cucumber');
+const { defineSupportCode, Given, When, Then } = require('@cucumber/cucumber');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = require('../../support/constants');
 const config = require('../../config/conf.js');
 const BrowserWaits = require('../../support/customWaits');

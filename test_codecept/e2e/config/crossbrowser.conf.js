@@ -5,6 +5,7 @@ const retry = require('protractor-retry').retry;
 
 console.log(process.env.SAUCE_USERNAME)
 console.log(process.env.SAUCE_ACCESS_KEY)
+console.log(process.env.TUNNEL_IDENTIFIER)
 const config = {
   framework: 'custom',
   frameworkPath: require.resolve('protractor-cucumber-framework'),
@@ -93,6 +94,11 @@ const config = {
     browser.manage().window().maximize();
     browser.waitForAngularEnabled(true);
     retry.onPrepare();
+    browser.manage().logs().get('browser').then(function(browserLog) {
+      browserLog.forEach(function(log) {
+        console.log(log.message);
+      });
+    });
   },
   afterLaunch() {
     return retry.afterLaunch(1);

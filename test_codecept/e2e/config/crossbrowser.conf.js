@@ -90,13 +90,12 @@ const config = {
   },
 
   onPrepare() {
+    console.log(path.join(__dirname, '/tsconfig.e2e.json'))
     const caps = browser.getCapabilities();
     browser.manage().window().maximize();
     browser.waitForAngularEnabled(true);
     retry.onPrepare();
-    require('ts-node').register({
-      project: path.join(__dirname, './tsconfig.e2e.json')
-   });
+    require('ts-node/register');
     browser.manage().logs().get('browser').then(function(browserLog) {
       browserLog.forEach(function(log) {
         console.log(log.message);

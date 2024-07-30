@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 const tsNode = require('ts-node');
@@ -94,6 +95,13 @@ const config = {
   ],
 
   onPrepare() {
+    const reportsDir = 'cb_reports/';
+    console.log('Preparing to run crossbrowser tests');
+    console.log(fs.existsSync(reportsDir));
+    if (!fs.existsSync(reportsDir)) {
+      fs.mkdirSync(reportsDir, { recursive: true });
+    }
+
     browser.getCapabilities().then(function (caps) {
       browser.browserName = caps.get('browserName');
     });

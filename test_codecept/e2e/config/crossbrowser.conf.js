@@ -74,7 +74,7 @@ const config = {
       '../crossbrowser/step_definitions/loginLogout.steps.js'
     ],
     tags: [],
-    format: ['json:../../../functional-output/tests/crossbrowser/saucelab_results.json'],
+    format: ['json:../../../functional-output/crossbrowser/saucelab_results.json'],
     retry: 1
   },
   plugins: [

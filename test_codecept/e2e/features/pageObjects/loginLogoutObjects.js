@@ -1,6 +1,7 @@
 'use strict';
 
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = require('../../support/constants');
+
 var BrowserWaits = require('../../support/customWaits');
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
@@ -10,7 +11,7 @@ function loginLogoutObjects() {
 
   this.emailAddress = element(by.css("[id='username']"));
   this.password = element(by.css("[id='password']"));
-  this.signinTitle = element(by.xpath("//*[@id=\"authorizeCommand\"]"));
+  this.signinTitle = element(by.xpath("//*[@id=\"authorizeCommand\"]/h1"));
   this.signinBtn = element(by.css("input.button"));
   this.signOutlink = element(by.xpath("//a[@class='hmcts-header__navigation-link']"));
   this.failure_error_heading = element(by.css("[id='validation-error-summary-heading']"));
@@ -40,7 +41,7 @@ function loginLogoutObjects() {
 
 
   this.givenIAmLoggedIn = async function (email,password) {
-    // const isSessionReused = await this.reuseLoginSession(email)
+    const isSessionReused = await this.reuseLoginSession(email)
     // if (isSessionReused){
     //   return;
     // }

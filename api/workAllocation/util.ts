@@ -43,7 +43,7 @@ export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
 
 export function preparePostTaskUrlAction(baseUrl: string, taskId: string, action: string, mode: string): string {
   if (action === 'complete') {
-    return `${baseUrl}/task/${taskId}/${action}?completionProcess=${mode}`;
+    return `${baseUrl}/task/${taskId}/${action}?completion_process=${mode}`;
   }
   return `${baseUrl}/task/${taskId}/${action}`;
 }

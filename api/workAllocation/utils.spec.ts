@@ -369,7 +369,7 @@ describe('workAllocation.utils', () => {
       const ACTION: string = 'complete';
       const MODE: string = 'EXUI_USER_COMPLETION';
       const url = preparePostTaskUrlAction(BASE_URL, TASK_ID, ACTION, MODE);
-      expect(url).to.equal('base/task/123456/complete?completionProcess=EXUI_USER_COMPLETION');
+      expect(url).to.equal('base/task/123456/complete?completion_process=EXUI_USER_COMPLETION');
     });
   });
 

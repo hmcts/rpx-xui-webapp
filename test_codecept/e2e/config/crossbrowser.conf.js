@@ -42,7 +42,7 @@ const config = {
       extendedDebugging: true,
       sharedTestFiles: false,
       capturePerformance: true,
-      maxInstances: 1,
+      maxInstances: 1
     },
     {
       browserName: 'firefox',
@@ -85,8 +85,8 @@ const config = {
         automaticallyGenerateReport: true,
         removeExistingJsonReportFile: true,
         reportName: 'MC Cross Browser Test',
-        jsonDir: 'functional-output/tests/crossbrowser',
-        reportPath: 'functional-output/tests/crossbrowser',
+        jsonDir: '../../../functional-output/tests/crossbrowser',
+        reportPath: '../../../functional-output/tests/crossbrowser',
         pageFooter: '<div><p> </p></div>'
       }
     }

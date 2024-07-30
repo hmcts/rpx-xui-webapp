@@ -64,18 +64,18 @@ const config = {
       extendedDebugging: true,
       sharedTestFiles: false,
       capturePerformance: true,
-      maxInstances: 1,
-    },
+      maxInstances: 1
+    }
   ],
   maxSessions: 1,
   cucumberOpts: {
     require: [
       './crossbrowser-timeout.js',
-      '../crossbrowser/step_definitions/loginLogout.steps.js',
+      '../crossbrowser/step_definitions/loginLogout.steps.js'
     ],
     tags: [],
     format: ['json:./cb_reports/saucelab_results.json'],
-    retry: 1,
+    retry: 1
   },
   plugins: [
     {
@@ -87,9 +87,9 @@ const config = {
         reportName: 'MC Cross Browser Test',
         jsonDir: 'reports/tests/crossbrowser',
         reportPath: 'reports/tests/crossbrowser',
-        pageFooter: '<div><p> </p></div>',
-      },
-    },
+        pageFooter: '<div><p> </p></div>'
+      }
+    }
   ],
 
   onPrepare() {
@@ -100,7 +100,7 @@ const config = {
     browser.waitForAngularEnabled(false);
 
     tsNode.register({
-      project: path.join(__dirname, '/tsconfig.e2e.json')
+      project: path.join(__dirname, './tsconfig.e2e.json')
     });
   },
 

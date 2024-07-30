@@ -74,7 +74,7 @@ const config = {
       '../crossbrowser/step_definitions/loginLogout.steps.js'
     ],
     tags: [],
-    format: ['json:./cb_reports/saucelab_results.json'],
+    format: ['json:functional-output/tests/crossbrowser/saucelab_results.json'],
     retry: 1
   },
   plugins: [
@@ -85,8 +85,8 @@ const config = {
         automaticallyGenerateReport: true,
         removeExistingJsonReportFile: true,
         reportName: 'MC Cross Browser Test',
-        jsonDir: 'reports/tests/crossbrowser',
-        reportPath: 'reports/tests/crossbrowser',
+        jsonDir: 'functional-output/tests/crossbrowser',
+        reportPath: 'functional-output/tests/crossbrowser',
         pageFooter: '<div><p> </p></div>'
       }
     }

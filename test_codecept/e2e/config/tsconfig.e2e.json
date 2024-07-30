@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "downlevelIteration": true,
-    "outDir": "../out-tsc/app",
+    "outDir": "./out-tsc/app",
     "sourceMap": true,
     "declaration": false,
     "module": "commonjs",

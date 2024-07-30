@@ -100,7 +100,7 @@ const config = {
     browser.waitForAngularEnabled(false);
 
     tsNode.register({
-      project: path.join(__dirname, './tsconfig.e2e.json')
+      project: path.join(__dirname, '/tsconfig.e2e.json')
     });
   },
 

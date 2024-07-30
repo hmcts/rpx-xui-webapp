@@ -2,7 +2,7 @@
 
 const loginPage = require('../../features/pageObjects/loginLogoutObjects');
 const headerPage = require('../../features/pageObjects/headerPage');
-
+const { expect } = require('chai');
 const { defineSupportCode, Given, When, Then } = require('@cucumber/cucumber');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = require('../../support/constants');
 const config = require('../../config/conf.js');
@@ -103,10 +103,9 @@ let secondAttemptFailedLogins = 0;
 When('I navigate to Expert UI Url', async function () {
   await BrowserWaits.retryWithActionCallback(async function(){
     CucumberReportLogger.AddMessage('App base url : ' + config.config.baseUrl, LOG_LEVELS.Info);
-    await browser.get(config.config.baseUrl);
+    //await browser.get(config.config.baseUrl);
     await BrowserWaits.waitForElement(loginPage.signinTitle);
     await BrowserWaits.waitForElement(loginPage.signinBtn);
-
     expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
   }).catch((err) => {
     throw err;

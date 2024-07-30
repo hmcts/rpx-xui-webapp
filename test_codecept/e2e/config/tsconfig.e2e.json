@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "downlevelIteration": true,
-    "outDir": "./dist/out-tsc",
+    "outDir": "reports/tests/crossbrowser/",
     "sourceMap": true,
     "declaration": false,
     "module": "commonjs",

@@ -103,10 +103,12 @@ let secondAttemptFailedLogins = 0;
 When('I navigate to Expert UI Url', async function () {
   await BrowserWaits.retryWithActionCallback(async function(){
     CucumberReportLogger.AddMessage('App base url : ' + config.config.baseUrl, LOG_LEVELS.Info);
-    //await browser.get(config.config.baseUrl);
-    await BrowserWaits.waitForElement(loginPage.signinTitle);
-    await BrowserWaits.waitForElement(loginPage.signinBtn);
-    expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
+    await browser.get(config.config.baseUrl);
+    const loginContainer = element(by.xpath("//*[@id=\"authorizeCommand\"]"));
+    const inputButton = element(by.css("input.button"));
+    await loginContainer.isDisplayed();
+    await inputButton.isDisplayed();
+    expect(await element(by.css("input.button")).isDisplayed()).to.be.true;
   }).catch((err) => {
     throw err;
   });

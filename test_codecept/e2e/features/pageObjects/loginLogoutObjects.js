@@ -1,7 +1,6 @@
 'use strict';
 
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = require('../../support/constants');
-
 var BrowserWaits = require('../../support/customWaits');
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
@@ -41,7 +40,7 @@ function loginLogoutObjects() {
 
 
   this.givenIAmLoggedIn = async function (email,password) {
-    const isSessionReused = await this.reuseLoginSession(email)
+    // const isSessionReused = await this.reuseLoginSession(email)
     // if (isSessionReused){
     //   return;
     // }

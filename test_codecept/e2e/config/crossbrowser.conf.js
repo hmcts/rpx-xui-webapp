@@ -34,17 +34,6 @@ const config = {
   useAllAngular2AppRoots: true,
   multiCapabilities: [
     {
-      browserName: 'firefox',
-      version: 'latest',
-      platform: 'Windows 10',
-      name: 'MC-firefox-windows-test',
-      tunnelIdentifier: 'reformtunnel',
-      extendedDebugging: true,
-      sharedTestFiles: false,
-      capturePerformance: true,
-      maxInstances: 1
-    },
-    {
       browserName: 'chrome',
       version: 'latest',
       platform: 'macOS 10.15',
@@ -54,6 +43,17 @@ const config = {
       sharedTestFiles: false,
       capturePerformance: true,
       maxInstances: 1,
+    },
+    {
+      browserName: 'firefox',
+      version: 'latest',
+      platform: 'Windows 10',
+      name: 'MC-firefox-windows-test',
+      tunnelIdentifier: 'reformtunnel',
+      extendedDebugging: true,
+      sharedTestFiles: false,
+      capturePerformance: true,
+      maxInstances: 1
     },
     {
       browserName: 'MicrosoftEdge',
@@ -70,7 +70,7 @@ const config = {
   maxSessions: 1,
   cucumberOpts: {
     require: [
-      '../crossbrowser/**/*.steps',
+      './crossbrowser-timeout.js',
       '../crossbrowser/step_definitions/loginLogout.steps.js',
     ],
     tags: [],

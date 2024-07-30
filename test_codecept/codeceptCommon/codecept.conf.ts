@@ -32,7 +32,7 @@ console.log(`headless : ${!head}`)
 let pipelineBranch = process.env.TEST_URL.includes('pr-') || process.env.TEST_URL.includes('manage-case.aat.platform.hmcts.net') ? "preview" : "master"
 let local = process.env.LOCAL && process.env.LOCAL.includes('true')
 let features = ''
-if (testType === 'e2e' || testType === 'smoke'){
+if (testType === 'e2e' || testType === 'smoke' || testType === 'crossbrowser'){
   features = `../e2e/features/app/**/*.feature`
 } else if (testType === 'ngIntegration'){
   
@@ -41,10 +41,17 @@ if (testType === 'e2e' || testType === 'smoke'){
 } else{
   throw new Error(`Unrecognized test type ${testType}`);
 }
+console.log(testType)
 
-
-const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`)
-const cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/cucumber-codecept-${testType}`)
+let functional_output_dir = '';
+let cucumber_functional_output_dir = '';
+if (process.env.BROWSER_GROUP) {
+  functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}-${process.env.BROWSER_GROUP}`)
+  cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/cucumber-codecept-${testType}-${process.env.BROWSER_GROUP}`)
+} else {
+  functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`)
+  cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/cucumber-codecept-${testType}`)
+}
 
 let bddTags = testType === 'ngIntegration' ? 'functional_enabled':'fullFunctional'
 

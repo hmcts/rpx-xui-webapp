@@ -126,7 +126,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     } else {
       this.hearingsActions = [];
     }
-    
     this.unloadSpinnerSubscription = combineLatest([
       this.showSpinner$,
       this.showLoadSpinner$

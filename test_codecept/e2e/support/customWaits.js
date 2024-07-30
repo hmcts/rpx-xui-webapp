@@ -1,4 +1,5 @@
-const EC = protractor.ExpectedConditions;
+// var EC = protractor.ExpectedConditions;
+
 
 const CucumberReporter = require('../../codeceptCommon/reportLogger');
 const BrowserLogs = require('./browserLogs');
@@ -36,18 +37,20 @@ class BrowserWaits{
 
     async waitForElementTime(element, waitTime) {
         await browser.wait(EC.presenceOf(element), waitTime ? waitTime : 10000, "Error waitForElementTime : " + JSON.stringify(element.selector));
+
     }
 
     async waitForElement(element, message, waitForSeconds) {
         const startTime = Date.now();
-        CucumberReporter.AddMessage("ELEMENT_WAIT: at " + this.__getCallingFunctionName() + " " + JSON.stringify(element.selector) + " at ");
-        
-        // Wait for the element to be present
-        await this.waitForElementTime(element);
-        
-        // Check if the element is available and log the result
-        const isPresent = await element.isPresent();
-        CucumberReporter.AddMessage("ELEMENT_FOUND: " + isPresent + " in sec " + (Date.now() - startTime) / 1000 + " " + JSON.stringify(element.selector));
+        CucumberReporter.AddMessage("ELEMENT_WAIT: at " + this.__getCallingFunctionName()+ " " + JSON.stringify(element.selector)+" at ");
+        await element.wait(this.waitTime / 1000)
+
+        // await this.waitForConditionAsync(async () => {
+        //     const isPresent = await element.isPresent();
+        //     return isPresent;
+        // }, 20*1000);
+        // CucumberReporter.AddMessage("ELEMENT_FOUND: in sec " + (Date.now() - startTime) / 1000 + " "+ JSON.stringify(element.selector) );
+
     }
 
     async waitForPresenceOfElement(element) {

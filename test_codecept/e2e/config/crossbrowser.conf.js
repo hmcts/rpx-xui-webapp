@@ -2,6 +2,7 @@ const path = require('path');
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 const tsNode = require('ts-node');
+console.log('path dir name', __dirname);
 
 const config = {
   framework: 'custom',
@@ -15,7 +16,6 @@ const config = {
   sauceUser: process.env.SAUCE_USERNAME,
   sauceKey: process.env.SAUCE_ACCESS_KEY,
   SAUCE_REST_ENDPOINT: 'https://eu-central-1.saucelabs.com/rest/v1/',
-  output: '../../../reports/tests/crossbrowser',
   params: {
     serverUrls: process.env.TEST_URL || 'http://localhost:3000/',
     targetEnv: argv.env || 'local',
@@ -74,7 +74,7 @@ const config = {
       '../crossbrowser/step_definitions/loginLogout.steps.js'
     ],
     tags: [],
-    format: ['json:../../../reports/tests/crossbrowser/saucelab_results.json'],
+    format: ['json:cb_reports/saucelab_results.json'],
     retry: 1
   },
   plugins: [
@@ -85,8 +85,8 @@ const config = {
         automaticallyGenerateReport: true,
         removeExistingJsonReportFile: true,
         reportName: 'MC Cross Browser Test',
-        jsonDir: '../../../reports/tests/crossbrowser',
-        reportPath: '../../../reports/tests/crossbrowser',
+        jsonDir: 'reports/tests/crossbrowser/',
+        reportPath: 'reports/tests/crossbrowser/',
         pageFooter: '<div><p> </p></div>'
       }
     }
@@ -98,7 +98,6 @@ const config = {
     });
 
     browser.waitForAngularEnabled(false);
-    console.log(path.join(__dirname, './tsconfig.e2e.json'));
     tsNode.register({
       project: path.join(__dirname, './tsconfig.e2e.json')
     });

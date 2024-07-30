@@ -90,6 +90,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       this.hearingValuesLastErrorState$
     ]).subscribe(([hearingListlastError, hearingValuesLastError]: [fromHearingStore.State, fromHearingStore.State]) => {
       if (hearingListlastError || hearingValuesLastError) {
+        this.displaySpinner = false;
         this.serverError = {
           id: 'backendError', message: HearingSummaryEnum.BackendError
         };
@@ -125,7 +126,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     } else {
       this.hearingsActions = [];
     }
-
+    
     this.unloadSpinnerSubscription = combineLatest([
       this.showSpinner$,
       this.showLoadSpinner$
@@ -155,7 +156,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
           const caseHearingViewModels: HearingListViewModel[] = this.calculateEarliestHearingDate(caseHearingModels);
           return this.sortHearingsByHearingAndRequestDate(caseHearingViewModels);
         }
-
         return [];
       }
       )

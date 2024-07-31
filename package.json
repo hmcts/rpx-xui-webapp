@@ -1,6 +1,6 @@
 {
   "name": "rpx-exui",
-  "version": "7.0.14",
+  "version": "7.0.14-EXUI-2209-MediaViewerUpgrade",
   "engines": {
     "node": ">=18.17.0"
   },
@@ -95,7 +95,7 @@
     "@hmcts/ccd-case-ui-toolkit": "7.0.51",
     "@hmcts/ccpay-web-component": "6.2.1",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "4.0.4",
+    "@hmcts/media-viewer": "4.0.7",
     "@hmcts/nodejs-healthcheck": "1.7.0",
     "@hmcts/properties-volume": "^0.0.13",
     "@hmcts/rpx-xui-common-lib": "2.0.25",

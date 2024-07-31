@@ -942,12 +942,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.23.9, @babel/parser@npm:^7.24.0, @babel/parser@npm:^7.25.0, @babel/parser@npm:^7.4.3, @babel/parser@npm:^7.8.3":
-  version: 7.25.0
-  resolution: "@babel/parser@npm:7.25.0"
+"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.23.9, @babel/parser@npm:^7.24.0, @babel/parser@npm:^7.25.0, @babel/parser@npm:^7.25.3, @babel/parser@npm:^7.4.3, @babel/parser@npm:^7.8.3":
+  version: 7.25.3
+  resolution: "@babel/parser@npm:7.25.3"
+  dependencies:
+    "@babel/types": ^7.25.2
   bin:
     parser: ./bin/babel-parser.js
-  checksum: e0f0f5a0d323c8ebaa7caa5a982ce82a87d1f7176939642020beed021024af523e69e30b8918be82d02666742dfe0aad562c65edfd1a696785d76a2882e7904c
+  checksum: b55aba64214fa1d66ccd0d29f476d2e55a48586920d280f88c546f81cbbececc0e01c9d05a78d6bf206e8438b9c426caa344942c1a581eecc4d365beaab8a20e
   languageName: node
   linkType: hard
 
@@ -2061,17 +2063,17 @@ __metadata:
   linkType: hard
 
 "@babel/traverse@npm:^7.23.9, @babel/traverse@npm:^7.24.0, @babel/traverse@npm:^7.24.7, @babel/traverse@npm:^7.24.8, @babel/traverse@npm:^7.25.0, @babel/traverse@npm:^7.25.1, @babel/traverse@npm:^7.25.2, @babel/traverse@npm:^7.4.3":
-  version: 7.25.2
-  resolution: "@babel/traverse@npm:7.25.2"
+  version: 7.25.3
+  resolution: "@babel/traverse@npm:7.25.3"
   dependencies:
     "@babel/code-frame": ^7.24.7
     "@babel/generator": ^7.25.0
-    "@babel/parser": ^7.25.0
+    "@babel/parser": ^7.25.3
     "@babel/template": ^7.25.0
     "@babel/types": ^7.25.2
     debug: ^4.3.1
     globals: ^11.1.0
-  checksum: 281bb367d78735d3a84b342b6021d57ef21827fb5049dc298c509bd3880470e9979bc2a87ec8d6da27856c08a0fc94d7feb29e8e03f8f0efa5d3f2904ac65779
+  checksum: 5661308b1357816f1d4e2813a5dd82c6053617acc08c5c95db051b8b6577d07c4446bc861c9a5e8bf294953ac8266ae13d7d9d856b6b889fc0d34c1f51abbd8c
   languageName: node
   linkType: hard
 
@@ -2811,12 +2813,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.51":
-  version: 7.0.51
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.51"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.52-EXUI-2209-MediaViewerUpgrade":
+  version: 7.0.52-EXUI-2209-MediaViewerUpgrade
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.52-EXUI-2209-MediaViewerUpgrade"
   dependencies:
     tslib: ^2.3.0
-  checksum: ca7aeaee6ed0926bd9442ada13f3d4027b28684dea8fbbc9c4762e4797fcc44edcbfce30d8b3b4e8c9e538b33cb63935b8244e45cd3c16571ff439bf83a06156
+  checksum: f448514a5c3d21b26a620c9ccf13c6cfdc873d15ab2c9cedba7d9226e3cc0cf06ac067b2256d3e587aaba39e8d9cdf799f0611cbad0748757c5724816d235e52
   languageName: node
   linkType: hard
 
@@ -8489,16 +8491,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromium-bidi@npm:0.6.2":
-  version: 0.6.2
-  resolution: "chromium-bidi@npm:0.6.2"
+"chromium-bidi@npm:0.6.3":
+  version: 0.6.3
+  resolution: "chromium-bidi@npm:0.6.3"
   dependencies:
     mitt: 3.0.1
     urlpattern-polyfill: 10.0.0
     zod: 3.23.8
   peerDependencies:
     devtools-protocol: "*"
-  checksum: 09656a96ef821b0957125af33e739411ac35ad34428d522c060a42a455c010cd025c4753589ae4e27b944011e3cc521f822953700e75704cacfecbd0b915f8d8
+  checksum: 4c96419e8f9cf77340948f89cb388e18fb7621993853448f53b7f532a405c6f594e341ae3d9d5f3e73f27bde142cd6b4a0b5984fe88a7758393f76f6f7974705
   languageName: node
   linkType: hard
 
@@ -10189,7 +10191,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:^4.0.0, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4, debug@npm:^4.3.5, debug@npm:~4.3.1, debug@npm:~4.3.2, debug@npm:~4.3.4":
+"debug@npm:4, debug@npm:^4.0.0, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4, debug@npm:^4.3.5, debug@npm:^4.3.6, debug@npm:~4.3.1, debug@npm:~4.3.2, debug@npm:~4.3.4":
   version: 4.3.6
   resolution: "debug@npm:4.3.6"
   dependencies:
@@ -20134,16 +20136,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"puppeteer-core@npm:22.14.0":
-  version: 22.14.0
-  resolution: "puppeteer-core@npm:22.14.0"
+"puppeteer-core@npm:22.15.0":
+  version: 22.15.0
+  resolution: "puppeteer-core@npm:22.15.0"
   dependencies:
     "@puppeteer/browsers": 2.3.0
-    chromium-bidi: 0.6.2
-    debug: ^4.3.5
+    chromium-bidi: 0.6.3
+    debug: ^4.3.6
     devtools-protocol: 0.0.1312386
     ws: ^8.18.0
-  checksum: f5149f21b4995c9e157518c8fcfe79dc953cb1a5789f64aebb5fdce1f790348d97867a31ffbe87c5969c69dde90fd0e76fe9178d5dbb89f078e145af58eeafec
+  checksum: 68dbc590275d3d2a231bddf6e53c1e352724d159563abe6b6dc8bcff895476e6dc05bdd1bd2ac969c2970ba8aca2adb48128abd50940e701195bc0e655671696
   languageName: node
   linkType: hard
 
@@ -20168,16 +20170,16 @@ __metadata:
   linkType: hard
 
 "puppeteer@npm:^22.4.1":
-  version: 22.14.0
-  resolution: "puppeteer@npm:22.14.0"
+  version: 22.15.0
+  resolution: "puppeteer@npm:22.15.0"
   dependencies:
     "@puppeteer/browsers": 2.3.0
     cosmiconfig: ^9.0.0
     devtools-protocol: 0.0.1312386
-    puppeteer-core: 22.14.0
+    puppeteer-core: 22.15.0
   bin:
     puppeteer: lib/esm/puppeteer/node/cli.js
-  checksum: d7ba0fc01d7cc8924a3132f3888beb09cfe026e367304e214d7c3bde26994f7fa53139758400da8220eda4b5d3211f1e3118ce54df923295de3a9e1cf9fa5583
+  checksum: 64e9ff78fdd3d848a4404ec1abfd58df987c6fd216b78bc6144a616622c00375bae8cd06f6df8a313b6f2039c95526f4f3de47e907859a65c0b508261ce488f8
   languageName: node
   linkType: hard
 
@@ -21075,7 +21077,7 @@ __metadata:
     "@angular/router": ^17.3.6
     "@angular/ssr": ^17.3.6
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.51
+    "@hmcts/ccd-case-ui-toolkit": 7.0.52-EXUI-2209-MediaViewerUpgrade
     "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 4.0.7

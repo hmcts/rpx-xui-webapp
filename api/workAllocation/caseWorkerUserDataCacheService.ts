@@ -173,8 +173,8 @@ export function timestampExists(): boolean {
 
 // This ensures there are no duplicates
 export function getUniqueUsersFromResponse(userResponse: StaffUserDetails[]): StaffUserDetails[] {
-  const userIdList = [];
-  const uniqueUsers = [];
+  const userIdList = new Set<string>();
+  const uniqueUsers: StaffUserDetails[] = [];
   // go through all users
   for (let userIndex = 0; userIndex < userResponse.length; userIndex++) {
     const thisUser = userResponse[userIndex];
@@ -183,7 +183,7 @@ export function getUniqueUsersFromResponse(userResponse: StaffUserDetails[]): St
     const memberProfile = thisUser.staff_profile;
     const userServices = [thisUser.ccd_service_name];
     const baseLocationList = [];
-    if (!userIdList.includes(memberProfile.id)) {
+    if (!userIdList.has(memberProfile.id)) {
       // if the user is not the same as a previous user, loop through remaining users
       // this should find all duplicates
       for (let matchIndex = userIndex + 1; matchIndex < userResponse.length; matchIndex++) {
@@ -215,7 +215,7 @@ export function getUniqueUsersFromResponse(userResponse: StaffUserDetails[]): St
       memberProfile.base_location = baseLocationList?.length > 0 ? baseLocationList : memberProfile.base_location;
       // ensure user is not reused
       uniqueUsers.push(thisUser);
-      userIdList.push(thisUser.staff_profile.id);
+      userIdList.add(thisUser.staff_profile.id);
     }
   }
   return uniqueUsers;

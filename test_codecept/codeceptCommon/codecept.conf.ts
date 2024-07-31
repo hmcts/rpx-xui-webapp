@@ -64,7 +64,7 @@ const tags = process.env.DEBUG ? 'functional_debug' : bddTags
 const grepTags = `(?=.*@${testType === 'smoke' ? 'smoke' : tags})^(?!.*@ignore)`
 console.log(grepTags)
 
-exports.config = {
+let config = {
   timeout: 600,
   "gherkin": {
     "features": features,
@@ -241,34 +241,79 @@ exports.config = {
   }
 }
 
+if (process.env.BROWSER_GROUP) {
+  config.sauceSeleniumAddress = 'ondemand.eu-central-1.saucelabs.com:443/wd/hub';
+  config.host = 'ondemand.eu-central-1.saucelabs.com';
+  config.sauceRegion = 'eu';
+  config.port = 80;
+  config.processes = 23;
+  config.sauceConnect = true;
+  config.sauceUser = process.env.SAUCE_USERNAME;
+  config.sauceKey = process.env.SAUCE_ACCESS_KEY;
+  config.SAUCE_REST_ENDPOINT = 'https://eu-central-1.saucelabs.com/rest/v1/';
+  config.multiCapabilities = [
+    {
+      browserName: 'chrome',
+      version: 'latest',
+      platform: 'macOS 10.15',
+      name: 'MC-chrome-mac-test',
+      tunnelIdentifier: 'reformtunnel',
+      extendedDebugging: true,
+      sharedTestFiles: false,
+      capturePerformance: true,
+      maxInstances: 1,
+    },
+    {
+      browserName: 'firefox',
+      version: 'latest',
+      platform: 'Windows 10',
+      name: 'MC-firefox-windows-test',
+      tunnelIdentifier: 'reformtunnel',
+      extendedDebugging: true,
+      sharedTestFiles: false,
+      capturePerformance: true,
+      maxInstances: 1
+    },
+    {
+      browserName: 'MicrosoftEdge',
+      version: 'latest',
+      platform: 'Windows 10',
+      name: 'MC-microsoft-edge-windows-test',
+      tunnelIdentifier: 'reformtunnel',
+      extendedDebugging: true,
+      sharedTestFiles: false,
+      capturePerformance: true,
+      maxInstances: 1
+    }
+  ];
+}
+
+console.log(config)
+
+exports.config = config;
 
 function exitWithStatus() {
   // const status = await mochawesomeGenerateReport()
   console.log(`*************** executionResult: ${executionResult}  *************** `)
   process.exit(executionResult === 'passed' ? 0 : 1)
-
-
-
 }
 
 async function setup(){
-
   if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')){
+    console.log('Starting backend mock server');
     await backendMockApp.startServer(debugMode);
-    await applicationServer.start()
+    await applicationServer.start();
   }
-
 }
 
 async function teardown(){
-  console.log('Tests execution completed')
+  console.log('Tests execution completed');
   if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
     await backendMockApp.stopServer();
-    await applicationServer.stop()
+    await applicationServer.stop();
   }
   statsReporter.run();
   await generateCucumberReport();
-
 
   // process.exit(1);
 }
@@ -304,7 +349,7 @@ async function generateCucumberReport(){
       // durationInMS: true,
       metadata: {
         browser: {
-          name: "chrome",
+          name: process.env.BROWSER_GROUP ? process.env.BROWSER_GROUP : "chrome",
           version: "60",
         },
         device: "Local test machine",

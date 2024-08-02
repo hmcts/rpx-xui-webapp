@@ -1,4 +1,4 @@
-<xuilib-loading-spinner *ngIf="displaySpinner"></xuilib-loading-spinner>
+<xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
 <div class="govuk-tabs__panel">
   <div class="govuk-width-container" *ngIf="serverError">
     <div class="govuk-main-wrapper">
@@ -10,8 +10,11 @@
         </span>
     </div>
   </div>
-  <ng-container *ngIf="!serverError">
+  <ng-container *ngIf="{upcoming: upcomingHearings$ | async,
+    pastAndCancelled: pastAndCancelledHearings$ |async, listed: listedHearings$ | async} as data">
     <br>
+  <ng-container *ngIf="!serverError && 
+  (data.upcoming !== null || data.pastAndCancelled !== null || data.listed !==null)">
     <a *ngIf="hasRequestAction"
        href="javascript:void(0)"
        role="button" draggable="false"
@@ -26,7 +29,7 @@
         <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/>
       </svg>
     </a>
-    <ng-container *ngIf="!isOgdRole">
+    <ng-container >
       <exui-case-hearings-list
         [status]="upcomingStatus"
         [hearingStageOptions]="hearingStageOptions"
@@ -42,7 +45,7 @@
       </exui-case-hearings-list>
     </ng-container>
 
-    <ng-container *ngIf="isOgdRole">
+    <ng-container >
       <exui-case-hearings-list
         [status]="upcomingStatus"
         [hearingStageOptions]="hearingStageOptions"
@@ -50,6 +53,6 @@
         [actions]="hearingsActions">
       </exui-case-hearings-list>
     </ng-container>
-
+  </ng-container>
   </ng-container>
 </div>

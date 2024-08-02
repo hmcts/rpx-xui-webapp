@@ -5,16 +5,18 @@ export class FullUserDetailCache {
   private static instance: FullUserDetailCache;
   private userDetails: Caseworker[];
 
-  static getInstance(): FullUserDetailCache {
+  private static getInstance(): FullUserDetailCache {
     this.instance = this.instance ? this.instance : new FullUserDetailCache();
     return this.instance;
   }
 
-  setUserDetails(userDetails: Caseworker[]): void {
-    this.userDetails = userDetails;
+  static setUserDetails(userDetails: Caseworker[]): void {
+    const instance = this.getInstance();
+    instance.userDetails = userDetails;
   }
 
-  getAllUserDetails(): Caseworker[] {
-    return this.userDetails;
+  static getAllUserDetails(): Caseworker[] {
+    const instance = this.getInstance();
+    return instance.userDetails;
   }
 }

@@ -324,7 +324,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
 
         When I start case next step "Test event"
 
-        Then I validate session storage has key "taskToComplete"
+        Then I validate session storage has key "clientContext"
         When I complete and submit test event "text"
         Then I see task event validation error page
             | Summary header  | There is a problem                           |

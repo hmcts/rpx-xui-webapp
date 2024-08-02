@@ -29,7 +29,7 @@
         <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/>
       </svg>
     </a>
-    <ng-container >
+    <ng-container *ngIf="!isOgdRole">
       <exui-case-hearings-list
         [status]="upcomingStatus"
         [hearingStageOptions]="hearingStageOptions"
@@ -45,7 +45,7 @@
       </exui-case-hearings-list>
     </ng-container>
 
-    <ng-container >
+    <ng-container *ngIf="isOgdRole">
       <exui-case-hearings-list
         [status]="upcomingStatus"
         [hearingStageOptions]="hearingStageOptions"

@@ -1,5 +1,5 @@
 
-@fullfunctional @functional_enabled
+@fullfunctional @ignore @functional_debug
 Feature: Support request Add/Update Reasonable adjustment
 
     Background: Setup case

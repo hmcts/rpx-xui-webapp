@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
+import { Directive, ElementRef, Input, OnInit } from '@angular/core';
 import { CaseRole, RoleCategory, TypeOfRole } from '../../role-access/models';
 
 @Directive({

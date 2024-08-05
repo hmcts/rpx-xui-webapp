@@ -1,6 +1,5 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { CaseNotifier, CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { WAFeatureConfig } from '../../../work-allocation/models/common/service-config.model';
 
 import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
 import { Caseworker } from '../../../work-allocation/models/dtos';
@@ -28,13 +27,11 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   public judicial = RoleCategory.JUDICIAL;
   public caseId: string;
   public jurisdiction: string;
-  public isCTSCRoleEnabled: boolean;
 
   @Input() public exclusions: RoleExclusion[] = [];
   @Input() public showAllocateRoleLink: boolean = false;
   @Input() public caseDetails: CaseView;
   @Input() public caseworkers: Caseworker[];
-  @Input() public waServiceConfig: WAFeatureConfig;
 
   private pRoles: CaseRole[] = [];
   public jurisdictionFieldId = '[JURISDICTION]';
@@ -114,15 +111,6 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
     }
     if (this.caseworkers && this.adminRoles && this.adminRoles.length > 0) {
       this.namedAdminRoles = this.checkSetNamedRoles(this.adminRoles, this.adminRolesNotNamed);
-    }
-    if (this.waServiceConfig) {
-      const caseJurisdiction = this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction ? this.caseDetails.case_type.jurisdiction.id : null;
-      const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
-      this.waServiceConfig.configurations.forEach((serviceConfig) => {
-        if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType) && parseFloat(serviceConfig.releaseVersion) >= 3.5) {
-          this.isCTSCRoleEnabled = true;
-        }
-      });
     }
   }
 

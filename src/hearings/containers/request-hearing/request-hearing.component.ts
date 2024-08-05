@@ -11,6 +11,10 @@ import { AbstractPageFlow } from '../../utils/abstract-page-flow';
   styleUrls: ['./request-hearing.component.scss']
 })
 export class RequestHearingComponent implements OnDestroy {
+  public hasSubmitted = false;
+
+  public action = ACTION;
+
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly pageFlow: AbstractPageFlow,
     private readonly hearingsService: HearingsService) {
@@ -24,17 +28,14 @@ export class RequestHearingComponent implements OnDestroy {
     this.hearingsService.navigateAction(ACTION.CONTINUE);
   }
 
-  public submitNewRequest(): void {
-    this.hearingsService.navigateAction(ACTION.SUBMIT);
-  }
-
-  public submitUpdatedRequest(): void {
-    this.hearingsService.submitUpdatedRequestClicked = true;
-    this.hearingsService.navigateAction(ACTION.VIEW_EDIT_REASON);
-  }
-
-  public submitChangeRequest(): void {
-    this.hearingsService.navigateAction(ACTION.VIEW_EDIT_SUBMIT);
+  public submitRequest(action: ACTION): void {
+    if (action === ACTION.VIEW_EDIT_REASON) {
+      this.hearingsService.submitUpdatedRequestClicked = true;
+    } else {
+      // if we are submitting and awaiting backend process
+      this.hasSubmitted = true;
+    }
+    this.hearingsService.navigateAction(action);
   }
 
   public get isSummary(): boolean {

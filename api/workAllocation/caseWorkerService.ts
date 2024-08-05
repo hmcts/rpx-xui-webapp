@@ -6,7 +6,20 @@ import { setHeaders } from '../lib/proxy';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 
 const logger: JUILogger = log4jui.getLogger('caseworker-service');
-const MAX_RECORDS: number = 10000;
+const MAX_RECORDS: number = 100000;
+
+export async function handleUsersGet(path: string, req: EnhancedRequest): Promise<any> {
+  logger.info('getting users for', path);
+  const headers = setHeaders(req);
+  const response: AxiosResponse = await http.get(path, { headers });
+  return response.data;
+}
+
+export async function handleNewUsersGet(path: string, headers: any): Promise<any> {
+  logger.info('getting users for', path);
+  const response: AxiosResponse = await http.get(path, { headers });
+  return response.data;
+}
 
 export async function handleCaseWorkerGetAll(path: string, req: EnhancedRequest): Promise<any> {
   logger.info('getting all caseworkers for', path);
@@ -53,6 +66,16 @@ export async function handlePostRoleAssignments(path: string, payload: any, req:
   const headers = setHeaders(req);
   headers.pageNumber = 0;
   headers.size = MAX_RECORDS;
+  // sort
+  // direction
+  const response: AxiosResponse = await http.post(path, payload, { headers });
+  if (response.data.roleAssignmentResponse.length >= MAX_RECORDS) {
+    logger.warn('Case workers now returning MAX_RECORDS', response.data.roleAssignmentResponse.length);
+  }
+  return response;
+}
+
+export async function handlePostRoleAssignmentsWithNewUsers(path: string, payload: any, headers: any): Promise<any> {
   // sort
   // direction
   const response: AxiosResponse = await http.post(path, payload, { headers });

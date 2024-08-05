@@ -179,7 +179,7 @@ Feature: Hearings CR84 OFF: View or edit action
         When In hearing page "Do you want a specific judge?", I input values
             | field                             | value                     |
             | Do you want a specific judge?     | No                        |
-            | Select all judge types that apply | Judge type 1 |
+            | Select all judge types that apply | Judge type 1,Judge type 2 |
 
 
         When I click continue in hearing workflow
@@ -198,7 +198,7 @@ Feature: Hearings CR84 OFF: View or edit action
         Then I validate fields displayed in view or edit hearing page
             | field                             | value                      | changeLinkDisplay | amendedFlagDisplayed_preCR84 |
             | Do you want a specific judge?     | No                         | true              |                              |
-            | Select all judge types that apply | Judge type 1| true              | AMENDED                      |
+            | Select all judge types that apply | Judge type 1, Judge type 2 | true              | AMENDED                      |
 
         # Judge details end
 

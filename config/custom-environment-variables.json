@@ -121,6 +121,7 @@
   "secrets": {
     "rpx": {
       "appinsights-instrumentationkey-mc": "APPINSIGHTS_INSTRUMENTATIONKEY",
+      "appinsights-connection-string-mc": "APPINSIGHTS_CONNECTION_STRING",
       "mc-s2s-client-secret": "S2S_SECRET",
       "mc-idam-client-secret": "IDAM_SECRET",
       "webapp-redis-connection-string": "REDISCLOUD_URL",
@@ -130,6 +131,7 @@
     }
   },
   "jurisdictions": "JURISDICTIONS",
+  "staffSupportedJurisdictions": "STAFF_SUPPORTED_JURISDICTIONS",
   "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",
   "globalSearchServices": "GLOBAL_SEARCH_SERVICES",
   "serviceRefDataMapping": "SERVICE_REF_DATA_MAPPING",

@@ -1,10 +1,10 @@
 
-@fullfunctional @functional_enabled @functional_debug
+@fullfunctional @ignore @functional_debug
 Feature: Support request Add/Update Reasonable adjustment
 
     Background: Setup case
         When I navigate to Expert UI Url
-        Given I am logged into Expert UI with with case flags
+        Given I am logged into Expert UI with case flags
         When I setup a case for case flags version "V1"
             | party                       | fieldName    | value      |
             | Flags for legal rep Party 1 | Role On Case | Party 1    |

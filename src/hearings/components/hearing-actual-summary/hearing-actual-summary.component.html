@@ -20,19 +20,13 @@
   <dl class="govuk-summary-list">
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
       <dt class="govuk-summary-list__key">{{ 'Hearing stage' | rpxTranslate }}</dt>
-      <dd class="govuk-summary-list__value">{{hearingActualsMainModel?.hmcStatus}}</dd>
+      <dd class="govuk-summary-list__value">{{hearingTypeDescription}}</dd>
     </div>
 
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
       <dt class="govuk-summary-list__key">{{ 'Hearing result' | rpxTranslate }}</dt>
       <dd class="govuk-summary-list__value">
         {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResult}}</dd>
-    </div>
-
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="isCompleted">
-      <dt class="govuk-summary-list__key">{{ 'Decision type' | rpxTranslate }}</dt>
-      <dd class="govuk-summary-list__value">
-        {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResultReasonType}}</dd>
     </div>
 
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="isAdjourned">

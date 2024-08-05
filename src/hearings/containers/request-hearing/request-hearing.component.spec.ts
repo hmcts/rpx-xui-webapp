@@ -51,8 +51,16 @@ describe('RequestHearingComponent', () => {
 
   it('should check submit method', () => {
     spyOn(hearingsService, 'navigateAction');
-    component.submitNewRequest();
+    component.submitRequest(ACTION.SUBMIT);
     expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.SUBMIT);
+  });
+
+  it('should check submit method and not be able to click submit change request button again', () => {
+    spyOn(hearingsService, 'navigateAction');
+    expect(component.hasSubmitted).toBe(false);
+    component.submitRequest(ACTION.VIEW_EDIT_SUBMIT);
+    expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.VIEW_EDIT_SUBMIT);
+    expect(component.hasSubmitted).toBe(true);
   });
 
   it('should check is answer page', () => {

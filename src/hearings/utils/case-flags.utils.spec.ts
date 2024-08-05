@@ -395,10 +395,57 @@ describe('CaseFlagsUtils', () => {
       }
     ];
 
+    const partyDetailsWithLanguage = [
+      {
+        ...partyDetails[0],
+        individualDetails: {
+          ...partyDetails[0].individualDetails,
+          interpreterLanguage: 'req'
+        }
+      },
+      {
+        ...partyDetails[1]
+      }];
     const requestDetails = {
       timestamp: '2023-12-18T09:00:00.000Z',
       versionNumber: 1
     };
+
+    const mockLanguageFlag: CaseFlagReferenceModel = {
+      name: 'Language Interpreter',
+      hearingRelevant: true,
+      flagComment: true,
+      flagCode: 'PF0015',
+      isParent: false,
+      Path: [
+        'Party'
+      ],
+      childFlags: []
+    };
+
+    const singleCaseFlagReferenceValue: CaseFlagReferenceModel[] = [
+      {
+        name: 'Case',
+        hearingRelevant: true,
+        flagComment: true,
+        flagCode: 'CF0001',
+        isParent: true,
+        Path: [],
+        childFlags: [
+          {
+            name: 'Complex Case',
+            hearingRelevant: true,
+            flagComment: true,
+            flagCode: 'CC0002',
+            isParent: false,
+            Path: [
+              'Case'
+            ],
+            childFlags: []
+          }
+        ]
+      }
+    ];
 
     it('should return non-reasonable adjustment flags with labels', () => {
       const flagsGroup = CaseFlagsUtils.getNonReasonableAdjustmentFlags(caseFlagsRefData, caseFlags,
@@ -435,9 +482,11 @@ describe('CaseFlagsUtils', () => {
     });
 
     it('should set reasonable adjustments from hearing request if found', () => {
-      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetailsWithLanguage, servicePartyDetails);
+      expect(partyWithFlags.get('Jane and Smith').length).toEqual(3);
       expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag1);
       expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag2);
+      expect(partyWithFlags.get('Jane and Smith')).toContain(mockLanguageFlag);
     });
 
     it('should set reasonable adjustments from service hearing values if null in hearing request', () => {
@@ -452,6 +501,18 @@ describe('CaseFlagsUtils', () => {
       const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetails, servicePartyDetails);
       expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag3);
       expect(partyWithFlags.get('Jane and Smith')).toContain(mockFlag4);
+    });
+
+    it('should not set reasonable adjustments for party when missing in case flag', () => {
+      partyDetails[0].individualDetails.reasonableAdjustments = [];
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(singleCaseFlagReferenceValue, partyDetails, servicePartyDetails);
+      expect(partyWithFlags.size).toEqual(0);
+    });
+
+    it('should return an empty array if partyFlags is undefined', () => {
+      const partyFlags: PartyFlagsModel[] = undefined;
+      const activeFlags = CaseFlagsUtils.displayCaseFlagsGroup(partyFlags, singleCaseFlagReferenceValue, CaseFlagType.NON_REASONABLE_ADJUSTMENT);
+      expect(activeFlags.length).toBe(0);
     });
   });
 });

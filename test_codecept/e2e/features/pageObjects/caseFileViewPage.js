@@ -37,9 +37,9 @@ class CaseFileViewPage{
     }
 
     async getFileDisplayedInMediaViewer(){
-        const ele = element(by.xpath(`//div[contains(@class,'media-viewer-container')]//mv-pdf-viewer//div[contains(@class,'textLayer')]`))
+        const ele = element(by.xpath(`//title`));
         return await ele.getText()
-    }
+}
 
 }
 

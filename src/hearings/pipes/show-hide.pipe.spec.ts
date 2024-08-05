@@ -70,26 +70,4 @@ describe('ShowHidePipe', () => {
     const expected = cold('(b|)', { b: isHidden });
     expect(result$).toBeObservable(expected);
   });
-
-  it('should transform is judge type page hidden1', () => {
-    const STATE: State = initialState.hearings;
-    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      roleType: ['role1']
-    };
-    const result$ = showHidePipe.transform(IsHiddenSource.JUDGE_TYPES, of(STATE));
-    const isHidden = false;
-    const expected = cold('(b|)', { b: isHidden });
-    expect(result$).toBeObservable(expected);
-  });
-
-  it('should transform is judge type page hidden2', () => {
-    const STATE: State = initialState.hearings;
-    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      roleType: []
-    };
-    const result$ = showHidePipe.transform(IsHiddenSource.JUDGE_TYPES, of(STATE));
-    const isHidden = true;
-    const expected = cold('(b|)', { b: isHidden });
-    expect(result$).toBeObservable(expected);
-  });
 });

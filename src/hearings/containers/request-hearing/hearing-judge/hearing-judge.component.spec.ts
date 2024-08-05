@@ -168,10 +168,6 @@ describe('HearingJudgeComponent', () => {
   });
 
   it('should check prepareHearingRequestData', () => {
-    component.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelPreferences: [],
-      roleType: ['role1']
-    };
     component.hearingJudgeForm.controls.specificJudge.setValue(RadioOptions.YES);
     component.hearingJudgeForm.controls.judgeName.setValue(judgeInfo);
     component.prepareHearingRequestData();

@@ -119,22 +119,22 @@
                   </div>
                   <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">{{ 'Start time' | rpxTranslate }}</dt>
-                    <dd class="govuk-summary-list__value">{{actualHearingDay.hearingStartTime | date: "HH:mm"}}</dd>
+                    <dd class="govuk-summary-list__value">{{actualHearingUtils.formatTime(actualHearingDay.hearingStartTime | ccdDate: 'local')}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                   </div>
                   <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">{{ 'Finish time' | rpxTranslate }}</dt>
-                    <dd class="govuk-summary-list__value">{{actualHearingDay.hearingEndTime | date: "HH:mm"}}</dd>
+                    <dd class="govuk-summary-list__value">{{actualHearingUtils.formatTime(actualHearingDay.hearingEndTime | ccdDate: 'local')}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                   </div>
                   <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">{{ 'Pause time' | rpxTranslate }}</dt>
-                    <dd class="govuk-summary-list__value">{{actualHearingUtils.getPauseDateTime(actualHearingDay, 'start')}}</dd>
+                    <dd class="govuk-summary-list__value">{{actualHearingUtils.formatTime(actualHearingUtils.getPauseDateTime(actualHearingDay, 'start') | ccdDate: 'local')}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                   </div>
                   <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">{{ 'Resume time' | rpxTranslate }}</dt>
-                    <dd class="govuk-summary-list__value">{{actualHearingUtils.getPauseDateTime(actualHearingDay, 'end')}}</dd>
+                    <dd class="govuk-summary-list__value">{{actualHearingUtils.formatTime(actualHearingUtils.getPauseDateTime(actualHearingDay, 'end') | ccdDate: 'local')}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                   </div>
                 </div>

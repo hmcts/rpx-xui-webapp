@@ -43,15 +43,10 @@ describe('HearingPanelAmendedConverter', () => {
     converter = new HearingPanelAmendedConverter();
   });
 
-  it('should not transform the amended flag to true when previous vs current hearing type are not equal', () => {
+  it('should not transform the amended flag when previous vs current hearing type are equal', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelPreferences: JUDICAIL_USER_DETAILS,
-      roleType: ['role1']
-    };
-    STATE.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelPreferences: [],
-      roleType: []
+      panelPreferences: JUDICAIL_USER_DETAILS
     };
     const result$ = converter.transformIsAmended(of(STATE));
     const isAmended = true;
@@ -59,16 +54,9 @@ describe('HearingPanelAmendedConverter', () => {
     expect(result$).toBeObservable(expected);
   });
 
-  it('should not transform the amended flag to false when previous vs current hearing type are equal', () => {
+  it('should not transform the amended flag when previous vs current hearing type are equal', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
-    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelPreferences: JUDICAIL_USER_DETAILS,
-      roleType: ['role1']
-    };
-    STATE.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelPreferences: JUDICAIL_USER_DETAILS,
-      roleType: ['role1']
-    };
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;
     const result$ = converter.transformIsAmended(of(STATE));
     const isAmended = false;
     const expected = cold('(b|)', { b: isAmended });

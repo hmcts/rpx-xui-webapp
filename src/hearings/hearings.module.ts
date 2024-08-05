@@ -3,7 +3,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { AbstractAppConfig, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import {
+  AbstractAppConfig,
+  DatePipe,
+  FormatTranslatorService,
+  LoadingService, PaletteUtilsModule
+} from '@hmcts/ccd-case-ui-toolkit';
 import {
   ExuiCommonLibModule
 } from '@hmcts/rpx-xui-common-lib';
@@ -36,10 +41,10 @@ import { WarningAndErrorSectionComponent } from './containers/request-hearing/he
     FormsModule,
     ReactiveFormsModule,
     ExuiCommonLibModule,
-    HearingsPipesModule
+    HearingsPipesModule,
+    PaletteUtilsModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers, WarningAndErrorSectionComponent],
-  entryComponents: [],
   providers: [
     PageFlow,
     {
@@ -54,6 +59,8 @@ import { WarningAndErrorSectionComponent } from './containers/request-hearing/he
     HearingsEditGuard,
     HearingsViewGuard,
     LoadingService,
+    DatePipe,
+    FormatTranslatorService,
     HearingAmendmentsGuard,
     HearingsFeatureService
   ]

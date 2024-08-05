@@ -6,6 +6,7 @@ Setting up Secrets locally as documented below.
 Then follow: 
 ## Startup the Node service locally
 
+
 1. Make sure you have local-development.json within /config, if you do not you can get this from an XUI team member.
 2. Start the Node service locally using: 
 `export IDAM_SECRET=* && export S2S_SECRET=* && export NODE_CONFIG_DIR=../config && export NODE_CONFIG_ENV=development
@@ -177,6 +178,10 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
+## Running pure playwright end-to-end tests
+
+Run `HEAD=true APPBASEURL=https://manage-case.aat.platform.hmcts.net yarn test:playwrightE2E` to execute the pure playwright end-to-end tests on aat via [Playwright](https://playwright.dev/).
+
 ## Running Consumer Driven Contract tests (pact)
 
 Run `yarn test-pact` to execute the Pact tests 
@@ -199,5 +204,3 @@ Extended version of script below:
 
 END
 Trigger2 Trigger3
-
-

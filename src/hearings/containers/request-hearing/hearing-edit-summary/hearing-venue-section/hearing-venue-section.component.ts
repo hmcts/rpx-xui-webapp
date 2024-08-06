@@ -26,8 +26,11 @@ export class HearingVenueSectionComponent implements OnInit {
 
   public ngOnInit(): void {
     const hearingLocationIds = this.hearingRequestMainModel.hearingDetails.hearingLocations?.map((hearingLocation) => hearingLocation.locationId);
+    hearingLocationIds.sort();
     this.hearingLocationIdsToCompare = this.hearingRequestToCompareMainModel.hearingDetails.hearingLocations.map((loc) => loc.locationId);
+    this.hearingLocationIdsToCompare.sort();
     this.locations$ = this.locationsDataService.getLocationById(hearingLocationIds.join(','));
+
     this.showAmmendedForHeading = !_.isEqual(
       hearingLocationIds,
       this.hearingLocationIdsToCompare

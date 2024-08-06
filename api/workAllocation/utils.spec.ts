@@ -359,8 +359,17 @@ describe('workAllocation.utils', () => {
       const BASE_URL: string = 'base';
       const TASK_ID: string = '123456';
       const ACTION: string = 'fixit';
-      const url = preparePostTaskUrlAction(BASE_URL, TASK_ID, ACTION);
+      const MODE: string = 'EXUI_CASE-EVENT_COMPLETION';
+      const url = preparePostTaskUrlAction(BASE_URL, TASK_ID, ACTION, MODE);
       expect(url).to.equal('base/task/123456/fixit');
+    });
+    it('should correctly format with a baseUrl, taskId, and action', () => {
+      const BASE_URL: string = 'base';
+      const TASK_ID: string = '123456';
+      const ACTION: string = 'complete';
+      const MODE: string = 'EXUI_USER_COMPLETION';
+      const url = preparePostTaskUrlAction(BASE_URL, TASK_ID, ACTION, MODE);
+      expect(url).to.equal('base/task/123456/complete?completion_process=EXUI_USER_COMPLETION');
     });
   });
 

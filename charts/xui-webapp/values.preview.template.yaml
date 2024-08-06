@@ -32,6 +32,7 @@ nodejs:
     rpx:
       secrets:
         - appinsights-instrumentationkey-mc
+        - appinsights-connection-string-mc
         - mc-s2s-client-secret
         - mc-idam-client-secret
         - system-user-name

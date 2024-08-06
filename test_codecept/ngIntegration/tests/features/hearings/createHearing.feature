@@ -91,6 +91,13 @@ Feature: Create hearings workflow
             | Search for a location by name | cen,IA Court Center 1 |
         When I click continue in create hearing workflow
 
+        # Does this hearing need to be in Welsh?
+        Then I am on create hearing page "Does this hearing need to be in Welsh?"
+        When In hearing page "Does this hearing need to be in Welsh?", I input values
+            | field                                  | value |
+            | Does this hearing need to be in Welsh? | No   |
+        When I click continue in create hearing workflow
+
 
         # Do you want a specific judge?
         Then I am on create hearing page "Do you want a specific judge?"
@@ -238,7 +245,6 @@ Feature: Create hearings workflow
             | field                         | value                 |
             | Search for a location by name | cen,IA Court Center 1 |
         When I click continue in create hearing workflow
-
 
         # Do you want a specific judge?
         Then I am on create hearing page "Do you want a specific judge?"
@@ -528,7 +534,7 @@ Feature: Create hearings workflow
         Then I am on create hearing page "What are the hearing venue details?"
         When In create hearing page "What are the hearing venue details?", I input values
             | field                         | value                     |
-            | Search for a location by name | Wal,IA Court Center Wales |
+            | Search for a location by name | cen,IA Court Center 2     |
         When I click continue in create hearing workflow
 
 
@@ -556,15 +562,14 @@ Feature: Create hearings workflow
 
         # When I click continue in create hearing workflow
 
-
         # What are the hearing venue details?
         Then I am on create hearing page "Length, date and priority level of hearing"
         When In create hearing page "Length, date and priority level of hearing", I input values
             | field                                                   | value               |
             | Length of hearing                                       | 1,2,5               |
             | Does the hearing need to take place on a specific date? | Choose a date range |
-            | Earliest start date                                     | 1,8,2024            |
-            | Latest end date                                         | 1,9,2024            |
+            | Earliest start date                                     | 1,8,2025            |
+            | Latest end date                                         | 1,9,2025            |
 
             | What is the priority of this hearing? | Hearing priority 1 |
         When I click continue in create hearing workflow
@@ -610,7 +615,7 @@ Feature: Create hearings workflow
             # | Panel details | Exclude specific panel members | auto test 2 judge 2 |
 
             | Length, date and priority level of hearing | Length of hearing                                       | 1 Day 2 Hours 5 Minutes                                                                     |
-            | Length, date and priority level of hearing | Does the hearing need to take place on a specific date? | Choose a date range,Earliest start date: 01 August 2024, Latest end date: 01 September 2024 |
+            | Length, date and priority level of hearing | Does the hearing need to take place on a specific date? | Choose a date range,Earliest start date: 01 August 2025, Latest end date: 01 September 2025 |
 
             | Length, date and priority level of hearing | What is the priority of this hearing?                  | Hearing priority 1 |
             | Linked hearings                            | Will this hearing need to be linked to other hearings? | Yes                |

@@ -89,7 +89,9 @@ export class CaseFlagsUtils {
         displayPath: null
       };
     });
-    return displayCaseFlags.filter((flag) => flag.displayPath ? flag.flagStatus.toLowerCase() === CaseFlagsUtils.ACTIVE : false);
+    return displayCaseFlags
+      ? displayCaseFlags.filter((flag) => flag.displayPath ? flag.flagStatus.toLowerCase() === CaseFlagsUtils.ACTIVE : false)
+      : [];
   }
 
   private static getAllRAFsWithGroup(flags: PartyFlagsDisplayModel[]): CaseFlagGroup[] {

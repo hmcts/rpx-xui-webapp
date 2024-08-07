@@ -55,7 +55,8 @@
     roleCategory="ADMIN"
     [showAllocateRoleLink]="showAllocateRoleLink"
     linkText="Allocate an admin role"
-    [showAllocate]="true">
+    [showAllocate]="true"
+    [existingUsers]="existingAdminUsers">
   </exui-role-access-section>
 
   <exui-role-access-section *ngIf="!namedCTSCRoles"
@@ -78,7 +79,8 @@
     roleCategory="CTSC"
     [showAllocateRoleLink]="showAllocateRoleLink"
     linkText="Allocate a CTSC role"
-    [showAllocate]="true">
+    [showAllocate]="true"
+    [existingUsers]="existingCTSCUsers">
   </exui-role-access-section>
 
   <h2 class="govuk-heading-m">Exclusions</h2>

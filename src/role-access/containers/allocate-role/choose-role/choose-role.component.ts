@@ -68,9 +68,11 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
         this.formGroup = new FormGroup({ [this.radioControlName]: this.radioOptionControl });
       }
     );
-    this.store.pipe(select(fromFeature.getAvailableRolesForService)).subscribe((roles) =>
-      this.optionsList = this.getOptions(roles.filter((role) => role.roleCategory === this.roleCategory))
-    );
+    this.store.pipe(select(fromFeature.getAvailableRolesForService)).subscribe((roles) => {
+      if (roles) {
+        this.optionsList = this.getOptions(roles.filter((role) => role.roleCategory === this.roleCategory));
+      }
+    });
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent): void {

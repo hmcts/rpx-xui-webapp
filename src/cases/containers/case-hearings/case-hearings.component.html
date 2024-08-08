@@ -10,8 +10,11 @@
         </span>
     </div>
   </div>
-  <ng-container *ngIf="!serverError">
+  <ng-container *ngIf="{upcoming: upcomingHearings$ | async,
+    pastAndCancelled: pastAndCancelledHearings$ |async, listed: listedHearings$ | async} as data">
     <br>
+  <ng-container *ngIf="!serverError && 
+  (data.upcoming !== null || data.pastAndCancelled !== null || data.listed !==null)">
     <a *ngIf="hasRequestAction"
        href="javascript:void(0)"
        role="button" draggable="false"
@@ -50,6 +53,6 @@
         [actions]="hearingsActions">
       </exui-case-hearings-list>
     </ng-container>
-
+  </ng-container>
   </ng-container>
 </div>

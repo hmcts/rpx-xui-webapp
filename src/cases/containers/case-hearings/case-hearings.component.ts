@@ -47,20 +47,19 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public caseId: string = '';
   public serverError: { id: string, message: string } = null;
   public isOgdRole: boolean;
-  public showSpinner$ : Observable<boolean>;
+  public showSpinner$: Observable<boolean>;
   public hearingStageOptions: LovRefDataModel[];
   public hearingValuesSubscription: Subscription;
   public refDataSubscription: Subscription;
-  public showSpinner: boolean = true;
   private userRoles: string[] = [];
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
-              private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly activatedRoute: ActivatedRoute,
-              private readonly router: Router,
-              private readonly lovRefDataService: LovRefDataService,
-              private readonly loadingService: LoadingService,
-              private readonly sessionSvc: SessionStorageService) {
+    private readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly router: Router,
+    private readonly lovRefDataService: LovRefDataService,
+    private readonly loadingService: LoadingService,
+    private readonly sessionSvc: SessionStorageService) {
     this.caseId = this.activatedRoute.snapshot.params.cid;
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
     this.hearingListLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingListLastError));
@@ -95,8 +94,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       } else {
         // Reset the error context if there is no error on subsequent requests
         this.serverError = null;
+        this.loadingService.unregister(loadingToken);
       }
-      this.loadingService.unregister(loadingToken);
     }, () => {
       this.loadingService.unregister(loadingToken);
     });
@@ -143,7 +142,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
           const caseHearingViewModels: HearingListViewModel[] = this.calculateEarliestHearingDate(caseHearingModels);
           return this.sortHearingsByHearingAndRequestDate(caseHearingViewModels);
         }
-
         return [];
       }
       )

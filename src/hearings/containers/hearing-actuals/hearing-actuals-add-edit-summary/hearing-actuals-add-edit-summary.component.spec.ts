@@ -287,7 +287,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
     const mainModel = _.cloneDeep(hearingActualsMainModel);
     const actualHearingDays = [mainModel.hearingActuals.actualHearingDays[0]];
     const s = component.calculateEarliestHearingDate(actualHearingDays);
-    expect(s).toBe('12 March 2021');
+    expect(s).toBe('2021-03-12T09:00:00+00:00');
   });
 
   it('should calculate return first and last hearing date as string', () => {
@@ -299,7 +299,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
     hearingDays.push(obj1);
     hearingDays.push(obj2);
     const s = component.calculateEarliestHearingDate(hearingDays);
-    expect(s).toBe('12 March 2021 - 15 March 2021');
+    expect(s).toBe('2021-03-12T09:00:00+00:00 - 2021-03-14T09:00:00+00:00');
   });
 
   it('should return hearing date(s) text as string', () => {

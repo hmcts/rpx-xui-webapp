@@ -22,7 +22,7 @@
     <dl class="govuk-summary-list">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">{{getHearingDateText()}}</dt>
-        <dd class="govuk-summary-list__value">{{hearingDateRange}}</dd>
+        <dd class="govuk-summary-list__value">{{hearingDateRange | ccdDate: 'local' | date: "dd MMMM yyyy"}}</dd>
       </div>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">{{ 'Paper hearing' | rpxTranslate }}</dt>
@@ -70,7 +70,7 @@
           <summary class="govuk-details__summary"
             (click)="$event.preventDefault(); hearingDatesAccordion[actualHearingDay.hearingDate] = !hearingDatesAccordion[actualHearingDay.hearingDate]">
             <div class="govuk-details__summary-text govuk-!-padding-bottom-1">
-              {{actualHearingDay.hearingDate | date: "dd MMMM yyyy"}}
+              {{actualHearingDay?.hearingStartTime | ccdDate: 'local' | date: "dd MMMM yyyy"}}
             </div>
             <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
               <div class="govuk-tag" [class.govuk-tag--grey]="!isDetailsProvidedForDay(actualHearingDay)">

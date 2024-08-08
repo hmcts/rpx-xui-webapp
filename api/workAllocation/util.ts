@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import * as express from 'express';
 import { getConfigValue } from '../configuration';
-import { SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
+import { CASEWORKER_PAGE_SIZE, SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
@@ -42,7 +42,10 @@ export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`;
 }
 
-export function preparePostTaskUrlAction(baseUrl: string, taskId: string, action: string): string {
+export function preparePostTaskUrlAction(baseUrl: string, taskId: string, action: string, mode: string): string {
+  if (action === 'complete') {
+    return `${baseUrl}/task/${taskId}/${action}?completion_process=${mode}`;
+  }
   return `${baseUrl}/task/${taskId}/${action}`;
 }
 
@@ -75,7 +78,8 @@ export function prepareGetSpecificLocationUrl(baseUrl: string, epimmsId: string)
 }
 
 export function prepareGetUsersUrl(baseUrl: string, service: string): string {
-  return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=12000`;
+  const pageSize = parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
+  return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=${pageSize}`;
 }
 
 export function prepareRoleApiUrl(baseUrl: string) {

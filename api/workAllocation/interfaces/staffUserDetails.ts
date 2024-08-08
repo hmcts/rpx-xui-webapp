@@ -7,6 +7,7 @@ export interface ServiceUserDetailList {
 
 export interface StaffUserDetails {
   ccd_service_name: string;
+  ccd_service_names?: string[];
   staff_profile: StaffProfile;
 }
 

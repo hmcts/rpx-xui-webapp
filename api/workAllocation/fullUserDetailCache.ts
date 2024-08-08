@@ -1,20 +1,20 @@
-import { Caseworker } from './interfaces/common';
+import { CachedCaseworker } from './interfaces/common';
 
 export class FullUserDetailCache {
   // singleton class to keep single instance of role assignment query
   private static instance: FullUserDetailCache;
-  private userDetails: Caseworker[];
+  private userDetails: CachedCaseworker[];
 
   static getInstance(): FullUserDetailCache {
     this.instance = this.instance ? this.instance : new FullUserDetailCache();
     return this.instance;
   }
 
-  setUserDetails(userDetails: Caseworker[]): void {
+  setUserDetails(userDetails: CachedCaseworker[]): void {
     this.userDetails = userDetails;
   }
 
-  getAllUserDetails(): Caseworker[] {
+  getAllUserDetails(): CachedCaseworker[] {
     return this.userDetails;
   }
 }

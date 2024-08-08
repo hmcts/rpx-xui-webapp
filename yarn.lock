@@ -3330,16 +3330,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.25-banner-message-date-error-handling":
-  version: 2.0.25-banner-message-date-error-handling
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.25-banner-message-date-error-handling"
+"@hmcts/rpx-xui-common-lib@npm:2.0.26-banner-message-date-error-handling":
+  version: 2.0.26-banner-message-date-error-handling
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.26-banner-message-date-error-handling"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 280a1d3617360ad763314f50d3e941c57f9ee957236b6c69f8136321bcd057a0465e635276a187dcceb3c056aeff2af7ccf9148bfcc4efd3f651a667ec2c0d7f
+  checksum: 172ac6391538bbc02ba3d2e7eb71adc8529812ee4f0f17fdf0dd8955c57cde6458650b56e00c974f77711dac9b63d9e0797c829765bdc3085215e7816d39f9b4
   languageName: node
   linkType: hard
 
@@ -21677,7 +21677,7 @@ __metadata:
     "@hmcts/media-viewer": 4.0.4
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 2.0.25-banner-message-date-error-handling
+    "@hmcts/rpx-xui-common-lib": 2.0.26-banner-message-date-error-handling
     "@hmcts/rpx-xui-node-lib": 2.29.1
     "@microsoft/applicationinsights-web": ^3.1.0
     "@ng-idle/core": ^14.0.0

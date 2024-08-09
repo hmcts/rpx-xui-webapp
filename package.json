@@ -1,6 +1,6 @@
 {
   "name": "rpx-exui",
-  "version": "7.0.14",
+  "version": "7.0.15",
   "engines": {
     "node": ">=18.17.0"
   },
@@ -98,7 +98,7 @@
     "@hmcts/media-viewer": "4.0.4",
     "@hmcts/nodejs-healthcheck": "1.7.0",
     "@hmcts/properties-volume": "^0.0.13",
-    "@hmcts/rpx-xui-common-lib": "2.0.25",
+    "@hmcts/rpx-xui-common-lib": "2.0.26",
     "@hmcts/rpx-xui-node-lib": "2.29.1",
     "@microsoft/applicationinsights-web": "^3.1.0",
     "@ng-idle/core": "^14.0.0",

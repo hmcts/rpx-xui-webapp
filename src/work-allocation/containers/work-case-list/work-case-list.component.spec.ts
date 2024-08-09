@@ -61,7 +61,7 @@ function getCaseService(): CaseServiceConfig {
   };
 }
 
-describe('CaseListComponent', () => {
+describe('WorkCaseListComponent', () => {
   let component: WorkCaseListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

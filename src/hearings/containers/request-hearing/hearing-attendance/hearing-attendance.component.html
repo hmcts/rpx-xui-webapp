@@ -72,7 +72,7 @@
           <div *ngFor="let partyControl of partiesFormArray.controls; let i=index" class="party-row" [formGroupName]="i">
             <label class="govuk-label govuk-!-font-weight-bold" [for]="'partyChannel'+i">
                 {{ partyControl.value.partyName }}
-                <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && partyControl.value.partyAmendmentStatus"
+                <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && partyControl.value.partyAmendmentStatus !== 'NONE'"
                   [displayLabel]="partyControl.value.partyAmendmentStatus">
                 </exui-amendment-label>
             </label>

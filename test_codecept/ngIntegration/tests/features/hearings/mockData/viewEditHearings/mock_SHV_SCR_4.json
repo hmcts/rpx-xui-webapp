@@ -25,7 +25,7 @@
         "dateRangeEnd": "",
         "firstDateTimeMustBe": "2024-12-18T00:00:00"
     },
-    "duration": 0,
+    "duration": 120,
     "hearingPriorityType": "Standard",
     "numberOfPhysicalAttendees": 0,
     "hearingInWelshFlag": false,
@@ -48,10 +48,15 @@
         {
             "partyID": "1234-uytr-7654-asdf-0001",
             "partyType": "IND",
-            "partyName": "Party1 name updated",
+            "partyName": "Party1 name FN updated Party1 name LN",
             "partyRole": "APPL",
+            "unavailabilityRanges": {
+                "unavailableFromDate": "2024-09-01T10:00:00",
+                "unavailableToDate": "2024-09-10T10:00:00",
+                "unavailabilityType": "All Day"
+            },
             "individualDetails": {
-                "firstName": "Party1 name FN",
+                "firstName": "Party1 name FN updated",
                 "lastName": "Party1 name LN",
                 "interpreterLanguage": "",
                 "reasonableAdjustments": [
@@ -84,8 +89,13 @@
         {
             "partyID": "1234-uytr-7654-asdf-0002",
             "partyType": "IND",
-            "partyName": "Party2 name",
+            "partyName": "Party2 name FN Party2 name LN",
             "partyRole": "APPL",
+            "unavailabilityRanges": {
+                "unavailableFromDate": "2024-08-02T10:00:00",
+                "unavailableToDate": "2024-08-12T10:00:00",
+                "unavailabilityType": "All Day"
+            },
             "individualDetails": {
                 "firstName": "Party2 name FN",
                 "lastName": "Party2 name LN",
@@ -131,7 +141,7 @@
         {
             "partyID": "1234-uytr-7654-asdf-0004",
             "partyType": "IND",
-            "partyName": "Party4 name",
+            "partyName": "Party4 name FN Party4 name LN",
             "partyRole": "APPL",
             "individualDetails": {
                 "firstName": "Party4 name FN",

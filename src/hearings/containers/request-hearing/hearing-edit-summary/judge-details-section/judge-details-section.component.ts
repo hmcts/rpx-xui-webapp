@@ -1,59 +1,40 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Store, select } from '@ngrx/store';
 import * as _ from 'lodash';
-import { Observable } from 'rxjs';
 import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
-import * as fromHearingStore from '../../../../../hearings/store';
+import { PanelRequirementsModel } from '../../../../../hearings/models/panelRequirements.model';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { MemberType, RadioOptions, RequirementType } from '../../../../models/hearings.enum';
 import { JudicialUserModel } from '../../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
-import { PanelRequirementsModel } from '../../../../models/panelRequirements.model';
 
 @Component({
   selector: 'exui-judge-details-section',
   templateUrl: './judge-details-section.component.html'
 })
 export class JudgeDetailsSectionComponent implements OnInit {
+  @Input() public panelRequirements: PanelRequirementsModel;
+  @Input() public panelRequirementsToCompare: PanelRequirementsModel;
   @Input() public judgeTypesRefData: LovRefDataModel[];
   @Input() public judicialUsers: JudicialUserModel[];
-  @Input() public panelRequirements: PanelRequirementsModel;
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
   public needJudge: string;
   public judgeName: string;
   public judgeTypes: string;
   public excludedJudgeNames: string;
-
-  public hearingState$: Observable<fromHearingStore.State>;
+  public showAmendedLabelForPageTitle: boolean;
   public showAmmendedForNeedJudge: boolean;
   public showAmmendedForJudgeName: boolean;
   public showAmmendedForJudgeType: boolean;
   public showAmmendedForExcludedJudgeNames: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {
-    this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
-  }
-
   public ngOnInit(): void {
     this.needJudge = this.getNeedJudge();
     this.judgeName = this.getJudgeName();
     this.judgeTypes = this.getJudgeTypes();
     this.excludedJudgeNames = this.getExcludedJudgeNames();
-
-    this.hearingState$.subscribe((state) => {
-      const objA = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements;
-      const objB = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-      this.showAmmendedForNeedJudge = !_.isEqual(objA?.roleType.length > 0, objB?.roleType.length > 0);
-      this.showAmmendedForJudgeName = !_.isEqual(objA?.panelPreferences.filter((panel) => panel.memberType === MemberType.JUDGE && panel.requirementType === RequirementType.MUSTINC),
-        objB?.panelPreferences.filter((panel) => panel.memberType === MemberType.JUDGE && panel.requirementType === RequirementType.MUSTINC));
-      this.showAmmendedForExcludedJudgeNames = !_.isEqual(objA?.panelPreferences.filter((panel) => panel.memberType === MemberType.JUDGE && panel.requirementType === RequirementType.EXCLUDE),
-        objB?.panelPreferences.filter((panel) => panel.memberType === MemberType.JUDGE && panel.requirementType === RequirementType.EXCLUDE));
-      if (objA?.roleType && objB?.roleType) {
-        this.showAmmendedForJudgeType = !_.isEqual([...objA.roleType].sort((a, b) => a.localeCompare(b)), [...objB.roleType].sort((a, b) => a.localeCompare(b)));
-      }
-    });
+    this.setAmendmentLabels();
   }
 
   public onChange(fragmentId: string): void {
@@ -77,11 +58,11 @@ export class JudgeDetailsSectionComponent implements OnInit {
 
   private getNeedJudge(): string {
     const hasJudgeDetails = this.panelRequirements?.panelPreferences?.filter((panel) => panel.memberType === MemberType.JUDGE);
-    if (this.panelRequirements?.roleType?.length > 0) {
-      return RadioOptions.NO;
-    }
     if (hasJudgeDetails?.length > 0) {
       return RadioOptions.YES;
+    }
+    if (this.panelRequirements?.roleType?.length > 0) {
+      return RadioOptions.NO;
     }
     return '';
   }
@@ -122,5 +103,48 @@ export class JudgeDetailsSectionComponent implements OnInit {
     return excludedJudgeNames.length > 0
       ? excludedJudgeNames.join(', ')
       : '';
+  }
+
+  private setAmendmentLabels(): void {
+    this.showAmmendedForNeedJudge = !_.isEqual(
+      this.panelRequirementsToCompare?.roleType.length > 0,
+      this.panelRequirements?.roleType.length > 0
+    );
+
+    this.showAmmendedForJudgeName = !_.isEqual(
+      this.panelRequirementsToCompare?.panelPreferences.filter(
+        (panel) => panel.memberType === MemberType.JUDGE && panel.requirementType === RequirementType.MUSTINC
+      ),
+      this.panelRequirements?.panelPreferences.filter(
+        (panel) => panel.memberType === MemberType.JUDGE && panel.requirementType === RequirementType.MUSTINC
+      )
+    );
+
+    const memberIdsToCompare = this.panelRequirementsToCompare?.panelPreferences?.map(
+      (panelPreference) => panelPreference.memberID
+    )?.sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
+    const memberIds = this.panelRequirements?.panelPreferences?.map(
+      (panelPreference) => panelPreference.memberID
+    )?.sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
+    this.showAmmendedForExcludedJudgeNames = !_.isEqual(
+      memberIdsToCompare,
+      memberIds
+    );
+
+    if (this.panelRequirementsToCompare?.roleType && this.panelRequirements?.roleType) {
+      this.showAmmendedForJudgeType = !_.isEqual(
+        [...this.panelRequirementsToCompare.roleType].sort((a, b) => a.localeCompare(b)),
+        [...this.panelRequirements.roleType].sort((a, b) => a.localeCompare(b))
+      );
+    }
+
+    this.showAmendedLabelForPageTitle = this.showAmmendedForNeedJudge ||
+      this.showAmmendedForJudgeName ||
+      this.showAmmendedForExcludedJudgeNames ||
+      this.showAmmendedForJudgeType;
   }
 }

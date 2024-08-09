@@ -177,8 +177,22 @@ describe('HearingChangeReasonsComponent', () => {
     component.executeAction(ACTION.VIEW_EDIT_SUBMIT);
     expect(component.isFormValid).toHaveBeenCalled();
     expect(component.errors.length).toBe(0);
+    expect(hearingsService.hearingRequestForSubmitValid = true);
     component.executeAction(ACTION.BACK);
     expect(component.errors.length).toBe(0);
+    expect(hearingsService.hearingRequestForSubmitValid = false);
+  });
+
+  it('should execute Action and fail validation', () => {
+    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
+      .forEach((reason) => reason.value.selected = false);
+    hearingsService.hearingRequestForSubmitValid = false;
+    component.executeAction(ACTION.VIEW_EDIT_SUBMIT);
+    expect(component.isFormValid).toHaveBeenCalled();
+    expect(component.errors.length).toBe(1);
+    expect(hearingsService.hearingRequestForSubmitValid = false);
+    component.executeAction(ACTION.BACK);
+    expect(component.errors.length).toBe(1);
   });
 
   it('should navigate back to hearing view edit summary page', () => {

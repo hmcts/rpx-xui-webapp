@@ -40,7 +40,7 @@ class ElementCollection {
         // if (index >= this.nativeElements.length ){
         //     throw Error(`Array index out of bound, elements count ${this.nativeElements.length} , index to get ${index}`);
         // }
-        
+
         // const nativeLement = new PuppeteerNativeElement(index, this);
         // return nativeLement;
         const locatorAtIndex = locate(this.selector).at(index + 1)
@@ -85,7 +85,7 @@ class ElementCollection {
         //     const helperNativeElement = new PuppeteerNativeElement(null, null)
         //     this.nativeElements = await helperNativeElement.getNativeElements(this.selector);
         // }
-        
+
         // let sourceElement = null;
         // if (this.parent){
         //     sourceElement = await this.parent.__checkAndGetNativeElement();
@@ -110,7 +110,7 @@ class ElementCollection {
 
 
     async getText(){
-        
+
     }
 }
 
@@ -122,7 +122,7 @@ class Element {
 
     _childElement(locator){
         let newSelector = '';
-     
+
         newSelector = locate(this.selector).find(locator).locator
         return new Element(newSelector)
     }
@@ -143,7 +143,7 @@ class Element {
         const child = this._childElement(locator)
         return new ElementCollection(child.selector, null)
     }
-   
+
 
     locator() {
         return this.selector
@@ -154,7 +154,7 @@ class Element {
         reportLogger.AddMessage(`getText: ${JSON.stringify(this.selector)}`)
         const selectorType = Object.keys(this.selector)[0]
         const selector = selectorType === 'css' ? this.selector.css : `xpath=${this.selector.xpath}`
-        return await getActor().getTextUsingPlaywright(selector) 
+        return await getActor().getTextUsingPlaywright(selector)
     }
 
     async getTextFromAll() {
@@ -172,14 +172,14 @@ class Element {
 
     async clear(){
         await this.wait();
-        await getActor().clearField(this.selector)  
+        await getActor().clearField(this.selector)
     }
 
     async click(){
         await this.wait();
         reportLogger.AddMessage(`click: ${JSON.stringify(this.selector)}`)
 
-        await getActor().click(this.selector)  
+        await getActor().click(this.selector)
     }
 
     async getSelectOptions() {
@@ -224,8 +224,8 @@ class Element {
             reportLogger.AddMessage(`error occured ${err.message}`)
             return false
         }
-      
-      
+
+
     }
 
     async isEnabled(){
@@ -247,13 +247,13 @@ class Element {
 
     async count(){
         // await this.wait();
-        const elements = new ElementCollection(this.selector) 
+        const elements = new ElementCollection(this.selector)
         return await elements.count()
     }
 
     async get(index){
         await this.wait();
-        return new Element(locate(this.selector).at(index+1)) 
+        return new Element(locate(this.selector).at(index+1))
     }
 
     async getAttribute(attr){
@@ -267,14 +267,14 @@ class Element {
             let attributeItemValues = ''
             for (const prop of values){
                 const v = await getActor().grabCssPropertyFrom(this.selector, prop)
-                attributeItemValues = `${prop}: ${v};`;      
+                attributeItemValues = `${prop}: ${v};`;
             }
-            return attributeItemValues 
+            return attributeItemValues
         }else{
-            return attributeValue 
+            return attributeValue
         }
-        
-        
+
+
     }
 
     async getTagName(){
@@ -316,7 +316,7 @@ class Element {
         let waitTime = waitInSec ? waitInSec : 20;
         let isPresentStatus = null;
         let elapsedWait = 0;
-        do{ 
+        do{
             if (isPresentStatus === false){
                 await browser.sleepInMillisec(100)
             }
@@ -366,7 +366,7 @@ class Element {
     async waitForElementdetach(){
         await getActor().waitForPlaywrightLocatorState(this.selector,'detached')
     }
-    
+
 }
 
 

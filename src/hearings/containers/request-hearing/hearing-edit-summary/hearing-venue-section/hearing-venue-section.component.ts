@@ -1,11 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Store, select } from '@ngrx/store';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs';
 import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
-import * as fromHearingStore from '../../../../../hearings/store';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
-import { HearingLocationModel } from '../../../../models/hearingLocation.model';
+import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 import { LocationByEPIMMSModel } from '../../../../models/location.model';
 import { LocationsDataService } from '../../../../services/locations-data.service';
 
@@ -14,29 +12,29 @@ import { LocationsDataService } from '../../../../services/locations-data.servic
   templateUrl: './hearing-venue-section.component.html'
 })
 export class HearingVenueSectionComponent implements OnInit {
-  @Input() public hearingLocations: HearingLocationModel[];
+  @Input() public hearingRequestMainModel: HearingRequestMainModel;
+  @Input() public hearingRequestToCompareMainModel: HearingRequestMainModel;
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
   public locations$: Observable<LocationByEPIMMSModel[]>;
-
-  public hearingState$: Observable<fromHearingStore.State>;
   public showAmmendedForHeading: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
-  public hearingLocationsToCompare: string[];
+  public hearingLocationIdsToCompare: string[];
 
-  constructor(private readonly locationsDataService: LocationsDataService,
-    private readonly hearingStore: Store<fromHearingStore.State>) {
-    this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
+  constructor(private readonly locationsDataService: LocationsDataService) {
   }
 
   public ngOnInit(): void {
-    const locationIds = this.hearingLocations.map((hearingLocation) => hearingLocation.locationId).join(',');
-    this.locations$ = this.locationsDataService.getLocationById(locationIds);
-    this.hearingState$.subscribe((state) => {
-      this.hearingLocationsToCompare = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingLocations.map((loc) => loc.locationId);
-      const objB = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingLocations.map((loc) => loc.locationId);
-      this.showAmmendedForHeading = !_.isEqual(this.hearingLocationsToCompare, objB);
-    });
+    const hearingLocationIds = this.hearingRequestMainModel.hearingDetails.hearingLocations?.map((hearingLocation) => hearingLocation.locationId);
+    hearingLocationIds.sort((a: any, b: any) => a - b);
+    this.hearingLocationIdsToCompare = this.hearingRequestToCompareMainModel.hearingDetails.hearingLocations.map((loc) => loc.locationId);
+    this.hearingLocationIdsToCompare.sort((a: any, b: any) => a - b);
+    this.locations$ = this.locationsDataService.getLocationById(hearingLocationIds.join(','));
+
+    this.showAmmendedForHeading = !_.isEqual(
+      hearingLocationIds,
+      this.hearingLocationIdsToCompare
+    );
   }
 
   public onChange(fragmentId: string): void {
@@ -45,6 +43,6 @@ export class HearingVenueSectionComponent implements OnInit {
   }
 
   public showAmmended(locationId: string): boolean {
-    return !this.hearingLocationsToCompare.includes(locationId);
+    return !this.hearingLocationIdsToCompare.includes(locationId);
   }
 }

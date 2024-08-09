@@ -69,6 +69,11 @@ describe('HearingAdditionalInstructionsComponent', () => {
     expect(component.getListingAutoChangeReasonCode()).toBe('user-added-comments');
   });
 
+  it('should sanitise HTML strings', () => {
+    const sanitisedString = component.santiseHTML('<h1>this is a test</h1>');
+    expect(sanitisedString).toBe('this is a test');
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

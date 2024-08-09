@@ -50,11 +50,17 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
       ...this.hearingRequestMainModel,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        listingComments: this.instructionsForm.value.instructions,
+        listingComments: this.santiseHTML(this.instructionsForm.value.instructions),
         autolistFlag: this.getAutoListFlag(),
         listingAutoChangeReasonCode: this.getListingAutoChangeReasonCode()
       }
     };
+  }
+
+  public santiseHTML(string: string) {
+    const tempDivElement = document.createElement('div');
+    tempDivElement.innerHTML = string;
+    return tempDivElement.textContent || tempDivElement.innerText || '';
   }
 
   public getAutoListFlag(): boolean {

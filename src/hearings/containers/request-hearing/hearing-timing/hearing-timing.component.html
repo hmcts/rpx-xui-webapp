@@ -39,6 +39,9 @@
                     name="durationmins" type="text" inputmode="numeric" value="" formControlName="minutes">
                 </div>
               </div>
+              <exui-amendment-label id="length-of-hearing-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && durationChanged"
+                                    [displayLabel]="amendmentLabelEnum.AMENDED">
+              </exui-amendment-label>
             </div>
           </fieldset>
         </div>
@@ -46,9 +49,14 @@
       <div class="govuk-form-group govuk-!-margin-top-3" [ngClass]="{'govuk-form-group--error': hearingPriorityDateError}">
         <fieldset class="govuk-fieldset" aria-describedby="contact-hint" id="hearing-specific-dates">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-            <h3 class="govuk-fieldset__heading">{{ 'Does the hearing need to take place on a specific date?' | rpxTranslate }}</h3>
+            <h3 class="govuk-fieldset__heading">
+              {{ 'Does the hearing need to take place on a specific date?' | rpxTranslate }}
+              <exui-amendment-label id="hearing-specific-dates-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired"
+                [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
+              </exui-amendment-label>
+            </h3>
           </legend>
-          <div class="govuk-hint">{{ 'Availability of all the parties will be taken into account when scheduling this hearing.' | rpxTranslate }}</div>
+          <div class="govuk-hint">{{ 'Availability of all the parties will be taken into account when scheduling this hearing' | rpxTranslate }}</div>
           <span class="govuk-error-message" *ngIf="hearingPriorityDateError">
             <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{hearingPriorityDateError | rpxTranslate }}
           </span>
@@ -69,10 +77,10 @@
               <div class="govuk-form-group">
                 <div class="govuk-!-margin-right-1 first-hearing-date">
                   <xuilib-gov-uk-date [config]="firstHearingDate" [formGroup]="firstHearingFormGroup" [errorMessage]="firstDateOfHearingError"></xuilib-gov-uk-date>
+                  <exui-amendment-label id="first-date-amendment-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && firstDateTimeMustBeChanged"
+                      [displayLabel]="amendmentLabelEnum.AMENDED">
+                  </exui-amendment-label>
                 </div>
-                <exui-amendment-label id="first-date-amendment-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired"
-                  [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
-                </exui-amendment-label>
               </div>
             </div>
             <div class="govuk-radios__item">
@@ -88,20 +96,33 @@
                 </span>
                 <div class="govuk-form-group">
                   <xuilib-gov-uk-date [config]="earliestHearingDate" [formGroup]="earliestHearingFormGroup" [errorMessage]="earliestDateOfHearingError"></xuilib-gov-uk-date>
+                  <exui-amendment-label id="earliest-hearing-date-amendment-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && dateRangeStartChanged"
+                     [displayLabel]="amendmentLabelEnum.AMENDED">
+                  </exui-amendment-label>
                 </div>
                 <div class="govuk-form-group">
                   <xuilib-gov-uk-date [config]="latestHearingDate" [formGroup]="latestHearingFormGroup" [errorMessage]="latestDateOfHearingError"></xuilib-gov-uk-date>
+                  <exui-amendment-label id="latest-hearing-date-amendment-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && dateRangeEndChanged"
+                     [displayLabel]="amendmentLabelEnum.AMENDED">
+                  </exui-amendment-label>
                 </div>
               </div>
             </div>
           </div>
         </fieldset>
       </div>
-      <exui-parties-unavailable-dates [unAvailableDates]="partiesNotAvailableDates"></exui-parties-unavailable-dates>
+      <exui-parties-unavailable-dates
+        [unAvailableDates]="partiesNotAvailableDates"
+        [showAmendedLabel]="hearingUnavailabilityDatesChanged">
+      </exui-parties-unavailable-dates>
       <div class="govuk-form-group govuk-!-margin-top-5"  [ngClass]="{'govuk-form-group--error': hearingPriorityError}">
         <fieldset class="govuk-fieldset" id="hearing-priority">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-            <h3 class="govuk-fieldset__heading">{{ 'What is the priority of this hearing?' | rpxTranslate }}</h3>
+            <h3 class="govuk-fieldset__heading">{{ 'What is the priority of this hearing?' | rpxTranslate }}
+            <exui-amendment-label id="hearing-priority-amendment-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && priorityChanged"
+                                  [displayLabel]="amendmentLabelEnum.AMENDED">
+            </exui-amendment-label>
+            </h3>
           </legend>
           <span class="govuk-error-message" *ngIf="hearingPriorityError">
             <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{hearingPriorityError | rpxTranslate }}

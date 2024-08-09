@@ -43,10 +43,16 @@ describe('RequestHearingComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should check continue method', () => {
+  it('should check back method', () => {
     spyOn(hearingsService, 'navigateAction');
     component.onBack();
     expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.BACK);
+  });
+
+  it('should check continue method', () => {
+    spyOn(hearingsService, 'navigateAction');
+    component.onContinue();
+    expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.CONTINUE);
   });
 
   it('should check submit method', () => {
@@ -57,10 +63,36 @@ describe('RequestHearingComponent', () => {
 
   it('should check submit method and not be able to click submit change request button again', () => {
     spyOn(hearingsService, 'navigateAction');
-    expect(component.hasSubmitted).toBe(false);
     component.submitRequest(ACTION.VIEW_EDIT_SUBMIT);
     expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.VIEW_EDIT_SUBMIT);
-    expect(component.hasSubmitted).toBe(true);
+  });
+
+  it('should check submitUpdatedRequestClicked set to true for view edit reason', () => {
+    spyOn(hearingsService, 'navigateAction');
+    component.submitRequest(ACTION.VIEW_EDIT_REASON);
+    expect(hearingsService.submitUpdatedRequestClicked).toBe(true);
+  });
+
+  it('should check buttonDisabled returns a false for a submit with failed validation', () => {
+    spyOn(hearingsService, 'navigateAction');
+    hearingsService.hearingRequestForSubmitValid = false;
+    component.submitRequest(ACTION.VIEW_EDIT_SUBMIT);
+    const buttonDisabled = component.buttonDisabled(ACTION.VIEW_EDIT_SUBMIT);
+    expect(buttonDisabled).toEqual(false);
+  });
+
+  it('should check buttonDisabled returns a true for a VIEW_EDIT_SUBMIT with successful validation', () => {
+    spyOn(hearingsService, 'navigateAction');
+    hearingsService.hearingRequestForSubmitValid = true;
+    const buttonDisabled = component.buttonDisabled(ACTION.VIEW_EDIT_SUBMIT);
+    expect(buttonDisabled).toEqual(true);
+  });
+
+  it('should check buttonDisabled returns a false for a submit with successful validation', () => {
+    spyOn(hearingsService, 'navigateAction');
+    hearingsService.hearingRequestForSubmitValid = true;
+    const buttonDisabled = component.buttonDisabled(ACTION.SUBMIT);
+    expect(buttonDisabled).toEqual(false);
   });
 
   it('should check is answer page', () => {
@@ -81,13 +113,15 @@ describe('RequestHearingComponent', () => {
     expect(component.isChildPage).toBeTruthy();
   });
 
-  it('should purge data in store if page is destroyed', () => {
+  it('should purge data in store and clear hearings service manual amendment properties if page is destroyed', () => {
     const dispatchSpy = spyOn(mockStore, 'dispatch');
     component.ngOnDestroy();
     fixture.detectChanges();
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingRequest()));
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingValues()));
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingConditions()));
+    expect(hearingsService.propertiesUpdatedAutomatically).toEqual({ pageless: {}, withinPage: {} });
+    expect(hearingsService.propertiesUpdatedOnPageVisit).toBeNull();
   });
 
   afterEach(() => {

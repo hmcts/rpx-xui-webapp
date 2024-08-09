@@ -22,11 +22,11 @@ import { HearingsService } from '../../../services/hearings.service';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
 
 @Component({
   selector: 'exui-hearing-timing',
-  templateUrl: './hearing-timing.component.html',
-  styleUrls: ['./hearing-timing.component.scss']
+  templateUrl: './hearing-timing.component.html'
 })
 export class HearingTimingComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public priorityForm: FormGroup;
@@ -47,6 +47,13 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public priorityFormInfo: { days: string, hours: string, minutes: string, startDate: Date, firstDate: Date, secondDate: Date, priority: string };
   public hearingWindowChangesRequired: boolean;
   public hearingWindowChangesConfirmed: boolean;
+  public hearingUnavailabilityDatesChanged: boolean;
+  public hearingUnavailabilityDatesConfirmed: boolean;
+  public dateRangeStartChanged: boolean;
+  public dateRangeEndChanged: boolean;
+  public firstDateTimeMustBeChanged: boolean;
+  public durationChanged: boolean;
+  public priorityChanged: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
 
   constructor(private readonly formBuilder: FormBuilder,
@@ -76,24 +83,35 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
 
   public ngOnInit(): void {
     this.initDateConfig();
-    this.getFormData();
+    this.getFormData(this.serviceHearingValuesModel.duration, HearingsUtils.getHearingWindow(this.serviceHearingValuesModel.hearingWindow), this.serviceHearingValuesModel.hearingPriorityType);
     this.initForm();
     this.priorities = this.route.snapshot.data.hearingPriorities.sort((currentPriority: { order: number; }, nextPriority: { order: number; }) => (currentPriority.order < nextPriority.order ? -1 : 1));
     // @ts-ignore
     const unavailabilityDateList: UnavailabilityRangeModel[] = this.serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRanges);
     this.checkUnavailableDatesList(unavailabilityDateList);
-    this.hearingWindowChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesRequired;
-    this.hearingWindowChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesConfirmed;
+
+    if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
+      if (this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow')) {
+        this.hearingWindowChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesRequired;
+        this.hearingWindowChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesConfirmed;
+      }
+      this.hearingUnavailabilityDatesChanged = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingUnavailabilityDatesChanged &&
+        !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingUnavailabilityDatesConfirmed;
+      this.dateRangeStartChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeStart, this.serviceHearingValuesModel.hearingWindow.dateRangeStart);
+      this.dateRangeEndChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeEnd, this.serviceHearingValuesModel.hearingWindow.dateRangeEnd);
+      this.firstDateTimeMustBeChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow.firstDateTimeMustBe, this.serviceHearingValuesModel.hearingWindow.firstDateTimeMustBe);
+      this.durationChanged = HearingsUtils.hasHearingDurationChanged(this.hearingRequestMainModel.hearingDetails.duration, this.serviceHearingValuesModel.duration);
+      this.priorityChanged = HearingsUtils.hasHearingPriorityChanged(this.hearingRequestMainModel.hearingDetails.hearingPriorityType, this.serviceHearingValuesModel.hearingPriorityType);
+    }
   }
 
-  public getFormData(): void {
+  public getFormData(durationInput: number, hearingWindowInput: HearingWindowModel, priorityInput: string): void {
     let duration: number;
     let startDate: Date = null;
     let firstDate: Date = null;
     let secondDate: Date = null;
-    duration = this.hearingRequestMainModel.hearingDetails.duration ?
-      this.hearingRequestMainModel.hearingDetails.duration : 0;
-    const hearingWindow: HearingWindowModel = HearingsUtils.getHearingWindow(this.hearingRequestMainModel);
+    duration = durationInput ? durationInput : 0;
+    const hearingWindow: HearingWindowModel = hearingWindowInput;
     if (hearingWindow && (hearingWindow.dateRangeStart || hearingWindow.dateRangeEnd)) {
       this.checkedHearingAvailability = RadioOptions.CHOOSE_DATE_RANGE;
       startDate = hearingWindow.dateRangeStart && new Date(hearingWindow.dateRangeStart);
@@ -104,8 +122,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     } else if (hearingWindow === null) {
       this.checkedHearingAvailability = RadioOptions.NO;
     }
-    const priority: string = this.hearingRequestMainModel.hearingDetails.hearingPriorityType ?
-      this.hearingRequestMainModel.hearingDetails.hearingPriorityType : '';
+    const priority: string = priorityInput ? priorityInput : '';
 
     let days = 0;
     let hours = 0;
@@ -206,7 +223,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
 
     while (startDate <= endDate) {
       const currentDate = startDate.format(HearingDateEnum.DisplayMonth);
-      if (this.isWeekDay(startDate) && !this.partiesNotAvailableDates.includes(currentDate)) {
+      if (!this.partiesNotAvailableDates.includes(currentDate)) {
         this.partiesNotAvailableDates.push(currentDate);
       }
       startDate.add(1, 'd');
@@ -365,7 +382,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     let firstDateMustBe = null;
     let startDate = null;
     let endDate = null;
-    let hearingWindow: HearingWindowModel = null;
+    let hearingWindow: HearingWindowModel = {};
     if (this.priorityForm.value.specificDate === RadioOptions.YES) {
       firstDateMustBe = `${moment.utc(Object.values(this.priorityForm.value.firstHearing).join('-'), HearingDateEnum.DefaultFormat).local().toISOString()}`;
     } else if (this.priorityForm.value.specificDate === RadioOptions.CHOOSE_DATE_RANGE) {
@@ -397,13 +414,48 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
         duration,
         hearingWindow,
         hearingPriorityType: this.priorityForm.value.priority
-      }
+      },
+      partyDetails: [...this.updatePartyDetails(this.serviceHearingValuesModel.parties)]
     };
-    if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
-      this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow') &&
-      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired) {
-      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesConfirmed = true;
+    if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
+      if (this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow') &&
+        this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired) {
+        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesConfirmed = true;
+      }
+      if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingUnavailabilityDatesChanged ||
+        this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsAnyChangesRequired) {
+        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingUnavailabilityDatesConfirmed = true;
+      }
     }
+  }
+
+  public updatePartyDetails(parties: PartyDetailsModel[]): PartyDetailsModel[] {
+    const newParty: PartyDetailsModel[] = [];
+
+    if (Array.isArray(this.hearingRequestMainModel.partyDetails)) {
+      this.hearingRequestMainModel.partyDetails.forEach((party) => {
+        const serviceParty = parties.find((serviceParty) => serviceParty.partyID === party.partyID);
+        if (serviceParty) {
+          newParty.push({
+            ...party,
+            unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges)
+          });
+        }
+      });
+    }
+
+    parties.filter((svcParty) => !newParty.find((y) => y.partyID === svcParty.partyID))
+      .forEach((svcParty) => {
+        newParty.push(svcParty);
+      });
+    return newParty;
+  }
+
+  private compareAndUpdateServiceHearingValues(currentValue, serviceHearingValue) {
+    if (!currentValue && !serviceHearingValue) {
+      return currentValue;
+    }
+    return serviceHearingValue;
   }
 
   public calculateDuration(): number {

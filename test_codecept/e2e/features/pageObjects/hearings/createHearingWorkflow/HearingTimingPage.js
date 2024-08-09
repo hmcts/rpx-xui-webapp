@@ -34,6 +34,16 @@ class HearingTimingPage {
         }
 
         this.firstDateHearingAmendedLabel = $('#first-date-amendment-label')
+
+        this.earliestHearingDateAmendedLabel = $('#earliest-hearing-date-amendment-label')
+
+        this.latestHearingDateAmendedLabel = $('#latest-hearing-date-amendment-label')
+
+        this.specificHearingDateAmendedLabel = $('#hearing-specific-dates-label')
+
+        this.lengthOfHearingAmendedLabel = $('#length-of-hearing-label')
+
+        this.hearingPriorityAmendmentLabel = $('#hearing-priority-amendment-label')
     }
 
     async isDisplayed() {
@@ -111,9 +121,25 @@ class HearingTimingPage {
             case 'The first date of the hearing must be':
                 retVal = await this.firstDateHearingAmendedLabel.isDisplayed();
                 break;
+            case 'Length of hearing':
+                retVal = await this.lengthOfHearingAmendedLabel.isDisplayed();
+                break;
+            case 'Does the hearing need to take place on a specific date?':
+                retVal = await this.specificHearingDateAmendedLabel.isDisplayed();
+                break;
+            case 'What is the priority of this hearing?':
+                retVal = await this.hearingPriorityAmendmentLabel.isDisplayed();
+                break;
+            case 'Earliest start date':
+                retVal = await this.earliestHearingDateAmendedLabel.isDisplayed();
+                break;
+            case 'Latest end date':
+                retVal = await this.latestHearingDateAmendedLabel.isDisplayed();
+                break;
             default:
-        } 
-        return retVal;  
+        }
+
+        return retVal;
     }
 
 }

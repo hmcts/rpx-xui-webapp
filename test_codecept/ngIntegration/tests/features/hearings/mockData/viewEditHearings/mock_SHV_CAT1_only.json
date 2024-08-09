@@ -25,7 +25,7 @@
         "dateRangeEnd": "",
         "firstDateTimeMustBe": "2024-12-17T00:00:00"
     },
-    "duration": 0,
+    "duration": 120,
     "hearingPriorityType": "Standard",
     "numberOfPhysicalAttendees": 0,
     "hearingInWelshFlag": false,
@@ -50,6 +50,11 @@
             "partyType": "IND",
             "partyName": "Party1 name",
             "partyRole": "APPL",
+            "unavailabilityRanges": {
+                "unavailableFromDate": "2024-08-01T10:00:00",
+                "unavailableToDate": "2024-08-10T10:00:00",
+                "unavailabilityType": "All Day"
+            },
             "individualDetails": {
                 "firstName": "Party1 name FN",
                 "lastName": "Party1 name LN",
@@ -86,6 +91,11 @@
             "partyType": "IND",
             "partyName": "Party2 name",
             "partyRole": "APPL",
+            "unavailabilityRanges": {
+                "unavailableFromDate": "2024-08-02T10:00:00",
+                "unavailableToDate": "2024-08-12T10:00:00",
+                "unavailabilityType": "All Day"
+            },
             "individualDetails": {
                 "firstName": "Party2 name FN",
                 "lastName": "Party2 name LN",

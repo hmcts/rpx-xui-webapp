@@ -5,9 +5,9 @@
       <a *ngIf="!isConfirmationPage" href="javascript:void(0)" (click)="onBack()" class="govuk-back-link">{{ 'Back' | rpxTranslate }}</a>
       <router-outlet></router-outlet>
       <button *ngIf="isChildPage" class="govuk-button" data-module="govuk-button" (click)="onContinue()">{{ 'Continue' | rpxTranslate }}</button>
-      <button *ngIf="isCreateEditSummary" [disabled]="hasSubmitted" class="govuk-button" data-module="govuk-button" (click)="submitRequest(action.SUBMIT)">{{ 'Submit request' | rpxTranslate }}</button>
-      <button *ngIf="isViewEditSummary || isEditSummary" [disabled]="hasSubmitted" class="govuk-button" data-module="govuk-button" (click)="submitRequest(action.VIEW_EDIT_REASON)">{{ 'Submit updated request' | rpxTranslate }}</button>
-      <button *ngIf="isViewEditReason" [disabled]="hasSubmitted" class="govuk-button" data-module="govuk-button" (click)="submitRequest(action.VIEW_EDIT_SUBMIT)">{{ 'Submit change request' | rpxTranslate }}</button>
+      <button *ngIf="isCreateEditSummary" [disabled]="buttonDisabled(action.SUBMIT)" class="govuk-button" data-module="govuk-button" (click)="submitRequest(action.SUBMIT)">{{ 'Submit request' | rpxTranslate }}</button>
+      <button *ngIf="isViewEditSummary || isEditSummary" [disabled]="buttonDisabled(action.VIEW_EDIT_REASON)" class="govuk-button" data-module="govuk-button" (click)="submitRequest(action.VIEW_EDIT_REASON)">{{ 'Submit updated request' | rpxTranslate }}</button>
+      <button *ngIf="isViewEditReason" [disabled]="buttonDisabled(action.VIEW_EDIT_SUBMIT)" class="govuk-button" data-module="govuk-button" (click)="submitRequest(action.VIEW_EDIT_SUBMIT)">{{ 'Submit change request' | rpxTranslate }}</button>
     </main>
   </div>
 </div>

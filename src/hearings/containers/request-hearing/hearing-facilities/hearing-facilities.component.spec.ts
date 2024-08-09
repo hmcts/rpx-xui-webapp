@@ -6,7 +6,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
-import { ACTION, PartyType } from '../../../models/hearings.enum';
+import { ACTION, PartyType, HearingFacilitiesEnum } from '../../../models/hearings.enum';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { PartyFlagsModel } from '../../../models/partyFlags.model';
 import { HearingsService } from '../../../services/hearings.service';
@@ -230,12 +230,43 @@ describe('HearingFacilitiesComponent', () => {
     expect(component.getHearingFacilitiesFormArray).toBeTruthy();
   });
 
+  it('should get enum from interface', () => {
+    expect(component.hearingFacilitiesEnum).toEqual(HearingFacilitiesEnum);
+  });
+
   it('should call prepareHearingRequestData when executeAction is called with a valid form', () => {
     component.hearingFactilitiesForm.controls['addition-security-required'].setValue('Yes');
     component.hearingFactilitiesForm.controls['addition-security-required'].markAsPristine();
     component.executeAction(ACTION.CONTINUE);
     expect(component.hearingFactilitiesForm.controls['addition-security-required'].dirty).toEqual(true);
     expect(component.prepareHearingRequestData).toHaveBeenCalled();
+  });
+
+  it('should executeAction not call prepareHearingRequestData', () => {
+    component.executeAction(ACTION.BACK);
+    expect(component.prepareHearingRequestData).not.toHaveBeenCalled();
+  });
+
+  it('should prepareHearingRequestData set hearingFacilitiesChangesConfirmed to true', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: true,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.prepareHearingRequestData();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesConfirmed).toEqual(true);
   });
 
   it('should be true when calling isFormValid when security is selected', () => {
@@ -268,6 +299,7 @@ describe('HearingFacilitiesComponent', () => {
       mode: 'create'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
       hearingWindow: null,
@@ -275,7 +307,9 @@ describe('HearingFacilitiesComponent', () => {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: false,
-        hearingWindowChangesRequired: false
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.ngOnInit();
@@ -287,6 +321,7 @@ describe('HearingFacilitiesComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
       hearingWindow: null,
@@ -294,7 +329,9 @@ describe('HearingFacilitiesComponent', () => {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: false,
-        hearingWindowChangesRequired: false
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.hearingRequestMainModel = {
@@ -314,6 +351,7 @@ describe('HearingFacilitiesComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
       hearingWindow: null,
@@ -321,7 +359,9 @@ describe('HearingFacilitiesComponent', () => {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: false,
-        hearingWindowChangesRequired: false
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.prepareHearingRequestData();
@@ -333,6 +373,7 @@ describe('HearingFacilitiesComponent', () => {
       mode: 'view-edit'
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
       caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
       parties: null,
       hearingWindow: null,
@@ -340,11 +381,40 @@ describe('HearingFacilitiesComponent', () => {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
         partyDetailsChangesRequired: false,
-        hearingWindowChangesRequired: false
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
       }
     };
     component.prepareHearingRequestData();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed).toBeUndefined();
+  });
+
+  it('should prepareHearingRequestData', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: true,
+        hearingFacilitiesChangesConfirmed: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.serviceHearingValuesModel = {
+      ...component.serviceHearingValuesModel,
+      facilitiesRequired: ['facility']
+    };
+    component.ngOnInit();
+    expect(component.additionalFacilities[0].showAmendedLabel).toBe(true);
   });
 
   afterEach(() => {

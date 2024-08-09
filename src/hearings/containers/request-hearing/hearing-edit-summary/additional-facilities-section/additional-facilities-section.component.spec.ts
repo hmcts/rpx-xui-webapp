@@ -1,7 +1,10 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { HearingsService } from '../../../../../hearings/services/hearings.service';
 import { initialState } from '../../../../hearing.test.data';
+import { AmendmentLabelStatus } from '../../../../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { AdditionalFacilitiesSectionComponent } from './additional-facilities-section.component';
 
@@ -128,7 +131,9 @@ describe('AdditionalFacilitiesSectionComponent', () => {
       declarations: [
         AdditionalFacilitiesSectionComponent
       ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
+        provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService }
       ]
     }).compileComponents();
@@ -137,6 +142,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
     component = fixture.componentInstance;
     component.additionalFacilitiesRefData = additionalFacilitiesRefData;
     component.hearingRequestMainModel = initialState.hearings.hearingRequest.hearingRequestMainModel;
+    component.hearingRequestToCompareMainModel = initialState.hearings.hearingRequestToCompare.hearingRequestMainModel;
     fixture.detectChanges();
   });
 
@@ -174,6 +180,161 @@ describe('AdditionalFacilitiesSectionComponent', () => {
     component.onChange('additionalFacilitiesRequired');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
       fragmentId: 'additionalFacilitiesRequired', changeLink: '/hearings/request/hearing-facilities#immigrationDetentionCentre'
+    });
+  });
+
+  describe('pageTitleDisplayLabel', () => {
+    xit('should not set pageTitleDisplayLabel', () => {
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+        parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+        hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+        afterPageVisit: {
+          reasonableAdjustmentChangesRequired: false,
+          nonReasonableAdjustmentChangesRequired: false,
+          partyDetailsChangesRequired: false,
+          hearingWindowChangesRequired: false,
+          hearingFacilitiesChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false
+        }
+      };
+      component.ngOnInit();
+      expect(component.pageTitleDisplayLabel).toBeUndefined();
+    });
+
+    it('should set pageTitleDisplayLabel to amended if case additional security flag value is manually amended by user', () => {
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+        parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+        hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+        afterPageVisit: {
+          reasonableAdjustmentChangesRequired: false,
+          nonReasonableAdjustmentChangesRequired: false,
+          partyDetailsChangesRequired: false,
+          hearingWindowChangesRequired: false,
+          hearingFacilitiesChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false
+        }
+      };
+      component.hearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        caseDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+          caseAdditionalSecurityFlag: true
+        }
+      };
+      component.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag = true;
+      component.ngOnInit();
+      expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);
+    });
+
+    it('should set pageTitleDisplayLabel to amended if facilities manually amended by user', () => {
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+        parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+        hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+        afterPageVisit: {
+          reasonableAdjustmentChangesRequired: false,
+          nonReasonableAdjustmentChangesRequired: false,
+          partyDetailsChangesRequired: false,
+          hearingWindowChangesRequired: false,
+          hearingFacilitiesChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false
+        }
+      };
+      component.hearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        hearingDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+          facilitiesRequired: ['some facility']
+        }
+      };
+      component.ngOnInit();
+      expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);
+    });
+
+    it('should set pageTitleDisplayLabel to action needed if manual amendment changes exists for non reasonable adjustment changes but not confirmed', () => {
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+        parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+        hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+        afterPageVisit: {
+          reasonableAdjustmentChangesRequired: false,
+          nonReasonableAdjustmentChangesRequired: true,
+          nonReasonableAdjustmentChangesConfirmed: false,
+          partyDetailsChangesRequired: false,
+          hearingWindowChangesRequired: false,
+          hearingFacilitiesChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false
+        }
+      };
+      component.ngOnInit();
+      expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
+    });
+
+    it('should set pageTitleDisplayLabel to amended if manual amendment changes exists for non reasonable adjustment changes and confirmed', () => {
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+        parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+        hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+        afterPageVisit: {
+          reasonableAdjustmentChangesRequired: false,
+          nonReasonableAdjustmentChangesRequired: true,
+          nonReasonableAdjustmentChangesConfirmed: true,
+          partyDetailsChangesRequired: false,
+          hearingWindowChangesRequired: false,
+          hearingFacilitiesChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false
+        }
+      };
+      component.ngOnInit();
+      expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);
+    });
+
+    it('should set pageTitleDisplayLabel to action needed if manual amendment changes exists for hearing facilities and not confirmed', () => {
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+        parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+        hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+        afterPageVisit: {
+          reasonableAdjustmentChangesRequired: false,
+          nonReasonableAdjustmentChangesRequired: false,
+          nonReasonableAdjustmentChangesConfirmed: false,
+          partyDetailsChangesRequired: false,
+          hearingWindowChangesRequired: false,
+          hearingFacilitiesChangesRequired: true,
+          hearingUnavailabilityDatesChanged: false
+        }
+      };
+      component.ngOnInit();
+      expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
+    });
+
+    it('should set pageTitleDisplayLabel to amended if manual amendment changes exists for hearing facilities and confirmed', () => {
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+        parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+        hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+        afterPageVisit: {
+          reasonableAdjustmentChangesRequired: false,
+          nonReasonableAdjustmentChangesRequired: false,
+          nonReasonableAdjustmentChangesConfirmed: false,
+          partyDetailsChangesRequired: false,
+          hearingWindowChangesRequired: false,
+          hearingFacilitiesChangesRequired: true,
+          hearingFacilitiesChangesConfirmed: true,
+          hearingUnavailabilityDatesChanged: false
+        }
+      };
+      component.ngOnInit();
+      expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);
     });
   });
 });

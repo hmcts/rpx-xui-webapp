@@ -37,10 +37,27 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   }
 
   public changeWasThisHearingDayRequired(hearingDay: ActualHearingDayModel) {
-    this.validationErrors = [];
+    this.resetErrorMessages();
+
+    const dayRequired = !hearingDay.notRequired;
+    let updatedActuals;
+
+    if (!dayRequired) {
+      updatedActuals = {
+        hearingStartTime: '',
+        hearingEndTime: '',
+        pauseDateTimes: [],
+        notRequired: dayRequired,
+        actualDayParties: []
+      } as ActualHearingDayModel;
+    } else {
+      updatedActuals = { notRequired: dayRequired } as ActualHearingDayModel;
+    }
+
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(
-      this.hearingActualsMainModel, hearingDay.hearingDate, { notRequired: !hearingDay.notRequired } as ActualHearingDayModel
+      this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals
     );
+
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
       hearingActuals: patchedHearingActuals

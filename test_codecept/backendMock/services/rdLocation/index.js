@@ -59,7 +59,7 @@ class RDLocationService{
         ];
 
         this.setupMockCaseManagementLocations();
-    }   
+    }
 
     setupMockCaseManagementLocations(){
         this.locationsConfig.forEach(serviceConf => {
@@ -80,7 +80,7 @@ class RDLocationService{
             }
 
             const temp = this.getMockLocations();
-            temp.epimms_id = index + '';
+            temp.epimms_id = (index + 20) + '';
             temp.is_case_management_location = 'Y';
             temp.court_name = `${service} Court Center Wales`;
             temp.venue_name = `${service} Court Center Wales`;
@@ -90,7 +90,6 @@ class RDLocationService{
             temp.region = 'Wales';
             temp.region_id = "7";
             serviceConf.locations.push(temp)
-
         })
     }
 
@@ -115,7 +114,7 @@ class RDLocationService{
                     results.push(loc);
                 }
             }
-            
+
         }
         return results;
     }
@@ -125,7 +124,7 @@ class RDLocationService{
         const serviceWithCode = this.locationsConfig.find(service => service.serviceCode.includes(serviceCode))
 
         console.assert(serviceWithCode, `Mock service config not found for service code ${serviceCode}`);
-        
+
         return {
             "service_code": serviceCode,
             "court_type_id": "18",

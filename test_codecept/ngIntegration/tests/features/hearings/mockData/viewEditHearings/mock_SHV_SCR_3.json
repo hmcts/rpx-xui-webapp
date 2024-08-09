@@ -25,7 +25,7 @@
         "dateRangeEnd": "",
         "firstDateTimeMustBe": "2024-12-14T00:00:00"
     },
-    "duration": 0,
+    "duration": 10,
     "hearingPriorityType": "Standard",
     "numberOfPhysicalAttendees": 0,
     "hearingInWelshFlag": false,
@@ -126,6 +126,42 @@
                 "name": "party3 org name",
                 "organisationType": "ORG",
                 "cftOrganisationID": "ECKZ4BE"
+            }
+        },
+        {
+            "partyID": "1234-uytr-7654-asdf-0004",
+            "partyType": "IND",
+            "partyName": "Party4 name FN Party4 name LN",
+            "partyRole": "APPL",
+            "individualDetails": {
+                "firstName": "Party4 name FN",
+                "lastName": "Party4 name LN",
+                "interpreterLanguage": "",
+                "reasonableAdjustments": [
+                    "RA001"
+                ],
+                "vulnerableFlag": false,
+                "vulnerabilityDetails": "",
+                "hearingChannelEmail": [
+                    "applicant@test.com"
+                ],
+                "hearingChannelPhone": [
+                    "1234567890"
+                ],
+                "relatedParties": [
+                    {
+                        "relationshipType": "mock relationship",
+                        "relatedPartyID": "1234-uytr-7654-asdf-0001",
+                        "relatedPartyType": "IND",
+                        "relatedPartyName": "Related Party1 name",
+                        "relatedPartyRole": "APPL",
+                        "individualDetails": {
+                            "firstName": "Realted party First Applicant FN updated",
+                            "lastName": "Related party First Applicant LN updated",
+                            "interpreterLanguage": ""
+                        }
+                    }
+                ]
             }
         }
     ],

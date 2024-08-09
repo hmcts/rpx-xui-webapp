@@ -133,6 +133,20 @@ Then('In Length, date and priority level of hearing page, I see ACTION NEEDED la
     expect(await page.isActionNeededLabelDisplayedForField('The first date of the hearing must be')).to.be.true
 })
 
+Then('In Length, date and priority level of hearing page, I see AMENDED label displayed for Length of hearing', async function () {
+  const page = getPageObject("Length, date and priority level of hearing");
+  expect(await page.isActionNeededLabelDisplayedForField('Length of hearing')).to.be.true
+})
+
+Then('In Length, date and priority level of hearing page, I see AMENDED label displayed for the latest end date', async function () {
+  const page = getPageObject("Length, date and priority level of hearing");
+  expect(await page.isActionNeededLabelDisplayedForField('Latest end date')).to.be.true
+})
+
+Then('In Length, date and priority level of hearing page, I see no label displayed for the earliest end date', async function () {
+  const page = getPageObject("Length, date and priority level of hearing");
+  expect(await page.isActionNeededLabelDisplayedForField('Earliest start date')).to.be.false
+})
 
 Then('In Length, date and priority level of hearing page, I dont see ACTION NEEDED label displayed for The first date of the hearing must be', async function () {
     const page = getPageObject("Length, date and priority level of hearing");

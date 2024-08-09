@@ -1,10 +1,7 @@
 <h2 class="govuk-heading-m">
   Additional facilities
-  <exui-amendment-label *ngIf="nonReasonableAdjustmentChangesConfirmed"
-    [displayLabel]="amendmentLabelEnum.AMENDED">
-  </exui-amendment-label>
-  <exui-amendment-label *ngIf="nonReasonableAdjustmentChangesRequired && !nonReasonableAdjustmentChangesConfirmed"
-    [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
+  <exui-amendment-label *ngIf="pageTitleDisplayLabel"
+    [displayLabel]="pageTitleDisplayLabel">
   </exui-amendment-label>
 </h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
@@ -14,6 +11,8 @@
     </div>
     <div class="govuk-summary-list__value">
       {{ additionalFacilitiesRequiredText }}
+      <exui-amendment-label *ngIf="caseAdditionalSecurityFlagChanged" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
     </div>
     <div class="govuk-summary-list__actions">
       <a id="additionalSecurityRequired"
@@ -30,6 +29,8 @@
       <ul>
         <li *ngFor="let additionalFacility of additionalFacilities">
           {{ additionalFacility }}
+          <exui-amendment-label *ngIf="showAmendedForFacilitiesRequired(additionalFacility)" [displayLabel]="amendmentLabelEnum.AMENDED">
+          </exui-amendment-label>
         </li>
       </ul>
     </div>

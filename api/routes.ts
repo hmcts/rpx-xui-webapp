@@ -19,6 +19,7 @@ import staffRefDataRouter from './staff-ref-data/routes';
 import { router as staffSupportedJurisdictionsRouter } from './staffSupportedJurisdictions';
 import userRouter from './user/routes';
 import { router as waSupportedJurisdictionRouter } from './waSupportedJurisdictions';
+import { router as headerRouter } from './header/routes';
 
 const router = express.Router({ mergeParams: true });
 
@@ -62,5 +63,6 @@ router.use('/hearings', hearingsRouter);
 router.use('/specific-access-request', specificAccessRouter);
 router.use('/challenged-access-request', challengedAccessRouter);
 router.use('/staff-ref-data', staffRefDataRouter);
+router.use('/header', headerRouter);
 
 export default router;

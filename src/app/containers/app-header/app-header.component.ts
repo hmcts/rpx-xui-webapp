@@ -11,6 +11,7 @@ import { ApplicationTheme, NavigationItem } from '../../models/theming.model';
 import { UserDetails } from '../../models/user-details.model';
 import { UserNavModel } from '../../models/user-nav.model';
 import { LoggerService } from '../../services/logger/logger.service';
+import { HeaderConfigService } from '../../services/header-config/header-config.service';
 import * as fromActions from '../../store';
 
 @Component({
@@ -53,6 +54,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     private readonly store: Store<fromActions.State>,
     private readonly featureToggleService: FeatureToggleService,
     private readonly loggerService: LoggerService,
+    private readonly headerConfigService: HeaderConfigService,
     public router: Router
   ) {}
 
@@ -114,10 +116,20 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
         this.hideNavigationListener(this.store);
         this.setAppHeaderTheme(theme);
       });
-      // const menuItems: NavigationItem[] = await this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).pipe(first()).toPromise();
-      this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).subscribe((menuItems) => {
+      this.headerConfigService.constructHeaderConfig(this.userRoles).subscribe((menuItems) => {
+        console.log('Local Menu items');
+        console.log(menuItems);
+        console.log('Local Menu items');
         this.hideNavigationListener(this.store);
         this.setAppHeaderNavItems(menuItems);
+      });
+      // const menuItems: NavigationItem[] = await this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).pipe(first()).toPromise();
+      this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).subscribe((menuItems) => {
+        console.log('LD Menu items');
+        console.log(menuItems);
+        console.log('LD Menu items');
+        //   // this.hideNavigationListener(this.store);
+      //   // this.setAppHeaderNavItems(menuItems);
       });
     }
   }

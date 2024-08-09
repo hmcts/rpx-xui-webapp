@@ -144,3 +144,5 @@ export const PACT_BRANCH_NAME = 'pact.branchName';
 export const PACT_CONSUMER_VERSION = 'pact.consumerVersion';
 export const PACT_BROKER_USERNAME = 'pact.brokerUsername';
 export const PACT_BROKER_PASSWORD = 'pact.brokerPassword';
+
+export const HEADER_CONFIG = 'headerConfig';

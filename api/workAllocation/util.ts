@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import * as express from 'express';
 import { getConfigValue } from '../configuration';
-import { SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
+import { CASEWORKER_PAGE_SIZE, SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
@@ -41,7 +41,10 @@ export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`;
 }
 
-export function preparePostTaskUrlAction(baseUrl: string, taskId: string, action: string): string {
+export function preparePostTaskUrlAction(baseUrl: string, taskId: string, action: string, mode: string): string {
+  if (action === 'complete') {
+    return `${baseUrl}/task/${taskId}/${action}?completion_process=${mode}`;
+  }
   return `${baseUrl}/task/${taskId}/${action}`;
 }
 
@@ -74,7 +77,8 @@ export function prepareGetSpecificLocationUrl(baseUrl: string, epimmsId: string)
 }
 
 export function prepareGetUsersUrl(baseUrl: string, service: string): string {
-  return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=12000`;
+  const pageSize = parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
+  return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=${pageSize}`;
 }
 
 export function prepareRoleApiUrl(baseUrl: string) {
@@ -784,7 +788,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
   return {
     assignee: roleAssignment.actorId,
     // hmctsCaseCategory will be available only if an event has been triggered
-    case_category: caseDetail.case_data && caseDetail.case_data.hmctsCaseCategory ? caseDetail.case_data.hmctsCaseCategory : '',
+    case_category: getCaseCategory(caseDetail),
     case_type: caseDetail.case_type_id,
     case_id: caseDetail.id,
     case_name: getCaseName(caseDetail),
@@ -813,6 +817,13 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     next_hearing_date: caseDetail.case_data && caseDetail.case_data.nextHearingDetails &&
       caseDetail.case_data.nextHearingDetails.hearingDateTime ? caseDetail.case_data.nextHearingDetails.hearingDateTime : null
   };
+}
+
+export function getCaseCategory(caseDetail: Case): string {
+  if (caseDetail.case_data?.caseManagementCategory?.value?.label) {
+    return caseDetail.case_data.caseManagementCategory.value.label;
+  }
+  return caseDetail.case_data && caseDetail.case_data.hmctsCaseCategory ? caseDetail.case_data.hmctsCaseCategory : '';
 }
 
 export function checkIsNew(roleAssignment: RoleAssignment, newRoleAssignmentList: RoleAssignment[]): boolean {

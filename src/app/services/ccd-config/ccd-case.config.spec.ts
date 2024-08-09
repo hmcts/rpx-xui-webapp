@@ -172,7 +172,7 @@ describe('AppConfiguration', () => {
     expect(service.getCamRoleAssignmentsApiUrl()).toBe('dummy');
   }));
 
- it('should have getEventsToHide return value', inject([AppConfig], (service: AppConfig) => {
+  it('should have getEventsToHide return value', inject([AppConfig], (service: AppConfig) => {
     expect(service.getEventsToHide()).toEqual(['queryManagementRespondQuery']);
-  })); 
+  }));
 });

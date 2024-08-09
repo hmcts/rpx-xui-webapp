@@ -281,6 +281,6 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getEventsToHide(): string[] {
-    return ['events_to_hide'];
+    return this.config.events_to_hide;
   }
 }

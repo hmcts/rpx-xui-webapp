@@ -22,7 +22,10 @@ class MockConfigService {
       access_management_mode: true,
       location_ref_api_url: 'dummy',
       cam_role_assignments_api_url: 'dummy',
-      notification_url: 'dummy'
+      notification_url: 'dummy',
+      events_to_hide: [
+        'queryManagementRespondQuery'
+      ]
     };
   }
 
@@ -168,4 +171,8 @@ describe('AppConfiguration', () => {
   it('should have getCamRoleAssignmentsApiUrl return value', inject([AppConfig], (service: AppConfig) => {
     expect(service.getCamRoleAssignmentsApiUrl()).toBe('dummy');
   }));
+
+ it('should have getEventsToHide return value', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getEventsToHide()).toEqual(['queryManagementRespondQuery']);
+  })); 
 });

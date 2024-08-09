@@ -13,19 +13,19 @@ export const menuItems: MenuItem[] = [
   {
     active: false,
     href: '/cases',
-    text: 'Case list',
+    text: 'Case list'
   },
   {
     active: false,
     href: '/cases/case-filter',
-    text: 'Create case',
+    text: 'Create case'
   },
   {
     active: false,
     flags: ['MC_Notice_of_Change'],
     href: '/noc',
     roles: [],
-    text: 'Notice of change',
+    text: 'Notice of change'
   },
   {
     active: false,
@@ -45,7 +45,7 @@ export const menuItems: MenuItem[] = [
     ],
     href: '/work/my-work/list',
     roles: [],
-    text: 'My work',
+    text: 'My work'
   },
   {
     active: false,
@@ -58,20 +58,20 @@ export const menuItems: MenuItem[] = [
     ],
     href: '/work/all-work/tasks',
     roles: [],
-    text: 'All work',
+    text: 'All work'
   },
   {
     active: false,
     flags: ['feature-global-search'],
     href: '/search',
     roles: [],
-    text: 'Search',
+    text: 'Search'
   },
   {
     active: false,
     href: '/booking',
     roles: [],
-    text: 'Work access',
+    text: 'Work access'
   },
   {
     active: false,
@@ -79,7 +79,7 @@ export const menuItems: MenuItem[] = [
     flags: ['feature-global-search'],
     href: '/cases/case-search',
     ngClass: 'hmcts-search-toggle__button',
-    text: '16-digit-ref-search',
+    text: '16-digit-ref-search'
   },
   {
     active: false,
@@ -92,7 +92,7 @@ export const menuItems: MenuItem[] = [
     ],
     href: '/tasks',
     roles: [],
-    text: 'Task list',
+    text: 'Task list'
   },
   {
     active: false,
@@ -105,20 +105,20 @@ export const menuItems: MenuItem[] = [
     ],
     href: '/tasks/task-manager',
     roles: [],
-    text: 'Task manager',
+    text: 'Task manager'
   },
   {
     active: false,
     flags: ['feature-refunds'],
     href: '/refunds',
     roles: [],
-    text: 'Refunds',
+    text: 'Refunds'
   },
   {
     active: false,
     flags: [],
     href: '/staff',
     roles: [],
-    text: 'Staff',
+    text: 'Staff'
   }
 ];

@@ -148,7 +148,7 @@
                     <ng-container *ngIf="!actualHearingDay.notRequired">
                       <dd class="govuk-summary-list__actions">
                         <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
-                          <a href="javascript:void(0)" (click)="confirmActualPartiesForDay(actualHearingDay)"
+                          <a href="javascript:void(0)" (click)="confirmActualPartiesForDay(actualHearingDay)" *ngIf="!haveParticipantsBeenAdded((actualHearingDay))"
                             id="hearing-parties-result-confirm-link" class="govuk-link">{{ 'Confirm' | rpxTranslate }}</a>&nbsp;
                           <a *ngIf="!isPaperHearing" href="javascript:void(0)"
                             [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties', actualHearingDay.hearingDate]"

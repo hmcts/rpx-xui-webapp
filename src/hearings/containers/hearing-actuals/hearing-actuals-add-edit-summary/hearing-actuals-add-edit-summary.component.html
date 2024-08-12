@@ -39,7 +39,7 @@
     <h1 class="govuk-heading-m" id="hearingStageResult">{{ 'Hearing stage and result' | rpxTranslate }}</h1>
     <span class="govuk-body align-right">
       <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', id, 'hearing-stage-result']"
-        id="hearing-stage-result-update-link" class="govuk-link">{{ 'Change' | rpxTranslate }}</a>
+        id="hearing-stage-result-update-link" class="govuk-link">{{ 'Update' | rpxTranslate }}</a>
     </span>
     <div class="govuk-error-message" *ngIf="hearingStageResultErrorMessage !== ''">
       {{hearingStageResultErrorMessage | rpxTranslate }}
@@ -113,7 +113,7 @@
                           <a href="javascript:void(0)" (click)="confirmActualHearingTimeForDay(actualHearingDay)"
                             id="hearing-timing-result-confirm-link" class="govuk-link">{{ 'Confirm' | rpxTranslate }}</a>&nbsp;
                           <a [routerLink]="['/', 'hearings', 'actuals' , id, 'hearing-timing', actualHearingDay.hearingDate]"
-                            class="govuk-link">{{ 'Change' | rpxTranslate }}</a>
+                            class="govuk-link">{{ 'Update' | rpxTranslate }}</a>
                         </ng-container>
                       </dd>
                   </div>
@@ -152,7 +152,7 @@
                             id="hearing-parties-result-confirm-link" class="govuk-link">{{ 'Confirm' | rpxTranslate }}</a>&nbsp;
                           <a *ngIf="!isPaperHearing" href="javascript:void(0)"
                             [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties', actualHearingDay.hearingDate]"
-                            class="govuk-link">{{ 'Change' | rpxTranslate }}</a>
+                            class="govuk-link">{{ 'Update' | rpxTranslate }}</a>
                         </ng-container>
                       </dd>
                     </ng-container>

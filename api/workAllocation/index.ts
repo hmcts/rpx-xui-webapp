@@ -56,8 +56,8 @@ import {
   preparePostTaskUrlAction,
   prepareSearchTaskUrl,
   prepareTaskSearchForCompletable,
-  searchCasesById,
-  searchUsers
+  searchAndReturnRefinedUsers,
+  searchCasesById
 } from './util';
 
 caseServiceMock.init();
@@ -542,7 +542,7 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
       // if already ran just use the cache to avoid loading issues
       firstEntry = false;
       cachedUsers = FullUserDetailCache.getAllUserDetails();
-      cachedUsers = searchUsers(services, term, cachedUsers);
+      cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
       res.send(cachedUsers).status(200);
     }
     // always update the cache after getting the cache if needed
@@ -550,7 +550,8 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
     cachedUsers = await fetchRoleAssignments(cachedUserData, req, next);
     if (firstEntry) {
       // if not previously ran ensure the new values are given back to angular layer
-      cachedUsers = searchUsers(services, term, cachedUsers);
+      // note: this is now only a safeguard to ensure caching (caching should have run pre login)
+      cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
       res.send(cachedUsers).status(200);
     }
   } catch (error) {

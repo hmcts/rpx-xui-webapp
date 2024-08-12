@@ -76,7 +76,6 @@ export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
 export async function fetchRoleAssignments(cachedUserData: StaffUserDetails[], req: EnhancedRequest, next: NextFunction): Promise<CachedCaseworker[]> {
   // note: this has been done to cache role categories
   // it is separate from the above as above caching will be done by backend
-  const fullUserDetailCache = FullUserDetailCache.getInstance();
   try {
     if (refreshRoles || !cachedUsersWithRoles) {
       // refreshRoles to determine whether roles require refreshing
@@ -87,12 +86,12 @@ export async function fetchRoleAssignments(cachedUserData: StaffUserDetails[], r
       const { data } = await handlePostRoleAssignments(roleApiPath, payload, req);
       const roleAssignments = data.roleAssignmentResponse;
       cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
-      fullUserDetailCache.setUserDetails(cachedUsersWithRoles);
+      FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
     }
-    return fullUserDetailCache.getAllUserDetails();
+    return FullUserDetailCache.getAllUserDetails();
   } catch (error) {
-    if (fullUserDetailCache.getAllUserDetails()) {
-      return fullUserDetailCache.getAllUserDetails();
+    if (FullUserDetailCache.getAllUserDetails()) {
+      return FullUserDetailCache.getAllUserDetails();
     }
     next(error);
   }
@@ -101,7 +100,6 @@ export async function fetchRoleAssignments(cachedUserData: StaffUserDetails[], r
 export async function fetchRoleAssignmentsForNewUsers(cachedUserData: StaffUserDetails[]): Promise<CachedCaseworker[]> {
   // note: this has been done to cache role categories
   // it is separate from the above as above caching will be done by backend
-  const fullUserDetailCache = FullUserDetailCache.getInstance();
   try {
     if (refreshRoles && !cachedUsersWithRoles) {
       // refreshRoles to determine whether roles require refreshing
@@ -117,12 +115,12 @@ export async function fetchRoleAssignmentsForNewUsers(cachedUserData: StaffUserD
       const { data } = await handlePostRoleAssignmentsWithNewUsers(roleApiPath, payload, roleAssignmentHeaders);
       const roleAssignments = data.roleAssignmentResponse;
       cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
-      fullUserDetailCache.setUserDetails(cachedUsersWithRoles);
+      FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
     }
-    return fullUserDetailCache.getAllUserDetails();
+    return FullUserDetailCache.getAllUserDetails();
   } catch (error) {
-    if (fullUserDetailCache.getAllUserDetails()) {
-      return fullUserDetailCache.getAllUserDetails();
+    if (FullUserDetailCache.getAllUserDetails()) {
+      return FullUserDetailCache.getAllUserDetails();
     }
   }
 }

@@ -3244,12 +3244,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.53-task-event-completion-info-2":
-  version: 7.0.53-task-event-completion-info-2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.53-task-event-completion-info-2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.56-task-event-completion-info":
+  version: 7.0.56-task-event-completion-info
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.56-task-event-completion-info"
   dependencies:
     tslib: ^2.3.0
-  checksum: d67ddfe46eb49ed913b5de9a438534cc2aefbb9a609ba09026bbba489ea859c08d04795a96f9a5009069251b6ee438d33540edc242be3357b1a463e7554bc0aa
+  checksum: 6b2d0597ba1ce2053532f8fa61b0435cdb6360d363f4e81cf540be7cf1209d4d060268b7399f6fa6e0f01e6e29e8709130dbc62d26c0147421c09469499c4d2c
   languageName: node
   linkType: hard
 
@@ -21671,7 +21671,7 @@ __metadata:
     "@angular/router": ^17.3.6
     "@angular/ssr": ^17.3.6
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.53-task-event-completion-info-2
+    "@hmcts/ccd-case-ui-toolkit": 7.0.56-task-event-completion-info
     "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 4.0.4

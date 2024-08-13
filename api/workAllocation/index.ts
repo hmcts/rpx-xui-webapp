@@ -247,7 +247,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
       delete req.body.actionByEvent;
     }
     let eventName;
-    if(req.body.eventName) {
+    if (req.body.eventName) {
       eventName = req.body.eventName;
       delete req.body.eventName;
     }

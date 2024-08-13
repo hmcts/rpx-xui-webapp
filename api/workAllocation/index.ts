@@ -246,9 +246,14 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
       actionByEvent = req.body.actionByEvent;
       delete req.body.actionByEvent;
     }
+    let eventName;
+    if(req.body.eventName) {
+      eventName = req.body.eventName;
+      delete req.body.eventName;
+    }
     if (actionByEvent === true) {
       mode = 'EXUI_CASE-EVENT_COMPLETION';
-      trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to automated task completion`, traceProps);
+      trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to automated task completion by ${eventName} event`, traceProps);
     } else {
       mode = 'EXUI_USER_COMPLETION';
       trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to manual task action`, traceProps);

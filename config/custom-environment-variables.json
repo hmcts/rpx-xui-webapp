@@ -130,6 +130,7 @@
       "system-user-password": "SYSTEM_USER_PASSWORD"
     }
   },
+  "caseworkerPageSize": "CASEWORKER_PAGE_SIZE",
   "jurisdictions": "JURISDICTIONS",
   "staffSupportedJurisdictions": "STAFF_SUPPORTED_JURISDICTIONS",
   "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",

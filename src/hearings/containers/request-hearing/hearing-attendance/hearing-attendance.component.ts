@@ -88,10 +88,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
             partyType: partyDetail.partyType,
             partyRole: partyDetail.partyRole,
             partyName: `${partyDetail.individualDetails.firstName} ${partyDetail.individualDetails.lastName}`,
-            individualDetails: {
-              ...partyDetail.individualDetails,
-              preferredHearingChannel: partyDetail.individualDetails?.preferredHearingChannel ? partyDetail.individualDetails?.preferredHearingChannel : ''
-            },
+            individualDetails: partyDetail.individualDetails,
             organisationDetails: partyDetail.organisationDetails,
             unavailabilityDOW: partyDetail.unavailabilityDOW,
             unavailabilityRanges: partyDetail.unavailabilityRanges

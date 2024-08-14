@@ -56,8 +56,8 @@ import {
   preparePostTaskUrlAction,
   prepareSearchTaskUrl,
   prepareTaskSearchForCompletable,
-  searchCasesById,
-  searchUsers
+  searchAndReturnRefinedUsers,
+  searchCasesById
 } from './util';
 
 caseServiceMock.init();
@@ -75,10 +75,12 @@ const logger: JUILogger = log4jui.getLogger('workallocation');
  * getTask
  */
 export async function getTask(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const traceProps = { functionCall: 'getTask' };
+  const taskId = req.params.taskId;
   try {
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
     // Adding log in app insights for task completion journey
-    trackTrace(`get task Id: ${req.params.taskId}`, { functionCall: 'getTask' });
+    trackTrace(`get task Id: ${taskId}`, { functionCall: 'getTask' });
     const jsonResponse = await handleTaskGet(getTaskPath, req);
     if (jsonResponse && jsonResponse.task && jsonResponse.task.due_date) {
       jsonResponse.task.dueDate = jsonResponse.task.due_date;
@@ -86,6 +88,7 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
     res.status(200);
     res.send(jsonResponse);
   } catch (error) {
+    trackTrace(`Error calling get task Id: ${taskId} ${error.toString()}`, traceProps);
     next(error);
   }
 }
@@ -216,7 +219,7 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
       : { status: 200, data: [] };
     return res.status(status).send(data);
   } catch (e) {
-    trackTrace(`Error calling /task/search-for-completable ${e.toString()}`, traceProps);
+    trackTrace(`Error calling search for completable task of eventId and caseId: ${eventId} ${caseId} ${e.toString()}`, traceProps);
     next(e);
   }
 }
@@ -225,6 +228,7 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
  * Post to invoke an action on a Task.
  */
 export async function postTaskAction(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const traceProps = { functionCall: 'postTaskAction' };
   try {
     // Additional setting to mark unassigned tasks as done - need to assign task before completing
     if (req.body.hasNoAssigneeOnComplete === true) {
@@ -236,13 +240,25 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
     } else {
       delete req.body.hasNoAssigneeOnComplete;
     }
-    const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
-
-    trackTrace(`${req.params.action} of task Id: ${req.params.taskId} ${req.params.action}`, { functionCall: 'postTaskAction' });
+    let actionByEvent;
+    let mode;
+    if (req.body.actionByEvent) {
+      actionByEvent = req.body.actionByEvent;
+      delete req.body.actionByEvent;
+    }
+    if (actionByEvent === true) {
+      mode = 'EXUI_CASE-EVENT_COMPLETION';
+      trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to automated task completion`, traceProps);
+    } else {
+      mode = 'EXUI_USER_COMPLETION';
+      trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to manual task action`, traceProps);
+    }
+    const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action, mode);
     const { status, data } = await handleTaskPost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
+    trackTrace(`Error calling ${req.params.action} on task Id: ${req.params.taskId} ${error.toString()}`, traceProps);
     // 5528 - removed error handling for 403 errors
     next(error);
   }
@@ -252,6 +268,8 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
  * Post to invoke an action on a Task.
  */
 export async function postTaskCompletionForAccess(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
+  const traceProps = { functionCall: 'postTaskCompletionForAccess' };
+  const taskId = req.body.specificAccessStateData ? req.body.specificAccessStateData.taskId : req.body.taskId;
   try {
     // Additional setting to mark unassigned tasks as done - need to assign task before completing
     const newRequest = {
@@ -260,11 +278,12 @@ export async function postTaskCompletionForAccess(req: EnhancedRequest, res: Res
       }
     };
     // line added as requests are different for approval/rejection
-    const taskId = req.body.specificAccessStateData ? req.body.specificAccessStateData.taskId : req.body.taskId;
     const getTaskPath: string =
-      preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, 'complete');
+      preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, 'complete', 'EXUI_USER_COMPLETION');
+    trackTrace(`complete on task Id: ${taskId} due to specific access processing`, traceProps);
     return await handleTaskPost(getTaskPath, newRequest, req);
   } catch (error) {
+    trackTrace(`Error calling complete on task Id: ${taskId} due to specific access processing`, traceProps);
     next(error);
     return error;
   }
@@ -519,12 +538,11 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
     const services = req.body.services;
     let cachedUsers = [];
     let firstEntry = true;
-    const fullUserDetailCache = FullUserDetailCache.getInstance();
-    if (timestampExists() && fullUserDetailCache.getAllUserDetails()?.length > 0) {
+    if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
       // if already ran just use the cache to avoid loading issues
       firstEntry = false;
-      cachedUsers = fullUserDetailCache.getAllUserDetails();
-      cachedUsers = searchUsers(services, term, cachedUsers);
+      cachedUsers = FullUserDetailCache.getAllUserDetails();
+      cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
       res.send(cachedUsers).status(200);
     }
     // always update the cache after getting the cache if needed
@@ -532,7 +550,8 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
     cachedUsers = await fetchRoleAssignments(cachedUserData, req, next);
     if (firstEntry) {
       // if not previously ran ensure the new values are given back to angular layer
-      cachedUsers = searchUsers(services, term, cachedUsers);
+      // note: this is now only a safeguard to ensure caching (caching should have run pre login)
+      cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
       res.send(cachedUsers).status(200);
     }
   } catch (error) {

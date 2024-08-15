@@ -86,6 +86,8 @@ export const SESSION_SECRET = 'sessionSecret';
 
 export const ENVIRONMENT = 'environment';
 
+export const CASEWORKER_PAGE_SIZE = 'caseworkerPageSize';
+
 export const JURISDICTIONS = 'jurisdictions';
 
 export const WA_SUPPORTED_JURISDICTIONS = 'waSupportedJurisdictions';

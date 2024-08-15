@@ -23,63 +23,178 @@ describe('Caseworker Cache Service', () => {
 
   describe('fetchNewUserData', () => {
     it('should make a get request', async () => {
-      const mockStaffDetails = [{}, {}, {}];
+      const mockStaffDetails = [{
+        ccd_service_name: 'IA',
+        staff_profile: {
+          id: '1',
+          first_name: 'IA',
+          last_name: 'User',
+          email_id: 'IAUser@test.com',
+          base_location: [{
+            location: 'IA location',
+            location_id: 'a',
+            is_primary: true
+          }]
+        }
+      },
+      {
+        ccd_service_name: 'CIVIL',
+        staff_profile: {
+          id: '1',
+          first_name: 'IA',
+          last_name: 'User',
+          email_id: 'IAUser@test.com',
+          base_location: [{
+            location: 'CIVIL location',
+            location_id: 'b',
+            is_primary: false
+          },
+          {
+            location: 'IA location',
+            location_id: 'a',
+            is_primary: true
+          }]
+        }
+      },
+      {
+        ccd_service_name: 'PRIVATELAW',
+        staff_profile: {
+          id: '2',
+          first_name: 'PL',
+          last_name: 'User',
+          email_id: 'PLUser@test.com',
+          base_location: [{
+            location: 'PL location',
+            location_id: 'c',
+            is_primary: true
+          },
+          {
+            location: 'IA location',
+            location_id: 'a',
+            is_primary: false
+          }]
+        }
+      }];
+      const mockMergedStaffUsers = [
+        {
+          ccd_service_name: 'IA',
+          staff_profile: {
+            id: '1',
+            first_name: 'IA',
+            last_name: 'User',
+            email_id: 'IAUser@test.com',
+            base_location: [{
+              is_primary: true,
+              location: 'IA location',
+              location_id: 'a',
+              services: ['IA', 'CIVIL']
+            }]
+          },
+          ccd_service_names: ['IA', 'CIVIL']
+        },
+        {
+          ccd_service_name: 'PRIVATELAW',
+          staff_profile: {
+            id: '2',
+            first_name: 'PL',
+            last_name: 'User',
+            email_id: 'PLUser@test.com',
+            base_location: [{
+              is_primary: true,
+              location: 'PL location',
+              location_id: 'c'
+            },
+            {
+              is_primary: false,
+              location: 'IA location',
+              location_id: 'a'
+            }]
+          },
+          ccd_service_names: ['PRIVATELAW']
+        }
+      ];
       const res = mockRes({ status: 200, data: mockStaffDetails });
       sandbox.stub(http, 'get').resolves(res);
       const data = await fetchNewUserData();
-      expect(data).to.equal(mockStaffDetails);
+      expect(data).to.deep.equal(mockMergedStaffUsers);
     });
   });
 
   describe('fetchRoleAssignmentsForNewUsers', () => {
     it('should make a post request', async () => {
-      const mockStaffUserDetails: StaffUserDetails[] = [
+      const mockMergedStaffUsers = [
         {
-          ccd_service_name: 'EMPLOYMENT',
+          ccd_service_name: 'IA',
           staff_profile: {
-            id: '0bdd43aa-527b-40ac-9d68-d72bd45054f4',
-            first_name: 'Latest',
-            last_name: 'New',
-            region_id: '1',
-            user_type: 'CTSC',
-            suspended: 'false',
-            case_allocator: 'Y',
-            task_supervisor: 'Y',
-            staff_admin: 'N',
-            email_id: 'test@test.com',
-            region: 'London',
+            id: '1',
+            first_name: 'IA',
+            last_name: 'User',
+            email_id: 'IAUser@test.com',
             base_location: [{
-              location_id: '637145',
-              location: 'Wrexham',
-              is_primary: true
-            }],
-            user_type_id: '1',
-            role: [],
-            skills: [],
-            work_area: [],
-            idam_roles: '',
-            created_time: new Date(),
-            last_updated_time: new Date()
-          }
-        }];
+              is_primary: true,
+              location: 'IA location',
+              location_id: 'a',
+              services: ['IA', 'CIVIL']
+            }]
+          },
+          ccd_service_names: ['IA', 'CIVIL']
+        },
+        {
+          ccd_service_name: 'PRIVATELAW',
+          staff_profile: {
+            id: '2',
+            first_name: 'PL',
+            last_name: 'User',
+            email_id: 'PLUser@test.com',
+            base_location: [{
+              is_primary: true,
+              location: 'PL location',
+              location_id: 'c'
+            },
+            {
+              is_primary: false,
+              location: 'IA location',
+              location_id: 'a'
+            }]
+          },
+          ccd_service_names: ['PRIVATELAW']
+        }
+      ];
       const mockRoleAssignments = [{
         id: '123',
         attributes: {},
         roleCategory: 'ADMIN',
-        actorId: '0bdd43aa-527b-40ac-9d68-d72bd45054f4'
+        actorId: '1'
+      },
+      {
+        id: '124',
+        attributes: {},
+        roleCategory: 'CTSC',
+        actorId: '2'
       }];
       const finalCaseworkers = [{
-        email: 'test@test.com',
-        firstName: 'Latest',
-        idamId: '0bdd43aa-527b-40ac-9d68-d72bd45054f4',
-        lastName: 'New',
-        location: { id: '637145', locationName: 'Wrexham', services: undefined },
+        email: 'IAUser@test.com',
+        firstName: 'IA',
+        idamId: '1',
+        lastName: 'User',
+        locations: [{ id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] }],
         roleCategory: 'ADMIN',
-        service: 'EMPLOYMENT'
+        services: ['IA', 'CIVIL']
+      },
+      {
+        email: 'PLUser@test.com',
+        firstName: 'PL',
+        idamId: '2',
+        lastName: 'User',
+        locations: [
+          { id: 'c', locationName: 'PL location', services: undefined }
+        ],
+        roleCategory: 'CTSC',
+        services: ['PRIVATELAW']
       }];
       const res = mockRes({ status: 200, data: { roleAssignmentResponse: mockRoleAssignments } });
       sandbox.stub(http, 'post').resolves(res);
-      const data = await fetchRoleAssignmentsForNewUsers(mockStaffUserDetails);
+      const data = await fetchRoleAssignmentsForNewUsers(mockMergedStaffUsers as StaffUserDetails[]);
       expect(data).to.deep.equal(finalCaseworkers);
     });
   });

@@ -65,7 +65,12 @@ export class LocationResolver {
     const newBookingCreated = (this.router.getCurrentNavigation() &&
       this.router.getCurrentNavigation().extras.state &&
       this.router.getCurrentNavigation().extras.state.newBooking === true);
-    return newBookingCreated ? this.userService.getUserDetails(true) : this.store.pipe(select(fromRoot.getUserDetails));
+    return newBookingCreated ? this.updateAndGetUserDetails() : this.store.pipe(select(fromRoot.getUserDetails));
+  }
+
+  private updateAndGetUserDetails(): Observable<UserDetails> {
+    this.store.dispatch(new fromRoot.LoadUserDetails(true));
+    return this.store.pipe(select(fromRoot.getUserDetails));
   }
 
   // Will call location service API with list of derived possible services to get locations by region

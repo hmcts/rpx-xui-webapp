@@ -139,4 +139,9 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
       window.history.back();
     }
   }
+
+  public haveParticipantsBeenAdded(hearingDay: ActualHearingDayModel): boolean {
+    const individualParties = this.individualParties;
+    return individualParties.length !== hearingDay.actualDayParties.length;
+  }
 }

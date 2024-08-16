@@ -30,7 +30,7 @@ describe('DateValidators', () => {
     formGroup.get('endDate_year').setValue('10');
     formGroup.get('endDate_month').setValue('12');
     formGroup.get('endDate_day').setValue('2010');
-    formGroup.get('dateOption').setValue('' + BookingDateOption.DATERANGE);
+    formGroup.get('dateOption').setValue(BookingDateOption.DATERANGE);
     const bookingDateValidator = DateValidators.bookingDateValidator();
     expect(bookingDateValidator(formGroup)).toEqual({
       isValid: false,

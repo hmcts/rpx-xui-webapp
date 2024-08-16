@@ -1,5 +1,5 @@
 
-var { defineSupportCode } = require('cucumber');
+var { Then, When, Given } = require('@cucumber/cucumber');
 const reportLogger = require('../../../support/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
@@ -10,7 +10,7 @@ const myWorkPage = require('../../pageObjects/workAllocation/myWorkPage');
 
 const ArrayUtil = require('../../../utils/ArrayUtil');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
   Then('I see work filter of type {string} is displayed', async function(filterType){
     await BrowserWaits.retryWithActionCallback(async () => {
       expect(await myWorkPage.isWorkFilterOfTypeDisplayed(filterType)).to.be.true;
@@ -269,5 +269,4 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
   When('I remove all selected locations from my work filters', async function () {
     await myWorkPage.clearAllSelectedLocations();
   });
-});
 

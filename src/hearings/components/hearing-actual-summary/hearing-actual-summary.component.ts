@@ -53,4 +53,10 @@ export class HearingActualSummaryComponent implements OnInit {
   public get isMultiDayHearing(): boolean {
     return this.hearingActualsMainModel.hearingActuals.actualHearingDays.length > 1;
   }
+
+  public actualHearingDate(): string {
+    return this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingStartTime ?
+      this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingStartTime :
+      this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingDate;
+  }
 }

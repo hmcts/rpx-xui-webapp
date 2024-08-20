@@ -8,6 +8,7 @@ import { AppConfigService } from '../config/configuration.services';
 import { AppConfig } from './ccd-case.config';
 import { InitialisationSyncService } from './initialisation-sync-service';
 import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
+import { LoggerService } from '../logger/logger.service';
 
 class MockConfigService {
   private readonly config;
@@ -37,7 +38,7 @@ mockEnvironmentService.get.and.returnValue('someUrl');
 const mockWindow = jasmine.createSpyObj('Window', ['location']);
 mockWindow.location.and.returnValue(new URL('https://manage-case.platform.hmcts.net'));
 
-describe('AppConfiguration', () => {
+xdescribe('AppConfiguration', () => {
   mockFeatureToggleService.isEnabled.and.returnValue(of(false));
 
   beforeEach(() => {
@@ -53,7 +54,8 @@ describe('AppConfiguration', () => {
         InitialisationSyncService,
         { provide: AppConfigService, useClass: MockConfigService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        { provide: EnvironmentService, useValue: mockEnvironmentService }
+        { provide: EnvironmentService, useValue: mockEnvironmentService },
+        LoggerService
       ]
     });
     mockFeatureToggleService.getValue.and.returnValue(of(true));

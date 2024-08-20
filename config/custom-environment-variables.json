@@ -53,7 +53,7 @@
       },
       "ia": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_IAC",
-        "caseTypes": "SERVICES_HEAARINGS_CASETYPES_IAC"
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_IAC"
       },
       "employment": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_ET",

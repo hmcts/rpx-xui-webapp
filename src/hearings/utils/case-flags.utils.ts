@@ -159,10 +159,8 @@ export class CaseFlagsUtils {
     const individualParties = partyDetails.filter((party) => party.partyType === PartyType.IND);
     individualParties?.forEach((party) => {
       const partyName = `${party.individualDetails.firstName} ${party.individualDetails.lastName}`;
-      console.log('PARTY NAME', JSON.stringify(partyName));
       if (partyName) {
         const reasonableAdjustments = party.individualDetails?.reasonableAdjustments?.filter((reasonableAdjustment) => reasonableAdjustment.startsWith('RA')) || [];
-        console.log('RAs', JSON.stringify(reasonableAdjustments));
         const flagsId = reasonableAdjustments.slice();
         if (party.individualDetails?.interpreterLanguage) {
           flagsId.push(CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID);
@@ -170,7 +168,6 @@ export class CaseFlagsUtils {
 
         const allFlags: CaseFlagReferenceModel[] = flagsId.map((flagId) => CaseFlagsUtils.findFlagByFlagId(caseFlagReferenceModels, flagId));
         partyWithFlags.set(partyName, allFlags);
-        console.log('PARTY WITH FLAGS', JSON.stringify(partyWithFlags.get(partyName)));
       }
     });
     return partyWithFlags;

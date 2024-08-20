@@ -63,10 +63,11 @@ export class NocValidators {
         return null;
       }
       const value = control.value.toString();
+      console.log(value)
       const [year, month, day] = value.split('-').map(Number);
       const isValidDate = moment(value, 'YYYY-MM-DD', true).isValid();
       if (!isValidDate || year === 0 || month === 0 || month > 12 || day === 0 || day > 31) {
-        return { month: true, date: true, valid: false };
+        return { date: true, month: true, year: true, valid: false };
       }
       return null;
     };

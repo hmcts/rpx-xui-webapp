@@ -65,7 +65,7 @@
   <ng-container *ngIf="!casesTotal">
     <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
       <th class="govuk-table__header" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell
-        *cdkHeaderCellDef>&ZeroWidthSpace;
+        *cdkHeaderCellDef>
         <button class="column-sort"
                 *ngIf="field.columnLabel && !field.disableSort"
                 type="button"
@@ -83,7 +83,7 @@
 
   <!-- Manage column -->
   <ng-container cdkColumnDef="manage">
-    <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>&nbsp;&ZeroWidthSpace;</th>
+    <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>&nbsp;</th>
     <td cdk-cell *cdkCellDef="let rowData" class="govuk-table__cell govuk-accordion__section-header">
       <div *ngIf="showManage[rowData.id]" class="govuk-accordion__section-heading">
         <button type="button" [id]="'manage_' + rowData.id" (click)="setSelectedCase(rowData)"

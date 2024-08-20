@@ -86,7 +86,7 @@ export class NocValidators {
 
       if (!isValidDateTime || year === 0 || month === 0 || month > 12 || day === 0 || day > 31 ||
           hour > 23 || minute > 59 || (second !== undefined && second > 59)) {
-        return { month: true, datetime: true, valid: false };
+        return { datetime: true, month: true, year: true, valid: false };
       }
       return null;
     };

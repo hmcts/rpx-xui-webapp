@@ -53,7 +53,7 @@ describe('NocValidators', () => {
   it('dateValidator invalid case', () => {
     control.setValue('2019-13-24');
     const validator = NocValidators.dateValidator();
-    expect(validator(control)).toEqual({ date: true, month: true, valid: false });
+    expect(validator(control)).toEqual({ date: true, month: true, year: true, valid: false });
   });
 
   it('dateTimeValidator valid 12 hour case', () => {
@@ -71,7 +71,7 @@ describe('NocValidators', () => {
   it('dateTimeValidator invalid case', () => {
     control.setValue('2019-13-24T30:15:00.000');
     const validator = NocValidators.dateTimeValidator();
-    expect(validator(control)).toEqual({ datetime: true, month: true, valid: false });
+    expect(validator(control)).toEqual({ datetime: true, month: true, year: true, valid: false });
   });
 
   it('timeValidator valid 12 hour case', () => {

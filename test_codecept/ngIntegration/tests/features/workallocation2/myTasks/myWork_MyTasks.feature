@@ -1,12 +1,12 @@
-@ng @functional_enabled 
+@ng @functional_enabled
 Feature: WA Release 2: My work - My Tasks
 
     Background: Mock and browser setup
         Given I init MockApp
-        
+
     Scenario Outline:  My Tasks, colums and column links for "<UserType>"
-        
-        
+
+
         Given I set MOCK with user details
             | roles | <Roles>,task-supervisor,case-allocator |
             | roleCategory | <roleCategory> |
@@ -47,7 +47,7 @@ Feature: WA Release 2: My work - My Tasks
             | Task          | Yes        | Yes   |
             | Task created  | No         | Yes   |
             | Due date      | Yes        | No    |
-            | Priority      | Yes        | Yes   |
+            | Priority      | Yes        | Yes    |
 
         Then If current user "<UserType>" is "Judge", I validate task table values displayed
             | row | Case name | Case category        | Location        | Task             | Task created |
@@ -93,11 +93,11 @@ Feature: WA Release 2: My work - My Tasks
 
 
     Scenario Outline: My Tasks sort column persist in session with Caseworker user "<SubNavigationTab>"
-       
+
         Given I set MOCK with user details
             | roles        | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator |
             | roleCategory | LEGAL_OPERATIONS                         |
-        
+
         Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
@@ -140,11 +140,11 @@ Feature: WA Release 2: My work - My Tasks
 
 
     Scenario Outline:  My Tasks, colums width "<UserType>"
-       
+
         Given I set MOCK with user details
             | roles | <Roles>,task-supervisor,case-allocator |
             | roleCategory | <roleCategory> |
-        
+
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |

@@ -8,7 +8,9 @@ export class NeedJudgeAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map((state) => {
-        const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
+        const panelRequirements = state.hearingConditions?.isHearingAmendmentsEnabled
+          ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements
+          : state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
         const panelPreferences = panelRequirements?.panelPreferences;
         const hasJudgeDetails = panelPreferences?.filter((panel) => panel.memberType === MemberType.JUDGE);
         if (panelRequirements?.roleType?.length) {

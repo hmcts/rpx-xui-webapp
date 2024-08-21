@@ -64,7 +64,7 @@
 
   <!-- Manage column -->
   <ng-container cdkColumnDef="manage">
-    <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>&ZeroWidthSpace;</th>
+    <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>&nbsp;</th>
     <td cdk-cell *cdkCellDef="let rowData" class="govuk-table__cell govuk-accordion__section-header">
       <div *ngIf="showManage[rowData.id]" class="govuk-accordion__section-heading">
         <button type="button" [id]="'manage_' + rowData.id" (click)="setSelectedTask(rowData)"

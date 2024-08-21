@@ -129,8 +129,9 @@ withPipeline(type, product, component) {
         ])
     }
 
-    afterAlways('smoketest:aat') {
-            stage('Functional api tests') {
+
+    afterSuccess('functionalTest:preview') {
+        stage('Functional api tests') {
             try {
                 yarnBuilder.yarn('test:functionalAPI')
             } catch (Error) {
@@ -140,16 +141,32 @@ withPipeline(type, product, component) {
                     allowMissing         : true,
                     alwaysLinkToLastBuild: true,
                     keepAll              : true,
-                    reportDir            : "functional-output/tests/api_functional1/",
+                    reportDir            : "functional-output/tests/api_functional/",
                     reportFiles          : 'mochawesome.html',
                     reportName           : 'PREVIEW API Functional Test'
                 ])
-            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/functional-output/tests/api_functional1/**/*'
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/functional-output/tests/api_functional/**/*'
             }
         }
-    }
 
-    afterSuccess('functionalTest:preview') {
+        stage('Functional NG Int') {
+            try {
+                yarnBuilder.yarn('test:functionalNGInt')
+            } catch (Error) {
+                unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+                publishHTML([
+                     allowMissing         : true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll              : true,
+                    reportDir            : "functional-output/tests/ngIntegration/",
+                    reportFiles          : 'index.html',
+                    reportName           : 'PREVIEW NG Integration Test'
+                ])
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/functional-output/tests/ngIntegration/**/*'
+            }
+        }
+
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -157,24 +174,6 @@ withPipeline(type, product, component) {
             reportDir            : "functional-output/tests/functional/",
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Functional Test'
-        ])
-
-         publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "functional-output/tests/api_functional/",
-            reportFiles          : 'mochawesome.html',
-            reportName           : 'PREVIEW API Functional Test'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "functional-output/tests/ngIntegration/",
-            reportFiles          : 'index.html',
-            reportName           : 'PREVIEW NG Integration Test'
         ])
     }
 

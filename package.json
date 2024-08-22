@@ -45,7 +45,7 @@
     "test:coverage:merge": "./node_modules/.bin/lcov-result-merger './reports/tests/coverage/*/lcov.info' > ./reports/tests/coverage/lcov.info",
     "test:coverage:node": "cd api && yarn coverage",
     "test:coverage:ng": "ng test --code-coverage --source-map",
-    "test:a11y": "node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=a11y PARALLEL=false   npx codeceptjs run --config=./test_codecept/codeceptCommon/codeceptA11y.conf.ts",
+    "test:a11y_old": "node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=a11y PARALLEL=false   npx codeceptjs run --config=./test_codecept/codeceptCommon/codeceptA11y.conf.ts",
     "test:a11y1": "echo disabled to fix tests",
     "test:a11y:needsfix": "yarn test:ngIntegrationMockEnv &&  webdriver-manager update --gecko=false --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/accessibility/config/pa11yProtractor.conf.js",
     "test:all": "yarn test:ng && yarn test:node && yarn test:smoke && yarn test:functional && yarn test:crossbrowser",

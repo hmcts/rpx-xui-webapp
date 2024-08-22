@@ -164,7 +164,7 @@ describe('CaseCreateSubmitComponent', () => {
           useValue: mockAlertService
         },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        { provide: LoggerService, useValue: mockLoggerService },
+        { provide: LoggerService, useValue: mockLoggerService }
       ]
     })
       .compileComponents();

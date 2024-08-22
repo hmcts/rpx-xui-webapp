@@ -56,7 +56,7 @@ describe('AppConfiguration', () => {
         { provide: AppConfigService, useClass: MockConfigService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: EnvironmentService, useValue: mockEnvironmentService },
-        { provide: LoggerService, useValue: mockLoggerService },
+        { provide: LoggerService, useValue: mockLoggerService }
       ]
     });
     mockFeatureToggleService.getValue.and.returnValue(of(true));

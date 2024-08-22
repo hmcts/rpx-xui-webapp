@@ -11,9 +11,9 @@ import { AbstractPageFlow } from '../../utils/abstract-page-flow';
   styleUrls: ['./request-hearing.component.scss']
 })
 export class RequestHearingComponent implements OnDestroy {
-  public hasSubmitted = false;
-
   public action = ACTION;
+
+  public caseId: string;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly pageFlow: AbstractPageFlow,
@@ -33,13 +33,16 @@ export class RequestHearingComponent implements OnDestroy {
       this.hearingsService.submitUpdatedRequestClicked = true;
     } else {
       // if we are submitting and awaiting backend process
-      this.hasSubmitted = true;
+      this.hearingsService.hearingRequestForSubmitValid = false;
     }
     this.hearingsService.navigateAction(action);
   }
 
-  public get isSummary(): boolean {
-    return this.isCreateEditSummary || this.isViewEditSummary;
+  public buttonDisabled(action: ACTION): boolean {
+    if (action === ACTION.VIEW_EDIT_SUBMIT) {
+      return this.hearingsService.hearingRequestForSubmitValid;
+    }
+    return false;
   }
 
   public get isCreateEditSummary(): boolean {
@@ -48,6 +51,10 @@ export class RequestHearingComponent implements OnDestroy {
 
   public get isViewEditSummary(): boolean {
     return this.pageFlow.getCurrentPage() === HearingRequestPageRouteNames.HEARING_VIEW_EDIT_SUMMARY;
+  }
+
+  public get isViewSummary(): boolean {
+    return this.pageFlow.getCurrentPage() === HearingRequestPageRouteNames.HEARING_VIEW_SUMMARY;
   }
 
   public get isEditSummary(): boolean {
@@ -65,6 +72,7 @@ export class RequestHearingComponent implements OnDestroy {
   public get isChildPage(): boolean {
     return !this.isCreateEditSummary &&
       !this.isViewEditSummary &&
+      !this.isViewSummary &&
       !this.isEditSummary &&
       !this.isViewEditReason &&
       !this.isConfirmationPage;
@@ -74,5 +82,7 @@ export class RequestHearingComponent implements OnDestroy {
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequest());
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingConditions());
+    this.hearingsService.propertiesUpdatedAutomatically = { pageless: {}, withinPage: {} };
+    this.hearingsService.propertiesUpdatedOnPageVisit = null;
   }
 }

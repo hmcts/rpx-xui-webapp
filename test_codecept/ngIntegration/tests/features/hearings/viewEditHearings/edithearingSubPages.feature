@@ -43,7 +43,7 @@ Feature: Hearings : Edit hearing sub pages
             | What stage is this hearing at?                          | What stage is this hearing at?                         | Request a hearing for Mock Test case public case name    |
             | Will this be a paper hearing?                           | Participant attendance                                 | Request a hearing for Mock Test case public case name    |
             | What are the hearing venue details?                     | What are the hearing venue details?                    | Request a hearing for Mock Test case public case name    |
-            # | Does this hearing need to be in Welsh?                  | Does this hearing need to be in Welsh?                 | Request a hearing for Mock Test case public case name |
+            | Does this hearing need to be in Welsh?                  | Does this hearing need to be in Welsh?                 | Request a hearing for Mock Test case public case name |
             | Do you want a specific judge?                           | Do you want a specific judge?                          | Request a hearing for Mock Test case public case name    |
             | Length of hearing                                       | Length, date and priority level of hearing             | Request a hearing for Mock Test case public case name    |
             | Does the hearing need to take place on a specific date? | Length, date and priority level of hearing             | Request a hearing for Mock Test case public case name    |

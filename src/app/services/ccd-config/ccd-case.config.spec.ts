@@ -37,8 +37,9 @@ mockEnvironmentService.get.and.returnValue('someUrl');
 
 const mockWindow = jasmine.createSpyObj('Window', ['location']);
 mockWindow.location.and.returnValue(new URL('https://manage-case.platform.hmcts.net'));
+const mockLoggerService = jasmine.createSpyObj('LoggerService', ['log']);
 
-xdescribe('AppConfiguration', () => {
+describe('AppConfiguration', () => {
   mockFeatureToggleService.isEnabled.and.returnValue(of(false));
 
   beforeEach(() => {
@@ -55,7 +56,7 @@ xdescribe('AppConfiguration', () => {
         { provide: AppConfigService, useClass: MockConfigService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: EnvironmentService, useValue: mockEnvironmentService },
-        LoggerService
+        { provide: LoggerService, useValue: mockLoggerService },
       ]
     });
     mockFeatureToggleService.getValue.and.returnValue(of(true));
@@ -169,5 +170,10 @@ xdescribe('AppConfiguration', () => {
 
   it('should have getCamRoleAssignmentsApiUrl return value', inject([AppConfig], (service: AppConfig) => {
     expect(service.getCamRoleAssignmentsApiUrl()).toBe('dummy');
+  }));
+
+  it('should have called LogService log method', inject([AppConfig, Window], (service: AppConfig) => {
+    service.logMessage('hello world');
+    expect(mockLoggerService.log).toHaveBeenCalledWith('hello world');
   }));
 });

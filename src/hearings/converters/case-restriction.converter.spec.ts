@@ -34,4 +34,52 @@ describe('PrivateHearingAnswerConverter', () => {
     const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });
+
+  it('should transform private hearing answer selection to yes when hearings amendment is enabled', () => {
+    const STATE = {
+      ...initialState.hearings,
+      hearingConditions: {
+        ...initialState.hearings.hearingConditions,
+        isHearingAmendmentsEnabled: true
+      },
+      hearingRequestToCompare: {
+        ...initialState.hearings.hearingRequestToCompare,
+        hearingRequestMainModel: {
+          ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
+          caseDetails: {
+            ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.caseDetails,
+            caserestrictedFlag: true
+          }
+        }
+      }
+    };
+    const result$ = converter.transformAnswer(of(STATE));
+    const option = RadioOptions.YES;
+    const expected = cold('(b|)', { b: option });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform private hearing answer selection to no when hearings amendment is enabled', () => {
+    const STATE = {
+      ...initialState.hearings,
+      hearingConditions: {
+        ...initialState.hearings.hearingConditions,
+        isHearingAmendmentsEnabled: true
+      },
+      hearingRequestToCompare: {
+        ...initialState.hearings.hearingRequestToCompare,
+        hearingRequestMainModel: {
+          ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
+          caseDetails: {
+            ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.caseDetails,
+            caserestrictedFlag: false
+          }
+        }
+      }
+    };
+    const result$ = converter.transformAnswer(of(STATE));
+    const option = RadioOptions.NO;
+    const expected = cold('(b|)', { b: option });
+    expect(result$).toBeObservable(expected);
+  });
 });

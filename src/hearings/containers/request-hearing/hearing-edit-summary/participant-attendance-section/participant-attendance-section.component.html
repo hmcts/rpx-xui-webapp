@@ -1,10 +1,7 @@
 <h2 class="govuk-heading-m">
   Participant attendance
-  <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired"
-    [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
-  </exui-amendment-label>
-  <exui-amendment-label *ngIf="partyDetailsChangesConfirmed && partyDetailsChangesRequired"
-    [displayLabel]="amendmentLabelEnum.AMENDED">
+  <exui-amendment-label *ngIf="pageTitleDisplayLabel"
+    [displayLabel]="pageTitleDisplayLabel">
   </exui-amendment-label>
 </h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
@@ -13,7 +10,10 @@
       Will this be a paper hearing?
     </div>
     <div class="govuk-summary-list__value">
-      {{ isPaperHearing  }}
+      {{ isPaperHearing }}
+      <exui-amendment-label *ngIf="isPaperHearingChanged"
+        [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
     </div>
     <div class="govuk-summary-list__actions">
       <a id="paperHearing"
@@ -22,16 +22,19 @@
         (click)="onChange('paperHearing')">Change</a>
     </div>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
+  <div class="govuk-summary-list__row" *ngIf="isPaperHearing === 'No'">
     <div class="govuk-summary-list__key">
       What will be the methods of attendance for this hearing?
     </div>
     <div class="govuk-summary-list__value">
-      <ul>
+      <ul id="participant-channels">
         <li *ngFor="let participantChannel of participantChannels">
           {{ participantChannel  }}
         </li>
       </ul>
+      <exui-amendment-label *ngIf="methodOfAttendanceChanged"
+        [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
     </div>
     <div class="govuk-summary-list__actions">
       <a id="howParticipantsAttendant"
@@ -40,17 +43,18 @@
         (click)="onChange('howParticipantsAttendant')">Change</a>
     </div>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
+  <div class="govuk-summary-list__row" *ngIf="isPaperHearing === 'No'">
     <div class="govuk-summary-list__key">
       How will each participant attend the hearing?
     </div>
     <div class="govuk-summary-list__value">
       <ul>
         <li *ngFor="let participantAttendanceMode of participantAttendanceModes">
-          <exui-amendment-label *ngIf="participantAttendanceMode.partyNameChanged"
+          {{ participantAttendanceMode.partyName }}{{ participantAttendanceMode.channel }}
+          <exui-amendment-label
+            *ngIf="participantAttendanceMode.partyNameChanged || participantAttendanceMode.partyChannelChanged"
             [displayLabel]="amendmentLabelEnum.AMENDED">
           </exui-amendment-label>
-          {{ participantAttendanceMode.partyName }} - {{ participantAttendanceMode.channel }}
         </li>
       </ul>
     </div>
@@ -61,12 +65,15 @@
         (click)="onChange('howAttendant')">Change</a>
     </div>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
+  <div class="govuk-summary-list__row" *ngIf="isPaperHearing === 'No'">
     <div class="govuk-summary-list__key">
       How many people will attend the hearing in person?
     </div>
     <div class="govuk-summary-list__value">
       {{ numberOfPhysicalAttendees }}
+      <exui-amendment-label *ngIf="numberOfPhysicalAttendeesChanged"
+        [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
     </div>
     <div class="govuk-summary-list__actions">
       <a id="attendantPersonAmount"

@@ -32,6 +32,7 @@ import { AppConfigService } from '../../../app/services/config/configuration.ser
 import * as fromCases from '../../store/reducers';
 import { CaseCreateSubmitComponent } from './case-create-submit.component';
 import { InitialisationSyncService } from '../../../app/services/ccd-config/initialisation-sync-service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 class MockSortService {
   public features = {};
@@ -89,6 +90,7 @@ describe('CaseCreateSubmitComponent', () => {
   let draftService: DraftService;
   const mockAlertService = jasmine.createSpyObj('alertService', ['error']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
+  const mockLoggerService = jasmine.createSpyObj('LoggerService', ['log']);
 
   beforeAll(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
@@ -161,7 +163,8 @@ describe('CaseCreateSubmitComponent', () => {
           provide: AlertService,
           useValue: mockAlertService
         },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: LoggerService, useValue: mockLoggerService },
       ]
     })
       .compileComponents();
@@ -177,15 +180,15 @@ describe('CaseCreateSubmitComponent', () => {
     fixture.detectChanges();
   }));
 
-  xit('should create', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  xit('should have ngOnInit', () => {
+  it('should have ngOnInit', () => {
     expect(component.ngOnInit).toBeTruthy();
   });
 
-  xit('should have called casesService.createCase on submit', async () => {
+  it('should have called casesService.createCase on submit', async () => {
     spyOn(casesService, 'createCase').and.callThrough();
     component.submit()(SANITISED_EDIT_FORM);
     await fixture.whenStable();
@@ -193,7 +196,7 @@ describe('CaseCreateSubmitComponent', () => {
     expect(casesService.createCase).toHaveBeenCalled();
   });
 
-  xit('should have called casesService.validateCase on validate', async () => {
+  it('should have called casesService.validateCase on validate', async () => {
     spyOn(casesService, 'validateCase').and.callThrough();
     component.validate()(SANITISED_EDIT_FORM, '12');
     await fixture.whenStable();
@@ -201,7 +204,7 @@ describe('CaseCreateSubmitComponent', () => {
     expect(casesService.validateCase).toHaveBeenCalled();
   });
 
-  xit('should have called draftService.createOrUpdateDraft on saveDraft', async () => {
+  it('should have called draftService.createOrUpdateDraft on saveDraft', async () => {
     spyOn(draftService, 'createOrUpdateDraft').and.callThrough();
     component.saveDraft()(SANITISED_EDIT_FORM);
     await fixture.whenStable();
@@ -209,7 +212,7 @@ describe('CaseCreateSubmitComponent', () => {
     expect(draftService.createOrUpdateDraft).toHaveBeenCalled();
   });
 
-  xit('should not  have called draftService.createOrUpdateDraft on saveDraft is false', async () => {
+  it('should not  have called draftService.createOrUpdateDraft on saveDraft is false', async () => {
     spyOn(draftService, 'createOrUpdateDraft').and.callThrough();
     component.eventTrigger.can_save_draft = false;
     expect(component.saveDraft()).toBeUndefined();

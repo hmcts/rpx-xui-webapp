@@ -22,7 +22,9 @@ export class PartyChannelsAnswerConverter implements AnswerConverter {
     return hearingState$.pipe(
       map((state) => {
         const partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
-        const partiesFromRequest = state.hearingRequest.hearingRequestMainModel.partyDetails;
+        const partiesFromRequest = state.hearingConditions?.isHearingAmendmentsEnabled
+          ? state.hearingRequestToCompare.hearingRequestMainModel.partyDetails
+          : state.hearingRequest.hearingRequestMainModel.partyDetails;
         const partiesFromServiceValue = state.hearingValues.serviceHearingValuesModel.parties;
         let strReturn = '<ul>';
         partiesFromRequest.filter((party) => party.partyType === PartyType.IND)

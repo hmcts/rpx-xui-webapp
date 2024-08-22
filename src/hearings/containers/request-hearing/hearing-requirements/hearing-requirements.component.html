@@ -7,6 +7,9 @@
     <exui-hearing-amend-warning-msg
       [warningMsg]="'Review the information on this page, it has been updated.' | rpxTranslate ">
     </exui-hearing-amend-warning-msg>
+    <exui-hearing-amend-warning-msg *ngIf="showReasonableAdjustmentFlagsWarningMessage"
+      [warningMsg]="'Some of the information shown below may not be sent as part of your hearing request to the listing system. If you think this is an issue then please raise a ServiceNow ticket.'">
+    </exui-hearing-amend-warning-msg>
     <div *ngFor="let caseType of caseTypes">
       <p class="govuk-body govuk-!-margin-bottom-2">{{caseType.categoryDisplayValue}}</p>
       <ul class="govuk-list govuk-list--bullet">

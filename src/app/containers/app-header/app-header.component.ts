@@ -71,10 +71,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     return AppUtils.getCookieRolesAsArray(serialisedUserRolesWithoutJsonPrefix);
   }
 
-  public getUsersTheme(defaultTheme: ApplicationTheme): Observable<ApplicationTheme> {
-    return this.featureToggleService.getValue('mc-menu-theme', defaultTheme);
-  }
-
   /**
    * ngOnInit
    *
@@ -141,11 +137,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.backgroundColor = applicationTheme.backgroundColor;
     this.logo = applicationTheme.logo;
     this.logoIsUsed = this.logo !== ApplicationThemeLogo.NONE;
-  }
-
-  public logErrorAndReturnDefaultTheme(error): Observable<ApplicationTheme> {
-    this.loggerService.error(error);
-    return of(this.defaultTheme);
   }
 
   /**

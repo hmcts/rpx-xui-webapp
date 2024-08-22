@@ -96,20 +96,27 @@ describe('AppHeaderComponent', () => {
 
   describe('setAppHeaderProperties()', () => {
     it('should take a theme and update the app header properties.', () => {
-      const defaultTheme = AppConstants.DEFAULT_USER_THEME;
-      const menuItems = AppConstants.DEFAULT_MENU_ITEMS;
+      component.setApplicationThemeForUser();
 
-      component.setAppHeaderProperties(defaultTheme, menuItems);
-
-      expect(component.appHeaderTitle).toBe(AppConstants.DEFAULT_USER_THEME.appTitle);
+      expect(component.appHeaderTitle).toEqual(AppConstants.DEFAULT_USER_THEME.appTitle);
       expect(component.navItems).toEqual(AppConstants.DEFAULT_MENU_ITEMS);
       expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
       expect(component.logo).toBe(AppConstants.DEFAULT_USER_THEME.logo);
       expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);
     });
 
+    it('should take a theme and update the app header properties with role judge.', () => {
+      component.userRoles = ['judge'];
+      component.setApplicationThemeForUser();
+
+      expect(component.appHeaderTitle).toEqual({ name: 'Judicial Case Manager', url: '/' });
+      expect(component.backgroundColor).toBe('#8d0f0e');
+      expect(component.logo).toBe('judicial');
+      expect(component.logoIsUsed).toBe(true);
+    });
+
     it('should set app header content', async () => {
-      const themeSpy = spyOn(component, 'getApplicationThemeForUser').and.returnValue(of(AppConstants.DEFAULT_USER_THEME));
+      const themeSpy = spyOn(component, 'setApplicationThemeForUser').and.returnValue();
 
       const userDetails = {
         userInfo: ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker-divorce-financialremedy-solicitor', 'caseworker']
@@ -118,17 +125,10 @@ describe('AppHeaderComponent', () => {
       expect(themeSpy).toHaveBeenCalled();
     });
 
-    it('should call userThems on getApplicationThemeForUser', () => {
-      const userThemeSpy = spyOn(component, 'getUsersTheme').and.callThrough();
-
-      component.getApplicationThemeForUser();
-      expect(userThemeSpy).toHaveBeenCalled();
-    });
-
     it('should call usersTheme on getApplicationThemeForUser with no roles', () => {
-      const userThemeSpy = spyOn(component, 'getUsersTheme').and.callThrough();
+      const userThemeSpy = spyOn(component, 'setApplicationThemeForUser').and.callThrough();
 
-      component.getApplicationThemeForUser();
+      component.setApplicationThemeForUser();
       expect(userThemeSpy).toHaveBeenCalled();
       expect(component.userNav.items).toEqual([]);
     });
@@ -140,10 +140,9 @@ describe('AppHeaderComponent', () => {
     });
 
     it('should update navItems app header properties.', () => {
-      const defaultTheme = AppConstants.DEFAULT_USER_THEME;
-      component.setAppHeaderTheme(defaultTheme);
+      component.setApplicationThemeForUser();
 
-      expect(component.appHeaderTitle).toBe(AppConstants.DEFAULT_USER_THEME.appTitle);
+      expect(component.appHeaderTitle).toEqual(AppConstants.DEFAULT_USER_THEME.appTitle);
       expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
       expect(component.logo).toBe(AppConstants.DEFAULT_USER_THEME.logo);
       expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);

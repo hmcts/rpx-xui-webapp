@@ -6,6 +6,7 @@ import * as fromHearingStore from '../../../../../hearings/store';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
+
 @Component({
   selector: 'exui-hearing-stage-section',
   templateUrl: './hearing-stage-section.component.html'
@@ -27,9 +28,10 @@ export class HearingStageSectionComponent implements OnInit {
     this.hearingStage = hearingStageFromRefData
       ? hearingStageFromRefData.value_en
       : '';
-
-    const objA = this.hearingRequestToCompareMainModel.hearingDetails.hearingType;
-    this.showAmmended = !_.isEqual(objA, hearingType);
+    this.showAmmended = !_.isEqual(
+      this.hearingRequestToCompareMainModel.hearingDetails.hearingType,
+      hearingType
+    );
   }
 
   public onChange(fragmentId: string): void {

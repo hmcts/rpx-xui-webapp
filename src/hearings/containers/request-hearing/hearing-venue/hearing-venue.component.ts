@@ -117,9 +117,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
     const locations: HearingLocationModel[] = this.selectedLocations.map((locationByEPIMMSModel) => {
       return {
         locationType: HMCLocationType.COURT,
-        locationId: locationByEPIMMSModel.epimms_id,
-        locationName: locationByEPIMMSModel.court_name,
-        regionId: locationByEPIMMSModel.region_id
+        locationId: locationByEPIMMSModel.epimms_id
       } as HearingLocationModel;
     });
     this.hearingRequestMainModel = {

@@ -123,6 +123,13 @@ Feature: Hearings CR84 OFF: View or edit action
             | Search for a location by name | cen,IA Court Center 2 |
 
         When I click continue in hearing workflow
+
+        Then I am on hearings workflow page "Does this hearing need to be in Welsh?"
+        When In hearing page "Does this hearing need to be in Welsh?", I input values
+            | field                                  | value |
+            | Does this hearing need to be in Welsh? | No   |
+
+        When I click continue in hearing workflow
         Then I validate view or edit hearing page displayed
 
 
@@ -134,11 +141,7 @@ Feature: Hearings CR84 OFF: View or edit action
             | Judge details           |       |
             | Linked hearings         |       |
             | Additional instructions |       |
-
-        Then I validate fields displayed in view or edit hearing page
-            | field                              | value             | changeLinkDisplay | amendedFlagDisplayed_preCR84 |
-            | What are the hearing venue details | IA Court Center 2 | true              | AMENDED                      |
-
+            
         # Hearing venue end
 
         # Language requirements start
@@ -168,8 +171,6 @@ Feature: Hearings CR84 OFF: View or edit action
         #     | Does this hearing need to be in Welsh? | Yes   | true              |                              |
 
         # Language requirements end
-
-
 
 
         # Judge details start

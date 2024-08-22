@@ -1,5 +1,6 @@
 export interface PartyFlagsModel {
-  partyId: string;
+  partyId?: string;
+  partyID?: string;
   partyName: string;
   flagParentId?: string;
   flagId: string;

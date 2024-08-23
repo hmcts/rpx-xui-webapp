@@ -1,17 +1,20 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UserDetails } from '../../../../app/models';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import * as fromAppStore from '../../../../app/store';
-import { HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE } from '../../../../hearings/templates/hearing-request-view-summary.template';
-import { HEARING_VIEW_ONLY_SUMMARY_TEMPLATE } from '../../../../hearings/templates/hearing-view-only-summary.template';
+import { ACTION } from '../../../../hearings/models/hearings.enum';
+import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { HearingsFeatureService } from '../../../services/hearings-feature.service';
 import { HearingsService } from '../../../services/hearings.service';
+import { HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE } from '../../../templates/hearing-request-view-summary.template';
+import { HEARING_VIEW_ONLY_SUMMARY_TEMPLATE } from '../../../templates/hearing-view-only-summary.template';
 import { HearingViewSummaryComponent } from './hearing-view-summary.component';
 
 describe('HearingViewSummaryComponent', () => {
@@ -48,15 +51,27 @@ describe('HearingViewSummaryComponent', () => {
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
     featureToggleServiceMock = jasmine.createSpyObj('featureToggleService', ['isEnabled']);
     hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled']);
-    routerMock = jasmine.createSpyObj('Router', ['navigateByUrl']);
+    routerMock = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
       declarations: [HearingViewSummaryComponent, MockRpxTranslatePipe],
       imports: [RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
+        provideMockStore({ initialState }),
         {
           provide: Store,
           useValue: storeMock
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                caseFlags: caseFlagsRefData
+              }
+            },
+            fragment: of('point-to-me')
+          }
         },
         {
           provide: Router,
@@ -77,11 +92,11 @@ describe('HearingViewSummaryComponent', () => {
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HearingViewSummaryComponent);
-    component = fixture.componentInstance;
     storeMock.pipe.and.returnValue(of(USER));
     featureToggleServiceMock.isEnabled.and.returnValue(of(false));
     hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(false));
+    fixture = TestBed.createComponent(HearingViewSummaryComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
@@ -105,7 +120,13 @@ describe('HearingViewSummaryComponent', () => {
 
   it('should navigate to edit hearing page', () => {
     component.onEdit();
-    expect(routerMock.navigateByUrl).toHaveBeenCalled();
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-edit-summary']);
+  });
+
+  it('should navigate to case details page', () => {
+    component.hearingRequestMainModel = initialState.hearings.hearingRequest.hearingRequestMainModel;
+    component.executeAction(ACTION.BACK);
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', '1234123412341234', 'hearings']);
   });
 
   afterEach(() => {

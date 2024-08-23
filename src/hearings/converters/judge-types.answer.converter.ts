@@ -11,7 +11,9 @@ export class JudgeTypesAnswerConverter implements AnswerConverter {
     const judgeTypes: LovRefDataModel[] = this.route.snapshot.data.judgeTypes;
     return hearingState$.pipe(
       map((state) => {
-        const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
+        const panelRequirements = state.hearingConditions?.isHearingAmendmentsEnabled
+          ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements
+          : state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
         if (panelRequirements?.roleType?.length) {
           const selectedJudgeTypes: string[] = [];
           judgeTypes.forEach((judgeType) => {

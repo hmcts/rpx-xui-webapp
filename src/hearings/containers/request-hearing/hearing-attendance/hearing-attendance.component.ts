@@ -78,25 +78,31 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('parties') &&
       this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired)) {
       this.initialiseFromHearingValuesForAmendments();
-    } else if (!this.hearingRequestMainModel.partyDetails.length) {
+    } 
+    // else if (!this.hearingRequestMainModel.partyDetails.length) {
+    //   console.log("i dont have party details");
+    //   this.initialiseFromHearingValues();
+    // } 
+    else {
+      console.log("I GOT HERE");
+      // this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND)
+      //   .forEach((partyDetail) => {
+      //     (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues({
+      //       partyID: partyDetail.partyID,
+      //       partyType: partyDetail.partyType,
+      //       partyRole: partyDetail.partyRole,
+      //       partyName: `${partyDetail.individualDetails.firstName} ${partyDetail.individualDetails.lastName}`,
+      //       individualDetails: {
+      //         ...partyDetail.individualDetails,
+      //         preferredHearingChannel: partyDetail.individualDetails?.preferredHearingChannel ? partyDetail.individualDetails?.preferredHearingChannel : ''
+      //       },
+      //       organisationDetails: partyDetail.organisationDetails,
+      //       unavailabilityDOW: partyDetail.unavailabilityDOW,
+      //       unavailabilityRanges: partyDetail.unavailabilityRanges
+      //     } as PartyDetailsModel) as FormGroup);
+      //   });
       this.initialiseFromHearingValues();
-    } else {
-      this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND)
-        .forEach((partyDetail) => {
-          (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues({
-            partyID: partyDetail.partyID,
-            partyType: partyDetail.partyType,
-            partyRole: partyDetail.partyRole,
-            partyName: `${partyDetail.individualDetails.firstName} ${partyDetail.individualDetails.lastName}`,
-            individualDetails: {
-              ...partyDetail.individualDetails,
-              preferredHearingChannel: partyDetail.individualDetails?.preferredHearingChannel ? partyDetail.individualDetails?.preferredHearingChannel : ''
-            },
-            organisationDetails: partyDetail.organisationDetails,
-            unavailabilityDOW: partyDetail.unavailabilityDOW,
-            unavailabilityRanges: partyDetail.unavailabilityRanges
-          } as PartyDetailsModel) as FormGroup);
-        });
+      console.log("THE FORM PARTY DETAILS ARE:", this.attendanceFormGroup.controls.partyDetails);
     }
     this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees || 0);
     this.partiesFormArray = this.attendanceFormGroup.controls.parties as FormArray;

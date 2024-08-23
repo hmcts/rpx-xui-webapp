@@ -20,7 +20,7 @@ nodejs:
      GLOBAL_SEARCH_SERVICES: IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,SSCS,ST_CIC
      WA_SUPPORTED_JURISDICTIONS: IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,SSCS,ST_CIC
      STUB: false
-     DEBUG: xuiNode:*,-xuiNode:auth:s2s,-xuiNode:auth:oauth2
+     DEBUG: xuiNode:*
      FEATURE_WORKALLOCATION_ENABLED: true
      SERVICES_CASE_JUDICIAL_API: http://rd-judicial-api-aat.service.core-compute-aat.internal
      SERVICES_LOCATION_REF_API_URL: http://rd-location-ref-api-aat.service.core-compute-aat.internal

@@ -8,9 +8,9 @@
       Does this hearing need to be in Welsh?
     </div>
     <div class="govuk-summary-list__value">
+      {{ hearingInWelshFlag ? 'Yes' : 'No' }}
       <exui-amendment-label *ngIf="showAmmended" [displayLabel]="amendmentLabelEnum.AMENDED">
       </exui-amendment-label>
-      {{ hearingInWelshFlag ? 'Yes' : 'No' }}
     </div>
     <div class="govuk-summary-list__actions">
       <a id="needWelsh"

@@ -453,7 +453,7 @@ describe('HearingActualSummaryComponent', () => {
 
   it('should return hearing start time', () => {
     expect(component.actualHearingDate()).toEqual('2021-03-12T09:00:00.000Z');
-  })
+  });
 
   it('should set empty hearing type description', () => {
     fixture.detectChanges();

@@ -30,6 +30,10 @@ export class QueryManagementContainerComponent implements OnInit {
   private readonly RAISE_A_QUERY_NAME = 'Raise a new query';
   public static readonly RAISE_A_QUERY_QUESTION_OPTION = 'raiseAQuery';
 
+  private static readonly QUERY_ITEM_QUALIFYING_QUESTION_DETAIL = '1';
+  private static readonly QUERY_ITEM_RESPOND = '3';
+  private static readonly QUERY_ITEM_FOLLOWUP = '4';
+
   private queryItemId: string;
   public caseId: string;
   public queryCreateContext: QueryCreateContext;
@@ -212,13 +216,13 @@ export class QueryManagementContainerComponent implements OnInit {
 
   private getQueryCreateContext(): QueryCreateContext {
     switch (this.queryItemId) {
-      case '1':
+      case QueryManagementContainerComponent.QUERY_ITEM_QUALIFYING_QUESTION_DETAIL:
         return QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL;
       case QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION:
         return QueryCreateContext.NEW_QUERY;
-      case '3':
+      case QueryManagementContainerComponent.QUERY_ITEM_RESPOND:
         return QueryCreateContext.RESPOND;
-      case '4':
+      case QueryManagementContainerComponent.QUERY_ITEM_FOLLOWUP:
         return QueryCreateContext.FOLLOWUP;
       default:
         // When raise a query event is initiated, the queryItemId will be null for
@@ -231,6 +235,7 @@ export class QueryManagementContainerComponent implements OnInit {
           : QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
     }
   }
+
 
   private getQualifyingQuestions(): Observable<QualifyingQuestion[]> {
     return combineLatest([

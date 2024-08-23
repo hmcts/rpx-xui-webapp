@@ -101,8 +101,7 @@ describe('AvailableTasksComponent', () => {
         { provide: AllocateRoleService, useValue: mockRoleService },
         { provide: Store, useValue: storeMock },
         { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
+      ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     store = TestBed.inject(Store);

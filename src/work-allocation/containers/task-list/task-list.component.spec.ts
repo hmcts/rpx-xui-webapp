@@ -107,8 +107,7 @@ describe('TaskListComponent', () => {
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: SessionStorageService, useValue: mockSessionStorageService }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
+      ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;

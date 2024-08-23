@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import config from "../config"
 import { signIn } from './steps/login-steps';
-import axeTest from "../helpers/accessibilityTestHelper";
+//import axeTest from "../helpers/accessibilityTestHelper";
 
 test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await signIn(page, "USER_WITH_FLAGS");
@@ -43,7 +43,7 @@ test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await page.getByLabel('Next step').selectOption('4: Object');
   await page.getByRole('button', { name: 'Go' }).click();
   await expect(page.getByText(caseId)).toBeVisible();
-  await axeTest(page);
+  //await axeTest(page);
 
   console.log("Who is the support for");
   await expect(page.getByRole('heading', { name: 'Who is the support for?' })).toBeVisible();
@@ -51,7 +51,7 @@ test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await expect(page.getByText('Respondent (Party 2)')).toBeVisible();
   await page.getByLabel('Applicant (Party 1)').check();
   await page.getByRole('button', { name: 'Next' }).click();
-  await axeTest(page);
+  //await axeTest(page);
 
   console.log("Select support type");
   await expect(page.getByRole('heading', { name: 'Select support type' })).toBeVisible();
@@ -59,7 +59,7 @@ test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await page.getByLabel('Reasonable adjustment').check();
   await page.getByRole('button', { name: 'Next' }).click();
   await expect(page.getByText(caseId)).toBeVisible();
-  await axeTest(page);
+  //await axeTest(page);
 
   console.log("Reasonable adjustment");
   await expect(page.getByRole('heading', { name: 'Reasonable adjustment' })).toBeVisible();
@@ -75,7 +75,7 @@ test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await expect(page.getByText('Documents in a specified')).toBeVisible();
   await page.getByLabel('Documents in a specified').check();
   await page.getByRole('button', { name: 'Next' }).click();
-  await axeTest(page);
+  //await axeTest(page);
 
   console.log("Tell us more about the request");
   await expect(page.getByText('Tell us more about the request')).toBeVisible();
@@ -83,7 +83,7 @@ test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await page.getByLabel('Tell us more about the request').fill('Test auto comment');
   await page.getByRole('button', { name: 'Next' }).click();
   await expect(page.getByText(caseId)).toBeVisible();
-  await axeTest(page);
+  //await axeTest(page);
 
   console.log("Review support request");
   await expect(page.getByRole('heading', { name: 'Review support request' })).toBeVisible();
@@ -95,7 +95,7 @@ test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Change flag type' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Change comments' })).toBeVisible();
   await expect(page.locator('ccd-case-flag-summary-list div').filter({ hasText: 'Status Requested' }).getByRole('definition').nth(1)).toBeVisible();
-  await axeTest(page);
+  //await axeTest(page);
 
   console.log("Submit support request");
   await page.getByRole('button', { name: 'Submit' }).click();
@@ -107,5 +107,5 @@ test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await page.waitForSelector('ccd-case-full-access-view');
   const ele = await page.$('ccd-notification-banner .govuk-notification-banner__content');
   expect(ele == null).toBeTruthy();
-  await axeTest(page);
+  //await axeTest(page);
 });

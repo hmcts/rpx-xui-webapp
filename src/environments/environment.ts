@@ -14,9 +14,9 @@ export const environment = {
   googleAnalyticsKey: 'UA-124734893-1',
   googleTagManagerKey: 'GTM-TQ7PKDF',
   themes: {
-    'judge|judiciary|panelmember': { appTitle: { name: 'Judicial Case Manager', url: '/' }, backgroundColor: '#8d0f0e', logo: 'judicial' },
+    '(judge)|(judiciary)|(panelmember)': { appTitle: { name: 'Judicial Case Manager', url: '/' }, backgroundColor: '#8d0f0e', logo: 'judicial' },
     'pui-case-manager': { appTitle: { name: 'Manage Cases', url: '/' }, backgroundColor: '#202020', logo: 'myhmcts' },
-    'default': { appTitle: { name: 'Manage Cases', url: '/' }, backgroundColor: '#202020', logo: 'none' }
+    '.+': { appTitle: { name: 'Manage Cases', url: '/' }, backgroundColor: '#202020', logo: 'none' }
   }
 };
 /**

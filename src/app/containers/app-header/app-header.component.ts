@@ -123,10 +123,11 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   public setApplicationThemeForUser(): void {
     const availableThemes = environment.themes;
-    const userRolesSet = new Set(this.userRoles);
-    const userTheme = Object.keys(availableThemes).find((theme) =>
-      theme !== 'default' && theme.split('|').some((role) => userRolesSet.has(role))
-    ) || 'default';
+    const userRoles = this.userRoles;
+    const userTheme = Object.keys(availableThemes).find((themeRegex) =>
+      userRoles.some((role) => new RegExp(themeRegex).test(role))
+    );
+
     const applicationTheme = availableThemes[userTheme] as ApplicationTheme;
     // Set the app header properties based on the retrieved application theme
     this.appHeaderTitle = applicationTheme.appTitle;

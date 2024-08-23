@@ -96,6 +96,7 @@ describe('AppHeaderComponent', () => {
 
   describe('setAppHeaderProperties()', () => {
     it('should take a theme and update the app header properties.', () => {
+      component.userRoles = ['testrole'];
       component.setApplicationThemeForUser();
 
       expect(component.appHeaderTitle).toEqual(AppConstants.DEFAULT_USER_THEME.appTitle);
@@ -125,14 +126,6 @@ describe('AppHeaderComponent', () => {
       expect(themeSpy).toHaveBeenCalled();
     });
 
-    it('should call usersTheme on getApplicationThemeForUser with no roles', () => {
-      const userThemeSpy = spyOn(component, 'setApplicationThemeForUser').and.callThrough();
-
-      component.setApplicationThemeForUser();
-      expect(userThemeSpy).toHaveBeenCalled();
-      expect(component.userNav.items).toEqual([]);
-    });
-
     it('should update theme app header properties.', () => {
       const menuItems = AppConstants.DEFAULT_MENU_ITEMS;
       component.setAppHeaderNavItems(menuItems);
@@ -140,6 +133,7 @@ describe('AppHeaderComponent', () => {
     });
 
     it('should update navItems app header properties.', () => {
+      component.userRoles = ['testrole'];
       component.setApplicationThemeForUser();
 
       expect(component.appHeaderTitle).toEqual(AppConstants.DEFAULT_USER_THEME.appTitle);

@@ -4,7 +4,7 @@ Feature: Case file view sort documents
 
     Scenario: Display of case file view V1.1
         Given I set MOCK with user details with user identifier "RESTRICTED_CASE_FILE_VIEW_V1.1_ON"
-            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |
+            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                                            |
 
         Given I set MOCK case "caseFileViewCase" details with reference "CaseFileView_case"
@@ -35,7 +35,7 @@ Feature: Case file view sort documents
     @AAT_only
     Scenario: Display of case file view V1
         Given I set MOCK with user details with user identifier "RESTRICTED_CASE_FILE_VIEW_V1.1_OFF"
-            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |
+            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                                            |
 
         Given I set MOCK case "caseFileViewCase" details with reference "CaseFileView_case"

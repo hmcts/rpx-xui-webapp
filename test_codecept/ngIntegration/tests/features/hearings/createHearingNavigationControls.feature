@@ -1,10 +1,10 @@
 
-@ng @functional_enabled @functional_debug
+@ng @functional_enabled
 Feature: Create hearings workflow navigation controls
 
     Background: create hearing
         Given I set MOCK with user details
-            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator, hearing-manager |
+            | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,hearing-centre-admin,case-allocator,hearing-manager |
             | roleCategory | LEGAL_OPERATIONS                                                                                            |
 
         Given I set MOCK case "hearingCase" details with reference "Hearing_case"
@@ -159,4 +159,3 @@ Feature: Create hearings workflow navigation controls
         Then I am on create hearing page "Length, date and priority level of hearing"
         # When In create hearing work flow, I click back link
         # Then I am on create hearing page "Do you require a panel for this hearing?"
-

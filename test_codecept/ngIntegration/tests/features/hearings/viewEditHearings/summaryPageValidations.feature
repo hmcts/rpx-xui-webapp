@@ -57,7 +57,6 @@ Feature: Hearings : Summary page validations EUI-9097
         When I click button with label "Submit updated request"
         Then I am on hearings workflow page "Provide a reason for changing this hearing"
 
-
     Scenario: changes to CAT1 only, EUI-9097 scr 2
         cenario: SCR_1: CAT1 and CAT 2 ,Ameded and ACTION NEEDED labels  (Conditions (1) & (4))
         When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
@@ -121,7 +120,7 @@ Feature: Hearings : Summary page validations EUI-9097
 
         # Then debug sleep minutes 30
 
-        When In hearing page "Participant attendance", I input values
+        When In hearing page "Participant attendance", I input values and click continue
             | field                                                    | value                 |
             | Will this be a paper hearing?                            | No                    |
             | What will be the methods of attendance for this hearing? | In Person, Video      |
@@ -130,7 +129,7 @@ Feature: Hearings : Summary page validations EUI-9097
             | How will each participant attend the hearing?            | Party2 name,Video     |
 
             | How many people will attend the hearing in person? | 2 |
-        When I click continue in hearing workflow
+        # When I click continue in hearing workflow
         Then I validate Edit hearing page displayed
 
         When I click button with label "Submit updated request"

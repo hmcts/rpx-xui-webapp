@@ -236,7 +236,6 @@ export class QueryManagementContainerComponent implements OnInit {
     }
   }
 
-
   private getQualifyingQuestions(): Observable<QualifyingQuestion[]> {
     return combineLatest([
       this.caseNotifier.caseView,

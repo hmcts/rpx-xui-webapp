@@ -7,7 +7,7 @@ import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 import { Role, RolesByService } from './models/roleType';
 
-const serviceIDRegex = /^[A-Za-z]{3}\d$/;
+const serviceIDRegex = /^[A-Za-z0-9]{1,50}$/;
 export async function getPossibleRoles(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
   try {
     const serviceIds = req.body && req.body.serviceIds ? req.body.serviceIds : null;

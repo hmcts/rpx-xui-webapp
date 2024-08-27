@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, NO_ERRORS_SCHEMA, Pipe, PipeTransform, ViewChild } from '@angular/core';
+import { Component, Pipe, PipeTransform, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';

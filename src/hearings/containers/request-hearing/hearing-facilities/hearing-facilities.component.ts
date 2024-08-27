@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 import { CaseFlagGroup } from '../../../models/caseFlagGroup.model';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
 import { ACTION, CaseFlagType, HearingFacilitiesEnum, Mode } from '../../../models/hearings.enum';
+import { AmendmentLabelStatus } from '../../../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -25,6 +26,9 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   public validationErrors: { id: string, message: string }[] = [];
   public additionalFacilities: LovRefDataModel[];
   public additionSecurityRequiredValid: boolean = true;
+  public amendmentLabelEnum = AmendmentLabelStatus;
+  public hearingFacilitiesChangesRequired: boolean;
+  public hearingFacilitiesChangesConfirmed: boolean;
 
   constructor(private fb: FormBuilder,
               protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -37,6 +41,11 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   }
 
   public ngOnInit(): void {
+    if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
+      this.hearingFacilitiesChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesRequired;
+      this.hearingFacilitiesChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesConfirmed;
+    }
+
     this.setNonReasonableAdjustmentFlags();
 
     this.hearingFactilitiesForm = this.fb.group({
@@ -56,10 +65,25 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   }
 
   public get getHearingFacilitiesFormArray(): FormArray {
-    if (this.hearingRequestMainModel.hearingDetails?.facilitiesRequired?.length) {
-      const additionalFacilitiesValuated = this.additionalFacilities.filter((additionalFacility) =>
-        this.hearingRequestMainModel.hearingDetails.facilitiesRequired.includes(additionalFacility.key));
-      additionalFacilitiesValuated.forEach((facailyValuated) => facailyValuated.selected = true);
+    const facilities = this.hearingFacilitiesChangesRequired && !this.hearingFacilitiesChangesConfirmed
+      ? this.serviceHearingValuesModel.facilitiesRequired || []
+      : this.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
+
+    if (facilities.length > 0) {
+      const additionalFacilitiesValuated = this.additionalFacilities.filter((additionalFacility) => facilities.includes(additionalFacility.key));
+      additionalFacilitiesValuated.forEach((facilityValuated) => {
+        facilityValuated.selected = true;
+        if (this.hearingFacilitiesChangesRequired && !this.hearingFacilitiesChangesConfirmed) {
+          facilityValuated.showAmendedLabel = true;
+        }
+      });
+    }
+
+    if (this.hearingFacilitiesChangesRequired && !this.hearingFacilitiesChangesConfirmed) {
+      const facilitiesToLabel = this.additionalFacilities.filter(
+        (additionalFacility) => this.hearingRequestMainModel.hearingDetails.facilitiesRequired?.includes(additionalFacility.key)
+      );
+      facilitiesToLabel.forEach((facility) => facility.showAmendedLabel = true);
     }
 
     return this.fb.array(this.additionalFacilities.map((val) => this.fb.group({
@@ -96,22 +120,28 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   public prepareHearingRequestData() {
     const facilitiesRequired: string[] = (this.hearingFactilitiesForm.controls['addition-securities'] as FormArray).controls
       .filter((control) => control.value.selected).map((mapControl) => mapControl.value.key);
-    this.hearingRequestMainModel = {
-      ...this.hearingRequestMainModel,
-      caseDetails: {
-        ...this.hearingRequestMainModel.caseDetails,
-        caseAdditionalSecurityFlag: this.hearingFactilitiesForm.controls['addition-security-required'].value === 'Yes'
-      },
-      hearingDetails: {
-        ...this.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired
-      }
-    };
+    if (facilitiesRequired.length > 0) {
+      this.hearingRequestMainModel = {
+        ...this.hearingRequestMainModel,
+        caseDetails: {
+          ...this.hearingRequestMainModel.caseDetails,
+          caseAdditionalSecurityFlag: this.hearingFactilitiesForm.controls['addition-security-required'].value === 'Yes'
+        },
+        hearingDetails: {
+          ...this.hearingRequestMainModel.hearingDetails,
+          facilitiesRequired
+        }
+      };
+    }
     const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
-    if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
-      propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
-      (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired)) {
-      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed = true;
+    if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
+      if (propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
+        (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired)) {
+        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed = true;
+      }
+      if (propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesRequired) {
+        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesConfirmed = true;
+      }
     }
   }
 
@@ -141,7 +171,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
       const partyDetails = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed
         ? this.hearingRequestMainModel.partyDetails
         : this.hearingRequestToCompareMainModel.partyDetails;
-      this.nonReasonableAdjustmentFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlags(this.caseFlagsRefData,
+      this.nonReasonableAdjustmentFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlagsGroupedByPartyName(this.caseFlagsRefData,
         propertiesUpdatedOnPageVisit.caseFlags?.flags, partyDetails, this.serviceHearingValuesModel.parties,
         this.hearingRequestMainModel.requestDetails, this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed);
     } else {

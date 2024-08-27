@@ -17,6 +17,7 @@ export enum AutoUpdateMode {
 
 export enum PagelessPropertiesEnum {
   CASE_MANAGEMENT_LOCATIONCODE = 'caseManagementLocationCode',
+  CASE_INTERPRETER_REQUIRED_FLAG = 'caseInterpreterRequiredFlag',
   HEARING_IN_WELSH_FLAG = 'hearingInWelshFlag',
   PARTIES = 'parties'
 }
@@ -27,7 +28,8 @@ export enum WithinPagePropertiesEnum {
   CASE_CATEGORIES = 'caseCategories',
   CASE_RESTRICTED_FLAG = 'caserestrictedFlag',
   PRIVATE_HEARING_REQUIRED_FLAG = 'privateHearingRequiredFlag',
-  PARTIES = 'parties'
+  PARTIES = 'parties',
+  HEARING_IN_WELSH_FLAG = 'hearingInWelshFlag'
 }
 
 export enum AfterPageVisitPropertiesEnum {
@@ -57,8 +59,13 @@ export interface AfterPageVisitProperties {
   nonReasonableAdjustmentChangesConfirmed?: boolean;
   partyDetailsChangesRequired: boolean;
   partyDetailsChangesConfirmed?: boolean;
+  partyDetailsAnyChangesRequired?: boolean;
   hearingWindowChangesRequired: boolean;
   hearingWindowChangesConfirmed?: boolean;
+  hearingFacilitiesChangesRequired: boolean;
+  hearingFacilitiesChangesConfirmed?: boolean;
+  hearingUnavailabilityDatesChanged: boolean;
+  hearingUnavailabilityDatesConfirmed?: boolean;
 }
 
 export interface PropertiesUpdatedAutomatically {
@@ -67,6 +74,7 @@ export interface PropertiesUpdatedAutomatically {
 }
 
 export interface PropertiesUpdatedOnPageVisit {
+  hearingId: string,
   caseFlags: {
     flags: PartyFlagsModel[],
     flagAmendURL: string,
@@ -79,6 +87,7 @@ export interface PropertiesUpdatedOnPageVisit {
 export enum AmendmentLabelStatus {
   ACTION_NEEDED = 'ACTION NEEDED',
   AMENDED = 'AMENDED',
+  WARNING = 'WARNING',
   NONE = 'NONE'
 }
 
@@ -86,4 +95,5 @@ export interface ParticipantAttendanceMode {
   partyName: string;
   channel: string;
   partyNameChanged: boolean;
+  partyChannelChanged: boolean;
 }

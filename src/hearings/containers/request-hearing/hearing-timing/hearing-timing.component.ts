@@ -418,8 +418,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
       partyDetails: [...this.updatePartyDetails(this.serviceHearingValuesModel.parties)]
     };
     if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
-      if (this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow') &&
-        this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired) {
+      if (this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow')) {
         this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesConfirmed = true;
       }
       if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingUnavailabilityDatesChanged ||

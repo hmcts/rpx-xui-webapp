@@ -143,7 +143,7 @@ Feature: WA Release 2: My work - Work filters
     Scenario Outline: Work filters locations based on organisation role and base location
 
 
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType        |

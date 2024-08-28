@@ -111,7 +111,7 @@ Feature: WA Release 2: All work
     Scenario:  Tasks sort column persist in session with Caseworker user
        
         Given I set MOCK with user details
-            | roles        | caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator |
+            | roles        | caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator |
             | roleCategory | LEGAL_OPERATIONS                        |
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo

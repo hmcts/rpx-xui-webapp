@@ -98,7 +98,7 @@ Feature: WA Release 2: My work - My Tasks
             | roles        | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator |
             | roleCategory | LEGAL_OPERATIONS                         |
         
-        Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator"
+        Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo

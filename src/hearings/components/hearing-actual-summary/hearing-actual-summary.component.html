@@ -4,7 +4,7 @@
       <dt class="govuk-summary-list__key">{{ 'Hearing date(s)' | rpxTranslate }}</dt>
       <dd class="govuk-summary-list__value">
         <ng-container *ngIf="isMultiDayHearing; else singleDayHearingDate">
-          {{ hearingDays[0]?.actualHearingDay?.hearingStartTime | ccdDate: 'local' | date:"dd MMMM yyyy" }} - {{ hearingDays[hearingDays.length - 1]?.actualHearingDay?.hearingStartTime | ccdDate: 'local' | date:"dd MMMM yyyy" }}
+            {{ actualMultiDaysHearingDates() }}
         </ng-container>
         <ng-template #singleDayHearingDate>
           {{ actualHearingDate() | date:"dd MMMM yyyy" }}

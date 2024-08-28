@@ -142,6 +142,6 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
 
   public haveParticipantsBeenAdded(hearingDay: ActualHearingDayModel): boolean {
     const individualParties = this.individualParties;
-    return individualParties.length !== hearingDay.actualDayParties.length;
+    return individualParties?.length !== hearingDay?.actualDayParties?.length;
   }
 }

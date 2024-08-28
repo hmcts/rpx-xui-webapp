@@ -455,6 +455,14 @@ describe('HearingActualSummaryComponent', () => {
     expect(component.actualHearingDate()).toEqual('2021-03-12T09:00:00.000Z');
   });
 
+  it('should return true for multi days hearing', () => {
+    expect(component.isMultiDayHearing).toEqual(true);
+  });
+
+  it('should return multi day hearing days', () => {
+    expect(component.actualMultiDaysHearingDates()).toEqual('12 Mar 2021 - 14 Mar 2021');
+  });
+
   it('should set empty hearing type description', () => {
     fixture.detectChanges();
     expect(component.hearingTypeDescription).toEqual('');

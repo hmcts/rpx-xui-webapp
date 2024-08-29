@@ -97,8 +97,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
             unavailabilityRanges: partyDetail.unavailabilityRanges
           } as PartyDetailsModel) as FormGroup);
         });
-    } 
-    else {
+    } else {
       // This will be triggered on a create request
       this.serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND)
         .forEach((partyDetail) => {

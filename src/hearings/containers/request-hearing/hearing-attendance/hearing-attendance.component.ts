@@ -75,12 +75,12 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
 
   public ngOnInit(): void {
     if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
+      // This will be triggered due to changes in the hearing service call
       if (this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('parties') &&
       this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired) {
-        console.log("I GOT HERE ON THE CREATE WITH EXTRAS TRY");
         this.initialiseFromHearingValuesForAmendments();
       }
-      console.log("I GOT HERE ON THE EDIT TRY");
+      // This will be triggered when a user is amending
       this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND)
         .forEach((partyDetail) => {
           (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues({
@@ -99,7 +99,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
         });
     } 
     else {
-      console.log("I GOT HERE ON THE CREATE TRY");
+      // This will be triggered on a create request
       this.serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND)
         .forEach((partyDetail) => {
           (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues({
@@ -119,13 +119,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     }
     this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees || 0);
     this.partiesFormArray = this.attendanceFormGroup.controls.parties as FormArray;
-    console.log("THE FORM PARTY DETAILS ARE:", this.partiesFormArray);
-  }
-
-  public initialiseFromHearingValues(): void {
-    this.serviceHearingValuesModel.parties.forEach((partyDetailsModel: PartyDetailsModel) => {
-      (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyDetailsModel) as FormGroup);
-    });
   }
 
   public initialiseFromHearingValuesForAmendments(): void {

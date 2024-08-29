@@ -167,7 +167,6 @@ describe('HearingAttendanceComponent', () => {
 
     fixture = TestBed.createComponent(HearingAttendanceComponent);
     component = fixture.componentInstance;
-    spyOn(component, 'initialiseFromHearingValues').and.callThrough();
     spyOn(component, 'prepareHearingRequestData').and.callThrough();
     spyOn(component, 'isFormValid').and.callThrough();
     lovRefDataService.getListOfValues.and.returnValue(of([]));
@@ -279,16 +278,6 @@ describe('HearingAttendanceComponent', () => {
     expect(formValid).toEqual(false);
   });
 
-  it('should render parties from the hearingvaluemodel', () => {
-    const store = jasmine.createSpyObj('store', ['pipe', 'dispatch', 'select']);
-    store.select.and.returnValue(of(initialState));
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    component.initialiseFromHearingValues();
-    expect(component.initialiseFromHearingValues).toHaveBeenCalled();
-    expect((component.attendanceFormGroup.controls.parties as FormArray).length).toBeGreaterThan(0);
-  });
-
   it('should not consider the party details from in-memory object for create new hearing request journey', () => {
     component.hearingCondition = {
       mode: 'create'
@@ -308,7 +297,6 @@ describe('HearingAttendanceComponent', () => {
       }
     };
     component.ngOnInit();
-    expect(component.initialiseFromHearingValues).not.toHaveBeenCalled();
     expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(2);
   });
 
@@ -317,22 +305,8 @@ describe('HearingAttendanceComponent', () => {
     component.hearingCondition = {
       mode: 'view-edit'
     };
-    hearingsService.propertiesUpdatedOnPageVisit = {
-      hearingId: 'h000001',
-      caseFlags: null,
-      parties: partyDetailsFromLatestSHV,
-      hearingWindow: null,
-      afterPageVisit: {
-        reasonableAdjustmentChangesRequired: true,
-        nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: true,
-        hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
-    };
     component.ngOnInit();
-    expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(1);
+    expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(2);
   });
 
   it('should call initialiseFromHearingValuesForAmendments for manual amendments journey with party changes', () => {

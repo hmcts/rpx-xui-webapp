@@ -81,10 +81,9 @@ export class HearingTimingSectionComponent implements OnInit {
   private setDateSectionForChange(): string{
     if (this.earliestHearingDate.length > 0 || this.latestHearingDate.length > 0) {
       return '/hearings/request/hearing-timing#hearingDateRange';
-    } else {
-      if (this.firstHearingDate.length > 0) {
-        return '/hearings/request/hearing-timing#hearingSingleDate';
-      }
+    }
+    if (this.firstHearingDate.length > 0) {
+      return '/hearings/request/hearing-timing#hearingSingleDate';
     }
     return '/hearings/request/hearing-timing#noSpecificDate';
   }

@@ -251,7 +251,7 @@ describe('HearingTimingSectionComponent', () => {
     });
     component.onChange('hearingSpecificDate');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'hearingSpecificDate', changeLink: '/hearings/request/hearing-timing#noSpecificDate'
+      fragmentId: 'hearingSpecificDate', changeLink: '/hearings/request/hearing-timing#hearingDateRange'
     });
     component.onChange('hearingPriority');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
@@ -405,7 +405,7 @@ describe('HearingTimingSectionComponent', () => {
     it('should return the correct URL fragment when earliestHearingDate or latestHearingDate is set', () => {
       component.earliestHearingDate = '2023-10-01';
       component.latestHearingDate = '2023-10-10';
-
+      // eslint-disable-next-line dot-notation
       const result = component['setDateSectionForChange']();
 
       expect(result).toBe('/hearings/request/hearing-timing#hearingDateRange');
@@ -415,7 +415,7 @@ describe('HearingTimingSectionComponent', () => {
       component.earliestHearingDate = '';
       component.latestHearingDate = '';
       component.firstHearingDate = '2023-10-01';
-
+      // eslint-disable-next-line dot-notation
       const result = component['setDateSectionForChange']();
 
       expect(result).toBe('/hearings/request/hearing-timing#hearingSingleDate');
@@ -425,7 +425,7 @@ describe('HearingTimingSectionComponent', () => {
       component.earliestHearingDate = '';
       component.latestHearingDate = '';
       component.firstHearingDate = '';
-
+      // eslint-disable-next-line dot-notation
       const result = component['setDateSectionForChange']();
 
       expect(result).toBe('/hearings/request/hearing-timing#noSpecificDate');

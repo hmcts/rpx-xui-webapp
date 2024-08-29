@@ -546,7 +546,7 @@ describe('HearingTimingComponent', () => {
 
     component.setSourceOfData();
 
-    expect(component.sourceOFData).toBe(SourceOfData.SERVICE_HEARING_VALUES);
+    expect(component.sourceOfData).toBe(SourceOfData.SERVICE_HEARING_VALUES);
   });
 
   it('should set sourceOFData to HEARING_REQUEST_MAIN_MODEL when mode is VIEW_EDIT and hearingWindowChangesRequired is true and hearingWindowChangesConfirmed is true', () => {
@@ -568,7 +568,7 @@ describe('HearingTimingComponent', () => {
 
     component.setSourceOfData();
 
-    expect(component.sourceOFData).toBe(SourceOfData.HEARING_REQUEST_MAIN_MODEL);
+    expect(component.sourceOfData).toBe(SourceOfData.HEARING_REQUEST_MAIN_MODEL);
   });
 
   it('should set sourceOFData to HEARING_REQUEST_MAIN_MODEL when mode is VIEW_EDIT and hearingWindowChangesRequired is false', () => {
@@ -590,7 +590,7 @@ describe('HearingTimingComponent', () => {
 
     component.setSourceOfData();
 
-    expect(component.sourceOFData).toBe(SourceOfData.HEARING_REQUEST_MAIN_MODEL);
+    expect(component.sourceOfData).toBe(SourceOfData.HEARING_REQUEST_MAIN_MODEL);
   });
 
   it('should set sourceOFData to HEARING_REQUEST_MAIN_MODEL when mode is not VIEW_EDIT', () => {
@@ -598,11 +598,11 @@ describe('HearingTimingComponent', () => {
 
     component.setSourceOfData();
 
-    expect(component.sourceOFData).toBe(SourceOfData.HEARING_REQUEST_MAIN_MODEL);
+    expect(component.sourceOfData).toBe(SourceOfData.HEARING_REQUEST_MAIN_MODEL);
   });
 
   it('should set data items from serviceHearingValuesModel when sourceOFData is SERVICE_HEARING_VALUES', () => {
-    component.sourceOFData = SourceOfData.SERVICE_HEARING_VALUES;
+    component.sourceOfData = SourceOfData.SERVICE_HEARING_VALUES;
 
     component.serviceHearingValuesModel = {
       ...component.serviceHearingValuesModel,
@@ -632,7 +632,7 @@ describe('HearingTimingComponent', () => {
   });
 
   it('should set data items from hearingRequestMainModel when sourceOFData is HEARING_REQUEST_MAIN_MODEL', () => {
-    component.sourceOFData = SourceOfData.HEARING_REQUEST_MAIN_MODEL;
+    component.sourceOfData = SourceOfData.HEARING_REQUEST_MAIN_MODEL;
     component.hearingRequestMainModel = {
       ...component.hearingRequestMainModel,
       hearingDetails: {

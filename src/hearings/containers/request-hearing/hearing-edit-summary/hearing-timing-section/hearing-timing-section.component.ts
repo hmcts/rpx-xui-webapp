@@ -79,13 +79,14 @@ export class HearingTimingSectionComponent implements OnInit {
   }
 
   private setDateSectionForChange(): string{
+    const BASE_URL = '/hearings/request/hearing-timing#';
     if (this.earliestHearingDate.length > 0 || this.latestHearingDate.length > 0) {
-      return '/hearings/request/hearing-timing#hearingDateRange';
+      return BASE_URL + 'hearingDateRange';
     }
     if (this.firstHearingDate.length > 0) {
-      return '/hearings/request/hearing-timing#hearingSingleDate';
+      return BASE_URL + 'hearingSingleDate';
     }
-    return '/hearings/request/hearing-timing#noSpecificDate';
+    return BASE_URL + 'noSpecificDate';
   }
 
   private getSpecificDate(): string {

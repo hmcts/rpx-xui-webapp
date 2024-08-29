@@ -60,7 +60,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public hearingWindow: HearingWindowModel;
   public hearingPriorityType: string;
   public unavailabilityDateList: UnavailabilityRangeModel[];
-  public sourceOFData = SourceOfData.HEARING_REQUEST_MAIN_MODEL;
+  public sourceOfData = SourceOfData.HEARING_REQUEST_MAIN_MODEL;
 
   constructor(private readonly formBuilder: FormBuilder,
     private readonly validatorsUtils: ValidatorsUtils,
@@ -107,21 +107,27 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
         this.hearingWindowChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesConfirmed;
       }
       if (this.hearingWindowChangesRequired && !this.hearingWindowChangesConfirmed) {
-        this.sourceOFData = SourceOfData.SERVICE_HEARING_VALUES;
+        this.sourceOfData = SourceOfData.SERVICE_HEARING_VALUES;
       } else {
-        this.sourceOFData = SourceOfData.HEARING_REQUEST_MAIN_MODEL;
+        this.sourceOfData = SourceOfData.HEARING_REQUEST_MAIN_MODEL;
       }
     } else {
-      this.sourceOFData = SourceOfData.HEARING_REQUEST_MAIN_MODEL;
+      this.sourceOfData = SourceOfData.HEARING_REQUEST_MAIN_MODEL;
     }
   }
 
   public setDataItems() {
-    this.duration = this.sourceOFData === SourceOfData.SERVICE_HEARING_VALUES ? this.serviceHearingValuesModel.duration : this.hearingRequestMainModel.hearingDetails.duration;
-    this.hearingWindow = this.sourceOFData === SourceOfData.SERVICE_HEARING_VALUES ? this.serviceHearingValuesModel.hearingWindow : this.hearingRequestMainModel.hearingDetails.hearingWindow;
-    this.hearingPriorityType = this.sourceOFData === SourceOfData.SERVICE_HEARING_VALUES ? this.serviceHearingValuesModel.hearingPriorityType : this.hearingRequestMainModel.hearingDetails.hearingPriorityType;
-    this.unavailabilityDateList = this.sourceOFData === SourceOfData.SERVICE_HEARING_VALUES ? this.serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRanges) :
-      this.hearingRequestMainModel.partyDetails.flatMap((party) => party.unavailabilityRanges);
+    if (this.sourceOfData === SourceOfData.SERVICE_HEARING_VALUES) {
+      this.duration = this.serviceHearingValuesModel.duration;
+      this.hearingWindow = this.serviceHearingValuesModel.hearingWindow;
+      this.hearingPriorityType = this.serviceHearingValuesModel.hearingPriorityType;
+      this.unavailabilityDateList = this.serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRanges);
+    } else {
+      this.duration = this.hearingRequestMainModel.hearingDetails.duration;
+      this.hearingWindow = this.hearingRequestMainModel.hearingDetails.hearingWindow;
+      this.hearingPriorityType = this.hearingRequestMainModel.hearingDetails.hearingPriorityType;
+      this.unavailabilityDateList = this.hearingRequestMainModel.partyDetails.flatMap((party) => party.unavailabilityRanges);
+    }
   }
 
   public setAmendmentFlags() {

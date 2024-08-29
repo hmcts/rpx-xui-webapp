@@ -69,13 +69,24 @@ export class HearingTimingSectionComponent implements OnInit {
         changeLink = '/hearings/request/hearing-timing#durationdays';
         break;
       case 'hearingSpecificDate':
-        changeLink = '/hearings/request/hearing-timing#noSpecificDate';
+        changeLink = this.setDateSectionForChange();
         break;
       case 'hearingPriority':
         changeLink = '/hearings/request/hearing-timing#urgent';
         break;
     }
     this.changeEditHearing.emit({ fragmentId, changeLink });
+  }
+
+  private setDateSectionForChange(): string{
+    if (this.earliestHearingDate.length > 0 || this.latestHearingDate.length > 0) {
+      return '/hearings/request/hearing-timing#hearingDateRange';
+    } else {
+      if (this.firstHearingDate.length > 0) {
+        return '/hearings/request/hearing-timing#hearingSingleDate';
+      }
+    }
+    return '/hearings/request/hearing-timing#noSpecificDate';
   }
 
   private getSpecificDate(): string {

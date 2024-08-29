@@ -400,4 +400,35 @@ describe('HearingTimingSectionComponent', () => {
     component.ngOnInit();
     expect(component.hearingDateChanged).toEqual(true);
   });
+
+  describe('testing the creation of the change url', () => {
+    it('should return the correct URL fragment when earliestHearingDate or latestHearingDate is set', () => {
+      component.earliestHearingDate = '2023-10-01';
+      component.latestHearingDate = '2023-10-10';
+
+      const result = component['setDateSectionForChange']();
+
+      expect(result).toBe('/hearings/request/hearing-timing#hearingDateRange');
+    });
+
+    it('should return the correct URL fragment when firstHearingDate is set', () => {
+      component.earliestHearingDate = '';
+      component.latestHearingDate = '';
+      component.firstHearingDate = '2023-10-01';
+
+      const result = component['setDateSectionForChange']();
+
+      expect(result).toBe('/hearings/request/hearing-timing#hearingSingleDate');
+    });
+
+    it('should return the default URL fragment when no dates are set', () => {
+      component.earliestHearingDate = '';
+      component.latestHearingDate = '';
+      component.firstHearingDate = '';
+
+      const result = component['setDateSectionForChange']();
+
+      expect(result).toBe('/hearings/request/hearing-timing#noSpecificDate');
+    });
+  });
 });

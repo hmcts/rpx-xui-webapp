@@ -30,6 +30,7 @@ class CreateHearingWorkflow{
             "What stage is this hearing at?": new HearingStagePage(),
             "Participant attendance": new ParticipantAttendancePage(),
             "What are the hearing venue details?": new HearingVenueDetails(),
+            "Does this hearing need to be in Welsh?" : new HearingWelshPage(),
             "Do you want a specific judge?": new HearingJudgePage(),
             "Do you require a panel for this hearing?" : new HearingPanelPage(),
             "Length, date and priority level of hearing" : new HearingTimingPage(),
@@ -37,7 +38,6 @@ class CreateHearingWorkflow{
             "Enter any additional instructions for the hearing": new HearingAdditionalInstructionsPage(),
             "Check your answers before sending your request": new HearingCreateEditSummaryPage(),
             "Hearing request submitted": new HearingSubmitConfirmationPage(),
-            "Does this hearing need to be in Welsh?" : new HearingWelshPage(),
             "Provide a reason for changing this hearing": new HearingChangeReasonsPage()
         }
 

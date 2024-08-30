@@ -8,7 +8,7 @@ export const SERVICES_COURT_TYPE_MAPPINGS = {
   BHA1: ['17'], // Employment Claims
   BFA1: ['4', '23'], // 4: Asylum Support Appeals, 23: Immigration and Asylum Tribunal
   BBA1: ['4'], // Asylum Support
-  ST_CIC: ['14'], // Special Tribunal
+  ST_CIC: ['14'], // Special Tribunals
   BBA2: ['14'], // Criminal Injuries Compensation
   SSCS: ['31'], // 31: Social Security and Child Support Tribunal
   BBA3: ['31'], // Social Security and Child Support Tribunal

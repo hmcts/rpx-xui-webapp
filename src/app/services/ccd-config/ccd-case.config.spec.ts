@@ -8,6 +8,7 @@ import { AppConfigService } from '../config/configuration.services';
 import { AppConfig } from './ccd-case.config';
 import { InitialisationSyncService } from './initialisation-sync-service';
 import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
+import { LoggerService } from '../logger/logger.service';
 
 class MockConfigService {
   private readonly config;
@@ -39,6 +40,7 @@ mockEnvironmentService.get.and.returnValue('someUrl');
 
 const mockWindow = jasmine.createSpyObj('Window', ['location']);
 mockWindow.location.and.returnValue(new URL('https://manage-case.platform.hmcts.net'));
+const mockLoggerService = jasmine.createSpyObj('LoggerService', ['log']);
 
 describe('AppConfiguration', () => {
   mockFeatureToggleService.isEnabled.and.returnValue(of(false));
@@ -56,7 +58,8 @@ describe('AppConfiguration', () => {
         InitialisationSyncService,
         { provide: AppConfigService, useClass: MockConfigService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        { provide: EnvironmentService, useValue: mockEnvironmentService }
+        { provide: EnvironmentService, useValue: mockEnvironmentService },
+        { provide: LoggerService, useValue: mockLoggerService }
       ]
     });
     mockFeatureToggleService.getValue.and.returnValue(of(true));
@@ -174,5 +177,10 @@ describe('AppConfiguration', () => {
 
   it('should have getEventsToHide return value', inject([AppConfig], (service: AppConfig) => {
     expect(service.getEventsToHide()).toEqual(['queryManagementRespondQuery']);
+  }));
+  
+  it('should have called LogService log method', inject([AppConfig, Window], (service: AppConfig) => {
+    service.logMessage('hello world');
+    expect(mockLoggerService.log).toHaveBeenCalledWith('hello world');
   }));
 });

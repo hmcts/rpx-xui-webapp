@@ -277,7 +277,7 @@
     "braces": "^3.0.3",
     "tough-cookie": "^4.1.3",
     "semver": "^7.5.2",
-    "axios": "^0.28.0",
+    "axios": "^1.7.5",
     "ws": "^8.18.0"
   },
   "packageManager": "yarn@3.6.3"

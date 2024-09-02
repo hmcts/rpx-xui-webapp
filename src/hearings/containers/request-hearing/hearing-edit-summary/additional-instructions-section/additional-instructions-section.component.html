@@ -9,9 +9,9 @@
       Enter any additional instructions for the hearing
     </div>
     <div class="govuk-summary-list__value">
+      <span [innerHtml]="additionalInstructions"></span>
       <exui-amendment-label *ngIf="showAmmended" [displayLabel]="amendmentLabelEnum.AMENDED">
       </exui-amendment-label>
-      {{ additionalInstructions }}
     </div>
     <div class="govuk-summary-list__actions">
       <a id="additionalInstruction"

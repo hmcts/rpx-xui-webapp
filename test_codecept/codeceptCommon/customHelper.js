@@ -14,14 +14,14 @@ class CustomHelper extends Helper {
 
     // before/after hooks
     _before() {
-       this.browserErrorLogs = [];
-        
-       this.pageOnListener = false;
-       
+        this.browserErrorLogs = [];
+
+        this.pageOnListener = false;
+
     }
 
-    _beforeStep(){
-        const page = this.getPuppeteerPage();
+    _beforeStep() {
+        // const page = this.getPuppeteerPage();
 
         // if (!this.pageOnListener && page){
 
@@ -42,7 +42,7 @@ class CustomHelper extends Helper {
         codeceptMochawesomeLog.AddMessage('---------------------- TEST FAILED ----------------------');
         for (const log of this.browserErrorLogs) {
             this.attachBrowserLog(log)
-              
+
         }
     }
 
@@ -68,7 +68,7 @@ class CustomHelper extends Helper {
         codeceptMochawesomeLog.AddMessage('---------------------- TEST FAILED ----------------------');
         for (const log of this.browserErrorLogs) {
             this.attachBrowserLog(log)
-              
+
         }
 
     }
@@ -153,7 +153,6 @@ class CustomHelper extends Helper {
             locator  = this.getPlaywrightPage().locator(selector).first()
             return await locator.getAttribute(name)
         }
-        
     }
 
     async isElementChecked(selector) {

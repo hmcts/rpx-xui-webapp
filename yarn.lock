@@ -21419,7 +21419,7 @@ __metadata:
     accessibility-checker: ^3.1.70
     allure-js-commons: ^2.11.1
     applicationinsights: 1.7.2
-    axios: ^1.6.8
+    axios: ^1.7.5
     axios-mock-adapter: ^1.22.0
     base-64: ^0.1.0
     chai: ^4.3.10

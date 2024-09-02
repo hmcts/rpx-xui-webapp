@@ -47,7 +47,8 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         'https://*.analytics.google.com',
         '*.hmcts.net',
         'wss://*.webpubsub.azure.com',
-        'https://*.in.applicationinsights.azure.com'
+        'https://*.in.applicationinsights.azure.com',
+        'https://js.monitor.azure.com'
 
       ],
       defaultSrc: ['\'self\''],

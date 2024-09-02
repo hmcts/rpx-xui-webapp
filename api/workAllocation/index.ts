@@ -56,8 +56,8 @@ import {
   preparePostTaskUrlAction,
   prepareSearchTaskUrl,
   prepareTaskSearchForCompletable,
-  searchCasesById,
-  searchUsers
+  searchAndReturnRefinedUsers,
+  searchCasesById
 } from './util';
 
 caseServiceMock.init();
@@ -246,9 +246,14 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
       actionByEvent = req.body.actionByEvent;
       delete req.body.actionByEvent;
     }
+    let eventName;
+    if (req.body.eventName) {
+      eventName = req.body.eventName;
+      delete req.body.eventName;
+    }
     if (actionByEvent === true) {
       mode = 'EXUI_CASE-EVENT_COMPLETION';
-      trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to automated task completion`, traceProps);
+      trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to automated task completion by ${eventName} event`, traceProps);
     } else {
       mode = 'EXUI_USER_COMPLETION';
       trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to manual task action`, traceProps);
@@ -538,12 +543,11 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
     const services = req.body.services;
     let cachedUsers = [];
     let firstEntry = true;
-    const fullUserDetailCache = FullUserDetailCache.getInstance();
-    if (timestampExists() && fullUserDetailCache.getAllUserDetails()?.length > 0) {
+    if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
       // if already ran just use the cache to avoid loading issues
       firstEntry = false;
-      cachedUsers = fullUserDetailCache.getAllUserDetails();
-      cachedUsers = searchUsers(services, term, cachedUsers);
+      cachedUsers = FullUserDetailCache.getAllUserDetails();
+      cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
       res.send(cachedUsers).status(200);
     }
     // always update the cache after getting the cache if needed
@@ -551,7 +555,8 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
     cachedUsers = await fetchRoleAssignments(cachedUserData, req, next);
     if (firstEntry) {
       // if not previously ran ensure the new values are given back to angular layer
-      cachedUsers = searchUsers(services, term, cachedUsers);
+      // note: this is now only a safeguard to ensure caching (caching should have run pre login)
+      cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
       res.send(cachedUsers).status(200);
     }
   } catch (error) {

@@ -7,7 +7,6 @@ import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 import { Role, RolesByService } from './models/roleType';
 
-const serviceIDRegex = /^[A-Za-z]{3}\d$/;
 export async function getPossibleRoles(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
   try {
     const serviceIds = req.body && req.body.serviceIds ? req.body.serviceIds : null;
@@ -15,9 +14,6 @@ export async function getPossibleRoles(req: EnhancedRequest, res: Response, next
     const rolesByService: RolesByService[] = [];
     if (serviceIds) {
       serviceIds.forEach((serviceId) => {
-        if (!serviceIDRegex.test(serviceId)) {
-          return;
-        }
         // note: if service obtained, check role either includes service or does not specify service
         const serviceRoles = roles.filter((role) =>
           role.roleJurisdiction && (role.roleJurisdiction.values && role.roleJurisdiction.values.includes(serviceId)));

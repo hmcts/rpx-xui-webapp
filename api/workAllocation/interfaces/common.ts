@@ -43,6 +43,16 @@ export interface Caseworker {
   service?: string;
 }
 
+export interface CachedCaseworker {
+  firstName: string;
+  lastName: string;
+  idamId: string;
+  email: string;
+  locations: Location[];
+  roleCategory: string;
+  services?: string[];
+}
+
 export interface Judicialworker {
   firstName: string;
   lastName: string;

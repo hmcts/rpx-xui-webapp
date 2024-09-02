@@ -10,7 +10,7 @@ COPY --chown=hmcts:hmcts package.json yarn.lock .yarnrc.yml ./
 COPY --chown=hmcts:hmcts .yarn ./.yarn
 
 # Install dependencies with frozen lockfile
-RUN yarn workspaces focus --all
+RUN PUPPETEER_SKIP_DOWNLOAD=true yarn workspaces focus --production
 
 # Build stage
 FROM base as build

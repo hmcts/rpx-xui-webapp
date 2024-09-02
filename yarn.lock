@@ -3363,12 +3363,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.58":
-  version: 7.0.58
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.58"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.61":
+  version: 7.0.61
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.61"
   dependencies:
     tslib: ^2.3.0
-  checksum: c0540842121a8def7785fa712065b7211a49711543f43fa3b44ccd5c0f94b886c163ceb41d9a406419c5c41fb50e18b2ebbbef9d66cb02b5d62cb12c3ded3722
+  checksum: ea8a847bed9275344829e5aa684acd81d73ab9e00a6352e26d6acb1c1c06c5c37e98a4f6a0cdf3e95b1a909cdfd66aed6ea30428fdc7eca759d1d4a863ec03ae
   languageName: node
   linkType: hard
 
@@ -3391,9 +3391,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.0.7":
-  version: 4.0.7
-  resolution: "@hmcts/media-viewer@npm:4.0.7"
+"@hmcts/media-viewer@npm:4.0.8":
+  version: 4.0.8
+  resolution: "@hmcts/media-viewer@npm:4.0.8"
   dependencies:
     "@swimlane/ngx-datatable": ^20.0.0
     mutable-div: ^2.0.0
@@ -3412,7 +3412,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 5dd7153b9daf1dfc27fd8c5d773ae887b7032326f25c26d09fd1e429c7de3cecc3f886fbcdd1670ad0da1f016456b5112f8fd7c95711f8319ddddb5ea228efee
+  checksum: 620252ce3e8af449881cb19aa96a47360bdf73eae17a94bd27619918f4e02f9f622b32ba26a696ced04f91a0dd27c42dbcbd6cb17be8c2fd168236d6de565f77
   languageName: node
   linkType: hard
 
@@ -21986,10 +21986,10 @@ __metadata:
     "@angular/ssr": ^17.3.6
     "@cucumber/cucumber": ^10.8.0
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.58
+    "@hmcts/ccd-case-ui-toolkit": 7.0.61
     "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
-    "@hmcts/media-viewer": 4.0.7
+    "@hmcts/media-viewer": 4.0.8
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
     "@hmcts/rpx-xui-common-lib": 2.0.26

@@ -40,7 +40,7 @@
         <dt class="govuk-summary-list__key">{{ 'Names' | rpxTranslate }}</dt>
         <dd class="govuk-summary-list__value">
           <div *ngFor="let party of ActualHearingsUtils.getParties(hearingActualsMainModel, hearingDate)">
-            {{ party.individualDetails.firstName }} {{ party.individualDetails.lastName }}
+            {{ party?.individualDetails?.firstName }} {{ party?.individualDetails?.lastName }}
           </div>
         </dd>
       </div>
@@ -50,7 +50,7 @@
           <dt class="govuk-summary-list__key">{{ 'How participants will attend' | rpxTranslate }}</dt>
           <dd class="govuk-summary-list__value">
             <div *ngFor="let party of ActualHearingsUtils.getParties(hearingActualsMainModel, hearingDate)">
-              {{ party.individualDetails.firstName }} {{ party.individualDetails.lastName }}: {{party.partyChannelSubType | convertToValue: partyChannels}}
+              {{ party?.individualDetails?.firstName }} {{ party?.individualDetails?.lastName }}: {{party?.partyChannelSubType | convertToValue: partyChannels}}
             </div>
           </dd>
         </div>

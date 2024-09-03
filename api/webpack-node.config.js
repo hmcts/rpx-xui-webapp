@@ -37,7 +37,14 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js']
   },
-  externals: [nodeExternals()],
+  externals: [nodeExternals(),
+        {
+      'pino': 'commonjs pino',
+      'thread-stream': 'commonjs thread-stream',
+      '@pact-foundation/pact': 'commonjs @pact-foundation/pact',
+      '@pact-foundation/pact-node': 'commonjs @pact-foundation/pact-node'
+    }
+  ],
   module: {
     rules: [
       {

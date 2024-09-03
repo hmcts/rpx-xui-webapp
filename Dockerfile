@@ -5,15 +5,11 @@ USER root
 RUN corepack enable
 USER hmcts
 
-# Copy only necessary files for dependency installation
 COPY --chown=hmcts:hmcts package.json yarn.lock .yarnrc.yml ./
 COPY --chown=hmcts:hmcts .yarn ./.yarn
 
-# Install dependencies with frozen lockfile
 RUN PUPPETEER_SKIP_DOWNLOAD=true yarn workspaces focus --production
 
-# Build stage
-FROM base as build
 COPY --chown=hmcts:hmcts . .
 RUN yarn build
 

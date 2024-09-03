@@ -18,6 +18,8 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   public adminRoles: CaseRole[] = [];
   public namedLegalRoles: CaseRole[];
   public namedAdminRoles: CaseRole[];
+  public existingAdminUsers: string[];
+  public existingCTSCUsers: string[];
   public namedCTSCRoles: CaseRole[];
   public judicialRoles: CaseRole[] = [];
   public namedExclusions: RoleExclusion[];
@@ -48,6 +50,11 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
       this.adminRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.ADMIN);
       this.ctscRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.CTSC);
     }
+    // Get unique array of existing admin user id's
+    this.existingAdminUsers = [... new Set(this.adminRoles.map((ar) => ar.actorId))];
+    // Get unique array of existing CTSC user id's
+    this.existingCTSCUsers = [... new Set(this.ctscRoles.map((ar) => ar.actorId))];
+
     this.showLegalOpsAllocate = this.showAllocateRoleLink && this.legalOpsRoles.length === 0;
   }
 

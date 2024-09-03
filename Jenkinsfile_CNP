@@ -225,7 +225,8 @@ withPipeline(type, product, component) {
                  ])
                  steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/functional-output/tests/ngIntegration/**/*'
              }
-
+        }
+        
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

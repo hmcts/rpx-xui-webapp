@@ -12,6 +12,7 @@ import { UserDetails } from '../../models/user-details.model';
 import { UserNavModel } from '../../models/user-nav.model';
 import { LoggerService } from '../../services/logger/logger.service';
 import { HeaderConfigService } from '../../services/header-config/header-config.service';
+import { environment } from '../../../environments/environment';
 import * as fromActions from '../../store';
 
 @Component({
@@ -72,10 +73,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     return AppUtils.getCookieRolesAsArray(serialisedUserRolesWithoutJsonPrefix);
   }
 
-  public getUsersTheme(defaultTheme: ApplicationTheme): Observable<ApplicationTheme> {
-    return this.featureToggleService.getValue('mc-menu-theme', defaultTheme);
-  }
-
   /**
    * ngOnInit
    *
@@ -111,19 +108,13 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public async setHeaderContent(userDetails) {
     if (userDetails.userInfo) {
       this.userRoles = userDetails.userInfo.roles;
-      // const applicationTheme: ApplicationTheme = await this.getApplicationThemeForUser().pipe(first()).toPromise();
-      this.getApplicationThemeForUser().subscribe((theme) => {
-        this.hideNavigationListener(this.store);
-        this.setAppHeaderTheme(theme);
-      });
       this.headerConfigService.constructHeaderConfig(this.userRoles).subscribe((menuItems) => {
         console.log('Local Menu items');
         console.log(menuItems);
         console.log('Local Menu items');
-        this.hideNavigationListener(this.store);
-        this.setAppHeaderNavItems(menuItems);
-      });
-      // const menuItems: NavigationItem[] = await this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).pipe(first()).toPromise();
+      })
+      this.hideNavigationListener(this.store);
+      this.setApplicationThemeForUser();
       this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).subscribe((menuItems) => {
         console.log('LD Menu items');
         console.log(menuItems);
@@ -140,17 +131,23 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getApplicationThemeForUser(): Observable<ApplicationTheme> {
-    try {
-      return this.getUsersTheme(this.defaultTheme);
-    } catch (error) {
-      return this.logErrorAndReturnDefaultTheme(error);
-    }
-  }
+  public setApplicationThemeForUser(): void {
+    const availableThemes = environment.themes;
+    const userRoles = this.userRoles;
+    const userTheme = Object.keys(availableThemes).find((themeRegex) =>
+      userRoles.some((role) => new RegExp(themeRegex).test(role))
+    );
 
-  public logErrorAndReturnDefaultTheme(error): Observable<ApplicationTheme> {
-    this.loggerService.error(error);
-    return of(this.defaultTheme);
+    const applicationTheme = availableThemes[userTheme] as ApplicationTheme;
+    // Set the app header properties based on the retrieved application theme
+    this.appHeaderTitle = applicationTheme.appTitle;
+    this.userNav = {
+      label: 'Account navigation',
+      items: this.userRoles.length > 0 ? [{ text: 'Sign out', emit: 'sign-out' }] : []
+    };
+    this.backgroundColor = applicationTheme.backgroundColor;
+    this.logo = applicationTheme.logo;
+    this.logoIsUsed = this.logo !== ApplicationThemeLogo.NONE;
   }
 
   /**
@@ -160,24 +157,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    */
   public setAppHeaderProperties(applicationTheme: ApplicationTheme, navigationItems: NavigationItem[]): void {
     this.setAppHeaderNavItems(navigationItems);
-    this.setAppHeaderTheme(applicationTheme);
-  }
-
-  public setAppHeaderTheme(applicationTheme: ApplicationTheme): void {
-    this.appHeaderTitle = applicationTheme.appTitle;
-    this.userNav = this.userRoles && this.userRoles.length > 0 ? {
-      label: 'Account navigation',
-      items: [{
-        text: 'Sign out',
-        emit: 'sign-out'
-      }]
-    } : {
-      label: 'Account navigation',
-      items: []
-    };
-    this.backgroundColor = applicationTheme.backgroundColor;
-    this.logo = applicationTheme.logo;
-    this.logoIsUsed = applicationTheme.logo !== ApplicationThemeLogo.NONE;
   }
 
   public setAppHeaderNavItems(navigationItems: NavigationItem[]): void {

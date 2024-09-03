@@ -8,6 +8,7 @@ import { AppConfigService } from '../config/configuration.services';
 import { InitialisationSyncService } from './initialisation-sync-service';
 import { LaunchDarklyDefaultsConstants } from './launch-darkly-defaults.constants';
 import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
+import { LoggerService } from '../logger/logger.service';
 
 /**
  * see more:
@@ -25,7 +26,8 @@ export class AppConfig extends AbstractAppConfig {
     private readonly featureToggleService: FeatureToggleService,
     private readonly environmentService: EnvironmentService,
     private readonly initialisationSyncService: InitialisationSyncService,
-    private readonly window: Window
+    private readonly window: Window,
+    private readonly loggerService: LoggerService
   ) {
     super();
     this.deploymentEnv = environmentService.getDeploymentEnv();
@@ -278,5 +280,9 @@ export class AppConfig extends AbstractAppConfig {
 
   public getIcpJurisdictions(): string[] {
     return this.config.icp_jurisdictions;
+  }
+
+  public logMessage(logMessage: string): void {
+    this.loggerService.log(logMessage);
   }
 }

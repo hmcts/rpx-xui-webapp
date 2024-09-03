@@ -32,6 +32,10 @@ class ViewOrEditHearingPage{
         }else{
             values.push(await this.summaryTable.getValueForField(field))
         }
+
+        if (values.length === 0){
+            values.push(await this.summaryTable.getValueForField(field))
+        }
         return values;
     }
 

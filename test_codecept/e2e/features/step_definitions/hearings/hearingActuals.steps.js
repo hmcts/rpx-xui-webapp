@@ -117,7 +117,7 @@ Then('In hearing actuals, hearing date {string} displayed with values and action
         for (const action of actions){
             expect(actualActions, `Expected action ${action} not present in actual actions ${actualActions}`).to.includes(action)
         }
-        
+
     }
 
 })

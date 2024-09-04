@@ -286,6 +286,7 @@ export enum AnswerSource {
   DATE_RESPONSE_SUBMITTED_MULTI_DAY,
   DATE_RESPONSE_RECEIVED,
   CASE_FLAGS,
+  REASONABLE_ADJUSTMENT_FLAGS,
   ROOM_ID,
   ADDITIONAL_SECURITY_REQUIRED,
   ADDITIONAL_FACILITIES_REQUIRED,
@@ -326,15 +327,25 @@ export enum AnswerSource {
 export enum IsHiddenSource {
   WELSH_LOCATION,
   JUDGE_EXCLUSION,
+  JUDGE_DETAILS_EXCLUSION,
   PANEL_INCLUSION,
   PANEL_EXCLUSION,
   PANEL_DETAILS_EXCLUSION,
   PANEL_ROLES,
+  PANEL_MEMBER_ROLES,
   PAPER_HEARING,
   JUDGE_TYPES,
   JUDGE_NAME,
   LISTED,
   LISTED_HEARING_VIEWER,
+  HEARING_REQUIREMENTS_EXCLUSION,
+  HEARING_FACILITIES_EXCLUSION,
+  HEARING_STAGE_EXCLUSION,
+  HEARING_TIMING_EXCLUSION,
+  HEARING_VENUE_EXCLUSION,
+  LINKED_HEARINGS_EXCLUSION,
+  PARTICIPANT_ATTENDANCE_EXCLUSION,
+  ADDITIONAL_INSTRUCTION_EXCLUSION,
   NOT_LISTED
 }
 
@@ -350,6 +361,7 @@ export enum Mode {
 export enum HearingRequestPageRouteNames {
   HEARING_CREATE_EDIT_SUMMARY = 'hearing-create-edit-summary',
   HEARING_VIEW_EDIT_SUMMARY = 'hearing-view-edit-summary',
+  HEARING_VIEW_SUMMARY = 'hearing-view-summary',
   HEARING_EDIT_SUMMARY = 'hearing-edit-summary',
   HEARING_CHANGE_REASON = 'hearing-change-reason',
   HEARING_CONFIRMATION = 'hearing-confirmation'
@@ -391,4 +403,19 @@ export enum HearingActualsTimingErrorMessages {
   PAUSE_TIME_BEFORE_RESUME_TIME = 'Pause time must be before resume time',
   PAUSE_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Pause time must be between the hearing start and finish times',
   RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Resume time must be between the hearing start and finish times',
+}
+
+export enum HearingScreensEnum {
+  HEARING_REQUIREMENTS = 'hearing-requirements',
+  HEARING_FACILITIES = 'hearing-facilities',
+  HEARING_STAGE = 'hearing-stage',
+  HEARING_ATTENDANCE = 'hearing-attendance',
+  REGION_ID = 'regionId',
+  HEARING_VENUE = 'hearing-venue',
+  HEARING_WELSH = 'hearing-welsh',
+  HEARING_JUDGE = 'hearing-judge',
+  HEARING_TIMING = 'hearing-timing',
+  HEARING_LINK = 'hearing-link',
+  HEARING_PANEL = 'hearing-panel',
+  HEARING_ADDITIONAL_INSTRUCTIONS = 'hearing-additional-instructions'
 }

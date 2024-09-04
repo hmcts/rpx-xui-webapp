@@ -117,7 +117,8 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   private filterNavItemsOnRole(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
-    return this.userService.getUserDetails().pipe(
+    const userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
+    return userDetails$.pipe(
       skipWhile((details) => !('userInfo' in details)),
       map((details) => details?.userInfo?.roles),
       map((roles) => {

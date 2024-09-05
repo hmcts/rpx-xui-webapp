@@ -118,7 +118,8 @@ nodejs:
     SERVICES_JUDICIAL_BOOKING_API_PATH: http://am-judicial-booking-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Welsh Translation endpoints
     SERVICES_TRANSLATION_API_URL: http://ts-translation-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-
+    # Services LAU Challenged access
+    SERVICES_LAU_CHALLENGED_ACCESS_API: http://lau-case-backend-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     #Feature Flags
     FEATURE_APP_INSIGHTS_ENABLED: true
     FEATURE_SECURE_COOKIE_ENABLED: true
@@ -132,6 +133,7 @@ nodejs:
     FEATURE_JRD_E_LINKS_V2_ENABLED: false
     FEATURE_SUBSTANTIVE_ROLE_ENABLED: true
     FEATURE_ACCESS_MANAGEMENT_ENABLED: false
+    FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED: false
 
     # Redis
     REDIS_KEY_PREFIX: 'activity:'

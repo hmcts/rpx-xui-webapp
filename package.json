@@ -59,6 +59,7 @@
     "test:functional_old": "yarn test:api && yarn run test:xuiIntegration && yarn run test:codeceptE2E",
     "test:functional_old2": "npm-run-all -p -l -n -c test:api test:xuiIntegration test:codeceptE2E test:playwrightE2E",
     "test:functional_old3": "npm-run-all -p -l -n -c test:codeceptE2E test:playwrightE2E",
+    "test:functional": "yarn test:api",
     "test:functionalAPI": "npm-run-all -p -l -n -c test:api",
     "test:functionalNGInt": "npm-run-all -p -l -n -c test:xuiIntegration",
     "test:functional:backup": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",

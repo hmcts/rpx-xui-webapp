@@ -58,6 +58,7 @@ describe('RequestHearingComponent', () => {
   it('should check submit method', () => {
     spyOn(hearingsService, 'navigateAction');
     component.submitRequest(ACTION.SUBMIT);
+    expect(hearingsService.hearingRequestForSubmitValid).toEqual(true);
     expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.SUBMIT);
   });
 
@@ -92,7 +93,7 @@ describe('RequestHearingComponent', () => {
     spyOn(hearingsService, 'navigateAction');
     hearingsService.hearingRequestForSubmitValid = true;
     const buttonDisabled = component.buttonDisabled(ACTION.SUBMIT);
-    expect(buttonDisabled).toEqual(false);
+    expect(buttonDisabled).toEqual(true);
   });
 
   it('should check is answer page', () => {

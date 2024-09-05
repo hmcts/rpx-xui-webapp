@@ -411,6 +411,29 @@ export const ROUTES: Routes = [
         }
       },
       {
+        path: 'hearing-view-summary',
+        resolve: {
+          hearingPriorities: RefDataResolver,
+          caseType: CaseTypesResolver,
+          caseFlags: CaseFlagsResolver,
+          hearingStageOptions: HearingStageResolver,
+          additionFacilitiesOptions: AdditionalFacilitiesResolver,
+          partyChannels: PartyChannelsResolverService,
+          partySubChannels: PartySubChannelsResolverService,
+          judgeTypes: JudgeTypesResolverService,
+          judicialUsers: JudicialUserSearchResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
+          panelMemberResponseUsers: PanelMemberSearchResponseResolver,
+          otherPanelRoles: PanelRolesResolverService,
+          courtLocation: CourtLocationsDataResolver
+        },
+        component: HearingViewSummaryComponent,
+        data: {
+          title: 'HMCTS Hearings | View Hearing | Summary',
+          isChildRequired: [HearingCategory.PanelMemberType, HearingCategory.CaseType]
+        }
+      },
+      {
         path: 'hearing-edit-summary',
         resolve: {
           hearingPriorities: RefDataResolver,

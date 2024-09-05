@@ -221,6 +221,10 @@ class MockApp{
     async startServer(){
 
         const app = express();
+
+        // Enable view caching
+        app.set('view cache', true);
+
         app.disable('etag');
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());

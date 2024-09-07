@@ -14,7 +14,10 @@ module.exports = {
     minimizer: [
       new TerserPlugin({
         terserOptions: {
-          sourceMap: true
+          sourceMap: true,
+          compress: {
+            drop_console: true
+          }
         }
       })
     ]

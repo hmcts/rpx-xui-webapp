@@ -277,7 +277,8 @@
     "typed-rest-client": "^1.8.0",
     "lodash": "^4.17.21",
     "braces": "^3.0.3",
-    "ws": "^8.18.0"
+    "ws": "^8.18.0",
+    "webpack": "^5.94.0"
   },
   "packageManager": "yarn@3.6.3"
 }

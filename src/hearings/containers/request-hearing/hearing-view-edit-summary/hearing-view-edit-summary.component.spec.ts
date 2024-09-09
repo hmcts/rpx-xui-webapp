@@ -268,6 +268,7 @@ describe('HearingViewEditSummaryComponent', () => {
       spyOn(mockStore, 'select').and.returnValue(of(null));
       component.ngOnInit();
       fixture.detectChanges();
+      expect(hearingsService.hearingRequestForSubmitValid).toEqual(false);
       expect(component.requestError).toBeNull();
     });
 

@@ -1,5 +1,6 @@
 import * as express from 'express';
 import { getConfigValue, showFeature } from './index';
+import { menuConfigs } from './menuConfigs/configs';
 import {
   FEATURE_ACCESS_MANAGEMENT_ENABLED,
   FEATURE_OIDC_ENABLED,
@@ -15,9 +16,23 @@ import {
   SERVICES_WA_WORKFLOW_API_URL
 } from './references';
 
+import { JUILogger } from 'lib/models';
+import * as log4jui from '../lib/log4jui';
+const logger: JUILogger = log4jui.getLogger('uiConfig');
+
 export const router = express.Router({ mergeParams: true });
 
 router.get('/', uiConfigurationRouter);
+
+function getHeaderConfig() {
+  const previewID = process.env.PREVIEW_DEPLOYMENT_ID;
+  const envUrl = getConfigValue(SERVICES_IDAM_LOGIN_URL);
+  const aatConfigEnvs = ['.aat.', '.demo.', '.perftest.', '.ithc.'];
+  const environment = previewID ? 'preview' :
+    aatConfigEnvs.some((substring) => envUrl.includes(substring)) ? 'aat' : 'prod';
+  logger.info(`Environment set to: ${environment} (Preview ID: ${previewID}, Env URL: ${envUrl})`);
+  return menuConfigs[environment];
+}
 
 /**
  * UI Configuration Route
@@ -40,7 +55,8 @@ async function uiConfigurationRouter(req, res) {
     substantiveEnabled: showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED),
     paymentReturnUrl: getConfigValue(SERVICES_PAYMENT_RETURN_URL),
     waWorkflowApi: getConfigValue(SERVICES_WA_WORKFLOW_API_URL),
-    judicialBookingApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH)
+    judicialBookingApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
+    headerConfig: getHeaderConfig()
   });
 }
 

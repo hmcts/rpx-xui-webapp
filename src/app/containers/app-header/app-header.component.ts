@@ -109,19 +109,10 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     if (userDetails.userInfo) {
       this.userRoles = userDetails.userInfo.roles;
       this.headerConfigService.constructHeaderConfig(this.userRoles).subscribe((menuItems) => {
-        console.log('Local Menu items');
-        console.log(menuItems);
-        console.log('Local Menu items');
-      })
+        this.setAppHeaderNavItems(menuItems);
+      });
       this.hideNavigationListener(this.store);
       this.setApplicationThemeForUser();
-      this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).subscribe((menuItems) => {
-        console.log('LD Menu items');
-        console.log(menuItems);
-        console.log('LD Menu items');
-        //   // this.hideNavigationListener(this.store);
-      //   // this.setAppHeaderNavItems(menuItems);
-      });
     }
   }
 

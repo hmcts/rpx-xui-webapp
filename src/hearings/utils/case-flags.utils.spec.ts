@@ -423,18 +423,6 @@ describe('CaseFlagsUtils', () => {
       versionNumber: 1
     };
 
-    const mockLanguageFlag: CaseFlagReferenceModel = {
-      name: 'Language Interpreter',
-      hearingRelevant: true,
-      flagComment: true,
-      flagCode: 'PF0015',
-      isParent: false,
-      Path: [
-        'Party'
-      ],
-      childFlags: []
-    };
-
     const singleCaseFlagReferenceValue: CaseFlagReferenceModel[] = [
       {
         name: 'Case',
@@ -509,10 +497,9 @@ describe('CaseFlagsUtils', () => {
 
     it('should set reasonable adjustments from hearing request if found', () => {
       const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetailsWithLanguage, servicePartyDetails);
-      expect(partyWithFlags.get('Jane Smith').length).toEqual(3);
+      expect(partyWithFlags.get('Jane Smith').length).toEqual(2);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag1);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag2);
-      expect(partyWithFlags.get('Jane Smith')).toContain(mockLanguageFlag);
     });
 
     it('should set reasonable adjustments from service hearing values if null in hearing request', () => {

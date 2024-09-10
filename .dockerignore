@@ -2,6 +2,16 @@
 charts
 infrastructure
 node_modules
-
 Jenkinsfile*
 README.md
+.git
+.gitignore
+.dockerignore
+Dockerfile
+*.md
+*.log
+tests
+__tests__
+*.test.js
+*.spec.js
+coverage

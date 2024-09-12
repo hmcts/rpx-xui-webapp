@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { signIn } from './steps/login-steps';
-import { clickOnMainMenu } from './steps/steps-functions';
-import { retryAction } from './steps/retry-steps';
+import { signIn } from '../steps/login-steps';
+import { clickOnMainMenu } from '../steps/steps-functions';
+import { retryAction } from '../steps/retry-steps';
 
 test('Search from menu 16-digit find control', async ({ page }) => {
   await signIn(page, 'IAC_CaseOfficer_R2');

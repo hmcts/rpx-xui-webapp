@@ -34,7 +34,28 @@ describe('HearingRequirementsSectionComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set the HMC parties based on reasonableAdjustmentChangesConfirmed flag', () => {
+  it('should set the HMC parties based on reasonableAdjustmentChangesConfirmed flag has set to true', () => {
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
+        reasonableAdjustmentChangesConfirmed: true,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.partyIds.length).toEqual(0);
+    expect(component.partyNamesInHMC.length).toEqual(0);
+  });
+
+  it('should set the HMC parties based on reasonableAdjustmentChangesConfirmed flag has set to false', () => {
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
       caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,

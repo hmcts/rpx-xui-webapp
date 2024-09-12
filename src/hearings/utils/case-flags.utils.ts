@@ -12,7 +12,7 @@ import { IndividualDetailsModel } from '../models/individualDetails.model';
 export class CaseFlagsUtils {
   public static ACTIVE = 'active';
   public static LANGUAGE_INTERPRETER_FLAG_ID = 'PF0015';
-  public static SIGN_LANGUAGE_INTERPRETER_FLAG_ID = 'RA0042';
+  public static readonly SIGN_LANGUAGE_INTERPRETER_FLAG_ID = 'RA0042';
   public static PARTY_NAME = 'partyName';
 
   public static getReasonableAdjustmentFlags(caseFlagsRefData: CaseFlagReferenceModel[],

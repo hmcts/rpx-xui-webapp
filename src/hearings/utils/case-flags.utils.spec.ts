@@ -513,7 +513,7 @@ describe('CaseFlagsUtils', () => {
     });
 
     it('should set either Language Interpreter or Sign Language Interpreter', () => {
-      partyDetailsWithLanguage[0].individualDetails.reasonableAdjustments = ['RA0053']
+      partyDetailsWithLanguage[0].individualDetails.reasonableAdjustments = ['RA0053'];
       const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetailsWithLanguage, servicePartyDetails);
       expect(partyWithFlags.get('Jane Smith').length).toEqual(2);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag1);

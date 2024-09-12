@@ -121,6 +121,16 @@ describe('CaseFlagsUtils', () => {
     childFlags: []
   };
 
+  const mockFlag5: CaseFlagReferenceModel = {
+    name: 'Language Interpreter',
+    hearingRelevant: true,
+    flagComment: true,
+    flagCode: 'PF0015',
+    isParent: false,
+    Path: ['Party'],
+    childFlags: []
+  };
+
   it('should return true if has the right property', () => {
     const caseFlagGroup = CaseFlagsUtils.displayCaseFlagsGroup(serviceHearingValuesModel.caseFlags.flags, caseFlagsRefData, CaseFlagType.REASONABLE_ADJUSTMENT);
     expect(caseFlagGroup.length).toBe(2);
@@ -500,6 +510,14 @@ describe('CaseFlagsUtils', () => {
       expect(partyWithFlags.get('Jane Smith').length).toEqual(2);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag1);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag2);
+    });
+
+    it('should set either Language Interpreter or Sign Language Interpreter', () => {
+      partyDetailsWithLanguage[0].individualDetails.reasonableAdjustments = ['RA0053']
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetailsWithLanguage, servicePartyDetails);
+      expect(partyWithFlags.get('Jane Smith').length).toEqual(2);
+      expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag1);
+      expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag5);
     });
 
     it('should set reasonable adjustments from service hearing values if null in hearing request', () => {

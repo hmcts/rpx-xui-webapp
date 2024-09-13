@@ -13,7 +13,7 @@ test('Search from menu 16-digit find control', async ({ page }) => {
   await page.getByLabel('-digit case reference:').click();
   await page.getByLabel('-digit case reference:').fill(caseId); 
   await retryAction(async () => {
-  await page.getByRole('button', { name: 'Find' }).click();
+  await page.locator('//button[contains(text(), "Find")]').click();
   await expect(page.getByRole('heading', { name: 'Current progress of the case' })).toBeVisible();
   //await axeTest(page);
   });

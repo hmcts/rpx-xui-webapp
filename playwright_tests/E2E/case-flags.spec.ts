@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { checkTableCellContent, checkTableRowContent, checkNumberOfRow } from "./steps/table-steps"
+import { checkTableCellContent, checkTableRowContent, checkNumberOfRow } from "../steps/table-steps"
 import config from "../config"
 import { routeToCasePage } from '../steps/case-steps';
 

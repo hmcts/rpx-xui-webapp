@@ -3363,12 +3363,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.63-incorrect-font-size-fix":
-  version: 7.0.63-incorrect-font-size-fix
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.63-incorrect-font-size-fix"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.64-incorrect-font-size-fix-v2":
+  version: 7.0.64-incorrect-font-size-fix-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.64-incorrect-font-size-fix-v2"
   dependencies:
     tslib: ^2.3.0
-  checksum: c4d10e95ac81b3238881398ffb265002e3e204c6d1aef25377495f69456ca56118c452f3cd8b8c1e3996bdb328fda72aff90415a2b8ab6f4afa9f18ab4e75f86
+  checksum: 23da458749cf34889d7f1c63eb9bfd9388c01a8d8b77abc2aac869a6c4664849165c9dfd66a34f00c6509f448f1fd18062c3d9c383856024091cc88373a3a6f7
   languageName: node
   linkType: hard
 
@@ -21969,7 +21969,7 @@ __metadata:
     "@angular/ssr": ^17.3.6
     "@cucumber/cucumber": ^10.8.0
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.63-incorrect-font-size-fix
+    "@hmcts/ccd-case-ui-toolkit": 7.0.64-incorrect-font-size-fix-v2
     "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 4.0.8

@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { signIn } from "./steps/login-steps";
 import config from "../config";
-//import axeTest from "../helpers/accessibilityTestHelper";
+import axeTest from "../helpers/accessibilityTestHelper";
 
 test('login and log out from EUI with valid user', async ({ page }) => {
   await signIn(page, 'PROD_LIKE');
   await expect(page.getByRole('heading', { name: 'Case list' })).toBeVisible();
-  //await axeTest(page);
+  await axeTest(page);
   await page.getByText('Sign out').click();
   await expect(page.getByRole('heading', { name: 'Sign in or create an account' })).toBeVisible();
 });

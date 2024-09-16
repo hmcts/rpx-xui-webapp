@@ -41,7 +41,7 @@ test('My work tabs', async ({ page }) => {
   await expect(page.getByRole('button', { name: '▼ Hearing date ▲' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Start' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'End' })).toBeVisible();
-  //await axeTest(page);
+  await axeTest(page);
 });
 
 test('View tasks, E2E journey of Caseworker-ia-officer user', async ({ page }) => {
@@ -52,19 +52,19 @@ test('View tasks, E2E journey of Caseworker-ia-officer user', async ({ page }) =
   await page.getByRole('link', { name: 'My work' }).click();
   await expect(page.getByText('Use the work filter to show')).toBeVisible();
   await checkAllHeadersTabMenu(page);
-  //await axeTest(page);
+  await axeTest(page);
   
   console.log("All works tabs");
   await page.getByRole('link', { name: 'All work' }).click();
   await expect(page.getByRole('heading', { name: 'All work' })).toBeVisible();
   await checkAllHeadersTabMenu(page);
-  //await axeTest(page);
+  await axeTest(page);
 
   console.log("Create case tabs");
   await page.getByRole('link', { name: 'Create case' }).click();
   await expect(page.getByRole('heading', { name: 'Create Case' })).toBeVisible();
   await checkAllHeadersTabMenu(page);
-  //await axeTest(page);
+  await axeTest(page);
 
   console.log("Availble task check");
   await page.getByRole('link', { name: 'My work' }).click();
@@ -72,13 +72,13 @@ test('View tasks, E2E journey of Caseworker-ia-officer user', async ({ page }) =
   await expect(page.locator('[data-test="search-result-summary__text"]')).toBeVisible();
   await assertTableColumnNames(page, false, true);
   await page.getByRole('button', { name: '▼ Case category ▲' }).click();
-  //await axeTest(page);
+  await axeTest(page);
 
   console.log("Case list tabs");
   await page.getByRole('link', { name: 'Case list' }).click();
   await expect(page.getByRole('heading', { name: 'Case list' })).toBeVisible();
   await checkAllHeadersTabMenu(page);
-  //await axeTest(page);
+  await axeTest(page);
 });
 
 async function checkAllHeadersTabMenu(page) {

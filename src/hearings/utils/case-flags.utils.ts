@@ -7,10 +7,12 @@ import { PartyDetailsModel } from '../models/partyDetails.model';
 import { PartyFlagsDisplayModel, PartyFlagsModel } from '../models/partyFlags.model';
 import { RequestDetailsModel } from '../models/requestDetails.model';
 import { HearingsUtils } from './hearings.utils';
+import { IndividualDetailsModel } from '../models/individualDetails.model';
 
 export class CaseFlagsUtils {
   public static ACTIVE = 'active';
   public static LANGUAGE_INTERPRETER_FLAG_ID = 'PF0015';
+  public static readonly SIGN_LANGUAGE_INTERPRETER_FLAG_ID = 'RA0042';
   public static PARTY_NAME = 'partyName';
 
   public static getReasonableAdjustmentFlags(caseFlagsRefData: CaseFlagReferenceModel[],
@@ -137,12 +139,10 @@ export class CaseFlagsUtils {
       if (reasonableAdjustments.length === 0 && foundPartyFromService?.individualDetails?.reasonableAdjustments?.length > 0) {
         reasonableAdjustments = foundPartyFromService.individualDetails.reasonableAdjustments;
       }
-      const allFlagsId: string[] = reasonableAdjustments.slice();
-      if (party.individualDetails?.interpreterLanguage) {
-        allFlagsId.push(CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID);
-      }
+      const allFlagIds: string[] = reasonableAdjustments.slice();
+      const flags = this.addLanguageFlagIfMissing(allFlagIds, party?.individualDetails);
 
-      const allFlags: CaseFlagReferenceModel[] = allFlagsId.map((flagId) => CaseFlagsUtils.findFlagByFlagId(caseFlagReferenceModels, flagId))
+      const allFlags: CaseFlagReferenceModel[] = flags.map((flagId) => CaseFlagsUtils.findFlagByFlagId(caseFlagReferenceModels, flagId))
         .filter((foundFlag) => foundFlag !== null);
       if (allFlags?.length > 0 && partyName) {
         partyWithFlags.set(partyName, allFlags);
@@ -161,16 +161,23 @@ export class CaseFlagsUtils {
       const partyName = `${party.individualDetails.firstName} ${party.individualDetails.lastName}`;
       if (partyName) {
         const reasonableAdjustments = party.individualDetails?.reasonableAdjustments?.filter((reasonableAdjustment) => reasonableAdjustment.startsWith('RA')) || [];
-        const flagsId = reasonableAdjustments.slice();
-        if (party.individualDetails?.interpreterLanguage) {
-          flagsId.push(CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID);
-        }
+        const flagIds = reasonableAdjustments.slice();
+        const flags = this.addLanguageFlagIfMissing(flagIds, party?.individualDetails);
 
-        const allFlags: CaseFlagReferenceModel[] = flagsId.map((flagId) => CaseFlagsUtils.findFlagByFlagId(caseFlagReferenceModels, flagId));
+        const allFlags: CaseFlagReferenceModel[] = flags.map((flagId) => CaseFlagsUtils.findFlagByFlagId(caseFlagReferenceModels, flagId));
         partyWithFlags.set(partyName, allFlags);
       }
     });
     return partyWithFlags;
+  }
+
+  public static addLanguageFlagIfMissing(flagIds: string[], individualDetails:IndividualDetailsModel): string[] {
+    if (individualDetails?.interpreterLanguage) {
+      if (!flagIds.includes(this.SIGN_LANGUAGE_INTERPRETER_FLAG_ID)) {
+        flagIds.push(this.LANGUAGE_INTERPRETER_FLAG_ID);
+      }
+    }
+    return flagIds;
   }
 
   private static convertMapToArray(caseFlags: Record<string, PartyFlagsDisplayModel[]>): CaseFlagGroup[] {

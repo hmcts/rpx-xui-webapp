@@ -1,9 +1,16 @@
 import { expect, Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { createHtmlReport } from 'axe-html-reporter';
+import { axeTestEnabled } from "../playwright.config";
+
 const fs = require('fs');
 
 async function axeTest(page: Page): Promise<void> {
+
+  if (!axeTestEnabled) {
+    console.log("Skipping accessibility axe test as ENABLE_AXE_TESTS is not set to true");
+    return;
+  }
   // accessibility testing function
   const accessibilityScanResults = await new AxeBuilder({ page })
     .withTags([

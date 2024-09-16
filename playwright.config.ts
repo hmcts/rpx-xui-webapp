@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
 const headlessMode = process.env.HEAD !== 'true';
 

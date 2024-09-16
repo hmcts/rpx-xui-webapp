@@ -1,7 +1,5 @@
 import { test, expect } from '@playwright/test';
 import { signIn } from "../steps/login-steps"
-// import axeTest from "../helpers/accessibilityTestHelper";
-// import config from "../config"
 import { validateCaseEventNextStepTriggerActions, validateUpdateFormPageNextStepTriggerActions } from '../steps/search-steps';
 import { validateInvalidDateErrorMessage } from '../steps/createCase-steps';
 

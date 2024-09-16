@@ -509,9 +509,16 @@ describe('CaseFlagsUtils', () => {
 
     it('should set reasonable adjustments from hearing request if found', () => {
       const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetailsWithLanguage, servicePartyDetails);
-      expect(partyWithFlags.get('Jane Smith').length).toEqual(3);
+      expect(partyWithFlags.get('Jane Smith').length).toEqual(2);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag1);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag2);
+    });
+
+    it('should set either Language Interpreter or Sign Language Interpreter', () => {
+      partyDetailsWithLanguage[0].individualDetails.reasonableAdjustments = ['RA0053'];
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetailsWithLanguage, servicePartyDetails);
+      expect(partyWithFlags.get('Jane Smith').length).toEqual(2);
+      expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag1);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockLanguageFlag);
     });
 

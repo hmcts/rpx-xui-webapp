@@ -55,17 +55,13 @@ export class HearingRequirementsSectionComponent implements OnInit {
       if (this.partyIds.includes(partyInSHV.partyID)) {
         let flagIds: string[] = [];
         if (this.reasonableAdjustmentChangesConfirmed) {
-          flagIds = partyInSHV.individualDetails?.reasonableAdjustments?.filter((flagCode) => flagCode?.startsWith('RA'));
-          if (partyInSHV.individualDetails?.interpreterLanguage) {
-            flagIds = [...flagIds, CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID];
-          }
+          const reasonableAdjustments = partyInSHV.individualDetails?.reasonableAdjustments?.filter((flagCode) => flagCode?.startsWith('RA'));
+          flagIds = CaseFlagsUtils.addLanguageFlagIfMissing(reasonableAdjustments.slice(), partyInSHV.individualDetails);
         } else {
           const partyInHMC = this.partyDetails.find((partyInHMC) => partyInHMC.partyID === partyInSHV.partyID);
           if (partyInHMC) {
-            flagIds = partyInHMC.individualDetails?.reasonableAdjustments?.filter((flagCode) => flagCode?.startsWith('RA'));
-            if (partyInHMC.individualDetails?.interpreterLanguage) {
-              flagIds = [...flagIds, CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID];
-            }
+            const reasonableAdjustments = partyInHMC.individualDetails?.reasonableAdjustments?.filter((flagCode) => flagCode?.startsWith('RA'));
+            flagIds = CaseFlagsUtils.addLanguageFlagIfMissing(reasonableAdjustments.slice(), partyInHMC?.individualDetails);
           }
         }
         const flags = flagIds?.map((flagId) => CaseFlagsUtils.findFlagByFlagId(this.caseFlagsRefData, flagId))?.filter((flag) => flag !== null);

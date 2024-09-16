@@ -31,6 +31,8 @@ export class RequestHearingComponent implements OnDestroy {
   public submitRequest(action: ACTION): void {
     if (action === ACTION.VIEW_EDIT_REASON) {
       this.hearingsService.submitUpdatedRequestClicked = true;
+    } else if (action === ACTION.SUBMIT) {
+      this.hearingsService.hearingRequestForSubmitValid = true;
     } else {
       // if we are submitting and awaiting backend process
       this.hearingsService.hearingRequestForSubmitValid = false;
@@ -39,7 +41,7 @@ export class RequestHearingComponent implements OnDestroy {
   }
 
   public buttonDisabled(action: ACTION): boolean {
-    if (action === ACTION.VIEW_EDIT_SUBMIT) {
+    if (action === ACTION.VIEW_EDIT_SUBMIT || action === ACTION.SUBMIT) {
       return this.hearingsService.hearingRequestForSubmitValid;
     }
     return false;

@@ -182,6 +182,8 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 Run `HEAD=true APPBASEURL=https://manage-case.aat.platform.hmcts.net yarn test:playwrightE2E` to execute the pure playwright end-to-end tests on aat via [Playwright](https://playwright.dev/).
 
+Add `ENABLE_AXE_TESTS=true` to activate Axe Accessibility testing 
+
 ## Running Consumer Driven Contract tests (pact)
 
 Run `yarn test-pact` to execute the Pact tests 

@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { signIn } from './steps/login-steps';
 import { clickOnMainMenu } from './steps/steps-functions';
+import axeTest from "../helpers/accessibilityTestHelper";
 import { retryAction } from './steps/retry-steps';
 
 test('Search from menu 16-digit find control', async ({ page }) => {
@@ -12,8 +13,9 @@ test('Search from menu 16-digit find control', async ({ page }) => {
   await page.getByLabel('-digit case reference:').click();
   await page.getByLabel('-digit case reference:').fill(caseId); 
   await retryAction(async () => {
-    await page.locator('//button[contains(text(), "Find")]').click();
-    await expect(page.getByRole('heading', { name: 'Current progress of the case' })).toBeVisible();
+  await page.locator('//button[contains(text(), "Find")]').click();
+  await expect(page.getByRole('heading', { name: 'Current progress of the case' })).toBeVisible();
+  await axeTest(page);
   });
   
   console.log('Check the case details are displayed');
@@ -22,6 +24,7 @@ test('Search from menu 16-digit find control', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Case details' })).toBeVisible();
   await expect(page.getByText('Home Office Reference/Case ID')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Legal representative' })).toBeVisible();
+  await axeTest(page);
 });
 
 
@@ -39,6 +42,7 @@ test('Search from page Search', async ({ page }) => {
   await page.getByLabel('16-digit case reference', { exact: true }).fill(nonExistentCaseId);
   await page.getByRole('button', { name: 'Search' }).click();
   await expect(page.getByRole('heading', { name: 'No results found' })).toBeVisible();
+  await axeTest(page);
 });
 
 function findCaseId(page: any) {

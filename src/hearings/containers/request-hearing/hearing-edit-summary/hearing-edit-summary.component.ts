@@ -96,6 +96,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   public ngOnInit(): void {
+    console.log('edit summary source file');
     this.caseReference = String(this.hearingRequestMainModel.caseDetails.caseRef).replace(/(\d{4})(\d{4})(\d{4})(\d{4})/, '$1-$2-$3-$4');
     this.status = hearingStatusMappings.find((mapping) => mapping.hmcStatus === this.hearingRequestMainModel.requestDetails?.status)?.exuiDisplayStatus || '';
     this.requestSubmittedDate = moment(this.hearingRequestMainModel?.requestDetails?.timestamp)?.format(HearingDateEnum.DisplayMonth) || '';
@@ -596,11 +597,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     if ((hearingWindowHMC?.firstDateTimeMustBe) ||
       (hearingWindowHMC?.dateRangeStart || hearingWindowHMC?.dateRangeEnd)) {
       if (HearingsUtils.hasHearingDatesChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow, this.serviceHearingValuesModel.hearingWindow)){
-        return true;
-      }
-    }
-    if (this.hearingRequestMainModel.hearingDetails.duration){
-      if (HearingsUtils.hasHearingDurationChanged(this.hearingRequestMainModel.hearingDetails.duration, this.serviceHearingValuesModel.duration)){
         return true;
       }
     }

@@ -57,7 +57,10 @@
     "test:fullfunctional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js --local",
     "test:functional1": "yarn run test:xuiIntegration && yarn run test:functionalApiE2e",
     "test:functional_old": "yarn test:api && yarn run test:xuiIntegration && yarn run test:codeceptE2E",
-    "test:functional": "npm-run-all -p -l -n -c test:api test:xuiIntegration test:codeceptE2E test:playwrightE2E",
+    "test:functional_old2": "npm-run-all -p -l -n -c test:api test:xuiIntegration test:codeceptE2E test:playwrightE2E",
+    "test:functional": "npm-run-all -p -l -n -c test:codeceptE2E test:playwrightE2E",
+    "test:functionalAPI": "npm-run-all -p -l -n -c test:api",
+    "test:functionalNGInt": "npm-run-all -p -l -n -c test:xuiIntegration",
     "test:functional:backup": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",
     "test:functional:local": "yarn test:ngIntegration && webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/functional.conf.js --local",
     "test:functionalApiE2e": "yarn run test:api && yarn run test:codeceptE2E",
@@ -93,13 +96,13 @@
     "@angular/ssr": "^17.3.6",
     "@cucumber/cucumber": "^10.8.0",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "7.0.60",
+    "@hmcts/ccd-case-ui-toolkit": "7.0.64",
     "@hmcts/ccpay-web-component": "6.2.1",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.0.8",
     "@hmcts/nodejs-healthcheck": "1.7.0",
     "@hmcts/properties-volume": "^0.0.13",
-    "@hmcts/rpx-xui-common-lib": "2.0.26",
+    "@hmcts/rpx-xui-common-lib": "2.0.28",
     "@hmcts/rpx-xui-node-lib": "2.29.2-output-stdout",
     "@microsoft/applicationinsights-web": "^3.1.0",
     "@ng-idle/core": "^14.0.0",
@@ -260,7 +263,7 @@
     "typescript": "~5.4.5",
     "underscore": "^1.13.6",
     "uuid": "^8.3.1",
-    "webpack": "^5.75.0",
+    "webpack": "^5.94.0",
     "webpack-cli": "^4.10.0",
     "webpack-node-externals": "^3.0.0",
     "webpack-source-map-support": "^2.0.1"
@@ -275,7 +278,8 @@
     "typed-rest-client": "^1.8.0",
     "lodash": "^4.17.21",
     "braces": "^3.0.3",
-    "ws": "^8.18.0"
+    "ws": "^8.18.0",
+    "webpack": "^5.94.0"
   },
   "packageManager": "yarn@3.6.3"
 }

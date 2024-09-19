@@ -46,6 +46,7 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
   ngOnInit(): void {
     this.removeUnnecessarySummaryTemplateItems();
     this.getError$ = this.hearingStore.select(fromHearingStore.selectGetJudicialUsersError);
+    this.hearingsService.hearingRequestForSubmitValid = false;
     this.getError$
       .pipe(
         takeUntil(this.unsubscribe$),
